@@ -119,6 +119,54 @@ SKILL 会在特定场景下自动触发，例如：
 
 你也可以手动指定使用某个 SKILL，具体方式取决于你使用的 AI IDE。
 
+### 使用示例：find-skills
+
+**find-skills** 是一个帮助你发现和安装其他 SKILL 的工具。当你需要扩展 AI 能力时，可以使用它来搜索生态系统中可用的 SKILL。
+
+**使用场景：**
+
+- 问"如何做X"，其中X可能是已有skill的常见任务
+- 说"找一个X的skill"或"有没有一个X的skill"
+- 问"你能做X吗"，其中X是专业能力
+- 表达对扩展agent能力的兴趣
+
+**使用方法：**
+
+使用 Skills CLI 搜索相关 SKILL：
+
+```bash
+npx skills find [query]
+```
+
+**示例：**
+
+- 用户问"如何让我的React应用更快？" → `npx skills find react performance`
+- 用户问"你能帮我审查PR吗？" → `npx skills find pr review`
+- 用户问"我需要创建一个变更日志" → `npx skills find changelog`
+
+**安装 SKILL：**
+
+找到想要的 SKILL 后，使用以下命令安装：
+
+```bash
+npx skills add <owner/repo@skill>
+```
+
+例如：
+
+```bash
+npx skills add vercel-labs/agent-skills@vercel-react-best-practices
+```
+
+**常用命令：**
+
+- `npx skills find [query]` - 交互式或按关键词搜索skills
+- `npx skills add <package>` - 从GitHub或其他来源安装skill
+- `npx skills check` - 检查skill更新
+- `npx skills update` - 更新所有已安装的skills
+
+**浏览 SKILL：** https://skills.sh/
+
 ## 贡献指南
 
 欢迎参与翻译工作！贡献方式：
