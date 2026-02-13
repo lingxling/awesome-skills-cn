@@ -1,0 +1,43 @@
+# 原始英文技能仓库（不提交到翻译项目）
+claude-code-skill/
+vercel-agent-skills/
+vercel-skills/
+ui-ux-pro-max-skill/
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# IDE 配置文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 临时文件
+*.tmp
+*.temp
+*.log
+
+# 构建输出
+dist/
+build/
+out/
