@@ -1,6 +1,3 @@
-# 原始英文技能仓库（不提交到翻译项目）
-openclaw-skills/
-
 # 子项目中的 .git 文件夹（不提交）
 # 使用 **/.git 但排除根目录的 .git
 #**/.git
@@ -13,6 +10,7 @@ Thumbs.db
 # IDE 配置文件
 .vscode/
 .idea/
+.trae/
 *.swp
 *.swo
 *~

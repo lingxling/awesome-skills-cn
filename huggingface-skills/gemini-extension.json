@@ -1,0 +1,11 @@
+{
+    "name": "huggingface-skills",
+    "description": "Provides access to the Hugging Face Skills.",
+    "version": "0.1.0",
+    "contextFileName": "agents/AGENTS.md",
+    "mcpServers": {
+        "huggingface-skills": {
+            "httpUrl": "https://huggingface.co/mcp?login"
+        }
+    }
+}

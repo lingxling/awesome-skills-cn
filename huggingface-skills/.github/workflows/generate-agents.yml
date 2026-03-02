@@ -1,0 +1,30 @@
+name: Validate generated agent/plugin artifacts
+
+on:
+  pull_request:
+    paths:
+      - "scripts/AGENTS_TEMPLATE.md"
+      - "scripts/generate_agents.py"
+      - "scripts/generate_cursor_plugin.py"
+      - "scripts/publish.sh"
+      - "**/SKILL.md"
+      - "agents/AGENTS.md"
+      - "README.md"
+      - ".claude-plugin/marketplace.json"
+      - ".claude-plugin/plugin.json"
+      - "gemini-extension.json"
+      - ".cursor-plugin/plugin.json"
+      - ".mcp.json"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Ensure generated files are up to date
+        run: ./scripts/publish.sh --check
