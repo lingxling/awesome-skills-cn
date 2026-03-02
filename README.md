@@ -33,171 +33,177 @@ skill-name/
     └── assets/           - 输出中使用的文件 (模板、图标、字体等)
 ```
 
+SKILL.md示例
+```Markdown
+---
+name: frontend-design
+description: ...
+---
+
+skill details.
+```
+
 ## 项目结构
 
 ```
 awesome-skills-cn/
 ├── README.md                    # 项目说明文档
 ├── LICENSE                      # MIT 许可证
+├── CHANGELOG.md                 # 更新日志
 ├── .gitignore                   # Git 忽略文件
-├── claude-code-skill-cn/        # claude-code-skill 的中文翻译
-│   ├── algorithmic-art/       # 算法艺术生成
-│   ├── brand-guidelines/      # 品牌指南
-│   ├── canvas-design/        # Canvas 设计
-│   ├── doc-coauthoring/      # 文档协作
-│   ├── docx/                # Word 文档处理
-│   ├── frontend-design/      # 前端设计
-│   ├── internal-comms/       # 内部沟通
-│   ├── mcp-builder/         # MCP服务器开发指南
-│   ├── pdf/                # PDF 处理
-│   ├── pptx/               # PowerPoint 处理
-│   ├── skill-creator/       # SKILL 创建指南
-│   ├── slack-gif-creator/   # Slack GIF 创建器
-│   ├── theme-factory/       # 主题工厂
-│   ├── web-artifacts-builder/# Web 构建器
-│   ├── webapp-testing/      # Web 应用测试
-│   └── xlsx/               # Excel 处理
-├── vercel-agent-skills-cn/      # vercel-agent-skills 的中文翻译
-│   ├── composition-patterns/  # 组合模式
-│   ├── react-best-practices/ # React 最佳实践
-│   ├── react-native-skills/   # React Native 技能
-│   ├── vercel-deploy-claimable/ # Vercel部署工具
-│   └── web-design-guidelines/ # Web 设计指南
-├── vercel-skills-cn/           # vercel-skills 的中文翻译
-│   └── find-skills/         # SKILL 发现工具
-└── ui-ux-pro-max-skill-cn/    # ui-ux-pro-max-skill 的中文翻译
-└── [原始仓库目录]               # 原始英文仓库（不提交）
+├── anthropics-skills/           # claude-code-skills 原项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/
+│       ├── algorithmic-art/
+│       │   └── SKILL_CN.md    # 算法艺术生成
+│       ├── brand-guidelines/
+│       │   └── SKILL_CN.md    # 品牌指南
+│       ├── canvas-design/
+│       │   └── SKILL_CN.md    # Canvas 设计
+│       ├── doc-coauthoring/
+│       │   └── SKILL_CN.md    # 文档协作
+│       ├── docx/
+│       │   └── SKILL_CN.md    # Word 文档处理
+│       ├── frontend-design/
+│       │   └── SKILL_CN.md    # 前端设计
+│       ├── internal-comms/
+│       │   └── SKILL_CN.md    # 内部沟通
+│       ├── mcp-builder/
+│       │   └── SKILL_CN.md    # MCP 服务器开发指南
+│       ├── pdf/
+│       │   └── SKILL_CN.md    # PDF 处理
+│       ├── pptx/
+│       │   └── SKILL_CN.md    # PowerPoint 处理
+│       ├── skill-creator/
+│       │   └── SKILL_CN.md    # SKILL 创建指南
+│       ├── slack-gif-creator/
+│       │   └── SKILL_CN.md    # Slack GIF 创建器
+│       ├── theme-factory/
+│       │   └── SKILL_CN.md    # 主题工厂
+│       ├── web-artifacts-builder/
+│       │   └── SKILL_CN.md    # Web 构建器
+│       ├── webapp-testing/
+│       │   └── SKILL_CN.md    # Web 应用测试
+│       └── xlsx/
+│           └── SKILL_CN.md    # Excel 处理
+├── ui-ux-pro-max-skill/        # ui-ux-pro-max-skill 原项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── .claude/skills/ui-ux-pro-max/
+│       └── SKILL_CN.md        # UI/UX Pro Max 技能
+└── vercel-labs-skills/         # vercel-labs/skills 原项目
+    ├── README_CN.md            # 项目说明文档中文翻译
+    └── skills/find-skills/
+        └── SKILL_CN.md        # SKILL 发现工具
+...
 ```
+
+**翻译方式说明：**
+- 中文翻译文件直接在原项目的 SKILL.md 所在目录下新增 SKILL_CN.md
+- 项目说明文档的中文翻译为 README_CN.md，与原 README.md 同级
+- 原项目保持完整，翻译文件作为补充存在
 
 ## 翻译进度
 
-| 来源仓库 | SKILL 数量 | 翻译进度 | 状态 |
-|---------|-----------|---------|------|
-| claude-code-skill | 16 | 16/16 | 已完成 |
-| vercel-agent-skills | 5 | 5/5 | 已完成 |
-| vercel-skills | 1 | 1/1 | 已完成 |
-| ui-ux-pro-max-skill | 1 | 1/1 | 已完成 |
-| **总计** | **23** | **23/23** | **已完成** |
+| 来源仓库 | SKILL 数量 | README 翻译 | SKILL 翻译 | 状态 |
+|---------|-----------|------------|-----------|------|
+| anthropics-skills | 16 | ✓ | 16/16 | 已完成 |
+| ui-ux-pro-max-skill | 1 | ✓ | 1/1 | 已完成 |
+| vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
+| antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
+| huggingface-skills | 9 | - | 0/9 | 未开始 |
+| openai-skills | 30 | - | 0/30 | 未开始 |
+| vercel-labs-agent-skills | 5 | - | 0/5 | 未开始 |
+| **总计** | **1030** | **3** | **18/1030** | **进行中** |
 
-### claude-code-skill (16个)
+### anthropics-skills (16个)
 
-- [x] algorithmic-art - 算法艺术生成
-- [x] brand-guidelines - 品牌指南
-- [x] canvas-design - Canvas 设计
-- [x] doc-coauthoring - 文档协作
-- [x] docx - Word 文档处理
-- [x] frontend-design - 前端设计
-- [x] internal-comms - 内部沟通
-- [x] mcp-builder - MCP服务器开发指南
-- [x] pdf - PDF 处理
-- [x] pptx - PowerPoint 处理
-- [x] skill-creator - SKILL 创建指南
-- [x] slack-gif-creator - Slack GIF 创建器
-- [x] theme-factory - 主题工厂
-- [x] web-artifacts-builder - Web 构建器
-- [x] webapp-testing - Web 应用测试
-- [x] xlsx - Excel 处理
-
-### vercel-agent-skills (5个)
-
-- [x] react-best-practices - React 最佳实践
-- [x] react-native-skills - React Native 技能
-- [x] composition-patterns - 组合模式
-- [x] vercel-deploy-claimable - Vercel部署工具
-- [x] web-design-guidelines - Web 设计指南
-
-### vercel-skills (1个)
-
-- [x] find-skills - SKILL 发现工具
+- [x] [algorithmic-art](anthropics-skills/skills/algorithmic-art/SKILL_CN.md) - 算法艺术生成
+- [x] [brand-guidelines](anthropics-skills/skills/brand-guidelines/SKILL_CN.md) - 品牌指南
+- [x] [canvas-design](anthropics-skills/skills/canvas-design/SKILL_CN.md) - Canvas 设计
+- [x] [doc-coauthoring](anthropics-skills/skills/doc-coauthoring/SKILL_CN.md) - 文档协作
+- [x] [docx](anthropics-skills/skills/docx/SKILL_CN.md) - Word 文档处理
+- [x] [frontend-design](anthropics-skills/skills/frontend-design/SKILL_CN.md) - 前端设计
+- [x] [internal-comms](anthropics-skills/skills/internal-comms/SKILL_CN.md) - 内部沟通
+- [x] [mcp-builder](anthropics-skills/skills/mcp-builder/SKILL_CN.md) - MCP 服务器开发指南
+- [x] [pdf](anthropics-skills/skills/pdf/SKILL_CN.md) - PDF 处理
+- [x] [pptx](anthropics-skills/skills/pptx/SKILL_CN.md) - PowerPoint 处理
+- [x] [skill-creator](anthropics-skills/skills/skill-creator/SKILL_CN.md) - SKILL 创建指南
+- [x] [slack-gif-creator](anthropics-skills/skills/slack-gif-creator/SKILL_CN.md) - Slack GIF 创建器
+- [x] [theme-factory](anthropics-skills/skills/theme-factory/SKILL_CN.md) - 主题工厂
+- [x] [web-artifacts-builder](anthropics-skills/skills/web-artifacts-builder/SKILL_CN.md) - Web 构建器
+- [x] [webapp-testing](anthropics-skills/skills/webapp-testing/SKILL_CN.md) - Web 应用测试
+- [x] [xlsx](anthropics-skills/skills/xlsx/SKILL_CN.md) - Excel 处理
 
 ### ui-ux-pro-max-skill (1个)
 
-- [x] ui-ux-pro-max - UI/UX 专业技能
+- [x] [ui-ux-pro-max](ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/SKILL_CN.md) - UI/UX 专业技能
 
-## 如何使用
+### vercel-labs-skills (1个)
 
-### 安装 SKILL
+- [x] [find-skills](vercel-labs-skills/skills/find-skills/SKILL_CN.md) - SKILL 发现工具
 
-1. 确保你的 AI IDE 支持 SKILL 配置
-2. 将 SKILL 文件复制到你的 IDE 的 skills 目录，或者直接按照IDE页面提示新增SKILL。
-3. 重启 IDE 或重新加载配置
+### vercel-labs-agent-skills (4个)
 
-### 使用 SKILL
+- [ ] composition-patterns - 组合模式
+- [ ] react-best-practices - React 最佳实践
+- [ ] react-native-skills - React Native 技能
+- [ ] vercel-deploy-claimable - Vercel 部署工具
+- [ ] web-design-guidelines - Web 设计指南
 
-SKILL 会在特定场景下自动触发，例如：
+### antigravity-awesome-skills (968个)
 
-- 当你提到处理 PDF 文件时，pdf SKILL 会自动加载
-- 当你询问 React 最佳实践时，react-best-practices SKILL 会自动加载
-- 当你需要创建新的 SKILL 时，skill-creator SKILL 会提供指导
+- [ ] 00-andruia-consultant
+- [ ] 10-andruia-skill-smith
+- [ ] 20-andruia-niche-intelligence
+- [ ] 3d-web-experience
+- [ ] ab-test-setup
+- [ ] ... (共 968 个技能，详见项目目录)
 
-你也可以手动指定使用某个 SKILL，具体方式取决于你使用的 AI IDE。
+### huggingface-skills (9个)
 
-### 使用示例：find-skills
+- [ ] hugging-face-cli
+- [ ] hugging-face-datasets
+- [ ] hugging-face-evaluation
+- [ ] hugging-face-jobs
+- [ ] hugging-face-model-trainer
+- [ ] hugging-face-paper-publisher
+- [ ] hugging-face-tool-builder
+- [ ] hugging-face-trackio
+- [ ] huggingface-gradio
 
-**find-skills** 是一个帮助你发现和安装其他 SKILL 的工具。当你需要扩展 AI 能力时，可以使用它来搜索生态系统中可用的 SKILL。
+### openai-skills (30个)
 
-**使用场景：**
+- [ ] cloudflare-deploy
+- [ ] develop-web-game
+- [ ] doc
+- [ ] figma
+- [ ] figma-implement-design
+- [ ] gh-address-comments
+- [ ] gh-fix-ci
+- [ ] imagegen
+- [ ] jupyter-notebook
+- [ ] linear
+- [ ] netlify-deploy
+- [ ] notion-knowledge-capture
+- [ ] notion-meeting-intelligence
+- [ ] notion-research-documentation
+- [ ] notion-spec-to-implementation
+- [ ] openai-docs
+- [ ] pdf
+- [ ] playwright
+- [ ] render-deploy
+- [ ] screenshot
+- [ ] security-best-practices
+- [ ] security-ownership-map
+- [ ] security-threat-model
+- [ ] sentry
+- [ ] sora
+- [ ] speech
+- [ ] spreadsheet
+- [ ] transcribe
+- [ ] vercel-deploy
+- [ ] yeet
 
-- 问"如何做X"，其中X可能是已有skill的常见任务
-- 说"找一个X的skill"或"有没有一个X的skill"
-- 问"你能做X吗"，其中X是专业能力
-- 表达对扩展agent能力的兴趣
-
-**使用方法：**
-
-使用 Skills CLI 搜索相关 SKILL：
-
-```bash
-npx skills find [query]
-```
-
-**示例：**
-
-- 用户问"如何让我的React应用更快？" → `npx skills find react performance`
-- 用户问"你能帮我审查PR吗？" → `npx skills find pr review`
-- 用户问"我需要创建一个变更日志" → `npx skills find changelog`
-
-**安装 SKILL：**
-
-找到想要的 SKILL 后，使用以下命令安装：
-
-```bash
-npx skills add <owner/repo@skill>
-```
-
-例如：
-
-```bash
-npx skills add vercel-labs/agent-skills@vercel-react-best-practices
-```
-
-**常用命令：**
-
-- `npx skills find [query]` - 交互式或按关键词搜索skills
-- `npx skills add <package>` - 从GitHub或其他来源安装skill
-- `npx skills check` - 检查skill更新
-- `npx skills update` - 更新所有已安装的skills
-
-**浏览 SKILL：** https://skills.sh/
-
-## 贡献指南
-
-欢迎参与翻译工作！贡献方式：
-
-1. Fork 本项目
-2. 选择一个未翻译的 SKILL
-3. 翻译 SKILL.md 文件，保持 YAML frontmatter 中的 name 字段为英文，翻译 description 字段为中文
-4. 保持代码示例不变，只翻译说明文字
-5. 对于包含 scripts/、references/、assets/ 的 SKILL，翻译其中的文档文件，代码文件保持不变
-6. 提交 Pull Request
-
-### 翻译规范
-
-- 保持专业术语的准确性
-- 保持代码示例的完整性
-- 保持文件名和目录名不变
-- 保持 YAML frontmatter 格式正确
-- 使用简体中文
 
 ## 许可证
 
@@ -207,10 +213,13 @@ npx skills add vercel-labs/agent-skills@vercel-react-best-practices
 
 感谢以下原始 SKILL 仓库：
 
-- [claude-code-skill](https://github.com/anthropics/claude-code-skill)
-- [vercel-agent-skills](https://github.com/vercel-labs/agent-skills)
-- [vercel-skills](https://github.com/vercel-labs/skills)
-- [ui-ux-pro-max-skill](https://github.com/ComposioHQ/awesome-claude-skills)
+- [Anthropic Skills](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等
+- [UI/UX Pro Max Skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能
+- [Vercel Labs Skills](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具
+- [Vercel Labs Agent Skills](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等
+- [Antigravity Awesome Skills](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合
+- [Hugging Face Skills](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能
+- [OpenAI Skills](https://github.com/openai/skills) - OpenAI Codex 技能目录
 
 ## 联系方式
 
