@@ -3,8 +3,8 @@ openclaw-skills/
 
 # 子项目中的 .git 文件夹（不提交）
 # 使用 **/.git 但排除根目录的 .git
-**/.git
-!.git
+#**/.git
+#!.git
 
 # 操作系统文件
 .DS_Store

@@ -7,7 +7,7 @@
 
 ## [未发布]
 
-## [1.0.1] - 2026-03-02
+## [2.0.0] - 2026-03-02
 
 ### 变更
 - 移除原翻译文件 claude-code-skills-cn、ui-ux-pro-max-skill-cn、vercel-agent-skills-cn、vercel-skills-cn，改为在原项目文件夹下新增对应中文翻译。
