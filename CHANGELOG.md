@@ -5,8 +5,6 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [未发布]
-
 ## [2.0.0] - 2026-03-02
 
 ### 变更
@@ -35,8 +33,6 @@
   - [webapp-testing/SKILL_CN.md](anthropics-skills/skills/webapp-testing/SKILL_CN.md) - Web 应用测试
   - [xlsx/SKILL_CN.md](anthropics-skills/skills/xlsx/SKILL_CN.md) - Excel 处理
   
-### 新增
-
 
 ## [1.0.0]
 
