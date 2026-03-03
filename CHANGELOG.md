@@ -5,18 +5,50 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [2.2.0] - 2026-03-03
+## [2.5.0] - 2026-03-03
 
 ### 新增
-- 完成 5 个 Vercel Labs Agent Skills SKILL 的中文翻译：
-  - [composition-patterns/SKILL_CN.md](vercel-labs-agent-skills/skills/composition-patterns/SKILL_CN.md) - React 组合模式
-  - [react-best-practices/SKILL_CN.md](vercel-labs-agent-skills/skills/react-best-practices/SKILL_CN.md) - React 和 Next.js 性能优化
-  - [react-native-skills/SKILL_CN.md](vercel-labs-agent-skills/skills/react-native-skills/SKILL_CN.md) - React Native 最佳实践
-  - [vercel-deploy-claimable/SKILL_CN.md](vercel-labs-agent-skills/skills/claude.ai/vercel-deploy-claimable/SKILL_CN.md) - Vercel 部署工具
-  - [web-design-guidelines/SKILL_CN.md](vercel-labs-agent-skills/skills/web-design-guidelines/SKILL_CN.md) - Web 界面指南
-- 创建 [vercel-labs-agent-skills/README_CN.md](vercel-labs-agent-skills/README_CN.md) - 项目说明文档中文翻译
+- 完成 31 个 OpenAI Skills SKILL 的中文翻译：
+  - [skill-installer/SKILL_CN.md](openai-skills/skills/.system/skill-installer/SKILL_CN.md) - 技能安装器
+  - [skill-creator/SKILL_CN.md](openai-skills/skills/.system/skill-creator/SKILL_CN.md) - 技能创建器
+  - [vercel-deploy/SKILL_CN.md](openai-skills/skills/.curated/vercel-deploy/SKILL_CN.md) - Vercel 部署
+  - [netlify-deploy/SKILL_CN.md](openai-skills/skills/.curated/netlify-deploy/SKILL_CN.md) - Netlify 部署
+  - [render-deploy/SKILL_CN.md](openai-skills/skills/.curated/render-deploy/SKILL_CN.md) - Render 部署
+  - [develop-web-game/SKILL_CN.md](openai-skills/skills/.curated/develop-web-game/SKILL_CN.md) - Web 游戏开发
+  - [playwright/SKILL_CN.md](openai-skills/skills/.curated/playwright/SKILL_CN.md) - Playwright 浏览器自动化
+  - [pdf/SKILL_CN.md](openai-skills/skills/.curated/pdf/SKILL_CN.md) - PDF 处理
+  - [screenshot/SKILL_CN.md](openai-skills/skills/.curated/screenshot/SKILL_CN.md) - 屏幕截图
+  - [imagegen/SKILL_CN.md](openai-skills/skills/.curated/imagegen/SKILL_CN.md) - 图像生成
+  - [gh-fix-ci/SKILL_CN.md](openai-skills/skills/.curated/gh-fix-ci/SKILL_CN.md) - GitHub CI 修复
+  - [transcribe/SKILL_CN.md](openai-skills/skills/.curated/transcribe/SKILL_CN.md) - 音频转录
+  - [speech/SKILL_CN.md](openai-skills/skills/.curated/speech/SKILL_CN.md) - 语音生成
+  - [spreadsheet/SKILL_CN.md](openai-skills/skills/.curated/spreadsheet/SKILL_CN.md) - 电子表格处理
+  - [jupyter-notebook/SKILL_CN.md](openai-skills/skills/.curated/jupyter-notebook/SKILL_CN.md) - Jupyter 笔记本
+  - [openai-docs/SKILL_CN.md](openai-skills/skills/.curated/openai-docs/SKILL_CN.md) - OpenAI 文档查询
+  - [linear/SKILL_CN.md](openai-skills/skills/.curated/linear/SKILL_CN.md) - Linear 项目管理
+  - [sentry/SKILL_CN.md](openai-skills/skills/.curated/sentry/SKILL_CN.md) - Sentry 监控
+  - [security-best-practices/SKILL_CN.md](openai-skills/skills/.curated/security-best-practices/SKILL_CN.md) - 安全最佳实践
+  - [security-threat-model/SKILL_CN.md](openai-skills/skills/.curated/security-threat-model/SKILL_CN.md) - 安全威胁建模
+  - [security-ownership-map/SKILL_CN.md](openai-skills/skills/.curated/security-ownership-map/SKILL_CN.md) - 安全所有权映射
+  - [notion-knowledge-capture/SKILL_CN.md](openai-skills/skills/.curated/notion-knowledge-capture/SKILL_CN.md) - Notion 知识捕获
+  - [notion-meeting-intelligence/SKILL_CN.md](openai-skills/skills/.curated/notion-meeting-intelligence/SKILL_CN.md) - Notion 会议智能
+  - [notion-research-documentation/SKILL_CN.md](openai-skills/skills/.curated/notion-research-documentation/SKILL_CN.md) - Notion 研究文档
+  - [notion-spec-to-implementation/SKILL_CN.md](openai-skills/skills/.curated/notion-spec-to-implementation/SKILL_CN.md) - Notion 规格到实施
+  - [yeet/SKILL_CN.md](openai-skills/skills/.curated/yeet/SKILL_CN.md) - Git 提交流程
+  - [sora/SKILL_CN.md](openai-skills/skills/.curated/sora/SKILL_CN.md) - Sora 视频生成
+  - [cloudflare-deploy/SKILL_CN.md](openai-skills/skills/.curated/cloudflare-deploy/SKILL_CN.md) - Cloudflare 部署工具
+  - [develop-web-game/SKILL_CN.md](openai-skills/skills/.curated/develop-web-game/SKILL_CN.md) - Web 游戏开发
+  - [doc/SKILL_CN.md](openai-skills/skills/.curated/doc/SKILL_CN.md) - DOCX 文档处理
+  - [figma/SKILL_CN.md](openai-skills/skills/.curated/figma/SKILL_CN.md) - Figma 设计工具
+  - [figma-implement-design/SKILL_CN.md](openai-skills/skills/.curated/figma-implement-design/SKILL_CN.md) - Figma 设计实现
+  - [gh-address-comments/SKILL_CN.md](openai-skills/skills/.curated/gh-address-comments/SKILL_CN.md) - GitHub 评论处理
+- 创建 [openai-skills/README_CN.md](openai-skills/README_CN.md) - 项目说明文档中文翻译
 
-## [2.1.0] - 2026-03-03
+### 变更
+- 更新项目结构，添加 openai-skills 完整目录结构
+- 更新翻译进度表格：openai-skills 从 "6/31 进行中" 改为 "31/31 已完成"
+
+## [2.4.0] - 2026-03-03
 
 ### 新增
 - 完成 9 个 Hugging Face SKILL 的中文翻译：
