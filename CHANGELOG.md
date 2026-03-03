@@ -5,7 +5,22 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [2.0.0] - 2026-03-02
+## [2.0.0] - 2026-03-03
+
+### 新增
+- 完成 9 个 Hugging Face SKILL 的中文翻译：
+  - [huggingface-gradio/SKILL_CN.md](huggingface-skills/skills/huggingface-gradio/SKILL_CN.md) - Gradio Web UI 构建
+  - [hugging-face-cli/SKILL_CN.md](huggingface-skills/skills/hugging-face-cli/SKILL_CN.md) - Hugging Face CLI 操作
+  - [hugging-face-datasets/SKILL_CN.md](huggingface-skills/skills/hugging-face-datasets/SKILL_CN.md) - 数据集创建和管理
+  - [hugging-face-evaluation/SKILL_CN.md](huggingface-skills/skills/hugging-face-evaluation/SKILL_CN.md) - 模型评估管理
+  - [hugging-face-jobs/SKILL_CN.md](huggingface-skills/skills/hugging-face-jobs/SKILL_CN.md) - Hugging Face Jobs 计算任务
+  - [hugging-face-model-trainer/SKILL_CN.md](huggingface-skills/skills/hugging-face-model-trainer/SKILL_CN.md) - 模型训练和微调
+  - [hugging-face-paper-publisher/SKILL_CN.md](huggingface-skills/skills/hugging-face-paper-publisher/SKILL_CN.md) - 研究论文发布
+  - [hugging-face-tool-builder/SKILL_CN.md](huggingface-skills/skills/hugging-face-tool-builder/SKILL_CN.md) - API 工具构建
+  - [hugging-face-trackio/SKILL_CN.md](huggingface-skills/skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
+- 创建 [huggingface-skills/README_CN.md](huggingface-skills/README_CN.md) - 项目说明文档中文翻译
+
+## [1.0.0] - 2026-03-02
 
 ### 变更
 - 移除原翻译文件 claude-code-skills-cn、ui-ux-pro-max-skill-cn、vercel-agent-skills-cn、vercel-skills-cn，改为在原项目文件夹下新增对应中文翻译。

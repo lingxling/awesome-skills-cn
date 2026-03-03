@@ -109,11 +109,11 @@ awesome-skills-cn/
 | anthropics-skills | 16 | ✓ | 16/16 | 已完成 |
 | ui-ux-pro-max-skill | 1 | ✓ | 1/1 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
+| huggingface-skills | 9 | ✓ | 9/9 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
-| huggingface-skills | 9 | - | 0/9 | 未开始 |
 | openai-skills | 30 | - | 0/30 | 未开始 |
 | vercel-labs-agent-skills | 5 | - | 0/5 | 未开始 |
-| **总计** | **1030** | **3** | **18/1030** | **进行中** |
+| **总计** | **1030** | **4** | **27/1030** | **进行中** |
 
 ### anthropics-skills (16个)
 
@@ -161,15 +161,15 @@ awesome-skills-cn/
 
 ### huggingface-skills (9个)
 
-- [ ] hugging-face-cli
-- [ ] hugging-face-datasets
-- [ ] hugging-face-evaluation
-- [ ] hugging-face-jobs
-- [ ] hugging-face-model-trainer
-- [ ] hugging-face-paper-publisher
-- [ ] hugging-face-tool-builder
-- [ ] hugging-face-trackio
-- [ ] huggingface-gradio
+- [x] [huggingface-gradio](huggingface-skills/skills/huggingface-gradio/SKILL_CN.md) - Gradio Web UI 构建
+- [x] [hugging-face-cli](huggingface-skills/skills/hugging-face-cli/SKILL_CN.md) - Hugging Face CLI 操作
+- [x] [hugging-face-datasets](huggingface-skills/skills/hugging-face-datasets/SKILL_CN.md) - 数据集创建和管理
+- [x] [hugging-face-evaluation](huggingface-skills/skills/hugging-face-evaluation/SKILL_CN.md) - 模型评估管理
+- [x] [hugging-face-jobs](huggingface-skills/skills/hugging-face-jobs/SKILL_CN.md) - Hugging Face Jobs 计算任务
+- [x] [hugging-face-model-trainer](huggingface-skills/skills/hugging-face-model-trainer/SKILL_CN.md) - 模型训练和微调
+- [x] [hugging-face-paper-publisher](huggingface-skills/skills/hugging-face-paper-publisher/SKILL_CN.md) - 研究论文发布
+- [x] [hugging-face-tool-builder](huggingface-skills/skills/hugging-face-tool-builder/SKILL_CN.md) - API 工具构建
+- [x] [hugging-face-trackio](huggingface-skills/skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
 
 ### openai-skills (30个)
 
