@@ -4,6 +4,16 @@
 
 本项目致力于将优秀的英文 SKILL 翻译成中文，方便中文用户学习和使用。SKILL 是一种模块化的 AI 能力扩展包，可以为支持 SKILL 配置的 AI IDE 提供专业的领域知识、工作流程和工具集成。
 
+本翻译项目囊括了以下优秀的 SKILL 项目：
+
+- [**Anthropic Skills**](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（16个技能）
+- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（1个技能）
+- [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能）
+- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（5个技能）
+- [**Antigravity Awesome Skills**](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合（968个技能）
+- [**Hugging Face Skills**](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（9个技能）
+- [**OpenAI Skills**](https://github.com/openai/skills) - OpenAI Codex 技能目录（30个技能）
+
 ## SKILL 是什么
 
 SKILL 是一种模块化、自包含的扩展包，通过提供专业的领域知识、工作流程和工具来增强 AI 的能力。你可以将它们视为特定领域或任务的"入职指南"——它们将通用 AI 助手转变为具备程序化知识的专业助手。
