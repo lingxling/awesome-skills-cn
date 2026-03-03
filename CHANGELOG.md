@@ -5,7 +5,18 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [2.0.0] - 2026-03-03
+## [2.2.0] - 2026-03-03
+
+### 新增
+- 完成 5 个 Vercel Labs Agent Skills SKILL 的中文翻译：
+  - [composition-patterns/SKILL_CN.md](vercel-labs-agent-skills/skills/composition-patterns/SKILL_CN.md) - React 组合模式
+  - [react-best-practices/SKILL_CN.md](vercel-labs-agent-skills/skills/react-best-practices/SKILL_CN.md) - React 和 Next.js 性能优化
+  - [react-native-skills/SKILL_CN.md](vercel-labs-agent-skills/skills/react-native-skills/SKILL_CN.md) - React Native 最佳实践
+  - [vercel-deploy-claimable/SKILL_CN.md](vercel-labs-agent-skills/skills/claude.ai/vercel-deploy-claimable/SKILL_CN.md) - Vercel 部署工具
+  - [web-design-guidelines/SKILL_CN.md](vercel-labs-agent-skills/skills/web-design-guidelines/SKILL_CN.md) - Web 界面指南
+- 创建 [vercel-labs-agent-skills/README_CN.md](vercel-labs-agent-skills/README_CN.md) - 项目说明文档中文翻译
+
+## [2.1.0] - 2026-03-03
 
 ### 新增
 - 完成 9 个 Hugging Face SKILL 的中文翻译：
@@ -20,7 +31,7 @@
   - [hugging-face-trackio/SKILL_CN.md](huggingface-skills/skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
 - 创建 [huggingface-skills/README_CN.md](huggingface-skills/README_CN.md) - 项目说明文档中文翻译
 
-## [1.0.0] - 2026-03-02
+## [2.0.0] - 2026-03-02
 
 ### 变更
 - 移除原翻译文件 claude-code-skills-cn、ui-ux-pro-max-skill-cn、vercel-agent-skills-cn、vercel-skills-cn，改为在原项目文件夹下新增对应中文翻译。

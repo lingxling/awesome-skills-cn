@@ -100,10 +100,44 @@ awesome-skills-cn/
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── .claude/skills/ui-ux-pro-max/
 │       └── SKILL_CN.md        # UI/UX Pro Max 技能
-└── vercel-labs-skills/         # vercel-labs/skills 原项目
-    ├── README_CN.md            # 项目说明文档中文翻译
-    └── skills/find-skills/
-        └── SKILL_CN.md        # SKILL 发现工具
+├── vercel-labs-skills/         # vercel-labs/skills 原项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/find-skills/
+│       └── SKILL_CN.md        # SKILL 发现工具
+├── vercel-labs-agent-skills/    # vercel-labs/agent-skills 原项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/
+│       ├── composition-patterns/
+│       │   └── SKILL_CN.md    # 组合模式
+│       ├── react-best-practices/
+│       │   └── SKILL_CN.md    # React 最佳实践
+│       ├── react-native-skills/
+│       │   └── SKILL_CN.md    # React Native 技能
+│       ├── claude.ai/vercel-deploy-claimable/
+│       │   └── SKILL_CN.md    # Vercel 部署工具
+│       └── web-design-guidelines/
+│           └── SKILL_CN.md    # Web 设计指南
+├── huggingface-skills/         # huggingface/skills 原项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/
+│       ├── huggingface-gradio/
+│       │   └── SKILL_CN.md    # Gradio Web UI 构建
+│       ├── hugging-face-cli/
+│       │   └── SKILL_CN.md    # Hugging Face CLI 操作
+│       ├── hugging-face-datasets/
+│       │   └── SKILL_CN.md    # 数据集创建和管理
+│       ├── hugging-face-evaluation/
+│       │   └── SKILL_CN.md    # 模型评估管理
+│       ├── hugging-face-jobs/
+│       │   └── SKILL_CN.md    # Hugging Face Jobs 计算任务
+│       ├── hugging-face-model-trainer/
+│       │   └── SKILL_CN.md    # 模型训练和微调
+│       ├── hugging-face-paper-publisher/
+│       │   └── SKILL_CN.md    # 研究论文发布
+│       ├── hugging-face-tool-builder/
+│       │   └── SKILL_CN.md    # API 工具构建
+│       └── hugging-face-trackio/
+│           └── SKILL_CN.md    # ML 实验跟踪
 ...
 ```
 
@@ -120,10 +154,10 @@ awesome-skills-cn/
 | ui-ux-pro-max-skill | 1 | ✓ | 1/1 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
 | huggingface-skills | 9 | ✓ | 9/9 | 已完成 |
+| vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
 | openai-skills | 30 | - | 0/30 | 未开始 |
-| vercel-labs-agent-skills | 5 | - | 0/5 | 未开始 |
-| **总计** | **1030** | **4** | **27/1030** | **进行中** |
+| **总计** | **1030** | **5** | **32/1030** | **进行中** |
 
 ### anthropics-skills (16个)
 
@@ -152,13 +186,13 @@ awesome-skills-cn/
 
 - [x] [find-skills](vercel-labs-skills/skills/find-skills/SKILL_CN.md) - SKILL 发现工具
 
-### vercel-labs-agent-skills (4个)
+### vercel-labs-agent-skills (5个)
 
-- [ ] composition-patterns - 组合模式
-- [ ] react-best-practices - React 最佳实践
-- [ ] react-native-skills - React Native 技能
-- [ ] vercel-deploy-claimable - Vercel 部署工具
-- [ ] web-design-guidelines - Web 设计指南
+- [x] [composition-patterns](vercel-labs-agent-skills/skills/composition-patterns/SKILL_CN.md) - 组合模式
+- [x] [react-best-practices](vercel-labs-agent-skills/skills/react-best-practices/SKILL_CN.md) - React 最佳实践
+- [x] [react-native-skills](vercel-labs-agent-skills/skills/react-native-skills/SKILL_CN.md) - React Native 技能
+- [x] [vercel-deploy-claimable](vercel-labs-agent-skills/skills/claude.ai/vercel-deploy-claimable/SKILL_CN.md) - Vercel 部署工具
+- [x] [web-design-guidelines](vercel-labs-agent-skills/skills/web-design-guidelines/SKILL_CN.md) - Web 设计指南
 
 ### antigravity-awesome-skills (968个)
 
