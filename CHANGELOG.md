@@ -5,6 +5,19 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.6.0] - 2026-03-04
+
+### 新增
+- 添加 3 个新的 SKILL 项目到翻译项目：
+  - [claude-scientific-skills](claude-scientific-skills/) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（170个技能）
+  - [composiohq-awesome-claude-skills](composiohq-awesome-claude-skills/) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（200+个技能）
+  - [voltagent-awesome-openclaw-skills](voltagent-awesome-openclaw-skills/) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能）
+
+### 变更
+- 更新项目简介，添加3个新项目的描述
+- 更新翻译进度表格，从 1031 个技能增加到 7200+ 个技能
+- 更新致谢部分，添加3个新项目的致谢信息
+
 ## [2.5.0] - 2026-03-03
 
 ### 新增

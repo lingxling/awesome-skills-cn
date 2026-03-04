@@ -6,13 +6,16 @@
 
 本翻译项目囊括了以下优秀的 SKILL 项目：
 
-- [**Anthropic Skills**](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（16个技能）
-- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（1个技能）
-- [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能）
-- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（5个技能）
-- [**Antigravity Awesome Skills**](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合（968个技能）
-- [**Hugging Face Skills**](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（9个技能）
-- [**OpenAI Skills**](https://github.com/openai/skills) - OpenAI Codex 技能目录（30个技能）
+- [**Anthropic Skills**](https://github.com/anthropics/skills) [![GitHub Stars](https://img.shields.io/github/stars/anthropics/skills?style=social)](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（16个技能）
+- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) [![GitHub Stars](https://img.shields.io/github/stars/nextlevelbuilder/ui-ux-pro-max-skill?style=social)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（1个技能）
+- [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) [![GitHub Stars](https://img.shields.io/github/stars/vercel-labs/skills?style=social)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能）
+- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://img.shields.io/github/stars/vercel-labs/agent-skills?style=social)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（5个技能）
+- [**Antigravity Awesome Skills**](https://github.com/sickn33/antigravity-awesome-skills) [![GitHub Stars](https://img.shields.io/github/stars/sickn33/antigravity-awesome-skills?style=social)](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合（968个技能）
+- [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://img.shields.io/github/stars/huggingface/skills?style=social)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（9个技能）
+- [**OpenAI Skills**](https://github.com/openai/skills) [![GitHub Stars](https://img.shields.io/github/stars/openai/skills?style=social)](https://github.com/openai/skills) - OpenAI Codex 技能目录（31个技能）
+- [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) [![GitHub Stars](https://img.shields.io/github/stars/K-Dense-AI/claude-scientific-skills?style=social)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（170个技能）
+- [**Composio Awesome Claude Skills**](https://github.com/ComposioHQ/awesome-claude-skills) [![GitHub Stars](https://img.shields.io/github/stars/ComposioHQ/awesome-claude-skills?style=social)](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（200+个技能）
+- [**Voltagent Awesome OpenClaw Skills**](https://github.com/voltagent/awesome-openclaw-skills) [![GitHub Stars](https://img.shields.io/github/stars/voltagent/awesome-openclaw-skills?style=social)](https://github.com/voltagent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能）
 
 ## SKILL 是什么
 
@@ -61,7 +64,7 @@ awesome-skills-cn/
 ├── LICENSE                      # MIT 许可证
 ├── CHANGELOG.md                 # 更新日志
 ├── .gitignore                   # Git 忽略文件
-├── anthropics-skills/           # claude-code-skills 原项目
+├── anthropics-skills/           # anthrpics-skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
 │       ├── algorithmic-art/
@@ -96,15 +99,15 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # Web 应用测试
 │       └── xlsx/
 │           └── SKILL_CN.md    # Excel 处理
-├── ui-ux-pro-max-skill/        # ui-ux-pro-max-skill 原项目
+├── ui-ux-pro-max-skill/        # ui-ux-pro-max-skill 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── .claude/skills/ui-ux-pro-max/
 │       └── SKILL_CN.md        # UI/UX Pro Max 技能
-├── vercel-labs-skills/         # vercel-labs/skills 原项目
+├── vercel-labs-skills/         # vercel-labs/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/find-skills/
 │       └── SKILL_CN.md        # SKILL 发现工具
-├── vercel-labs-agent-skills/    # vercel-labs/agent-skills 原项目
+├── vercel-labs-agent-skills/    # vercel-labs/agent-skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
 │       ├── composition-patterns/
@@ -117,7 +120,6 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # Vercel 部署工具
 │       └── web-design-guidelines/
 │           └── SKILL_CN.md    # Web 设计指南
-├── huggingface-skills/         # huggingface/skills 原项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
 │       ├── huggingface-gradio/
@@ -138,7 +140,7 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # API 工具构建
 │       └── hugging-face-trackio/
 │           └── SKILL_CN.md    # ML 实验跟踪
-├── openai-skills/              # openai/skills 原项目
+├── openai-skills/              # openai/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/.curated/
 │       ├── cloudflare-deploy/
@@ -169,10 +171,13 @@ awesome-skills-cn/
 | ui-ux-pro-max-skill | 1 | ✓ | 1/1 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
 | huggingface-skills | 9 | ✓ | 9/9 | 已完成 |
-| vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
 | openai-skills | 31 | ✓ | 31/31 | 已完成 |
+| vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
-| **总计** | **1031** | **37** | **37/1031** | **已完成** |
+| claude-scientific-skills | 170 | - | 0/170 | 未开始 |
+| composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
+| voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
+| **总计** | **7200+** | **37** | **37/7200+** | **进行中** |
 
 ### anthropics-skills (16个)
 
@@ -265,6 +270,25 @@ awesome-skills-cn/
 - [x] [vercel-deploy](openai-skills/skills/.curated/vercel-deploy/SKILL_CN.md) - Vercel 部署
 - [x] [yeet](openai-skills/skills/.curated/yeet/SKILL_CN.md) - Git 提交流程
 
+### claude-scientific-skills (170个)
+
+- [ ] 00-andruia-consultant
+- [ ] 10-andruia-skill-smith
+- [ ] ... (共 170 个技能，详见项目目录)
+
+### composiohq-awesome-claude-skills (200+个)
+
+- [ ] active-campaign-automation
+- [ ] adobe-automation
+- [ ] ... (共 200+ 个技能，详见项目目录)
+
+### voltagent-awesome-openclaw-skills (5816个)
+
+- [ ] ai-and-llms (196个技能)
+- [ ] browser-and-automation (335个技能)
+- [ ] coding-agents-and-ides (1222个技能)
+- [ ] ... (共 5816 个技能，详见项目目录)
+
 
 ## 许可证
 
@@ -281,6 +305,9 @@ awesome-skills-cn/
 - [Antigravity Awesome Skills](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合
 - [Hugging Face Skills](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能
 - [OpenAI Skills](https://github.com/openai/skills) - OpenAI Codex 技能目录
+- [Claude Scientific Skills](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域
+- [Composio Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等
+- [Voltagent Awesome OpenClaw Skills](https://github.com/voltagent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域
 
 ## 联系方式
 
