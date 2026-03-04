@@ -16,6 +16,7 @@
 - [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) [![GitHub Stars](https://img.shields.io/github/stars/K-Dense-AI/claude-scientific-skills?style=social)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（170个技能）
 - [**Composio Awesome Claude Skills**](https://github.com/ComposioHQ/awesome-claude-skills) [![GitHub Stars](https://img.shields.io/github/stars/ComposioHQ/awesome-claude-skills?style=social)](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（200+个技能）
 - [**Voltagent Awesome OpenClaw Skills**](https://github.com/voltagent/awesome-openclaw-skills) [![GitHub Stars](https://img.shields.io/github/stars/voltagent/awesome-openclaw-skills?style=social)](https://github.com/voltagent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能）
+- [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) [![GitHub Stars](https://img.shields.io/github/stars/kepano/obsidian-skills?style=social)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能）
 
 ## SKILL 是什么
 
@@ -176,6 +177,7 @@ awesome-skills-cn/
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
 | claude-scientific-skills | 170 | - | 0/170 | 未开始 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
+| obsidian-skills | 5 | - | 0/5 | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
 | **总计** | **7200+** | **37** | **37/7200+** | **进行中** |
 
@@ -289,6 +291,14 @@ awesome-skills-cn/
 - [ ] coding-agents-and-ides (1222个技能)
 - [ ] ... (共 5816 个技能，详见项目目录)
 
+### obsidian-skills (5个)
+
+- [ ] obsidian-markdown - 创建和编辑 Obsidian Flavored Markdown 文档
+- [ ] obsidian-bases - 创建和编辑 Obsidian Bases 数据库
+- [ ] json-canvas - 创建和编辑 JSON Canvas 文件
+- [ ] obsidian-cli - 通过 Obsidian CLI 与 Obsidian vault 交互
+- [ ] defuddle - 从网页提取干净的 Markdown 内容
+
 
 ## 许可证
 
@@ -308,6 +318,7 @@ awesome-skills-cn/
 - [Claude Scientific Skills](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域
 - [Composio Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等
 - [Voltagent Awesome OpenClaw Skills](https://github.com/voltagent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域
+- [Obsidian Skills](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等
 
 ## 联系方式
 

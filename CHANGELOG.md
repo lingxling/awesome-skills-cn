@@ -5,6 +5,17 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.7.0] - 2026-03-04
+
+### 新增
+- 添加 1 个新的 SKILL 项目到翻译项目：
+  - [obsidian-skills](obsidian-skills/) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能）
+
+### 变更
+- 更新项目简介，添加 obsidian-skills 项目的描述
+- 更新翻译进度表格，从 7200+ 个技能增加到 7205+ 个技能
+- 更新致谢部分，添加 obsidian-skills 项目的致谢信息
+
 ## [2.6.0] - 2026-03-04
 
 ### 新增
@@ -17,6 +28,7 @@
 - 更新项目简介，添加3个新项目的描述
 - 更新翻译进度表格，从 1031 个技能增加到 7200+ 个技能
 - 更新致谢部分，添加3个新项目的致谢信息
+- 为所有项目添加 GitHub Stars 徽章，实时显示 Star 数量
 
 ## [2.5.0] - 2026-03-03
 
