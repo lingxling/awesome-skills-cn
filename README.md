@@ -179,7 +179,7 @@ awesome-skills-cn/
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | obsidian-skills | 5 | - | 0/5 | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7200+** | **37** | **37/7200+** | **进行中** |
+| **总计** | **7200+** | **63** | **63/7200+** | **进行中** |
 
 ### anthropics-skills (16个)
 
