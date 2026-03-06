@@ -174,10 +174,10 @@ awesome-skills-cn/
 | huggingface-skills | 9 | ✓ | 9/9 | 已完成 |
 | openai-skills | 31 | ✓ | 31/31 | 已完成 |
 | vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
+| obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
 | claude-scientific-skills | 170 | - | 0/170 | 未开始 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
-| obsidian-skills | 5 | - | 5/5 | 已完成 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
 | **总计** | **7201+** | **64** | **69/7201+** | **进行中** |
 
@@ -273,6 +273,14 @@ awesome-skills-cn/
 - [x] [vercel-deploy](openai-skills/skills/.curated/vercel-deploy/SKILL_CN.md) - Vercel 部署
 - [x] [yeet](openai-skills/skills/.curated/yeet/SKILL_CN.md) - Git 提交流程
 
+### obsidian-skills (5个)
+
+- [x] [obsidian-markdown](obsidian-skills/skills/obsidian-markdown/SKILL_CN.md) - 创建和编辑 Obsidian Flavored Markdown 文档
+- [x] [obsidian-bases](obsidian-skills/skills/obsidian-bases/SKILL_CN.md) - 创建和编辑 Obsidian Bases 数据库
+- [x] [json-canvas](obsidian-skills/skills/json-canvas/SKILL_CN.md) - 创建和编辑 JSON Canvas 文件
+- [x] [obsidian-cli](obsidian-skills/skills/obsidian-cli/SKILL_CN.md) - 通过 Obsidian CLI 与 Obsidian vault 交互
+- [x] [defuddle](obsidian-skills/skills/defuddle/SKILL_CN.md) - 从网页提取干净的 Markdown 内容
+
 ### claude-scientific-skills (170个)
 
 - [ ] 00-andruia-consultant
@@ -291,15 +299,6 @@ awesome-skills-cn/
 - [ ] browser-and-automation (335个技能)
 - [ ] coding-agents-and-ides (1222个技能)
 - [ ] ... (共 5816 个技能，详见项目目录)
-
-### obsidian-skills (5个)
-
-- [x] [obsidian-markdown](obsidian-skills/skills/obsidian-markdown/SKILL_CN.md) - 创建和编辑 Obsidian Flavored Markdown 文档
-- [x] [obsidian-bases](obsidian-skills/skills/obsidian-bases/SKILL_CN.md) - 创建和编辑 Obsidian Bases 数据库
-- [x] [json-canvas](obsidian-skills/skills/json-canvas/SKILL_CN.md) - 创建和编辑 JSON Canvas 文件
-- [x] [obsidian-cli](obsidian-skills/skills/obsidian-cli/SKILL_CN.md) - 通过 Obsidian CLI 与 Obsidian vault 交互
-- [x] [defuddle](obsidian-skills/skills/defuddle/SKILL_CN.md) - 从网页提取干净的 Markdown 内容
-
 
 ## 许可证
 
