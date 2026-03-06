@@ -7,6 +7,290 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+---
+
+## [6.11.0] - 2026-03-05 - "Skills Expansion & Docs Polish"
+
+> **28 new skills, web-app performance upgrades, and documentation consistency pass.**
+
+This release adds 28 new skills across database tooling, FDA compliance, Odoo ERP, agent orchestration, and production architecture. It also ships incremental web-app performance improvements and a full documentation emoji-cleanup pass in line with Maintenance V5 rules. Registry count synced to 1006+ across all docs.
+
+## 🚀 New Skills
+
+### 🗄️ [drizzle-orm-expert](skills/drizzle-orm-expert/)
+
+**Type-safe database development with Drizzle ORM.**
+Covers queries, migrations, relations, and adapters for PostgreSQL, MySQL, and SQLite.
+
+> **Try it:** `Use @drizzle-orm-expert to design a schema with relations and run a migration`
+
+---
+
+### 🏭 FDA Compliance Suite (2 skills)
+
+**FDA audit and compliance guidance for food and medtech.**
+
+- **[fda-food-safety-auditor](skills/fda-food-safety-auditor/)**: FSMA, HACCP, and food facility audits with corrective action plans.
+- **[fda-medtech-compliance-auditor](skills/fda-medtech-compliance-auditor/)**: FDA 21 CFR Part 820, QSR, and 510(k) / PMA guidance.
+
+> **Try it:** `Use @fda-food-safety-auditor to audit our production facility`
+
+---
+
+### 🏢 Odoo ERP Suite (24 skills)
+
+**Complete Odoo 17 coverage for development, functional, DevOps, compliance, and integrations.**
+
+Skills include: `odoo-development`, `odoo-functional`, `odoo-devops`, `odoo-l10n-compliance`, `odoo-shopify-integration`, `odoo-woocommerce-bridge`, `odoo-edi-connector`, and 17 more.
+
+> **Try it:** `Use @odoo-development to scaffold a custom Odoo 17 module`
+
+---
+
+### 🤖 Production & Audit Skills (2 skills)
+
+- **[codebase-audit-pre-push](skills/codebase-audit-pre-push/)**: Automated quality gate that runs before every push.
+- **[production-grade](skills/production-grade/)**: 14-agent orchestrator pipeline for end-to-end production-readiness checks.
+
+> **Try it:** `Run @codebase-audit-pre-push before merging this PR`
+
+---
+
+## 📦 Improvements
+
+- **Registry Update**: Now tracking 1006 skills (+28 since v6.10.0).
+- **Statistics Sync**: All docs (README, GETTING_STARTED, FAQ, package.json) updated to reflect 1006 skills — eliminating 978/954/950/900 drift.
+- **Contributors**: Added `devchangjun`, `raeef1001`, `1bcMax` to Repo Contributors.
+- **Web App Performance** (PR #196): List virtualization, global state, debounced search, lazy loading, incremental loading, and edge-to-edge scrolling.
+- **Docs Polish**: Removed emojis from H2 headers in `GETTING_STARTED`, `SKILL_ANATOMY`, `CONTRIBUTING`, `FAQ` following Maintenance V5 anchor rules.
+- **Star History**: Updated star history chart in README.
+
+## 👥 Credits
+
+A huge shoutout to our community contributors:
+
+- **@sx4im** for `drizzle-orm-expert`
+- **@nagisanzenin** for `production-grade`
+- **@Mohammad-Faiz-Cloud-Engineer** for docs emoji cleanup across multiple files
+- **@skyruh** for web-app performance improvements (PR #196)
+- **@devchangjun**, **@raeef1001**, **@1bcMax** for community contributions
+
+---
+
+_Upgrade now: `git pull origin main` to fetch the latest skills._
+
+---
+
+## [6.10.0] - 2026-03-04 - "Skill Router & Developer Tools"
+
+> **Intelligent skill discovery, developer marketing, and AI integration tools.**
+
+This release brings a meta-skill for discovering the right skill, proofreading capabilities, Google Gemini integration, prompt optimization, SaaS MVP guidance, and Bitcoin Lightning Network skills. Plus documentation improvements for durable execution patterns.
+
+### 🚀 New Skills
+
+### 🧭 Skill Router
+
+**Intelligent entry point to the skill library.**
+
+Interviews users with a 4-question funnel when they're unsure what to do, then recommends the best skill(s) with exact invoke prompts to copy-paste immediately. Solves the "900+ skills, where do I start?" problem.
+
+- 4-question guided interview (area → specificity → stack → style)
+- Primary + alternative skill recommendations
+- Copy-paste ready invoke prompts
+
+> **Try it:** "@skill-router I want to build something but I'm not sure where to start"
+
+### ✍️ Professional Proofreader
+
+**Structured proofreading and grammar correction.**
+
+Proofreads and corrects grammar, spelling, punctuation, and clarity issues while preserving the author's original voice. Returns a structured modification log.
+
+- Inline text mode with change tracking
+- File processing mode for .docx, .pdf, .txt
+- Preserves original formatting and meaning
+
+> **Try it:** "Proofread this blog post and show me what changed"
+
+### 🤖 Gemini API Integration
+
+**Integrate Google Gemini API into projects.**
+
+Comprehensive guide for Google Gemini API covering model selection, multimodal inputs, streaming, function calling, and production best practices. Supports Node.js and Python.
+
+- Basic generation to advanced multimodal use cases
+- Streaming and function calling patterns
+- Error handling and model selection guide
+
+> **Try it:** "Set up Gemini API with streaming and function calling"
+
+### 🎯 LLM Prompt Optimizer
+
+**Systematic prompt engineering framework.**
+
+Transforms weak prompts into precision-engineered instructions using RSCIT framework, chain-of-thought, few-shot examples, and structured output patterns.
+
+- RSCIT framework for prompt analysis
+- Hallucination reduction techniques
+- Token compression strategies
+
+> **Try it:** "Optimize this prompt to get better JSON outputs"
+
+### 🚀 SaaS MVP Launcher
+
+**End-to-end roadmap for building SaaS MVPs.**
+
+Complete guide for building and launching a SaaS MVP: idea validation, tech stack selection (Next.js/Supabase/Stripe/Clerk), project structure, DB schema, auth, payments, and launch checklist.
+
+- Tech stack recommendations with rationale
+- Database schema templates
+- Pre-launch checklist
+
+> **Try it:** "I have an idea for a SaaS, help me build an MVP"
+
+### ⚡ Lightning Network Skills (3 skills)
+
+**Bitcoin Lightning Network development and architecture.**
+
+Three skills from the SuperScalar project covering channel factories, LSP architectures, and Layer 2 scaling:
+
+- **Lightning Factory Explainer**: SuperScalar protocol and scalable onboarding
+- **Lightning Channel Factories**: Multi-party channels and factory architectures
+- **Lightning Architecture Review**: Protocol design comparison and tradeoffs
+
+> **Try it:** "Explain how Lightning channel factories work"
+
+---
+
+### 📦 Improvements
+
+- **Registry Update**: Now tracking 978 skills.
+- **Documentation**: Added durable execution highlights to architectural skills (ai-agents-architect, architecture-patterns, event-sourcing-architect, saga-orchestration, workflow-automation).
+- **Community**: Added devmarketing-skills to Community Contributors section.
+- **Validation**: Fixed risk level in 3 skills (saas-mvp-launcher, llm-prompt-optimizer, gemini-api-integration).
+
+### 👥 Credits
+
+A huge shoutout to our community contributors:
+
+- **@lsuryatej** for `skill-router`
+- **@tejasashinde** for `professional-proofreader`
+- **@SnakeEye-sudo** for `gemini-api-integration`, `llm-prompt-optimizer`, `saas-mvp-launcher`
+- **@8144225309** for Lightning Network skills
+- **@maxdml** for durable execution documentation updates
+- **@jonathimer** for devmarketing-skills community link
+- **@copilot-swe-agent** for answering community questions
+
+---
+
+## [6.9.0] - 2026-03-03 - "Multi-Tool & Agent Infrastructure"
+
+> **Agent capabilities expand with email infrastructure, video intelligence, and multi-tool installer support.**
+
+This release delivers major infrastructure improvements: one-command install for multiple AI tools, email capabilities for agents via AgentMail, and video/audio processing with VideoDB. Plus significant web-app performance optimizations.
+
+### 🚀 New Skills
+
+### 📧 AgentMail
+
+**Email infrastructure for AI agents.**
+
+Gives agents real email addresses (`@theagentmail.net`) via REST API. Create accounts, send/receive emails, manage webhooks, and check karma balance. Perfect for agents that need to sign up for services, receive verification codes, or communicate via email.
+
+- Create email accounts with karma-based rate limiting
+- Send/receive emails with attachments
+- Webhook signature verification for secure notifications
+- Full SDK examples and API reference
+
+> **Try it:** "Create an email account for my agent and send a verification email"
+
+### 📹 VideoDB
+
+**Video and audio perception, indexing, and editing.**
+
+Ingest files/URLs/live streams, build visual/spoken indexes, search with timestamps, edit timelines, add overlays/subtitles, generate media, and create real-time alerts.
+
+- Ingest from files, URLs, RTSP/live feeds, or desktop capture
+- Semantic, visual, and spoken word indexes with timestamp search
+- Timeline editing with subtitles, overlays, transcoding
+- AI generation for images, video, music, voiceovers
+
+> **Try it:** "Search for 'product demo' in this video and create a clip with subtitles"
+
+---
+
+### 📦 Improvements
+
+- **Multi-Tool Install Support**: The installer now supports installing skills for multiple tools simultaneously (e.g., `npx antigravity-awesome-skills --claude --codex`). Fixes #182.
+- **Web-App Sync Optimization**: Hybrid sync strategy using git fetch for faster updates (5+ min → < 2 sec when no changes). Includes sort by "Most Stars" feature.
+- **Registry Update**: Now tracking 970 skills (+2 new).
+
+### 👥 Credits
+
+- **@zinzied** for web-app sync optimization (PR #180)
+- **@0xrohitgarg** for VideoDB skill contribution (PR #181)
+- **@uriva** for AgentMail skill contribution (PR #183)
+
+---
+
+## [6.8.0] - 2026-03-02 - "Productivity Boost & In-App Sync"
+
+> **Major productivity enhancements to existing skills and new in-app skill synchronization feature.**
+
+This release delivers version 2.0.0 upgrades to two critical skills: `vibe-code-auditor` and `tutorial-engineer`, packed with pattern recognition shortcuts, deterministic scoring, and copy-paste templates. Plus, a new "Sync Skills" button in the Web App enables live skill updates from GitHub without leaving the browser.
+
+## 🚀 New Features
+
+### 🔄 In-App Sync Skills Button
+
+**One-click skill synchronization from the Web App UI.**
+Replaces the unreliable START_APP.bat auto-updater. Users can now click "Sync Skills" in the web app to download the latest skills from GitHub instantly.
+
+- Vite dev server plugin exposing `/api/refresh-skills` endpoint
+- Downloads and extracts only the `/skills/` folder and `skills_index.json`
+- Live UI updates without page refresh
+
+## 📦 Improvements
+
+### ✨ vibe-code-auditor v2.0.0
+
+**Productivity-focused overhaul with 10x faster audits.**
+
+- **Pattern Recognition Shortcuts**: 10 heuristics for rapid issue detection
+- **Quick Checks**: 3-second scans for each of 7 audit dimensions
+- **Executive Summary**: Critical findings upfront
+- **Deterministic Scoring**: Replaces subjective ranges with algorithmic scoring
+- **Code Fix Blocks**: Before/after examples for copy-paste remediation
+- **Quick Wins Section**: Fixes completable in <1 hour
+- **Calibration Rules**: Scoring adjusted by code size (snippet vs multi-file)
+- **Expanded Security**: SQL injection, path traversal, insecure deserialization detection
+
+### 📚 tutorial-engineer v2.0.0
+
+**Evidence-based learning with 75% better retention.**
+
+- **4-MAT Model**: Why/What/How/What If framework for explanations
+- **Learning Retention Shortcuts**: Evidence-based patterns (+75% retention)
+- **Cognitive Load Management**: 7±2 rule, One Screen, No Forward References
+- **Exercise Calibration**: Difficulty table with time estimates
+- **Format Selection Guide**: Quick Start vs Deep Dive vs Workshop
+- **Pre-Publish Audit Checklist**: Comprehension, progression, technical validation
+- **Speed Scoring Rubric**: 1-5 rating on 5 dimensions
+- **Copy-Paste Template**: Ready-to-use Markdown structure
+- **Accessibility Checklist**: WCAG compliance for tutorials
+
+## 👥 Credits
+
+A huge shoutout to our community contributors:
+
+- **@munir-abbasi** for the v2.0.0 productivity enhancements to `vibe-code-auditor` and `tutorial-engineer` (PR #172)
+- **@zinzied** for the In-App Sync Skills Button and START_APP.bat simplification (PR #178)
+
+---
+
 ## [6.7.0] - 2026-03-01 - "Intelligence Extraction & Automation"
 
 > **New skills for Web Scraping (Apify), X/Twitter extraction, Genomic analysis, and hardened registry infrastructure.**

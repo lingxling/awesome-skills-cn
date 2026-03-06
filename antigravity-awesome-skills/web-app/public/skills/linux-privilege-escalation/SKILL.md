@@ -1,11 +1,9 @@
 ---
 name: linux-privilege-escalation
 description: "This skill should be used when the user asks to \"escalate privileges on Linux\", \"find privesc vectors on Linux systems\", \"exploit sudo misconfigurations\", \"abuse SUID binaries\", \"ex..."
-metadata:
-  author: zebbern
-  version: "1.1"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Linux Privilege Escalation

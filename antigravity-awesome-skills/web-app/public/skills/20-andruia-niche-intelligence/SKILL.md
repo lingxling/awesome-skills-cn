@@ -5,6 +5,7 @@ description: "Estratega de Inteligencia de Dominio de Andru.ia. Analiza el nicho
 category: andruia
 risk: safe
 source: personal
+date_added: "2026-02-27"
 ---
 
 ## When to Use

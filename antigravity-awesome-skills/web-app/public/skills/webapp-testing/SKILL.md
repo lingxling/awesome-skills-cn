@@ -1,9 +1,9 @@
 ---
 name: webapp-testing
 description: "Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browse..."
-license: Complete terms in LICENSE.txt
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Web Application Testing

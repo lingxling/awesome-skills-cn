@@ -3,6 +3,7 @@ name: vector-index-tuning
 description: "Optimize vector index performance for latency, recall, and memory. Use when tuning HNSW parameters, selecting quantization strategies, or scaling vector search infrastructure."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Vector Index Tuning

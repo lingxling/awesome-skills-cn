@@ -3,6 +3,7 @@ name: launch-strategy
 description: "When the user wants to plan a product launch, feature announcement, or release strategy. Also use when the user mentions 'launch,' 'Product Hunt,' 'feature release,' 'announcement,' 'go-to-market,'..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Launch Strategy

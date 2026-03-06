@@ -1,9 +1,9 @@
 ---
 name: deployment-procedures
 description: "Production deployment principles and decision-making. Safe deployment workflows, rollback strategies, and verification. Teaches thinking, not scripts."
-allowed-tools: Read, Glob, Grep, Bash
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Deployment Procedures

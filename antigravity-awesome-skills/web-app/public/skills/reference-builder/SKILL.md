@@ -1,14 +1,9 @@
 ---
 name: reference-builder
-description: |
-  Creates exhaustive technical references and API documentation.
-  Generates comprehensive parameter listings, configuration guides, and
-  searchable reference materials. Use PROACTIVELY for API docs, configuration
-  references, or complete technical specifications.
-metadata:
-  model: haiku
+description: Creates exhaustive technical references and API documentation. Generates comprehensive parameter listings, configuration guides, and searchable reference materials.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 ## Use this skill when

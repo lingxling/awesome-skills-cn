@@ -1,9 +1,9 @@
 ---
 name: azure-eventhub-ts
 description: "Build event streaming applications using Azure Event Hubs SDK for JavaScript (@azure/event-hubs). Use when implementing high-throughput event ingestion, real-time analytics, IoT telemetry, or event..."
-package: "@azure/event-hubs"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Azure Event Hubs SDK for TypeScript

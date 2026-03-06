@@ -1,9 +1,9 @@
 ---
 name: parallel-agents
 description: "Multi-agent orchestration patterns. Use when multiple independent tasks can run with different domain expertise or when comprehensive analysis requires multiple perspectives."
-allowed-tools: Read, Glob, Grep
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Native Parallel Agents

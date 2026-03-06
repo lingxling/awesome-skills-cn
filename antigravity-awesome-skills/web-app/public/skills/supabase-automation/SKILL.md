@@ -1,10 +1,9 @@
 ---
 name: supabase-automation
 description: "Automate Supabase database queries, table management, project administration, storage, edge functions, and SQL execution via Rube MCP (Composio). Always search tools first for current schemas."
-requires:
-  mcp: [rube]
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Supabase Automation via Rube MCP

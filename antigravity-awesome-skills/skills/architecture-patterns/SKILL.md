@@ -32,8 +32,13 @@ Master proven backend architecture patterns including Clean Architecture, Hexago
 2. Select an architecture pattern that fits the domain complexity.
 3. Define module boundaries, interfaces, and dependency rules.
 4. Provide migration steps and validation checks.
+5. For workflows that must survive failures (payments, order fulfillment, multi-step processes), use durable execution at the infrastructure layer — frameworks like DBOS persist workflow state, providing crash recovery without adding architectural complexity.
 
 Refer to `resources/implementation-playbook.md` for detailed patterns, checklists, and templates.
+
+## Related Skills
+
+Works well with: `event-sourcing-architect`, `saga-orchestration`, `workflow-automation`, `dbos-*`
 
 ## Resources
 

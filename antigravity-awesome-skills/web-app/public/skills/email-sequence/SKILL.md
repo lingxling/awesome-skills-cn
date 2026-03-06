@@ -3,6 +3,7 @@ name: email-sequence
 description: "When the user wants to create or optimize an email sequence, drip campaign, automated email flow, or lifecycle email program. Also use when the user mentions \"email sequence,\" \"drip campa..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Email Sequence Design

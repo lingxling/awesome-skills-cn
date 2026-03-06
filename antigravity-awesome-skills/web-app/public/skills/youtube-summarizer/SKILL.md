@@ -1,15 +1,11 @@
 ---
 name: youtube-summarizer
 description: "Extract transcripts from YouTube videos and generate comprehensive, detailed summaries using intelligent analysis frameworks"
-version: 1.2.1
-author: Eric Andrade
-created: 2025-02-01
-updated: 2026-02-04
-platforms: [github-copilot-cli, claude-code, codex]
 category: content
-tags: [video, summarization, transcription, youtube, content-analysis]
 risk: safe
 source: community
+tags: "[video, summarization, transcription, youtube, content-analysis]"
+date_added: "2026-02-27"
 ---
 
 # youtube-summarizer

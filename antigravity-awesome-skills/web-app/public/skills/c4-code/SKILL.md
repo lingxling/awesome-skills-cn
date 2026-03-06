@@ -1,15 +1,9 @@
 ---
 name: c4-code
-description: |
-  Expert C4 Code-level documentation specialist. Analyzes code
-  directories to create comprehensive C4 code-level documentation including
-  function signatures, arguments, dependencies, and code structure. Use when
-  documenting code at the lowest C4 level for individual directories and code
-  modules.
-metadata:
-  model: haiku
+description: Expert C4 Code-level documentation specialist. Analyzes code directories to create comprehensive C4 code-level documentation including function signatures, arguments, dependencies, and code structure.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 # C4 Code Level: [Directory Name]

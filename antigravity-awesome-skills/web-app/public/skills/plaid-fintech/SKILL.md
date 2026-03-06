@@ -1,8 +1,9 @@
 ---
 name: plaid-fintech
 description: "Expert patterns for Plaid API integration including Link token flows, transactions sync, identity verification, Auth for ACH, balance checks, webhook handling, and fintech compliance best practices..."
-source: vibeship-spawner-skills (Apache 2.0)
 risk: unknown
+source: "vibeship-spawner-skills (Apache 2.0)"
+date_added: "2026-02-27"
 ---
 
 # Plaid Fintech

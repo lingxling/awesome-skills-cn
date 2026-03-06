@@ -1,9 +1,9 @@
 ---
 name: pptx-official
 description: "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layo..."
-license: Proprietary. LICENSE.txt has complete terms
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # PPTX creation, editing, and analysis

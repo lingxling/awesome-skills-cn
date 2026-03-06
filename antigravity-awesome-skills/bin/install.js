@@ -80,20 +80,37 @@ function parseArgs() {
   };
 }
 
-function defaultDir(opts) {
-  if (opts.pathArg) return resolveDir(opts.pathArg);
-  if (opts.cursor) return path.join(HOME, ".cursor", "skills");
-  if (opts.claude) return path.join(HOME, ".claude", "skills");
-  if (opts.gemini) return path.join(HOME, ".gemini", "skills");
+function getTargets(opts) {
+  const targets = [];
+  if (opts.pathArg) {
+    return [{ name: "Custom", path: resolveDir(opts.pathArg) }];
+  }
+  if (opts.cursor) {
+    targets.push({ name: "Cursor", path: path.join(HOME, ".cursor", "skills") });
+  }
+  if (opts.claude) {
+    targets.push({ name: "Claude Code", path: path.join(HOME, ".claude", "skills") });
+  }
+  if (opts.gemini) {
+    targets.push({ name: "Gemini CLI", path: path.join(HOME, ".gemini", "skills") });
+  }
   if (opts.codex) {
     const codexHome = process.env.CODEX_HOME;
-    if (codexHome) return path.join(codexHome, "skills");
-    return path.join(HOME, ".codex", "skills");
+    const codexPath = codexHome
+      ? path.join(codexHome, "skills")
+      : path.join(HOME, ".codex", "skills");
+    targets.push({ name: "Codex CLI", path: codexPath });
   }
-  if (opts.kiro) return path.join(HOME, ".kiro", "skills");
-  if (opts.antigravity)
-    return path.join(HOME, ".gemini", "antigravity", "skills");
-  return path.join(HOME, ".gemini", "antigravity", "skills");
+  if (opts.kiro) {
+    targets.push({ name: "Kiro", path: path.join(HOME, ".kiro", "skills") });
+  }
+  if (opts.antigravity) {
+    targets.push({ name: "Antigravity", path: path.join(HOME, ".gemini", "antigravity", "skills") });
+  }
+  if (targets.length === 0) {
+    targets.push({ name: "Antigravity", path: path.join(HOME, ".gemini", "antigravity", "skills") });
+  }
+  return targets;
 }
 
 function printHelp() {
@@ -122,6 +139,7 @@ Examples:
   npx antigravity-awesome-skills --antigravity
   npx antigravity-awesome-skills --version 4.6.0
   npx antigravity-awesome-skills --path ./my-skills
+  npx antigravity-awesome-skills --claude --codex    Install to multiple targets
 `);
 }
 
@@ -165,6 +183,45 @@ function run(cmd, args, opts = {}) {
   if (r.status !== 0) process.exit(r.status == null ? 1 : r.status);
 }
 
+function installForTarget(tempDir, target) {
+  if (fs.existsSync(target.path)) {
+    const gitDir = path.join(target.path, ".git");
+    if (fs.existsSync(gitDir)) {
+      console.log(`  Migrating from full-repo install to skills-only layout…`);
+      const entries = fs.readdirSync(target.path);
+      for (const name of entries) {
+        const full = path.join(target.path, name);
+        const stat = fs.statSync(full);
+        if (stat.isDirectory()) {
+          if (fs.rmSync) {
+            fs.rmSync(full, { recursive: true, force: true });
+          } else {
+            fs.rmdirSync(full, { recursive: true });
+          }
+        } else {
+          fs.unlinkSync(full);
+        }
+      }
+    } else {
+      console.log(`  Updating existing install at ${target.path}…`);
+    }
+  } else {
+    const parent = path.dirname(target.path);
+    if (!fs.existsSync(parent)) {
+      try {
+        fs.mkdirSync(parent, { recursive: true });
+      } catch (e) {
+        console.error(`  Cannot create parent directory: ${parent}`, e.message);
+        process.exit(1);
+      }
+    }
+    fs.mkdirSync(target.path, { recursive: true });
+  }
+
+  installSkillsIntoTarget(tempDir, target.path);
+  console.log(`  ✓ Installed to ${target.path}`);
+}
+
 function main() {
   const opts = parseArgs();
   const { tagArg, versionArg } = opts;
@@ -174,8 +231,8 @@ function main() {
     return;
   }
 
-  const target = defaultDir(opts);
-  if (!target || !HOME) {
+  const targets = getTargets(opts);
+  if (!targets.length || !HOME) {
     console.error(
       "Could not resolve home directory. Use --path <absolute-path>.",
     );
@@ -186,6 +243,7 @@ function main() {
   const originalCwd = process.cwd();
 
   try {
+    console.log("Cloning repository…");
     if (process.platform === "win32") {
       run("git", ["-c", "core.symlinks=true", "clone", REPO, tempDir]);
     } else {
@@ -206,45 +264,14 @@ function main() {
       process.chdir(originalCwd);
     }
 
-    if (fs.existsSync(target)) {
-      const gitDir = path.join(target, ".git");
-      if (fs.existsSync(gitDir)) {
-        console.log("Migrating from full-repo install to skills-only layout…");
-        const entries = fs.readdirSync(target);
-        for (const name of entries) {
-          const full = path.join(target, name);
-          const stat = fs.statSync(full);
-          if (stat.isDirectory()) {
-            if (fs.rmSync) {
-              fs.rmSync(full, { recursive: true, force: true });
-            } else {
-              fs.rmdirSync(full, { recursive: true });
-            }
-          } else {
-            fs.unlinkSync(full);
-          }
-        }
-      } else {
-        console.log(`Updating existing install at ${target}…`);
-      }
-    } else {
-      const parent = path.dirname(target);
-      if (!fs.existsSync(parent)) {
-        try {
-          fs.mkdirSync(parent, { recursive: true });
-        } catch (e) {
-          console.error(`Cannot create parent directory: ${parent}`, e.message);
-          process.exit(1);
-        }
-      }
-      fs.mkdirSync(target, { recursive: true });
+    console.log(`\nInstalling for ${targets.length} target(s):`);
+    for (const target of targets) {
+      console.log(`\n${target.name}:`);
+      installForTarget(tempDir, target);
     }
 
-    installSkillsIntoTarget(tempDir, target);
-
-    console.log(`\nInstalled to ${target}`);
     console.log(
-      "Pick a bundle in docs/BUNDLES.md and use @skill-name in your AI assistant.",
+      "\nPick a bundle in docs/BUNDLES.md and use @skill-name in your AI assistant.",
     );
   } finally {
     try {

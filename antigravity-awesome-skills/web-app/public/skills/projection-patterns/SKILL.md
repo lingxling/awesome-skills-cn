@@ -3,6 +3,7 @@ name: projection-patterns
 description: "Build read models and projections from event streams. Use when implementing CQRS read sides, building materialized views, or optimizing query performance in event-sourced systems."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Projection Patterns

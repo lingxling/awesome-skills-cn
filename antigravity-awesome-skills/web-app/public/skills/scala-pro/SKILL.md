@@ -1,15 +1,9 @@
 ---
 name: scala-pro
-description: |
-  Master enterprise-grade Scala development with functional
-  programming, distributed systems, and big data processing. Expert in Apache
-  Pekko, Akka, Spark, ZIO/Cats Effect, and reactive architectures. Use
-  PROACTIVELY for Scala system design, performance optimization, or enterprise
-  integration.
-metadata:
-  model: inherit
+description: Master enterprise-grade Scala development with functional programming, distributed systems, and big data processing. Expert in Apache Pekko, Akka, Spark, ZIO/Cats Effect, and reactive architectures.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 ## Use this skill when

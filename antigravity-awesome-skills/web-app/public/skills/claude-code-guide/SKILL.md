@@ -3,6 +3,7 @@ name: claude-code-guide
 description: "Master guide for using Claude Code effectively. Includes configuration templates, prompting strategies \\\"Thinking\\\" keywords, debugging techniques, and best practices for interacting wit..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Claude Code Guide

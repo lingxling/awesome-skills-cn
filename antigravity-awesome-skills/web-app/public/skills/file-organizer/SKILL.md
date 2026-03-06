@@ -3,6 +3,7 @@ name: file-organizer
 description: "Intelligently organizes files and folders by understanding context, finding duplicates, and suggesting better organizational structures. Use when user wants to clean up directories, organize downlo..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # File Organizer

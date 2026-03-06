@@ -1,8 +1,9 @@
 ---
 name: graphql
 description: "GraphQL gives clients exactly the data they need - no more, no less. One endpoint, typed schema, introspection. But the flexibility that makes it powerful also makes it dangerous. Without proper co..."
-source: vibeship-spawner-skills (Apache 2.0)
 risk: unknown
+source: "vibeship-spawner-skills (Apache 2.0)"
+date_added: "2026-02-27"
 ---
 
 # GraphQL

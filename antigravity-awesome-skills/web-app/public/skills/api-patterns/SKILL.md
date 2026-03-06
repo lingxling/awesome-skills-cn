@@ -1,9 +1,9 @@
 ---
 name: api-patterns
 description: "API design principles and decision-making. REST vs GraphQL vs tRPC selection, response formats, versioning, pagination."
-allowed-tools: Read, Write, Edit, Glob, Grep
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # API Patterns

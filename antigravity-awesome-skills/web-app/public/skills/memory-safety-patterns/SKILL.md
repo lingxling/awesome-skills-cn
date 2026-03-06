@@ -3,6 +3,7 @@ name: memory-safety-patterns
 description: "Implement memory-safe programming with RAII, ownership, smart pointers, and resource management across Rust, C++, and C. Use when writing safe systems code, managing resources, or preventing memory..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Memory Safety Patterns

@@ -1,11 +1,9 @@
 ---
 name: idor-testing
 description: "This skill should be used when the user asks to \"test for insecure direct object references,\" \"find IDOR vulnerabilities,\" \"exploit broken access control,\" \"enumerate user IDs or obje..."
-metadata:
-  author: zebbern
-  version: "1.1"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # IDOR Vulnerability Testing

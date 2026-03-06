@@ -1,16 +1,9 @@
 ---
 name: reverse-engineer
-description: |
-  Expert reverse engineer specializing in binary analysis,
-  disassembly, decompilation, and software analysis. Masters IDA Pro, Ghidra,
-  radare2, x64dbg, and modern RE toolchains. Handles executable analysis,
-  library inspection, protocol extraction, and vulnerability research. Use
-  PROACTIVELY for binary analysis, CTF challenges, security research, or
-  understanding undocumented software.
-metadata:
-  model: opus
+description: Expert reverse engineer specializing in binary analysis, disassembly, decompilation, and software analysis. Masters IDA Pro, Ghidra, radare2, x64dbg, and modern RE toolchains.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 # Common RE scripting environments

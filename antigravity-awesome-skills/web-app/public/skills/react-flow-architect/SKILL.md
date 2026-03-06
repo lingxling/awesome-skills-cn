@@ -3,6 +3,7 @@ name: react-flow-architect
 description: "Expert ReactFlow architect for building interactive graph applications with hierarchical node-edge systems, performance optimization, and auto-layout integration. Use when Claude needs to create or..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # ReactFlow Architect

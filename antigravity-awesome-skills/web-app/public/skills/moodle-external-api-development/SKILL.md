@@ -3,6 +3,7 @@ name: moodle-external-api-development
 description: "Create custom external web service APIs for Moodle LMS. Use when implementing web services for course management, user tracking, quiz operations, or custom plugin functionality. Covers parameter va..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Moodle External API Development

@@ -3,6 +3,7 @@ name: backend-dev-guidelines
 description: "Opinionated backend development standards for Node.js + Express + TypeScript microservices. Covers layered architecture, BaseController pattern, dependency injection, Prisma repositories, Zod valid..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Backend Development Guidelines

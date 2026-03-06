@@ -3,6 +3,7 @@ name: incident-response-smart-fix
 description: "[Extended thinking: This workflow implements a sophisticated debugging and resolution pipeline that leverages AI-assisted debugging tools and observability platforms to systematically diagnose and res"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Intelligent Issue Resolution with Multi-Agent Orchestration

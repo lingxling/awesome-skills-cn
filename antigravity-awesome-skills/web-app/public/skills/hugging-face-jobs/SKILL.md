@@ -1,9 +1,9 @@
 ---
 name: hugging-face-jobs
 description: "This skill should be used when users want to run any workload on Hugging Face Jobs infrastructure. Covers UV scripts, Docker-based jobs, hardware selection, cost estimation, authentication with tok..."
-license: "Complete terms in LICENSE.txt"
-source: "https://github.com/huggingface/skills/tree/main/skills/hugging-face-jobs"
 risk: safe
+source: "https://github.com/huggingface/skills/tree/main/skills/hugging-face-jobs"
+date_added: "2026-02-27"
 ---
 
 # Running Workloads on Hugging Face Jobs

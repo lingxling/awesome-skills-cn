@@ -3,6 +3,7 @@ name: error-diagnostics-error-trace
 description: "You are an error tracking and observability expert specializing in implementing comprehensive error monitoring solutions. Set up error tracking systems, configure alerts, implement structured logging,"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Error Tracking and Monitoring

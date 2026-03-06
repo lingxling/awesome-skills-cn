@@ -1,9 +1,9 @@
 ---
 name: internal-comms-anthropic
 description: "A set of resources to help me write all kinds of internal communications, using the formats that my company likes to use. Claude should use this skill whenever asked to write some sort of internal ..."
-license: Complete terms in LICENSE.txt
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 ## When to use this skill

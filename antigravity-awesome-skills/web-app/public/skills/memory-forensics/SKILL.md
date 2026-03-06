@@ -3,6 +3,7 @@ name: memory-forensics
 description: "Master memory forensics techniques including memory acquisition, process analysis, and artifact extraction using Volatility and related tools. Use when analyzing memory dumps, investigating inciden..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Memory Forensics

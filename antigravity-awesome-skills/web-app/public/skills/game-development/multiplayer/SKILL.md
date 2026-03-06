@@ -1,9 +1,9 @@
 ---
 name: multiplayer
 description: "Multiplayer game development principles. Architecture, networking, synchronization."
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Multiplayer Game Development

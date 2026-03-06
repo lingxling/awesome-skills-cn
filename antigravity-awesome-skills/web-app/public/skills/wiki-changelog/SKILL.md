@@ -3,6 +3,7 @@ name: wiki-changelog
 description: "Analyzes git commit history and generates structured changelogs categorized by change type. Use when the user asks about recent changes, wants a changelog, or needs to understand what changed in th..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Wiki Changelog

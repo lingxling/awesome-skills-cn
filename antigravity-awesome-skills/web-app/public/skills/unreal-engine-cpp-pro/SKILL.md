@@ -3,6 +3,7 @@ name: unreal-engine-cpp-pro
 description: "Expert guide for Unreal Engine 5.x C++ development, covering UObject hygiene, performance patterns, and best practices."
 risk: safe
 source: self
+date_added: "2026-02-27"
 ---
 
 # Unreal Engine C++ Pro

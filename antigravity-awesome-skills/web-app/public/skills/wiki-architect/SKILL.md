@@ -3,6 +3,7 @@ name: wiki-architect
 description: "Analyzes code repositories and generates hierarchical documentation structures with onboarding guides. Use when the user wants to create a wiki, generate documentation, map a codebase structure, or..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Wiki Architect

@@ -1,13 +1,9 @@
 ---
 name: seo-meta-optimizer
-description: |
-  Creates optimized meta titles, descriptions, and URL suggestions
-  based on character limits and best practices. Generates compelling,
-  keyword-rich metadata. Use PROACTIVELY for new content.
-metadata:
-  model: haiku
+description: Creates optimized meta titles, descriptions, and URL suggestions based on character limits and best practices. Generates compelling, keyword-rich metadata. Use PROACTIVELY for new content.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 ## Use this skill when

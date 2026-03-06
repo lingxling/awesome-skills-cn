@@ -1,8 +1,9 @@
 ---
 name: n8n-node-configuration
 description: "Operation-aware node configuration guidance. Use when configuring nodes, understanding property dependencies, determining required fields, choosing between get_node detail levels, or learning commo..."
-source: "https://github.com/czlonkowski/n8n-skills/tree/main/skills/n8n-node-configuration"
 risk: safe
+source: "https://github.com/czlonkowski/n8n-skills/tree/main/skills/n8n-node-configuration"
+date_added: "2026-02-27"
 ---
 
 # n8n Node Configuration

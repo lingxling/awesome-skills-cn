@@ -3,6 +3,7 @@ name: godot-gdscript-patterns
 description: "Master Godot 4 GDScript patterns including signals, scenes, state machines, and optimization. Use when building Godot games, implementing game systems, or learning GDScript best practices."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Godot GDScript Patterns

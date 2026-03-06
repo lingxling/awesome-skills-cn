@@ -12,7 +12,7 @@ Great question! Here's what just happened and what to do next:
 
 When you ran `npx antigravity-awesome-skills` or cloned the repository, you:
 
-✅ **Downloaded 954+ skill files** to your computer (default: `~/.gemini/antigravity/skills/`; or `~/.agent/skills/` if you used `--path`)  
+✅ **Downloaded 978+ skill files** to your computer (default: `~/.gemini/antigravity/skills/`; or `~/.agent/skills/` if you used `--path`)  
 ✅ **Made them available** to your AI assistant  
 ❌ **Did NOT enable them all automatically** (they're just sitting there, waiting)
 
@@ -32,7 +32,7 @@ Bundles are **recommended lists** of skills grouped by role. They help you decid
 
 **Analogy:**
 
-- You installed a toolbox with 954+ tools (✅ done)
+- You installed a toolbox with 978+ tools (✅ done)
 - Bundles are like **labeled organizer trays** saying: "If you're a carpenter, start with these 10 tools"
 - You don't install bundles—you **pick skills from them**
 

@@ -3,6 +3,7 @@ name: codex-review
 description: "Professional code review with auto CHANGELOG generation, integrated with Codex AI"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # codex-review

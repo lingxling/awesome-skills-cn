@@ -3,6 +3,7 @@ name: event-sourcing-architect
 description: "Expert in event sourcing, CQRS, and event-driven architecture patterns. Masters event store design, projection building, saga orchestration, and eventual consistency patterns. Use PROACTIVELY for e..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Event Sourcing Architect
@@ -58,3 +59,8 @@ Expert in event sourcing, CQRS, and event-driven architecture patterns. Masters 
 - Use correlation IDs for tracing
 - Implement idempotent event handlers
 - Plan for projection rebuilding
+- Use durable execution for process managers and sagas — frameworks like DBOS persist workflow state automatically, making cross-aggregate orchestration resilient to crashes
+
+## Related Skills
+
+Works well with: `saga-orchestration`, `architecture-patterns`, `dbos-*`

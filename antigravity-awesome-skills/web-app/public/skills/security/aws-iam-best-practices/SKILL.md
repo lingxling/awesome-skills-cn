@@ -1,10 +1,11 @@
 ---
 name: aws-iam-best-practices
-description: IAM policy review, hardening, and least privilege implementation
+description: "IAM policy review, hardening, and least privilege implementation"
+category: security
 risk: safe
 source: community
-category: security
-tags: [aws, iam, security, access-control, kiro-cli, least-privilege]
+tags: "[aws, iam, security, access-control, kiro-cli, least-privilege]"
+date_added: "2026-02-27"
 ---
 
 # AWS IAM Best Practices

@@ -3,6 +3,7 @@ name: frontend-mobile-security-xss-scan
 description: "You are a frontend security specialist focusing on Cross-Site Scripting (XSS) vulnerability detection and prevention. Analyze React, Vue, Angular, and vanilla JavaScript code to identify injection poi"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # XSS Vulnerability Scanner for Frontend Code

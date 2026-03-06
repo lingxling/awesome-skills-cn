@@ -1,11 +1,10 @@
 ---
 name: documentation
 description: "Documentation generation workflow covering API docs, architecture docs, README files, code comments, and technical writing."
-source: personal
-risk: safe
-domain: documentation
 category: workflow-bundle
-version: 1.0.0
+risk: safe
+source: personal
+date_added: "2026-02-27"
 ---
 
 # Documentation Workflow Bundle

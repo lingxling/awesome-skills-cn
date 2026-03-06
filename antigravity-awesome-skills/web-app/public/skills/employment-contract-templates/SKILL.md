@@ -3,6 +3,7 @@ name: employment-contract-templates
 description: "Create employment contracts, offer letters, and HR policy documents following legal best practices. Use when drafting employment agreements, creating HR policies, or standardizing employment docume..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Employment Contract Templates

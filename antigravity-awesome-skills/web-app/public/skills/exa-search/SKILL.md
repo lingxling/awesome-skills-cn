@@ -3,6 +3,7 @@ name: exa-search
 description: "Semantic search, similar content discovery, and structured research using Exa API"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # exa-search

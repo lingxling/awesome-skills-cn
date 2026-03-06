@@ -3,6 +3,7 @@ name: frontend-dev-guidelines
 description: "Opinionated frontend development standards for modern React + TypeScript applications. Covers Suspense-first data fetching, lazy loading, feature-based architecture, MUI v7 styling, TanStack Router..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 

@@ -1,10 +1,9 @@
 ---
 name: cloudformation-best-practices
 description: "CloudFormation template optimization, nested stacks, drift detection, and production-ready patterns. Use when writing or reviewing CF templates."
-metadata:
-  model: sonnet
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 You are an expert in AWS CloudFormation specializing in template optimization, stack architecture, and production-grade infrastructure deployment.
 

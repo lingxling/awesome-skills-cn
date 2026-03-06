@@ -3,6 +3,7 @@ name: prompt-library
 description: "Curated collection of high-quality prompts for various use cases. Includes role-based prompts, task-specific templates, and prompt refinement techniques. Use when user needs prompt templates, role-..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # 📝 Prompt Library

@@ -1,9 +1,9 @@
 ---
 name: bash-linux
 description: "Bash/Linux terminal patterns. Critical commands, piping, error handling, scripting. Use when working on macOS or Linux systems."
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Bash Linux Patterns

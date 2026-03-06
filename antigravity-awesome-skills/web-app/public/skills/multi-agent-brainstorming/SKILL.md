@@ -1,13 +1,9 @@
 ---
 name: multi-agent-brainstorming
-description: 
-  Use this skill when a design or idea requires higher confidence,
-  risk reduction, or formal review. This skill orchestrates a
-  structured, sequential multi-agent design review where each agent
-  has a strict, non-overlapping role. It prevents blind spots,
-  false confidence, and premature convergence.
+description: "Simulate a structured peer-review process using multiple specialized agents to validate designs, surface hidden assumptions, and identify failure modes before implementation."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Multi-Agent Brainstorming (Structured Design Review)

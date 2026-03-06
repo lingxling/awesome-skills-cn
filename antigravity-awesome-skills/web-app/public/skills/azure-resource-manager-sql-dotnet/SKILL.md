@@ -1,10 +1,9 @@
 ---
 name: azure-resource-manager-sql-dotnet
-description: |
-  Azure Resource Manager SDK for Azure SQL in .NET. Use for MANAGEMENT PLANE operations: creating/managing SQL servers, databases, elastic pools, firewall rules, and failover groups via Azure Resource Manager. NOT for data plane operations (executing queries) - use Microsoft.Data.SqlClient for that. Triggers: "SQL server", "create SQL database", "manage SQL resources", "ARM SQL", "SqlServerResource", "provision Azure SQL", "elastic pool", "firewall rule".
-package: Azure.ResourceManager.Sql
+description: Azure Resource Manager SDK for Azure SQL in .NET.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 # Azure.ResourceManager.Sql (.NET)

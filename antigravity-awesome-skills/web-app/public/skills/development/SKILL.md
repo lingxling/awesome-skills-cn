@@ -1,11 +1,10 @@
 ---
 name: development
 description: "Comprehensive web, mobile, and backend development workflow bundling frontend, backend, full-stack, and mobile development skills for end-to-end application delivery."
-source: personal
-risk: safe
-domain: software-development
 category: workflow-bundle
-version: 1.0.0
+risk: safe
+source: personal
+date_added: "2026-02-27"
 ---
 
 # Development Workflow Bundle

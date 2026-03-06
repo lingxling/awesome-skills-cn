@@ -3,6 +3,7 @@ name: pci-compliance
 description: "Implement PCI DSS compliance requirements for secure handling of payment card data and payment systems. Use when securing payment processing, achieving PCI compliance, or implementing payment card ..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # PCI Compliance

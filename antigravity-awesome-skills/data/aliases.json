@@ -59,6 +59,7 @@
     "error-diagnostics-analysis": "error-diagnostics-error-analysis",
     "error-diagnostics-trace": "error-diagnostics-error-trace",
     "error-diagnostics-debug": "error-diagnostics-smart-debug",
+    "fda-medtech-auditor": "fda-medtech-compliance-auditor",
     "finishing-a-branch": "finishing-a-development-branch",
     "framework-migration-migrate": "framework-migration-code-migrate",
     "framework-migration-upgrade": "framework-migration-deps-upgrade",

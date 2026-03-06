@@ -3,6 +3,7 @@ name: referral-program
 description: "When the user wants to create, optimize, or analyze a referral program, affiliate program, or word-of-mouth strategy. Also use when the user mentions 'referral,' 'affiliate,' 'ambassador,' 'word of..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Referral & Affiliate Programs

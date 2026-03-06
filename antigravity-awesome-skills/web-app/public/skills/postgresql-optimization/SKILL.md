@@ -1,11 +1,10 @@
 ---
 name: postgresql-optimization
 description: "PostgreSQL database optimization workflow for query tuning, indexing strategies, performance analysis, and production database management."
-source: personal
-risk: safe
-domain: database
 category: granular-workflow-bundle
-version: 1.0.0
+risk: safe
+source: personal
+date_added: "2026-02-27"
 ---
 
 # PostgreSQL Optimization Workflow

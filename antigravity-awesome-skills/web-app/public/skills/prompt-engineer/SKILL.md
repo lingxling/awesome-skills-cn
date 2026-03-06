@@ -1,15 +1,11 @@
 ---
 name: prompt-engineer
 description: "Transforms user prompts into optimized prompts using frameworks (RTF, RISEN, Chain of Thought, RODES, Chain of Density, RACE, RISE, STAR, SOAP, CLEAR, GROW)"
-version: 1.1.0
-author: Eric Andrade
-created: 2025-02-01
-updated: 2026-02-04
-platforms: [github-copilot-cli, claude-code, codex]
 category: automation
-tags: [prompt-engineering, optimization, frameworks, ai-enhancement]
 risk: safe
 source: community
+tags: "[prompt-engineering, optimization, frameworks, ai-enhancement]"
+date_added: "2026-02-27"
 ---
 
 ## Purpose

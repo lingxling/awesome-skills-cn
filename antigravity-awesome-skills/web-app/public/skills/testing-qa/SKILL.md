@@ -1,11 +1,10 @@
 ---
 name: testing-qa
 description: "Comprehensive testing and QA workflow covering unit testing, integration testing, E2E testing, browser automation, and quality assurance."
-source: personal
-risk: safe
-domain: quality-assurance
 category: workflow-bundle
-version: 1.0.0
+risk: safe
+source: personal
+date_added: "2026-02-27"
 ---
 
 # Testing/QA Workflow Bundle

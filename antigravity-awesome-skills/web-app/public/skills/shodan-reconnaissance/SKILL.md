@@ -1,11 +1,9 @@
 ---
 name: shodan-reconnaissance
 description: "This skill should be used when the user asks to \"search for exposed devices on the internet,\" \"perform Shodan reconnaissance,\" \"find vulnerable services using Shodan,\" \"scan IP ranges..."
-metadata:
-  author: zebbern
-  version: "1.1"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Shodan Reconnaissance and Pentesting

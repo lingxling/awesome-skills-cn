@@ -3,6 +3,7 @@ name: paywall-upgrade-cro
 description: "When the user wants to create or optimize in-app paywalls, upgrade screens, upsell modals, or feature gates. Also use when the user mentions \"paywall,\" \"upgrade screen,\" \"upgrade modal,..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Paywall and Upgrade Screen CRO

@@ -1,10 +1,9 @@
 ---
 name: cc-skill-security-review
 description: "Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist a..."
-author: affaan-m
-version: "1.0"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Security Review Skill

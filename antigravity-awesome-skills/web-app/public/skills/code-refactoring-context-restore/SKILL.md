@@ -3,6 +3,7 @@ name: code-refactoring-context-restore
 description: "Use when working with code refactoring context restore"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Context Restoration: Advanced Semantic Memory Rehydration

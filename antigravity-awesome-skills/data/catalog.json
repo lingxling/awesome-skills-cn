@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 968,
+  "total": 1006,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -459,6 +459,30 @@
         "directory"
       ],
       "path": "skills/agentfolio/SKILL.md"
+    },
+    {
+      "id": "agentmail",
+      "name": "agentmail",
+      "description": "Email infrastructure for AI agents. Create accounts, send/receive emails, manage webhooks, and check karma balance via the AgentMail API.",
+      "category": "data-ai",
+      "tags": [
+        "agentmail"
+      ],
+      "triggers": [
+        "agentmail",
+        "email",
+        "infrastructure",
+        "ai",
+        "agents",
+        "accounts",
+        "send",
+        "receive",
+        "emails",
+        "webhooks",
+        "check",
+        "karma"
+      ],
+      "path": "skills/agentmail/SKILL.md"
     },
     {
       "id": "agents-v2-py",
@@ -7291,6 +7315,33 @@
       "path": "skills/code-reviewer/SKILL.md"
     },
     {
+      "id": "codebase-audit-pre-push",
+      "name": "codebase-audit-pre-push",
+      "description": "Deep audit before GitHub push: removes junk files, dead code, security holes, and optimization issues. Checks every file line-by-line for production readiness.",
+      "category": "security",
+      "tags": [
+        "codebase",
+        "audit",
+        "pre",
+        "push"
+      ],
+      "triggers": [
+        "codebase",
+        "audit",
+        "pre",
+        "push",
+        "deep",
+        "before",
+        "github",
+        "removes",
+        "junk",
+        "files",
+        "dead",
+        "code"
+      ],
+      "path": "skills/codebase-audit-pre-push/SKILL.md"
+    },
+    {
       "id": "codebase-cleanup-deps-audit",
       "name": "codebase-cleanup-deps-audit",
       "description": "You are a dependency security expert specializing in vulnerability scanning, license compliance, and supply chain security. Analyze project dependencies for known vulnerabilities, licensing issues,...",
@@ -9848,6 +9899,31 @@
       "path": "skills/dotnet-backend-patterns/SKILL.md"
     },
     {
+      "id": "drizzle-orm-expert",
+      "name": "drizzle-orm-expert",
+      "description": "Expert in Drizzle ORM for TypeScript — schema design, relational queries, migrations, and serverless database integration. Use when building type-safe database layers with Drizzle.",
+      "category": "data-ai",
+      "tags": [
+        "drizzle",
+        "orm"
+      ],
+      "triggers": [
+        "drizzle",
+        "orm",
+        "typescript",
+        "schema",
+        "relational",
+        "queries",
+        "migrations",
+        "serverless",
+        "database",
+        "integration",
+        "building",
+        "type"
+      ],
+      "path": "skills/drizzle-orm-expert/SKILL.md"
+    },
+    {
       "id": "dropbox-automation",
       "name": "dropbox-automation",
       "description": "Automate Dropbox file management, sharing, search, uploads, downloads, and folder operations via Rube MCP (Composio). Always search tools first for current schemas.",
@@ -10651,6 +10727,60 @@
         "backend"
       ],
       "path": "skills/fastapi-templates/SKILL.md"
+    },
+    {
+      "id": "fda-food-safety-auditor",
+      "name": "fda-food-safety-auditor",
+      "description": "Expert AI auditor for FDA Food Safety (FSMA), HACCP, and PCQI compliance. Reviews food facility records and preventive controls.",
+      "category": "security",
+      "tags": [
+        "fda",
+        "food",
+        "safety",
+        "auditor"
+      ],
+      "triggers": [
+        "fda",
+        "food",
+        "safety",
+        "auditor",
+        "ai",
+        "fsma",
+        "haccp",
+        "pcqi",
+        "compliance",
+        "reviews",
+        "facility",
+        "records"
+      ],
+      "path": "skills/fda-food-safety-auditor/SKILL.md"
+    },
+    {
+      "id": "fda-medtech-compliance-auditor",
+      "name": "fda-medtech-compliance-auditor",
+      "description": "Expert AI auditor for Medical Device (SaMD) compliance, IEC 62304, and 21 CFR Part 820. Reviews DHFs, technical files, and software validation.",
+      "category": "security",
+      "tags": [
+        "fda",
+        "medtech",
+        "compliance",
+        "auditor"
+      ],
+      "triggers": [
+        "fda",
+        "medtech",
+        "compliance",
+        "auditor",
+        "ai",
+        "medical",
+        "device",
+        "samd",
+        "iec",
+        "62304",
+        "21",
+        "cfr"
+      ],
+      "path": "skills/fda-medtech-compliance-auditor/SKILL.md"
     },
     {
       "id": "ffuf-claude-skill",
@@ -11748,6 +11878,32 @@
         "images"
       ],
       "path": "skills/gemini-api-dev/SKILL.md"
+    },
+    {
+      "id": "gemini-api-integration",
+      "name": "gemini-api-integration",
+      "description": "Use when integrating Google Gemini API into projects. Covers model selection, multimodal inputs, streaming, function calling, and production best practices.",
+      "category": "development",
+      "tags": [
+        "gemini",
+        "api",
+        "integration"
+      ],
+      "triggers": [
+        "gemini",
+        "api",
+        "integration",
+        "integrating",
+        "google",
+        "covers",
+        "model",
+        "selection",
+        "multimodal",
+        "inputs",
+        "streaming",
+        "function"
+      ],
+      "path": "skills/gemini-api-integration/SKILL.md"
     },
     {
       "id": "geo-fundamentals",
@@ -14241,6 +14397,83 @@
       "path": "skills/libreoffice/writer/SKILL.md"
     },
     {
+      "id": "lightning-architecture-review",
+      "name": "lightning-architecture-review",
+      "description": "Review Bitcoin Lightning Network protocol designs, compare channel factory approaches, and analyze Layer 2 scaling tradeoffs. Covers trust models, on-chain footprint, consensus requirements, HTLC/PTLC compatibility, liveness, and watchtower support.",
+      "category": "security",
+      "tags": [
+        "lightning",
+        "architecture"
+      ],
+      "triggers": [
+        "lightning",
+        "architecture",
+        "review",
+        "bitcoin",
+        "network",
+        "protocol",
+        "designs",
+        "compare",
+        "channel",
+        "factory",
+        "approaches",
+        "analyze"
+      ],
+      "path": "skills/lightning-architecture-review/SKILL.md"
+    },
+    {
+      "id": "lightning-channel-factories",
+      "name": "lightning-channel-factories",
+      "description": "Technical reference on Lightning Network channel factories, multi-party channels, LSP architectures, and Bitcoin Layer 2 scaling without soft forks. Covers Decker-Wattenhofer, timeout trees, MuSig2 key aggregation, HTLC/PTLC forwarding, and watchtower breach detection.",
+      "category": "infrastructure",
+      "tags": [
+        "lightning",
+        "channel",
+        "factories"
+      ],
+      "triggers": [
+        "lightning",
+        "channel",
+        "factories",
+        "technical",
+        "reference",
+        "network",
+        "multi",
+        "party",
+        "channels",
+        "lsp",
+        "architectures",
+        "bitcoin"
+      ],
+      "path": "skills/lightning-channel-factories/SKILL.md"
+    },
+    {
+      "id": "lightning-factory-explainer",
+      "name": "lightning-factory-explainer",
+      "description": "Explain Bitcoin Lightning channel factories and the SuperScalar protocol — scalable Lightning onboarding using shared UTXOs, Decker-Wattenhofer trees, timeout-signature trees, MuSig2, and Taproot. No soft fork required.",
+      "category": "general",
+      "tags": [
+        "lightning",
+        "factory",
+        "explainer"
+      ],
+      "triggers": [
+        "lightning",
+        "factory",
+        "explainer",
+        "explain",
+        "bitcoin",
+        "channel",
+        "factories",
+        "superscalar",
+        "protocol",
+        "scalable",
+        "onboarding",
+        "shared"
+      ],
+      "path": "skills/lightning-factory-explainer/SKILL.md"
+    },
+    {
       "id": "linear-automation",
       "name": "linear-automation",
       "description": "Automate Linear tasks via Rube MCP (Composio): issues, projects, cycles, teams, labels. Always search tools first for current schemas.",
@@ -14585,6 +14818,32 @@
         "ai"
       ],
       "path": "skills/llm-evaluation/SKILL.md"
+    },
+    {
+      "id": "llm-prompt-optimizer",
+      "name": "llm-prompt-optimizer",
+      "description": "Use when improving prompts for any LLM. Applies proven prompt engineering techniques to boost output quality, reduce hallucinations, and cut token usage.",
+      "category": "data-ai",
+      "tags": [
+        "llm",
+        "prompt",
+        "optimizer"
+      ],
+      "triggers": [
+        "llm",
+        "prompt",
+        "optimizer",
+        "improving",
+        "prompts",
+        "any",
+        "applies",
+        "proven",
+        "engineering",
+        "techniques",
+        "boost",
+        "output"
+      ],
+      "path": "skills/llm-prompt-optimizer/SKILL.md"
     },
     {
       "id": "local-legal-seo-audit",
@@ -16336,6 +16595,625 @@
       "path": "skills/obsidian-clipper-template-creator/SKILL.md"
     },
     {
+      "id": "odoo-accounting-setup",
+      "name": "odoo-accounting-setup",
+      "description": "Expert guide for configuring Odoo Accounting: chart of accounts, journals, fiscal positions, taxes, payment terms, and bank reconciliation.",
+      "category": "general",
+      "tags": [
+        "odoo",
+        "accounting",
+        "setup"
+      ],
+      "triggers": [
+        "odoo",
+        "accounting",
+        "setup",
+        "configuring",
+        "chart",
+        "accounts",
+        "journals",
+        "fiscal",
+        "positions",
+        "taxes",
+        "payment",
+        "terms"
+      ],
+      "path": "skills/odoo-accounting-setup/SKILL.md"
+    },
+    {
+      "id": "odoo-automated-tests",
+      "name": "odoo-automated-tests",
+      "description": "Write and run Odoo automated tests using TransactionCase, HttpCase, and browser tour tests. Covers test data setup, mocking, and CI integration.",
+      "category": "infrastructure",
+      "tags": [
+        "odoo",
+        "automated",
+        "tests"
+      ],
+      "triggers": [
+        "odoo",
+        "automated",
+        "tests",
+        "write",
+        "run",
+        "transactioncase",
+        "httpcase",
+        "browser",
+        "tour",
+        "covers",
+        "test",
+        "data"
+      ],
+      "path": "skills/odoo-automated-tests/SKILL.md"
+    },
+    {
+      "id": "odoo-backup-strategy",
+      "name": "odoo-backup-strategy",
+      "description": "Complete Odoo backup and restore strategy: database dumps, filestore backup, automated scheduling, cloud storage upload, and tested restore procedures.",
+      "category": "infrastructure",
+      "tags": [
+        "odoo",
+        "backup"
+      ],
+      "triggers": [
+        "odoo",
+        "backup",
+        "complete",
+        "restore",
+        "database",
+        "dumps",
+        "filestore",
+        "automated",
+        "scheduling",
+        "cloud",
+        "storage",
+        "upload"
+      ],
+      "path": "skills/odoo-backup-strategy/SKILL.md"
+    },
+    {
+      "id": "odoo-docker-deployment",
+      "name": "odoo-docker-deployment",
+      "description": "Production-ready Docker and docker-compose setup for Odoo with PostgreSQL, persistent volumes, environment-based configuration, and Nginx reverse proxy.",
+      "category": "infrastructure",
+      "tags": [
+        "odoo",
+        "docker",
+        "deployment"
+      ],
+      "triggers": [
+        "odoo",
+        "docker",
+        "deployment",
+        "compose",
+        "setup",
+        "postgresql",
+        "persistent",
+        "volumes",
+        "environment",
+        "configuration",
+        "nginx",
+        "reverse"
+      ],
+      "path": "skills/odoo-docker-deployment/SKILL.md"
+    },
+    {
+      "id": "odoo-ecommerce-configurator",
+      "name": "odoo-ecommerce-configurator",
+      "description": "Expert guide for Odoo eCommerce and Website: product catalog, payment providers, shipping methods, SEO, and order-to-fulfillment workflow.",
+      "category": "business",
+      "tags": [
+        "odoo",
+        "ecommerce",
+        "configurator"
+      ],
+      "triggers": [
+        "odoo",
+        "ecommerce",
+        "configurator",
+        "website",
+        "product",
+        "catalog",
+        "payment",
+        "providers",
+        "shipping",
+        "methods",
+        "seo",
+        "order"
+      ],
+      "path": "skills/odoo-ecommerce-configurator/SKILL.md"
+    },
+    {
+      "id": "odoo-edi-connector",
+      "name": "odoo-edi-connector",
+      "description": "Guide for implementing EDI (Electronic Data Interchange) with Odoo: X12, EDIFACT document mapping, partner onboarding, and automated order processing.",
+      "category": "data-ai",
+      "tags": [
+        "odoo",
+        "edi",
+        "connector"
+      ],
+      "triggers": [
+        "odoo",
+        "edi",
+        "connector",
+        "implementing",
+        "electronic",
+        "data",
+        "interchange",
+        "x12",
+        "edifact",
+        "document",
+        "mapping",
+        "partner"
+      ],
+      "path": "skills/odoo-edi-connector/SKILL.md"
+    },
+    {
+      "id": "odoo-hr-payroll-setup",
+      "name": "odoo-hr-payroll-setup",
+      "description": "Expert guide for Odoo HR and Payroll: salary structures, payslip rules, leave policies, employee contracts, and payroll journal entries.",
+      "category": "business",
+      "tags": [
+        "odoo",
+        "hr",
+        "payroll",
+        "setup"
+      ],
+      "triggers": [
+        "odoo",
+        "hr",
+        "payroll",
+        "setup",
+        "salary",
+        "structures",
+        "payslip",
+        "rules",
+        "leave",
+        "policies",
+        "employee",
+        "contracts"
+      ],
+      "path": "skills/odoo-hr-payroll-setup/SKILL.md"
+    },
+    {
+      "id": "odoo-inventory-optimizer",
+      "name": "odoo-inventory-optimizer",
+      "description": "Expert guide for Odoo Inventory: stock valuation (FIFO/AVCO), reordering rules, putaway strategies, routes, and multi-warehouse configuration.",
+      "category": "data-ai",
+      "tags": [
+        "odoo",
+        "inventory",
+        "optimizer"
+      ],
+      "triggers": [
+        "odoo",
+        "inventory",
+        "optimizer",
+        "stock",
+        "valuation",
+        "fifo",
+        "avco",
+        "reordering",
+        "rules",
+        "putaway",
+        "routes",
+        "multi"
+      ],
+      "path": "skills/odoo-inventory-optimizer/SKILL.md"
+    },
+    {
+      "id": "odoo-l10n-compliance",
+      "name": "odoo-l10n-compliance",
+      "description": "Country-specific Odoo localization: tax configuration, e-invoicing (CFDI, FatturaPA, SAF-T), fiscal reporting, and country chart of accounts setup.",
+      "category": "security",
+      "tags": [
+        "odoo",
+        "l10n",
+        "compliance"
+      ],
+      "triggers": [
+        "odoo",
+        "l10n",
+        "compliance",
+        "country",
+        "specific",
+        "localization",
+        "tax",
+        "configuration",
+        "invoicing",
+        "cfdi",
+        "fatturapa",
+        "saf"
+      ],
+      "path": "skills/odoo-l10n-compliance/SKILL.md"
+    },
+    {
+      "id": "odoo-manufacturing-advisor",
+      "name": "odoo-manufacturing-advisor",
+      "description": "Expert guide for Odoo Manufacturing: Bills of Materials (BoM), Work Centers, routings, MRP planning, and production order workflows.",
+      "category": "general",
+      "tags": [
+        "odoo",
+        "manufacturing",
+        "advisor"
+      ],
+      "triggers": [
+        "odoo",
+        "manufacturing",
+        "advisor",
+        "bills",
+        "materials",
+        "bom",
+        "work",
+        "centers",
+        "routings",
+        "mrp",
+        "planning",
+        "order"
+      ],
+      "path": "skills/odoo-manufacturing-advisor/SKILL.md"
+    },
+    {
+      "id": "odoo-migration-helper",
+      "name": "odoo-migration-helper",
+      "description": "Step-by-step guide for migrating Odoo custom modules between versions (v14→v15→v16→v17). Covers API changes, deprecated methods, and view migration.",
+      "category": "development",
+      "tags": [
+        "odoo",
+        "migration",
+        "helper"
+      ],
+      "triggers": [
+        "odoo",
+        "migration",
+        "helper",
+        "step",
+        "migrating",
+        "custom",
+        "modules",
+        "between",
+        "versions",
+        "v14",
+        "v15",
+        "v16"
+      ],
+      "path": "skills/odoo-migration-helper/SKILL.md"
+    },
+    {
+      "id": "odoo-module-developer",
+      "name": "odoo-module-developer",
+      "description": "Expert guide for creating custom Odoo modules. Covers __manifest__.py, model inheritance, ORM patterns, and module structure best practices.",
+      "category": "architecture",
+      "tags": [
+        "odoo",
+        "module"
+      ],
+      "triggers": [
+        "odoo",
+        "module",
+        "developer",
+        "creating",
+        "custom",
+        "modules",
+        "covers",
+        "manifest",
+        "py",
+        "model",
+        "inheritance",
+        "orm"
+      ],
+      "path": "skills/odoo-module-developer/SKILL.md"
+    },
+    {
+      "id": "odoo-orm-expert",
+      "name": "odoo-orm-expert",
+      "description": "Master Odoo ORM patterns: search, browse, create, write, domain filters, computed fields, and performance-safe query techniques.",
+      "category": "architecture",
+      "tags": [
+        "odoo",
+        "orm"
+      ],
+      "triggers": [
+        "odoo",
+        "orm",
+        "search",
+        "browse",
+        "write",
+        "domain",
+        "filters",
+        "computed",
+        "fields",
+        "performance",
+        "safe",
+        "query"
+      ],
+      "path": "skills/odoo-orm-expert/SKILL.md"
+    },
+    {
+      "id": "odoo-performance-tuner",
+      "name": "odoo-performance-tuner",
+      "description": "Expert guide for diagnosing and fixing Odoo performance issues: slow queries, worker configuration, memory limits, PostgreSQL tuning, and profiling tools.",
+      "category": "general",
+      "tags": [
+        "odoo",
+        "performance",
+        "tuner"
+      ],
+      "triggers": [
+        "odoo",
+        "performance",
+        "tuner",
+        "diagnosing",
+        "fixing",
+        "issues",
+        "slow",
+        "queries",
+        "worker",
+        "configuration",
+        "memory",
+        "limits"
+      ],
+      "path": "skills/odoo-performance-tuner/SKILL.md"
+    },
+    {
+      "id": "odoo-project-timesheet",
+      "name": "odoo-project-timesheet",
+      "description": "Expert guide for Odoo Project and Timesheets: task stages, billable time tracking, timesheet approval, budget alerts, and invoicing from timesheets.",
+      "category": "general",
+      "tags": [
+        "odoo",
+        "timesheet"
+      ],
+      "triggers": [
+        "odoo",
+        "timesheet",
+        "timesheets",
+        "task",
+        "stages",
+        "billable",
+        "time",
+        "tracking",
+        "approval",
+        "budget",
+        "alerts",
+        "invoicing"
+      ],
+      "path": "skills/odoo-project-timesheet/SKILL.md"
+    },
+    {
+      "id": "odoo-purchase-workflow",
+      "name": "odoo-purchase-workflow",
+      "description": "Expert guide for Odoo Purchase: RFQ → PO → Receipt → Vendor Bill workflow, purchase agreements, vendor price lists, and 3-way matching.",
+      "category": "workflow",
+      "tags": [
+        "odoo",
+        "purchase"
+      ],
+      "triggers": [
+        "odoo",
+        "purchase",
+        "rfq",
+        "po",
+        "receipt",
+        "vendor",
+        "bill",
+        "agreements",
+        "price",
+        "lists",
+        "way",
+        "matching"
+      ],
+      "path": "skills/odoo-purchase-workflow/SKILL.md"
+    },
+    {
+      "id": "odoo-qweb-templates",
+      "name": "odoo-qweb-templates",
+      "description": "Expert in Odoo QWeb templating for PDF reports, email templates, and website pages. Covers t-if, t-foreach, t-field, and report actions.",
+      "category": "general",
+      "tags": [
+        "odoo",
+        "qweb"
+      ],
+      "triggers": [
+        "odoo",
+        "qweb",
+        "templating",
+        "pdf",
+        "reports",
+        "email",
+        "website",
+        "pages",
+        "covers",
+        "foreach",
+        "field",
+        "report"
+      ],
+      "path": "skills/odoo-qweb-templates/SKILL.md"
+    },
+    {
+      "id": "odoo-rpc-api",
+      "name": "odoo-rpc-api",
+      "description": "Expert on Odoo's external JSON-RPC and XML-RPC APIs. Covers authentication, model calls, record CRUD, and real-world integration examples in Python, JavaScript, and curl.",
+      "category": "development",
+      "tags": [
+        "odoo",
+        "rpc",
+        "api"
+      ],
+      "triggers": [
+        "odoo",
+        "rpc",
+        "api",
+        "external",
+        "json",
+        "xml",
+        "apis",
+        "covers",
+        "authentication",
+        "model",
+        "calls",
+        "record"
+      ],
+      "path": "skills/odoo-rpc-api/SKILL.md"
+    },
+    {
+      "id": "odoo-sales-crm-expert",
+      "name": "odoo-sales-crm-expert",
+      "description": "Expert guide for Odoo Sales and CRM: pipeline stages, quotation templates, pricelists, sales teams, lead scoring, and forecasting.",
+      "category": "infrastructure",
+      "tags": [
+        "odoo",
+        "sales",
+        "crm"
+      ],
+      "triggers": [
+        "odoo",
+        "sales",
+        "crm",
+        "pipeline",
+        "stages",
+        "quotation",
+        "pricelists",
+        "teams",
+        "lead",
+        "scoring",
+        "forecasting"
+      ],
+      "path": "skills/odoo-sales-crm-expert/SKILL.md"
+    },
+    {
+      "id": "odoo-security-rules",
+      "name": "odoo-security-rules",
+      "description": "Expert in Odoo access control: ir.model.access.csv, record rules (ir.rule), groups, and multi-company security patterns.",
+      "category": "security",
+      "tags": [
+        "odoo",
+        "security",
+        "rules"
+      ],
+      "triggers": [
+        "odoo",
+        "security",
+        "rules",
+        "access",
+        "control",
+        "ir",
+        "model",
+        "csv",
+        "record",
+        "rule",
+        "groups",
+        "multi"
+      ],
+      "path": "skills/odoo-security-rules/SKILL.md"
+    },
+    {
+      "id": "odoo-shopify-integration",
+      "name": "odoo-shopify-integration",
+      "description": "Connect Odoo with Shopify: sync products, inventory, orders, and customers using the Shopify API and Odoo's external API or connector modules.",
+      "category": "development",
+      "tags": [
+        "odoo",
+        "shopify",
+        "integration"
+      ],
+      "triggers": [
+        "odoo",
+        "shopify",
+        "integration",
+        "connect",
+        "sync",
+        "products",
+        "inventory",
+        "orders",
+        "customers",
+        "api",
+        "external",
+        "connector"
+      ],
+      "path": "skills/odoo-shopify-integration/SKILL.md"
+    },
+    {
+      "id": "odoo-upgrade-advisor",
+      "name": "odoo-upgrade-advisor",
+      "description": "Step-by-step Odoo version upgrade advisor: pre-upgrade checklist, community vs enterprise upgrade path, OCA module compatibility, and post-upgrade validation.",
+      "category": "general",
+      "tags": [
+        "odoo",
+        "upgrade",
+        "advisor"
+      ],
+      "triggers": [
+        "odoo",
+        "upgrade",
+        "advisor",
+        "step",
+        "version",
+        "pre",
+        "checklist",
+        "community",
+        "vs",
+        "enterprise",
+        "path",
+        "oca"
+      ],
+      "path": "skills/odoo-upgrade-advisor/SKILL.md"
+    },
+    {
+      "id": "odoo-woocommerce-bridge",
+      "name": "odoo-woocommerce-bridge",
+      "description": "Sync Odoo with WooCommerce: products, inventory, orders, and customers via WooCommerce REST API and Odoo external API.",
+      "category": "development",
+      "tags": [
+        "odoo",
+        "woocommerce",
+        "bridge"
+      ],
+      "triggers": [
+        "odoo",
+        "woocommerce",
+        "bridge",
+        "sync",
+        "products",
+        "inventory",
+        "orders",
+        "customers",
+        "via",
+        "rest",
+        "api",
+        "external"
+      ],
+      "path": "skills/odoo-woocommerce-bridge/SKILL.md"
+    },
+    {
+      "id": "odoo-xml-views-builder",
+      "name": "odoo-xml-views-builder",
+      "description": "Expert at building Odoo XML views: Form, List, Kanban, Search, Calendar, and Graph. Generates correct XML for Odoo 14-17 with proper visibility syntax.",
+      "category": "general",
+      "tags": [
+        "odoo",
+        "xml",
+        "views",
+        "builder"
+      ],
+      "triggers": [
+        "odoo",
+        "xml",
+        "views",
+        "builder",
+        "building",
+        "form",
+        "list",
+        "kanban",
+        "search",
+        "calendar",
+        "graph",
+        "generates"
+      ],
+      "path": "skills/odoo-xml-views-builder/SKILL.md"
+    },
+    {
       "id": "office-productivity",
       "name": "office-productivity",
       "description": "Office productivity workflow covering document creation, spreadsheet automation, presentation generation, and integration with LibreOffice and Microsoft Office formats.",
@@ -17494,6 +18372,31 @@
         "resolution"
       ],
       "path": "skills/production-scheduling/SKILL.md"
+    },
+    {
+      "id": "professional-proofreader",
+      "name": "professional-proofreader",
+      "description": "Use when a user asks to \"proofread\", \"review and correct\", \"fix grammar\", \"improve readability while keeping my voice\", and to proofread a document file and save an updated version.",
+      "category": "general",
+      "tags": [
+        "professional",
+        "proofreader"
+      ],
+      "triggers": [
+        "professional",
+        "proofreader",
+        "user",
+        "asks",
+        "proofread",
+        "review",
+        "correct",
+        "fix",
+        "grammar",
+        "improve",
+        "readability",
+        "while"
+      ],
+      "path": "skills/professional-proofreader/SKILL.md"
     },
     {
       "id": "programmatic-seo",
@@ -18712,6 +19615,32 @@
         "programming"
       ],
       "path": "skills/rust-pro/SKILL.md"
+    },
+    {
+      "id": "saas-mvp-launcher",
+      "name": "saas-mvp-launcher",
+      "description": "Use when planning or building a SaaS MVP from scratch. Provides a structured roadmap covering tech stack, architecture, auth, payments, and launch checklist.",
+      "category": "security",
+      "tags": [
+        "saas",
+        "mvp",
+        "launcher"
+      ],
+      "triggers": [
+        "saas",
+        "mvp",
+        "launcher",
+        "planning",
+        "building",
+        "scratch",
+        "provides",
+        "structured",
+        "roadmap",
+        "covering",
+        "tech",
+        "stack"
+      ],
+      "path": "skills/saas-mvp-launcher/SKILL.md"
     },
     {
       "id": "saga-orchestration",
@@ -20203,6 +21132,31 @@
         "assessments"
       ],
       "path": "skills/skill-rails-upgrade/SKILL.md"
+    },
+    {
+      "id": "skill-router",
+      "name": "skill-router",
+      "description": "Use when the user is unsure which skill to use or where to start. Interviews the user with targeted questions and recommends the best skill(s) from the installed library for their goal.",
+      "category": "general",
+      "tags": [
+        "skill",
+        "router"
+      ],
+      "triggers": [
+        "skill",
+        "router",
+        "user",
+        "unsure",
+        "which",
+        "where",
+        "start",
+        "interviews",
+        "targeted",
+        "questions",
+        "recommends",
+        "installed"
+      ],
+      "path": "skills/skill-router/SKILL.md"
     },
     {
       "id": "skill-seekers",
@@ -22634,6 +23588,39 @@
         "risks"
       ],
       "path": "skills/vibe-code-auditor/SKILL.md"
+    },
+    {
+      "id": "videodb",
+      "name": "videodb",
+      "description": "Video and audio perception, indexing, and editing. Ingest files/URLs/live streams, build visual/spoken indexes, search with timestamps, edit timelines, add overlays/subtitles, generate media, and create real-time alerts.",
+      "category": "general",
+      "tags": [
+        "[video",
+        "editing",
+        "transcription",
+        "subtitles",
+        "search",
+        "streaming",
+        "ai-generation",
+        "media",
+        "live-streams",
+        "desktop-capture]"
+      ],
+      "triggers": [
+        "[video",
+        "editing",
+        "transcription",
+        "subtitles",
+        "search",
+        "streaming",
+        "ai-generation",
+        "media",
+        "live-streams",
+        "desktop-capture]",
+        "videodb",
+        "video"
+      ],
+      "path": "skills/videodb/SKILL.md"
     },
     {
       "id": "videodb-skills",

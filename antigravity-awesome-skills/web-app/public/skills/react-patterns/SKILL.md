@@ -1,9 +1,9 @@
 ---
 name: react-patterns
 description: "Modern React patterns and principles. Hooks, composition, performance, TypeScript best practices."
-allowed-tools: Read, Write, Edit, Glob, Grep
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # React Patterns

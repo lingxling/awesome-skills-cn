@@ -3,6 +3,7 @@ name: signup-flow-cro
 description: "When the user wants to optimize signup, registration, account creation, or trial activation flows. Also use when the user mentions \"signup conversions,\" \"registration friction,\" \"signup..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Signup Flow CRO

@@ -3,6 +3,7 @@ name: ui-ux-pro-max
 description: "UI/UX design intelligence. 50 styles, 21 palettes, 50 font pairings, 20 charts, 9 stacks (React, Next.js, Vue, Svelte, SwiftUI, React Native, Flutter, Tailwind, shadcn/ui). Actions: plan, build, cr..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # UI/UX Pro Max - Design Intelligence

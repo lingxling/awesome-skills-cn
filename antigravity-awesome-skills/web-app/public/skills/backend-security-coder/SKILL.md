@@ -1,13 +1,9 @@
 ---
 name: backend-security-coder
-description: |
-  Expert in secure backend coding practices specializing in input
-  validation, authentication, and API security. Use PROACTIVELY for backend
-  security implementations or security code reviews.
-metadata:
-  model: sonnet
+description: Expert in secure backend coding practices specializing in input validation, authentication, and API security. Use PROACTIVELY for backend security implementations or security code reviews.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 ## Use this skill when

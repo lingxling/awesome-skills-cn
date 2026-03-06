@@ -1,11 +1,9 @@
 ---
 name: azure-eventhub-py
-description: |
-  Azure Event Hubs SDK for Python streaming. Use for high-throughput event ingestion, producers, consumers, and checkpointing.
-  Triggers: "event hubs", "EventHubProducerClient", "EventHubConsumerClient", "streaming", "partitions".
-package: azure-eventhub
+description: Azure Event Hubs SDK for Python streaming. Use for high-throughput event ingestion, producers, consumers, and checkpointing.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 # Azure Event Hubs SDK for Python

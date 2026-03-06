@@ -3,6 +3,7 @@ name: fastapi-router-py
 description: "Create FastAPI routers with CRUD operations, authentication dependencies, and proper response models. Use when building REST API endpoints, creating new routes, implementing CRUD operations, or add..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # FastAPI Router

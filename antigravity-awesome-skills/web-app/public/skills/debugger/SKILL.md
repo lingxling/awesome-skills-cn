@@ -1,12 +1,13 @@
 ---
 name: debugger
-description: |
-  Debugging specialist for errors, test failures, and unexpected
+description: 'Debugging specialist for errors, test failures, and unexpected
+
   behavior. Use proactively when encountering any issues.
-metadata:
-  model: sonnet
+
+  '
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 ## Use this skill when

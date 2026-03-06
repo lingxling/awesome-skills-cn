@@ -1,10 +1,9 @@
 ---
 name: cc-skill-continuous-learning
 description: "Development skill from everything-claude-code"
-author: affaan-m
-version: "1.0"
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # cc-skill-continuous-learning

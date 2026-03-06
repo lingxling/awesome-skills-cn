@@ -3,6 +3,7 @@ name: embedding-strategies
 description: "Select and optimize embedding models for semantic search and RAG applications. Use when choosing embedding models, implementing chunking strategies, or optimizing embedding quality for specific dom..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Embedding Strategies

@@ -1,15 +1,15 @@
 ---
 name: conductor-validator
-description: |
-  Validates Conductor project artifacts for completeness,
+description: 'Validates Conductor project artifacts for completeness,
+
   consistency, and correctness. Use after setup, when diagnosing issues, or
+
   before implementation to verify project context.
-allowed-tools: Read Glob Grep Bash
-metadata:
-  model: opus
-  color: cyan
+
+  '
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 # Check if conductor directory exists

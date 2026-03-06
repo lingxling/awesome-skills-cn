@@ -1,9 +1,9 @@
 ---
 name: 2d-games
 description: "2D game development principles. Sprites, tilemaps, physics, camera."
-allowed-tools: Read, Write, Edit, Glob, Grep
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # 2D Game Development

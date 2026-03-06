@@ -1,11 +1,13 @@
 ---
 name: startup-business-analyst-business-case
-description: |
-  Generate comprehensive investor-ready business case document with
+description: 'Generate comprehensive investor-ready business case document with
+
   market, solution, financials, and strategy
-allowed-tools: Read Write Edit Glob Grep Bash WebSearch WebFetch
+
+  '
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 # Business Case Generator

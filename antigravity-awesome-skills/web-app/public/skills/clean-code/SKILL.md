@@ -1,9 +1,9 @@
 ---
 name: clean-code
 description: "Applies principles from Robert C. Martin's 'Clean Code'. Use this skill when writing, reviewing, or refactoring code to ensure high quality, readability, and maintainability. Covers naming, functio..."
-user-invocable: true
 risk: safe
 source: "ClawForge (https://github.com/jackjin1997/ClawForge)"
+date_added: "2026-02-27"
 ---
 
 # Clean Code Skill

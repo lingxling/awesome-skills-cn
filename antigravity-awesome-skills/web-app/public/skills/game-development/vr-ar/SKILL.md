@@ -1,9 +1,9 @@
 ---
 name: vr-ar
 description: "VR/AR development principles. Comfort, interaction, performance requirements."
-allowed-tools: Read, Write, Edit, Glob, Grep
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # VR/AR Development

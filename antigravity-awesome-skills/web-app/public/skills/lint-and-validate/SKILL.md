@@ -1,9 +1,9 @@
 ---
 name: lint-and-validate
 description: "Automatic quality control, linting, and static analysis procedures. Use after every code modification to ensure syntax correctness and project standards. Triggers onKeywords: lint, format, check, v..."
-allowed-tools: Read, Glob, Grep, Bash
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Lint and Validate Skill

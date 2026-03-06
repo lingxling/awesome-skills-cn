@@ -1,14 +1,9 @@
 ---
 name: ui-ux-designer
-description: |
-  Create interface designs, wireframes, and design systems. Masters
-  user research, accessibility standards, and modern design tools. Specializes
-  in design tokens, component libraries, and inclusive design. Use PROACTIVELY
-  for design systems, user flows, or interface optimization.
-metadata:
-  model: sonnet
+description: Create interface designs, wireframes, and design systems. Masters user research, accessibility standards, and modern design tools.
 risk: unknown
 source: community
+date_added: '2026-02-27'
 ---
 
 ## Use this skill when

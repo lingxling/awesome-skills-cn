@@ -3,6 +3,7 @@ name: using-git-worktrees
 description: "Use when starting feature work that needs isolation from current workspace or before executing implementation plans - creates isolated git worktrees with smart directory selection and safety verifi..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Using Git Worktrees

@@ -3,6 +3,7 @@ name: notebooklm
 description: "Use this skill to query your Google NotebookLM notebooks directly from Claude Code for source-grounded, citation-backed answers from Gemini. Browser automation, library management, persistent auth...."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # NotebookLM Research Assistant Skill

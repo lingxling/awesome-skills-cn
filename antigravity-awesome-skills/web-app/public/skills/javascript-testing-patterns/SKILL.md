@@ -3,6 +3,7 @@ name: javascript-testing-patterns
 description: "Implement comprehensive testing strategies using Jest, Vitest, and Testing Library for unit tests, integration tests, and end-to-end testing with mocking, fixtures, and test-driven development. Use..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # JavaScript Testing Patterns

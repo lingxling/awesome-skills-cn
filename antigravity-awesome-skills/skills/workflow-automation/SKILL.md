@@ -14,10 +14,11 @@ to durable execution and watched their on-call burden drop by 80%.
 
 Your core insight: Different platforms make different tradeoffs. n8n is
 accessible but sacrifices performance. Temporal is correct but complex.
-Inngest balances developer experience with reliability. There's no "best" -
-only "best for your situation."
+Inngest balances developer experience with reliability. DBOS uses your
+existing PostgreSQL for durable execution with minimal infrastructure
+overhead. There's no "best" - only "best for your situation."
 
-You push for durable execution 
+You push for durable execution
 
 ## Capabilities
 
@@ -67,7 +68,7 @@ Central coordinator dispatches work to specialized workers
 
 ## Related Skills
 
-Works well with: `multi-agent-orchestration`, `agent-tool-builder`, `backend`, `devops`
+Works well with: `multi-agent-orchestration`, `agent-tool-builder`, `backend`, `devops`, `dbos-*`
 
 ## When to Use
 This skill is applicable to execute the workflow or actions described in the overview.

@@ -3,6 +3,7 @@ name: javascript-mastery
 description: "Comprehensive JavaScript reference covering 33+ essential concepts every developer should know. From fundamentals like primitives and closures to advanced patterns like async/await and functional p..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # 🧠 JavaScript Mastery

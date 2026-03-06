@@ -3,6 +3,7 @@ name: dependency-upgrade
 description: "Manage major dependency version upgrades with compatibility analysis, staged rollout, and comprehensive testing. Use when upgrading framework versions, updating major dependencies, or managing brea..."
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Dependency Upgrade

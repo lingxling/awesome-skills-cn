@@ -1,9 +1,9 @@
 ---
 name: performance-profiling
 description: "Performance profiling principles. Measurement, analysis, and optimization techniques."
-allowed-tools: Read, Glob, Grep, Bash
 risk: unknown
 source: community
+date_added: "2026-02-27"
 ---
 
 # Performance Profiling

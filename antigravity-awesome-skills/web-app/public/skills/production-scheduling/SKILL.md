@@ -1,22 +1,9 @@
 ---
 name: production-scheduling
-description: >
-  Codified expertise for production scheduling, job sequencing, line balancing,
-  changeover optimisation, and bottleneck resolution in discrete and batch
-  manufacturing. Informed by production schedulers with 15+ years experience.
-  Includes TOC/drum-buffer-rope, SMED, OEE analysis, disruption response
-  frameworks, and ERP/MES interaction patterns. Use when scheduling production,
-  resolving bottlenecks, optimising changeovers, responding to disruptions,
-  or balancing manufacturing lines.
-license: Apache-2.0
-version: 1.0.0
-homepage: https://github.com/evos-ai/evos-capabilities
+description: Codified expertise for production scheduling, job sequencing, line balancing, changeover optimisation, and bottleneck resolution in discrete and batch manufacturing.
 risk: safe
 source: https://github.com/ai-evos/agent-skills
-metadata:
-  author: evos
-  clawdbot:
-    emoji: "🏭"
+date_added: '2026-02-27'
 ---
 
 ## When to Use
