@@ -5,6 +5,32 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.9.0] - 2026-03-06
+
+### 新增
+- 完成 5 个 Obsidian SKILL 的中文翻译：
+  - [obsidian-markdown/SKILL_CN.md](obsidian-skills/skills/obsidian-markdown/SKILL_CN.md) - 创建和编辑 Obsidian Flavored Markdown 文档
+  - [obsidian-bases/SKILL_CN.md](obsidian-skills/skills/obsidian-bases/SKILL_CN.md) - 创建和编辑 Obsidian Bases 数据库
+  - [json-canvas/SKILL_CN.md](obsidian-skills/skills/json-canvas/SKILL_CN.md) - 创建和编辑 JSON Canvas 文件
+  - [obsidian-cli/SKILL_CN.md](obsidian-skills/skills/obsidian-cli/SKILL_CN.md) - 通过 Obsidian CLI 与 Obsidian vault 交互
+  - [defuddle/SKILL_CN.md](obsidian-skills/skills/defuddle/SKILL_CN.md) - 从网页提取干净的 Markdown 内容
+
+### 变更
+- 更新翻译进度表格，obsidian-skills 从 0/5 改为 5/5 已完成
+- 更新翻译进度表格，已完成翻译从 64 个增加到 69 个
+
+## [2.8.0] - 2026-03-06
+
+### 新增
+- 完成 1 个新的 Anthropic SKILL 的中文翻译：
+  - [claude-api/SKILL_CN.md](anthropics-skills/skills/claude-api/SKILL_CN.md) - Claude API 和 Agent SDK
+
+### 变更
+- 更新项目简介，anthropics-skills 从 16 个技能增加到 17 个技能
+- 更新翻译进度表格，从 7200+ 个技能增加到 7200+ 个技能，已完成翻译从 63 个增加到 64 个
+- 更新 anthropics-skills 技能列表，添加 claude-api 技能
+- 将所有项目的 GitHub Stars 徽章服务从 shields.io 更换为 badgen.net，提高稳定性和加载速度
+
 ## [2.7.0] - 2026-03-04
 
 ### 新增
@@ -28,7 +54,7 @@
 - 更新项目简介，添加3个新项目的描述
 - 更新翻译进度表格，从 1031 个技能增加到 7200+ 个技能
 - 更新致谢部分，添加3个新项目的致谢信息
-- 为所有项目添加 GitHub Stars 徽章，实时显示 Star 数量
+- 为所有项目添加 GitHub Stars 徽章，实时显示 Star 数量（使用 badgen.net 服务）
 
 ## [2.5.0] - 2026-03-03
 
@@ -134,7 +160,7 @@
 ## 变更类型说明
 
 - **新增** - 新增的功能
-- **更改** - 现有功能的变更
+- **变更** - 现有功能的变更
 - **弃用** - 即将移除的功能
 - **移除** - 已移除的功能
 - **修复** - Bug 修复

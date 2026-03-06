@@ -6,7 +6,7 @@
 
 本翻译项目囊括了以下优秀的 SKILL 项目：
 
-- [**Anthropic Skills**](https://github.com/anthropics/skills) [![GitHub Stars](https://badgen.net/github/stars/anthropics/skills)](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（16个技能）
+- [**Anthropic Skills**](https://github.com/anthropics/skills) [![GitHub Stars](https://badgen.net/github/stars/anthropics/skills)](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（17个技能）
 - [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（1个技能）
 - [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能）
 - [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（5个技能）
@@ -168,7 +168,7 @@ awesome-skills-cn/
 
 | 来源仓库 | SKILL 数量 | README 翻译 | SKILL 翻译 | 状态 |
 |---------|-----------|------------|-----------|------|
-| anthropics-skills | 16 | ✓ | 16/16 | 已完成 |
+| anthropics-skills | 17 | ✓ | 17/17 | 已完成 |
 | ui-ux-pro-max-skill | 1 | ✓ | 1/1 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
 | huggingface-skills | 9 | ✓ | 9/9 | 已完成 |
@@ -177,15 +177,16 @@ awesome-skills-cn/
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
 | claude-scientific-skills | 170 | - | 0/170 | 未开始 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
-| obsidian-skills | 5 | - | 0/5 | 未开始 |
+| obsidian-skills | 5 | - | 5/5 | 已完成 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7200+** | **63** | **63/7200+** | **进行中** |
+| **总计** | **7201+** | **64** | **69/7201+** | **进行中** |
 
-### anthropics-skills (16个)
+### anthropics-skills (17个)
 
 - [x] [algorithmic-art](anthropics-skills/skills/algorithmic-art/SKILL_CN.md) - 算法艺术生成
 - [x] [brand-guidelines](anthropics-skills/skills/brand-guidelines/SKILL_CN.md) - 品牌指南
 - [x] [canvas-design](anthropics-skills/skills/canvas-design/SKILL_CN.md) - Canvas 设计
+- [x] [claude-api](anthropics-skills/skills/claude-api/SKILL_CN.md) - Claude API 和 Agent SDK
 - [x] [doc-coauthoring](anthropics-skills/skills/doc-coauthoring/SKILL_CN.md) - 文档协作
 - [x] [docx](anthropics-skills/skills/docx/SKILL_CN.md) - Word 文档处理
 - [x] [frontend-design](anthropics-skills/skills/frontend-design/SKILL_CN.md) - 前端设计
@@ -293,11 +294,11 @@ awesome-skills-cn/
 
 ### obsidian-skills (5个)
 
-- [ ] obsidian-markdown - 创建和编辑 Obsidian Flavored Markdown 文档
-- [ ] obsidian-bases - 创建和编辑 Obsidian Bases 数据库
-- [ ] json-canvas - 创建和编辑 JSON Canvas 文件
-- [ ] obsidian-cli - 通过 Obsidian CLI 与 Obsidian vault 交互
-- [ ] defuddle - 从网页提取干净的 Markdown 内容
+- [x] [obsidian-markdown](obsidian-skills/skills/obsidian-markdown/SKILL_CN.md) - 创建和编辑 Obsidian Flavored Markdown 文档
+- [x] [obsidian-bases](obsidian-skills/skills/obsidian-bases/SKILL_CN.md) - 创建和编辑 Obsidian Bases 数据库
+- [x] [json-canvas](obsidian-skills/skills/json-canvas/SKILL_CN.md) - 创建和编辑 JSON Canvas 文件
+- [x] [obsidian-cli](obsidian-skills/skills/obsidian-cli/SKILL_CN.md) - 通过 Obsidian CLI 与 Obsidian vault 交互
+- [x] [defuddle](obsidian-skills/skills/defuddle/SKILL_CN.md) - 从网页提取干净的 Markdown 内容
 
 
 ## 许可证
