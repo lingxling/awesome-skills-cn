@@ -67,7 +67,7 @@
 
 <p align="center">
   <i>其他项目</i><br>
-  <a href="https://nextlevelbuilder.io">Next Level Builder</a> | <a href="https://goclaw.sh">GoClaw</a> | <a href="https://claudekit.cc">ClaudeKit</a>
+  <a href="https://nextlevelbuilder.io">NextLevelBuilder</a> | <a href="https://goclaw.sh">GoClaw</a> | <a href="https://claudekit.cc">ClaudeKit</a>
 </p>
 
 ## v2.0 新功能
