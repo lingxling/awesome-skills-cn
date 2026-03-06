@@ -5,6 +5,21 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.10.0] - 2026-03-06
+
+### 新增
+- 完成 6 个 OpenAI SKILL 的中文翻译：
+  - [openai-docs/SKILL_CN.md](openai-skills/skills/.system/openai-docs/SKILL_CN.md) - OpenAI 文档查询（系统级）
+  - [aspnet-core/SKILL_CN.md](openai-skills/skills/.curated/aspnet-core/SKILL_CN.md) - ASP.NET Core 应用开发
+  - [chatgpt-apps/SKILL_CN.md](openai-skills/skills/.curated/chatgpt-apps/SKILL_CN.md) - ChatGPT 应用开发
+  - [playwright-interactive/SKILL_CN.md](openai-skills/skills/.curated/playwright-interactive/SKILL_CN.md) - Playwright 交互式调试
+  - [slides/SKILL_CN.md](openai-skills/skills/.curated/slides/SKILL_CN.md) - 演示文稿创建
+  - [winui-app/SKILL_CN.md](openai-skills/skills/.curated/winui-app/SKILL_CN.md) - WinUI 3 应用开发
+
+### 变更
+- 更新翻译进度表格，openai-skills 从 31/31 改为 37/37 已完成
+- 更新翻译进度表格，已完成翻译从 69 个增加到 75 个
+
 ## [2.9.0] - 2026-03-06
 
 ### 新增

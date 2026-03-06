@@ -100,27 +100,7 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # Web 应用测试
 │       └── xlsx/
 │           └── SKILL_CN.md    # Excel 处理
-├── ui-ux-pro-max-skill/        # ui-ux-pro-max-skill 项目
-│   ├── README_CN.md            # 项目说明文档中文翻译
-│   └── .claude/skills/ui-ux-pro-max/
-│       └── SKILL_CN.md        # UI/UX Pro Max 技能
-├── vercel-labs-skills/         # vercel-labs/skills 项目
-│   ├── README_CN.md            # 项目说明文档中文翻译
-│   └── skills/find-skills/
-│       └── SKILL_CN.md        # SKILL 发现工具
-├── vercel-labs-agent-skills/    # vercel-labs/agent-skills 项目
-│   ├── README_CN.md            # 项目说明文档中文翻译
-│   └── skills/
-│       ├── composition-patterns/
-│       │   └── SKILL_CN.md    # 组合模式
-│       ├── react-best-practices/
-│       │   └── SKILL_CN.md    # React 最佳实践
-│       ├── react-native-skills/
-│       │   └── SKILL_CN.md    # React Native 技能
-│       ├── claude.ai/vercel-deploy-claimable/
-│       │   └── SKILL_CN.md    # Vercel 部署工具
-│       └── web-design-guidelines/
-│           └── SKILL_CN.md    # Web 设计指南
+├── huggingface-skills/         # huggingface/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
 │       ├── huggingface-gradio/
@@ -141,6 +121,19 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # API 工具构建
 │       └── hugging-face-trackio/
 │           └── SKILL_CN.md    # ML 实验跟踪
+├── obsidian-skills/            # obsidian-skills 项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/
+│       ├── defuddle/
+│       │   └── SKILL_CN.md    # 从网页提取干净的 Markdown 内容
+│       ├── json-canvas/
+│       │   └── SKILL_CN.md    # 创建和编辑 JSON Canvas 文件
+│       ├── obsidian-bases/
+│       │   └── SKILL_CN.md    # 创建和编辑 Obsidian Bases 数据库
+│       ├── obsidian-cli/
+│       │   └── SKILL_CN.md    # 通过 Obsidian CLI 与 Obsidian vault 交互
+│       └── obsidian-markdown/
+│           └── SKILL_CN.md    # 创建和编辑 Obsidian Flavored Markdown 文档
 ├── openai-skills/              # openai/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/.curated/
@@ -156,7 +149,35 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # Figma 设计实现
 │       └── gh-address-comments/
 │           └── SKILL_CN.md    # GitHub 评论处理
-...
+├── ui-ux-pro-max-skill/        # ui-ux-pro-max-skill 项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── .claude/skills/ui-ux-pro-max/
+│       └── SKILL_CN.md        # UI/UX Pro Max 技能
+├── vercel-labs-agent-skills/    # vercel-labs/agent-skills 项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/
+│       ├── composition-patterns/
+│       │   └── SKILL_CN.md    # 组合模式
+│       ├── react-best-practices/
+│       │   └── SKILL_CN.md    # React 最佳实践
+│       ├── react-native-skills/
+│       │   └── SKILL_CN.md    # React Native 技能
+│       ├── claude.ai/vercel-deploy-claimable/
+│       │   └── SKILL_CN.md    # Vercel 部署工具
+│       └── web-design-guidelines/
+│           └── SKILL_CN.md    # Web 设计指南
+├── vercel-labs-skills/         # vercel-labs/skills 项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/find-skills/
+│       └── SKILL_CN.md        # SKILL 发现工具
+├── antigravity-awesome-skills/  # antigravity-awesome-skills 项目
+│   └── skills/               # (共 968 个技能，详见项目目录)
+├── claude-scientific-skills/   # claude-scientific-skills 项目
+│   └── docs/                 # (共 170 个技能，详见项目目录)
+├── composiohq-awesome-claude-skills/  # composiohq-awesome-claude-skills 项目
+│   └── connect/              # (共 200+ 个技能，详见项目目录)
+└── voltagent-awesome-openclaw-skills/  # voltagent-awesome-openclaw-skills 项目
+    └── skills/               # (共 5816 个技能，详见项目目录)
 ```
 
 **翻译方式说明：**
@@ -172,14 +193,14 @@ awesome-skills-cn/
 | ui-ux-pro-max-skill | 1 | ✓ | 1/1 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
 | huggingface-skills | 9 | ✓ | 9/9 | 已完成 |
-| openai-skills | 31 | ✓ | 31/31 | 已完成 |
+| openai-skills | 37 | ✓ | 37/37 | 已完成 |
 | vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
 | claude-scientific-skills | 170 | - | 0/170 | 未开始 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7201+** | **64** | **69/7201+** | **进行中** |
+| **总计** | **7207+** | **75** | **75/7207+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -238,10 +259,13 @@ awesome-skills-cn/
 - [x] [hugging-face-tool-builder](huggingface-skills/skills/hugging-face-tool-builder/SKILL_CN.md) - API 工具构建
 - [x] [hugging-face-trackio](huggingface-skills/skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
 
-### openai-skills (31个)
+### openai-skills (37个)
 
 - [x] [skill-installer](openai-skills/skills/.system/skill-installer/SKILL_CN.md) - 技能安装器
 - [x] [skill-creator](openai-skills/skills/.system/skill-creator/SKILL_CN.md) - 技能创建器
+- [x] [openai-docs](openai-skills/skills/.system/openai-docs/SKILL_CN.md) - OpenAI 文档查询（系统级）
+- [x] [aspnet-core](openai-skills/skills/.curated/aspnet-core/SKILL_CN.md) - ASP.NET Core 应用开发
+- [x] [chatgpt-apps](openai-skills/skills/.curated/chatgpt-apps/SKILL_CN.md) - ChatGPT 应用开发
 - [x] [cloudflare-deploy](openai-skills/skills/.curated/cloudflare-deploy/SKILL_CN.md) - Cloudflare 部署工具
 - [x] [develop-web-game](openai-skills/skills/.curated/develop-web-game/SKILL_CN.md) - Web 游戏开发
 - [x] [doc](openai-skills/skills/.curated/doc/SKILL_CN.md) - DOCX 文档处理
@@ -260,17 +284,20 @@ awesome-skills-cn/
 - [x] [openai-docs](openai-skills/skills/.curated/openai-docs/SKILL_CN.md) - OpenAI 文档查询
 - [x] [pdf](openai-skills/skills/.curated/pdf/SKILL_CN.md) - PDF 处理
 - [x] [playwright](openai-skills/skills/.curated/playwright/SKILL_CN.md) - Playwright 浏览器自动化
+- [x] [playwright-interactive](openai-skills/skills/.curated/playwright-interactive/SKILL_CN.md) - Playwright 交互式调试
 - [x] [render-deploy](openai-skills/skills/.curated/render-deploy/SKILL_CN.md) - Render 部署
 - [x] [screenshot](openai-skills/skills/.curated/screenshot/SKILL_CN.md) - 屏幕截图
 - [x] [security-best-practices](openai-skills/skills/.curated/security-best-practices/SKILL_CN.md) - 安全最佳实践
 - [x] [security-ownership-map](openai-skills/skills/.curated/security-ownership-map/SKILL_CN.md) - 安全所有权映射
 - [x] [security-threat-model](openai-skills/skills/.curated/security-threat-model/SKILL_CN.md) - 安全威胁建模
 - [x] [sentry](openai-skills/skills/.curated/sentry/SKILL_CN.md) - Sentry 监控
+- [x] [slides](openai-skills/skills/.curated/slides/SKILL_CN.md) - 演示文稿创建
 - [x] [sora](openai-skills/skills/.curated/sora/SKILL_CN.md) - Sora 视频生成
 - [x] [speech](openai-skills/skills/.curated/speech/SKILL_CN.md) - 语音生成
 - [x] [spreadsheet](openai-skills/skills/.curated/spreadsheet/SKILL_CN.md) - 电子表格处理
 - [x] [transcribe](openai-skills/skills/.curated/transcribe/SKILL_CN.md) - 音频转录
 - [x] [vercel-deploy](openai-skills/skills/.curated/vercel-deploy/SKILL_CN.md) - Vercel 部署
+- [x] [winui-app](openai-skills/skills/.curated/winui-app/SKILL_CN.md) - WinUI 3 应用开发
 - [x] [yeet](openai-skills/skills/.curated/yeet/SKILL_CN.md) - Git 提交流程
 
 ### obsidian-skills (5个)
