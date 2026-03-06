@@ -1,16 +1,8 @@
 ---
 name: multi-agent-patterns
-description: "Master orchestrator, peer-to-peer, and hierarchical multi-agent architectures"
-risk: safe
-source: "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering/tree/main/skills/multi-agent-patterns"
-date_added: "2026-02-27"
+description: This skill should be used when the user asks to "design multi-agent system", "implement supervisor pattern", "create swarm architecture", "coordinate multiple agents", or mentions multi-agent patterns, context isolation, agent handoffs, sub-agents, or parallel agent execution.
 ---
 
-## When to Use This Skill
-
-Master orchestrator, peer-to-peer, and hierarchical multi-agent architectures
-
-Use this skill when working with master orchestrator, peer-to-peer, and hierarchical multi-agent architectures.
 # Multi-Agent Architecture Patterns
 
 Multi-agent architectures distribute work across multiple language model instances, each with its own context window. When designed well, this distribution enables capabilities beyond single-agent limits. When designed poorly, it introduces coordination overhead that negates benefits. The critical insight is that sub-agents exist primarily to isolate context, not to anthropomorphize role division.

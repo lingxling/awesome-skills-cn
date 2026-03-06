@@ -28,7 +28,7 @@ If you touch **any of these**:
 
 - `skills/` (add/remove/modify skills)
 - the **Full Skill Registry** section of `README.md`
-- **counts/claims** about the number of skills (`560+ Agentic Skills...`, `(560/560)`, etc.)
+- **counts/claims** about the number of skills (`1,200+ Agentic Skills...`, `(1,200+/1,200+)`, etc.)
 
 …then you **MUST** run the Validation Chain **BEFORE** committing.
 
@@ -146,8 +146,8 @@ If you add/remove skills, you **MUST** ensure the total count is identical in AL
 
 Locations to check:
 
-1.  **Title of `README.md`**: "560+ Agentic Skills..."
-2.  **`## Full Skill Registry (560/560)` header**.
+1.  **Title of `README.md`**: "1,200+ Agentic Skills..."
+2.  **`## Full Skill Registry (1,200+/1,200+)` header**.
 3.  **`docs/GETTING_STARTED.md` intro**.
 
 ### D. Credits Policy (Who goes where?)
@@ -250,11 +250,11 @@ Validate → Changelog → Bump `package.json` (and README if needed) → Commit
 
 ### When to Close an Issue
 
-| Situation | Action |
-|-----------|--------|
-| PR merges and PR body contains `Closes #N` or `Fixes #N` | GitHub closes the issue automatically. |
-| PR merges but did not reference the issue | After merge, close manually: `gh issue close N --comment "Fixed in #<PR>. Shipped in vX.Y.Z."` |
-| Fix/feature shipped in a release, no PR referenced | Close with: `gh issue close N --comment "Shipped in vX.Y.Z. See CHANGELOG."` |
+| Situation                                                | Action                                                                                         |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| PR merges and PR body contains `Closes #N` or `Fixes #N` | GitHub closes the issue automatically.                                                         |
+| PR merges but did not reference the issue                | After merge, close manually: `gh issue close N --comment "Fixed in #<PR>. Shipped in vX.Y.Z."` |
+| Fix/feature shipped in a release, no PR referenced       | Close with: `gh issue close N --comment "Shipped in vX.Y.Z. See CHANGELOG."`                   |
 
 ### 📋 Changelog Entry Template
 

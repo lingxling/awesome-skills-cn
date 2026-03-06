@@ -5,6 +5,18 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.12.0] - 2026-03-06
+
+### 新增
+- 完成 1 个新的 Hugging Face SKILL 的中文翻译：
+  - [hugging-face-dataset-viewer/SKILL_CN.md](huggingface-skills/skills/hugging-face-dataset-viewer/SKILL_CN.md) - 数据集查看器 API 工作流
+
+### 变更
+- 更新翻译进度表格，huggingface-skills 从 9/9 改为 10/10 已完成
+- 更新翻译进度表格，已完成翻译从 75 个增加到 76 个
+- 更新项目简介，huggingface-skills 从 9 个技能增加到 10 个技能
+- 更新 huggingface-skills 技能列表，添加 hugging-face-dataset-viewer 技能
+
 ## [2.11.0] - 2026-03-06
 
 ### 变更

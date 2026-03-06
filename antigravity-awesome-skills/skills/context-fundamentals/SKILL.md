@@ -1,16 +1,8 @@
 ---
 name: context-fundamentals
-description: "Understand what context is, why it matters, and the anatomy of context in agent systems"
-risk: safe
-source: "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering/tree/main/skills/context-fundamentals"
-date_added: "2026-02-27"
+description: This skill should be used when the user asks to "understand context", "explain context windows", "design agent architecture", "debug context issues", "optimize context usage", or discusses context components, attention mechanics, progressive disclosure, or context budgeting....
 ---
 
-## When to Use This Skill
-
-Understand what context is, why it matters, and the anatomy of context in agent systems
-
-Use this skill when working with understand what context is, why it matters, and the anatomy of context in agent systems.
 # Context Engineering Fundamentals
 
 Context is the complete state available to a language model at inference time. It includes everything the model can attend to when generating responses: system instructions, tool definitions, retrieved documents, message history, and tool outputs. Understanding context fundamentals is prerequisite to effective context engineering.

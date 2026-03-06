@@ -1,7 +1,3 @@
-# 子项目中的 .git 文件夹（不提交）
-**/.git
-**/.gitigore
-
 # 操作系统文件
 .DS_Store
 Thumbs.db
@@ -40,3 +36,11 @@ yarn-error.log*
 dist/
 build/
 out/
+
+# 忽略本地文件
+test_run.py
+work.md
+
+# 子项目中的 .git 文件夹（不提交）
+**/.git
+**/.gitigore

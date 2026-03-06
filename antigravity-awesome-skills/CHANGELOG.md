@@ -11,6 +11,205 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [7.0.0] - 2026-03-06 - "20k Stars Celebration"
+
+> **300+ new skills added to celebrate 20,000 GitHub stars!**
+
+This major release expands our collection to **1,200+ skills** from 35+ community repositories, covering UI/UX, Security, Data Science, Health, Quantum Computing, and more. This is our biggest community-driven update ever!
+
+### 🎉 20k Stars Milestone
+
+Thank you to our incredible community! From 0 to 20,000 stars, this journey has been powered by developers, security researchers, data scientists, and AI enthusiasts worldwide.
+
+## 🚀 New Skill Categories (300+ Skills)
+
+### UI/UX & Frontend (35+ skills)
+Complete UI/UX polish toolkit and 3D graphics suite:
+- **[baseline-ui](skills/baseline-ui/)**, **[fixing-accessibility](skills/fixing-accessibility/)**, **[fixing-metadata](skills/fixing-metadata/)**, **[fixing-motion-performance](skills/fixing-motion-performance/)** - UI validation and accessibility
+- **[swiftui-expert-skill](skills/swiftui-expert-skill/)** - iOS SwiftUI development with 14 reference guides
+- **[threejs-fundamentals](skills/threejs-fundamentals/)** through **[threejs-interaction](skills/threejs-interaction/)** - Complete Three.js 3D graphics (10 skills)
+- **[expo-ui-swift-ui](skills/expo-ui-swift-ui/)**, **[expo-ui-jetpack-compose](skills/expo-ui-jetpack-compose/)**, **[expo-tailwind-setup](skills/expo-tailwind-setup/)**, **[building-native-ui](skills/building-native-ui/)**, **[expo-api-routes](skills/expo-api-routes/)**, **[expo-dev-client](skills/expo-dev-client/)**, **[expo-cicd-workflows](skills/expo-cicd-workflows/)**, **[native-data-fetching](skills/native-data-fetching/)** - Expo/React Native development
+- **[frontend-slides](skills/frontend-slides/)** - HTML presentation creation
+- **[makepad-basics](skills/makepad-basics/)** through **[molykit](skills/molykit/)** - Complete Makepad UI Framework (19 skills)
+- **[favicon](skills/favicon/)**, **[chat-widget](skills/chat-widget/)** - UI utilities
+
+### Automation & Integration (35+ skills)
+Full workflow automation toolkit:
+- **[gmail-automation](skills/gmail-automation/)**, **[google-calendar-automation](skills/google-calendar-automation/)**, **[google-docs-automation](skills/google-docs-automation/)**, **[google-sheets-automation](skills/google-sheets-automation/)**, **[google-drive-automation](skills/google-drive-automation/)**, **[google-slides-automation](skills/google-slides-automation/)** - Complete Google Workspace integration
+- **[n8n-expression-syntax](skills/n8n-expression-syntax/)**, **[n8n-mcp-tools-expert](skills/n8n-mcp-tools-expert/)**, **[n8n-workflow-patterns](skills/n8n-workflow-patterns/)**, **[n8n-validation-expert](skills/n8n-validation-expert/)**, **[n8n-node-configuration](skills/n8n-node-configuration/)**, **[n8n-code-javascript](skills/n8n-code-javascript/)**, **[n8n-code-python](skills/n8n-code-python/)** - n8n workflow automation (7 skills)
+- **[automate-whatsapp](skills/automate-whatsapp/)**, **[integrate-whatsapp](skills/integrate-whatsapp/)**, **[observe-whatsapp](skills/observe-whatsapp/)** - WhatsApp automation
+- **[linear](skills/linear/)** - Linear project management integration
+- **[rails-upgrade](skills/rails-upgrade/)** - Rails upgrade assistant
+- **[commit](skills/commit/)**, **[create-pr](skills/create-pr/)**, **[find-bugs](skills/find-bugs/)**, **[iterate-pr](skills/iterate-pr/)**, **[code-simplifier](skills/code-simplifier/)**, **[skill-scanner](skills/skill-scanner/)**, **[skill-writer](skills/skill-writer/)**, **[pr-writer](skills/pr-writer/)**, **[create-branch](skills/create-branch/)** - Developer workflow automation from Sentry
+- **[build](skills/build/)**, **[conductor-setup](skills/conductor-setup/)**, **[issues](skills/issues/)**, **[new-rails-project](skills/new-rails-project/)** - Development project management
+
+### Security & Auditing (40+ skills)
+Comprehensive security toolkit from Trail of Bits and community:
+- **[semgrep-rule-creator](skills/semgrep-rule-creator/)**, **[semgrep-rule-variant-creator](skills/semgrep-rule-variant-creator/)**, **[static-analysis](skills/static-analysis/)**, **[variant-analysis](skills/variant-analysis/)** - Code security analysis
+- **[golang-security-auditor](skills/golang-security-auditor/)**, **[python-security-auditor](skills/python-security-auditor/)**, **[rust-security-auditor](skills/rust-security-auditor/)** - Language-specific security auditing
+- **[burpsuite-project-parser](skills/burpsuite-project-parser/)**, **[agentic-actions-auditor](skills/agentic-actions-auditor/)**, **[audit-context-building](skills/audit-context-building/)**, **[proof-of-vulnerability](skills/proof-of-vulnerability/)**, **[yara-authoring](skills/yara-authoring/)** - Security testing tools
+- **[ffuf-web-fuzzing](skills/ffuf-web-fuzzing/)** - Web fuzzing with ffuf
+- **[security-bluebook-builder](skills/security-bluebook-builder/)** - Security policy documentation
+- **[ask-questions-if-underspecified](skills/ask-questions-if-underspecified/)**, **[building-secure-contracts](skills/building-secure-contracts/)**, **[claude-in-chrome-troubleshooting](skills/claude-in-chrome-troubleshooting/)**, **[constant-time-analysis](skills/constant-time-analysis/)**, **[culture-index](skills/culture-index/)**, **[debug-buttercup](skills/debug-buttercup/)**, **[devcontainer-setup](skills/devcontainer-setup/)**, **[differential-review](skills/differential-review/)**, **[dwarf-expert](skills/dwarf-expert/)**, **[grimoire](skills/grimoire/)**, **[it-depends](skills/it-depends/)**, **[monte-carlo-treasury](skills/monte-carlo-treasury/)**, **[monte-carlo-vulnerability-detection](skills/monte-carlo-vulnerability-detection/)**, **[open-source-context](skills/open-source-context/)**, **[operational-guidelines](skills/operational-guidelines/)**, **[osint-evals](skills/osint-evals/)**, **[polyfile](skills/polyfile/)**, **[publish-and-summary](skills/publish-and-summary/)**, **[security-skill-creator](skills/security-skill-creator/)**, **[sharp-edges](skills/sharp-edges/)**, **[skill-improver](skills/skill-improver/)**, **[spec-to-code-compliance](skills/spec-to-code-compliance/)**, **[supply-chain-risk-auditor](skills/supply-chain-risk-auditor/)**, **[testing-handbook-skills](skills/testing-handbook-skills/)**, **[workflow-skill-design](skills/workflow-skill-design/)**, **[zeroize-audit](skills/zeroize-audit/)** - Additional Trail of Bits security skills
+
+### Machine Learning & Data Science (35+ skills)
+Complete scientific computing suite:
+- **[hugging-face-dataset-viewer](skills/hugging-face-dataset-viewer/)**, **[hugging-face-datasets](skills/hugging-face-datasets/)**, **[hugging-face-evaluation](skills/hugging-face-evaluation/)**, **[hugging-face-model-trainer](skills/hugging-face-model-trainer/)**, **[hugging-face-paper-publisher](skills/hugging-face-paper-publisher/)**, **[hugging-face-tool-builder](skills/hugging-face-tool-builder/)** - HuggingFace ML platform
+- **[numpy](skills/numpy/)**, **[pandas](skills/pandas/)**, **[scipy](skills/scipy/)**, **[matplotlib](skills/matplotlib/)**, **[scikit-learn](skills/scikit-learn/)**, **[jupyter-workflow](skills/jupyter-workflow/)** - Data science essentials
+- **[biopython](skills/biopython/)**, **[scanpy](skills/scanpy/)**, **[uniprot-database](skills/uniprot-database/)**, **[pubmed-database](skills/pubmed-database/)** - Bioinformatics tools
+- **[astropy](skills/astropy/)**, **[citation-management](skills/citation-management/)**, **[data-visualization](skills/data-visualization/)**, **[great-tables](skills/great-tables/)**, **[literature-analysis](skills/literature-analysis/)**, **[networkx](skills/networkx/)**, **[plotly](skills/plotly/)**, **[polars](skills/polars/)**, **[pygraphistry](skills/pygraphistry/)**, **[seaborn](skills/seaborn/)**, **[statsmodels](skills/statsmodels/)**, **[sympy](skills/sympy/)**, **[umap](skills/umap/)** - Scientific computing
+- **[alpha-vantage](skills/alpha-vantage/)**, **[quantitative-analysis](skills/quantitative-analysis/)**, **[risk-modeling](skills/risk-modeling/)** - Financial analysis
+- **[cirq](skills/cirq/)**, **[qiskit](skills/qiskit/)** - Quantum computing frameworks
+- **[research-engineer](skills/research-engineer/)**, **[scientific-writing](skills/scientific-writing/)**, **[paper-analysis](skills/paper-analysis/)** - Academic research
+
+### Health & Wellness (20+ skills)
+Comprehensive health management from Claude-Ally-Health:
+- **[sleep-analyzer](skills/sleep-analyzer/)**, **[nutrition-analyzer](skills/nutrition-analyzer/)**, **[fitness-analyzer](skills/fitness-analyzer/)** - Core health tracking
+- **[ai-analyzer](skills/ai-analyzer/)**, **[emergency-card](skills/emergency-card/)**, **[family-health-analyzer](skills/family-health-analyzer/)**, **[food-database-query](skills/food-database-query/)**, **[goal-analyzer](skills/goal-analyzer/)**, **[health-trend-analyzer](skills/health-trend-analyzer/)**, **[mental-health-analyzer](skills/mental-health-analyzer/)**, **[occupational-health-analyzer](skills/occupational-health-analyzer/)**, **[oral-health-analyzer](skills/oral-health-analyzer/)**, **[rehabilitation-analyzer](skills/rehabilitation-analyzer/)**, **[sexual-health-analyzer](skills/sexual-health-analyzer/)**, **[skin-health-analyzer](skills/skin-health-analyzer/)**, **[tcm-constitution-analyzer](skills/tcm-constitution-analyzer/)**, **[travel-health-analyzer](skills/travel-health-analyzer/)**, **[weightloss-analyzer](skills/weightloss-analyzer/)**, **[wellally-tech](skills/wellally-tech/)** - Specialized health analyzers
+
+### Context Engineering & AI (15+ skills)
+Advanced agent patterns from muratcankoylan and community:
+- **[context-fundamentals](skills/context-fundamentals/)**, **[context-degradation](skills/context-degradation/)**, **[context-compression](skills/context-compression/)**, **[context-optimization](skills/context-optimization/)**, **[multi-agent-patterns](skills/multi-agent-patterns/)**, **[filesystem-context](skills/filesystem-context/)** - Context engineering patterns
+- **[hosted-agents](skills/hosted-agents/)**, **[advanced-evaluation](skills/advanced-evaluation/)**, **[project-development](skills/project-development/)**, **[bdi-mental-states](skills/bdi-mental-states/)** - Advanced agent patterns
+- **[agents-md](skills/agents-md/)**, **[blog-writing-guide](skills/blog-writing-guide/)**, **[brand-guidelines](skills/brand-guidelines/)**, **[claude-settings-audit](skills/claude-settings-audit/)** - Sentry workflow skills
+
+### Functional Programming (12+ skills)
+Complete fp-ts guide:
+- **[fp-pragmatic](skills/fp-pragmatic/)**, **[fp-errors](skills/fp-errors/)**, **[fp-async](skills/fp-async/)**, **[fp-react](skills/fp-react/)**, **[fp-data-transforms](skills/fp-data-transforms/)**, **[fp-backend](skills/fp-backend/)**, **[fp-refactor](skills/fp-refactor/)** - Core functional programming
+- **[fp-types-ref](skills/fp-types-ref/)**, **[fp-pipe-ref](skills/fp-pipe-ref/)**, **[fp-option-ref](skills/fp-option-ref/)**, **[fp-either-ref](skills/fp-either-ref/)**, **[fp-taskeither-ref](skills/fp-taskeither-ref/)** - Quick reference guides
+
+### AWS Development (6+ skills)
+AWS expertise from zxkane:
+- **[aws-agentic-ai](skills/aws-agentic-ai/)**, **[aws-cdk-development](skills/aws-cdk-development/)**, **[aws-common](skills/aws-common/)**, **[aws-cost-ops](skills/aws-cost-ops/)**, **[aws-mcp-setup](skills/aws-mcp-setup/)**, **[aws-serverless-eda](skills/aws-serverless-eda/)**
+
+### Utilities & Developer Tools (10+ skills)
+- **[vexor-cli](skills/vexor-cli/)** - Semantic file discovery
+- **[clarity-gate](skills/clarity-gate/)** - RAG quality verification
+- **[speckit-updater](skills/speckit-updater/)** - SpecKit template updates
+- **[varlock](skills/varlock/)** - Secure environment variable management
+- **[beautiful-prose](skills/beautiful-prose/)** - Writing style guide
+- **[speed](skills/speed/)** - Speed reading tool
+- **[vercel-deploy-claimable](skills/vercel-deploy-claimable/)** - Vercel deployment
+- **[enhance-prompt](skills/enhance-prompt/)**, **[remotion](skills/remotion/)**, **[stitch-loop](skills/stitch-loop/)** - Google Labs tools
+- **[claimable-postgres](skills/claimable-postgres/)** - Neon Postgres
+
+## 📦 Improvements
+
+- **Registry Update**: Now tracking 1,200+ skills (from 900+)
+- **New Categories**: Bioinformatics, Quantum Computing, Makepad Framework, Health & Wellness
+- **External Repositories**: Skills from 35+ community repositories
+- **Validation**: Full validation chain run on all new skills
+- **Catalog**: Updated interactive web catalog with all new skills
+
+## 👥 Credits
+
+### Official Team Contributions
+- **Vercel Labs**: `vercel-deploy-claimable`
+- **Google Labs**: `enhance-prompt`, `remotion`, `stitch-loop`
+- **HuggingFace**: `hugging-face-dataset-viewer`, `hugging-face-datasets`, `hugging-face-evaluation`, `hugging-face-model-trainer`, `hugging-face-paper-publisher`, `hugging-face-tool-builder`
+- **Expo**: `expo-ui-swift-ui`, `expo-ui-jetpack-compose`, `expo-tailwind-setup`, `building-native-ui`, `expo-api-routes`, `expo-dev-client`, `expo-cicd-workflows`, `native-data-fetching`
+- **Sentry**: `agents-md`, `blog-writing-guide`, `brand-guidelines`, `claude-settings-audit`, `code-simplifier`, `commit`, `create-branch`, `create-pr`, `django-access-review`, `django-perf-review`, `find-bugs`, `gh-review-requests`, `gha-security-review`, `iterate-pr`, `pr-writer`, `skill-scanner`, `skill-writer`, `sred-project-organizer`, `sred-work-summary`
+- **Trail of Bits**: 40+ security skills including `semgrep-rule-creator`, `static-analysis`, `variant-analysis`, and specialized auditors
+
+### Community Contributors
+- **[ibelick](https://github.com/ibelick/ui-skills)**: UI/UX polish skills
+- **[expo](https://github.com/expo/skills)**: React Native development skills
+- **[sanjay3290](https://github.com/sanjay3290/ai-skills)**: Google Workspace integration
+- **[czlonkowski](https://github.com/czlonkowski/n8n-skills)**: n8n automation toolkit
+- **[gokapso](https://github.com/gokapso/agent-skills)**: WhatsApp automation
+- **[wrsmith108](https://github.com/wrsmith108/linear-claude-skill)**: Linear integration, varlock
+- **[robzolkos](https://github.com/robzolkos/skill-rails-upgrade)**: Rails upgrade assistant
+- **[scarletkc](https://github.com/scarletkc/vexor)**: Vexor CLI
+- **[zarazhangrui](https://github.com/zarazhangrui/frontend-slides)**: HTML presentations
+- **[AvdLee](https://github.com/AvdLee/SwiftUI-Agent-Skill)**: SwiftUI expert skill
+- **[CloudAI-X](https://github.com/CloudAI-X/threejs-skills)**: Complete Three.js suite
+- **[ZhangHanDong](https://github.com/ZhangHanDong/makepad-skills)**: Makepad UI Framework
+- **[muratcankoylan](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering)**: Context engineering patterns
+- **[huifer](https://github.com/huifer/Claude-Ally-Health)**: Health & wellness analyzers
+- **[K-Dense-AI](https://github.com/K-Dense-AI/claude-scientific-skills)**: Scientific computing suite
+- **[jthack](https://github.com/jthack/ffuf_claude_skill)**: ffuf web fuzzing
+- **[NotMyself](https://github.com/NotMyself/claude-win11-speckit-update-skill)**: SpecKit updater
+- **[SHADOWPR0](https://github.com/SHADOWPR0/security-bluebook-builder)**: Security bluebook, beautiful-prose
+- **[SeanZoR](https://github.com/SeanZoR/claude-speed-reader)**: Speed reading
+- **[whatiskadudoing](https://github.com/whatiskadudoing/fp-ts-skills)**: fp-ts functional programming
+- **[zxkane](https://github.com/zxkane/aws-skills)**: AWS development skills
+- **[Shpigford](https://github.com/Shpigford/skills)**: Developer tools
+- **[frmoretto](https://github.com/frmoretto/clarity-gate)**: RAG verification
+- **[neondatabase](https://github.com/neondatabase/agent-skills)**: Neon Postgres
+
+### Top Repository Contributors
+- [@sck_0](https://github.com/sck_0) - 377 commits
+- [@github-actions[bot]](https://github.com/apps/github-actions) - 145 commits
+- [@sickn33](https://github.com/sickn33) - 54 commits
+- [@Mohammad-Faiz-Cloud-Engineer](https://github.com/Mohammad-Faiz-Cloud-Engineer) - 38 commits
+- [@munir-abbasi](https://github.com/munir-abbasi) - 31 commits
+- [@zinzied](https://github.com/zinzied) - 21 commits
+- ...and 40+ more contributors!
+
+---
+
+## [6.12.0] - 2026-03-06 - "Developer APIs & Management Tools"
+
+> **7 new developer and product management skills plus web-app UI fixes.**
+
+This release introduces payment capabilities for agents via Agent Cards, production-grade Zod validation, comprehensive Product Management frameworks, and a suite of essential developer tools (API builder, bug hunter, performance optimizer). It also includes fixes for unwanted scrollbars in the interactive web app.
+
+## 🚀 New Skills
+
+### 💳 [agent-cards/skill](https://github.com/agent-cards/skill)
+
+**Manage prepaid virtual Visa cards for AI agents.**
+Allows AI agents to create cards, complete Stripe checkout, check balances, view credentials, and close cards via MCP.
+
+> **Try it:** `Use agent-cards to create a virtual Visa card with a $50 budget.`
+
+### 🛡️ [zod-validation-expert](skills/zod-validation-expert/)
+
+**Type-safe schema definitions and parsing logic with Zod.**
+Production-grade guide covering schema definition, type inference, safe parsing, transformations, and React/Next.js integration.
+
+> **Try it:** `Use zod-validation-expert to create a user registration schema with custom error messages.`
+
+### 📊 [product-manager](skills/product-manager/)
+
+**Senior PM agent with 6 knowledge domains and 30+ frameworks.**
+Provides product management expertise including RICE scoring, PRD templates, and 32 SaaS metrics with exact formulas.
+
+> **Try it:** `Draft a PRD for our new authentication feature using the product-manager templates.`
+
+### 🛠️ Developer Essentials (3 skills)
+
+**Essential skills for building, debugging, and optimizing applications.**
+
+- **[api-endpoint-builder](skills/api-endpoint-builder/)**: Builds production-ready REST API endpoints with validation and error handling.
+- **[bug-hunter](skills/bug-hunter/)**: Systematically finds and fixes bugs from symptoms to root cause.
+- **[performance-optimizer](skills/performance-optimizer/)**: Identifies and fixes performance bottlenecks in code, databases, and APIs.
+
+> **Try it:** `Use api-endpoint-builder to scaffold a secure user login REST endpoint.`
+
+---
+
+## 📦 Improvements
+
+- **Web App Scroll Fixes**: Corrected horizontal and vertical scrollbar overflow issues in the web app UI grid and virtualized lists (PR #208).
+- **Registry Update**: Now tracking 1011 skills.
+
+## 👥 Credits
+
+A huge shoutout to our community contributors:
+
+- **@keyserfaty** for `agent-cards`
+- **@zinzied** for web-app scroll fixes
+- **@sx4im** for `zod-validation-expert`
+- **@Digidai** for `product-manager`
+- **@Mohammad-Faiz-Cloud-Engineer** for developer essential skills
+
+---
+
+_Upgrade now: `git pull origin main` to fetch the latest skills._
+
+---
+
 ## [6.11.0] - 2026-03-05 - "Skills Expansion & Docs Polish"
 
 > **28 new skills, web-app performance upgrades, and documentation consistency pass.**

@@ -73,7 +73,7 @@ jobs:
           # Pull with rebase to integrate remote changes
           git pull origin main --rebase || true
 
-          git add README.md skills_index.json data/catalog.json data/bundles.json data/aliases.json CATALOG.md || true
+          git add README.md skills_index.json data/skills_index.json data/catalog.json data/bundles.json data/aliases.json CATALOG.md || true
 
           # If nothing to commit, exit successfully
           git diff --cached --quiet && exit 0
@@ -89,7 +89,7 @@ jobs:
             echo "To fix locally, run the FULL Validation Chain, then commit and push:"
             echo "  npm run chain"
             echo "  npm run catalog"
-            echo "  git add README.md skills_index.json data/catalog.json data/bundles.json data/aliases.json CATALOG.md"
+            echo "  git add README.md skills_index.json data/skills_index.json data/catalog.json data/bundles.json data/aliases.json CATALOG.md"
             echo "  git commit -m \"chore: sync generated registry files\""
             echo "  git push"
             exit 1

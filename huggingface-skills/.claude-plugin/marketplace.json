@@ -57,6 +57,12 @@
       "description": "Track and visualize ML training experiments with Trackio. Log metrics via Python API and retrieve them via CLI. Supports real-time dashboards synced to HF Spaces."
     },
     {
+      "name": "hugging-face-dataset-viewer",
+      "source": "./skills/hugging-face-dataset-viewer",
+      "skills": "./",
+      "description": "Explore, query, and extract data from any Hugging Face dataset using the Dataset Viewer REST API and npx tooling. Zero Python dependencies — covers split/config discovery, row pagination, text search, filtering, SQL via parquetlens, and dataset upload via CLI."
+    },
+    {
       "name": "gradio",
       "source": "./skills/huggingface-gradio",
       "skills": "./",

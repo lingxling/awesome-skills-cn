@@ -1,4 +1,4 @@
-# Getting Started with Antigravity Awesome Skills (V6.10.0)
+# Getting Started with Antigravity Awesome Skills (V7.0.0)
 
 **New here? This guide will help you supercharge your AI Agent in 5 minutes.**
 
@@ -17,7 +17,7 @@ AI Agents (like **Claude Code**, **Gemini**, **Cursor**) are smart, but they lac
 
 ## ⚡️ Quick Start: The "Starter Packs"
 
-Don't panic about the 1006+ skills. You don't need them all at once.
+Don't panic about the 1,200+ skills. You don't need them all at once.
 We have curated **Starter Packs** to get you running immediately.
 
 You **install the full repo once** (npx or clone); Starter Packs are curated lists to help you **pick which skills to use** by role (e.g. Web Wizard, Hacker Pack)—they are not a different way to install.

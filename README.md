@@ -11,7 +11,7 @@
 - [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能）
 - [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（5个技能）
 - [**Antigravity Awesome Skills**](https://github.com/sickn33/antigravity-awesome-skills) [![GitHub Stars](https://badgen.net/github/stars/sickn33/antigravity-awesome-skills)](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合（968个技能）
-- [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（9个技能）
+- [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（10个技能）
 - [**OpenAI Skills**](https://github.com/openai/skills) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（31个技能）
 - [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) [![GitHub Stars](https://badgen.net/github/stars/K-Dense-AI/claude-scientific-skills)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（170个技能）
 - [**Composio Awesome Claude Skills**](https://github.com/ComposioHQ/awesome-claude-skills) [![GitHub Stars](https://badgen.net/github/stars/ComposioHQ/awesome-claude-skills)](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（200+个技能）
@@ -192,7 +192,7 @@ awesome-skills-cn/
 | anthropics-skills | 17 | ✓ | 17/17 | 已完成 |
 | ui-ux-pro-max-skill | 1 | ✓ | 1/1 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| huggingface-skills | 9 | ✓ | 9/9 | 已完成 |
+| huggingface-skills | 10 | ✓ | 10/10 | 已完成 |
 | openai-skills | 37 | ✓ | 37/37 | 已完成 |
 | vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
@@ -200,7 +200,7 @@ awesome-skills-cn/
 | claude-scientific-skills | 170 | - | 0/170 | 未开始 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7207+** | **75** | **75/7207+** | **进行中** |
+| **总计** | **7208+** | **75** | **76/7208+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -247,11 +247,12 @@ awesome-skills-cn/
 - [ ] ab-test-setup
 - [ ] ... (共 968 个技能，详见项目目录)
 
-### huggingface-skills (9个)
+### huggingface-skills (10个)
 
 - [x] [huggingface-gradio](huggingface-skills/skills/huggingface-gradio/SKILL_CN.md) - Gradio Web UI 构建
 - [x] [hugging-face-cli](huggingface-skills/skills/hugging-face-cli/SKILL_CN.md) - Hugging Face CLI 操作
 - [x] [hugging-face-datasets](huggingface-skills/skills/hugging-face-datasets/SKILL_CN.md) - 数据集创建和管理
+- [x] [hugging-face-dataset-viewer](huggingface-skills/skills/hugging-face-dataset-viewer/SKILL_CN.md) - 数据集查看器 API 工作流
 - [x] [hugging-face-evaluation](huggingface-skills/skills/hugging-face-evaluation/SKILL_CN.md) - 模型评估管理
 - [x] [hugging-face-jobs](huggingface-skills/skills/hugging-face-jobs/SKILL_CN.md) - Hugging Face Jobs 计算任务
 - [x] [hugging-face-model-trainer](huggingface-skills/skills/hugging-face-model-trainer/SKILL_CN.md) - 模型训练和微调

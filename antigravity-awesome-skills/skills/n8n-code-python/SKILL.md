@@ -1,9 +1,6 @@
 ---
 name: n8n-code-python
-description: "Write Python code in n8n Code nodes. Use when writing Python in n8n, using _input/_json/_node syntax, working with standard library, or need to understand Python limitations in n8n Code nodes."
-risk: safe
-source: "https://github.com/czlonkowski/n8n-skills/tree/main/skills/n8n-code-python"
-date_added: "2026-02-27"
+description: Write Python code in n8n Code nodes. Use when writing Python in n8n, using _input/_json/_node syntax, working with standard library, or need to understand Python limitations in n8n Code nodes.
 ---
 
 # Python Code Node (Beta)

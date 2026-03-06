@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1006,
+  "total": 1204,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -234,6 +234,31 @@
       "path": "skills/address-github-comments/SKILL.md"
     },
     {
+      "id": "advanced-evaluation",
+      "name": "advanced-evaluation",
+      "description": "This skill should be used when the user asks to \"implement LLM-as-judge\", \"compare model outputs\", \"create evaluation rubrics\", \"mitigate evaluation bias\", or mentions direct scoring, pairwise comparison, position bias, evaluation pipelines, or automated quality assessment.",
+      "category": "data-ai",
+      "tags": [
+        "advanced",
+        "evaluation"
+      ],
+      "triggers": [
+        "advanced",
+        "evaluation",
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "llm",
+        "judge",
+        "compare",
+        "model",
+        "outputs"
+      ],
+      "path": "skills/advanced-evaluation/SKILL.md"
+    },
+    {
       "id": "agent-evaluation",
       "name": "agent-evaluation",
       "description": "Testing and benchmarking LLM agents including behavioral testing, capability assessment, reliability metrics, and production monitoring—where even top agents achieve less than 50% on re...",
@@ -461,6 +486,32 @@
       "path": "skills/agentfolio/SKILL.md"
     },
     {
+      "id": "agentic-actions-auditor",
+      "name": "agentic-actions-auditor",
+      "description": "Audits GitHub Actions workflows for security vulnerabilities in AI agent integrations including Claude Code Action, Gemini CLI, OpenAI Codex, and GitHub AI Inference. Detects attack vectors where attacker-controlled input reaches AI agents running in CI/CD pipelines,...",
+      "category": "security",
+      "tags": [
+        "agentic",
+        "actions",
+        "auditor"
+      ],
+      "triggers": [
+        "agentic",
+        "actions",
+        "auditor",
+        "audits",
+        "github",
+        "security",
+        "vulnerabilities",
+        "ai",
+        "agent",
+        "integrations",
+        "including",
+        "claude"
+      ],
+      "path": "skills/agentic-actions-auditor/SKILL.md"
+    },
+    {
       "id": "agentmail",
       "name": "agentmail",
       "description": "Email infrastructure for AI agents. Create accounts, send/receive emails, manage webhooks, and check karma balance via the AgentMail API.",
@@ -483,6 +534,31 @@
         "karma"
       ],
       "path": "skills/agentmail/SKILL.md"
+    },
+    {
+      "id": "agents-md",
+      "name": "agents-md",
+      "description": "This skill should be used when the user asks to \"create AGENTS.md\", \"update AGENTS.md\", \"maintain agent docs\", \"set up CLAUDE.md\", or needs to keep agent instructions concise. Enforces research-backed best practices for minimal, high-signal agent documentation.",
+      "category": "general",
+      "tags": [
+        "agents",
+        "md"
+      ],
+      "triggers": [
+        "agents",
+        "md",
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "update",
+        "maintain",
+        "agent",
+        "docs",
+        "set"
+      ],
+      "path": "skills/agents-md/SKILL.md"
     },
     {
       "id": "agents-v2-py",
@@ -558,6 +634,21 @@
         "orchestration"
       ],
       "path": "skills/ai-agents-architect/SKILL.md"
+    },
+    {
+      "id": "ai-analyzer",
+      "name": "ai-analyzer",
+      "description": "AI驱动的综合健康分析系统，整合多维度健康数据、识别异常模式、预测健康风险、提供个性化建议。支持智能问答和AI健康报告生成。",
+      "category": "data-ai",
+      "tags": [
+        "ai",
+        "analyzer"
+      ],
+      "triggers": [
+        "ai",
+        "analyzer"
+      ],
+      "path": "skills/ai-analyzer/SKILL.md"
     },
     {
       "id": "ai-engineer",
@@ -755,6 +846,31 @@
         "request"
       ],
       "path": "skills/algorithmic-art/SKILL.md"
+    },
+    {
+      "id": "alpha-vantage",
+      "name": "alpha-vantage",
+      "description": "Access real-time and historical stock market data, forex rates, cryptocurrency prices, commodities, economic indicators, and 50+ technical indicators via the Alpha Vantage API. Use when fetching stock prices (OHLCV), company fundamentals (income statement, balance sheet, cash...",
+      "category": "data-ai",
+      "tags": [
+        "alpha",
+        "vantage"
+      ],
+      "triggers": [
+        "alpha",
+        "vantage",
+        "access",
+        "real",
+        "time",
+        "historical",
+        "stock",
+        "market",
+        "data",
+        "forex",
+        "rates",
+        "cryptocurrency"
+      ],
+      "path": "skills/alpha-vantage/SKILL.md"
     },
     {
       "id": "amplitude-automation",
@@ -1117,6 +1233,32 @@
         "sdks"
       ],
       "path": "skills/api-documenter/SKILL.md"
+    },
+    {
+      "id": "api-endpoint-builder",
+      "name": "api-endpoint-builder",
+      "description": "Builds production-ready REST API endpoints with validation, error handling, authentication, and documentation. Follows best practices for security and scalability.",
+      "category": "security",
+      "tags": [
+        "api",
+        "endpoint",
+        "builder"
+      ],
+      "triggers": [
+        "api",
+        "endpoint",
+        "builder",
+        "rest",
+        "endpoints",
+        "validation",
+        "error",
+        "handling",
+        "authentication",
+        "documentation",
+        "follows",
+        "security"
+      ],
+      "path": "skills/api-endpoint-builder/SKILL.md"
     },
     {
       "id": "api-fuzzing-bug-bounty",
@@ -1819,6 +1961,56 @@
       "path": "skills/asana-automation/SKILL.md"
     },
     {
+      "id": "ask-questions-if-underspecified",
+      "name": "ask-questions-if-underspecified",
+      "description": "Clarify requirements before implementing. Use when serious doubts arise.",
+      "category": "general",
+      "tags": [
+        "ask",
+        "questions",
+        "if",
+        "underspecified"
+      ],
+      "triggers": [
+        "ask",
+        "questions",
+        "if",
+        "underspecified",
+        "clarify",
+        "requirements",
+        "before",
+        "implementing",
+        "serious",
+        "doubts",
+        "arise"
+      ],
+      "path": "skills/ask-questions-if-underspecified/SKILL.md"
+    },
+    {
+      "id": "astropy",
+      "name": "astropy",
+      "description": "Comprehensive Python library for astronomy and astrophysics. This skill should be used when working with astronomical data including celestial coordinates, physical units, FITS files, cosmological calculations, time systems, tables, world coordinate systems (WCS), and...",
+      "category": "data-ai",
+      "tags": [
+        "astropy"
+      ],
+      "triggers": [
+        "astropy",
+        "python",
+        "library",
+        "astronomy",
+        "astrophysics",
+        "skill",
+        "should",
+        "used",
+        "working",
+        "astronomical",
+        "data",
+        "including"
+      ],
+      "path": "skills/astropy/SKILL.md"
+    },
+    {
       "id": "async-python-patterns",
       "name": "async-python-patterns",
       "description": "Master Python asyncio, concurrent programming, and async/await patterns for high-performance applications. Use when building async APIs, concurrent systems, or I/O-bound applications requiring non-...",
@@ -1898,6 +2090,31 @@
       "path": "skills/audio-transcriber/SKILL.md"
     },
     {
+      "id": "audit-context-building",
+      "name": "audit-context-building",
+      "description": "Enables ultra-granular, line-by-line code analysis to build deep architectural context before vulnerability or bug finding.",
+      "category": "security",
+      "tags": [
+        "audit",
+        "building"
+      ],
+      "triggers": [
+        "audit",
+        "building",
+        "context",
+        "enables",
+        "ultra",
+        "granular",
+        "line",
+        "code",
+        "analysis",
+        "deep",
+        "architectural",
+        "before"
+      ],
+      "path": "skills/audit-context-building/SKILL.md"
+    },
+    {
       "id": "auth-implementation-patterns",
       "name": "auth-implementation-patterns",
       "description": "Master authentication and authorization patterns including JWT, OAuth2, session management, and RBAC to build secure, scalable access control systems. Use when implementing auth systems, securing A...",
@@ -1924,25 +2141,15 @@
     {
       "id": "automate-whatsapp",
       "name": "automate-whatsapp",
-      "description": "Build WhatsApp automations with Kapso workflows: configure WhatsApp triggers, edit workflow graphs, manage executions, deploy functions, and use databases/integrations for state. Use when automatin...",
-      "category": "workflow",
+      "description": "Automate Whatsapp",
+      "category": "general",
       "tags": [
         "automate",
         "whatsapp"
       ],
       "triggers": [
         "automate",
-        "whatsapp",
-        "automations",
-        "kapso",
-        "configure",
-        "triggers",
-        "edit",
-        "graphs",
-        "executions",
-        "deploy",
-        "functions",
-        "databases"
+        "whatsapp"
       ],
       "path": "skills/automate-whatsapp/SKILL.md"
     },
@@ -2068,6 +2275,54 @@
       "path": "skills/avalonia-zafiro-development/SKILL.md"
     },
     {
+      "id": "aws-agentic-ai",
+      "name": "aws-agentic-ai",
+      "description": "Aws Agentic Ai",
+      "category": "data-ai",
+      "tags": [
+        "aws",
+        "agentic",
+        "ai"
+      ],
+      "triggers": [
+        "aws",
+        "agentic",
+        "ai"
+      ],
+      "path": "skills/aws-agentic-ai/SKILL.md"
+    },
+    {
+      "id": "aws-cdk-development",
+      "name": "aws-cdk-development",
+      "description": "Aws Cdk Development",
+      "category": "general",
+      "tags": [
+        "aws",
+        "cdk"
+      ],
+      "triggers": [
+        "aws",
+        "cdk",
+        "development"
+      ],
+      "path": "skills/aws-cdk-development/SKILL.md"
+    },
+    {
+      "id": "aws-common",
+      "name": "aws-common",
+      "description": "Aws Common",
+      "category": "general",
+      "tags": [
+        "aws",
+        "common"
+      ],
+      "triggers": [
+        "aws",
+        "common"
+      ],
+      "path": "skills/aws-common/SKILL.md"
+    },
+    {
       "id": "aws-cost-cleanup",
       "name": "aws-cost-cleanup",
       "description": "Automated cleanup of unused AWS resources to reduce costs",
@@ -2090,6 +2345,23 @@
       "path": "skills/aws-cost-cleanup/SKILL.md"
     },
     {
+      "id": "aws-cost-ops",
+      "name": "aws-cost-ops",
+      "description": "Aws Cost Ops",
+      "category": "general",
+      "tags": [
+        "aws",
+        "cost",
+        "ops"
+      ],
+      "triggers": [
+        "aws",
+        "cost",
+        "ops"
+      ],
+      "path": "skills/aws-cost-ops/SKILL.md"
+    },
+    {
       "id": "aws-cost-optimizer",
       "name": "aws-cost-optimizer",
       "description": "Comprehensive AWS cost analysis and optimization recommendations using AWS CLI and Cost Explorer",
@@ -2110,6 +2382,23 @@
         "explorer"
       ],
       "path": "skills/aws-cost-optimizer/SKILL.md"
+    },
+    {
+      "id": "aws-mcp-setup",
+      "name": "aws-mcp-setup",
+      "description": "Aws Mcp Setup",
+      "category": "general",
+      "tags": [
+        "aws",
+        "mcp",
+        "setup"
+      ],
+      "triggers": [
+        "aws",
+        "mcp",
+        "setup"
+      ],
+      "path": "skills/aws-mcp-setup/SKILL.md"
     },
     {
       "id": "aws-penetration-testing",
@@ -2160,6 +2449,23 @@
         "dynamodb"
       ],
       "path": "skills/aws-serverless/SKILL.md"
+    },
+    {
+      "id": "aws-serverless-eda",
+      "name": "aws-serverless-eda",
+      "description": "Aws Serverless Eda",
+      "category": "general",
+      "tags": [
+        "aws",
+        "serverless",
+        "eda"
+      ],
+      "triggers": [
+        "aws",
+        "serverless",
+        "eda"
+      ],
+      "path": "skills/aws-serverless-eda/SKILL.md"
     },
     {
       "id": "aws-skills",
@@ -5448,6 +5754,31 @@
       "path": "skills/basecamp-automation/SKILL.md"
     },
     {
+      "id": "baseline-ui",
+      "name": "baseline-ui",
+      "description": "Validates animation durations, enforces typography scale, checks component accessibility, and prevents layout anti-patterns in Tailwind CSS projects. Use when building UI components, reviewing CSS utilities, styling React views, or enforcing design consistency.",
+      "category": "development",
+      "tags": [
+        "baseline",
+        "ui"
+      ],
+      "triggers": [
+        "baseline",
+        "ui",
+        "validates",
+        "animation",
+        "durations",
+        "enforces",
+        "typography",
+        "scale",
+        "checks",
+        "component",
+        "accessibility",
+        "prevents"
+      ],
+      "path": "skills/baseline-ui/SKILL.md"
+    },
+    {
       "id": "bash-defensive-patterns",
       "name": "bash-defensive-patterns",
       "description": "Master defensive Bash programming techniques for production-grade scripts. Use when writing robust shell scripts, CI/CD pipelines, or system utilities requiring fault tolerance and safety.",
@@ -5593,9 +5924,35 @@
       "path": "skills/bazel-build-optimization/SKILL.md"
     },
     {
+      "id": "bdi-mental-states",
+      "name": "bdi-mental-states",
+      "description": "This skill should be used when the user asks to \"model agent mental states\", \"implement BDI architecture\", \"create belief-desire-intention models\", \"transform RDF to beliefs\", \"build cognitive agent\", or mentions BDI ontology, mental state modeling, rational agency, or neuro-symbolic AI integration.",
+      "category": "data-ai",
+      "tags": [
+        "bdi",
+        "mental",
+        "states"
+      ],
+      "triggers": [
+        "bdi",
+        "mental",
+        "states",
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "model",
+        "agent",
+        "architecture",
+        "belief"
+      ],
+      "path": "skills/bdi-mental-states/SKILL.md"
+    },
+    {
       "id": "beautiful-prose",
       "name": "beautiful-prose",
-      "description": "Hard-edged writing style contract for timeless, forceful English prose without AI tics",
+      "description": "A hard-edged writing style contract for timeless, forceful English prose without modern AI tics. Use when users ask for prose or rewrites that must be clean, exact, concrete, and free of AI cadence, filler, or therapeutic tone.",
       "category": "data-ai",
       "tags": [
         "beautiful",
@@ -5714,6 +6071,30 @@
       "path": "skills/binary-analysis-patterns/SKILL.md"
     },
     {
+      "id": "biopython",
+      "name": "biopython",
+      "description": "Comprehensive molecular biology toolkit. Use for sequence manipulation, file parsing (FASTA/GenBank/PDB), phylogenetics, and programmatic NCBI/PubMed access (Bio.Entrez). Best for batch processing, custom bioinformatics pipelines, BLAST automation. For quick lookups use gget;...",
+      "category": "workflow",
+      "tags": [
+        "biopython"
+      ],
+      "triggers": [
+        "biopython",
+        "molecular",
+        "biology",
+        "toolkit",
+        "sequence",
+        "manipulation",
+        "file",
+        "parsing",
+        "fasta",
+        "genbank",
+        "pdb",
+        "phylogenetics"
+      ],
+      "path": "skills/biopython/SKILL.md"
+    },
+    {
       "id": "bitbucket-automation",
       "name": "bitbucket-automation",
       "description": "Automate Bitbucket repositories, pull requests, branches, issues, and workspace management via Rube MCP (Composio). Always search tools first for current schemas.",
@@ -5786,6 +6167,31 @@
       "path": "skills/blockrun/SKILL.md"
     },
     {
+      "id": "blog-writing-guide",
+      "name": "blog-writing-guide",
+      "description": "Write, review, and improve blog posts for the Sentry engineering blog following Sentry's specific writing standards, voice, and quality bar. Use this skill whenever someone asks to write a blog post, draft a technical article, review blog content, improve a draft, write a...",
+      "category": "general",
+      "tags": [
+        "blog",
+        "writing"
+      ],
+      "triggers": [
+        "blog",
+        "writing",
+        "write",
+        "review",
+        "improve",
+        "posts",
+        "sentry",
+        "engineering",
+        "following",
+        "specific",
+        "standards",
+        "voice"
+      ],
+      "path": "skills/blog-writing-guide/SKILL.md"
+    },
+    {
       "id": "box-automation",
       "name": "box-automation",
       "description": "Automate Box cloud storage operations including file upload/download, search, folder management, sharing, collaborations, and metadata queries via Rube MCP (Composio). Always search tools first for...",
@@ -5832,6 +6238,31 @@
         "validated"
       ],
       "path": "skills/brainstorming/SKILL.md"
+    },
+    {
+      "id": "brand-guidelines",
+      "name": "brand-guidelines",
+      "description": "Write copy following Sentry brand guidelines. Use when writing UI text, error messages, empty states, onboarding flows, 404 pages, documentation, marketing copy, or any user-facing content. Covers both Plain Speech (default) and Sentry Voice tones.",
+      "category": "business",
+      "tags": [
+        "brand",
+        "guidelines"
+      ],
+      "triggers": [
+        "brand",
+        "guidelines",
+        "write",
+        "copy",
+        "following",
+        "sentry",
+        "writing",
+        "ui",
+        "text",
+        "error",
+        "messages",
+        "empty"
+      ],
+      "path": "skills/brand-guidelines/SKILL.md"
     },
     {
       "id": "brand-guidelines-anthropic",
@@ -5985,6 +6416,87 @@
       "path": "skills/browser-extension-builder/SKILL.md"
     },
     {
+      "id": "bug-hunter",
+      "name": "bug-hunter",
+      "description": "Systematically finds and fixes bugs using proven debugging techniques. Traces from symptoms to root cause, implements fixes, and prevents regression.",
+      "category": "general",
+      "tags": [
+        "bug",
+        "hunter"
+      ],
+      "triggers": [
+        "bug",
+        "hunter",
+        "systematically",
+        "finds",
+        "fixes",
+        "bugs",
+        "proven",
+        "debugging",
+        "techniques",
+        "traces",
+        "symptoms",
+        "root"
+      ],
+      "path": "skills/bug-hunter/SKILL.md"
+    },
+    {
+      "id": "build",
+      "name": "build",
+      "description": "build",
+      "category": "general",
+      "tags": [
+        "build"
+      ],
+      "triggers": [
+        "build"
+      ],
+      "path": "skills/build/SKILL.md"
+    },
+    {
+      "id": "building-native-ui",
+      "name": "building-native-ui",
+      "description": "Complete guide for building beautiful apps with Expo Router. Covers fundamentals, styling, components, navigation, animations, patterns, and native tabs.",
+      "category": "architecture",
+      "tags": [
+        "building",
+        "native",
+        "ui"
+      ],
+      "triggers": [
+        "building",
+        "native",
+        "ui",
+        "complete",
+        "beautiful",
+        "apps",
+        "expo",
+        "router",
+        "covers",
+        "fundamentals",
+        "styling",
+        "components"
+      ],
+      "path": "skills/building-native-ui/SKILL.md"
+    },
+    {
+      "id": "building-secure-contracts",
+      "name": "building-secure-contracts",
+      "description": "Building Secure Contracts",
+      "category": "general",
+      "tags": [
+        "building",
+        "secure",
+        "contracts"
+      ],
+      "triggers": [
+        "building",
+        "secure",
+        "contracts"
+      ],
+      "path": "skills/building-secure-contracts/SKILL.md"
+    },
+    {
       "id": "bullmq-specialist",
       "name": "bullmq-specialist",
       "description": "BullMQ expert for Redis-backed job queues, background processing, and reliable async execution in Node.js/TypeScript applications. Use when: bullmq, bull queue, redis queue, background job, job queue.",
@@ -6056,6 +6568,31 @@
         "modify"
       ],
       "path": "skills/burp-suite-testing/SKILL.md"
+    },
+    {
+      "id": "burpsuite-project-parser",
+      "name": "burpsuite-project-parser",
+      "description": "Searches and explores Burp Suite project files (.burp) from the command line. Use when searching response headers or bodies with regex patterns, extracting security audit findings, dumping proxy history or site map data, or analyzing HTTP traffic captured in a Burp project.",
+      "category": "security",
+      "tags": [
+        "burpsuite",
+        "parser"
+      ],
+      "triggers": [
+        "burpsuite",
+        "parser",
+        "searches",
+        "explores",
+        "burp",
+        "suite",
+        "files",
+        "command",
+        "line",
+        "searching",
+        "response",
+        "headers"
+      ],
+      "path": "skills/burpsuite-project-parser/SKILL.md"
     },
     {
       "id": "business-analyst",
@@ -6607,6 +7144,31 @@
       "path": "skills/changelog-automation/SKILL.md"
     },
     {
+      "id": "chat-widget",
+      "name": "chat-widget",
+      "description": "Build a real-time support chat system with a floating widget for users and an admin dashboard for support staff. Use when the user wants live chat, customer support chat, real-time messaging, or in-app support.",
+      "category": "business",
+      "tags": [
+        "chat",
+        "widget"
+      ],
+      "triggers": [
+        "chat",
+        "widget",
+        "real",
+        "time",
+        "floating",
+        "users",
+        "admin",
+        "dashboard",
+        "staff",
+        "user",
+        "wants",
+        "live"
+      ],
+      "path": "skills/chat-widget/SKILL.md"
+    },
+    {
       "id": "chrome-extension-developer",
       "name": "chrome-extension-developer",
       "description": "Expert in building Chrome Extensions using Manifest V3. Covers background scripts, service workers, content scripts, and cross-context communication.",
@@ -6681,9 +7243,82 @@
       "path": "skills/circleci-automation/SKILL.md"
     },
     {
+      "id": "cirq",
+      "name": "cirq",
+      "description": "Google quantum computing framework. Use when targeting Google Quantum AI hardware, designing noise-aware circuits, or running quantum characterization experiments. Best for Google hardware, noise modeling, and low-level circuit design. For IBM hardware use qiskit; for quantum...",
+      "category": "data-ai",
+      "tags": [
+        "cirq"
+      ],
+      "triggers": [
+        "cirq",
+        "google",
+        "quantum",
+        "computing",
+        "framework",
+        "targeting",
+        "ai",
+        "hardware",
+        "designing",
+        "noise",
+        "aware",
+        "circuits"
+      ],
+      "path": "skills/cirq/SKILL.md"
+    },
+    {
+      "id": "citation-management",
+      "name": "citation-management",
+      "description": "Comprehensive citation management for academic research. Search Google Scholar and PubMed for papers, extract accurate metadata, validate citations, and generate properly formatted BibTeX entries. This skill should be used when you need to find papers, verify citation...",
+      "category": "general",
+      "tags": [
+        "citation"
+      ],
+      "triggers": [
+        "citation",
+        "academic",
+        "research",
+        "search",
+        "google",
+        "scholar",
+        "pubmed",
+        "papers",
+        "extract",
+        "accurate",
+        "metadata",
+        "validate"
+      ],
+      "path": "skills/citation-management/SKILL.md"
+    },
+    {
+      "id": "claimable-postgres",
+      "name": "claimable-postgres",
+      "description": "Provision instant temporary Postgres databases via Claimable Postgres by Neon (pg.new). No login or credit card required. Use for quick Postgres environments and throwaway DATABASE_URL for prototyping.",
+      "category": "data-ai",
+      "tags": [
+        "claimable",
+        "postgres"
+      ],
+      "triggers": [
+        "claimable",
+        "postgres",
+        "provision",
+        "instant",
+        "temporary",
+        "databases",
+        "via",
+        "neon",
+        "pg",
+        "new",
+        "no",
+        "login"
+      ],
+      "path": "skills/claimable-postgres/SKILL.md"
+    },
+    {
       "id": "clarity-gate",
       "name": "clarity-gate",
-      "description": "Pre-ingestion verification for epistemic quality in RAG systems with 9-point verification and Two-Round HITL workflow",
+      "description": "Pre-ingestion verification for epistemic quality in RAG systems. Ensures documents are properly qualified before entering knowledge bases. Produces CGD (Clarity-Gated Documents) and validates SOT (Source of Truth) files.",
       "category": "data-ai",
       "tags": [
         "clarity",
@@ -6698,10 +7333,10 @@
         "epistemic",
         "quality",
         "rag",
-        "point",
-        "two",
-        "round",
-        "hitl"
+        "ensures",
+        "documents",
+        "properly",
+        "qualified"
       ],
       "path": "skills/clarity-gate/SKILL.md"
     },
@@ -6783,6 +7418,33 @@
       "path": "skills/claude-d3js-skill/SKILL.md"
     },
     {
+      "id": "claude-in-chrome-troubleshooting",
+      "name": "claude-in-chrome-troubleshooting",
+      "description": "Diagnose and fix Claude in Chrome MCP extension connectivity issues. Use when mcp__claude-in-chrome__* tools fail, return \"Browser extension is not connected\", or behave erratically.",
+      "category": "general",
+      "tags": [
+        "claude",
+        "in",
+        "chrome",
+        "troubleshooting"
+      ],
+      "triggers": [
+        "claude",
+        "in",
+        "chrome",
+        "troubleshooting",
+        "diagnose",
+        "fix",
+        "mcp",
+        "extension",
+        "connectivity",
+        "issues",
+        "fail",
+        "return"
+      ],
+      "path": "skills/claude-in-chrome-troubleshooting/SKILL.md"
+    },
+    {
       "id": "claude-scientific-skills",
       "name": "claude-scientific-skills",
       "description": "Scientific research and analysis skills",
@@ -6800,6 +7462,32 @@
         "analysis"
       ],
       "path": "skills/claude-scientific-skills/SKILL.md"
+    },
+    {
+      "id": "claude-settings-audit",
+      "name": "claude-settings-audit",
+      "description": "Analyze a repository to generate recommended Claude Code settings.json permissions. Use when setting up a new project, auditing existing settings, or determining which read-only bash commands to allow. Detects tech stack, build tools, and monorepo structure.",
+      "category": "general",
+      "tags": [
+        "claude",
+        "settings",
+        "audit"
+      ],
+      "triggers": [
+        "claude",
+        "settings",
+        "audit",
+        "analyze",
+        "repository",
+        "generate",
+        "recommended",
+        "code",
+        "json",
+        "permissions",
+        "setting",
+        "up"
+      ],
+      "path": "skills/claude-settings-audit/SKILL.md"
     },
     {
       "id": "claude-speed-reader",
@@ -7315,6 +8003,31 @@
       "path": "skills/code-reviewer/SKILL.md"
     },
     {
+      "id": "code-simplifier",
+      "name": "code-simplifier",
+      "description": "Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality. Use when asked to \"simplify code\", \"clean up code\", \"refactor for clarity\", \"improve readability\", or review recently modified code for elegance. Focuses on project-specific best practices.",
+      "category": "general",
+      "tags": [
+        "code",
+        "simplifier"
+      ],
+      "triggers": [
+        "code",
+        "simplifier",
+        "simplifies",
+        "refines",
+        "clarity",
+        "consistency",
+        "maintainability",
+        "while",
+        "preserving",
+        "all",
+        "functionality",
+        "asked"
+      ],
+      "path": "skills/code-simplifier/SKILL.md"
+    },
+    {
       "id": "codebase-audit-pre-push",
       "name": "codebase-audit-pre-push",
       "description": "Deep audit before GitHub push: removes junk files, dead code, security holes, and optimization issues. Checks every file line-by-line for production readiness.",
@@ -7446,24 +8159,24 @@
     {
       "id": "commit",
       "name": "commit",
-      "description": "Create commit messages following Sentry conventions. Use when committing code changes, writing commit messages, or formatting git history. Follows conventional commits with Sentry-specific issue re...",
+      "description": "ALWAYS use this skill when committing code changes — never commit directly without it. Creates commits following Sentry conventions with proper conventional commit format and issue references. Trigger on any commit, git commit, save changes, or commit message task.",
       "category": "general",
       "tags": [
         "commit"
       ],
       "triggers": [
         "commit",
-        "messages",
-        "following",
-        "sentry",
-        "conventions",
+        "always",
+        "skill",
         "committing",
         "code",
         "changes",
-        "writing",
-        "formatting",
-        "git",
-        "history"
+        "never",
+        "directly",
+        "without",
+        "creates",
+        "commits",
+        "following"
       ],
       "path": "skills/commit/SKILL.md"
     },
@@ -7726,8 +8439,8 @@
     {
       "id": "conductor-setup",
       "name": "conductor-setup",
-      "description": "Initialize project with Conductor artifacts (product definition,\ntech stack, workflow, style guides)",
-      "category": "business",
+      "description": "Configure a Rails project to work with Conductor (parallel coding agents)",
+      "category": "workflow",
       "tags": [
         "conductor",
         "setup"
@@ -7735,14 +8448,12 @@
       "triggers": [
         "conductor",
         "setup",
-        "initialize",
-        "artifacts",
-        "product",
-        "definition",
-        "tech",
-        "stack",
-        "style",
-        "guides"
+        "configure",
+        "rails",
+        "work",
+        "parallel",
+        "coding",
+        "agents"
       ],
       "path": "skills/conductor-setup/SKILL.md"
     },
@@ -7816,6 +8527,31 @@
       "path": "skills/confluence-automation/SKILL.md"
     },
     {
+      "id": "constant-time-analysis",
+      "name": "constant-time-analysis",
+      "description": "Detects timing side-channel vulnerabilities in cryptographic code. Use when implementing or reviewing crypto code, encountering division on secrets, secret-dependent branches, or constant-time programming questions in C, C++, Go, Rust, Swift, Java, Kotlin, C#, PHP,...",
+      "category": "security",
+      "tags": [
+        "constant",
+        "time"
+      ],
+      "triggers": [
+        "constant",
+        "time",
+        "analysis",
+        "detects",
+        "timing",
+        "side",
+        "channel",
+        "vulnerabilities",
+        "cryptographic",
+        "code",
+        "implementing",
+        "reviewing"
+      ],
+      "path": "skills/constant-time-analysis/SKILL.md"
+    },
+    {
       "id": "content-creator",
       "name": "content-creator",
       "description": "Create SEO-optimized marketing content with consistent brand voice. Includes brand voice analyzer, SEO optimizer, content frameworks, and social media templates. Use when writing blog posts, creati...",
@@ -7868,7 +8604,7 @@
     {
       "id": "context-compression",
       "name": "context-compression",
-      "description": "Design and evaluate compression strategies for long-running sessions",
+      "description": "This skill should be used when the user asks to \"compress context\", \"summarize conversation history\", \"implement compaction\", \"reduce token usage\", or mentions context compression, structured summarization, tokens-per-task optimization, or long-running agent sessions...",
       "category": "general",
       "tags": [
         "compression"
@@ -7876,17 +8612,23 @@
       "triggers": [
         "compression",
         "context",
-        "evaluate",
-        "long",
-        "running",
-        "sessions"
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "compress",
+        "summarize",
+        "conversation",
+        "history",
+        "compaction"
       ],
       "path": "skills/context-compression/SKILL.md"
     },
     {
       "id": "context-degradation",
       "name": "context-degradation",
-      "description": "Recognize patterns of context failure: lost-in-middle, poisoning, distraction, and clash",
+      "description": "This skill should be used when the user asks to \"diagnose context problems\", \"fix lost-in-middle issues\", \"debug agent failures\", \"understand context poisoning\", or mentions context degradation, attention patterns, context clash, context confusion, or agent performance...",
       "category": "architecture",
       "tags": [
         "degradation"
@@ -7894,13 +8636,16 @@
       "triggers": [
         "degradation",
         "context",
-        "recognize",
-        "failure",
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "diagnose",
+        "problems",
+        "fix",
         "lost",
-        "middle",
-        "poisoning",
-        "distraction",
-        "clash"
+        "middle"
       ],
       "path": "skills/context-degradation/SKILL.md"
     },
@@ -7931,20 +8676,24 @@
     {
       "id": "context-fundamentals",
       "name": "context-fundamentals",
-      "description": "Understand what context is, why it matters, and the anatomy of context in agent systems",
-      "category": "general",
+      "description": "This skill should be used when the user asks to \"understand context\", \"explain context windows\", \"design agent architecture\", \"debug context issues\", \"optimize context usage\", or discusses context components, attention mechanics, progressive disclosure, or context budgeting....",
+      "category": "architecture",
       "tags": [
         "fundamentals"
       ],
       "triggers": [
         "fundamentals",
         "context",
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
         "understand",
-        "what",
-        "why",
-        "matters",
-        "anatomy",
-        "agent"
+        "explain",
+        "windows",
+        "agent",
+        "architecture"
       ],
       "path": "skills/context-fundamentals/SKILL.md"
     },
@@ -8005,7 +8754,7 @@
     {
       "id": "context-optimization",
       "name": "context-optimization",
-      "description": "Apply compaction, masking, and caching strategies",
+      "description": "This skill should be used when the user asks to \"optimize context\", \"reduce token costs\", \"improve context efficiency\", \"implement KV-cache optimization\", \"partition context\", or mentions context limits, observation masking, context budgeting, or extending effective context...",
       "category": "general",
       "tags": [
         "optimization"
@@ -8013,10 +8762,16 @@
       "triggers": [
         "optimization",
         "context",
-        "apply",
-        "compaction",
-        "masking",
-        "caching"
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "optimize",
+        "reduce",
+        "token",
+        "costs",
+        "improve"
       ],
       "path": "skills/context-optimization/SKILL.md"
     },
@@ -8312,10 +9067,35 @@
       "path": "skills/cqrs-implementation/SKILL.md"
     },
     {
+      "id": "create-branch",
+      "name": "create-branch",
+      "description": "Create a git branch following Sentry naming conventions. Use when asked to \"create a branch\", \"new branch\", \"start a branch\", \"make a branch\", \"switch to a new branch\", or when starting new work on the default branch.",
+      "category": "general",
+      "tags": [
+        "create",
+        "branch"
+      ],
+      "triggers": [
+        "create",
+        "branch",
+        "git",
+        "following",
+        "sentry",
+        "naming",
+        "conventions",
+        "asked",
+        "new",
+        "start",
+        "switch",
+        "starting"
+      ],
+      "path": "skills/create-branch/SKILL.md"
+    },
+    {
       "id": "create-pr",
       "name": "create-pr",
-      "description": "Create pull requests following Sentry conventions. Use when opening PRs, writing PR descriptions, or preparing changes for review. Follows Sentry's code review guidelines.",
-      "category": "general",
+      "description": "Alias for sentry-skills:pr-writer. Use when users explicitly ask for \"create-pr\" or reference the legacy skill name. Redirects to the canonical PR writing workflow.",
+      "category": "workflow",
       "tags": [
         "create",
         "pr"
@@ -8323,16 +9103,16 @@
       "triggers": [
         "create",
         "pr",
-        "pull",
-        "requests",
-        "following",
+        "alias",
         "sentry",
-        "conventions",
-        "opening",
-        "prs",
-        "writing",
-        "descriptions",
-        "preparing"
+        "skills",
+        "writer",
+        "users",
+        "explicitly",
+        "ask",
+        "reference",
+        "legacy",
+        "skill"
       ],
       "path": "skills/create-pr/SKILL.md"
     },
@@ -8413,7 +9193,7 @@
     {
       "id": "culture-index",
       "name": "culture-index",
-      "description": "Index and search culture documentation",
+      "description": "Culture Index",
       "category": "general",
       "tags": [
         "culture",
@@ -8421,9 +9201,7 @@
       ],
       "triggers": [
         "culture",
-        "index",
-        "search",
-        "documentation"
+        "index"
       ],
       "path": "skills/culture-index/SKILL.md"
     },
@@ -8681,6 +9459,21 @@
         "track"
       ],
       "path": "skills/data-structure-protocol/SKILL.md"
+    },
+    {
+      "id": "data-visualization",
+      "name": "data-visualization",
+      "description": "Data Visualization",
+      "category": "data-ai",
+      "tags": [
+        "data",
+        "visualization"
+      ],
+      "triggers": [
+        "data",
+        "visualization"
+      ],
+      "path": "skills/data-visualization/SKILL.md"
     },
     {
       "id": "database",
@@ -9109,6 +9902,31 @@
       "path": "skills/ddd-tactical-patterns/SKILL.md"
     },
     {
+      "id": "debug-buttercup",
+      "name": "debug-buttercup",
+      "description": "Debugs the Buttercup CRS (Cyber Reasoning System) running on Kubernetes. Use when diagnosing pod crashes, restart loops, Redis failures, resource pressure, disk saturation, DinD issues, or any service misbehavior in the crs namespace. Covers triage, log analysis,...",
+      "category": "infrastructure",
+      "tags": [
+        "debug",
+        "buttercup"
+      ],
+      "triggers": [
+        "debug",
+        "buttercup",
+        "debugs",
+        "crs",
+        "cyber",
+        "reasoning",
+        "running",
+        "kubernetes",
+        "diagnosing",
+        "pod",
+        "crashes",
+        "restart"
+      ],
+      "path": "skills/debug-buttercup/SKILL.md"
+    },
+    {
       "id": "debugger",
       "name": "debugger",
       "description": "Debugging specialist for errors, test failures, and unexpected\nbehavior. Use proactively when encountering any issues.",
@@ -9412,6 +10230,31 @@
       "path": "skills/design-orchestration/SKILL.md"
     },
     {
+      "id": "devcontainer-setup",
+      "name": "devcontainer-setup",
+      "description": "Creates devcontainers with Claude Code, language-specific tooling (Python/Node/Rust/Go), and persistent volumes. Use when adding devcontainer support to a project, setting up isolated development environments, or configuring sandboxed Claude Code workspaces.",
+      "category": "development",
+      "tags": [
+        "devcontainer",
+        "setup"
+      ],
+      "triggers": [
+        "devcontainer",
+        "setup",
+        "creates",
+        "devcontainers",
+        "claude",
+        "code",
+        "language",
+        "specific",
+        "tooling",
+        "python",
+        "node",
+        "rust"
+      ],
+      "path": "skills/devcontainer-setup/SKILL.md"
+    },
+    {
       "id": "development",
       "name": "development",
       "description": "Comprehensive web, mobile, and backend development workflow bundling frontend, backend, full-stack, and mobile development skills for end-to-end application delivery.",
@@ -9452,6 +10295,30 @@
         "observability"
       ],
       "path": "skills/devops-troubleshooter/SKILL.md"
+    },
+    {
+      "id": "differential-review",
+      "name": "differential-review",
+      "description": "Performs security-focused differential review of code changes (PRs, commits, diffs). Adapts analysis depth to codebase size, uses git history for context, calculates blast radius, checks test coverage, and generates comprehensive markdown reports. Automatically...",
+      "category": "security",
+      "tags": [
+        "differential"
+      ],
+      "triggers": [
+        "differential",
+        "review",
+        "performs",
+        "security",
+        "code",
+        "changes",
+        "prs",
+        "commits",
+        "diffs",
+        "adapts",
+        "analysis",
+        "depth"
+      ],
+      "path": "skills/differential-review/SKILL.md"
     },
     {
       "id": "discord-automation",
@@ -9579,6 +10446,47 @@
         "analyzing"
       ],
       "path": "skills/distributed-tracing/SKILL.md"
+    },
+    {
+      "id": "django-access-review",
+      "name": "django-access-review",
+      "description": "django-access-review",
+      "category": "development",
+      "tags": [
+        "django",
+        "access"
+      ],
+      "triggers": [
+        "django",
+        "access",
+        "review"
+      ],
+      "path": "skills/django-access-review/SKILL.md"
+    },
+    {
+      "id": "django-perf-review",
+      "name": "django-perf-review",
+      "description": "Django performance code review. Use when asked to \"review Django performance\", \"find N+1 queries\", \"optimize Django\", \"check queryset performance\", \"database performance\", \"Django ORM issues\", or audit Django code for performance problems.",
+      "category": "data-ai",
+      "tags": [
+        "django",
+        "perf"
+      ],
+      "triggers": [
+        "django",
+        "perf",
+        "review",
+        "performance",
+        "code",
+        "asked",
+        "find",
+        "queries",
+        "optimize",
+        "check",
+        "queryset",
+        "database"
+      ],
+      "path": "skills/django-perf-review/SKILL.md"
     },
     {
       "id": "django-pro",
@@ -9948,6 +10856,30 @@
       "path": "skills/dropbox-automation/SKILL.md"
     },
     {
+      "id": "dwarf-expert",
+      "name": "dwarf-expert",
+      "description": "Provides expertise for analyzing DWARF debug files and understanding the DWARF debug format/standard (v3-v5). Triggers when understanding DWARF information, interacting with DWARF files, answering DWARF-related questions, or working with code that parses DWARF data.",
+      "category": "data-ai",
+      "tags": [
+        "dwarf"
+      ],
+      "triggers": [
+        "dwarf",
+        "provides",
+        "expertise",
+        "analyzing",
+        "debug",
+        "files",
+        "understanding",
+        "format",
+        "standard",
+        "v3",
+        "v5",
+        "triggers"
+      ],
+      "path": "skills/dwarf-expert/SKILL.md"
+    },
+    {
       "id": "dx-optimizer",
       "name": "dx-optimizer",
       "description": "Developer Experience specialist. Improves tooling, setup, and workflows. Use PROACTIVELY when setting up new projects, after team feedback, or when development friction is noticed.",
@@ -10118,6 +11050,22 @@
       "path": "skills/embedding-strategies/SKILL.md"
     },
     {
+      "id": "emergency-card",
+      "name": "emergency-card",
+      "description": "生成紧急情况下快速访问的医疗信息摘要卡片。当用户需要旅行、就诊准备、紧急情况或询问\"紧急信息\"、\"医疗卡片\"、\"急救信息\"时使用此技能。提取关键信息（过敏、用药、急症、植入物），支持多格式输出（JSON、文本、二维码），用于急救或快速就医。",
+      "category": "general",
+      "tags": [
+        "emergency",
+        "card"
+      ],
+      "triggers": [
+        "emergency",
+        "card",
+        "json"
+      ],
+      "path": "skills/emergency-card/SKILL.md"
+    },
+    {
       "id": "employment-contract-templates",
       "name": "employment-contract-templates",
       "description": "Create employment contracts, offer letters, and HR policy documents following legal best practices. Use when drafting employment agreements, creating HR policies, or standardizing employment docume...",
@@ -10166,6 +11114,31 @@
         "ppa"
       ],
       "path": "skills/energy-procurement/SKILL.md"
+    },
+    {
+      "id": "enhance-prompt",
+      "name": "enhance-prompt",
+      "description": "Transforms vague UI ideas into polished, Stitch-optimized prompts. Enhances specificity, adds UI/UX keywords, injects design system context, and structures output for better generation results.",
+      "category": "general",
+      "tags": [
+        "enhance",
+        "prompt"
+      ],
+      "triggers": [
+        "enhance",
+        "prompt",
+        "transforms",
+        "vague",
+        "ui",
+        "ideas",
+        "polished",
+        "stitch",
+        "optimized",
+        "prompts",
+        "enhances",
+        "specificity"
+      ],
+      "path": "skills/enhance-prompt/SKILL.md"
     },
     {
       "id": "environment-setup-guide",
@@ -10473,6 +11446,30 @@
       "path": "skills/event-store-design/SKILL.md"
     },
     {
+      "id": "evolution",
+      "name": "evolution",
+      "description": "CRITICAL: Use for makepad-skills self-evolution and contribution. Triggers on:\nevolve, evolution, contribute, contribution, self-improve, self-improvement,\nadd pattern, new pattern, capture learning, document solution,\nhooks, hook system, auto-trigger, skill...",
+      "category": "general",
+      "tags": [
+        "evolution"
+      ],
+      "triggers": [
+        "evolution",
+        "critical",
+        "makepad",
+        "skills",
+        "self",
+        "contribution",
+        "triggers",
+        "evolve",
+        "contribute",
+        "improve",
+        "improvement",
+        "add"
+      ],
+      "path": "skills/evolution/SKILL.md"
+    },
+    {
       "id": "exa-search",
       "name": "exa-search",
       "description": "Semantic search, similar content discovery, and structured research using Exa API",
@@ -10517,6 +11514,53 @@
       "path": "skills/executing-plans/SKILL.md"
     },
     {
+      "id": "expo-api-routes",
+      "name": "expo-api-routes",
+      "description": "Guidelines for creating API routes in Expo Router with EAS Hosting",
+      "category": "development",
+      "tags": [
+        "expo",
+        "api",
+        "routes"
+      ],
+      "triggers": [
+        "expo",
+        "api",
+        "routes",
+        "guidelines",
+        "creating",
+        "router",
+        "eas",
+        "hosting"
+      ],
+      "path": "skills/expo-api-routes/SKILL.md"
+    },
+    {
+      "id": "expo-cicd-workflows",
+      "name": "expo-cicd-workflows",
+      "description": "Helps understand and write EAS workflow YAML files for Expo projects. Use this skill when the user asks about CI/CD or workflows in an Expo or EAS context, mentions .eas/workflows/, or wants help with EAS build pipelines or deployment automation.",
+      "category": "infrastructure",
+      "tags": [
+        "expo",
+        "cicd"
+      ],
+      "triggers": [
+        "expo",
+        "cicd",
+        "helps",
+        "understand",
+        "write",
+        "eas",
+        "yaml",
+        "files",
+        "skill",
+        "user",
+        "asks",
+        "about"
+      ],
+      "path": "skills/expo-cicd-workflows/SKILL.md"
+    },
+    {
       "id": "expo-deployment",
       "name": "expo-deployment",
       "description": "Deploy Expo apps to production",
@@ -10532,6 +11576,91 @@
         "apps"
       ],
       "path": "skills/expo-deployment/SKILL.md"
+    },
+    {
+      "id": "expo-dev-client",
+      "name": "expo-dev-client",
+      "description": "Build and distribute Expo development clients locally or via TestFlight",
+      "category": "general",
+      "tags": [
+        "expo",
+        "dev",
+        "client"
+      ],
+      "triggers": [
+        "expo",
+        "dev",
+        "client",
+        "distribute",
+        "development",
+        "clients",
+        "locally",
+        "via",
+        "testflight"
+      ],
+      "path": "skills/expo-dev-client/SKILL.md"
+    },
+    {
+      "id": "expo-tailwind-setup",
+      "name": "expo-tailwind-setup",
+      "description": "Set up Tailwind CSS v4 in Expo with react-native-css and NativeWind v5 for universal styling",
+      "category": "development",
+      "tags": [
+        "expo",
+        "tailwind",
+        "setup"
+      ],
+      "triggers": [
+        "expo",
+        "tailwind",
+        "setup",
+        "set",
+        "up",
+        "css",
+        "v4",
+        "react",
+        "native",
+        "nativewind",
+        "v5",
+        "universal"
+      ],
+      "path": "skills/expo-tailwind-setup/SKILL.md"
+    },
+    {
+      "id": "expo-ui-jetpack-compose",
+      "name": "expo-ui-jetpack-compose",
+      "description": "expo-ui-jetpack-compose",
+      "category": "general",
+      "tags": [
+        "expo",
+        "ui",
+        "jetpack",
+        "compose"
+      ],
+      "triggers": [
+        "expo",
+        "ui",
+        "jetpack",
+        "compose"
+      ],
+      "path": "skills/expo-ui-jetpack-compose/SKILL.md"
+    },
+    {
+      "id": "expo-ui-swift-ui",
+      "name": "expo-ui-swift-ui",
+      "description": "expo-ui-swift-ui",
+      "category": "general",
+      "tags": [
+        "expo",
+        "ui",
+        "swift"
+      ],
+      "triggers": [
+        "expo",
+        "ui",
+        "swift"
+      ],
+      "path": "skills/expo-ui-swift-ui/SKILL.md"
     },
     {
       "id": "fal-audio",
@@ -10655,6 +11784,23 @@
       "path": "skills/fal-workflow/SKILL.md"
     },
     {
+      "id": "family-health-analyzer",
+      "name": "family-health-analyzer",
+      "description": "分析家族病史、评估遗传风险、识别家庭健康模式、提供个性化预防建议",
+      "category": "general",
+      "tags": [
+        "family",
+        "health",
+        "analyzer"
+      ],
+      "triggers": [
+        "family",
+        "health",
+        "analyzer"
+      ],
+      "path": "skills/family-health-analyzer/SKILL.md"
+    },
+    {
       "id": "fastapi-pro",
       "name": "fastapi-pro",
       "description": "Build high-performance async APIs with FastAPI, SQLAlchemy 2.0, and Pydantic V2. Master microservices, WebSockets, and modern Python async patterns.",
@@ -10729,6 +11875,23 @@
       "path": "skills/fastapi-templates/SKILL.md"
     },
     {
+      "id": "favicon",
+      "name": "favicon",
+      "description": "Generate favicons from a source image",
+      "category": "general",
+      "tags": [
+        "favicon"
+      ],
+      "triggers": [
+        "favicon",
+        "generate",
+        "favicons",
+        "source",
+        "image"
+      ],
+      "path": "skills/favicon/SKILL.md"
+    },
+    {
       "id": "fda-food-safety-auditor",
       "name": "fda-food-safety-auditor",
       "description": "Expert AI auditor for FDA Food Safety (FSMA), HACCP, and PCQI compliance. Reviews food facility records and preventive controls.",
@@ -10800,6 +11963,32 @@
         "fuzzing"
       ],
       "path": "skills/ffuf-claude-skill/SKILL.md"
+    },
+    {
+      "id": "ffuf-web-fuzzing",
+      "name": "ffuf-web-fuzzing",
+      "description": "Expert guidance for ffuf web fuzzing during penetration testing, including authenticated fuzzing with raw requests, auto-calibration, and result analysis",
+      "category": "testing",
+      "tags": [
+        "ffuf",
+        "web",
+        "fuzzing"
+      ],
+      "triggers": [
+        "ffuf",
+        "web",
+        "fuzzing",
+        "guidance",
+        "during",
+        "penetration",
+        "testing",
+        "including",
+        "authenticated",
+        "raw",
+        "requests",
+        "auto"
+      ],
+      "path": "skills/ffuf-web-fuzzing/SKILL.md"
     },
     {
       "id": "figma-automation",
@@ -10900,6 +12089,30 @@
         "multipart"
       ],
       "path": "skills/file-uploads/SKILL.md"
+    },
+    {
+      "id": "filesystem-context",
+      "name": "filesystem-context",
+      "description": "Use for file-based context management, dynamic context discovery, and reducing context window bloat. Offload context to files for just-in-time loading.",
+      "category": "general",
+      "tags": [
+        "filesystem"
+      ],
+      "triggers": [
+        "filesystem",
+        "context",
+        "file",
+        "dynamic",
+        "discovery",
+        "reducing",
+        "window",
+        "bloat",
+        "offload",
+        "files",
+        "just",
+        "time"
+      ],
+      "path": "skills/filesystem-context/SKILL.md"
     },
     {
       "id": "find-bugs",
@@ -11023,6 +12236,21 @@
       "path": "skills/firmware-analyst/SKILL.md"
     },
     {
+      "id": "fitness-analyzer",
+      "name": "fitness-analyzer",
+      "description": "分析运动数据、识别运动模式、评估健身进展，并提供个性化训练建议。支持与慢性病数据的关联分析。",
+      "category": "general",
+      "tags": [
+        "fitness",
+        "analyzer"
+      ],
+      "triggers": [
+        "fitness",
+        "analyzer"
+      ],
+      "path": "skills/fitness-analyzer/SKILL.md"
+    },
+    {
       "id": "fix-review",
       "name": "fix-review",
       "description": "Verify fix commits address audit findings without new bugs",
@@ -11045,6 +12273,82 @@
       "path": "skills/fix-review/SKILL.md"
     },
     {
+      "id": "fixing-accessibility",
+      "name": "fixing-accessibility",
+      "description": "Audit and fix HTML accessibility issues including ARIA labels, keyboard navigation, focus management, color contrast, and form errors. Use when adding interactive controls, forms, dialogs, or reviewing WCAG compliance.",
+      "category": "security",
+      "tags": [
+        "fixing",
+        "accessibility"
+      ],
+      "triggers": [
+        "fixing",
+        "accessibility",
+        "audit",
+        "fix",
+        "html",
+        "issues",
+        "including",
+        "aria",
+        "labels",
+        "keyboard",
+        "navigation",
+        "color"
+      ],
+      "path": "skills/fixing-accessibility/SKILL.md"
+    },
+    {
+      "id": "fixing-metadata",
+      "name": "fixing-metadata",
+      "description": "Audit and fix HTML metadata including page titles, meta descriptions, canonical URLs, Open Graph tags, Twitter cards, favicons, JSON-LD structured data, and robots directives. Use when adding SEO metadata, fixing social share previews, reviewing Open Graph tags,...",
+      "category": "data-ai",
+      "tags": [
+        "fixing",
+        "metadata"
+      ],
+      "triggers": [
+        "fixing",
+        "metadata",
+        "audit",
+        "fix",
+        "html",
+        "including",
+        "page",
+        "titles",
+        "meta",
+        "descriptions",
+        "canonical",
+        "urls"
+      ],
+      "path": "skills/fixing-metadata/SKILL.md"
+    },
+    {
+      "id": "fixing-motion-performance",
+      "name": "fixing-motion-performance",
+      "description": "Audit and fix animation performance issues including layout thrashing, compositor properties, scroll-linked motion, and blur effects. Use when animations stutter, transitions jank, or reviewing CSS/JS animation performance.",
+      "category": "general",
+      "tags": [
+        "fixing",
+        "motion",
+        "performance"
+      ],
+      "triggers": [
+        "fixing",
+        "motion",
+        "performance",
+        "audit",
+        "fix",
+        "animation",
+        "issues",
+        "including",
+        "layout",
+        "thrashing",
+        "compositor",
+        "properties"
+      ],
+      "path": "skills/fixing-motion-performance/SKILL.md"
+    },
+    {
       "id": "flutter-expert",
       "name": "flutter-expert",
       "description": "Master Flutter development with Dart 3, advanced widgets, and multi-platform deployment.",
@@ -11062,6 +12366,23 @@
         "deployment"
       ],
       "path": "skills/flutter-expert/SKILL.md"
+    },
+    {
+      "id": "food-database-query",
+      "name": "food-database-query",
+      "description": "Food Database Query",
+      "category": "data-ai",
+      "tags": [
+        "food",
+        "database",
+        "query"
+      ],
+      "triggers": [
+        "food",
+        "database",
+        "query"
+      ],
+      "path": "skills/food-database-query/SKILL.md"
     },
     {
       "id": "form-cro",
@@ -11087,6 +12408,337 @@
         "demo"
       ],
       "path": "skills/form-cro/SKILL.md"
+    },
+    {
+      "id": "fp-async",
+      "name": "fp-async",
+      "description": "Practical async patterns using TaskEither - clean pipelines instead of try/catch hell, with real API examples",
+      "category": "development",
+      "tags": [
+        "fp-ts",
+        "typescript",
+        "async",
+        "error-handling",
+        "practical",
+        "promises",
+        "api",
+        "fetch"
+      ],
+      "triggers": [
+        "fp-ts",
+        "typescript",
+        "async",
+        "error-handling",
+        "practical",
+        "promises",
+        "api",
+        "fetch",
+        "fp",
+        "taskeither",
+        "clean",
+        "pipelines"
+      ],
+      "path": "skills/fp-async/SKILL.md"
+    },
+    {
+      "id": "fp-backend",
+      "name": "fp-backend",
+      "description": "Functional programming patterns for Node.js/Deno backend development using fp-ts, ReaderTaskEither, and functional dependency injection",
+      "category": "development",
+      "tags": [
+        "fp-ts",
+        "typescript",
+        "backend",
+        "functional-programming",
+        "node",
+        "deno",
+        "dependency-injection",
+        "reader-task-either"
+      ],
+      "triggers": [
+        "fp-ts",
+        "typescript",
+        "backend",
+        "functional-programming",
+        "node",
+        "deno",
+        "dependency-injection",
+        "reader-task-either",
+        "fp",
+        "functional",
+        "programming",
+        "js"
+      ],
+      "path": "skills/fp-backend/SKILL.md"
+    },
+    {
+      "id": "fp-data-transforms",
+      "name": "fp-data-transforms",
+      "description": "Everyday data transformations using functional patterns - arrays, objects, grouping, aggregation, and null-safe access",
+      "category": "data-ai",
+      "tags": [
+        "functional-programming",
+        "typescript",
+        "data-transformation",
+        "fp-ts",
+        "arrays",
+        "objects",
+        "grouping",
+        "aggregation",
+        "null-safety"
+      ],
+      "triggers": [
+        "functional-programming",
+        "typescript",
+        "data-transformation",
+        "fp-ts",
+        "arrays",
+        "objects",
+        "grouping",
+        "aggregation",
+        "null-safety",
+        "fp",
+        "data",
+        "transforms"
+      ],
+      "path": "skills/fp-data-transforms/SKILL.md"
+    },
+    {
+      "id": "fp-either-ref",
+      "name": "fp-either-ref",
+      "description": "Quick reference for Either type. Use when user needs error handling, validation, or operations that can fail with typed errors.",
+      "category": "general",
+      "tags": [
+        "fp-ts",
+        "either",
+        "error-handling",
+        "validation",
+        "quick-reference"
+      ],
+      "triggers": [
+        "fp-ts",
+        "either",
+        "error-handling",
+        "validation",
+        "quick-reference",
+        "fp",
+        "ref",
+        "quick",
+        "reference",
+        "type",
+        "user",
+        "error"
+      ],
+      "path": "skills/fp-either-ref/SKILL.md"
+    },
+    {
+      "id": "fp-errors",
+      "name": "fp-errors",
+      "description": "Stop throwing everywhere - handle errors as values using Either and TaskEither for cleaner, more predictable code",
+      "category": "development",
+      "tags": [
+        "fp-ts",
+        "error-handling",
+        "either",
+        "task-either",
+        "typescript",
+        "validation",
+        "practical"
+      ],
+      "triggers": [
+        "fp-ts",
+        "error-handling",
+        "either",
+        "task-either",
+        "typescript",
+        "validation",
+        "practical",
+        "fp",
+        "errors",
+        "stop",
+        "throwing",
+        "everywhere"
+      ],
+      "path": "skills/fp-errors/SKILL.md"
+    },
+    {
+      "id": "fp-option-ref",
+      "name": "fp-option-ref",
+      "description": "Quick reference for Option type. Use when user needs to handle nullable values, optional data, or wants to avoid null checks.",
+      "category": "data-ai",
+      "tags": [
+        "fp-ts",
+        "option",
+        "nullable",
+        "maybe",
+        "quick-reference"
+      ],
+      "triggers": [
+        "fp-ts",
+        "option",
+        "nullable",
+        "maybe",
+        "quick-reference",
+        "fp",
+        "ref",
+        "quick",
+        "reference",
+        "type",
+        "user",
+        "handle"
+      ],
+      "path": "skills/fp-option-ref/SKILL.md"
+    },
+    {
+      "id": "fp-pipe-ref",
+      "name": "fp-pipe-ref",
+      "description": "Quick reference for pipe and flow. Use when user needs to chain functions, compose operations, or build data pipelines in fp-ts.",
+      "category": "data-ai",
+      "tags": [
+        "fp-ts",
+        "pipe",
+        "flow",
+        "composition",
+        "quick-reference"
+      ],
+      "triggers": [
+        "fp-ts",
+        "pipe",
+        "flow",
+        "composition",
+        "quick-reference",
+        "fp",
+        "ref",
+        "quick",
+        "reference",
+        "user",
+        "chain",
+        "functions"
+      ],
+      "path": "skills/fp-pipe-ref/SKILL.md"
+    },
+    {
+      "id": "fp-pragmatic",
+      "name": "fp-pragmatic",
+      "description": "A practical, jargon-free guide to functional programming - the 80/20 approach that gets results without the academic overhead",
+      "category": "development",
+      "tags": [
+        "fp-ts",
+        "functional-programming",
+        "typescript",
+        "pragmatic",
+        "beginner-friendly",
+        "best-practices"
+      ],
+      "triggers": [
+        "fp-ts",
+        "functional-programming",
+        "typescript",
+        "pragmatic",
+        "beginner-friendly",
+        "best-practices",
+        "fp",
+        "practical",
+        "jargon",
+        "free",
+        "functional",
+        "programming"
+      ],
+      "path": "skills/fp-pragmatic/SKILL.md"
+    },
+    {
+      "id": "fp-react",
+      "name": "fp-react",
+      "description": "Practical patterns for using fp-ts with React - hooks, state, forms, data fetching. Works with React 18/19, Next.js 14/15.",
+      "category": "data-ai",
+      "tags": [
+        "fp-ts",
+        "react",
+        "typescript",
+        "hooks",
+        "state-management",
+        "forms",
+        "data-fetching",
+        "remote-data",
+        "react-19",
+        "next-js"
+      ],
+      "triggers": [
+        "fp-ts",
+        "react",
+        "typescript",
+        "hooks",
+        "state-management",
+        "forms",
+        "data-fetching",
+        "remote-data",
+        "react-19",
+        "next-js",
+        "fp",
+        "practical"
+      ],
+      "path": "skills/fp-react/SKILL.md"
+    },
+    {
+      "id": "fp-refactor",
+      "name": "fp-refactor",
+      "description": "Comprehensive guide for refactoring imperative TypeScript code to fp-ts functional patterns",
+      "category": "development",
+      "tags": [
+        "fp-ts",
+        "refactoring",
+        "functional-programming",
+        "typescript",
+        "migration",
+        "either",
+        "option",
+        "task",
+        "reader"
+      ],
+      "triggers": [
+        "fp-ts",
+        "refactoring",
+        "functional-programming",
+        "typescript",
+        "migration",
+        "either",
+        "option",
+        "task",
+        "reader",
+        "fp",
+        "refactor",
+        "imperative"
+      ],
+      "path": "skills/fp-refactor/SKILL.md"
+    },
+    {
+      "id": "fp-taskeither-ref",
+      "name": "fp-taskeither-ref",
+      "description": "Quick reference for TaskEither. Use when user needs async error handling, API calls, or Promise-based operations that can fail.",
+      "category": "development",
+      "tags": [
+        "fp-ts",
+        "taskeither",
+        "async",
+        "promise",
+        "error-handling",
+        "quick-reference"
+      ],
+      "triggers": [
+        "fp-ts",
+        "taskeither",
+        "async",
+        "promise",
+        "error-handling",
+        "quick-reference",
+        "fp",
+        "ref",
+        "quick",
+        "reference",
+        "user",
+        "error"
+      ],
+      "path": "skills/fp-taskeither-ref/SKILL.md"
     },
     {
       "id": "fp-ts-errors",
@@ -11165,6 +12817,35 @@
         "functional"
       ],
       "path": "skills/fp-ts-react/SKILL.md"
+    },
+    {
+      "id": "fp-types-ref",
+      "name": "fp-types-ref",
+      "description": "Quick reference for fp-ts types. Use when user asks which type to use, needs Option/Either/Task decision help, or wants fp-ts imports.",
+      "category": "development",
+      "tags": [
+        "fp-ts",
+        "typescript",
+        "quick-reference",
+        "option",
+        "either",
+        "task"
+      ],
+      "triggers": [
+        "fp-ts",
+        "typescript",
+        "quick-reference",
+        "option",
+        "either",
+        "task",
+        "fp",
+        "types",
+        "ref",
+        "quick",
+        "reference",
+        "ts"
+      ],
+      "path": "skills/fp-types-ref/SKILL.md"
     },
     {
       "id": "framework-migration-code-migrate",
@@ -11476,7 +13157,7 @@
     {
       "id": "frontend-slides",
       "name": "frontend-slides",
-      "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a...",
+      "description": "Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual...",
       "category": "development",
       "tags": [
         "frontend",
@@ -11930,6 +13611,56 @@
       "path": "skills/geo-fundamentals/SKILL.md"
     },
     {
+      "id": "gh-review-requests",
+      "name": "gh-review-requests",
+      "description": "Fetch unread GitHub notifications for open PRs where review is requested from a specified team or opened by a team member. Use when asked to \"find PRs I need to review\", \"show my review requests\", \"what needs my review\", \"fetch GitHub review requests\", or \"check team review queue\".",
+      "category": "general",
+      "tags": [
+        "gh",
+        "requests"
+      ],
+      "triggers": [
+        "gh",
+        "requests",
+        "review",
+        "fetch",
+        "unread",
+        "github",
+        "notifications",
+        "open",
+        "prs",
+        "where",
+        "requested",
+        "specified"
+      ],
+      "path": "skills/gh-review-requests/SKILL.md"
+    },
+    {
+      "id": "gha-security-review",
+      "name": "gha-security-review",
+      "description": "GitHub Actions security review for workflow exploitation vulnerabilities. Use when asked to \"review GitHub Actions\", \"audit workflows\", \"check CI security\", \"GHA security\", \"workflow security review\", or review .github/workflows/ for pwn requests, expression injection,...",
+      "category": "security",
+      "tags": [
+        "gha",
+        "security"
+      ],
+      "triggers": [
+        "gha",
+        "security",
+        "review",
+        "github",
+        "actions",
+        "exploitation",
+        "vulnerabilities",
+        "asked",
+        "audit",
+        "check",
+        "ci",
+        "pwn"
+      ],
+      "path": "skills/gha-security-review/SKILL.md"
+    },
+    {
       "id": "git-advanced-workflows",
       "name": "git-advanced-workflows",
       "description": "Master advanced Git workflows including rebasing, cherry-picking, bisect, worktrees, and reflog to maintain clean history and recover from any situation. Use when managing complex Git histories, co...",
@@ -12231,7 +13962,7 @@
     {
       "id": "gmail-automation",
       "name": "gmail-automation",
-      "description": "Automate Gmail tasks via Rube MCP (Composio): send/reply, search, labels, drafts, attachments. Always search tools first for current schemas.",
+      "description": "Interact with Gmail - search emails, read messages, send emails, create drafts, and manage labels.\nUse when user asks to: search email, read email, send email, create email draft, mark as read,\narchive email, star email, or manage Gmail labels. Lightweight alternative...",
       "category": "workflow",
       "tags": [
         "gmail"
@@ -12239,16 +13970,16 @@
       "triggers": [
         "gmail",
         "automation",
-        "automate",
-        "tasks",
-        "via",
-        "rube",
-        "mcp",
-        "composio",
-        "send",
-        "reply",
+        "interact",
         "search",
-        "labels"
+        "emails",
+        "read",
+        "messages",
+        "send",
+        "drafts",
+        "labels",
+        "user",
+        "asks"
       ],
       "path": "skills/gmail-automation/SKILL.md"
     },
@@ -12325,6 +14056,21 @@
       "path": "skills/go-rod-master/SKILL.md"
     },
     {
+      "id": "goal-analyzer",
+      "name": "goal-analyzer",
+      "description": "分析健康目标数据、识别目标模式、评估目标进度,并提供个性化目标管理建议。支持与营养、运动、睡眠等健康数据的关联分析。",
+      "category": "general",
+      "tags": [
+        "goal",
+        "analyzer"
+      ],
+      "triggers": [
+        "goal",
+        "analyzer"
+      ],
+      "path": "skills/goal-analyzer/SKILL.md"
+    },
+    {
       "id": "godot-4-migration",
       "name": "godot-4-migration",
       "description": "Specialized guide for migrating Godot 3.x projects to Godot 4 (GDScript 2.0), covering syntax changes, Tweens, and exports.",
@@ -12395,6 +14141,23 @@
       "path": "skills/golang-pro/SKILL.md"
     },
     {
+      "id": "golang-security-auditor",
+      "name": "golang-security-auditor",
+      "description": "Golang Security Auditor",
+      "category": "security",
+      "tags": [
+        "golang",
+        "security",
+        "auditor"
+      ],
+      "triggers": [
+        "golang",
+        "security",
+        "auditor"
+      ],
+      "path": "skills/golang-security-auditor/SKILL.md"
+    },
+    {
       "id": "google-analytics-automation",
       "name": "google-analytics-automation",
       "description": "Automate Google Analytics tasks via Rube MCP (Composio): run reports, list accounts/properties, funnels, pivots, key events. Always search tools first for current schemas.",
@@ -12422,8 +14185,8 @@
     {
       "id": "google-calendar-automation",
       "name": "google-calendar-automation",
-      "description": "Automate Google Calendar events, scheduling, availability checks, and attendee management via Rube MCP (Composio). Create events, find free slots, manage attendees, and list calendars programmatica...",
-      "category": "workflow",
+      "description": "Interact with Google Calendar - list calendars, view events, create/update/delete events, and find free time.\nUse when user asks to: check calendar, schedule a meeting, create an event, find available time, list upcoming events,\ndelete or update a calendar event, or...",
+      "category": "architecture",
       "tags": [
         "google",
         "calendar"
@@ -12432,22 +14195,47 @@
         "google",
         "calendar",
         "automation",
-        "automate",
+        "interact",
+        "list",
+        "calendars",
+        "view",
         "events",
-        "scheduling",
-        "availability",
-        "checks",
-        "attendee",
-        "via",
-        "rube",
-        "mcp"
+        "update",
+        "delete",
+        "find",
+        "free"
       ],
       "path": "skills/google-calendar-automation/SKILL.md"
     },
     {
+      "id": "google-docs-automation",
+      "name": "google-docs-automation",
+      "description": "Interact with Google Docs - create documents, search by title, read content, and edit text.\nUse when user asks to: create a Google Doc, find a document, read doc content, add text to a doc,\nor replace text in a document. Lightweight alternative to full Google...",
+      "category": "workflow",
+      "tags": [
+        "google",
+        "docs"
+      ],
+      "triggers": [
+        "google",
+        "docs",
+        "automation",
+        "interact",
+        "documents",
+        "search",
+        "title",
+        "read",
+        "content",
+        "edit",
+        "text",
+        "user"
+      ],
+      "path": "skills/google-docs-automation/SKILL.md"
+    },
+    {
       "id": "google-drive-automation",
       "name": "google-drive-automation",
-      "description": "Automate Google Drive file operations (upload, download, search, share, organize) via Rube MCP (Composio). Upload/download files, manage folders, share with permissions, and search across drives pr...",
+      "description": "Interact with Google Drive - search files, find folders, list contents, download files, upload files,\ncreate folders, move, copy, rename, and trash files. Use when user asks to: search Google Drive,\nfind a file/folder, list Drive contents, download or upload files,...",
       "category": "workflow",
       "tags": [
         "google",
@@ -12457,17 +14245,67 @@
         "google",
         "drive",
         "automation",
-        "automate",
-        "file",
-        "operations",
-        "upload",
-        "download",
+        "interact",
         "search",
-        "share",
-        "organize",
-        "via"
+        "files",
+        "find",
+        "folders",
+        "list",
+        "contents",
+        "download",
+        "upload"
       ],
       "path": "skills/google-drive-automation/SKILL.md"
+    },
+    {
+      "id": "google-sheets-automation",
+      "name": "google-sheets-automation",
+      "description": "Read and write Google Sheets spreadsheets - get content, update cells, append rows, fetch specific ranges,\nsearch for spreadsheets, and view metadata. Use when user asks to: read a spreadsheet, update cells,\nadd data to Google Sheets, find a spreadsheet, check sheet...",
+      "category": "data-ai",
+      "tags": [
+        "google",
+        "sheets"
+      ],
+      "triggers": [
+        "google",
+        "sheets",
+        "automation",
+        "read",
+        "write",
+        "spreadsheets",
+        "get",
+        "content",
+        "update",
+        "cells",
+        "append",
+        "rows"
+      ],
+      "path": "skills/google-sheets-automation/SKILL.md"
+    },
+    {
+      "id": "google-slides-automation",
+      "name": "google-slides-automation",
+      "description": "Read and write Google Slides presentations - get text, find presentations, create presentations, add slides,\nreplace text, and manage slide content. Use when user asks to: read a presentation, create slides, find slides,\nadd a slide, replace text in a presentation, or...",
+      "category": "workflow",
+      "tags": [
+        "google",
+        "slides"
+      ],
+      "triggers": [
+        "google",
+        "slides",
+        "automation",
+        "read",
+        "write",
+        "presentations",
+        "get",
+        "text",
+        "find",
+        "add",
+        "replace",
+        "slide"
+      ],
+      "path": "skills/google-slides-automation/SKILL.md"
     },
     {
       "id": "googlesheets-automation",
@@ -12567,6 +14405,34 @@
       "path": "skills/graphql-architect/SKILL.md"
     },
     {
+      "id": "great-tables",
+      "name": "great-tables",
+      "description": "Great Tables",
+      "category": "general",
+      "tags": [
+        "great",
+        "tables"
+      ],
+      "triggers": [
+        "great",
+        "tables"
+      ],
+      "path": "skills/great-tables/SKILL.md"
+    },
+    {
+      "id": "grimoire",
+      "name": "grimoire",
+      "description": "Grimoire",
+      "category": "general",
+      "tags": [
+        "grimoire"
+      ],
+      "triggers": [
+        "grimoire"
+      ],
+      "path": "skills/grimoire/SKILL.md"
+    },
+    {
       "id": "grpc-golang",
       "name": "grpc-golang",
       "description": "Build production-ready gRPC services in Go with mTLS, streaming, and observability. Use when designing Protobuf contracts with Buf or implementing secure service-to-service transport.",
@@ -12608,6 +14474,26 @@
         "pure"
       ],
       "path": "skills/haskell-pro/SKILL.md"
+    },
+    {
+      "id": "health-trend-analyzer",
+      "name": "health-trend-analyzer",
+      "description": "分析一段时间内健康数据的趋势和模式。关联药物、症状、生命体征、化验结果和其他健康指标的变化。识别令人担忧的趋势、改善情况，并提供数据驱动的洞察。当用户询问健康趋势、模式、随时间的变化或\"我的健康状况有什么变化？\"时使用。支持多维度分析（体重/BMI、症状、药物依从性、化验结果、情绪睡眠），相关性分析，变化检测，以及交互式HTML可视化报告（ECharts图表）。",
+      "category": "general",
+      "tags": [
+        "health",
+        "trend",
+        "analyzer"
+      ],
+      "triggers": [
+        "health",
+        "trend",
+        "analyzer",
+        "bmi",
+        "html",
+        "echarts"
+      ],
+      "path": "skills/health-trend-analyzer/SKILL.md"
     },
     {
       "id": "helm-chart-scaffolding",
@@ -13015,6 +14901,29 @@
       "path": "skills/hig-technologies/SKILL.md"
     },
     {
+      "id": "hosted-agents",
+      "name": "hosted-agents",
+      "description": "Build background agents in sandboxed environments. Use for hosted coding agents, sandboxed VMs, Modal sandboxes, and remote coding environments.",
+      "category": "general",
+      "tags": [
+        "hosted",
+        "agents"
+      ],
+      "triggers": [
+        "hosted",
+        "agents",
+        "background",
+        "sandboxed",
+        "environments",
+        "coding",
+        "vms",
+        "modal",
+        "sandboxes",
+        "remote"
+      ],
+      "path": "skills/hosted-agents/SKILL.md"
+    },
+    {
       "id": "hosted-agents-v2-py",
       "name": "hosted-agents-v2-py",
       "description": "Build hosted agents using Azure AI Projects SDK with ImageBasedHostedAgentDefinition. Use when creating container-based agents in Azure AI Foundry.",
@@ -13165,6 +15074,85 @@
       "path": "skills/hugging-face-cli/SKILL.md"
     },
     {
+      "id": "hugging-face-dataset-viewer",
+      "name": "hugging-face-dataset-viewer",
+      "description": "Use this skill for Hugging Face Dataset Viewer API workflows that fetch subset/split metadata, paginate rows, search text, apply filters, download parquet URLs, and read size or statistics.",
+      "category": "development",
+      "tags": [
+        "hugging",
+        "face",
+        "dataset",
+        "viewer"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "dataset",
+        "viewer",
+        "skill",
+        "api",
+        "fetch",
+        "subset",
+        "split",
+        "metadata",
+        "paginate",
+        "rows"
+      ],
+      "path": "skills/hugging-face-dataset-viewer/SKILL.md"
+    },
+    {
+      "id": "hugging-face-datasets",
+      "name": "hugging-face-datasets",
+      "description": "Create and manage datasets on Hugging Face Hub. Supports initializing repos, defining configs/system prompts, streaming row updates, and SQL-based dataset querying/transformation. Designed to work alongside HF MCP server for comprehensive dataset workflows.",
+      "category": "data-ai",
+      "tags": [
+        "hugging",
+        "face",
+        "datasets"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "datasets",
+        "hub",
+        "supports",
+        "initializing",
+        "repos",
+        "defining",
+        "configs",
+        "prompts",
+        "streaming",
+        "row"
+      ],
+      "path": "skills/hugging-face-datasets/SKILL.md"
+    },
+    {
+      "id": "hugging-face-evaluation",
+      "name": "hugging-face-evaluation",
+      "description": "Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content, importing scores from Artificial Analysis API, and running custom model evaluations with vLLM/lighteval. Works with the model-index metadata format.",
+      "category": "development",
+      "tags": [
+        "hugging",
+        "face",
+        "evaluation"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "evaluation",
+        "add",
+        "results",
+        "model",
+        "cards",
+        "supports",
+        "extracting",
+        "eval",
+        "tables",
+        "readme"
+      ],
+      "path": "skills/hugging-face-evaluation/SKILL.md"
+    },
+    {
       "id": "hugging-face-jobs",
       "name": "hugging-face-jobs",
       "description": "This skill should be used when users want to run any workload on Hugging Face Jobs infrastructure. Covers UV scripts, Docker-based jobs, hardware selection, cost estimation, authentication with tok...",
@@ -13189,6 +15177,86 @@
         "infrastructure"
       ],
       "path": "skills/hugging-face-jobs/SKILL.md"
+    },
+    {
+      "id": "hugging-face-model-trainer",
+      "name": "hugging-face-model-trainer",
+      "description": "This skill should be used when users want to train or fine-tune language models using TRL (Transformer Reinforcement Learning) on Hugging Face Jobs infrastructure. Covers SFT, DPO, GRPO and reward modeling training methods, plus GGUF conversion for...",
+      "category": "general",
+      "tags": [
+        "hugging",
+        "face",
+        "model",
+        "trainer"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "model",
+        "trainer",
+        "skill",
+        "should",
+        "used",
+        "users",
+        "want",
+        "train",
+        "fine",
+        "tune"
+      ],
+      "path": "skills/hugging-face-model-trainer/SKILL.md"
+    },
+    {
+      "id": "hugging-face-paper-publisher",
+      "name": "hugging-face-paper-publisher",
+      "description": "Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating professional markdown-based research articles.",
+      "category": "general",
+      "tags": [
+        "hugging",
+        "face",
+        "paper",
+        "publisher"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "paper",
+        "publisher",
+        "publish",
+        "research",
+        "papers",
+        "hub",
+        "supports",
+        "creating",
+        "pages",
+        "linking"
+      ],
+      "path": "skills/hugging-face-paper-publisher/SKILL.md"
+    },
+    {
+      "id": "hugging-face-tool-builder",
+      "name": "hugging-face-tool-builder",
+      "description": "Use this skill when the user wants to build tool/scripts or achieve a task where using data from the Hugging Face API would help. This is especially useful when chaining or combining API calls or the task will be repeated/automated. This Skill creates a reusable script to...",
+      "category": "data-ai",
+      "tags": [
+        "hugging",
+        "face",
+        "builder"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "builder",
+        "skill",
+        "user",
+        "wants",
+        "scripts",
+        "achieve",
+        "task",
+        "where",
+        "data",
+        "api"
+      ],
+      "path": "skills/hugging-face-tool-builder/SKILL.md"
     },
     {
       "id": "hybrid-cloud-architect",
@@ -13500,6 +15568,21 @@
       "path": "skills/instagram-automation/SKILL.md"
     },
     {
+      "id": "integrate-whatsapp",
+      "name": "integrate-whatsapp",
+      "description": "Integrate Whatsapp",
+      "category": "general",
+      "tags": [
+        "integrate",
+        "whatsapp"
+      ],
+      "triggers": [
+        "integrate",
+        "whatsapp"
+      ],
+      "path": "skills/integrate-whatsapp/SKILL.md"
+    },
+    {
       "id": "interactive-portfolio",
       "name": "interactive-portfolio",
       "description": "Expert in building portfolios that actually land jobs and clients - not just showing work, but creating memorable experiences. Covers developer portfolios, designer portfolios, creative portfolios,...",
@@ -13651,6 +15734,23 @@
       "path": "skills/ios-developer/SKILL.md"
     },
     {
+      "id": "issues",
+      "name": "issues",
+      "description": "Interact with GitHub issues - create, list, and view issues.",
+      "category": "general",
+      "tags": [
+        "issues"
+      ],
+      "triggers": [
+        "issues",
+        "interact",
+        "github",
+        "list",
+        "view"
+      ],
+      "path": "skills/issues/SKILL.md"
+    },
+    {
       "id": "istio-traffic-management",
       "name": "istio-traffic-management",
       "description": "Configure Istio traffic management including routing, load balancing, circuit breakers, and canary deployments. Use when implementing service mesh traffic policies, progressive delivery, or resilie...",
@@ -13674,6 +15774,21 @@
         "implementing"
       ],
       "path": "skills/istio-traffic-management/SKILL.md"
+    },
+    {
+      "id": "it-depends",
+      "name": "it-depends",
+      "description": "It Depends",
+      "category": "general",
+      "tags": [
+        "it",
+        "depends"
+      ],
+      "triggers": [
+        "it",
+        "depends"
+      ],
+      "path": "skills/it-depends/SKILL.md"
     },
     {
       "id": "iterate-pr",
@@ -13865,6 +15980,19 @@
         "dispatch"
       ],
       "path": "skills/julia-pro/SKILL.md"
+    },
+    {
+      "id": "jupyter-workflow",
+      "name": "jupyter-workflow",
+      "description": "Jupyter Workflow",
+      "category": "workflow",
+      "tags": [
+        "jupyter"
+      ],
+      "triggers": [
+        "jupyter"
+      ],
+      "path": "skills/jupyter-workflow/SKILL.md"
     },
     {
       "id": "k8s-manifest-generator",
@@ -14689,6 +16817,20 @@
       "path": "skills/linux-troubleshooting/SKILL.md"
     },
     {
+      "id": "literature-analysis",
+      "name": "literature-analysis",
+      "description": "Literature Analysis",
+      "category": "general",
+      "tags": [
+        "literature"
+      ],
+      "triggers": [
+        "literature",
+        "analysis"
+      ],
+      "path": "skills/literature-analysis/SKILL.md"
+    },
+    {
       "id": "llm-app-patterns",
       "name": "llm-app-patterns",
       "description": "Production-ready patterns for building LLM applications. Covers RAG pipelines, agent architectures, prompt IDEs, and LLMOps monitoring. Use when designing AI applications, implementing RAG, buildin...",
@@ -15069,6 +17211,256 @@
       "path": "skills/make-automation/SKILL.md"
     },
     {
+      "id": "makepad-animation",
+      "name": "makepad-animation",
+      "description": "CRITICAL: Use for Makepad animation system. Triggers on:\nmakepad animation, makepad animator, makepad hover, makepad state,\nmakepad transition, \"from: { all: Forward\", makepad pressed,\nmakepad 动画, makepad 状态, makepad 过渡, makepad 悬停效果",
+      "category": "general",
+      "tags": [
+        "makepad",
+        "animation"
+      ],
+      "triggers": [
+        "makepad",
+        "animation",
+        "critical",
+        "triggers",
+        "animator",
+        "hover",
+        "state",
+        "transition",
+        "all",
+        "forward",
+        "pressed"
+      ],
+      "path": "skills/makepad-animation/SKILL.md"
+    },
+    {
+      "id": "makepad-basics",
+      "name": "makepad-basics",
+      "description": "CRITICAL: Use for Makepad getting started and app structure. Triggers on:\nmakepad, makepad getting started, makepad tutorial, live_design!, app_main!,\nmakepad project setup, makepad hello world, \"how to create makepad app\",\nmakepad 入门, 创建 makepad 应用, makepad 教程, makepad 项目结构",
+      "category": "general",
+      "tags": [
+        "makepad",
+        "basics"
+      ],
+      "triggers": [
+        "makepad",
+        "basics",
+        "critical",
+        "getting",
+        "started",
+        "app",
+        "structure",
+        "triggers",
+        "tutorial",
+        "live",
+        "main",
+        "setup"
+      ],
+      "path": "skills/makepad-basics/SKILL.md"
+    },
+    {
+      "id": "makepad-deployment",
+      "name": "makepad-deployment",
+      "description": "CRITICAL: Use for Makepad packaging and deployment. Triggers on:\ndeploy, package, APK, IPA, 打包, 部署,\ncargo-packager, cargo-makepad, WASM, Android, iOS,\ndistribution, installer, .deb, .dmg, .nsis,\nGitHub Actions, CI, action, marketplace",
+      "category": "infrastructure",
+      "tags": [
+        "makepad",
+        "deployment"
+      ],
+      "triggers": [
+        "makepad",
+        "deployment",
+        "critical",
+        "packaging",
+        "triggers",
+        "deploy",
+        "package",
+        "apk",
+        "ipa",
+        "cargo",
+        "packager",
+        "wasm"
+      ],
+      "path": "skills/makepad-deployment/SKILL.md"
+    },
+    {
+      "id": "makepad-dsl",
+      "name": "makepad-dsl",
+      "description": "CRITICAL: Use for Makepad DSL syntax and inheritance. Triggers on:\nmakepad dsl, live_design, makepad inheritance, makepad prototype,\n\"<Widget>\", \"Foo = { }\", makepad object, makepad property,\nmakepad DSL 语法, makepad 继承, makepad 原型, 如何定义 makepad 组件",
+      "category": "general",
+      "tags": [
+        "makepad",
+        "dsl"
+      ],
+      "triggers": [
+        "makepad",
+        "dsl",
+        "critical",
+        "syntax",
+        "inheritance",
+        "triggers",
+        "live",
+        "prototype",
+        "widget",
+        "foo",
+        "object",
+        "property"
+      ],
+      "path": "skills/makepad-dsl/SKILL.md"
+    },
+    {
+      "id": "makepad-event-action",
+      "name": "makepad-event-action",
+      "description": "CRITICAL: Use for Makepad event and action handling. Triggers on:\nmakepad event, makepad action, Event enum, ActionTrait, handle_event,\nMouseDown, KeyDown, TouchUpdate, Hit, FingerDown, post_action,\nmakepad 事件, makepad action, 事件处理",
+      "category": "architecture",
+      "tags": [
+        "makepad",
+        "event",
+        "action"
+      ],
+      "triggers": [
+        "makepad",
+        "event",
+        "action",
+        "critical",
+        "handling",
+        "triggers",
+        "enum",
+        "actiontrait",
+        "handle",
+        "mousedown",
+        "keydown",
+        "touchupdate"
+      ],
+      "path": "skills/makepad-event-action/SKILL.md"
+    },
+    {
+      "id": "makepad-font",
+      "name": "makepad-font",
+      "description": "CRITICAL: Use for Makepad font and text rendering. Triggers on:\nmakepad font, makepad text, makepad glyph, makepad typography,\nfont atlas, text layout, font family, font size, text shaping,\nmakepad 字体, makepad 文字, makepad 排版, makepad 字形",
+      "category": "general",
+      "tags": [
+        "makepad",
+        "font"
+      ],
+      "triggers": [
+        "makepad",
+        "font",
+        "critical",
+        "text",
+        "rendering",
+        "triggers",
+        "glyph",
+        "typography",
+        "atlas",
+        "layout",
+        "family",
+        "size"
+      ],
+      "path": "skills/makepad-font/SKILL.md"
+    },
+    {
+      "id": "makepad-layout",
+      "name": "makepad-layout",
+      "description": "CRITICAL: Use for Makepad layout system. Triggers on:\nmakepad layout, makepad width, makepad height, makepad flex,\nmakepad padding, makepad margin, makepad flow, makepad align,\nFit, Fill, Size, Walk, \"how to center in makepad\",\nmakepad 布局, makepad 宽度, makepad 对齐, makepad 居中",
+      "category": "general",
+      "tags": [
+        "makepad",
+        "layout"
+      ],
+      "triggers": [
+        "makepad",
+        "layout",
+        "critical",
+        "triggers",
+        "width",
+        "height",
+        "flex",
+        "padding",
+        "margin",
+        "flow",
+        "align",
+        "fit"
+      ],
+      "path": "skills/makepad-layout/SKILL.md"
+    },
+    {
+      "id": "makepad-platform",
+      "name": "makepad-platform",
+      "description": "CRITICAL: Use for Makepad cross-platform support. Triggers on:\nmakepad platform, makepad os, makepad macos, makepad windows, makepad linux,\nmakepad android, makepad ios, makepad web, makepad wasm, makepad metal,\nmakepad d3d11, makepad opengl, makepad webgl, OsType, CxOs,\nmakepad 跨平台, makepad 平台支持",
+      "category": "development",
+      "tags": [
+        "makepad",
+        "platform"
+      ],
+      "triggers": [
+        "makepad",
+        "platform",
+        "critical",
+        "cross",
+        "triggers",
+        "os",
+        "macos",
+        "windows",
+        "linux",
+        "android",
+        "ios",
+        "web"
+      ],
+      "path": "skills/makepad-platform/SKILL.md"
+    },
+    {
+      "id": "makepad-reference",
+      "name": "makepad-reference",
+      "description": "CRITICAL: Use for Makepad troubleshooting and reference. Triggers on:\ntroubleshoot, error, debug, fix, problem, issue,\nno matching field, parse error, widget not found, UI not updating,\ncode quality, refactor, responsive layout, adaptive,\napi docs, reference,...",
+      "category": "development",
+      "tags": [
+        "makepad",
+        "reference"
+      ],
+      "triggers": [
+        "makepad",
+        "reference",
+        "critical",
+        "troubleshooting",
+        "triggers",
+        "troubleshoot",
+        "error",
+        "debug",
+        "fix",
+        "problem",
+        "issue",
+        "no"
+      ],
+      "path": "skills/makepad-reference/SKILL.md"
+    },
+    {
+      "id": "makepad-shaders",
+      "name": "makepad-shaders",
+      "description": "CRITICAL: Use for Makepad shader system. Triggers on:\nmakepad shader, makepad draw_bg, Sdf2d, makepad pixel,\nmakepad glsl, makepad sdf, draw_quad, makepad gpu,\nmakepad 着色器, makepad shader 语法, makepad 绘制",
+      "category": "general",
+      "tags": [
+        "makepad",
+        "shaders"
+      ],
+      "triggers": [
+        "makepad",
+        "shaders",
+        "critical",
+        "shader",
+        "triggers",
+        "draw",
+        "bg",
+        "sdf2d",
+        "pixel",
+        "glsl",
+        "sdf",
+        "quad"
+      ],
+      "path": "skills/makepad-shaders/SKILL.md"
+    },
+    {
       "id": "makepad-skills",
       "name": "makepad-skills",
       "description": "Makepad UI development skills for Rust apps: setup, patterns, shaders, packaging, and troubleshooting.",
@@ -15090,6 +17482,55 @@
         "troubleshooting"
       ],
       "path": "skills/makepad-skills/SKILL.md"
+    },
+    {
+      "id": "makepad-splash",
+      "name": "makepad-splash",
+      "description": "CRITICAL: Use for Makepad Splash scripting language. Triggers on:\nsplash language, makepad script, makepad scripting, script!, cx.eval,\nmakepad dynamic, makepad AI, splash 语言, makepad 脚本",
+      "category": "data-ai",
+      "tags": [
+        "makepad",
+        "splash"
+      ],
+      "triggers": [
+        "makepad",
+        "splash",
+        "critical",
+        "scripting",
+        "language",
+        "triggers",
+        "script",
+        "cx",
+        "eval",
+        "dynamic",
+        "ai"
+      ],
+      "path": "skills/makepad-splash/SKILL.md"
+    },
+    {
+      "id": "makepad-widgets",
+      "name": "makepad-widgets",
+      "description": "CRITICAL: Use for Makepad widgets and UI components. Triggers on:\nmakepad widget, makepad View, makepad Button, makepad Label, makepad Image,\nmakepad TextInput, RoundedView, SolidView, ScrollView, \"makepad component\",\nmakepad Markdown, makepad Html, TextFlow, rich...",
+      "category": "general",
+      "tags": [
+        "makepad",
+        "widgets"
+      ],
+      "triggers": [
+        "makepad",
+        "widgets",
+        "critical",
+        "ui",
+        "components",
+        "triggers",
+        "widget",
+        "view",
+        "button",
+        "label",
+        "image",
+        "textinput"
+      ],
+      "path": "skills/makepad-widgets/SKILL.md"
     },
     {
       "id": "malware-analyst",
@@ -15215,6 +17656,30 @@
       "path": "skills/marketing-psychology/SKILL.md"
     },
     {
+      "id": "matplotlib",
+      "name": "matplotlib",
+      "description": "Low-level plotting library for full customization. Use when you need fine-grained control over every plot element, creating novel plot types, or integrating with specific scientific workflows. Export to PNG/PDF/SVG for publication. For quick...",
+      "category": "general",
+      "tags": [
+        "matplotlib"
+      ],
+      "triggers": [
+        "matplotlib",
+        "low",
+        "level",
+        "plotting",
+        "library",
+        "full",
+        "customization",
+        "fine",
+        "grained",
+        "control",
+        "every",
+        "plot"
+      ],
+      "path": "skills/matplotlib/SKILL.md"
+    },
+    {
       "id": "mcp-builder",
       "name": "mcp-builder",
       "description": "Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate exte...",
@@ -15332,6 +17797,23 @@
         "architectures"
       ],
       "path": "skills/memory-systems/SKILL.md"
+    },
+    {
+      "id": "mental-health-analyzer",
+      "name": "mental-health-analyzer",
+      "description": "分析心理健康数据、识别心理模式、评估心理健康状况、提供个性化心理健康建议。支持与睡眠、运动、营养等其他健康数据的关联分析。",
+      "category": "general",
+      "tags": [
+        "mental",
+        "health",
+        "analyzer"
+      ],
+      "triggers": [
+        "mental",
+        "health",
+        "analyzer"
+      ],
+      "path": "skills/mental-health-analyzer/SKILL.md"
     },
     {
       "id": "mermaid-expert",
@@ -15726,6 +18208,30 @@
       "path": "skills/modern-javascript-patterns/SKILL.md"
     },
     {
+      "id": "molykit",
+      "name": "molykit",
+      "description": "CRITICAL: Use for MolyKit AI chat toolkit. Triggers on:\nBotClient, OpenAI, SSE streaming, AI chat, molykit,\nPlatformSend, spawn(), ThreadToken, cross-platform async,\nChat widget, Messages, PromptInput, Avatar, LLM",
+      "category": "data-ai",
+      "tags": [
+        "molykit"
+      ],
+      "triggers": [
+        "molykit",
+        "critical",
+        "ai",
+        "chat",
+        "toolkit",
+        "triggers",
+        "botclient",
+        "openai",
+        "sse",
+        "streaming",
+        "platformsend",
+        "spawn"
+      ],
+      "path": "skills/molykit/SKILL.md"
+    },
+    {
       "id": "monday-automation",
       "name": "monday-automation",
       "description": "Automate Monday.com work management including boards, items, columns, groups, subitems, and updates via Rube MCP (Composio). Always search tools first for current schemas.",
@@ -15796,6 +18302,42 @@
         "dependency"
       ],
       "path": "skills/monorepo-management/SKILL.md"
+    },
+    {
+      "id": "monte-carlo-treasury",
+      "name": "monte-carlo-treasury",
+      "description": "Monte Carlo Treasury",
+      "category": "general",
+      "tags": [
+        "monte",
+        "carlo",
+        "treasury"
+      ],
+      "triggers": [
+        "monte",
+        "carlo",
+        "treasury"
+      ],
+      "path": "skills/monte-carlo-treasury/SKILL.md"
+    },
+    {
+      "id": "monte-carlo-vulnerability-detection",
+      "name": "monte-carlo-vulnerability-detection",
+      "description": "Monte Carlo Vulnerability Detection",
+      "category": "security",
+      "tags": [
+        "monte",
+        "carlo",
+        "vulnerability",
+        "detection"
+      ],
+      "triggers": [
+        "monte",
+        "carlo",
+        "vulnerability",
+        "detection"
+      ],
+      "path": "skills/monte-carlo-vulnerability-detection/SKILL.md"
     },
     {
       "id": "moodle-external-api-development",
@@ -15877,7 +18419,7 @@
     {
       "id": "multi-agent-patterns",
       "name": "multi-agent-patterns",
-      "description": "Master orchestrator, peer-to-peer, and hierarchical multi-agent architectures",
+      "description": "This skill should be used when the user asks to \"design multi-agent system\", \"implement supervisor pattern\", \"create swarm architecture\", \"coordinate multiple agents\", or mentions multi-agent patterns, context isolation, agent handoffs, sub-agents, or parallel agent execution.",
       "category": "architecture",
       "tags": [
         "multi",
@@ -15886,10 +18428,16 @@
       "triggers": [
         "multi",
         "agent",
-        "orchestrator",
-        "peer",
-        "hierarchical",
-        "architectures"
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "supervisor",
+        "swarm",
+        "architecture",
+        "coordinate",
+        "multiple"
       ],
       "path": "skills/multi-agent-patterns/SKILL.md"
     },
@@ -15946,6 +18494,32 @@
       "path": "skills/multi-platform-apps-multi-platform/SKILL.md"
     },
     {
+      "id": "n8n-code-javascript",
+      "name": "n8n-code-javascript",
+      "description": "Write JavaScript code in n8n Code nodes. Use when writing JavaScript in n8n, using $input/$json/$node syntax, making HTTP requests with $helpers, working with dates using DateTime, troubleshooting Code node errors, or choosing between Code node modes.",
+      "category": "development",
+      "tags": [
+        "n8n",
+        "code",
+        "javascript"
+      ],
+      "triggers": [
+        "n8n",
+        "code",
+        "javascript",
+        "write",
+        "nodes",
+        "writing",
+        "input",
+        "json",
+        "node",
+        "syntax",
+        "making",
+        "http"
+      ],
+      "path": "skills/n8n-code-javascript/SKILL.md"
+    },
+    {
       "id": "n8n-code-python",
       "name": "n8n-code-python",
       "description": "Write Python code in n8n Code nodes. Use when writing Python in n8n, using _input/_json/_node syntax, working with standard library, or need to understand Python limitations in n8n Code nodes.",
@@ -15972,10 +18546,36 @@
       "path": "skills/n8n-code-python/SKILL.md"
     },
     {
+      "id": "n8n-expression-syntax",
+      "name": "n8n-expression-syntax",
+      "description": "Validate n8n expression syntax and fix common errors. Use when writing n8n expressions, using {{}} syntax, accessing $json/$node variables, troubleshooting expression errors, or working with webhook data in workflows.",
+      "category": "data-ai",
+      "tags": [
+        "n8n",
+        "expression",
+        "syntax"
+      ],
+      "triggers": [
+        "n8n",
+        "expression",
+        "syntax",
+        "validate",
+        "fix",
+        "common",
+        "errors",
+        "writing",
+        "expressions",
+        "accessing",
+        "json",
+        "node"
+      ],
+      "path": "skills/n8n-expression-syntax/SKILL.md"
+    },
+    {
       "id": "n8n-mcp-tools-expert",
       "name": "n8n-mcp-tools-expert",
-      "description": "Expert guide for using n8n-mcp MCP tools effectively. Use when searching for nodes, validating configurations, accessing templates, managing workflows, or using any n8n-mcp tool. Provides tool sele...",
-      "category": "general",
+      "description": "Expert guide for using n8n-mcp MCP tools effectively. Use when searching for nodes, validating configurations, accessing templates, managing workflows, or using any n8n-mcp tool. Provides tool selection guidance, parameter formats, and common patterns.",
+      "category": "architecture",
       "tags": [
         "n8n",
         "mcp"
@@ -15992,14 +18592,14 @@
         "managing",
         "any",
         "provides",
-        "sele"
+        "selection"
       ],
       "path": "skills/n8n-mcp-tools-expert/SKILL.md"
     },
     {
       "id": "n8n-node-configuration",
       "name": "n8n-node-configuration",
-      "description": "Operation-aware node configuration guidance. Use when configuring nodes, understanding property dependencies, determining required fields, choosing between get_node detail levels, or learning commo...",
+      "description": "Operation-aware node configuration guidance. Use when configuring nodes, understanding property dependencies, determining required fields, choosing between get_node detail levels, or learning common configuration patterns by node type.",
       "category": "development",
       "tags": [
         "n8n",
@@ -16021,6 +18621,55 @@
         "determining"
       ],
       "path": "skills/n8n-node-configuration/SKILL.md"
+    },
+    {
+      "id": "n8n-validation-expert",
+      "name": "n8n-validation-expert",
+      "description": "Interpret validation errors and guide fixing them. Use when encountering validation errors, validation warnings, false positives, operator structure issues, or need help understanding validation results. Also use when asking about validation...",
+      "category": "general",
+      "tags": [
+        "n8n",
+        "validation"
+      ],
+      "triggers": [
+        "n8n",
+        "validation",
+        "interpret",
+        "errors",
+        "fixing",
+        "them",
+        "encountering",
+        "warnings",
+        "false",
+        "positives",
+        "operator",
+        "structure"
+      ],
+      "path": "skills/n8n-validation-expert/SKILL.md"
+    },
+    {
+      "id": "n8n-workflow-patterns",
+      "name": "n8n-workflow-patterns",
+      "description": "Proven workflow architectural patterns from real n8n workflows. Use when building new workflows, designing workflow structure, choosing workflow patterns, planning workflow architecture, or asking about webhook processing, HTTP API integration,...",
+      "category": "development",
+      "tags": [
+        "n8n"
+      ],
+      "triggers": [
+        "n8n",
+        "proven",
+        "architectural",
+        "real",
+        "building",
+        "new",
+        "designing",
+        "structure",
+        "choosing",
+        "planning",
+        "architecture",
+        "asking"
+      ],
+      "path": "skills/n8n-workflow-patterns/SKILL.md"
     },
     {
       "id": "nanobanana-ppt-skills",
@@ -16045,6 +18694,32 @@
         "images"
       ],
       "path": "skills/nanobanana-ppt-skills/SKILL.md"
+    },
+    {
+      "id": "native-data-fetching",
+      "name": "native-data-fetching",
+      "description": "Use when implementing or debugging ANY network request, API call, or data fetching. Covers fetch API, React Query, SWR, error handling, caching, offline support, and Expo Router data loaders (useLoaderData).",
+      "category": "infrastructure",
+      "tags": [
+        "native",
+        "data",
+        "fetching"
+      ],
+      "triggers": [
+        "native",
+        "data",
+        "fetching",
+        "implementing",
+        "debugging",
+        "any",
+        "network",
+        "request",
+        "api",
+        "call",
+        "covers",
+        "fetch"
+      ],
+      "path": "skills/native-data-fetching/SKILL.md"
     },
     {
       "id": "neon-postgres",
@@ -16190,6 +18865,45 @@
         "optimization"
       ],
       "path": "skills/network-engineer/SKILL.md"
+    },
+    {
+      "id": "networkx",
+      "name": "networkx",
+      "description": "Comprehensive toolkit for creating, analyzing, and visualizing complex networks and graphs in Python. Use when working with network/graph data structures, analyzing relationships between entities, computing graph algorithms (shortest paths, centrality, clustering), detecting...",
+      "category": "infrastructure",
+      "tags": [
+        "networkx"
+      ],
+      "triggers": [
+        "networkx",
+        "toolkit",
+        "creating",
+        "analyzing",
+        "visualizing",
+        "complex",
+        "networks",
+        "graphs",
+        "python",
+        "working",
+        "network",
+        "graph"
+      ],
+      "path": "skills/networkx/SKILL.md"
+    },
+    {
+      "id": "new-rails-project",
+      "name": "new-rails-project",
+      "description": "Create a new Rails project",
+      "category": "general",
+      "tags": [
+        "new",
+        "rails"
+      ],
+      "triggers": [
+        "new",
+        "rails"
+      ],
+      "path": "skills/new-rails-project/SKILL.md"
     },
     {
       "id": "nextjs-app-router-patterns",
@@ -16443,6 +19157,34 @@
       "path": "skills/notion-template-business/SKILL.md"
     },
     {
+      "id": "numpy",
+      "name": "numpy",
+      "description": "Numpy",
+      "category": "general",
+      "tags": [
+        "numpy"
+      ],
+      "triggers": [
+        "numpy"
+      ],
+      "path": "skills/numpy/SKILL.md"
+    },
+    {
+      "id": "nutrition-analyzer",
+      "name": "nutrition-analyzer",
+      "description": "分析营养数据、识别营养模式、评估营养状况，并提供个性化营养建议。支持与运动、睡眠、慢性病数据的关联分析。",
+      "category": "general",
+      "tags": [
+        "nutrition",
+        "analyzer"
+      ],
+      "triggers": [
+        "nutrition",
+        "analyzer"
+      ],
+      "path": "skills/nutrition-analyzer/SKILL.md"
+    },
+    {
       "id": "nx-workspace-patterns",
       "name": "nx-workspace-patterns",
       "description": "Configure and optimize Nx monorepo workspaces. Use when setting up Nx, configuring project boundaries, optimizing build caching, or implementing affected commands.",
@@ -16546,25 +19288,15 @@
     {
       "id": "observe-whatsapp",
       "name": "observe-whatsapp",
-      "description": "Observe and troubleshoot WhatsApp in Kapso: debug message delivery, inspect webhook deliveries/retries, triage API errors, and run health checks. Use when investigating production issues, message f...",
-      "category": "development",
+      "description": "Observe Whatsapp",
+      "category": "general",
       "tags": [
         "observe",
         "whatsapp"
       ],
       "triggers": [
         "observe",
-        "whatsapp",
-        "troubleshoot",
-        "kapso",
-        "debug",
-        "message",
-        "delivery",
-        "inspect",
-        "webhook",
-        "deliveries",
-        "retries",
-        "triage"
+        "whatsapp"
       ],
       "path": "skills/observe-whatsapp/SKILL.md"
     },
@@ -16593,6 +19325,23 @@
         "format"
       ],
       "path": "skills/obsidian-clipper-template-creator/SKILL.md"
+    },
+    {
+      "id": "occupational-health-analyzer",
+      "name": "occupational-health-analyzer",
+      "description": "分析职业健康数据、识别工作相关健康风险、评估职业健康状况、提供个性化职业健康建议。支持与睡眠、运动、心理健康等其他健康数据的关联分析。",
+      "category": "general",
+      "tags": [
+        "occupational",
+        "health",
+        "analyzer"
+      ],
+      "triggers": [
+        "occupational",
+        "health",
+        "analyzer"
+      ],
+      "path": "skills/occupational-health-analyzer/SKILL.md"
     },
     {
       "id": "odoo-accounting-setup",
@@ -17315,6 +20064,22 @@
       "path": "skills/one-drive-automation/SKILL.md"
     },
     {
+      "id": "open-source-context",
+      "name": "open-source-context",
+      "description": "Open Source Context",
+      "category": "general",
+      "tags": [
+        "open",
+        "source"
+      ],
+      "triggers": [
+        "open",
+        "source",
+        "context"
+      ],
+      "path": "skills/open-source-context/SKILL.md"
+    },
+    {
       "id": "openapi-spec-generation",
       "name": "openapi-spec-generation",
       "description": "Generate and maintain OpenAPI 3.1 specifications from code, design-first specs, and validation patterns. Use when creating API documentation, generating SDKs, or ensuring API contract compliance.",
@@ -17341,6 +20106,38 @@
       "path": "skills/openapi-spec-generation/SKILL.md"
     },
     {
+      "id": "operational-guidelines",
+      "name": "operational-guidelines",
+      "description": "Operational Guidelines",
+      "category": "general",
+      "tags": [
+        "operational",
+        "guidelines"
+      ],
+      "triggers": [
+        "operational",
+        "guidelines"
+      ],
+      "path": "skills/operational-guidelines/SKILL.md"
+    },
+    {
+      "id": "oral-health-analyzer",
+      "name": "oral-health-analyzer",
+      "description": "分析口腔健康数据、识别口腔问题模式、评估口腔健康状况、提供个性化口腔健康建议。支持与营养、慢性病、用药等其他健康数据的关联分析。",
+      "category": "general",
+      "tags": [
+        "oral",
+        "health",
+        "analyzer"
+      ],
+      "triggers": [
+        "oral",
+        "health",
+        "analyzer"
+      ],
+      "path": "skills/oral-health-analyzer/SKILL.md"
+    },
+    {
       "id": "os-scripting",
       "name": "os-scripting",
       "description": "Operating system and shell scripting troubleshooting workflow for Linux, macOS, and Windows. Covers bash scripting, system administration, debugging, and automation.",
@@ -17364,6 +20161,21 @@
         "debugging"
       ],
       "path": "skills/os-scripting/SKILL.md"
+    },
+    {
+      "id": "osint-evals",
+      "name": "osint-evals",
+      "description": "Osint Evals",
+      "category": "general",
+      "tags": [
+        "osint",
+        "evals"
+      ],
+      "triggers": [
+        "osint",
+        "evals"
+      ],
+      "path": "skills/osint-evals/SKILL.md"
     },
     {
       "id": "oss-hunter",
@@ -17506,6 +20318,33 @@
         "twitter"
       ],
       "path": "skills/paid-ads/SKILL.md"
+    },
+    {
+      "id": "pandas",
+      "name": "pandas",
+      "description": "Pandas",
+      "category": "general",
+      "tags": [
+        "pandas"
+      ],
+      "triggers": [
+        "pandas"
+      ],
+      "path": "skills/pandas/SKILL.md"
+    },
+    {
+      "id": "paper-analysis",
+      "name": "paper-analysis",
+      "description": "Paper Analysis",
+      "category": "general",
+      "tags": [
+        "paper"
+      ],
+      "triggers": [
+        "paper",
+        "analysis"
+      ],
+      "path": "skills/paper-analysis/SKILL.md"
     },
     {
       "id": "parallel-agents",
@@ -17723,6 +20562,31 @@
         "observability"
       ],
       "path": "skills/performance-engineer/SKILL.md"
+    },
+    {
+      "id": "performance-optimizer",
+      "name": "performance-optimizer",
+      "description": "Identifies and fixes performance bottlenecks in code, databases, and APIs. Measures before and after to prove improvements.",
+      "category": "general",
+      "tags": [
+        "performance",
+        "optimizer"
+      ],
+      "triggers": [
+        "performance",
+        "optimizer",
+        "identifies",
+        "fixes",
+        "bottlenecks",
+        "code",
+        "databases",
+        "apis",
+        "measures",
+        "before",
+        "after",
+        "prove"
+      ],
+      "path": "skills/performance-optimizer/SKILL.md"
     },
     {
       "id": "performance-profiling",
@@ -17964,6 +20828,30 @@
       "path": "skills/playwright-skill/SKILL.md"
     },
     {
+      "id": "plotly",
+      "name": "plotly",
+      "description": "Interactive visualization library. Use when you need hover info, zoom, pan, or web-embeddable charts. Best for dashboards, exploratory analysis, and presentations. For static publication figures use matplotlib or scientific-visualization.",
+      "category": "general",
+      "tags": [
+        "plotly"
+      ],
+      "triggers": [
+        "plotly",
+        "interactive",
+        "visualization",
+        "library",
+        "hover",
+        "info",
+        "zoom",
+        "pan",
+        "web",
+        "embeddable",
+        "charts",
+        "dashboards"
+      ],
+      "path": "skills/plotly/SKILL.md"
+    },
+    {
       "id": "podcast-generation",
       "name": "podcast-generation",
       "description": "Generate AI-powered podcast-style audio narratives using Azure OpenAI's GPT Realtime Mini model via WebSocket. Use when building text-to-speech features, audio narrative generation, podcast creatio...",
@@ -17987,6 +20875,43 @@
         "realtime"
       ],
       "path": "skills/podcast-generation/SKILL.md"
+    },
+    {
+      "id": "polars",
+      "name": "polars",
+      "description": "Fast in-memory DataFrame library for datasets that fit in RAM. Use when pandas is too slow but data still fits in memory. Lazy evaluation, parallel execution, Apache Arrow backend. Best for 1-100GB datasets, ETL pipelines, faster pandas replacement. For larger-than-RAM data use dask or vaex.",
+      "category": "data-ai",
+      "tags": [
+        "polars"
+      ],
+      "triggers": [
+        "polars",
+        "fast",
+        "memory",
+        "dataframe",
+        "library",
+        "datasets",
+        "fit",
+        "ram",
+        "pandas",
+        "too",
+        "slow",
+        "data"
+      ],
+      "path": "skills/polars/SKILL.md"
+    },
+    {
+      "id": "polyfile",
+      "name": "polyfile",
+      "description": "Polyfile",
+      "category": "general",
+      "tags": [
+        "polyfile"
+      ],
+      "triggers": [
+        "polyfile"
+      ],
+      "path": "skills/polyfile/SKILL.md"
     },
     {
       "id": "popup-cro",
@@ -18227,6 +21152,31 @@
       "path": "skills/pptx-official/SKILL.md"
     },
     {
+      "id": "pr-writer",
+      "name": "pr-writer",
+      "description": "ALWAYS use this skill when creating or updating pull requests — never create or edit a PR directly without it. Follows Sentry conventions for PR titles, descriptions, and issue references. Trigger on any create PR, open PR, submit PR, make PR,...",
+      "category": "general",
+      "tags": [
+        "pr",
+        "writer"
+      ],
+      "triggers": [
+        "pr",
+        "writer",
+        "always",
+        "skill",
+        "creating",
+        "updating",
+        "pull",
+        "requests",
+        "never",
+        "edit",
+        "directly",
+        "without"
+      ],
+      "path": "skills/pr-writer/SKILL.md"
+    },
+    {
       "id": "pricing-strategy",
       "name": "pricing-strategy",
       "description": "Design pricing, packaging, and monetization strategies based on value, customer willingness to pay, and growth objectives.",
@@ -18296,6 +21246,34 @@
         "root"
       ],
       "path": "skills/privilege-escalation-methods/SKILL.md"
+    },
+    {
+      "id": "product-manager",
+      "name": "product-manager",
+      "description": "Senior PM agent with 6 knowledge domains, 30+ frameworks, 12 templates, and 32 SaaS metrics with formulas. Pure Markdown, zero scripts.",
+      "category": "security",
+      "tags": [
+        "product-management",
+        "saas",
+        "frameworks",
+        "metrics",
+        "strategy"
+      ],
+      "triggers": [
+        "product-management",
+        "saas",
+        "frameworks",
+        "metrics",
+        "strategy",
+        "product",
+        "manager",
+        "senior",
+        "pm",
+        "agent",
+        "knowledge",
+        "domains"
+      ],
+      "path": "skills/product-manager/SKILL.md"
     },
     {
       "id": "product-manager-toolkit",
@@ -18419,6 +21397,28 @@
         "data"
       ],
       "path": "skills/programmatic-seo/SKILL.md"
+    },
+    {
+      "id": "project-development",
+      "name": "project-development",
+      "description": "This skill should be used when the user asks to \"start an LLM project\", \"design batch pipeline\", \"evaluate task-model fit\", \"structure agent project\", or mentions pipeline architecture, agent-assisted development, cost estimation, or choosing...",
+      "category": "infrastructure",
+      "tags": [],
+      "triggers": [
+        "development",
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "start",
+        "llm",
+        "batch",
+        "pipeline",
+        "evaluate",
+        "task"
+      ],
+      "path": "skills/project-development/SKILL.md"
     },
     {
       "id": "projection-patterns",
@@ -18597,6 +21597,23 @@
       "path": "skills/prompt-library/SKILL.md"
     },
     {
+      "id": "proof-of-vulnerability",
+      "name": "proof-of-vulnerability",
+      "description": "Proof Of Vulnerability",
+      "category": "security",
+      "tags": [
+        "proof",
+        "of",
+        "vulnerability"
+      ],
+      "triggers": [
+        "proof",
+        "of",
+        "vulnerability"
+      ],
+      "path": "skills/proof-of-vulnerability/SKILL.md"
+    },
+    {
       "id": "protocol-reverse-engineering",
       "name": "protocol-reverse-engineering",
       "description": "Master network protocol reverse engineering including packet analysis, protocol dissection, and custom protocol documentation. Use when analyzing network traffic, understanding proprietary protocol...",
@@ -18623,6 +21640,48 @@
       "path": "skills/protocol-reverse-engineering/SKILL.md"
     },
     {
+      "id": "publish-and-summary",
+      "name": "publish-and-summary",
+      "description": "Publish And Summary",
+      "category": "general",
+      "tags": [
+        "publish",
+        "and",
+        "summary"
+      ],
+      "triggers": [
+        "publish",
+        "and",
+        "summary"
+      ],
+      "path": "skills/publish-and-summary/SKILL.md"
+    },
+    {
+      "id": "pubmed-database",
+      "name": "pubmed-database",
+      "description": "Direct REST API access to PubMed. Advanced Boolean/MeSH queries, E-utilities API, batch processing, citation management. For Python workflows, prefer biopython (Bio.Entrez). Use this for direct HTTP/REST work or custom API implementations.",
+      "category": "infrastructure",
+      "tags": [
+        "pubmed",
+        "database"
+      ],
+      "triggers": [
+        "pubmed",
+        "database",
+        "direct",
+        "rest",
+        "api",
+        "access",
+        "boolean",
+        "mesh",
+        "queries",
+        "utilities",
+        "batch",
+        "processing"
+      ],
+      "path": "skills/pubmed-database/SKILL.md"
+    },
+    {
       "id": "pydantic-models-py",
       "name": "pydantic-models-py",
       "description": "Create Pydantic models following the multi-model pattern with Base, Create, Update, Response, and InDB variants. Use when defining API request/response schemas, database models, or data validation ...",
@@ -18647,6 +21706,19 @@
         "defining"
       ],
       "path": "skills/pydantic-models-py/SKILL.md"
+    },
+    {
+      "id": "pygraphistry",
+      "name": "pygraphistry",
+      "description": "Pygraphistry",
+      "category": "general",
+      "tags": [
+        "pygraphistry"
+      ],
+      "triggers": [
+        "pygraphistry"
+      ],
+      "path": "skills/pygraphistry/SKILL.md"
     },
     {
       "id": "pypict-skill",
@@ -18812,6 +21884,23 @@
       "path": "skills/python-pro/SKILL.md"
     },
     {
+      "id": "python-security-auditor",
+      "name": "python-security-auditor",
+      "description": "Python Security Auditor",
+      "category": "security",
+      "tags": [
+        "python",
+        "security",
+        "auditor"
+      ],
+      "triggers": [
+        "python",
+        "security",
+        "auditor"
+      ],
+      "path": "skills/python-security-auditor/SKILL.md"
+    },
+    {
       "id": "python-testing-patterns",
       "name": "python-testing-patterns",
       "description": "Implement comprehensive testing strategies with pytest, fixtures, mocking, and test-driven development. Use when writing Python tests, setting up test suites, or implementing testing best practices.",
@@ -18834,6 +21923,30 @@
         "up"
       ],
       "path": "skills/python-testing-patterns/SKILL.md"
+    },
+    {
+      "id": "qiskit",
+      "name": "qiskit",
+      "description": "IBM quantum computing framework. Use when targeting IBM Quantum hardware, working with Qiskit Runtime for production workloads, or needing IBM optimization tools. Best for IBM hardware execution, quantum error mitigation, and enterprise quantum computing. For Google hardware...",
+      "category": "general",
+      "tags": [
+        "qiskit"
+      ],
+      "triggers": [
+        "qiskit",
+        "ibm",
+        "quantum",
+        "computing",
+        "framework",
+        "targeting",
+        "hardware",
+        "working",
+        "runtime",
+        "workloads",
+        "needing",
+        "optimization"
+      ],
+      "path": "skills/qiskit/SKILL.md"
     },
     {
       "id": "quality-nonconformance",
@@ -18884,6 +21997,20 @@
         "metrics"
       ],
       "path": "skills/quant-analyst/SKILL.md"
+    },
+    {
+      "id": "quantitative-analysis",
+      "name": "quantitative-analysis",
+      "description": "Quantitative Analysis",
+      "category": "general",
+      "tags": [
+        "quantitative"
+      ],
+      "triggers": [
+        "quantitative",
+        "analysis"
+      ],
+      "path": "skills/quantitative-analysis/SKILL.md"
     },
     {
       "id": "radix-ui-design-system",
@@ -18956,6 +22083,21 @@
         "optimization"
       ],
       "path": "skills/rag-implementation/SKILL.md"
+    },
+    {
+      "id": "rails-upgrade",
+      "name": "rails-upgrade",
+      "description": "Rails Upgrade",
+      "category": "general",
+      "tags": [
+        "rails",
+        "upgrade"
+      ],
+      "triggers": [
+        "rails",
+        "upgrade"
+      ],
+      "path": "skills/rails-upgrade/SKILL.md"
     },
     {
       "id": "react-best-practices",
@@ -19353,6 +22495,43 @@
       "path": "skills/referral-program/SKILL.md"
     },
     {
+      "id": "rehabilitation-analyzer",
+      "name": "rehabilitation-analyzer",
+      "description": "分析康复训练数据、识别康复模式、评估康复进展，并提供个性化康复建议",
+      "category": "general",
+      "tags": [
+        "rehabilitation",
+        "analyzer"
+      ],
+      "triggers": [
+        "rehabilitation",
+        "analyzer"
+      ],
+      "path": "skills/rehabilitation-analyzer/SKILL.md"
+    },
+    {
+      "id": "remotion",
+      "name": "remotion",
+      "description": "Generate walkthrough videos from Stitch projects using Remotion with smooth transitions, zooming, and text overlays",
+      "category": "general",
+      "tags": [
+        "remotion"
+      ],
+      "triggers": [
+        "remotion",
+        "generate",
+        "walkthrough",
+        "videos",
+        "stitch",
+        "smooth",
+        "transitions",
+        "zooming",
+        "text",
+        "overlays"
+      ],
+      "path": "skills/remotion/SKILL.md"
+    },
+    {
       "id": "remotion-best-practices",
       "name": "remotion-best-practices",
       "description": "Best practices for Remotion - Video creation in React",
@@ -19426,24 +22605,14 @@
     {
       "id": "research-engineer",
       "name": "research-engineer",
-      "description": "An uncompromising Academic Research Engineer. Operates with absolute scientific rigor, objective criticism, and zero flair. Focuses on theoretical correctness, formal verification, and optimal impl...",
-      "category": "security",
+      "description": "Research Engineer",
+      "category": "general",
       "tags": [
         "research"
       ],
       "triggers": [
         "research",
-        "engineer",
-        "uncompromising",
-        "academic",
-        "operates",
-        "absolute",
-        "scientific",
-        "rigor",
-        "objective",
-        "criticism",
-        "zero",
-        "flair"
+        "engineer"
       ],
       "path": "skills/research-engineer/SKILL.md"
     },
@@ -19549,6 +22718,149 @@
       "path": "skills/risk-metrics-calculation/SKILL.md"
     },
     {
+      "id": "risk-modeling",
+      "name": "risk-modeling",
+      "description": "Risk Modeling",
+      "category": "security",
+      "tags": [
+        "risk",
+        "modeling"
+      ],
+      "triggers": [
+        "risk",
+        "modeling"
+      ],
+      "path": "skills/risk-modeling/SKILL.md"
+    },
+    {
+      "id": "robius-app-architecture",
+      "name": "robius-app-architecture",
+      "description": "CRITICAL: Use for Robius app architecture patterns. Triggers on:\nTokio, async, submit_async_request, 异步, 架构,\nSignalToUI, Cx::post_action, worker task,\napp structure, MatchEvent, handle_startup",
+      "category": "architecture",
+      "tags": [
+        "robius",
+        "app",
+        "architecture"
+      ],
+      "triggers": [
+        "robius",
+        "app",
+        "architecture",
+        "critical",
+        "triggers",
+        "tokio",
+        "async",
+        "submit",
+        "request",
+        "signaltoui",
+        "cx",
+        "post"
+      ],
+      "path": "skills/robius-app-architecture/SKILL.md"
+    },
+    {
+      "id": "robius-event-action",
+      "name": "robius-event-action",
+      "description": "CRITICAL: Use for Robius event and action patterns. Triggers on:\ncustom action, MatchEvent, post_action, cx.widget_action,\nhandle_actions, DefaultNone, widget action, event handling,\n事件处理, 自定义动作",
+      "category": "architecture",
+      "tags": [
+        "robius",
+        "event",
+        "action"
+      ],
+      "triggers": [
+        "robius",
+        "event",
+        "action",
+        "critical",
+        "triggers",
+        "custom",
+        "matchevent",
+        "post",
+        "cx",
+        "widget",
+        "handle",
+        "actions"
+      ],
+      "path": "skills/robius-event-action/SKILL.md"
+    },
+    {
+      "id": "robius-matrix-integration",
+      "name": "robius-matrix-integration",
+      "description": "CRITICAL: Use for Matrix SDK integration with Makepad. Triggers on:\nMatrix SDK, sliding sync, MatrixRequest, timeline,\nmatrix-sdk, matrix client, robrix, matrix room,\nMatrix 集成, 聊天客户端",
+      "category": "general",
+      "tags": [
+        "robius",
+        "matrix",
+        "integration"
+      ],
+      "triggers": [
+        "robius",
+        "matrix",
+        "integration",
+        "critical",
+        "sdk",
+        "makepad",
+        "triggers",
+        "sliding",
+        "sync",
+        "matrixrequest",
+        "timeline",
+        "client"
+      ],
+      "path": "skills/robius-matrix-integration/SKILL.md"
+    },
+    {
+      "id": "robius-state-management",
+      "name": "robius-state-management",
+      "description": "CRITICAL: Use for Robius state management patterns. Triggers on:\nAppState, persistence, theme switch, 状态管理,\nScope::with_data, save state, load state, serde,\n状态持久化, 主题切换",
+      "category": "data-ai",
+      "tags": [
+        "robius",
+        "state"
+      ],
+      "triggers": [
+        "robius",
+        "state",
+        "critical",
+        "triggers",
+        "appstate",
+        "persistence",
+        "theme",
+        "switch",
+        "scope",
+        "data",
+        "save",
+        "load"
+      ],
+      "path": "skills/robius-state-management/SKILL.md"
+    },
+    {
+      "id": "robius-widget-patterns",
+      "name": "robius-widget-patterns",
+      "description": "CRITICAL: Use for Robius widget patterns. Triggers on:\napply_over, TextOrImage, modal, 可复用, 模态,\ncollapsible, drag drop, reusable widget, widget design,\npageflip, 组件设计, 组件模式",
+      "category": "architecture",
+      "tags": [
+        "robius",
+        "widget"
+      ],
+      "triggers": [
+        "robius",
+        "widget",
+        "critical",
+        "triggers",
+        "apply",
+        "textorimage",
+        "modal",
+        "collapsible",
+        "drag",
+        "drop",
+        "reusable",
+        "pageflip"
+      ],
+      "path": "skills/robius-widget-patterns/SKILL.md"
+    },
+    {
       "id": "ruby-pro",
       "name": "ruby-pro",
       "description": "Write idiomatic Ruby code with metaprogramming, Rails patterns, and performance optimization. Specializes in Ruby on Rails, gem development, and testing frameworks.",
@@ -19615,6 +22927,23 @@
         "programming"
       ],
       "path": "skills/rust-pro/SKILL.md"
+    },
+    {
+      "id": "rust-security-auditor",
+      "name": "rust-security-auditor",
+      "description": "Rust Security Auditor",
+      "category": "security",
+      "tags": [
+        "rust",
+        "security",
+        "auditor"
+      ],
+      "triggers": [
+        "rust",
+        "security",
+        "auditor"
+      ],
+      "path": "skills/rust-security-auditor/SKILL.md"
     },
     {
       "id": "saas-mvp-launcher",
@@ -19813,6 +23142,30 @@
       "path": "skills/scanning-tools/SKILL.md"
     },
     {
+      "id": "scanpy",
+      "name": "scanpy",
+      "description": "Standard single-cell RNA-seq analysis pipeline. Use for QC, normalization, dimensionality reduction (PCA/UMAP/t-SNE), clustering, differential expression, and visualization. Best for exploratory scRNA-seq analysis with established workflows. For...",
+      "category": "infrastructure",
+      "tags": [
+        "scanpy"
+      ],
+      "triggers": [
+        "scanpy",
+        "standard",
+        "single",
+        "cell",
+        "rna",
+        "seq",
+        "analysis",
+        "pipeline",
+        "qc",
+        "normalization",
+        "dimensionality",
+        "reduction"
+      ],
+      "path": "skills/scanpy/SKILL.md"
+    },
+    {
       "id": "schema-markup",
       "name": "schema-markup",
       "description": "Design, validate, and optimize schema.org structured data for eligibility, correctness, and measurable SEO impact.",
@@ -19836,6 +23189,69 @@
         "impact"
       ],
       "path": "skills/schema-markup/SKILL.md"
+    },
+    {
+      "id": "scientific-writing",
+      "name": "scientific-writing",
+      "description": "Core skill for the deep research and writing tool. Write scientific manuscripts in full paragraphs (never bullet points). Use two-stage process with (1) section outlines with key points using research-lookup then (2) convert to flowing prose. IMRAD...",
+      "category": "workflow",
+      "tags": [
+        "scientific",
+        "writing"
+      ],
+      "triggers": [
+        "scientific",
+        "writing",
+        "core",
+        "skill",
+        "deep",
+        "research",
+        "write",
+        "manuscripts",
+        "full",
+        "paragraphs",
+        "never",
+        "bullet"
+      ],
+      "path": "skills/scientific-writing/SKILL.md"
+    },
+    {
+      "id": "scikit-learn",
+      "name": "scikit-learn",
+      "description": "Machine learning in Python with scikit-learn. Use for classification, regression, clustering, model evaluation, and ML pipelines.",
+      "category": "data-ai",
+      "tags": [
+        "scikit",
+        "learn"
+      ],
+      "triggers": [
+        "scikit",
+        "learn",
+        "machine",
+        "learning",
+        "python",
+        "classification",
+        "regression",
+        "clustering",
+        "model",
+        "evaluation",
+        "ml",
+        "pipelines"
+      ],
+      "path": "skills/scikit-learn/SKILL.md"
+    },
+    {
+      "id": "scipy",
+      "name": "scipy",
+      "description": "Scipy",
+      "category": "general",
+      "tags": [
+        "scipy"
+      ],
+      "triggers": [
+        "scipy"
+      ],
+      "path": "skills/scipy/SKILL.md"
     },
     {
       "id": "screen-reader-testing",
@@ -19910,6 +23326,30 @@
         "cinematic"
       ],
       "path": "skills/scroll-experience/SKILL.md"
+    },
+    {
+      "id": "seaborn",
+      "name": "seaborn",
+      "description": "Statistical visualization with pandas integration. Use for quick exploration of distributions, relationships, and categorical comparisons with attractive defaults. Best for box plots, violin plots, pair plots, heatmaps. Built on matplotlib. For interactive plots use plotly;...",
+      "category": "general",
+      "tags": [
+        "seaborn"
+      ],
+      "triggers": [
+        "seaborn",
+        "statistical",
+        "visualization",
+        "pandas",
+        "integration",
+        "quick",
+        "exploration",
+        "distributions",
+        "relationships",
+        "categorical",
+        "comparisons",
+        "attractive"
+      ],
+      "path": "skills/seaborn/SKILL.md"
     },
     {
       "id": "search-specialist",
@@ -19999,7 +23439,7 @@
     {
       "id": "security-bluebook-builder",
       "name": "security-bluebook-builder",
-      "description": "Build security Blue Books for sensitive apps",
+      "description": "Create or refine a concise, normative security policy (\"Blue Book\") for sensitive applications. Use when users need a threat model, data classification rules, auth/session policy, logging and audit requirements, retention/deletion expectations, incident response, or security...",
       "category": "security",
       "tags": [
         "security",
@@ -20010,10 +23450,15 @@
         "security",
         "bluebook",
         "builder",
+        "refine",
+        "concise",
+        "normative",
+        "policy",
         "blue",
-        "books",
+        "book",
         "sensitive",
-        "apps"
+        "applications",
+        "users"
       ],
       "path": "skills/security-bluebook-builder/SKILL.md"
     },
@@ -20144,6 +23589,23 @@
         "frameworks"
       ],
       "path": "skills/security-scanning-security-sast/SKILL.md"
+    },
+    {
+      "id": "security-skill-creator",
+      "name": "security-skill-creator",
+      "description": "Security Skill Creator",
+      "category": "security",
+      "tags": [
+        "security",
+        "skill",
+        "creator"
+      ],
+      "triggers": [
+        "security",
+        "skill",
+        "creator"
+      ],
+      "path": "skills/security-skill-creator/SKILL.md"
     },
     {
       "id": "security/aws-compliance-checker",
@@ -20308,6 +23770,59 @@
         "plans"
       ],
       "path": "skills/segment-cdp/SKILL.md"
+    },
+    {
+      "id": "semgrep-rule-creator",
+      "name": "semgrep-rule-creator",
+      "description": "Creates custom Semgrep rules for detecting security vulnerabilities, bug patterns, and code patterns. Use when writing Semgrep rules or building custom static analysis detections.",
+      "category": "security",
+      "tags": [
+        "semgrep",
+        "rule",
+        "creator"
+      ],
+      "triggers": [
+        "semgrep",
+        "rule",
+        "creator",
+        "creates",
+        "custom",
+        "rules",
+        "detecting",
+        "security",
+        "vulnerabilities",
+        "bug",
+        "code",
+        "writing"
+      ],
+      "path": "skills/semgrep-rule-creator/SKILL.md"
+    },
+    {
+      "id": "semgrep-rule-variant-creator",
+      "name": "semgrep-rule-variant-creator",
+      "description": "Creates language variants of existing Semgrep rules. Use when porting a Semgrep rule to specified target languages. Takes an existing rule and target languages as input, produces independent rule+test directories for each language.",
+      "category": "testing",
+      "tags": [
+        "semgrep",
+        "rule",
+        "variant",
+        "creator"
+      ],
+      "triggers": [
+        "semgrep",
+        "rule",
+        "variant",
+        "creator",
+        "creates",
+        "language",
+        "variants",
+        "existing",
+        "rules",
+        "porting",
+        "specified",
+        "target"
+      ],
+      "path": "skills/semgrep-rule-variant-creator/SKILL.md"
     },
     {
       "id": "sendgrid-automation",
@@ -20815,6 +24330,23 @@
       "path": "skills/service-mesh-observability/SKILL.md"
     },
     {
+      "id": "sexual-health-analyzer",
+      "name": "sexual-health-analyzer",
+      "description": "Sexual Health Analyzer",
+      "category": "general",
+      "tags": [
+        "sexual",
+        "health",
+        "analyzer"
+      ],
+      "triggers": [
+        "sexual",
+        "health",
+        "analyzer"
+      ],
+      "path": "skills/sexual-health-analyzer/SKILL.md"
+    },
+    {
       "id": "shader-programming-glsl",
       "name": "shader-programming-glsl",
       "description": "Expert guide for writing efficient GLSL shaders (Vertex/Fragment) for web and game engines, covering syntax, uniforms, and common effects.",
@@ -20843,7 +24375,7 @@
     {
       "id": "sharp-edges",
       "name": "sharp-edges",
-      "description": "Identify error-prone APIs and dangerous configurations",
+      "description": "sharp-edges",
       "category": "general",
       "tags": [
         "sharp",
@@ -20851,13 +24383,7 @@
       ],
       "triggers": [
         "sharp",
-        "edges",
-        "identify",
-        "error",
-        "prone",
-        "apis",
-        "dangerous",
-        "configurations"
+        "edges"
       ],
       "path": "skills/sharp-edges/SKILL.md"
     },
@@ -21113,6 +24639,31 @@
       "path": "skills/skill-developer/SKILL.md"
     },
     {
+      "id": "skill-improver",
+      "name": "skill-improver",
+      "description": "Iteratively reviews and fixes Claude Code skill quality issues until they meet standards. Runs automated fix-review cycles using the skill-reviewer agent. Use to fix skill quality issues, improve skill descriptions, run automated skill review loops, or iteratively refine a...",
+      "category": "general",
+      "tags": [
+        "skill",
+        "improver"
+      ],
+      "triggers": [
+        "skill",
+        "improver",
+        "iteratively",
+        "reviews",
+        "fixes",
+        "claude",
+        "code",
+        "quality",
+        "issues",
+        "until",
+        "meet",
+        "standards"
+      ],
+      "path": "skills/skill-improver/SKILL.md"
+    },
+    {
       "id": "skill-rails-upgrade",
       "name": "skill-rails-upgrade",
       "description": "Analyze Rails apps and provide upgrade assessments",
@@ -21159,6 +24710,31 @@
       "path": "skills/skill-router/SKILL.md"
     },
     {
+      "id": "skill-scanner",
+      "name": "skill-scanner",
+      "description": "Scan agent skills for security issues. Use when asked to \"scan a skill\", \"audit a skill\", \"review skill security\", \"check skill for injection\", \"validate SKILL.md\", or assess whether an agent skill is safe to install. Checks for prompt injection, malicious scripts,...",
+      "category": "security",
+      "tags": [
+        "skill",
+        "scanner"
+      ],
+      "triggers": [
+        "skill",
+        "scanner",
+        "scan",
+        "agent",
+        "skills",
+        "security",
+        "issues",
+        "asked",
+        "audit",
+        "review",
+        "check",
+        "injection"
+      ],
+      "path": "skills/skill-scanner/SKILL.md"
+    },
+    {
       "id": "skill-seekers",
       "name": "skill-seekers",
       "description": "-Automatically convert documentation websites, GitHub repositories, and PDFs into Claude AI skills in minutes.",
@@ -21182,6 +24758,55 @@
         "skills"
       ],
       "path": "skills/skill-seekers/SKILL.md"
+    },
+    {
+      "id": "skill-writer",
+      "name": "skill-writer",
+      "description": "Create and improve agent skills following the Agent Skills specification. Use when asked to create, write, or update skills.",
+      "category": "general",
+      "tags": [
+        "skill",
+        "writer"
+      ],
+      "triggers": [
+        "skill",
+        "writer",
+        "improve",
+        "agent",
+        "skills",
+        "following",
+        "specification",
+        "asked",
+        "write",
+        "update"
+      ],
+      "path": "skills/skill-writer/SKILL.md"
+    },
+    {
+      "id": "skin-health-analyzer",
+      "name": "skin-health-analyzer",
+      "description": "Analyze skin health data, identify skin problem patterns, assess skin health status. Supports correlation analysis with nutrition, chronic diseases, and medication data.",
+      "category": "data-ai",
+      "tags": [
+        "skin",
+        "health",
+        "analyzer"
+      ],
+      "triggers": [
+        "skin",
+        "health",
+        "analyzer",
+        "analyze",
+        "data",
+        "identify",
+        "problem",
+        "assess",
+        "status",
+        "supports",
+        "correlation",
+        "analysis"
+      ],
+      "path": "skills/skin-health-analyzer/SKILL.md"
     },
     {
       "id": "slack-automation",
@@ -21258,6 +24883,21 @@
         "validation"
       ],
       "path": "skills/slack-gif-creator/SKILL.md"
+    },
+    {
+      "id": "sleep-analyzer",
+      "name": "sleep-analyzer",
+      "description": "分析睡眠数据、识别睡眠模式、评估睡眠质量，并提供个性化睡眠改善建议。支持与其他健康数据的关联分析。",
+      "category": "general",
+      "tags": [
+        "sleep",
+        "analyzer"
+      ],
+      "triggers": [
+        "sleep",
+        "analyzer"
+      ],
+      "path": "skills/sleep-analyzer/SKILL.md"
     },
     {
       "id": "slo-implementation",
@@ -21409,6 +25049,67 @@
       "path": "skills/spark-optimization/SKILL.md"
     },
     {
+      "id": "spec-to-code-compliance",
+      "name": "spec-to-code-compliance",
+      "description": "Verifies code implements exactly what documentation specifies for blockchain audits. Use when comparing code against whitepapers, finding gaps between specs and implementation, or performing compliance checks for protocol implementations.",
+      "category": "security",
+      "tags": [
+        "spec",
+        "to",
+        "code",
+        "compliance"
+      ],
+      "triggers": [
+        "spec",
+        "to",
+        "code",
+        "compliance",
+        "verifies",
+        "implements",
+        "exactly",
+        "what",
+        "documentation",
+        "specifies",
+        "blockchain",
+        "audits"
+      ],
+      "path": "skills/spec-to-code-compliance/SKILL.md"
+    },
+    {
+      "id": "speckit-updater",
+      "name": "speckit-updater",
+      "description": "SpecKit Safe Update",
+      "category": "general",
+      "tags": [
+        "speckit",
+        "updater"
+      ],
+      "triggers": [
+        "speckit",
+        "updater",
+        "safe",
+        "update"
+      ],
+      "path": "skills/speckit-updater/SKILL.md"
+    },
+    {
+      "id": "speed",
+      "name": "speed",
+      "description": "Launch RSVP speed reader for text",
+      "category": "general",
+      "tags": [
+        "speed"
+      ],
+      "triggers": [
+        "speed",
+        "launch",
+        "rsvp",
+        "reader",
+        "text"
+      ],
+      "path": "skills/speed/SKILL.md"
+    },
+    {
       "id": "sql-injection-testing",
       "name": "sql-injection-testing",
       "description": "This skill should be used when the user asks to \"test for SQL injection vulnerabilities\", \"perform SQLi attacks\", \"bypass authentication using SQL injection\", \"extract database inform...",
@@ -21531,6 +25232,55 @@
         "locations"
       ],
       "path": "skills/square-automation/SKILL.md"
+    },
+    {
+      "id": "sred-project-organizer",
+      "name": "sred-project-organizer",
+      "description": "Take a list of projects and their related documentation, and organize them into the SRED format for submission.",
+      "category": "general",
+      "tags": [
+        "sred",
+        "organizer"
+      ],
+      "triggers": [
+        "sred",
+        "organizer",
+        "take",
+        "list",
+        "related",
+        "documentation",
+        "organize",
+        "them",
+        "format",
+        "submission"
+      ],
+      "path": "skills/sred-project-organizer/SKILL.md"
+    },
+    {
+      "id": "sred-work-summary",
+      "name": "sred-work-summary",
+      "description": "Go back through the previous year of work and create a Notion doc that groups relevant links into projects that can then be documented as SRED projects.",
+      "category": "development",
+      "tags": [
+        "sred",
+        "work",
+        "summary"
+      ],
+      "triggers": [
+        "sred",
+        "work",
+        "summary",
+        "go",
+        "back",
+        "through",
+        "previous",
+        "year",
+        "notion",
+        "doc",
+        "groups",
+        "relevant"
+      ],
+      "path": "skills/sred-work-summary/SKILL.md"
     },
     {
       "id": "ssh-penetration-testing",
@@ -21715,6 +25465,66 @@
       "path": "skills/startup-metrics-framework/SKILL.md"
     },
     {
+      "id": "static-analysis",
+      "name": "static-analysis",
+      "description": "Static Analysis",
+      "category": "general",
+      "tags": [
+        "static"
+      ],
+      "triggers": [
+        "static",
+        "analysis"
+      ],
+      "path": "skills/static-analysis/SKILL.md"
+    },
+    {
+      "id": "statsmodels",
+      "name": "statsmodels",
+      "description": "Statistical models library for Python. Use when you need specific model classes (OLS, GLM, mixed models, ARIMA) with detailed diagnostics, residuals, and inference. Best for econometrics, time series, rigorous inference with coefficient tables. For...",
+      "category": "development",
+      "tags": [
+        "statsmodels"
+      ],
+      "triggers": [
+        "statsmodels",
+        "statistical",
+        "models",
+        "library",
+        "python",
+        "specific",
+        "model",
+        "classes",
+        "ols",
+        "glm",
+        "mixed",
+        "arima"
+      ],
+      "path": "skills/statsmodels/SKILL.md"
+    },
+    {
+      "id": "stitch-loop",
+      "name": "stitch-loop",
+      "description": "Teaches agents to iteratively build websites using Stitch with an autonomous baton-passing loop pattern",
+      "category": "general",
+      "tags": [
+        "stitch",
+        "loop"
+      ],
+      "triggers": [
+        "stitch",
+        "loop",
+        "teaches",
+        "agents",
+        "iteratively",
+        "websites",
+        "autonomous",
+        "baton",
+        "passing"
+      ],
+      "path": "skills/stitch-loop/SKILL.md"
+    },
+    {
       "id": "stitch-ui-design",
       "name": "stitch-ui-design",
       "description": "Expert guide for creating effective prompts for Google Stitch AI UI design tool. Use when user wants to design UI/UX in Stitch, create app interfaces, generate mobile/web designs, or needs help cra...",
@@ -21876,9 +25686,36 @@
       "path": "skills/superpowers-lab/SKILL.md"
     },
     {
+      "id": "supply-chain-risk-auditor",
+      "name": "supply-chain-risk-auditor",
+      "description": "Identifies dependencies at heightened risk of exploitation or takeover. Use when assessing supply chain attack surface, evaluating dependency health, or scoping security engagements.",
+      "category": "security",
+      "tags": [
+        "supply",
+        "chain",
+        "risk",
+        "auditor"
+      ],
+      "triggers": [
+        "supply",
+        "chain",
+        "risk",
+        "auditor",
+        "identifies",
+        "dependencies",
+        "heightened",
+        "exploitation",
+        "takeover",
+        "assessing",
+        "attack",
+        "surface"
+      ],
+      "path": "skills/supply-chain-risk-auditor/SKILL.md"
+    },
+    {
       "id": "swiftui-expert-skill",
       "name": "swiftui-expert-skill",
-      "description": "Write, review, or improve SwiftUI code following best practices for state management, view composition, performance, modern APIs, Swift concurrency, and iOS 26+ Liquid Glass adoption. Use when buil...",
+      "description": "Write, review, or improve SwiftUI code following best practices for state management, view composition, performance, and iOS 26+ Liquid Glass adoption. Use when building new SwiftUI features, refactoring existing views, reviewing code quality, or adopting modern SwiftUI patterns.",
       "category": "development",
       "tags": [
         "swiftui",
@@ -21896,9 +25733,33 @@
         "view",
         "composition",
         "performance",
-        "apis"
+        "ios"
       ],
       "path": "skills/swiftui-expert-skill/SKILL.md"
+    },
+    {
+      "id": "sympy",
+      "name": "sympy",
+      "description": "Use this skill when working with symbolic mathematics in Python. This skill should be used for symbolic computation tasks including solving equations algebraically, performing calculus operations (derivatives, integrals, limits), manipulating algebraic expressions, working...",
+      "category": "development",
+      "tags": [
+        "sympy"
+      ],
+      "triggers": [
+        "sympy",
+        "skill",
+        "working",
+        "symbolic",
+        "mathematics",
+        "python",
+        "should",
+        "used",
+        "computation",
+        "tasks",
+        "including",
+        "solving"
+      ],
+      "path": "skills/sympy/SKILL.md"
     },
     {
       "id": "systematic-debugging",
@@ -22016,6 +25877,23 @@
         "api"
       ],
       "path": "skills/tavily-web/SKILL.md"
+    },
+    {
+      "id": "tcm-constitution-analyzer",
+      "name": "tcm-constitution-analyzer",
+      "description": "分析中医体质数据、识别体质类型、评估体质特征,并提供个性化养生建议。支持与营养、运动、睡眠等健康数据的关联分析。",
+      "category": "general",
+      "tags": [
+        "tcm",
+        "constitution",
+        "analyzer"
+      ],
+      "triggers": [
+        "tcm",
+        "constitution",
+        "analyzer"
+      ],
+      "path": "skills/tcm-constitution-analyzer/SKILL.md"
     },
     {
       "id": "tdd-orchestrator",
@@ -22553,6 +26431,22 @@
       "path": "skills/test-fixing/SKILL.md"
     },
     {
+      "id": "testing-handbook-skills",
+      "name": "testing-handbook-skills",
+      "description": "Testing Handbook Skills",
+      "category": "testing",
+      "tags": [
+        "handbook",
+        "skills"
+      ],
+      "triggers": [
+        "handbook",
+        "skills",
+        "testing"
+      ],
+      "path": "skills/testing-handbook-skills/SKILL.md"
+    },
+    {
       "id": "testing-patterns",
       "name": "testing-patterns",
       "description": "Jest testing patterns, factory functions, mocking strategies, and TDD workflow. Use when writing unit tests, creating test factories, or following TDD red-green-refactor cycle.",
@@ -22673,6 +26567,231 @@
       "path": "skills/threat-modeling-expert/SKILL.md"
     },
     {
+      "id": "threejs-animation",
+      "name": "threejs-animation",
+      "description": "Three.js animation - keyframe animation, skeletal animation, morph targets, animation mixing. Use when animating objects, playing GLTF animations, creating procedural motion, or blending animations.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "animation"
+      ],
+      "triggers": [
+        "threejs",
+        "animation",
+        "three",
+        "js",
+        "keyframe",
+        "skeletal",
+        "morph",
+        "targets",
+        "mixing",
+        "animating",
+        "objects",
+        "playing"
+      ],
+      "path": "skills/threejs-animation/SKILL.md"
+    },
+    {
+      "id": "threejs-fundamentals",
+      "name": "threejs-fundamentals",
+      "description": "Three.js scene setup, cameras, renderer, Object3D hierarchy, coordinate systems. Use when setting up 3D scenes, creating cameras, configuring renderers, managing object hierarchies, or working with transforms.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "fundamentals"
+      ],
+      "triggers": [
+        "threejs",
+        "fundamentals",
+        "three",
+        "js",
+        "scene",
+        "setup",
+        "cameras",
+        "renderer",
+        "object3d",
+        "hierarchy",
+        "coordinate",
+        "setting"
+      ],
+      "path": "skills/threejs-fundamentals/SKILL.md"
+    },
+    {
+      "id": "threejs-geometry",
+      "name": "threejs-geometry",
+      "description": "Three.js geometry creation - built-in shapes, BufferGeometry, custom geometry, instancing. Use when creating 3D shapes, working with vertices, building custom meshes, or optimizing with instanced rendering.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "geometry"
+      ],
+      "triggers": [
+        "threejs",
+        "geometry",
+        "three",
+        "js",
+        "creation",
+        "built",
+        "shapes",
+        "buffergeometry",
+        "custom",
+        "instancing",
+        "creating",
+        "3d"
+      ],
+      "path": "skills/threejs-geometry/SKILL.md"
+    },
+    {
+      "id": "threejs-interaction",
+      "name": "threejs-interaction",
+      "description": "Three.js interaction - raycasting, controls, mouse/touch input, object selection. Use when handling user input, implementing click detection, adding camera controls, or creating interactive 3D experiences.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "interaction"
+      ],
+      "triggers": [
+        "threejs",
+        "interaction",
+        "three",
+        "js",
+        "raycasting",
+        "controls",
+        "mouse",
+        "touch",
+        "input",
+        "object",
+        "selection",
+        "handling"
+      ],
+      "path": "skills/threejs-interaction/SKILL.md"
+    },
+    {
+      "id": "threejs-lighting",
+      "name": "threejs-lighting",
+      "description": "Three.js lighting - light types, shadows, environment lighting. Use when adding lights, configuring shadows, setting up IBL, or optimizing lighting performance.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "lighting"
+      ],
+      "triggers": [
+        "threejs",
+        "lighting",
+        "three",
+        "js",
+        "light",
+        "types",
+        "shadows",
+        "environment",
+        "adding",
+        "lights",
+        "configuring",
+        "setting"
+      ],
+      "path": "skills/threejs-lighting/SKILL.md"
+    },
+    {
+      "id": "threejs-loaders",
+      "name": "threejs-loaders",
+      "description": "Three.js asset loading - GLTF, textures, images, models, async patterns. Use when loading 3D models, textures, HDR environments, or managing loading progress.",
+      "category": "architecture",
+      "tags": [
+        "threejs",
+        "loaders"
+      ],
+      "triggers": [
+        "threejs",
+        "loaders",
+        "three",
+        "js",
+        "asset",
+        "loading",
+        "gltf",
+        "textures",
+        "images",
+        "models",
+        "async",
+        "3d"
+      ],
+      "path": "skills/threejs-loaders/SKILL.md"
+    },
+    {
+      "id": "threejs-materials",
+      "name": "threejs-materials",
+      "description": "Three.js materials - PBR, basic, phong, shader materials, material properties. Use when styling meshes, working with textures, creating custom shaders, or optimizing material performance.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "materials"
+      ],
+      "triggers": [
+        "threejs",
+        "materials",
+        "three",
+        "js",
+        "pbr",
+        "basic",
+        "phong",
+        "shader",
+        "material",
+        "properties",
+        "styling",
+        "meshes"
+      ],
+      "path": "skills/threejs-materials/SKILL.md"
+    },
+    {
+      "id": "threejs-postprocessing",
+      "name": "threejs-postprocessing",
+      "description": "Three.js post-processing - EffectComposer, bloom, DOF, screen effects. Use when adding visual effects, color grading, blur, glow, or creating custom screen-space shaders.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "postprocessing"
+      ],
+      "triggers": [
+        "threejs",
+        "postprocessing",
+        "three",
+        "js",
+        "post",
+        "processing",
+        "effectcomposer",
+        "bloom",
+        "dof",
+        "screen",
+        "effects",
+        "adding"
+      ],
+      "path": "skills/threejs-postprocessing/SKILL.md"
+    },
+    {
+      "id": "threejs-shaders",
+      "name": "threejs-shaders",
+      "description": "Three.js shaders - GLSL, ShaderMaterial, uniforms, custom effects. Use when creating custom visual effects, modifying vertices, writing fragment shaders, or extending built-in materials.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "shaders"
+      ],
+      "triggers": [
+        "threejs",
+        "shaders",
+        "three",
+        "js",
+        "glsl",
+        "shadermaterial",
+        "uniforms",
+        "custom",
+        "effects",
+        "creating",
+        "visual",
+        "modifying"
+      ],
+      "path": "skills/threejs-shaders/SKILL.md"
+    },
+    {
       "id": "threejs-skills",
       "name": "threejs-skills",
       "description": "Create 3D scenes, interactive experiences, and visual effects using Three.js. Use when user requests 3D graphics, WebGL experiences, 3D visualizations, animations, or interactive 3D elements.",
@@ -22696,6 +26815,31 @@
         "requests"
       ],
       "path": "skills/threejs-skills/SKILL.md"
+    },
+    {
+      "id": "threejs-textures",
+      "name": "threejs-textures",
+      "description": "Three.js textures - texture types, UV mapping, environment maps, texture settings. Use when working with images, UV coordinates, cubemaps, HDR environments, or texture optimization.",
+      "category": "general",
+      "tags": [
+        "threejs",
+        "textures"
+      ],
+      "triggers": [
+        "threejs",
+        "textures",
+        "three",
+        "js",
+        "texture",
+        "types",
+        "uv",
+        "mapping",
+        "environment",
+        "maps",
+        "settings",
+        "working"
+      ],
+      "path": "skills/threejs-textures/SKILL.md"
     },
     {
       "id": "tiktok-automation",
@@ -22809,6 +26953,25 @@
         "bugs"
       ],
       "path": "skills/track-management/SKILL.md"
+    },
+    {
+      "id": "travel-health-analyzer",
+      "name": "travel-health-analyzer",
+      "description": "分析旅行健康数据、评估目的地健康风险、提供疫苗接种建议、生成多语言紧急医疗信息卡片。支持WHO/CDC数据集成的专业级旅行健康风险评估。",
+      "category": "data-ai",
+      "tags": [
+        "travel",
+        "health",
+        "analyzer"
+      ],
+      "triggers": [
+        "travel",
+        "health",
+        "analyzer",
+        "who",
+        "cdc"
+      ],
+      "path": "skills/travel-health-analyzer/SKILL.md"
     },
     {
       "id": "trello-automation",
@@ -23127,6 +27290,44 @@
       "path": "skills/ui-visual-validator/SKILL.md"
     },
     {
+      "id": "umap",
+      "name": "umap",
+      "description": "Umap",
+      "category": "general",
+      "tags": [
+        "umap"
+      ],
+      "triggers": [
+        "umap"
+      ],
+      "path": "skills/umap/SKILL.md"
+    },
+    {
+      "id": "uniprot-database",
+      "name": "uniprot-database",
+      "description": "Direct REST API access to UniProt. Protein searches, FASTA retrieval, ID mapping, Swiss-Prot/TrEMBL. For Python workflows with multiple databases, prefer bioservices (unified interface to 40+ services). Use this for direct HTTP/REST work or UniProt-specific control.",
+      "category": "data-ai",
+      "tags": [
+        "uniprot",
+        "database"
+      ],
+      "triggers": [
+        "uniprot",
+        "database",
+        "direct",
+        "rest",
+        "api",
+        "access",
+        "protein",
+        "searches",
+        "fasta",
+        "retrieval",
+        "id",
+        "mapping"
+      ],
+      "path": "skills/uniprot-database/SKILL.md"
+    },
+    {
       "id": "unit-testing-test-generate",
       "name": "unit-testing-test-generate",
       "description": "Generate comprehensive, maintainable unit tests across languages with strong coverage and edge case focus.",
@@ -23368,6 +27569,54 @@
       "path": "skills/uv-package-manager/SKILL.md"
     },
     {
+      "id": "variant-analysis",
+      "name": "variant-analysis",
+      "description": "Find similar vulnerabilities and bugs across codebases using pattern-based analysis. Use when hunting bug variants, building CodeQL/Semgrep queries, analyzing security vulnerabilities, or performing systematic code audits after finding an initial issue.",
+      "category": "security",
+      "tags": [
+        "variant"
+      ],
+      "triggers": [
+        "variant",
+        "analysis",
+        "find",
+        "similar",
+        "vulnerabilities",
+        "bugs",
+        "codebases",
+        "hunting",
+        "bug",
+        "variants",
+        "building",
+        "codeql"
+      ],
+      "path": "skills/variant-analysis/SKILL.md"
+    },
+    {
+      "id": "varlock",
+      "name": "varlock",
+      "description": "Secure environment variable management with Varlock. Use when handling secrets, API keys, credentials, or any sensitive configuration. Ensures secrets are never exposed in terminals, logs, traces, or Claude's context. Trigger phrases include \"environment variables\",...",
+      "category": "security",
+      "tags": [
+        "varlock"
+      ],
+      "triggers": [
+        "varlock",
+        "secure",
+        "environment",
+        "variable",
+        "handling",
+        "secrets",
+        "api",
+        "keys",
+        "credentials",
+        "any",
+        "sensitive",
+        "configuration"
+      ],
+      "path": "skills/varlock/SKILL.md"
+    },
+    {
       "id": "varlock-claude-skill",
       "name": "varlock-claude-skill",
       "description": "Secure environment variable management ensuring secrets are never exposed in Claude sessions, terminals, logs, or git commits",
@@ -23471,8 +27720,8 @@
     {
       "id": "vercel-deploy-claimable",
       "name": "vercel-deploy-claimable",
-      "description": "Deploy applications and websites to Vercel. Use this skill when the user requests deployment actions such as 'Deploy my app', 'Deploy this to production', 'Create a preview deployment', 'Deploy and...",
-      "category": "infrastructure",
+      "description": "Vercel Deploy Claimable",
+      "category": "general",
       "tags": [
         "vercel",
         "deploy",
@@ -23481,16 +27730,7 @@
       "triggers": [
         "vercel",
         "deploy",
-        "claimable",
-        "applications",
-        "websites",
-        "skill",
-        "user",
-        "requests",
-        "deployment",
-        "actions",
-        "such",
-        "my"
+        "claimable"
       ],
       "path": "skills/vercel-deploy-claimable/SKILL.md"
     },
@@ -23562,6 +27802,31 @@
         "skill"
       ],
       "path": "skills/vexor/SKILL.md"
+    },
+    {
+      "id": "vexor-cli",
+      "name": "vexor-cli",
+      "description": "Semantic file discovery via `vexor`. Use whenever locating where something is implemented/loaded/defined in a medium or large repo, or when the file location is unclear. Prefer this over manual browsing.",
+      "category": "general",
+      "tags": [
+        "vexor",
+        "cli"
+      ],
+      "triggers": [
+        "vexor",
+        "cli",
+        "semantic",
+        "file",
+        "discovery",
+        "via",
+        "whenever",
+        "locating",
+        "where",
+        "something",
+        "implemented",
+        "loaded"
+      ],
+      "path": "skills/vexor-cli/SKILL.md"
     },
     {
       "id": "vibe-code-auditor",
@@ -23978,6 +28243,46 @@
         "orders"
       ],
       "path": "skills/webflow-automation/SKILL.md"
+    },
+    {
+      "id": "weightloss-analyzer",
+      "name": "weightloss-analyzer",
+      "description": "分析减肥数据、计算代谢率、追踪能量缺口、管理减肥阶段",
+      "category": "general",
+      "tags": [
+        "weightloss",
+        "analyzer"
+      ],
+      "triggers": [
+        "weightloss",
+        "analyzer"
+      ],
+      "path": "skills/weightloss-analyzer/SKILL.md"
+    },
+    {
+      "id": "wellally-tech",
+      "name": "wellally-tech",
+      "description": "Integrate digital health data sources (Apple Health, Fitbit, Oura Ring) and connect to WellAlly.tech knowledge base. Import external health device data, standardize to local format, and recommend relevant WellAlly.tech knowledge base articles based on health data. Support...",
+      "category": "data-ai",
+      "tags": [
+        "wellally",
+        "tech"
+      ],
+      "triggers": [
+        "wellally",
+        "tech",
+        "integrate",
+        "digital",
+        "health",
+        "data",
+        "sources",
+        "apple",
+        "fitbit",
+        "oura",
+        "ring",
+        "connect"
+      ],
+      "path": "skills/wellally-tech/SKILL.md"
     },
     {
       "id": "whatsapp-automation",
@@ -24417,6 +28722,19 @@
       "path": "skills/workflow-patterns/SKILL.md"
     },
     {
+      "id": "workflow-skill-design",
+      "name": "workflow-skill-design",
+      "description": "Workflow Skill Design",
+      "category": "workflow",
+      "tags": [
+        "skill"
+      ],
+      "triggers": [
+        "skill"
+      ],
+      "path": "skills/workflow-skill-design/SKILL.md"
+    },
+    {
       "id": "wrike-automation",
       "name": "wrike-automation",
       "description": "Automate Wrike project management via Rube MCP (Composio): create tasks/folders, manage projects, assign work, and track progress. Always search tools first for current schemas.",
@@ -24588,6 +28906,21 @@
       "path": "skills/xss-html-injection/SKILL.md"
     },
     {
+      "id": "yara-authoring",
+      "name": "yara-authoring",
+      "description": "Yara Authoring",
+      "category": "general",
+      "tags": [
+        "yara",
+        "authoring"
+      ],
+      "triggers": [
+        "yara",
+        "authoring"
+      ],
+      "path": "skills/yara-authoring/SKILL.md"
+    },
+    {
       "id": "youtube-automation",
       "name": "youtube-automation",
       "description": "Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools first for current schemas.",
@@ -24687,6 +29020,56 @@
         "replies"
       ],
       "path": "skills/zendesk-automation/SKILL.md"
+    },
+    {
+      "id": "zeroize-audit",
+      "name": "zeroize-audit",
+      "description": "Detects missing zeroization of sensitive data in source code and identifies zeroization removed by compiler optimizations, with assembly-level analysis, and control-flow verification. Use for auditing C/C++/Rust code handling secrets, keys, passwords, or other sensitive data.",
+      "category": "security",
+      "tags": [
+        "zeroize",
+        "audit"
+      ],
+      "triggers": [
+        "zeroize",
+        "audit",
+        "detects",
+        "missing",
+        "zeroization",
+        "sensitive",
+        "data",
+        "source",
+        "code",
+        "identifies",
+        "removed",
+        "compiler"
+      ],
+      "path": "skills/zeroize-audit/SKILL.md"
+    },
+    {
+      "id": "zod-validation-expert",
+      "name": "zod-validation-expert",
+      "description": "Expert in Zod — TypeScript-first schema validation. Covers parsing, custom errors, refinements, type inference, and integration with React Hook Form, Next.js, and tRPC.",
+      "category": "development",
+      "tags": [
+        "zod",
+        "validation"
+      ],
+      "triggers": [
+        "zod",
+        "validation",
+        "typescript",
+        "first",
+        "schema",
+        "covers",
+        "parsing",
+        "custom",
+        "errors",
+        "refinements",
+        "type",
+        "inference"
+      ],
+      "path": "skills/zod-validation-expert/SKILL.md"
     },
     {
       "id": "zoho-crm-automation",

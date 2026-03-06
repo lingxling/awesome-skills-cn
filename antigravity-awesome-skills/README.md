@@ -1,6 +1,8 @@
-# 🌌 Antigravity Awesome Skills: 1006+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
+# 🌌 Antigravity Awesome Skills: 1,200+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
 
-> **The Ultimate Collection of 1006+ Universal Agentic Skills for AI Coding Assistants — Claude Code, Gemini CLI, Codex CLI, Antigravity IDE, GitHub Copilot, Cursor, OpenCode, AdaL**
+> **The Ultimate Collection of 1,200+ Universal Agentic Skills for AI Coding Assistants — Claude Code, Gemini CLI, Codex CLI, Antigravity IDE, GitHub Copilot, Cursor, OpenCode, AdaL**
+
+[![GitHub stars](https://img.shields.io/badge/⭐%2020%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Anthropic-purple)](https://claude.ai)
@@ -17,7 +19,7 @@
 
 If this project helps you, you can [support it here](https://buymeacoffee.com/sickn33) or simply ⭐ the repo.
 
-**Antigravity Awesome Skills** is a curated, battle-tested library of **1006+ high-performance agentic skills** designed to work seamlessly across all major AI coding assistants:
+**Antigravity Awesome Skills** is a curated, battle-tested library of **1,200+ high-performance agentic skills** designed to work seamlessly across all major AI coding assistants:
 
 - 🟣 **Claude Code** (Anthropic CLI)
 - 🔵 **Gemini CLI** (Google DeepMind)
@@ -42,7 +44,7 @@ This repository provides essential skills to transform your AI assistant into a 
 - [🎁 Curated Collections (Bundles)](#curated-collections)
 - [🧭 Antigravity Workflows](#antigravity-workflows)
 - [📦 Features & Categories](#features--categories)
-- [📚 Browse 1006+ Skills](#browse-1006-skills)
+- [📚 Browse 1,200+ Skills](#browse-1200-skills)
 - [🤝 How to Contribute](#how-to-contribute)
 - [💬 Community](#community)
 - [☕ Support the Project](#support-the-project)
@@ -55,11 +57,13 @@ This repository provides essential skills to transform your AI assistant into a 
 
 ## New Here? Start Here!
 
-**Welcome to the V6.10.0 Interactive Web Edition.** This isn't just a list of scripts; it's a complete operating system for your AI Agent.
+**Welcome to the V7.0.0 20k Stars Celebration Release!** 🎉 This isn't just a list of scripts; it's a complete operating system for your AI Agent.
+
+> **🌟 20,000+ GitHub Stars Milestone!** Thank you to our incredible community for making this the most comprehensive agentic skills collection ever created.
 
 ### 1. 🐣 Context: What is this?
 
-**Antigravity Awesome Skills** (Release 6.10.0) is a massive upgrade to your AI's capabilities.
+**Antigravity Awesome Skills** (Release 7.0.0) is a massive upgrade to your AI's capabilities, now featuring **1,200+ skills** from 35+ community repositories.
 
 AI Agents (like Claude Code, Cursor, or Gemini) are smart, but they lack **specific tools**. They don't know your company's "Deployment Protocol" or the specific syntax for "AWS CloudFormation".
 **Skills** are small markdown files that teach them how to do these specific tasks perfectly, every time.
@@ -341,13 +345,13 @@ The repository is organized into specialized domains to transform your AI into a
 
 Counts change as new skills are added. For the current full registry, see [CATALOG.md](CATALOG.md).
 
-## Browse 1006+ Skills
+## Browse 1,200+ Skills
 
 We have moved the full skill registry to a dedicated catalog to keep this README clean, and we've also introduced an interactive **Web App**!
 
 ### 🌐 Interactive Skills Web App
 
-A modern web interface to explore, search, and use the 1006+ skills directly from your browser.
+A modern web interface to explore, search, and use the 1,200+ skills directly from your browser.
 
 #### ✨ Features
 
@@ -510,6 +514,8 @@ This collection would not be possible without the incredible work of the Claude 
 - **[leonardomso/33-js-concepts](https://github.com/leonardomso/33-js-concepts)**: Inspiration for JavaScript Mastery.
 
 ---
+
+- **[agent-cards/skill](https://github.com/agent-cards/skill)**: Manage prepaid virtual Visa cards for AI agents. Create cards, check balances, view credentials, close cards, and get support via MCP tools.
 
 ## Repo Contributors
 

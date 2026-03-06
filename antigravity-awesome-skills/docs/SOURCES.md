@@ -80,6 +80,64 @@ The following skills were added from the curated collection at [VoltAgent/awesom
 | `fp-ts-react`     | [whatiskadudoing/fp-ts-skills](https://github.com/whatiskadudoing/fp-ts-skills) | Compatible | fp-ts with React 18/19 and Next.js                       |
 | `fp-ts-errors`    | [whatiskadudoing/fp-ts-skills](https://github.com/whatiskadudoing/fp-ts-skills) | Compatible | Type-safe error handling with Either and TaskEither      |
 
+---
+
+## Recently Added Skills (March 2026)
+
+The following skills were added during the March 2026 skills update:
+
+### UI/UX & Frontend
+| Skill | Source | License | Notes |
+|-------|--------|---------|-------|
+| `baseline-ui`, `fixing-accessibility`, `fixing-metadata`, `fixing-motion-performance` | [ibelick/ui-skills](https://github.com/ibelick/ui-skills) | Compatible | UI polish and validation |
+| `expo-ui-swift-ui`, `expo-ui-jetpack-compose`, `expo-tailwind-setup`, `building-native-ui`, `expo-api-routes`, `expo-dev-client`, `expo-cicd-workflows`, `native-data-fetching` | [expo/skills](https://github.com/expo/skills) | MIT | Expo/React Native skills |
+| `swiftui-expert-skill` | [AvdLee/SwiftUI-Agent-Skill](https://github.com/AvdLee/SwiftUI-Agent-Skill) | Compatible | SwiftUI development |
+| `threejs-fundamentals`, `threejs-geometry`, `threejs-materials`, `threejs-lighting`, `threejs-textures`, `threejs-animation`, `threejs-loaders`, `threejs-shaders`, `threejs-postprocessing`, `threejs-interaction` | [CloudAI-X/threejs-skills](https://github.com/CloudAI-X/threejs-skills) | Compatible | Three.js 3D graphics |
+| `frontend-slides` | [zarazhangrui](https://github.com/zarazhangrui/frontend-slides) | Compatible | HTML presentations |
+
+### Automation & Integration
+| Skill | Source | License | Notes |
+|-------|--------|---------|-------|
+| `gmail-automation`, `google-calendar-automation`, `google-docs-automation`, `google-sheets-automation`, `google-drive-automation`, `google-slides-automation` | [sanjay3290/ai-skills](https://github.com/sanjay3290/ai-skills) | Compatible | Google Workspace integration |
+| `n8n-expression-syntax`, `n8n-mcp-tools-expert`, `n8n-workflow-patterns`, `n8n-validation-expert`, `n8n-node-configuration`, `n8n-code-javascript`, `n8n-code-python` | [czlonkowski/n8n-skills](https://github.com/czlonkowski/n8n-skills) | Compatible | n8n workflow automation |
+| `automate-whatsapp` | [gokapso/agent-skills](https://github.com/gokapso/agent-skills) | Compatible | WhatsApp automation |
+| `linear` | [wrsmith108/linear-claude-skill](https://github.com/wrsmith108/linear-claude-skill) | Compatible | Linear project management |
+| `rails-upgrade` | [robzolkos](https://github.com/robzolkos/skill-rails-upgrade) | Compatible | Rails upgrade assistant |
+| `vexor-cli` | [scarletkc/vexor](https://github.com/scarletkc/vexor) | Compatible | Semantic file discovery |
+
+### Machine Learning & Data
+| Skill | Source | License | Notes |
+|-------|--------|---------|-------|
+| `hugging-face-dataset-viewer`, `hugging-face-datasets`, `hugging-face-evaluation`, `hugging-face-model-trainer`, `hugging-face-paper-publisher`, `hugging-face-tool-builder` | [huggingface/skills](https://github.com/huggingface/skills) | Compatible | HuggingFace ML tools |
+| `numpy`, `pandas`, `scipy`, `matplotlib`, `scikit-learn`, `jupyter-workflow` | [K-Dense-AI/claude-scientific-skills](https://github.com/K-Dense-AI/claude-scientific-skills) | Compatible | Data science essentials |
+| `biopython`, `scanpy`, `uniprot-database`, `pubmed-database` | [K-Dense-AI/claude-scientific-skills](https://github.com/K-Dense-AI/claude-scientific-skills) | Compatible | Bioinformatics tools |
+
+### Security & Auditing
+| Skill | Source | License | Notes |
+|-------|--------|---------|-------|
+| `semgrep-rule-creator`, `semgrep-rule-variant-creator`, `static-analysis`, `variant-analysis` | [trailofbits/skills](https://github.com/trailofbits/skills) | Compatible | Code security analysis |
+| `golang-security-auditor`, `python-security-auditor`, `rust-security-auditor` | [trailofbits/skills](https://github.com/trailofbits/skills) | Compatible | Language-specific security |
+| `burpsuite-project-parser`, `agentic-actions-auditor`, `audit-context-building`, `proof-of-vulnerability`, `yara-authoring` | [trailofbits/skills](https://github.com/trailofbits/skills) | Compatible | Security testing tools |
+
+### Context Engineering & AI
+| Skill | Source | License | Notes |
+|-------|--------|---------|-------|
+| `context-fundamentals`, `context-degradation`, `context-compression`, `context-optimization`, `multi-agent-patterns`, `filesystem-context` | [muratcankoylan](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering) | Compatible | Context engineering patterns |
+
+### Health & Wellness
+| Skill | Source | License | Notes |
+|-------|--------|---------|-------|
+| `sleep-analyzer`, `nutrition-analyzer`, `fitness-analyzer` | [huifer/Claude-Ally-Health](https://github.com/huifer/Claude-Ally-Health) | Compatible | Health tracking |
+
+### Quality & Verification
+| Skill | Source | License | Notes |
+|-------|--------|---------|-------|
+| `clarity-gate` | [frmoretto/clarity-gate](https://github.com/frmoretto/clarity-gate) | Compatible | RAG quality verification |
+
+**Total: 80+ new skills added**
+
+---
+
 ## License Policy
 
 - **Code**: All original code in this repository is **MIT**.

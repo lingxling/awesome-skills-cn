@@ -1,16 +1,8 @@
 ---
 name: context-degradation
-description: "Recognize patterns of context failure: lost-in-middle, poisoning, distraction, and clash"
-risk: safe
-source: "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering/tree/main/skills/context-degradation"
-date_added: "2026-02-27"
+description: This skill should be used when the user asks to "diagnose context problems", "fix lost-in-middle issues", "debug agent failures", "understand context poisoning", or mentions context degradation, attention patterns, context clash, context confusion, or agent performance...
 ---
 
-## When to Use This Skill
-
-Recognize patterns of context failure: lost-in-middle, poisoning, distraction, and clash
-
-Use this skill when working with recognize patterns of context failure: lost-in-middle, poisoning, distraction, and clash.
 # Context Degradation Patterns
 
 Language models exhibit predictable degradation patterns as context length increases. Understanding these patterns is essential for diagnosing failures and designing resilient systems. Context degradation is not a binary state but a continuum of performance degradation that manifests in several distinct ways.

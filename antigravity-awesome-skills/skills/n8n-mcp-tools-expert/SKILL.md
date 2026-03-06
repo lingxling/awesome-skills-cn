@@ -1,24 +1,11 @@
 ---
 name: n8n-mcp-tools-expert
-description: "Expert guide for using n8n-mcp MCP tools effectively. Use when searching for nodes, validating configurations, accessing templates, managing workflows, or using any n8n-mcp tool. Provides tool sele..."
-risk: safe
-source: "https://github.com/czlonkowski/n8n-skills/tree/main/skills/n8n-mcp-tools-expert"
-date_added: "2026-02-27"
+description: Expert guide for using n8n-mcp MCP tools effectively. Use when searching for nodes, validating configurations, accessing templates, managing workflows, or using any n8n-mcp tool. Provides tool selection guidance, parameter formats, and common patterns.
 ---
 
 # n8n MCP Tools Expert
 
 Master guide for using n8n-mcp MCP server tools to build workflows.
-
-## When to Use This Skill
-
-Use this skill when:
-- Searching for n8n nodes
-- Validating n8n configurations
-- Accessing n8n templates
-- Managing n8n workflows
-- Using any n8n-mcp tool
-- Need guidance on tool selection or parameter formats
 
 ---
 
