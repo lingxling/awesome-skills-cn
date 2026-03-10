@@ -5,6 +5,14 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.14.0] - 2026-03-10
+
+### 变更
+- 更新翻译进度表格，claude-scientific-skills 从 6/170 改为 43/175 进行中
+- 更新翻译进度表格，已完成翻译从 82 个增加到 119 个
+- 更新 claude-scientific-skills 技能列表，添加已翻译的 37 个新技能
+- 新增已翻译技能包括：astropy、benchling-integration、bgpt-paper-search、bindingdb-database、biopython、biorxiv-database、bioservices、brenda-database、cbioportal-database、cellxgene-census、chembl-database、cirq、citation-management、clinical-decision-support、clinical-reports、clinicaltrials-database、clinpgx-database、clinvar-database、cobrapy、consciousness-council、cosmic-database、dask、datacommons-client、datamol、deepchem、deeptools、denario、depmap、dhdna-profiler、diffdock、dnanexus-integration、docx、document-skills/docx、document-skills/pdf、document-skills/pptx、document-skills/xlsx、drugbank-database、edgartools、ena-database、ensembl-database、esm、etetoolkit、exploratory-data-analysis
+
 ## [2.13.0] - 2026-03-10
 
 ### 新增

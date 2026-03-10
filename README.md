@@ -197,10 +197,10 @@ awesome-skills-cn/
 | vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
-| claude-scientific-skills | 170 | - | 6/170 | 进行中 |
+| claude-scientific-skills | 175 | - | 43/175 | 进行中 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7208+** | **75** | **82/7208+** | **进行中** |
+| **总计** | **7213+** | **75** | **119/7213+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -309,7 +309,7 @@ awesome-skills-cn/
 - [x] [obsidian-cli](obsidian-skills/skills/obsidian-cli/SKILL_CN.md) - 通过 Obsidian CLI 与 Obsidian vault 交互
 - [x] [defuddle](obsidian-skills/skills/defuddle/SKILL_CN.md) - 从网页提取干净的 Markdown 内容
 
-### claude-scientific-skills (170个)
+### claude-scientific-skills (175个)
 
 - [x] [adaptyv](claude-scientific-skills/scientific-skills/adaptyv/SKILL_CN.md) - Adaptyv 蛋白质设计平台
 - [x] [aeon](claude-scientific-skills/scientific-skills/aeon/SKILL_CN.md) - Aeon 时间序列机器学习
@@ -317,46 +317,49 @@ awesome-skills-cn/
 - [x] [alphafold-database](claude-scientific-skills/scientific-skills/alphafold-database/SKILL_CN.md) - AlphaFold 蛋白质结构数据库
 - [x] [anndata](claude-scientific-skills/scientific-skills/anndata/SKILL_CN.md) - AnnData 单细胞数据结构
 - [x] [arboreto](claude-scientific-skills/scientific-skills/arboreto/SKILL_CN.md) - Arboreto 基因调控网络推断
-- [ ] astropy
-- [ ] benchling-integration
-- [ ] bgpt-paper-search
-- [ ] bindingdb-database
-- [ ] biopython
-- [ ] biorxiv-database
-- [ ] bioservices
-- [ ] brenda-database
-- [ ] cbioportal-database
-- [ ] cellxgene-census
-- [ ] chembl-database
-- [ ] cirq
-- [ ] citation-management
-- [ ] clinical-decision-support
-- [ ] clinical-reports
-- [ ] clinicaltrials-database
-- [ ] clinpgx-database
-- [ ] clinvar-database
-- [ ] cobrapy
-- [ ] consciousness-council
-- [ ] cosmic-database
-- [ ] dask
-- [ ] datacommons-client
-- [ ] datamol
-- [ ] deepchem
-- [ ] deeptools
-- [ ] denario
-- [ ] depmap
-- [ ] dhdna-profiler
-- [ ] diffdock
-- [ ] dnanexus-integration
-- [ ] document-skills
-- [ ] docx
-- [ ] drugbank-database
-- [ ] edgartools
-- [ ] ena-database
-- [ ] ensembl-database
-- [ ] esm
-- [ ] etetoolkit
-- [ ] exploratory-data-analysis
+- [x] [astropy](claude-scientific-skills/scientific-skills/astropy/SKILL_CN.md) - Astropy 天文学 Python 库
+- [x] [benchling-integration](claude-scientific-skills/scientific-skills/benchling-integration/SKILL_CN.md) - Benchling 实验室云平台集成
+- [x] [bgpt-paper-search](claude-scientific-skills/scientific-skills/bgpt-paper-search/SKILL_CN.md) - BioGPT 论文搜索
+- [x] [bindingdb-database](claude-scientific-skills/scientific-skills/bindingdb-database/SKILL_CN.md) - BindingDB 药物靶点结合数据库
+- [x] [biopython](claude-scientific-skills/scientific-skills/biopython/SKILL_CN.md) - Biopython 生物信息学工具
+- [x] [biorxiv-database](claude-scientific-skills/scientific-skills/biorxiv-database/SKILL_CN.md) - bioRxiv 预印本数据库
+- [x] [bioservices](claude-scientific-skills/scientific-skills/bioservices/SKILL_CN.md) - BioServices 生物数据库访问
+- [x] [brenda-database](claude-scientific-skills/scientific-skills/brenda-database/SKILL_CN.md) - BRENDA 酶数据库
+- [x] [cbioportal-database](claude-scientific-skills/scientific-skills/cbioportal-database/SKILL_CN.md) - cBioPortal 癌症基因组数据库
+- [x] [cellxgene-census](claude-scientific-skills/scientific-skills/cellxgene-census/SKILL_CN.md) - CELLxGENE Census 单细胞基因组数据
+- [x] [chembl-database](claude-scientific-skills/scientific-skills/chembl-database/SKILL_CN.md) - ChEMBL 生物活性分子数据库
+- [x] [cirq](claude-scientific-skills/scientific-skills/cirq/SKILL_CN.md) - Cirq 量子计算框架
+- [x] [citation-management](claude-scientific-skills/scientific-skills/citation-management/SKILL_CN.md) - 学术引用管理
+- [x] [clinical-decision-support](claude-scientific-skills/scientific-skills/clinical-decision-support/SKILL_CN.md) - 临床决策支持
+- [x] [clinical-reports](claude-scientific-skills/scientific-skills/clinical-reports/SKILL_CN.md) - 临床报告
+- [x] [clinicaltrials-database](claude-scientific-skills/scientific-skills/clinicaltrials-database/SKILL_CN.md) - ClinicalTrials.gov 临床试验数据库
+- [x] [clinpgx-database](claude-scientific-skills/scientific-skills/clinpgx-database/SKILL_CN.md) - ClinPGx 药物基因组学数据库
+- [x] [clinvar-database](claude-scientific-skills/scientific-skills/clinvar-database/SKILL_CN.md) - ClinVar 基因变异数据库
+- [x] [cobrapy](claude-scientific-skills/scientific-skills/cobrapy/SKILL_CN.md) - COBRApy 代谢网络建模
+- [x] [consciousness-council](claude-scientific-skills/scientific-skills/consciousness-council/SKILL_CN.md) - 意识研究框架
+- [x] [cosmic-database](claude-scientific-skills/scientific-skills/cosmic-database/SKILL_CN.md) - COSMIC 癌症体细胞突变目录
+- [x] [dask](claude-scientific-skills/scientific-skills/dask/SKILL_CN.md) - Dask 分布式计算
+- [x] [datacommons-client](claude-scientific-skills/scientific-skills/datacommons-client/SKILL_CN.md) - Data Commons 公共统计数据
+- [x] [datamol](claude-scientific-skills/scientific-skills/datamol/SKILL_CN.md) - Datamol 化学信息学库
+- [x] [deepchem](claude-scientific-skills/scientific-skills/deepchem/SKILL_CN.md) - DeepChem 分子机器学习
+- [x] [deeptools](claude-scientific-skills/scientific-skills/deeptools/SKILL_CN.md) - deepTools NGS 分析工具
+- [x] [denario](claude-scientific-skills/scientific-skills/denario/SKILL_CN.md) - Denario 多智能体 AI 系统
+- [x] [depmap](claude-scientific-skills/scientific-skills/depmap/SKILL_CN.md) - DepMap 癌症依赖图谱
+- [x] [dhdna-profiler](claude-scientific-skills/scientific-skills/dhdna-profiler/SKILL_CN.md) - DHDNA 认知模式提取
+- [x] [diffdock](claude-scientific-skills/scientific-skills/diffdock/SKILL_CN.md) - DiffDock 分子对接
+- [x] [dnanexus-integration](claude-scientific-skills/scientific-skills/dnanexus-integration/SKILL_CN.md) - DNAnexus 云基因组平台
+- [x] [docx](claude-scientific-skills/scientific-skills/docx/SKILL_CN.md) - DOCX 文档处理
+- [x] [document-skills/docx](claude-scientific-skills/scientific-skills/document-skills/docx/SKILL_CN.md) - DOCX 文档处理（document-skills）
+- [x] [document-skills/pdf](claude-scientific-skills/scientific-skills/document-skills/pdf/SKILL_CN.md) - PDF 处理（document-skills）
+- [x] [document-skills/pptx](claude-scientific-skills/scientific-skills/document-skills/pptx/SKILL_CN.md) - PPTX 演示文稿处理（document-skills）
+- [x] [document-skills/xlsx](claude-scientific-skills/scientific-skills/document-skills/xlsx/SKILL_CN.md) - XLSX 电子表格处理（document-skills）
+- [x] [drugbank-database](claude-scientific-skills/scientific-skills/drugbank-database/SKILL_CN.md) - DrugBank 药物数据库
+- [x] [edgartools](claude-scientific-skills/scientific-skills/edgartools/SKILL_CN.md) - SEC EDGAR 数据访问
+- [x] [ena-database](claude-scientific-skills/scientific-skills/ena-database/SKILL_CN.md) - ENA 欧洲核苷酸序列档案
+- [x] [ensembl-database](claude-scientific-skills/scientific-skills/ensembl-database/SKILL_CN.md) - Ensembl 基因组数据库
+- [x] [esm](claude-scientific-skills/scientific-skills/esm/SKILL_CN.md) - ESM 蛋白质语言模型
+- [x] [etetoolkit](claude-scientific-skills/scientific-skills/etetoolkit/SKILL_CN.md) - ETE 系统发育分析工具包
+- [x] [exploratory-data-analysis](claude-scientific-skills/scientific-skills/exploratory-data-analysis/SKILL_CN.md) - 探索性数据分析
 - [ ] fda-database
 - [ ] flowio
 - [ ] fluidsim
@@ -482,7 +485,6 @@ awesome-skills-cn/
 - [ ] zarr-python
 - [ ] zinc-database
 - [ ] timesfm-forecasting
-- [ ] torch-geometric
 - [ ] pymc
 - [ ] scientific-schematics
 
