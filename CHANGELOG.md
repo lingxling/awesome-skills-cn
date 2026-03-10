@@ -5,6 +5,22 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.13.0] - 2026-03-10
+
+### 新增
+- 完成 6 个 Claude Scientific SKILL 的中文翻译：
+  - [adaptyv/SKILL_CN.md](claude-scientific-skills/scientific-skills/adaptyv/SKILL_CN.md) - Adaptyv 蛋白质设计平台
+  - [aeon/SKILL_CN.md](claude-scientific-skills/scientific-skills/aeon/SKILL_CN.md) - Aeon 时间序列机器学习
+  - [alpha-vantage/SKILL_CN.md](claude-scientific-skills/scientific-skills/alpha-vantage/SKILL_CN.md) - Alpha Vantage 金融数据 API
+  - [alphafold-database/SKILL_CN.md](claude-scientific-skills/scientific-skills/alphafold-database/SKILL_CN.md) - AlphaFold 蛋白质结构数据库
+  - [anndata/SKILL_CN.md](claude-scientific-skills/scientific-skills/anndata/SKILL_CN.md) - AnnData 单细胞数据结构
+  - [arboreto/SKILL_CN.md](claude-scientific-skills/scientific-skills/arboreto/SKILL_CN.md) - Arboreto 基因调控网络推断
+
+### 变更
+- 更新翻译进度表格，claude-scientific-skills 从 0/170 改为 6/170 进行中
+- 更新翻译进度表格，已完成翻译从 76 个增加到 82 个
+- 更新 claude-scientific-skills 技能列表，添加已翻译的 6 个技能
+
 ## [2.12.0] - 2026-03-06
 
 ### 新增

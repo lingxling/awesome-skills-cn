@@ -197,10 +197,10 @@ awesome-skills-cn/
 | vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
-| claude-scientific-skills | 170 | - | 0/170 | 未开始 |
+| claude-scientific-skills | 170 | - | 6/170 | 进行中 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7208+** | **75** | **76/7208+** | **进行中** |
+| **总计** | **7208+** | **75** | **82/7208+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -311,9 +311,180 @@ awesome-skills-cn/
 
 ### claude-scientific-skills (170个)
 
-- [ ] 00-andruia-consultant
-- [ ] 10-andruia-skill-smith
-- [ ] ... (共 170 个技能，详见项目目录)
+- [x] [adaptyv](claude-scientific-skills/scientific-skills/adaptyv/SKILL_CN.md) - Adaptyv 蛋白质设计平台
+- [x] [aeon](claude-scientific-skills/scientific-skills/aeon/SKILL_CN.md) - Aeon 时间序列机器学习
+- [x] [alpha-vantage](claude-scientific-skills/scientific-skills/alpha-vantage/SKILL_CN.md) - Alpha Vantage 金融数据 API
+- [x] [alphafold-database](claude-scientific-skills/scientific-skills/alphafold-database/SKILL_CN.md) - AlphaFold 蛋白质结构数据库
+- [x] [anndata](claude-scientific-skills/scientific-skills/anndata/SKILL_CN.md) - AnnData 单细胞数据结构
+- [x] [arboreto](claude-scientific-skills/scientific-skills/arboreto/SKILL_CN.md) - Arboreto 基因调控网络推断
+- [ ] astropy
+- [ ] benchling-integration
+- [ ] bgpt-paper-search
+- [ ] bindingdb-database
+- [ ] biopython
+- [ ] biorxiv-database
+- [ ] bioservices
+- [ ] brenda-database
+- [ ] cbioportal-database
+- [ ] cellxgene-census
+- [ ] chembl-database
+- [ ] cirq
+- [ ] citation-management
+- [ ] clinical-decision-support
+- [ ] clinical-reports
+- [ ] clinicaltrials-database
+- [ ] clinpgx-database
+- [ ] clinvar-database
+- [ ] cobrapy
+- [ ] consciousness-council
+- [ ] cosmic-database
+- [ ] dask
+- [ ] datacommons-client
+- [ ] datamol
+- [ ] deepchem
+- [ ] deeptools
+- [ ] denario
+- [ ] depmap
+- [ ] dhdna-profiler
+- [ ] diffdock
+- [ ] dnanexus-integration
+- [ ] document-skills
+- [ ] docx
+- [ ] drugbank-database
+- [ ] edgartools
+- [ ] ena-database
+- [ ] ensembl-database
+- [ ] esm
+- [ ] etetoolkit
+- [ ] exploratory-data-analysis
+- [ ] fda-database
+- [ ] flowio
+- [ ] fluidsim
+- [ ] fred-economic-data
+- [ ] gene-database
+- [ ] generate-image
+- [ ] geniml
+- [ ] geo-database
+- [ ] geomaster
+- [ ] geopandas
+- [ ] get-available-resources
+- [ ] gget
+- [ ] ginkgo-cloud-lab
+- [ ] glycoengineering
+- [ ] gnomad-database
+- [ ] gtars
+- [ ] gtex-database
+- [ ] gwas-database
+- [ ] hedgefundmonitor
+- [ ] histolab
+- [ ] hmdb-database
+- [ ] hypogenic
+- [ ] hypothesis-generation
+- [ ] imaging-data-commons
+- [ ] infographics
+- [ ] interpro-database
+- [ ] iso-13485-certification
+- [ ] jaspar-database
+- [ ] kegg-database
+- [ ] labarchive-integration
+- [ ] lamindb
+- [ ] latchbio-integration
+- [ ] latex-posters
+- [ ] literature-review
+- [ ] markdown-mermaid-writing
+- [ ] market-research-reports
+- [ ] markitdown
+- [ ] matchms
+- [ ] matlab
+- [ ] matplotlib
+- [ ] medchem
+- [ ] modal
+- [ ] molecular-dynamics
+- [ ] molfeat
+- [ ] monarch-database
+- [ ] networkx
+- [ ] neurokit2
+- [ ] neuropixels-analysis
+- [ ] offer-k-dense-web
+- [ ] omero-integration
+- [ ] open-notebook
+- [ ] openalex-database
+- [ ] opentargets-database
+- [ ] opentrons-integration
+- [ ] paper-2-web
+- [ ] parallel-web
+- [ ] pathml
+- [ ] pdb-database
+- [ ] pdf
+- [ ] peer-review
+- [ ] pennylane
+- [ ] perplexity-search
+- [ ] phylogenetics
+- [ ] plotly
+- [ ] polars
+- [ ] pptx
+- [ ] pptx-posters
+- [ ] protocolsio-integration
+- [ ] pubchem-database
+- [ ] pubmed-database
+- [ ] pufferlib
+- [ ] pydeseq2
+- [ ] pydicom
+- [ ] pyhealth
+- [ ] pymatgen
+- [ ] pymoo
+- [ ] pyopenms
+- [ ] pysam
+- [ ] pytdc
+- [ ] pytorch-lightning
+- [ ] pyzotero
+- [ ] qiskit
+- [ ] qutip
+- [ ] rdkit
+- [ ] reactome-database
+- [ ] research-grants
+- [ ] research-lookup
+- [ ] rowan
+- [ ] scanpy
+- [ ] scholar-evaluation
+- [ ] scientific-brainstorming
+- [ ] scientific-critical-thinking
+- [ ] scientific-slides
+- [ ] scientific-visualization
+- [ ] scientific-writing
+- [ ] scikit-bio
+- [ ] scikit-learn
+- [ ] scikit-survival
+- [ ] scvelo
+- [ ] scvi-tools
+- [ ] seaborn
+- [ ] shap
+- [ ] simpy
+- [ ] stable-baselines3
+- [ ] statistical-analysis
+- [ ] statsmodels
+- [ ] string-database
+- [ ] sympy
+- [ ] tiledbvcf
+- [ ] torch_geometric
+- [ ] torch-geometric
+- [ ] torchdrug
+- [ ] transformers
+- [ ] treatment-plans
+- [ ] umap-learn
+- [ ] uniprot-database
+- [ ] usfiscaldata
+- [ ] uspto-database
+- [ ] vaex
+- [ ] venue-templates
+- [ ] what-if-oracle
+- [ ] xlsx
+- [ ] zarr-python
+- [ ] zinc-database
+- [ ] timesfm-forecasting
+- [ ] torch-geometric
+- [ ] pymc
+- [ ] scientific-schematics
 
 ### composiohq-awesome-claude-skills (200+个)
 
