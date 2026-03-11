@@ -5,6 +5,19 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.15.0] - 2026-03-11
+
+### 新增
+- 完成 3 个 Claude Scientific SKILL 的中文翻译：
+  - [neuropixels-analysis/SKILL_CN.md](claude-scientific-skills/scientific-skills/neuropixels-analysis/SKILL_CN.md) - Neuropixels神经记录分析
+  - [neurokit2/SKILL_CN.md](claude-scientific-skills/scientific-skills/neurokit2/SKILL_CN.md) - 生理信号处理工具包
+  - [networkx/SKILL_CN.md](claude-scientific-skills/scientific-skills/networkx/SKILL_CN.md) - 复杂网络和图分析工具包
+
+### 变更
+- 更新翻译进度表格，claude-scientific-skills 从 43/175 改为 46/175 进行中
+- 更新翻译进度表格，已完成翻译从 119 个增加到 122 个
+- 更新 claude-scientific-skills 技能列表，添加已翻译的 3 个新技能
+
 ## [2.14.0] - 2026-03-10
 
 ### 变更

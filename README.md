@@ -197,10 +197,10 @@ awesome-skills-cn/
 | vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
-| claude-scientific-skills | 175 | - | 43/175 | 进行中 |
+| claude-scientific-skills | 175 | - | 46/175 | 进行中 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7213+** | **75** | **119/7213+** | **进行中** |
+| **总计** | **7213+** | **75** | **122/7213+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -316,6 +316,9 @@ awesome-skills-cn/
 - [x] [cbioportal-database](claude-scientific-skills/scientific-skills/cbioportal-database/SKILL_CN.md) - cBioPortal 癌症基因组数据库
 - [x] [deepchem](claude-scientific-skills/scientific-skills/deepchem/SKILL_CN.md) - DeepChem 分子机器学习
 - [x] [document-skills/docx](claude-scientific-skills/scientific-skills/document-skills/docx/SKILL_CN.md) - DOCX 文档处理（document-skills）
+- [x] [neuropixels-analysis](claude-scientific-skills/scientific-skills/neuropixels-analysis/SKILL_CN.md) - Neuropixels神经记录分析
+- [x] [neurokit2](claude-scientific-skills/scientific-skills/neurokit2/SKILL_CN.md) - 生理信号处理工具包
+- [x] [networkx](claude-scientific-skills/scientific-skills/networkx/SKILL_CN.md) - 复杂网络和图分析工具包
 - ... (更多已翻译技能详见项目目录)
 
 - [ ] fda-database
