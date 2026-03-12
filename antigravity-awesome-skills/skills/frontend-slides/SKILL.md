@@ -1,11 +1,20 @@
 ---
 name: frontend-slides
-description: Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files. Use when the user wants to build a presentation, convert a PPT/PPTX to web, or create slides for a talk/pitch. Helps non-designers discover their aesthetic through visual...
+description: Create stunning, animation-rich HTML presentations from scratch or by converting PowerPoint files.
+risk: safe
+source: https://github.com/zarazhangrui/frontend-slides
+date_added: "2026-03-07"
 ---
 
 # Frontend Slides
 
 Create zero-dependency, animation-rich HTML presentations that run entirely in the browser.
+
+## When to Use This Skill
+
+- Use when the user asks to create a presentation, slide deck, or pitch from scratch.
+- Use when the user wants to convert an existing PPT or PPTX file into a web-based presentation.
+- Use when designing visually rich, animated HTML content that needs to fit exactly within the viewport.
 
 ## Core Principles
 
@@ -19,12 +28,14 @@ Create zero-dependency, animation-rich HTML presentations that run entirely in t
 You tend to converge toward generic, "on distribution" outputs. In frontend design, this creates what users call the "AI slop" aesthetic. Avoid this: make creative, distinctive frontends that surprise and delight.
 
 Focus on:
+
 - Typography: Choose fonts that are beautiful, unique, and interesting. Avoid generic fonts like Arial and Inter; opt instead for distinctive choices that elevate the frontend's aesthetics.
 - Color & Theme: Commit to a cohesive aesthetic. Use CSS variables for consistency. Dominant colors with sharp accents outperform timid, evenly-distributed palettes. Draw from IDE themes and cultural aesthetics for inspiration.
 - Motion: Use animations for effects and micro-interactions. Prioritize CSS-only solutions for HTML. Use Motion library for React when available. Focus on high-impact moments: one well-orchestrated page load with staggered reveals (animation-delay) creates more delight than scattered micro-interactions.
 - Backgrounds: Create atmosphere and depth rather than defaulting to solid colors. Layer CSS gradients, use geometric patterns, or add contextual effects that match the overall aesthetic.
 
 Avoid generic AI-generated aesthetics:
+
 - Overused font families (Inter, Roboto, Arial, system fonts)
 - Cliched color schemes (particularly purple gradients on white backgrounds)
 - Predictable layouts and component patterns
@@ -48,14 +59,14 @@ These invariants apply to EVERY slide in EVERY presentation:
 
 ### Content Density Limits Per Slide
 
-| Slide Type | Maximum Content |
-|------------|-----------------|
-| Title slide | 1 heading + 1 subtitle + optional tagline |
+| Slide Type    | Maximum Content                                           |
+| ------------- | --------------------------------------------------------- |
+| Title slide   | 1 heading + 1 subtitle + optional tagline                 |
 | Content slide | 1 heading + 4-6 bullet points OR 1 heading + 2 paragraphs |
-| Feature grid | 1 heading + 6 cards maximum (2x3 or 3x2) |
-| Code slide | 1 heading + 8-10 lines of code |
-| Quote slide | 1 quote (max 3 lines) + attribution |
-| Image slide | 1 heading + 1 image (max 60vh height) |
+| Feature grid  | 1 heading + 6 cards maximum (2x3 or 3x2)                  |
+| Code slide    | 1 heading + 8-10 lines of code                            |
+| Quote slide   | 1 quote (max 3 lines) + attribution                       |
+| Image slide   | 1 heading + 1 image (max 60vh height)                     |
 
 **Content exceeds limits? Split into multiple slides. Never cram, never scroll.**
 
@@ -98,6 +109,7 @@ Do you have content ready? Options: All content ready / Rough notes / Topic only
 
 **Question 4 — Inline Editing** (header: "Editing"):
 Do you need to edit text directly in the browser after generation? Options:
+
 - "Yes (Recommended)" — Can edit text in-browser, auto-save to localStorage, export file
 - "No" — Presentation only, keeps file smaller
 
@@ -110,6 +122,7 @@ If user has content, ask them to share it.
 If user selected "No images" → skip to Phase 2.
 
 If user provides an image folder:
+
 1. **Scan** — List all image files (.png, .jpg, .svg, .webp, etc.)
 2. **View each image** — Use the Read tool (Claude is multimodal)
 3. **Evaluate** — For each: what it shows, USABLE or NOT USABLE (with reason), what concept it represents, dominant colors
@@ -127,15 +140,17 @@ If user provides an image folder:
 ### Step 2.0: Style Path
 
 Ask how they want to choose (header: "Style"):
+
 - "Show me options" (recommended) — Generate 3 previews based on mood
 - "I know what I want" — Pick from preset list directly
 
-**If direct selection:** Show preset picker and skip to Phase 3. Available presets are defined in STYLE_PRESETS.md.
+**If direct selection:** Show preset picker and skip to Phase 3. Available presets are defined in [STYLE_PRESETS.md](STYLE_PRESETS.md).
 
 ### Step 2.1: Mood Selection (Guided Discovery)
 
 Ask (header: "Vibe", multiSelect: true, max 2):
 What feeling should the audience have? Options:
+
 - Impressed/Confident — Professional, trustworthy
 - Excited/Energized — Innovative, bold
 - Calm/Focused — Clear, thoughtful
@@ -143,14 +158,14 @@ What feeling should the audience have? Options:
 
 ### Step 2.2: Generate 3 Style Previews
 
-Based on mood, generate 3 distinct single-slide HTML previews showing typography, colors, animation, and overall aesthetic. Read STYLE_PRESETS.md for available presets and their specifications.
+Based on mood, generate 3 distinct single-slide HTML previews showing typography, colors, animation, and overall aesthetic. Read [STYLE_PRESETS.md](STYLE_PRESETS.md) for available presets and their specifications.
 
-| Mood | Suggested Presets |
-|------|-------------------|
-| Impressed/Confident | Bold Signal, Electric Studio, Dark Botanical |
-| Excited/Energized | Creative Voltage, Neon Cyber, Split Pastel |
-| Calm/Focused | Notebook Tabs, Paper & Ink, Swiss Modern |
-| Inspired/Moved | Dark Botanical, Vintage Editorial, Pastel Geometry |
+| Mood                | Suggested Presets                                  |
+| ------------------- | -------------------------------------------------- |
+| Impressed/Confident | Bold Signal, Electric Studio, Dark Botanical       |
+| Excited/Energized   | Creative Voltage, Neon Cyber, Split Pastel         |
+| Calm/Focused        | Notebook Tabs, Paper & Ink, Swiss Modern           |
+| Inspired/Moved      | Dark Botanical, Vintage Editorial, Pastel Geometry |
 
 Save previews to `.claude-design/slide-previews/` (style-a.html, style-b.html, style-c.html). Each should be self-contained, ~50-100 lines, showing one animated title slide.
 
@@ -172,11 +187,13 @@ Generate the full presentation using content from Phase 1 (text, or text + curat
 If images were provided, the slide outline already incorporates them from Step 1.2. If not, CSS-generated visuals (gradients, shapes, patterns) provide visual interest — this is a fully supported first-class path.
 
 **Before generating, read these supporting files:**
-- html-template.md — HTML architecture and JS features
-- viewport-base.css — Mandatory CSS (include in full)
-- animation-patterns.md — Animation reference for the chosen feeling
+
+- [html-template.md](html-template.md) — HTML architecture and JS features
+- [viewport-base.css](viewport-base.css) — Mandatory CSS (include in full)
+- [animation-patterns.md](animation-patterns.md) — Animation reference for the chosen feeling
 
 **Key requirements:**
+
 - Single self-contained HTML file, all CSS/JS inline
 - Include the FULL contents of viewport-base.css in the `<style>` block
 - Use fonts from Fontshare or Google Fonts — never system fonts
@@ -210,10 +227,10 @@ When converting PowerPoint files:
 
 ## Supporting Files
 
-| File | Purpose | When to Read |
-|------|---------|-------------|
-| STYLE_PRESETS.md | 12 curated visual presets with colors, fonts, and signature elements | Phase 2 (style selection) |
-| viewport-base.css | Mandatory responsive CSS — copy into every presentation | Phase 3 (generation) |
-| html-template.md | HTML structure, JS features, code quality standards | Phase 3 (generation) |
-| animation-patterns.md | CSS/JS animation snippets and effect-to-feeling guide | Phase 3 (generation) |
-| scripts/extract-pptx.py | Python script for PPT content extraction | Phase 4 (conversion) |
+| File                                               | Purpose                                                              | When to Read              |
+| -------------------------------------------------- | -------------------------------------------------------------------- | ------------------------- |
+| [STYLE_PRESETS.md](STYLE_PRESETS.md)               | 12 curated visual presets with colors, fonts, and signature elements | Phase 2 (style selection) |
+| [viewport-base.css](viewport-base.css)             | Mandatory responsive CSS — copy into every presentation              | Phase 3 (generation)      |
+| [html-template.md](html-template.md)               | HTML structure, JS features, code quality standards                  | Phase 3 (generation)      |
+| [animation-patterns.md](animation-patterns.md)     | CSS/JS animation snippets and effect-to-feeling guide                | Phase 3 (generation)      |
+| [scripts/extract-pptx.py](scripts/extract-pptx.py) | Python script for PPT content extraction                             | Phase 4 (conversion)      |

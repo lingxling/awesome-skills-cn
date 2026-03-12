@@ -5,6 +5,29 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.16.0] - 2026-03-12
+
+### 变更
+- 执行 test_run.py 脚本，更新所有项目至最新版本：
+  - anthropics-skills (Already up to date)
+  - antigravity-awesome-skills (Fast-forward 更新，新增多个技能)
+  - claude-scientific-skills (Fast-forward 更新，新增 arxiv-database 技能)
+  - composiohq-awesome-claude-skills (Already up to date)
+  - huggingface-skills (Fast-forward 更新，删除部分技能文件)
+  - obsidian-skills (Already up to date)
+  - openai-skills (Fast-forward 更新，修改 2 个技能文件)
+  - ui-ux-pro-max-skill (Already up to date)
+  - vercel-labs-agent-skills (Already up to date)
+  - vercel-labs-skills (Fast-forward 更新，修改多个源文件)
+  - voltagent-awesome-openclaw-skills (Fast-forward 更新，修改 README.md)
+
+- 更新翻译进度表格：
+  - ui-ux-pro-max-skill：从 1/1 已完成改为 1/7 进行中
+  - huggingface-skills：从 10/10 已完成改为 10/14 进行中
+  - vercel-labs-agent-skills：从 5/5 已完成改为 5/6 进行中
+  - obsidian-skills：从 ✓ README 翻译改为 ✗ README 翻译
+  - 总计：从 7213+ 个技能增加到 7229+ 个技能
+
 ## [2.15.0] - 2026-03-11
 
 ### 新增

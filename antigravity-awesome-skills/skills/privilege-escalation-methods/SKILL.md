@@ -3,6 +3,7 @@ name: privilege-escalation-methods
 description: "This skill should be used when the user asks to \"escalate privileges\", \"get root access\", \"become administrator\", \"privesc techniques\", \"abuse sudo\", \"exploit SUID binaries\", \"K..."
 risk: unknown
 source: community
+author: zebbern
 date_added: "2026-02-27"
 ---
 

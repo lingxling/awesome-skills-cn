@@ -3,6 +3,7 @@ name: file-path-traversal
 description: "This skill should be used when the user asks to \"test for directory traversal\", \"exploit path traversal vulnerabilities\", \"read arbitrary files through web applications\", \"find LFI vu..."
 risk: unknown
 source: community
+author: zebbern
 date_added: "2026-02-27"
 ---
 

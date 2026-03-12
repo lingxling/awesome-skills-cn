@@ -2,7 +2,7 @@
  
 <p align="center">
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/releases"><img src="https://img.shields.io/github/v/release/nextlevelbuilder/ui-ux-pro-max-skill?style=for-the-badge&color=blue" alt="GitHub Release"></a>
-  <img src="https://img.shields.io/badge/reasoning_rules-100-green?style=for-the-badge" alt="100 Reasoning Rules">
+  <img src="https://img.shields.io/badge/reasoning_rules-161-green?style=for-the-badge" alt="161 Reasoning Rules">
   <img src="https://img.shields.io/badge/UI_styles-67-purple?style=for-the-badge" alt="67 UI Styles">
   <img src="https://img.shields.io/badge/python-3.x-yellow?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.x">
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nextlevelbuilder/ui-ux-pro-max-skill?style=for-the-badge&color=green" alt="License"></a>
@@ -101,9 +101,9 @@ The flagship feature of v2.0 is the **Design System Generator** - an AI-powered 
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  2. MULTI-DOMAIN SEARCH (5 parallel searches)                   │
-│     • Product type matching (100 categories)                    │
+│     • Product type matching (161 categories)                    │
 │     • Style recommendations (67 styles)                         │
-│     • Color palette selection (96 palettes)                     │
+│     • Color palette selection (161 palettes)                    │
 │     • Landing page patterns (24 patterns)                       │
 │     • Typography pairing (57 font combinations)                 │
 └─────────────────────────────────────────────────────────────────┘
@@ -125,19 +125,20 @@ The flagship feature of v2.0 is the **Design System Generator** - an AI-powered 
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 100 Industry-Specific Reasoning Rules
+### 161 Industry-Specific Reasoning Rules
 
 The reasoning engine includes specialized rules for:
 
 | Category | Examples |
 |----------|----------|
-| **Tech & SaaS** | SaaS, Micro SaaS, B2B Enterprise, Developer Tools, AI/Chatbot Platform |
-| **Finance** | Fintech, Banking, Crypto, Insurance, Trading Dashboard |
-| **Healthcare** | Medical Clinic, Pharmacy, Dental, Veterinary, Mental Health |
-| **E-commerce** | General, Luxury, Marketplace, Subscription Box |
-| **Services** | Beauty/Spa, Restaurant, Hotel, Legal, Consulting |
-| **Creative** | Portfolio, Agency, Photography, Gaming, Music Streaming |
-| **Emerging Tech** | Web3/NFT, Spatial Computing, Quantum Computing, Autonomous Systems |
+| **Tech & SaaS** | SaaS, Micro SaaS, B2B Service, Developer Tool / IDE, AI/Chatbot Platform, Cybersecurity Platform |
+| **Finance** | Fintech/Crypto, Banking, Insurance, Personal Finance Tracker, Invoice & Billing Tool |
+| **Healthcare** | Medical Clinic, Pharmacy, Dental, Veterinary, Mental Health, Medication Reminder |
+| **E-commerce** | General, Luxury, Marketplace (P2P), Subscription Box, Food Delivery |
+| **Services** | Beauty/Spa, Restaurant, Hotel, Legal, Home Services, Booking & Appointment |
+| **Creative** | Portfolio, Agency, Photography, Gaming, Music Streaming, Photo/Video Editor |
+| **Lifestyle** | Habit Tracker, Recipe & Cooking, Meditation, Weather, Diary, Mood Tracker |
+| **Emerging Tech** | Web3/NFT, Spatial Computing, Quantum Computing, Autonomous Drone Fleet |
 
 Each rule includes:
 - **Recommended Pattern** - Landing page structure
@@ -150,12 +151,12 @@ Each rule includes:
 ## Features
 
 - **67 UI Styles** - Glassmorphism, Claymorphism, Minimalism, Brutalism, Neumorphism, Bento Grid, Dark Mode, AI-Native UI, and more
-- **96 Color Palettes** - Industry-specific palettes for SaaS, E-commerce, Healthcare, Fintech, Beauty, etc.
+- **161 Color Palettes** - Industry-specific palettes aligned 1:1 with the 161 product types
 - **57 Font Pairings** - Curated typography combinations with Google Fonts imports
 - **25 Chart Types** - Recommendations for dashboards and analytics
 - **13 Tech Stacks** - React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, HTML+Tailwind, shadcn/ui, Jetpack Compose
 - **99 UX Guidelines** - Best practices, anti-patterns, and accessibility rules
-- **100 Reasoning Rules** - Industry-specific design system generation (NEW in v2.0)
+- **161 Reasoning Rules** - Industry-specific design system generation (NEW in v2.0)
 
 ### Available Styles (67)
 

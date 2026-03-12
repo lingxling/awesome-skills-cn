@@ -8,8 +8,269 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 ## [Unreleased]
+## [7.5.0] - 2026-03-11 - "Socratic Governance"
+
+> **Introducing Truth Engines, Local Inference optimizations, and Advanced Output Formatting**
+
+This release brings major architectural skills for local inferences, cross-jurisdictional legal logic, and advanced document structuring to help your AI agents operate securely and systematically.
+
+## 🚀 New Skills
+
+### ⚖️ [lex](skills/lex/)
+**Cross-Jurisdictional Legal Logic Engine**
+A truth engine for navigating complex legal contexts across different jurisdictions without hallucinations.
+
+### 🛡️ [skill-check](skills/skill-check/)
+**Validation for agentskills.io Specification**
+A read-only skill that validates SKILL.md files against the agentskills specification and Anthropic best practices.
+
+### 🔑 [keyword-extractor](skills/keyword-extractor/)
+**Extract High-Quality SEO Keywords**
+Provides agents with the ability to extract up to 50 high-quality, ranked keywords from any text payload.
+
+### 🧠 [local-llm-expert](skills/local-llm-expert/)
+**Mastery over Local Inference & VRAM Optimization**
+Authoritative guidance on running, configuring, and optimizing large language models locally on consumer and enterprise hardware.
+
+### ✅ [yes-md](skills/yes-md/)
+**AI Governance at the Formatting Layer**
+Instructs generative agents on how to navigate complex formatting rules with a focus on governance and output fidelity.
+
+### 📝 [ai-md](skills/ai-md/)
+**Convert CLAUDE.md to AI-Native Format**
+A sophisticated transformation skill for AI documentation, battle-tested across 4 frontier models.
+
+### 🤔 [explain-like-socrates](skills/explain-like-socrates/)
+**Socratic-Style Concept Explanations**
+Transforms the agent into a Socratic tutor, engaging users in dialogue to teach complex concepts through questioning.
+
+## 👥 Credits
+
+A huge shoutout to our community contributors for making this release possible:
+- **@sx4im** for `local-llm-expert`
+- **@sstklen** for `yes-md` and `ai-md`
+- **@tejasashinde** for `keyword-extractor` and `explain-like-socrates`
+- **@Olga Safonova** for `skill-check`
 
 ---
+
+
+- **pipecat-friday-agent** — Iron Man-inspired tactical voice assistant (F.R.I.D.A.Y.) with Pipecat, Gemini, and OpenAI.
+
+---
+
+## [7.4.1] - 2026-03-10 - "Documentation Consistency & Workflow Fixes"
+
+> **Resolved comprehensive documentation consistency issues and integrated community AI tools.**
+
+This patch release focuses on bringing the entire repository's documentation into strict compliance with the newly established maintenance protocols. It resolves conflicting skill counts, aligns the documentation "trinity", fixes workflow routing paths, and standardizes formats to prevent anchor breakage. It also includes new community skills like the `pipecat-friday-agent` and workflow enhancements.
+
+## 🚀 New Skills
+
+### 🤖 [pipecat-friday-agent](skills/pipecat-friday-agent/)
+
+**Iron Man-inspired tactical voice assistant (F.R.I.D.A.Y.).**
+Built with Pipecat, Google Gemini, and OpenAI, providing a blueprint for creating interactive voice-driven agents.
+
+### ⏱️ [progressive-estimation](skills/progressive-estimation/)
+
+**Agentic workflow for progressive task estimation.**
+Breaks down complex tasks to improve estimation accuracy and project planning.
+
+### 🎥 [seek-and-analyze-video](skills/seek-and-analyze-video/)
+
+**AI-powered video analysis toolkit.**
+Automates seeking and analyzing of video content, extracting key insights and moments.
+
+## 📦 Improvements
+
+- **Documentation Consistency**: Full audit and remediation of `.github/MAINTENANCE.md` rules.
+- **TOC Formatting**: Removed emojis from H2 headers in `README.md` to fix broken markdown anchors.
+- **Statistics Alignment**: Synced skill counts across `package.json` and `README.md` for accurate representation (1,239+).
+- **Workflow Routing**: Added the `design-ddd-core-domain` workflow to required path definitions and copy-paste examples in `skills/antigravity-workflows/SKILL.md`.
+- **Validation**: Passed all sync chains including `npm run validate:references`.
+
+## 👥 Credits
+
+A huge shoutout to our community contributors:
+
+- **@Enreign** for `progressive-estimation`
+- **@kennyzheng-builds** for `seek-and-analyze-video`
+
+---
+
+## [7.4.0] - 2026-03-10 - "Planning & Dashboards"
+
+> **Blueprint planning skill, Sankhya dashboard best‑practices, and registry sync to 1,236+ skills.**
+
+This release focuses on better multi-session planning and domain dashboards. It adds a Blueprint skill for cold-start construction plans that any coding agent can execute, plus a Sankhya dashboard best-practices skill with SQL/JSP and UI guidance. The registry, catalog, and README counts are synced to 1,236+ skills, and the web app build is verified clean for this version.
+
+## 🚀 New Skills
+
+### 🧱 [blueprint](skills/blueprint/)
+
+**Cold-start construction planning for multi-step projects.**
+Generates dependency-aware plans where every step has its own context brief, tasks, rollback, verification, and exit criteria so fresh agents can execute steps independently.
+
+### 📊 [sankhya-dashboard-html-jsp-custom-best-pratices](skills/sankhya-dashboard-html-jsp-custom-best-pratices/)
+
+**Sankhya dashboard structure, SQL/JSP patterns, and UI best practices.**
+Documents resilient dashboard patterns, recommended SQL/JSP layout, and UX guidelines for production Sankhya deployments.
+
+## 📦 Improvements
+
+- **Registry Update**: Now tracking **1,236+** skills across the catalog.
+- **Docs & Catalog**: `README.md`, `skills_index.json`, `data/catalog.json`, and `CATALOG.md` regenerated and validated for 7.4.0.
+- **Web App**: `npm run app:build` run successfully to ensure the skills browser is up to date.
+
+## 👥 Credits
+
+- **@antbotlab** for `blueprint` (PR #259).
+- **@Guilherme-ruy** for the Sankhya dashboard skill (PR #258).
+
+---
+
+## [7.2.0] - 2026-03-08 - "Community PR Harvest & Cleanup"
+
+> **Eight PRs merged: 44 broken skills removed, zebbern attribution restored, Chinese docs, new skills (audit-skills, senior-frontend, shadcn, frontend-slides update, pakistan-payments-stack), and explainable auto-categorization.**
+
+This release cleans up the registry (removal of 44 SKILL.md files that contained only "404: Not Found"), restores `author: zebbern` attribution to 29 security skills, and merges community contributions: Simplified Chinese documentation, audit-skills, senior-frontend and shadcn skills, frontend-slides dependencies and formatting, pakistan-payments-stack for Pakistani SaaS payments, and explainable auto-categorization in the index generator. Bundle references were updated to drop missing skills so reference validation passes.
+
+## New Skills
+
+- **audit-skills** — Audit-safe skills (PR #236)
+- **senior-frontend** — React, Next.js, TypeScript, Tailwind (PR #233)
+- **shadcn** — shadcn/ui ecosystem (PR #233)
+- **pakistan-payments-stack** — JazzCash, Easypaisa, PKR billing (PR #228)
+
+## Improvements
+
+- **Registry cleanup**: 44 broken "404: Not Found" skill files removed (PR #240).
+- **Attribution**: `author: zebbern` restored for 29 security skills (PR #238).
+- **Docs**: frontend-slides updated with missing deps and formatting (PR #234); Simplified Chinese docs added (PR #232).
+- **Index**: Explainable auto-categorization in `generate_index.py` (PR #230).
+- **Bundles**: `data/bundles.json` updated to remove references to removed or missing skills; `npm run validate:references` passes.
+- **Registry**: Now tracking **1,232** skills.
+
+## Credits
+
+- **@munir-abbasi** for Chinese docs (PR #232)
+- **@itsmeares** for senior-frontend, shadcn (PR #233), frontend-slides update (PR #234)
+- **@zebbern** for security skills attribution (PR #238)
+- Contributors behind PRs #228, #230, #236, #240
+
+---
+
+_Upgrade now: `git pull origin main` to fetch the latest skills._
+
+---
+
+## [7.1.0] - 2026-03-07 - "PR Harvest & README Integrity"
+
+> **7 new skills merged from the community, README structure restored, and 1,272 skills milestone confirmed.**
+
+This release integrates a fresh batch of community pull requests: a Figma-to-React converter, Stripe payment expert, TanStack Query expert, Vercel AI SDK expert, Uncle Bob Clean Architecture guide, Antigravity premium design skills, and an AI agent toolkit. It also restores the structural integrity of README.md, which had picked up nested conflict markers from the batch-merge process.
+
+## 🚀 New Skills
+
+### 🎨 [figma-to-react](skills/figma-to-react/)
+
+**Convert Figma designs to production-ready React components.**
+Automatic conversion with pixel-perfect fidelity, responsive layouts, and Tailwind/CSS Modules support.
+
+> **Try it:** `Use @figma-to-react to turn this Figma component into a React component.`
+
+### 💳 [stripe-expert](skills/stripe-expert/)
+
+**Production-grade Stripe integration guidance.**
+Covers one-time payments, subscriptions, webhooks, and tax/compliance patterns.
+
+> **Try it:** `Use @stripe-expert to implement a SaaS subscription with annual billing.`
+
+### ⚡ [tanstack-query-expert](skills/tanstack-query-expert/)
+
+**Advanced data fetching and server state with TanStack Query v5.**
+Optimistic updates, infinite queries, and SSR/Next.js integration.
+
+> **Try it:** `Use @tanstack-query-expert to refactor this fetch call with caching and optimistic updates.`
+
+### 🤖 [vercel-ai-sdk-expert](skills/vercel-ai-sdk-expert/)
+
+**Generative UI and tool calling with the Vercel AI SDK.**
+Streaming, multi-step tools, and edge deployment patterns.
+
+> **Try it:** `Use @vercel-ai-sdk-expert to add streaming chat with tool calls.`
+
+### 📐 [uncle-bob-craft](skills/uncle-bob-craft/)
+
+**Clean Code, Clean Architecture, and TDD guidance from Uncle Bob's books.**
+Code reviews, refactoring, SOLID principles, and design pattern references.
+
+> **Try it:** `Use @uncle-bob-craft to review this class for SRP violations.`
+
+### ✨ [antigravity-premium-design](skills/antigravity-premium-design/)
+
+**Premium UI/UX patterns and motion design for Antigravity IDE.**
+
+> **Try it:** `Use @antigravity-premium-design to redesign this component.`
+
+## 📦 Improvements
+
+- **Registry Update**: Now tracking **1,272** skills.
+- **README Integrity**: Removed all nested merge conflict markers introduced during the batch-merge phase; restored original section layout.
+- **Stats Sync**: `package.json` description updated to `1,272+`.
+
+## 👥 Credits
+
+A huge shoutout to our community contributors:
+
+- **@GuppyTheCat** for `obsidian-clipper-template-creator` (PR #226)
+- **@sraphaz** for `uncle-bob-craft` (PR #225)
+- **@ziuus** for `antigravity-premium-design` (PR #224)
+- **@sx4im** for `git-hooks-automation` (PR #223), `tanstack-query-expert` (PR #222), `vercel-ai-sdk-expert` (PR #220)
+- **@Sayeem3051** for skill filtering utility (PR #219)
+- **@AlmogBaku** for `debug-skill` (PR #218)
+- **@ProgramadorBrasil** for 52 specialized AI agent skills (PR #217)
+- **@shubhamdevx** for web app markdown rendering improvements (PR #213)
+
+---
+
+_Upgrade now: `git pull origin main` to fetch the latest skills._
+
+---
+
+## [7.0.1] - 2026-03-06 - "Markdown & Wallet Patch"
+
+> **Patch release with web markdown improvements and new wallet skills, plus catalog sync.**
+
+This patch release adds new skills for AI-writing cleanup and multi-chain crypto wallets, while improving how markdown is rendered in the web app. It also syncs the generated catalog and metadata for a clean 7.0.1 state.
+
+## 🚀 New Skills
+
+### ✍️ avoid-ai-writing (skills/avoid-ai-writing/)
+
+**Remove AI-isms from generated prose**
+Audits and rewrites content to remove 21 categories of AI writing patterns, using a 43-entry replacement table and a structured four-step audit workflow.
+
+> **Try it:** `Use @avoid-ai-writing to clean up this AI-generated blog post before publishing.`
+
+### 🪙 emblemai-crypto-wallet (skills/emblemai-crypto-wallet/)
+
+**Multi-chain crypto wallet management via EmblemAI**
+Manages crypto wallets across 7 blockchains (Solana, Ethereum, Base, BSC, Polygon, Hedera, Bitcoin) for balance checks, swaps, transfers, and portfolio analysis via the EmblemAI Agent Hustle API.
+
+> **Try it:** `Use @emblemai-crypto-wallet to summarize my portfolio and estimate gas costs for a swap.`
+
+## 📦 Improvements
+
+- **Registry Update**: Catalog and bundles regenerated after adding the new skills.
+- **Risk Metadata**: `emblemai-crypto-wallet` now uses a `critical` risk level to reflect real-value asset operations.
+- **Validation**: Full validation chain and catalog build run successfully for 7.0.1.
+
+## 👥 Credits
+
+- **@conorbronsdon** for `avoid-ai-writing`.
+- **@decentraliser** for `emblemai-crypto-wallet`.
 
 ## [7.0.0] - 2026-03-06 - "20k Stars Celebration"
 
@@ -24,7 +285,9 @@ Thank you to our incredible community! From 0 to 20,000 stars, this journey has 
 ## 🚀 New Skill Categories (300+ Skills)
 
 ### UI/UX & Frontend (35+ skills)
+
 Complete UI/UX polish toolkit and 3D graphics suite:
+
 - **[baseline-ui](skills/baseline-ui/)**, **[fixing-accessibility](skills/fixing-accessibility/)**, **[fixing-metadata](skills/fixing-metadata/)**, **[fixing-motion-performance](skills/fixing-motion-performance/)** - UI validation and accessibility
 - **[swiftui-expert-skill](skills/swiftui-expert-skill/)** - iOS SwiftUI development with 14 reference guides
 - **[threejs-fundamentals](skills/threejs-fundamentals/)** through **[threejs-interaction](skills/threejs-interaction/)** - Complete Three.js 3D graphics (10 skills)
@@ -34,7 +297,9 @@ Complete UI/UX polish toolkit and 3D graphics suite:
 - **[favicon](skills/favicon/)**, **[chat-widget](skills/chat-widget/)** - UI utilities
 
 ### Automation & Integration (35+ skills)
+
 Full workflow automation toolkit:
+
 - **[gmail-automation](skills/gmail-automation/)**, **[google-calendar-automation](skills/google-calendar-automation/)**, **[google-docs-automation](skills/google-docs-automation/)**, **[google-sheets-automation](skills/google-sheets-automation/)**, **[google-drive-automation](skills/google-drive-automation/)**, **[google-slides-automation](skills/google-slides-automation/)** - Complete Google Workspace integration
 - **[n8n-expression-syntax](skills/n8n-expression-syntax/)**, **[n8n-mcp-tools-expert](skills/n8n-mcp-tools-expert/)**, **[n8n-workflow-patterns](skills/n8n-workflow-patterns/)**, **[n8n-validation-expert](skills/n8n-validation-expert/)**, **[n8n-node-configuration](skills/n8n-node-configuration/)**, **[n8n-code-javascript](skills/n8n-code-javascript/)**, **[n8n-code-python](skills/n8n-code-python/)** - n8n workflow automation (7 skills)
 - **[automate-whatsapp](skills/automate-whatsapp/)**, **[integrate-whatsapp](skills/integrate-whatsapp/)**, **[observe-whatsapp](skills/observe-whatsapp/)** - WhatsApp automation
@@ -44,7 +309,9 @@ Full workflow automation toolkit:
 - **[build](skills/build/)**, **[conductor-setup](skills/conductor-setup/)**, **[issues](skills/issues/)**, **[new-rails-project](skills/new-rails-project/)** - Development project management
 
 ### Security & Auditing (40+ skills)
+
 Comprehensive security toolkit from Trail of Bits and community:
+
 - **[semgrep-rule-creator](skills/semgrep-rule-creator/)**, **[semgrep-rule-variant-creator](skills/semgrep-rule-variant-creator/)**, **[static-analysis](skills/static-analysis/)**, **[variant-analysis](skills/variant-analysis/)** - Code security analysis
 - **[golang-security-auditor](skills/golang-security-auditor/)**, **[python-security-auditor](skills/python-security-auditor/)**, **[rust-security-auditor](skills/rust-security-auditor/)** - Language-specific security auditing
 - **[burpsuite-project-parser](skills/burpsuite-project-parser/)**, **[agentic-actions-auditor](skills/agentic-actions-auditor/)**, **[audit-context-building](skills/audit-context-building/)**, **[proof-of-vulnerability](skills/proof-of-vulnerability/)**, **[yara-authoring](skills/yara-authoring/)** - Security testing tools
@@ -53,7 +320,9 @@ Comprehensive security toolkit from Trail of Bits and community:
 - **[ask-questions-if-underspecified](skills/ask-questions-if-underspecified/)**, **[building-secure-contracts](skills/building-secure-contracts/)**, **[claude-in-chrome-troubleshooting](skills/claude-in-chrome-troubleshooting/)**, **[constant-time-analysis](skills/constant-time-analysis/)**, **[culture-index](skills/culture-index/)**, **[debug-buttercup](skills/debug-buttercup/)**, **[devcontainer-setup](skills/devcontainer-setup/)**, **[differential-review](skills/differential-review/)**, **[dwarf-expert](skills/dwarf-expert/)**, **[grimoire](skills/grimoire/)**, **[it-depends](skills/it-depends/)**, **[monte-carlo-treasury](skills/monte-carlo-treasury/)**, **[monte-carlo-vulnerability-detection](skills/monte-carlo-vulnerability-detection/)**, **[open-source-context](skills/open-source-context/)**, **[operational-guidelines](skills/operational-guidelines/)**, **[osint-evals](skills/osint-evals/)**, **[polyfile](skills/polyfile/)**, **[publish-and-summary](skills/publish-and-summary/)**, **[security-skill-creator](skills/security-skill-creator/)**, **[sharp-edges](skills/sharp-edges/)**, **[skill-improver](skills/skill-improver/)**, **[spec-to-code-compliance](skills/spec-to-code-compliance/)**, **[supply-chain-risk-auditor](skills/supply-chain-risk-auditor/)**, **[testing-handbook-skills](skills/testing-handbook-skills/)**, **[workflow-skill-design](skills/workflow-skill-design/)**, **[zeroize-audit](skills/zeroize-audit/)** - Additional Trail of Bits security skills
 
 ### Machine Learning & Data Science (35+ skills)
+
 Complete scientific computing suite:
+
 - **[hugging-face-dataset-viewer](skills/hugging-face-dataset-viewer/)**, **[hugging-face-datasets](skills/hugging-face-datasets/)**, **[hugging-face-evaluation](skills/hugging-face-evaluation/)**, **[hugging-face-model-trainer](skills/hugging-face-model-trainer/)**, **[hugging-face-paper-publisher](skills/hugging-face-paper-publisher/)**, **[hugging-face-tool-builder](skills/hugging-face-tool-builder/)** - HuggingFace ML platform
 - **[numpy](skills/numpy/)**, **[pandas](skills/pandas/)**, **[scipy](skills/scipy/)**, **[matplotlib](skills/matplotlib/)**, **[scikit-learn](skills/scikit-learn/)**, **[jupyter-workflow](skills/jupyter-workflow/)** - Data science essentials
 - **[biopython](skills/biopython/)**, **[scanpy](skills/scanpy/)**, **[uniprot-database](skills/uniprot-database/)**, **[pubmed-database](skills/pubmed-database/)** - Bioinformatics tools
@@ -63,26 +332,35 @@ Complete scientific computing suite:
 - **[research-engineer](skills/research-engineer/)**, **[scientific-writing](skills/scientific-writing/)**, **[paper-analysis](skills/paper-analysis/)** - Academic research
 
 ### Health & Wellness (20+ skills)
+
 Comprehensive health management from Claude-Ally-Health:
+
 - **[sleep-analyzer](skills/sleep-analyzer/)**, **[nutrition-analyzer](skills/nutrition-analyzer/)**, **[fitness-analyzer](skills/fitness-analyzer/)** - Core health tracking
 - **[ai-analyzer](skills/ai-analyzer/)**, **[emergency-card](skills/emergency-card/)**, **[family-health-analyzer](skills/family-health-analyzer/)**, **[food-database-query](skills/food-database-query/)**, **[goal-analyzer](skills/goal-analyzer/)**, **[health-trend-analyzer](skills/health-trend-analyzer/)**, **[mental-health-analyzer](skills/mental-health-analyzer/)**, **[occupational-health-analyzer](skills/occupational-health-analyzer/)**, **[oral-health-analyzer](skills/oral-health-analyzer/)**, **[rehabilitation-analyzer](skills/rehabilitation-analyzer/)**, **[sexual-health-analyzer](skills/sexual-health-analyzer/)**, **[skin-health-analyzer](skills/skin-health-analyzer/)**, **[tcm-constitution-analyzer](skills/tcm-constitution-analyzer/)**, **[travel-health-analyzer](skills/travel-health-analyzer/)**, **[weightloss-analyzer](skills/weightloss-analyzer/)**, **[wellally-tech](skills/wellally-tech/)** - Specialized health analyzers
 
 ### Context Engineering & AI (15+ skills)
+
 Advanced agent patterns from muratcankoylan and community:
+
 - **[context-fundamentals](skills/context-fundamentals/)**, **[context-degradation](skills/context-degradation/)**, **[context-compression](skills/context-compression/)**, **[context-optimization](skills/context-optimization/)**, **[multi-agent-patterns](skills/multi-agent-patterns/)**, **[filesystem-context](skills/filesystem-context/)** - Context engineering patterns
 - **[hosted-agents](skills/hosted-agents/)**, **[advanced-evaluation](skills/advanced-evaluation/)**, **[project-development](skills/project-development/)**, **[bdi-mental-states](skills/bdi-mental-states/)** - Advanced agent patterns
 - **[agents-md](skills/agents-md/)**, **[blog-writing-guide](skills/blog-writing-guide/)**, **[brand-guidelines](skills/brand-guidelines/)**, **[claude-settings-audit](skills/claude-settings-audit/)** - Sentry workflow skills
 
 ### Functional Programming (12+ skills)
+
 Complete fp-ts guide:
+
 - **[fp-pragmatic](skills/fp-pragmatic/)**, **[fp-errors](skills/fp-errors/)**, **[fp-async](skills/fp-async/)**, **[fp-react](skills/fp-react/)**, **[fp-data-transforms](skills/fp-data-transforms/)**, **[fp-backend](skills/fp-backend/)**, **[fp-refactor](skills/fp-refactor/)** - Core functional programming
 - **[fp-types-ref](skills/fp-types-ref/)**, **[fp-pipe-ref](skills/fp-pipe-ref/)**, **[fp-option-ref](skills/fp-option-ref/)**, **[fp-either-ref](skills/fp-either-ref/)**, **[fp-taskeither-ref](skills/fp-taskeither-ref/)** - Quick reference guides
 
 ### AWS Development (6+ skills)
+
 AWS expertise from zxkane:
+
 - **[aws-agentic-ai](skills/aws-agentic-ai/)**, **[aws-cdk-development](skills/aws-cdk-development/)**, **[aws-common](skills/aws-common/)**, **[aws-cost-ops](skills/aws-cost-ops/)**, **[aws-mcp-setup](skills/aws-mcp-setup/)**, **[aws-serverless-eda](skills/aws-serverless-eda/)**
 
 ### Utilities & Developer Tools (10+ skills)
+
 - **[vexor-cli](skills/vexor-cli/)** - Semantic file discovery
 - **[clarity-gate](skills/clarity-gate/)** - RAG quality verification
 - **[speckit-updater](skills/speckit-updater/)** - SpecKit template updates
@@ -104,6 +382,7 @@ AWS expertise from zxkane:
 ## 👥 Credits
 
 ### Official Team Contributions
+
 - **Vercel Labs**: `vercel-deploy-claimable`
 - **Google Labs**: `enhance-prompt`, `remotion`, `stitch-loop`
 - **HuggingFace**: `hugging-face-dataset-viewer`, `hugging-face-datasets`, `hugging-face-evaluation`, `hugging-face-model-trainer`, `hugging-face-paper-publisher`, `hugging-face-tool-builder`
@@ -112,6 +391,7 @@ AWS expertise from zxkane:
 - **Trail of Bits**: 40+ security skills including `semgrep-rule-creator`, `static-analysis`, `variant-analysis`, and specialized auditors
 
 ### Community Contributors
+
 - **[ibelick](https://github.com/ibelick/ui-skills)**: UI/UX polish skills
 - **[expo](https://github.com/expo/skills)**: React Native development skills
 - **[sanjay3290](https://github.com/sanjay3290/ai-skills)**: Google Workspace integration
@@ -138,6 +418,7 @@ AWS expertise from zxkane:
 - **[neondatabase](https://github.com/neondatabase/agent-skills)**: Neon Postgres
 
 ### Top Repository Contributors
+
 - [@sck_0](https://github.com/sck_0) - 377 commits
 - [@github-actions[bot]](https://github.com/apps/github-actions) - 145 commits
 - [@sickn33](https://github.com/sickn33) - 54 commits

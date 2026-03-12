@@ -15,5 +15,5 @@ If you find a security vulnerability (e.g., a skill that bypasses the "Authorize
 
 ## Offensive Skills Policy
 
-Please read our [Security Guardrails](docs/SECURITY_GUARDRAILS.md).
+Please read our [Security Guardrails](docs/contributors/security-guardrails.md).
 All offensive skills are strictly for **authorized educational and professional use only**.

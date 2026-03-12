@@ -6,7 +6,7 @@ Usage: python search.py "<query>" [--domain <domain>] [--stack <stack>] [--max-r
        python search.py "<query>" --design-system [-p "Project Name"]
        python search.py "<query>" --design-system --persist [-p "Project Name"] [--page "dashboard"]
 
-Domains: style, prompt, color, chart, landing, product, ux, typography
+Domains: style, prompt, color, chart, landing, product, ux, typography, google-fonts
 Stacks: html-tailwind, react, nextjs
 
 Persistence (Master + Overrides pattern):

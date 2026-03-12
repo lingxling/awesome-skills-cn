@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小猫咪 - 萌宠日常</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* Pet Tech App 配色 - 来自 UI/UX Pro Max design system */
+      --primary: #F97316;
+      --primary-on: #0F172A;
+      --secondary: #FB923C;
+      --accent: #2563EB;
+      --accent-on: #FFFFFF;
+      --background: #FFF7ED;
+      --foreground: #9A3412;
+      --card: #FFFFFF;
+      --card-foreground: #9A3412;
+      --muted: #F1F0F0;
+      --muted-foreground: #64748B;
+      --border: #FED7AA;
+      --destructive: #DC2626;
+      --ring: #F97316;
+      --radius-outer: 28px;
+      --radius-card: 20px;
+      --radius-btn: 16px;
+      --shadow-clay: 0 4px 0 0 rgba(154, 52, 18, 0.12), 0 8px 24px -4px rgba(249, 115, 22, 0.15);
+      --shadow-card: 0 2px 0 0 rgba(154, 52, 18, 0.06), 0 12px 32px -8px rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'Nunito', -apple-system, sans-serif;
+      background: var(--background);
+      color: var(--foreground);
+      min-height: 100vh;
+      padding-bottom: 80px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    .header {
+      padding: 16px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(255,247,237,0.98) 0%, var(--background) 100%);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--foreground);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-clay);
+    }
+    .logo-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: white;
+    }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-btn);
+      border: none;
+      background: var(--card);
+      color: var(--foreground);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-card);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .icon-btn:hover { transform: scale(0.96); }
+    .icon-btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+    .icon-btn svg { width: 22px; height: 22px; }
+
+    /* Hero - 主猫卡片 */
+    .hero {
+      padding: 20px;
+      margin-bottom: 8px;
+    }
+    .hero-card {
+      background: var(--card);
+      border-radius: var(--radius-outer);
+      padding: 24px;
+      box-shadow: var(--shadow-card);
+      border: 2px solid var(--border);
+      text-align: center;
+    }
+    .cat-avatar {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 16px;
+      background: linear-gradient(145deg, #FED7AA 0%, #FDBA74 50%, #FB923C 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 0 0 rgba(154, 52, 18, 0.15), 0 12px 32px -4px rgba(249, 115, 22, 0.25);
+    }
+    .cat-avatar svg {
+      width: 70px;
+      height: 70px;
+      fill: var(--foreground);
+      opacity: 0.9;
+    }
+    .hero-card h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.5rem;
+      color: var(--foreground);
+      margin-bottom: 4px;
+    }
+    .hero-card .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted-foreground);
+      margin-bottom: 20px;
+    }
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+    .stat {
+      text-align: center;
+    }
+    .stat-value {
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+    }
+
+    /* 快捷操作区 */
+    .section-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.1rem;
+      padding: 0 20px 12px;
+      color: var(--foreground);
+    }
+    .quick-actions {
+      padding: 0 20px 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .action-card {
+      background: var(--card);
+      border-radius: var(--radius-card);
+      padding: 20px 12px;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .action-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 0 0 rgba(154, 52, 18, 0.08), 0 16px 40px -8px rgba(0,0,0,0.12);
+    }
+    .action-card:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+    .action-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 10px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .action-card:nth-child(1) .action-icon { background: linear-gradient(135deg, #FED7AA, #FDBA74); }
+    .action-card:nth-child(2) .action-icon { background: linear-gradient(135deg, #BFDBFE, #93C5FD); }
+    .action-card:nth-child(3) .action-icon { background: linear-gradient(135deg, #BBF7D0, #86EFAC); }
+    .action-icon svg { width: 26px; height: 26px; fill: var(--foreground); }
+    .action-card span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--foreground);
+    }
+
+    /* 今日动态 */
+    .feed-section {
+      padding: 0 20px 24px;
+    }
+    .feed-card {
+      background: var(--card);
+      border-radius: var(--radius-card);
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-card);
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .feed-time {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      min-width: 48px;
+    }
+    .feed-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--primary);
+      flex-shrink: 0;
+    }
+    .feed-content {
+      flex: 1;
+    }
+    .feed-content strong {
+      font-size: 0.95rem;
+      color: var(--foreground);
+    }
+    .feed-content p {
+      font-size: 0.85rem;
+      color: var(--muted-foreground);
+      margin-top: 2px;
+    }
+
+    /* 底部导航 */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: var(--card);
+      border-top: 2px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 0 24px;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.06);
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--muted-foreground);
+      text-decoration: none;
+      font-size: 0.75rem;
+      padding: 8px 16px;
+      border-radius: var(--radius-btn);
+      transition: color 0.2s, background 0.2s;
+    }
+    .nav-item:hover, .nav-item.active {
+      color: var(--primary);
+    }
+    .nav-item.active {
+      background: rgba(249, 115, 22, 0.12);
+    }
+    .nav-item svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    /* 响应式 */
+    @media (min-width: 768px) {
+      body { max-width: 420px; margin: 0 auto; }
+      .bottom-nav { max-width: 420px; left: 50%; transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c2.5 0 4 1.5 5 3.5 1 .9 1.5 2.1 1.5 3.5 0 2.8-2.2 5-5 5-1.2 0-2.3-.4-3.2-1-.1.4-.3.8-.5 1.2-.6 1.2-1.5 2.2-2.6 2.8-.3.2-.7.3-1 .5-.4.2-.8.4-1.2.5-.5.2-1 .3-1.5.3-1.7 0-3.2-1.4-3.5-3.1-.1-.5 0-1 .2-1.5.2-.4.5-.7.8-1 .4-.4.8-.7 1.2-1 .5-.3 1-.5 1.5-.6.6-.2 1.2-.2 1.8-.1.5.1 1 .3 1.5.5.4.2.8.4 1.2.7.3.2.6.5.9.8.2.2.4.4.6.7.2.2.3.5.5.7.2.3.3.6.5 1 .2.4.3.8.4 1.2.1.5.1 1 .1 1.5 0 .5-.1 1-.3 1.5-.2.5-.5.9-.8 1.3-.4.4-.9.7-1.4.9-.5.2-1 .4-1.6.4-.5 0-1-.1-1.5-.3-.4-.2-.8-.4-1.2-.7-.3-.2-.6-.5-.9-.8-.2-.2-.4-.5-.6-.7-.2-.3-.4-.5-.6-.8-.2-.2-.4-.5-.6-.7-.2-.2-.4-.5-.5-.7-.2-.2-.3-.5-.5-.7-.1-.2-.3-.4-.4-.6-.1-.2-.2-.4-.3-.6-.1-.2-.2-.4-.2-.6-.1-.2-.1-.4-.2-.6 0-.2-.1-.4-.1-.6 0-.2 0-.4.1-.6.1-.2.2-.4.3-.5.1-.2.3-.3.4-.5.2-.1.3-.3.5-.4.2-.1.3-.3.5-.4.2-.1.4-.2.6-.3.2-.1.4-.1.6-.2.2 0 .4 0 .6.1.2 0 .4.1.6.2.2.1.4.2.5.4.2.1.3.3.5.5.1.2.3.4.4.6.1.2.2.4.3.6.1.2.1.4.2.7.1.2 0 .5.1.7.1.2 0 .5 0 .7-.1.2-.1.5-.2.7-.4.2-.2.4-.4.6-.6.2-.2.3-.5.5-.7.1-.2.3-.5.4-.7.1-.2.2-.5.3-.7.1-.2.1-.5.2-.7 0-.2.1-.5.1-.7 0-.2 0-.5-.1-.7-.1-.2-.2-.4-.4-.6-.2-.2-.4-.3-.6-.5-.2-.1-.4-.2-.7-.3-.2-.1-.5-.1-.7-.1-.2 0-.5.1-.7.2-.2.1-.4.2-.6.4-.2.2-.3.4-.5.6-.1.2-.2.4-.3.6-.1.2-.1.4-.2.6 0 .2 0 .4.1.6.1.2.1.4.2.5.1.2.2.3.3.5.1.2.2.4.3.5.1.2.2.3.3.5.1.2.1.3.2.5.1.2.1.3.2.5.1.2.1.3.1.5 0 .2.1.4.1.5.1.2 0 .3.1.5.1.2.1.3.2.5.2.2.1.3.2.5.2.2.1.3.3.5.3.2.1.3.3.5.3.2.1.3.3.5.3.2.1.3.3.5.3z"/></svg>
+      </div>
+      小猫咪
+    </div>
+    <div class="header-actions">
+      <button type="button" class="icon-btn" aria-label="通知">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <button type="button" class="icon-btn" aria-label="设置">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-card">
+        <div class="cat-avatar" role="img" aria-label="猫咪头像">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2c2.5 0 4 1.5 5 3.5 1 .9 1.5 2.1 1.5 3.5 0 2.8-2.2 5-5 5-1.2 0-2.3-.4-3.2-1-.1.4-.3.8-.5 1.2-.6 1.2-1.5 2.2-2.6 2.8-.3.2-.7.3-1 .5-.4.2-.8.4-1.2.5-.5.2-1 .3-1.5.3-1.7 0-3.2-1.4-3.5-3.1-.1-.5 0-1 .2-1.5.2-.4.5-.7.8-1 .4-.4.8-.7 1.2-1 .5-.3 1-.5 1.5-.6.6-.2 1.2-.2 1.8-.1.5.1 1 .3 1.5.5.4.2.8.4 1.2.7.3.2.6.5.9.8.2.2.4.4.6.7.2.2.3.5.5.7.2.3.3.6.5 1 .2.4.3.8.4 1.2.1.5.1 1 .1 1.5 0 .5-.1 1-.3 1.5-.2.5-.5.9-.8 1.3-.4.4-.9.7-1.4.9-.5.2-1 .4-1.6.4-.5 0-1-.1-1.5-.3-.4-.2-.8-.4-1.2-.7-.3-.2-.6-.5-.9-.8-.2-.2-.4-.5-.6-.7-.2-.3-.4-.5-.6-.8-.2-.2-.4-.5-.6-.7-.2-.2-.4-.5-.5-.7-.2-.2-.3-.5-.5-.7-.1-.2-.3-.4-.4-.6-.1-.2-.2-.4-.3-.6-.1-.2-.2-.4-.2-.6-.1-.2-.1-.4-.2-.6 0-.2-.1-.4-.1-.6 0-.2 0-.4.1-.6.1-.2.2-.4.3-.5.1-.2.3-.3.4-.5.2-.1.3-.3.5-.4.2-.1.3-.3.5-.4.2-.1.4-.2.6-.3.2-.1.4-.1.6-.2.2 0 .4 0 .6.1.2 0 .4.1.6.2.2.1.4.2.5.4.2.1.3.3.5.5.1.2.3.4.4.6.1.2.2.4.3.6.1.2.1.4.2.7.1.2 0 .5.1.7.1.2 0 .5 0 .7-.1.2-.1.5-.2.7-.4.2-.2.4-.4.6-.6.2-.2.3-.5.5-.7.1-.2.3-.5.4-.7.1-.2.2-.5.3-.7.1-.2.1-.5.2-.7 0-.2.1-.5.1-.7 0-.2 0-.5-.1-.7-.1-.2-.2-.4-.4-.6-.2-.2-.4-.3-.6-.5-.2-.1-.4-.2-.7-.3-.2-.1-.5-.1-.7-.1-.2 0-.5.1-.7.2-.2.1-.4.2-.6.4-.2.2-.3.4-.5.6-.1.2-.2.4-.3.6-.1.2-.1.4-.2.6 0 .2 0 .4.1.6.1.2.1.4.2.5.1.2.2.3.3.5.1.2.2.4.3.5.1.2.2.3.3.5.1.2.1.3.2.5.1.2.1.3.2.5.1.2.1.3.1.5 0 .2.1.4.1.5.1.2 0 .3.1.5.1.2.1.3.2.5.2.2.1.3.2.5.2.2.1.3.3.5.3.2.1.3.3.5.3.2.1.3.3.5.3.2.1.3.3.5.3z"/></svg>
+        </div>
+        <h1>喵小橘</h1>
+        <p class="subtitle">橘猫 · 1岁2个月</p>
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-value">3</div>
+            <div class="stat-label">今日喂食</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">42</div>
+            <div class="stat-label">连续陪伴</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">健康</div>
+            <div class="stat-label">状态</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <h2 class="section-title">今日待办</h2>
+    <div class="quick-actions">
+      <a href="#" class="action-card">
+        <div class="action-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        </div>
+        <span>喂食</span>
+      </a>
+      <a href="#" class="action-card">
+        <div class="action-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9zM5.6 10.25c0 1.38 1.12 2.5 2.5 2.5.53 0 1.01-.16 1.42-.44l-.02 2.44c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5l-.02-2.44c.4.28.89.44 1.42.44 1.38 0 2.5-1.12 2.5-2.5 0-1-.6-1.86-1.44-2.28.19-.59.31-1.23.31-1.91 0-3.31-2.69-6-6-6S3 4.69 3 8c0 .68.12 1.32.31 1.91C2.6 10.39 2 11.25 2 12.25 2 13.63 3.12 14.75 4.5 14.75c.53 0 1.01-.16 1.42-.44l.02 2.44c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5l.02-2.44c.4.28.89.44 1.42.44 1.38 0 2.5-1.12 2.5-2.5 0-1-.6-1.86-1.44-2.28.19-.59.31-1.23.31-1.91 0-3.31-2.69-6-6-6z"/></svg>
+        </div>
+        <span>玩耍</span>
+      </a>
+      <a href="#" class="action-card">
+        <div class="action-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.5 3.5L18 2l-1.5 1.5L15 2l-1.5 1.5L12 2l-1.5 1.5L9 2 7.5 3.5 6 2v14H3v3c0 1.66 1.34 3 3 3h12c1.66 0 3-1.34 3-3V2l-1.5 1.5zM15 20H6c-.55 0-1-.45-1-1v-1h10v2zm4-1c0 .55-.45 1-1 1h-2v-2h4v1z"/></svg>
+        </div>
+        <span>健康</span>
+      </a>
+    </div>
+
+    <h2 class="section-title">今日动态</h2>
+    <section class="feed-section">
+      <div class="feed-card">
+        <span class="feed-time">08:30</span>
+        <span class="feed-dot"></span>
+        <div class="feed-content">
+          <strong>早餐已记录</strong>
+          <p>猫粮 25g · 罐头 半份</p>
+        </div>
+      </div>
+      <div class="feed-card">
+        <span class="feed-time">12:00</span>
+        <span class="feed-dot"></span>
+        <div class="feed-content">
+          <strong>玩耍 15 分钟</strong>
+          <p>逗猫棒 · 消耗 28 卡路里</p>
+        </div>
+      </div>
+      <div class="feed-card">
+        <span class="feed-time">18:00</span>
+        <span class="feed-dot"></span>
+        <div class="feed-content">
+          <strong>晚餐待喂</strong>
+          <p>点击记录今日晚餐</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="主导航">
+    <a href="#" class="nav-item active" aria-current="page">
+      <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      首页
+    </a>
+    <a href="#" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm-8 4H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z"/></svg>
+      日记
+    </a>
+    <a href="#" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      发现
+    </a>
+    <a href="#" class="nav-item">
+      <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      我的
+    </a>
+  </nav>
+</body>
+</html>

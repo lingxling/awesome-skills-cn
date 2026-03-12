@@ -215,6 +215,8 @@
 - [meetup-planner](https://github.com/openclaw/skills/tree/main/skills/apresmoi/meetup-planner/SKILL.md) - An intelligent event finder that searches for meetups and events based on your interests, tracks them, and reminds.
 - [memo-persistent-memory](https://github.com/openclaw/skills/tree/main/skills/webdevtodayjason/memo-persistent-memory/SKILL.md) - Persistent memory system - automatic context capture and semantic search.
 - [message-parser](https://github.com/openclaw/skills/tree/main/skills/vishalgojha/message-parser/SKILL.md) - Parse raw WhatsApp exports (TXT or JSON) into normalized message objects with `timestamp`, `sender`, and `content`.
+- [meyhem-researcher](https://github.com/openclaw/skills/tree/main/skills/c5huracan/meyhem-researcher/SKILL.md) - Multi-query deep research with outcome tracking. Every search improves future results for all agents.
+- [meyhem-search](https://github.com/openclaw/skills/tree/main/skills/c5huracan/meyhem-search/SKILL.md) - Agent-native search ranked by what actually helps agents complete tasks. No API key, no signup.
 - [mh-bear-notes](https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-bear-notes/SKILL.md) - Create, search, and manage Bear notes via grizzly CLI.
 - [mh-session-logs](https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-session-logs/SKILL.md) - Search and analyze your own session logs (older/parent conversations) using jq.
 - [mh-wacli](https://github.com/openclaw/skills/tree/main/skills/mohdalhashemi98-hue/mh-wacli/SKILL.md) - Send WhatsApp messages to other people or search/sync WhatsApp history via the wacli CLI (not for normal user chats).
@@ -354,3 +356,5 @@
 - [zvec-local-rag-service](https://github.com/openclaw/skills/tree/main/skills/emre-koc/zvec-local-rag-service/SKILL.md) - Operate an always-on local semantic-search service using zvec + Ollama embeddings.
 - [zvukogram](https://github.com/openclaw/skills/tree/main/skills/erview/zvukogram/SKILL.md) - Text-to-Speech via Zvukogram API with SSML support.
 - [zynd-network](https://github.com/openclaw/skills/tree/main/skills/atmegabuzz/zynd-network/SKILL.md) - Connect to the Zynd AI Network to discover, communicate with, and pay other AI agents.
+- [aminer-open-academic](https://github.com/openclaw/skills/tree/main/skills/canxiangcc/aminer-open-academic/SKILL.md) - AMiner open academic resource query tool and academic data acquisition tool.
+- [xquik-x-twitter-scraper](https://github.com/openclaw/skills/tree/main/skills/kriptoburak/xquik-x-twitter-scraper/SKILL.md) - X API scraper with 40+ tools for AI agents.

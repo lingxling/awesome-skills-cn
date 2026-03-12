@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐱 小猫喂养助手</title>
+  <!-- Phosphor Icons - 与 icons.csv 中 Phosphor 图标对应 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #fef3e2 0%, #f5e6d3 100%);
+      min-height: 100vh;
+      padding: 1rem;
+    }
+    .app {
+      max-width: 420px;
+      margin: 0 auto;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0;
+      margin-bottom: 1.5rem;
+    }
+    .logo { font-size: 1.5rem; font-weight: 700; color: #2d1b0e; }
+    .nav-icons {
+      display: flex;
+      gap: 1rem;
+    }
+    .nav-icons i {
+      font-size: 1.5rem;
+      color: #8b6914;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .nav-icons i:hover { transform: scale(1.1); }
+    .card {
+      background: #fff;
+      border-radius: 1rem;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 20px rgba(139, 105, 20, 0.08);
+    }
+    .card h2 {
+      font-size: 0.9rem;
+      color: #8b6914;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .cat-bowl {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      padding: 1.5rem;
+    }
+    .bowl-control {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .bowl-control button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: #f5e6d3;
+      color: #8b6914;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      transition: all 0.2s;
+    }
+    .bowl-control button:hover {
+      background: #e8d4b8;
+      transform: scale(1.05);
+    }
+    .bowl-display {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #2d1b0e;
+      min-width: 3rem;
+      text-align: center;
+    }
+    .schedule-list {
+      list-style: none;
+    }
+    .schedule-list li {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f5e6d3;
+    }
+    .schedule-list li:last-child { border-bottom: none; }
+    .schedule-list i { font-size: 1.25rem; color: #8b6914; flex-shrink: 0; }
+    .schedule-list span { flex: 1; color: #2d1b0e; }
+    .schedule-list .badge {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+    }
+    .icon-test {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px dashed #e8d4b8;
+    }
+    .icon-test h3 { font-size: 0.8rem; color: #8b6914; margin-bottom: 0.75rem; }
+    .icon-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.5rem;
+      font-size: 1.5rem;
+      color: #2d1b0e;
+    }
+    .icon-grid i { text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <span class="logo">🐱 小猫喂养</span>
+      <div class="nav-icons">
+        <!-- icons.csv: List, House, Bell, User, Gear -->
+        <i class="ph ph-list" title="菜单"></i>
+        <i class="ph ph-house" title="首页"></i>
+        <i class="ph ph-bell" title="提醒"></i>
+        <i class="ph ph-user" title="我的"></i>
+        <i class="ph ph-gear" title="设置"></i>
+      </div>
+    </header>
+
+    <div class="card">
+      <h2><i class="ph ph-cat"></i> 今日喂食</h2>
+      <div class="cat-bowl">
+        <div class="bowl-control">
+          <button><i class="ph ph-minus"></i></button>
+          <span class="bowl-display" id="portion">2</span>
+          <button><i class="ph ph-plus"></i></button>
+        </div>
+        <span style="font-size: 2rem">🍽️</span>
+        <div class="bowl-control">
+          <button><i class="ph ph-trash" title="清空"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><i class="ph ph-clock"></i> 喂食计划</h2>
+      <ul class="schedule-list">
+        <li>
+          <i class="ph ph-check-circle"></i>
+          <span>早餐 08:00</span>
+          <span class="badge">已完成</span>
+        </li>
+        <li>
+          <i class="ph ph-clock"></i>
+          <span>午餐 12:00</span>
+        </li>
+        <li>
+          <i class="ph ph-clock"></i>
+          <span>晚餐 18:00</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2><i class="ph ph-gift"></i> 零食与用品</h2>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <button style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid #e8d4b8; background: #fff; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="ph ph-shopping-cart"></i> 猫粮
+        </button>
+        <button style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid #e8d4b8; background: #fff; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="ph ph-heart"></i> 零食
+        </button>
+        <button style="padding: 0.5rem 1rem; border-radius: 0.5rem; border: 1px solid #e8d4b8; background: #fff; cursor: pointer; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="ph ph-camera"></i> 记录
+        </button>
+      </div>
+    </div>
+
+    <!-- 图标调用验证区 - 对应 icons.csv 中的 Phosphor 图标 -->
+    <div class="card icon-test">
+      <h3>📋 图标调用验证 (icons.csv Phosphor)</h3>
+      <div class="icon-grid">
+        <i class="ph ph-list" title="List"></i>
+        <i class="ph ph-arrow-left" title="ArrowLeft"></i>
+        <i class="ph ph-caret-down" title="CaretDown"></i>
+        <i class="ph ph-house" title="House"></i>
+        <i class="ph ph-x" title="X"></i>
+        <i class="ph ph-arrow-square-out" title="ArrowSquareOut"></i>
+        <i class="ph ph-plus" title="Plus"></i>
+        <i class="ph ph-minus" title="Minus"></i>
+        <i class="ph ph-trash" title="Trash"></i>
+        <i class="ph ph-pencil-simple" title="PencilSimple"></i>
+        <i class="ph ph-floppy-disk" title="FloppyDisk"></i>
+        <i class="ph ph-magnifying-glass" title="MagnifyingGlass"></i>
+        <i class="ph ph-gear" title="Gear"></i>
+        <i class="ph ph-check" title="Check"></i>
+        <i class="ph ph-check-circle" title="CheckCircle"></i>
+        <i class="ph ph-warning" title="Warning"></i>
+        <i class="ph ph-circle-notch" title="CircleNotch"></i>
+        <i class="ph ph-envelope" title="Envelope"></i>
+        <i class="ph ph-chat-circle" title="ChatCircle"></i>
+        <i class="ph ph-paper-plane-tilt" title="PaperPlaneTilt"></i>
+        <i class="ph ph-bell" title="Bell"></i>
+        <i class="ph ph-user" title="User"></i>
+        <i class="ph ph-shopping-cart" title="ShoppingCart"></i>
+        <i class="ph ph-currency-dollar" title="CurrencyDollar"></i>
+        <i class="ph ph-heart" title="Heart"></i>
+        <i class="ph ph-star" title="Star"></i>
+        <i class="ph ph-clock" title="Clock"></i>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 喂食份量控制
+    const portionEl = document.getElementById('portion');
+    const [minusBtn, plusBtn] = document.querySelectorAll('.bowl-control button');
+    let portion = 2;
+    minusBtn.onclick = () => { if (portion > 1) { portion--; portionEl.textContent = portion; } };
+    plusBtn.onclick = () => { if (portion < 5) { portion++; portionEl.textContent = portion; } };
+  </script>
+</body>
+</html>

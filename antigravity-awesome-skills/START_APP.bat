@@ -15,7 +15,7 @@ IF %ERRORLEVEL% NEQ 0 (
 )
 
 :: Check/Install dependencies
-cd web-app
+cd apps\web-app
 
 if not exist "node_modules\" (
     echo [INFO] Dependencies not found. Installing...
@@ -43,7 +43,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 :DEPS_OK
-cd ..
+cd ..\..
 
 :: Run setup script
 echo [INFO] Updating skills data...
@@ -53,7 +53,7 @@ call npm run app:setup
 echo [INFO] Starting Web App...
 echo [INFO] Opening default browser...
 echo [INFO] Use the Sync Skills button in the app to update skills from GitHub!
-cd web-app
+cd apps\web-app
 call npx -y vite --open
 
 endlocal

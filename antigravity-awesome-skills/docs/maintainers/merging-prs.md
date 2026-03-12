@@ -1,0 +1,69 @@
+# Merging Pull Requests
+
+**Policy: we always Merge PRs on GitHub so contributors get credit. We never Close a PR after integrating their work locally.**
+
+## Always merge via GitHub
+
+- Use the GitHub UI **"Squash and merge"** for every accepted PR.
+- The PR must show as **Merged**, not Closed. That way the contributor appears in the repo’s contribution graph and the PR is clearly linked to the merge commit.
+- Do **not** integrate a PR by squashing locally, pushing to `main`, and then closing the PR. That would show "Closed" and the contributor would not get proper credit.
+
+## If the PR has merge conflicts
+
+Resolve conflicts **on the PR branch** so the PR becomes mergeable, then use "Squash and merge" on GitHub.
+
+### Steps (maintainer resolves conflicts on the contributor’s branch)
+
+1. **Fetch the PR branch**  
+   `git fetch origin pull/<PR_NUMBER>/head:pr-<PR_NUMBER>`
+2. **Checkout that branch**  
+   `git checkout pr-<PR_NUMBER>`
+3. **Merge `main` into it**  
+   `git merge origin/main`  
+   Resolve any conflicts in the working tree (e.g. `README.md`, `CATALOG.md`, `data/*.json`, `skills_index.json`). Run `npm run chain` and `npm run catalog` if registry files were touched, then `git add` the updated generated files.
+4. **Commit the merge**  
+   `git add .` then `git commit -m "chore: merge main to resolve conflicts"` (or leave the default merge message).
+5. **Push to the same branch the PR is from**  
+   If the PR is from the contributor’s fork branch (e.g. `sraphaz:feat/uncle-bob-craft`), you need push access to that branch. Options:
+   - **Preferred:** Ask the contributor to merge `main` into their branch, fix conflicts, and push; then you use "Squash and merge" on GitHub.
+   - If you have a way to push to their branch (e.g. they gave you permission, or the branch is in this repo), push:  
+     `git push origin pr-<PR_NUMBER>:feat/uncle-bob-craft` (replace with the actual branch name from the PR).
+6. **On GitHub:** The PR should now be mergeable. Click **"Squash and merge"**. The PR will show as **Merged**.
+
+### If the contributor resolves conflicts
+
+Ask them to:
+
+```bash
+git checkout <their-branch>
+git fetch origin main
+git merge origin/main
+# resolve conflicts, then:
+npm run chain && npm run catalog   # if they touched skills/ or registry
+git add .
+git commit -m "chore: merge main to resolve conflicts"
+git push origin <their-branch>
+```
+
+Then you use **"Squash and merge"** on GitHub. The PR will be **Merged**, not Closed.
+
+## Rare exception: local squash (avoid if possible)
+
+Only if merging via GitHub is not possible (e.g. contributor unreachable and you must integrate their work, or a one-off batch), you may squash locally and push to `main`. In that case:
+
+1. Add a **Co-authored-by** line to the squash commit so the contributor is still credited (see [GitHub: Creating a commit with multiple authors](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors)).
+2. Close the PR with a comment explaining why it was integrated locally and that attribution is in the commit.
+3. Prefer to avoid this pattern in the future so PRs can be **Merged** normally.
+
+## Summary
+
+| Goal                         | Action                                                                 |
+|-----------------------------|------------------------------------------------------------------------|
+| Give contributors credit   | Always use **Squash and merge** on GitHub so the PR shows **Merged**.  |
+| PR has conflicts           | Resolve on the PR branch (you or the contributor), then **Squash and merge**. |
+| Never                      | Integrate locally and then **Close** the PR without merging.          |
+
+## References
+
+- [GitHub: Creating a commit with multiple authors](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors)
+- [GitHub: Merging a PR](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request)

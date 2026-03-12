@@ -190,17 +190,17 @@ awesome-skills-cn/
 | 来源仓库 | SKILL 数量 | README 翻译 | SKILL 翻译 | 状态 |
 |---------|-----------|------------|-----------|------|
 | anthropics-skills | 17 | ✓ | 17/17 | 已完成 |
-| ui-ux-pro-max-skill | 1 | ✓ | 1/1 | 已完成 |
+| ui-ux-pro-max-skill | 7 | ✓ | 1/7 | 进行中 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| huggingface-skills | 10 | ✓ | 10/10 | 已完成 |
+| huggingface-skills | 14 | ✓ | 10/14 | 进行中 |
 | openai-skills | 37 | ✓ | 37/37 | 已完成 |
-| vercel-labs-agent-skills | 5 | ✓ | 5/5 | 已完成 |
-| obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
+| vercel-labs-agent-skills | 6 | ✓ | 5/6 | 进行中 |
+| obsidian-skills | 5 | ✗ | 5/5 | 进行中 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
 | claude-scientific-skills | 175 | - | 46/175 | 进行中 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7213+** | **75** | **122/7213+** | **进行中** |
+| **总计** | **7229+** | **75** | **122/7229+** | **进行中** |
 
 ### anthropics-skills (17个)
 
