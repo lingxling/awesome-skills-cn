@@ -1,124 +1,124 @@
 ---
 name: obsidian-markdown
-description: 创建和编辑包含 wikilinks、嵌入、标注、属性和其他 Obsidian 特定语法的 Obsidian Flavored Markdown。在处理 Obsidian 中的 .md 文件，或用户提及 wikilinks、标注、frontmatter、标签、嵌入或 Obsidian 笔记时使用。
+description: 创建和编辑带有维基链接、嵌入、标注、属性和其他Obsidian特定语法的Obsidian风格Markdown。在Obsidian中处理.md文件时，或当用户提到维基链接、标注、前置内容、标签、嵌入或Obsidian笔记时使用。
 ---
 
-# Obsidian Flavored Markdown 技能
+# Obsidian风格Markdown技能
 
-创建和编辑有效的 Obsidian Flavored Markdown。Obsidian 扩展了 CommonMark 和 GFM，包含 wikilinks、嵌入、标注、属性、注释和其他语法。此技能仅涵盖 Obsidian 特定扩展——标准 Markdown（标题、粗体、斜体、列表、引用、代码块、表格）被假定为已知知识。
+创建和编辑有效的Obsidian风格Markdown。Obsidian通过维基链接、嵌入、标注、属性、注释和其他语法扩展了CommonMark和GFM。此技能仅涵盖Obsidian特定的扩展 - 标准Markdown（标题、粗体、斜体、列表、引用、代码块、表格）被视为已知知识。
 
-## 工作流程：创建 Obsidian 笔记
+## 工作流程：创建Obsidian笔记
 
-1. **添加 frontmatter**——在文件顶部包含属性（标题、标签、别名）。有关所有属性类型，请参阅 [PROPERTIES.md](references/PROPERTIES.md)。
-2. **编写内容**——使用标准 Markdown 进行结构化，加上下面的 Obsidian 特定语法。
-3. **链接相关笔记**——使用 wikilinks（`[[笔记]]`）进行内部 vault 连接，或使用标准 Markdown 链接进行外部 URL。
-4. **嵌入内容**——从其他笔记、图像或 PDF 使用 `![[嵌入]]` 语法。有关所有嵌入类型，请参阅 [EMBEDS.md](references/EMBEDS.md)。
-5. **添加标注**——使用 `> [!类型]` 语法突出显示信息。有关所有标注类型，请参阅 [CALLOUTS.md](references/CALLOUTS.md)。
-6. **验证**——确认笔记在 Obsidian 的阅读视图中正确渲染。
+1. **添加带属性的前置内容**（标题、标签、别名）在文件顶部。有关所有属性类型，请参阅[PROPERTIES.md](references/PROPERTIES.md)。
+2. **编写内容**使用标准Markdown进行结构，加上下面的Obsidian特定语法。
+3. **链接相关笔记**使用维基链接（`[[Note]]`）进行内部库连接，或使用标准Markdown链接用于外部URL。
+4. **嵌入内容**使用`![[embed]]`语法从其他笔记、图像或PDF嵌入内容。有关所有嵌入类型，请参阅[EMBEDS.md](references/EMBEDS.md)。
+5. **添加标注**使用`> [!type]`语法突出显示信息。有关所有标注类型，请参阅[CALLOUTS.md](references/CALLOUTS.md)。
+6. **验证**笔记在Obsidian的阅读视图中正确渲染。
 
-> 在 wikilinks 和 Markdown 链接之间选择：对 vault 内的笔记使用 `[[wikilinks]]`（Obsidian 自动跟踪重命名），对仅外部 URL 使用 `[文本](url)`。
+> 在选择维基链接和Markdown链接之间：对库内的笔记使用`[[维基链接]]`（Obsidian自动跟踪重命名），仅对外部URL使用`[text](url)`。
 
-## 内部链接
+## 内部链接（维基链接）
 
 ```markdown
-[[笔记名称]]                          链接到笔记
-[[笔记名称|显示文本]]             自定义显示文本
-[[笔记名称#标题]]                  链接到标题
-[[笔记名称#^块-id]]                链接到块
-[[#同一笔记中的标题]]              同一笔记标题链接
+[[Note Name]]                          链接到笔记
+[[Note Name|Display Text]]             自定义显示文本
+[[Note Name#Heading]]                  链接到标题
+[[Note Name#^block-id]]                链接到块
+[[#Heading in same note]]              同一笔记中的标题链接
 ```
 
-通过在任何段落后追加 `^块-id` 来定义块 ID：
+通过在任何段落后追加`^block-id`来定义块ID：
 
 ```markdown
-此段落可以被链接到。^my-block-id
+This paragraph can be linked to. ^my-block-id
 ```
 
-对于列表和引用，将块 ID 放在单独的行上，位于块之后：
+对于列表和引用，将块ID放在块后的单独行上：
 
 ```markdown
-> 一个引用块
+> A quote block
 
 ^quote-id
 ```
 
 ## 嵌入
 
-在任何 wikilink 前缀 `!` 以内联嵌入其内容：
+在任何维基链接前加上`!`以内联嵌入其内容：
 
 ```markdown
-![[笔记名称]]                         嵌入完整笔记
-![[笔记名称#标题]]                 嵌入章节
+![[Note Name]]                         嵌入完整笔记
+![[Note Name#Heading]]                 嵌入部分
 ![[image.png]]                         嵌入图像
-![[image.png|300]]                     嵌入具有宽度的图像
-![[document.pdf#page=3]]               嵌入 PDF 页面
+![[image.png|300]]                     嵌入指定宽度的图像
+![[document.pdf#page=3]]               嵌入PDF页面
 ```
 
-有关音频、视频、搜索嵌入和外部图像，请参阅 [EMBEDS.md](references/EMBEDS.md)。
+有关音频、视频、搜索嵌入和外部图像，请参阅[EMBEDS.md](references/EMBEDS.md)。
 
 ## 标注
 
 ```markdown
 > [!note]
-> 基本标注。
+> Basic callout.
 
-> [!warning] 自定义标题
-> 带有自定义标题的标注。
+> [!warning] Custom Title
+> Callout with a custom title.
 
-> [!faq]- 默认折叠
-> 可折叠标注（- collapsed，+ expanded）。
+> [!faq]- Collapsed by default
+> Foldable callout (- collapsed, + expanded).
 ```
 
 常见类型：`note`、`tip`、`warning`、`info`、`example`、`quote`、`bug`、`danger`、`success`、`failure`、`question`、`abstract`、`todo`。
 
-有关完整列表（包括别名、嵌套和自定义 CSS 标注），请参阅 [CALLOUTS.md](references/CALLOUTS.md)。
+有关带有别名、嵌套和自定义CSS标注的完整列表，请参阅[CALLOUTS.md](references/CALLOUTS.md)。
 
-## 属性
+## 属性（前置内容）
 
 ```yaml
 ---
-title: 我的笔记
+title: My Note
 date: 2024-01-15
 tags:
   - project
   - active
 aliases:
-  - 备用名称
+  - Alternative Name
 cssclasses:
-  - 自定义类
+  - custom-class
 ---
 ```
 
-默认属性：`tags`（可搜索的标签）、`aliases`（用于链接建议的备用名称）、`cssclasses`（用于样式的 CSS 类）。
+默认属性：`tags`（可搜索标签）、`aliases`（链接建议的替代笔记名称）、`cssclasses`（用于样式的CSS类）。
 
-有关所有属性类型、标签语法规则和高级用法，请参阅 [PROPERTIES.md](references/PROPERTIES.md)。
+有关所有属性类型、标签语法规则和高级用法，请参阅[PROPERTIES.md](references/PROPERTIES.md)。
 
 ## 标签
 
 ```markdown
-#标签                    内联标签
-#嵌套/标签             具有层级的嵌套标签
+#tag                    内联标签
+#nested/tag             带层次结构的嵌套标签
 ```
 
-标签可以包含字母、数字（不是第一个字符）、下划线、连字符和正斜杠。标签也可以在 frontmatter 中的 `tags` 属性下定义。
+标签可以包含字母、数字（不是第一个字符）、下划线、连字符和正斜杠。标签也可以在前置内容中的`tags`属性下定义。
 
 ## 注释
 
 ```markdown
-这是可见的 %%但这是隐藏的%% 文本。
+This is visible %%but this is hidden%% text.
 
 %%
-此整个块在阅读视图中隐藏。
+This entire block is hidden in reading view.
 %%
 ```
 
-## Obsidian 特定格式化
+## Obsidian特定格式
 
 ```markdown
-==高亮文本==                   高亮语法
+==Highlighted text==                   高亮语法
 ```
 
-## 数学
+## 数学（LaTeX）
 
 ```markdown
 内联：$e^{i\pi} + 1 = 0$
@@ -129,67 +129,67 @@ $$
 $$
 ```
 
-## 图表
+## 图表（Mermaid）
 
-```markdown
+````markdown
 ```mermaid
 graph TD
-    A[开始] --> B{决策}
-    B -->|是| C[执行此操作]
-    B -->|否| D[执行该操作]
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Do this]
+    B -->|No| D[Do that]
 ```
-```
+````
 
-要将 Mermaid 节点链接到 Obsidian 笔记，添加 `class NodeName 内部链接;`。
+要将Mermaid节点链接到Obsidian笔记，添加`class NodeName internal-link;`。
 
 ## 脚注
 
 ```markdown
-带有脚注的文本[^1]。
+Text with a footnote[^1].
 
-[^1]: 脚注内容。
+[^1]: Footnote content.
 
-内联脚注。^[这是内联的。]
+Inline footnote.^[This is inline.]
 ```
 
 ## 完整示例
 
-```markdown
+````markdown
 ---
-title: 项目 Alpha
+title: Project Alpha
 date: 2024-01-15
 tags:
   - project
   - active
-status: 进行中
+status: in-progress
 ---
 
-# 项目 Alpha
+# Project Alpha
 
-该项目旨在 [[改进工作流程]]使用现代技术。
+This project aims to [[improve workflow]] using modern techniques.
 
-> [!important] 关键截止日期
-> 第一个里程碑截止日期为 ==1 月 30 日==。
+> [!important] Key Deadline
+> The first milestone is due on ==January 30th==.
 
-## 任务
+## Tasks
 
-- [x] 初始规划
-- [ ] 开发阶段
-  - [ ] 后端实现
-  - [ ] 前端设计
+- [x] Initial planning
+- [ ] Development phase
+  - [ ] Backend implementation
+  - [ ] Frontend design
 
-## 笔记
+## Notes
 
-该算法使用 $O(n \log n)$ 排序。有关详细信息，请参阅 [[算法笔记#排序]]。
+The algorithm uses $O(n \log n)$ sorting. See [[Algorithm Notes#Sorting]] for details.
 
-![[架构图.png|600]]
+![[Architecture Diagram.png|600]]
 
-在 [[会议笔记 2024-01-10#决策]] 中进行了审查。
-```
+Reviewed in [[Meeting Notes 2024-01-10#Decisions]].
+````
 
 ## 参考
 
-- [Obsidian Flavored Markdown](https://help.obsidian.md/obsidian-flavored-markdown)
+- [Obsidian风格Markdown](https://help.obsidian.md/obsidian-flavored-markdown)
 - [内部链接](https://help.obsidian.md/links)
 - [嵌入文件](https://help.obsidian.md/embeds)
 - [标注](https://help.obsidian.md/callouts)

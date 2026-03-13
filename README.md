@@ -190,17 +190,17 @@ awesome-skills-cn/
 | 来源仓库 | SKILL 数量 | README 翻译 | SKILL 翻译 | 状态 |
 |---------|-----------|------------|-----------|------|
 | anthropics-skills | 17 | ✓ | 17/17 | 已完成 |
-| ui-ux-pro-max-skill | 7 | ✓ | 1/7 | 进行中 |
+| ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| huggingface-skills | 14 | ✓ | 10/14 | 进行中 |
+| huggingface-skills | 14 | ✓ | 14/14 | 已完成 |
 | openai-skills | 37 | ✓ | 37/37 | 已完成 |
-| vercel-labs-agent-skills | 6 | ✓ | 5/6 | 进行中 |
-| obsidian-skills | 5 | ✗ | 5/5 | 进行中 |
+| vercel-labs-agent-skills | 6 | ✓ | 6/6 | 已完成 |
+| obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
-| claude-scientific-skills | 175 | - | 46/175 | 进行中 |
+| claude-scientific-skills | 175 | - | 91/175 | 进行中 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7229+** | **75** | **122/7229+** | **进行中** |
+| **总计** | **7213+** | **75** | **192/7213+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -222,21 +222,27 @@ awesome-skills-cn/
 - [x] [webapp-testing](anthropics-skills/skills/webapp-testing/SKILL_CN.md) - Web 应用测试
 - [x] [xlsx](anthropics-skills/skills/xlsx/SKILL_CN.md) - Excel 处理
 
-### ui-ux-pro-max-skill (1个)
+### ui-ux-pro-max-skill (7个)
 
 - [x] [ui-ux-pro-max](ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/SKILL_CN.md) - UI/UX 专业技能
+- [x] [banner-design](ui-ux-pro-max-skill/.claude/skills/banner-design/SKILL_CN.md) - 横幅设计
+- [x] [design](ui-ux-pro-max-skill/.claude/skills/design/SKILL_CN.md) - 设计
+- [x] [design-system](ui-ux-pro-max-skill/.claude/skills/design-system/SKILL_CN.md) - 设计系统
+- [x] [slides](ui-ux-pro-max-skill/.claude/skills/slides/SKILL_CN.md) - 幻灯片
+- [x] [ui-styling](ui-ux-pro-max-skill/.claude/skills/ui-styling/SKILL_CN.md) - UI样式
 
 ### vercel-labs-skills (1个)
 
 - [x] [find-skills](vercel-labs-skills/skills/find-skills/SKILL_CN.md) - SKILL 发现工具
 
-### vercel-labs-agent-skills (5个)
+### vercel-labs-agent-skills (6个)
 
 - [x] [composition-patterns](vercel-labs-agent-skills/skills/composition-patterns/SKILL_CN.md) - 组合模式
 - [x] [react-best-practices](vercel-labs-agent-skills/skills/react-best-practices/SKILL_CN.md) - React 最佳实践
 - [x] [react-native-skills](vercel-labs-agent-skills/skills/react-native-skills/SKILL_CN.md) - React Native 技能
 - [x] [vercel-deploy-claimable](vercel-labs-agent-skills/skills/claude.ai/vercel-deploy-claimable/SKILL_CN.md) - Vercel 部署工具
 - [x] [web-design-guidelines](vercel-labs-agent-skills/skills/web-design-guidelines/SKILL_CN.md) - Web 设计指南
+- [x] [deploy-to-vercel](vercel-labs-agent-skills/skills/deploy-to-vercel/SKILL_CN.md) - 部署到Vercel
 
 ### antigravity-awesome-skills (968个)
 
@@ -247,7 +253,7 @@ awesome-skills-cn/
 - [ ] ab-test-setup
 - [ ] ... (共 968 个技能，详见项目目录)
 
-### huggingface-skills (10个)
+### huggingface-skills (14个)
 
 - [x] [huggingface-gradio](huggingface-skills/skills/huggingface-gradio/SKILL_CN.md) - Gradio Web UI 构建
 - [x] [hugging-face-cli](huggingface-skills/skills/hugging-face-cli/SKILL_CN.md) - Hugging Face CLI 操作
@@ -259,6 +265,8 @@ awesome-skills-cn/
 - [x] [hugging-face-paper-publisher](huggingface-skills/skills/hugging-face-paper-publisher/SKILL_CN.md) - 研究论文发布
 - [x] [hugging-face-tool-builder](huggingface-skills/skills/hugging-face-tool-builder/SKILL_CN.md) - API 工具构建
 - [x] [hugging-face-trackio](huggingface-skills/skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
+- [x] [hf-cli](huggingface-skills/skills/hf-cli/SKILL_CN.md) - Hugging Face Hub CLI
+- [x] [transformers-js](huggingface-skills/skills/transformers.js/SKILL_CN.md) - Transformers.js 机器学习
 
 ### openai-skills (37个)
 
@@ -315,18 +323,10 @@ awesome-skills-cn/
 - [x] [alphafold-database](claude-scientific-skills/scientific-skills/alphafold-database/SKILL_CN.md) - AlphaFold 蛋白质结构数据库
 - [x] [cbioportal-database](claude-scientific-skills/scientific-skills/cbioportal-database/SKILL_CN.md) - cBioPortal 癌症基因组数据库
 - [x] [deepchem](claude-scientific-skills/scientific-skills/deepchem/SKILL_CN.md) - DeepChem 分子机器学习
-- [x] [document-skills/docx](claude-scientific-skills/scientific-skills/document-skills/docx/SKILL_CN.md) - DOCX 文档处理（document-skills）
 - [x] [neuropixels-analysis](claude-scientific-skills/scientific-skills/neuropixels-analysis/SKILL_CN.md) - Neuropixels神经记录分析
-- [x] [neurokit2](claude-scientific-skills/scientific-skills/neurokit2/SKILL_CN.md) - 生理信号处理工具包
-- [x] [networkx](claude-scientific-skills/scientific-skills/networkx/SKILL_CN.md) - 复杂网络和图分析工具包
 - ... (更多已翻译技能详见项目目录)
 
-- [ ] fda-database
-- [ ] matplotlib
-- [ ] networkx
-- [ ] pandas
-- [ ] plotly
-- ... (更多未翻译技能详见项目目录)
+... (更多未翻译技能详见项目目录)
 
 ### composiohq-awesome-claude-skills (200+个)
 

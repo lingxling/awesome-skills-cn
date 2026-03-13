@@ -7,6 +7,12 @@
 
 ## [2.16.0] - 2026-03-12
 
+### 新增
+- 完成 3 个 SKILL 的中文翻译：
+  - [brand/SKILL_CN.md](ui-ux-pro-max-skill/.claude/skills/brand/SKILL_CN.md) - 品牌管理技能
+  - [hf-mcp/SKILL_CN.md](huggingface-skills/hf-mcp/skills/hf-mcp/SKILL_CN.md) - Hugging Face MCP服务器技能
+  - [hugging-face-vision-trainer/SKILL_CN.md](huggingface-skills/skills/hugging-face-vision-trainer/SKILL_CN.md) - 视觉模型训练技能
+
 ### 变更
 - 执行 test_run.py 脚本，更新所有项目至最新版本：
   - anthropics-skills (Already up to date)
@@ -22,10 +28,10 @@
   - voltagent-awesome-openclaw-skills (Fast-forward 更新，修改 README.md)
 
 - 更新翻译进度表格：
-  - ui-ux-pro-max-skill：从 1/1 已完成改为 1/7 进行中
-  - huggingface-skills：从 10/10 已完成改为 10/14 进行中
-  - vercel-labs-agent-skills：从 5/5 已完成改为 5/6 进行中
-  - obsidian-skills：从 ✓ README 翻译改为 ✗ README 翻译
+  - ui-ux-pro-max-skill：从 1/1 已完成改为 7/7 已完成
+  - huggingface-skills：从 10/10 已完成改为 14/14 已完成
+  - vercel-labs-agent-skills：从 5/5 已完成改为 6/6 已完成
+  - obsidian-skills：从 ✓ README 翻译改为 5/5 已完成
   - 总计：从 7213+ 个技能增加到 7229+ 个技能
 
 ## [2.15.0] - 2026-03-11
