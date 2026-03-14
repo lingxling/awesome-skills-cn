@@ -5,6 +5,18 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.17.0] - 2026-03-14
+
+### 新增
+- 完成 claude-scientific-skills 项目的全部 179 个 SKILL 中文翻译
+  - 涵盖生物信息学、化学、医学、机器学习等领域的科学研究技能
+  - 包括 adaptyv、alphafold-database、cbioportal-database、deepchem、neuropixels-analysis 等重要技能
+
+### 变更
+- 更新翻译进度表格：
+  - claude-scientific-skills：从 91/175 进行中改为 179/179 已完成
+  - 总计：已完成翻译从 192 个增加到 296 个
+
 ## [2.16.0] - 2026-03-12
 
 ### 新增
@@ -25,7 +37,7 @@
   - ui-ux-pro-max-skill (Already up to date)
   - vercel-labs-agent-skills (Already up to date)
   - vercel-labs-skills (Fast-forward 更新，修改多个源文件)
-  - voltagent-awesome-openclaw-skills (Fast-forward 更新，修改 README.md)
+  - awesome-openclaw-skills (Fast-forward 更新，修改 README.md)
 
 - 更新翻译进度表格：
   - ui-ux-pro-max-skill：从 1/1 已完成改为 7/7 已完成

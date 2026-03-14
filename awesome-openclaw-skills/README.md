@@ -1,6 +1,6 @@
 <div align="center">
 
-<a href="https://github.com/VoltAgent/voltagent">
+<a href="https://github.com/openclaw/skills">
 <img width="1500" height="500" alt="social" src="https://github.com/user-attachments/assets/a6f310af-8fed-4766-9649-b190575b399d" />
 </a>
 
@@ -15,13 +15,11 @@
 </div>
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
-<a href="https://github.com/VoltAgent/voltagent">
-  <img alt="VoltAgent" src="https://cdn.voltagent.dev/website/logo/logo-2-svg.svg" height="20" />
-</a> 
+
 
 [![Skills Count](https://img.shields.io/badge/skills-5494-blue?style=flat-square)](#table-of-contents)
-[![Last Update](https://img.shields.io/github/last-commit/VoltAgent/awesome-clawdbot-skills?label=Last%20update&style=flat-square)](https://github.com/VoltAgent/awesome-clawdbot-skills/pulls?q=is%3Apr+is%3Amerged+sort%3Aupdated-desc)
-[![Discord](https://img.shields.io/discord/1361559153780195478.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://s.voltagent.dev/discord)
+[![Last Update](https://img.shields.io/github/last-commit/openclaw/skills?label=Last%20update&style=flat-square)](https://github.com/openclaw/skills/pulls?q=is%3Apr+is%3Amerged+sort%3Aupdated-desc)
+[![Discord](https://img.shields.io/discord/1361559153780195478.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/openclaw)
 </div>
 
 <div align="center">
@@ -156,7 +154,7 @@ Before installing or using any Agent Skill, review potential security risks and 
 > Agent skills can include prompt injections, tool poisoning, hidden malware payloads, or unsafe data handling patterns. Always review the source code before installing and use skills at your own discretion.
 
 
-If you believe a skill in this list should be flagged or has a security concern, please [open an issue](https://github.com/VoltAgent/awesome-clawdbot-skills/issues) so we can review it.
+If you believe a skill in this list should be flagged or has a security concern, please [open an issue](https://github.com/openclaw/skills/issues) so we can review it.
 
 
 ## Table of Contents

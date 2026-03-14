@@ -6,17 +6,17 @@
 
 本翻译项目囊括了以下优秀的 SKILL 项目：
 
-- [**Anthropic Skills**](https://github.com/anthropics/skills) [![GitHub Stars](https://badgen.net/github/stars/anthropics/skills)](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（17个技能）
-- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（1个技能）
-- [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能）
-- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（5个技能）
 - [**Antigravity Awesome Skills**](https://github.com/sickn33/antigravity-awesome-skills) [![GitHub Stars](https://badgen.net/github/stars/sickn33/antigravity-awesome-skills)](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合（968个技能）
-- [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（10个技能）
-- [**OpenAI Skills**](https://github.com/openai/skills) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（31个技能）
-- [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) [![GitHub Stars](https://badgen.net/github/stars/K-Dense-AI/claude-scientific-skills)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（170个技能）
+- [**Anthropic Skills**](https://github.com/anthropics/skills) [![GitHub Stars](https://badgen.net/github/stars/anthropics/skills)](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（17个技能，已全部翻译）
+- [**Awesome OpenClaw Skills**](https://github.com/openclaw/skills) [![GitHub Stars](https://badgen.net/github/stars/openclaw/skills)](https://github.com/openclaw/skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能）
+- [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) [![GitHub Stars](https://badgen.net/github/stars/K-Dense-AI/claude-scientific-skills)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（179个技能，已全部翻译）
 - [**Composio Awesome Claude Skills**](https://github.com/ComposioHQ/awesome-claude-skills) [![GitHub Stars](https://badgen.net/github/stars/ComposioHQ/awesome-claude-skills)](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（200+个技能）
-- [**Voltagent Awesome OpenClaw Skills**](https://github.com/voltagent/awesome-openclaw-skills) [![GitHub Stars](https://badgen.net/github/stars/voltagent/awesome-openclaw-skills)](https://github.com/voltagent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能）
-- [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能）
+- [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（13个技能，已全部翻译）
+- [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能，已全部翻译）
+- [**OpenAI Skills**](https://github.com/openai/skills) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（38个技能，已全部翻译）
+- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（1个技能）
+- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（5个技能）
+- [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
 
 ## SKILL 是什么
 
@@ -65,7 +65,7 @@ awesome-skills-cn/
 ├── LICENSE                      # MIT 许可证
 ├── CHANGELOG.md                 # 更新日志
 ├── .gitignore                   # Git 忽略文件
-├── anthropics-skills/           # anthrpics-skills 项目
+├── anthropics-skills/           # anthropics-skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
 │       ├── algorithmic-art/
@@ -74,6 +74,8 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # 品牌指南
 │       ├── canvas-design/
 │       │   └── SKILL_CN.md    # Canvas 设计
+│       ├── claude-api/
+│       │   └── SKILL_CN.md    # Claude API 和 Agent SDK
 │       ├── doc-coauthoring/
 │       │   └── SKILL_CN.md    # 文档协作
 │       ├── docx/
@@ -100,15 +102,44 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # Web 应用测试
 │       └── xlsx/
 │           └── SKILL_CN.md    # Excel 处理
+├── antigravity-awesome-skills/  # antigravity-awesome-skills 项目
+│   └── skills/               # (共 968 个技能，详见项目目录)
+├── awesome-openclaw-skills/  # awesome-openclaw-skills 项目
+│   └── skills/               # (共 5816 个技能，详见项目目录)
+├── claude-scientific-skills/   # claude-scientific-skills 项目
+│   └── scientific-skills/     # (共 179 个技能，详见项目目录)
+│       ├── adaptyv/
+│       │   └── SKILL_CN.md    # Adaptyv 蛋白质设计平台
+│       ├── alphafold-database/
+│       │   └── SKILL_CN.md    # AlphaFold 蛋白质结构数据库
+│       ├── biopython/
+│       │   └── SKILL_CN.md    # Biopython 生物信息学工具
+│       ├── deepchem/
+│       │   └── SKILL_CN.md    # DeepChem 分子机器学习
+│       ├── geopandas/
+│       │   └── SKILL_CN.md    # GeoPandas 地理空间数据处理
+│       ├── neurokit2/
+│       │   └── SKILL_CN.md    # NeuroKit2 神经科学数据分析
+│       ├── pdb-database/
+│       │   └── SKILL_CN.md    # PDB 蛋白质结构数据库
+│       ├── pubmed-database/
+│       │   └── SKILL_CN.md    # PubMed 医学文献数据库
+│       └── ...                # 更多技能（共 179 个，详见项目目录）
+├── composiohq-awesome-claude-skills/  # composiohq-awesome-claude-skills 项目
+│   └── connect/              # (共 200+ 个技能，详见项目目录)
 ├── huggingface-skills/         # huggingface/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
+│       ├── hf-cli/
+│       │   └── SKILL_CN.md    # Hugging Face Hub CLI
 │       ├── huggingface-gradio/
 │       │   └── SKILL_CN.md    # Gradio Web UI 构建
 │       ├── hugging-face-cli/
 │       │   └── SKILL_CN.md    # Hugging Face CLI 操作
 │       ├── hugging-face-datasets/
 │       │   └── SKILL_CN.md    # 数据集创建和管理
+│       ├── hugging-face-dataset-viewer/
+│       │   └── SKILL_CN.md    # 数据集查看器 API 工作流
 │       ├── hugging-face-evaluation/
 │       │   └── SKILL_CN.md    # 模型评估管理
 │       ├── hugging-face-jobs/
@@ -119,8 +150,10 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # 研究论文发布
 │       ├── hugging-face-tool-builder/
 │       │   └── SKILL_CN.md    # API 工具构建
-│       └── hugging-face-trackio/
-│           └── SKILL_CN.md    # ML 实验跟踪
+│       ├── hugging-face-trackio/
+│       │   └── SKILL_CN.md    # ML 实验跟踪
+│       └── transformers.js/
+│           └── SKILL_CN.md    # Transformers.js 机器学习
 ├── obsidian-skills/            # obsidian-skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
@@ -136,48 +169,120 @@ awesome-skills-cn/
 │           └── SKILL_CN.md    # 创建和编辑 Obsidian Flavored Markdown 文档
 ├── openai-skills/              # openai/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
-│   └── skills/.curated/
-│       ├── cloudflare-deploy/
-│       │   └── SKILL_CN.md    # Cloudflare 部署工具
-│       ├── develop-web-game/
-│       │   └── SKILL_CN.md    # Web 游戏开发
-│       ├── doc/
-│       │   └── SKILL_CN.md    # DOCX 文档处理
-│       ├── figma/
-│       │   └── SKILL_CN.md    # Figma 设计工具
-│       ├── figma-implement-design/
-│       │   └── SKILL_CN.md    # Figma 设计实现
-│       └── gh-address-comments/
-│           └── SKILL_CN.md    # GitHub 评论处理
+│   └── skills/
+│       ├── .curated/
+│       │   ├── aspnet-core/
+│       │   │   └── SKILL_CN.md    # ASP.NET Core 应用开发
+│       │   ├── chatgpt-apps/
+│       │   │   └── SKILL_CN.md    # ChatGPT 应用开发
+│       │   ├── cloudflare-deploy/
+│       │   │   └── SKILL_CN.md    # Cloudflare 部署工具
+│       │   ├── develop-web-game/
+│       │   │   └── SKILL_CN.md    # Web 游戏开发
+│       │   ├── doc/
+│       │   │   └── SKILL_CN.md    # DOCX 文档处理
+│       │   ├── figma/
+│       │   │   └── SKILL_CN.md    # Figma 设计工具
+│       │   ├── figma-implement-design/
+│       │   │   └── SKILL_CN.md    # Figma 设计实现
+│       │   ├── gh-address-comments/
+│       │   │   └── SKILL_CN.md    # GitHub 评论处理
+│       │   ├── gh-fix-ci/
+│       │   │   └── SKILL_CN.md    # GitHub CI 修复
+│       │   ├── imagegen/
+│       │   │   └── SKILL_CN.md    # 图像生成
+│       │   ├── jupyter-notebook/
+│       │   │   └── SKILL_CN.md    # Jupyter 笔记本
+│       │   ├── linear/
+│       │   │   └── SKILL_CN.md    # Linear 项目管理
+│       │   ├── netlify-deploy/
+│       │   │   └── SKILL_CN.md    # Netlify 部署
+│       │   ├── notion-knowledge-capture/
+│       │   │   └── SKILL_CN.md    # Notion 知识捕获
+│       │   ├── notion-meeting-intelligence/
+│       │   │   └── SKILL_CN.md    # Notion 会议智能
+│       │   ├── notion-research-documentation/
+│       │   │   └── SKILL_CN.md    # Notion 研究文档
+│       │   ├── notion-spec-to-implementation/
+│       │   │   └── SKILL_CN.md    # Notion 规格到实施
+│       │   ├── openai-docs/
+│       │   │   └── SKILL_CN.md    # OpenAI 文档查询
+│       │   ├── pdf/
+│       │   │   └── SKILL_CN.md    # PDF 处理
+│       │   ├── playwright/
+│       │   │   └── SKILL_CN.md    # Playwright 浏览器自动化
+│       │   ├── playwright-interactive/
+│       │   │   └── SKILL_CN.md    # Playwright 交互式调试
+│       │   ├── render-deploy/
+│       │   │   └── SKILL_CN.md    # Render 部署
+│       │   ├── screenshot/
+│       │   │   └── SKILL_CN.md    # 屏幕截图
+│       │   ├── security-best-practices/
+│       │   │   └── SKILL_CN.md    # 安全最佳实践
+│       │   ├── security-ownership-map/
+│       │   │   └── SKILL_CN.md    # 安全所有权映射
+│       │   ├── security-threat-model/
+│       │   │   └── SKILL_CN.md    # 安全威胁建模
+│       │   ├── sentry/
+│       │   │   └── SKILL_CN.md    # Sentry 监控
+│       │   ├── slides/
+│       │   │   └── SKILL_CN.md    # 演示文稿创建
+│       │   ├── sora/
+│       │   │   └── SKILL_CN.md    # Sora 视频生成
+│       │   ├── speech/
+│       │   │   └── SKILL_CN.md    # 语音生成
+│       │   ├── spreadsheet/
+│       │   │   └── SKILL_CN.md    # 电子表格处理
+│       │   ├── transcribe/
+│       │   │   └── SKILL_CN.md    # 音频转录
+│       │   ├── vercel-deploy/
+│       │   │   └── SKILL_CN.md    # Vercel 部署
+│       │   ├── winui-app/
+│       │   │   └── SKILL_CN.md    # WinUI 3 应用开发
+│       │   └── yeet/
+│       │       └── SKILL_CN.md    # Git 提交流程
+│       └── .system/
+│           ├── openai-docs/
+│           │   └── SKILL_CN.md    # OpenAI 文档查询（系统级）
+│           ├── skill-creator/
+│           │   └── SKILL_CN.md    # 技能创建器
+│           └── skill-installer/
+│               └── SKILL_CN.md    # 技能安装器
 ├── ui-ux-pro-max-skill/        # ui-ux-pro-max-skill 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
-│   └── .claude/skills/ui-ux-pro-max/
-│       └── SKILL_CN.md        # UI/UX Pro Max 技能
+│   └── .claude/skills/
+│       ├── banner-design/
+│       │   └── SKILL_CN.md    # 横幅设计
+│       ├── design/
+│       │   └── SKILL_CN.md    # 设计
+│       ├── design-system/
+│       │   └── SKILL_CN.md    # 设计系统
+│       ├── slides/
+│       │   └── SKILL_CN.md    # 幻灯片
+│       ├── ui-styling/
+│       │   └── SKILL_CN.md    # UI样式
+│       └── ui-ux-pro-max/
+│           └── SKILL_CN.md    # UI/UX 专业技能
 ├── vercel-labs-agent-skills/    # vercel-labs/agent-skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
+│       ├── claude.ai/
+│       │   └── vercel-deploy-claimable/
+│       │       └── SKILL_CN.md    # Vercel 部署工具
 │       ├── composition-patterns/
 │       │   └── SKILL_CN.md    # 组合模式
+│       ├── deploy-to-vercel/
+│       │   └── SKILL_CN.md    # 部署到Vercel
 │       ├── react-best-practices/
 │       │   └── SKILL_CN.md    # React 最佳实践
 │       ├── react-native-skills/
 │       │   └── SKILL_CN.md    # React Native 技能
-│       ├── claude.ai/vercel-deploy-claimable/
-│       │   └── SKILL_CN.md    # Vercel 部署工具
 │       └── web-design-guidelines/
 │           └── SKILL_CN.md    # Web 设计指南
-├── vercel-labs-skills/         # vercel-labs/skills 项目
-│   ├── README_CN.md            # 项目说明文档中文翻译
-│   └── skills/find-skills/
-│       └── SKILL_CN.md        # SKILL 发现工具
-├── antigravity-awesome-skills/  # antigravity-awesome-skills 项目
-│   └── skills/               # (共 968 个技能，详见项目目录)
-├── claude-scientific-skills/   # claude-scientific-skills 项目
-│   └── docs/                 # (共 170 个技能，详见项目目录)
-├── composiohq-awesome-claude-skills/  # composiohq-awesome-claude-skills 项目
-│   └── connect/              # (共 200+ 个技能，详见项目目录)
-└── voltagent-awesome-openclaw-skills/  # voltagent-awesome-openclaw-skills 项目
-    └── skills/               # (共 5816 个技能，详见项目目录)
+└── vercel-labs-skills/         # vercel-labs/skills 项目
+    ├── README_CN.md            # 项目说明文档中文翻译
+    └── skills/find-skills/
+        └── SKILL_CN.md        # SKILL 发现工具
 ```
 
 **翻译方式说明：**
@@ -190,17 +295,17 @@ awesome-skills-cn/
 | 来源仓库 | SKILL 数量 | README 翻译 | SKILL 翻译 | 状态 |
 |---------|-----------|------------|-----------|------|
 | anthropics-skills | 17 | ✓ | 17/17 | 已完成 |
-| ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
-| vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| huggingface-skills | 14 | ✓ | 14/14 | 已完成 |
-| openai-skills | 37 | ✓ | 37/37 | 已完成 |
-| vercel-labs-agent-skills | 6 | ✓ | 6/6 | 已完成 |
-| obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
-| claude-scientific-skills | 175 | - | 91/175 | 进行中 |
+| awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
+| claude-scientific-skills | 179 | - | 179/179 | 已完成 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
-| voltagent-awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| **总计** | **7213+** | **75** | **192/7213+** | **进行中** |
+| huggingface-skills | 13 | ✓ | 13/13 | 已完成 |
+| obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
+| openai-skills | 38 | ✓ | 38/38 | 已完成 |
+| ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
+| vercel-labs-agent-skills | 6 | ✓ | 6/6 | 已完成 |
+| vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
+| **总计** | **7239+** | **75** | **296/7239+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -222,28 +327,6 @@ awesome-skills-cn/
 - [x] [webapp-testing](anthropics-skills/skills/webapp-testing/SKILL_CN.md) - Web 应用测试
 - [x] [xlsx](anthropics-skills/skills/xlsx/SKILL_CN.md) - Excel 处理
 
-### ui-ux-pro-max-skill (7个)
-
-- [x] [ui-ux-pro-max](ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/SKILL_CN.md) - UI/UX 专业技能
-- [x] [banner-design](ui-ux-pro-max-skill/.claude/skills/banner-design/SKILL_CN.md) - 横幅设计
-- [x] [design](ui-ux-pro-max-skill/.claude/skills/design/SKILL_CN.md) - 设计
-- [x] [design-system](ui-ux-pro-max-skill/.claude/skills/design-system/SKILL_CN.md) - 设计系统
-- [x] [slides](ui-ux-pro-max-skill/.claude/skills/slides/SKILL_CN.md) - 幻灯片
-- [x] [ui-styling](ui-ux-pro-max-skill/.claude/skills/ui-styling/SKILL_CN.md) - UI样式
-
-### vercel-labs-skills (1个)
-
-- [x] [find-skills](vercel-labs-skills/skills/find-skills/SKILL_CN.md) - SKILL 发现工具
-
-### vercel-labs-agent-skills (6个)
-
-- [x] [composition-patterns](vercel-labs-agent-skills/skills/composition-patterns/SKILL_CN.md) - 组合模式
-- [x] [react-best-practices](vercel-labs-agent-skills/skills/react-best-practices/SKILL_CN.md) - React 最佳实践
-- [x] [react-native-skills](vercel-labs-agent-skills/skills/react-native-skills/SKILL_CN.md) - React Native 技能
-- [x] [vercel-deploy-claimable](vercel-labs-agent-skills/skills/claude.ai/vercel-deploy-claimable/SKILL_CN.md) - Vercel 部署工具
-- [x] [web-design-guidelines](vercel-labs-agent-skills/skills/web-design-guidelines/SKILL_CN.md) - Web 设计指南
-- [x] [deploy-to-vercel](vercel-labs-agent-skills/skills/deploy-to-vercel/SKILL_CN.md) - 部署到Vercel
-
 ### antigravity-awesome-skills (968个)
 
 - [ ] 00-andruia-consultant
@@ -253,22 +336,52 @@ awesome-skills-cn/
 - [ ] ab-test-setup
 - [ ] ... (共 968 个技能，详见项目目录)
 
-### huggingface-skills (14个)
+### awesome-openclaw-skills (5816个)
+
+- [ ] ai-and-llms (196个技能)
+- [ ] browser-and-automation (335个技能)
+- [ ] coding-agents-and-ides (1222个技能)
+- [ ] ... (共 5816 个技能，详见项目目录)
+
+### claude-scientific-skills (179个)
+
+- [x] [adaptyv](claude-scientific-skills/scientific-skills/adaptyv/SKILL_CN.md) - Adaptyv 蛋白质设计平台
+- [x] [alphafold-database](claude-scientific-skills/scientific-skills/alphafold-database/SKILL_CN.md) - AlphaFold 蛋白质结构数据库
+- [x] [cbioportal-database](claude-scientific-skills/scientific-skills/cbioportal-database/SKILL_CN.md) - cBioPortal 癌症基因组数据库
+- [x] [deepchem](claude-scientific-skills/scientific-skills/deepchem/SKILL_CN.md) - DeepChem 分子机器学习
+- [x] [neuropixels-analysis](claude-scientific-skills/scientific-skills/neuropixels-analysis/SKILL_CN.md) - Neuropixels神经记录分析
+- ... (更多已翻译技能详见项目目录)
+
+### composiohq-awesome-claude-skills (200+个)
+
+- [ ] active-campaign-automation
+- [ ] adobe-automation
+- [ ] ... (共 200+ 个技能，详见项目目录)
+
+### huggingface-skills (13个)
 
 - [x] [huggingface-gradio](huggingface-skills/skills/huggingface-gradio/SKILL_CN.md) - Gradio Web UI 构建
-- [x] [hugging-face-cli](huggingface-skills/skills/hugging-face-cli/SKILL_CN.md) - Hugging Face CLI 操作
-- [x] [hugging-face-datasets](huggingface-skills/skills/hugging-face-datasets/SKILL_CN.md) - 数据集创建和管理
-- [x] [hugging-face-dataset-viewer](huggingface-skills/skills/hugging-face-dataset-viewer/SKILL_CN.md) - 数据集查看器 API 工作流
-- [x] [hugging-face-evaluation](huggingface-skills/skills/hugging-face-evaluation/SKILL_CN.md) - 模型评估管理
-- [x] [hugging-face-jobs](huggingface-skills/skills/hugging-face-jobs/SKILL_CN.md) - Hugging Face Jobs 计算任务
-- [x] [hugging-face-model-trainer](huggingface-skills/skills/hugging-face-model-trainer/SKILL_CN.md) - 模型训练和微调
-- [x] [hugging-face-paper-publisher](huggingface-skills/skills/hugging-face-paper-publisher/SKILL_CN.md) - 研究论文发布
-- [x] [hugging-face-tool-builder](huggingface-skills/skills/hugging-face-tool-builder/SKILL_CN.md) - API 工具构建
-- [x] [hugging-face-trackio](huggingface-skills/skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
-- [x] [hf-cli](huggingface-skills/skills/hf-cli/SKILL_CN.md) - Hugging Face Hub CLI
-- [x] [transformers-js](huggingface-skills/skills/transformers.js/SKILL_CN.md) - Transformers.js 机器学习
+- [x] [hugging-face-cli](hugging-face-skills/skills/hugging-face-cli/SKILL_CN.md) - Hugging Face CLI 操作
+- [x] [hugging-face-datasets](hugging-face-skills/skills/hugging-face-datasets/SKILL_CN.md) - 数据集创建和管理
+- [x] [hugging-face-dataset-viewer](hugging-face-skills/skills/hugging-face-dataset-viewer/SKILL_CN.md) - 数据集查看器 API 工作流
+- [x] [hugging-face-evaluation](hugging-face-skills/skills/hugging-face-evaluation/SKILL_CN.md) - 模型评估管理
+- [x] [hugging-face-jobs](hugging-face-skills/skills/hugging-face-jobs/SKILL_CN.md) - Hugging Face Jobs 计算任务
+- [x] [hugging-face-model-trainer](hugging-face-skills/skills/hugging-face-model-trainer/SKILL_CN.md) - 模型训练和微调
+- [x] [hugging-face-paper-publisher](hugging-face-skills/skills/hugging-face-paper-publisher/SKILL_CN.md) - 研究论文发布
+- [x] [hugging-face-tool-builder](hugging-face-skills/skills/hugging-face-tool-builder/SKILL_CN.md) - API 工具构建
+- [x] [hugging-face-trackio](hugging-face-skills/skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
+- [x] [hf-cli](hugging-face-skills/skills/hf-cli/SKILL_CN.md) - Hugging Face Hub CLI
+- [x] [transformers-js](hugging-face-skills/skills/transformers.js/SKILL_CN.md) - Transformers.js 机器学习
 
-### openai-skills (37个)
+### obsidian-skills (5个)
+
+- [x] [obsidian-markdown](obsidian-skills/skills/obsidian-markdown/SKILL_CN.md) - 创建和编辑 Obsidian Flavored Markdown 文档
+- [x] [obsidian-bases](obsidian-skills/skills/obsidian-bases/SKILL_CN.md) - 创建和编辑 Obsidian Bases 数据库
+- [x] [json-canvas](obsidian-skills/skills/json-canvas/SKILL_CN.md) - 创建和编辑 JSON Canvas 文件
+- [x] [obsidian-cli](obsidian-skills/skills/obsidian-cli/SKILL_CN.md) - 通过 Obsidian CLI 与 Obsidian vault 交互
+- [x] [defuddle](obsidian-skills/skills/defuddle/SKILL_CN.md) - 从网页提取干净的 Markdown 内容
+
+### openai-skills (38个)
 
 - [x] [skill-installer](openai-skills/skills/.system/skill-installer/SKILL_CN.md) - 技能安装器
 - [x] [skill-creator](openai-skills/skills/.system/skill-creator/SKILL_CN.md) - 技能创建器
@@ -309,37 +422,27 @@ awesome-skills-cn/
 - [x] [winui-app](openai-skills/skills/.curated/winui-app/SKILL_CN.md) - WinUI 3 应用开发
 - [x] [yeet](openai-skills/skills/.curated/yeet/SKILL_CN.md) - Git 提交流程
 
-### obsidian-skills (5个)
+### ui-ux-pro-max-skill (7个)
 
-- [x] [obsidian-markdown](obsidian-skills/skills/obsidian-markdown/SKILL_CN.md) - 创建和编辑 Obsidian Flavored Markdown 文档
-- [x] [obsidian-bases](obsidian-skills/skills/obsidian-bases/SKILL_CN.md) - 创建和编辑 Obsidian Bases 数据库
-- [x] [json-canvas](obsidian-skills/skills/json-canvas/SKILL_CN.md) - 创建和编辑 JSON Canvas 文件
-- [x] [obsidian-cli](obsidian-skills/skills/obsidian-cli/SKILL_CN.md) - 通过 Obsidian CLI 与 Obsidian vault 交互
-- [x] [defuddle](obsidian-skills/skills/defuddle/SKILL_CN.md) - 从网页提取干净的 Markdown 内容
+- [x] [ui-ux-pro-max](ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/SKILL_CN.md) - UI/UX 专业技能
+- [x] [banner-design](ui-ux-pro-max-skill/.claude/skills/banner-design/SKILL_CN.md) - 横幅设计
+- [x] [design](ui-ux-pro-max-skill/.claude/skills/design/SKILL_CN.md) - 设计
+- [x] [design-system](ui-ux-pro-max-skill/.claude/skills/design-system/SKILL_CN.md) - 设计系统
+- [x] [slides](ui-ux-pro-max-skill/.claude/skills/slides/SKILL_CN.md) - 幻灯片
+- [x] [ui-styling](ui-ux-pro-max-skill/.claude/skills/ui-styling/SKILL_CN.md) - UI样式
 
-### claude-scientific-skills (175个)
+### vercel-labs-agent-skills (6个)
 
-- [x] [adaptyv](claude-scientific-skills/scientific-skills/adaptyv/SKILL_CN.md) - Adaptyv 蛋白质设计平台
-- [x] [alphafold-database](claude-scientific-skills/scientific-skills/alphafold-database/SKILL_CN.md) - AlphaFold 蛋白质结构数据库
-- [x] [cbioportal-database](claude-scientific-skills/scientific-skills/cbioportal-database/SKILL_CN.md) - cBioPortal 癌症基因组数据库
-- [x] [deepchem](claude-scientific-skills/scientific-skills/deepchem/SKILL_CN.md) - DeepChem 分子机器学习
-- [x] [neuropixels-analysis](claude-scientific-skills/scientific-skills/neuropixels-analysis/SKILL_CN.md) - Neuropixels神经记录分析
-- ... (更多已翻译技能详见项目目录)
+- [x] [composition-patterns](vercel-labs-agent-skills/skills/composition-patterns/SKILL_CN.md) - 组合模式
+- [x] [deploy-to-vercel](vercel-labs-agent-skills/skills/deploy-to-vercel/SKILL_CN.md) - 部署到Vercel
+- [x] [react-best-practices](vercel-labs-agent-skills/skills/react-best-practices/SKILL_CN.md) - React 最佳实践
+- [x] [react-native-skills](vercel-labs-agent-skills/skills/react-native-skills/SKILL_CN.md) - React Native 技能
+- [x] [vercel-deploy-claimable](vercel-labs-agent-skills/skills/claude.ai/vercel-deploy-claimable/SKILL_CN.md) - Vercel 部署工具
+- [x] [web-design-guidelines](vercel-labs-agent-skills/skills/web-design-guidelines/SKILL_CN.md) - Web 设计指南
 
-... (更多未翻译技能详见项目目录)
+### vercel-labs-skills (1个)
 
-### composiohq-awesome-claude-skills (200+个)
-
-- [ ] active-campaign-automation
-- [ ] adobe-automation
-- [ ] ... (共 200+ 个技能，详见项目目录)
-
-### voltagent-awesome-openclaw-skills (5816个)
-
-- [ ] ai-and-llms (196个技能)
-- [ ] browser-and-automation (335个技能)
-- [ ] coding-agents-and-ides (1222个技能)
-- [ ] ... (共 5816 个技能，详见项目目录)
+- [x] [find-skills](vercel-labs-skills/skills/find-skills/SKILL_CN.md) - SKILL 发现工具
 
 ## 许可证
 
@@ -349,17 +452,17 @@ awesome-skills-cn/
 
 感谢以下原始 SKILL 仓库：
 
-- [Anthropic Skills](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等
-- [UI/UX Pro Max Skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能
-- [Vercel Labs Skills](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具
-- [Vercel Labs Agent Skills](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等
 - [Antigravity Awesome Skills](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合
-- [Hugging Face Skills](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能
-- [OpenAI Skills](https://github.com/openai/skills) - OpenAI Codex 技能目录
+- [Anthropic Skills](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等
+- [Awesome OpenClaw Skills](https://github.com/openclaw/skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域
 - [Claude Scientific Skills](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域
 - [Composio Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等
-- [Voltagent Awesome OpenClaw Skills](https://github.com/voltagent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域
+- [Hugging Face Skills](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能
 - [Obsidian Skills](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等
+- [OpenAI Skills](https://github.com/openai/skills) - OpenAI Codex 技能目录
+- [UI/UX Pro Max Skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能
+- [Vercel Labs Agent Skills](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等
+- [Vercel Labs Skills](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具
 
 ## 联系方式
 
