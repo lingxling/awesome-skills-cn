@@ -14,8 +14,8 @@
 - [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（13个技能，已全部翻译）
 - [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能，已全部翻译）
 - [**OpenAI Skills**](https://github.com/openai/skills) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（38个技能，已全部翻译）
-- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（1个技能）
-- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（5个技能）
+- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（7个技能，已全部翻译）
+- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（6个技能，已全部翻译）
 - [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
 
 ## SKILL 是什么
@@ -297,7 +297,7 @@ awesome-skills-cn/
 | anthropics-skills | 17 | ✓ | 17/17 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
 | awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
-| claude-scientific-skills | 179 | - | 179/179 | 已完成 |
+| claude-scientific-skills | 179 | ✓ | 179/179 | 已完成 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | huggingface-skills | 13 | ✓ | 13/13 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
