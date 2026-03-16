@@ -16,6 +16,16 @@ from pathlib import Path
 SKILLS_DIR = Path(__file__).parent.parent / "skills"
 DISABLED_DIR = SKILLS_DIR / ".disabled"
 
+
+def resolve_skill_path(base_dir: Path, skill_name: str) -> Path | None:
+    candidate = (base_dir / skill_name).resolve()
+    try:
+        candidate.relative_to(base_dir.resolve())
+        return candidate
+    except ValueError:
+        print(f"❌ Invalid skill name: {skill_name}")
+        return None
+
 def list_active():
     """List all active skills"""
     print("🟢 Active Skills:\n")
@@ -51,8 +61,11 @@ def list_disabled():
 
 def enable_skill(skill_name):
     """Enable a disabled skill"""
-    source = DISABLED_DIR / skill_name
-    target = SKILLS_DIR / skill_name
+    source = resolve_skill_path(DISABLED_DIR, skill_name)
+    target = resolve_skill_path(SKILLS_DIR, skill_name)
+
+    if source is None or target is None:
+        return False
     
     if not source.exists():
         print(f"❌ Skill '{skill_name}' not found in .disabled/")
@@ -68,8 +81,11 @@ def enable_skill(skill_name):
 
 def disable_skill(skill_name):
     """Disable an active skill"""
-    source = SKILLS_DIR / skill_name
-    target = DISABLED_DIR / skill_name
+    source = resolve_skill_path(SKILLS_DIR, skill_name)
+    target = resolve_skill_path(DISABLED_DIR, skill_name)
+
+    if source is None or target is None:
+        return False
     
     if not source.exists():
         print(f"❌ Skill '{skill_name}' not found")

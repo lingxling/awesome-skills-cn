@@ -74,7 +74,7 @@ export function Home(): React.ReactElement {
     setSyncing(true);
     setSyncMsg(null);
     try {
-      const res = await fetch('/api/refresh-skills');
+      const res = await fetch('/api/refresh-skills', { method: 'POST' });
       const data = await res.json();
       if (data.success) {
         if (data.upToDate) {

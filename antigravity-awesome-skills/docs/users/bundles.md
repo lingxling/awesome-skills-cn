@@ -1,8 +1,8 @@
-# 📦 Antigravity Skill Bundles
+# Antigravity Skill Bundles
 
 > **Curated collections of skills organized by role and expertise level.** Don't know where to start? Pick a bundle below to get a curated set of skills for your role.
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Install the repository:**
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 🎯 Essentials & Core
+## Essentials & Core
 
 ### 🚀 The "Essentials" Starter Pack
 
@@ -36,7 +36,7 @@ _For everyone. Install these first._
 
 ---
 
-## 🛡️ Security & Compliance
+## Security & Compliance
 
 ### 🛡️ The "Security Engineer" Pack
 
@@ -213,7 +213,7 @@ _For driving user acquisition and retention._
 
 ---
 
-## 🌧️ DevOps & Infrastructure
+## DevOps & Infrastructure
 
 ### 🌧️ The "DevOps & Cloud" Pack
 
@@ -417,7 +417,7 @@ Keep a small list of high-frequency skills and reuse it across tasks to reduce c
 
 ---
 
-## 🎓 Learning Paths
+## Learning Paths
 
 ### Beginner → Intermediate → Advanced
 
@@ -447,13 +447,13 @@ Keep a small list of high-frequency skills and reuse it across tasks to reduce c
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Found a skill that should be in a bundle? Or want to create a new bundle? [Open an issue](https://github.com/sickn33/antigravity-awesome-skills/issues) or submit a PR!
 
 ---
 
-## 📖 Related Documentation
+## Related Documentation
 
 - [Getting Started Guide](getting-started.md)
 - [Full Skill Catalog](../../CATALOG.md)
@@ -461,4 +461,4 @@ Found a skill that should be in a bundle? Or want to create a new bundle? [Open 
 
 ---
 
-_Last updated: March 2026 | Total Skills: 1,204+ | Total Bundles: 26_
+_Last updated: March 2026 | Total Skills: 1,254+ | Total Bundles: 26_

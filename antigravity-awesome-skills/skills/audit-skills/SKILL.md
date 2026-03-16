@@ -10,6 +10,8 @@ tags: [security, audit, skills, bundles, cross-platform]
 tools: [claude, gemini, gpt, llama, mistral, etc]
 ---
 
+<!-- security-allowlist: curl-pipe-bash -->
+
 # Audit Skills (Premium Universal Security)
 
 ## Overview

@@ -158,7 +158,26 @@ More instructions...
   **Solution:** How to fix it
 ```
 
-#### 8. Related Skills
+#### 8. Security & Safety Notes (for command/network/offensive skills)
+
+If your skill includes:
+
+- shell commands or command-like examples,
+- remote fetch/install or token usage guidance,
+- file mutation, destructive actions, or privileged operations,
+
+add a dedicated section before final wrap-up:
+
+```markdown
+## Security & Safety Notes
+
+- This is safe/unsafe scope
+- Required confirmation or authorization
+- Example allowlist notes (if needed):
+  `<!-- security-allowlist: ... -->`
+```
+
+#### 9. Related Skills
 ```markdown
 ## Related Skills
 

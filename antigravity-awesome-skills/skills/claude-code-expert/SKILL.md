@@ -18,6 +18,8 @@ tools:
 - codex-cli
 ---
 
+<!-- security-allowlist: curl-pipe-bash -->
+
 # CLAUDE CODE EXPERT - Potencia Maxima
 
 ## Overview

@@ -9,7 +9,7 @@ metadata:
 
 # Vercel React 最佳实践
 
-由 Vercel 维护的 React 和 Next.js 应用程序综合性能优化指南。包含 8 个类别的 57 条规则，按影响程度优先排序，以指导自动化重构和代码生成。
+由 Vercel 维护的 React 和 Next.js 应用程序综合性能优化指南。包含 8 个类别的 62 条规则，按影响程度优先排序，以指导自动化重构和代码生成。
 
 ## 何时应用
 
@@ -57,6 +57,7 @@ metadata:
 - `server-cache-react` - 使用 React.cache() 进行每次请求去重
 - `server-cache-lru` - 使用 LRU 缓存进行跨请求缓存
 - `server-dedup-props` - 避免在 RSC props 中重复序列化
+- `server-hoist-static-io` - 将静态 I/O（字体、徽标）提升到模块级别
 - `server-serialization` - 最小化传递给客户端组件的数据
 - `server-parallel-fetching` - 重构组件以并行化获取
 - `server-after-nonblocking` - 使用 after() 进行非阻塞操作
@@ -82,6 +83,7 @@ metadata:
 - `rerender-move-effect-to-event` - 将交互逻辑放在事件处理程序中
 - `rerender-transitions` - 使用 startTransition 进行非紧急更新
 - `rerender-use-ref-transient-values` - 使用 refs 存储瞬态频繁值
+- `rerender-no-inline-components` - 不要在组件内部定义组件
 
 ### 6. 渲染性能 (中)
 
@@ -94,6 +96,8 @@ metadata:
 - `rendering-activity` - 使用 Activity 组件进行显示/隐藏
 - `rendering-conditional-render` - 使用三元运算符，而不是 && 进行条件渲染
 - `rendering-usetransition-loading` - 优先使用 useTransition 处理加载状态
+- `rendering-resource-hints` - 使用 React DOM 资源提示进行预加载
+- `rendering-script-defer-async` - 在脚本标签上使用 defer 或 async
 
 ### 7. JavaScript 性能 (低中)
 
@@ -109,6 +113,7 @@ metadata:
 - `js-min-max-loop` - 使用循环查找 min/max 而不是排序
 - `js-set-map-lookups` - 使用 Set/Map 进行 O(1) 查找
 - `js-tosorted-immutable` - 使用 toSorted() 保持不可变性
+- `js-flatmap-filter` - 使用 flatMap 在一次传递中映射和过滤
 
 ### 8. 高级模式 (低)
 
@@ -126,7 +131,6 @@ rules/bundle-barrel-imports.md
 ```
 
 每个规则文件包含：
-
 - 为什么重要的简要说明
 - 带有说明的错误代码示例
 - 带有说明的正确代码示例

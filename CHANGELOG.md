@@ -5,6 +5,26 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.18.0] - 2026-03-16
+
+### 变更
+- 更新所有项目至最新版本：
+  - anthropics-skills (Already up to date)
+  - antigravity-awesome-skills (Fast-forward 更新，124个文件变更)
+  - awesome-openclaw-skills (Fast-forward 更新，24个文件变更)
+  - claude-scientific-skills (Already up to date)
+  - composiohq-awesome-claude-skills (Already up to date)
+  - huggingface-skills (Fast-forward 更新，1个文件变更)
+  - obsidian-skills (Already up to date)
+  - openai-skills (Already up to date)
+  - ui-ux-pro-max-skill (Already up to date)
+  - vercel-labs-agent-skills (Fast-forward 更新，7个文件变更)
+  - vercel-labs-skills (Fast-forward 更新，11个文件变更)
+
+- 更新 SKILL_CN.md 文件以保持与 SKILL.md 的同步：
+  - [hf-cli/SKILL_CN.md](huggingface-skills/skills/hf-cli/SKILL_CN.md) - 更新版本号至 v1.7.1，添加新命令 `hf extensions search`，修正命令名称（如 `list` 替代 `ls`）
+  - [react-best-practices/SKILL_CN.md](vercel-labs-agent-skills/skills/react-best-practices/SKILL_CN.md) - 更新规则数量从 57 条增加到 62 条，添加新规则（如 `server-hoist-static-io`、`rerender-no-inline-components`、`rendering-resource-hints`、`rendering-script-defer-async`、`js-flatmap-filter`）
+
 ## [2.17.0] - 2026-03-14
 
 ### 新增

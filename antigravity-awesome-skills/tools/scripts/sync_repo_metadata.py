@@ -52,18 +52,25 @@ def parse_args() -> argparse.Namespace:
         description="Synchronize repository metadata across README and package.json."
     )
     parser.add_argument("--dry-run", action="store_true", help="Preview updates without writing files.")
+    parser.add_argument(
+        "--refresh-volatile",
+        action="store_true",
+        help="Refresh live star count and updated_at when syncing README metadata.",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
     base_dir = find_repo_root(os.path.dirname(__file__))
-    metadata = load_metadata(base_dir)
+    metadata = load_metadata(base_dir, refresh_volatile=args.refresh_volatile)
 
     print("Repository metadata")
     print(json.dumps(metadata, indent=2))
 
-    readme_metadata = update_readme(dry_run=args.dry_run)
+    readme_metadata = update_readme(
+        dry_run=args.dry_run, refresh_volatile=args.refresh_volatile
+    )
     package_updated = update_package_description(base_dir, metadata, args.dry_run)
     print_manual_github_about(readme_metadata)
 

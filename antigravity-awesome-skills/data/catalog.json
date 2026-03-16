@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1250,
+  "total": 1259,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -1161,6 +1161,35 @@
       "path": "skills/analytics-tracking/SKILL.md"
     },
     {
+      "id": "analyze-project",
+      "name": "analyze-project",
+      "description": "Forensic root cause analyzer for Antigravity sessions. Classifies scope deltas, rework patterns, root causes, hotspots, and auto-improves prompts/health.",
+      "category": "architecture",
+      "tags": [
+        "analysis",
+        "diagnostics",
+        "meta",
+        "root-cause",
+        "project-health",
+        "session-review"
+      ],
+      "triggers": [
+        "analysis",
+        "diagnostics",
+        "meta",
+        "root-cause",
+        "project-health",
+        "session-review",
+        "analyze",
+        "forensic",
+        "root",
+        "cause",
+        "analyzer",
+        "antigravity"
+      ],
+      "path": "skills/analyze-project/SKILL.md"
+    },
+    {
       "id": "andrej-karpathy",
       "name": "andrej-karpathy",
       "description": "Agente que simula Andrej Karpathy — ex-Director of AI da Tesla, co-fundador da OpenAI, fundador da Eureka Labs, e o maior educador de deep learning do mundo. Use quando quiser: aprender deep...",
@@ -1430,6 +1459,33 @@
         "glassmorphism"
       ],
       "path": "skills/antigravity-design-expert/SKILL.md"
+    },
+    {
+      "id": "antigravity-skill-orchestrator",
+      "name": "antigravity-skill-orchestrator",
+      "description": "A meta-skill that understands task requirements, dynamically selects appropriate skills, tracks successful skill combinations using agent-memory-mcp, and prevents skill overuse for simple tasks.",
+      "category": "general",
+      "tags": [
+        "[orchestration",
+        "meta-skill",
+        "agent-memory",
+        "task-evaluation]"
+      ],
+      "triggers": [
+        "[orchestration",
+        "meta-skill",
+        "agent-memory",
+        "task-evaluation]",
+        "antigravity",
+        "skill",
+        "orchestrator",
+        "meta",
+        "understands",
+        "task",
+        "requirements",
+        "dynamically"
+      ],
+      "path": "skills/antigravity-skill-orchestrator/SKILL.md"
     },
     {
       "id": "antigravity-workflows",
@@ -11571,6 +11627,30 @@
       "path": "skills/earllm-build/SKILL.md"
     },
     {
+      "id": "electron-development",
+      "name": "electron-development",
+      "description": "Master Electron desktop app development with secure IPC, contextIsolation, preload scripts, multi-process architecture, electron-builder packaging, code signing, and auto-update.",
+      "category": "architecture",
+      "tags": [
+        "electron"
+      ],
+      "triggers": [
+        "electron",
+        "development",
+        "desktop",
+        "app",
+        "secure",
+        "ipc",
+        "contextisolation",
+        "preload",
+        "scripts",
+        "multi",
+        "process",
+        "architecture"
+      ],
+      "path": "skills/electron-development/SKILL.md"
+    },
+    {
       "id": "elixir-pro",
       "name": "elixir-pro",
       "description": "Write idiomatic Elixir code with OTP patterns, supervision trees, and Phoenix LiveView. Masters concurrency, fault tolerance, and distributed systems.",
@@ -16846,6 +16926,34 @@
       "path": "skills/junta-leiloeiros/SKILL.md"
     },
     {
+      "id": "k6-load-testing",
+      "name": "k6-load-testing",
+      "description": "Comprehensive k6 load testing skill for API, browser, and scalability testing. Write realistic load scenarios, analyze results, and integrate with CI/CD.",
+      "category": "infrastructure",
+      "tags": [
+        "k6",
+        "load-testing",
+        "performance",
+        "api-testing",
+        "ci-cd"
+      ],
+      "triggers": [
+        "k6",
+        "load-testing",
+        "performance",
+        "api-testing",
+        "ci-cd",
+        "load",
+        "testing",
+        "skill",
+        "api",
+        "browser",
+        "scalability",
+        "write"
+      ],
+      "path": "skills/k6-load-testing/SKILL.md"
+    },
+    {
       "id": "k8s-manifest-generator",
       "name": "k8s-manifest-generator",
       "description": "Create production-ready Kubernetes manifests for Deployments, Services, ConfigMaps, and Secrets following best practices and security standards. Use when generating Kubernetes YAML manifests, creat...",
@@ -17209,6 +17317,32 @@
         "paste"
       ],
       "path": "skills/last30days/SKILL.md"
+    },
+    {
+      "id": "latex-paper-conversion",
+      "name": "latex-paper-conversion",
+      "description": "This skill should be used when the user asks to convert an academic paper in LaTeX from one format (e.g., Springer, IPOL) to another format (e.g., MDPI, IEEE, Nature). It automates extraction, injection, fixing formatting, and compiling.",
+      "category": "general",
+      "tags": [
+        "latex",
+        "paper",
+        "conversion"
+      ],
+      "triggers": [
+        "latex",
+        "paper",
+        "conversion",
+        "skill",
+        "should",
+        "used",
+        "user",
+        "asks",
+        "convert",
+        "academic",
+        "one",
+        "format"
+      ],
+      "path": "skills/latex-paper-conversion/SKILL.md"
     },
     {
       "id": "launch-strategy",
@@ -18066,6 +18200,32 @@
         "output"
       ],
       "path": "skills/llm-prompt-optimizer/SKILL.md"
+    },
+    {
+      "id": "llm-structured-output",
+      "name": "llm-structured-output",
+      "description": "Get reliable JSON, enums, and typed objects from LLMs using response_format, tool_use, and schema-constrained decoding across OpenAI, Anthropic, and Google APIs.",
+      "category": "data-ai",
+      "tags": [
+        "llm",
+        "structured",
+        "output"
+      ],
+      "triggers": [
+        "llm",
+        "structured",
+        "output",
+        "get",
+        "reliable",
+        "json",
+        "enums",
+        "typed",
+        "objects",
+        "llms",
+        "response",
+        "format"
+      ],
+      "path": "skills/llm-structured-output/SKILL.md"
     },
     {
       "id": "local-legal-seo-audit",
@@ -22398,6 +22558,31 @@
       "path": "skills/prisma-expert/SKILL.md"
     },
     {
+      "id": "privacy-by-design",
+      "name": "privacy-by-design",
+      "description": "Use when building apps that collect user data. Ensures privacy protections are built in from the start—data minimization, consent, encryption.",
+      "category": "security",
+      "tags": [
+        "privacy",
+        "by"
+      ],
+      "triggers": [
+        "privacy",
+        "by",
+        "building",
+        "apps",
+        "collect",
+        "user",
+        "data",
+        "ensures",
+        "protections",
+        "built",
+        "start",
+        "minimization"
+      ],
+      "path": "skills/privacy-by-design/SKILL.md"
+    },
+    {
       "id": "privilege-escalation-methods",
       "name": "privilege-escalation-methods",
       "description": "This skill should be used when the user asks to \"escalate privileges\", \"get root access\", \"become administrator\", \"privesc techniques\", \"abuse sudo\", \"exploit SUID binaries\", \"K...",
@@ -23510,6 +23695,36 @@
         "he"
       ],
       "path": "skills/readme/SKILL.md"
+    },
+    {
+      "id": "recallmax",
+      "name": "recallmax",
+      "description": "FREE — God-tier long-context memory for AI agents. Injects 500K-1M clean tokens, auto-summarizes with tone/intent preservation, compresses 14-turn history into 800 tokens.",
+      "category": "data-ai",
+      "tags": [
+        "memory",
+        "context",
+        "rag",
+        "summarization",
+        "compression",
+        "long-context",
+        "agent-infrastructure"
+      ],
+      "triggers": [
+        "memory",
+        "context",
+        "rag",
+        "summarization",
+        "compression",
+        "long-context",
+        "agent-infrastructure",
+        "recallmax",
+        "free",
+        "god",
+        "tier",
+        "long"
+      ],
+      "path": "skills/recallmax/SKILL.md"
     },
     {
       "id": "receiving-code-review",
@@ -28364,6 +28579,35 @@
         "reduction"
       ],
       "path": "skills/tool-design/SKILL.md"
+    },
+    {
+      "id": "tool-use-guardian",
+      "name": "tool-use-guardian",
+      "description": "FREE — Intelligent tool-call reliability wrapper. Monitors, retries, fixes, and learns from tool failures. Auto-recovers from truncated JSON, timeouts, rate limits, and mid-chain failures.",
+      "category": "general",
+      "tags": [
+        "reliability",
+        "tool-use",
+        "error-handling",
+        "retries",
+        "recovery",
+        "agent-infrastructure"
+      ],
+      "triggers": [
+        "reliability",
+        "tool-use",
+        "error-handling",
+        "retries",
+        "recovery",
+        "agent-infrastructure",
+        "guardian",
+        "free",
+        "intelligent",
+        "call",
+        "wrapper",
+        "monitors"
+      ],
+      "path": "skills/tool-use-guardian/SKILL.md"
     },
     {
       "id": "top-web-vulnerabilities",

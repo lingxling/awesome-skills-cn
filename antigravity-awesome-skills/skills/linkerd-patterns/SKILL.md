@@ -6,6 +6,8 @@ source: community
 date_added: "2026-02-27"
 ---
 
+<!-- security-allowlist: curl-pipe-bash -->
+
 # Linkerd Patterns
 
 Production patterns for Linkerd service mesh - the lightweight, security-first service mesh for Kubernetes.

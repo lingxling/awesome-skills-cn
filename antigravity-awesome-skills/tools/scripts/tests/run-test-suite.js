@@ -8,7 +8,11 @@ const ENABLED_VALUES = new Set(["1", "true", "yes", "on"]);
 const TOOL_SCRIPTS = path.join("tools", "scripts");
 const TOOL_TESTS = path.join(TOOL_SCRIPTS, "tests");
 const LOCAL_TEST_COMMANDS = [
+  [path.join(TOOL_TESTS, "jetski_gemini_loader.test.js")],
+  [path.join(TOOL_TESTS, "npm_package_contents.test.js")],
   [path.join(TOOL_TESTS, "validate_skills_headings.test.js")],
+  [path.join(TOOL_TESTS, "workflow_contracts.test.js")],
+  [path.join(TOOL_TESTS, "docs_security_content.test.js")],
   [path.join(TOOL_SCRIPTS, "run-python.js"), path.join(TOOL_TESTS, "test_validate_skills_headings.py")],
 ];
 const NETWORK_TEST_COMMANDS = [

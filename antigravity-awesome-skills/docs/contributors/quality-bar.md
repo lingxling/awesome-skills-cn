@@ -4,7 +4,7 @@ To transform **Antigravity Awesome Skills** from a collection of scripts into a 
 
 ## The "Validated" Badge ✅
 
-A skill earns the "Validated" badge only if it meets these **5 quality checks**. Some are enforced automatically today, while others still require reviewer judgment:
+A skill earns the "Validated" badge only if it meets these **6 quality checks**. Some are enforced automatically today, while others still require reviewer judgment:
 
 ### 1. Metadata Integrity
 
@@ -42,6 +42,16 @@ A list of known edge cases or things the skill _cannot_ do.
 
 - _Example_: "Does not work on Windows without WSL."
 
+### 6. Instruction Safety Review
+
+If a skill includes command examples, remote fetch steps, secrets, or mutation guidance, the PR must document the risk and pass `npm run security:docs` in addition to normal validation.
+
+`npm run security:docs` enforces a repo-wide scan for:
+
+- command pipelines like `curl ... | bash`, `wget ... | sh`, `irm ... | iex`,
+- inline token/secret-style command examples,
+- deliberate allowlisted high-risk documentation commands via `<!-- security-allowlist: ... -->`.
+
 ---
 
 ## Support Levels
@@ -64,10 +74,12 @@ The canonical validator is `tools/scripts/validate_skills.py`, but the recommend
 npm run validate
 npm run validate:references
 npm test
+npm run security:docs
 ```
 
 Notes:
 
 - `npm run validate` is the operational contributor gate.
+- `npm run security:docs` is required for command-heavy or risky skill content.
 - `npm run validate:strict` is a useful hardening pass, but the repository still contains legacy skills that do not yet satisfy strict validation.
 - Examples and limitations remain part of the quality bar even when they are not fully auto-enforced by the current validator.

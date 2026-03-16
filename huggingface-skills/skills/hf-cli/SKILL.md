@@ -9,7 +9,7 @@ The Hugging Face Hub CLI tool `hf` is available. IMPORTANT: The `hf` command rep
 
 Use `hf --help` to view available functions. Note that auth commands are now all under `hf auth` e.g. `hf auth whoami`.
 
-Generated with `huggingface_hub v1.6.0`. Run `hf skills add --force` to regenerate.
+Generated with `huggingface_hub v1.7.1`. Run `hf skills add --force` to regenerate.
 
 ## Commands
 
@@ -41,7 +41,7 @@ Generated with `huggingface_hub v1.6.0`. Run `hf skills add --force` to regenera
 
 ### `hf cache` — Manage local cache directory.
 
-- `hf cache ls` — List cached repositories or revisions.
+- `hf cache list` — List cached repositories or revisions.
 - `hf cache prune` — Remove detached revisions from the cache.
 - `hf cache rm TARGETS` — Remove cached repositories or revisions.
 - `hf cache verify REPO_ID` — Verify checksums for a single repo revision from cache or a local directory.
@@ -53,14 +53,14 @@ Generated with `huggingface_hub v1.6.0`. Run `hf skills add --force` to regenera
 - `hf collections delete COLLECTION_SLUG` — Delete a collection from the Hub.
 - `hf collections delete-item COLLECTION_SLUG ITEM_OBJECT_ID` — Delete an item from a collection.
 - `hf collections info COLLECTION_SLUG` — Get info about a collection on the Hub.
-- `hf collections ls` — List collections on the Hub.
+- `hf collections list` — List collections on the Hub.
 - `hf collections update COLLECTION_SLUG` — Update a collection's metadata on the Hub.
 - `hf collections update-item COLLECTION_SLUG ITEM_OBJECT_ID` — Update an item in a collection.
 
 ### `hf datasets` — Interact with datasets on the Hub.
 
 - `hf datasets info DATASET_ID` — Get info about a dataset on the Hub.
-- `hf datasets ls` — List datasets on the Hub.
+- `hf datasets list` — List datasets on the Hub.
 - `hf datasets parquet DATASET_ID` — List parquet file URLs available for a dataset.
 - `hf datasets sql SQL` — Execute a raw SQL query with DuckDB against dataset parquet URLs.
 
@@ -82,7 +82,7 @@ Generated with `huggingface_hub v1.6.0`. Run `hf skills add --force` to regenera
 - `hf endpoints delete NAME` — Delete an Inference Endpoint permanently.
 - `hf endpoints deploy NAME repo framework accelerator instance_size instance_type region vendor` — Deploy an Inference Endpoint from a Hub repository.
 - `hf endpoints describe NAME` — Get information about an existing endpoint.
-- `hf endpoints ls` — Lists all Inference Endpoints for the given namespace.
+- `hf endpoints list` — Lists all Inference Endpoints for the given namespace.
 - `hf endpoints pause NAME` — Pause an Inference Endpoint.
 - `hf endpoints resume NAME` — Resume an Inference Endpoint.
 - `hf endpoints scale-to-zero NAME` — Scale an Inference Endpoint to zero.
@@ -94,6 +94,7 @@ Generated with `huggingface_hub v1.6.0`. Run `hf skills add --force` to regenera
 - `hf extensions install REPO_ID` — Install an extension from a public GitHub repository.
 - `hf extensions list` — List installed extension commands.
 - `hf extensions remove NAME` — Remove an installed extension.
+- `hf extensions search` — Search extensions available on GitHub (tagged with 'hf-extension' topic).
 
 ### `hf jobs` — Run and manage Jobs on the Hub.
 
@@ -110,11 +111,11 @@ Generated with `huggingface_hub v1.6.0`. Run `hf skills add --force` to regenera
 ### `hf models` — Interact with models on the Hub.
 
 - `hf models info MODEL_ID` — Get info about a model on the Hub.
-- `hf models ls` — List models on the Hub.
+- `hf models list` — List models on the Hub.
 
 ### `hf papers` — Interact with papers on the Hub.
 
-- `hf papers ls` — List daily papers on the Hub.
+- `hf papers list` — List daily papers on the Hub.
 
 ### `hf repos` — Manage repos on the Hub.
 
@@ -137,7 +138,7 @@ Generated with `huggingface_hub v1.6.0`. Run `hf skills add --force` to regenera
 - `hf spaces dev-mode SPACE_ID` — Enable or disable dev mode on a Space.
 - `hf spaces hot-reload SPACE_ID` — Hot-reload any Python file of a Space without a full rebuild + restart.
 - `hf spaces info SPACE_ID` — Get info about a space on the Hub.
-- `hf spaces ls` — List spaces on the Hub.
+- `hf spaces list` — List spaces on the Hub.
 
 ### `hf webhooks` — Manage webhooks on the Hub.
 

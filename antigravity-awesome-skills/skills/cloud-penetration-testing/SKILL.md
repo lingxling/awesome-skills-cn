@@ -7,6 +7,8 @@ author: zebbern
 date_added: "2026-02-27"
 ---
 
+<!-- security-allowlist: curl-pipe-bash -->
+
 # Cloud Penetration Testing
 
 ## Purpose

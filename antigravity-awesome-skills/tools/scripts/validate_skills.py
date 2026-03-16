@@ -4,6 +4,8 @@ import argparse
 import sys
 import io
 import yaml
+from collections.abc import Mapping
+from datetime import date, datetime
 from _project_paths import find_repo_root
 
 
@@ -37,6 +39,15 @@ WHEN_TO_USE_PATTERNS = [
 def has_when_to_use_section(content):
     return any(pattern.search(content) for pattern in WHEN_TO_USE_PATTERNS)
 
+def normalize_yaml_value(value):
+    if isinstance(value, Mapping):
+        return {key: normalize_yaml_value(val) for key, val in value.items()}
+    if isinstance(value, list):
+        return [normalize_yaml_value(item) for item in value]
+    if isinstance(value, (date, datetime)):
+        return value.isoformat()
+    return value
+
 def parse_frontmatter(content, rel_path=None):
     """
     Parse frontmatter using PyYAML for robustness.
@@ -50,6 +61,9 @@ def parse_frontmatter(content, rel_path=None):
     fm_errors = []
     try:
         metadata = yaml.safe_load(fm_text) or {}
+        metadata = normalize_yaml_value(metadata)
+        if not isinstance(metadata, Mapping):
+            return None, ["Frontmatter must be a YAML mapping/object."]
         
         # Identification of the specific regression issue for better reporting
         if "description" in metadata:
@@ -59,7 +73,7 @@ def parse_frontmatter(content, rel_path=None):
             elif desc == "|":
                 fm_errors.append("description contains only the YAML block indicator '|', likely due to a parsing regression.")
         
-        return metadata, fm_errors
+        return dict(metadata), fm_errors
     except yaml.YAMLError as e:
         return None, [f"YAML Syntax Error: {e}"]
 
@@ -86,6 +100,9 @@ def validate_skills(skills_dir, strict_mode=False):
         if "SKILL.md" in files:
             skill_count += 1
             skill_path = os.path.join(root, "SKILL.md")
+            if os.path.islink(skill_path):
+                warnings.append(f"⚠️  {os.path.relpath(skill_path, skills_dir)}: Skipping symlinked SKILL.md")
+                continue
             rel_path = os.path.relpath(skill_path, skills_dir)
             
             try:

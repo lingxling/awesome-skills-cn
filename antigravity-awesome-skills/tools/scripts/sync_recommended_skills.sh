@@ -90,7 +90,7 @@ MISSING_COUNT=0
 
 for skill in "${RECOMMENDED_SKILLS[@]}"; do
     if [ -d "$GITHUB_REPO/$skill" ]; then
-        cp -r "$GITHUB_REPO/$skill" "$LOCAL_LIBRARY/"
+        cp -RP "$GITHUB_REPO/$skill" "$LOCAL_LIBRARY/"
         echo "  ✅ $skill"
         ((SUCCESS_COUNT++))
     else

@@ -345,6 +345,22 @@
   },
   {
     "ruleId": "",
+    "ruleTitle": "Use flatMap to Map and Filter in One Pass",
+    "type": "bad",
+    "code": "const userNames = users\n  .map(user => user.isActive ? user.name : null)\n  .filter(Boolean)",
+    "language": "typescript",
+    "description": "2 iterations, intermediate array"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Use flatMap to Map and Filter in One Pass",
+    "type": "good",
+    "code": "const userNames = users.flatMap(user =>\n  user.isActive ? [user.name] : []\n)",
+    "language": "typescript",
+    "description": "1 iteration, no intermediate array"
+  },
+  {
+    "ruleId": "",
     "ruleTitle": "Hoist RegExp Creation",
     "type": "bad",
     "code": "function Highlighter({ text, query }: Props) {\n  const regex = new RegExp(`(${query})`, 'gi')\n  const parts = text.split(regex)\n  return <>{parts.map((part, i) => ...)}</>\n}",
@@ -537,6 +553,22 @@
   },
   {
     "ruleId": "",
+    "ruleTitle": "Use defer or async on Script Tags",
+    "type": "bad",
+    "code": "export default function Document() {\n  return (\n    <html>\n      <head>\n        <script src=\"https://example.com/analytics.js\" />\n        <script src=\"/scripts/utils.js\" />\n      </head>\n      <body>{/* content */}</body>\n    </html>\n  )\n}",
+    "language": "tsx",
+    "description": "blocks rendering"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Use defer or async on Script Tags",
+    "type": "good",
+    "code": "import Script from 'next/script'\n\nexport default function Page() {\n  return (\n    <>\n      <Script src=\"https://example.com/analytics.js\" strategy=\"afterInteractive\" />\n      <Script src=\"/scripts/utils.js\" strategy=\"beforeInteractive\" />\n    </>\n  )\n}",
+    "language": "tsx",
+    "description": "non-blocking"
+  },
+  {
+    "ruleId": "",
     "ruleTitle": "Optimize SVG Precision",
     "type": "bad",
     "code": "<path d=\"M 10.293847 20.847362 L 30.938472 40.192837\" />",
@@ -710,6 +742,22 @@
     "code": "function Form() {\n  const theme = useContext(ThemeContext)\n\n  function handleSubmit() {\n    post('/api/register')\n    showToast('Registered', theme)\n  }\n\n  return <button onClick={handleSubmit}>Submit</button>\n}",
     "language": "tsx",
     "description": "do it in the handler"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Don't Define Components Inside Components",
+    "type": "bad",
+    "code": "function UserProfile({ user, theme }) {\n  // Defined inside to access `theme` - BAD\n  const Avatar = () => (\n    <img\n      src={user.avatarUrl}\n      className={theme === 'dark' ? 'avatar-dark' : 'avatar-light'}\n    />\n  )\n\n  // Defined inside to access `user` - BAD\n  const Stats = () => (\n    <div>\n      <span>{user.followers} followers</span>\n      <span>{user.posts} posts</span>\n    </div>\n  )\n\n  return (\n    <div>\n      <Avatar />\n      <Stats />\n    </div>\n  )\n}",
+    "language": "tsx",
+    "description": "remounts on every render"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Don't Define Components Inside Components",
+    "type": "good",
+    "code": "function Avatar({ src, theme }: { src: string; theme: string }) {\n  return (\n    <img\n      src={src}\n      className={theme === 'dark' ? 'avatar-dark' : 'avatar-light'}\n    />\n  )\n}\n\nfunction Stats({ followers, posts }: { followers: number; posts: number }) {\n  return (\n    <div>\n      <span>{followers} followers</span>\n      <span>{posts} posts</span>\n    </div>\n  )\n}\n\nfunction UserProfile({ user, theme }) {\n  return (\n    <div>\n      <Avatar src={user.avatarUrl} theme={theme} />\n      <Stats followers={user.followers} posts={user.posts} />\n    </div>\n  )\n}",
+    "language": "tsx",
+    "description": "pass props instead"
   },
   {
     "ruleId": "",

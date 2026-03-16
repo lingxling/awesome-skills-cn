@@ -1,9 +1,9 @@
-<!-- registry-sync: version=7.5.0; skills=1250; stars=23497; updated_at=2026-03-12T11:20:22+00:00 -->
-# 🌌 Antigravity Awesome Skills: 1,250+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
+<!-- registry-sync: version=7.9.2; skills=1259; stars=24531; updated_at=2026-03-15T16:51:23+00:00 -->
+# 🌌 Antigravity Awesome Skills: 1,259+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
 
-> **The Ultimate Collection of 1,250+ Universal Agentic Skills for AI Coding Assistants — Claude Code, Gemini CLI, Codex CLI, Antigravity IDE, GitHub Copilot, Cursor, OpenCode, AdaL**
+> **The Ultimate Collection of 1,259+ Universal Agentic Skills for AI Coding Assistants — Claude Code, Gemini CLI, Codex CLI, Antigravity IDE, GitHub Copilot, Cursor, OpenCode, AdaL**
 
-[![GitHub stars](https://img.shields.io/badge/⭐%2021%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
+[![GitHub stars](https://img.shields.io/badge/⭐%2024%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Anthropic-purple)](https://claude.ai)
 [![Gemini CLI](https://img.shields.io/badge/Gemini%20CLI-Google-blue)](https://github.com/google-gemini/gemini-cli)
@@ -18,9 +18,9 @@
 [![Web App](https://img.shields.io/badge/Web%20App-Browse%20Skills-blue)](apps/web-app)
 [![Buy Me a Book](https://img.shields.io/badge/Buy%20me%20a-book-d13610?logo=buymeacoffee&logoColor=white)](https://buymeacoffee.com/sickn33)
 
-**Antigravity Awesome Skills** is a curated, battle-tested library of **1,250+ high-performance agentic skills** designed to work seamlessly across the major AI coding assistants.
+**Antigravity Awesome Skills** is a curated, battle-tested library of **1,259+ high-performance agentic skills** designed to work seamlessly across the major AI coding assistants.
 
-**Welcome to the V7.4.0 Release!** This repository gives your agent reusable playbooks for planning, coding, debugging, testing, security review, infrastructure work, product thinking, and much more.
+**Current release: V7.9.1.** This repository gives your agent reusable playbooks for planning, coding, debugging, testing, security review, infrastructure work, product thinking, and much more.
 
 ## Table of Contents
 
@@ -28,12 +28,13 @@
 - [📖 Complete Usage Guide](docs/users/usage.md) - **Start here if confused after installation!**
 - [🔌 Compatibility & Invocation](#compatibility--invocation)
 - [🛠️ Installation](#installation)
+- [🛡️ Security Posture](#security-posture)
 - [🧯 Troubleshooting](#troubleshooting)
 - [🎁 Curated Collections (Bundles)](#curated-collections)
 - [🧭 Antigravity Workflows](#antigravity-workflows)
 - [📦 Features & Categories](#features--categories)
-- [📚 Browse 1,250+ Skills](#browse-1250-skills)
-- [🤝 How to Contribute](#how-to-contribute)
+- [📚 Browse 1,259+ Skills](#browse-1259-skills)
+- [🤝 Contributing](#contributing)
 - [💬 Community](#community)
 - [☕ Support the Project](#support-the-project)
 - [🏆 Credits & Sources](#credits--sources)
@@ -45,11 +46,11 @@
 
 ## New Here? Start Here!
 
-**Welcome to the V7.2.0 Interactive Web Edition.** This isn't just a list of scripts; it's a complete operating system for your AI Agent.
+**Welcome to the current interactive web edition.** This isn't just a list of scripts; it's a complete operating system for your AI agent.
 
 ### 1. 🐣 Context: What is this?
 
-**Antigravity Awesome Skills** (Release 7.2.0) is a massive upgrade to your AI's capabilities.
+**Antigravity Awesome Skills** (Release 7.9.1) is a broad, production-oriented upgrade to your AI's capabilities.
 
 AI Agents (like Claude Code, Cursor, or Gemini) are smart, but they lack **specific tools**. They don't know your company's "Deployment Protocol" or the specific syntax for "AWS CloudFormation".
 **Skills** are small markdown files that teach them how to do these specific tasks perfectly, every time.
@@ -114,11 +115,8 @@ These skills follow the universal **SKILL.md** format and work with any AI codin
 > **Default installer path**: `~/.gemini/antigravity/skills` (Antigravity global). Use `--path ~/.agent/skills` for workspace-specific install. For manual clone, `.agent/skills/` works as workspace path for Antigravity.
 > **OpenCode Path Update**: opencode path is changed to `.agents/skills` for global skills. See [Place Files](https://opencode.ai/docs/skills/#place-files) directive on OpenCode Docs.
 
-> [!WARNING]
-> **Windows Users**: this repository uses **symlinks** for official skills.
-> See [Troubleshooting](#troubleshooting) for the exact fix.
-
----
+> [!TIP]
+> **Windows Users**: use the standard install commands. The legacy `core.symlinks=true` / Developer Mode workaround is no longer required for this repository.
 
 ## Installation
 
@@ -144,11 +142,22 @@ Use @brainstorming to plan a SaaS MVP.
 
 4. Browse starter collections in [`docs/users/bundles.md`](docs/users/bundles.md) and execution playbooks in [`docs/users/workflows.md`](docs/users/workflows.md).
 
+### Option B: Claude Code plugin marketplace
+
+If you use Claude Code and prefer the plugin marketplace flow, this repository now ships a root `.claude-plugin/marketplace.json`:
+
+```text
+/plugin marketplace add sickn33/antigravity-awesome-skills
+/plugin install antigravity-awesome-skills
+```
+
+This installs the same repository-backed skill library through Claude Code's plugin marketplace entrypoint.
+
 ## Choose Your Tool
 
 | Tool           | Install                                                | First Use                                            |
 | -------------- | ------------------------------------------------------ | ---------------------------------------------------- |
-| Claude Code    | `npx antigravity-awesome-skills --claude`              | `>> /brainstorming help me plan a feature`           |
+| Claude Code    | `npx antigravity-awesome-skills --claude` or Claude plugin marketplace | `>> /brainstorming help me plan a feature` |
 | Cursor         | `npx antigravity-awesome-skills --cursor`              | `@brainstorming help me plan a feature`              |
 | Gemini CLI     | `npx antigravity-awesome-skills --gemini`              | `Use brainstorming to plan a feature`                |
 | Codex CLI      | `npx antigravity-awesome-skills --codex`               | `Use brainstorming to plan a feature`                |
@@ -159,6 +168,18 @@ Use @brainstorming to plan a SaaS MVP.
 | OpenCode       | `npx antigravity-awesome-skills --path .agents/skills` | `opencode run @brainstorming help me plan a feature` |
 | AdaL CLI       | `npx antigravity-awesome-skills --path .adal/skills`   | `Use brainstorming to plan a feature`                |
 | Custom path    | `npx antigravity-awesome-skills --path ./my-skills`    | Depends on your tool                                 |
+
+## Security Posture
+
+These skills are continuously reviewed and hardened, but the collection is not "safe by default". They are instructions and examples that can include risky operations by design.
+
+- Runtime hardening now protects the `/api/refresh-skills` mutation flow (method/host checks and optional token gate) before any repo mutation.
+- Markdown rendering in the web app avoids raw HTML passthrough (`rehype-raw`) and follows safer defaults for skill content display.
+- A repo-wide `SKILL.md` security scan checks for high-risk command patterns (for example `curl|bash`, `wget|sh`, `irm|iex`, command-line token examples) with explicit allowlisting for deliberate exceptions.
+- Maintainer-facing tooling has additional path/symlink checks and parser robustness guards for safer sync, index, and install operations.
+- Security test coverage for endpoint authorization, rendering safety, and doc-risk patterns is part of the normal CI/release validation flow.
+
+---
 
 ## What This Repo Includes
 
@@ -209,7 +230,7 @@ Use @security-auditor to review this API endpoint for auth and validation risks.
 
 **Bundles** are curated groups of skills for a specific role or goal (for example: `Web Wizard`, `Security Engineer`, `OSS Maintainer`).
 
-They help you avoid picking from 1,236+ skills one by one.
+They help you avoid picking through the full catalog one by one.
 
 ### ⚠️ Important: Bundles Are NOT Separate Installations!
 
@@ -282,7 +303,7 @@ The repository is organized into specialized domains to transform your AI into a
 
 Counts change as new skills are added. For the current full registry, see [CATALOG.md](CATALOG.md).
 
-## Browse 1,250+ Skills
+## Browse 1,259+ Skills
 
 - Open the interactive browser in [`apps/web-app`](apps/web-app).
 - Read the full catalog in [`CATALOG.md`](CATALOG.md).
@@ -298,6 +319,30 @@ Counts change as new skills are added. For the current full registry, see [CATAL
 | [`docs/users/usage.md`](docs/users/usage.md)                     | [`docs/contributors/skill-anatomy.md`](docs/contributors/skill-anatomy.md) | [`docs/maintainers/audit.md`](docs/maintainers/audit.md)                             |
 | [`docs/users/faq.md`](docs/users/faq.md)                         | [`docs/contributors/quality-bar.md`](docs/contributors/quality-bar.md)     | [`docs/maintainers/ci-drift-fix.md`](docs/maintainers/ci-drift-fix.md)               |
 | [`docs/users/visual-guide.md`](docs/users/visual-guide.md)       | [`docs/contributors/examples.md`](docs/contributors/examples.md)           | [`docs/maintainers/skills-update-guide.md`](docs/maintainers/skills-update-guide.md) · [`.github/MAINTENANCE.md`](.github/MAINTENANCE.md) |
+
+## Troubleshooting
+
+### Windows install note
+
+Use the normal install flow on Windows:
+
+```bash
+git clone https://github.com/sickn33/antigravity-awesome-skills.git .agent/skills
+```
+
+If you have an older clone created around the removed symlink workaround, reinstall into a fresh directory or rerun the `npx antigravity-awesome-skills` installer.
+
+### Windows truncation or context crash loop
+
+If Antigravity or a Jetski/Cortex-based host keeps reopening into a truncation error, use the dedicated recovery guide:
+
+- [`docs/users/windows-truncation-recovery.md`](docs/users/windows-truncation-recovery.md)
+
+That guide includes:
+
+- backup paths before cleanup
+- the storage folders that usually need to be cleared
+- an optional batch helper adapted from [issue #274](https://github.com/sickn33/antigravity-awesome-skills/issues/274)
 
 ## Web App
 
@@ -396,6 +441,9 @@ This collection would not be possible without the incredible work of the Claude 
 - **[Xquik-dev/x-twitter-scraper](https://github.com/Xquik-dev/x-twitter-scraper)**: X (Twitter) data platform — tweet search, user lookup, follower extraction, engagement metrics, giveaway draws, monitoring, webhooks, 19 extraction tools, MCP server.
 - **[shmlkv/dna-claude-analysis](https://github.com/shmlkv/dna-claude-analysis)**: Personal genome analysis toolkit — Python scripts analyzing raw DNA data across 17 categories (health risks, ancestry, pharmacogenomics, nutrition, psychology, etc.) with terminal-style single-page HTML visualization.
 - **[AlmogBaku/debug-skill](https://github.com/AlmogBaku/debug-skill)**: Interactive debugger skill for AI agents — breakpoints, stepping, variable inspection, and stack traces via the `dap` CLI. Supports Python, Go, Node.js/TypeScript, Rust, and C/C++.
+- **[uberSKILLS](https://github.com/uberskillsdev/uberSKILLS)**: Design, test, and deploy Claude Code Agent Skills through a visual, AI-assisted workflow.
+- **[christopherlhammer11-ai/tool-use-guardian](https://github.com/christopherlhammer11-ai/tool-use-guardian)**: Source for the Tool Use Guardian skill — tool-call reliability wrapper with retries, recovery, and failure classification.
+- **[christopherlhammer11-ai/recallmax](https://github.com/christopherlhammer11-ai/recallmax)**: Source for the RecallMax skill — long-context memory, summarization, and conversation compression for agents.
 
 ### Inspirations
 
@@ -409,99 +457,128 @@ This collection would not be possible without the incredible work of the Claude 
 ## Repo Contributors
 
 <a href="https://github.com/sickn33/antigravity-awesome-skills/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=sickn33/antigravity-awesome-skills&max=120" alt="Repository contributors" />
+  <img src="https://contrib.rocks/image?repo=sickn33/antigravity-awesome-skills" alt="Repository contributors" />
 </a>
 
 Made with [contrib.rocks](https://contrib.rocks). *(Image may be cached; [view live contributors](https://github.com/sickn33/antigravity-awesome-skills/graphs/contributors) on GitHub.)*
 
 We officially thank the following contributors for their help in making this repository awesome!
 
-- [@Enreign](https://github.com/Enreign)
-- [@kennyzheng-builds](https://github.com/kennyzheng-builds)
+- [@sck000](https://github.com/sck000)
+- [@github-actions[bot]](https://github.com/apps/github-actions)
 - [@sickn33](https://github.com/sickn33)
-- [@munir-abbasi](https://github.com/munir-abbasi)
-- [@ssumanbiswas](https://github.com/ssumanbiswas)
-- [@zinzied](https://github.com/zinzied)
 - [@Mohammad-Faiz-Cloud-Engineer](https://github.com/Mohammad-Faiz-Cloud-Engineer)
+- [@munir-abbasi](https://github.com/munir-abbasi)
+- [@zinzied](https://github.com/zinzied)
+- [@ssumanbiswas](https://github.com/ssumanbiswas)
 - [@Dokhacgiakhoa](https://github.com/Dokhacgiakhoa)
 - [@IanJ332](https://github.com/IanJ332)
+- [@maxdml](https://github.com/maxdml)
+- [@sx4im](https://github.com/sx4im)
+- [@skyruh](https://github.com/skyruh)
+- [@itsmeares](https://github.com/itsmeares)
 - [@chauey](https://github.com/chauey)
 - [@ar27111994](https://github.com/ar27111994)
-- [@8hrsk](https://github.com/8hrsk)
-- [@itsmeares](https://github.com/itsmeares)
 - [@GuppyTheCat](https://github.com/GuppyTheCat)
-- [@fernandorych](https://github.com/fernandorych)
-- [@nikolasdehor](https://github.com/nikolasdehor)
+- [@Copilot](https://github.com/apps/copilot-swe-agent)
+- [@8hrsk](https://github.com/8hrsk)
+- [@sstklen](https://github.com/sstklen)
+- [@tejasashinde](https://github.com/tejasashinde)
+- [@0xrohitgarg](https://github.com/0xrohitgarg)
+- [@zebbern](https://github.com/zebbern)
 - [@talesperito](https://github.com/talesperito)
+- [@SnakeEye-sudo](https://github.com/SnakeEye-sudo)
+- [@nikolasdehor](https://github.com/nikolasdehor)
+- [@fernandorych](https://github.com/fernandorych)
+- [@taksrules](https://github.com/taksrules)
 - [@jackjin1997](https://github.com/jackjin1997)
 - [@HuynhNhatKhanh](https://github.com/HuynhNhatKhanh)
 - [@liyin2015](https://github.com/liyin2015)
 - [@arathiesh](https://github.com/arathiesh)
 - [@Tiger-Foxx](https://github.com/Tiger-Foxx)
-- [@Musayrlsms](https://github.com/Musayrlsms)
-- [@sohamganatra](https://github.com/sohamganatra)
-- [@SuperJMN](https://github.com/SuperJMN)
-- [@SebConejo](https://github.com/SebConejo)
-- [@Onsraa](https://github.com/Onsraa)
-- [@truongnmt](https://github.com/truongnmt)
-- [@code-vj](https://github.com/code-vj)
-- [@viktor-ferenczi](https://github.com/viktor-ferenczi)
-- [@vprudnikoff](https://github.com/vprudnikoff)
-- [@Vonfry](https://github.com/Vonfry)
-- [@Wittlesus](https://github.com/Wittlesus)
-- [@avimak](https://github.com/avimak)
-- [@buzzbysolcex](https://github.com/buzzbysolcex)
-- [@c1c3ru](https://github.com/c1c3ru)
-- [@ckdwns9121](https://github.com/ckdwns9121)
-- [@developer-victor](https://github.com/developer-victor)
-- [@fbientrigo](https://github.com/fbientrigo)
-- [@junited31](https://github.com/junited31)
-- [@KrisnaSantosa15](https://github.com/KrisnaSantosa15)
-- [@nocodemf](https://github.com/nocodemf)
-- [@sstklen](https://github.com/sstklen)
-- [@taksrules](https://github.com/taksrules)
-- [@thuanlm215](https://github.com/thuanlm215)
-- [@zebbern](https://github.com/zebbern)
-- [@vuth-dogo](https://github.com/vuth-dogo)
-- [@ALEKGG1](https://github.com/ALEKGG1)
-- [@Abdulrahmansoliman](https://github.com/Abdulrahmansoliman)
-- [@alexmvie](https://github.com/alexmvie)
-- [@Andruia](https://github.com/Andruia)
-- [@acbhatt12](https://github.com/acbhatt12)
-- [@BenedictKing](https://github.com/BenedictKing)
-- [@rcigor](https://github.com/rcigor)
-- [@whatiskadudoing](https://github.com/whatiskadudoing)
-- [@k-kolomeitsev](https://github.com/k-kolomeitsev)
-- [@Krishna-Modi12](https://github.com/Krishna-Modi12)
-- [@kromahlusenii-ops](https://github.com/kromahlusenii-ops)
-- [@djmahe4](https://github.com/djmahe4)
-- [@maxdml](https://github.com/maxdml)
-- [@mertbaskurt](https://github.com/mertbaskurt)
-- [@nedcodes-ok](https://github.com/nedcodes-ok)
-- [@LocNguyenSGU](https://github.com/LocNguyenSGU)
-- [@KhaiTrang1995](https://github.com/KhaiTrang1995)
-- [@sharmanilay](https://github.com/sharmanilay)
-- [@yubing744](https://github.com/yubing744)
-- [@PabloASMD](https://github.com/PabloASMD)
-- [@0xrohitgarg](https://github.com/0xrohitgarg)
-- [@Silverov](https://github.com/Silverov)
-- [@shmlkv](https://github.com/shmlkv)
-- [@kriptoburak](https://github.com/kriptoburak)
-- [@lsuryatej](https://github.com/lsuryatej)
-- [@tejasashinde](https://github.com/tejasashinde)
-- [@SnakeEye-sudo](https://github.com/SnakeEye-sudo)
-- [@8144225309](https://github.com/8144225309)
 - [@RamonRiosJr](https://github.com/RamonRiosJr)
-- [@sx4im](https://github.com/sx4im)
-- [@skyruh](https://github.com/skyruh)
-- [@nagisanzenin](https://github.com/nagisanzenin)
-- [@devchangjun](https://github.com/devchangjun)
-- [@raeef1001](https://github.com/raeef1001)
-- [@1bcMax](https://github.com/1bcMax)
-- [@Sayeem3051](https://github.com/Sayeem3051)
-- [@AlmogBaku](https://github.com/AlmogBaku)
-- [@ProgramadorBrasil](https://github.com/ProgramadorBrasil)
+- [@Musayrlsms](https://github.com/Musayrlsms)
+- [@Vonfry](https://github.com/Vonfry)
+- [@vprudnikoff](https://github.com/vprudnikoff)
+- [@viktor-ferenczi](https://github.com/viktor-ferenczi)
+- [@code-vj](https://github.com/code-vj)
+- [@babysor](https://github.com/babysor)
+- [@uriva](https://github.com/uriva)
+- [@truongnmt](https://github.com/truongnmt)
+- [@Onsraa](https://github.com/Onsraa)
+- [@SebConejo](https://github.com/SebConejo)
+- [@SuperJMN](https://github.com/SuperJMN)
+- [@Enreign](https://github.com/Enreign)
+- [@sohamganatra](https://github.com/sohamganatra)
+- [@Silverov](https://github.com/Silverov)
 - [@shubhamdevx](https://github.com/shubhamdevx)
+- [@ronanguilloux](https://github.com/ronanguilloux)
+- [@sraphaz](https://github.com/sraphaz)
+- [@ProgramadorBrasil](https://github.com/ProgramadorBrasil)
+- [@PabloASMD](https://github.com/PabloASMD)
+- [@yubing744](https://github.com/yubing744)
+- [@vuth-dogo](https://github.com/vuth-dogo)
+- [@yang1002378395-cmyk](https://github.com/yang1002378395-cmyk)
+- [@thuanlm215](https://github.com/thuanlm215)
+- [@shmlkv](https://github.com/shmlkv)
+- [@rafsilva85](https://github.com/rafsilva85)
+- [@nocodemf](https://github.com/nocodemf)
+- [@KrisnaSantosa15](https://github.com/KrisnaSantosa15)
+- [@junited31](https://github.com/junited31)
+- [@fbientrigo](https://github.com/fbientrigo)
+- [@dz3ai](https://github.com/dz3ai)
+- [@developer-victor](https://github.com/developer-victor)
+- [@ckdwns9121](https://github.com/ckdwns9121)
+- [@christopherlhammer11-ai](https://github.com/christopherlhammer11-ai)
+- [@c1c3ru](https://github.com/c1c3ru)
+- [@buzzbysolcex](https://github.com/buzzbysolcex)
+- [@avimak](https://github.com/avimak)
+- [@antbotlab](https://github.com/antbotlab)
+- [@amalsam](https://github.com/amalsam)
+- [@ziuus](https://github.com/ziuus)
+- [@Wittlesus](https://github.com/Wittlesus)
+- [@wahidzzz](https://github.com/wahidzzz)
+- [@olgasafonova](https://github.com/olgasafonova)
+- [@hvasconcelos](https://github.com/hvasconcelos)
+- [@Guilherme-ruy](https://github.com/Guilherme-ruy)
+- [@Gizzant](https://github.com/Gizzant)
+- [@Digidai](https://github.com/Digidai)
+- [@dbhat93](https://github.com/dbhat93)
+- [@decentraliser](https://github.com/decentraliser)
+- [@MAIOStudio](https://github.com/MAIOStudio)
+- [@conorbronsdon](https://github.com/conorbronsdon)
+- [@kriptoburak](https://github.com/kriptoburak)
+- [@BenedictKing](https://github.com/BenedictKing)
+- [@acbhatt12](https://github.com/acbhatt12)
+- [@Andruia](https://github.com/Andruia)
+- [@AlmogBaku](https://github.com/AlmogBaku)
+- [@Allen930311](https://github.com/Allen930311)
+- [@alexmvie](https://github.com/alexmvie)
+- [@Sayeem3051](https://github.com/Sayeem3051)
+- [@Abdulrahmansoliman](https://github.com/Abdulrahmansoliman)
+- [@ALEKGG1](https://github.com/ALEKGG1)
+- [@8144225309](https://github.com/8144225309)
+- [@1bcMax](https://github.com/1bcMax)
+- [@sharmanilay](https://github.com/sharmanilay)
+- [@KhaiTrang1995](https://github.com/KhaiTrang1995)
+- [@LocNguyenSGU](https://github.com/LocNguyenSGU)
+- [@nedcodes-ok](https://github.com/nedcodes-ok)
+- [@iftikharg786](https://github.com/iftikharg786)
+- [@mertbaskurt](https://github.com/mertbaskurt)
+- [@MatheusCampagnolo](https://github.com/MatheusCampagnolo)
+- [@djmahe4](https://github.com/djmahe4)
+- [@MArbeeGit](https://github.com/MArbeeGit)
+- [@Svobikl](https://github.com/Svobikl)
+- [@kromahlusenii-ops](https://github.com/kromahlusenii-ops)
+- [@Krishna-Modi12](https://github.com/Krishna-Modi12)
+- [@k-kolomeitsev](https://github.com/k-kolomeitsev)
+- [@kennyzheng-builds](https://github.com/kennyzheng-builds)
+- [@keyserfaty](https://github.com/keyserfaty)
+- [@kage-art](https://github.com/kage-art)
+- [@whatiskadudoing](https://github.com/whatiskadudoing)
+- [@jonathimer](https://github.com/jonathimer)
+- [@qcwssss](https://github.com/qcwssss)
+- [@rcigor](https://github.com/rcigor)
 
 ---
 

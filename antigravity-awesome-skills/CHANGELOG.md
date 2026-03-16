@@ -8,6 +8,166 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 ## [Unreleased]
+
+## [7.9.2] - 2026-03-15 - "npm CLI Packaging Fix"
+
+> **Patch release to fix the published npm CLI bundle so `npx antigravity-awesome-skills` resolves its runtime helper modules correctly**
+
+This release fixes a packaging regression in the published npm artifact. Version `7.9.1` shipped `tools/bin/install.js` without the required `tools/lib` runtime helpers, causing `npx antigravity-awesome-skills` to fail with `MODULE_NOT_FOUND` for `../lib/symlink-safety`.
+
+## New Skills
+
+- **None in this release** — `7.9.2` is a focused patch release for the npm installer bundle.
+
+## Improvements
+
+- **npm package contents**: Expanded the published `files` whitelist to ship `tools/lib/*` alongside `tools/bin/*`, restoring the runtime dependency required by the installer entrypoint.
+- **Regression coverage**: Added a package-contents test that checks `npm pack --dry-run --json` and asserts the published tarball includes both `tools/bin/install.js` and `tools/lib/symlink-safety.js`.
+- **CLI verification**: Verified the extracted packaged entrypoint runs successfully with `--help`, confirming the published layout no longer reproduces the missing-module crash reported in issue `#315`.
+
+## Credits
+
+- **Issue #315 reporter** for isolating the npm packaging regression in the published CLI artifact.
+
+## [7.9.1] - 2026-03-15 - "Security Hardening Follow-up"
+
+> **Follow-up release to 7.9.0: same security batch, additional hardening focused on mutating endpoints, markdown rendering, and doc-risk enforcement**
+
+This release is a companion follow-up to `7.9.0` and applies security controls for the web app runtime, runtime refresh endpoint, and documentation quality gates.
+
+## New Skills
+
+- **None in this release** — this is a follow-up security maintenance release.
+
+## Improvements
+
+- **Endpoint hardening (mutating API)**: The `/api/refresh-skills` endpoint is now protected by strict local-only ingress rules, explicit token support (`SKILLS_REFRESH_TOKEN` when configured), explicit method validation, and explicit host/Origin checks before any state-changing logic runs.
+- **Front-end hardening**: Added POST-only sync from UI and removed unsafe HTML passthrough (`rehype-raw`) from `SkillDetail`, reducing the runtime XSS surface.
+- **Documentation risk controls**: Added a full-repo `SKILL.md` security scan for dangerous command patterns (`curl|bash`, `wget|sh`, `irm|iex`, obvious command-line token examples), with opt-in comment allowlisting.
+- **Security test coverage**: Added dedicated security tests for endpoint authorization/host/token behavior and markdown rendering behavior, and wired docs security checks into the shared test and CI pipeline.
+- **Tooling robustness**: Improved YAML date normalization for frontmatter parsing and index generation so unquoted ISO dates remain stable as strings across tooling.
+
+## Credits
+
+- **Internal security hardening pass** covering endpoint, rendering, and docs scanning controls.
+
+## [7.9.0] - 2026-03-15 - "Codex Security Remediation Sweep"
+
+> **Verified and remediated the active security batch on `main`, with triage and fixes delivered thanks to Codex Security with Codex for OSS**
+
+This release is a focused security maintenance cut. We used Codex Security with Codex for OSS as the triage input, verified every reported finding against the current default branch, collapsed duplicates and obsolete reports, then shipped the confirmed fixes in remediation buckets before merging the final set onto `main`.
+
+## New Skills
+
+- **None in this release** — `7.9.0` is intentionally a security and maintenance release.
+
+## Improvements
+
+- **Filesystem trust boundaries**: Hardened path, symlink, and archive extraction handling across setup, install, sync, metadata, normalization, indexing, and local dev serving flows.
+- **Auth and integrity defaults**: Disabled shared frontend star writes by default unless explicitly enabled, and restored TLS verification defaults in the `junta-leiloeiros` scrapers with an explicit opt-out for insecure targets.
+- **Shell safety**: Removed pipe-to-shell and token-on-command-line guidance from the Apify docs, and fixed the audio transcription example so shell values are no longer interpolated directly into Python source.
+- **Robustness fixes**: Rejected non-mapping YAML frontmatter in validation paths, moved local state files out of predictable shared `/tmp` locations, repaired malformed metadata, and removed committed Python bytecode artifacts.
+- **Regression coverage**: Added focused JS, Python, and web-app tests that prove the remediations and guard the reported root causes from reappearing.
+- **Security triage artifacts**: Added maintainer-facing triage outputs at `docs/maintainers/security-findings-triage-2026-03-15.{md,csv}` documenting all 33 findings, including why each one was still valid, duplicate, or obsolete on `HEAD`.
+
+## Credits
+
+- **Codex Security with Codex for OSS** for surfacing and structuring the security batch that drove this release.
+
+---
+
+_Upgrade now: `git pull origin main` to fetch the latest skills._
+
+## [7.8.0] - 2026-03-14 - "Marketplace & Merge Sweep"
+
+> **Merged seven community PRs, added Claude Code marketplace manifests, and finished the maintainer sync/release pass**
+
+This release closes the active maintenance batch in one pass. It ships a new Claude Code plugin marketplace entrypoint for the whole repository, merges seven open community pull requests after maintainer preflight, removes stale Windows symlink guidance from the user docs, and refreshes the generated registry artifacts on `main` for a single `7.8.0` cut.
+
+## New Skills
+
+- **analyze-project** — root-cause analyst workflow for full-project diagnosis (PR #297)
+- **latex-paper-conversion** — convert academic papers into reusable engineering artifacts (PR #296)
+- **k6-load-testing** — k6-based API and performance testing guidance (PR #287)
+- **tool-use-guardian** — tool-call reliability wrapper with retries, recovery, and failure classification (PR #298)
+- **recallmax** — long-context memory, summarization, and conversation compression for agents (PR #298)
+
+## Improvements
+
+- **Claude Code marketplace support**: Added `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` so the repository can be installed as a single Claude Code marketplace plugin (PR #302, closes #288).
+- **Windows installer/docs alignment**: Removed the stale `core.symlinks=true` / Developer Mode guidance from user docs after the Windows installer cleanup (PR #299, fixes #286, follow-up #281 closed in release).
+- **NotebookLM cleanup**: Removed unused `typing.Optional` / `typing.List` imports from `skills/notebooklm/scripts/browser_utils.py` (PR #301, closes #300).
+- **README/source maintenance**: Added maintained attribution for external-sourced skills and merged the `uberSKILLS` README addition without generated-file drift (PRs #298 and #293).
+- **Batch merge workflow**: Completed a maintainer preflight for PRs #301, #299, #297, #296, #287, #298, and #293, then regenerated `README.md`, `skills_index.json`, `CATALOG.md`, and `data/*.json` once on `main`.
+- **Issue hygiene**: Closed #288, #300, #286, and #281 from the shipped fixes; documented existing support for #294 in the release follow-up.
+
+## Credits
+
+- **[@ronanguilloux](https://github.com/ronanguilloux)** for the NotebookLM cleanup in PR #301
+- **[@yang1002378395-cmyk](https://github.com/yang1002378395-cmyk)** for the Windows installer cleanup in PR #299
+- **[@Gizzant](https://github.com/Gizzant)** for `analyze-project` in PR #297
+- **[@MArbeeGit](https://github.com/MArbeeGit)** for `latex-paper-conversion` in PR #296
+- **[@kage-art](https://github.com/kage-art)** for `k6-load-testing` in PR #287
+- **[@christopherlhammer11-ai](https://github.com/christopherlhammer11-ai)** for `tool-use-guardian` and `recallmax` in PR #298
+- **[@hvasconcelos](https://github.com/hvasconcelos)** for the `uberSKILLS` README addition in PR #293
+
+## [7.7.0] - 2026-03-13 - "Merge Friction Reduction"
+
+> **Shipped four maintained PR outcomes, stabilized generated-file CI, and cut release friction for future contributor merges**
+
+This release turns a noisy maintainer workflow into a predictable one. It merges the latest community skill additions, integrates the cleaned `privacy-by-design` contribution under the maintainer exception path, and removes the biggest source of PR churn by making generated registry drift informational on pull requests while keeping `main` self-healing and strict.
+
+## New Skills
+
+- **llm-structured-output** — structured JSON/schema extraction patterns across OpenAI, Anthropic, and Gemini (PR #280)
+- **electron-development** — secure Electron architecture, IPC hardening, packaging, signing, and updates (PR #282)
+- **privacy-by-design** — privacy-first software design patterns and implementation guidance (PR #283)
+- **antigravity-skill-orchestrator** — meta-skill for selecting and coordinating the best skill set for a task (PR #285)
+
+## Improvements
+
+- **CI determinism**: `tools/scripts/update_readme.py` and `tools/scripts/sync_repo_metadata.py` now preserve volatile README sync metadata during normal runs instead of rewriting stars/timestamps and causing PR drift.
+- **PR merge flow**: `.github/workflows/ci.yml` now reports generated registry drift as informational on PRs while keeping `main` strict and auto-syncing the final artifact set after merge.
+- **Maintainer docs**: Updated `.github/MAINTENANCE.md`, `docs/maintainers/ci-drift-fix.md`, and `docs/maintainers/merging-prs.md` to document the new lower-friction merge procedure.
+- **Windows issue triage**: Clarified that issue `#281` remains open as an installer/symlink problem distinct from truncation-loop issue `#274`, closed `#284` against the shipped recovery guidance, and opened follow-up issue `#286`.
+
+## Credits
+
+- **[@sx4im](https://github.com/sx4im)** for `llm-structured-output` (PR #280)
+- **[@MatheusCampagnolo](https://github.com/MatheusCampagnolo)** for `electron-development` (PR #282)
+- **[@Abdeltoto](https://github.com/Abdeltoto)** for `privacy-by-design` (PR #283)
+- **[@wahidzzz](https://github.com/wahidzzz)** for `antigravity-skill-orchestrator` (PR #285)
+
+## [7.6.0] - 2026-03-12 - "Maintenance Sweep"
+
+> **Merged community PRs, documented Windows truncation recovery, and hardened Metasploit setup guidance**
+
+This release finishes a focused maintenance sweep across open pull requests and issues. It merges four community updates, ships the Jetski/Gemini overflow and path-safety documentation from the context overflow fix, adds a Windows recovery guide for truncation crash loops, and removes the non-deterministic Metasploit installer flow from the security skill.
+
+## New Skills
+
+- **acceptance-orchestrator** — acceptance-driven execution orchestration (PR #277)
+- **closed-loop-delivery** — delivery workflow with feedback loops (PR #277)
+- **create-issue-gate** — issue creation quality gate (PR #277)
+- **interview-coach** — interview preparation and coaching (PR #272)
+
+## Improvements
+
+- **PR maintenance**: Merged PRs #277, #272, #275, #278, and #271 using GitHub squash merge so all contributors receive merge credit.
+- **Jetski/Gemini loader docs**: Documented `overflowBehavior` handling and `skillsRoot`-confined path validation in the reference loader and integration guide (PR #271).
+- **Windows recovery docs**: Added `docs/users/windows-truncation-recovery.md` and linked it from the main user docs for truncation/context crash loops on Windows.
+- **Metasploit safety**: Replaced the remote installer pattern in `skills/metasploit-framework/SKILL.md` with an explicit "Metasploit must already be installed" prerequisite, and marked the skill as `risk: offensive` with the required warning.
+- **Repo sync**: Refreshed README metadata, generated registry files, and contributor acknowledgements before release.
+
+## Credits
+
+- **[@qcwssss](https://github.com/qcwssss)** for `acceptance-orchestrator`, `closed-loop-delivery`, and `create-issue-gate` (PR #277)
+- **[@dbhat93](https://github.com/dbhat93)** for `interview-coach` (PR #272)
+- **[@rafsilva85](https://github.com/rafsilva85)** for the credit source addition (PR #275)
+- **[@iftikharg786](https://github.com/iftikharg786)** for the star-history update branch that was refreshed and merged as PR #278
+- **[@DiggaX](https://github.com/DiggaX)** for the Windows recovery workflow shared in issue #274
+- **[@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)** for the Jetski/Gemini overflow loader changes in PR #271
+
 ## [7.5.0] - 2026-03-11 - "Socratic Governance"
 
 > **Introducing Truth Engines, Local Inference optimizations, and Advanced Output Formatting**

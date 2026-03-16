@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**109 skills**
+**110 skills**
 
 - [accountsos](https://github.com/openclaw/skills/tree/main/skills/paulgosnell/accountsos/SKILL.md) - AI-native accounting for UK micro-businesses.
 - [aetherlang-strategy](https://github.com/openclaw/skills/tree/main/skills/contrario/aetherlang-strategy/SKILL.md) - > Game theory, Monte Carlo simulations, behavioral economics, and competitive war gaming.
@@ -44,7 +44,6 @@
 - [context-scope-tags](https://github.com/openclaw/skills/tree/main/skills/phenomenoner/context-scope-tags/SKILL.md) - Use when: you need strict context boundaries in chat (Telegram/Discord/Slack/etc.) and want to prevent topic bleed.
 - [copey-flight-tracker](https://github.com/openclaw/skills/tree/main/skills/copey02/copey-flight-tracker/SKILL.md) - Track flights in real-time with detailed status.
 - [creditcard](https://github.com/openclaw/skills/tree/main/skills/jononovo/creditcard/SKILL.md) - Let your agent shop online with guardrailed wallets, multiple payment methods, and owner approval.
-- [crypton-esim](https://github.com/openclaw/skills/tree/main/skills/ajarmoszuk/crypton-esim/SKILL.md) - Purchase anonymous eSIMs with BTC/XMR/card - no account required.
 - [cta](https://clawhub.ai/brianleach/cta) - Chicago CTA L train arrivals, bus predictions, and service alerts.
 - [daai-xianzun-persona](https://github.com/openclaw/skills/tree/main/skills/kunwl123456/daai-xianzun-persona/SKILL.md) - The persona of Da Ai Xian Zun (大爱仙尊) - Gu Yue Fang Yuan from the novel Reverend Insanity.
 - [db-travel](https://github.com/openclaw/skills/tree/main/skills/mmichelli/db-travel/SKILL.md) - Plan journeys across Germany and Europe using the Deutsche Bahn API (v6.db.transport.rest)
@@ -66,6 +65,7 @@
 - [google-maps-search-api](https://github.com/openclaw/skills/tree/main/skills/phheng/google-maps-search-api/SKILL.md) - This skill is designed to help users.
 - [gotrain](https://github.com/openclaw/skills/tree/main/skills/gumadeiras/gotrain/SKILL.md) - MTA system train departures (NYC Subway, LIRR, Metro-North).
 - [greek-compliance-aade](https://github.com/openclaw/skills/tree/main/skills/satoshistackalotto/greek-compliance-aade/SKILL.md) - Greek tax compliance with AADE/TAXIS integration — VAT, payroll, EFKA, municipal taxes, stamp duty.
+- [hk-bus-eta](https://github.com/openclaw/skills/tree/main/skills/tomfong/hk-bus-eta/SKILL.md) - Real-time Hong Kong bus arrival predictions for KMB, LWB, and Citybus. 香港九巴、城巴及龍運實時到站時間查詢。
 - [hudy](https://github.com/openclaw/skills/tree/main/skills/kyu1204/hudy/SKILL.md) - Korean public holidays and business day calculations via HuDy MCP.
 - [idfm-journey-navitia](https://github.com/openclaw/skills/tree/main/skills/anthonymq/idfm-journey-navitia/SKILL.md) - Query Île-de-France Mobilités (IDFM) PRIM/Navitia.
 - [idfm-journey-skill](https://github.com/openclaw/skills/tree/main/skills/anthonymq/idfm-journey-skill/SKILL.md) - Query Île-de-France Mobilités (IDFM) PRIM/Navitia.
@@ -85,7 +85,6 @@
 - [muki-fingerprint](https://github.com/openclaw/skills/tree/main/skills/admin4giter/muki-fingerprint/SKILL.md) - MUKI asset fingerprinting tool for red team reconnaissance.
 - [mvg-cli](https://github.com/openclaw/skills/tree/main/skills/lars147/mvg-cli/SKILL.md) - Munich public transport (MVG) CLI and S-Bahn live tracking.
 - [mycobot](https://github.com/openclaw/skills/tree/main/skills/dabhadeamol6/mycobot/SKILL.md) - WhatsApp Business API integration with managed OAuth.
-- [niche](https://github.com/openclaw/skills/tree/main/skills/clementsutjiatma/niche/SKILL.md) - Trading card marketplace with partial USDC deposits.
 - [nyx-archive-absurdist-play](https://github.com/openclaw/skills/tree/main/skills/nyxur42/nyx-archive-absurdist-play/SKILL.md) - The philosophy of absurdist play — the meta-skill that trains your ability to acquire and use all other skills.
 - [percept-summarize](https://github.com/openclaw/skills/tree/main/skills/jarvis563/percept-summarize/SKILL.md) - Automatic conversation summaries with entity extraction and relationship mapping.
 - [personal-hygiene](https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-hygiene/SKILL.md) - Acts as the user's personal care and grooming assistant in the Hygiene topic.

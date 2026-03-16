@@ -25,7 +25,7 @@
 
 ---
 
-## 📦 Repository Structure (Visual)
+## Repository Structure (Visual)
 
 ```
 antigravity-awesome-skills/
@@ -34,7 +34,7 @@ antigravity-awesome-skills/
 ├── 📄 CONTRIBUTING.md                  ← Contributor workflow
 ├── 📄 CATALOG.md                       ← Full generated catalog
 │
-├── 📁 skills/                          ← 1,204+ skills live here
+├── 📁 skills/                          ← 1,254+ skills live here
 │   │
 │   ├── 📁 brainstorming/
 │   │   └── 📄 SKILL.md                 ← Skill definition
@@ -47,7 +47,7 @@ antigravity-awesome-skills/
 │   │   └── 📁 2d-games/
 │   │       └── 📄 SKILL.md             ← Nested skills also supported
 │   │
-│   └── ... (1,200+ total)
+│   └── ... (1,254+ total)
 │
 ├── 📁 apps/
 │   └── 📁 web-app/                     ← Interactive browser
@@ -96,11 +96,11 @@ antigravity-awesome-skills/
 
 ---
 
-## 🎯 Skill Categories (Visual Map)
+## Skill Categories (Visual Map)
 
 ```
                     ┌─────────────────────────┐
-                    │  1,204+ SKILLS          │
+                    │  1,254+ SKILLS          │
                     └────────────┬────────────┘
                                  │
         ┌────────────────────────┼────────────────────────┐
@@ -202,7 +202,7 @@ antigravity-awesome-skills/
 │       ├── 📁 brainstorming/             │
 │       ├── 📁 stripe-integration/        │
 │       ├── 📁 react-best-practices/      │
-│       └── ... (1,200+ total)            │
+│       └── ... (1,254+ total)            │
 └─────────────────────────────────────────┘
 ```
 
@@ -351,7 +351,7 @@ Open skills_index.json → Search for keyword → Find skill path
 
 ---
 
-## 🎯 Contribution Impact (Visual)
+## Contribution Impact (Visual)
 
 ```
 Your Contribution
@@ -427,7 +427,7 @@ START HERE
 
 ---
 
-## 💡 Quick Tips (Visual Cheatsheet)
+## Quick Tips (Visual Cheatsheet)
 
 ```
 ┌─────────────────────────────────────────────────────────────┐

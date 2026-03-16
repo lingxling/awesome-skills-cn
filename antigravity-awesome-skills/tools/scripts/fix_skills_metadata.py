@@ -8,6 +8,9 @@ def fix_skills(skills_dir):
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         if "SKILL.md" in files:
             skill_path = os.path.join(root, "SKILL.md")
+            if os.path.islink(skill_path):
+                print(f"⚠️ Skipping symlinked skill file: {skill_path}")
+                continue
             with open(skill_path, 'r', encoding='utf-8') as f:
                 content = f.read()
 
@@ -23,6 +26,10 @@ def fix_skills(skills_dir):
                 metadata = yaml.safe_load(fm_text) or {}
             except yaml.YAMLError as e:
                 print(f"⚠️ {skill_path}: YAML error - {e}")
+                continue
+
+            if not isinstance(metadata, dict):
+                print(f"⚠️ {skill_path}: Frontmatter must be a mapping, skipping")
                 continue
 
             changed = False

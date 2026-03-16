@@ -4,6 +4,7 @@ const { spawnSync } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
+const { resolveSafeRealPath } = require("../lib/symlink-safety");
 
 const REPO = "https://github.com/sickn33/antigravity-awesome-skills.git";
 const HOME = process.env.HOME || process.env.USERPROFILE || "";
@@ -143,18 +144,28 @@ Examples:
 `);
 }
 
-function copyRecursiveSync(src, dest, skipGit = true) {
-  const stats = fs.statSync(src);
-  if (stats.isDirectory()) {
+function copyRecursiveSync(src, dest, rootDir = src, skipGit = true) {
+  const stats = fs.lstatSync(src);
+  const resolvedSource = stats.isSymbolicLink()
+    ? resolveSafeRealPath(rootDir, src)
+    : src;
+
+  if (!resolvedSource) {
+    console.warn(`  Skipping symlink outside cloned skills root: ${src}`);
+    return;
+  }
+
+  const resolvedStats = fs.statSync(resolvedSource);
+  if (resolvedStats.isDirectory()) {
     if (!fs.existsSync(dest)) {
       fs.mkdirSync(dest, { recursive: true });
     }
-    fs.readdirSync(src).forEach((child) => {
+    fs.readdirSync(resolvedSource).forEach((child) => {
       if (skipGit && child === ".git") return;
-      copyRecursiveSync(path.join(src, child), path.join(dest, child), skipGit);
+      copyRecursiveSync(path.join(resolvedSource, child), path.join(dest, child), rootDir, skipGit);
     });
   } else {
-    fs.copyFileSync(src, dest);
+    fs.copyFileSync(resolvedSource, dest);
   }
 }
 
@@ -168,13 +179,13 @@ function installSkillsIntoTarget(tempDir, target) {
   fs.readdirSync(repoSkills).forEach((name) => {
     const src = path.join(repoSkills, name);
     const dest = path.join(target, name);
-    copyRecursiveSync(src, dest);
+    copyRecursiveSync(src, dest, repoSkills);
   });
   const repoDocs = path.join(tempDir, "docs");
   if (fs.existsSync(repoDocs)) {
     const docsDest = path.join(target, "docs");
     if (!fs.existsSync(docsDest)) fs.mkdirSync(docsDest, { recursive: true });
-    copyRecursiveSync(repoDocs, docsDest);
+    copyRecursiveSync(repoDocs, docsDest, repoDocs);
   }
 }
 
@@ -191,8 +202,8 @@ function installForTarget(tempDir, target) {
       const entries = fs.readdirSync(target.path);
       for (const name of entries) {
         const full = path.join(target.path, name);
-        const stat = fs.statSync(full);
-        if (stat.isDirectory()) {
+        const stat = fs.lstatSync(full);
+        if (stat.isDirectory() && !stat.isSymbolicLink()) {
           if (fs.rmSync) {
             fs.rmSync(full, { recursive: true, force: true });
           } else {
@@ -244,11 +255,7 @@ function main() {
 
   try {
     console.log("Cloning repository…");
-    if (process.platform === "win32") {
-      run("git", ["-c", "core.symlinks=true", "clone", REPO, tempDir]);
-    } else {
-      run("git", ["clone", REPO, tempDir]);
-    }
+    run("git", ["clone", REPO, tempDir]);
 
     const ref =
       tagArg ||
@@ -288,4 +295,13 @@ function main() {
   }
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  copyRecursiveSync,
+  installSkillsIntoTarget,
+  installForTarget,
+  main,
+};

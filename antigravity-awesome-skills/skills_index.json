@@ -480,6 +480,16 @@
     "date_added": "2026-02-27"
   },
   {
+    "id": "analyze-project",
+    "path": "skills/analyze-project",
+    "category": "uncategorized",
+    "name": "analyze-project",
+    "description": "Forensic root cause analyzer for Antigravity sessions. Classifies scope deltas, rework patterns, root causes, hotspots, and auto-improves prompts/health.",
+    "risk": "unknown",
+    "source": "unknown",
+    "date_added": null
+  },
+  {
     "id": "andrej-karpathy",
     "path": "skills/andrej-karpathy",
     "category": "uncategorized",
@@ -588,6 +598,16 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-03-07"
+  },
+  {
+    "id": "antigravity-skill-orchestrator",
+    "path": "skills/antigravity-skill-orchestrator",
+    "category": "meta",
+    "name": "antigravity-skill-orchestrator",
+    "description": "A meta-skill that understands task requirements, dynamically selects appropriate skills, tracks successful skill combinations using agent-memory-mcp, and prevents skill overuse for simple tasks.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-13"
   },
   {
     "id": "antigravity-workflows",
@@ -4710,6 +4730,16 @@
     "date_added": "2026-03-06"
   },
   {
+    "id": "electron-development",
+    "path": "skills/electron-development",
+    "category": "uncategorized",
+    "name": "electron-development",
+    "description": "Master Electron desktop app development with secure IPC, contextIsolation, preload scripts, multi-process architecture, electron-builder packaging, code signing, and auto-update.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-12"
+  },
+  {
     "id": "elixir-pro",
     "path": "skills/elixir-pro",
     "category": "uncategorized",
@@ -6820,6 +6850,16 @@
     "date_added": "2026-03-06"
   },
   {
+    "id": "k6-load-testing",
+    "path": "skills/k6-load-testing",
+    "category": "testing",
+    "name": "k6-load-testing",
+    "description": "Comprehensive k6 load testing skill for API, browser, and scalability testing. Write realistic load scenarios, analyze results, and integrate with CI/CD.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-13"
+  },
+  {
     "id": "k8s-manifest-generator",
     "path": "skills/k8s-manifest-generator",
     "category": "uncategorized",
@@ -6968,6 +7008,16 @@
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27"
+  },
+  {
+    "id": "latex-paper-conversion",
+    "path": "skills/latex-paper-conversion",
+    "category": "uncategorized",
+    "name": "latex-paper-conversion",
+    "description": "This skill should be used when the user asks to convert an academic paper in LaTeX from one format (e.g., Springer, IPOL) to another format (e.g., MDPI, IEEE, Nature). It automates extraction, injection, fixing formatting, and compiling.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-14"
   },
   {
     "id": "launch-strategy",
@@ -7258,6 +7308,16 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-03-04"
+  },
+  {
+    "id": "llm-structured-output",
+    "path": "skills/llm-structured-output",
+    "category": "uncategorized",
+    "name": "llm-structured-output",
+    "description": "Get reliable JSON, enums, and typed objects from LLMs using response_format, tool_use, and schema-constrained decoding across OpenAI, Anthropic, and Google APIs.\n",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-12"
   },
   {
     "id": "local-legal-seo-audit",
@@ -7655,7 +7715,7 @@
     "category": "uncategorized",
     "name": "metasploit-framework",
     "description": "This skill should be used when the user asks to \"use Metasploit for penetration testing\", \"exploit vulnerabilities with msfconsole\", \"create payloads with msfvenom\", \"perform post-exp...",
-    "risk": "unknown",
+    "risk": "offensive",
     "source": "community",
     "date_added": "2026-02-27"
   },
@@ -9050,6 +9110,16 @@
     "date_added": "2026-02-27"
   },
   {
+    "id": "privacy-by-design",
+    "path": "skills/privacy-by-design",
+    "category": "uncategorized",
+    "name": "privacy-by-design",
+    "description": "Use when building apps that collect user data. Ensures privacy protections are built in from the start\u2014data minimization, consent, encryption.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-02-23"
+  },
+  {
     "id": "privilege-escalation-methods",
     "path": "skills/privilege-escalation-methods",
     "category": "uncategorized",
@@ -9498,6 +9568,16 @@
     "risk": "safe",
     "source": "https://github.com/Shpigford/skills/tree/main/readme",
     "date_added": "2026-02-27"
+  },
+  {
+    "id": "recallmax",
+    "path": "skills/recallmax",
+    "category": "memory",
+    "name": "recallmax",
+    "description": "FREE \u2014 God-tier long-context memory for AI agents. Injects 500K-1M clean tokens, auto-summarizes with tone/intent preservation, compresses 14-turn history into 800 tokens.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-13"
   },
   {
     "id": "receiving-code-review",
@@ -11458,6 +11538,16 @@
     "risk": "safe",
     "source": "https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering/tree/main/skills/tool-design",
     "date_added": "2026-02-27"
+  },
+  {
+    "id": "tool-use-guardian",
+    "path": "skills/tool-use-guardian",
+    "category": "reliability",
+    "name": "tool-use-guardian",
+    "description": "FREE \u2014 Intelligent tool-call reliability wrapper. Monitors, retries, fixes, and learns from tool failures. Auto-recovers from truncated JSON, timeouts, rate limits, and mid-chain failures.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-13"
   },
   {
     "id": "top-web-vulnerabilities",

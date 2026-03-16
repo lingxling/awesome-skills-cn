@@ -9,7 +9,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 使用 `hf --help` 查看可用功能。注意，身份验证命令现在都在 `hf auth` 下，例如 `hf auth whoami`。
 
-由 `huggingface_hub v1.6.0` 生成。运行 `hf skills add --force` 重新生成。
+由 `huggingface_hub v1.7.1` 生成。运行 `hf skills add --force` 重新生成。
 
 ## 命令
 
@@ -41,7 +41,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 ### `hf cache` — 管理本地缓存目录。
 
-- `hf cache ls` — 列出缓存的存储库或修订版。
+- `hf cache list` — 列出缓存的存储库或修订版。
 - `hf cache prune` — 从缓存中删除分离的修订版。
 - `hf cache rm TARGETS` — 删除缓存的存储库或修订版。
 - `hf cache verify REPO_ID` — 验证来自缓存或本地目录的单个存储库修订版的校验和。
@@ -53,14 +53,14 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 - `hf collections delete COLLECTION_SLUG` — 从 Hub 中删除集合。
 - `hf collections delete-item COLLECTION_SLUG ITEM_OBJECT_ID` — 从集合中删除项目。
 - `hf collections info COLLECTION_SLUG` — 获取 Hub 上集合的信息。
-- `hf collections ls` — 列出 Hub 上的集合。
+- `hf collections list` — 列出 Hub 上的集合。
 - `hf collections update COLLECTION_SLUG` — 更新 Hub 上集合的元数据。
 - `hf collections update-item COLLECTION_SLUG ITEM_OBJECT_ID` — 更新集合中的项目。
 
 ### `hf datasets` — 与 Hub 上的数据集交互。
 
 - `hf datasets info DATASET_ID` — 获取 Hub 上数据集的信息。
-- `hf datasets ls` — 列出 Hub 上的数据集。
+- `hf datasets list` — 列出 Hub 上的数据集。
 - `hf datasets parquet DATASET_ID` — 列出数据集可用的 parquet 文件 URL。
 - `hf datasets sql SQL` — 使用 DuckDB 对数据集 parquet URL 执行原始 SQL 查询。
 
@@ -82,7 +82,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 - `hf endpoints delete NAME` — 永久删除推理端点。
 - `hf endpoints deploy NAME repo framework accelerator instance_size instance_type region vendor` — 从 Hub 存储库部署推理端点。
 - `hf endpoints describe NAME` — 获取现有端点的信息。
-- `hf endpoints ls` — 列出给定命名空间的所有推理端点。
+- `hf endpoints list` — 列出给定命名空间的所有推理端点。
 - `hf endpoints pause NAME` — 暂停推理端点。
 - `hf endpoints resume NAME` — 恢复推理端点。
 - `hf endpoints scale-to-zero NAME` — 将推理端点缩放到零。
@@ -94,6 +94,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 - `hf extensions install REPO_ID` — 从公共 GitHub 存储库安装扩展。
 - `hf extensions list` — 列出已安装的扩展命令。
 - `hf extensions remove NAME` — 移除已安装的扩展。
+- `hf extensions search` — 搜索 GitHub 上可用的扩展（标记为 'hf-extension' 主题）。
 
 ### `hf jobs` — 在 Hub 上运行和管理作业。
 
@@ -110,11 +111,11 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 ### `hf models` — 与 Hub 上的模型交互。
 
 - `hf models info MODEL_ID` — 获取 Hub 上模型的信息。
-- `hf models ls` — 列出 Hub 上的模型。
+- `hf models list` — 列出 Hub 上的模型。
 
 ### `hf papers` — 与 Hub 上的论文交互。
 
-- `hf papers ls` — 列出 Hub 上的每日论文。
+- `hf papers list` — 列出 Hub 上的每日论文。
 
 ### `hf repos` — 管理 Hub 上的存储库。
 
@@ -137,7 +138,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 - `hf spaces dev-mode SPACE_ID` — 在 Space 上启用或禁用开发模式。
 - `hf spaces hot-reload SPACE_ID` — 热重载 Space 的任何 Python 文件，无需完全重建 + 重启。
 - `hf spaces info SPACE_ID` — 获取 Hub 上 space 的信息。
-- `hf spaces ls` — 列出 Hub 上的 spaces。
+- `hf spaces list` — 列出 Hub 上的 spaces。
 
 ### `hf webhooks` — 管理 Hub 上的 webhook。
 

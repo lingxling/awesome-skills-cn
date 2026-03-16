@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase';
+import { sharedStarWritesEnabled, supabase } from '../lib/supabase';
 
 const STORAGE_KEY = 'user_stars';
 
@@ -102,7 +102,7 @@ export function useSkillStars(skillId: string | undefined): UseSkillStarsReturn 
       saveUserStarsToStorage(updatedStars);
 
       // Sync to Supabase if available
-      if (supabase) {
+      if (supabase && sharedStarWritesEnabled) {
         try {
           // Fetch current count first
           const { data: current } = await supabase

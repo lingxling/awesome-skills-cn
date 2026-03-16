@@ -12,6 +12,13 @@
 
 Resolve conflicts **on the PR branch** so the PR becomes mergeable, then use "Squash and merge" on GitHub.
 
+### Generated files policy
+
+- Treat `CATALOG.md`, `skills_index.json`, and `data/*.json` as **derived artifacts**, not contributor-owned source files.
+- `README.md` is mixed ownership: contributor prose edits are allowed, but workflow-managed metadata is canonicalized on `main`.
+- If derived files appear in a PR refresh or merge conflict, prefer **`main`'s side** and remove them from the PR branch instead of hand-maintaining them there.
+- Do not block a PR only because shared generated files would be regenerated differently after other merges. `main` auto-syncs the final state after merge.
+
 ### Steps (maintainer resolves conflicts on the contributor’s branch)
 
 1. **Fetch the PR branch**  
@@ -20,7 +27,9 @@ Resolve conflicts **on the PR branch** so the PR becomes mergeable, then use "Sq
    `git checkout pr-<PR_NUMBER>`
 3. **Merge `main` into it**  
    `git merge origin/main`  
-   Resolve any conflicts in the working tree (e.g. `README.md`, `CATALOG.md`, `data/*.json`, `skills_index.json`). Run `npm run chain` and `npm run catalog` if registry files were touched, then `git add` the updated generated files.
+   Resolve any conflicts in the working tree. For generated registry files (`CATALOG.md`, `data/*.json`, `skills_index.json`), prefer `main`'s version and remove them from the contributor branch:
+   `git checkout --theirs CATALOG.md data/catalog.json skills_index.json`
+   If `README.md` conflicts only because of workflow-managed metadata, prefer `main`'s side there too. Keep contributor prose edits when they are real source changes.
 4. **Commit the merge**  
    `git add .` then `git commit -m "chore: merge main to resolve conflicts"` (or leave the default merge message).
 5. **Push to the same branch the PR is from**  
@@ -38,8 +47,8 @@ Ask them to:
 git checkout <their-branch>
 git fetch origin main
 git merge origin/main
-# resolve conflicts, then:
-npm run chain && npm run catalog   # if they touched skills/ or registry
+# resolve conflicts, then drop derived files from the PR if they appear:
+# CATALOG.md, skills_index.json, data/*.json
 git add .
 git commit -m "chore: merge main to resolve conflicts"
 git push origin <their-branch>

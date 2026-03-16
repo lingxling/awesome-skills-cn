@@ -27,8 +27,10 @@
 # - Transitioning from research/exploration to implementation
 # - Plan has been finalized
 
-# Track tool call count (increment in a temp file)
-COUNTER_FILE="/tmp/claude-tool-count-$$"
+# Track tool call count in a user-owned state directory
+COUNTER_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/strategic-compact"
+mkdir -p "$COUNTER_DIR"
+COUNTER_FILE="$COUNTER_DIR/tool-count"
 THRESHOLD=${COMPACT_THRESHOLD:-50}
 
 # Initialize or increment counter

@@ -1,21 +1,21 @@
-# ❓ Frequently Asked Questions (FAQ)
+# Frequently Asked Questions (FAQ)
 
 **Got questions?** You're not alone! Here are answers to the most common questions about Antigravity Awesome Skills.
 
 ---
 
-## 🎯 General Questions
+## General Questions
 
 ### What are "skills" exactly?
 
 Skills are specialized instruction files that teach AI assistants how to handle specific tasks. Think of them as expert knowledge modules that your AI can load on-demand.
 **Simple analogy:** Just like you might consult different experts (a lawyer, a doctor, a mechanic), these skills let your AI become an expert in different areas when you need them.
 
-### Do I need to install all 1,204+ skills?
+### Do I need to install every skill?
 
 **No!** When you clone the repository, all skills are available, but your AI only loads them when you explicitly invoke them with `@skill-name`.
 It's like having a library - all books are there, but you only read the ones you need.
-**Pro Tip:** Use [Starter Packs](bundles.md) to install only what matches your role.
+**Pro Tip:** Use [Starter Packs](bundles.md) to focus on the skills that match your role first.
 
 ### What is the difference between Bundles and Workflows?
 
@@ -50,7 +50,7 @@ Start from:
 ### How do these skills avoid overflowing the model context?
 
 Some host tools (for example custom agents built on Jetski/Cortex + Gemini) might be tempted to **concatenate every `SKILL.md` file into a single system prompt**.  
-This is **not** how this repository is designed to be used, and it will almost certainly overflow the model’s context window with 1,200+ skills.
+This is **not** how this repository is designed to be used, and it will almost certainly overflow the model’s context window if you concatenate the whole repository into one prompt.
 
 Instead, hosts should:
 
@@ -67,7 +67,7 @@ The skill files themselves are stored locally on your computer, but your AI assi
 
 ---
 
-## 🔒 Security & Trust (V4 Update)
+## Security & Trust
 
 ### What do the Risk Labels mean?
 
@@ -84,7 +84,7 @@ _Always check the Risk label and review the code._
 
 ---
 
-## 📦 Installation & Setup
+## Installation & Setup
 
 ### Where should I install the skills?
 
@@ -105,16 +105,40 @@ git clone https://github.com/sickn33/antigravity-awesome-skills.git .agent/skill
 - Codex CLI: `.codex/skills/`
 - Cursor: `.cursor/skills/` or project root
 
-### Does this work with Windows?
+**Claude Code plugin marketplace alternative:**
 
-**Yes**, but some "Official" skills use **symlinks** which Windows handles poorly by default.
-Run git with:
-
-```bash
-git clone -c core.symlinks=true https://github.com/sickn33/antigravity-awesome-skills.git .agent/skills
+```text
+/plugin marketplace add sickn33/antigravity-awesome-skills
+/plugin install antigravity-awesome-skills
 ```
 
-Or enable "Developer Mode" in Windows Settings.
+This repository now includes `.claude-plugin/marketplace.json` and `.claude-plugin/plugin.json` so Claude Code can install the same skill tree through the plugin marketplace.
+
+### Does this work with Windows?
+
+**Yes.** Use the standard install flow:
+
+```bash
+git clone https://github.com/sickn33/antigravity-awesome-skills.git .agent/skills
+```
+
+If you have an older clone created around the removed symlink workaround, reinstall into a fresh directory or rerun `npx antigravity-awesome-skills`.
+
+### I hit a truncation or context crash loop on Windows. How do I recover?
+
+If Antigravity or a Jetski/Cortex-based host keeps reopening into:
+
+> `TrajectoryChatConverter: could not convert a single message before hitting truncation`
+
+use the dedicated Windows recovery guide:
+
+- [`windows-truncation-recovery.md`](windows-truncation-recovery.md)
+
+It includes:
+
+- the manual cleanup steps for broken Local Storage / Session Storage / IndexedDB state
+- the default Antigravity Windows paths to back up first
+- an optional batch script adapted from [issue #274](https://github.com/sickn33/antigravity-awesome-skills/issues/274)
 
 ### How do I update skills?
 
@@ -127,7 +151,7 @@ git pull origin main
 
 ---
 
-## 🛠️ Using Skills
+## Using Skills
 
 > **💡 For a complete guide with examples, see [usage.md](usage.md)**
 
@@ -155,7 +179,7 @@ Use the `@` symbol followed by the skill name:
 
 ---
 
-## 🏗️ Troubleshooting
+## Troubleshooting
 
 ### My AI assistant doesn't recognize skills
 
@@ -176,7 +200,7 @@ Include:
 
 ---
 
-## 🤝 Contribution
+## Contribution
 
 ### I'm new to open source. Can I contribute?
 
@@ -189,11 +213,29 @@ Include:
 
 ### My PR failed "Quality Bar" check. Why?
 
-V4 introduces automated quality control. Your skill might be missing:
+The repository enforces automated quality control. Your skill might be missing:
 
 1. A valid `description`.
 2. Usage examples.
    Run `npm run validate` locally to check before you push.
+
+### My PR failed "security docs" check. What should I do?
+
+Run the security docs gate locally and address the findings:
+
+```bash
+npm run security:docs
+```
+
+Common fixes:
+
+- Replace risky examples like `curl ... | bash`, `wget ... | sh`, `irm ... | iex` with safer alternatives.
+- Remove or redact token-like command-line examples.
+- For intentional high-risk guidance, add explicit justification via:
+
+```markdown
+<!-- security-allowlist: reason and scope -->
+```
 
 ### Can I update an "Official" skill?
 
@@ -201,7 +243,7 @@ V4 introduces automated quality control. Your skill might be missing:
 
 ---
 
-## 💡 Pro Tips
+## Pro Tips
 
 - Start with `@brainstorming` before building anything new
 - Use `@systematic-debugging` when stuck on bugs

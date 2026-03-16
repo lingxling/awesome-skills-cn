@@ -7,15 +7,17 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import List, Optional
-
-import httpx
-from bs4 import BeautifulSoup
+from typing import Any, List, Optional
 
 logger = logging.getLogger(__name__)
+
+
+def should_verify_tls() -> bool:
+    return os.getenv("JUNTA_INSECURE_TLS", "").lower() not in {"1", "true", "yes", "on"}
 
 
 @dataclass
@@ -80,16 +82,20 @@ class AbstractJuntaScraper(ABC):
         params: Optional[dict] = None,
         data: Optional[dict] = None,
         method: str = "GET",
-    ) -> Optional[BeautifulSoup]:
+    ) -> Optional[Any]:
         """Faz o request HTTP com retry e retorna BeautifulSoup ou None."""
+        import httpx
+        from bs4 import BeautifulSoup
+
         target = url or self.url
+        verify_tls = should_verify_tls()
         for attempt in range(1, self.max_retries + 1):
             try:
                 async with httpx.AsyncClient(
                     headers=self.HEADERS,
                     timeout=self.timeout,
                     follow_redirects=True,
-                    verify=False,  # alguns sites gov têm cert self-signed
+                    verify=verify_tls,
                 ) as client:
                     if method.upper() == "POST":
                         resp = await client.post(target, data=data, params=params)
@@ -173,9 +179,12 @@ class AbstractJuntaScraper(ABC):
         url: Optional[str] = None,
         wait_selector: Optional[str] = None,
         wait_ms: int = 3000,
-    ) -> Optional[BeautifulSoup]:
+    ) -> Optional[Any]:
         """Renderiza página com JavaScript usando Playwright. Retorna BeautifulSoup ou None."""
+        from bs4 import BeautifulSoup
+
         target = url or self.url
+        verify_tls = should_verify_tls()
         try:
             from playwright.async_api import async_playwright
         except ImportError:
@@ -188,7 +197,7 @@ class AbstractJuntaScraper(ABC):
                 ctx = await browser.new_context(
                     user_agent=self.HEADERS["User-Agent"],
                     locale="pt-BR",
-                    ignore_https_errors=True,
+                    ignore_https_errors=not verify_tls,
                 )
                 page = await ctx.new_page()
                 await page.goto(target, timeout=60000, wait_until="networkidle")

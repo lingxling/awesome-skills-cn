@@ -39,6 +39,8 @@ _Examples: Linting, Log Analysis, Configuration Auditing._
 
 - **Data Privacy**: Defensive skills must not upload data to 3rd party servers without explicit user consent.
 - **Non-Destructive**: Audits should be read-only by default.
+- **Documentation review**: Defensive skills with command examples must still be reviewed for unsafe command patterns.
+- **High-risk examples** (`curl|bash`, `wget|sh`, etc.) must use explicit allowlisting comments and clear warning context in the skill body when retained for operational examples.
 
 ---
 

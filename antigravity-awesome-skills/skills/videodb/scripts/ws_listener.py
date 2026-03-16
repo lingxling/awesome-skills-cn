@@ -56,7 +56,10 @@ def parse_args():
             output_dir = arg
     
     if output_dir is None:
-        output_dir = os.environ.get("VIDEODB_EVENTS_DIR", "/tmp")
+        output_dir = os.environ.get("VIDEODB_EVENTS_DIR")
+    if output_dir is None:
+        state_root = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state"))
+        output_dir = str(state_root / "videodb-events")
     
     return clear, Path(output_dir)
 

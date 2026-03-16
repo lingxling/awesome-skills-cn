@@ -5,7 +5,6 @@ import { SkillStarButton } from '../components/SkillStarButton';
 import { useSkills } from '../context/SkillContext';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
-import rehypeRaw from 'rehype-raw';
 
 // Lazy load heavy markdown component
 const Markdown = lazy(() => import('react-markdown'));
@@ -261,7 +260,7 @@ export function SkillDetail(): React.ReactElement {
             <Suspense fallback={<div className="h-24 animate-pulse bg-slate-100 dark:bg-slate-800 rounded-lg"></div>}>
               <Markdown
                 remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeHighlight, rehypeRaw]}
+                rehypePlugins={[rehypeHighlight]}
               >
                 {markdownBody}
               </Markdown>

@@ -152,9 +152,11 @@ function listSkillIds(skillsDir) {
     .filter(entry => {
       if (entry.startsWith('.')) return false;
       const dirPath = path.join(skillsDir, entry);
-      if (!fs.statSync(dirPath).isDirectory()) return false;
+      const entryStats = fs.lstatSync(dirPath);
+      if (entryStats.isSymbolicLink() || !entryStats.isDirectory()) return false;
       const skillPath = path.join(dirPath, 'SKILL.md');
-      return fs.existsSync(skillPath);
+      if (!fs.existsSync(skillPath)) return false;
+      return !fs.lstatSync(skillPath).isSymbolicLink();
     })
     .sort();
 }
@@ -171,7 +173,7 @@ function listSkillIdsRecursive(skillsDir, baseDir = skillsDir, acc = []) {
     const dirPath = path.join(baseDir, entry.name);
     const skillPath = path.join(dirPath, 'SKILL.md');
     const relPath = path.relative(skillsDir, dirPath);
-    if (fs.existsSync(skillPath)) {
+    if (fs.existsSync(skillPath) && !fs.lstatSync(skillPath).isSymbolicLink()) {
       acc.push(relPath);
     }
     listSkillIdsRecursive(skillsDir, dirPath, acc);

@@ -15,7 +15,7 @@ This document summarizes the repository coherence audit performed after the `app
 
 ### 1. Conteggi
 
-- `README.md`, `package.json`, and generated artifacts are aligned to the current collection size (`1,204+` skills).
+- `README.md`, `package.json`, and generated artifacts are aligned to the current collection size.
 - `npm run sync:all` and `npm run catalog` are the canonical commands for keeping counts and generated files synchronized.
 
 ### 2. Validazione skill
@@ -23,6 +23,10 @@ This document summarizes the repository coherence audit performed after the `app
 - `npm run validate` is the operational contributor gate.
 - `npm run validate:strict` is currently a diagnostic hardening pass: it still surfaces repository-wide legacy metadata/content gaps across many older skills.
 - The validator accepts `risk: unknown` for legacy/unclassified skills while still preferring concrete risk values for new skills.
+- Repo-wide documentation risk guidance is now covered by `npm run security:docs`:
+  - detects high-risk command guidance in `SKILL.md`,
+  - requires explicit allowlists for deliberate command-delivery patterns,
+  - and blocks token-like examples that look exploitable.
 
 ### 3. Riferimenti incrociati
 
@@ -58,6 +62,7 @@ This document summarizes the repository coherence audit performed after the `app
 npm run validate          # validazione skill (soft)
 npm run validate:strict   # hardening / diagnostic pass
 npm run validate:references  # workflow, bundle, and docs/users/bundles.md references
+npm run security:docs       # documentation command-risk scan (required for security-sensitive guidance)
 npm run build             # chain + catalog
 npm test                  # suite test
 ```

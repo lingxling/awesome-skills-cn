@@ -1,0 +1,33 @@
+{
+  "name": "antigravity-awesome-skills",
+  "owner": {
+    "name": "sickn33 and contributors",
+    "url": "https://github.com/sickn33/antigravity-awesome-skills"
+  },
+  "metadata": {
+    "description": "Single-plugin Claude Code marketplace entry for the Antigravity Awesome Skills library.",
+    "version": "7.7.0"
+  },
+  "plugins": [
+    {
+      "name": "antigravity-awesome-skills",
+      "version": "7.7.0",
+      "description": "Expose the repository's curated `skills/` tree to Claude Code through a single plugin marketplace entry.",
+      "author": {
+        "name": "sickn33 and contributors",
+        "url": "https://github.com/sickn33/antigravity-awesome-skills"
+      },
+      "homepage": "https://github.com/sickn33/antigravity-awesome-skills",
+      "repository": "https://github.com/sickn33/antigravity-awesome-skills",
+      "license": "MIT",
+      "keywords": [
+        "claude-code",
+        "skills",
+        "agentic-skills",
+        "plugin",
+        "marketplace"
+      ],
+      "source": "."
+    }
+  ]
+}

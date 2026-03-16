@@ -3,10 +3,14 @@ import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
+import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ROOT_DIR = path.resolve(__dirname, '..');
+const require = createRequire(import.meta.url);
+const { resolveSafeRealPath } = require('../../tools/lib/symlink-safety');
+const ROOT_DIR = path.resolve(__dirname, '..', '..');
 
 const UPSTREAM_REPO = 'https://github.com/sickn33/antigravity-awesome-skills.git';
 const UPSTREAM_NAME = 'upstream';
@@ -41,9 +45,75 @@ function isGitAvailable() {
     return _gitAvailable;
 }
 
+function normalizeHost(hostValue = '') {
+    return String(hostValue).trim().toLowerCase().replace(/^\[|\]$/g, '');
+}
+
+function isLoopbackHost(hostname) {
+    const host = normalizeHost(hostname);
+    return host === 'localhost'
+        || host === '::1'
+        || host.startsWith('127.');
+}
+
+function getRequestHost(req) {
+    const hostHeader = req.headers?.host || '';
+
+    if (!hostHeader) {
+        return '';
+    }
+
+    try {
+        return new URL(`http://${hostHeader}`).hostname;
+    } catch {
+        return normalizeHost(hostHeader);
+    }
+}
+
+function isDevLoopbackRequest(req) {
+    return isLoopbackHost(getRequestHost(req));
+}
+
+function isTokenAuthorized(req) {
+    const expectedToken = (process.env.SKILLS_REFRESH_TOKEN || '').trim();
+
+    if (!expectedToken) {
+        return true;
+    }
+
+    const providedToken = req.headers?.['x-skills-refresh-token'];
+    if (typeof providedToken !== 'string' || !providedToken) {
+        return false;
+    }
+
+    const expected = Buffer.from(expectedToken);
+    const provided = Buffer.from(providedToken);
+
+    if (expected.length !== provided.length) {
+        return false;
+    }
+
+    return crypto.timingSafeEqual(expected, provided);
+}
+
 /** Run a git command in the project root. */
 function git(cmd) {
     return execSync(`git ${cmd}`, { cwd: ROOT_DIR, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }).trim();
+}
+
+function isAllowedDevOrigin(req) {
+    const host = req.headers?.host;
+    const origin = req.headers?.origin;
+
+    if (!host || !origin) {
+        return false;
+    }
+
+    try {
+        return new URL(origin).host === host;
+    } catch {
+        return false;
+    }
 }
 
 /** Ensure the upstream remote exists. */
@@ -98,20 +168,6 @@ function checkRemoteSha() {
             });
         }).on('error', () => resolve(null));
     });
-}
-
-/** Copy folder recursively. */
-function copyFolderSync(from, to) {
-    if (!fs.existsSync(to)) fs.mkdirSync(to, { recursive: true });
-    for (const element of fs.readdirSync(from)) {
-        const srcPath = path.join(from, element);
-        const destPath = path.join(to, element);
-        if (fs.lstatSync(srcPath).isFile()) {
-            fs.copyFileSync(srcPath, destPath);
-        } else {
-            copyFolderSync(srcPath, destPath);
-        }
-    }
 }
 
 // ─── Sync strategies ───
@@ -186,7 +242,7 @@ async function syncWithArchive() {
 
         if (useTar) {
             execSync(`tar -xzf "${archivePath}" -C "${tempDir}"`, { stdio: 'ignore' });
-        } else if (process.platform === 'win32') {
+        } else if (globalThis.process?.platform === 'win32') {
             execSync(`powershell -Command "Expand-Archive -Path '${archivePath}' -DestinationPath '${tempDir}' -Force"`, { stdio: 'ignore' });
         } else {
             execSync(`unzip -o "${archivePath}" -d "${tempDir}"`, { stdio: 'ignore' });
@@ -242,14 +298,16 @@ export default function refreshSkillsPlugin() {
 
                 const relativePath = decodeURIComponent(req.url.replace(/\?.*$/, ''));
                 const filePath = path.join(ROOT_DIR, relativePath);
+                const safeRealPath = fs.existsSync(filePath)
+                    ? resolveSafeRealPath(path.join(ROOT_DIR, 'skills'), filePath)
+                    : null;
 
-                const resolved = path.resolve(filePath);
-                if (!resolved.startsWith(path.join(ROOT_DIR, 'skills'))) return next();
+                if (!safeRealPath) return next();
 
-                if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+                if (fs.statSync(safeRealPath).isFile()) {
                     const ext = path.extname(filePath).toLowerCase();
                     res.setHeader('Content-Type', MIME_TYPES[ext] || 'application/octet-stream');
-                    fs.createReadStream(filePath).pipe(res);
+                    fs.createReadStream(safeRealPath).pipe(res);
                 } else {
                     next();
                 }
@@ -258,6 +316,37 @@ export default function refreshSkillsPlugin() {
             // Sync API endpoint
             server.middlewares.use('/api/refresh-skills', async (req, res) => {
                 res.setHeader('Content-Type', 'application/json');
+
+                if (req.method !== 'POST') {
+                    res.statusCode = 405;
+                    res.setHeader('Allow', 'POST');
+                    res.end(JSON.stringify({ success: false, error: 'Method not allowed' }));
+                    return;
+                }
+
+                if (!req.headers?.host || !req.headers?.origin) {
+                    res.statusCode = 400;
+                    res.end(JSON.stringify({ success: false, error: 'Missing request host or origin headers' }));
+                    return;
+                }
+
+                if (!isDevLoopbackRequest(req)) {
+                    res.statusCode = 403;
+                    res.end(JSON.stringify({ success: false, error: 'Only local loopback requests are allowed' }));
+                    return;
+                }
+
+                if (!isAllowedDevOrigin(req)) {
+                    res.statusCode = 403;
+                    res.end(JSON.stringify({ success: false, error: 'Forbidden origin' }));
+                    return;
+                }
+
+                if (!isTokenAuthorized(req)) {
+                    res.statusCode = 401;
+                    res.end(JSON.stringify({ success: false, error: 'Invalid or missing refresh token' }));
+                    return;
+                }
 
                 try {
                     let result;
@@ -296,3 +385,5 @@ export default function refreshSkillsPlugin() {
         }
     };
 }
+
+export { isAllowedDevOrigin };

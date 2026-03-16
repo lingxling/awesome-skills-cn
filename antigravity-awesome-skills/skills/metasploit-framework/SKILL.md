@@ -1,13 +1,18 @@
 ---
 name: metasploit-framework
 description: "This skill should be used when the user asks to \"use Metasploit for penetration testing\", \"exploit vulnerabilities with msfconsole\", \"create payloads with msfvenom\", \"perform post-exp..."
-risk: unknown
+risk: offensive
 source: community
 author: zebbern
 date_added: "2026-02-27"
 ---
 
 # Metasploit Framework
+
+> **⚠️ AUTHORIZED USE ONLY**
+> This skill is for educational purposes or authorized security assessments only.
+> You must have explicit, written permission from the system owner before using this tool.
+> Misuse of this tool is illegal and strictly prohibited.
 
 ## Purpose
 
@@ -17,16 +22,14 @@ Leverage the Metasploit Framework for comprehensive penetration testing, from in
 
 ### Required Tools
 ```bash
-# Metasploit comes pre-installed on Kali Linux
-# For other systems:
-curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall
-chmod 755 msfinstall
-./msfinstall
-
-# Start PostgreSQL for database support
-sudo systemctl start postgresql
-sudo msfdb init
+# Metasploit must already be installed before using this skill.
+# Kali Linux usually ships with it preinstalled.
+msfconsole --version
 ```
+
+Installation varies by operating system and package source. Follow your platform's documented package-manager or vendor installation process before using this skill. Do not rely on an unpinned remote installer script from inside this skill.
+
+If you want database-backed features such as workspace tracking, initialize `msfdb` using the instructions for your local installation. This skill assumes Metasploit is already available and does not require `sudo`, `systemctl`, or other privileged host-level setup steps.
 
 ### Required Knowledge
 - Network and system fundamentals
@@ -38,6 +41,8 @@ sudo msfdb init
 - Written authorization for testing
 - Network access to target systems
 - Understanding of scope and rules of engagement
+
+Before running exploit modules, ask the user to confirm the exact target host, scope, and authorization state.
 
 ## Outputs and Deliverables
 

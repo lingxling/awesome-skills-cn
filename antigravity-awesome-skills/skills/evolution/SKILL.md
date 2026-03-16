@@ -7,6 +7,8 @@ description: |
   hooks, hook system, auto-trigger, skill...
 ---
 
+<!-- security-allowlist: curl-pipe-bash -->
+
 # Makepad Skills Evolution
 
 This skill enables makepad-skills to self-improve continuously during development.

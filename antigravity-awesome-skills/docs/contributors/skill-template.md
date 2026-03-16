@@ -54,6 +54,17 @@ More instructions...
 - ❌ Don't do this
 - ❌ Avoid this
 
+## Security & Safety Notes
+
+- If this skill includes shell commands, command-like examples, network fetches, token/capability strings, or direct mutation guidance, add explicit preconditions and caveats.
+- For deliberate risky examples (for example `curl ... | bash`, `wget ... | sh`, credential examples), include a reviewer-visible reason and add an allowlist comment:
+
+```markdown
+<!-- security-allowlist: approved for documented workflow X -->
+```
+
+- If the skill can alter files/systems or run dangerous actions, document confirmation gates and environment expectations (`local-only`, `authorized test environment`, etc.).
+
 ## Common Pitfalls
 
 - **Problem:** Description

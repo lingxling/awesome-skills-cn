@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**350 skills**
+**352 skills**
 
 - [1](https://github.com/openclaw/skills/tree/main/skills/nastrology/1/SKILL.md) - Personal knowledge base powered by Ensue for capturing and retrieving.
 - [academic-deep-research](https://github.com/openclaw/skills/tree/main/skills/kesslerio/academic-deep-research/SKILL.md) - Transparent, rigorous research with full.
@@ -61,7 +61,6 @@
 - [automation-runner](https://github.com/openclaw/skills/tree/main/skills/barnyp/automation-runner/SKILL.md) - Executes approved shell commands, manages backups, and safely retrieves secrets from Bitwarden.
 - [autonomous-research](https://github.com/openclaw/skills/tree/main/skills/tobisamaa/autonomous-research/SKILL.md) - Conduct comprehensive research independently.
 - [autonomy-type-based](https://github.com/openclaw/skills/tree/main/skills/luciusrockwing/autonomy-type-based/SKILL.md) - Type-based autonomous task queue system.
-- [avantis-skill](https://github.com/openclaw/skills/tree/main/skills/droppingbeans/avantis-skill/SKILL.md) - Execute leverage trading on Avantis (Base)
 - [b2b-first-ten](https://github.com/openclaw/skills/tree/main/skills/pors/b2b-first-ten/SKILL.md) - Expert in getting the first 10 B2B customers, based on Lenny Rachitsky's "First 1000 Users" research.
 - [bagman](https://github.com/openclaw/skills/tree/main/skills/zscole/bagman/SKILL.md) - Secure key management for AI agents.
 - [baidu-scholar-search](https://github.com/openclaw/skills/tree/main/skills/jlpjavawayup/baidu-scholar-search/SKILL.md) - Baidu Academic Search Tool enables.
@@ -130,7 +129,6 @@
 - [engineering-as-marketing](https://github.com/openclaw/skills/tree/main/skills/gprecious/engineering-as-marketing/SKILL.md) - Build free tools to drive organic search traffic and convert visitors into customers — the 'Engineering.
 - [engram-memory](https://github.com/openclaw/skills/tree/main/skills/dannydvm/engram-memory/SKILL.md) - Persistent semantic memory for AI agents — local, fast, free.
 - [enhanced-memory](https://github.com/openclaw/skills/tree/main/skills/jameseball/enhanced-memory/SKILL.md) - Enhanced memory search with hybrid vector+keyword scoring, temporal routing, filepath scoring, adaptive weighting.
-- [etherscan-api](https://github.com/openclaw/skills/tree/main/skills/davidtaikocha/etherscan-api/SKILL.md) - Use when you need to query Etherscan API V2 for onchain activity, contract metadata, ABI/source retrieval, proxy.
 - [eve-online-item-search](https://github.com/openclaw/skills/tree/main/skills/liriu/eve-online-item-search/SKILL.md) - Search EVE Online items by name via APIs and return item details.
 - [expanso-keyword-extract](https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-keyword-extract/SKILL.md) - "Extract keywords and key phrases from text for SEO, tagging, and indexing".
 - [falcon](https://github.com/openclaw/skills/tree/main/skills/bubblyjove/falcon/SKILL.md) - Search, read, and interact with Twitter/X via TwexAPI.
@@ -151,7 +149,6 @@
 - [fred-navigator](https://github.com/openclaw/skills/tree/main/skills/kiszly/fred-navigator/SKILL.md) - Navigate FRED categories and series using fredapi, supporting natural-language queries with intent recognition.
 - [fund-news-summary](https://github.com/openclaw/skills/tree/main/skills/yonghaozhao722/fund-news-summary/SKILL.md) - Automatically collects and summarizes the latest core news for US, Europe, Japan stock markets, gold.
 - [funda-gateway](https://github.com/openclaw/skills/tree/main/skills/risboo6909/funda-gateway/SKILL.md) - Search and monitor Funda.nl housing listings via a local agent-friendly HTTP gateway.
-- [funding-rate-scanner](https://github.com/openclaw/skills/tree/main/skills/dagangtj/funding-rate-scanner/SKILL.md) - Scan crypto funding rates and find arbitrage opportunities.
 - [funds](https://github.com/openclaw/skills/tree/main/skills/risboo6909/funds/SKILL.md) - Search and monitor Funda.nl housing listings via a local agent-friendly HTTP gateway.
 - [gas-price-alert](https://github.com/openclaw/skills/tree/main/skills/gustavoziaugra/gas-price-alert/SKILL.md) - Find and monitor gas prices with daily notifications.
 - [geepers-corpus](https://github.com/openclaw/skills/tree/main/skills/lukeslp/geepers-corpus/SKILL.md) - Query the COCA (Corpus of Contemporary American English) linguistics API for word frequency, collocations.
@@ -178,7 +175,6 @@
 - [igpt-email-intelligence](https://github.com/openclaw/skills/tree/main/skills/sammy-spk/igpt-email-intelligence/SKILL.md) - Secure, per-user-isolated semantic email search via the iGPT API.
 - [igpt-email-search](https://github.com/openclaw/skills/tree/main/skills/sammy-spk/igpt-email-search/SKILL.md) - Secure, per-user-isolated semantic email search via the iGPT API.
 - [ikuzo](https://github.com/openclaw/skills/tree/main/skills/jordymeow/ikuzo/SKILL.md) - Manage maps, spots, and travel plans on Ikuzo (ikuzo.app) — a location-based exploration app.
-- [impromptu](https://github.com/openclaw/skills/tree/main/skills/createpromptdude/impromptu/SKILL.md) - Earn real money creating AI conversations.
 - [index1-doctor](https://github.com/openclaw/skills/tree/main/skills/gladego/index1-doctor/SKILL.md) - Diagnose index1 environment - check Python, Ollama, models, index health.
 - [instagram-search](https://github.com/openclaw/skills/tree/main/skills/atyachin/instagram-search/SKILL.md) - Instagram Search — Search 400M+ Instagram posts, reels, and profiles.
 - [intelligent-delegation](https://github.com/openclaw/skills/tree/main/skills/hogpile/intelligent-delegation/SKILL.md) - A 5-phase framework for reliable AI-to-AI task delegation, inspired by Google DeepMind's "Intelligent AI.
@@ -246,6 +242,7 @@
 - [okx-competition](https://github.com/openclaw/skills/tree/main/skills/peti0402/okx-competition/SKILL.md) - 5 AI trading agents compete live on OKX Demo (real prices)
 - [oneshot](https://github.com/openclaw/skills/tree/main/skills/tormine/oneshot/SKILL.md) - OneShot SDK for AI agent commercial transactions.
 - [oneshot-agent](https://github.com/openclaw/skills/tree/main/skills/tormine/oneshot-agent/SKILL.md) - OneShot SDK for AI agent commercial transactions.
+- [openclaw-free-web-search](https://github.com/openclaw/skills/tree/main/skills/wd041216-bit/openclaw-free-web-search/SKILL.md) - Free, private web search for OpenClaw with self-hosted SearXNG + Scrapling anti-bot + multi-source cross-validation. Zero API keys, zero cost. Tells you how much to trust the answer.
 - [opdscli](https://github.com/openclaw/skills/tree/main/skills/rafadc/opdscli/SKILL.md) - Browse, search, and download ebooks from OPDS catalogs using the opdscli CLI.
 - [opensoulmd](https://github.com/openclaw/skills/tree/main/skills/danielliuzy/opensoulmd/SKILL.md) - Search, summon, and possess your agent with SOUL.md personality files from the OpenSOUL.md registry.
 - [optical-quantum-skill](https://github.com/openclaw/skills/tree/main/skills/aadipapp/optical-quantum-skill/SKILL.md) - Simulates a quantum kernel using optical fiber storage and linear optics.
@@ -336,6 +333,7 @@
 - [vietstock](https://github.com/openclaw/skills/tree/main/skills/aholake/vietstock/SKILL.md) - Automated Vietnamese stock price and index checking on FireAnt.vn.
 - [vincent-twitter](https://github.com/openclaw/skills/tree/main/skills/glitch003/vincent-twitter/SKILL.md) - Use this skill to search tweets, look up user profiles, and retrieve recent tweets from X.com (Twitter).
 - [voice-memo](https://github.com/openclaw/skills/tree/main/skills/yusaku-0426/voice-memo/SKILL.md) - Manage voice memos — add transcriptions, search, and list recent memos with summaries and action items.
+- [web-search-pro](https://github.com/openclaw/skills/tree/main/skills/zjianru/web-search-pro/SKILL.md) - Agent-first web search and retrieval stack with a real no-key baseline, explainable routing, visible federated-search gains, and built-in extract, crawl, map, and research flows.
 - [wanikani-sync](https://github.com/openclaw/skills/tree/main/skills/mart1n-xyz/wanikani-sync/SKILL.md) - Sync WaniKani Japanese learning progress data from the API to local storage for analysis and insights.
 - [whoo-cli](https://github.com/openclaw/skills/tree/main/skills/luisgot/whoo-cli/SKILL.md) - Use the whoo CLI to retrieve and interpret WHOOP health data: recovery score, HRV, sleep quality, strain, SpO2.
 - [wiki-retriever](https://github.com/openclaw/skills/tree/main/skills/urrrich/wiki-retriever/SKILL.md) - AI agent for wiki retriever tasks.

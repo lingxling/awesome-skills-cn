@@ -35,11 +35,17 @@ If you touch **any of these**:
 - Running `npm run chain` is **NOT optional**.
 - Running `npm run catalog` is **NOT optional**.
 
-If CI fails with:
+For contributor PRs, the contract is now **source-only**:
+
+- contributors should not commit `CATALOG.md`, `skills_index.json`, or `data/*.json`
+- PR CI previews generated drift but does not require those files in the branch
+- `main` remains the only canonical owner of derived registry artifacts
+
+If `main` CI fails with:
 
 > `❌ Detected uncommitted changes produced by registry/readme/catalog scripts.`
 
-it means you **did not run or commit** the Validation Chain correctly.
+it means the repository could not auto-sync generated artifacts cleanly and maintainer intervention is required.
 
 ### 3. 📝 EVIDENCE OF WORK
 
@@ -76,10 +82,11 @@ Before ANY commit that adds/modifies skills, run the chain:
 
 3.  **COMMIT GENERATED FILES**:
     ```bash
-    git add README.md skills_index.json data/catalog.json data/bundles.json data/aliases.json CATALOG.md
+    git add README.md skills_index.json data/skills_index.json data/catalog.json data/bundles.json data/aliases.json CATALOG.md
     git commit -m "chore: sync generated files"
     ```
-    > 🔴 **CRITICAL**: If you skip this, CI will fail with "Detected uncommitted changes".
+    > 🔴 **CRITICAL for direct `main` work**: If you skip this on maintainer work that lands directly on `main`, CI will fail with "Detected uncommitted changes".
+    > For contributor PRs, do **not** include derived registry artifacts. CI blocks direct edits to those files and previews drift separately.
     > See [`docs/maintainers/ci-drift-fix.md`](../docs/maintainers/ci-drift-fix.md) for details.
 
 ### B. When You Merge a PR (Step-by-Step)
@@ -89,14 +96,14 @@ Before ANY commit that adds/modifies skills, run the chain:
 **Before merging:**
 
 1.  **CI is green** — Validation, reference checks, tests, and generated artifact steps passed (see [`.github/workflows/ci.yml`](workflows/ci.yml)).
-2.  **No drift** — PR does not introduce uncommitted generated-file changes; if the "Check for Uncommitted Drift" step failed, ask the author to run `npm run chain` and `npm run catalog` and commit the result.
+2.  **Generated drift understood** — On pull requests, generator drift is informational only. Do not block a good PR solely because canonical artifacts would be regenerated. Also do not accept PRs that directly edit `CATALOG.md`, `skills_index.json`, or `data/*.json`; those files are `main`-owned.
 3.  **Quality Bar** — PR description confirms the [Quality Bar Checklist](.github/PULL_REQUEST_TEMPLATE.md) (metadata, risk label, credits if applicable).
 4.  **Issue link** — If the PR fixes an issue, the PR description should contain `Closes #N` or `Fixes #N` so GitHub auto-closes the issue on merge.
 
 **How you merge:**
 
 - **Always merge via GitHub** so the PR shows as **Merged** and the contributor gets credit. Use **"Squash and merge"**. Do **not** integrate locally and then close the PR — that would show "Closed" and the contributor would not get proper attribution.
-- **If the PR has merge conflicts:** Resolve them **on the PR branch** (you or the contributor: merge `main` into the PR branch, fix conflicts, run `npm run chain` and `npm run catalog` if needed, push). Then use **"Squash and merge"** on GitHub. Full steps: [docs/maintainers/merging-prs.md](../docs/maintainers/merging-prs.md).
+- **If the PR has merge conflicts:** Resolve them **on the PR branch** (you or the contributor: merge `main` into the PR branch, fix conflicts, drop derived registry files from the branch if they appear, push). For generated registry files, prefer keeping `main`'s side rather than hand-editing conflicts. Then use **"Squash and merge"** on GitHub. Full steps: [docs/maintainers/merging-prs.md](../docs/maintainers/merging-prs.md).
 - **Rare exception:** Only if merging via GitHub is not possible, you may integrate locally and close the PR; in that case you **must** add a Co-authored-by line to the commit and explain in a comment. Prefer to avoid this so PRs are always **Merged**.
 
 **If a PR was closed after local integration (reopen and merge):**
@@ -113,8 +120,8 @@ If a PR was integrated via local squash and then **closed** (so it shows "Closed
     ```bash
     git merge origin/main -m "chore: merge main to resolve conflicts"
     ```
-    For conflicts in generated/registry files (`README.md`, `CATALOG.md`, `data/catalog.json`, etc.), keep **main's version**:  
-    `git checkout --theirs README.md CATALOG.md data/catalog.json` (and any other conflicted files), then `git add` them.
+    For conflicts in generated/registry files (`CATALOG.md`, `data/catalog.json`, etc.), keep **main's version** and remove those derived files from the PR branch:
+    `git checkout --theirs CATALOG.md data/catalog.json` (and any other derived files), then `git add` them.
 4.  **Commit the merge** (if not already done):  
     `git commit -m "chore: merge main to resolve conflicts" --no-edit`
 5.  **Push to the contributor's fork.** Add their fork as a remote if needed (replace `USER` and `BRANCH` with the PR head owner and branch from the PR page):
@@ -224,7 +231,7 @@ Rules:
 
 ## 3. 🛡️ Governance & Quality Bar
 
-### A. The 5-Point Quality Check
+### A. The 6-Point Quality Check
 
 Reject any PR that fails this:
 
@@ -232,7 +239,8 @@ Reject any PR that fails this:
 2.  **Safety**: `risk: offensive` used for red-team tools?
 3.  **Clarity**: Does it say _when_ to use it?
 4.  **Examples**: Copy-pasteable code blocks?
-5.  **Limitations / Safety Notes**: Edge cases and risk boundaries are stated clearly.
+5.  **Risk Limits**: If the skill includes shell/network/filesystem/mutation guidance, instructions include explicit prerequisites and warnings.
+6.  **Repo Security Scan**: Run `npm run security:docs` for command-heavy, network-execution, or token-like guidance in `SKILL.md`.
 
 ### B. Risk Labels (V4)
 
@@ -247,27 +255,24 @@ Reject any PR that fails this:
 When cutting a new version, follow the maintainer playbook in [`docs/maintainers/release-process.md`](../docs/maintainers/release-process.md).
 
 **Release checklist (order matters):**  
-Operational verification → Changelog → Bump `package.json` (and README if needed) → Commit & push → Create GitHub Release with tag matching `package.json` → npm publish (manual or via CI) → Close remaining linked issues.
+Preflight verification → Changelog → `npm run release:prepare -- X.Y.Z` → `npm run release:publish -- X.Y.Z` → npm publish (manual or via CI) → Close remaining linked issues.
 
 ---
 
 1.  **Run release verification**:
     ```bash
-    npm run validate
-    npm run validate:references
-    npm run sync:all
-    npm run test
-    npm run app:build
+    npm run release:preflight
     ```
     Optional diagnostic pass:
     ```bash
     npm run validate:strict
     ```
 2.  **Update Changelog**: Add the new release section to `CHANGELOG.md`.
-3.  **Bump Version**:
-    - Update `package.json` → `"version": "X.Y.Z"` (source of truth for npm).
-    - Update version header in `README.md` if it displays the number.
-    - One-liner: `npm version patch` (or `minor`/`major`) — bumps `package.json` and creates a git tag; then amend if you need to tag after release.
+3.  **Prepare commit and tag locally**:
+    ```bash
+    npm run release:prepare -- X.Y.Z
+    ```
+    This validates the release, aligns versioned files, writes the release notes artifact, creates the release commit, and creates the local tag.
 4.  **Create GitHub Release** (REQUIRED):
 
     > ⚠️ **CRITICAL**: Pushing a tag (`git push --tags`) is NOT enough. You must create a **GitHub Release Object** for it to appear in the sidebar and trigger the NPM publish workflow.
@@ -275,9 +280,7 @@ Operational verification → Changelog → Bump `package.json` (and README if ne
     Use the GitHub CLI:
 
     ```bash
-    # Prepare release notes (copy the new section from CHANGELOG.md into docs/maintainers/release-process.md, or use CHANGELOG excerpt)
-    # Then create the tag AND the release page (tag must match package.json version, e.g. v4.1.0)
-    gh release create v4.0.0 --title "v4.0.0 - [Theme Name]" --notes-file docs/maintainers/release-process.md
+    npm run release:publish -- X.Y.Z
     ```
 
     **Important:** The release tag must match `package.json`'s version. The [Publish to npm](workflows/publish-npm.yml) workflow runs on **Release published** and will run `npm publish`; npm rejects republishing the same version.

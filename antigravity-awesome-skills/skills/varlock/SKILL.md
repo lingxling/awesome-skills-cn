@@ -4,6 +4,8 @@ description: Secure environment variable management with Varlock. Use when handl
 --- 1.0.0
 ---
 
+<!-- security-allowlist: curl-pipe-bash -->
+
 # Varlock Security Skill
 
 Secure-by-default environment variable management for Claude Code sessions.

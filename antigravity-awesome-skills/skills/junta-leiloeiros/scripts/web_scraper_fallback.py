@@ -24,6 +24,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from db import Database
+from scraper.base_scraper import should_verify_tls
 from scraper.states import SCRAPERS
 
 logger = logging.getLogger(__name__)
@@ -114,7 +115,10 @@ async def _direct_extract(estado: str, url: str) -> list[dict]:
     results = []
     try:
         async with httpx.AsyncClient(
-            headers=headers, timeout=30.0, follow_redirects=True, verify=False
+            headers=headers,
+            timeout=30.0,
+            follow_redirects=True,
+            verify=should_verify_tls(),
         ) as client:
             resp = await client.get(url)
             if resp.status_code >= 400:

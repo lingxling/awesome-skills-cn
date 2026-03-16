@@ -1,0 +1,19 @@
+{
+  "derivedFiles": [
+    "CATALOG.md",
+    "skills_index.json",
+    "data/skills_index.json",
+    "data/catalog.json",
+    "data/bundles.json",
+    "data/aliases.json"
+  ],
+  "mixedFiles": [
+    "README.md"
+  ],
+  "releaseManagedFiles": [
+    "CHANGELOG.md",
+    "package.json",
+    "package-lock.json",
+    "README.md"
+  ]
+}
