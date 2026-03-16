@@ -40,6 +40,7 @@ out/
 # 忽略本地文件
 test_run.py
 work.md
+translate_composio_skills.ps1
 
 # 子项目中的 .git 文件夹（不提交）
 **/.git
