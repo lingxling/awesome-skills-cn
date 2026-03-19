@@ -45,6 +45,10 @@
 
 > **注意：** 本仓库包含 Anthropic 为 Claude 实现的技能。有关 Agent Skills 标准的信息，请参阅 [agentskills.io](http://agentskills.io)。
 
+以下为原项目文件README.md的翻译。
+
+---
+
 # Skills
 
 技能是包含指令、脚本和资源的文件夹，Claude 会动态加载这些内容以在专业任务上提高性能。技能教会 Claude 如何以可重复的方式完成特定任务，无论是根据公司的品牌指南创建文档、使用组织的特定工作流程分析数据，还是自动化个人任务。

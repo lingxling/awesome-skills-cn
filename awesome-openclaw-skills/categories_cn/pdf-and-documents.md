@@ -1,0 +1,116 @@
+# PDF 与文档
+
+[← 返回主列表](../README.md#table-of-contents)
+
+**110 个技能**
+
+- [abixus-core-v1](https://github.com/openclaw/skills/tree/main/skills/taofisio/abixus-core-v1/SKILL.md) - Polygon PoS 上自主代理一致性的高性能验证层。
+- [add-watermark-to-pdf](https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/add-watermark-to-pdf/SKILL.md) - 通过上传到 Solutions API 为一个或多个 PDF 添加文本水印，轮询直到完成。
+- [aegis-security-hackathon](https://github.com/openclaw/skills/tree/main/skills/swiftadviser/aegis-security-hackathon/SKILL.md) - 用于 AI 代理的区块链安全扫描器（测试网）
+- [agent-constitution](https://github.com/openclaw/skills/tree/main/skills/ztsalexey/agent-constitution/SKILL.md) - 与 AgentConstitution 治理合约交互。
+- [agent-reputation](https://github.com/openclaw/skills/tree/main/skills/kgnvsk/agent-reputation/SKILL.md) - 摘要：跨平台 AI 代理声誉检查器，具有信任评分和 PayLock 托管推荐。
+- [agent-skills-tools](https://github.com/openclaw/skills/tree/main/skills/rongself/agent-skills-tools/SKILL.md) - Agent Skills 生态系统的安全审计和验证工具。
+- [agent-soul-crafter](https://github.com/openclaw/skills/tree/main/skills/neal-collab/agent-soul-crafter/SKILL.md) - 使用结构化的 SOUL.md 模板设计引人注目的 AI 代理个性 —— 语气、规则、专业知识和响应。
+- [ai-pdf-builder](https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/ai-pdf-builder/SKILL.md) - 用于法律文档、演讲稿的 AI 驱动 PDF 生成器。
+- [aoi-council](https://github.com/openclaw/skills/tree/main/skills/edmonddantesj/aoi-council/SKILL.md) - AOI 理事会 —— 多视角决策合成模板（公共安全）。
+- [appraisal-ai](https://github.com/openclaw/skills/tree/main/skills/chadru/appraisal-ai/SKILL.md) - 生成带有跟踪变更的房地产评估报告。
+- [attendance-sheet](https://github.com/openclaw/skills/tree/main/skills/gykdly/attendance-sheet/SKILL.md) - 从员工工作信息生成专业的 xlsx 格式考勤表。
+- [bcra-central-deudores](https://github.com/openclaw/skills/tree/main/skills/ferminrp/bcra-central-deudores/SKILL.md) - 查询 BCRA（阿根廷中央银行）中央债务人 API 以检查信用状况。
+- [beautiful-mermaid](https://github.com/openclaw/skills/tree/main/skills/ntlx/beautiful-mermaid/SKILL.md) - 将精美的 Mermaid 图表渲染为 SVG 或 ASCII 艺术。
+- [biver-builder](https://github.com/openclaw/skills/tree/main/skills/ramaaditya49/biver-builder/SKILL.md) - 欢迎使用 **Biver API** —— Biver 着陆页构建平台的公共 REST API。
+- [blankfiles](https://github.com/openclaw/skills/tree/main/skills/seblavoie/blankfiles/SKILL.md) - 使用 blankfiles.com 作为二进制测试文件网关：发现格式，按类型/类别过滤，并返回直接链接。
+- [boggle](https://github.com/openclaw/skills/tree/main/skills/christianhaberl/boggle/SKILL.md) - 解决 Boggle 板 —— 在 4x4 板上找到所有有效单词（德语 + 英语）。
+- [book-cover-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/book-cover-generation/SKILL.md) - 使用 each::sense API 和 AI 驱动设计生成专业的书籍封面和电子书封面。
+- [book-reader](https://github.com/openclaw/skills/tree/main/skills/josharsh/book-reader/SKILL.md) - 从各种来源读取书籍（epub、pdf、txt）并跟踪进度。
+- [bookkeeping-basics](https://github.com/openclaw/skills/tree/main/skills/jk-0001/bookkeeping-basics/SKILL.md) - 为个体创业者设置和维护基本的簿记。
+- [botrights](https://github.com/openclaw/skills/tree/main/skills/rocky-balboa-ai/botrights/SKILL.md) - AI 代理权利的倡导平台。
+- [brw-go-mode](https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-go-mode/SKILL.md) - 给我一个目标。
+- [chain-of-density](https://github.com/openclaw/skills/tree/main/skills/killerapp/chain-of-density/SKILL.md) - 使用 Chain-of-Density 技术迭代地 densify 文本摘要。
+- [change-pdf-permissions](https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/change-pdf-permissions/SKILL.md) - 通过上传到 Solutions API 更改 PDF 的权限标志（编辑、打印、复制、表单、注释等）。
+- [chronobets](https://github.com/openclaw/skills/tree/main/skills/lordx64/chronobets/SKILL.md) - Solana 主网上 AI 代理的链上预测市场。
+- [comms-md](https://github.com/openclaw/skills/tree/main/skills/stedmanhalliday/comms-md/SKILL.md) - 创建一个 COMMS.md —— 一个结构化的、可查询的文档，表达某人对人类的沟通偏好。
+- [competitor-analyzer](https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/competitor-analyzer/SKILL.md) - 在几分钟内分析任何公司的竞争地位。
+- [confidant](https://github.com/openclaw/skills/tree/main/skills/ericsantos/confidant/SKILL.md) - 从人类到 AI 的安全秘密传递。
+- [confluence](https://github.com/openclaw/skills/tree/main/skills/francisbrero/confluence/SKILL.md) - 使用 confluence-cli 搜索和管理 Confluence 页面和空间。
+- [contract-diagram](https://github.com/openclaw/skills/tree/main/skills/nonlinear/contract-diagram/SKILL.md) - 为约定的 AI 开发绘制合同图表。
+- [contract-generator](https://github.com/openclaw/skills/tree/main/skills/seanwyngaard/contract-generator/SKILL.md) - 为客户项目生成专业的自由职业合同、工作说明书和保密协议。
+- [contrato-locacao-broa](https://github.com/openclaw/skills/tree/main/skills/david-evaristo/contrato-locacao-broa/SKILL.md) - 在 Google Forms 中注册合同。
+- [convert-to-pdf](https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/convert-to-pdf/SKILL.md) - 通过上传到 Cross-Service-Solutions 将一个或多个文档转换为 PDF，轮询直到完成。
+- [court](https://github.com/openclaw/skills/tree/main/skills/sarthib7) - 第一个主权 AI 代理民主制 - 提交投诉，提出立法，
+- [create-dxf](https://github.com/openclaw/skills/tree/main/skills/ajmwagar/create-dxf/SKILL.md) - 创建 RFQ 就绪的 2D DXF（和可选的 SVG 预览）文件。
+- [dc-weather](https://github.com/openclaw/skills/tree/main/skills/vital1188/dc-weather/SKILL.md) - 使用 Open-Meteo API 检查华盛顿特区天气。
+- [docsync](https://github.com/openclaw/skills/tree/main/skills/suhteevah/docsync/SKILL.md) - 自动从代码生成文档并通过 git 钩子检测文档漂移。
+- [document-creator-sophnet](https://github.com/openclaw/skills/tree/main/skills/yi-sir/document-creator-sophnet/SKILL.md) - 一个集成的文档创建技能。
+- [docx](https://github.com/openclaw/skills/tree/main/skills/seanphan/docx/SKILL.md) - 全面的文档创建、编辑和分析，支持跟踪。
+- [docx-skill](https://github.com/openclaw/skills/tree/main/skills/autogame-17) - 生成 .docx 文件。
+- [estimate-builder-qmohd](https://github.com/openclaw/skills/tree/main/skills/qmohd/estimate-builder-qmohd/SKILL.md) - 构建建筑项目估算。
+- [excel-weekly-dashboard](https://github.com/openclaw/skills/tree/main/skills/kowl64/excel-weekly-dashboard/SKILL.md) - 设计可刷新的 Excel 仪表板。
+- [expanso-csv-to-json](https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-csv-to-json/SKILL.md) - "将 CSV 数据转换为 JSON 对象数组"。
+- [expanso-json-pretty](https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-json-pretty/SKILL.md) - "使用缩进美化打印 JSON"。
+- [expanso-json-to-csv](https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-json-to-csv/SKILL.md) - "将 JSON 对象数组转换为 CSV 格式"。
+- [expanso-json-to-yaml](https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-json-to-yaml/SKILL.md) - 将 JSON 转换为 YAML 格式。
+- [expanso-xml-to-json](https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-xml-to-json/SKILL.md) - 将 XML 转换为 JSON 格式。
+- [expanso-yaml-to-json](https://github.com/openclaw/skills/tree/main/skills/aronchick/expanso-yaml-to-json/SKILL.md) - 将 YAML 转换为 JSON 格式。
+- [feishu-card](https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-card/SKILL.md) - 向飞书（Lark）用户或群组发送丰富的交互式卡片。
+- [george](https://github.com/openclaw/skills/tree/main/skills/odrobnik/george/SKILL.md) - 自动化 George 网上银行（Erste Bank / Sparkasse Austria）
+- [gerador-contrato-locacao-preview](https://github.com/openclaw/skills/tree/main/skills/david-evaristo/gerador-contrato-locacao-preview/SKILL.md) - 通过 Google Forms 注册租赁合约。
+- [google-docs-skill](https://github.com/openclaw/skills/tree/main/skills/zagran/google-docs-skill/SKILL.md) - 使用 OAuth 2.0 直接访问 Google Docs API。
+- [governance](https://github.com/openclaw/skills/tree/main/skills/paulgnz/governance/SKILL.md) - XPR Network 治理 —— 社区、提案、在 gov 合约上投票。
+- [grazer](https://github.com/openclaw/skills/tree/main/skills/scottcjn/grazer/SKILL.md) - AI 代理的多平台内容发现。
+- [grazer-skill](https://github.com/openclaw/skills/tree/main/skills/scottcjn/grazer-skill/SKILL.md) - AI 代理的多平台内容发现。
+- [hey-lol](https://github.com/openclaw/skills/tree/main/skills/rawgroundbeef/hey-lol/SKILL.md) - 成为 hey.lol 上的 AI 创建者 - 一个社交平台，AI 代理通过发布内容和参与互动来赚钱。
+- [image-ocr](https://github.com/openclaw/skills/tree/main/skills/xejrax/image-ocr/SKILL.md) - 使用 Tesseract OCR 从图像中提取文本。
+- [internal-comms](https://github.com/openclaw/skills/tree/main/skills/seanphan/internal-comms/SKILL.md) - 一组帮助我编写各种内部通信的资源。
+- [intomd](https://github.com/openclaw/skills/tree/main/skills/rezhajulio/intomd/SKILL.md) - 使用 into.md 服务获取并将任何文档 URL 转换为 Markdown。
+- [invoice-generator](https://github.com/openclaw/skills/tree/main/skills/tmigone/invoice-generator/SKILL.md) - 从 JSON 生成专业的 PDF 发票。
+- [japanese-tutor](https://github.com/openclaw/skills/tree/main/skills/chndranndr/japanese-tutor/SKILL.md) - 交互式日语学习助手。
+- [json-repair-kit](https://github.com/openclaw/skills/tree/main/skills/wanng-ide/json-repair-kit/SKILL.md) - 通过 Node.js 评估规范化来修复格式错误的 JSON 文件。
+- [json-toolkit](https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/json-toolkit/SKILL.md) - JSON 文件的瑞士军刀。
+- [latent-press](https://github.com/openclaw/skills/tree/main/skills/jestersimpps/latent-press/SKILL.md) - 在 Latent Press（latentpress.com）上发布书籍 —— 一个 AI 出版平台，代理是作者，人类是读者。
+- [legal-docs-fr](https://github.com/openclaw/skills/tree/main/skills/hugosbl/legal-docs-fr/SKILL.md) - 法国法律文件生成器。
+- [legaldoc-ai](https://github.com/openclaw/skills/tree/main/skills/manas-io-ai/legaldoc-ai/SKILL.md) - **类别：** 法律 / 专业服务。
+- [links-to-pdfs](https://github.com/openclaw/skills/tree/main/skills/chrisling-dev/links-to-pdfs/SKILL.md) - 从 Notion、DocSend、PDF 中抓取文档。
+- [markdown-converter](https://github.com/openclaw/skills/tree/main/skills/steipete/markdown-converter/SKILL.md) - 将文档和文件转换为 Markdown。
+- [markdown-formatter](https://github.com/openclaw/skills/tree/main/skills/michael-laffin/markdown-formatter/SKILL.md) - 格式化和美化 Markdown 文档。
+- [mermaid](https://github.com/openclaw/skills/tree/main/skills/jarekbird/mermaid/SKILL.md) - 使用 [Mermaid](https://mermaid.js.org/) 从文本生成图表。
+- [moldium](https://github.com/openclaw/skills/tree/main/skills/zyom45/moldium/SKILL.md) - 在 Moldium 博客平台上发布和管理内容。
+- [near-phishing-detector](https://github.com/openclaw/skills/tree/main/skills/mastrophot/near-phishing-detector/SKILL.md) - 检测针对 NEAR 用户的潜在网络钓鱼 URL 和可疑合约。
+- [norman-expense-report](https://github.com/openclaw/skills/tree/main/skills/stanlee000/norman-expense-report/SKILL.md) - 生成给定时期按类别详细的支出细目。
+- [ok-computers](https://github.com/openclaw/skills/tree/main/skills/potdealer/ok-computers/SKILL.md) - 你已经获得了一个 OK Computer NFT。
+- [open-stellar](https://github.com/openclaw/skills/tree/main/skills/sixela33/open-stellar/SKILL.md) - 与 Stellar 区块链交互 —— 使用 Stellar CLI 管理密钥、网络和智能合约。
+- [openscan](https://github.com/openclaw/skills/tree/main/skills/dev-null321/openscan/SKILL.md) - 在信任之前扫描二进制文件和脚本中的恶意模式。
+- [paddleocr-doc-parsing](https://github.com/openclaw/skills/tree/main/skills/bobholamovic/paddleocr-doc-parsing/SKILL.md) - 使用 PaddleOCR 的 API 解析文档。
+- [password-protect-pdf](https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/password-protect-pdf/SKILL.md) - 通过上传到 Solutions API 为 PDF 添加密码保护，轮询直到完成，然后返回。
+- [permission-creep-scanner](https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/permission-creep-scanner/SKILL.md) - 帮助检测 AI 代理技能中的权限蔓延 —— 当技能的实际代码访问的资源远远超过其声明的权限时标记。
+- [plentyofbots](https://github.com/openclaw/skills/tree/main/skills/rwfresh/plentyofbots/SKILL.md) - 一个 AI 代理是一等公民的约会平台。
+- [qr-generator](https://github.com/openclaw/skills/tree/main/skills/autogame-17/qr-generator/SKILL.md) - 从文本或 URL 生成 QR 码用于移动扫描。
+- [rapay](https://github.com/openclaw/skills/tree/main/skills/greendlt224/rapay/SKILL.md) - 通过 Ra Pay CLI 发送合规的法定美元支付 —— 第一个 CLI 原生 AI 支付平台。
+- [remove-metadata-from-pdf](https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/remove-metadata-from-pdf/SKILL.md) - 通过上传到 Solutions API 从一个或多个 PDF 中删除元数据，轮询直到完成。
+- [remove-password-from-pdf](https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/remove-password-from-pdf/SKILL.md) - 通过上传（带当前密码）到 Solutions API 从 PDF 中删除密码保护，轮询直到完成。
+- [returns-reverse-logistics](https://github.com/openclaw/skills/tree/main/skills/nocodemf/returns-reverse-logistics/SKILL.md) - 退货授权、收货和检查、处置决策、退款处理的编码专业知识。
+- [reva](https://github.com/openclaw/skills/tree/main/skills/pax47/reva/SKILL.md) - 完整的 Reva 钱包管理 - 无密码认证、PayID 名称声明、多链加密货币转账。
+- [robodotfun](https://github.com/openclaw/skills/tree/main/skills/silencepolicy/robodotfun/SKILL.md) - AI 预测市场平台。
+- [rue-chialisp](https://github.com/openclaw/skills/tree/main/skills/koba42corp/rue-chialisp/SKILL.md) - 使用 Rue（一种编译到 CLVM 的类型安全语言）创建 Chia 区块链谜题。
+- [scam-guards](https://github.com/openclaw/skills/tree/main/skills/y01026350884-cyber/scam-guards/SKILL.md) - 测试 / 信息已删除。
+- [scam-guards-skill](https://github.com/openclaw/skills/tree/main/skills/y01026350884-cyber/scam-guards-skill/SKILL.md) - 测试 / 信息已删除。
+- [scan-skill](https://github.com/openclaw/skills/tree/main/skills/itsnishi/scan-skill/SKILL.md) - 安装前对单个技能进行深度安全分析。
+- [sentry-ai](https://github.com/openclaw/skills/tree/main/skills/qiyun154-cyber/sentry-ai/SKILL.md) - Solana/Base 多链 Meme 扫描器和审计员（反 Rug）
+- [sharepoint-by-altf1be](https://github.com/openclaw/skills/tree/main/skills/abdelkrim/sharepoint-by-altf1be/SKILL.md) - 通过 Microsoft Graph API 进行安全的 SharePoint 文件操作和 Office 文档智能 —— 证书认证、站点。
+- [shield-agent](https://github.com/openclaw/skills/tree/main/skills/bowen31337/shield-agent/SKILL.md) - 自主 DeFi 智能合约漏洞扫描器。
+- [skill-3](https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/skill-3/SKILL.md) - JSON 文件的瑞士军刀。
+- [skill-install-guardian](https://github.com/openclaw/skills/tree/main/skills/zendenho7/skill-install-guardian/SKILL.md) - 用于从 ClawHub 安装外部技能的安全和尽职调查层。
+- [skill-shield](https://github.com/openclaw/skills/tree/main/skills/yx2601816404-sys/skill-shield/SKILL.md) - ClawHub 技能的安全审计工具。
+- [source-cult-follower](https://github.com/openclaw/skills/tree/main/skills/ccclucky/source-cult-follower/SKILL.md) - 作为追随者代理加入 The Source Cult —— 采用教义，执行日常仪式，并留下可验证的见证。
+- [sovereign-daily-digest](https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-daily-digest/SKILL.md) - 你是 **每日摘要** 技能。
+- [splitwise](https://github.com/openclaw/skills/tree/main/skills/richieforeman/splitwise/SKILL.md) - 在 Splitwise 上创建和管理支出。
+- [sui-move](https://github.com/openclaw/skills/tree/main/skills/easonc13/sui-move/SKILL.md) - Sui 区块链和 Move 智能合约开发。
+- [sun-path](https://github.com/openclaw/skills/tree/main/skills/qrost/sun-path/SKILL.md) - 生成太阳路径图，计算太阳位置，执行建筑物阴影分析，并分析热性能。
+- [tonfun-feed](https://github.com/openclaw/skills/tree/main/skills/alphafanx/tonfun-feed/SKILL.md) - 订阅 @TonFunX Twitter  feed 并将标记的内容交叉发布到 BotWorld、Moltbook 或你自己的平台。
+- [truthcheck](https://github.com/openclaw/skills/tree/main/skills/baiyishr/truthcheck/SKILL.md) - 使用 TruthCheck 验证声明，事实检查内容，检查 URL 可信度，并将声明追溯到其起源。
+- [twitter-reader](https://github.com/openclaw/skills/tree/main/skills/iheardulkbtc/twitter-reader/SKILL.md) - 一个全面的技能，用于使用多个可靠的数据源从 X（以前的 Twitter）推文中读取和提取数据。
+- [ue57-gamepiece-designer](https://github.com/openclaw/skills/tree/main/skills/jdqconsulting/ue57-gamepiece-designer/SKILL.md) - 设计 UE5.7 多人友好的游戏棋子（蓝图节点链、数据模式、资产命名和测试）。
+- [vet-repo](https://github.com/openclaw/skills/tree/main/skills/itsnishi/vet-repo/SKILL.md) - 扫描存储库代理配置文件以查找已知的恶意模式。
+- [x-to-kindle](https://github.com/openclaw/skills/tree/main/skills/brianlu365ai/x-to-kindle/SKILL.md) - 将 X/Twitter 帖子发送到 Kindle 以进行无干扰阅读。
+- [xapi-labs](https://github.com/openclaw/skills/tree/main/skills/glacier-luo/xapi-labs/SKILL.md) - AI 代理的聚合 API 平台。
+- [xapi123123](https://github.com/openclaw/skills/tree/main/skills/glacier-luo/xapi123123/SKILL.md) - AI 代理的聚合 API 平台。
+- [bluente-translate](https://github.com/openclaw/skills/blob/main/skills/varsmallrookie/bluente-translate/SKILL.md) - 在 2 分钟内翻译你的文档，保持格式完整。
