@@ -296,7 +296,7 @@ awesome-skills-cn/
 |---------|-----------|------------|-----------|------|
 | anthropics-skills | 17 | ✓ | 17/17 | 已完成 |
 | antigravity-awesome-skills | 968 | - | 0/968 | 未开始 |
-| awesome-openclaw-skills | 5816 | - | 0/5816 | 未开始 |
+| awesome-openclaw-skills | 5816 | ✓ | 5816/5816 | 已完成 |
 | claude-scientific-skills | 179 | ✓ | 179/179 | 已完成 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
 | huggingface-skills | 13 | ✓ | 13/13 | 已完成 |
@@ -305,7 +305,7 @@ awesome-skills-cn/
 | ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-agent-skills | 6 | ✓ | 6/6 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| **总计** | **7239+** | **75** | **296/7239+** | **进行中** |
+| **总计** | **7239+** | **75** | **6163/7239+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -338,10 +338,37 @@ awesome-skills-cn/
 
 ### awesome-openclaw-skills (5816个)
 
-- [ ] ai-and-llms (196个技能)
-- [ ] browser-and-automation (335个技能)
-- [ ] coding-agents-and-ides (1222个技能)
-- [ ] ... (共 5816 个技能，详见项目目录)
+- [x] [README_CN.md](awesome-openclaw-skills/README_CN.md) - 项目说明文档中文翻译
+- [x] [ai-and-llms](awesome-openclaw-skills/categories_cn/ai-and-llms.md) (184个技能)
+- [x] [apple-apps-and-services](awesome-openclaw-skills/categories_cn/apple-apps-and-services.md) (44个技能)
+- [x] [browser-and-automation](awesome-openclaw-skills/categories_cn/browser-and-automation.md) (320个技能)
+- [x] [calendar-and-scheduling](awesome-openclaw-skills/categories_cn/calendar-and-scheduling.md) (65个技能)
+- [x] [clawdbot-tools](awesome-openclaw-skills/categories_cn/clawdbot-tools.md) (36个技能)
+- [x] [cli-utilities](awesome-openclaw-skills/categories_cn/cli-utilities.md) (180个技能)
+- [x] [coding-agents-and-ides](awesome-openclaw-skills/categories_cn/coding-agents-and-ides.md) (1200个技能)
+- [x] [communication](awesome-openclaw-skills/categories_cn/communication.md) (145个技能)
+- [x] [data-and-analytics](awesome-openclaw-skills/categories_cn/data-and-analytics.md) (41个技能)
+- [x] [devops-and-cloud](awesome-openclaw-skills/categories_cn/devops-and-cloud.md) (392个技能)
+- [x] [gaming](awesome-openclaw-skills/categories_cn/gaming.md) (35个技能)
+- [x] [git-and-github](awesome-openclaw-skills/categories_cn/git-and-github.md) (166个技能)
+- [x] [health-and-fitness](awesome-openclaw-skills/categories_cn/health-and-fitness.md) (84个技能)
+- [x] [image-and-video-generation](awesome-openclaw-skills/categories_cn/image-and-video-generation.md) (169个技能)
+- [x] [ios-and-macos-development](awesome-openclaw-skills/categories_cn/ios-and-macos-development.md) (29个技能)
+- [x] [marketing-and-sales](awesome-openclaw-skills/categories_cn/marketing-and-sales.md) (103个技能)
+- [x] [media-and-streaming](awesome-openclaw-skills/categories_cn/media-and-streaming.md) (84个技能)
+- [x] [moltbook](awesome-openclaw-skills/categories_cn/moltbook.md) (44个技能)
+- [x] [notes-and-pkm](awesome-openclaw-skills/categories_cn/notes-and-pkm.md) (71个技能)
+- [x] [pdf-and-documents](awesome-openclaw-skills/categories_cn/pdf-and-documents.md) (110个技能)
+- [x] [personal-development](awesome-openclaw-skills/categories_cn/personal-development.md) (51个技能)
+- [x] [productivity-and-tasks](awesome-openclaw-skills/categories_cn/productivity-and-tasks.md) (204个技能)
+- [x] [search-and-research](awesome-openclaw-skills/categories_cn/search-and-research.md) (352个技能)
+- [x] [security-and-passwords](awesome-openclaw-skills/categories_cn/security-and-passwords.md) (54个技能)
+- [x] [self-hosted-and-automation](awesome-openclaw-skills/categories_cn/self-hosted-and-automation.md) (33个技能)
+- [x] [shopping-and-e-commerce](awesome-openclaw-skills/categories_cn/shopping-and-e-commerce.md) (51个技能)
+- [x] [smart-home-and-iot](awesome-openclaw-skills/categories_cn/smart-home-and-iot.md) (43个技能)
+- [x] [speech-and-transcription](awesome-openclaw-skills/categories_cn/speech-and-transcription.md) (45个技能)
+- [x] [transportation](awesome-openclaw-skills/categories_cn/transportation.md) (110个技能)
+- [x] [web-and-frontend-development](awesome-openclaw-skills/categories_cn/web-and-frontend-development.md) (925个技能)
 
 ### claude-scientific-skills (179个)
 

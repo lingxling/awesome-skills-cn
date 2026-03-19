@@ -5,6 +5,70 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.21.0] - 2026-03-19
+
+### 新增
+- 完成 awesome-openclaw-skills 项目的最后一个分类文件中文翻译：
+  - [search-and-research](awesome-openclaw-skills/categories_cn/search-and-research.md) (352个技能)
+
+### 变更
+- 更新翻译进度表格：
+  - awesome-openclaw-skills：从 5019/5816 进行中改为 5816/5816 已完成
+  - 总计：已完成翻译从 5292 个增加到 6163 个
+
+## [2.20.0] - 2026-03-19
+
+### 变更
+- 修正 awesome-openclaw-skills 项目的翻译统计：
+  - 已完成翻译的技能数量从 925 个更正为 5019 个
+  - 完成了 29 个分类文件的中文翻译，包括：
+    - web-and-frontend-development (925个技能)
+    - speech-and-transcription (45个技能)
+    - transportation (110个技能)
+    - gaming (35个技能)
+    - moltbook (44个技能)
+    - ai-and-llms (184个技能)
+    - browser-and-automation (320个技能)
+    - coding-agents-and-ides (1200个技能)
+    - data-and-analytics (41个技能)
+    - devops-and-cloud (392个技能)
+    - image-and-video-generation (169个技能)
+    - pdf-and-documents (110个技能)
+    - productivity-and-tasks (204个技能)
+    - apple-apps-and-services (44个技能)
+    - calendar-and-scheduling (65个技能)
+    - clawdbot-tools (36个技能)
+    - cli-utilities (180个技能)
+    - communication (145个技能)
+    - git-and-github (166个技能)
+    - health-and-fitness (84个技能)
+    - ios-and-macos-development (29个技能)
+    - marketing-and-sales (103个技能)
+    - media-and-streaming (84个技能)
+    - notes-and-pkm (71个技能)
+    - personal-development (51个技能)
+    - security-and-passwords (54个技能)
+    - self-hosted-and-automation (33个技能)
+    - shopping-and-e-commerce (51个技能)
+    - smart-home-and-iot (43个技能)
+- 更新翻译进度表格：
+  - awesome-openclaw-skills：从 925/5816 进行中改为 5019/5816 进行中
+  - 总计：已完成翻译从 1221 个增加到 5292 个
+
+## [2.19.0] - 2026-03-17
+
+### 新增
+- 完成 awesome-openclaw-skills 项目的 3 个分类文件中文翻译：
+  - [web-and-frontend-development](awesome-openclaw-skills/categories_cn/web-and-frontend-development.md) (925个技能)
+  - [speech-and-transcription](awesome-openclaw-skills/categories_cn/speech-and-transcription.md) (45个技能)
+  - [transportation](awesome-openclaw-skills/categories_cn/transportation.md) (110个技能)
+- 创建 [awesome-openclaw-skills/README_CN.md](awesome-openclaw-skills/README_CN.md) - 项目说明文档中文翻译
+
+### 变更
+- 更新翻译进度表格：
+  - awesome-openclaw-skills：从 0/5816 未开始改为 925/5816 进行中
+  - 总计：已完成翻译从 296 个增加到 1221 个
+
 ## [2.18.0] - 2026-03-16
 
 ### 变更
