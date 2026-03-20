@@ -36,8 +36,7 @@ Return **exactly one comma-separated line** of keywords, following these rules:
 
 ---
 
-## WHEN TO USE
-
+## When to Use
 Use this skill when the user wants to generate or extract **SEO-friendly keywords or tags** from text including:
 - Extracting keywords or tags for any given text or paragraph  
 - Creating **comma-separated keywords or tags** suitable for SEO, search, or metadata  

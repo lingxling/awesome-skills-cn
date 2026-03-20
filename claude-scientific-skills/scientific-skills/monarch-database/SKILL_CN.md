@@ -1,208 +1,372 @@
 ---
 name: monarch-database
-description: Monarch Initiative是一个整合多种生物数据库的跨物种生物医学知识平台。提供基因、疾病、表型、基因型-表型关联、通路、解剖学、同源性和比较基因组学数据。支持跨物种查询、疾病-基因关联、表型相似性分析、基因本体论注解和进化保守性研究。整合了OMIM、Orphanet、MGI、ZFIN、WormBase、FlyBase等数据库。
-license: Unknown
+description: Query the Monarch Initiative knowledge graph for disease-gene-phenotype associations across species. Integrates OMIM, ORPHANET, HPO, ClinVar, and model organism databases. Use for rare disease gene discovery, phenotype-to-gene mapping, cross-species disease modeling, and HPO term lookup.
+license: CC0-1.0
 metadata:
-    skill-author: K-Dense Inc.
+    skill-author: Kuan-lin Huang
 ---
 
-# Monarch数据库
+# Monarch Initiative Database
 
-## 概述
+## Overview
 
-Monarch Initiative是一个整合多种生物数据库的跨物种生物医学知识平台。它提供了一个统一的接口，用于查询和探索基因、疾病、表型、基因型-表型关联、通路、解剖学、同源性和比较基因组学数据。
+The Monarch Initiative (https://monarchinitiative.org/) is a multi-species integrated knowledgebase that links genes, diseases, and phenotypes across humans and model organisms. It integrates data from over 40 sources including OMIM, ORPHANET, HPO (Human Phenotype Ontology), ClinVar, MGI (Mouse Genome Informatics), ZFIN (Zebrafish), RGD (Rat), FlyBase, and WormBase.
 
-## 核心能力
+Monarch enables:
+- Mapping phenotypes across species to identify candidate disease genes
+- Finding all genes associated with a disease or phenotype
+- Discovering model organisms for human diseases
+- Navigating the HPO hierarchy for phenotype ontology queries
 
-### 1. 跨物种数据整合
+**Key resources:**
+- Monarch portal: https://monarchinitiative.org/
+- Monarch API v3: https://api-v3.monarchinitiative.org/v3/
+- API docs: https://api-v3.monarchinitiative.org/v3/docs
+- HPO browser: https://hpo.jax.org/
 
-Monarch整合了多个生物数据库，包括：
-- **人类**：OMIM、Orphanet、ClinVar
-- **小鼠**：MGI（Mouse Genome Informatics）
-- **斑马鱼**：ZFIN（Zebrafish Information Network）
-- **线虫**：WormBase
-- **果蝇**：FlyBase
-- **酵母**：SGD（Saccharomyces Genome Database）
-- **其他**：多个物种和数据库
+## When to Use This Skill
 
-### 2. 基因和疾病关联
+Use Monarch when:
 
-查询基因与疾病之间的关联，包括：
-- 孟德尔疾病
-- 复杂疾病
-- 药物靶点
-- 基因-疾病证据级别
+- **Rare disease gene discovery**: What genes are associated with my patient's phenotypes (HPO terms)?
+- **Phenotype similarity**: Are two diseases similar based on their phenotypic profiles?
+- **Cross-species modeling**: Are there mouse/zebrafish models for my disease of interest?
+- **HPO term lookup**: Retrieve HPO term names, definitions, and ontology hierarchy
+- **Disease-phenotype mapping**: List all HPO terms associated with a specific disease
+- **Gene-phenotype associations**: What phenotypes are caused by variants in a gene?
+- **Ortholog-phenotype mapping**: Use animal model phenotypes to infer human gene function
 
-### 3. 表型分析
+## Core Capabilities
 
-分析表型数据，包括：
-- 表型相似性
-- 基因型-表型关联
-- 跨物种表型比较
-- 表型本体论（HPO、MP、ZP、WBPhenotype等）
+### 1. Monarch API v3
 
-### 4. 比较基因组学
-
-进行跨物种比较，包括：
-- 同源基因
-- 基因家族
-- 进化保守性
-- 物种特异性基因
-
-### 5. 通路和功能注解
-
-访问通路和功能注解，包括：
-- 基因本体论（GO）
-- 通路数据库（KEGG、Reactome）
-- 蛋白质-蛋白质相互作用
-- 基因调控网络
-
-## 何时使用此技能
-
-在以下情况下使用此技能：
-- 查询跨物种生物医学数据
-- 研究基因与疾病的关联
-- 分析表型相似性和基因型-表型关联
-- 进行比较基因组学研究
-- 查询基因本体论注解
-- 研究进化保守性
-- 查询通路和功能注解
-- 整合多种生物数据库的数据
-
-## API访问
-
-Monarch提供REST API和GraphQL API用于程序化访问。
-
-### REST API
-
-基本端点：
-```
-https://api.monarchinitiative.org/api
-```
-
-常用端点：
-- `/bioentity/gene/{id}` - 获取基因信息
-- `/bioentity/disease/{id}` - 获取疾病信息
-- `/bioentity/phenotype/{id}` - 获取表型信息
-- `/association/between/{gene_id}/{disease_id}` - 获取基因-疾病关联
-- `/homologs/{gene_id}` - 获取同源基因
-- `/similarity/phenotype/{phenotype_id}` - 获取表型相似性
-
-### GraphQL API
-
-GraphQL端点：
-```
-https://api.monarchinitiative.org/api/graphql
-```
-
-使用GraphQL进行复杂查询，获取特定数据。
-
-## 使用示例
-
-### 查询基因信息
+Base URL: `https://api-v3.monarchinitiative.org/v3/`
 
 ```python
 import requests
 
-# 查询基因信息
-gene_id = "HGNC:1100"  # BRCA1
-url = f"https://api.monarchinitiative.org/api/bioentity/gene/{gene_id}"
-response = requests.get(url)
-gene_data = response.json()
+BASE_URL = "https://api-v3.monarchinitiative.org/v3"
 
-print(f"基因名称: {gene_data['name']}")
-print(f"基因符号: {gene_data['symbol']}")
-print(f"描述: {gene_data['description']}")
+def monarch_get(endpoint, params=None):
+    """Make a GET request to the Monarch API."""
+    url = f"{BASE_URL}/{endpoint}"
+    response = requests.get(url, params=params, headers={"Accept": "application/json"})
+    response.raise_for_status()
+    return response.json()
 ```
 
-### 查询基因-疾病关联
+### 2. Phenotype-to-Gene Association (Pheno2Gene)
 
 ```python
-# 查询基因与疾病的关联
-gene_id = "HGNC:1100"  # BRCA1
-url = f"https://api.monarchinitiative.org/api/association/between/{gene_id}"
-response = requests.get(url)
-associations = response.json()
+def get_genes_for_phenotypes(hpo_ids, limit=50, offset=0):
+    """
+    Find genes associated with a list of HPO phenotype terms.
+    Core use case: rare disease differential diagnosis.
 
-for assoc in associations['associations']:
-    disease = assoc['object']
-    print(f"疾病: {disease['name']} (ID: {disease['id']})")
-    print(f"证据: {assoc['evidence']['label']}")
+    Args:
+        hpo_ids: List of HPO term IDs (e.g., ["HP:0001250", "HP:0004322"])
+        limit: Maximum number of results
+    """
+    params = {
+        "terms": hpo_ids,
+        "limit": limit,
+        "offset": offset
+    }
+    return monarch_get("semsim/termset-pairwise-similarity/analyze", params)
+
+def phenotype_to_gene(hpo_ids):
+    """
+    Return genes whose phenotypes match the given HPO terms.
+    Uses semantic similarity scoring.
+    """
+    # Use the /association endpoint for direct phenotype-gene links
+    all_genes = []
+    for hpo_id in hpo_ids:
+        data = monarch_get("association/all", {
+            "subject": hpo_id,
+            "predicate": "biolink:has_phenotype",
+            "category": "biolink:GeneToPhenotypicFeatureAssociation",
+            "limit": 50
+        })
+        for assoc in data.get("items", []):
+            all_genes.append({
+                "phenotype_id": hpo_id,
+                "gene_id": assoc.get("object", {}).get("id"),
+                "gene_name": assoc.get("object", {}).get("name"),
+                "evidence": assoc.get("evidence_type")
+            })
+    return all_genes
+
+# Example: Find genes associated with seizures and short stature
+hpo_terms = ["HP:0001250", "HP:0004322"]  # Seizures, Short stature
+genes = phenotype_to_gene(hpo_terms)
 ```
 
-### 查询同源基因
+### 3. Disease-to-Gene Associations
 
 ```python
-# 查询同源基因
-gene_id = "HGNC:1100"  # BRCA1
-url = f"https://api.monarchinitiative.org/api/homologs/{gene_id}"
-response = requests.get(url)
-homologs = response.json()
+def get_genes_for_disease(disease_id, limit=100):
+    """
+    Get all genes associated with a disease.
+    Disease IDs: OMIM:146300, MONDO:0007739, ORPHANET:558, etc.
+    """
+    params = {
+        "object": disease_id,
+        "category": "biolink:DiseaseToDiseaseAssociation",
+        "limit": limit
+    }
+    # Use the gene-disease association endpoint
+    gene_params = {
+        "subject": disease_id,
+        "category": "biolink:GeneToPhenotypicFeatureAssociation",
+        "limit": limit
+    }
 
-for homolog in homologs['homologs']:
-    print(f"物种: {homolog['taxon']['label']}")
-    print(f"基因符号: {homolog['symbol']}")
-    print(f"同源类型: {homolog['homology_type']}")
+    data = monarch_get("association/all", {
+        "object": disease_id,
+        "predicate": "biolink:has_phenotype",
+        "limit": limit
+    })
+    return data
+
+def get_disease_genes(disease_id, limit=100):
+    """Get genes causally linked to a disease."""
+    data = monarch_get("association/all", {
+        "subject_category": "biolink:Gene",
+        "object": disease_id,
+        "predicate": "biolink:causes",
+        "limit": limit
+    })
+    return data.get("items", [])
+
+# MONDO disease IDs (preferred over OMIM for cross-ontology queries)
+# MONDO:0007739 - Huntington disease
+# MONDO:0009061 - Cystic fibrosis
+# OMIM:104300 - Alzheimer disease, susceptibility to, type 1
 ```
 
-### 查询表型相似性
+### 4. Gene-to-Phenotype and Disease
 
 ```python
-# 查询表型相似性
-phenotype_id = "HP:0001250"  # Seizure
-url = f"https://api.monarchinitiative.org/api/similarity/phenotype/{phenotype_id}"
-response = requests.get(url)
-similarities = response.json()
+def get_phenotypes_for_gene(gene_id, limit=100):
+    """
+    Get all phenotypes associated with a gene.
+    Gene IDs: HGNC:7884, NCBIGene:4137, etc.
+    """
+    data = monarch_get("association/all", {
+        "subject": gene_id,
+        "predicate": "biolink:has_phenotype",
+        "limit": limit
+    })
+    return data.get("items", [])
 
-for sim in similarities['matches']:
-    print(f"表型: {sim['match']['label']}")
-    print(f"相似度: {sim['score']}")
+def get_diseases_for_gene(gene_id, limit=100):
+    """Get diseases caused by variants in a gene."""
+    data = monarch_get("association/all", {
+        "subject": gene_id,
+        "object_category": "biolink:Disease",
+        "limit": limit
+    })
+    return data.get("items", [])
+
+# Example: What diseases does BRCA1 cause?
+brca1_diseases = get_diseases_for_gene("HGNC:1100")
+for assoc in brca1_diseases:
+    print(f"  {assoc.get('object', {}).get('name')} ({assoc.get('object', {}).get('id')})")
 ```
 
-## 数据模型
+### 5. HPO Term Lookup
 
-Monarch使用标准化的数据模型和本体论：
+```python
+def get_hpo_term(hpo_id):
+    """Fetch information about an HPO term."""
+    return monarch_get(f"entity/{hpo_id}")
 
-### 本体论
-- **基因**：NCBI Gene、HGNC
-- **疾病**：MONDO、OMIM、Orphanet、DOID
-- **表型**：HPO（人类表型本体论）、MP（哺乳动物表型本体论）
-- **解剖学**：UBERON（跨物种解剖学本体论）
-- **通路**：GO（基因本体论）、KEGG、Reactome
+def search_hpo_terms(query, limit=20):
+    """Search for HPO terms by name."""
+    params = {
+        "q": query,
+        "category": "biolink:PhenotypicFeature",
+        "limit": limit
+    }
+    return monarch_get("search", params)
 
-### 关联类型
-- **基因-疾病**：孟德尔、关联、治疗靶点
-- **基因-表型**：基因型-表型关联
-- **同源性**：直系同源、旁系同源
-- **通路**：通路成员、调控
+# Example: look up the HPO term for seizures
+seizure_term = get_hpo_term("HP:0001250")
+print(f"Name: {seizure_term.get('name')}")
+print(f"Definition: {seizure_term.get('description')}")
 
-## 最佳实践
+# Search for related terms
+epilepsy_terms = search_hpo_terms("epilepsy")
+for term in epilepsy_terms.get("items", [])[:5]:
+    print(f"  {term['id']}: {term['name']}")
+```
 
-1. **使用标准标识符**：使用HGNC、OMIM、HPO等标准标识符
-2. **理解本体论**：熟悉相关本体论的结构和层次
-3. **验证数据**：验证查询结果的准确性和完整性
-4. **使用API限制**：遵守API速率限制和使用政策
-5. **缓存结果**：缓存常用查询结果以提高性能
-6. **处理分页**：处理大型结果集的分页
-7. **错误处理**：实现适当的错误处理和重试逻辑
+### 6. Semantic Similarity (Disease Comparison)
 
-## 常见问题
+```python
+def compare_disease_phenotypes(disease_id_1, disease_id_2):
+    """
+    Compare two diseases by semantic similarity of their phenotype profiles.
+    Returns similarity score using HPO hierarchy.
+    """
+    params = {
+        "subjects": [disease_id_1],
+        "objects": [disease_id_2],
+        "metric": "ancestor_information_content"
+    }
+    return monarch_get("semsim/compare", params)
 
-**Q: Monarch支持哪些物种？**
-A: Monarch支持人类、小鼠、斑马鱼、线虫、果蝇、酵母等多个物种。
+# Example: Compare Dravet syndrome with CDKL5-deficiency disorder
+similarity = compare_disease_phenotypes("MONDO:0100135", "MONDO:0014917")
+```
 
-**Q: 如何获取基因-疾病关联？**
-A: 使用 `/association/between/{gene_id}` 端点获取基因与疾病的关联。
+### 7. Cross-Species Orthologs
 
-**Q: Monarch的数据来源是什么？**
-A: Monarch整合了OMIM、Orphanet、MGI、ZFIN、WormBase、FlyBase等多个数据库。
+```python
+def get_orthologs(gene_id, species=None):
+    """
+    Get orthologs of a human gene in model organisms.
+    Useful for finding animal models of human diseases.
+    """
+    params = {"limit": 50}
+    if species:
+        params["subject_taxon"] = species
 
-**Q: 如何查询表型相似性？**
-A: 使用 `/similarity/phenotype/{phenotype_id}` 端点查询表型相似性。
+    data = monarch_get("association/all", {
+        "subject": gene_id,
+        "predicate": "biolink:orthologous_to",
+        "limit": 50
+    })
+    return data.get("items", [])
 
-## 资源
+# NCBI Taxonomy IDs for common model organisms:
+# Mouse: 10090 (Mus musculus)
+# Zebrafish: 7955 (Danio rerio)
+# Fruit fly: 7227 (Drosophila melanogaster)
+# C. elegans: 6239
+# Rat: 10116 (Rattus norvegicus)
+```
 
-- **Monarch官方网站**：https://monarchinitiative.org
-- **API文档**：https://monarchinitiative.org/page/about
-- **GraphQL文档**：https://api.monarchinitiative.org/api/graphql
-- **GitHub**：https://github.com/monarch-initiative
+### 8. Full Workflow: Rare Disease Gene Prioritization
+
+```python
+import requests
+import pandas as pd
+
+def rare_disease_gene_finder(patient_hpo_terms, candidate_gene_ids=None, top_n=20):
+    """
+    Find genes that match a patient's HPO phenotype profile.
+
+    Args:
+        patient_hpo_terms: List of HPO IDs from clinical assessment
+        candidate_gene_ids: Optional list to restrict search
+        top_n: Number of top candidates to return
+    """
+    BASE_URL = "https://api-v3.monarchinitiative.org/v3"
+
+    # 1. Find genes associated with each phenotype
+    gene_phenotype_counts = {}
+
+    for hpo_id in patient_hpo_terms:
+        data = requests.get(
+            f"{BASE_URL}/association/all",
+            params={
+                "object": hpo_id,
+                "subject_category": "biolink:Gene",
+                "limit": 100
+            }
+        ).json()
+
+        for item in data.get("items", []):
+            gene_id = item.get("subject", {}).get("id")
+            gene_name = item.get("subject", {}).get("name")
+            if gene_id:
+                if gene_id not in gene_phenotype_counts:
+                    gene_phenotype_counts[gene_id] = {"name": gene_name, "count": 0, "phenotypes": []}
+                gene_phenotype_counts[gene_id]["count"] += 1
+                gene_phenotype_counts[gene_id]["phenotypes"].append(hpo_id)
+
+    # 2. Rank by number of matching phenotypes
+    ranked = sorted(gene_phenotype_counts.items(),
+                    key=lambda x: -x[1]["count"])[:top_n]
+
+    results = []
+    for gene_id, info in ranked:
+        results.append({
+            "gene_id": gene_id,
+            "gene_name": info["name"],
+            "matching_phenotypes": info["count"],
+            "total_patient_phenotypes": len(patient_hpo_terms),
+            "phenotype_overlap": info["count"] / len(patient_hpo_terms),
+            "matching_hpo_terms": info["phenotypes"]
+        })
+
+    return pd.DataFrame(results)
+
+# Example usage
+patient_phenotypes = [
+    "HP:0001250",  # Seizures
+    "HP:0004322",  # Short stature
+    "HP:0001252",  # Hypotonia
+    "HP:0000252",  # Microcephaly
+    "HP:0001263",  # Global developmental delay
+]
+candidates = rare_disease_gene_finder(patient_phenotypes)
+print(candidates[["gene_name", "matching_phenotypes", "phenotype_overlap"]].to_string())
+```
+
+## Query Workflows
+
+### Workflow 1: HPO-Based Differential Diagnosis
+
+1. Extract HPO terms from clinical notes or genetics consultation
+2. Run phenotype-to-gene query against Monarch
+3. Rank candidate genes by number of matching phenotypes
+4. Cross-reference with gnomAD (constraint scores) and ClinVar (variant evidence)
+5. Prioritize genes with high pLI and known pathogenic variants
+
+### Workflow 2: Disease Model Discovery
+
+1. Identify gene or disease of interest
+2. Query Monarch for cross-species orthologs
+3. Find phenotype associations in model organism databases
+4. Identify experimental models that recapitulate human disease features
+
+### Workflow 3: Phenotype Annotation of Novel Genes
+
+1. For a gene with unknown function, query all known phenotype associations
+2. Map to HPO hierarchy to understand affected body systems
+3. Cross-reference with OMIM and ORPHANET for disease links
+
+## Common Identifier Prefixes
+
+| Prefix | Namespace | Example |
+|--------|-----------|---------|
+| `HP:` | Human Phenotype Ontology | HP:0001250 (Seizures) |
+| `MONDO:` | Monarch Disease Ontology | MONDO:0007739 |
+| `OMIM:` | OMIM disease | OMIM:104300 |
+| `ORPHANET:` | Orphanet rare disease | ORPHANET:558 |
+| `HGNC:` | HGNC gene symbol | HGNC:7884 |
+| `NCBIGene:` | NCBI gene ID | NCBIGene:4137 |
+| `ENSEMBL:` | Ensembl gene | ENSEMBL:ENSG... |
+| `MGI:` | Mouse gene | MGI:1338833 |
+| `ZFIN:` | Zebrafish gene | ZFIN:ZDB-GENE... |
+
+## Best Practices
+
+- **Use MONDO IDs** for diseases — they unify OMIM/ORPHANET/MESH identifiers
+- **Use HPO IDs** for phenotypes — the standard for clinical phenotype description
+- **Handle pagination**: Large queries may require iterating with offset parameter
+- **Semantic similarity is better than exact match**: Ancestor HPO terms catch related phenotypes
+- **Cross-validate with ClinVar and OMIM**: Monarch aggregates many sources; quality varies
+- **Use HGNC IDs for genes**: More stable than gene symbols across database versions
+
+## Additional Resources
+
+- **Monarch portal**: https://monarchinitiative.org/
+- **API v3 docs**: https://api-v3.monarchinitiative.org/v3/docs
+- **HPO browser**: https://hpo.jax.org/
+- **MONDO ontology**: https://mondo.monarchinitiative.org/
+- **Citation**: Shefchek KA et al. (2020) Nucleic Acids Research. PMID: 31701156
+- **Phenomizer** (HPO-based diagnosis): https://compbio.charite.de/phenomizer/

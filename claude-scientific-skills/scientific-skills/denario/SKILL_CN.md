@@ -1,6 +1,6 @@
 ---
 name: denario
-description: 用于科学研究辅助的多代理 AI 系统，可自动化从数据分析到发表的研究工作流。此技能应用于从数据集生成研究想法、开发研究方法、执行计算实验、进行文献检索或生成 LaTeX 格式的发表就绪论文时。支持带有可自定义代理编排的端到端研究管道。
+description: Multiagent AI system for scientific research assistance that automates research workflows from data analysis to publication. This skill should be used when generating research ideas from datasets, developing research methodologies, executing computational experiments, performing literature searches, or generating publication-ready papers in LaTeX format. Supports end-to-end research pipelines with customizable agent orchestration.
 license: GPL-3.0 license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,110 +8,110 @@ metadata:
 
 # Denario
 
-## 概述
+## Overview
 
-Denario 是一个多代理 AI 系统，旨在自动化从初始数据分析到发表就绪手稿的科学研究工作流。基于 AG2 和 LangGraph 框架构建，它协调多个专业代理来处理假设生成、方法开发、计算分析和论文写作。
+Denario is a multiagent AI system designed to automate scientific research workflows from initial data analysis through publication-ready manuscripts. Built on AG2 and LangGraph frameworks, it orchestrates multiple specialized agents to handle hypothesis generation, methodology development, computational analysis, and paper writing.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况下使用此技能：
-- 分析数据集以生成新颖的研究假设
-- 开发结构化的研究方法
-- 执行计算实验并生成可视化
-- 进行文献检索以获取研究背景
-- 从研究结果编写期刊格式的 LaTeX 论文
-- 自动化从数据到发表的完整研究管道
+Use this skill when:
+- Analyzing datasets to generate novel research hypotheses
+- Developing structured research methodologies
+- Executing computational experiments and generating visualizations
+- Conducting literature searches for research context
+- Writing journal-formatted LaTeX papers from research results
+- Automating the complete research pipeline from data to publication
 
-## 安装
+## Installation
 
-使用 uv（推荐）安装 denario：
+Install denario using uv (recommended):
 
 ```bash
 uv init
 uv add "denario[app]"
 ```
 
-或使用 pip：
+Or using pip:
 
 ```bash
 uv pip install "denario[app]"
 ```
 
-对于 Docker 部署或从源代码构建，请参阅 `references/installation.md`。
+For Docker deployment or building from source, see `references/installation.md`.
 
-## LLM API 配置
+## LLM API Configuration
 
-Denario 需要来自支持的 LLM 提供商的 API 密钥。支持的提供商包括：
+Denario requires API keys from supported LLM providers. Supported providers include:
 - Google Vertex AI
 - OpenAI
-- 其他与 AG2/LangGraph 兼容的 LLM 服务
+- Other LLM services compatible with AG2/LangGraph
 
-使用环境变量或 `.env` 文件安全地存储 API 密钥。有关包括 Vertex AI 设置在内的详细配置说明，请参阅 `references/llm_configuration.md`。
+Store API keys securely using environment variables or `.env` files. For detailed configuration instructions including Vertex AI setup, see `references/llm_configuration.md`.
 
-## 核心研究工作流
+## Core Research Workflow
 
-Denario 遵循结构化的四阶段研究管道：
+Denario follows a structured four-stage research pipeline:
 
-### 1. 数据描述
+### 1. Data Description
 
-通过指定可用数据和工具来定义研究背景：
+Define the research context by specifying available data and tools:
 
 ```python
 from denario import Denario
 
 den = Denario(project_dir="./my_research")
 den.set_data_description("""
-可用数据集：X 和 Y 的时间序列数据
-工具：pandas、sklearn、matplotlib
-研究领域：[指定领域]
+Available datasets: time-series data on X and Y
+Tools: pandas, sklearn, matplotlib
+Research domain: [specify domain]
 """)
 ```
 
-### 2. 想法生成
+### 2. Idea Generation
 
-从数据描述生成研究假设：
+Generate research hypotheses from the data description:
 
 ```python
 den.get_idea()
 ```
 
-这将根据描述的数据产生研究问题或假设。或者，提供自定义想法：
+This produces a research question or hypothesis based on the described data. Alternatively, provide a custom idea:
 
 ```python
-den.set_idea("自定义研究假设")
+den.set_idea("Custom research hypothesis")
 ```
 
-### 3. 方法开发
+### 3. Methodology Development
 
-开发研究方法：
+Develop the research methodology:
 
 ```python
 den.get_method()
 ```
 
-这创建调查假设的结构化方法。也可以接受带有自定义方法的 markdown 文件：
+This creates a structured approach for investigating the hypothesis. Can also accept markdown files with custom methodologies:
 
 ```python
 den.set_method("path/to/methodology.md")
 ```
 
-### 4. 结果生成
+### 4. Results Generation
 
-执行计算实验并生成分析：
+Execute computational experiments and generate analysis:
 
 ```python
 den.get_results()
 ```
 
-这将运行方法、执行计算、创建可视化并产生发现。也可以提供预先计算的结果：
+This runs the methodology, performs computations, creates visualizations, and produces findings. Can also provide pre-computed results:
 
 ```python
 den.set_results("path/to/results.md")
 ```
 
-### 5. 论文生成
+### 5. Paper Generation
 
-创建发表就绪的 LaTeX 论文：
+Create a publication-ready LaTeX paper:
 
 ```python
 from denario import Journal
@@ -119,94 +119,95 @@ from denario import Journal
 den.get_paper(journal=Journal.APS)
 ```
 
-生成的论文包括为指定期刊的正确格式、集成图表和完整的 LaTeX 源代码。
+The generated paper includes proper formatting for the specified journal, integrated figures, and complete LaTeX source.
 
-## 可用期刊
+## Available Journals
 
-Denario 支持多种期刊格式样式：
-- `Journal.APS` - 美国物理学会格式
-- 其他期刊可能可用；请参阅 `references/research_pipeline.md` 获取完整列表
+Denario supports multiple journal formatting styles:
+- `Journal.APS` - American Physical Society format
+- Additional journals may be available; check `references/research_pipeline.md` for the complete list
 
-## 启动 GUI
+## Launching the GUI
 
-运行图形用户界面：
+Run the graphical user interface:
 
 ```bash
 denario run
 ```
 
-这将启动一个用于交互式研究工作流管理的基于 Web 的界面。
+This launches a web-based interface for interactive research workflow management.
 
-## 常见工作流
+## Common Workflows
 
-### 端到端研究管道
+### End-to-End Research Pipeline
 
 ```python
 from denario import Denario, Journal
 
-# 初始化项目
+# Initialize project
 den = Denario(project_dir="./research_project")
 
-# 定义研究背景
+# Define research context
 den.set_data_description("""
-数据集：[现象]的时间序列测量
-可用工具：pandas、sklearn、scipy
-研究目标：调查[研究问题]
+Dataset: Time-series measurements of [phenomenon]
+Available tools: pandas, sklearn, scipy
+Research goal: Investigate [research question]
 """)
 
-# 生成研究想法
+# Generate research idea
 den.get_idea()
 
-# 开发方法
+# Develop methodology
 den.get_method()
 
-# 执行分析
+# Execute analysis
 den.get_results()
 
-# 创建发表物
+# Create publication
 den.get_paper(journal=Journal.APS)
 ```
 
-### 混合工作流（自定义 + 自动化）
+### Hybrid Workflow (Custom + Automated)
 
 ```python
-# 提供自定义研究想法
-den.set_idea("使用时间序列分析调查 X 和 Y 之间的相关性")
+# Provide custom research idea
+den.set_idea("Investigate the correlation between X and Y using time-series analysis")
 
-# 自动生成方法
+# Auto-generate methodology
 den.get_method()
 
-# 自动生成结果
+# Auto-generate results
 den.get_results()
 
-# 生成论文
+# Generate paper
 den.get_paper(journal=Journal.APS)
 ```
 
-### 文献检索集成
+### Literature Search Integration
 
-有关文献检索功能和额外工作流示例，请参阅 `references/examples.md`。
+For literature search functionality and additional workflow examples, see `references/examples.md`.
 
-## 高级功能
+## Advanced Features
 
-- **多代理编排**：AG2 和 LangGraph 协调用于不同研究任务的专业代理
-- **可重复研究**：所有阶段产生可版本控制的结构化输出
-- **期刊集成**：自动格式化以适应目标发表场所
-- **灵活输入**：每个管道阶段的手动或自动化
-- **Docker 部署**：带有 LaTeX 和所有依赖项的容器化环境
+- **Multiagent orchestration**: AG2 and LangGraph coordinate specialized agents for different research tasks
+- **Reproducible research**: All stages produce structured outputs that can be version-controlled
+- **Journal integration**: Automatic formatting for target publication venues
+- **Flexible input**: Manual or automated at each pipeline stage
+- **Docker deployment**: Containerized environment with LaTeX and all dependencies
 
-## 详细参考
+## Detailed References
 
-有关全面的文档：
-- **安装选项**：`references/installation.md`
-- **LLM 配置**：`references/llm_configuration.md`
-- **完整 API 参考**：`references/research_pipeline.md`
-- **示例工作流**：`references/examples.md`
+For comprehensive documentation:
+- **Installation options**: `references/installation.md`
+- **LLM configuration**: `references/llm_configuration.md`
+- **Complete API reference**: `references/research_pipeline.md`
+- **Example workflows**: `references/examples.md`
 
-## 故障排除
+## Troubleshooting
 
-常见问题和解决方案：
-- **API 密钥错误**：确保正确设置了环境变量（请参阅 `references/llm_configuration.md`）
-- **LaTeX 编译**：安装 TeX 发行版或使用预安装 LaTeX 的 Docker 镜像
-- **包冲突**：使用虚拟环境或 Docker 进行隔离
-- **Python 版本**：需要 Python 3.12 或更高版本
+Common issues and solutions:
+- **API key errors**: Ensure environment variables are set correctly (see `references/llm_configuration.md`)
+- **LaTeX compilation**: Install TeX distribution or use Docker image with pre-installed LaTeX
+- **Package conflicts**: Use virtual environments or Docker for isolation
+- **Python version**: Requires Python 3.12 or higher
+

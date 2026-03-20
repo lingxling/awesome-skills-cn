@@ -1,99 +1,99 @@
 ---
 name: chembl-database
-description: 查询 ChEMBL 生物活性分子和药物发现数据。按结构/属性搜索化合物,检索生物活性数据(IC50、Ki),查找抑制剂,进行 SAR 研究,用于药物化学。
+description: Query ChEMBL bioactive molecules and drug discovery data. Search compounds by structure/properties, retrieve bioactivity data (IC50, Ki), find inhibitors, perform SAR studies, for medicinal chemistry.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# ChEMBL 数据库
+# ChEMBL Database
 
-## 概述
+## Overview
 
-ChEMBL 是由欧洲生物信息学研究所(EBI)维护的手工策展生物活性分子数据库,包含超过200万个化合物、1900万个生物活性测量、13,000+药物靶点以及已批准药物和临床候选药物的数据。使用 ChEMBL Python 客户端以编程方式访问和查询此数据,用于药物发现和药物化学研究。
+ChEMBL is a manually curated database of bioactive molecules maintained by the European Bioinformatics Institute (EBI), containing over 2 million compounds, 19 million bioactivity measurements, 13,000+ drug targets, and data on approved drugs and clinical candidates. Access and query this data programmatically using the ChEMBL Python client for drug discovery and medicinal chemistry research.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况下使用此技能:
+This skill should be used when:
 
-- **化合物搜索**: 按名称、结构或属性查找分子
-- **靶点信息**: 检索蛋白质、酶或生物靶点的数据
-- **生物活性数据**: 查询 IC50、Ki、EC50 或其他活性测量值
-- **药物信息**: 查找已批准药物、机制或适应症
-- **结构搜索**: 执行相似性或子结构搜索
-- **化学信息学**: 分析分子属性和药物相似性
-- **靶点-配体关系**: 探索化合物-靶点相互作用
-- **药物发现**: 识别抑制剂、激动剂或生物活性分子
+- **Compound searches**: Finding molecules by name, structure, or properties
+- **Target information**: Retrieving data about proteins, enzymes, or biological targets
+- **Bioactivity data**: Querying IC50, Ki, EC50, or other activity measurements
+- **Drug information**: Looking up approved drugs, mechanisms, or indications
+- **Structure searches**: Performing similarity or substructure searches
+- **Cheminformatics**: Analyzing molecular properties and drug-likeness
+- **Target-ligand relationships**: Exploring compound-target interactions
+- **Drug discovery**: Identifying inhibitors, agonists, or bioactive molecules
 
-## 安装和设置
+## Installation and Setup
 
-### Python 客户端
+### Python Client
 
-ChEMBL Python 客户端是编程访问所必需的:
+The ChEMBL Python client is required for programmatic access:
 
 ```bash
 uv pip install chembl_webresource_client
 ```
 
-### 基本使用模式
+### Basic Usage Pattern
 
 ```python
 from chembl_webresource_client.new_client import new_client
 
-# 访问不同端点
+# Access different endpoints
 molecule = new_client.molecule
 target = new_client.target
 activity = new_client.activity
 drug = new_client.drug
 ```
 
-## 核心功能
+## Core Capabilities
 
-### 1. 分子查询
+### 1. Molecule Queries
 
-**按 ChEMBL ID 检索:**
+**Retrieve by ChEMBL ID:**
 ```python
 molecule = new_client.molecule
 aspirin = molecule.get('CHEMBL25')
 ```
 
-**按名称搜索:**
+**Search by name:**
 ```python
 results = molecule.filter(pref_name__icontains='aspirin')
 ```
 
-**按属性筛选:**
+**Filter by properties:**
 ```python
-# 查找小分子(MW <= 500)且 LogP 有利
+# Find small molecules (MW <= 500) with favorable LogP
 results = molecule.filter(
     molecule_properties__mw_freebase__lte=500,
     molecule_properties__alogp__lte=5
 )
 ```
 
-### 2. 靶点查询
+### 2. Target Queries
 
-**检索靶点信息:**
+**Retrieve target information:**
 ```python
 target = new_client.target
 egfr = target.get('CHEMBL203')
 ```
 
-**搜索特定靶点类型:**
+**Search for specific target types:**
 ```python
-# 查找所有激酶靶点
+# Find all kinase targets
 kinases = target.filter(
     target_type='SINGLE PROTEIN',
     pref_name__icontains='kinase'
 )
 ```
 
-### 3. 生物活性数据
+### 3. Bioactivity Data
 
-**查询靶点的活性:**
+**Query activities for a target:**
 ```python
 activity = new_client.activity
-# 查找强效 EGFR 抑制剂
+# Find potent EGFR inhibitors
 results = activity.filter(
     target_chembl_id='CHEMBL203',
     standard_type='IC50',
@@ -102,7 +102,7 @@ results = activity.filter(
 )
 ```
 
-**获取化合物的所有活性:**
+**Get all activities for a compound:**
 ```python
 compound_activities = activity.filter(
     molecule_chembl_id='CHEMBL25',
@@ -110,56 +110,56 @@ compound_activities = activity.filter(
 )
 ```
 
-### 4. 基于结构的搜索
+### 4. Structure-Based Searches
 
-**相似性搜索:**
+**Similarity search:**
 ```python
 similarity = new_client.similarity
-# 查找与阿司匹林相似的化合物
+# Find compounds similar to aspirin
 similar = similarity.filter(
     smiles='CC(=O)Oc1ccccc1C(=O)O',
-    similarity=85  # 85% 相似性阈值
+    similarity=85  # 85% similarity threshold
 )
 ```
 
-**子结构搜索:**
+**Substructure search:**
 ```python
 substructure = new_client.substructure
-# 查找含有苯环的化合物
+# Find compounds containing benzene ring
 results = substructure.filter(smiles='c1ccccc1')
 ```
 
-### 5. 药物信息
+### 5. Drug Information
 
-**检索药物数据:**
+**Retrieve drug data:**
 ```python
 drug = new_client.drug
 drug_info = drug.get('CHEMBL25')
 ```
 
-**获取作用机制:**
+**Get mechanisms of action:**
 ```python
 mechanism = new_client.mechanism
 mechanisms = mechanism.filter(molecule_chembl_id='CHEMBL25')
 ```
 
-**查询药物适应症:**
+**Query drug indications:**
 ```python
 drug_indication = new_client.drug_indication
 indications = drug_indication.filter(molecule_chembl_id='CHEMBL25')
 ```
 
-## 查询工作流程
+## Query Workflow
 
-### 工作流程 1: 查找靶点的抑制剂
+### Workflow 1: Finding Inhibitors for a Target
 
-1. **通过搜索识别靶点**:
+1. **Identify the target** by searching by name:
    ```python
    targets = new_client.target.filter(pref_name__icontains='EGFR')
    target_id = targets[0]['target_chembl_id']
    ```
 
-2. **查询该靶点的生物活性数据**:
+2. **Query bioactivity data** for that target:
    ```python
    activities = new_client.activity.filter(
        target_chembl_id=target_id,
@@ -168,37 +168,37 @@ indications = drug_indication.filter(molecule_chembl_id='CHEMBL25')
    )
    ```
 
-3. **提取化合物 ID 并检索详细信息**:
+3. **Extract compound IDs** and retrieve details:
    ```python
    compound_ids = [act['molecule_chembl_id'] for act in activities]
    compounds = [new_client.molecule.get(cid) for cid in compound_ids]
    ```
 
-### 工作流程 2: 分析已知药物
+### Workflow 2: Analyzing a Known Drug
 
-1. **获取药物信息**:
+1. **Get drug information**:
    ```python
    drug_info = new_client.drug.get('CHEMBL1234')
    ```
 
-2. **检索机制**:
+2. **Retrieve mechanisms**:
    ```python
    mechanisms = new_client.mechanism.filter(molecule_chembl_id='CHEMBL1234')
    ```
 
-3. **查找所有生物活性**:
+3. **Find all bioactivities**:
    ```python
    activities = new_client.activity.filter(molecule_chembl_id='CHEMBL1234')
    ```
 
-### 工作流程 3: 结构-活性关系(SAR)研究
+### Workflow 3: Structure-Activity Relationship (SAR) Study
 
-1. **查找相似化合物**:
+1. **Find similar compounds**:
    ```python
    similar = new_client.similarity.filter(smiles='query_smiles', similarity=80)
    ```
 
-2. **获取每个化合物的活性**:
+2. **Get activities for each compound**:
    ```python
    for compound in similar:
        activities = new_client.activity.filter(
@@ -206,24 +206,24 @@ indications = drug_indication.filter(molecule_chembl_id='CHEMBL25')
        )
    ```
 
-3. **使用结果中的分子属性分析属性-活性关系**。
+3. **Analyze property-activity relationships** using molecular properties from results.
 
-## 筛选运算符
+## Filter Operators
 
-ChEMBL 支持 Django 风格的查询筛选器:
+ChEMBL supports Django-style query filters:
 
-- `__exact` - 精确匹配
-- `__iexact` - 不区分大小写的精确匹配
-- `__contains` / `__icontains` - 子字符串匹配
-- `__startswith` / `__endswith` - 前缀/后缀匹配
-- `__gt`、`__gte`、`__lt`、`__lte` - 数值比较
-- `__range` - 值在范围内
-- `__in` - 值在列表中
-- `__isnull` - 空值/非空值检查
+- `__exact` - Exact match
+- `__iexact` - Case-insensitive exact match
+- `__contains` / `__icontains` - Substring matching
+- `__startswith` / `__endswith` - Prefix/suffix matching
+- `__gt`, `__gte`, `__lt`, `__lte` - Numeric comparisons
+- `__range` - Value in range
+- `__in` - Value in list
+- `__isnull` - Null/not null check
 
-## 数据导出和分析
+## Data Export and Analysis
 
-将结果转换为 pandas DataFrame 进行分析:
+Convert results to pandas DataFrame for analysis:
 
 ```python
 import pandas as pd
@@ -231,62 +231,62 @@ import pandas as pd
 activities = new_client.activity.filter(target_chembl_id='CHEMBL203')
 df = pd.DataFrame(list(activities))
 
-# 分析结果
+# Analyze results
 print(df['standard_value'].describe())
 print(df.groupby('standard_type').size())
 ```
 
-## 性能优化
+## Performance Optimization
 
-### 缓存
+### Caching
 
-客户端自动缓存结果24小时。配置缓存:
+The client automatically caches results for 24 hours. Configure caching:
 
 ```python
 from chembl_webresource_client.settings import Settings
 
-# 禁用缓存
+# Disable caching
 Settings.Instance().CACHING = False
 
-# 调整缓存过期时间(秒)
+# Adjust cache expiration (seconds)
 Settings.Instance().CACHE_EXPIRE = 86400
 ```
 
-### 延迟求值
+### Lazy Evaluation
 
-查询仅在访问数据时执行。转换为列表以强制执行:
+Queries execute only when data is accessed. Convert to list to force execution:
 
 ```python
-# 查询尚未执行
+# Query is not executed yet
 results = molecule.filter(pref_name__icontains='aspirin')
 
-# 强制执行
+# Force execution
 results_list = list(results)
 ```
 
-### 分页
+### Pagination
 
-结果自动分页。迭代所有结果:
+Results are paginated automatically. Iterate through all results:
 
 ```python
 for activity in new_client.activity.filter(target_chembl_id='CHEMBL203'):
-    # 处理每个活性
+    # Process each activity
     print(activity['molecule_chembl_id'])
 ```
 
-## 常见用例
+## Common Use Cases
 
-### 查找激酶抑制剂
+### Find Kinase Inhibitors
 
 ```python
-# 识别激酶靶点
+# Identify kinase targets
 kinases = new_client.target.filter(
     target_type='SINGLE PROTEIN',
     pref_name__icontains='kinase'
 )
 
-# 获取强效抑制剂
-for kinase in kinases[:5]:  # 前5个激酶
+# Get potent inhibitors
+for kinase in kinases[:5]:  # First 5 kinases
     activities = new_client.activity.filter(
         target_chembl_id=kinase['target_chembl_id'],
         standard_type='IC50',
@@ -294,23 +294,23 @@ for kinase in kinases[:5]:  # 前5个激酶
     )
 ```
 
-### 探索药物重定位
+### Explore Drug Repurposing
 
 ```python
-# 获取已批准药物
+# Get approved drugs
 drugs = new_client.drug.filter()
 
-# 对每个药物,查找所有靶点
+# For each drug, find all targets
 for drug in drugs[:10]:
     mechanisms = new_client.mechanism.filter(
         molecule_chembl_id=drug['molecule_chembl_id']
     )
 ```
 
-### 虚拟筛选
+### Virtual Screening
 
 ```python
-# 查找具有所需属性的化合物
+# Find compounds with desired properties
 candidates = new_client.molecule.filter(
     molecule_properties__mw_freebase__range=[300, 500],
     molecule_properties__alogp__lte=5,
@@ -319,68 +319,69 @@ candidates = new_client.molecule.filter(
 )
 ```
 
-## 资源
+## Resources
 
 ### scripts/example_queries.py
 
-即用型 Python 函数,演示常见的 ChEMBL 查询模式:
+Ready-to-use Python functions demonstrating common ChEMBL query patterns:
 
-- `get_molecule_info()` - 按 ID 检索分子详细信息
-- `search_molecules_by_name()` - 基于名称的分子搜索
-- `find_molecules_by_properties()` - 基于属性的筛选
-- `get_bioactivity_data()` - 查询靶点的生物活性
-- `find_similar_compounds()` - 相似性搜索
-- `substructure_search()` - 子结构匹配
-- `get_drug_info()` - 检索药物信息
-- `find_kinase_inhibitors()` - 专用激酶抑制剂搜索
-- `export_to_dataframe()` - 将结果转换为 pandas DataFrame
+- `get_molecule_info()` - Retrieve molecule details by ID
+- `search_molecules_by_name()` - Name-based molecule search
+- `find_molecules_by_properties()` - Property-based filtering
+- `get_bioactivity_data()` - Query bioactivities for targets
+- `find_similar_compounds()` - Similarity searching
+- `substructure_search()` - Substructure matching
+- `get_drug_info()` - Retrieve drug information
+- `find_kinase_inhibitors()` - Specialized kinase inhibitor search
+- `export_to_dataframe()` - Convert results to pandas DataFrame
 
-查阅此脚本以获取实现细节和使用示例。
+Consult this script for implementation details and usage examples.
 
 ### references/api_reference.md
 
-全面的 API 文档包括:
+Comprehensive API documentation including:
 
-- 完整端点列表(molecule、target、activity、assay、drug 等)
-- 所有筛选运算符和查询模式
-- 分子属性和生物活性字段
-- 高级查询示例
-- 配置和性能调优
-- 错误处理和速率限制
+- Complete endpoint listing (molecule, target, activity, assay, drug, etc.)
+- All filter operators and query patterns
+- Molecular properties and bioactivity fields
+- Advanced query examples
+- Configuration and performance tuning
+- Error handling and rate limiting
 
-需要详细 API 信息或排查查询问题时参考此文档。
+Refer to this document when detailed API information is needed or when troubleshooting queries.
 
-## 重要说明
+## Important Notes
 
-### 数据可靠性
+### Data Reliability
 
-- ChEMBL 数据是手工策展的,但可能包含不一致
-- 始终检查活性记录中的 `data_validity_comment` 字段
-- 注意 `potential_duplicate` 标志
+- ChEMBL data is manually curated but may contain inconsistencies
+- Always check `data_validity_comment` field in activity records
+- Be aware of `potential_duplicate` flags
 
-### 单位和标准
+### Units and Standards
 
-- 生物活性值使用标准单位(nM、uM 等)
-- `pchembl_value` 提供标准化活性(-log 标度)
-- 检查 `standard_type` 以了解测量类型(IC50、Ki、EC50 等)
+- Bioactivity values use standard units (nM, uM, etc.)
+- `pchembl_value` provides normalized activity (-log scale)
+- Check `standard_type` to understand measurement type (IC50, Ki, EC50, etc.)
 
-### 速率限制
+### Rate Limiting
 
-- 遵守 ChEMBL 的公平使用政策
-- 使用缓存以最小化重复请求
-- 对于大型数据集,考虑批量下载
-- 避免快速连续请求对 API 造成过大压力
+- Respect ChEMBL's fair usage policies
+- Use caching to minimize repeated requests
+- Consider bulk downloads for large datasets
+- Avoid hammering the API with rapid consecutive requests
 
-### 化学结构格式
+### Chemical Structure Formats
 
-- SMILES 字符串是主要结构格式
-- 化合物提供 InChI 键
-- 可以通过图像端点生成 SVG 图像
+- SMILES strings are the primary structure format
+- InChI keys available for compounds
+- SVG images can be generated via the image endpoint
 
-## 其他资源
+## Additional Resources
 
-- ChEMBL 网站: https://www.ebi.ac.uk/chembl/
-- API 文档: https://www.ebi.ac.uk/chembl/api/data/docs
-- Python 客户端 GitHub: https://github.com/chembl/chembl_webresource_client
-- 接口文档: https://chembl.gitbook.io/chembl-interface-documentation/
-- 示例笔记本: https://github.com/chembl/notebooks
+- ChEMBL website: https://www.ebi.ac.uk/chembl/
+- API documentation: https://www.ebi.ac.uk/chembl/api/data/docs
+- Python client GitHub: https://github.com/chembl/chembl_webresource_client
+- Interface documentation: https://chembl.gitbook.io/chembl-interface-documentation/
+- Example notebooks: https://github.com/chembl/notebooks
+

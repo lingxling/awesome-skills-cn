@@ -1,251 +1,454 @@
-# Skills CLI 中文翻译
+# skills
 
-> 本文档是 [Vercel Skills CLI](https://github.com/vercel-labs/skills) 的中文翻译版本。
+The CLI for the open agent skills ecosystem.
 
-## 关于本翻译
+<!-- agent-list:start -->
+Supports **OpenCode**, **Claude Code**, **Codex**, **Cursor**, and [39 more](#available-agents).
+<!-- agent-list:end -->
 
-### 原项目介绍
-
-**Skills CLI** 是开放代理技能生态系统的命令行工具，用于管理 AI 编程助手的技能包。它支持 40+ 种 AI 编程助手，包括：
-
-- Claude Code
-- Cursor
-- OpenCode
-- Codex
-- Trae
-- Windsurf
-- GitHub Copilot
-- 以及更多...
-
-Skills CLI 让你可以：
-- **安装技能** - 从 GitHub 或其他来源安装技能包
-- **查找技能** - 交互式搜索或关键词搜索技能
-- **管理技能** - 列表、更新、移除已安装的技能
-- **创建技能** - 创建新的技能模板
-
-### 翻译说明
-
-本翻译将原项目的核心文档翻译成中文，帮助中文用户更好地理解和使用 Skills CLI。
-
-### 翻译内容
-
-- `skills/find-skills/SKILL.md` - 技能发现与安装指南的中文翻译
-
-### 翻译原则
-
-- 保持技术术语的准确性
-- 使用简洁明了的中文表达
-- 保留原文档的结构和格式
-- 命令示例保持原样（不翻译命令）
-
-### 原项目链接
-
-- [GitHub 仓库](https://github.com/vercel-labs/skills)
-- [技能目录](https://skills.sh)
-- [代理技能规范](https://agentskills.io)
-
-### 翻译项目
-
-本翻译属于 [awesome-skills-cn](https://github.com/lingxling/awesome-skills-cn) 项目的一部分，致力于将优秀的英文 SKILL 翻译成中文。
-
----
-以下是原README.md的内容：
-
-## 安装skills
+## Install a Skill
 
 ```bash
 npx skills add vercel-labs/agent-skills
 ```
 
-### 源格式
+### Source Formats
 
 ```bash
-# GitHub 简写 (owner/repo)
+# GitHub shorthand (owner/repo)
 npx skills add vercel-labs/agent-skills
 
-# 完整 GitHub URL
+# Full GitHub URL
 npx skills add https://github.com/vercel-labs/agent-skills
 
-# 仓库中特定技能的直接路径
+# Direct path to a skill in a repo
 npx skills add https://github.com/vercel-labs/agent-skills/tree/main/skills/web-design-guidelines
 
 # GitLab URL
 npx skills add https://gitlab.com/org/repo
 
-# 任何 git URL
+# Any git URL
 npx skills add git@github.com:vercel-labs/agent-skills.git
 
-# 本地路径
+# Local path
 npx skills add ./my-local-skills
 ```
 
-### 可选项
+### Options
 
-| 选项                    | 描述                                                                                                                                        |
+| Option                    | Description                                                                                                                                        |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-g, --global`            | 安装到用户目录而不是项目目录                                                                                                       |
-| `-a, --agent <agents...>` | <!-- agent-names:start -->目标特定代理（例如，`claude-code`、`codex`）。参见[可用代理](#available-agents)<!-- agent-names:end -->                  |
-| `-s, --skill <skills...>` | 按名称安装特定技能（使用 `'*'` 安装所有技能）                                                                                         |
-| `-l, --list`              | 列出可用技能而不安装                                                                                                           |
-| `--copy`                  | 复制文件而不是符号链接到代理目录                                                                                              |
-| `-y, --yes`               | 跳过所有确认提示                                                                                                                      |
-| `--all`                   | 在不提示的情况下将所有技能安装到所有代理                                                                                                   |
+| `-g, --global`            | Install to user directory instead of project                                                                                                       |
+| `-a, --agent <agents...>` | <!-- agent-names:start -->Target specific agents (e.g., `claude-code`, `codex`). See [Available Agents](#available-agents)<!-- agent-names:end --> |
+| `-s, --skill <skills...>` | Install specific skills by name (use `'*'` for all skills)                                                                                         |
+| `-l, --list`              | List available skills without installing                                                                                                           |
+| `--copy`                  | Copy files instead of symlinking to agent directories                                                                                              |
+| `-y, --yes`               | Skip all confirmation prompts                                                                                                                      |
+| `--all`                   | Install all skills to all agents without prompts                                                                                                   |
 
-### 示例
+### Examples
 
 ```bash
-# 列出仓库中的技能
+# List skills in a repository
 npx skills add vercel-labs/agent-skills --list
 
-# 安装特定技能
+# Install specific skills
 npx skills add vercel-labs/agent-skills --skill frontend-design --skill skill-creator
 
-# 安装名称中包含空格的技能（必须加引号）
+# Install a skill with spaces in the name (must be quoted)
 npx skills add owner/repo --skill "Convex Best Practices"
 
-# 安装到特定代理
+# Install to specific agents
 npx skills add vercel-labs/agent-skills -a claude-code -a opencode
 
-# 非交互式安装（CI/CD 友好）
+# Non-interactive installation (CI/CD friendly)
 npx skills add vercel-labs/agent-skills --skill frontend-design -g -a claude-code -y
 
-# 将仓库中的所有技能安装到所有代理
+# Install all skills from a repo to all agents
 npx skills add vercel-labs/agent-skills --all
 
-# 将所有技能安装到特定代理
+# Install all skills to specific agents
 npx skills add vercel-labs/agent-skills --skill '*' -a claude-code
 
-# 将特定技能安装到所有代理
+# Install specific skills to all agents
 npx skills add vercel-labs/agent-skills --agent '*' --skill frontend-design
 ```
 
-### 安装范围
+### Installation Scope
 
-| 范围       | 标志      | 位置            | 使用场景                                      |
+| Scope       | Flag      | Location            | Use Case                                      |
 | ----------- | --------- | ------------------- | --------------------------------------------- |
-| **项目** | (默认) | `./<agent>/skills/` | 与项目一起提交，与团队共享 |
-| **全局**  | `-g`      | `~/<agent>/skills/` | 在所有项目中可用                 |
+| **Project** | (default) | `./<agent>/skills/` | Committed with your project, shared with team |
+| **Global**  | `-g`      | `~/<agent>/skills/` | Available across all projects                 |
 
-### 安装方法
+### Installation Methods
 
-交互式安装时，您可以选择：
+When installing interactively, you can choose:
 
-| 方法                    | 描述                                                                                 |
+| Method                    | Description                                                                                 |
 | ------------------------- | ------------------------------------------------------------------------------------------- |
-| **符号链接**（推荐） | 从每个代理创建符号链接到规范副本。单一事实来源，易于更新。 |
-| **复制**                  | 为每个代理创建独立副本。当不支持符号链接时使用。              |
+| **Symlink** (Recommended) | Creates symlinks from each agent to a canonical copy. Single source of truth, easy updates. |
+| **Copy**                  | Creates independent copies for each agent. Use when symlinks aren't supported.              |
 
-## 其他命令
+## Other Commands
 
-| 命令                      | 描述                                    |
+| Command                      | Description                                    |
 | ---------------------------- | ---------------------------------------------- |
-| `npx skills list`            | 列出已安装的技能（别名：`ls`）            |
-| `npx skills find [query]`    | 交互式或按关键词搜索技能  |
-| `npx skills remove [skills]` | 从代理中移除已安装的技能            |
-| `npx skills check`           | 检查可用的技能更新              |
-| `npx skills update`          | 将所有已安装的技能更新到最新版本 |
-| `npx skills init [name]`     | 创建新的 SKILL.md 模板                 |
+| `npx skills list`            | List installed skills (alias: `ls`)            |
+| `npx skills find [query]`    | Search for skills interactively or by keyword  |
+| `npx skills remove [skills]` | Remove installed skills from agents            |
+| `npx skills check`           | Check for available skill updates              |
+| `npx skills update`          | Update all installed skills to latest versions |
+| `npx skills init [name]`     | Create a new SKILL.md template                 |
 
 ### `skills list`
 
-列出所有已安装的技能。类似于 `npm ls`。
+List all installed skills. Similar to `npm ls`.
 
 ```bash
-# 列出所有已安装的技能（项目和全局）
+# List all installed skills (project and global)
 npx skills list
 
-# 仅列出全局技能
+# List only global skills
 npx skills ls -g
 
-# 按特定代理过滤
+# Filter by specific agents
 npx skills ls -a claude-code -a cursor
 ```
 
 ### `skills find`
 
-交互式或按关键词搜索技能。
+Search for skills interactively or by keyword.
 
 ```bash
-# 交互式搜索（fzf 风格）
+# Interactive search (fzf-style)
 npx skills find
 
-# 按关键词搜索
+# Search by keyword
 npx skills find typescript
 ```
 
 ### `skills check` / `skills update`
 
 ```bash
-# 检查是否有任何已安装的技能有更新
+# Check if any installed skills have updates
 npx skills check
 
-# 将所有技能更新到最新版本
+# Update all skills to latest versions
 npx skills update
 ```
 
 ### `skills init`
 
 ```bash
-# 在当前目录创建 SKILL.md
+# Create SKILL.md in current directory
 npx skills init
 
-# 在子目录中创建新技能
+# Create a new skill in a subdirectory
 npx skills init my-skill
 ```
 
 ### `skills remove`
 
-从代理中移除已安装的技能。
+Remove installed skills from agents.
 
 ```bash
-# 交互式移除（从已安装的技能中选择）
+# Remove interactively (select from installed skills)
 npx skills remove
 
-# 按名称移除特定技能
+# Remove specific skill by name
 npx skills remove web-design-guidelines
 
-# 移除多个技能
+# Remove multiple skills
 npx skills remove frontend-design web-design-guidelines
 
-# 从全局范围移除
+# Remove from global scope
 npx skills remove --global web-design-guidelines
 
-# 仅从特定代理移除
+# Remove from specific agents only
 npx skills remove --agent claude-code cursor my-skill
 
-# 在不确认的情况下移除所有已安装的技能
+# Remove all installed skills without confirmation
 npx skills remove --all
 
-# 从特定代理移除所有技能
+# Remove all skills from a specific agent
 npx skills remove --skill '*' -a cursor
 
-# 从所有代理移除特定技能
+# Remove a specific skill from all agents
 npx skills remove my-skill --agent '*'
 
-# 使用 'rm' 别名
+# Use 'rm' alias
 npx skills rm my-skill
 ```
 
-| 选项         | 描述                                      |
+| Option         | Description                                      |
 | -------------- | ------------------------------------------------ |
-| `-g, --global` | 从全局范围（~/）而不是项目移除 |
-| `-a, --agent`  | 从特定代理移除（对所有使用 `'*'）  |
-| `-s, --skill`  | 指定要移除的技能（对所有使用 `'*'）     |
-| `-y, --yes`    | 跳过确认提示                        |
-| `--all`        | `--skill '*' --agent '*' -y` 的简写       |
+| `-g, --global` | Remove from global scope (~/) instead of project |
+| `-a, --agent`  | Remove from specific agents (use `'*'` for all)  |
+| `-s, --skill`  | Specify skills to remove (use `'*'` for all)     |
+| `-y, --yes`    | Skip confirmation prompts                        |
+| `--all`        | Shorthand for `--skill '*' --agent '*' -y`       |
 
-## 什么是代理技能？
+## What are Agent Skills?
 
-代理技能是可重用的指令集，用于扩展您的编码代理的能力。它们定义在包含 `name` 和 `description` 的 YAML 前置数据的 `SKILL.md` 文件中。
+Agent skills are reusable instruction sets that extend your coding agent's capabilities. They're defined in `SKILL.md`
+files with YAML frontmatter containing a `name` and `description`.
 
-技能让代理可以执行专业任务，例如：
+Skills let agents perform specialized tasks like:
 
-- 从 git 历史生成发布说明
-- 按照团队的约定创建 PR
-- 与外部工具集成（Linear、Notion 等）
+- Generating release notes from git history
+- Creating PRs following your team's conventions
+- Integrating with external tools (Linear, Notion, etc.)
 
-在 **[skills.sh](https://skills.sh)** 发现技能
+Discover skills at **[skills.sh](https://skills.sh)**
 
-## 支持的代理
+## Supported Agents
 
-技能可以安装到以下任何代理：
+Skills can be installed to any of these agents:
+
+<!-- supported-agents:start -->
+| Agent | `--agent` | Project Path | Global Path |
+|-------|-----------|--------------|-------------|
+| Amp, Kimi Code CLI, Replit, Universal | `amp`, `kimi-cli`, `replit`, `universal` | `.agents/skills/` | `~/.config/agents/skills/` |
+| Antigravity | `antigravity` | `.agents/skills/` | `~/.gemini/antigravity/skills/` |
+| Augment | `augment` | `.augment/skills/` | `~/.augment/skills/` |
+| Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
+| OpenClaw | `openclaw` | `skills/` | `~/.openclaw/skills/` |
+| Cline, Warp | `cline`, `warp` | `.agents/skills/` | `~/.agents/skills/` |
+| CodeBuddy | `codebuddy` | `.codebuddy/skills/` | `~/.codebuddy/skills/` |
+| Codex | `codex` | `.agents/skills/` | `~/.codex/skills/` |
+| Command Code | `command-code` | `.commandcode/skills/` | `~/.commandcode/skills/` |
+| Continue | `continue` | `.continue/skills/` | `~/.continue/skills/` |
+| Cortex Code | `cortex` | `.cortex/skills/` | `~/.snowflake/cortex/skills/` |
+| Crush | `crush` | `.crush/skills/` | `~/.config/crush/skills/` |
+| Cursor | `cursor` | `.agents/skills/` | `~/.cursor/skills/` |
+| Deep Agents | `deepagents` | `.agents/skills/` | `~/.deepagents/agent/skills/` |
+| Droid | `droid` | `.factory/skills/` | `~/.factory/skills/` |
+| Gemini CLI | `gemini-cli` | `.agents/skills/` | `~/.gemini/skills/` |
+| GitHub Copilot | `github-copilot` | `.agents/skills/` | `~/.copilot/skills/` |
+| Goose | `goose` | `.goose/skills/` | `~/.config/goose/skills/` |
+| Junie | `junie` | `.junie/skills/` | `~/.junie/skills/` |
+| iFlow CLI | `iflow-cli` | `.iflow/skills/` | `~/.iflow/skills/` |
+| Kilo Code | `kilo` | `.kilocode/skills/` | `~/.kilocode/skills/` |
+| Kiro CLI | `kiro-cli` | `.kiro/skills/` | `~/.kiro/skills/` |
+| Kode | `kode` | `.kode/skills/` | `~/.kode/skills/` |
+| MCPJam | `mcpjam` | `.mcpjam/skills/` | `~/.mcpjam/skills/` |
+| Mistral Vibe | `mistral-vibe` | `.vibe/skills/` | `~/.vibe/skills/` |
+| Mux | `mux` | `.mux/skills/` | `~/.mux/skills/` |
+| OpenCode | `opencode` | `.agents/skills/` | `~/.config/opencode/skills/` |
+| OpenHands | `openhands` | `.openhands/skills/` | `~/.openhands/skills/` |
+| Pi | `pi` | `.pi/skills/` | `~/.pi/agent/skills/` |
+| Qoder | `qoder` | `.qoder/skills/` | `~/.qoder/skills/` |
+| Qwen Code | `qwen-code` | `.qwen/skills/` | `~/.qwen/skills/` |
+| Roo Code | `roo` | `.roo/skills/` | `~/.roo/skills/` |
+| Trae | `trae` | `.trae/skills/` | `~/.trae/skills/` |
+| Trae CN | `trae-cn` | `.trae/skills/` | `~/.trae-cn/skills/` |
+| Windsurf | `windsurf` | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` |
+| Zencoder | `zencoder` | `.zencoder/skills/` | `~/.zencoder/skills/` |
+| Neovate | `neovate` | `.neovate/skills/` | `~/.neovate/skills/` |
+| Pochi | `pochi` | `.pochi/skills/` | `~/.pochi/skills/` |
+| AdaL | `adal` | `.adal/skills/` | `~/.adal/skills/` |
+<!-- supported-agents:end -->
+
+> [!NOTE]
+> **Kiro CLI users:** After installing skills, manually add them to your custom agent's `resources` in
+> `.kiro/agents/<agent>.json`:
+>
+> ```json
+> {
+>   "resources": ["skill://.kiro/skills/**/SKILL.md"]
+> }
+> ```
+
+The CLI automatically detects which coding agents you have installed. If none are detected, you'll be prompted to select
+which agents to install to.
+
+## Creating Skills
+
+Skills are directories containing a `SKILL.md` file with YAML frontmatter:
+
+```markdown
+---
+name: my-skill
+description: What this skill does and when to use it
+---
+
+# My Skill
+
+Instructions for the agent to follow when this skill is activated.
+
+## When to Use
+
+Describe the scenarios where this skill should be used.
+
+## Steps
+
+1. First, do this
+2. Then, do that
+```
+
+### Required Fields
+
+- `name`: Unique identifier (lowercase, hyphens allowed)
+- `description`: Brief explanation of what the skill does
+
+### Optional Fields
+
+- `metadata.internal`: Set to `true` to hide the skill from normal discovery. Internal skills are only visible and
+  installable when `INSTALL_INTERNAL_SKILLS=1` is set. Useful for work-in-progress skills or skills meant only for
+  internal tooling.
+
+```markdown
+---
+name: my-internal-skill
+description: An internal skill not shown by default
+metadata:
+  internal: true
+---
+```
+
+### Skill Discovery
+
+The CLI searches for skills in these locations within a repository:
+
+<!-- skill-discovery:start -->
+- Root directory (if it contains `SKILL.md`)
+- `skills/`
+- `skills/.curated/`
+- `skills/.experimental/`
+- `skills/.system/`
+- `.agents/skills/`
+- `.augment/skills/`
+- `.claude/skills/`
+- `./skills/`
+- `.codebuddy/skills/`
+- `.commandcode/skills/`
+- `.continue/skills/`
+- `.cortex/skills/`
+- `.crush/skills/`
+- `.factory/skills/`
+- `.goose/skills/`
+- `.junie/skills/`
+- `.iflow/skills/`
+- `.kilocode/skills/`
+- `.kiro/skills/`
+- `.kode/skills/`
+- `.mcpjam/skills/`
+- `.vibe/skills/`
+- `.mux/skills/`
+- `.openhands/skills/`
+- `.pi/skills/`
+- `.qoder/skills/`
+- `.qwen/skills/`
+- `.roo/skills/`
+- `.trae/skills/`
+- `.windsurf/skills/`
+- `.zencoder/skills/`
+- `.neovate/skills/`
+- `.pochi/skills/`
+- `.adal/skills/`
+<!-- skill-discovery:end -->
+
+### Plugin Manifest Discovery
+
+If `.claude-plugin/marketplace.json` or `.claude-plugin/plugin.json` exists, skills declared in those files are also discovered:
+
+```json
+// .claude-plugin/marketplace.json
+{
+  "metadata": { "pluginRoot": "./plugins" },
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": "my-plugin",
+      "skills": ["./skills/review", "./skills/test"]
+    }
+  ]
+}
+```
+
+This enables compatibility with the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem.
+
+If no skills are found in standard locations, a recursive search is performed.
+
+## Compatibility
+
+Skills are generally compatible across agents since they follow a
+shared [Agent Skills specification](https://agentskills.io). However, some features may be agent-specific:
+
+| Feature         | OpenCode | OpenHands | Claude Code | Cline | CodeBuddy | Codex | Command Code | Kiro CLI | Cursor | Antigravity | Roo Code | Github Copilot | Amp | OpenClaw | Neovate | Pi  | Qoder | Zencoder |
+| --------------- | -------- | --------- | ----------- | ----- | --------- | ----- | ------------ | -------- | ------ | ----------- | -------- | -------------- | --- | -------- | ------- | --- | ----- | -------- |
+| Basic skills    | Yes      | Yes       | Yes         | Yes   | Yes       | Yes   | Yes          | Yes      | Yes    | Yes         | Yes      | Yes            | Yes | Yes      | Yes     | Yes | Yes   | Yes      |
+| `allowed-tools` | Yes      | Yes       | Yes         | Yes   | Yes       | Yes   | Yes          | No       | Yes    | Yes         | Yes      | Yes            | Yes | Yes      | Yes     | Yes | Yes   | No       |
+| `context: fork` | No       | No        | Yes         | No    | No        | No    | No           | No       | No     | No          | No       | No             | No  | No       | No      | No  | No    | No       |
+| Hooks           | No       | No        | Yes         | Yes   | No        | No    | No           | No       | No     | No          | No       | No             | No  | No       | No      | No  | No    | No       |
+
+## Troubleshooting
+
+### "No skills found"
+
+Ensure the repository contains valid `SKILL.md` files with both `name` and `description` in the frontmatter.
+
+### Skill not loading in agent
+
+- Verify the skill was installed to the correct path
+- Check the agent's documentation for skill loading requirements
+- Ensure the `SKILL.md` frontmatter is valid YAML
+
+### Permission errors
+
+Ensure you have write access to the target directory.
+
+## Environment Variables
+
+| Variable                  | Description                                                                |
+| ------------------------- | -------------------------------------------------------------------------- |
+| `INSTALL_INTERNAL_SKILLS` | Set to `1` or `true` to show and install skills marked as `internal: true` |
+| `DISABLE_TELEMETRY`       | Set to disable anonymous usage telemetry                                   |
+| `DO_NOT_TRACK`            | Alternative way to disable telemetry                                       |
+
+```bash
+# Install internal skills
+INSTALL_INTERNAL_SKILLS=1 npx skills add vercel-labs/agent-skills --list
+```
+
+## Telemetry
+
+This CLI collects anonymous usage data to help improve the tool. No personal information is collected.
+
+Telemetry is automatically disabled in CI environments.
+
+## Related Links
+
+- [Agent Skills Specification](https://agentskills.io)
+- [Skills Directory](https://skills.sh)
+- [Amp Skills Documentation](https://ampcode.com/manual#agent-skills)
+- [Antigravity Skills Documentation](https://antigravity.google/docs/skills)
+- [Factory AI / Droid Skills Documentation](https://docs.factory.ai/cli/configuration/skills)
+- [Claude Code Skills Documentation](https://code.claude.com/docs/en/skills)
+- [OpenClaw Skills Documentation](https://docs.openclaw.ai/tools/skills)
+- [Cline Skills Documentation](https://docs.cline.bot/features/skills)
+- [CodeBuddy Skills Documentation](https://www.codebuddy.ai/docs/ide/Features/Skills)
+- [Codex Skills Documentation](https://developers.openai.com/codex/skills)
+- [Command Code Skills Documentation](https://commandcode.ai/docs/skills)
+- [Crush Skills Documentation](https://github.com/charmbracelet/crush?tab=readme-ov-file#agent-skills)
+- [Cursor Skills Documentation](https://cursor.com/docs/context/skills)
+- [Gemini CLI Skills Documentation](https://geminicli.com/docs/cli/skills/)
+- [GitHub Copilot Agent Skills](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
+- [iFlow CLI Skills Documentation](https://platform.iflow.cn/en/cli/examples/skill)
+- [Kimi Code CLI Skills Documentation](https://moonshotai.github.io/kimi-cli/en/customization/skills.html)
+- [Kiro CLI Skills Documentation](https://kiro.dev/docs/cli/custom-agents/configuration-reference/#skill-resources)
+- [Kode Skills Documentation](https://github.com/shareAI-lab/kode/blob/main/docs/skills.md)
+- [OpenCode Skills Documentation](https://opencode.ai/docs/skills)
+- [Qwen Code Skills Documentation](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/)
+- [OpenHands Skills Documentation](https://docs.openhands.ai/modules/usage/how-to/using-skills)
+- [Pi Skills Documentation](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md)
+- [Qoder Skills Documentation](https://docs.qoder.com/cli/Skills)
+- [Replit Skills Documentation](https://docs.replit.com/replitai/skills)
+- [Roo Code Skills Documentation](https://docs.roocode.com/features/skills)
+- [Trae Skills Documentation](https://docs.trae.ai/ide/skills)
+- [Vercel Agent Skills Repository](https://github.com/vercel-labs/agent-skills)
+
+## License
+
+MIT

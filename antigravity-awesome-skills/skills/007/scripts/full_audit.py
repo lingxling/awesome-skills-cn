@@ -1081,6 +1081,7 @@ def run_audit(
     inj_report: dict = {"findings": [], "score": 100, "total_findings": 0}
     quick_report: dict = {"findings": [], "score": 100, "total_findings": 0}
     all_findings: list[dict] = []
+    report_findings: list[dict] = []
 
     if need_scanners:
         logger.info("Running scanners for phases %s...", [p for p in phases_list if p >= 3])
@@ -1121,6 +1122,7 @@ def run_audit(
             + quick_report.get("findings", [])
         )
         all_findings = score_calculator._deduplicate_findings(raw)
+        report_findings = score_calculator.redact_findings_for_report(all_findings)
 
     # ------------------------------------------------------------------
     # Collect source files if needed for phase 6
@@ -1142,7 +1144,7 @@ def run_audit(
     if 2 in phases_list:
         # Phase 2 benefits from phase 1 data and findings
         surface = phases_data.get("phase1") or _phase1_surface_mapping(target, verbose=verbose)
-        phases_data["phase2"] = _phase2_threat_modeling_hints(surface, all_findings)
+        phases_data["phase2"] = _phase2_threat_modeling_hints(surface, report_findings)
 
     if 3 in phases_list:
         phases_data["phase3"] = _phase3_security_checklist(
@@ -1164,10 +1166,10 @@ def run_audit(
                 )
 
     if 4 in phases_list:
-        phases_data["phase4"] = _phase4_red_team_scenarios(all_findings, auth_score)
+        phases_data["phase4"] = _phase4_red_team_scenarios(report_findings, auth_score)
 
     if 5 in phases_list:
-        phases_data["phase5"] = _phase5_blue_team_recommendations(all_findings, auth_score)
+        phases_data["phase5"] = _phase5_blue_team_recommendations(report_findings, auth_score)
 
     if 6 in phases_list:
         phases_data["phase6"] = _phase6_verdict(
@@ -1227,7 +1229,7 @@ def run_audit(
         "phases_run": phases_list,
         "phases": phases_data,
         "total_findings": len(all_findings),
-        "findings": all_findings,
+        "findings": report_findings,
         "report_path": str(report_path),
     }
 

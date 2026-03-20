@@ -1,229 +1,228 @@
 ---
 name: hypothesis-generation
-description: 从观察中进行结构化假设制定。当您有实验观察或数据，需要制定带有预测的可测试假设、提出机制并设计实验来测试它们时使用。遵循科学方法框架。对于开放式构思使用scientific-brainstorming；对于数据集上的自动化LLM驱动假设测试使用hypogenic。
+description: Structured hypothesis formulation from observations. Use when you have experimental observations or data and need to formulate testable hypotheses with predictions, propose mechanisms, and design experiments to test them. Follows scientific method framework. For open-ended ideation use scientific-brainstorming; for automated LLM-driven hypothesis testing on datasets use hypogenic.
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# 科学假设生成
+# Scientific Hypothesis Generation
 
-## 概述
+## Overview
 
-假设生成是开发可测试解释的系统性过程。从观察中制定基于证据的假设，设计实验，探索竞争性解释，并开发预测。在各领域科学探究中应用此技能。
+Hypothesis generation is a systematic process for developing testable explanations. Formulate evidence-based hypotheses from observations, design experiments, explore competing explanations, and develop predictions. Apply this skill for scientific inquiry across domains.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况下应使用此技能：
-- 从观察或初步数据开发假设
-- 设计实验以测试科学问题
-- 探索现象的竞争性解释
-- 为研究制定可测试的预测
-- 进行基于文献的假设生成
-- 跨科学领域规划机制性研究
+This skill should be used when:
+- Developing hypotheses from observations or preliminary data
+- Designing experiments to test scientific questions
+- Exploring competing explanations for phenomena
+- Formulating testable predictions for research
+- Conducting literature-based hypothesis generation
+- Planning mechanistic studies across scientific domains
 
-## 使用科学图解进行视觉增强
+## Visual Enhancement with Scientific Schematics
 
-**⚠️ 必需：每个假设生成报告必须至少包含1-2个使用scientific-schematics技能生成的AI图解。**
+**⚠️ MANDATORY: Every hypothesis generation report MUST include at least 1-2 AI-generated figures using the scientific-schematics skill.**
 
-这不是可选的。没有视觉元素的假设报告是不完整的。在最终确定任何文档之前：
-1. 至少生成一个图解或图表（例如，显示竞争性解释的假设框架）
-2. 对于全面报告，首选2-3个图解（机制通路、实验设计流程图、预测决策树）
+This is not optional. Hypothesis reports without visual elements are incomplete. Before finalizing any document:
+1. Generate at minimum ONE schematic or diagram (e.g., hypothesis framework showing competing explanations)
+2. Prefer 2-3 figures for comprehensive reports (mechanistic pathway, experimental design flowchart, prediction decision tree)
 
-**如何生成图解：**
-- 使用**scientific-schematics**技能生成AI驱动的出版质量图表
-- 只需用自然语言描述您想要的图表
-- Nano Banana Pro将自动生成、审查和优化图解
+**How to generate figures:**
+- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
+- Simply describe your desired diagram in natural language
+- Nano Banana Pro will automatically generate, review, and refine the schematic
 
-**如何生成图解：**
+**How to generate schematics:**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
-AI将自动：
-- 创建具有适当格式的出版质量图像
-- 通过多次迭代审查和优化
-- 确保可访问性（色盲友好、高对比度）
-- 将输出保存在figures/目录中
+The AI will automatically:
+- Create publication-quality images with proper formatting
+- Review and refine through multiple iterations
+- Ensure accessibility (colorblind-friendly, high contrast)
+- Save outputs in the figures/ directory
 
-**何时添加图解：**
-- 显示竞争性解释的假设框架图解
-- 实验设计流程图
-- 机制通路图解
-- 预测决策树
-- 因果关系图解
-- 理论模型可视化
-- 任何受益于可视化的复杂概念
+**When to add schematics:**
+- Hypothesis framework diagrams showing competing explanations
+- Experimental design flowcharts
+- Mechanistic pathway diagrams
+- Prediction decision trees
+- Causal relationship diagrams
+- Theoretical model visualizations
+- Any complex concept that benefits from visualization
 
-有关创建图解的详细指导，请参阅scientific-schematics技能文档。
+For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.
 
 ---
 
-## 工作流程
+## Workflow
 
-遵循此系统性过程以生成稳健的科学假设：
+Follow this systematic process to generate robust scientific hypotheses:
 
-### 1. 理解现象
+### 1. Understand the Phenomenon
 
-首先澄清需要解释的观察、问题或现象：
+Start by clarifying the observation, question, or phenomenon that requires explanation:
 
-- 识别需要解释的核心观察或模式
-- 定义现象的范围和边界
-- 注意任何约束或特定上下文
-- 澄清已知与不确定的内容
-- 识别相关科学领域
+- Identify the core observation or pattern that needs explanation
+- Define the scope and boundaries of the phenomenon
+- Note any constraints or specific contexts
+- Clarify what is already known vs. what is uncertain
+- Identify the relevant scientific domain(s)
 
-### 2. 进行全面的文献搜索
+### 2. Conduct Comprehensive Literature Search
 
-搜索现有科学文献以将假设建立在当前证据基础上。同时使用PubMed（用于生物医学主题）和通用网络搜索（用于更广泛的科学领域）：
+Search existing scientific literature to ground hypotheses in current evidence. Use both PubMed (for biomedical topics) and general web search (for broader scientific domains):
 
-**对于生物医学主题：**
-- 使用WebFetch访问PubMed URL以获取相关文献
-- 搜索最近的综述、荟萃分析和原始研究
-- 查找类似现象、相关机制或类似系统
+**For biomedical topics:**
+- Use WebFetch with PubMed URLs to access relevant literature
+- Search for recent reviews, meta-analyses, and primary research
+- Look for similar phenomena, related mechanisms, or analogous systems
 
-**对于所有科学领域：**
-- 使用WebSearch查找最近的论文、预印本和综述
-- 搜索既定理论、机制或框架
-- 识别当前理解中的空白、局限性或未解决的争论
-- 咨询`references/literature_search_strategies.md`以获取详细搜索技术
+**For all scientific domains:**
+- Use WebSearch to find recent papers, preprints, and reviews
+- Search for established theories, mechanisms, or frameworks
+- Identify gaps in current understanding
 
-**搜索策略：**
-- 从广泛搜索开始以了解领域
-- 缩小到特定机制、通路或理论
-- 查找矛盾发现或未解决的争论
-- 咨询`references/literature_search_strategies.md`以获取详细搜索技术
+**Search strategy:**
+- Begin with broad searches to understand the landscape
+- Narrow to specific mechanisms, pathways, or theories
+- Look for contradictory findings or unresolved debates
+- Consult `references/literature_search_strategies.md` for detailed search techniques
 
-### 3. 综合现有证据
+### 3. Synthesize Existing Evidence
 
-分析和整合文献搜索的发现：
+Analyze and integrate findings from literature search:
 
-- 总结对现象的当前理解
-- 识别可能适用的既定机制或理论
-- 注意冲突证据或替代观点
-- 认识空白、局限性或未回答的问题
-- 识别来自相关系统或领域的类比
+- Summarize current understanding of the phenomenon
+- Identify established mechanisms or theories that may apply
+- Note conflicting evidence or alternative viewpoints
+- Recognize gaps, limitations, or unanswered questions
+- Identify analogies from related systems or domains
 
-### 4. 生成竞争性假设
+### 4. Generate Competing Hypotheses
 
-开发3-5个可以解释现象的不同假设。每个假设应该：
+Develop 3-5 distinct hypotheses that could explain the phenomenon. Each hypothesis should:
 
-- 提供机制性解释（不仅仅是描述）
-- 与其他假设可区分
-- 基于文献综合的证据
-- 考虑不同层面的解释（分子、细胞、系统、群体等）
+- Provide a mechanistic explanation (not just description)
+- Be distinguishable from other hypotheses
+- Draw on evidence from the literature synthesis
+- Consider different levels of explanation (molecular, cellular, systemic, population, etc.)
 
-**生成假设的策略：**
-- 应用来自类似系统的已知机制
-- 考虑多个因果通路
-- 探索不同层面的解释
-- 质疑现有解释中的假设
-- 以新颖方式组合机制
+**Strategies for generating hypotheses:**
+- Apply known mechanisms from analogous systems
+- Consider multiple causative pathways
+- Explore different scales of explanation
+- Question assumptions in existing explanations
+- Combine mechanisms in novel ways
 
-### 5. 评估假设质量
+### 5. Evaluate Hypothesis Quality
 
-根据`references/hypothesis_quality_criteria.md`中的既定质量标准评估每个假设：
+Assess each hypothesis against established quality criteria from `references/hypothesis_quality_criteria.md`:
 
-**可测试性：** 假设能否通过经验测试？
-**可证伪性：** 什么观察将反驳它？
-**简约性：** 它是否是最符合证据的最简单解释？
-**解释力：** 它解释了多少现象？
-**范围：** 它覆盖了什么范围的观察？
-**一致性：** 它是否与既定原则一致？
-**新颖性：** 它是否提供超越现有解释的新见解？
+**Testability:** Can the hypothesis be empirically tested?
+**Falsifiability:** What observations would disprove it?
+**Parsimony:** Is it the simplest explanation that fits the evidence?
+**Explanatory Power:** How much of the phenomenon does it explain?
+**Scope:** What range of observations does it cover?
+**Consistency:** Does it align with established principles?
+**Novelty:** Does it offer new insights beyond existing explanations?
 
-明确说明每个假设的优势和劣势。
+Explicitly note the strengths and weaknesses of each hypothesis.
 
-### 6. 设计实验测试
+### 6. Design Experimental Tests
 
-对于每个可行的假设，提出具体的实验或研究来测试它。请参阅`references/experimental_design_patterns.md`以获取常见方法：
+For each viable hypothesis, propose specific experiments or studies to test it. Consult `references/experimental_design_patterns.md` for common approaches:
 
-**实验设计要素：**
-- 将测量或观察什么？
-- 需要什么比较或对照？
-- 将使用什么方法或技术？
-- 什么样本量或统计方法合适？
-- 有什么潜在混杂因素以及如何解决它们？
+**Experimental design elements:**
+- What would be measured or observed?
+- What comparisons or controls are needed?
+- What methods or techniques would be used?
+- What sample sizes or statistical approaches are appropriate?
+- What are potential confounds and how to address them?
 
-**考虑多种方法：**
-- 实验室实验（体外、体内、计算）
-- 观察性研究（横断面、纵向、病例对照）
-- 临床试验（如适用）
-- 自然实验或准实验设计
+**Consider multiple approaches:**
+- Laboratory experiments (in vitro, in vivo, computational)
+- Observational studies (cross-sectional, longitudinal, case-control)
+- Clinical trials (if applicable)
+- Natural experiments or quasi-experimental designs
 
-### 7. 制定可测试的预测
+### 7. Formulate Testable Predictions
 
-对于每个假设，生成具体的、定量的预测：
+For each hypothesis, generate specific, quantitative predictions:
 
-- 陈述如果假设正确应该观察到什么
-- 尽可能指定预期方向和效应大小
-- 识别预测应该成立的条件
-- 区分竞争性假设之间的预测
-- 注意将证伪假设的预测
+- State what should be observed if the hypothesis is correct
+- Specify expected direction and magnitude of effects when possible
+- Identify conditions under which predictions should hold
+- Distinguish predictions between competing hypotheses
+- Note predictions that would falsify the hypothesis
 
-### 8. 呈现结构化输出
+### 8. Present Structured Output
 
-使用`assets/hypothesis_report_template.tex`中的模板生成专业的LaTeX文档。报告应格式良好，使用彩色框进行视觉组织，并分为简洁的正文和全面的附录。
+Generate a professional LaTeX document using the template in `assets/hypothesis_report_template.tex`. The report should be well-formatted with colored boxes for visual organization and divided into a concise main text with comprehensive appendices.
 
-**文档结构：**
+**Document Structure:**
 
-**正文（最多4页）：**
-1. **执行摘要** - 摘要框中的简要概述（0.5-1页）
-2. **竞争性假设** - 每个假设在自己的彩色框中，带有简要机制解释和关键证据（2-2.5页，共3-5个假设）
-   - **重要：** 在每个假设框之前使用`\newpage`以防止内容溢出
-   - 每个框应最多0.6页
-3. **可测试的预测** - 琥珀框中的关键预测（0.5-1页）
-4. **关键比较** - 优先级比较框（0.5-1页）
+**Main Text (Maximum 4 pages):**
+1. **Executive Summary** - Brief overview in summary box (0.5-1 page)
+2. **Competing Hypotheses** - Each hypothesis in its own colored box with brief mechanistic explanation and key evidence (2-2.5 pages for 3-5 hypotheses)
+   - **IMPORTANT:** Use `\newpage` before each hypothesis box to prevent content overflow
+   - Each box should be ≤0.6 pages maximum
+3. **Testable Predictions** - Key predictions in amber boxes (0.5-1 page)
+4. **Critical Comparisons** - Priority comparison boxes (0.5-1 page)
 
-保持正文高度简洁 - 仅包含最必要的信息。所有细节都放在附录中。
+Keep main text highly concise - only the most essential information. All details go to appendices.
 
-**分页策略：**
-- 始终在假设框之前使用`\newpage`以确保它们从新页面开始
-- 这可以防止内容从页面边界溢出
-- LaTeX框（tcolorbox）不会自动跨页断开
+**Page Break Strategy:**
+- Always use `\newpage` before hypothesis boxes to ensure they start on fresh pages
+- This prevents content from overflowing off page boundaries
+- LaTeX boxes (tcolorbox) do not automatically break across pages
 
-**附录（全面、详细）：**
-- **附录A：** 带有广泛引用的全面文献综述
-- **附录B：** 带有完整协议的详细实验设计
-- **附录C：** 质量评估表格和详细评估
-- **附录D：** 补充证据和类似系统
+**Appendices (Comprehensive, Detailed):**
+- **Appendix A:** Comprehensive literature review with extensive citations
+- **Appendix B:** Detailed experimental designs with full protocols
+- **Appendix C:** Quality assessment tables and detailed evaluations
+- **Appendix D:** Supplementary evidence and analogous systems
 
-**彩色框使用：**
+**Colored Box Usage:**
 
-使用`hypothesis_generation.sty`中的自定义框环境：
+Use the custom box environments from `hypothesis_generation.sty`:
 
-- `hypothesisbox1`到`hypothesisbox5` - 用于每个竞争性假设（蓝色、绿色、紫色、蓝绿色、橙色）
-- `predictionbox` - 用于可测试的预测（琥珀色）
-- `comparisonbox` - 用于关键比较（钢灰色）
-- `evidencebox` - 用于支持证据亮点（浅蓝色）
-- `summarybox` - 用于执行摘要（蓝色）
+- `hypothesisbox1` through `hypothesisbox5` - For each competing hypothesis (blue, green, purple, teal, orange)
+- `predictionbox` - For testable predictions (amber)
+- `comparisonbox` - For critical comparisons (steel gray)
+- `evidencebox` - For supporting evidence highlights (light blue)
+- `summarybox` - For executive summary (blue)
 
-**每个假设框应包含（为4页限制保持简洁）：**
-- **机制性解释：** 1-2个简短段落（最多6-10个句子）解释如何和为什么
-- **关键支持证据：** 2-3个带有引用的要点（仅最重要的证据）
-- **核心假设：** 1-2个关键假设
+**Each hypothesis box should contain (keep concise for 4-page limit):**
+- **Mechanistic Explanation:** 1-2 brief paragraphs (6-10 sentences max) explaining HOW and WHY
+- **Key Supporting Evidence:** 2-3 bullet points with citations (most important evidence only)
+- **Core Assumptions:** 1-2 critical assumptions
 
-所有详细解释、额外证据和全面讨论都属于附录。
+All detailed explanations, additional evidence, and comprehensive discussions belong in the appendices.
 
-**关键溢出预防：**
-- 在每个假设框之前插入`\newpage`以在新页面上开始它
-- 将每个完整的假设框保持在≤0.6页（约15-20行内容）
-- 如果内容超过此限制，将额外详细信息移至附录A
-- 永远不要让框从页面边界溢出 - 这会创建不可读的PDF
+**Critical Overflow Prevention:**
+- Insert `\newpage` before each hypothesis box to start it on a fresh page
+- Keep each complete hypothesis box to ≤0.6 pages (approximately 15-20 lines of content)
+- If content exceeds this, move additional details to Appendix A
+- Never let boxes overflow off page boundaries - this creates unreadable PDFs
 
-**引用要求：**
+**Citation Requirements:**
 
-目标广泛引用以支持所有主张：
-- **正文：** 10-15个关键引用，仅用于最重要的证据（为4页限制保持简洁）
-- **附录A：** 40-70+个全面引用，涵盖所有相关文献
-- **总目标：** 参考文献中50+个引用
+Aim for extensive citation to support all claims:
+- **Main text:** 10-15 key citations for most important evidence only (keep concise for 4-page limit)
+- **Appendix A:** 40-70+ comprehensive citations covering all relevant literature
+- **Total target:** 50+ references in bibliography
 
-正文引用应具有选择性 - 仅引用最关键的论文。所有全面引用和详细文献讨论都属于附录。使用`\citep{author2023}`进行括号引用。
+Main text citations should be selective - cite only the most critical papers. All comprehensive citation and detailed literature discussion belongs in the appendices. Use `\citep{author2023}` for parenthetical citations.
 
-**LaTeX编译：**
+**LaTeX Compilation:**
 
-模板需要XeLaTeX或LuaLaTeX以进行正确渲染：
+The template requires XeLaTeX or LuaLaTeX for proper rendering:
 
 ```bash
 xelatex hypothesis_report.tex
@@ -232,65 +231,67 @@ xelatex hypothesis_report.tex
 xelatex hypothesis_report.tex
 ```
 
-**必需软件包：** `hypothesis_generation.sty`样式软件包必须位于同一目录或LaTeX路径中。它需要：tcolorbox、xcolor、fontspec、fancyhdr、titlesec、enumitem、booktabs、natbib。
+**Required packages:** The `hypothesis_generation.sty` style package must be in the same directory or LaTeX path. It requires: tcolorbox, xcolor, fontspec, fancyhdr, titlesec, enumitem, booktabs, natbib.
 
-**页面溢出预防：**
+**Page Overflow Prevention:**
 
-为防止内容在页面上溢出，请遵循这些关键指南：
+To prevent content from overflowing on pages, follow these critical guidelines:
 
-1. **监控框内容长度：** 每个假设框应舒适地适应单个页面。如果内容超过约0.7页，很可能会溢出。
+1. **Monitor Box Content Length:** Each hypothesis box should fit comfortably on a single page. If content exceeds ~0.7 pages, it will likely overflow.
 
-2. **使用战略性分页符：** 在包含大量内容的框之前插入`\newpage`：
+2. **Use Strategic Page Breaks:** Insert `\newpage` before boxes that contain substantial content:
    ```latex
    \newpage
-   \begin{hypothesisbox1}[假设1：标题]
-   % 长内容在此
+   \begin{hypothesisbox1}[Hypothesis 1: Title]
+   % Long content here
    \end{hypothesisbox1}
    ```
 
-3. **保持正文框简洁：** 对于4页正文限制：
-   - 每个假设框：最多0.5-0.6页
-   - 机制性解释：仅1-2个简短段落（最多6-10个句子）
-   - 关键证据：仅2-3个要点
-   - 核心假设：仅1-2个项目
-   - 如果内容更长，将详细信息移至附录
+3. **Keep Main Text Boxes Concise:** For the 4-page main text limit:
+   - Each hypothesis box: Maximum 0.5-0.6 pages
+   - Mechanistic explanation: 1-2 brief paragraphs only (6-10 sentences max)
+   - Key evidence: 2-3 bullet points only
+   - Core assumptions: 1-2 items only
+   - If content is longer, move details to appendices
 
-4. **分解长内容：** 如果假设需要广泛解释，在正文和附录之间拆分：
-   - 正文框：简要机制概述 + 2-3个关键证据点
-   - 附录A：详细机制解释、全面证据、扩展讨论
+4. **Break Long Content:** If a hypothesis requires extensive explanation, split across main text and appendix:
+   - Main text box: Brief mechanistic overview + 2-3 key evidence points
+   - Appendix A: Detailed mechanism explanation, comprehensive evidence, extended discussion
 
-5. **测试页面边界：** 在每个新框之前，考虑剩余页面空间是否充足。如果剩余少于0.6页，使用`\newpage`在新页面上开始框。
+5. **Test Page Boundaries:** Before each new box, consider if remaining page space is sufficient. If less than 0.6 pages remain, use `\newpage` to start the box on a fresh page.
 
-6. **附录页面管理：** 在附录中，在主要部分之间使用`\newpage`以避免详细内容区域中的溢出。
+6. **Appendix Page Management:** In appendices, use `\newpage` between major sections to avoid overflow in detailed content areas.
 
-**快速参考：** 请参阅`assets/FORMATTING_GUIDE.md`以获取所有框类型、配色方案、常见格式模式和故障排除提示的详细示例。
+**Quick Reference:** See `assets/FORMATTING_GUIDE.md` for detailed examples of all box types, color schemes, and common formatting patterns.
 
-## 质量标准
+## Quality Standards
 
-确保所有生成的假设符合这些标准：
-- **基于证据：** 基于现有文献并带有引用
-- **可测试：** 包括具体的、可测量的预测
-- **机制性：** 解释如何/为什么，而不仅仅是是什么
-- **全面：** 考虑替代解释
-- **严谨：** 包括测试预测的实验设计
+Ensure all generated hypotheses meet these standards:
 
-## 资源
+- **Evidence-based:** Grounded in existing literature with citations
+- **Testable:** Include specific, measurable predictions
+- **Mechanistic:** Explain how/why, not just what
+- **Comprehensive:** Consider alternative explanations
+- **Rigorous:** Include experimental designs to test predictions
+
+## Resources
 
 ### references/
 
-- `hypothesis_quality_criteria.md` - 评估假设质量的框架（可测试性、可证伪性、简约性、解释力、范围、一致性）
-- `experimental_design_patterns.md` - 跨领域的常见实验方法（RCT、观察性研究、实验室实验、计算模型）
-- `literature_search_strategies.md` - PubMed和通用科学来源的有效搜索技术
+- `hypothesis_quality_criteria.md` - Framework for evaluating hypothesis quality (testability, falsifiability, parsimony, explanatory power, scope, consistency)
+- `experimental_design_patterns.md` - Common experimental approaches across domains (RCTs, observational studies, lab experiments, computational models)
+- `literature_search_strategies.md` - Effective search techniques for PubMed and general scientific sources
 
 ### assets/
 
-- `hypothesis_generation.sty` - LaTeX样式软件包，提供彩色框、专业格式化和假设报告的自定义环境
-- `hypothesis_report_template.tex` - 完整的LaTeX模板，包含正文结构和全面的附录部分
-- `FORMATTING_GUIDE.md` - 快速参考指南，包含所有框类型、配色方案、引用实践和故障排除提示的示例
+- `hypothesis_generation.sty` - LaTeX style package providing colored boxes, professional formatting, and custom environments for hypothesis reports
+- `hypothesis_report_template.tex` - Complete LaTeX template with main text structure and comprehensive appendix sections
+- `FORMATTING_GUIDE.md` - Quick reference guide with examples of all box types, color schemes, citation practices, and troubleshooting tips
 
-### 相关技能
+### Related Skills
 
-在为出版物准备假设驱动研究时，请咨询**venue-templates**技能以获取写作风格指导：
-- `venue_writing_styles.md` - 跨场所写作风格的主指南
-- 特定于场所的指南：Nature/Science、Cell Press、医学期刊和ML/CS会议
-- `reviewer_expectations.md` - 审查者在评估研究假设时寻找的内容
+When preparing hypothesis-driven research for publication, consult the **venue-templates** skill for writing style guidance:
+- `venue_writing_styles.md` - Master guide comparing styles across venues
+- Venue-specific guides for Nature/Science, Cell Press, medical journals, and ML/CS conferences
+- `reviewer_expectations.md` - What reviewers look for when evaluating research hypotheses
+

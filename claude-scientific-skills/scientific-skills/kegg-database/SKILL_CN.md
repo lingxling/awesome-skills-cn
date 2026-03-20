@@ -1,374 +1,375 @@
 ---
 name: kegg-database
-description: KEGG的直接REST API访问（仅学术使用）。通路分析、基因-通路映射、代谢通路、药物相互作用、ID转换。对于具有多个数据库的Python工作流，首选bioservices。对于直接HTTP/REST工作或KEGG特定控制使用此技能。
-license: KEGG的非学术使用需要商业许可证
+description: Direct REST API access to KEGG (academic use only). Pathway analysis, gene-pathway mapping, metabolic pathways, drug interactions, ID conversion. For Python workflows with multiple databases, prefer bioservices. Use this for direct HTTP/REST work or KEGG-specific control.
+license: Non-academic use of KEGG requires a commercial license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# KEGG数据库
+# KEGG Database
 
-## 概述
+## Overview
 
-KEGG（京都基因与基因组百科全书）是生物通路分析和分子相互作用网络的综合生物信息学资源。
+KEGG (Kyoto Encyclopedia of Genes and Genomes) is a comprehensive bioinformatics resource for biological pathway analysis and molecular interaction networks.
 
-**重要：** KEGG API仅提供给学术用户用于学术使用。
+**Important**: KEGG API is made available only for academic use by academic users.
 
-## 何时使用此技能
+## When to Use This Skill
 
-当使用KEGG的REST API跨多个生物体查询通路、基因、化合物、酶、疾病和药物时，应使用此技能。
+This skill should be used when querying pathways, genes, compounds, enzymes, diseases, and drugs across multiple organisms using KEGG's REST API.
 
-## 快速开始
+## Quick Start
 
-此技能提供：
-1. 用于所有KEGG REST API操作的Python辅助函数（`scripts/kegg_api.py`）
-2. 综合参考文档（`references/kegg_reference.md`），包含详细的API规范
+The skill provides:
+1. Python helper functions (`scripts/kegg_api.py`) for all KEGG REST API operations
+2. Comprehensive reference documentation (`references/kegg_reference.md`) with detailed API specifications
 
-当用户请求KEGG数据时，确定需要哪种操作并使用`scripts/kegg_api.py`中的适当函数。
+When users request KEGG data, determine which operation is needed and use the appropriate function from `scripts/kegg_api.py`.
 
-## 核心操作
+## Core Operations
 
-### 1. 数据库信息（`kegg_info`）
+### 1. Database Information (`kegg_info`)
 
-检索KEGG数据库的元数据和统计信息。
+Retrieve metadata and statistics about KEGG databases.
 
-**何时使用：** 理解数据库结构、检查可用数据、获取发布信息。
+**When to use**: Understanding database structure, checking available data, getting release information.
 
-**用法：**
+**Usage**:
 ```python
 from scripts.kegg_api import kegg_info
 
-# 获取通路数据库信息
+# Get pathway database info
 info = kegg_info('pathway')
 
-# 获取生物体特定信息
-hsa_info = kegg_info('hsa')  # 人类基因组
+# Get organism-specific info
+hsa_info = kegg_info('hsa')  # Human genome
 ```
 
-**常用数据库：** `kegg`、`pathway`、`module`、`brite`、`genes`、`genome`、`compound`、`glycan`、`reaction`、`enzyme`、`disease`、`drug`
+**Common databases**: `kegg`, `pathway`, `module`, `brite`, `genes`, `genome`, `compound`, `glycan`, `reaction`, `enzyme`, `disease`, `drug`
 
-### 2. 列出条目（`kegg_list`）
+### 2. Listing Entries (`kegg_list`)
 
-从KEGG数据库列出条目标识符和名称。
+List entry identifiers and names from KEGG databases.
 
-**何时使用：** 获取生物体的所有通路、列出基因、检索化合物目录。
+**When to use**: Getting all pathways for an organism, listing genes, retrieving compound catalogs.
 
-**用法：**
+**Usage**:
 ```python
 from scripts.kegg_api import kegg_list
 
-# 列出所有参考通路
+# List all reference pathways
 pathways = kegg_list('pathway')
 
-# 列出人类特定通路
+# List human-specific pathways
 hsa_pathways = kegg_list('pathway', 'hsa')
 
-# 列出特定基因（最多10个）
+# List specific genes (max 10)
 genes = kegg_list('hsa:10458+hsa:10459')
 ```
 
-**常用生物体代码：** `hsa`（人类）、`mmu`（小鼠）、`dme`（果蝇）、`sce`（酵母）、`eco`（大肠杆菌）
+**Common organism codes**: `hsa` (human), `mmu` (mouse), `dme` (fruit fly), `sce` (yeast), `eco` (E. coli)
 
-### 3. 搜索（`kegg_find`）
+### 3. Searching (`kegg_find`)
 
-按关键词或分子属性搜索KEGG数据库。
+Search KEGG databases by keywords or molecular properties.
 
-**何时使用：** 按名称/描述查找基因、按分子式或质量搜索化合物、通过关键词发现条目。
+**When to use**: Finding genes by name/description, searching compounds by formula or mass, discovering entries by keywords.
 
-**用法：**
+**Usage**:
 ```python
 from scripts.kegg_api import kegg_find
 
-# 关键词搜索
+# Keyword search
 results = kegg_find('genes', 'p53')
 shiga_toxin = kegg_find('genes', 'shiga toxin')
 
-# 化学式搜索（精确匹配）
+# Chemical formula search (exact match)
 compounds = kegg_find('compound', 'C7H10N4O2', 'formula')
 
-# 分子量范围搜索
+# Molecular weight range search
 drugs = kegg_find('drug', '300-310', 'exact_mass')
 ```
 
-**搜索选项：** `formula`（精确匹配）、`exact_mass`（范围）、`mol_weight`（范围）
+**Search options**: `formula` (exact match), `exact_mass` (range), `mol_weight` (range)
 
-### 4. 检索条目（`kegg_get`）
+### 4. Retrieving Entries (`kegg_get`)
 
-获取完整的数据库条目或特定数据格式。
+Get complete database entries or specific data formats.
 
-**何时使用：** 检索通路详情、获取基因/蛋白质序列、下载通路图、访问化合物结构。
+**When to use**: Retrieving pathway details, getting gene/protein sequences, downloading pathway maps, accessing compound structures.
 
-**用法：**
+**Usage**:
 ```python
 from scripts.kegg_api import kegg_get
 
-# 获取通路条目
-pathway = kegg_get('hsa00010')  # 糖酵解通路
+# Get pathway entry
+pathway = kegg_get('hsa00010')  # Glycolysis pathway
 
-# 获取多个条目（最多10个）
+# Get multiple entries (max 10)
 genes = kegg_get(['hsa:10458', 'hsa:10459'])
 
-# 获取蛋白质序列（FASTA）
+# Get protein sequence (FASTA)
 sequence = kegg_get('hsa:10458', 'aaseq')
 
-# 获取核苷酸序列
+# Get nucleotide sequence
 nt_seq = kegg_get('hsa:10458', 'ntseq')
 
-# 获取化合物结构
-mol_file = kegg_get('cpd:C00002', 'mol')  # ATP的MOL格式
+# Get compound structure
+mol_file = kegg_get('cpd:C00002', 'mol')  # ATP in MOL format
 
-# 获取通路为JSON（仅单个条目）
+# Get pathway as JSON (single entry only)
 pathway_json = kegg_get('hsa05130', 'json')
 
-# 获取通路为图像（仅单个条目）
+# Get pathway image (single entry only)
 pathway_img = kegg_get('hsa05130', 'image')
 ```
 
-**输出格式：** `aaseq`（蛋白质FASTA）、`ntseq`（核苷酸FASTA）、`mol`（MOL格式）、`kcf`（KCF格式）、`image`（PNG）、`kgml`（XML）、`json`（通路JSON）
+**Output formats**: `aaseq` (protein FASTA), `ntseq` (nucleotide FASTA), `mol` (MOL format), `kcf` (KCF format), `image` (PNG), `kgml` (XML), `json` (pathway JSON)
 
-**重要：** 图像、KGML和JSON格式仅允许一次一个条目。
+**Important**: Image, KGML, and JSON formats allow only one entry at a time.
 
-### 5. ID转换（`kegg_conv`）
+### 5. ID Conversion (`kegg_conv`)
 
-在KEGG和外部数据库之间转换标识符。
+Convert identifiers between KEGG and external databases.
 
-**何时使用：** 将KEGG数据与其他数据库集成、映射基因ID、转换化合物标识符。
+**When to use**: Integrating KEGG data with other databases, mapping gene IDs, converting compound identifiers.
 
-**用法：**
+**Usage**:
 ```python
 from scripts.kegg_api import kegg_conv
 
-# 将所有人类基因转换为NCBI基因ID
+# Convert all human genes to NCBI Gene IDs
 conversions = kegg_conv('ncbi-geneid', 'hsa')
 
-# 转换特定基因
+# Convert specific gene
 gene_id = kegg_conv('ncbi-geneid', 'hsa:10458')
 
-# 转换为UniProt
+# Convert to UniProt
 uniprot_id = kegg_conv('uniprot', 'hsa:10458')
 
-# 将化合物转换为PubChem
+# Convert compounds to PubChem
 pubchem_ids = kegg_conv('pubchem', 'compound')
 
-# 反向转换（NCBI基因ID到KEGG）
+# Reverse conversion (NCBI Gene ID to KEGG)
 kegg_id = kegg_conv('hsa', 'ncbi-geneid')
 ```
 
-**支持的转换：** `ncbi-geneid`、`ncbi-proteinid`、`uniprot`、`pubchem`、`chebi`
+**Supported conversions**: `ncbi-geneid`, `ncbi-proteinid`, `uniprot`, `pubchem`, `chebi`
 
-### 6. 交叉引用（`kegg_link`）
+### 6. Cross-Referencing (`kegg_link`)
 
-在KEGG数据库内部和之间查找相关条目。
+Find related entries within and between KEGG databases.
 
-**何时使用：** 查找包含基因的通路、获取通路中的基因、将基因映射到KO组、查找通路中的化合物。
+**When to use**: Finding pathways containing genes, getting genes in a pathway, mapping genes to KO groups, finding compounds in pathways.
 
-**用法：**
+**Usage**:
 ```python
 from scripts.kegg_api import kegg_link
 
-# 查找与人类基因链接的通路
+# Find pathways linked to human genes
 pathways = kegg_link('pathway', 'hsa')
 
-# 获取特定通路中的基因
-genes = kegg_link('genes', 'hsa00010')  # 糖酵解基因
+# Get genes in a specific pathway
+genes = kegg_link('genes', 'hsa00010')  # Glycolysis genes
 
-# 查找包含特定基因的通路
+# Find pathways containing a specific gene
 gene_pathways = kegg_link('pathway', 'hsa:10458')
 
-# 查找通路中的化合物
+# Find compounds in a pathway
 compounds = kegg_link('compound', 'hsa00010')
 
-# 将基因映射到KO（同源）组
+# Map genes to KO (orthology) groups
 ko_groups = kegg_link('ko', 'hsa:10458')
 ```
 
-**常用链接：** genes ↔ pathway、pathway ↔ compound、pathway ↔ enzyme、genes ↔ ko（同源）
+**Common links**: genes ↔ pathway, pathway ↔ compound, pathway ↔ enzyme, genes ↔ ko (orthology)
 
-### 7. 药物-药物相互作用（`kegg_ddi`）
+### 7. Drug-Drug Interactions (`kegg_ddi`)
 
-检查药物-药物相互作用。
+Check for drug-drug interactions.
 
-**何时使用：** 分析药物组合、检查禁忌症、药理学研究。
+**When to use**: Analyzing drug combinations, checking for contraindications, pharmacological research.
 
-**用法：**
+**Usage**:
 ```python
 from scripts.kegg_api import kegg_ddi
 
-# 检查单个药物
+# Check single drug
 interactions = kegg_ddi('D00001')
 
-# 检查多个药物（最多10个）
+# Check multiple drugs (max 10)
 interactions = kegg_ddi(['D00001', 'D00002', 'D00003'])
 ```
 
-## 常见分析工作流程
+## Common Analysis Workflows
 
-### 工作流程1：基因到通路映射
+### Workflow 1: Gene to Pathway Mapping
 
-**用例：** 查找与感兴趣的基因关联的通路（例如，用于通路富集分析）。
+**Use case**: Finding pathways associated with genes of interest (e.g., for pathway enrichment analysis).
 
 ```python
 from scripts.kegg_api import kegg_find, kegg_link, kegg_get
 
-# 步骤1：按名称查找基因ID
+# Step 1: Find gene ID by name
 gene_results = kegg_find('genes', 'p53')
 
-# 步骤2：将基因链接到通路
-pathways = kegg_link('pathway', 'hsa:7157')  # TP53基因
+# Step 2: Link gene to pathways
+pathways = kegg_link('pathway', 'hsa:7157')  # TP53 gene
 
-# 步骤3：获取详细通路信息
+# Step 3: Get detailed pathway information
 for pathway_line in pathways.split('\n'):
     if pathway_line:
         pathway_id = pathway_line.split('\t')[1].replace('path:', '')
         pathway_info = kegg_get(pathway_id)
-        # 处理通路信息
+        # Process pathway information
 ```
 
-### 工作流程2：通路富集背景
+### Workflow 2: Pathway Enrichment Context
 
-**用例：** 获取生物体通路中的所有基因以进行富集分析。
+**Use case**: Getting all genes in organism pathways for enrichment analysis.
 
 ```python
 from scripts.kegg_api import kegg_list, kegg_link
 
-# 步骤1：列出所有人类通路
+# Step 1: List all human pathways
 pathways = kegg_list('pathway', 'hsa')
 
-# 步骤2：对于每个通路，获取关联的基因
+# Step 2: For each pathway, get associated genes
 for pathway_line in pathways.split('\n'):
     if pathway_line:
         pathway_id = pathway_line.split('\t')[0]
         genes = kegg_link('genes', pathway_id)
-        # 处理基因以进行富集分析
+        # Process genes for enrichment analysis
 ```
 
-### 工作流程3：化合物到通路分析
+### Workflow 3: Compound to Pathway Analysis
 
-**用例：** 查找包含感兴趣化合物的代谢通路。
+**Use case**: Finding metabolic pathways containing compounds of interest.
 
 ```python
 from scripts.kegg_api import kegg_find, kegg_link, kegg_get
 
-# 步骤1：搜索化合物
+# Step 1: Search for compound
 compound_results = kegg_find('compound', 'glucose')
 
-# 步骤2：将化合物链接到反应
-reactions = kegg_link('reaction', 'cpd:C00031')  # 葡萄糖
+# Step 2: Link compound to reactions
+reactions = kegg_link('reaction', 'cpd:C00031')  # Glucose
 
-# 步骤3：将反应链接到通路
-pathways = kegg_link('pathway', 'rn:R00299')  # 特定反应
+# Step 3: Link reactions to pathways
+pathways = kegg_link('pathway', 'rn:R00299')  # Specific reaction
 
-# 步骤4：获取通路详情
-pathway_info = kegg_get('map00010')  # 糖酵解
+# Step 4: Get pathway details
+pathway_info = kegg_get('map00010')  # Glycolysis
 ```
 
-### 工作流程4：跨数据库集成
+### Workflow 4: Cross-Database Integration
 
-**用例：** 将KEGG数据与UniProt、NCBI或PubChem数据库集成。
+**Use case**: Integrating KEGG data with UniProt, NCBI, or PubChem databases.
 
 ```python
 from scripts.kegg_api import kegg_conv, kegg_get
 
-# 步骤1：将KEGG基因ID转换为外部数据库ID
+# Step 1: Convert KEGG gene IDs to external database IDs
 uniprot_map = kegg_conv('uniprot', 'hsa')
 ncbi_map = kegg_conv('ncbi-geneid', 'hsa')
 
-# 步骤2：解析转换结果
+# Step 2: Parse conversion results
 for line in uniprot_map.split('\n'):
     if line:
         kegg_id, uniprot_id = line.split('\t')
-        # 使用外部ID进行集成
+        # Use external IDs for integration
 
-# 步骤3：使用KEGG获取序列
+# Step 3: Get sequences using KEGG
 sequence = kegg_get('hsa:10458', 'aaseq')
 ```
 
-### 工作流程5：生物体特定通路分析
+### Workflow 5: Organism-Specific Pathway Analysis
 
-**用例：** 比较不同生物体的通路。
+**Use case**: Comparing pathways across different organisms.
 
 ```python
 from scripts.kegg_api import kegg_list, kegg_get
 
-# 步骤1：列出多个生物体的通路
+# Step 1: List pathways for multiple organisms
 human_pathways = kegg_list('pathway', 'hsa')
 mouse_pathways = kegg_list('pathway', 'mmu')
 yeast_pathways = kegg_list('pathway', 'sce')
 
-# 步骤2：获取参考通路以进行比较
-ref_pathway = kegg_get('map00010')  # 参考糖酵解
+# Step 2: Get reference pathway for comparison
+ref_pathway = kegg_get('map00010')  # Reference glycolysis
 
-# 步骤3：获取生物体特定版本
+# Step 3: Get organism-specific versions
 hsa_glycolysis = kegg_get('hsa00010')
 mmu_glycolysis = kegg_get('mmu00010')
 ```
 
-## 通路类别
+## Pathway Categories
 
-KEGG将通路组织为七个主要类别。在解释通路ID或向用户推荐通路时：
+KEGG organizes pathways into seven major categories. When interpreting pathway IDs or recommending pathways to users:
 
-1. **代谢**（例如，`map00010` - 糖酵解、`map00190` - 氧化磷酸化）
-2. **遗传信息处理**（例如，`map03010` - 核糖体、`map03040` - 剪接体）
-3. **环境信息处理**（例如，`map04010` - MAPK信号传导、`map02010` - ABC转运蛋白）
-4. **细胞过程**（例如，`map04140` - 自噬、`map04210` - 细胞凋亡）
-5. **生物体系统**（例如，`map04610` - 补体级联、`map04910` - 胰岛素信号传导）
-6. **人类疾病**（例如，`map05200` - 癌症通路、`map05010` - 阿尔茨海默病）
-7. **药物开发**（按时间顺序和基于靶点的分类）
+1. **Metabolism** (e.g., `map00010` - Glycolysis, `map00190` - Oxidative phosphorylation)
+2. **Genetic Information Processing** (e.g., `map03010` - Ribosome, `map03040` - Spliceosome)
+3. **Environmental Information Processing** (e.g., `map04010` - MAPK signaling, `map02010` - ABC transporters)
+4. **Cellular Processes** (e.g., `map04140` - Autophagy, `map04210` - Apoptosis)
+5. **Organismal Systems** (e.g., `map04610` - Complement cascade, `map04910` - Insulin signaling)
+6. **Human Diseases** (e.g., `map05200` - Pathways in cancer, `map05010` - Alzheimer disease)
+7. **Drug Development** (chronological and target-based classifications)
 
-有关详细通路列表和分类，请参考`references/kegg_reference.md`。
+Reference `references/kegg_reference.md` for detailed pathway lists and classifications.
 
-## 重要标识符和格式
+## Important Identifiers and Formats
 
-### 通路ID
-- `map#####` - 参考通路（通用，非生物体特定）
-- `hsa#####` - 人类通路
-- `mmu#####` - 小鼠通路
+### Pathway IDs
+- `map#####` - Reference pathway (generic, not organism-specific)
+- `hsa#####` - Human pathway
+- `mmu#####` - Mouse pathway
 
-### 基因ID
-- 格式：`organism:gene_number`（例如，`hsa:10458`）
+### Gene IDs
+- Format: `organism:gene_number` (e.g., `hsa:10458`)
 
-### 化合物ID
-- 格式：`cpd:C#####`（例如，`cpd:C00002`表示ATP）
+### Compound IDs
+- Format: `cpd:C#####` (e.g., `cpd:C00002` for ATP)
 
-### 药物ID
-- 格式：`dr:D#####`（例如，`dr:D00001`）
+### Drug IDs
+- Format: `dr:D#####` (e.g., `dr:D00001`)
 
-### 酶ID
-- 格式：`ec:EC_number`（例如，`ec:1.1.1.1`）
+### Enzyme IDs
+- Format: `ec:EC_number` (e.g., `ec:1.1.1.1`)
 
-### KO（KEGG同源）ID
-- 格式：`ko:K#####`（例如，`ko:K00001`）
+### KO (KEGG Orthology) IDs
+- Format: `ko:K#####` (e.g., `ko:K00001`)
 
-## API限制
+## API Limitations
 
-使用KEGG API时请遵守这些约束：
+Respect these constraints when using the KEGG API:
 
-1. **条目限制：** 每次操作最多10个条目（图像/kgml/json：仅1个条目）
-2. **学术使用：** API仅用于学术使用；商业使用需要许可
-3. **HTTP状态代码：** 检查200（成功）、400（错误请求）、404（未找到）
-4. **速率限制：** 无明确限制，但避免快速连续请求
+1. **Entry limits**: Maximum 10 entries per operation (except image/kgml/json: 1 entry only)
+2. **Academic use**: API is for academic use only; commercial use requires licensing
+3. **HTTP status codes**: Check for 200 (success), 400 (bad request), 404 (not found)
+4. **Rate limiting**: No explicit limit, but avoid rapid-fire requests
 
-## 详细参考
+## Detailed Reference
 
-有关全面的API文档、数据库规范、生物体代码和高级用法，请参阅`references/kegg_reference.md`。这包括：
+For comprehensive API documentation, database specifications, organism codes, and advanced usage, refer to `references/kegg_reference.md`. This includes:
 
-- KEGG数据库的完整列表
-- 详细的API操作语法
-- 所有生物体代码
-- HTTP状态代码和错误处理
-- 与Biopython和R/Bioconductor的集成
-- API使用的最佳实践
+- Complete list of KEGG databases
+- Detailed API operation syntax
+- All organism codes
+- HTTP status codes and error handling
+- Integration with Biopython and R/Bioconductor
+- Best practices for API usage
 
-## 故障排除
+## Troubleshooting
 
-**404未找到：** 条目或数据库不存在；验证ID和生物体代码
-**400错误请求：** API调用中的语法错误；检查参数格式
-**空结果：** 搜索词可能不匹配条目；尝试更广泛的关键词
-**图像/KGML错误：** 这些格式仅适用于单个条目；删除批量处理
+**404 Not Found**: Entry or database doesn't exist; verify IDs and organism codes
+**400 Bad Request**: Syntax error in API call; check parameter formatting
+**Empty results**: Search term may not match entries; try broader keywords
+**Image/KGML errors**: These formats only work with single entries; remove batch processing
 
-## 其他工具
+## Additional Tools
 
-用于交互式通路可视化和注释：
-- **KEGG Mapper**：https://www.kegg.jp/kegg/mapper/
-- **BlastKOALA**：自动化基因组注释
-- **GhostKOALA**：宏基因组/宏转录组注释
+For interactive pathway visualization and annotation:
+- **KEGG Mapper**: https://www.kegg.jp/kegg/mapper/
+- **BlastKOALA**: Automated genome annotation
+- **GhostKOALA**: Metagenome/metatranscriptome annotation
+

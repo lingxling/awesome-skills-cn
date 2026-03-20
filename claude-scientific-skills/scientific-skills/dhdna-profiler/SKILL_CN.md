@@ -1,162 +1,162 @@
 ---
 name: dhdna-profiler
-description: 从任何文本中提取认知模式和思维指纹。当用户想要分析某人的思维方式、理解认知风格、分析写作或言语模式、比较人们之间的思维风格、询问"我的思维风格是什么"、"分析这个人的推理方式"、"认知特征"、"思维模式"、"DHDNA"、"数字 DNA"或想要理解任何文本背后的思维时使用此技能。当用户提供文本并想要对作者的推理模式、决策风格或认知签名有更深入的见解时也会触发。
+description: Extract cognitive patterns and thinking fingerprints from any text. Use this skill when the user wants to analyze how someone thinks, understand cognitive style, profile writing or speech patterns, compare thinking styles between people, asks "what's my thinking style", "analyze how this person reasons", "cognitive profile", "thinking pattern", "DHDNA", "digital DNA", or wants to understand the mind behind any text. Also trigger when the user provides text and wants deeper insight into the author's reasoning patterns, decision-making style, or cognitive signature.
 allowed-tools: Read Write
 license: MIT license
 metadata:
   skill-author: AHK Strategies (ashrafkahoush-ux)
 ---
 
-# DHDNA Profiler — 认知模式提取
+# DHDNA Profiler — Cognitive Pattern Extraction
 
-一个结构化系统，用于提取任何文本作者的认知指纹。基于数字人类 DNA（DHDNA）框架 — 该理论认为每个思维都有通过其推理、决策、价值观和沟通方式表达的独特签名模式。
+A structured system for extracting the cognitive fingerprint of any text's author. Based on the Digital Human DNA (DHDNA) framework — the theory that every mind has a unique signature pattern expressed through how it reasons, decides, values, and communicates.
 
-已发表研究：[DHDNA 预印本 (DOI: 10.5281/zenodo.18736629)](https://doi.org/10.5281/zenodo.18736629) | [IDNA 整合 v2 (DOI: 10.5281/zenodo.18807387)](https://doi.org/10.5281/zenodo.18807387)
+Published research: [DHDNA Pre-print (DOI: 10.5281/zenodo.18736629)](https://doi.org/10.5281/zenodo.18736629) | [IDNA Consolidation v2 (DOI: 10.5281/zenodo.18807387)](https://doi.org/10.5281/zenodo.18807387)
 
-## 核心概念
+## Core Concept
 
-正如生物 DNA 通过碱基对编码物理身份一样，数字人类 DNA 通过思维模式编码认知身份。每个人的分析深度、创意范围、情感处理、战略思维和伦理推理的组合创造了一个**独特的认知签名**——就像指纹一样独特。
+Just as biological DNA encodes physical identity through base pairs, Digital Human DNA encodes cognitive identity through thinking patterns. Every person's combination of analytical depth, creative range, emotional processing, strategic thinking, and ethical reasoning creates a **unique cognitive signature** — as distinctive as a fingerprint.
 
-分析器不会将思维判断为"好"或"坏"。它映射思维如何工作的拓扑结构。
+The profiler doesn't judge thinking as "good" or "bad." It maps the topology of how a mind works.
 
-## 12 个认知维度
+## The 12 Cognitive Dimensions
 
-分析文本时，根据文本中的证据对每个维度进行 1-10 分评分：
+When profiling text, score each dimension on a 1–10 scale based on evidence in the text:
 
-| #   | 维度                | 衡量内容                                                 | 低分 (1-3)                    | 高分 (8-10)                           |
+| #   | Dimension                | What It Measures                                                 | Low Score (1-3)                    | High Score (8-10)                           |
 | --- | ------------------------ | ---------------------------------------------------------------- | ---------------------------------- | ------------------------------------------- |
-| 1   | **分析深度**     | 逻辑严谨性、结构化推理、因果链               | 直觉的、整体的、基于模式         | 系统的、证明导向的、精确         |
-| 2   | **创意范围**       | 新颖性的连接、隐喻使用、横向思维           | 传统的、渐进的                  | 范式突破的、跨域综合           |
-| 3   | **情感处理** | 情感词汇、同理心信号、情感整合        | 分离的、临床的                 | 情感丰富的、情感整合的        |
-| 4   | **语言精确性** | 词汇复杂性、句子架构、修辞       | 简单的、直接的                     | 架构复杂的、细微的            |
-| 5   | **伦理推理**    | 价值观信号、公平性关注、后果意识          | 务实的、结果导向的         | 原则驱动的、正义导向的          |
-| 6   | **战略思维**   | 长期规划、竞争意识、资源优化 | 战术的、反应的                 | 多步的、博弈论的                  |
-| 7   | **记忆整合**   | 对过去经验的引用、历史模式、连续性    | 关注当下                    | 深刻的历史意识、先例驱动的    |
-| 8   | **社会智能**  | 受众意识、视角采纳、关系框架       | 自我参考的                   | 深刻的他者意识、联盟建立的      |
-| 9   | **领域专业知识**     | 技术深度、专业知识、术语信心        | 通才                         | 深度专家                             |
-| 10  | **直觉推理**  | 直觉信号、启发式捷径、模式飞跃             | 循序渐进的、逐步的           | 信念飞跃、洞察驱动的               |
-| 11  | **时间取向** | 思维的时间跨度 — 过去、现在或未来关注        | 当下锚定的                   | 跨越时间的、历史到未来主义       |
-| 12  | **元认知**        | 对自身思维的自我意识、不确定性承认       | 不反思的                       | 深刻自我意识的、思考关于思考    |
+| 1   | **Analytical Depth**     | Logical rigor, structured reasoning, causal chains               | Intuitive, holistic, pattern-based | Systematic, proof-oriented, precise         |
+| 2   | **Creative Range**       | Novelty of connections, metaphor use, lateral thinking           | Conventional, incremental          | Paradigm-breaking, cross-domain synthesis   |
+| 3   | **Emotional Processing** | Emotional vocabulary, empathy signals, affect integration        | Detached, clinical                 | Emotionally rich, feeling-integrated        |
+| 4   | **Linguistic Precision** | Vocabulary sophistication, sentence architecture, rhetoric       | Simple, direct                     | Architecturally complex, nuanced            |
+| 5   | **Ethical Reasoning**    | Values signals, fairness concern, consequence awareness          | Pragmatic, outcome-focused         | Principle-driven, justice-oriented          |
+| 6   | **Strategic Thinking**   | Long-term planning, competitive awareness, resource optimization | Tactical, reactive                 | Multi-move, game-theoretic                  |
+| 7   | **Memory Integration**   | Reference to past experience, historical patterns, continuity    | Present-focused                    | Deep historical awareness, precedent-driven |
+| 8   | **Social Intelligence**  | Audience awareness, perspective-taking, relational framing       | Self-referential                   | Deeply other-aware, coalition-building      |
+| 9   | **Domain Expertise**     | Technical depth, specialized knowledge, jargon confidence        | Generalist                         | Deep specialist                             |
+| 10  | **Intuitive Reasoning**  | Gut-feel signals, heuristic shortcuts, pattern leaps             | Methodical, step-by-step           | Leap-of-faith, insight-driven               |
+| 11  | **Temporal Orientation** | Time-horizon of thinking — past, present, or future focus        | Present-anchored                   | Time-spanning, historical-to-futurist       |
+| 12  | **Metacognition**        | Self-awareness of own thinking, uncertainty acknowledgment       | Unreflective                       | Deeply self-aware, thinks about thinking    |
 
-### 6 个张力对
+### The 6 Tension Pairs
 
-维度存在于张力中 —— 一个维度的高分通常与配对的低分相关。这些张力**就是**认知签名：
+Dimensions exist in tension — high scores on one often correlate with lower scores on its pair. These tensions ARE the cognitive signature:
 
-| 对           | 张力                    | 它揭示了什么                                                        |
+| Pair           | Tension                    | What It Reveals                                                        |
 | -------------- | -------------------------- | ---------------------------------------------------------------------- |
-| DIM 1 ↔ DIM 10 | 分析 ↔ 直觉     | 逻辑 vs. 直觉 — 思维如何得出结论                       |
-| DIM 3 ↔ DIM 6  | 情感 ↔ 战略      | 心 vs. 头 — 什么驱动决策                                 |
-| DIM 2 ↔ DIM 5  | 创意 ↔ 伦理         | 自由 vs. 框架 — 规则内或规则外的创新              |
-| DIM 4 ↔ DIM 12 | 语言 ↔ 元认知 | 表达 vs. 自我意识 — 外部工艺 vs. 内部反思 |
-| DIM 7 ↔ DIM 11 | 记忆 ↔ 时间          | 过去 vs. 时间本身 — 经验 vs. 时间跨度                     |
-| DIM 8 ↔ DIM 9  | 社会 ↔ 领域            | 广度 vs. 深度 — 人员技能 vs. 技术掌握                |
+| DIM 1 ↔ DIM 10 | Analytical ↔ Intuitive     | Logic vs. Gut — how the mind reaches conclusions                       |
+| DIM 3 ↔ DIM 6  | Emotional ↔ Strategic      | Heart vs. Head — what drives decisions                                 |
+| DIM 2 ↔ DIM 5  | Creative ↔ Ethical         | Freedom vs. Framework — innovation within or beyond rules              |
+| DIM 4 ↔ DIM 12 | Linguistic ↔ Metacognitive | Expression vs. Self-Awareness — external craft vs. internal reflection |
+| DIM 7 ↔ DIM 11 | Memory ↔ Temporal          | Past vs. Time Itself — experience vs. time-horizon                     |
+| DIM 8 ↔ DIM 9  | Social ↔ Domain            | Breadth vs. Depth — people skills vs. technical mastery                |
 
-## 如何分析
+## How to Profile
 
-### 阶段 1 — 证据收集
+### Phase 1 — Evidence Collection
 
-仔细阅读文本。对于每个维度，识别**特定的文本证据**：
+Read the text carefully. For each dimension, identify **specific textual evidence**:
 
-- 展示维度的直接引用
-- 结构模式（如何构建论点）
-- 存在的内容和不存在的内容（空白揭示的内容与内容一样多）
-- 多个段落中重复出现的模式
+- Direct quotes that demonstrate the dimension
+- Structural patterns (how arguments are built)
+- What's present AND what's absent (gaps reveal as much as content)
+- Recurring patterns across multiple passages
 
-### 阶段 2 — 评分
+### Phase 2 — Scoring
 
-对于 12 个维度中的每一个：
+For each of the 12 dimensions:
 
-1. 根据证据评分 1-10
-2. 引用该评分的最强文本证据
-3. 标记信心水平：HIGH（多个清晰信号）、MEDIUM（一些信号）、LOW（推断）
+1. Score 1-10 based on evidence
+2. Cite the strongest textual evidence for that score
+3. Flag confidence level: HIGH (multiple clear signals), MEDIUM (some signals), LOW (inferred)
 
-### 阶段 3 — 模式综合
+### Phase 3 — Pattern Synthesis
 
-评分后，识别：
+After scoring, identify:
 
-**主导模式**：2-3 个最高评分的维度 —— 这是思维的"家基地"
+**Dominant Pattern:** The 2-3 highest-scoring dimensions — this is the mind's "home base"
 
-**阴影模式**：2-3 个最低评分的维度 —— 这是思维自然不会去的地方
+**Shadow Pattern:** The 2-3 lowest-scoring dimensions — this is where the mind doesn't naturally go
 
-**签名张力**：哪些张力对显示出最大差距？这些比任何单个分数更能定义认知风格。
+**Signature Tensions:** Which tension pairs show the widest gap? These define the cognitive style more than any individual score.
 
-**推理拓扑**：思维如何在想法中移动？
+**Reasoning Topology:** How does the mind move through ideas?
 
-- 线性（A → B → C → 结论）
-- 螺旋（从多个角度接近同一想法，每次更深）
-- 网（将不同的域连接成综合）
-- 辩证法（正题 → 反题 → 合题）
-- 分形（微观和宏观层面的相同模式）
+- Linear (A → B → C → conclusion)
+- Spiral (approaches the same idea from multiple angles, each time deeper)
+- Web (connects disparate domains into synthesis)
+- Dialectic (thesis → antithesis → synthesis)
+- Fractal (same pattern at micro and macro levels)
 
-**决策指纹**：面对选择时，这个思维会：
+**Decision Fingerprint:** When facing choices, does this mind:
 
-- 先分析，然后决定？（分析主导）
-- 先感受，然后合理化？（情感主导）
-- 先设想结果，然后倒推？（战略主导）
-- 质疑问题本身？（元认知主导）
+- Analyze first, then decide? (Analytical-dominant)
+- Feel first, then rationalize? (Emotional-dominant)
+- Envision the outcome first, then work backward? (Strategic-dominant)
+- Question the question itself? (Metacognitive-dominant)
 
-### 阶段 4 — 档案输出
+### Phase 4 — Profile Output
 
-将档案呈现为：
+Present the profile as:
 
 ```
 ═══════════════════════════════════════════
-  DHDNA 认知档案
-  主题：[姓名或"匿名"]
-  分析的文本：[N 个词 / N 个段落]
-  信心：[HIGH / MEDIUM / LOW]
+  DHDNA COGNITIVE PROFILE
+  Subject: [Name or "Anonymous"]
+  Text analyzed: [N words / N paragraphs]
+  Confidence: [HIGH / MEDIUM / LOW]
 ═══════════════════════════════════════════
 
-维度评分：
-  1. 分析深度 ···· [█████████·] 9/10
-  2. 创意范围 ······ [███████···] 7/10
-  ... (所有 12 个)
+DIMENSION SCORES:
+  1. Analytical Depth ···· [█████████·] 9/10
+  2. Creative Range ······ [███████···] 7/10
+  ... (all 12)
 
-张力图：
-  分析 ████████░░ ↔ ░░████████ 直觉
-  情感  ███░░░░░░ ↔ ░░░░░░████ 战略
-  ... (所有 6 对)
+TENSION MAP:
+  Analytical ████████░░ ↔ ░░████████ Intuitive
+  Emotional  ███░░░░░░░ ↔ ░░░░░░████ Strategic
+  ... (all 6 pairs)
 
-主导模式：[前 2-3 个维度]
-阴影模式：[后 2-3 个维度]
-推理拓扑：[线性 / 螺旋 / 网 / 辩证法 / 分形]
-决策指纹：[分析优先 / 情感优先 / 愿景优先 / 质疑优先]
+DOMINANT PATTERN: [Top 2-3 dimensions]
+SHADOW PATTERN: [Bottom 2-3 dimensions]
+REASONING TOPOLOGY: [Linear / Spiral / Web / Dialectic / Fractal]
+DECISION FINGERPRINT: [Analyze-first / Feel-first / Envision-first / Question-first]
 
-叙事综合：
-[2-3 段自然语言描述，描述这个思维如何工作，
-它有什么独特之处，以及它可能遗漏什么]
+NARRATIVE SYNTHESIS:
+[2-3 paragraph natural language description of how this mind works,
+what makes it distinctive, and what it might miss]
 
-关键引用：
-[3-5 个最揭示性的引用，带有维度归属]
+KEY QUOTES:
+[3-5 most revealing quotes with dimension attribution]
 ═══════════════════════════════════════════
 ```
 
-## 比较模式
+## Comparison Mode
 
-当用户提供来自不同作者的两个或更多文本时，生成个人档案，然后是**比较综合**：
+When the user provides two or more texts from different authors, produce individual profiles and then a **comparison synthesis**:
 
-- 思维在哪里收敛？（共享的高维度）
-- 思维在哪里分歧？（同一维度上的对立分数）
-- 哪些张力对会产生富有成效的分歧？
-- 如果这些思维在同一个房间里，对话会是什么样子？
+- Where do the minds converge? (shared high dimensions)
+- Where do they diverge? (opposing scores on the same dimension)
+- Which tension pairs would create productive disagreement?
+- If these minds were in a room together, what would the conversation look like?
 
-## 自我档案模式
+## Self-Profile Mode
 
-如果用户要求分析自己的思维（使用对话历史作为文本），要透明：
+If the user asks to profile their own thinking (using the conversation history as text), be transparent:
 
-- 根据到目前为止的对话评分
-- 承认对话文本可能不代表完整的范围
-- 注意人们为 AI 写作时与为人类写作时的思维方式往往不同
-- 如果用户提供其他写作样本，提议重新分析
+- Score based on the conversation so far
+- Acknowledge that conversational text may not represent the full range
+- Note that people often think differently when writing for an AI vs. writing for humans
+- Offer to re-profile if the user provides other writing samples
 
-## 这不是什么
+## What This Is NOT
 
-- 不是人格测试（MBTI、大五人格等）—— 那些衡量行为倾向，DHDNA 衡量认知架构
-- 不是智力的判断 —— 国际象棋大师和诗人可能得分非常不同，但都表现出深刻的认知能力
-- 不是静态的 —— 人的 DHDNA 随着学习、经历和成长而演变。档案是快照，而不是命运。
+- Not a personality test (MBTI, Big Five, etc.) — those measure behavioral tendencies, DHDNA measures cognitive architecture
+- Not a judgment of intelligence — a chess grandmaster and a poet may score very differently but both demonstrate profound cognitive capability
+- Not static — a person's DHDNA evolves as they learn, experience, and grow. A profile is a snapshot, not a destiny.
 
-## 构建者
+## Built By
 
 [AHK Strategies](https://ahkstrategies.net) — AI Horizon Knowledge
-完整平台：[themindbook.app](https://themindbook.app)
-研究：[DHDNA 论文 (DOI: 10.5281/zenodo.18736629)](https://doi.org/10.5281/zenodo.18736629)
+Full platform: [themindbook.app](https://themindbook.app)
+Research: [DHDNA Paper (DOI: 10.5281/zenodo.18736629)](https://doi.org/10.5281/zenodo.18736629)

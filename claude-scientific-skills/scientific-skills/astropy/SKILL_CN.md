@@ -1,6 +1,6 @@
 ---
 name: astropy
-description: 用于天文学和天体物理学的综合 Python 库。在处理天文数据（包括天球坐标、物理单位、FITS 文件、宇宙学计算、时间系统、表格、世界坐标系（WCS）和天文数据分析）时应使用此技能。当任务涉及坐标转换、单位转换、FITS 文件操作、宇宙学距离计算、时间尺度转换或天文数据处理时使用。
+description: Comprehensive Python library for astronomy and astrophysics. This skill should be used when working with astronomical data including celestial coordinates, physical units, FITS files, cosmological calculations, time systems, tables, world coordinate systems (WCS), and astronomical data analysis. Use when tasks involve coordinate transformations, unit conversions, FITS file manipulation, cosmological distance calculations, time scale conversions, or astronomical data processing.
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,23 +8,23 @@ metadata:
 
 # Astropy
 
-## 概述
+## Overview
 
-Astropy 是天文学的核心 Python 包，为天文研究和数据分析提供基本功能。使用 astropy 进行坐标转换、单位和量值计算、FITS 文件操作、宇宙学计算、精确时间处理、表格数据操作和天文图像处理。
+Astropy is the core Python package for astronomy, providing essential functionality for astronomical research and data analysis. Use astropy for coordinate transformations, unit and quantity calculations, FITS file operations, cosmological calculations, precise time handling, tabular data manipulation, and astronomical image processing.
 
-## 何时使用此技能
+## When to Use This Skill
 
-当任务涉及以下内容时使用 astropy：
-- 在天球坐标系之间转换（ICRS、银河系、FK5、AltAz 等）
-- 处理物理单位和量值（将 Jy 转换为 mJy、秒差距转换为 km 等）
-- 读取、写入或操作 FITS 文件（图像或表格）
-- 宇宙学计算（光度距离、回溯时间、哈勃参数）
-- 使用不同时间尺度（UTC、TAI、TT、TDB）和格式（JD、MJD、ISO）进行精确时间处理
-- 表格操作（读取星表、交叉匹配、过滤、连接）
-- 像素坐标与世界坐标之间的 WCS 转换
-- 天文常数和计算
+Use astropy when tasks involve:
+- Converting between celestial coordinate systems (ICRS, Galactic, FK5, AltAz, etc.)
+- Working with physical units and quantities (converting Jy to mJy, parsecs to km, etc.)
+- Reading, writing, or manipulating FITS files (images or tables)
+- Cosmological calculations (luminosity distance, lookback time, Hubble parameter)
+- Precise time handling with different time scales (UTC, TAI, TT, TDB) and formats (JD, MJD, ISO)
+- Table operations (reading catalogs, cross-matching, filtering, joining)
+- WCS transformations between pixel and world coordinates
+- Astronomical constants and calculations
 
-## 快速开始
+## Quick Start
 
 ```python
 import astropy.units as u
@@ -34,182 +34,182 @@ from astropy.io import fits
 from astropy.table import Table
 from astropy.cosmology import Planck18
 
-# 单位和量值
+# Units and quantities
 distance = 100 * u.pc
 distance_km = distance.to(u.km)
 
-# 坐标
+# Coordinates
 coord = SkyCoord(ra=10.5*u.degree, dec=41.2*u.degree, frame='icrs')
 coord_galactic = coord.galactic
 
-# 时间
+# Time
 t = Time('2023-01-15 12:30:00')
-jd = t.jd  # 儒略日
+jd = t.jd  # Julian Date
 
-# FITS 文件
+# FITS files
 data = fits.getdata('image.fits')
 header = fits.getheader('image.fits')
 
-# 表格
+# Tables
 table = Table.read('catalog.fits')
 
-# 宇宙学
+# Cosmology
 d_L = Planck18.luminosity_distance(z=1.0)
 ```
 
-## 核心能力
+## Core Capabilities
 
-### 1. 单位和量值（`astropy.units`）
+### 1. Units and Quantities (`astropy.units`)
 
-处理带单位的物理量，执行单位转换，并确保计算的维度一致性。
+Handle physical quantities with units, perform unit conversions, and ensure dimensional consistency in calculations.
 
-**关键操作：**
-- 通过将值与单位相乘来创建量值
-- 使用 `.to()` 方法在单位之间转换
-- 执行自动单位处理的算术运算
-- 使用等价性进行特定域的转换（光谱、多普勒、视差）
-- 处理对数单位（星等、分贝）
+**Key operations:**
+- Create quantities by multiplying values with units
+- Convert between units using `.to()` method
+- Perform arithmetic with automatic unit handling
+- Use equivalencies for domain-specific conversions (spectral, doppler, parallax)
+- Work with logarithmic units (magnitudes, decibels)
 
-**参见：** `references/units.md` 获取综合文档、单位系统、等价性、性能优化和单位算术。
+**See:** `references/units.md` for comprehensive documentation, unit systems, equivalencies, performance optimization, and unit arithmetic.
 
-### 2. 坐标系统（`astropy.coordinates`）
+### 2. Coordinate Systems (`astropy.coordinates`)
 
-表示天体位置并在不同坐标系之间转换。
+Represent celestial positions and transform between different coordinate frames.
 
-**关键操作：**
-- 在任何坐标系（ICRS、银河系、FK5、AltAz 等）中使用 `SkyCoord` 创建坐标
-- 在坐标系之间转换
-- 计算角分离和位置角
-- 将坐标与星表匹配
-- 包含距离以进行 3D 坐标操作
-- 处理自行和径向速度
-- 从在线数据库查询命名对象
+**Key operations:**
+- Create coordinates with `SkyCoord` in any frame (ICRS, Galactic, FK5, AltAz, etc.)
+- Transform between coordinate systems
+- Calculate angular separations and position angles
+- Match coordinates to catalogs
+- Include distance for 3D coordinate operations
+- Handle proper motions and radial velocities
+- Query named objects from online databases
 
-**参见：** `references/coordinates.md` 获取详细的坐标系描述、转换、观测者相关坐标系（AltAz）、星表匹配和性能提示。
+**See:** `references/coordinates.md` for detailed coordinate frame descriptions, transformations, observer-dependent frames (AltAz), catalog matching, and performance tips.
 
-### 3. 宇宙学计算（`astropy.cosmology`）
+### 3. Cosmological Calculations (`astropy.cosmology`)
 
-使用标准宇宙学模型执行宇宙学计算。
+Perform cosmological calculations using standard cosmological models.
 
-**关键操作：**
-- 使用内置宇宙学（Planck18、WMAP9 等）
-- 创建自定义宇宙学模型
-- 计算距离（光度、共动、角直径）
-- 计算年龄和回溯时间
-- 确定任何红移处的哈勃参数
-- 计算密度参数和体积
-- 执行逆计算（查找给定距离的 z）
+**Key operations:**
+- Use built-in cosmologies (Planck18, WMAP9, etc.)
+- Create custom cosmological models
+- Calculate distances (luminosity, comoving, angular diameter)
+- Compute ages and lookback times
+- Determine Hubble parameter at any redshift
+- Calculate density parameters and volumes
+- Perform inverse calculations (find z for given distance)
 
-**参见：** `references/cosmology.md` 获取可用模型、距离计算、时间计算、密度参数和中微子效应。
+**See:** `references/cosmology.md` for available models, distance calculations, time calculations, density parameters, and neutrino effects.
 
-### 4. FITS 文件处理（`astropy.io.fits`）
+### 4. FITS File Handling (`astropy.io.fits`)
 
-读取、写入和操作 FITS（灵活图像传输系统）文件。
+Read, write, and manipulate FITS (Flexible Image Transport System) files.
 
-**关键操作：**
-- 使用上下文管理器打开 FITS 文件
-- 通过索引或名称访问 HDU（头数据单元）
-- 读取和修改头（关键字、注释、历史）
-- 处理图像数据（NumPy 数组）
-- 处理表格数据（二进制和 ASCII 表格）
-- 创建新的 FITS 文件（单扩展或多扩展）
-- 对大文件使用内存映射
-- 访问远程 FITS 文件（S3、HTTP）
+**Key operations:**
+- Open FITS files with context managers
+- Access HDUs (Header Data Units) by index or name
+- Read and modify headers (keywords, comments, history)
+- Work with image data (NumPy arrays)
+- Handle table data (binary and ASCII tables)
+- Create new FITS files (single or multi-extension)
+- Use memory mapping for large files
+- Access remote FITS files (S3, HTTP)
 
-**参见：** `references/fits.md` 获取综合文件操作、头操作、图像和表格处理、多扩展文件和性能考虑。
+**See:** `references/fits.md` for comprehensive file operations, header manipulation, image and table handling, multi-extension files, and performance considerations.
 
-### 5. 表格操作（`astropy.table`）
+### 5. Table Operations (`astropy.table`)
 
-处理表格数据，支持单位、元数据和各种文件格式。
+Work with tabular data with support for units, metadata, and various file formats.
 
-**关键操作：**
-- 从数组、列表或字典创建表格
-- 以多种格式（FITS、CSV、HDF5、VOTable）读/写表格
-- 访问和修改列和行
-- 排序、过滤和索引表格
-- 执行数据库风格操作（连接、分组、聚合）
-- 堆叠和连接表格
-- 处理单位感知列（QTable）
-- 使用掩码处理缺失数据
+**Key operations:**
+- Create tables from arrays, lists, or dictionaries
+- Read/write tables in multiple formats (FITS, CSV, HDF5, VOTable)
+- Access and modify columns and rows
+- Sort, filter, and index tables
+- Perform database-style operations (join, group, aggregate)
+- Stack and concatenate tables
+- Work with unit-aware columns (QTable)
+- Handle missing data with masking
 
-**参见：** `references/tables.md` 获取表格创建、I/O 操作、数据操作、排序、过滤、连接、分组和性能提示。
+**See:** `references/tables.md` for table creation, I/O operations, data manipulation, sorting, filtering, joins, grouping, and performance tips.
 
-### 6. 时间处理（`astropy.time`）
+### 6. Time Handling (`astropy.time`)
 
-精确的时间表示和时间尺度与格式之间的转换。
+Precise time representation and conversion between time scales and formats.
 
-**关键操作：**
-- 以各种格式（ISO、JD、MJD、Unix 等）创建时间对象
-- 在时间尺度之间转换（UTC、TAI、TT、TDB 等）
-- 使用 TimeDelta 执行时间算术运算
-- 计算观测者的恒星时
-- 计算光行时修正（质心、日心）
-- 高效处理时间数组
-- 处理掩码（缺失）时间
+**Key operations:**
+- Create Time objects in various formats (ISO, JD, MJD, Unix, etc.)
+- Convert between time scales (UTC, TAI, TT, TDB, etc.)
+- Perform time arithmetic with TimeDelta
+- Calculate sidereal time for observers
+- Compute light travel time corrections (barycentric, heliocentric)
+- Work with time arrays efficiently
+- Handle masked (missing) times
 
-**参见：** `references/time.md` 获取时间格式、时间尺度、转换、算术、观测功能和精度处理。
+**See:** `references/time.md` for time formats, time scales, conversions, arithmetic, observing features, and precision handling.
 
-### 7. 世界坐标系（`astropy.wcs`）
+### 7. World Coordinate System (`astropy.wcs`)
 
-在图像中的像素坐标与世界坐标之间转换。
+Transform between pixel coordinates in images and world coordinates.
 
-**关键操作：**
-- 从 FITS 头读取 WCS
-- 将像素坐标转换世界坐标（反之亦然）
-- 计算图像足迹
-- 访问 WCS 参数（参考像素、投影、比例）
-- 创建自定义 WCS 对象
+**Key operations:**
+- Read WCS from FITS headers
+- Convert pixel coordinates to world coordinates (and vice versa)
+- Calculate image footprints
+- Access WCS parameters (reference pixel, projection, scale)
+- Create custom WCS objects
 
-**参见：** `references/wcs_and_other_modules.md` 获取 WCS 操作和转换。
+**See:** `references/wcs_and_other_modules.md` for WCS operations and transformations.
 
-## 其他能力
+## Additional Capabilities
 
-`references/wcs_and_other_modules.md` 文件还涵盖：
+The `references/wcs_and_other_modules.md` file also covers:
 
-### NDData 和 CCDData
-n 维数据集的容器，具有元数据、不确定性、掩码和 WCS 信息。
+### NDData and CCDData
+Containers for n-dimensional datasets with metadata, uncertainty, masking, and WCS information.
 
-### 建模
-用于创建和拟合数学模型到天文数据的框架。
+### Modeling
+Framework for creating and fitting mathematical models to astronomical data.
 
-### 可视化
-用于天文图像显示的工具，具有适当的拉伸和缩放。
+### Visualization
+Tools for astronomical image display with appropriate stretching and scaling.
 
-### 常数
-具有适当单位的物理和天文常数（光速、太阳质量、普朗克常数等）。
+### Constants
+Physical and astronomical constants with proper units (speed of light, solar mass, Planck constant, etc.).
 
-### 卷积
-用于平滑和过滤的图像处理内核。
+### Convolution
+Image processing kernels for smoothing and filtering.
 
-### 统计
-稳健的统计函数，包括 sigma 裁剪和异常值拒绝。
+### Statistics
+Robust statistical functions including sigma clipping and outlier rejection.
 
-## 安装
+## Installation
 
 ```bash
-# 安装 astropy
+# Install astropy
 uv pip install astropy
 
-# 安装可选依赖项以获得完整功能
+# With optional dependencies for full functionality
 uv pip install astropy[all]
 ```
 
-## 常见工作流程
+## Common Workflows
 
-### 在坐标系之间转换坐标
+### Converting Coordinates Between Systems
 
 ```python
 from astropy.coordinates import SkyCoord
 import astropy.units as u
 
-# 创建坐标
+# Create coordinate
 c = SkyCoord(ra='05h23m34.5s', dec='-69d45m22s', frame='icrs')
 
-# 转换为银河系坐标
+# Transform to galactic
 c_gal = c.galactic
 print(f"l={c_gal.l.deg}, b={c_gal.b.deg}")
 
-# 转换为地平坐标（需要时间和位置）
+# Transform to alt-az (requires time and location)
 from astropy.time import Time
 from astropy.coordinates import EarthLocation, AltAz
 
@@ -220,39 +220,39 @@ c_altaz = c.transform_to(aa_frame)
 print(f"Alt={c_altaz.alt.deg}, Az={c_altaz.az.deg}")
 ```
 
-### 读取和分析 FITS 文件
+### Reading and Analyzing FITS Files
 
 ```python
 from astropy.io import fits
 import numpy as np
 
-# 打开 FITS 文件
+# Open FITS file
 with fits.open('observation.fits') as hdul:
-    # 显示结构
+    # Display structure
     hdul.info()
 
-    # 获取图像数据和头
+    # Get image data and header
     data = hdul[1].data
     header = hdul[1].header
 
-    # 访问头值
+    # Access header values
     exptime = header['EXPTIME']
     filter_name = header['FILTER']
 
-    # 分析数据
+    # Analyze data
     mean = np.mean(data)
     median = np.median(data)
     print(f"Mean: {mean}, Median: {median}")
 ```
 
-### 宇宙学距离计算
+### Cosmological Distance Calculations
 
 ```python
 from astropy.cosmology import Planck18
 import astropy.units as u
 import numpy as np
 
-# 计算 z=1.5 处的距离
+# Calculate distances at z=1.5
 z = 1.5
 d_L = Planck18.luminosity_distance(z)
 d_A = Planck18.angular_diameter_distance(z)
@@ -260,69 +260,70 @@ d_A = Planck18.angular_diameter_distance(z)
 print(f"Luminosity distance: {d_L}")
 print(f"Angular diameter distance: {d_A}")
 
-# 该红移处的宇宙年龄
+# Age of universe at that redshift
 age = Planck18.age(z)
 print(f"Age at z={z}: {age.to(u.Gyr)}")
 
-# 回溯时间
+# Lookback time
 t_lookback = Planck18.lookback_time(z)
 print(f"Lookback time: {t_lookback.to(u.Gyr)}")
 ```
 
-### 交叉匹配星表
+### Cross-Matching Catalogs
 
 ```python
 from astropy.table import Table
 from astropy.coordinates import SkyCoord, match_coordinates_sky
 import astropy.units as u
 
-# 读取星表
+# Read catalogs
 cat1 = Table.read('catalog1.fits')
 cat2 = Table.read('catalog2.fits')
 
-# 创建坐标对象
+# Create coordinate objects
 coords1 = SkyCoord(ra=cat1['RA']*u.degree, dec=cat1['DEC']*u.degree)
 coords2 = SkyCoord(ra=cat2['RA']*u.degree, dec=cat2['DEC']*u.degree)
 
-# 查找匹配
+# Find matches
 idx, sep, _ = coords1.match_to_catalog_sky(coords2)
 
-# 按分离阈值过滤
+# Filter by separation threshold
 max_sep = 1 * u.arcsec
 matches = sep < max_sep
 
-# 创建匹配的星表
+# Create matched catalogs
 cat1_matched = cat1[matches]
 cat2_matched = cat2[idx[matches]]
 print(f"Found {len(cat1_matched)} matches")
 ```
 
-## 最佳实践
+## Best Practices
 
-1. **始终使用单位**：将单位附加到量值以避免错误并确保维度一致性
-2. **对 FITS 文件使用上下文管理器**：确保正确关闭文件
-3. **优先使用数组而不是循环**：将多个坐标/时间作为数组处理以获得更好的性能
-4. **检查坐标系**：在转换之前验证坐标系
-5. **使用适当的宇宙学**：为您的分析选择正确的宇宙学模型
-6. **处理缺失数据**：对具有缺失值的表格使用掩码列
-7. **指定时间尺度**：明确说明时间尺度（UTC、TT、TDB）以进行精确计时
-8. **对单位感知表格使用 QTable**：当表格列具有单位时
-9. **检查 WCS 有效性**：在使用转换之前验证 WCS
-10. **缓存常用值**：昂贵的计算（例如，宇宙学距离）可以缓存
+1. **Always use units**: Attach units to quantities to avoid errors and ensure dimensional consistency
+2. **Use context managers for FITS files**: Ensures proper file closing
+3. **Prefer arrays over loops**: Process multiple coordinates/times as arrays for better performance
+4. **Check coordinate frames**: Verify the frame before transformations
+5. **Use appropriate cosmology**: Choose the right cosmological model for your analysis
+6. **Handle missing data**: Use masked columns for tables with missing values
+7. **Specify time scales**: Be explicit about time scales (UTC, TT, TDB) for precise timing
+8. **Use QTable for unit-aware tables**: When table columns have units
+9. **Check WCS validity**: Verify WCS before using transformations
+10. **Cache frequently used values**: Expensive calculations (e.g., cosmological distances) can be cached
 
-## 文档和资源
+## Documentation and Resources
 
-- 官方 Astropy 文档：https://docs.astropy.org/en/stable/
-- 教程：https://learn.astropy.org/
-- GitHub：https://github.com/astropy/astropy
+- Official Astropy Documentation: https://docs.astropy.org/en/stable/
+- Tutorials: https://learn.astropy.org/
+- GitHub: https://github.com/astropy/astropy
 
-## 参考文件
+## Reference Files
 
-有关特定模块的详细信息：
-- `references/units.md` - 单位、量值、转换和等价性
-- `references/coordinates.md` - 坐标系统、转换和星表匹配
-- `references/cosmology.md` - 宇宙学模型和计算
-- `references/fits.md` - FITS 文件操作和处理
-- `references/tables.md` - 表格创建、I/O 和操作
-- `references/time.md` - 时间格式、尺度和计算
-- `references/wcs_and_other_modules.md` - WCS、NDData、建模、可视化、常量和实用程序
+For detailed information on specific modules:
+- `references/units.md` - Units, quantities, conversions, and equivalencies
+- `references/coordinates.md` - Coordinate systems, transformations, and catalog matching
+- `references/cosmology.md` - Cosmological models and calculations
+- `references/fits.md` - FITS file operations and manipulation
+- `references/tables.md` - Table creation, I/O, and operations
+- `references/time.md` - Time formats, scales, and calculations
+- `references/wcs_and_other_modules.md` - WCS, NDData, modeling, visualization, constants, and utilities
+

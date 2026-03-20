@@ -1,163 +1,168 @@
 ---
 name: what-if-oracle
-description: 运行结构化的假设情景分析，进行多分支可能性探索。当用户提出推测性问题，如"如果...会怎样"、"如果...会发生什么"、"有哪些可能性"、"探索情景"、"情景分析"、"可能性空间"、"可能出什么问题"、"最佳情况/最坏情况"、"风险分析"、"应急规划"、"战略选择"，或任何关于不确定未来的问题时，使用此技能。当用户面临岔路口决策、想要压力测试想法或需要在承诺前思考后果时，也会触发此技能。
+description: Run structured What-If scenario analysis with multi-branch possibility exploration. Use this skill when the user asks speculative questions like "what if...", "what would happen if...", "what are the possibilities", "explore scenarios", "scenario analysis", "possibility space", "what could go wrong", "best case / worst case", "risk analysis", "contingency planning", "strategic options", or any question about uncertain futures. Also trigger when the user faces a fork-in-the-road decision, wants to stress-test an idea, or needs to think through consequences before committing.
 allowed-tools: Read Write
 license: MIT license
 metadata:
   skill-author: AHK Strategies (ashrafkahoush-ux)
 ---
 
-# 假设情景预言家 — 可能性空间探索器
+# What-If Oracle — Possibility Space Explorer
 
-一个通过严谨的多分支情景分析来探索不确定未来的结构化系统。预言家不是提供单一预测，而是映射完整的**可能性空间** —— 分支时间线，每个路径都有自己的逻辑、概率和后果。
+A structured system for exploring uncertain futures through rigorous multi-branch scenario analysis. Instead of one prediction, the Oracle maps the full **possibility space** — branching timelines where each path has its own logic, probability, and consequences.
 
-基于假设陈述范式：推测性问题（"如果X会怎样？"）不是无意义的白日梦，而是一种**基本计算操作** —— 大脑在投入资源到某条路径之前模拟未来的方式。
+Based on the What-If Statement paradigm: the idea that speculative questions ("What if X?") are not idle daydreaming but a **fundamental computing operation** — the mind's way of simulating futures before committing resources to one.
 
-发表的研究：[The What-If Statement (DOI: 10.5281/zenodo.18736841)](https://doi.org/10.5281/zenodo.18736841) | [IDNA Consolidation v2 (DOI: 10.5281/zenodo.18807387)](https://doi.org/10.5281/zenodo.18807387)
+Published research: [The What-If Statement (DOI: 10.5281/zenodo.18736841)](https://doi.org/10.5281/zenodo.18736841) | [IDNA Consolidation v2 (DOI: 10.5281/zenodo.18807387)](https://doi.org/10.5281/zenodo.18807387)
 
-## 核心原则：0·IF·1
+## Core Principle: 0·IF·1
 
-每个情景分析都有三个元素：
+Every scenario analysis has three elements:
 
-- **0** — 未表达状态（尚未发生的事情，潜力）
-- **1** — 已表达状态（现状，当前现实）
-- **IF** — 条件纽带（将0转变为1的决策、事件或变化）
+- **0** — The unexpressed state (what hasn't happened yet, the potential)
+- **1** — The expressed state (what IS, the current reality)
+- **IF** — The conditional bond (the decision, event, or change that transforms 0 into 1)
 
-分析的质量取决于IF的精确性。模糊的"如果事情出错会怎样？"会产生模糊的结果。精确的"如果我们的主要供应商在第三季度提价30%会怎样？"会产生可操作的情报。
+The quality of the analysis depends on the precision of the IF. A vague "what if things go wrong?" produces vague results. A precise "what if our primary supplier raises prices 30% in Q3?" produces actionable intelligence.
 
-## 如何运行预言家
+## How to Run the Oracle
 
-### 阶段1 — 构建问题框架
+### Phase 1 — Frame the Question
 
-接受用户的假设问题并使其更明确：
+Take the user's What-If question and sharpen it:
 
-**分解为组件：**
+**Decompose into components:**
 
-- **变量：** 具体什么会改变？（每次分析一个变量）
-- **幅度：** 改变多少？（尽可能量化）
-- **时间范围：** 在什么时期内？
-- **背景：** 变化前的当前状态是什么？
+- **The Variable:** What specific thing changes? (one variable per analysis)
+- **The Magnitude:** By how much? (quantify if possible)
+- **The Timeframe:** Over what period?
+- **The Context:** What's the current state before the change?
 
-**如果问题模糊，使其更明确：**
+**If the question is vague, sharpen it:**
 
-- "如果AI接管会怎样？" → "如果在[特定行业]中，3年内40%的当前知识工作任务被AI自动化会怎样？"
-- "如果我们失败会怎样？" → "如果从现在开始，月度收入连续6个月保持在5000美元以下会怎样？"
+- "What if AI takes over?" → "What if 40% of current knowledge-work tasks are automated by AI within 3 years in [specific industry]?"
+- "What if we fail?" → "What if monthly revenue stays below $5K for 6 consecutive months starting now?"
 
-在继续之前，向用户展示明确的问题以获得确认。
+Present the sharpened question to the user for confirmation before proceeding.
 
-### 阶段2 — 映射可能性空间
+### Phase 2 — Map the Possibility Space
 
-使用以下框架生成**4-6个情景分支**：
+Generate **4-6 scenario branches** using this framework:
 
-| 分支             | 定义                                                                   | 目的                                            |
+| Branch             | Definition                                                                   | Purpose                                            |
 | ------------------ | ---------------------------------------------------------------------------- | -------------------------------------------------- |
-| **Ω 最佳情况**    | 一切顺利。关键假设全部验证。出现幸运转机。     | 定义上限 — 最大上行空间是什么？    |
-| **α 可能情况**  | 根据当前证据最可能的路径。没有重大意外。               | 将期望锚定在现实中                     |
-| **Δ 最坏情况**   | 关键假设失败。同时有两件事出错。                    | 定义下限 — 最大下行空间是什么？    |
-| **Ψ  wildcard**    | 一个无人追踪的意外变量进入。黑天鹅领域。 | 压力测试不可想象的情况                   |
-| **Φ 反向观点**   | 与共识观点相反的情况被证明是正确的。                     | 挑战群体思维并揭示隐藏的假设 |
-| **∞ 二阶效应** | 一阶效应触发无人预测的级联后果。     | 映射连锁反应                             |
+| **Ω Best Case**    | Everything goes right. Key assumptions all validate. Lucky breaks occur.     | Define the ceiling — what's the maximum upside?    |
+| **α Likely Case**  | Most probable path given current evidence. No major surprises.               | Anchor expectations in reality                     |
+| **Δ Worst Case**   | Key assumptions fail. Two things go wrong simultaneously.                    | Define the floor — what's the maximum downside?    |
+| **Ψ Wild Card**    | An unexpected variable enters that nobody is tracking. Black swan territory. | Stress-test for the unimaginable                   |
+| **Φ Contrarian**   | The opposite of the consensus view turns out to be true.                     | Challenge groupthink and reveal hidden assumptions |
+| **∞ Second Order** | The first-order effects trigger cascading consequences nobody predicted.     | Map the ripple effects                             |
 
-### 阶段3 — 分析每个分支
+### Phase 3 — Analyze Each Branch
 
-对于每个情景分支，提供：
+For each scenario branch, provide:
 
 ```
 ╔══════════════════════════════════════════════╗
-║  BRANCH: [Ω/α/Δ/Ψ/Φ/∞] — [分支名称]    ║
+║  BRANCH: [Ω/α/Δ/Ψ/Φ/∞] — [Branch Name]    ║
 ╠══════════════════════════════════════════════╣
-║  概率: [X%]                           ║
-║  时间范围: [何时可能实现]    ║
-║  信心: [高/中/低]               ║
+║  Probability: [X%]                           ║
+║  Timeframe: [When this could materialize]    ║
+║  Confidence: [HIGH/MEDIUM/LOW]               ║
 ╠══════════════════════════════════════════════╣
-║  叙述:                                  ║
-║  [2-3句话描述此情景如何逐步展开]             ║
+║  NARRATIVE:                                  ║
+║  [2-3 sentences describing how this          ║
+║   scenario unfolds step by step]             ║
 ║                                              ║
-║  关键假设:                            ║
-║  • [要发生此事必须为真的条件]    ║
-║  • [以及这个条件]                                ║
+║  KEY ASSUMPTIONS:                            ║
+║  • [What must be true for this to happen]    ║
+║  • [And this]                                ║
 ║                                              ║
-║  触发条件:                         ║
-║  • [表明此分支正在成为现实的早期信号]    ║
-║  • [第二个信号]                           ║
+║  TRIGGER CONDITIONS:                         ║
+║  • [Early signal that this branch is         ║
+║    becoming reality]                         ║
+║  • [Second signal]                           ║
 ║                                              ║
-║  后果:                               ║
-║  → 即时: [首先发生什么]           ║
-║  → 30天: [后续发生什么]                   ║
-║  → 6个月: [最终走向何处]               ║
+║  CONSEQUENCES:                               ║
+║  → Immediate: [What happens first]           ║
+║  → 30 days: [What follows]                   ║
+║  → 6 months: [Where it leads]               ║
 ║                                              ║
-║  所需响应:                          ║
-║  [如果此分支激活应采取什么行动 — 具体、可操作]          ║
+║  REQUIRED RESPONSE:                          ║
+║  [What action to take if this branch         ║
+║   activates — specific, actionable]          ║
 ║                                              ║
-║  大多数人忽略的点:                      ║
-║  [关于此情景的非显而易见的洞察，传统分析会忽略]                            ║
+║  WHAT MOST PEOPLE MISS:                      ║
+║  [The non-obvious insight about this         ║
+║   scenario that conventional analysis        ║
+║   would overlook]                            ║
 ╚══════════════════════════════════════════════╝
 ```
 
-### 阶段4 — 综合
+### Phase 4 — Synthesis
 
-分析所有分支后，提供：
+After analyzing all branches, provide:
 
-**概率分布：**
+**Probability Distribution:**
 
 ```
-Ω 最佳情况 ····· [██████░░░░] 15%
-α 可能情况 ··· [████████░░] 45%
-Δ 最坏情况 ···· [██████░░░░] 20%
-Ψ wildcard ····· [███░░░░░░░]  8%
-Φ 反向观点 ···· [████░░░░░░]  7%
-∞ 二阶效应 ·· [███░░░░░░░]  5%
+Ω Best Case ····· [██████░░░░] 15%
+α Likely Case ··· [████████░░] 45%
+Δ Worst Case ···· [██████░░░░] 20%
+Ψ Wild Card ····· [███░░░░░░░]  8%
+Φ Contrarian ···· [████░░░░░░]  7%
+∞ Second Order ·· [███░░░░░░░]  5%
 ```
 
-**稳健行动：** 哪些行动对多个分支都有益？这些是无遗憾的行动 — 无论哪个未来实现，都要执行它们。
+**Robust Actions:** What actions are beneficial across MULTIPLE branches? These are the no-regret moves — do them regardless of which future materializes.
 
-**对冲行动：** 哪些准备可以保护免受最坏分支的影响，同时不牺牲上行空间？
+**Hedge Actions:** What preparations protect against the worst branches without sacrificing upside?
 
-**决策触发因素：** 哪些具体、可观察的信号应该导致您更新哪个分支最可能发生？定义触发点。
+**Decision Triggers:** What specific, observable signals should cause you to update which branch is most likely? Define the tripwires.
 
-**1% 洞察：** 关于这种情况，几乎所有分析它的人都会忽略的一件事是什么？非显而易见的模式、隐藏的假设、被忽视的变量。
+**The 1% Insight:** What is the one thing about this situation that almost everyone analyzing it would miss? The non-obvious pattern, the hidden assumption, the overlooked variable.
 
-## 黄金比例权重
+## Golden Ratio Weighting
 
-当存在证据时，使用黄金比例对主要情景进行权重分配：
+When evidence exists, weight primary scenarios using the golden ratio:
 
-- **主要未来（最可能）：** 61.8%的注意力/资源
-- **替代未来：** 38.2%的注意力/资源
+- **Primary future (most likely):** 61.8% of attention/resources
+- **Alternative future:** 38.2% of attention/resources
 
-这可以防止过度承诺到单一路径和在太多应急方案中分散注意力。自然界使用此比例进行分支（树木、河流、血管）。战略规划也可以。
+This prevents both overcommitment to a single path and dilution across too many contingencies. Nature uses this ratio for branching (trees, rivers, blood vessels). Strategic planning can too.
 
-## 模式
+## Modes
 
-### 快速预言家（2-3分钟）
+### Quick Oracle (2-3 minutes)
 
-仅3个分支：最佳、可能、最坏。简短叙述。用于快速决策。
+3 branches only: Best, Likely, Worst. Short narratives. For fast decisions.
 
-### 深度预言家（5-10分钟）
+### Deep Oracle (5-10 minutes)
 
-所有6个分支。完整分析，包括后果、触发因素和综合。用于高风险决策。
+All 6 branches. Full analysis with consequences, triggers, and synthesis. For high-stakes decisions.
 
-### 情景链
+### Scenario Chain
 
-将一个预言家分析的输出输入到另一个。"如果分支Δ发生，那个分支内的可能性是什么？" 用于复杂战略规划的递归深度。
+Take the output of one Oracle analysis and feed it into another. "If Branch Δ happens, what are the possibilities WITHIN that branch?" Recursive depth for complex strategic planning.
 
-### 反向预言家
+### Reverse Oracle
 
-从期望的结果开始，向后工作："X发生的条件必须是什么？最可能的路径是什么？" 对目标设定和战略设计有用。
+Start from a desired outcome and work backward: "What conditions must be true for X to happen? What's the most likely path TO that outcome?" Useful for goal-setting and strategy design.
 
-### 竞争预言家
+### Competitive Oracle
 
-从多个利益相关者的角度分析相同的假设："如果我们推出此产品，从我们的角度、他们的角度和市场的角度来看，可能性空间是什么样子？"
+Analyze the same What-If from multiple stakeholder perspectives: "If we launch this product, what does the possibility space look like from OUR perspective vs. THEIR perspective vs. THE MARKET's perspective?"
 
-## 这不是什么
+## What This Is NOT
 
-- 不是预测 — 而是可能性地图。预言家不声称知道未来；它帮助您为多种未来做准备。
-- 不是水晶球 — 概率是基于可用证据的估计，不是确定性。
-- 不是行动的替代品 — 世界上最好的情景分析如果没有后续的决策和执行就是毫无价值的。
+- Not a prediction — it's a possibility map. The Oracle doesn't claim to know the future; it helps you prepare for multiple futures.
+- Not a crystal ball — probabilities are estimates based on available evidence, not certainties.
+- Not a substitute for action — the best scenario analysis in the world is worthless without subsequent decision and execution.
 
-## 构建者
+## Built By
 
 [AHK Strategies](https://ahkstrategies.net) — AI Horizon Knowledge
-完整平台：[themindbook.app](https://themindbook.app)
-研究：[The What-If Statement (DOI: 10.5281/zenodo.18736841)](https://doi.org/10.5281/zenodo.18736841)
+Full platform: [themindbook.app](https://themindbook.app)
+Research: [The What-If Statement (DOI: 10.5281/zenodo.18736841)](https://doi.org/10.5281/zenodo.18736841)
 
-_"未来不是空的。它包含对现在施加拉力的已完成状态。"_
+_"The future is not empty. It contains completed states that exert pull on the present."_

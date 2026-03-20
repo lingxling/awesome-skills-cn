@@ -1,6 +1,6 @@
 ---
 name: wiki-qa
-description: "Answers questions about a code repository using source file analysis. Use when the user asks a question about how something works, wants to understand a component, or needs help navigating the code..."
+description: "Answer repository questions grounded entirely in source code evidence."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -10,8 +10,7 @@ date_added: "2026-02-27"
 
 Answer repository questions grounded entirely in source code evidence.
 
-## When to Activate
-
+## When to Use
 - User asks a question about the codebase
 - User wants to understand a specific file, function, or component
 - User asks "how does X work" or "where is Y defined"

@@ -1,76 +1,89 @@
 ---
 name: vercel-composition-patterns
 description:
-  可扩展的 React 组合模式。在重构具有布尔属性泛滥的组件、构建灵活的组件库或设计可重用 API 时使用。在涉及复合组件、render props、context providers 或组件架构的任务时触发。包含 React 19 API 更改。
+  React composition patterns that scale. Use when refactoring components with
+  boolean prop proliferation, building flexible component libraries, or
+  designing reusable APIs. Triggers on tasks involving compound components,
+  render props, context providers, or component architecture. Includes React 19
+  API changes.
 license: MIT
 metadata:
   author: vercel
   version: '1.0.0'
 ---
 
-# React 组合模式
+# React Composition Patterns
 
-用于构建灵活、可维护的 React 组件的组合模式。通过使用复合组件、提升状态和组合内部来避免布尔属性泛滥。这些模式使代码库在扩展时更容易让人类和 AI 智能体使用。
+Composition patterns for building flexible, maintainable React components. Avoid
+boolean prop proliferation by using compound components, lifting state, and
+composing internals. These patterns make codebases easier for both humans and AI
+agents to work with as they scale.
 
-## 何时应用
+## When to Apply
 
-在以下情况下参考这些指南：
+Reference these guidelines when:
 
-- 重构具有许多布尔属性的组件
-- 构建可重用的组件库
-- 设计灵活的组件 API
-- 审查组件架构
-- 使用复合组件或 context providers
+- Refactoring components with many boolean props
+- Building reusable component libraries
+- Designing flexible component APIs
+- Reviewing component architecture
+- Working with compound components or context providers
 
-## 按优先级分类的规则
+## Rule Categories by Priority
 
-| 优先级 | 类别 | 影响 | 前缀 |
+| Priority | Category                | Impact | Prefix          |
 | -------- | ----------------------- | ------ | --------------- |
-| 1 | 组件架构 | 高 | `architecture-` |
-| 2 | 状态管理 | 中 | `state-` |
-| 3 | 实现模式 | 中 | `patterns-` |
-| 4 | React 19 API | 中 | `react19-` |
+| 1        | Component Architecture  | HIGH   | `architecture-` |
+| 2        | State Management        | MEDIUM | `state-`        |
+| 3        | Implementation Patterns | MEDIUM | `patterns-`     |
+| 4        | React 19 APIs           | MEDIUM | `react19-`      |
 
-## 快速参考
+## Quick Reference
 
-### 1. 组件架构 (高)
+### 1. Component Architecture (HIGH)
 
-- `architecture-avoid-boolean-props` - 不要添加布尔属性来自定义行为；使用组合
-- `architecture-compound-components` - 使用共享上下文构建复杂组件
+- `architecture-avoid-boolean-props` - Don't add boolean props to customize
+  behavior; use composition
+- `architecture-compound-components` - Structure complex components with shared
+  context
 
-### 2. 状态管理 (中)
+### 2. State Management (MEDIUM)
 
-- `state-decouple-implementation` - Provider 是唯一知道如何管理状态的地方
-- `state-context-interface` - 定义包含状态、操作、元数据的通用接口用于依赖注入
-- `state-lift-state` - 将状态移动到 provider 组件中以便兄弟组件访问
+- `state-decouple-implementation` - Provider is the only place that knows how
+  state is managed
+- `state-context-interface` - Define generic interface with state, actions, meta
+  for dependency injection
+- `state-lift-state` - Move state into provider components for sibling access
 
-### 3. 实现模式 (中)
+### 3. Implementation Patterns (MEDIUM)
 
-- `patterns-explicit-variants` - 创建显式的变体组件而不是布尔模式
-- `patterns-children-over-render-props` - 使用 children 进行组合而不是 renderX 属性
+- `patterns-explicit-variants` - Create explicit variant components instead of
+  boolean modes
+- `patterns-children-over-render-props` - Use children for composition instead
+  of renderX props
 
-### 4. React 19 API (中)
+### 4. React 19 APIs (MEDIUM)
 
-> **⚠️ 仅限 React 19+。** 如果使用 React 18 或更早版本，请跳过此部分。
+> **⚠️ React 19+ only.** Skip this section if using React 18 or earlier.
 
-- `react19-no-forwardref` - 不要使用 `forwardRef`；使用 `use()` 代替 `useContext()`
+- `react19-no-forwardref` - Don't use `forwardRef`; use `use()` instead of `useContext()`
 
-## 如何使用
+## How to Use
 
-阅读单个规则文件以获取详细说明和代码示例：
+Read individual rule files for detailed explanations and code examples:
 
 ```
 rules/architecture-avoid-boolean-props.md
 rules/state-context-interface.md
 ```
 
-每个规则文件包含：
+Each rule file contains:
 
-- 为什么重要的简要说明
-- 带有说明的错误代码示例
-- 带有说明的正确代码示例
-- 其他上下文和参考
+- Brief explanation of why it matters
+- Incorrect code example with explanation
+- Correct code example with explanation
+- Additional context and references
 
-## 完整编译文档
+## Full Compiled Document
 
-获取所有规则展开的完整指南：`AGENTS.md`
+For the complete guide with all rules expanded: `AGENTS.md`

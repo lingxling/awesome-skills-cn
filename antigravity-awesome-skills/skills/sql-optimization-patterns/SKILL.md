@@ -1,6 +1,6 @@
 ---
 name: sql-optimization-patterns
-description: "Master SQL query optimization, indexing strategies, and EXPLAIN analysis to dramatically improve database performance and eliminate slow queries. Use when debugging slow queries, designing database..."
+description: "Transform slow database queries into lightning-fast operations through systematic optimization, proper indexing, and query plan analysis."
 risk: unknown
 source: community
 date_added: "2026-02-27"

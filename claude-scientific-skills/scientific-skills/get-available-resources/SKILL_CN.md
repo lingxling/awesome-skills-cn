@@ -1,66 +1,66 @@
 ---
 name: get-available-resources
-description: 此技能应在任何计算密集型科学任务开始时使用，以检测和报告可用系统资源（CPU核心、GPU、内存、磁盘空间）。它创建包含资源信息和策略建议的JSON文件，为计算方法决策提供信息，例如是否使用并行处理（joblib、multiprocessing）、核外计算（Dask、Zarr）、GPU加速（PyTorch、JAX）或内存高效策略。在运行分析、训练模型、处理大型数据集或资源约束重要的任何任务之前使用此技能。
+description: This skill should be used at the start of any computationally intensive scientific task to detect and report available system resources (CPU cores, GPUs, memory, disk space). It creates a JSON file with resource information and strategic recommendations that inform computational approach decisions such as whether to use parallel processing (joblib, multiprocessing), out-of-core computing (Dask, Zarr), GPU acceleration (PyTorch, JAX), or memory-efficient strategies. Use this skill before running analyses, training models, processing large datasets, or any task where resource constraints matter.
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# 获取可用资源
+# Get Available Resources
 
-## 概述
+## Overview
 
-检测可用计算资源并为科学计算任务生成策略建议。此技能自动识别CPU能力、GPU可用性（NVIDIA CUDA、AMD ROCm、Apple Silicon Metal）、内存约束和磁盘空间，以帮助做出关于计算方法的明智决策。
+Detect available computational resources and generate strategic recommendations for scientific computing tasks. This skill automatically identifies CPU capabilities, GPU availability (NVIDIA CUDA, AMD ROCm, Apple Silicon Metal), memory constraints, and disk space to help make informed decisions about computational approaches.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况下主动使用此技能：
+Use this skill proactively before any computationally intensive task:
 
-- **数据分析之前**：确定数据集是否可以加载到内存中或需要核外处理
-- **模型训练之前**：检查GPU加速是否可用以及使用哪个后端
-- **并行处理之前**：为joblib、multiprocessing或Dask识别最佳工作线程数
-- **大型文件操作之前**：验证足够的磁盘空间和适当的存储策略
-- **项目初始化时**：了解基线功能以做出架构决策
+- **Before data analysis**: Determine if datasets can be loaded into memory or require out-of-core processing
+- **Before model training**: Check if GPU acceleration is available and which backend to use
+- **Before parallel processing**: Identify optimal number of workers for joblib, multiprocessing, or Dask
+- **Before large file operations**: Verify sufficient disk space and appropriate storage strategies
+- **At project initialization**: Understand baseline capabilities for making architectural decisions
 
-**示例场景：**
-- "帮我分析这个50GB的基因组数据集" → 首先使用此技能确定是否需要Dask/Zarr
-- "在这个数据上训练神经网络" → 使用此技能检测可用GPU和后端
-- "并行处理10,000个文件" → 使用此技能确定最佳工作线程数
-- "运行计算密集型模拟" → 使用此技能了解资源约束
+**Example scenarios:**
+- "Help me analyze this 50GB genomics dataset" → Use this skill first to determine if Dask/Zarr are needed
+- "Train a neural network on this data" → Use this skill to detect available GPUs and backends
+- "Process 10,000 files in parallel" → Use this skill to determine optimal worker count
+- "Run a computationally intensive simulation" → Use this skill to understand resource constraints
 
-## 此技能如何工作
+## How This Skill Works
 
-### 资源检测
+### Resource Detection
 
-此技能运行`scripts/detect_resources.py`以自动检测：
+The skill runs `scripts/detect_resources.py` to automatically detect:
 
-1. **CPU信息**
-   - 物理和逻辑核心数
-   - 处理器架构和型号
-   - CPU频率信息
+1. **CPU Information**
+   - Physical and logical core counts
+   - Processor architecture and model
+   - CPU frequency information
 
-2. **GPU信息**
-   - NVIDIA GPU：通过nvidia-smi检测，报告VRAM、驱动版本、计算能力
-   - AMD GPU：通过rocm-smi检测
-   - Apple Silicon：检测具有Metal支持和统一内存的M1/M2/M3/M4芯片
+2. **GPU Information**
+   - NVIDIA GPUs: Detects via nvidia-smi, reports VRAM, driver version, compute capability
+   - AMD GPUs: Detects via rocm-smi
+   - Apple Silicon: Detects M1/M2/M3/M4 chips with Metal support and unified memory
 
-3. **内存信息**
-   - 总内存和可用内存
-   - 当前内存使用百分比
-   - 交换空间可用性
+3. **Memory Information**
+   - Total and available RAM
+   - Current memory usage percentage
+   - Swap space availability
 
-4. **磁盘空间信息**
-   - 工作目录的总磁盘空间和可用磁盘空间
-   - 当前使用百分比
+4. **Disk Space Information**
+   - Total and available disk space for working directory
+   - Current usage percentage
 
-5. **操作系统信息**
-   - 操作系统类型（macOS、Linux、Windows）
-   - 操作系统版本和发布
-   - Python版本
+5. **Operating System Information**
+   - OS type (macOS, Linux, Windows)
+   - OS version and release
+   - Python version
 
-### 输出格式
+### Output Format
 
-此技能在当前工作目录中生成`.claude_resources.json`文件，包含：
+The skill generates a `.claude_resources.json` file in the current working directory containing:
 
 ```json
 {
@@ -121,93 +121,93 @@ metadata:
 }
 ```
 
-### 策略建议
+### Strategic Recommendations
 
-此技能生成上下文感知的建议：
+The skill generates context-aware recommendations:
 
-**并行处理建议：**
-- **高并行度（8+核心）**：使用Dask、joblib或multiprocessing，工作线程数 = 核心数 - 2
-- **中等并行度（4-7核心）**：使用joblib或multiprocessing，工作线程数 = 核心数 - 1
-- **顺序（< 4核心）**：首选顺序处理以避免开销
+**Parallel Processing Recommendations:**
+- **High parallelism (8+ cores)**: Use Dask, joblib, or multiprocessing with workers = cores - 2
+- **Moderate parallelism (4-7 cores)**: Use joblib or multiprocessing with workers = cores - 1
+- **Sequential (< 4 cores)**: Prefer sequential processing to avoid overhead
 
-**内存策略建议：**
-- **内存受限（< 4GB可用）**：使用Zarr、Dask或H5py进行核外处理
-- **中等内存（4-16GB可用）**：对大于2GB的数据集使用Dask/Zarr
-- **内存充足（> 16GB可用）**：可以直接将大多数数据集加载到内存中
+**Memory Strategy Recommendations:**
+- **Memory constrained (< 4GB available)**: Use Zarr, Dask, or H5py for out-of-core processing
+- **Moderate memory (4-16GB available)**: Use Dask/Zarr for datasets > 2GB
+- **Memory abundant (> 16GB available)**: Can load most datasets into memory directly
 
-**GPU加速建议：**
-- **检测到NVIDIA GPU**：使用PyTorch、TensorFlow、JAX、CuPy或RAPIDS
-- **检测到AMD GPU**：使用PyTorch-ROCm或TensorFlow-ROCm
-- **检测到Apple Silicon**：使用带有MPS后端的PyTorch、TensorFlow-Metal或JAX-Metal
-- **未检测到GPU**：使用CPU优化库
+**GPU Acceleration Recommendations:**
+- **NVIDIA GPUs detected**: Use PyTorch, TensorFlow, JAX, CuPy, or RAPIDS
+- **AMD GPUs detected**: Use PyTorch-ROCm or TensorFlow-ROCm
+- **Apple Silicon detected**: Use PyTorch with MPS backend, TensorFlow-Metal, or JAX-Metal
+- **No GPU detected**: Use CPU-optimized libraries
 
-**大数据处理建议：**
-- **磁盘受限（< 10GB）**：使用流式或压缩策略
-- **中等磁盘（10-100GB）**：使用Zarr、H5py或Parquet格式
-- **磁盘充足（> 100GB）**：可以自由创建大型中间文件
+**Large Data Handling Recommendations:**
+- **Disk constrained (< 10GB)**: Use streaming or compression strategies
+- **Moderate disk (10-100GB)**: Use Zarr, H5py, or Parquet formats
+- **Disk abundant (> 100GB)**: Can create large intermediate files freely
 
-## 使用说明
+## Usage Instructions
 
-### 步骤1：运行资源检测
+### Step 1: Run Resource Detection
 
-在任何计算密集型任务开始时执行检测脚本：
+Execute the detection script at the start of any computationally intensive task:
 
 ```bash
 python scripts/detect_resources.py
 ```
 
-可选参数：
-- `-o, --output <path>`：指定自定义输出路径（默认：`.claude_resources.json`）
-- `-v, --verbose`：将完整资源信息打印到stdout
+Optional arguments:
+- `-o, --output <path>`: Specify custom output path (default: `.claude_resources.json`)
+- `-v, --verbose`: Print full resource information to stdout
 
-### 步骤2：读取并应用建议
+### Step 2: Read and Apply Recommendations
 
-运行检测后，读取生成的`.claude_resources.json`文件以通知计算决策：
+After running detection, read the generated `.claude_resources.json` file to inform computational decisions:
 
 ```python
-# 示例：在代码中使用建议
+# Example: Use recommendations in code
 import json
 
 with open('.claude_resources.json', 'r') as f:
     resources = json.load(f)
 
-# 检查并行处理策略
+# Check parallel processing strategy
 if resources['recommendations']['parallel_processing']['strategy'] == 'high_parallelism':
     n_jobs = resources['recommendations']['parallel_processing']['suggested_workers']
-    # 使用joblib、Dask或multiprocessing，工作线程数为n_jobs
+    # Use joblib, Dask, or multiprocessing with n_jobs workers
 
-# 检查内存策略
+# Check memory strategy
 if resources['recommendations']['memory_strategy']['strategy'] == 'memory_constrained':
-    # 使用Dask、Zarr或H5py进行核外处理
+    # Use Dask, Zarr, or H5py for out-of-core processing
     import dask.array as da
-    # 分块加载数据
+    # Load data in chunks
 
-# 检查GPU可用性
+# Check GPU availability
 if resources['recommendations']['gpu_acceleration']['available']:
     backends = resources['recommendations']['gpu_acceleration']['backends']
-    # 根据可用后端使用适当的GPU库
+    # Use appropriate GPU library based on available backend
 ```
 
-### 步骤3：做出明智决策
+### Step 3: Make Informed Decisions
 
-使用资源信息和建议做出战略选择：
+Use the resource information and recommendations to make strategic choices:
 
-**对于数据加载：**
+**For data loading:**
 ```python
 memory_available_gb = resources['memory']['available_gb']
 dataset_size_gb = 10
 
 if dataset_size_gb > memory_available_gb * 0.5:
-    # 数据集相对于内存较大，使用Dask
+    # Dataset is large relative to memory, use Dask
     import dask.dataframe as dd
     df = dd.read_csv('large_file.csv')
 else:
-    # 数据集适合内存，使用pandas
+    # Dataset fits in memory, use pandas
     import pandas as pd
     df = pd.read_csv('large_file.csv')
 ```
 
-**对于并行处理：**
+**For parallel processing:**
 ```python
 from joblib import Parallel, delayed
 
@@ -218,7 +218,7 @@ results = Parallel(n_jobs=n_jobs)(
 )
 ```
 
-**对于GPU加速：**
+**For GPU acceleration:**
 ```python
 import torch
 
@@ -232,43 +232,44 @@ else:
 model = model.to(device)
 ```
 
-## 依赖项
+## Dependencies
 
-检测脚本需要以下Python包：
+The detection script requires the following Python packages:
 
 ```bash
 uv pip install psutil
 ```
 
-所有其他功能使用Python标准库模块（json、os、platform、subprocess、sys、pathlib）。
+All other functionality uses Python standard library modules (json, os, platform, subprocess, sys, pathlib).
 
-## 平台支持
+## Platform Support
 
-- **macOS**：完全支持，包括Apple Silicon（M1/M2/M3/M4）GPU检测
-- **Linux**：完全支持，包括NVIDIA（nvidia-smi）和AMD（rocm-smi）GPU检测
-- **Windows**：完全支持，包括NVIDIA GPU检测
+- **macOS**: Full support including Apple Silicon (M1/M2/M3/M4) GPU detection
+- **Linux**: Full support including NVIDIA (nvidia-smi) and AMD (rocm-smi) GPU detection
+- **Windows**: Full support including NVIDIA GPU detection
 
-## 最佳实践
+## Best Practices
 
-1. **尽早运行**：在项目开始时或主要计算任务之前执行资源检测
-2. **定期重新运行**：系统资源随时间变化（内存使用、磁盘空间）
-3. **扩展前检查**：在扩展并行工作线程或数据大小之前验证资源
-4. **记录决策**：在项目目录中保留`.claude_resources.json`文件以记录资源感知决策
-5. **配合版本控制使用**：不同机器具有不同功能；资源文件有助于保持可移植性
+1. **Run early**: Execute resource detection at the start of projects or before major computational tasks
+2. **Re-run periodically**: System resources change over time (memory usage, disk space)
+3. **Check before scaling**: Verify resources before scaling up parallel workers or data sizes
+4. **Document decisions**: Keep the `.claude_resources.json` file in project directories to document resource-aware decisions
+5. **Use with versioning**: Different machines have different capabilities; resource files help maintain portability
 
-## 故障排除
+## Troubleshooting
 
-**未检测到GPU：**
-- 确保安装了GPU驱动程序（nvidia-smi、rocm-smi或Apple Silicon的system_profiler）
-- 检查GPU实用程序是否在系统PATH中
-- 验证GPU未被其他进程使用
+**GPU not detected:**
+- Ensure GPU drivers are installed (nvidia-smi, rocm-smi, or system_profiler for Apple Silicon)
+- Check that GPU utilities are in system PATH
+- Verify GPU is not in use by other processes
 
-**脚本执行失败：**
-- 确保安装了psutil：`uv pip install psutil`
-- 检查Python版本兼容性（Python 3.6+）
-- 验证脚本具有执行权限：`chmod +x scripts/detect_resources.py`
+**Script execution fails:**
+- Ensure psutil is installed: `uv pip install psutil`
+- Check Python version compatibility (Python 3.6+)
+- Verify script has execute permissions: `chmod +x scripts/detect_resources.py`
 
-**内存读数不准确：**
-- 内存读数是快照；实际可用内存不断变化
-- 在检测前关闭其他应用程序以获得准确的"可用"内存
-- 考虑多次运行检测并平均结果
+**Inaccurate memory readings:**
+- Memory readings are snapshots; actual available memory changes constantly
+- Close other applications before detection for accurate "available" memory
+- Consider running detection multiple times and averaging results
+

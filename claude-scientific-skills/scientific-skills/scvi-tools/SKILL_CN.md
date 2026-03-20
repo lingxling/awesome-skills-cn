@@ -1,6 +1,6 @@
 ---
 name: scvi-tools
-description: 用于单细胞组学的深度生成模型。当需要概率性批次校正（scVI）、迁移学习、带不确定性的差异表达或多模态整合（TOTALVI、MultiVI）时使用。最适用于高级建模、批次效应、多模态数据。标准分析流程请使用 scanpy。
+description: Deep generative models for single-cell omics. Use when you need probabilistic batch correction (scVI), transfer learning, differential expression with uncertainty, or multi-modal integration (TOTALVI, MultiVI). Best for advanced modeling, batch effects, multimodal data. For standard analysis pipelines use scanpy.
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,66 +8,66 @@ metadata:
 
 # scvi-tools
 
-## 概述
+## Overview
 
-scvi-tools 是一个用于单细胞基因组学中概率模型的综合 Python 框架。它基于 PyTorch 和 PyTorch Lightning 构建，使用变分推断提供深度生成模型，用于分析多种单细胞数据模态。
+scvi-tools is a comprehensive Python framework for probabilistic models in single-cell genomics. Built on PyTorch and PyTorch Lightning, it provides deep generative models using variational inference for analyzing diverse single-cell data modalities.
 
-## 何时使用此技能
+## When to Use This Skill
 
-当以下情况时使用此技能：
-- 分析单细胞 RNA-seq 数据（降维、批次校正、整合）
-- 处理单细胞 ATAC-seq 或染色质可及性数据
-- 整合多模态数据（CITE-seq、多组学、配对/非配对数据集）
-- 分析空间转录组学数据（反卷积、空间映射）
-- 对单细胞数据执行差异表达分析
-- 进行细胞类型注释或迁移学习任务
-- 处理专门的单细胞模态（甲基化、细胞术、RNA 速度）
-- 构建用于单细胞分析的自定义概率模型
+Use this skill when:
+- Analyzing single-cell RNA-seq data (dimensionality reduction, batch correction, integration)
+- Working with single-cell ATAC-seq or chromatin accessibility data
+- Integrating multimodal data (CITE-seq, multiome, paired/unpaired datasets)
+- Analyzing spatial transcriptomics data (deconvolution, spatial mapping)
+- Performing differential expression analysis on single-cell data
+- Conducting cell type annotation or transfer learning tasks
+- Working with specialized single-cell modalities (methylation, cytometry, RNA velocity)
+- Building custom probabilistic models for single-cell analysis
 
-## 核心功能
+## Core Capabilities
 
-scvi-tools 提供按数据模态组织的模型：
+scvi-tools provides models organized by data modality:
 
-### 1. 单细胞 RNA-seq 分析
-用于表达分析、批次校正和整合的核心模型。请参阅 `references/models-scrna-seq.md`：
-- **scVI**：无监督降维和批次校正
-- **scANVI**：半监督细胞类型注释和整合
-- **AUTOZI**：零膨胀检测和建模
-- **VeloVI**：RNA 速度分析
-- **contrastiveVI**：扰动效应隔离
+### 1. Single-Cell RNA-seq Analysis
+Core models for expression analysis, batch correction, and integration. See `references/models-scrna-seq.md` for:
+- **scVI**: Unsupervised dimensionality reduction and batch correction
+- **scANVI**: Semi-supervised cell type annotation and integration
+- **AUTOZI**: Zero-inflation detection and modeling
+- **VeloVI**: RNA velocity analysis
+- **contrastiveVI**: Perturbation effect isolation
 
-### 2. 染色质可及性（ATAC-seq）
-用于分析单细胞染色质数据的模型。请参阅 `references/models-atac-seq.md`：
-- **PeakVI**：基于峰的 ATAC-seq 分析和整合
-- **PoissonVI**：定量片段计数建模
-- **scBasset**：带有基序分析的深度学习方法
+### 2. Chromatin Accessibility (ATAC-seq)
+Models for analyzing single-cell chromatin data. See `references/models-atac-seq.md` for:
+- **PeakVI**: Peak-based ATAC-seq analysis and integration
+- **PoissonVI**: Quantitative fragment count modeling
+- **scBasset**: Deep learning approach with motif analysis
 
-### 3. 多模态和多组学整合
-多种数据类型的联合分析。请参阅 `references/models-multimodal.md`：
-- **totalVI**：CITE-seq 蛋白质和 RNA 联合建模
-- **MultiVI**：配对和非配对多组学整合
-- **MrVI**：多分辨率跨样本分析
+### 3. Multimodal & Multi-omics Integration
+Joint analysis of multiple data types. See `references/models-multimodal.md` for:
+- **totalVI**: CITE-seq protein and RNA joint modeling
+- **MultiVI**: Paired and unpaired multi-omic integration
+- **MrVI**: Multi-resolution cross-sample analysis
 
-### 4. 空间转录组学
-空间解析转录组学分析。请参阅 `references/models-spatial.md`：
-- **DestVI**：多分辨率空间反卷积
-- **Stereoscope**：细胞类型反卷积
-- **Tangram**：空间映射和整合
-- **scVIVA**：细胞-环境关系分析
+### 4. Spatial Transcriptomics
+Spatially-resolved transcriptomics analysis. See `references/models-spatial.md` for:
+- **DestVI**: Multi-resolution spatial deconvolution
+- **Stereoscope**: Cell type deconvolution
+- **Tangram**: Spatial mapping and integration
+- **scVIVA**: Cell-environment relationship analysis
 
-### 5. 专门模态
-其他专门分析工具。请参阅 `references/models-specialized.md`：
-- **MethylVI/MethylANVI**：单细胞甲基化分析
-- **CytoVI**：流式/质谱细胞术批次校正
-- **Solo**：双细胞检测
-- **CellAssign**：基于标记的细胞类型注释
+### 5. Specialized Modalities
+Additional specialized analysis tools. See `references/models-specialized.md` for:
+- **MethylVI/MethylANVI**: Single-cell methylation analysis
+- **CytoVI**: Flow/mass cytometry batch correction
+- **Solo**: Doublet detection
+- **CellAssign**: Marker-based cell type annotation
 
-## 典型工作流
+## Typical Workflow
 
-所有 scvi-tools 模型遵循一致的 API 模式：
+All scvi-tools models follow a consistent API pattern:
 
 ```python
-# 1. 加载和预处理数据（AnnData 格式）
+# 1. Load and preprocess data (AnnData format)
 import scvi
 import scanpy as sc
 
@@ -75,113 +75,114 @@ adata = scvi.data.heart_cell_atlas_subsampled()
 sc.pp.filter_genes(adata, min_counts=3)
 sc.pp.highly_variable_genes(adata, n_top_genes=1200)
 
-# 2. 向模型注册数据（指定层、协变量）
+# 2. Register data with model (specify layers, covariates)
 scvi.model.SCVI.setup_anndata(
     adata,
-    layer="counts",  # 使用原始计数，而非对数标准化
+    layer="counts",  # Use raw counts, not log-normalized
     batch_key="batch",
     categorical_covariate_keys=["donor"],
     continuous_covariate_keys=["percent_mito"]
 )
 
-# 3. 创建和训练模型
+# 3. Create and train model
 model = scvi.model.SCVI(adata)
 model.train()
 
-# 4. 提取潜在表示和标准化值
+# 4. Extract latent representations and normalized values
 latent = model.get_latent_representation()
 normalized = model.get_normalized_expression(library_size=1e4)
 
-# 5. 存储在 AnnData 中用于下游分析
+# 5. Store in AnnData for downstream analysis
 adata.obsm["X_scVI"] = latent
 adata.layers["scvi_normalized"] = normalized
 
-# 6. 使用 scanpy 进行下游分析
+# 6. Downstream analysis with scanpy
 sc.pp.neighbors(adata, use_rep="X_scVI")
 sc.tl.umap(adata)
 sc.tl.leiden(adata)
 ```
 
-**关键设计原则：**
-- **需要原始计数**：模型期望未标准化的计数数据以获得最佳性能
-- **统一 API**：所有模型的一致接口（设置 → 训练 → 提取）
-- **以 AnnData 为中心**：与 scanpy 生态系统无缝集成
-- **GPU 加速**：自动利用可用的 GPU
-- **批次校正**：通过协变量注册处理技术变异
+**Key Design Principles:**
+- **Raw counts required**: Models expect unnormalized count data for optimal performance
+- **Unified API**: Consistent interface across all models (setup → train → extract)
+- **AnnData-centric**: Seamless integration with the scanpy ecosystem
+- **GPU acceleration**: Automatic utilization of available GPUs
+- **Batch correction**: Handle technical variation through covariate registration
 
-## 常见分析任务
+## Common Analysis Tasks
 
-### 差异表达
-使用学习到的生成模型进行概率性 DE 分析：
+### Differential Expression
+Probabilistic DE analysis using the learned generative models:
 
 ```python
 de_results = model.differential_expression(
     groupby="cell_type",
     group1="TypeA",
     group2="TypeB",
-    mode="change",  # 使用复合假设检验
-    delta=0.25      # 最小效应大小阈值
+    mode="change",  # Use composite hypothesis testing
+    delta=0.25      # Minimum effect size threshold
 )
 ```
 
-请参阅 `references/differential-expression.md` 了解详细方法和解释。
+See `references/differential-expression.md` for detailed methodology and interpretation.
 
-### 模型持久化
-保存和加载训练好的模型：
+### Model Persistence
+Save and load trained models:
 
 ```python
-# 保存模型
+# Save model
 model.save("./model_directory", overwrite=True)
 
-# 加载模型
+# Load model
 model = scvi.model.SCVI.load("./model_directory", adata=adata)
 ```
 
-### 批次校正和整合
-跨批次或研究整合数据集：
+### Batch Correction and Integration
+Integrate datasets across batches or studies:
 
 ```python
-# 注册批次信息
+# Register batch information
 scvi.model.SCVI.setup_anndata(adata, batch_key="study")
 
-# 模型自动学习批次校正的表示
+# Model automatically learns batch-corrected representations
 model = scvi.model.SCVI(adata)
 model.train()
-latent = model.get_latent_representation()  # 批次校正后的
+latent = model.get_latent_representation()  # Batch-corrected
 ```
 
-## 理论基础
+## Theoretical Foundations
 
-scvi-tools 基于：
-- **变分推断**：用于可扩展贝叶斯推断的近似后验分布
-- **深度生成模型**：学习复杂数据分布的 VAE 架构
-- **摊销推断**：跨细胞高效学习的共享神经网络
-- **概率建模**：原则性不确定性量化和统计检验
+scvi-tools is built on:
+- **Variational inference**: Approximate posterior distributions for scalable Bayesian inference
+- **Deep generative models**: VAE architectures that learn complex data distributions
+- **Amortized inference**: Shared neural networks for efficient learning across cells
+- **Probabilistic modeling**: Principled uncertainty quantification and statistical testing
 
-请参阅 `references/theoretical-foundations.md` 了解数学框架的详细背景。
+See `references/theoretical-foundations.md` for detailed background on the mathematical framework.
 
-## 其他资源
+## Additional Resources
 
-- **工作流**：`references/workflows.md` 包含常见工作流、最佳实践、超参数调优和 GPU 优化
-- **模型参考**：`references/` 目录中每个模型类别的详细文档
-- **官方文档**：https://docs.scvi-tools.org/en/stable/
-- **教程**：https://docs.scvi-tools.org/en/stable/tutorials/index.html
-- **API 参考**：https://docs.scvi-tools.org/en/stable/api/index.html
+- **Workflows**: `references/workflows.md` contains common workflows, best practices, hyperparameter tuning, and GPU optimization
+- **Model References**: Detailed documentation for each model category in the `references/` directory
+- **Official Documentation**: https://docs.scvi-tools.org/en/stable/
+- **Tutorials**: https://docs.scvi-tools.org/en/stable/tutorials/index.html
+- **API Reference**: https://docs.scvi-tools.org/en/stable/api/index.html
 
-## 安装
+## Installation
 
 ```bash
 uv pip install scvi-tools
-# 用于 GPU 支持
+# For GPU support
 uv pip install scvi-tools[cuda]
 ```
 
-## 最佳实践
+## Best Practices
 
-1. **使用原始计数**：始终向模型提供未标准化的计数数据
-2. **过滤基因**：分析前移除低计数基因（例如，`min_counts=3`）
-3. **注册协变量**：在 `setup_anndata` 中包含已知的技术因素（批次、供体等）
-4. **特征选择**：使用高可变基因以提高性能
-5. **模型保存**：始终保存训练好的模型以避免重新训练
-6. **GPU 使用**：为大型数据集启用 GPU 加速（`accelerator="gpu"`）
-7. **Scanpy 集成**：将输出存储在 AnnData 对象中用于下游分析
+1. **Use raw counts**: Always provide unnormalized count data to models
+2. **Filter genes**: Remove low-count genes before analysis (e.g., `min_counts=3`)
+3. **Register covariates**: Include known technical factors (batch, donor, etc.) in `setup_anndata`
+4. **Feature selection**: Use highly variable genes for improved performance
+5. **Model saving**: Always save trained models to avoid retraining
+6. **GPU usage**: Enable GPU acceleration for large datasets (`accelerator="gpu"`)
+7. **Scanpy integration**: Store outputs in AnnData objects for downstream analysis
+

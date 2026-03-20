@@ -1,92 +1,96 @@
 ---
 name: hugging-face-paper-publisher
-description: 在 Hugging Face Hub 上发布和管理研究论文。支持创建论文页面、将论文链接到模型/数据集、声明作者身份以及生成专业的基于 markdown 的研究文章。
+description: Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating professional markdown-based research articles.
 ---
 
-# 概述
-此技能为 AI 工程师和研究人员提供了在 Hugging Face Hub 上发布、管理和链接研究论文的综合工具。它简化了从论文创建到发布的工作流程,包括与 arXiv 的集成、模型/数据集链接和作者身份管理。
+# Overview
+This skill provides comprehensive tools for AI engineers and researchers to publish, manage, and link research papers on the Hugging Face Hub. It streamlines the workflow from paper creation to publication, including integration with arXiv, model/dataset linking, and authorship management.
 
-## 与 HF 生态系统的集成
-- **论文页面**: 在 Hugging Face Hub 上索引和发现论文
-- **arXiv 集成**: 从 arXiv ID 自动索引论文
-- **模型/数据集链接**: 通过元数据将论文链接到相关工件
-- **作者身份验证**: 声明和验证论文作者身份
-- **研究文章模板**: 生成专业的、现代的科学论文
+## Integration with HF Ecosystem
+- **Paper Pages**: Index and discover papers on Hugging Face Hub
+- **arXiv Integration**: Automatic paper indexing from arXiv IDs
+- **Model/Dataset Linking**: Connect papers to relevant artifacts through metadata
+- **Authorship Verification**: Claim and verify paper authorship
+- **Research Article Template**: Generate professional, modern scientific papers
 
-# 版本
+# Version
 1.0.0
 
-# 依赖项
+# Dependencies
+The included script uses PEP 723 inline dependencies. Prefer `uv run` over
+manual environment setup.
+
 - huggingface_hub>=0.26.0
 - pyyaml>=6.0.3
 - requests>=2.32.5
 - markdown>=3.5.0
 - python-dotenv>=1.2.1
 
-# 核心功能
+# Core Capabilities
 
-## 1. 论文页面管理
-- **索引论文**: 从 arXiv 将论文添加到 Hugging Face
-- **声明作者身份**: 验证和声明已发表论文的作者身份
-- **管理可见性**: 控制哪些论文出现在您的个人资料上
-- **论文发现**: 在 HF 生态系统中查找和探索论文
+## 1. Paper Page Management
+- **Index Papers**: Add papers to Hugging Face from arXiv
+- **Claim Authorship**: Verify and claim authorship on published papers
+- **Manage Visibility**: Control which papers appear on your profile
+- **Paper Discovery**: Find and explore papers in the HF ecosystem
 
-## 2. 将论文链接到工件
-- **模型卡片**: 将论文引用添加到模型元数据
-- **数据集卡片**: 通过 README 将论文链接到数据集
-- **自动标记**: Hub 自动生成 arxiv:<PAPER_ID> 标签
-- **引用管理**: 维护适当的归属和引用
+## 2. Link Papers to Artifacts
+- **Model Cards**: Add paper citations to model metadata
+- **Dataset Cards**: Link papers to datasets via README
+- **Automatic Tagging**: Hub auto-generates arxiv:<PAPER_ID> tags
+- **Citation Management**: Maintain proper attribution and references
 
-## 3. 研究文章创建
-- **Markdown 模板**: 生成专业的论文格式
-- **现代设计**: 干净、可读的研究文章布局
-- **动态目录**: 自动生成目录
-- **章节结构**: 标准的科学论文组织
-- **LaTeX 数学**: 支持方程和技术符号
+## 3. Research Article Creation
+- **Markdown Templates**: Generate professional paper formatting
+- **Modern Design**: Clean, readable research article layouts
+- **Dynamic TOC**: Automatic table of contents generation
+- **Section Structure**: Standard scientific paper organization
+- **LaTeX Math**: Support for equations and technical notation
 
-## 4. 元数据管理
-- **YAML 前置数据**: 适当的模型/数据集卡片元数据
-- **引用跟踪**: 在存储库之间维护论文引用
-- **版本控制**: 跟踪论文更新和修订
-- **多论文支持**: 将多个论文链接到单个工件
+## 4. Metadata Management
+- **YAML Frontmatter**: Proper model/dataset card metadata
+- **Citation Tracking**: Maintain paper references across repositories
+- **Version Control**: Track paper updates and revisions
+- **Multi-Paper Support**: Link multiple papers to single artifacts
 
-# 使用说明
+# Usage Instructions
 
-该技能在 `scripts/` 中包含用于论文发布操作的 Python 脚本。
+The skill includes Python scripts in `scripts/` for paper publishing operations.
 
-### 先决条件
-- 安装依赖项: `uv add huggingface_hub pyyaml requests markdown python-dotenv`
-- 设置 `HF_TOKEN` 环境变量,使用写访问令牌
-- 激活虚拟环境: `source .venv/bin/activate`
+### Prerequisites
+- Run scripts with `uv run` (dependencies are resolved from the script header)
+- Set `HF_TOKEN` environment variable with Write-access token
 
-> **所有路径都是相对于包含此 SKILL.md 文件的目录。**
-> 在运行任何脚本之前,首先 `cd` 到该目录或使用完整路径。
+> **All paths are relative to the directory containing this SKILL.md
+file.**
+> Before running any script, first `cd` to that directory or use the full
+path.
 
 
-### 方法 1: 从 arXiv 索引论文
+### Method 1: Index Paper from arXiv
 
-从 arXiv 将论文添加到 Hugging Face 论文页面。
+Add a paper to Hugging Face Paper Pages from arXiv.
 
-**基本用法:**
+**Basic Usage:**
 ```bash
 uv run scripts/paper_manager.py index \
   --arxiv-id "2301.12345"
 ```
 
-**检查论文是否存在:**
+**Check If Paper Exists:**
 ```bash
 uv run scripts/paper_manager.py check \
   --arxiv-id "2301.12345"
 ```
 
-**直接 URL 访问:**
-您也可以直接访问 `https://huggingface.co/papers/{arxiv-id}` 来索引论文。
+**Direct URL Access:**
+You can also visit `https://huggingface.co/papers/{arxiv-id}` directly to index a paper.
 
-### 方法 2: 将论文链接到模型/数据集
+### Method 2: Link Paper to Model/Dataset
 
-使用适当的 YAML 元数据将论文引用添加到模型或数据集 README。
+Add paper references to model or dataset README with proper YAML metadata.
 
-**添加到模型卡片:**
+**Add to Model Card:**
 ```bash
 uv run scripts/paper_manager.py link \
   --repo-id "username/model-name" \
@@ -94,7 +98,7 @@ uv run scripts/paper_manager.py link \
   --arxiv-id "2301.12345"
 ```
 
-**添加到数据集卡片:**
+**Add to Dataset Card:**
 ```bash
 uv run scripts/paper_manager.py link \
   --repo-id "username/dataset-name" \
@@ -102,7 +106,7 @@ uv run scripts/paper_manager.py link \
   --arxiv-id "2301.12345"
 ```
 
-**添加多篇论文:**
+**Add Multiple Papers:**
 ```bash
 uv run scripts/paper_manager.py link \
   --repo-id "username/model-name" \
@@ -110,7 +114,7 @@ uv run scripts/paper_manager.py link \
   --arxiv-ids "2301.12345,2302.67890,2303.11111"
 ```
 
-**使用自定义引用:**
+**With Custom Citation:**
 ```bash
 uv run scripts/paper_manager.py link \
   --repo-id "username/model-name" \
@@ -119,62 +123,62 @@ uv run scripts/paper_manager.py link \
   --citation "$(cat citation.txt)"
 ```
 
-#### 链接如何工作
+#### How Linking Works
 
-当您将 arXiv 论文链接添加到模型或数据集 README 时:
-1. Hub 从链接中提取 arXiv ID
-2. 标签 `arxiv:<PAPER_ID>` 自动添加到存储库
-3. 用户可以单击标签查看论文页面
-4. 论文页面显示引用此论文的所有模型/数据集
-5. 论文可通过过滤器和搜索发现
+When you add an arXiv paper link to a model or dataset README:
+1. The Hub extracts the arXiv ID from the link
+2. A tag `arxiv:<PAPER_ID>` is automatically added to the repository
+3. Users can click the tag to view the Paper Page
+4. The Paper Page shows all models/datasets citing this paper
+5. Papers are discoverable through filters and search
 
-### 方法 3: 声明作者身份
+### Method 3: Claim Authorship
 
-验证您在 Hugging Face 上发布的论文的作者身份。
+Verify your authorship on papers published on Hugging Face.
 
-**开始声明流程:**
+**Start Claim Process:**
 ```bash
 uv run scripts/paper_manager.py claim \
   --arxiv-id "2301.12345" \
   --email "your.email@institution.edu"
 ```
 
-**手动流程:**
-1. 导航到您的论文页面: `https://huggingface.co/papers/{arxiv-id}`
-2. 在作者列表中找到您的姓名
-3. 单击您的姓名并选择"声明作者身份"
-4. 等待管理员团队验证
+**Manual Process:**
+1. Navigate to your paper's page: `https://huggingface.co/papers/{arxiv-id}`
+2. Find your name in the author list
+3. Click your name and select "Claim authorship"
+4. Wait for admin team verification
 
-**检查作者身份状态:**
+**Check Authorship Status:**
 ```bash
 uv run scripts/paper_manager.py check-authorship \
   --arxiv-id "2301.12345"
 ```
 
-### 方法 4: 管理论文可见性
+### Method 4: Manage Paper Visibility
 
-控制哪些验证的论文出现在您的公共个人资料上。
+Control which verified papers appear on your public profile.
 
-**列出您的论文:**
+**List Your Papers:**
 ```bash
 uv run scripts/paper_manager.py list-my-papers
 ```
 
-**切换可见性:**
+**Toggle Visibility:**
 ```bash
 uv run scripts/paper_manager.py toggle-visibility \
   --arxiv-id "2301.12345" \
   --show true
 ```
 
-**在设置中管理:**
-导航到您的帐户设置 → 论文部分,为每篇论文切换"在个人资料上显示"。
+**Manage in Settings:**
+Navigate to your account settings → Papers section to toggle "Show on profile" for each paper.
 
-### 方法 5: 创建研究文章
+### Method 5: Create Research Article
 
-使用现代模板生成专业的基于 markdown 的研究论文。
+Generate a professional markdown-based research paper using modern templates.
 
-**从模板创建:**
+**Create from Template:**
 ```bash
 uv run scripts/paper_manager.py create \
   --template "standard" \
@@ -182,13 +186,13 @@ uv run scripts/paper_manager.py create \
   --output "paper.md"
 ```
 
-**可用模板:**
-- `standard` - 传统的科学论文结构
-- `modern` - 受 Distill 启发的干净、Web 友好格式
-- `arxiv` - arXiv 风格格式
-- `ml-report` - 机器学习实验报告
+**Available Templates:**
+- `standard` - Traditional scientific paper structure
+- `modern` - Clean, web-friendly format inspired by Distill
+- `arxiv` - arXiv-style formatting
+- `ml-report` - Machine learning experiment report
 
-**生成完整论文:**
+**Generate Complete Paper:**
 ```bash
 uv run scripts/paper_manager.py create \
   --template "modern" \
@@ -198,7 +202,7 @@ uv run scripts/paper_manager.py create \
   --output "paper.md"
 ```
 
-**转换为 HTML:**
+**Convert to HTML:**
 ```bash
 uv run scripts/paper_manager.py convert \
   --input "paper.md" \
@@ -206,9 +210,9 @@ uv run scripts/paper_manager.py convert \
   --style "modern"
 ```
 
-### 论文模板结构
+### Paper Template Structure
 
-**标准研究论文章节:**
+**Standard Research Paper Sections:**
 ```markdown
 ---
 title: Your Paper Title
@@ -220,49 +224,49 @@ tags: [machine-learning, nlp, fine-tuning]
 ---
 
 # Abstract
-论文的简要摘要...
+Brief summary of the paper...
 
 # 1. Introduction
-背景和动机...
+Background and motivation...
 
 # 2. Related Work
-先前研究和背景...
+Previous research and context...
 
 # 3. Methodology
-方法和实现...
+Approach and implementation...
 
 # 4. Experiments
-设置、数据集和程序...
+Setup, datasets, and procedures...
 
 # 5. Results
-发现和分析...
+Findings and analysis...
 
 # 6. Discussion
-解释和含义...
+Interpretation and implications...
 
 # 7. Conclusion
-总结和未来工作...
+Summary and future work...
 
 # References
 ```
 
-**现代模板功能:**
-- 动态目录
-- 用于 Web 查看的响应式设计
-- 代码语法高亮
-- 交互式图形和图表
-- 数学方程渲染(LaTeX)
-- 引用管理
-- 作者隶属关系链接
+**Modern Template Features:**
+- Dynamic table of contents
+- Responsive design for web viewing
+- Code syntax highlighting
+- Interactive figures and charts
+- Math equation rendering (LaTeX)
+- Citation management
+- Author affiliation linking
 
-### 命令参考
+### Commands Reference
 
-**索引论文:**
+**Index Paper:**
 ```bash
 uv run scripts/paper_manager.py index --arxiv-id "2301.12345"
 ```
 
-**链接到存储库:**
+**Link to Repository:**
 ```bash
 uv run scripts/paper_manager.py link \
   --repo-id "username/repo-name" \
@@ -272,21 +276,21 @@ uv run scripts/paper_manager.py link \
   [--create-pr]
 ```
 
-**声明作者身份:**
+**Claim Authorship:**
 ```bash
 uv run scripts/paper_manager.py claim \
   --arxiv-id "2301.12345" \
   --email "your.email@edu"
 ```
 
-**管理可见性:**
+**Manage Visibility:**
 ```bash
 uv run scripts/paper_manager.py toggle-visibility \
   --arxiv-id "2301.12345" \
   --show true|false
 ```
 
-**创建研究文章:**
+**Create Research Article:**
 ```bash
 uv run scripts/paper_manager.py create \
   --template "standard|modern|arxiv|ml-report" \
@@ -296,7 +300,7 @@ uv run scripts/paper_manager.py create \
   [--output "filename.md"]
 ```
 
-**将 Markdown 转换为 HTML:**
+**Convert Markdown to HTML:**
 ```bash
 uv run scripts/paper_manager.py convert \
   --input "paper.md" \
@@ -304,26 +308,26 @@ uv run scripts/paper_manager.py convert \
   [--style "modern|classic"]
 ```
 
-**检查论文状态:**
+**Check Paper Status:**
 ```bash
 uv run scripts/paper_manager.py check --arxiv-id "2301.12345"
 ```
 
-**列出您的论文:**
+**List Your Papers:**
 ```bash
 uv run scripts/paper_manager.py list-my-papers
 ```
 
-**搜索论文:**
+**Search Papers:**
 ```bash
 uv run scripts/paper_manager.py search --query "transformer attention"
 ```
 
-### YAML 元数据格式
+### YAML Metadata Format
 
-将论文链接到模型或数据集时,需要适当的 YAML 前置数据:
+When linking papers to models or datasets, proper YAML frontmatter is required:
 
-**模型卡片示例:**
+**Model Card Example:**
 ```yaml
 ---
 language:
@@ -338,7 +342,7 @@ library_name: transformers
 
 # Model Name
 
-此模型基于 [Our Paper](https://arxiv.org/abs/2301.12345) 中描述的方法。
+This model is based on the approach described in [Our Paper](https://arxiv.org/abs/2301.12345).
 
 ## Citation
 
@@ -352,7 +356,7 @@ library_name: transformers
 ```
 ```
 
-**数据集卡片示例:**
+**Dataset Card Example:**
 ```yaml
 ---
 language:
@@ -367,52 +371,52 @@ size_categories:
 
 # Dataset Name
 
-数据集在 [Our Paper](https://arxiv.org/abs/2301.12345) 中介绍。
+Dataset introduced in [Our Paper](https://arxiv.org/abs/2301.12345).
 
-有关更多详细信息,请参阅 [论文页面](https://huggingface.co/papers/2301.12345)。
+For more details, see the [paper page](https://huggingface.co/papers/2301.12345).
 ```
 
-Hub 自动从这些链接中提取 arXiv ID 并创建 `arxiv:2301.12345` 标签。
+The Hub automatically extracts arXiv IDs from these links and creates `arxiv:2301.12345` tags.
 
-### 集成示例
+### Integration Examples
 
-**工作流程 1: 发布新研究**
+**Workflow 1: Publish New Research**
 ```bash
-# 1. 创建研究文章
+# 1. Create research article
 uv run scripts/paper_manager.py create \
   --template "modern" \
   --title "Novel Fine-Tuning Approach" \
   --output "paper.md"
 
-# 2. 编辑 paper.md 的内容
+# 2. Edit paper.md with your content
 
-# 3. 提交到 arXiv(外部流程)
-# 上传到 arxiv.org,获取 arXiv ID
+# 3. Submit to arXiv (external process)
+# Upload to arxiv.org, get arXiv ID
 
-# 4. 在 Hugging Face 上索引
+# 4. Index on Hugging Face
 uv run scripts/paper_manager.py index --arxiv-id "2301.12345"
 
-# 5. 链接到您的模型
+# 5. Link to your model
 uv run scripts/paper_manager.py link \
   --repo-id "your-username/your-model" \
   --repo-type "model" \
   --arxiv-id "2301.12345"
 
-# 6. 声明作者身份
+# 6. Claim authorship
 uv run scripts/paper_manager.py claim \
   --arxiv-id "2301.12345" \
   --email "your.email@edu"
 ```
 
-**工作流程 2: 链接现有论文**
+**Workflow 2: Link Existing Paper**
 ```bash
-# 1. 检查论文是否存在
+# 1. Check if paper exists
 uv run scripts/paper_manager.py check --arxiv-id "2301.12345"
 
-# 2. 如需要则索引
+# 2. Index if needed
 uv run scripts/paper_manager.py index --arxiv-id "2301.12345"
 
-# 3. 链接到多个存储库
+# 3. Link to multiple repositories
 uv run scripts/paper_manager.py link \
   --repo-id "username/model-v1" \
   --repo-type "model" \
@@ -429,57 +433,57 @@ uv run scripts/paper_manager.py link \
   --arxiv-id "2301.12345"
 ```
 
-**工作流程 3: 使用论文引用更新模型**
+**Workflow 3: Update Model with Paper Reference**
 ```bash
-# 1. 获取当前 README
-huggingface-cli download username/model-name README.md
+# 1. Get current README
+hf download username/model-name README.md
 
-# 2. 添加论文链接
+# 2. Add paper link
 uv run scripts/paper_manager.py link \
   --repo-id "username/model-name" \
   --repo-type "model" \
   --arxiv-id "2301.12345" \
   --citation "Full citation for the paper"
 
-# 脚本将:
-# - 如果缺少则添加 YAML 元数据
-# - 在 README 中插入 arXiv 链接
-# - 添加格式化的引用
-# - 保留现有内容
+# The script will:
+# - Add YAML metadata if missing
+# - Insert arXiv link in README
+# - Add formatted citation
+# - Preserve existing content
 ```
 
-### 最佳实践
+### Best Practices
 
-1. **论文索引**
-   - 在 arXiv 上发布论文后立即索引
-   - 在模型/数据集卡片中包含完整的引用信息
-   - 在相关存储库中使用一致的论文引用
+1. **Paper Indexing**
+   - Index papers as soon as they're published on arXiv
+   - Include full citation information in model/dataset cards
+   - Use consistent paper references across related repositories
 
-2. **元数据管理**
-   - 为所有模型/数据集卡片添加 YAML 前置数据
-   - 包含适当的许可信息
-   - 使用相关的任务类别和域进行标记
+2. **Metadata Management**
+   - Add YAML frontmatter to all model/dataset cards
+   - Include proper licensing information
+   - Tag with relevant task categories and domains
 
-3. **作者身份**
-   - 声明您作为作者列出的论文的作者身份
-   - 使用机构电子邮件地址进行验证
-   - 保持论文可见性设置更新
+3. **Authorship**
+   - Claim authorship on papers where you're listed as author
+   - Use institutional email addresses for verification
+   - Keep paper visibility settings updated
 
-4. **存储库链接**
-   - 将论文链接到所有相关的模型、数据集和 Spaces
-   - 在 README 描述中包含论文背景
-   - 添加 BibTeX 引用以便于参考
+4. **Repository Linking**
+   - Link papers to all relevant models, datasets, and Spaces
+   - Include paper context in README descriptions
+   - Add BibTeX citations for easy reference
 
-5. **研究文章**
-   - 在项目中一致地使用模板
-   - 在论文中包含代码和数据链接
-   - 生成 Web 友好的 HTML 版本以进行共享
+5. **Research Articles**
+   - Use templates consistently within projects
+   - Include code and data links in papers
+   - Generate web-friendly HTML versions for sharing
 
-### 高级用法
+### Advanced Usage
 
-**批量链接论文:**
+**Batch Link Papers:**
 ```bash
-# 将多篇论文链接到一个存储库
+# Link multiple papers to one repository
 for arxiv_id in "2301.12345" "2302.67890" "2303.11111"; do
   uv run scripts/paper_manager.py link \
     --repo-id "username/model-name" \
@@ -488,114 +492,114 @@ for arxiv_id in "2301.12345" "2302.67890" "2303.11111"; do
 done
 ```
 
-**提取论文信息:**
+**Extract Paper Info:**
 ```bash
-# 从 arXiv 获取论文元数据
+# Get paper metadata from arXiv
 uv run scripts/paper_manager.py info \
   --arxiv-id "2301.12345" \
   --format "json"
 ```
 
-**生成引用:**
+**Generate Citation:**
 ```bash
-# 创建 BibTeX 引用
+# Create BibTeX citation
 uv run scripts/paper_manager.py citation \
   --arxiv-id "2301.12345" \
   --format "bibtex"
 ```
 
-**验证链接:**
+**Validate Links:**
 ```bash
-# 检查存储库中的所有论文链接
+# Check all paper links in a repository
 uv run scripts/paper_manager.py validate \
   --repo-id "username/model-name" \
   --repo-type "model"
 ```
 
-### 错误处理
+### Error Handling
 
-- **论文未找到**: arXiv ID 不存在或尚未索引
-- **权限被拒绝**: HF_TOKEN 缺少对存储库的写访问权限
-- **无效的 YAML**: README 前置数据中的元数据格式错误
-- **作者身份失败**: 电子邮件与论文作者记录不匹配
-- **已声明**: 另一个用户已声明作者身份
-- **速率限制**: 短时间内 API 请求过多
+- **Paper Not Found**: arXiv ID doesn't exist or isn't indexed yet
+- **Permission Denied**: HF_TOKEN lacks write access to repository
+- **Invalid YAML**: Malformed metadata in README frontmatter
+- **Authorship Failed**: Email doesn't match paper author records
+- **Already Claimed**: Another user has claimed authorship
+- **Rate Limiting**: Too many API requests in short time
 
-### 故障排除
+### Troubleshooting
 
-**问题**: "Hugging Face 上未找到论文"
-- **解决方案**: 访问 `hf.co/papers/{arxiv-id}` 以触发索引
+**Issue**: "Paper not found on Hugging Face"
+- **Solution**: Visit `hf.co/papers/{arxiv-id}` to trigger indexing
 
-**问题**: "作者身份声明未验证"
-- **解决方案**: 等待管理员审查或联系 HF 支持并提供证明
+**Issue**: "Authorship claim not verified"
+- **Solution**: Wait for admin review or contact HF support with proof
 
-**问题**: "arXiv 标记未出现"
-- **解决方案**: 确保 README 包含适当的 arXiv URL 格式
+**Issue**: "arXiv tag not appearing"
+- **Solution**: Ensure README includes proper arXiv URL format
 
-**问题**: "无法链接到存储库"
-- **解决方案**: 验证 HF_TOKEN 具有写权限
+**Issue**: "Cannot link to repository"
+- **Solution**: Verify HF_TOKEN has write permissions
 
-**问题**: "模板渲染错误"
-- **解决方案**: 检查 markdown 语法和 YAML 前置数据格式
+**Issue**: "Template rendering errors"
+- **Solution**: Check markdown syntax and YAML frontmatter format
 
-### 资源和参考
+### Resources and References
 
-- **Hugging Face 论文页面**: [hf.co/papers](https://huggingface.co/papers)
-- **模型卡片指南**: [hf.co/docs/hub/model-cards](https://huggingface.co/docs/hub/en/model-cards)
-- **数据集卡片指南**: [hf.co/docs/hub/datasets-cards](https://huggingface.co/docs/hub/en/datasets-cards)
-- **研究文章模板**: [tfrere/research-article-template](https://huggingface.co/spaces/tfrere/research-article-template)
-- **arXiv 格式指南**: [arxiv.org/help/submit](https://arxiv.org/help/submit)
+- **Hugging Face Paper Pages**: [hf.co/papers](https://huggingface.co/papers)
+- **Model Cards Guide**: [hf.co/docs/hub/model-cards](https://huggingface.co/docs/hub/en/model-cards)
+- **Dataset Cards Guide**: [hf.co/docs/hub/datasets-cards](https://huggingface.co/docs/hub/en/datasets-cards)
+- **Research Article Template**: [tfrere/research-article-template](https://huggingface.co/spaces/tfrere/research-article-template)
+- **arXiv Format Guide**: [arxiv.org/help/submit](https://arxiv.org/help/submit)
 
-### 与 tfrere 的研究模板集成
+### Integration with tfrere's Research Template
 
-此技能通过提供以下内容补充 [tfrere 的研究文章模板](https://huggingface.co/spaces/tfrere/research-article-template):
+This skill complements [tfrere's research article template](https://huggingface.co/spaces/tfrere/research-article-template) by providing:
 
-- 自动化论文索引工作流程
-- 存储库链接功能
-- 元数据管理工具
-- 引用生成实用程序
+- Automated paper indexing workflows
+- Repository linking capabilities
+- Metadata management tools
+- Citation generation utilities
 
-您可以使用 tfrere 的模板进行编写,然后使用此技能在 Hugging Face Hub 上发布和链接论文。
+You can use tfrere's template for writing, then use this skill to publish and link the paper on Hugging Face Hub.
 
-### 常见模式
+### Common Patterns
 
-**模式 1: 新论文发布**
+**Pattern 1: New Paper Publication**
 ```bash
-# 编写 → 发布 → 索引 → 链接
+# Write → Publish → Index → Link
 uv run scripts/paper_manager.py create --template modern --output paper.md
-# (提交到 arXiv)
+# (Submit to arXiv)
 uv run scripts/paper_manager.py index --arxiv-id "2301.12345"
 uv run scripts/paper_manager.py link --repo-id "user/model" --arxiv-id "2301.12345"
 ```
 
-**模式 2: 现有论文发现**
+**Pattern 2: Existing Paper Discovery**
 ```bash
-# 搜索 → 检查 → 链接
+# Search → Check → Link
 uv run scripts/paper_manager.py search --query "transformers"
 uv run scripts/paper_manager.py check --arxiv-id "2301.12345"
 uv run scripts/paper_manager.py link --repo-id "user/model" --arxiv-id "2301.12345"
 ```
 
-**模式 3: 作者作品集管理**
+**Pattern 3: Author Portfolio Management**
 ```bash
-# 声明 → 验证 → 组织
+# Claim → Verify → Organize
 uv run scripts/paper_manager.py claim --arxiv-id "2301.12345"
 uv run scripts/paper_manager.py list-my-papers
 uv run scripts/paper_manager.py toggle-visibility --arxiv-id "2301.12345" --show true
 ```
 
-### API 集成
+### API Integration
 
-**Python 脚本示例:**
+**Python Script Example:**
 ```python
 from scripts.paper_manager import PaperManager
 
 pm = PaperManager(hf_token="your_token")
 
-# 索引论文
+# Index paper
 pm.index_paper("2301.12345")
 
-# 链接到模型
+# Link to model
 pm.link_paper(
     repo_id="username/model",
     repo_type="model",
@@ -603,18 +607,18 @@ pm.link_paper(
     citation="Full citation text"
 )
 
-# 检查状态
+# Check status
 status = pm.check_paper("2301.12345")
 print(status)
 ```
 
-### 未来增强功能
+### Future Enhancements
 
-未来版本计划的功能:
-- 支持非 arXiv 论文(会议论文集、期刊)
-- 从 DOI 自动引用格式化
-- 论文比较和版本控制工具
-- 协作论文编写功能
-- 与 LaTeX 工作流程集成
-- 自动图形和表格提取
-- 论文指标和影响跟踪
+Planned features for future versions:
+- Support for non-arXiv papers (conference proceedings, journals)
+- Automatic citation formatting from DOI
+- Paper comparison and versioning tools
+- Collaborative paper writing features
+- Integration with LaTeX workflows
+- Automated figure and table extraction
+- Paper metrics and impact tracking

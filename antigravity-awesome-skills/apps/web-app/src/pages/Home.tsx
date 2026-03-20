@@ -5,15 +5,29 @@ import debounce from 'lodash.debounce';
 import { useSkills } from '../context/SkillContext';
 import { SkillCard } from '../components/SkillCard';
 import type { SyncMessage, CategoryStats } from '../types';
+import { usePageMeta } from '../hooks/usePageMeta';
+import { APP_HOME_CATALOG_COUNT, buildHomeMeta } from '../utils/seo';
 
 export function Home(): React.ReactElement {
-  const { skills, stars, loading, refreshSkills } = useSkills();
+  const { skills, stars, loading, error, refreshSkills } = useSkills();
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState('default');
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<SyncMessage | null>(null);
+  const [commandCopied, setCommandCopied] = useState(false);
+  const installCommand = 'npx antigravity-awesome-skills';
+  const docsLink = 'https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/usage.md';
+  const installLink = 'https://www.npmjs.com/package/antigravity-awesome-skills';
+
+  usePageMeta(buildHomeMeta(skills.length));
+
+  const copyInstallCommand = async () => {
+    await navigator.clipboard.writeText(installCommand);
+    setCommandCopied(true);
+    window.setTimeout(() => setCommandCopied(false), 2000);
+  };
 
   // Debounce search input to avoid excessive filtering on every keystroke
   const debouncedSetSearch = useCallback(
@@ -95,12 +109,56 @@ export function Home(): React.ReactElement {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)]">
+    <div className="flex flex-col min-h-[calc(100vh-8rem)]">
       <div className="space-y-8 mb-8">
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-7 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-3">
+            Take action
+          </p>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            Discover, install, and use trusted AI skills in minutes
+          </h2>
+          <p className="mt-3 text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300 max-w-4xl">
+            Antigravity Awesome Skills is a discoverable catalog of installable capabilities for AI assistants.
+            Install once, then test the highest-value skill directly from your terminal without waiting for documentation hops.
+            Search, filter, then copy a ready-to-run prompt in one pass.
+          </p>
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-stretch">
+            <button
+              onClick={copyInstallCommand}
+              className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
+            >
+              {commandCopied ? 'Copied install command' : 'Copy install command'}
+            </button>
+            <a
+              href={installLink}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-lg border border-indigo-600 text-sm font-semibold text-indigo-700 dark:text-indigo-200 px-4 py-2.5 hover:bg-indigo-50 dark:hover:bg-slate-800"
+            >
+              Install with npm
+            </a>
+            <a
+              href={docsLink}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              Read getting started docs
+            </a>
+          </div>
+          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+            Recommended command:
+            <span className="ml-2 rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-1 font-mono">{installCommand}</span>
+          </p>
+        </section>
+
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-2">Explore Skills</h1>
-            <p className="text-slate-500 dark:text-slate-400">Discover {skills.length} agentic capabilities for your AI assistant.</p>
+            <p className="text-slate-500 dark:text-slate-400">
+              Discover {Math.max(skills.length, APP_HOME_CATALOG_COUNT)}+ agentic capabilities for your AI assistant.
+            </p>
           </div>
           <div className="flex items-center gap-3">
             {syncMsg && (
@@ -169,13 +227,25 @@ export function Home(): React.ReactElement {
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 -mx-4">
+      <div className="flex-1 min-h-[60vh] sm:min-h-[68vh] lg:min-h-[72vh] -mx-4">
         {loading ? (
           <div data-testid="loader" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 px-4">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="animate-pulse rounded-lg border border-slate-200 p-6 h-48 bg-slate-100 dark:border-slate-800 dark:bg-slate-900">
               </div>
             ))}
+          </div>
+        ) : error && skills.length === 0 ? (
+          <div className="py-12 text-center px-4 sm:px-6 lg:px-8">
+            <AlertCircle className="mx-auto h-12 w-12 text-red-400" />
+            <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Unable to load skills</h3>
+            <p className="mt-2 text-slate-500 dark:text-slate-400">{error}</p>
+            <button
+              onClick={() => void refreshSkills()}
+              className="mt-5 inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
+            >
+              Retry loading catalog
+            </button>
           </div>
         ) : filteredSkills.length === 0 ? (
           <div className="py-12 text-center px-4 sm:px-6 lg:px-8">
@@ -185,9 +255,9 @@ export function Home(): React.ReactElement {
           </div>
         ) : (
           <VirtuosoGrid
-            style={{ height: '100%' }}
+            useWindowScroll
             totalCount={filteredSkills.length}
-            listClassName="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pb-8 px-4"
+            listClassName="grid gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 pb-8 px-4"
             itemContent={(index) => {
               const skill = filteredSkills[index];
               return <SkillCard key={skill.id} skill={skill} starCount={stars[skill.id] || 0} />;

@@ -1,6 +1,6 @@
 ---
 name: saga-orchestration
-description: "Implement saga patterns for distributed transactions and cross-aggregate workflows. Use when coordinating multi-step business processes, handling compensating transactions, or managing long-running..."
+description: "Patterns for managing distributed transactions and long-running business processes."
 risk: unknown
 source: community
 date_added: "2026-02-27"

@@ -11,9 +11,98 @@ import re
 import sys
 import urllib.request
 import urllib.error
+from html import unescape
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, Optional, Tuple
 from urllib.parse import urlparse, urljoin
+
+
+class MarkdownHTMLParser(HTMLParser):
+    """Convert a constrained subset of HTML into markdown without regex tag stripping."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self._parts: list[str] = []
+        self._ignored_tag: Optional[str] = None
+        self._ignored_depth = 0
+        self._current_link: Optional[str] = None
+        self._list_depth = 0
+        self._in_pre = False
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, Optional[str]]]) -> None:
+        if self._ignored_tag:
+            if tag == self._ignored_tag:
+                self._ignored_depth += 1
+            return
+
+        if tag in {"script", "style"}:
+            self._ignored_tag = tag
+            self._ignored_depth = 1
+            return
+
+        attrs_dict = dict(attrs)
+
+        if tag in {"article", "main", "div", "section"}:
+            self._append("\n")
+        elif tag == "br":
+            self._append("\n")
+        elif tag == "p":
+            self._append("\n\n")
+        elif tag in {"h1", "h2", "h3"}:
+            prefix = {"h1": "# ", "h2": "## ", "h3": "### "}[tag]
+            self._append(f"\n\n{prefix}")
+        elif tag in {"ul", "ol"}:
+            self._list_depth += 1
+            self._append("\n")
+        elif tag == "li":
+            indent = "  " * max(0, self._list_depth - 1)
+            self._append(f"\n{indent}- ")
+        elif tag == "a":
+            self._current_link = attrs_dict.get("href")
+            self._append("[")
+        elif tag == "pre":
+            self._in_pre = True
+            self._append("\n\n```\n")
+        elif tag == "code" and not self._in_pre:
+            self._append("`")
+
+    def handle_endtag(self, tag: str) -> None:
+        if self._ignored_tag:
+            if tag == self._ignored_tag:
+                self._ignored_depth -= 1
+                if self._ignored_depth == 0:
+                    self._ignored_tag = None
+            return
+
+        if tag in {"h1", "h2", "h3", "p"}:
+            self._append("\n")
+        elif tag in {"ul", "ol"}:
+            self._list_depth = max(0, self._list_depth - 1)
+            self._append("\n")
+        elif tag == "a":
+            href = self._current_link or ""
+            self._append(f"]({href})")
+            self._current_link = None
+        elif tag == "pre":
+            self._in_pre = False
+            self._append("\n```\n")
+        elif tag == "code" and not self._in_pre:
+            self._append("`")
+
+    def handle_data(self, data: str) -> None:
+        if self._ignored_tag or not data:
+            return
+        self._append(unescape(data))
+
+    def get_markdown(self) -> str:
+        markdown = "".join(self._parts)
+        markdown = re.sub(r"\n{3,}", "\n\n", markdown)
+        return markdown.strip()
+
+    def _append(self, text: str) -> None:
+        if text:
+            self._parts.append(text)
 
 def parse_frontmatter(content: str) -> Optional[Dict]:
     """Parse YAML frontmatter."""
@@ -128,37 +217,10 @@ def extract_markdown_from_html(html_content: str) -> Optional[str]:
 
 def convert_html_to_markdown(html: str) -> str:
     """Basic HTML to markdown conversion."""
-    # Remove scripts and styles
-    html = re.sub(r'<script[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
-    html = re.sub(r'<style[^>]*>.*?</style>', '', html, flags=re.DOTALL | re.IGNORECASE)
-    
-    # Headings
-    html = re.sub(r'<h1[^>]*>(.*?)</h1>', r'# \1', html, flags=re.DOTALL | re.IGNORECASE)
-    html = re.sub(r'<h2[^>]*>(.*?)</h2>', r'## \1', html, flags=re.DOTALL | re.IGNORECASE)
-    html = re.sub(r'<h3[^>]*>(.*?)</h3>', r'### \1', html, flags=re.DOTALL | re.IGNORECASE)
-    
-    # Code blocks
-    html = re.sub(r'<pre[^>]*><code[^>]*>(.*?)</code></pre>', r'```\n\1\n```', html, flags=re.DOTALL | re.IGNORECASE)
-    html = re.sub(r'<code[^>]*>(.*?)</code>', r'`\1`', html, flags=re.DOTALL | re.IGNORECASE)
-    
-    # Links
-    html = re.sub(r'<a[^>]*href="([^"]*)"[^>]*>(.*?)</a>', r'[\2](\1)', html, flags=re.DOTALL | re.IGNORECASE)
-    
-    # Lists
-    html = re.sub(r'<li[^>]*>(.*?)</li>', r'- \1', html, flags=re.DOTALL | re.IGNORECASE)
-    html = re.sub(r'<ul[^>]*>|</ul>|<ol[^>]*>|</ol>', '', html, flags=re.IGNORECASE)
-    
-    # Paragraphs
-    html = re.sub(r'<p[^>]*>(.*?)</p>', r'\1\n\n', html, flags=re.DOTALL | re.IGNORECASE)
-    
-    # Remove remaining HTML tags
-    html = re.sub(r'<[^>]+>', '', html)
-    
-    # Clean up whitespace
-    html = re.sub(r'\n{3,}', '\n\n', html)
-    html = html.strip()
-    
-    return html
+    parser = MarkdownHTMLParser()
+    parser.feed(html)
+    parser.close()
+    return parser.get_markdown()
 
 def create_minimal_markdown(metadata: Dict, source_url: str) -> str:
     """Create minimal markdown content from metadata."""

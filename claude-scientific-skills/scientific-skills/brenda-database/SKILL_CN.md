@@ -1,58 +1,58 @@
 ---
 name: brenda-database
-description: 通过 SOAP API 访问 BRENDA 酶数据库。检索动力学参数（Km、kcat）、反应方程、生物体数据和底物特异性酶信息，用于生化研究和代谢途径分析。
+description: Access BRENDA enzyme database via SOAP API. Retrieve kinetic parameters (Km, kcat), reaction equations, organism data, and substrate-specific enzyme information for biochemical research and metabolic pathway analysis.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# BRENDA 数据库
+# BRENDA Database
 
-## 概述
+## Overview
 
-BRENDA（BRaunschweig ENzyme DAtabase）是世界上最全面的酶信息系统，包含来自科学文献的详细酶数据。使用官方 SOAP API 查询动力学参数（Km、kcat）、反应方程、底物特异性、生物体信息和酶的最佳条件。访问超过 45,000 种酶和数百万个动力学数据点，用于生化研究、代谢工程和酶发现。
+BRENDA (BRaunschweig ENzyme DAtabase) is the world's most comprehensive enzyme information system, containing detailed enzyme data from scientific literature. Query kinetic parameters (Km, kcat), reaction equations, substrate specificities, organism information, and optimal conditions for enzymes using the official SOAP API. Access over 45,000 enzymes with millions of kinetic data points for biochemical research, metabolic engineering, and enzyme discovery.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况应使用此技能：
-- 搜索酶动力学参数（Km、kcat、Vmax）
-- 检索反应方程和化学计量
-- 查找特定底物或反应的酶
-- 比较不同生物体的酶特性
-- 研究最佳 pH、温度和条件
-- 访问酶抑制和激活数据
-- 支持代谢途径重建和逆合成
-- 进行酶工程和优化研究
-- 分析底物特性和辅因子要求
+This skill should be used when:
+- Searching for enzyme kinetic parameters (Km, kcat, Vmax)
+- Retrieving reaction equations and stoichiometry
+- Finding enzymes for specific substrates or reactions
+- Comparing enzyme properties across different organisms
+- Investigating optimal pH, temperature, and conditions
+- Accessing enzyme inhibition and activation data
+- Supporting metabolic pathway reconstruction and retrosynthesis
+- Performing enzyme engineering and optimization studies
+- Analyzing substrate specificity and cofactor requirements
 
-## 核心能力
+## Core Capabilities
 
-### 1. 动力学参数检索
+### 1. Kinetic Parameter Retrieval
 
-访问酶的综合动力学数据：
+Access comprehensive kinetic data for enzymes:
 
-**按 EC 编号获取 Km 值**：
+**Get Km Values by EC Number**:
 ```python
 from brenda_client import get_km_values
 
-# 获取所有生物体的 Km 值
-km_data = get_km_values("1.1.1.1")  # 醇脱氢酶
+# Get Km values for all organisms
+km_data = get_km_values("1.1.1.1")  # Alcohol dehydrogenase
 
-# 获取特定生物体的 Km 值
+# Get Km values for specific organism
 km_data = get_km_values("1.1.1.1", organism="Saccharomyces cerevisiae")
 
-# 获取特定底物的 Km 值
+# Get Km values for specific substrate
 km_data = get_km_values("1.1.1.1", substrate="ethanol")
 ```
 
-**解析 Km 结果**：
+**Parse Km Results**:
 ```python
 for entry in km_data:
     print(f"Km: {entry}")
-    # 示例输出："organism*Homo sapiens#substrate*ethanol#kmValue*1.2#commentary*"
+    # Example output: "organism*Homo sapiens#substrate*ethanol#kmValue*1.2#commentary*"
 ```
 
-**提取特定信息**：
+**Extract Specific Information**:
 ```python
 from scripts.brenda_queries import parse_km_entry, extract_organism_data
 
@@ -66,25 +66,25 @@ for entry in km_data:
     print(f"Temperature: {parsed.get('temperature', 'N/A')}")
 ```
 
-### 2. 反应信息
+### 2. Reaction Information
 
-检索反应方程和详细信息：
+Retrieve reaction equations and details:
 
-**按 EC 编号获取反应**：
+**Get Reactions by EC Number**:
 ```python
 from brenda_client import get_reactions
 
-# 获取 EC 编号的所有反应
+# Get all reactions for EC number
 reactions = get_reactions("1.1.1.1")
 
-# 按生物体过滤
+# Filter by organism
 reactions = get_reactions("1.1.1.1", organism="Escherichia coli")
 
-# 搜索特定反应
+# Search specific reaction
 reactions = get_reactions("1.1.1.1", reaction="ethanol + NAD+")
 ```
 
-**处理反应数据**：
+**Process Reaction Data**:
 ```python
 from scripts.brenda_queries import parse_reaction_entry, extract_substrate_products
 
@@ -98,15 +98,15 @@ for reaction in reactions:
     print(f"Products: {products}")
 ```
 
-### 3. 酶发现
+### 3. Enzyme Discovery
 
-查找特定生化转化的酶：
+Find enzymes for specific biochemical transformations:
 
-**按底物查找酶**：
+**Find Enzymes by Substrate**:
 ```python
 from scripts.brenda_queries import search_enzymes_by_substrate
 
-# 查找作用于葡萄糖的酶
+# Find enzymes that act on glucose
 enzymes = search_enzymes_by_substrate("glucose", limit=20)
 
 for enzyme in enzymes:
@@ -115,27 +115,27 @@ for enzyme in enzymes:
     print(f"Reaction: {enzyme['reaction']}")
 ```
 
-**按产物查找酶**：
+**Find Enzymes by Product**:
 ```python
 from scripts.brenda_queries import search_enzymes_by_product
 
-# 查找产生乳酸的酶
+# Find enzymes that produce lactate
 enzymes = search_enzymes_by_product("lactate", limit=10)
 ```
 
-**按反应模式搜索**：
+**Search by Reaction Pattern**:
 ```python
 from scripts.brenda_queries import search_by_pattern
 
-# 查找氧化反应
+# Find oxidation reactions
 enzymes = search_by_pattern("oxidation", limit=15)
 ```
 
-### 4. 生物体特异性酶数据
+### 4. Organism-Specific Enzyme Data
 
-比较不同生物体的酶特性：
+Compare enzyme properties across organisms:
 
-**获取多个生物体的酶数据**：
+**Get Enzyme Data for Multiple Organisms**:
 ```python
 from scripts.brenda_queries import compare_across_organisms
 
@@ -149,19 +149,19 @@ for org_data in comparison:
     print(f"Temperature range: {org_data['temperature_range']}")
 ```
 
-**查找具有特定酶的生物体**：
+**Find Organisms with Specific Enzyme**:
 ```python
 from scripts.brenda_queries import get_organisms_for_enzyme
 
-organisms = get_organisms_for_enzyme("6.3.5.5")  # 谷氨酰胺合成酶
+organisms = get_organisms_for_enzyme("6.3.5.5")  # Glutamine synthetase
 print(f"Found {len(organisms)} organisms with this enzyme")
 ```
 
-### 5. 环境参数
+### 5. Environmental Parameters
 
-访问最佳条件和环境参数：
+Access optimal conditions and environmental parameters:
 
-**获取 pH 和温度数据**：
+**Get pH and Temperature Data**:
 ```python
 from scripts.brenda_queries import get_environmental_parameters
 
@@ -173,7 +173,7 @@ print(f"Stability pH: {params['stability_ph']}")
 print(f"Temperature stability: {params['temperature_stability']}")
 ```
 
-**辅因子要求**：
+**Cofactor Requirements**:
 ```python
 from scripts.brenda_queries import get_cofactor_requirements
 
@@ -184,11 +184,11 @@ for cofactor in cofactors:
     print(f"Concentration: {cofactor['concentration']}")
 ```
 
-### 6. 底物特异性
+### 6. Substrate Specificity
 
-分析酶底物偏好：
+Analyze enzyme substrate preferences:
 
-**获取底物特异性数据**：
+**Get Substrate Specificity Data**:
 ```python
 from scripts.brenda_queries import get_substrate_specificity
 
@@ -202,22 +202,22 @@ for substrate in specificity:
     print(f"Specificity constant: {substrate['kcat_km_ratio']}")
 ```
 
-**比较底物偏好**：
+**Compare Substrate Preferences**:
 ```python
 from scripts.brenda_queries import compare_substrate_affinity
 
 comparison = compare_substrate_affinity("1.1.1.1")
 sorted_by_km = sorted(comparison, key=lambda x: x['km'])
 
-for substrate in sorted_by_km[:5]:  # 前 5 个最低 Km
+for substrate in sorted_by_km[:5]:  # Top 5 lowest Km
     print(f"{substrate['name']}: Km = {substrate['km']}")
 ```
 
-### 7. 抑制和激活
+### 7. Inhibition and Activation
 
-访问酶调节数据：
+Access enzyme regulation data:
 
-**获取抑制剂信息**：
+**Get Inhibitor Information**:
 ```python
 from scripts.brenda_queries import get_inhibitors
 
@@ -230,7 +230,7 @@ for inhibitor in inhibitors:
     print(f"IC50: {inhibitor['ic50']}")
 ```
 
-**获取激活剂信息**：
+**Get Activator Information**:
 ```python
 from scripts.brenda_queries import get_activators
 
@@ -242,11 +242,11 @@ for activator in activators:
     print(f"Mechanism: {activator['mechanism']}")
 ```
 
-### 8. 酶工程支持
+### 8. Enzyme Engineering Support
 
-查找工程靶点和替代方案：
+Find engineering targets and alternatives:
 
-**查找嗜热同源物**：
+**Find Thermophilic Homologs**:
 ```python
 from scripts.brenda_queries import find_thermophilic_homologs
 
@@ -258,7 +258,7 @@ for enzyme in thermophilic:
     print(f"Km: {enzyme['km']}")
 ```
 
-**查找碱性/酸性稳定变体**：
+**Find Alkaline/ Acid Stable Variants**:
 ```python
 from scripts.brenda_queries import find_ph_stable_variants
 
@@ -266,11 +266,11 @@ alkaline = find_ph_stable_variants("1.1.1.1", min_ph=8.0)
 acidic = find_ph_stable_variants("1.1.1.1", max_ph=6.0)
 ```
 
-### 9. 动力学建模
+### 9. Kinetic Modeling
 
-为动力学建模准备数据：
+Prepare data for kinetic modeling:
 
-**获取建模的动力学参数**：
+**Get Kinetic Parameters for Modeling**:
 ```python
 from scripts.brenda_queries import get_modeling_parameters
 
@@ -284,143 +284,143 @@ print(f"Temperature: {model_data['temperature']}")
 print(f"pH: {model_data['ph']}")
 ```
 
-**生成 Michaelis-Menten 图**：
+**Generate Michaelis-Menten Plots**:
 ```python
 from scripts.brenda_visualization import plot_michaelis_menten
 
-# 生成动力学图
+# Generate kinetic plots
 plot_michaelis_menten("1.1.1.1", substrate="ethanol")
 ```
 
-## 安装要求
+## Installation Requirements
 
 ```bash
 uv pip install zeep requests pandas matplotlib seaborn
 ```
 
-## 身份验证设置
+## Authentication Setup
 
-BRENDA 需要身份验证凭据：
+BRENDA requires authentication credentials:
 
-1. **创建 .env 文件**：
+1. **Create .env file**:
 ```
 BRENDA_EMAIL=your.email@example.com
 BRENDA_PASSWORD=your_brenda_password
 ```
 
-2. **或设置环境变量**：
+2. **Or set environment variables**:
 ```bash
 export BRENDA_EMAIL="your.email@example.com"
 export BRENDA_PASSWORD="your_brenda_password"
 ```
 
-3. **注册 BRENDA 访问**：
-   - 访问 https://www.brenda-enzymes.org/
-   - 创建账户
-   - 检查电子邮件以获取凭据
-   - 注意：还有 `BRENDA_EMAIL`（注意拼写错误）用于传统支持
+3. **Register for BRENDA access**:
+   - Visit https://www.brenda-enzymes.org/
+   - Create an account
+   - Check your email for credentials
+   - Note: There's also `BRENDA_EMIAL` (note the typo) for legacy support
 
-## 辅助脚本
+## Helper Scripts
 
-此技能包括用于 BRENDA 数据库查询的综合 Python 脚本：
+This skill includes comprehensive Python scripts for BRENDA database queries:
 
 ### scripts/brenda_queries.py
 
-为酶数据分析提供高级函数：
+Provides high-level functions for enzyme data analysis:
 
-**关键函数**：
-- `parse_km_entry(entry)`：解析 BRENDA Km 数据条目
-- `parse_reaction_entry(entry)`：解析反应数据条目
-- `extract_organism_data(entry)`：提取生物体特异性信息
-- `search_enzymes_by_substrate(substrate, limit)`：查找底物的酶
-- `search_enzymes_by_product(product, limit)`：查找产生产物的酶
-- `compare_across_organisms(ec_number, organisms)`：比较酶特性
-- `get_environmental_parameters(ec_number)`：获取 pH 和温度数据
-- `get_cofactor_requirements(ec_number)`：获取辅因子信息
-- `get_substrate_specificity(ec_number)`：分析底物偏好
-- `get_inhibitors(ec_number)`：获取酶抑制数据
-- `get_activators(ec_number)`：获取酶激活数据
-- `find_thermophilic_homologs(ec_number, min_temp)`：查找热稳定变体
-- `get_modeling_parameters(ec_number, substrate)`：获取动力学建模参数
-- `export_kinetic_data(ec_number, format, filename)`：将数据导出到文件
+**Key Functions**:
+- `parse_km_entry(entry)`: Parse BRENDA Km data entries
+- `parse_reaction_entry(entry)`: Parse reaction data entries
+- `extract_organism_data(entry)`: Extract organism-specific information
+- `search_enzymes_by_substrate(substrate, limit)`: Find enzymes for substrates
+- `search_enzymes_by_product(product, limit)`: Find enzymes producing products
+- `compare_across_organisms(ec_number, organisms)`: Compare enzyme properties
+- `get_environmental_parameters(ec_number)`: Get pH and temperature data
+- `get_cofactor_requirements(ec_number)`: Get cofactor information
+- `get_substrate_specificity(ec_number)`: Analyze substrate preferences
+- `get_inhibitors(ec_number)`: Get enzyme inhibition data
+- `get_activators(ec_number)`: Get enzyme activation data
+- `find_thermophilic_homologs(ec_number, min_temp)`: Find heat-stable variants
+- `get_modeling_parameters(ec_number, substrate)`: Get parameters for kinetic modeling
+- `export_kinetic_data(ec_number, format, filename)`: Export data to file
 
-**用法**：
+**Usage**:
 ```python
 from scripts.brenda_queries import search_enzymes_by_substrate, compare_across_organisms
 
-# 搜索酶
+# Search for enzymes
 enzymes = search_enzymes_by_substrate("glucose", limit=20)
 
-# 跨生物体比较
+# Compare across organisms
 comparison = compare_across_organisms("1.1.1.1", ["E. coli", "S. cerevisiae"])
 ```
 
 ### scripts/brenda_visualization.py
 
-为酶数据提供可视化函数：
+Provides visualization functions for enzyme data:
 
-**关键函数**：
-- `plot_kinetic_parameters(ec_number)`：绘制 Km 和 kcat 分布
-- `plot_organism_comparison(ec_number, organisms)`：比较生物体
-- `plot_pH_profiles(ec_number)`：绘制 pH 活性曲线
-- `plot_temperature_profiles(ec_number)`：绘制温度活性曲线
-- `plot_substrate_specificity(ec_number)`：可视化底物偏好
-- `plot_michaelis_menten(ec_number, substrate)`：生成动力学曲线
-- `create_heatmap_data(enzymes, parameters)`：创建热图数据
-- `generate_summary_plots(ec_number)`：创建综合酶概述
+**Key Functions**:
+- `plot_kinetic_parameters(ec_number)`: Plot Km and kcat distributions
+- `plot_organism_comparison(ec_number, organisms)`: Compare organisms
+- `plot_pH_profiles(ec_number)`: Plot pH activity profiles
+- `plot_temperature_profiles(ec_number)`: Plot temperature activity profiles
+- `plot_substrate_specificity(ec_number)`: Visualize substrate preferences
+- `plot_michaelis_menten(ec_number, substrate)`: Generate kinetic curves
+- `create_heatmap_data(enzymes, parameters)`: Create data for heatmaps
+- `generate_summary_plots(ec_number)`: Create comprehensive enzyme overview
 
-**用法**：
+**Usage**:
 ```python
 from scripts.brenda_visualization import plot_kinetic_parameters, plot_michaelis_menten
 
-# 绘制动力学参数
+# Plot kinetic parameters
 plot_kinetic_parameters("1.1.1.1")
 
-# 生成 Michaelis-Menten 曲线
+# Generate Michaelis-Menten curve
 plot_michaelis_menten("1.1.1.1", substrate="ethanol")
 ```
 
 ### scripts/enzyme_pathway_builder.py
 
-构建酶途径和逆合成路线：
+Build enzymatic pathways and retrosynthetic routes:
 
-**关键函数**：
-- `find_pathway_for_product(product, max_steps)`：查找酶途径
-- `build_retrosynthetic_tree(target, depth)`：构建逆合成树
-- `suggest_enzyme_substitutions(ec_number, criteria)`：建议酶替代方案
-- `calculate_pathway_feasibility(pathway)`：评估途径可行性
-- `optimize_pathway_conditions(pathway)`：建议最佳条件
-- `generate_pathway_report(pathway, filename)`：创建详细途径报告
+**Key Functions**:
+- `find_pathway_for_product(product, max_steps)`: Find enzymatic pathways
+- `build_retrosynthetic_tree(target, depth)`: Build retrosynthetic tree
+- `suggest_enzyme_substitutions(ec_number, criteria)`: Suggest enzyme alternatives
+- `calculate_pathway_feasibility(pathway)`: Evaluate pathway viability
+- `optimize_pathway_conditions(pathway)`: Suggest optimal conditions
+- `generate_pathway_report(pathway, filename)`: Create detailed pathway report
 
-**用法**：
+**Usage**:
 ```python
 from scripts.enzyme_pathway_builder import find_pathway_for_product, build_retrosynthetic_tree
 
-# 查找产物途径
+# Find pathway to product
 pathway = find_pathway_for_product("lactate", max_steps=3)
 
-# 构建逆合成树
+# Build retrosynthetic tree
 tree = build_retrosynthetic_tree("lactate", depth=2)
 ```
 
-## API 速率限制和最佳实践
+## API Rate Limits and Best Practices
 
-**速率限制**：
-- BRENDA API 具有适度的速率限制
-- 建议：持续使用时每秒 1 次请求
-- 最大值：每 10 秒 5 次请求
+**Rate Limits**:
+- BRENDA API has moderate rate limiting
+- Recommended: 1 request per second for sustained usage
+- Maximum: 5 requests per 10 seconds
 
-**最佳实践**：
-1. **缓存结果**：在本地存储频繁访问的酶数据
-2. **批量查询**：尽可能组合相关请求
-3. **使用特定搜索**：尽可能按生物体、底物缩小范围
-4. **处理缺失数据**：并非所有酶都有完整数据
-5. **验证 EC 编号**：确保 EC 编号格式正确
-6. **实现延迟**：在连续请求之间添加延迟
-7. **明智地使用通配符**：在适当的时候使用 '*' 进行更广泛的搜索
-8. **监控配额**：跟踪您的 API 使用情况
+**Best Practices**:
+1. **Cache results**: Store frequently accessed enzyme data locally
+2. **Batch queries**: Combine related requests when possible
+3. **Use specific searches**: Narrow down by organism, substrate when possible
+4. **Handle missing data**: Not all enzymes have complete data
+5. **Validate EC numbers**: Ensure EC numbers are in correct format
+6. **Implement delays**: Add delays between consecutive requests
+7. **Use wildcards wisely**: Use '*' for broader searches when appropriate
+8. **Monitor quota**: Track your API usage
 
-**错误处理**：
+**Error Handling**:
 ```python
 from brenda_client import get_km_values, get_reactions
 from zeep.exceptions import Fault, TransportError
@@ -437,17 +437,17 @@ except Exception as e:
     print(f"Unexpected error: {e}")
 ```
 
-## 常见工作流程
+## Common Workflows
 
-### 工作流程 1：新底物的酶发现
+### Workflow 1: Enzyme Discovery for New Substrate
 
-查找适合特定底物的酶：
+Find suitable enzymes for a specific substrate:
 
 ```python
 from brenda_client import get_km_values
 from scripts.brenda_queries import search_enzymes_by_substrate, compare_substrate_affinity
 
-# 搜索作用于底物的酶
+# Search for enzymes that act on substrate
 substrate = "2-phenylethanol"
 enzymes = search_enzymes_by_substrate(substrate, limit=15)
 
@@ -455,25 +455,25 @@ print(f"Found {len(enzymes)} enzymes for {substrate}")
 for enzyme in enzymes:
     print(f"EC {enzyme['ec_number']}: {enzyme['enzyme_name']}")
 
-# 获取最佳候选物的动力学数据
+# Get kinetic data for best candidates
 if enzymes:
     best_ec = enzymes[0]['ec_number']
     km_data = get_km_values(best_ec, substrate=substrate)
 
     if km_data:
         print(f"Kinetic data for {best_ec}:")
-        for entry in km_data[:3]:  # 前 3 个条目
+        for entry in km_data[:3]:  # First 3 entries
             print(f"  {entry}")
 ```
 
-### 工作流程 2：跨生物体酶比较
+### Workflow 2: Cross-Organism Enzyme Comparison
 
-比较不同生物体的酶特性：
+Compare enzyme properties across different organisms:
 
 ```python
 from scripts.brenda_queries import compare_across_organisms, get_environmental_parameters
 
-# 定义用于比较的生物体
+# Define organisms for comparison
 organisms = [
     "Escherichia coli",
     "Saccharomyces cerevisiae",
@@ -481,7 +481,7 @@ organisms = [
     "Thermus thermophilus"
 ]
 
-# 比较醇脱氢酶
+# Compare alcohol dehydrogenase
 comparison = compare_across_organisms("1.1.1.1", organisms)
 
 print("Cross-organism comparison:")
@@ -491,14 +491,14 @@ for org_data in comparison:
     print(f"  Optimal pH: {org_data['optimal_ph']}")
     print(f"  Temperature: {org_data['optimal_temperature']}°C")
 
-# 获取详细的环境参数
+# Get detailed environmental parameters
 env_params = get_environmental_parameters("1.1.1.1")
 print(f"\nOverall optimal pH range: {env_params['ph_range']}")
 ```
 
-### 工作流程 3：酶工程靶点识别
+### Workflow 3: Enzyme Engineering Target Identification
 
-查找酶改进的工程机会：
+Find engineering opportunities for enzyme improvement:
 
 ```python
 from scripts.brenda_queries import (
@@ -507,24 +507,24 @@ from scripts.brenda_queries import (
     compare_substrate_affinity
 )
 
-# 查找嗜热变体以提高热稳定性
+# Find thermophilic variants for heat stability
 thermophilic = find_thermophilic_homologs("1.1.1.1", min_temp=50)
 print(f"Found {len(thermophilic)} thermophilic variants")
 
-# 查找碱性稳定变体
+# Find alkaline-stable variants
 alkaline = find_ph_stable_variants("1.1.1.1", min_ph=8.0)
 print(f"Found {len(alkaline)} alkaline-stable variants")
 
-# 比较底物特异性以确定工程靶点
+# Compare substrate specificities for engineering targets
 specificity = compare_substrate_affinity("1.1.1.1")
 print("Substrate affinity ranking:")
 for i, sub in enumerate(specificity[:5]):
     print(f"  {i+1}. {sub['name']}: Km = {sub['km']}")
 ```
 
-### 工作流程 4：酶途径构建
+### Workflow 4: Enzymatic Pathway Construction
 
-构建酶合成途径：
+Build enzymatic synthesis pathways:
 
 ```python
 from scripts.enzyme_pathway_builder import (
@@ -533,7 +533,7 @@ from scripts.enzyme_pathway_builder import (
     calculate_pathway_feasibility
 )
 
-# 查找产物途径
+# Find pathway to target product
 target = "lactate"
 pathway = find_pathway_for_product(target, max_steps=3)
 
@@ -544,26 +544,26 @@ if pathway:
         print(f"    Enzyme: EC {step['ec_number']}")
         print(f"    Organism: {step['organism']}")
 
-# 评估途径可行性
+# Evaluate pathway feasibility
 feasibility = calculate_pathway_feasibility(pathway)
 print(f"\nPathway feasibility score: {feasibility['score']}/10")
 print(f"Potential issues: {feasibility['warnings']}")
 ```
 
-### 工作流程 5：动力学参数分析
+### Workflow 5: Kinetic Parameter Analysis
 
-用于酶选择的综合动力学分析：
+Comprehensive kinetic analysis for enzyme selection:
 
 ```python
 from brenda_client import get_km_values
 from scripts.brenda_queries import parse_km_entry, get_modeling_parameters
 from scripts.brenda_visualization import plot_kinetic_parameters
 
-# 获取综合动力学数据
+# Get comprehensive kinetic data
 ec_number = "1.1.1.1"
 km_data = get_km_values(ec_number)
 
-# 分析动力学参数
+# Analyze kinetic parameters
 all_entries = []
 for entry in km_data:
     parsed = parse_km_entry(entry)
@@ -572,27 +572,27 @@ for entry in km_data:
 
 print(f"Analyzed {len(all_entries)} kinetic entries")
 
-# 查找最佳动力学表现者
+# Find best kinetic performer
 best_km = min(all_entries, key=lambda x: x['km_value'])
 print(f"\nBest kinetic performer:")
 print(f"  Organism: {best_km['organism']}")
 print(f"  Substrate: {best_km['substrate']}")
 print(f"  Km: {best_km['km_value']}")
 
-# 获取建模参数
+# Get modeling parameters
 model_data = get_modeling_parameters(ec_number, substrate=best_km['substrate'])
 print(f"\nModeling parameters:")
 print(f"  Km: {model_data['km']}")
 print(f"  kcat: {model_data['kcat']}")
 print(f"  Vmax: {model_data['vmax']}")
 
-# 生成可视化
+# Generate visualization
 plot_kinetic_parameters(ec_number)
 ```
 
-### 工作流程 6：工业酶选择
+### Workflow 6: Industrial Enzyme Selection
 
-为工业应用选择酶：
+Select enzymes for industrial applications:
 
 ```python
 from scripts.brenda_queries import (
@@ -601,14 +601,14 @@ from scripts.brenda_queries import (
     get_inhibitors
 )
 
-# 工业标准：高温耐受性、有机溶剂抗性
+# Industrial criteria: high temperature tolerance, organic solvent resistance
 target_enzyme = "1.1.1.1"
 
-# 查找嗜热变体
+# Find thermophilic variants
 thermophilic = find_thermophilic_homologs(target_enzyme, min_temp=60)
 print(f"Thermophilic candidates: {len(thermophilic)}")
 
-# 检查溶剂耐受性（抑制剂数据）
+# Check solvent tolerance (inhibitor data)
 inhibitors = get_inhibitors(target_enzyme)
 solvent_tolerant = [
     inv for inv in inhibitors
@@ -618,7 +618,7 @@ solvent_tolerant = [
 
 print(f"Solvent tolerant candidates: {len(solvent_tolerant)}")
 
-# 评估顶级候选物
+# Evaluate top candidates
 for candidate in thermophilic[:3]:
     print(f"\nCandidate: {candidate['organism']}")
     print(f"  Optimal temp: {candidate['optimal_temperature']}°C")
@@ -626,92 +626,92 @@ for candidate in thermophilic[:3]:
     print(f"  pH range: {candidate.get('ph_range', 'N/A')}")
 ```
 
-## 数据格式和解析
+## Data Formats and Parsing
 
-### BRENDA 响应格式
+### BRENDA Response Format
 
-BRENDA 以需要解析的特定格式返回数据：
+BRENDA returns data in specific formats that need parsing:
 
-**Km 值格式**：
+**Km Value Format**:
 ```
 organism*Escherichia coli#substrate*ethanol#kmValue*1.2#kmValueMaximum*#commentary*pH 7.4, 25°C#ligandStructureId*#literature*
 ```
 
-**反应格式**：
+**Reaction Format**:
 ```
 ecNumber*1.1.1.1#organism*Saccharomyces cerevisiae#reaction*ethanol + NAD+ <=> acetaldehyde + NADH + H+#commentary*#literature*
 ```
 
-### 数据提取模式
+### Data Extraction Patterns
 
 ```python
 import re
 
 def parse_brenda_field(data, field_name):
-    """从 BRENDA 数据条目中提取特定字段"""
+    """Extract specific field from BRENDA data entry"""
     pattern = f"{field_name}\\*([^#]*)"
     match = re.search(pattern, data)
     return match.group(1) if match else None
 
 def extract_multiple_values(data, field_name):
-    """提取字段的多个值"""
+    """Extract multiple values for a field"""
     pattern = f"{field_name}\\*([^#]*)"
     matches = re.findall(pattern, data)
     return [match for match in matches if match.strip()]
 ```
 
-## 参考文档
+## Reference Documentation
 
-有关详细的 BRENDA 文档，请参阅 `references/api_reference.md`。这包括：
-- 完整的 SOAP API 方法文档
-- 完整的参数列表和格式
-- EC 编号结构和验证
-- 响应格式规范
-- 错误代码和处理
-- 数据字段定义
-- 文献引用格式
+For detailed BRENDA documentation, see `references/api_reference.md`. This includes:
+- Complete SOAP API method documentation
+- Full parameter lists and formats
+- EC number structure and validation
+- Response format specifications
+- Error codes and handling
+- Data field definitions
+- Literature citation formats
 
-## 故障排除
+## Troubleshooting
 
-**身份验证错误**：
-- 验证 .env 文件中的 BRENDA_EMAIL 和 BRENDA_PASSWORD
-- 检查拼写是否正确（注意 BRENDA_EMAIL 传统支持）
-- 确保 BRENDA 账户处于活动状态并具有 API 访问权限
+**Authentication Errors**:
+- Verify BRENDA_EMAIL and BRENDA_PASSWORD in .env file
+- Check for correct spelling (note BRENDA_EMIAL legacy support)
+- Ensure BRENDA account is active and has API access
 
-**未返回结果**：
-- 尝试使用通配符（*）进行更广泛的搜索
-- 检查 EC 编号格式（例如，"1.1.1.1" 而不是 "1.1.1"）
-- 验证底物拼写和命名
-- 某些酶在 BRENDA 中的数据可能有限
+**No Results Returned**:
+- Try broader searches with wildcards (*)
+- Check EC number format (e.g., "1.1.1.1" not "1.1.1")
+- Verify substrate spelling and naming
+- Some enzymes may have limited data in BRENDA
 
-**速率限制**：
-- 在请求之间添加延迟（0.5-1 秒）
-- 在本地缓存结果
-- 使用更具体的查询以减少数据量
-- 考虑对多个查询使用批量操作
+**Rate Limiting**:
+- Add delays between requests (0.5-1 second)
+- Cache results locally
+- Use more specific queries to reduce data volume
+- Consider batch operations for multiple queries
 
-**网络错误**：
-- 检查互联网连接
-- BRENDA 服务器可能暂时不可用
-- 几分钟后重试
-- 如果受地理限制，考虑使用 VPN
+**Network Errors**:
+- Check internet connection
+- BRENDA server may be temporarily unavailable
+- Try again after a few minutes
+- Consider using VPN if geo-restricted
 
-**数据格式问题**：
-- 使用脚本中提供的解析函数
-- BRENDA 数据在格式上可能不一致
-- 优雅地处理缺失字段
-- 使用前验证解析的数据
+**Data Format Issues**:
+- Use the provided parsing functions in scripts
+- BRENDA data can be inconsistent in formatting
+- Handle missing fields gracefully
+- Validate parsed data before use
 
-**性能问题**：
-- 大型查询可能很慢；限制搜索范围
-- 使用特定的生物体或底物过滤器
-- 考虑对批量操作使用异步处理
-- 监控大型数据集的内存使用情况
+**Performance Issues**:
+- Large queries can be slow; limit search scope
+- Use specific organism or substrate filters
+- Consider asynchronous processing for batch operations
+- Monitor memory usage with large datasets
 
-## 其他资源
+## Additional Resources
 
-- BRENDA 主页：https://www.brenda-enzymes.org/
-- BRENDA SOAP API 文档：https://www.brenda-enzymes.org/soap.php
-- 酶委员会（EC）编号：https://www.qmul.ac.uk/sbcs/iubmb/enzyme/
-- Zeep SOAP 客户端：https://python-zeep.readthedocs.io/
-- 酶命名法：https://www.iubmb.org/enzyme/
+- BRENDA Home: https://www.brenda-enzymes.org/
+- BRENDA SOAP API Documentation: https://www.brenda-enzymes.org/soap.php
+- Enzyme Commission (EC) Numbers: https://www.qmul.ac.uk/sbcs/iubmb/enzyme/
+- Zeep SOAP Client: https://python-zeep.readthedocs.io/
+- Enzyme Nomenclature: https://www.iubmb.org/enzyme/

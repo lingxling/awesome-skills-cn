@@ -1,6 +1,8 @@
 ---
 name: security-bluebook-builder
-description: Create or refine a concise, normative security policy ("Blue Book") for sensitive applications. Use when users need a threat model, data classification rules, auth/session policy, logging and audit requirements, retention/deletion expectations, incident response, or security...
+description: "Build a minimal but real security policy for sensitive apps. The output is a single, coherent Blue Book document using MUST/SHOULD/CAN language, with explicit assumptions, scope, and security gates."
+risk: unknown
+source: community
 ---
 
 # Security Bluebook Builder

@@ -4,11 +4,30 @@ import { useSkillStars } from '../useSkillStars';
 
 const STORAGE_KEY = 'user_stars';
 
+const supabaseMocks = vi.hoisted(() => {
+  const maybeSingle = vi.fn();
+  const upsert = vi.fn();
+  const select = vi.fn(() => ({ eq: vi.fn(() => ({ maybeSingle })) }));
+  const from = vi.fn(() => ({ select, upsert }));
+
+  return { maybeSingle, upsert, select, from };
+});
+
+vi.mock('../../lib/supabase', () => ({
+  supabase: {
+    from: supabaseMocks.from,
+  },
+}));
+
 describe('useSkillStars', () => {
   beforeEach(() => {
     // Clear localStorage mock before each test
     localStorage.clear();
     vi.clearAllMocks();
+    supabaseMocks.from.mockReturnValue({ select: supabaseMocks.select, upsert: supabaseMocks.upsert });
+    supabaseMocks.select.mockReturnValue({ eq: vi.fn(() => ({ maybeSingle: supabaseMocks.maybeSingle })) });
+    supabaseMocks.maybeSingle.mockResolvedValue({ data: null, error: null });
+    supabaseMocks.upsert.mockResolvedValue({ error: null });
   });
 
   describe('Initialization', () => {
@@ -25,6 +44,19 @@ describe('useSkillStars', () => {
 
       expect(result.current.starCount).toBe(0);
       expect(result.current.hasStarred).toBe(false);
+    });
+
+    it('should overlay a local star on top of the shared count', async () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ 'test-skill': true }));
+      supabaseMocks.maybeSingle.mockResolvedValue({ data: { star_count: 7 }, error: null });
+
+      const { result } = renderHook(() => useSkillStars('test-skill'));
+
+      await waitFor(() => {
+        expect(result.current.starCount).toBe(8);
+      });
+
+      expect(result.current.hasStarred).toBe(true);
     });
 
     it('should read starred status from localStorage on init', () => {
@@ -94,6 +126,7 @@ describe('useSkillStars', () => {
         expect(result.current.starCount).toBe(1);
         expect(result.current.hasStarred).toBe(true);
       });
+      expect(supabaseMocks.upsert).not.toHaveBeenCalled();
     });
 
     it('should persist starred status to localStorage', async () => {
@@ -107,6 +140,7 @@ describe('useSkillStars', () => {
         STORAGE_KEY,
         JSON.stringify({ 'persist-skill': true })
       );
+      expect(supabaseMocks.upsert).not.toHaveBeenCalled();
     });
 
     it('should set loading state during operation', async () => {

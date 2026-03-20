@@ -15,7 +15,6 @@ When you have multiple unrelated failures (different test files, different subsy
 **Core principle:** Dispatch one agent per independent problem domain. Let them work concurrently.
 
 ## When to Use
-
 ```dot
 digraph when_to_use {
     "Multiple failures?" [shape=diamond];

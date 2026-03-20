@@ -1,6 +1,6 @@
 ---
 name: wiki-vitepress
-description: "Packages generated wiki Markdown into a VitePress static site with dark theme, dark-mode Mermaid diagrams with click-to-zoom, and production build output. Use when the user wants to create a browsa..."
+description: "Transform generated wiki Markdown files into a polished VitePress static site with dark theme and interactive Mermaid diagrams."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -10,8 +10,7 @@ date_added: "2026-02-27"
 
 Transform generated wiki Markdown files into a polished VitePress static site with dark theme and interactive Mermaid diagrams.
 
-## When to Activate
-
+## When to Use
 - User asks to "build a site" or "package as VitePress"
 - User runs the `/deep-wiki:build` command
 - User wants a browsable HTML output from generated wiki pages

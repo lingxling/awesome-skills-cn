@@ -1,304 +1,327 @@
 ---
 name: markdown-mermaid-writing
-description: 使用Mermaid语法创建技术文档和图表。生成流程图、序列图、类图、状态图、ER图、甘特图、饼图、思维导图、时序图、Git图、用户旅程图、C4图等。使用Mermaid Live Editor或Markdown编辑器（如Obsidian）进行实时预览。
-license: Unknown
+description: Comprehensive markdown and Mermaid diagram writing skill. Use when creating any scientific document, report, analysis, or visualization. Establishes text-based diagrams as the default documentation standard with full style guides (markdown + mermaid), 24 diagram type references, and 9 document templates.
+allowed-tools: Read Write Edit Bash
+license: Apache-2.0
 metadata:
-    skill-author: K-Dense Inc.
+  skill-author: Clayton Young / Superior Byte Works, LLC (@borealBytes)
+  skill-source: https://github.com/SuperiorByteWorks-LLC/agent-project
+  skill-version: "1.0.0"
+  skill-contributors:
+    - name: Clayton Young
+      org: Superior Byte Works, LLC / @borealBytes
+      role: Author and originator
+    - name: K-Dense Team
+      org: K-Dense Inc.
+      role: Integration target and community feedback
 ---
 
-# Markdown + Mermaid写作
+# Markdown and Mermaid Writing
 
-## 概述
+## Overview
 
-使用Mermaid语法在Markdown文档中创建技术图表和可视化。Mermaid是一个基于文本的图表工具，允许您使用简单的文本语法创建各种类型的图表。将Mermaid代码嵌入到Markdown文件中以生成流程图、序列图、类图、状态图、ER图、甘特图、饼图、思维导图、时序图、Git图、用户旅程图、C4图等。
+This skill teaches you — and enforces a standard for — creating scientific documentation
+using **markdown with embedded Mermaid diagrams as the default and canonical format**.
 
-## 何时使用此技能
+The core bet: a relationship expressed as a Mermaid diagram inside a `.md` file is more
+valuable than any image. It is text, so it diffs cleanly in git. It requires no build step.
+It renders natively on GitHub, GitLab, Notion, VS Code, and any markdown viewer. It uses
+fewer tokens than a prose description of the same relationship. And it can always be
+converted to a polished image later — but the text version remains the source of truth.
 
-在以下情况下使用此技能：
-- 在Markdown文档中创建技术图表
-- 使用Mermaid语法生成流程图、序列图、类图、状态图、ER图、甘特图、饼图、思维导图、时序图、Git图、用户旅程图、C4图等
-- 使用Mermaid Live Editor或Markdown编辑器（如Obsidian）进行实时预览
-- 使用Mermaid语法创建技术文档
-- 使用Mermaid语法创建架构图
-- 使用Mermaid语法创建流程图
-- 使用Mermaid语法创建序列图
-- 使用Mermaid语法创建类图
-- 使用Mermaid语法创建状态图
-- 使用Mermaid语法创建ER图
-- 使用Mermaid语法创建甘特图
-- 使用Mermaid语法创建饼图
-- 使用Mermaid语法创建思维导图
-- 使用Mermaid语法创建时序图
-- 使用Mermaid语法创建Git图
-- 使用Mermaid语法创建用户旅程图
-- 使用Mermaid语法创建C4图
+> "The more you get your reports and files in .md in just regular text, which mermaid is
+> as well as being a simple 'script language'. This just helps with any downstream rendering
+> and especially AI generated images (using mermaid instead of just long form text to
+> describe relationships < tokens). Additionally mermaid can render along with markdown for
+> easy use almost anywhere by humans or AI."
+>
+> — Clayton Young (@borealBytes), K-Dense Discord, 2026-02-19
 
-## 核心能力
+## When to Use This Skill
 
-### 1. 基本语法
+Use this skill when:
 
-Mermaid图表使用简单的文本语法。基本结构如下：
+- Creating **any scientific document** — reports, analyses, manuscripts, methods sections
+- Writing **any documentation** — READMEs, how-tos, decision records, project docs
+- Producing **any diagram** — workflows, data pipelines, architectures, timelines, relationships
+- Generating **any output that will be version-controlled** — if it's going into git, it should be markdown
+- Working with **any other skill** — this skill defines the documentation layer that wraps every other output
+- Someone asks you to "add a diagram" or "visualize the relationship" — Mermaid first, always
 
-```mermaid
-graph TD
-    A[开始] --> B{条件}
-    B -->|是| C[操作1]
-    B -->|否| D[操作2]
-    C --> E[结束]
-    D --> E
-```
+Do NOT start with Python matplotlib, seaborn, or AI image generation for structural or relational diagrams.
+Those are Phase 2 and Phase 3 — only used when Mermaid cannot express what's needed (e.g., scatter plots with real data, photorealistic images).
 
-### 2. 流程图
+## 🎨 The Source Format Philosophy
 
-流程图用于表示算法或过程。
+### Why text-based diagrams win
 
-```mermaid
-graph LR
-    A[开始] --> B[初始化]
-    B --> C{检查条件}
-    C -->|真| D[执行操作]
-    C -->|假| E[跳过]
-    D --> F[结束]
-    E --> F
-```
+| What matters | Mermaid in Markdown | Python / AI Image |
+| ----------------------------- | :-----------------: | :---------------: |
+| Git diff readable | ✅ | ❌ binary blob |
+| Editable without regenerating | ✅ | ❌ |
+| Token efficient vs. prose | ✅ smaller | ❌ larger |
+| Renders without a build step | ✅ | ❌ needs hosting |
+| Parseable by AI without vision | ✅ | ❌ |
+| Works in GitHub / GitLab / Notion | ✅ | ⚠️ if hosted |
+| Accessible (screen readers) | ✅ accTitle/accDescr | ⚠️ needs alt text |
+| Convertible to image later | ✅ anytime | — already image |
 
-### 3. 序列图
-
-序列图用于表示对象之间的交互。
+### The three-phase workflow
 
 ```mermaid
-sequenceDiagram
-    participant 用户
-    participant 系统
-    participant 数据库
+flowchart LR
+    accTitle: Three-Phase Documentation Workflow
+    accDescr: Phase 1 Mermaid in markdown is always required and is the source of truth. Phases 2 and 3 are optional downstream conversions for polished output.
 
-    用户->>系统: 发送请求
-    系统->>数据库: 查询数据
-    数据库-->>系统: 返回结果
-    系统-->>用户: 返回响应
+    p1["📄 Phase 1<br/>Mermaid in Markdown<br/>(ALWAYS — source of truth)"]
+    p2["🐍 Phase 2<br/>Python Generated<br/>(optional — data charts)"]
+    p3["🎨 Phase 3<br/>AI Generated Visuals<br/>(optional — polish)"]
+    out["📊 Final Deliverable"]
+
+    p1 --> out
+    p1 -.->|"when needed"| p2
+    p1 -.->|"when needed"| p3
+    p2 --> out
+    p3 --> out
+
+    classDef required fill:#dbeafe,stroke:#2563eb,stroke-width:2px,color:#1e3a5f
+    classDef optional fill:#fef9c3,stroke:#ca8a04,stroke-width:2px,color:#713f12
+    classDef output fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#14532d
+
+    class p1 required
+    class p2,p3 optional
+    class out output
 ```
 
-### 4. 类图
+**Phase 1 is mandatory.** Even if you proceed to Phase 2 or 3, the Mermaid source stays committed.
 
-类图用于表示类及其关系。
+### What Mermaid can express
+
+Mermaid covers 24 diagram types. Almost every scientific relationship fits one:
+
+| Use case | Diagram type | File |
+| -------------------------------------------- | ---------------- | ---------------------------------------------------- |
+| Experimental workflow / decision logic | Flowchart | `references/diagrams/flowchart.md` |
+| Service interactions / API calls / messaging | Sequence | `references/diagrams/sequence.md` |
+| Data model / schema | ER diagram | `references/diagrams/er.md` |
+| State machine / lifecycle | State | `references/diagrams/state.md` |
+| Project timeline / roadmap | Gantt | `references/diagrams/gantt.md` |
+| Proportions / composition | Pie | `references/diagrams/pie.md` |
+| System architecture (zoom levels) | C4 | `references/diagrams/c4.md` |
+| Concept hierarchy / brainstorm | Mindmap | `references/diagrams/mindmap.md` |
+| Chronological events / history | Timeline | `references/diagrams/timeline.md` |
+| Class hierarchy / type relationships | Class | `references/diagrams/class.md` |
+| User journey / satisfaction map | User Journey | `references/diagrams/user_journey.md` |
+| Two-axis comparison / prioritization | Quadrant | `references/diagrams/quadrant.md` |
+| Requirements traceability | Requirement | `references/diagrams/requirement.md` |
+| Flow magnitude / resource distribution | Sankey | `references/diagrams/sankey.md` |
+| Numeric trends / bar + line charts | XY Chart | `references/diagrams/xy_chart.md` |
+| Component layout / spatial arrangement | Block | `references/diagrams/block.md` |
+| Work item status / task columns | Kanban | `references/diagrams/kanban.md` |
+| Cloud infrastructure / service topology | Architecture | `references/diagrams/architecture.md` |
+| Multi-dimensional comparison / skills radar | Radar | `references/diagrams/radar.md` |
+| Hierarchical proportions / budget | Treemap | `references/diagrams/treemap.md` |
+| Binary protocol / data format | Packet | `references/diagrams/packet.md` |
+| Git branching / merge strategy | Git Graph | `references/diagrams/git_graph.md` |
+| Code-style sequence (programming syntax) | ZenUML | `references/diagrams/zenuml.md` |
+| Multi-diagram composition patterns | Complex Examples | `references/diagrams/complex_examples.md` |
+
+> 💡 **Pick the right type, not the easy one.** Don't default to flowcharts for everything.
+> A timeline beats a flowchart for chronological events. A sequence beats a flowchart for
+> service interactions. Scan the table and match.
+
+---
+
+## 🔧 Core workflow
+
+### Step 1: Identify the document type
+
+Check if a template exists before writing from scratch:
+
+| Document type | Template |
+| ------------------------------ | ----------------------------------------------- |
+| Pull request record | `templates/pull_request.md` |
+| Issue / bug / feature request | `templates/issue.md` |
+| Sprint / project board | `templates/kanban.md` |
+| Architecture decision (ADR) | `templates/decision_record.md` |
+| Presentation / briefing | `templates/presentation.md` |
+| Research paper / analysis | `templates/research_paper.md` |
+| Project documentation | `templates/project_documentation.md` |
+| How-to / tutorial | `templates/how_to_guide.md` |
+| Status report | `templates/status_report.md` |
+
+### Step 2: Read the style guide
+
+Before writing any `.md` file: read `references/markdown_style_guide.md`.
+
+Key rules to internalize:
+
+- **One H1 per document** — the title. Never more.
+- **Emoji on H2 headings only** — one emoji per H2, none in H3/H4
+- **Cite everything** — every external claim gets a footnote `[^N]` with full URL
+- **Bold sparingly** — max 2-3 bold terms per paragraph, never full sentences
+- **Horizontal rule after every `</details>`** — mandatory
+- **Tables over prose** for comparisons, configurations, structured data
+- **Diagrams over walls of text** — if it describes flow, structure, or relationships, add Mermaid
+
+### Step 3: Pick the diagram type and read its guide
+
+Before creating any Mermaid diagram: read `references/mermaid_style_guide.md`.
+
+Then open the specific type file (e.g., `references/diagrams/flowchart.md`) for the exemplar, tips, and copy-paste template.
+
+Mandatory rules for every diagram:
+
+```
+accTitle: Short Name 3-8 Words
+accDescr: One or two sentences explaining what this diagram shows.
+```
+
+- **No `%%{init}` directives** — breaks GitHub dark mode
+- **No inline `style`** — use `classDef` only
+- **One emoji per node max** — at the start of the label
+- **`snake_case` node IDs** — match the label
+
+### Step 4: Write the document
+
+Start from the template. Apply the markdown style guide. Place diagrams inline with related text — not in a separate "Figures" section.
+
+### Step 5: Commit as text
+
+The `.md` file with embedded Mermaid is what gets committed. If you also generated a PNG or AI image, those are supplementary — the markdown is the source.
+
+---
+
+## ⚠️ Common pitfalls
+
+### Radar chart syntax (`radar-beta`)
+
+**WRONG:**
+```mermaid
+radar
+title Example
+x-axis ["A", "B", "C"]
+"Series" : [1, 2, 3]
+```
+
+**CORRECT:**
+```mermaid
+radar-beta
+title Example
+axis a["A"], b["B"], c["C"]
+curve series["Series"]{1, 2, 3}
+max 3
+```
+
+- **Use `radar-beta`** not `radar` (the bare keyword doesn't exist)
+- **Use `axis`** to define dimensions, **not** `x-axis`
+- **Use `curve`** to define data series, **not** quoted labels with colon
+- **No `accTitle`/`accDescr`** — radar-beta doesn't support accessibility annotations; always add a descriptive italic paragraph above the diagram
+
+### XY Chart vs Radar confusion
+
+| Diagram | Keyword | Axis syntax | Data syntax |
+| ------- | ------- | ----------- | ----------- |
+| **XY Chart** (bars/lines) | `xychart-beta` | `x-axis ["Label1", "Label2"]` | `bar [10, 20]` or `line [10, 20]` |
+| **Radar** (spider/web) | `radar-beta` | `axis id["Label"]` | `curve id["Label"]{10, 20}` |
+
+### Forgetting `accTitle`/`accDescr` on supported types
+
+Only some diagram types support `accTitle`/`accDescr`. For those that don't, always place a descriptive italic paragraph directly above the code block:
+
+> _Radar chart comparing three methods across five performance dimensions. Note: Radar charts do not support accTitle/accDescr._
 
 ```mermaid
-classDiagram
-    class Animal {
-        +String name
-        +int age
-        +makeSound()
-    }
-    class Dog {
-        +String breed
-        +bark()
-    }
-    class Cat {
-        +String color
-        +meow()
-    }
-    Animal <|-- Dog
-    Animal <|-- Cat
+radar-beta
+...
 ```
 
-### 5. 状态图
+---
 
-状态图用于表示对象的状态转换。
+## 🔗 Integration with other skills
 
-```mermaid
-stateDiagram-v2
-    [*] --> 空闲
-    空闲 --> 运行: 开始
-    运行 --> 暂停: 暂停
-    暂停 --> 运行: 继续
-    运行 --> 空闲: 停止
-    暂停 --> 空闲: 停止
+### With `scientific-schematics`
+
+`scientific-schematics` generates AI-powered publication-quality images (PNG). Use the Mermaid diagram as the **brief** for the schematic:
+
+```
+Workflow:
+1. Create the concept as Mermaid in .md (this skill — Phase 1)
+2. Describe the same concept to scientific-schematics for a polished PNG (Phase 3)
+3. Commit both — the .md as source, the PNG as a supplementary figure
 ```
 
-### 6. ER图
+### With `scientific-writing`
 
-ER图用于表示实体关系模型。
+When `scientific-writing` produces a manuscript, all diagrams and structural figures should use this skill's standards. The writing skill handles prose and citations; this skill handles visual structure.
 
-```mermaid
-erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    ORDER ||--|{ LINE-ITEM : contains
-    CUSTOMER {
-        string name
-        string custKey
-        string address
-    }
-    ORDER {
-        string orderKey
-        string orderStatus
-        float totalPrice
-    }
-    LINE-ITEM {
-        string l_orderKey
-        string l_partKey
-        float l_quantity
-    }
+```
+Workflow:
+1. Use scientific-writing to draft the manuscript
+2. For every figure that shows a workflow, architecture, or relationship:
+   - Replace placeholder with a Mermaid diagram following this skill's guide
+3. Use scientific-schematics only for figures that truly need photorealistic/complex rendering
 ```
 
-### 7. 甘特图
+### With `literature-review`
 
-甘特图用于表示项目时间线。
+Literature review produces summaries with lots of relationship data. Use this skill to:
 
-```mermaid
-gantt
-    title 项目开发计划
-    dateFormat  YYYY-MM-DD
-    section 设计
-    需求分析       :a1, 2024-01-01, 7d
-    系统设计       :a2, after a1, 14d
-    section 开发
-    前端开发       :b1, after a2, 21d
-    后端开发       :b2, after a2, 21d
-    section 测试
-    集成测试       :c1, after b1 b2, 14d
-    用户验收       :c2, after c1, 7d
-```
+- Create concept maps (Mindmap) of the literature landscape
+- Show publication timelines (Timeline or Gantt)
+- Compare methodologies (Quadrant or Radar)
+- Diagram data flows described in papers (Sequence or Flowchart)
 
-### 8. 饼图
+### With any skill that produces output documents
 
-饼图用于表示数据分布。
+Before finalizing any document from any skill, apply this skill's checklist:
 
-```mermaid
-pie title 项目预算分配
-    "开发" : 40
-    "测试" : 20
-    "部署" : 15
-    "维护" : 25
-```
+- [ ] Does the document use a template? If so, did I start from the right one?
+- [ ] Are all diagrams in Mermaid with `accTitle` + `accDescr`?
+- [ ] No `%%{init}`, no inline `style`, only `classDef`?
+- [ ] Are all external claims cited with `[^N]`?
+- [ ] One H1, emoji on H2 only?
+- [ ] Horizontal rules after every `</details>`?
 
-### 9. 思维导图
+---
 
-思维导图用于表示概念和想法。
+## 📚 Reference index
 
-```mermaid
-mindmap
-  root((项目))
-    规划
-      需求分析
-      时间安排
-    开发
-      前端
-      后端
-    测试
-      单元测试
-      集成测试
-    部署
-      服务器
-      数据库
-```
+### Style guides
 
-### 10. 时序图
+| Guide | Path | Lines | What it covers |
+| ----------------------- | ------------------------------------------- | ----- | -------------------------------------------------- |
+| Markdown Style Guide | `references/markdown_style_guide.md` | ~733 | Headings, formatting, citations, tables, Mermaid integration, templates, quality checklist |
+| Mermaid Style Guide | `references/mermaid_style_guide.md` | ~458 | Accessibility, emoji set, color classes, theme neutrality, type selection, complexity tiers |
 
-时序图用于表示时间线上的事件。
+### Diagram type guides (24 types)
 
-```mermaid
-xychart-beta
-    title "销售趋势"
-    x-axis [jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec]
-    y-axis "收入" 0 --> 100
-    line [30, 45, 35, 50, 60, 70, 65, 80, 75, 90, 85, 95]
-```
+Each file contains: production-quality exemplar, tips specific to that type, and a copy-paste template.
 
-### 11. Git图
+`references/diagrams/` — architecture, block, c4, class, complex\_examples, er, flowchart, gantt, git\_graph, kanban, mindmap, packet, pie, quadrant, radar, requirement, sankey, sequence, state, timeline, treemap, user\_journey, xy\_chart, zenuml
 
-Git图用于表示Git分支和提交。
+### Document templates (9 types)
 
-```mermaid
-gitGraph
-    commit
-    commit
-    branch develop
-    checkout develop
-    commit
-    commit
-    checkout main
-    merge develop
-    commit
-    commit
-```
+`templates/` — decision\_record, how\_to\_guide, issue, kanban, presentation, project\_documentation, pull\_request, research\_paper, status\_report
 
-### 12. 用户旅程图
+### Examples
 
-用户旅程图用于表示用户交互流程。
+`assets/examples/example-research-report.md` — a complete scientific research report demonstrating proper heading hierarchy, multiple diagram types (flowchart, sequence, gantt), tables, footnote citations, collapsible sections, and all style guide rules applied.
 
-```mermaid
-journey
-    title 用户购买旅程
-    section 浏览
-      浏览产品: 5: 用户
-      比较价格: 4: 用户
-    section 购买
-      添加到购物车: 5: 用户
-      结账: 3: 用户
-    section 收到
-      收到产品: 5: 用户
-      写评论: 4: 用户
-```
+---
 
-### 13. C4图
+## 📝 Attribution
 
-C4图用于表示软件架构。
+All style guides, diagram type guides, and document templates in this skill are ported from the `SuperiorByteWorks-LLC/agent-project` repository under the Apache-2.0 License.
 
-```mermaid
-C4Context
-    title 系统上下文图
-    Person(user, "用户", "使用系统的人")
-    System(system, "系统", "核心系统")
-    Rel(user, system, "使用")
-```
+- **Source**: https://github.com/SuperiorByteWorks-LLC/agent-project
+- **Author**: Clayton Young / Superior Byte Works, LLC (@borealBytes)
+- **License**: Apache-2.0
 
-## 工具和编辑器
+This skill (as part of claude-scientific-skills) is distributed under the MIT License. The included Apache-2.0 content is compatible for downstream use with attribution retained, as preserved in the file headers throughout this skill.
 
-### Mermaid Live Editor
+---
 
-Mermaid Live Editor是一个在线编辑器，允许您实时预览Mermaid图表。
+[^1]: GitHub Blog. (2022). "Include diagrams in your Markdown files with Mermaid." https://github.blog/2022-02-14-include-diagrams-markdown-files-mermaid/
 
-- 访问：https://mermaid.live
-- 在左侧编辑器中输入Mermaid代码
-- 在右侧预览图表
-- 导出为SVG、PNG等格式
-
-### Markdown编辑器
-
-许多Markdown编辑器支持Mermaid语法：
-
-- **Obsidian**：原生支持Mermaid
-- **Typora**：原生支持Mermaid
-- **VS Code**：通过插件支持Mermaid
-- **GitHub**：原生支持Mermaid
-- **GitLab**：原生支持Mermaid
-
-## 最佳实践
-
-1. **保持简单**：避免过于复杂的图表
-2. **使用清晰的标签**：使用描述性的节点和边标签
-3. **保持一致性**：在整个文档中使用一致的样式
-4. **测试图表**：在Mermaid Live Editor中测试图表
-5. **文档化图表**：为图表添加标题和描述
-6. **使用子图**：对于复杂图表，使用子图进行组织
-7. **考虑可访问性**：为图表提供文本描述
-
-## 常见问题
-
-**Q: Mermaid支持哪些图表类型？**
-A: Mermaid支持流程图、序列图、类图、状态图、ER图、甘特图、饼图、思维导图、时序图、Git图、用户旅程图、C4图等。
-
-**Q: 如何在Markdown中使用Mermaid？**
-A: 使用 ```mermaid 代码块包围Mermaid代码。
-
-**Q: Mermaid图表可以导出吗？**
-A: 是的，可以使用Mermaid Live Editor将图表导出为SVG、PNG等格式。
-
-**Q: Mermaid支持自定义样式吗？**
-A: 是的，Mermaid支持自定义样式，包括颜色、字体、大小等。
-
-## 资源
-
-- **Mermaid官方文档**：https://mermaid.js.org/intro/
-- **Mermaid Live Editor**：https://mermaid.live
-- **Mermaid GitHub**：https://github.com/mermaid-js/mermaid
+[^2]: Mermaid. "Mermaid Diagramming and Charting Tool." https://mermaid.js.org/

@@ -1,6 +1,6 @@
 ---
 name: gemini-api-dev
-description: "Use this skill when building applications with Gemini models, Gemini API, working with multimodal content (text, images, audio, video), implementing function calling, using structured outputs, or n..."
+description: "The Gemini API provides access to Google's most advanced AI models. Key capabilities include:"
 risk: unknown
 source: community
 date_added: "2026-02-27"

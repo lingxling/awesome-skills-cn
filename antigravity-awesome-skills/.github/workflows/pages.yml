@@ -44,12 +44,24 @@ jobs:
         run: cd apps/web-app && npm run build
         env:
           VITE_BASE_PATH: /${{ github.event.repository.name }}/
+          SEO_SITE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+
+      - name: Validate SEO artifact quality
+        run: cd apps/web-app && npm run verify:seo
+
+      - name: Validate generated sitemap and asset consistency
+        run: |
+          cd apps/web-app
+          test -f dist/robots.txt
+          test -f dist/sitemap.xml
+          test -f dist/manifest.webmanifest
 
       - name: Prepare artifact (404 + .nojekyll)
         run: |
           cd apps/web-app/dist
           cp index.html 404.html
           touch .nojekyll
+          test -f 404.html
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

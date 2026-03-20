@@ -1,216 +1,216 @@
 ---
 name: omero-integration
-description: 显微镜数据管理平台。通过 Python 访问图像，检索数据集，分析像素，管理 ROI/注释，批处理，用于高内涵筛选和显微镜工作流程。
+description: Microscopy data management platform. Access images via Python, retrieve datasets, analyze pixels, manage ROIs/annotations, batch processing, for high-content screening and microscopy workflows.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# OMERO 集成
+# OMERO Integration
 
-## 概述
+## Overview
 
-OMERO 是一个开源平台，用于管理、可视化和分析显微镜图像和元数据。通过 Python API 访问图像，检索数据集，分析像素，管理 ROI 和注释，用于高内涵筛选和显微镜工作流程。
+OMERO is an open-source platform for managing, visualizing, and analyzing microscopy images and metadata. Access images via Python API, retrieve datasets, analyze pixels, manage ROIs and annotations, for high-content screening and microscopy workflows.
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况使用：
-- 使用 OMERO Python API (omero-py) 访问显微镜数据
-- 以编程方式检索图像、数据集、项目或筛选数据
-- 分析像素数据并创建派生图像
-- 在显微镜图像上创建或管理 ROI（感兴趣区域）
-- 向 OMERO 对象添加注释、标签或元数据
-- 在 OMERO 表中存储测量结果
-- 创建用于批处理的服务器端脚本
-- 执行高内涵筛选分析
+This skill should be used when:
+- Working with OMERO Python API (omero-py) to access microscopy data
+- Retrieving images, datasets, projects, or screening data programmatically
+- Analyzing pixel data and creating derived images
+- Creating or managing ROIs (regions of interest) on microscopy images
+- Adding annotations, tags, or metadata to OMERO objects
+- Storing measurement results in OMERO tables
+- Creating server-side scripts for batch processing
+- Performing high-content screening analysis
 
-## 核心功能
+## Core Capabilities
 
-此技能涵盖八个主要功能领域。每个领域在 references/ 目录中有详细文档：
+This skill covers eight major capability areas. Each is documented in detail in the references/ directory:
 
-### 1. 连接和会话管理
-**文件**：`references/connection.md`
+### 1. Connection & Session Management
+**File**: `references/connection.md`
 
-建立与 OMERO 服务器的安全连接，管理会话，处理身份验证，并在组上下文中工作。用于初始设置和连接模式。
+Establish secure connections to OMERO servers, manage sessions, handle authentication, and work with group contexts. Use this for initial setup and connection patterns.
 
-**常见场景**：
-- 使用凭据连接到 OMERO 服务器
-- 使用现有会话 ID
-- 在组上下文之间切换
-- 使用上下文管理器管理连接生命周期
+**Common scenarios:**
+- Connect to OMERO server with credentials
+- Use existing session IDs
+- Switch between group contexts
+- Manage connection lifecycle with context managers
 
-### 2. 数据访问和检索
-**文件**：`references/data_access.md`
+### 2. Data Access & Retrieval
+**File**: `references/data_access.md`
 
-导航 OMERO 的分层数据结构（项目 → 数据集 → 图像）和筛选数据（筛选 → 板 → 孔）。检索对象，按属性查询，访问元数据。
+Navigate OMERO's hierarchical data structure (Projects → Datasets → Images) and screening data (Screens → Plates → Wells). Retrieve objects, query by attributes, and access metadata.
 
-**常见场景**：
-- 列出用户的所有项目和数据集
-- 通过 ID 或数据集检索图像
-- 访问筛选板数据
-- 使用过滤器查询对象
+**Common scenarios:**
+- List all projects and datasets for a user
+- Retrieve images by ID or dataset
+- Access screening plate data
+- Query objects with filters
 
-### 3. 元数据和注释
-**文件**：`references/metadata.md`
+### 3. Metadata & Annotations
+**File**: `references/metadata.md`
 
-创建和管理注释，包括标签、键值对、文件附件和评论。将注释链接到图像、数据集或其他对象。
+Create and manage annotations including tags, key-value pairs, file attachments, and comments. Link annotations to images, datasets, or other objects.
 
-**常见场景**：
-- 向图像添加标签
-- 将分析结果作为文件附加
-- 创建自定义键值元数据
-- 按命名空间查询注释
+**Common scenarios:**
+- Add tags to images
+- Attach analysis results as files
+- Create custom key-value metadata
+- Query annotations by namespace
 
-### 4. 图像处理和渲染
-**文件**：`references/image_processing.md`
+### 4. Image Processing & Rendering
+**File**: `references/image_processing.md`
 
-以 NumPy 数组形式访问原始像素数据，操作渲染设置，创建派生图像，并管理物理尺寸。
+Access raw pixel data as NumPy arrays, manipulate rendering settings, create derived images, and manage physical dimensions.
 
-**常见场景**：
-- 提取像素数据用于计算分析
-- 生成缩略图
-- 创建最大强度投影
-- 修改通道渲染设置
+**Common scenarios:**
+- Extract pixel data for computational analysis
+- Generate thumbnail images
+- Create maximum intensity projections
+- Modify channel rendering settings
 
-### 5. 感兴趣区域 (ROI)
-**文件**：`references/rois.md`
+### 5. Regions of Interest (ROIs)
+**File**: `references/rois.md`
 
-创建、检索和分析具有各种形状（矩形、椭圆、多边形、掩码、点、线）的 ROI。从 ROI 区域提取强度统计数据。
+Create, retrieve, and analyze ROIs with various shapes (rectangles, ellipses, polygons, masks, points, lines). Extract intensity statistics from ROI regions.
 
-**常见场景**：
-- 在图像上绘制矩形 ROI
-- 创建用于分割的多边形掩码
-- 分析 ROI 内的像素强度
-- 导出 ROI 坐标
+**Common scenarios:**
+- Draw rectangular ROIs on images
+- Create polygon masks for segmentation
+- Analyze pixel intensities within ROIs
+- Export ROI coordinates
 
-### 6. OMERO 表
-**文件**：`references/tables.md`
+### 6. OMERO Tables
+**File**: `references/tables.md`
 
-存储和查询与 OMERO 对象关联的结构化表格数据。适用于分析结果、测量和元数据。
+Store and query structured tabular data associated with OMERO objects. Useful for analysis results, measurements, and metadata.
 
-**常见场景**：
-- 存储图像的定量测量
-- 创建具有多种列类型的表
-- 带条件查询表数据
-- 将表链接到特定图像或数据集
+**Common scenarios:**
+- Store quantitative measurements for images
+- Create tables with multiple column types
+- Query table data with conditions
+- Link tables to specific images or datasets
 
-### 7. 脚本和批处理操作
-**文件**：`references/scripts.md`
+### 7. Scripts & Batch Operations
+**File**: `references/scripts.md`
 
-创建在服务器端运行的 OMERO.scripts，用于批处理、自动化工作流程和与 OMERO 客户端集成。
+Create OMERO.scripts that run server-side for batch processing, automated workflows, and integration with OMERO clients.
 
-**常见场景**：
-- 批处理多个图像
-- 创建自动化分析管道
-- 生成数据集的汇总统计数据
-- 以自定义格式导出数据
+**Common scenarios:**
+- Process multiple images in batch
+- Create automated analysis pipelines
+- Generate summary statistics across datasets
+- Export data in custom formats
 
-### 8. 高级功能
-**文件**：`references/advanced.md`
+### 8. Advanced Features
+**File**: `references/advanced.md`
 
-涵盖权限、文件集、跨组查询、删除操作和其他高级功能。
+Covers permissions, filesets, cross-group queries, delete operations, and other advanced functionality.
 
-**常见场景**：
-- 处理组权限
-- 访问原始导入的文件
-- 执行跨组查询
-- 带回调删除对象
+**Common scenarios:**
+- Handle group permissions
+- Access original imported files
+- Perform cross-group queries
+- Delete objects with callbacks
 
-## 安装
+## Installation
 
 ```bash
 uv pip install omero-py
 ```
 
-**要求**：
+**Requirements:**
 - Python 3.7+
 - Zeroc Ice 3.6+
-- 访问 OMERO 服务器（主机、端口、凭据）
+- Access to an OMERO server (host, port, credentials)
 
-## 快速开始
+## Quick Start
 
-基本连接模式：
+Basic connection pattern:
 
 ```python
 from omero.gateway import BlitzGateway
 
-# 连接到 OMERO 服务器
+# Connect to OMERO server
 conn = BlitzGateway(username, password, host=host, port=port)
 connected = conn.connect()
 
 if connected:
-    # 执行操作
+    # Perform operations
     for project in conn.listProjects():
         print(project.getName())
 
-    # 始终关闭连接
+    # Always close connection
     conn.close()
 else:
-    print("连接失败")
+    print("Connection failed")
 ```
 
-**推荐的上下文管理器模式**：
+**Recommended pattern with context manager:**
 
 ```python
 from omero.gateway import BlitzGateway
 
 with BlitzGateway(username, password, host=host, port=port) as conn:
-    # 连接自动管理
+    # Connection automatically managed
     for project in conn.listProjects():
         print(project.getName())
-    # 退出时自动关闭
+    # Automatically closed on exit
 ```
 
-## 选择正确的功能
+## Selecting the Right Capability
 
-**对于数据探索**：
-- 从 `references/connection.md` 开始建立连接
-- 使用 `references/data_access.md` 导航层次结构
-- 查看 `references/metadata.md` 获取注释详细信息
+**For data exploration:**
+- Start with `references/connection.md` to establish connection
+- Use `references/data_access.md` to navigate hierarchy
+- Check `references/metadata.md` for annotation details
 
-**对于图像分析**：
-- 使用 `references/image_processing.md` 访问像素数据
-- 使用 `references/rois.md` 进行基于区域的分析
-- 使用 `references/tables.md` 存储结果
+**For image analysis:**
+- Use `references/image_processing.md` for pixel data access
+- Use `references/rois.md` for region-based analysis
+- Use `references/tables.md` to store results
 
-**对于自动化**：
-- 使用 `references/scripts.md` 进行服务器端处理
-- 使用 `references/data_access.md` 进行批量数据检索
+**For automation:**
+- Use `references/scripts.md` for server-side processing
+- Use `references/data_access.md` for batch data retrieval
 
-**对于高级操作**：
-- 使用 `references/advanced.md` 处理权限和删除
-- 查看 `references/connection.md` 进行跨组查询
+**For advanced operations:**
+- Use `references/advanced.md` for permissions and deletion
+- Check `references/connection.md` for cross-group queries
 
-## 常见工作流程
+## Common Workflows
 
-### 工作流程 1：检索和分析图像
+### Workflow 1: Retrieve and Analyze Images
 
-1. 连接到 OMERO 服务器（`references/connection.md`）
-2. 导航到数据集（`references/data_access.md`）
-3. 从数据集检索图像（`references/data_access.md`）
-4. 以 NumPy 数组形式访问像素数据（`references/image_processing.md`）
-5. 执行分析
-6. 将结果存储为表或文件注释（`references/tables.md` 或 `references/metadata.md`）
+1. Connect to OMERO server (`references/connection.md`)
+2. Navigate to dataset (`references/data_access.md`)
+3. Retrieve images from dataset (`references/data_access.md`)
+4. Access pixel data as NumPy array (`references/image_processing.md`)
+5. Perform analysis
+6. Store results as table or file annotation (`references/tables.md` or `references/metadata.md`)
 
-### 工作流程 2：批量 ROI 分析
+### Workflow 2: Batch ROI Analysis
 
-1. 连接到 OMERO 服务器
-2. 检索具有现有 ROI 的图像（`references/rois.md`）
-3. 对于每个图像，获取 ROI 形状
-4. 提取 ROI 内的像素强度（`references/rois.md`）
-5. 将测量结果存储在 OMERO 表中（`references/tables.md`）
+1. Connect to OMERO server
+2. Retrieve images with existing ROIs (`references/rois.md`)
+3. For each image, get ROI shapes
+4. Extract pixel intensities within ROIs (`references/rois.md`)
+5. Store measurements in OMERO table (`references/tables.md`)
 
-### 工作流程 3：创建分析脚本
+### Workflow 3: Create Analysis Script
 
-1. 设计分析工作流程
-2. 使用 OMERO.scripts 框架（`references/scripts.md`）
-3. 通过脚本参数访问数据
-4. 批处理图像
-5. 生成输出（新图像、表、文件）
+1. Design analysis workflow
+2. Use OMERO.scripts framework (`references/scripts.md`)
+3. Access data through script parameters
+4. Process images in batch
+5. Generate outputs (new images, tables, files)
 
-## 错误处理
+## Error Handling
 
-始终将 OMERO 操作包装在 try-except 块中，并确保连接正确关闭：
+Always wrap OMERO operations in try-except blocks and ensure connections are properly closed:
 
 ```python
 from omero.gateway import BlitzGateway
@@ -219,30 +219,31 @@ import traceback
 try:
     conn = BlitzGateway(username, password, host=host, port=port)
     if not conn.connect():
-        raise Exception("连接失败")
+        raise Exception("Connection failed")
 
-    # 执行操作
+    # Perform operations
 
 except Exception as e:
-    print(f"错误: {e}")
+    print(f"Error: {e}")
     traceback.print_exc()
 finally:
     if conn:
         conn.close()
 ```
 
-## 其他资源
+## Additional Resources
 
-- **官方文档**：https://omero.readthedocs.io/en/stable/developers/Python.html
-- **BlitzGateway API**：https://omero.readthedocs.io/en/stable/developers/Python.html#omero-blitzgateway
-- **OMERO 模型**：https://omero.readthedocs.io/en/stable/developers/Model.html
-- **社区论坛**：https://forum.image.sc/tag/omero
+- **Official Documentation**: https://omero.readthedocs.io/en/stable/developers/Python.html
+- **BlitzGateway API**: https://omero.readthedocs.io/en/stable/developers/Python.html#omero-blitzgateway
+- **OMERO Model**: https://omero.readthedocs.io/en/stable/developers/Model.html
+- **Community Forum**: https://forum.image.sc/tag/omero
 
-## 注意事项
+## Notes
 
-- OMERO 使用基于组的权限（只读、读-注释、读-写）
-- OMERO 中的图像按层次组织：项目 > 数据集 > 图像
-- 筛选数据使用：筛选 > 板 > 孔 > 孔样本 > 图像
-- 始终关闭连接以释放服务器资源
-- 使用上下文管理器进行自动资源管理
-- 像素数据以 NumPy 数组形式返回用于分析
+- OMERO uses group-based permissions (READ-ONLY, READ-ANNOTATE, READ-WRITE)
+- Images in OMERO are organized hierarchically: Project > Dataset > Image
+- Screening data uses: Screen > Plate > Well > WellSample > Image
+- Always close connections to free server resources
+- Use context managers for automatic resource management
+- Pixel data is returned as NumPy arrays for analysis
+

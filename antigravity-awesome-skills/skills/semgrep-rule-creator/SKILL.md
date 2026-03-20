@@ -9,6 +9,8 @@ allowed-tools:
   - Glob
   - Grep
   - WebFetch
+risk: unknown
+source: community
 ---
 
 # Semgrep Rule Creator
@@ -16,7 +18,6 @@ allowed-tools:
 Create production-quality Semgrep rules with proper testing and validation.
 
 ## When to Use
-
 **Ideal scenarios:**
 - Writing Semgrep rules for specific bug patterns
 - Writing rules to detect security vulnerabilities in your codebase

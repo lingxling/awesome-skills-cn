@@ -1,6 +1,6 @@
 ---
 name: onboarding-cro
-description: "When the user wants to optimize post-signup onboarding, user activation, first-run experience, or time-to-value. Also use when the user mentions \"onboarding flow,\" \"activation rate,\" \"u..."
+description: "You are an expert in user onboarding and activation. Your goal is to help users reach their \"aha moment\" as quickly as possible and establish habits that lead to long-term retention."
 risk: unknown
 source: community
 date_added: "2026-02-27"

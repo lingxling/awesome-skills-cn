@@ -1,6 +1,6 @@
 ---
 name: matchms
-description: 用于质谱数据处理的Python库。提供光谱匹配、光谱相似性计算、光谱预处理、光谱聚类和质谱数据分析功能。支持多种质谱格式，包括mzML、mzXML、mgf等。适用于代谢组学、蛋白质组学和质谱数据分析。
+description: Spectral similarity and compound identification for metabolomics. Use for comparing mass spectra, computing similarity scores (cosine, modified cosine), and identifying unknown compounds from spectral libraries. Best for metabolite identification, spectral matching, library searching. For full LC-MS/MS proteomics pipelines use pyopenms.
 license: Apache-2.0 license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,214 +8,194 @@ metadata:
 
 # Matchms
 
-## 概述
+## Overview
 
-Matchms是用于质谱数据处理的Python库。它提供了光谱匹配、光谱相似性计算、光谱预处理、光谱聚类和质谱数据分析功能。该库支持多种质谱格式，包括mzML、mzXML、mgf等，适用于代谢组学、蛋白质组学和质谱数据分析。
+Matchms is an open-source Python library for mass spectrometry data processing and analysis. Import spectra from various formats, standardize metadata, filter peaks, calculate spectral similarities, and build reproducible analytical workflows.
 
-## 核心能力
+## Core Capabilities
 
-### 1. 光谱匹配
+### 1. Importing and Exporting Mass Spectrometry Data
 
-- **精确质量匹配**：基于精确质量的光谱匹配
-- **光谱相似性**：计算光谱相似性分数
-- **数据库搜索**：在数据库中搜索匹配的光谱
-- **候选排名**：对候选光谱进行排名
-
-### 2. 光谱相似性计算
-
-- **余弦相似性**：计算光谱的余弦相似性
-- **修改后的余弦相似性**：考虑质量偏移的余弦相似性
-- **Jaccard相似性**：计算光谱的Jaccard相似性
-- **Dice相似性**：计算光谱的Dice相似性
-- **其他相似性度量**：其他光谱相似性度量
-
-### 3. 光谱预处理
-
-- **归一化**：光谱强度归一化
-- **峰值过滤**：过滤低强度峰值
-- **质量过滤**：过滤特定质量范围的峰值
-- **去噪**：光谱去噪
-- **基线校正**：光谱基线校正
-
-### 4. 光谱聚类
-
-- **层次聚类**：层次聚类算法
-- **K-means聚类**：K-means聚类算法
-- **DBSCAN聚类**：DBSCAN聚类算法
-- **光谱聚类**：基于相似性的光谱聚类
-
-### 5. 质谱数据分析
-
-- **光谱导入**：导入质谱数据
-- **光谱导出**：导出质谱数据
-- **光谱可视化**：可视化质谱数据
-- **统计分析**：质谱数据统计分析
-
-## 何时使用此技能
-
-在以下情况下使用此技能：
-- 进行质谱数据预处理
-- 计算光谱相似性
-- 进行光谱匹配
-- 进行光谱聚类
-- 分析质谱数据
-- 进行代谢组学分析
-- 进行蛋白质组学分析
-
-## 安装
-
-```bash
-pip install matchms
-```
-
-## 使用示例
-
-### 光谱相似性计算
+Load spectra from multiple file formats and export processed data:
 
 ```python
-from matchms import Spectrum
-from matchms.similarity import CosineGreedy
+from matchms.importing import load_from_mgf, load_from_mzml, load_from_msp, load_from_json
+from matchms.exporting import save_as_mgf, save_as_msp, save_as_json
 
-# 创建光谱
-spectrum1 = Spectrum(mz=[100, 150, 200], intensities=[0.5, 1.0, 0.7])
-spectrum2 = Spectrum(mz=[100, 150, 200], intensities=[0.6, 0.9, 0.8])
+# Import spectra
+spectra = list(load_from_mgf("spectra.mgf"))
+spectra = list(load_from_mzml("data.mzML"))
+spectra = list(load_from_msp("library.msp"))
 
-# 计算余弦相似性
-cosine = CosineGreedy()
-score = cosine(spectrum1, spectrum2)
-
-print(f"余弦相似性: {score}")
+# Export processed spectra
+save_as_mgf(spectra, "output.mgf")
+save_as_json(spectra, "output.json")
 ```
 
-### 光谱预处理
+**Supported formats:**
+- mzML and mzXML (raw mass spectrometry formats)
+- MGF (Mascot Generic Format)
+- MSP (spectral library format)
+- JSON (GNPS-compatible)
+- metabolomics-USI references
+- Pickle (Python serialization)
+
+For detailed importing/exporting documentation, consult `references/importing_exporting.md`.
+
+### 2. Spectrum Filtering and Processing
+
+Apply comprehensive filters to standardize metadata and refine peak data:
 
 ```python
-from matchms import Spectrum
-from matchms.filtering import normalize_intensities, select_by_intensity
+from matchms.filtering import default_filters, normalize_intensities
+from matchms.filtering import select_by_relative_intensity, require_minimum_number_of_peaks
 
-# 创建光谱
-spectrum = Spectrum(mz=[100, 150, 200, 250], intensities=[0.1, 0.5, 1.0, 0.3])
+# Apply default metadata harmonization filters
+spectrum = default_filters(spectrum)
 
-# 归一化强度
+# Normalize peak intensities
 spectrum = normalize_intensities(spectrum)
 
-# 选择高强度峰值
-spectrum = select_by_intensity(spectrum, intensity_from=0.3)
+# Filter peaks by relative intensity
+spectrum = select_by_relative_intensity(spectrum, intensity_from=0.01, intensity_to=1.0)
 
-print(f"归一化后的m/z: {spectrum.mz}")
-print(f"归一化后的强度: {spectrum.intensities}")
+# Require minimum peaks
+spectrum = require_minimum_number_of_peaks(spectrum, n_required=5)
 ```
 
-### 光谱匹配
+**Filter categories:**
+- **Metadata processing**: Harmonize compound names, derive chemical structures, standardize adducts, correct charges
+- **Peak filtering**: Normalize intensities, select by m/z or intensity, remove precursor peaks
+- **Quality control**: Require minimum peaks, validate precursor m/z, ensure metadata completeness
+- **Chemical annotation**: Add fingerprints, derive InChI/SMILES, repair structural mismatches
+
+Matchms provides 40+ filters. For the complete filter reference, consult `references/filtering.md`.
+
+### 3. Calculating Spectral Similarities
+
+Compare spectra using various similarity metrics:
+
+```python
+from matchms import calculate_scores
+from matchms.similarity import CosineGreedy, ModifiedCosine, CosineHungarian
+
+# Calculate cosine similarity (fast, greedy algorithm)
+scores = calculate_scores(references=library_spectra,
+                         queries=query_spectra,
+                         similarity_function=CosineGreedy())
+
+# Calculate modified cosine (accounts for precursor m/z differences)
+scores = calculate_scores(references=library_spectra,
+                         queries=query_spectra,
+                         similarity_function=ModifiedCosine(tolerance=0.1))
+
+# Get best matches
+best_matches = scores.scores_by_query(query_spectra[0], sort=True)[:10]
+```
+
+**Available similarity functions:**
+- **CosineGreedy/CosineHungarian**: Peak-based cosine similarity with different matching algorithms
+- **ModifiedCosine**: Cosine similarity accounting for precursor mass differences
+- **NeutralLossesCosine**: Similarity based on neutral loss patterns
+- **FingerprintSimilarity**: Molecular structure similarity using fingerprints
+- **MetadataMatch**: Compare user-defined metadata fields
+- **PrecursorMzMatch/ParentMassMatch**: Simple mass-based filtering
+
+For detailed similarity function documentation, consult `references/similarity.md`.
+
+### 4. Building Processing Pipelines
+
+Create reproducible, multi-step analysis workflows:
+
+```python
+from matchms import SpectrumProcessor
+from matchms.filtering import default_filters, normalize_intensities
+from matchms.filtering import select_by_relative_intensity, remove_peaks_around_precursor_mz
+
+# Define a processing pipeline
+processor = SpectrumProcessor([
+    default_filters,
+    normalize_intensities,
+    lambda s: select_by_relative_intensity(s, intensity_from=0.01),
+    lambda s: remove_peaks_around_precursor_mz(s, mz_tolerance=17)
+])
+
+# Apply to all spectra
+processed_spectra = [processor(s) for s in spectra]
+```
+
+### 5. Working with Spectrum Objects
+
+The core `Spectrum` class contains mass spectral data:
 
 ```python
 from matchms import Spectrum
-from matchms.similarity import CosineGreedy
-from matchms.importing import load_from_mgf
+import numpy as np
 
-# 加载光谱库
-spectra = list(load_from_mgf("spectra.mgf"))
+# Create a spectrum
+mz = np.array([100.0, 150.0, 200.0, 250.0])
+intensities = np.array([0.1, 0.5, 0.9, 0.3])
+metadata = {"precursor_mz": 250.5, "ionmode": "positive"}
 
-# 查询光谱
-query = Spectrum(mz=[100, 150, 200], intensities=[0.5, 1.0, 0.7])
+spectrum = Spectrum(mz=mz, intensities=intensities, metadata=metadata)
 
-# 计算相似性
-cosine = CosineGreedy()
-scores = [cosine(query, spectrum) for spectrum in spectra]
+# Access spectrum properties
+print(spectrum.peaks.mz)           # m/z values
+print(spectrum.peaks.intensities)  # Intensity values
+print(spectrum.get("precursor_mz")) # Metadata field
 
-# 排名
-ranked = sorted(zip(spectra, scores), key=lambda x: x[1], reverse=True)
-
-# 显示前5个匹配
-for i, (spectrum, score) in enumerate(ranked[:5]):
-    print(f"排名 {i+1}: 相似性 {score}")
+# Visualize spectra
+spectrum.plot()
+spectrum.plot_against(reference_spectrum)
 ```
 
-### 光谱聚类
+### 6. Metadata Management
+
+Standardize and harmonize spectrum metadata:
 
 ```python
-from matchms import Spectrum
-from matchms.similarity import CosineGreedy
-from sklearn.cluster import DBSCAN
+# Metadata is automatically harmonized
+spectrum.set("Precursor_mz", 250.5)  # Gets harmonized to lowercase key
+print(spectrum.get("precursor_mz"))   # Returns 250.5
 
-# 加载光谱
-spectra = list(load_from_mgf("spectra.mgf"))
+# Derive chemical information
+from matchms.filtering import derive_inchi_from_smiles, derive_inchikey_from_inchi
+from matchms.filtering import add_fingerprint
 
-# 计算相似性矩阵
-cosine = CosineGreedy()
-n = len(spectra)
-similarity_matrix = [[0]*n for _ in range(n)]
-
-for i in range(n):
-    for j in range(i+1, n):
-        score = cosine(spectra[i], spectra[j])
-        similarity_matrix[i][j] = score
-        similarity_matrix[j][i] = score
-
-# 转换为距离矩阵
-distance_matrix = [[1-score for score in row] for row in similarity_matrix]
-
-# 聚类
-clustering = DBSCAN(eps=0.5, min_samples=2).fit(distance_matrix)
-labels = clustering.labels_
-
-print(f"聚类标签: {labels}")
+spectrum = derive_inchi_from_smiles(spectrum)
+spectrum = derive_inchikey_from_inchi(spectrum)
+spectrum = add_fingerprint(spectrum, fingerprint_type="morgan", nbits=2048)
 ```
 
-### 光谱导入和导出
+## Common Workflows
 
-```python
-from matchms.importing import load_from_mgf, load_from_mzml
-from matchms.exporting import save_as_mgf
+For typical mass spectrometry analysis workflows, including:
+- Loading and preprocessing spectral libraries
+- Matching unknown spectra against reference libraries
+- Quality filtering and data cleaning
+- Large-scale similarity comparisons
+- Network-based spectral clustering
 
-# 从mgf文件加载
-spectra = list(load_from_mgf("input.mgf"))
+Consult `references/workflows.md` for detailed examples.
 
-# 从mzML文件加载
-spectra = list(load_from_mzml("input.mzml"))
+## Installation
 
-# 保存为mgf文件
-save_as_mgf(spectra, "output.mgf")
+```bash
+uv pip install matchms
 ```
 
-## 支持的格式
+For molecular structure processing (SMILES, InChI):
+```bash
+uv pip install matchms[chemistry]
+```
 
-### 输入格式
-- **mgf**：Mascot通用格式
-- **mzML**：质谱标记语言
-- **mzXML**：质谱XML格式
-- **其他格式**：其他质谱格式
+## Reference Documentation
 
-### 输出格式
-- **mgf**：Mascot通用格式
-- **mzML**：质谱标记语言
-- **其他格式**：其他质谱格式
+Detailed reference documentation is available in the `references/` directory:
+- `filtering.md` - Complete filter function reference with descriptions
+- `similarity.md` - All similarity metrics and when to use them
+- `importing_exporting.md` - File format details and I/O operations
+- `workflows.md` - Common analysis patterns and examples
 
-## 最佳实践
+Load these references as needed for detailed information about specific matchms capabilities.
 
-1. **光谱预处理**：在进行相似性计算之前进行适当的光谱预处理
-2. **相似性度量选择**：选择合适的相似性度量
-3. **参数调整**：调整相似性度量的参数以获得最佳结果
-4. **质量控制**：进行质量控制以确保数据质量
-5. **批量处理**：使用批量处理提高效率
-6. **并行计算**：使用并行计算加速处理
-
-## 常见问题
-
-**Q: 如何选择合适的相似性度量？**
-A: 根据数据类型和分析目标选择合适的相似性度量。
-
-**Q: 如何处理大型质谱数据集？**
-A: 使用批量处理、并行计算或分布式计算。
-
-**Q: 如何提高光谱匹配的准确性？**
-A: 进行适当的光谱预处理、调整参数、使用多个相似性度量。
-
-**Q: Matchms支持哪些质谱格式？**
-A: 支持mgf、mzML、mzXML等多种格式。
-
-## 资源
-
-- **Matchms文档**：https://matchms.readthedocs.io
-- **Matchms GitHub**：https://github.com/matchms/matchms
-- **Matchms教程**：https://matchms.readthedocs.io/en/latest/tutorials.html

@@ -15,7 +15,6 @@ date_added: "2026-03-07"
 This skill is used for creating high-fidelity, jaw-dropping web animations that go far beyond simple CSS transitions. It's the tool of choice for awards-caliber interactive sites.
 
 ## When to Use
-
 Trigger this skill when:
 
 - Creating complex, multi-stage landing page orchestrations.

@@ -1,6 +1,6 @@
 ---
 name: qiskit
-description: IBM量子计算框架。适用于目标为IBM Quantum硬件、使用Qiskit Runtime处理生产工作负载，或需要IBM优化工具的场景。最适合IBM硬件执行、量子误差缓解和企业量子计算。对于Google硬件使用cirq；对于基于梯度的量子机器学习使用pennylane；对于开放量子系统模拟使用qutip。
+description: IBM quantum computing framework. Use when targeting IBM Quantum hardware, working with Qiskit Runtime for production workloads, or needing IBM optimization tools. Best for IBM hardware execution, quantum error mitigation, and enterprise quantum computing. For Google hardware use cirq; for gradient-based quantum ML use pennylane; for open quantum system simulations use qutip.
 license: Apache-2.0 license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,213 +8,213 @@ metadata:
 
 # Qiskit
 
-## 概述
+## Overview
 
-Qiskit是世界上最流行的开源量子计算框架，下载量超过1300万次。用于构建量子电路、针对硬件进行优化、在模拟器或真实量子计算机上执行，以及分析结果。支持IBM Quantum（100+量子比特系统）、IonQ、Amazon Braket等提供商。
+Qiskit is the world's most popular open-source quantum computing framework with 13M+ downloads. Build quantum circuits, optimize for hardware, execute on simulators or real quantum computers, and analyze results. Supports IBM Quantum (100+ qubit systems), IonQ, Amazon Braket, and other providers.
 
-**主要特性：**
-- 比竞争对手快83倍的转译速度
-- 优化电路中两量子比特门数量减少29%
-- 与后端无关的执行（本地模拟器或云硬件）
-- 用于优化、化学和机器学习的综合算法库
+**Key Features:**
+- 83x faster transpilation than competitors
+- 29% fewer two-qubit gates in optimized circuits
+- Backend-agnostic execution (local simulators or cloud hardware)
+- Comprehensive algorithm libraries for optimization, chemistry, and ML
 
-## 快速开始
+## Quick Start
 
-### 安装
+### Installation
 
 ```bash
 uv pip install qiskit
 uv pip install "qiskit[visualization]" matplotlib
 ```
 
-### 第一个电路
+### First Circuit
 
 ```python
 from qiskit import QuantumCircuit
 from qiskit.primitives import StatevectorSampler
 
-# 创建Bell态（纠缠量子比特）
+# Create Bell state (entangled qubits)
 qc = QuantumCircuit(2)
-qc.h(0)           # 对量子比特0应用Hadamard门
-qc.cx(0, 1)       # 从量子比特0到1的CNOT门
-qc.measure_all()  # 测量两个量子比特
+qc.h(0)           # Hadamard on qubit 0
+qc.cx(0, 1)       # CNOT from qubit 0 to 1
+qc.measure_all()  # Measure both qubits
 
-# 本地运行
+# Run locally
 sampler = StatevectorSampler()
 result = sampler.run([qc], shots=1024).result()
 counts = result[0].data.meas.get_counts()
 print(counts)  # {'00': ~512, '11': ~512}
 ```
 
-### 可视化
+### Visualization
 
 ```python
 from qiskit.visualization import plot_histogram
 
-qc.draw('mpl')           # 电路图
-plot_histogram(counts)   # 结果直方图
+qc.draw('mpl')           # Circuit diagram
+plot_histogram(counts)   # Results histogram
 ```
 
-## 核心功能
+## Core Capabilities
 
-### 1. 设置和安装
-关于详细的安装、认证和IBM Quantum账户设置：
-- **参见 `references/setup.md`**
+### 1. Setup and Installation
+For detailed installation, authentication, and IBM Quantum account setup:
+- **See `references/setup.md`**
 
-涵盖主题：
-- 使用uv进行安装
-- Python环境设置
-- IBM Quantum账户和API令牌配置
-- 本地与云端执行
+Topics covered:
+- Installation with uv
+- Python environment setup
+- IBM Quantum account and API token configuration
+- Local vs. cloud execution
 
-### 2. 构建量子电路
-关于使用门、测量和组合构建量子电路：
-- **参见 `references/circuits.md`**
+### 2. Building Quantum Circuits
+For constructing quantum circuits with gates, measurements, and composition:
+- **See `references/circuits.md`**
 
-涵盖主题：
-- 使用QuantumCircuit创建电路
-- 单量子比特门（H、X、Y、Z、旋转、相位门）
-- 多量子比特门（CNOT、SWAP、Toffoli）
-- 测量和屏障
-- 电路组合和属性
-- 变分算法的参数化电路
+Topics covered:
+- Creating circuits with QuantumCircuit
+- Single-qubit gates (H, X, Y, Z, rotations, phase gates)
+- Multi-qubit gates (CNOT, SWAP, Toffoli)
+- Measurements and barriers
+- Circuit composition and properties
+- Parameterized circuits for variational algorithms
 
-### 3. 原语（Sampler和Estimator）
-关于执行量子电路和计算结果：
-- **参见 `references/primitives.md`**
+### 3. Primitives (Sampler and Estimator)
+For executing quantum circuits and computing results:
+- **See `references/primitives.md`**
 
-涵盖主题：
-- **Sampler**：获取比特串测量和概率分布
-- **Estimator**：计算可观测量的期望值
-- V2接口（StatevectorSampler、StatevectorEstimator）
-- 用于硬件的IBM Quantum Runtime原语
-- Session和Batch模式
-- 参数绑定
+Topics covered:
+- **Sampler**: Get bitstring measurements and probability distributions
+- **Estimator**: Compute expectation values of observables
+- V2 interface (StatevectorSampler, StatevectorEstimator)
+- IBM Quantum Runtime primitives for hardware
+- Sessions and Batch modes
+- Parameter binding
 
-### 4. 转译和优化
-关于优化电路并为硬件执行做准备：
-- **参见 `references/transpilation.md`**
+### 4. Transpilation and Optimization
+For optimizing circuits and preparing for hardware execution:
+- **See `references/transpilation.md`**
 
-涵盖主题：
-- 为什么需要转译
-- 优化级别（0-3）
-- 六个转译阶段（初始化、布局、路由、转换、优化、调度）
-- 高级特性（虚拟置换消除、门抵消）
-- 常用参数（initial_layout、approximation_degree、seed）
-- 高效电路的最佳实践
+Topics covered:
+- Why transpilation is necessary
+- Optimization levels (0-3)
+- Six transpilation stages (init, layout, routing, translation, optimization, scheduling)
+- Advanced features (virtual permutation elision, gate cancellation)
+- Common parameters (initial_layout, approximation_degree, seed)
+- Best practices for efficient circuits
 
-### 5. 可视化
-关于显示电路、结果和量子态：
-- **参见 `references/visualization.md`**
+### 5. Visualization
+For displaying circuits, results, and quantum states:
+- **See `references/visualization.md`**
 
-涵盖主题：
-- 电路绘制（文本、matplotlib、LaTeX）
-- 结果直方图
-- 量子态可视化（布洛赫球、状态城市、QSphere）
-- 后端拓扑和误差图
-- 自定义和样式
-- 保存 publication 质量的图形
+Topics covered:
+- Circuit drawings (text, matplotlib, LaTeX)
+- Result histograms
+- Quantum state visualization (Bloch sphere, state city, QSphere)
+- Backend topology and error maps
+- Customization and styling
+- Saving publication-quality figures
 
-### 6. 硬件后端
-关于在模拟器和真实量子计算机上运行：
-- **参见 `references/backends.md`**
+### 6. Hardware Backends
+For running on simulators and real quantum computers:
+- **See `references/backends.md`**
 
-涵盖主题：
-- IBM Quantum后端和认证
-- 后端属性和状态
-- 使用Runtime原语在真实硬件上运行
-- 作业管理和排队
-- Session模式（迭代算法）
-- Batch模式（并行作业）
-- 本地模拟器（StatevectorSampler、Aer）
-- 第三方提供商（IonQ、Amazon Braket）
-- 误差缓解策略
+Topics covered:
+- IBM Quantum backends and authentication
+- Backend properties and status
+- Running on real hardware with Runtime primitives
+- Job management and queuing
+- Session mode (iterative algorithms)
+- Batch mode (parallel jobs)
+- Local simulators (StatevectorSampler, Aer)
+- Third-party providers (IonQ, Amazon Braket)
+- Error mitigation strategies
 
-### 7. Qiskit Patterns工作流
-关于实现四步量子计算工作流：
-- **参见 `references/patterns.md`**
+### 7. Qiskit Patterns Workflow
+For implementing the four-step quantum computing workflow:
+- **See `references/patterns.md`**
 
-涵盖主题：
-- **映射**：将问题转换为量子电路
-- **优化**：为硬件转译
-- **执行**：使用原语运行
-- **后处理**：提取和分析结果
-- 完整的VQE示例
-- Session与Batch执行
-- 常见工作流模式
+Topics covered:
+- **Map**: Translate problems to quantum circuits
+- **Optimize**: Transpile for hardware
+- **Execute**: Run with primitives
+- **Post-process**: Extract and analyze results
+- Complete VQE example
+- Session vs. Batch execution
+- Common workflow patterns
 
-### 8. 量子算法和应用
-关于实现特定的量子算法：
-- **参见 `references/algorithms.md`**
+### 8. Quantum Algorithms and Applications
+For implementing specific quantum algorithms:
+- **See `references/algorithms.md`**
 
-涵盖主题：
-- **优化**：VQE、QAOA、Grover算法
-- **化学**：分子基态、激发态、哈密顿量
-- **机器学习**：量子核、VQC、QNN
-- **算法库**：Qiskit Nature、Qiskit ML、Qiskit Optimization
-- 物理模拟和基准测试
+Topics covered:
+- **Optimization**: VQE, QAOA, Grover's algorithm
+- **Chemistry**: Molecular ground states, excited states, Hamiltonians
+- **Machine Learning**: Quantum kernels, VQC, QNN
+- **Algorithm libraries**: Qiskit Nature, Qiskit ML, Qiskit Optimization
+- Physics simulations and benchmarking
 
-## 工作流决策指南
+## Workflow Decision Guide
 
-**如果您需要：**
+**If you need to:**
 
-- 安装Qiskit或设置IBM Quantum账户 → `references/setup.md`
-- 构建新的量子电路 → `references/circuits.md`
-- 了解门和电路操作 → `references/circuits.md`
-- 运行电路并获取测量结果 → `references/primitives.md`
-- 计算期望值 → `references/primitives.md`
-- 优化电路以适应硬件 → `references/transpilation.md`
-- 可视化电路或结果 → `references/visualization.md`
-- 在IBM Quantum硬件上执行 → `references/backends.md`
-- 连接到第三方提供商 → `references/backends.md`
-- 实现端到端量子工作流 → `references/patterns.md`
-- 构建特定算法（VQE、QAOA等） → `references/algorithms.md`
-- 解决化学或优化问题 → `references/algorithms.md`
+- Install Qiskit or set up IBM Quantum account → `references/setup.md`
+- Build a new quantum circuit → `references/circuits.md`
+- Understand gates and circuit operations → `references/circuits.md`
+- Run circuits and get measurements → `references/primitives.md`
+- Compute expectation values → `references/primitives.md`
+- Optimize circuits for hardware → `references/transpilation.md`
+- Visualize circuits or results → `references/visualization.md`
+- Execute on IBM Quantum hardware → `references/backends.md`
+- Connect to third-party providers → `references/backends.md`
+- Implement end-to-end quantum workflow → `references/patterns.md`
+- Build specific algorithm (VQE, QAOA, etc.) → `references/algorithms.md`
+- Solve chemistry or optimization problems → `references/algorithms.md`
 
-## 最佳实践
+## Best Practices
 
-### 开发工作流
+### Development Workflow
 
-1. **从模拟器开始**：在使用硬件前先在本地测试
+1. **Start with simulators**: Test locally before using hardware
    ```python
    from qiskit.primitives import StatevectorSampler
    sampler = StatevectorSampler()
    ```
 
-2. **始终转译**：在执行前优化电路
+2. **Always transpile**: Optimize circuits before execution
    ```python
    from qiskit import transpile
    qc_optimized = transpile(qc, backend=backend, optimization_level=3)
    ```
 
-3. **使用适当的原语**：
-   - Sampler用于比特串（优化算法）
-   - Estimator用于期望值（化学、物理）
+3. **Use appropriate primitives**:
+   - Sampler for bitstrings (optimization algorithms)
+   - Estimator for expectation values (chemistry, physics)
 
-4. **选择执行模式**：
-   - Session：迭代算法（VQE、QAOA）
-   - Batch：独立并行作业
-   - 单个作业：一次性实验
+4. **Choose execution mode**:
+   - Session: Iterative algorithms (VQE, QAOA)
+   - Batch: Independent parallel jobs
+   - Single job: One-off experiments
 
-### 性能优化
+### Performance Optimization
 
-- 生产环境使用optimization_level=3
-- 最小化两量子比特门（主要误差源）
-- 在使用硬件前用噪声模拟器测试
-- 保存并重用转译后的电路
-- 监控变分算法的收敛
+- Use optimization_level=3 for production
+- Minimize two-qubit gates (major error source)
+- Test with noisy simulators before hardware
+- Save and reuse transpiled circuits
+- Monitor convergence in variational algorithms
 
-### 硬件执行
+### Hardware Execution
 
-- 提交前检查后端状态
-- 测试时使用least_busy()
-- 保存作业ID以便以后检索
-- 应用误差缓解（resilience_level）
-- 从较少的shots开始，最终运行时增加
+- Check backend status before submitting
+- Use least_busy() for testing
+- Save job IDs for later retrieval
+- Apply error mitigation (resilience_level)
+- Start with fewer shots, increase for final runs
 
-## 常见模式
+## Common Patterns
 
-### 模式1：简单电路执行
+### Pattern 1: Simple Circuit Execution
 
 ```python
 from qiskit import QuantumCircuit, transpile
@@ -230,7 +230,7 @@ result = sampler.run([qc], shots=1024).result()
 counts = result[0].data.meas.get_counts()
 ```
 
-### 模式2：带转译的硬件执行
+### Pattern 2: Hardware Execution with Transpilation
 
 ```python
 from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2 as Sampler
@@ -246,7 +246,7 @@ job = sampler.run([qc_optimized], shots=1024)
 result = job.result()
 ```
 
-### 模式3：变分算法（VQE）
+### Pattern 3: Variational Algorithm (VQE)
 
 ```python
 from qiskit_ibm_runtime import Session, EstimatorV2 as Estimator
@@ -264,9 +264,10 @@ with Session(backend=backend) as session:
     result = minimize(cost_function, initial_params, method='COBYLA')
 ```
 
-## 额外资源
+## Additional Resources
 
-- **官方文档**：https://quantum.ibm.com/docs
-- **Qiskit教科书**：https://qiskit.org/learn
-- **API参考**：https://docs.quantum.ibm.com/api/qiskit
-- **模式指南**：https://quantum.cloud.ibm.com/docs/en/guides/intro-to-patterns
+- **Official Docs**: https://quantum.ibm.com/docs
+- **Qiskit Textbook**: https://qiskit.org/learn
+- **API Reference**: https://docs.quantum.ibm.com/api/qiskit
+- **Patterns Guide**: https://quantum.cloud.ibm.com/docs/en/guides/intro-to-patterns
+

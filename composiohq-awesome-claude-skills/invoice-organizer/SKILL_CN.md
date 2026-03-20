@@ -1,311 +1,311 @@
 ---
 name: invoice-organizer
-description: 自动组织发票和收据用于税务准备，通过读取混乱的文件、提取关键信息、一致地重命名它们并将它们排序到逻辑文件夹中。将数小时的手动记账转变为几分钟的自动化组织。
+description: Automatically organizes invoices and receipts for tax preparation by reading messy files, extracting key information, renaming them consistently, and sorting them into logical folders. Turns hours of manual bookkeeping into minutes of automated organization.
 ---
 
-# 发票组织器
+# Invoice Organizer
 
-这个技能将混乱的发票、收据和财务文档文件夹转变为干净、税务就绪的归档系统，无需手动努力。
+This skill transforms chaotic folders of invoices, receipts, and financial documents into a clean, tax-ready filing system without manual effort.
 
-## 何时使用此技能
+## When to Use This Skill
 
-- 为税务季节做准备，需要组织良好的记录
-- 管理多个供应商的业务费用
-- 组织来自混乱文件夹或电子邮件下载的收据
-- 为持续记账设置自动发票归档
-- 按年份或类别归档财务记录
-- 核对费用以获得报销
-- 为会计师准备文档
+- Preparing for tax season and need organized records
+- Managing business expenses across multiple vendors
+- Organizing receipts from a messy folder or email downloads
+- Setting up automated invoice filing for ongoing bookkeeping
+- Archiving financial records by year or category
+- Reconciling expenses for reimbursement
+- Preparing documentation for accountants
 
-## 此技能的功能
+## What This Skill Does
 
-1. **读取发票内容**：从 PDF、图像和文档中提取信息：
-   - 供应商/公司名称
-   - 发票编号
-   - 日期
-   - 金额
-   - 产品或服务描述
-   - 支付方式
+1. **Reads Invoice Content**: Extracts information from PDFs, images, and documents:
+   - Vendor/company name
+   - Invoice number
+   - Date
+   - Amount
+   - Product or service description
+   - Payment method
 
-2. **一致地重命名文件**：创建标准化文件名：
-   - 格式：`YYYY-MM-DD 供应商 - 发票 - 产品或服务.pdf`
-   - 示例：`2024-03-15 Adobe - 发票 - Creative Cloud.pdf`
+2. **Renames Files Consistently**: Creates standardized filenames:
+   - Format: `YYYY-MM-DD Vendor - Invoice - ProductOrService.pdf`
+   - Examples: `2024-03-15 Adobe - Invoice - Creative Cloud.pdf`
 
-3. **按类别组织**：排序到逻辑文件夹：
-   - 按供应商
-   - 按费用类别（软件、办公、旅行等）
-   - 按时间段（年、季度、月）
-   - 按税务类别（可扣除、个人等）
+3. **Organizes by Category**: Sorts into logical folders:
+   - By vendor
+   - By expense category (software, office, travel, etc.)
+   - By time period (year, quarter, month)
+   - By tax category (deductible, personal, etc.)
 
-4. **处理多种格式**：适用于：
-   - PDF 发票
-   - 扫描收据（JPG、PNG）
-   - 电子邮件附件
-   - 截图
-   - 银行对账单
+4. **Handles Multiple Formats**: Works with:
+   - PDF invoices
+   - Scanned receipts (JPG, PNG)
+   - Email attachments
+   - Screenshots
+   - Bank statements
 
-5. **保留原件**：在组织副本的同时保留原始文件
+5. **Maintains Originals**: Preserves original files while organizing copies
 
-## 如何使用
+## How to Use
 
-### 基本用法
+### Basic Usage
 
-导航到您混乱的发票文件夹：
+Navigate to your messy invoice folder:
 ```
 cd ~/Desktop/receipts-to-sort
 ```
 
-然后询问 Claude Code：
+Then ask Claude Code:
 ```
-为税务组织这些发票
-```
-
-或更具体地：
-```
-读取此文件夹中的所有发票，将它们重命名为 
-"YYYY-MM-DD 供应商 - 发票 - 产品.pdf" 格式， 
-并按供应商组织它们
+Organize these invoices for taxes
 ```
 
-### 高级组织
-
+Or more specifically:
 ```
-组织这些发票：
-1. 从每个文件中提取日期、供应商和描述
-2. 重命名为标准格式
-3. 按费用类别（软件、办公、旅行等）排序到文件夹
-4. 创建包含所有发票详细信息的 CSV 电子表格给我的会计师
+Read all invoices in this folder, rename them to 
+"YYYY-MM-DD Vendor - Invoice - Product.pdf" format, 
+and organize them by vendor
 ```
 
-## 说明
+### Advanced Organization
 
-当用户请求发票组织时：
+```
+Organize these invoices:
+1. Extract date, vendor, and description from each file
+2. Rename to standard format
+3. Sort into folders by expense category (Software, Office, Travel, etc.)
+4. Create a CSV spreadsheet with all invoice details for my accountant
+```
 
-1. **扫描文件夹**
+## Instructions
+
+When a user requests invoice organization:
+
+1. **Scan the Folder**
    
-   识别所有发票文件：
+   Identify all invoice files:
    ```bash
-   # 查找所有与发票相关的文件
+   # Find all invoice-related files
    find . -type f \( -name "*.pdf" -o -name "*.jpg" -o -name "*.png" \) -print
    ```
    
-   报告发现：
-   - 文件总数
-   - 文件类型
-   - 日期范围（如果可以从名称中辨别）
-   - 当前组织（或缺乏组织）
+   Report findings:
+   - Total number of files
+   - File types
+   - Date range (if discernible from names)
+   - Current organization (or lack thereof)
 
-2. **从每个文件中提取信息**
+2. **Extract Information from Each File**
    
-   对于每个发票，提取：
+   For each invoice, extract:
    
-   **从 PDF 发票**：
-   - 使用文本提取读取发票内容
-   - 寻找常见模式：
-     - "发票日期："、"日期："、"发出："
-     - "发票 #："、"发票编号："
-     - 公司名称（通常在顶部）
-     - "应付金额："、"总计："、"金额："
-     - "描述："、"服务："、"产品："
+   **From PDF invoices**:
+   - Use text extraction to read invoice content
+   - Look for common patterns:
+     - "Invoice Date:", "Date:", "Issued:"
+     - "Invoice #:", "Invoice Number:"
+     - Company name (usually at top)
+     - "Amount Due:", "Total:", "Amount:"
+     - "Description:", "Service:", "Product:"
    
-   **从图像收据**：
-   - 从图像中读取可见文本
-   - 识别供应商名称（通常在顶部）
-   - 寻找日期（常见格式）
-   - 找到总金额
+   **From image receipts**:
+   - Read visible text from images
+   - Identify vendor name (often at top)
+   - Look for date (common formats)
+   - Find total amount
    
-   **对于不清晰文件的回退**：
-   - 使用文件名线索
-   - 检查文件创建/修改日期
-   - 如果关键信息缺失，标记为手动审查
+   **Fallback for unclear files**:
+   - Use filename clues
+   - Check file creation/modification date
+   - Flag for manual review if critical info missing
 
-3. **确定组织策略**
+3. **Determine Organization Strategy**
    
-   如果未指定，询问用户偏好：
+   Ask user preference if not specified:
    
    ```markdown
-   我发现了 [X] 张发票，日期范围为 [日期范围]。
+   I found [X] invoices from [date range].
    
-   您希望如何组织它们？
+   How would you like them organized?
    
-   1. **按供应商**（Adobe/、Amazon/、Stripe/ 等）
-   2. **按类别**（软件/、办公用品/、旅行/ 等）
-   3. **按日期**（2024/Q1/、2024/Q2/ 等）
-   4. **按税务类别**（可扣除/、个人/ 等）
-   5. **自定义**（描述您的结构）
+   1. **By Vendor** (Adobe/, Amazon/, Stripe/, etc.)
+   2. **By Category** (Software/, Office Supplies/, Travel/, etc.)
+   3. **By Date** (2024/Q1/, 2024/Q2/, etc.)
+   4. **By Tax Category** (Deductible/, Personal/, etc.)
+   5. **Custom** (describe your structure)
    
-   或者我可以使用默认结构：年/类别/供应商
+   Or I can use a default structure: Year/Category/Vendor
    ```
 
-4. **创建标准化文件名**
+4. **Create Standardized Filename**
    
-   对于每个发票，创建遵循此模式的文件名：
+   For each invoice, create a filename following this pattern:
    
    ```
-   YYYY-MM-DD 供应商 - 发票 - 描述.ext
+   YYYY-MM-DD Vendor - Invoice - Description.ext
    ```
    
-   示例：
-   - `2024-03-15 Adobe - 发票 - Creative Cloud.pdf`
-   - `2024-01-10 Amazon - 收据 - 办公用品.pdf`
-   - `2023-12-01 Stripe - 发票 - 月度支付处理.pdf`
+   Examples:
+   - `2024-03-15 Adobe - Invoice - Creative Cloud.pdf`
+   - `2024-01-10 Amazon - Receipt - Office Supplies.pdf`
+   - `2023-12-01 Stripe - Invoice - Monthly Payment Processing.pdf`
    
-   **文件名最佳实践**：
-   - 除连字符外，移除特殊字符
-   - 正确大写供应商名称
-   - 保持描述简洁但有意义
-   - 使用一致的日期格式（YYYY-MM-DD）以便排序
-   - 保留原始文件扩展名
+   **Filename Best Practices**:
+   - Remove special characters except hyphens
+   - Capitalize vendor names properly
+   - Keep descriptions concise but meaningful
+   - Use consistent date format (YYYY-MM-DD) for sorting
+   - Preserve original file extension
 
-5. **执行组织**
+5. **Execute Organization**
    
-   在移动文件之前，显示计划：
+   Before moving files, show the plan:
    
    ```markdown
-   # 组织计划
+   # Organization Plan
    
-   ## 提议的结构
+   ## Proposed Structure
    ```
-   发票/
+   Invoices/
    ├── 2023/
-   │   ├── 软件/
+   │   ├── Software/
    │   │   ├── Adobe/
    │   │   └── Microsoft/
-   │   ├── 服务/
-   │   └── 办公/
+   │   ├── Services/
+   │   └── Office/
    └── 2024/
-       ├── 软件/
-       ├── 服务/
-       └── 办公/
+       ├── Software/
+       ├── Services/
+       └── Office/
    ```
    
-   ## 示例更改
+   ## Sample Changes
    
-   之前：`invoice_adobe_march.pdf`
-   之后：`2024-03-15 Adobe - 发票 - Creative Cloud.pdf`
-   位置：`发票/2024/软件/Adobe/`
+   Before: `invoice_adobe_march.pdf`
+   After: `2024-03-15 Adobe - Invoice - Creative Cloud.pdf`
+   Location: `Invoices/2024/Software/Adobe/`
    
-   之前：`IMG_2847.jpg`
-   之后：`2024-02-10 Staples - 收据 - 办公用品.jpg`
-   位置：`发票/2024/办公/Staples/`
+   Before: `IMG_2847.jpg`
+   After: `2024-02-10 Staples - Receipt - Office Supplies.jpg`
+   Location: `Invoices/2024/Office/Staples/`
    
-   处理 [X] 个文件？（是/否）
+   Process [X] files? (yes/no)
    ```
    
-   获得批准后：
+   After approval:
    ```bash
-   # 创建文件夹结构
-   mkdir -p "发票/2024/软件/Adobe"
+   # Create folder structure
+   mkdir -p "Invoices/2024/Software/Adobe"
    
-   # 复制（不移动）以保留原件
-   cp "original.pdf" "发票/2024/软件/Adobe/2024-03-15 Adobe - 发票 - Creative Cloud.pdf"
+   # Copy (don't move) to preserve originals
+   cp "original.pdf" "Invoices/2024/Software/Adobe/2024-03-15 Adobe - Invoice - Creative Cloud.pdf"
    
-   # 或如果用户偏好移动
+   # Or move if user prefers
    mv "original.pdf" "new/path/standardized-name.pdf"
    ```
 
-6. **生成摘要报告**
+6. **Generate Summary Report**
    
-   创建包含所有发票详细信息的 CSV 文件：
+   Create a CSV file with all invoice details:
    
    ```csv
-   日期,供应商,发票编号,描述,金额,类别,文件路径
-   2024-03-15,Adobe,INV-12345,Creative Cloud,52.99,软件,发票/2024/软件/Adobe/2024-03-15 Adobe - 发票 - Creative Cloud.pdf
-   2024-03-10,Amazon,123-4567890-1234567,办公用品,127.45,办公,发票/2024/办公/Amazon/2024-03-10 Amazon - 收据 - 办公用品.pdf
+   Date,Vendor,Invoice Number,Description,Amount,Category,File Path
+   2024-03-15,Adobe,INV-12345,Creative Cloud,52.99,Software,Invoices/2024/Software/Adobe/2024-03-15 Adobe - Invoice - Creative Cloud.pdf
+   2024-03-10,Amazon,123-4567890-1234567,Office Supplies,127.45,Office,Invoices/2024/Office/Amazon/2024-03-10 Amazon - Receipt - Office Supplies.pdf
    ...
    ```
    
-   此 CSV 对以下情况有用：
-   - 导入到会计软件
-   - 与会计师共享
-   - 费用跟踪和报告
-   - 税务准备
+   This CSV is useful for:
+   - Importing into accounting software
+   - Sharing with accountants
+   - Expense tracking and reporting
+   - Tax preparation
 
-7. **提供完成摘要**
+7. **Provide Completion Summary**
    
    ```markdown
-   # 组织完成！ 📊
+   # Organization Complete! 📊
    
-   ## 摘要
-   - **处理**：[X] 张发票
-   - **日期范围**：[最早] 至 [最晚]
-   - **总金额**：$[总和]（如果提取了金额）
-   - **供应商**：[Y] 个独特供应商
+   ## Summary
+   - **Processed**: [X] invoices
+   - **Date range**: [earliest] to [latest]
+   - **Total amount**: $[sum] (if amounts extracted)
+   - **Vendors**: [Y] unique vendors
    
-   ## 新结构
+   ## New Structure
    ```
-   发票/
-   ├── 2024/（45 个文件）
-   │   ├── 软件/（23 个文件）
-   │   ├── 服务/（12 个文件）
-   │   └── 办公/（10 个文件）
-   └── 2023/（12 个文件）
+   Invoices/
+   ├── 2024/ (45 files)
+   │   ├── Software/ (23 files)
+   │   ├── Services/ (12 files)
+   │   └── Office/ (10 files)
+   └── 2023/ (12 files)
    ```
    
-   ## 创建的文件
-   - `/发票/` - 组织好的发票
-   - `/发票/invoice-summary.csv` - 会计电子表格
-   - `/发票/originals/` - 原始文件（如果复制）
+   ## Files Created
+   - `/Invoices/` - Organized invoices
+   - `/Invoices/invoice-summary.csv` - Spreadsheet for accounting
+   - `/Invoices/originals/` - Original files (if copied)
    
-   ## 需要审查的文件
-   [列出任何无法完全提取信息的文件]
+   ## Files Needing Review
+   [List any files where information couldn't be extracted completely]
    
-   ## 后续步骤
-   1. 审查 `invoice-summary.csv` 文件
-   2. 检查 "需要审查" 文件夹中的文件
-   3. 将 CSV 导入到您的会计软件
-   4. 为未来的发票设置自动组织
+   ## Next Steps
+   1. Review the `invoice-summary.csv` file
+   2. Check files in "Needs Review" folder
+   3. Import CSV into your accounting software
+   4. Set up auto-organization for future invoices
    
-   准备好税务季节！ 🎉
+   Ready for tax season! 🎉
    ```
 
-## 示例
+## Examples
 
-### 示例 1：税务准备（来自 Martin Merschroth）
+### Example 1: Tax Preparation (From Martin Merschroth)
 
-**用户**："我有一个混乱的税务发票文件夹。将它们排序并正确重命名。"
+**User**: "I have a messy folder of invoices for taxes. Sort them and rename properly."
 
-**过程**：
-1. 扫描文件夹：找到 147 个 PDF 和图像
-2. 读取每个发票以提取：
-   - 日期
-   - 供应商名称
-   - 发票编号
-   - 产品/服务描述
-3. 重命名所有文件：`YYYY-MM-DD 供应商 - 发票 - 产品.pdf`
-4. 组织到：`2024/软件/`、`2024/旅行/` 等
-5. 为会计师创建 `invoice-summary.csv`
-6. 结果：几分钟内准备好税务的组织发票
+**Process**:
+1. Scans folder: finds 147 PDFs and images
+2. Reads each invoice to extract:
+   - Date
+   - Vendor name
+   - Invoice number
+   - Product/service description
+3. Renames all files: `YYYY-MM-DD Vendor - Invoice - Product.pdf`
+4. Organizes into: `2024/Software/`, `2024/Travel/`, etc.
+5. Creates `invoice-summary.csv` for accountant
+6. Result: Tax-ready organized invoices in minutes
 
-### 示例 2：月度费用核对
+### Example 2: Monthly Expense Reconciliation
 
-**用户**："按类别组织我上个月的业务收据。"
+**User**: "Organize my business receipts from last month by category."
 
-**输出**：
+**Output**:
 ```markdown
-# 2024 年 3 月收据已组织
+# March 2024 Receipts Organized
 
-## 按类别
-- 软件和工具：$847.32（12 张发票）
-- 办公用品：$234.18（8 张收据）
-- 旅行和餐饮：$1,456.90（15 张收据）
-- 专业服务：$2,500.00（3 张发票）
+## By Category
+- Software & Tools: $847.32 (12 invoices)
+- Office Supplies: $234.18 (8 receipts)
+- Travel & Meals: $1,456.90 (15 receipts)
+- Professional Services: $2,500.00 (3 invoices)
 
-总计：$5,038.40
+Total: $5,038.40
 
-所有收据已重命名并归档到：
-`Business-Receipts/2024/03-March/[类别]/`
+All receipts renamed and filed in:
+`Business-Receipts/2024/03-March/[Category]/`
 
-CSV 导出：`march-2024-expenses.csv`
+CSV export: `march-2024-expenses.csv`
 ```
 
-### 示例 3：多年归档
+### Example 3: Multi-Year Archive
 
-**用户**："我有 3 年的随机发票。按年份组织，然后按供应商。"
+**User**: "I have 3 years of random invoices. Organize them by year, then by vendor."
 
-**输出**：创建结构：
+**Output**: Creates structure:
 ```
-发票/
+Invoices/
 ├── 2022/
 │   ├── Adobe/
 │   ├── Amazon/
@@ -320,125 +320,127 @@ CSV 导出：`march-2024-expenses.csv`
     └── ...
 ```
 
-每个文件都用日期和描述正确重命名。
+Each file properly renamed with date and description.
 
-### 示例 4：电子邮件下载清理
+### Example 4: Email Downloads Cleanup
 
-**用户**："我从 Gmail 下载发票。它们都命名为 'invoice.pdf'、'invoice(1).pdf' 等。修复这个混乱。"
+**User**: "I download invoices from Gmail. They're all named 'invoice.pdf', 'invoice(1).pdf', etc. Fix this mess."
 
-**输出**：
+**Output**:
 ```markdown
-找到 89 个文件，都命名为 "invoice*.pdf"
+Found 89 files all named "invoice*.pdf"
 
-正在读取每个文件以提取真实信息...
+Reading each file to extract real information...
 
-重命名示例：
-- invoice.pdf → 2024-03-15 Shopify - 发票 - 月度订阅.pdf
-- invoice(1).pdf → 2024-03-14 Google - 发票 - Workspace.pdf
-- invoice(2).pdf → 2024-03-10 Netlify - 发票 - Pro Plan.pdf
+Renamed examples:
+- invoice.pdf → 2024-03-15 Shopify - Invoice - Monthly Subscription.pdf
+- invoice(1).pdf → 2024-03-14 Google - Invoice - Workspace.pdf
+- invoice(2).pdf → 2024-03-10 Netlify - Invoice - Pro Plan.pdf
 
-所有文件已重命名并按供应商组织。
+All files renamed and organized by vendor.
 ```
 
-## 常见组织模式
+## Common Organization Patterns
 
-### 按供应商（简单）
+### By Vendor (Simple)
 ```
-发票/
+Invoices/
 ├── Adobe/
 ├── Amazon/
 ├── Google/
 └── Microsoft/
 ```
 
-### 按年份和类别（税务友好）
+### By Year and Category (Tax-Friendly)
 ```
-发票/
+Invoices/
 ├── 2023/
-│   ├── 软件/
-│   ├── 硬件/
-│   ├── 服务/
-│   └── 旅行/
+│   ├── Software/
+│   ├── Hardware/
+│   ├── Services/
+│   └── Travel/
 └── 2024/
     └── ...
 ```
 
-### 按季度（详细跟踪）
+### By Quarter (Detailed Tracking)
 ```
-发票/
+Invoices/
 ├── 2024/
 │   ├── Q1/
-│   │   ├── 软件/
-│   │   ├── 办公/
-│   │   └── 旅行/
+│   │   ├── Software/
+│   │   ├── Office/
+│   │   └── Travel/
 │   └── Q2/
 │       └── ...
 ```
 
-### 按税务类别（会计师就绪）
+### By Tax Category (Accountant-Ready)
 ```
-发票/
-├── 可扣除/
-│   ├── 软件/
-│   ├── 办公/
-│   └── 专业服务/
-├── 部分可扣除/
-│   └── 餐饮旅行/
-└── 个人/
-```
-
-## 自动化设置
-
-对于持续组织：
-
-```
-创建一个脚本，监视我的 ~/Downloads/invoices 文件夹 
-并使用我们的标准命名和文件夹结构自动组织任何新的发票文件。
+Invoices/
+├── Deductible/
+│   ├── Software/
+│   ├── Office/
+│   └── Professional-Services/
+├── Partially-Deductible/
+│   └── Meals-Travel/
+└── Personal/
 ```
 
-这创建了一个持久解决方案，在发票到达时组织它们。
+## Automation Setup
 
-## 专业提示
+For ongoing organization:
 
-1. **将电子邮件扫描为 PDF**：首先使用 Preview 或类似工具将电子邮件发票保存为 PDF
-2. **一致的下载**：将所有发票保存到一个文件夹以进行批处理
-3. **每月例程**：每月组织发票，而不是每年
-4. **备份原件**：在重新组织之前保留原始文件
-5. **在 CSV 中包含金额**：对预算跟踪有用
-6. **按可扣除性标记**：注意哪些费用可税务扣除
-7. **保留收据 7 年**：标准审计期
+```
+Create a script that watches my ~/Downloads/invoices folder 
+and auto-organizes any new invoice files using our standard 
+naming and folder structure.
+```
 
-## 处理特殊情况
+This creates a persistent solution that organizes invoices as they arrive.
 
-### 信息缺失
-如果无法提取日期/供应商：
-- 标记文件为手动审查
-- 使用文件修改日期作为回退
-- 创建 "需要审查/" 文件夹
+## Pro Tips
 
-### 重复发票
-如果同一发票出现多次：
-- 比较文件哈希
-- 保留最高质量版本
-- 在摘要中注意重复项
+1. **Scan emails to PDF**: Use Preview or similar to save email invoices as PDFs first
+2. **Consistent downloads**: Save all invoices to one folder for batch processing
+3. **Monthly routine**: Organize invoices monthly, not annually
+4. **Backup originals**: Keep original files before reorganizing
+5. **Include amounts in CSV**: Useful for budget tracking
+6. **Tag by deductibility**: Note which expenses are tax-deductible
+7. **Keep receipts 7 years**: Standard audit period
 
-### 多页发票
-对于跨文件拆分的发票：
-- 如有需要，合并 PDF
-- 对部分使用一致的命名
-- 如果发票拆分，在 CSV 中注明
+## Handling Special Cases
 
-### 非标准格式
-对于不寻常的收据格式：
-- 提取可能的信息
-- 标准化您能做的
-- 如果关键信息缺失，标记为审查
+### Missing Information
+If date/vendor can't be extracted:
+- Flag file for manual review
+- Use file modification date as fallback
+- Create "Needs-Review/" folder
 
-## 相关用例
+### Duplicate Invoices
+If same invoice appears multiple times:
+- Compare file hashes
+- Keep highest quality version
+- Note duplicates in summary
 
-- 创建报销费用报告
-- 组织银行对账单
-- 管理供应商合同
-- 归档旧财务记录
-- 为审计做准备
-- 随时间跟踪订阅成本
+### Multi-Page Invoices
+For invoices split across files:
+- Merge PDFs if needed
+- Use consistent naming for parts
+- Note in CSV if invoice is split
+
+### Non-Standard Formats
+For unusual receipt formats:
+- Extract what's possible
+- Standardize what you can
+- Flag for review if critical info missing
+
+## Related Use Cases
+
+- Creating expense reports for reimbursement
+- Organizing bank statements
+- Managing vendor contracts
+- Archiving old financial records
+- Preparing for audits
+- Tracking subscription costs over time
+

@@ -1,14 +1,15 @@
 ---
 name: multi-agent-patterns
 description: This skill should be used when the user asks to "design multi-agent system", "implement supervisor pattern", "create swarm architecture", "coordinate multiple agents", or mentions multi-agent patterns, context isolation, agent handoffs, sub-agents, or parallel agent execution.
+risk: unknown
+source: community
 ---
 
 # Multi-Agent Architecture Patterns
 
 Multi-agent architectures distribute work across multiple language model instances, each with its own context window. When designed well, this distribution enables capabilities beyond single-agent limits. When designed poorly, it introduces coordination overhead that negates benefits. The critical insight is that sub-agents exist primarily to isolate context, not to anthropomorphize role division.
 
-## When to Activate
-
+## When to Use
 Activate this skill when:
 - Single-agent context limits constrain task complexity
 - Tasks decompose naturally into parallel subtasks

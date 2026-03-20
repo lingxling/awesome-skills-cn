@@ -8,8 +8,7 @@ date_added: "2026-02-27"
 
 # Agent Manager Skill
 
-## When to use
-
+## When to Use
 Use this skill when you need to:
 
 - run multiple local CLI agents in parallel (separate tmux sessions)

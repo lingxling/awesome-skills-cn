@@ -2,6 +2,8 @@
 
 > **Curated collections of skills organized by role and expertise level.** Don't know where to start? Pick a bundle below to get a curated set of skills for your role.
 
+> These packs are curated starter recommendations for humans. Generated bundle ids in `data/bundles.json` are broader catalog/workflow groupings and do not need to map 1:1 to the editorial packs below.
+
 ## Quick Start
 
 1. **Install the repository:**
@@ -341,6 +343,122 @@ _For teams modeling complex domains and evolving toward evented systems._
 - [`saga-orchestration`](../../skills/saga-orchestration/): Cross-context long-running transaction coordination.
 - [`projection-patterns`](../../skills/projection-patterns/): Materialized read models from event streams.
 
+### 🤖 The "Automation Builder" Pack
+
+_For connecting tools and building repeatable automated workflows._
+
+- [`workflow-automation`](../../skills/workflow-automation/): Design durable automation flows for AI and business systems.
+- [`mcp-builder`](../../skills/mcp-builder/): Create tool interfaces agents can use reliably.
+- [`make-automation`](../../skills/make-automation/): Build automations in Make/Integromat.
+- [`airtable-automation`](../../skills/airtable-automation/): Automate Airtable records, bases, and views.
+- [`notion-automation`](../../skills/notion-automation/): Automate Notion pages, databases, and blocks.
+- [`slack-automation`](../../skills/slack-automation/): Automate Slack messaging and channel workflows.
+- [`googlesheets-automation`](../../skills/googlesheets-automation/): Automate spreadsheet updates and data operations.
+
+### 💼 The "RevOps & CRM Automation" Pack
+
+_For revenue operations, support handoffs, and CRM-heavy automation._
+
+- [`hubspot-automation`](../../skills/hubspot-automation/): Automate contacts, companies, deals, and tickets.
+- [`sendgrid-automation`](../../skills/sendgrid-automation/): Automate email sends, contacts, and templates.
+- [`zendesk-automation`](../../skills/zendesk-automation/): Automate support tickets and reply workflows.
+- [`google-calendar-automation`](../../skills/google-calendar-automation/): Schedule events and manage availability.
+- [`outlook-calendar-automation`](../../skills/outlook-calendar-automation/): Automate Outlook meetings and invitations.
+- [`stripe-automation`](../../skills/stripe-automation/): Automate billing, invoices, and subscriptions.
+- [`shopify-automation`](../../skills/shopify-automation/): Automate products, orders, customers, and inventory.
+
+### 💳 The "Commerce & Payments" Pack
+
+_For monetization, payments, and commerce workflows._
+
+- [`stripe-integration`](../../skills/stripe-integration/): Build robust checkout, subscription, and webhook flows.
+- [`paypal-integration`](../../skills/paypal-integration/): Integrate PayPal payments and related flows.
+- [`plaid-fintech`](../../skills/plaid-fintech/): Link bank accounts and handle ACH-related use cases.
+- [`hubspot-integration`](../../skills/hubspot-integration/): Connect CRM data into product and revenue workflows.
+- [`algolia-search`](../../skills/algolia-search/): Add search and discovery to commerce experiences.
+- [`monetization`](../../skills/monetization/): Design pricing and monetization systems deliberately.
+
+### 🏢 The "Odoo ERP" Pack
+
+_For teams building or operating around Odoo-based business systems._
+
+- [`odoo-module-developer`](../../skills/odoo-module-developer/): Create custom Odoo modules cleanly.
+- [`odoo-orm-expert`](../../skills/odoo-orm-expert/): Work effectively with Odoo ORM patterns and performance.
+- [`odoo-sales-crm-expert`](../../skills/odoo-sales-crm-expert/): Optimize sales pipelines, leads, and forecasting.
+- [`odoo-ecommerce-configurator`](../../skills/odoo-ecommerce-configurator/): Configure storefront, catalog, and order flows.
+- [`odoo-performance-tuner`](../../skills/odoo-performance-tuner/): Diagnose and improve slow Odoo instances.
+- [`odoo-security-rules`](../../skills/odoo-security-rules/): Apply secure access controls and rule design.
+- [`odoo-docker-deployment`](../../skills/odoo-docker-deployment/): Deploy and run Odoo in Docker-based environments.
+
+### ☁️ The "Azure AI & Cloud" Pack
+
+_For building on Azure across cloud, AI, and platform services._
+
+- [`azd-deployment`](../../skills/azd-deployment/): Ship Azure apps with Azure Developer CLI workflows.
+- [`azure-functions`](../../skills/azure-functions/): Build serverless workloads with Azure Functions.
+- [`azure-ai-openai-dotnet`](../../skills/azure-ai-openai-dotnet/): Use Azure OpenAI from .NET applications.
+- [`azure-search-documents-py`](../../skills/azure-search-documents-py/): Build search, hybrid search, and indexing in Python.
+- [`azure-identity-py`](../../skills/azure-identity-py/): Handle Azure authentication flows in Python services.
+- [`azure-monitor-opentelemetry-ts`](../../skills/azure-monitor-opentelemetry-ts/): Add telemetry and tracing from TypeScript apps.
+
+### 📲 The "Expo & React Native" Pack
+
+_For shipping mobile apps with Expo and React Native._
+
+- [`react-native-architecture`](../../skills/react-native-architecture/): Structure production React Native apps well.
+- [`expo-api-routes`](../../skills/expo-api-routes/): Build API routes in Expo Router and EAS Hosting.
+- [`expo-dev-client`](../../skills/expo-dev-client/): Build and distribute Expo development clients.
+- [`expo-tailwind-setup`](../../skills/expo-tailwind-setup/): Set up Tailwind and NativeWind in Expo apps.
+- [`expo-cicd-workflows`](../../skills/expo-cicd-workflows/): Automate builds and releases with EAS workflows.
+- [`expo-deployment`](../../skills/expo-deployment/): Deploy Expo apps and manage release flow.
+- [`app-store-optimization`](../../skills/app-store-optimization/): Improve App Store and Play Store discoverability.
+
+### 🍎 The "Apple Platform Design" Pack
+
+_For teams designing native-feeling Apple platform experiences._
+
+- [`hig-foundations`](../../skills/hig-foundations/): Learn the core Apple Human Interface Guidelines.
+- [`hig-patterns`](../../skills/hig-patterns/): Apply Apple interaction and UX patterns correctly.
+- [`hig-components-layout`](../../skills/hig-components-layout/): Use Apple layout and navigation components well.
+- [`hig-inputs`](../../skills/hig-inputs/): Design for gestures, keyboards, Pencil, focus, and controllers.
+- [`hig-components-system`](../../skills/hig-components-system/): Work with widgets, live activities, and system surfaces.
+- [`hig-platforms`](../../skills/hig-platforms/): Adapt experiences across Apple device families.
+
+### 🧩 The "Makepad Builder" Pack
+
+_For building UI-heavy apps with the Makepad ecosystem._
+
+- [`makepad-basics`](../../skills/makepad-basics/): Start with Makepad fundamentals and mental model.
+- [`makepad-layout`](../../skills/makepad-layout/): Handle sizing, flow, alignment, and layout composition.
+- [`makepad-widgets`](../../skills/makepad-widgets/): Build interfaces from Makepad widgets.
+- [`makepad-event-action`](../../skills/makepad-event-action/): Wire interaction and event handling correctly.
+- [`makepad-shaders`](../../skills/makepad-shaders/): Create GPU-driven visual effects and custom drawing.
+- [`makepad-deployment`](../../skills/makepad-deployment/): Package and ship Makepad projects.
+
+### 🔎 The "SEO Specialist" Pack
+
+_For technical SEO, content structure, and search growth._
+
+- [`seo-fundamentals`](../../skills/seo-fundamentals/): Build from sound SEO principles and search constraints.
+- [`seo-content-planner`](../../skills/seo-content-planner/): Plan clusters, calendars, and content gaps.
+- [`seo-content-writer`](../../skills/seo-content-writer/): Produce search-aware content drafts with intent alignment.
+- [`seo-structure-architect`](../../skills/seo-structure-architect/): Improve hierarchy, internal links, and structure.
+- [`seo-cannibalization-detector`](../../skills/seo-cannibalization-detector/): Find overlapping pages competing for the same intent.
+- [`seo-content-auditor`](../../skills/seo-content-auditor/): Audit existing content quality and optimization gaps.
+- [`schema-markup`](../../skills/schema-markup/): Add structured data to support richer search results.
+
+### 📄 The "Documents & Presentations" Pack
+
+_For document-heavy workflows, spreadsheets, PDFs, and presentations._
+
+- [`office-productivity`](../../skills/office-productivity/): Coordinate document, spreadsheet, and presentation workflows.
+- [`docx-official`](../../skills/docx-official/): Create and edit Word-compatible documents.
+- [`pptx-official`](../../skills/pptx-official/): Create and edit PowerPoint-compatible presentations.
+- [`xlsx-official`](../../skills/xlsx-official/): Create and analyze spreadsheet files with formulas and formatting.
+- [`pdf-official`](../../skills/pdf-official/): Extract, generate, and manipulate PDFs programmatically.
+- [`google-slides-automation`](../../skills/google-slides-automation/): Automate presentation updates in Google Slides.
+- [`google-sheets-automation`](../../skills/google-sheets-automation/): Automate reads and writes in Google Sheets.
+
 ---
 
 ## 🧰 Maintainer & OSS
@@ -461,4 +579,4 @@ Found a skill that should be in a bundle? Or want to create a new bundle? [Open 
 
 ---
 
-_Last updated: March 2026 | Total Skills: 1,254+ | Total Bundles: 26_
+_Last updated: March 2026 | Total Skills: 1,254+ | Total Bundles: 36_

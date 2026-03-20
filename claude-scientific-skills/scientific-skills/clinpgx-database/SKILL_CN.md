@@ -1,321 +1,321 @@
 ---
 name: clinpgx-database
-description: 访问 ClinPGx 药物基因组学数据(PharmGKB 的继任者)。查询基因-药物相互作用、CPIC 指南、等位基因功能,用于精准医学和基因型指导的给药决策。
+description: Access ClinPGx pharmacogenomics data (successor to PharmGKB). Query gene-drug interactions, CPIC guidelines, allele functions, for precision medicine and genotype-guided dosing decisions.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# ClinPGx 数据库
+# ClinPGx Database
 
-## 概述
+## Overview
 
-ClinPGx(临床药物基因组学数据库)是临床药物基因组学信息的综合资源,是 PharmGKB 的继任者。它整合了来自 PharmGKB、CPIC 和 PharmCAT 的数据,提供关于遗传变异如何影响药物反应的策展信息。访问基因-药物对、临床指南、等位基因功能和药物标签,用于精准医学应用。
+ClinPGx (Clinical Pharmacogenomics Database) is a comprehensive resource for clinical pharmacogenomics information, successor to PharmGKB. It consolidates data from PharmGKB, CPIC, and PharmCAT, providing curated information on how genetic variation affects medication response. Access gene-drug pairs, clinical guidelines, allele functions, and drug labels for precision medicine applications.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况下使用此技能:
+This skill should be used when:
 
-- **基因-药物相互作用**: 查询遗传变异如何影响药物代谢、疗效或毒性
-- **CPIC 指南**: 访问药物遗传学的基于证据的临床实践指南
-- **等位基因信息**: 检索等位基因功能、频率和表型数据
-- **药物标签**: 探索 FDA 和其他监管机构的药物基因组学药物标签
-- **药物基因组学注释**: 访问基因-药物-疾病关系的策展文献
-- **临床决策支持**: 使用 PharmDOG 工具进行表型转换和自定义基因型解释
-- **精准医学**: 在临床实践中实施药物基因组学测试
-- **药物代谢**: 了解 CYP450 和其他药物基因的功能
-- **个性化给药**: 查找基因型指导的给药推荐
-- **药物不良反应**: 识别药物毒性的遗传风险因素
+- **Gene-drug interactions**: Querying how genetic variants affect drug metabolism, efficacy, or toxicity
+- **CPIC guidelines**: Accessing evidence-based clinical practice guidelines for pharmacogenetics
+- **Allele information**: Retrieving allele function, frequency, and phenotype data
+- **Drug labels**: Exploring FDA and other regulatory pharmacogenomic drug labeling
+- **Pharmacogenomic annotations**: Accessing curated literature on gene-drug-disease relationships
+- **Clinical decision support**: Using PharmDOG tool for phenoconversion and custom genotype interpretation
+- **Precision medicine**: Implementing pharmacogenomic testing in clinical practice
+- **Drug metabolism**: Understanding CYP450 and other pharmacogene functions
+- **Personalized dosing**: Finding genotype-guided dosing recommendations
+- **Adverse drug reactions**: Identifying genetic risk factors for drug toxicity
 
-## 安装和设置
+## Installation and Setup
 
-### Python API 访问
+### Python API Access
 
-ClinPGx REST API 提供对所有数据库资源的编程访问。基本设置:
+The ClinPGx REST API provides programmatic access to all database resources. Basic setup:
 
 ```bash
 uv pip install requests
 ```
 
-### API 端点
+### API Endpoint
 
 ```python
 BASE_URL = "https://api.clinpgx.org/v1/"
 ```
 
-**速率限制:**
-- 每秒最多 2 个请求
-- 过多请求将导致 HTTP 429(请求过多)响应
+**Rate Limits**:
+- 2 requests per second maximum
+- Excessive requests will result in HTTP 429 (Too Many Requests) response
 
-**身份验证**: 基本访问不需要
+**Authentication**: Not required for basic access
 
-**数据许可**: 知识共享署名-相同方式 4.0 国际许可
+**Data License**: Creative Commons Attribution-ShareAlike 4.0 International License
 
-对于大量 API 使用,请通知 ClinPGx 团队: api@clinpgx.org
+For substantial API use, notify the ClinPGx team at api@clinpgx.org
 
-## 核心功能
+## Core Capabilities
 
-### 1. 基因查询
+### 1. Gene Queries
 
-**检索基因信息**,包括功能、临床注释和药物基因组学意义:
+**Retrieve gene information** including function, clinical annotations, and pharmacogenomic significance:
 
 ```python
 import requests
 
-# 获取基因详细信息
+# Get gene details
 response = requests.get("https://api.clinpgx.org/v1/gene/CYP2D6")
 gene_data = response.json()
 
-# 按名称搜索基因
+# Search for genes by name
 response = requests.get("https://api.clinpgx.org/v1/gene",
                        params={"q": "CYP"})
 genes = response.json()
 ```
 
-**关键药物基因:**
-- **CYP450 酶**: CYP2D6、CYP2C19、CYP2C9、CYP3A4、CYP3A5
-- **转运蛋白**: SLCO1B1、ABCB1、ABCG2
-- **其他代谢酶**: TPMT、DPYD、NUDT15、UGT1A1
-- **受体**: OPRM1、HTR2A、ADRB1
-- **HLA 基因**: HLA-B、HLA-A
+**Key pharmacogenes**:
+- **CYP450 enzymes**: CYP2D6, CYP2C19, CYP2C9, CYP3A4, CYP3A5
+- **Transporters**: SLCO1B1, ABCB1, ABCG2
+- **Other metabolizers**: TPMT, DPYD, NUDT15, UGT1A1
+- **Receptors**: OPRM1, HTR2A, ADRB1
+- **HLA genes**: HLA-B, HLA-A
 
-### 2. 药物和化学物质查询
+### 2. Drug and Chemical Queries
 
-**检索药物信息**,包括药物基因组学注释和机制:
+**Retrieve drug information** including pharmacogenomic annotations and mechanisms:
 
 ```python
-# 获取药物详细信息
+# Get drug details
 response = requests.get("https://api.clinpgx.org/v1/chemical/PA448515")  # Warfarin
 drug_data = response.json()
 
-# 按名称搜索药物
+# Search drugs by name
 response = requests.get("https://api.clinpgx.org/v1/chemical",
                        params={"name": "warfarin"})
 drugs = response.json()
 ```
 
-**具有药物基因组学意义的药物类别:**
-- 抗凝剂(华法林、氯吡格雷)
-- 抗抑郁药(SSRIs、TCAs)
-- 免疫抑制剂(他克莫司、硫唑嘌呤)
-- 肿瘤药物(5-氟尿嘧啶、伊立替康、他莫昔芬)
-- 心血管药物(他汀类、β 受体阻滞剂)
-- 止痛药(可待因、曲马多)
-- 抗病毒药(阿巴卡韦)
+**Drug categories with pharmacogenomic significance**:
+- Anticoagulants (warfarin, clopidogrel)
+- Antidepressants (SSRIs, TCAs)
+- Immunosuppressants (tacrolimus, azathioprine)
+- Oncology drugs (5-fluorouracil, irinotecan, tamoxifen)
+- Cardiovascular drugs (statins, beta-blockers)
+- Pain medications (codeine, tramadol)
+- Antivirals (abacavir)
 
-### 3. 基因-药物对查询
+### 3. Gene-Drug Pair Queries
 
-**访问策展的基因-药物关系**,包含临床注释:
+**Access curated gene-drug relationships** with clinical annotations:
 
 ```python
-# 获取基因-药物对信息
+# Get gene-drug pair information
 response = requests.get("https://api.clinpgx.org/v1/geneDrugPair",
                        params={"gene": "CYP2D6", "drug": "codeine"})
 pair_data = response.json()
 
-# 获取基因的所有对
+# Get all pairs for a gene
 response = requests.get("https://api.clinpgx.org/v1/geneDrugPair",
                        params={"gene": "CYP2C19"})
 all_pairs = response.json()
 ```
 
-**临床注释来源:**
-- CPIC(临床药物遗传学实施联盟)
-- DPWG(荷兰药物遗传学工作组)
-- FDA(美国食品药品监督管理局)标签
-- 同行评审文献摘要注释
+**Clinical annotation sources**:
+- CPIC (Clinical Pharmacogenetics Implementation Consortium)
+- DPWG (Dutch Pharmacogenetics Working Group)
+- FDA (Food and Drug Administration) labels
+- Peer-reviewed literature summary annotations
 
-### 4. CPIC 指南
+### 4. CPIC Guidelines
 
-**访问基于证据的临床实践指南:**
+**Access evidence-based clinical practice guidelines**:
 
 ```python
-# 获取 CPIC 指南
+# Get CPIC guideline
 response = requests.get("https://api.clinpgx.org/v1/guideline/PA166104939")
 guideline = response.json()
 
-# 列出所有 CPIC 指南
+# List all CPIC guidelines
 response = requests.get("https://api.clinpgx.org/v1/guideline",
                        params={"source": "CPIC"})
 guidelines = response.json()
 ```
 
-**CPIC 指南组件:**
-- 涵盖的基因-药物对
-- 按表型的临床推荐
-- 证据水平和强度评级
-- 支持文献
-- 可下载的 PDF 和补充材料
-- 实施考虑
+**CPIC guideline components**:
+- Gene-drug pairs covered
+- Clinical recommendations by phenotype
+- Evidence levels and strength ratings
+- Supporting literature
+- Downloadable PDFs and supplementary materials
+- Implementation considerations
 
-**示例指南:**
-- CYP2D6-可待因(超快代谢者避免使用)
-- CYP2C19-氯吡格雷(慢代谢者替代治疗)
-- TPMT-硫唑嘌呤(中/慢代谢者剂量减少)
-- DPYD-氟嘧啶类药物(基于活性调整剂量)
-- HLA-B*57:01-阿巴卡韦(阳性时避免)
+**Example guidelines**:
+- CYP2D6-codeine (avoid in ultra-rapid metabolizers)
+- CYP2C19-clopidogrel (alternative therapy for poor metabolizers)
+- TPMT-azathioprine (dose reduction for intermediate/poor metabolizers)
+- DPYD-fluoropyrimidines (dose adjustment based on activity)
+- HLA-B*57:01-abacavir (avoid if positive)
 
-### 5. 等位基因和变异信息
+### 5. Allele and Variant Information
 
-**查询等位基因功能和频率数据:**
+**Query allele function and frequency data**:
 
 ```python
-# 获取等位基因信息
+# Get allele information
 response = requests.get("https://api.clinpgx.org/v1/allele/CYP2D6*4")
 allele_data = response.json()
 
-# 获取基因的所有等位基因
+# Get all alleles for a gene
 response = requests.get("https://api.clinpgx.org/v1/allele",
                        params={"gene": "CYP2D6"})
 alleles = response.json()
 ```
 
-**等位基因信息包括:**
-- 功能状态(正常、降低、无功能、增加、不确定)
-- 各种族群体的频率
-- 定义变异(SNP、indel、CNV)
-- 表型分配
-- PharmVar 和其他命名法系统的参考文献
+**Allele information includes**:
+- Functional status (normal, decreased, no function, increased, uncertain)
+- Population frequencies across ethnic groups
+- Defining variants (SNPs, indels, CNVs)
+- Phenotype assignment
+- References to PharmVar and other nomenclature systems
 
-**表型类别:**
-- **超快代谢者**(UM): 酶活性增加
-- **正常代谢者**(NM): 正常酶活性
-- **中间代谢者**(IM): 酶活性降低
-- **慢代谢者**(PM): 极少或无酶活性
+**Phenotype categories**:
+- **Ultra-rapid metabolizer** (UM): Increased enzyme activity
+- **Normal metabolizer** (NM): Normal enzyme activity
+- **Intermediate metabolizer** (IM): Reduced enzyme activity
+- **Poor metabolizer** (PM): Little to no enzyme activity
 
-### 6. 变异注释
+### 6. Variant Annotations
 
-**访问特定遗传变异的临床注释:**
+**Access clinical annotations for specific genetic variants**:
 
 ```python
-# 获取变异信息
+# Get variant information
 response = requests.get("https://api.clinpgx.org/v1/variant/rs4244285")
 variant_data = response.json()
 
-# 按位置搜索变异(如支持)
+# Search variants by position (if supported)
 response = requests.get("https://api.clinpgx.org/v1/variant",
-                       params={"chromosome": "10", "position": 94781859})
+                       params={"chromosome": "10", "position": "94781859"})
 variants = response.json()
 ```
 
-**变异数据包括:**
-- rsID 和基因组坐标
-- 基因和功能后果
-- 等位基因关联
-- 临床意义
-- 群体频率
-- 文献参考文献
+**Variant data includes**:
+- rsID and genomic coordinates
+- Gene and functional consequence
+- Allele associations
+- Clinical significance
+- Population frequencies
+- Literature references
 
-### 7. 临床注释
+### 7. Clinical Annotations
 
-**检索策展文献注释**(原 PharmGKB 临床注释):**
+**Retrieve curated literature annotations** (formerly PharmGKB clinical annotations):
 
 ```python
-# 获取临床注释
+# Get clinical annotations
 response = requests.get("https://api.clinpgx.org/v1/clinicalAnnotation",
                        params={"gene": "CYP2D6"})
 annotations = response.json()
 
-# 按证据水平筛选
+# Filter by evidence level
 response = requests.get("https://api.clinpgx.org/v1/clinicalAnnotation",
                        params={"evidenceLevel": "1A"})
 high_evidence = response.json()
 ```
 
-**证据水平**(从高到低):
-- **水平 1A**: 高质量证据,CPIC/FDA/DPWG 指南
-- **水平 1B**: 高质量证据,尚无指南
-- **水平 2A**: 来自设计良好的研究的中等证据
-- **水平 2B**: 存在一些局限性的中等证据
-- **水平 3**: 有限或相互矛盾的证据
-- **水平 4**: 病例报告或弱证据
+**Evidence levels** (from highest to lowest):
+- **Level 1A**: High-quality evidence, CPIC/FDA/DPWG guidelines
+- **Level 1B**: High-quality evidence, not yet guideline
+- **Level 2A**: Moderate evidence from well-designed studies
+- **Level 2B**: Moderate evidence with some limitations
+- **Level 3**: Limited or conflicting evidence
+- **Level 4**: Case reports or weak evidence
 
-### 8. 药物标签
+### 8. Drug Labels
 
-**访问来自药物标签的药物基因组学信息:**
+**Access pharmacogenomic information from drug labels**:
 
 ```python
-# 获取具有药物基因组学信息的药物标签
+# Get drug labels with PGx information
 response = requests.get("https://api.clinpgx.org/v1/drugLabel",
                        params={"drug": "warfarin"})
 labels = response.json()
 
-# 按监管来源筛选
+# Filter by regulatory source
 response = requests.get("https://api.clinpgx.org/v1/drugLabel",
                        params={"source": "FDA"})
 fda_labels = response.json()
 ```
 
-**标签信息包括:**
-- 检测推荐
-- 按基因型的给药指导
-- 警告和注意事项
-- 生物标志物信息
-- 监管来源(FDA、EMA、PMDA 等)
+**Label information includes**:
+- Testing recommendations
+- Dosing guidance by genotype
+- Warnings and precautions
+- Biomarker information
+- Regulatory source (FDA, EMA, PMDA, etc.)
 
-### 9. 通路
+### 9. Pathways
 
-**探索药代动力学和药效学通路:**
+**Explore pharmacokinetic and pharmacodynamic pathways**:
 
 ```python
-# 获取通路信息
-response = requests.get("https://api.clinpgx.org/v1/pathway/PA146123006")  # 华法林通路
+# Get pathway information
+response = requests.get("https://api.clinpgx.org/v1/pathway/PA146123006")  # Warfarin pathway
 pathway_data = response.json()
 
-# 按药物搜索通路
+# Search pathways by drug
 response = requests.get("https://api.clinpgx.org/v1/pathway",
                        params={"drug": "warfarin"})
 pathways = response.json()
 ```
 
-**通路图显示:**
-- 药物代谢步骤
-- 涉及的酶和转运蛋白
-- 影响每个步骤的基因变异
-- 对疗效/毒性的下游影响
-- 与其他通路的相互作用
+**Pathway diagrams** show:
+- Drug metabolism steps
+- Enzymes and transporters involved
+- Gene variants affecting each step
+- Downstream effects on efficacy/toxicity
+- Interactions with other pathways
 
-## 查询工作流程
+## Query Workflow
 
-### 工作流程 1: 药物处方的临床决策支持
+### Workflow 1: Clinical Decision Support for Drug Prescription
 
-1. **识别相关药物基因的患者基因型**:
+1. **Identify patient genotype** for relevant pharmacogenes:
    ```python
-   # 示例: 患者为 CYP2C19 *1/*2(中间代谢者)
+   # Example: Patient is CYP2C19 *1/*2 (intermediate metabolizer)
    response = requests.get("https://api.clinpgx.org/v1/allele/CYP2C19*2")
    allele_function = response.json()
    ```
 
-2. **查询感兴趣药物的基因-药物对**:
+2. **Query gene-drug pairs** for medication of interest:
    ```python
    response = requests.get("https://api.clinpgx.org/v1/geneDrugPair",
                           params={"gene": "CYP2C19", "drug": "clopidogrel"})
    pair_info = response.json()
    ```
 
-3. **检索 CPIC 指南以获取给药推荐**:
+3. **Retrieve CPIC guideline** for dosing recommendations:
    ```python
    response = requests.get("https://api.clinpgx.org/v1/guideline",
                           params={"gene": "CYP2C19", "drug": "clopidogrel"})
    guideline = response.json()
-   # 推荐: IM/PM 的替代抗血小板治疗
+   # Recommendation: Alternative antiplatelet therapy for IM/PM
    ```
 
-4. **检查药物标签以获取监管指导**:
+4. **Check drug label** for regulatory guidance:
    ```python
    response = requests.get("https://api.clinpgx.org/v1/drugLabel",
                           params={"drug": "clopidogrel"})
    label = response.json()
    ```
 
-### 工作流程 2: 基因面板分析
+### Workflow 2: Gene Panel Analysis
 
-1. **获取临床面板中的药物基因列表**:
+1. **Get list of pharmacogenes** in clinical panel:
    ```python
    pgx_panel = ["CYP2C19", "CYP2D6", "CYP2C9", "TPMT", "DPYD", "SLCO1B1"]
    ```
 
-2. **对于每个基因,检索所有药物相互作用**:
+2. **For each gene, retrieve all drug interactions**:
    ```python
    all_interactions = {}
    for gene in pgx_panel:
@@ -324,33 +324,33 @@ pathways = response.json()
        all_interactions[gene] = response.json()
    ```
 
-3. **筛选 CPIC 指南水平证据**:
+3. **Filter for CPIC guideline-level evidence**:
    ```python
    for gene, pairs in all_interactions.items():
        for pair in pairs:
-           if pair.get('cpicLevel'):  # 有 CPIC 指南
+           if pair.get('cpicLevel'):  # Has CPIC guideline
                print(f"{gene} - {pair['drug']}: {pair['cpicLevel']}")
    ```
 
-4. **生成可操作的药物基因组学发现的患者报告**。
+4. **Generate patient report** with actionable pharmacogenomic findings.
 
-### 工作流程 3: 药物安全性评估
+### Workflow 3: Drug Safety Assessment
 
-1. **查询药物的药物基因组学关联**:
+1. **Query drug for PGx associations**:
    ```python
    response = requests.get("https://api.clinpgx.org/v1/chemical",
                           params={"name": "abacavir"})
    drug_id = response.json()[0]['id']
    ```
 
-2. **获取临床注释**:
+2. **Get clinical annotations**:
    ```python
    response = requests.get("https://api.clinpgx.org/v1/clinicalAnnotation",
                           params={"drug": drug_id})
    annotations = response.json()
    ```
 
-3. **检查 HLA 关联和毒性风险**:
+3. **Check for HLA associations** and toxicity risk:
    ```python
    for annotation in annotations:
        if 'HLA' in annotation.get('genes', []):
@@ -358,18 +358,18 @@ pathways = response.json()
            print(f"Evidence level: {annotation['evidenceLevel']}")
    ```
 
-4. **从指南和标签检索筛查推荐**。
+4. **Retrieve screening recommendations** from guidelines and labels.
 
-### 工作流程 4: 研究分析 - 人群药物基因组学
+### Workflow 4: Research Analysis - Population Pharmacogenomics
 
-1. **获取人群比较的等位基因频率**:
+1. **Get allele frequencies** for population comparison:
    ```python
    response = requests.get("https://api.clinpgx.org/v1/allele",
                           params={"gene": "CYP2D6"})
    alleles = response.json()
    ```
 
-2. **提取人群特异性频率**:
+2. **Extract population-specific frequencies**:
    ```python
    populations = ['European', 'African', 'East Asian', 'Latino']
    frequency_data = {}
@@ -381,56 +381,56 @@ pathways = response.json()
        }
    ```
 
-3. **按人群计算表型分布**:
+3. **Calculate phenotype distributions** by population:
    ```python
-   # 结合等位基因频率与功能以预测表型
+   # Combine allele frequencies with function to predict phenotypes
    phenotype_dist = calculate_phenotype_frequencies(frequency_data)
    ```
 
-4. **分析对多样化人群药物给药的影响**。
+4. **Analyze implications** for drug dosing in diverse populations.
 
-### 工作流程 5: 文献证据审查
+### Workflow 5: Literature Evidence Review
 
-1. **搜索基因-药物对**:
+1. **Search for gene-drug pair**:
    ```python
    response = requests.get("https://api.clinpgx.org/v1/geneDrugPair",
                           params={"gene": "TPMT", "drug": "azathioprine"})
    pair = response.json()
    ```
 
-2. **检索所有临床注释**:
+2. **Retrieve all clinical annotations**:
    ```python
    response = requests.get("https://api.clinpgx.org/v1/clinicalAnnotation",
                           params={"gene": "TPMT", "drug": "azathioprine"})
    annotations = response.json()
    ```
 
-3. **按证据水平和发表日期筛选**:
+3. **Filter by evidence level and publication date**:
    ```python
    high_quality = [a for a in annotations
                    if a['evidenceLevel'] in ['1A', '1B', '2A']]
    ```
 
-4. **提取 PMIDs 并检索完整参考文献**:
+4. **Extract PMIDs** and retrieve full references:
    ```python
    pmids = [a['pmid'] for a in high_quality if 'pmid' in a]
-   # 使用 PubMed 技能检索完整引文
+   # Use PubMed skill to retrieve full citations
    ```
 
-## 速率限制和最佳实践
+## Rate Limiting and Best Practices
 
-### 速率限制合规
+### Rate Limit Compliance
 
 ```python
 import time
 
 def rate_limited_request(url, params=None, delay=0.5):
-    """进行速率限制的 API 请求(每秒最多 2 个请求)"""
+    """Make API request with rate limiting (2 req/sec max)"""
     response = requests.get(url, params=params)
-    time.sleep(delay)  # 请求之间等待 0.5 秒
+    time.sleep(delay)  # Wait 0.5 seconds between requests
     return response
 
-# 在循环中使用
+# Use in loops
 genes = ["CYP2D6", "CYP2C19", "CYP2C9"]
 for gene in genes:
     response = rate_limited_request(
@@ -439,11 +439,11 @@ for gene in genes:
     data = response.json()
 ```
 
-### 错误处理
+### Error Handling
 
 ```python
 def safe_api_call(url, params=None, max_retries=3):
-    """具有错误处理和重试的 API 调用"""
+    """API call with error handling and retries"""
     for attempt in range(max_retries):
         try:
             response = requests.get(url, params=params, timeout=10)
@@ -451,8 +451,8 @@ def safe_api_call(url, params=None, max_retries=3):
             if response.status_code == 200:
                 return response.json()
             elif response.status_code == 429:
-                # 速率限制
-                wait_time = 2 ** attempt  # 指数退避
+                # Rate limit exceeded
+                wait_time = 2 ** attempt  # Exponential backoff
                 print(f"Rate limit hit. Waiting {wait_time}s...")
                 time.sleep(wait_time)
             else:
@@ -465,14 +465,14 @@ def safe_api_call(url, params=None, max_retries=3):
             time.sleep(1)
 ```
 
-### 缓存结果
+### Caching Results
 
 ```python
 import json
 from pathlib import Path
 
 def cached_query(cache_file, api_func, *args, **kwargs):
-    """缓存 API 结果以避免重复查询"""
+    """Cache API results to avoid repeated queries"""
     cache_path = Path(cache_file)
 
     if cache_path.exists():
@@ -483,9 +483,10 @@ def cached_query(cache_file, api_func, *args, **kwargs):
 
     with open(cache_path, 'w') as f:
         json.dump(result, f, indent=2)
+
     return result
 
-# 使用
+# Usage
 gene_data = cached_query(
     'cyp2d6_cache.json',
     rate_limited_request,
@@ -493,111 +494,112 @@ gene_data = cached_query(
 )
 ```
 
-## PharmDOG 工具
+## PharmDOG Tool
 
-PharmDOG(原 DDRx)是 ClinPGx 的临床决策支持工具,用于解释药物基因组学测试结果:
+PharmDOG (formerly DDRx) is ClinPGx's clinical decision support tool for interpreting pharmacogenomic test results:
 
-**关键功能:**
-- **表型转换计算器**: 调整表型预测以考虑影响 CYP2D6 的药物-药物相互作用
-- **自定义基因型**: 输入患者基因型以获取表型预测
-- **二维码共享**: 生成可共享的患者报告
-- **灵活的指导来源**: 选择要应用的指南(CPIC、DPWG、FDA)
-- **多药物分析**: 同时评估多种药物
+**Key features**:
+- **Phenoconversion calculator**: Adjusts phenotype predictions for drug-drug interactions affecting CYP2D6
+- **Custom genotypes**: Input patient genotypes to get phenotype predictions
+- **QR code sharing**: Generate shareable patient reports
+- **Flexible guidance sources**: Select which guidelines to apply (CPIC, DPWG, FDA)
+- **Multi-drug analysis**: Assess multiple medications simultaneously
 
-**访问**: 可在 https://www.clinpgx.org/pharmacogenomic-decision-support 获取
+**Access**: Available at https://www.clinpgx.org/pharmacogenomic-decision-support
 
-**用例:**
-- 临床解释药物基因组学面板结果
-- 已知基因型患者的药物审查
-- 患者教育材料
-- 床边决策支持
+**Use cases**:
+- Clinical interpretation of PGx panel results
+- Medication review for patients with known genotypes
+- Patient education materials
+- Point-of-care decision support
 
-## 资源
+## Resources
 
 ### scripts/query_clinpgx.py
 
-Python 脚本,包含常见 ClinPGx 查询的即用型函数:
+Python script with ready-to-use functions for common ClinPGx queries:
 
-- `get_gene_info(gene_symbol)` - 检索基因详细信息
-- `get_drug_info(drug_name)` - 获取药物信息
-- `get_gene_drug_pairs(gene, drug)` - 查询基因-药物相互作用
-- `get_cpic_guidelines(gene, drug)` - 检索 CPIC 指南
-- `get_alleles(gene)` - 获取基因的所有等位基因
-- `get_clinical_annotations(gene, drug, evidence_level)` - 查询文献注释
-- `get_drug_labels(drug)` - 检索药物基因组学药物标签
-- `search_variants(rsid)` - 按 rsID 搜索变异
-- `export_to_dataframe(data)` - 将结果转换为 pandas DataFrame
+- `get_gene_info(gene_symbol)` - Retrieve gene details
+- `get_drug_info(drug_name)` - Get drug information
+- `get_gene_drug_pairs(gene, drug)` - Query gene-drug interactions
+- `get_cpic_guidelines(gene, drug)` - Retrieve CPIC guidelines
+- `get_alleles(gene)` - Get all alleles for a gene
+- `get_clinical_annotations(gene, drug, evidence_level)` - Query literature annotations
+- `get_drug_labels(drug)` - Retrieve pharmacogenomic drug labels
+- `search_variants(rsid)` - Search by variant rsID
+- `export_to_dataframe(data)` - Convert results to pandas DataFrame
 
-查阅此脚本以获取实现示例和适当的速率限制及错误处理。
+Consult this script for implementation examples with proper rate limiting and error handling.
 
 ### references/api_reference.md
 
-全面的 API 文档,包括:
-- 完整的端点列表及参数
-- 请求/响应格式规范
-- 每个端点的示例查询
-- 筛选运算符和搜索模式
-- 数据架构定义
-- 速率限制详情
-- 身份验证要求(如任何)
-- 排查常见错误
+Comprehensive API documentation including:
 
-需要详细 API 信息或构建复杂查询时参考此文档。
+- Complete endpoint listing with parameters
+- Request/response format specifications
+- Example queries for each endpoint
+- Filter operators and search patterns
+- Data schema definitions
+- Rate limiting details
+- Authentication requirements (if any)
+- Troubleshooting common errors
 
-## 重要说明
+Refer to this document when detailed API information is needed or when constructing complex queries.
 
-### 数据来源和集成
+## Important Notes
 
-ClinPGx 整合了多个权威来源:
-- **PharmGKB**: 策展的药物基因组学知识库(现为 ClinPGx 的一部分)
-- **CPIC**: 基于证据的临床实施指南
-- **PharmCAT**: 等位基因调用和表型解释工具
-- **DPWG**: 荷兰药物遗传学指南
-- **FDA/EMA 标签**: 监管药物基因组学信息
+### Data Sources and Integration
 
-截至 2025 年 7 月,所有 PharmGKB URL 都重定向到相应的 ClinPGx 页面。
+ClinPGx consolidates multiple authoritative sources:
+- **PharmGKB**: Curated pharmacogenomics knowledge base (now part of ClinPGx)
+- **CPIC**: Evidence-based clinical implementation guidelines
+- **PharmCAT**: Allele calling and phenotype interpretation tool
+- **DPWG**: Dutch pharmacogenetics guidelines
+- **FDA/EMA labels**: Regulatory pharmacogenomic information
 
-### 临床实施考虑
+As of July 2025, all PharmGKB URLs redirect to corresponding ClinPGx pages.
 
-- **证据水平**: 临床应用前始终检查证据强度
-- **人群差异**: 等位基因频率在不同人群中差异显著
-- **表型转换**: 考虑影响酶活性的药物-药物相互作用
-- **多基因效应**: 某些药物受多个药物基因影响
-- **非遗传因素**: 年龄、器官功能、药物相互作用也影响反应
-- **测试局限性**: 并非所有临床相关等位基因都被所有检测检测到
+### Clinical Implementation Considerations
 
-### 数据更新
+- **Evidence levels**: Always check evidence strength before clinical application
+- **Population differences**: Allele frequencies vary significantly across populations
+- **Phenoconversion**: Consider drug-drug interactions that affect enzyme activity
+- **Multi-gene effects**: Some drugs affected by multiple pharmacogenes
+- **Non-genetic factors**: Age, organ function, drug interactions also affect response
+- **Testing limitations**: Not all clinically relevant alleles detected by all assays
 
-- ClinPGx 随着新证据和指南的出现持续更新
-- 检查临床注释的发表日期
-- 监控 ClinPGx 博客(https://blog.clinpgx.org/)获取公告
-- 随着新证据的出现更新 CPIC 指南
-- PharmVar 提供等位基因定义的命名法更新
+### Data Updates
 
-### API 稳定性
+- ClinPGx continuously updates with new evidence and guidelines
+- Check publication dates for clinical annotations
+- Monitor ClinPGx Blog (https://blog.clinpgx.org/) for announcements
+- CPIC guidelines updated as new evidence emerges
+- PharmVar provides nomenclature updates for allele definitions
 
-- API 端点相对稳定,但可能在开发期间发生变化
-- 参数和响应格式可能被修改
-- 监控 API 更改日志和 ClinPGx 博客以获取更新
-- 考虑为生产应用固定版本
-- 在生产部署前测试 API 更改
+### API Stability
 
-## 常见用例
+- API endpoints are relatively stable but may change during development
+- Parameters and response formats subject to modification
+- Monitor API changelog and ClinPGx blog for updates
+- Consider version pinning for production applications
+- Test API changes in development before production deployment
 
-### 预防性药物基因组学测试
+## Common Use Cases
 
-查询所有临床可操作的基因-药物对以指导面板选择:
+### Pre-emptive Pharmacogenomic Testing
+
+Query all clinically actionable gene-drug pairs to guide panel selection:
 
 ```python
-# 获取所有 CPIC 指南对
+# Get all CPIC guideline pairs
 response = requests.get("https://api.clinpgx.org/v1/geneDrugPair",
-                       params={"cpicLevel": "A"})  # A 级推荐
+                       params={"cpicLevel": "A"})  # Level A recommendations
 actionable_pairs = response.json()
 ```
 
-### 药物治疗管理
+### Medication Therapy Management
 
-根据已知基因型审查患者药物:
+Review patient medications against known genotypes:
 
 ```python
 patient_genes = {"CYP2C19": "*1/*2", "CYP2D6": "*1/*1", "SLCO1B1": "*1/*5"}
@@ -607,27 +609,28 @@ for med in medications:
     for gene in patient_genes:
         response = requests.get("https://api.clinpgx.org/v1/geneDrugPair",
                                params={"gene": gene, "drug": med})
-        # 检查相互作用和给药指导
+        # Check for interactions and dosing guidance
 ```
 
-### 临床试验资格
+### Clinical Trial Eligibility
 
-筛查药物基因组学禁忌症:
+Screen for pharmacogenomic contraindications:
 
 ```python
-# 阿巴卡韦试验前检查 HLA-B*57:01
+# Check for HLA-B*57:01 before abacavir trial
 response = requests.get("https://api.clinpgx.org/v1/geneDrugPair",
                        params={"gene": "HLA-B", "drug": "abacavir"})
 pair_info = response.json()
-# CPIC: HLA-B*57:01 阳性时不要使用
+# CPIC: Do not use if HLA-B*57:01 positive
 ```
 
-## 其他资源
+## Additional Resources
 
-- **ClinPGx 网站**: https://www.clinpgx.org/
-- **ClinPGx 博客**: https://blog.clinpgx.org/
-- **API 文档**: https://api.clinpgx.org/
-- **CPIC 网站**: https://cpicpgx.org/
+- **ClinPGx website**: https://www.clinpgx.org/
+- **ClinPGx Blog**: https://blog.clinpgx.org/
+- **API documentation**: https://api.clinpgx.org/
+- **CPIC website**: https://cpicpgx.org/
 - **PharmCAT**: https://pharmcat.clinpgx.org/
 - **ClinGen**: https://clinicalgenome.org/
-- **联系方式**: api@clinpgx.org(用于大量 API 使用)
+- **Contact**: api@clinpgx.org (for substantial API use)
+

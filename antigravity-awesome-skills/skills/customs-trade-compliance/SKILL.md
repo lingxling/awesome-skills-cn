@@ -7,7 +7,6 @@ date_added: '2026-02-27'
 ---
 
 ## When to Use
-
 Use this skill when navigating international trade regulations, classifying goods under HS codes, determining appropriate Incoterms, managing import/export documentation, or optimizing customs duty payments through Free Trade Agreements.
 
 # Customs & Trade Compliance
@@ -234,7 +233,6 @@ Track these metrics monthly and trend quarterly:
 - For complete communication templates with variables and formatting guidance, see [communication-templates.md](references/communication-templates.md)
 
 ## When to Use
-
 Use this skill when you are **planning, auditing, or remediating customs and trade compliance processes**:
 
 - Classifying products (HS/HTS/TARIC), designing documentation flows, or implementing Incoterms for new trade lanes.

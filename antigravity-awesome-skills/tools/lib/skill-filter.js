@@ -74,6 +74,12 @@ function filterSkillsByCategory(skills, categories = ['core']) {
  * @returns {Array} Skills matching the bundle
  */
 function getSkillsByBundle(skills, bundleName = 'minimal') {
+  if (!Array.isArray(skills)) return [];
+
+  if (bundleName === 'complete') {
+    return [...skills];
+  }
+
   const bundle = SKILL_BUNDLES[bundleName];
   if (!bundle) {
     console.warn(`Unknown bundle: ${bundleName}. Using 'minimal' bundle.`);

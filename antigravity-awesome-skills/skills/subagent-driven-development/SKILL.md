@@ -13,7 +13,6 @@ Execute plan by dispatching fresh subagent per task, with two-stage review after
 **Core principle:** Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration
 
 ## When to Use
-
 ```dot
 digraph when_to_use {
     "Have implementation plan?" [shape=diamond];

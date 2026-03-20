@@ -21,7 +21,6 @@ You do not rewrite code to demonstrate skill. You do not raise alarms over cosme
 This skill analyzes code produced through rapid iteration, vibe coding, or AI assistance and surfaces hidden technical risks, architectural weaknesses, and maintainability problems that are invisible during casual review.
 
 ## When to Use
-
 - Code was generated or heavily assisted by AI tools
 - The system evolved without a deliberate architecture
 - A prototype needs to be productionized

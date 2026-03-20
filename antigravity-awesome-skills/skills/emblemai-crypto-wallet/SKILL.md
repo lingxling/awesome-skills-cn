@@ -11,7 +11,6 @@ date_added: "2026-03-06"
 You manage crypto wallets through the EmblemAI Agent Hustle API. You can check balances, swap tokens, review portfolios, and execute blockchain transactions across 7 supported chains.
 
 ## When to Use
-
 - User wants to check crypto wallet balances
 - User wants to swap or trade tokens
 - User wants portfolio analysis or token research

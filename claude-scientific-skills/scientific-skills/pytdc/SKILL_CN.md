@@ -1,6 +1,6 @@
 ---
 name: pytdc
-description: Therapeutics Data Commons。AI-ready药物发现数据集（ADME、毒性、DTI）、基准测试、支架分割、分子预言机，用于治疗ML和药理学预测。
+description: Therapeutics Data Commons. AI-ready drug discovery datasets (ADME, toxicity, DTI), benchmarks, scaffold splits, molecular oracles, for therapeutic ML and pharmacological prediction.
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,43 +8,43 @@ metadata:
 
 # PyTDC (Therapeutics Data Commons)
 
-## 概述
+## Overview
 
-PyTDC是一个开放科学平台，提供用于药物发现和开发的AI-ready数据集和基准测试。访问覆盖整个治疗管线的精选数据集，具有标准化的评估指标和有意义的数据分割，分为三类：单实例预测（分子/蛋白质特性）、多实例预测（药物-靶点相互作用、DDI）和生成（分子生成、逆向合成）。
+PyTDC is an open-science platform providing AI-ready datasets and benchmarks for drug discovery and development. Access curated datasets spanning the entire therapeutics pipeline with standardized evaluation metrics and meaningful data splits, organized into three categories: single-instance prediction (molecular/protein properties), multi-instance prediction (drug-target interactions, DDI), and generation (molecule generation, retrosynthesis).
 
-## 使用场景
+## When to Use This Skill
 
-当您需要以下操作时使用此技能：
-- 处理药物发现或治疗ML数据集
-- 在标准化制药任务上基准测试机器学习模型
-- 预测分子特性（ADME、毒性、生物活性）
-- 预测药物-靶点或药物-药物相互作用
-- 生成具有所需特性的新型分子
-- 访问具有适当训练/测试分割的精选数据集（支架、冷分割）
-- 使用分子预言机进行特性优化
+This skill should be used when:
+- Working with drug discovery or therapeutic ML datasets
+- Benchmarking machine learning models on standardized pharmaceutical tasks
+- Predicting molecular properties (ADME, toxicity, bioactivity)
+- Predicting drug-target or drug-drug interactions
+- Generating novel molecules with desired properties
+- Accessing curated datasets with proper train/test splits (scaffold, cold-split)
+- Using molecular oracles for property optimization
 
-## 安装与设置
+## Installation & Setup
 
-使用pip安装PyTDC：
+Install PyTDC using pip:
 
 ```bash
 uv pip install PyTDC
 ```
 
-升级到最新版本：
+To upgrade to the latest version:
 
 ```bash
 uv pip install PyTDC --upgrade
 ```
 
-核心依赖（自动安装）：
+Core dependencies (automatically installed):
 - numpy, pandas, tqdm, seaborn, scikit_learn, fuzzywuzzy
 
-根据需要，额外的包会自动安装以支持特定功能。
+Additional packages are installed automatically as needed for specific features.
 
-## 快速开始
+## Quick Start
 
-访问任何TDC数据集的基本模式如下：
+The basic pattern for accessing any TDC dataset follows this structure:
 
 ```python
 from tdc.<problem> import <Task>
@@ -53,103 +53,103 @@ split = data.get_split(method='scaffold', seed=1, frac=[0.7, 0.1, 0.2])
 df = data.get_data(format='df')
 ```
 
-其中：
-- `<problem>`: `single_pred`、`multi_pred`或`generation`之一
-- `<Task>`: 特定任务类别（例如，ADME、DTI、MolGen）
-- `<Dataset>`: 该任务内的数据集名称
+Where:
+- `<problem>`: One of `single_pred`, `multi_pred`, or `generation`
+- `<Task>`: Specific task category (e.g., ADME, DTI, MolGen)
+- `<Dataset>`: Dataset name within that task
 
-**示例 - 加载ADME数据：**
+**Example - Loading ADME data:**
 
 ```python
 from tdc.single_pred import ADME
 data = ADME(name='Caco2_Wang')
 split = data.get_split(method='scaffold')
-# 返回包含'train'、'valid'、'test' DataFrame的字典
+# Returns dict with 'train', 'valid', 'test' DataFrames
 ```
 
-## 单实例预测任务
+## Single-Instance Prediction Tasks
 
-单实例预测涉及预测单个生物医学实体（分子、蛋白质等）的特性。
+Single-instance prediction involves forecasting properties of individual biomedical entities (molecules, proteins, etc.).
 
-### 可用任务类别
+### Available Task Categories
 
-#### 1. ADME（吸收、分布、代谢、排泄）
+#### 1. ADME (Absorption, Distribution, Metabolism, Excretion)
 
-预测药物分子的药代动力学特性。
+Predict pharmacokinetic properties of drug molecules.
 
 ```python
 from tdc.single_pred import ADME
-data = ADME(name='Caco2_Wang')  # 肠通透性
-# 其他数据集：HIA_Hou, Bioavailability_Ma, Lipophilicity_AstraZeneca等
+data = ADME(name='Caco2_Wang')  # Intestinal permeability
+# Other datasets: HIA_Hou, Bioavailability_Ma, Lipophilicity_AstraZeneca, etc.
 ```
 
-**常见ADME数据集：**
-- Caco2 - 肠通透性
-- HIA - 人体肠吸收
-- Bioavailability - 口服生物利用度
-- Lipophilicity - 辛醇-水分配系数
-- Solubility - 水溶性
-- BBB - 血脑屏障穿透
-- CYP - 细胞色素P450代谢
+**Common ADME datasets:**
+- Caco2 - Intestinal permeability
+- HIA - Human intestinal absorption
+- Bioavailability - Oral bioavailability
+- Lipophilicity - Octanol-water partition coefficient
+- Solubility - Aqueous solubility
+- BBB - Blood-brain barrier penetration
+- CYP - Cytochrome P450 metabolism
 
-#### 2. 毒性（Tox）
+#### 2. Toxicity (Tox)
 
-预测化合物的毒性和不良反应。
+Predict toxicity and adverse effects of compounds.
 
 ```python
 from tdc.single_pred import Tox
-data = Tox(name='hERG')  # 心脏毒性
-# 其他数据集：AMES, DILI, Carcinogens_Lagunin等
+data = Tox(name='hERG')  # Cardiotoxicity
+# Other datasets: AMES, DILI, Carcinogens_Lagunin, etc.
 ```
 
-**常见毒性数据集：**
-- hERG - 心脏毒性
-- AMES - 致突变性
-- DILI - 药物诱导的肝损伤
-- Carcinogens - 致癌性
-- ClinTox - 临床试验毒性
+**Common toxicity datasets:**
+- hERG - Cardiac toxicity
+- AMES - Mutagenicity
+- DILI - Drug-induced liver injury
+- Carcinogens - Carcinogenicity
+- ClinTox - Clinical trial toxicity
 
-#### 3. HTS（高通量筛选）
+#### 3. HTS (High-Throughput Screening)
 
-来自筛选数据的生物活性预测。
+Bioactivity predictions from screening data.
 
 ```python
 from tdc.single_pred import HTS
 data = HTS(name='SARSCoV2_Vitro_Touret')
 ```
 
-#### 4. QM（量子力学）
+#### 4. QM (Quantum Mechanics)
 
-分子的量子力学特性。
+Quantum mechanical properties of molecules.
 
 ```python
 from tdc.single_pred import QM
 data = QM(name='QM7')
 ```
 
-#### 5. 其他单预测任务
+#### 5. Other Single Prediction Tasks
 
-- **Yields**：化学反应产率预测
-- **Epitope**：生物制品的表位预测
-- **Develop**：开发阶段预测
-- **CRISPROutcome**：基因编辑结果预测
+- **Yields**: Chemical reaction yield prediction
+- **Epitope**: Epitope prediction for biologics
+- **Develop**: Development-stage predictions
+- **CRISPROutcome**: Gene editing outcome prediction
 
-### 数据格式
+### Data Format
 
-单预测数据集通常返回包含以下列的DataFrame：
-- `Drug_ID`或`Compound_ID`：唯一标识符
-- `Drug`或`X`：SMILES字符串或分子表示
-- `Y`：目标标签（连续或二元）
+Single prediction datasets typically return DataFrames with columns:
+- `Drug_ID` or `Compound_ID`: Unique identifier
+- `Drug` or `X`: SMILES string or molecular representation
+- `Y`: Target label (continuous or binary)
 
-## 多实例预测任务
+## Multi-Instance Prediction Tasks
 
-多实例预测涉及预测多个生物医学实体之间相互作用的特性。
+Multi-instance prediction involves forecasting properties of interactions between multiple biomedical entities.
 
-### 可用任务类别
+### Available Task Categories
 
-#### 1. DTI（药物-靶点相互作用）
+#### 1. DTI (Drug-Target Interaction)
 
-预测药物和蛋白质靶点之间的结合亲和力。
+Predict binding affinity between drugs and protein targets.
 
 ```python
 from tdc.multi_pred import DTI
@@ -157,17 +157,17 @@ data = DTI(name='BindingDB_Kd')
 split = data.get_split()
 ```
 
-**可用数据集：**
-- BindingDB_Kd - 解离常数（52,284对）
-- BindingDB_IC50 - 半最大抑制浓度（991,486对）
-- BindingDB_Ki - 抑制常数（375,032对）
-- DAVIS, KIBA - 激酶结合数据集
+**Available datasets:**
+- BindingDB_Kd - Dissociation constant (52,284 pairs)
+- BindingDB_IC50 - Half-maximal inhibitory concentration (991,486 pairs)
+- BindingDB_Ki - Inhibition constant (375,032 pairs)
+- DAVIS, KIBA - Kinase binding datasets
 
-**数据格式：** Drug_ID, Target_ID, Drug (SMILES), Target (序列), Y (结合亲和力)
+**Data format:** Drug_ID, Target_ID, Drug (SMILES), Target (sequence), Y (binding affinity)
 
-#### 2. DDI（药物-药物相互作用）
+#### 2. DDI (Drug-Drug Interaction)
 
-预测药物对之间的相互作用。
+Predict interactions between drug pairs.
 
 ```python
 from tdc.multi_pred import DDI
@@ -175,35 +175,35 @@ data = DDI(name='DrugBank')
 split = data.get_split()
 ```
 
-多分类任务，预测相互作用类型。数据集包含191,808个DDI对，涉及1,706种药物。
+Multi-class classification task predicting interaction types. Dataset contains 191,808 DDI pairs with 1,706 drugs.
 
-#### 3. PPI（蛋白质-蛋白质相互作用）
+#### 3. PPI (Protein-Protein Interaction)
 
-预测蛋白质-蛋白质相互作用。
+Predict protein-protein interactions.
 
 ```python
 from tdc.multi_pred import PPI
 data = PPI(name='HuRI')
 ```
 
-#### 4. 其他多预测任务
+#### 4. Other Multi-Prediction Tasks
 
-- **GDA**：基因-疾病关联
-- **DrugRes**：药物耐药性预测
-- **DrugSyn**：药物协同作用预测
-- **PeptideMHC**：肽-MHC结合
-- **AntibodyAff**：抗体亲和力预测
-- **MTI**：miRNA-靶点相互作用
-- **Catalyst**：催化剂预测
-- **TrialOutcome**：临床试验结果预测
+- **GDA**: Gene-disease associations
+- **DrugRes**: Drug resistance prediction
+- **DrugSyn**: Drug synergy prediction
+- **PeptideMHC**: Peptide-MHC binding
+- **AntibodyAff**: Antibody affinity prediction
+- **MTI**: miRNA-target interactions
+- **Catalyst**: Catalyst prediction
+- **TrialOutcome**: Clinical trial outcome prediction
 
-## 生成任务
+## Generation Tasks
 
-生成任务涉及创建具有所需特性的新型生物医学实体。
+Generation tasks involve creating novel biomedical entities with desired properties.
 
-### 1. 分子生成（MolGen）
+### 1. Molecular Generation (MolGen)
 
-生成具有理想化学特性的多样化、新型分子。
+Generate diverse, novel molecules with desirable chemical properties.
 
 ```python
 from tdc.generation import MolGen
@@ -211,19 +211,19 @@ data = MolGen(name='ChEMBL_V29')
 split = data.get_split()
 ```
 
-与预言机一起使用以优化特定特性：
+Use with oracles to optimize for specific properties:
 
 ```python
 from tdc import Oracle
 oracle = Oracle(name='GSK3B')
-score = oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')  # 评估SMILES
+score = oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')  # Evaluate SMILES
 ```
 
-有关所有可用预言机函数，请参见`references/oracles.md`。
+See `references/oracles.md` for all available oracle functions.
 
-### 2. 逆向合成（RetroSyn）
+### 2. Retrosynthesis (RetroSyn)
 
-预测合成目标分子所需的反应物。
+Predict reactants needed to synthesize a target molecule.
 
 ```python
 from tdc.generation import RetroSyn
@@ -231,227 +231,228 @@ data = RetroSyn(name='USPTO')
 split = data.get_split()
 ```
 
-数据集包含来自USPTO数据库的1,939,253个反应。
+Dataset contains 1,939,253 reactions from USPTO database.
 
-### 3. 配对分子生成
+### 3. Paired Molecule Generation
 
-生成分子对（例如，前药-药物对）。
+Generate molecule pairs (e.g., prodrug-drug pairs).
 
 ```python
 from tdc.generation import PairMolGen
 data = PairMolGen(name='Prodrug')
 ```
 
-有关预言机文档和分子生成工作流的详细信息，请参考`references/oracles.md`和`scripts/molecular_generation.py`。
+For detailed oracle documentation and molecular generation workflows, refer to `references/oracles.md` and `scripts/molecular_generation.py`.
 
-## 基准测试组
+## Benchmark Groups
 
-基准测试组提供相关数据集的精选集合，用于系统模型评估。
+Benchmark groups provide curated collections of related datasets for systematic model evaluation.
 
-### ADMET基准测试组
+### ADMET Benchmark Group
 
 ```python
 from tdc.benchmark_group import admet_group
 group = admet_group(path='data/')
 
-# 获取基准测试数据集
+# Get benchmark datasets
 benchmark = group.get('Caco2_Wang')
 predictions = {}
 
 for seed in [1, 2, 3, 4, 5]:
     train, valid = benchmark['train'], benchmark['valid']
-    # 在此训练模型
+    # Train model here
     predictions[seed] = model.predict(benchmark['test'])
 
-# 用所需的5个种子评估
+# Evaluate with required 5 seeds
 results = group.evaluate(predictions)
 ```
 
-**ADMET组包括22个数据集**，涵盖吸收、分布、代谢、排泄和毒性。
+**ADMET Group includes 22 datasets** covering absorption, distribution, metabolism, excretion, and toxicity.
 
-### 其他基准测试组
+### Other Benchmark Groups
 
-可用的基准测试组包括以下集合：
-- ADMET特性
-- 药物-靶点相互作用
-- 药物组合预测
-- 更多专门的治疗任务
+Available benchmark groups include collections for:
+- ADMET properties
+- Drug-target interactions
+- Drug combination prediction
+- And more specialized therapeutic tasks
 
-有关基准测试评估工作流，请参见`scripts/benchmark_evaluation.py`。
+For benchmark evaluation workflows, see `scripts/benchmark_evaluation.py`.
 
-## 数据函数
+## Data Functions
 
-TDC提供组织为四类的综合数据处理工具。
+TDC provides comprehensive data processing utilities organized into four categories.
 
-### 1. 数据集分割
+### 1. Dataset Splits
 
-使用各种策略检索训练/验证/测试分区：
+Retrieve train/validation/test partitions with various strategies:
 
 ```python
-# 支架分割（大多数任务的默认值）
+# Scaffold split (default for most tasks)
 split = data.get_split(method='scaffold', seed=1, frac=[0.7, 0.1, 0.2])
 
-# 随机分割
+# Random split
 split = data.get_split(method='random', seed=42, frac=[0.8, 0.1, 0.1])
 
-# 冷分割（用于DTI/DDI任务）
-split = data.get_split(method='cold_drug', seed=1)  # 测试中未见药物
-split = data.get_split(method='cold_target', seed=1)  # 测试中未见靶点
+# Cold split (for DTI/DDI tasks)
+split = data.get_split(method='cold_drug', seed=1)  # Unseen drugs in test
+split = data.get_split(method='cold_target', seed=1)  # Unseen targets in test
 ```
 
-**可用分割策略：**
-- `random`：随机洗牌
-- `scaffold`：基于支架（用于化学多样性）
-- `cold_drug`, `cold_target`, `cold_drug_target`：用于DTI任务
-- `temporal`：时间数据集的基于时间的分割
+**Available split strategies:**
+- `random`: Random shuffling
+- `scaffold`: Scaffold-based (for chemical diversity)
+- `cold_drug`, `cold_target`, `cold_drug_target`: For DTI tasks
+- `temporal`: Time-based splits for temporal datasets
 
-### 2. 模型评估
+### 2. Model Evaluation
 
-使用标准化指标进行评估：
+Use standardized metrics for evaluation:
 
 ```python
 from tdc import Evaluator
 
-# 对于二元分类
+# For binary classification
 evaluator = Evaluator(name='ROC-AUC')
 score = evaluator(y_true, y_pred)
 
-# 对于回归
+# For regression
 evaluator = Evaluator(name='RMSE')
 score = evaluator(y_true, y_pred)
 ```
 
-**可用指标：** ROC-AUC, PR-AUC, F1, 准确率, RMSE, MAE, R2, Spearman, Pearson等。
+**Available metrics:** ROC-AUC, PR-AUC, F1, Accuracy, RMSE, MAE, R2, Spearman, Pearson, and more.
 
-### 3. 数据处理
+### 3. Data Processing
 
-TDC提供11个关键处理工具：
+TDC provides 11 key processing utilities:
 
 ```python
 from tdc.chem_utils import MolConvert
 
-# 分子格式转换
+# Molecule format conversion
 converter = MolConvert(src='SMILES', dst='PyG')
 pyg_graph = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
 ```
 
-**处理工具包括：**
-- 分子格式转换（SMILES、SELFIES、PyG、DGL、ECFP等）
-- 分子过滤器（PAINS、类药性质）
-- 标签二值化和单位转换
-- 数据平衡（过/欠采样）
-- 对数据的负采样
-- 图转换
-- 实体检索（CID到SMILES、UniProt到序列）
+**Processing utilities include:**
+- Molecule format conversion (SMILES, SELFIES, PyG, DGL, ECFP, etc.)
+- Molecule filters (PAINS, drug-likeness)
+- Label binarization and unit conversion
+- Data balancing (over/under-sampling)
+- Negative sampling for pair data
+- Graph transformation
+- Entity retrieval (CID to SMILES, UniProt to sequence)
 
-有关综合工具文档，请参见`references/utilities.md`。
+For comprehensive utilities documentation, see `references/utilities.md`.
 
-### 4. 分子生成预言机
+### 4. Molecule Generation Oracles
 
-TDC提供17+个用于分子优化的预言机函数：
+TDC provides 17+ oracle functions for molecular optimization:
 
 ```python
 from tdc import Oracle
 
-# 单个预言机
+# Single oracle
 oracle = Oracle(name='DRD2')
 score = oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
 
-# 多个预言机
+# Multiple oracles
 oracle = Oracle(name='JNK3')
 scores = oracle(['SMILES1', 'SMILES2', 'SMILES3'])
 ```
 
-有关完整的预言机文档，请参见`references/oracles.md`。
+For complete oracle documentation, see `references/oracles.md`.
 
-## 高级功能
+## Advanced Features
 
-### 检索可用数据集
+### Retrieve Available Datasets
 
 ```python
 from tdc.utils import retrieve_dataset_names
 
-# 获取所有ADME数据集
+# Get all ADME datasets
 adme_datasets = retrieve_dataset_names('ADME')
 
-# 获取所有DTI数据集
+# Get all DTI datasets
 dti_datasets = retrieve_dataset_names('DTI')
 ```
 
-### 标签转换
+### Label Transformations
 
 ```python
-# 获取标签映射
+# Get label mapping
 label_map = data.get_label_map(name='DrugBank')
 
-# 转换标签
+# Convert labels
 from tdc.chem_utils import label_transform
 transformed = label_transform(y, from_unit='nM', to_unit='p')
 ```
 
-### 数据库查询
+### Database Queries
 
 ```python
 from tdc.utils import cid2smiles, uniprot2seq
 
-# 将PubChem CID转换为SMILES
+# Convert PubChem CID to SMILES
 smiles = cid2smiles(2244)
 
-# 将UniProt ID转换为氨基酸序列
+# Convert UniProt ID to amino acid sequence
 sequence = uniprot2seq('P12345')
 ```
 
-## 常见工作流
+## Common Workflows
 
-### 工作流1：训练单预测模型
+### Workflow 1: Train a Single Prediction Model
 
-有关完整示例，请参见`scripts/load_and_split_data.py`：
+See `scripts/load_and_split_data.py` for a complete example:
 
 ```python
 from tdc.single_pred import ADME
 from tdc import Evaluator
 
-# 加载数据
+# Load data
 data = ADME(name='Caco2_Wang')
 split = data.get_split(method='scaffold', seed=42)
 
 train, valid, test = split['train'], split['valid'], split['test']
 
-# 训练模型（用户实现）
+# Train model (user implements)
 # model.fit(train['Drug'], train['Y'])
 
-# 评估
+# Evaluate
 evaluator = Evaluator(name='MAE')
 # score = evaluator(test['Y'], predictions)
 ```
 
-### 工作流2：基准测试评估
+### Workflow 2: Benchmark Evaluation
 
-有关带有多个种子和适当评估协议的完整示例，请参见`scripts/benchmark_evaluation.py`。
+See `scripts/benchmark_evaluation.py` for a complete example with multiple seeds and proper evaluation protocol.
 
-### 工作流3：使用预言机的分子生成
+### Workflow 3: Molecular Generation with Oracles
 
-有关使用预言机函数进行目标导向生成的示例，请参见`scripts/molecular_generation.py`。
+See `scripts/molecular_generation.py` for an example of goal-directed generation using oracle functions.
 
-## 资源
+## Resources
 
-此技能包含用于常见TDC工作流的捆绑资源：
+This skill includes bundled resources for common TDC workflows:
 
 ### scripts/
 
-- `load_and_split_data.py`：使用各种策略加载和分割TDC数据集的模板
-- `benchmark_evaluation.py`：使用适当的5种子协议运行基准测试组评估的模板
-- `molecular_generation.py`：使用预言机函数进行分子生成的模板
+- `load_and_split_data.py`: Template for loading and splitting TDC datasets with various strategies
+- `benchmark_evaluation.py`: Template for running benchmark group evaluations with proper 5-seed protocol
+- `molecular_generation.py`: Template for molecular generation using oracle functions
 
 ### references/
 
-- `datasets.md`：按任务类型组织的所有可用数据集的综合目录
-- `oracles.md`：所有17+个分子生成预言机的完整文档
-- `utilities.md`：数据处理、分割和评估工具的详细指南
+- `datasets.md`: Comprehensive catalog of all available datasets organized by task type
+- `oracles.md`: Complete documentation of all 17+ molecule generation oracles
+- `utilities.md`: Detailed guide to data processing, splitting, and evaluation utilities
 
-## 其他资源
+## Additional Resources
 
-- **官方网站**：https://tdcommons.ai
-- **文档**：https://tdc.readthedocs.io
-- **GitHub**：https://github.com/mims-harvard/TDC
-- **论文**：NeurIPS 2021 - "Therapeutics Data Commons: Machine Learning Datasets and Tasks for Drug Discovery and Development"
+- **Official Website**: https://tdcommons.ai
+- **Documentation**: https://tdc.readthedocs.io
+- **GitHub**: https://github.com/mims-harvard/TDC
+- **Paper**: NeurIPS 2021 - "Therapeutics Data Commons: Machine Learning Datasets and Tasks for Drug Discovery and Development"
+

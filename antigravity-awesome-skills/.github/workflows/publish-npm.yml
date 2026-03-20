@@ -5,6 +5,9 @@
 
 name: Publish to npm
 
+permissions:
+  contents: read
+
 on:
   release:
     types: [published]

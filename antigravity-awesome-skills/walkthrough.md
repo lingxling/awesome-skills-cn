@@ -1,3 +1,36 @@
+# Maintenance Walkthrough - 2026-03-18
+
+- Fixed issue `#344` by correcting `.claude-plugin/marketplace.json` so the marketplace plugin entry uses `source: "./"` instead of `"."`, matching Claude Code's relative-path schema requirement for marketplace entries.
+- Added `tools/scripts/tests/claude_plugin_marketplace.test.js` and wired it into the local test suite so invalid marketplace `source` paths fail fast in CI/maintainer verification.
+- Merged PRs `#333`, `#336`, `#338`, `#343`, `#340`, `#334`, and `#345` via GitHub squash merge after maintainer refresh of forked workflows and PR metadata.
+- Closed PR `#337` and PR `#342` as superseded by `#338`, then closed issue `#339` manually after confirming the accepted fix path; issue `#335` auto-closed from the merged PR body.
+- Closed issue `#344` with a follow-up comment after shipping the plugin marketplace fix on `main`, and left PR `#341` open with a blocking review comment because the submitted skill content is corrupted even though CI is green.
+- Documented a new maintainer edge case in `.github/MAINTENANCE.md`: forked runs in `action_required`, `pr-policy` failures caused by stale PR bodies, the REST API fallback when `gh pr edit` fails with the Projects Classic GraphQL error, and the need to `close`/`reopen` a PR when a plain rerun does not pick up updated metadata.
+- Refreshed the release-facing docs for `8.2.0` across `README.md`, `docs/users/getting-started.md`, `docs/users/walkthrough.md`, and `CHANGELOG.md`.
+- Published release `v8.2.0` on `main` with:
+  - `npm run release:preflight`
+  - `npm run security:docs`
+  - `npm run release:prepare -- 8.2.0`
+  - `npm run release:publish -- 8.2.0`
+
+# Maintenance Walkthrough - 2026-03-17
+
+- Synced `main` after the six merged community PRs and re-verified all forked PR workflows through GitHub before final release prep.
+- Reopened/approved forked GitHub Actions runs where needed, normalized missing PR quality checklists, and merged PRs `#331`, `#330`, `#326`, `#324`, `#325`, and `#329` with GitHub squash merge.
+- Patched `skills/vibers-code-review/SKILL.md` on the contributor branch for PR `#325` so the skill had valid YAML frontmatter, a `When to Use` section, and explicit limitations; reran CI and merged after green checks.
+- Closed issue `#327` with a release comment pointing to `#331`, and closed issue `#328` as a duplicate of `#269` with links to the README recovery guidance and `docs/users/windows-truncation-recovery.md`.
+- Updated release-facing docs before cutting `v8.1.0`:
+  - `README.md`
+  - `docs/users/getting-started.md`
+  - `CHANGELOG.md`
+  - `walkthrough.md`
+- Refreshed the README contributor acknowledgements to include the latest merged contributors from the maintenance batch.
+- Release workflow to run for `8.1.0`:
+  - `npm run release:preflight`
+  - `npm run security:docs`
+  - `npm run release:prepare -- 8.1.0`
+  - `npm run release:publish -- 8.1.0`
+
 # Maintenance Walkthrough - 2026-03-12
 
 - Merged PRs `#277`, `#272`, `#275`, `#278`, and `#271` via GitHub squash merge after bringing contributor branches into a mergeable state and refreshing PR bodies against the quality checklist in `.github/MAINTENANCE.md`.

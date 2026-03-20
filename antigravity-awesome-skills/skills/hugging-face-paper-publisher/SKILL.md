@@ -1,6 +1,8 @@
 ---
 name: hugging-face-paper-publisher
 description: Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating professional markdown-based research articles.
+risk: unknown
+source: community
 ---
 
 # Overview
@@ -63,7 +65,6 @@ The skill includes Python scripts in `scripts/` for paper publishing operations.
 file.**
 > Before running any script, first `cd` to that directory or use the full
 path.
-
 
 ### Method 1: Index Paper from arXiv
 

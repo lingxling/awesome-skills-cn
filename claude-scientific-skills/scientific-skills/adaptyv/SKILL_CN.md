@@ -1,6 +1,6 @@
 ---
 name: adaptyv
-description: 云实验室平台，用于自动化蛋白质测试和验证。在设计蛋白质并需要实验验证时使用，包括结合测定、表达测试、热稳定性测量、酶活性测定或蛋白质序列优化。也可用于通过 API 提交实验、跟踪实验状态、下载结果、使用计算工具（NetSolP、SoluProt、SolubleMPNN、ESM）优化蛋白质序列以获得更好的表达，或管理具有湿实验验证的蛋白质设计工作流程。
+description: Cloud laboratory platform for automated protein testing and validation. Use when designing proteins and needing experimental validation including binding assays, expression testing, thermostability measurements, enzyme activity assays, or protein sequence optimization. Also use for submitting experiments via API, tracking experiment status, downloading results, optimizing protein sequences for better expression using computational tools (NetSolP, SoluProt, SolubleMPNN, ESM), or managing protein design workflows with wet-lab validation.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
@@ -8,39 +8,39 @@ metadata:
 
 # Adaptyv
 
-Adaptyv 是一个云实验室平台，提供自动化蛋白质测试和验证服务。通过 API 或 Web 界面提交蛋白质序列，在大约 21 天内接收实验结果。
+Adaptyv is a cloud laboratory platform that provides automated protein testing and validation services. Submit protein sequences via API or web interface and receive experimental results in approximately 21 days.
 
-## 快速开始
+## Quick Start
 
-### 认证设置
+### Authentication Setup
 
-Adaptyv 需要 API 认证。设置您的凭据：
+Adaptyv requires API authentication. Set up your credentials:
 
-1. 联系 support@adaptyvbio.com 请求 API 访问权限（平台处于 alpha/beta 阶段）
-2. 接收您的 API 访问令牌
-3. 设置环境变量：
+1. Contact support@adaptyvbio.com to request API access (platform is in alpha/beta)
+2. Receive your API access token
+3. Set environment variable:
 
 ```bash
 export ADAPTYV_API_KEY="your_api_key_here"
 ```
 
-或创建 `.env` 文件：
+Or create a `.env` file:
 
 ```
 ADAPTYV_API_KEY=your_api_key_here
 ```
 
-### 安装
+### Installation
 
-使用 uv 安装所需的包：
+Install the required package using uv:
 
 ```bash
 uv pip install requests python-dotenv
 ```
 
-### 基本用法
+### Basic Usage
 
-提交蛋白质序列进行测试：
+Submit protein sequences for testing:
 
 ```python
 import os
@@ -57,7 +57,7 @@ headers = {
     "Content-Type": "application/json"
 }
 
-# 提交实验
+# Submit experiment
 response = requests.post(
     f"{base_url}/experiments",
     headers=headers,
@@ -71,45 +71,42 @@ response = requests.post(
 experiment_id = response.json()["experiment_id"]
 ```
 
-## 可用的实验类型
+## Available Experiment Types
+Adaptyv supports multiple assay types:
+- **Binding assays** - Test protein-target interactions using biolayer interferometry
+- **Expression testing** - Measure protein expression levels
+- **Thermostability** - Characterize protein thermal stability
+- **Enzyme activity** - Assess enzymatic function
 
-Adaptyv 支持多种测定类型：
-- **结合测定** - 使用生物层干涉技术测试蛋白质-靶标相互作用
-- **表达测试** - 测量蛋白质表达水平
-- **热稳定性** - 表征蛋白质热稳定性
-- **酶活性** - 评估酶功能
+See `reference/experiments.md` for detailed information on each experiment type and workflows.
 
-有关每种实验类型和工作流程的详细信息，请参阅 `reference/experiments.md`。
+## Protein Sequence Optimization
+Before submitting sequences, optimize them for better expression and stability:
 
-## 蛋白质序列优化
+**Common issues to address:**
+- Unpaired cysteines that create unwanted disulfides
+- Excessive hydrophobic regions causing aggregation
+- Poor solubility predictions
 
-在提交序列之前，优化它们以获得更好的表达和稳定性：
+**Recommended tools:**
+- NetSolP / SoluProt - Initial solubility filtering
+- SolubleMPNN - Sequence redesign for improved solubility
+- ESM - Sequence likelihood scoring
+- ipTM - Interface stability assessment
+- pSAE - Hydrophobic exposure quantification
 
-**需要解决的常见问题：**
-- 形成不需要的二硫键的未配对半胱氨酸
-- 导致聚集的过度疏水区域
-- 溶解度预测不佳
+See `reference/protein_optimization.md` for detailed optimization workflows and tool usage.
 
-**推荐工具：**
-- NetSolP / SoluProt - 初始溶解度筛选
-- SolubleMPNN - 改善溶解度的序列重新设计
-- ESM - 序列可能性评分
-- ipTM - 界面稳定性评估
-- pSAE - 疏水性暴露量化
+## API Reference
+For complete API documentation including all endpoints, request/response formats, and authentication details, see `reference/api_reference.md`.
 
-有关详细的优化工作流程和工具使用，请参阅 `reference/protein_optimization.md`。
+## Examples
+For concrete code examples covering common use cases (experiment submission, status tracking, result retrieval, batch processing), see `reference/examples.md`.
 
-## API 参考
+## Important Notes
+- Platform is currently in alpha/beta phase with features subject to change
+- Not all platform features are available via API yet
+- Results typically delivered in ~21 days
+- Contact support@adaptyvbio.com for access requests or questions
+- Suitable for high-throughput AI-driven protein design workflows
 
-有关完整的 API 文档，包括所有端点、请求/响应格式和身份验证详细信息，请参阅 `reference/api_reference.md`。
-
-## 示例
-
-有关涵盖常见用例（实验提交、状态跟踪、结果检索、批处理）的具体代码示例，请参阅 `reference/examples.md`。
-
-## 重要说明
-- 平台目前处于 alpha/beta 阶段，功能可能会发生变化
-- 并非所有平台功能都可通过 API 使用
-- 结果通常在约 21 天内交付
-- 如需访问请求或问题，请联系 support@adaptyvbio.com
-- 适用于高通量 AI 驱动的蛋白质设计工作流程

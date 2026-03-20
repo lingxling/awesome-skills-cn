@@ -13,7 +13,6 @@ date_added: "2026-02-27"
 Perform comprehensive security assessments of AWS environments to identify vulnerabilities and misconfigurations.
 
 ## When to Use
-
 Use this skill when you need to audit AWS security posture, identify vulnerabilities, or prepare for compliance assessments.
 
 ## Audit Categories

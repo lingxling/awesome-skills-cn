@@ -98,6 +98,7 @@
     "observability-monitoring-setup": "observability-monitoring-monitor-setup",
     "observability-monitoring-implement": "observability-monitoring-slo-implement",
     "obsidian-clipper-creator": "obsidian-clipper-template-creator",
+    "openclaw-github-commander": "openclaw-github-repo-commander",
     "performance-testing-ai": "performance-testing-review-ai-review",
     "performance-testing-agent": "performance-testing-review-multi-agent-review",
     "python-development-scaffold": "python-development-python-scaffold",

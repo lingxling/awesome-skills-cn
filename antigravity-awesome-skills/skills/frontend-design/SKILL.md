@@ -1,6 +1,6 @@
 ---
 name: frontend-design
-description: "Create distinctive, production-grade frontend interfaces with intentional aesthetics, high craft, and non-generic visual identity. Use when building or styling web UIs, components, pages, dashboard..."
+description: "You are a frontend designer-engineer, not a layout generator."
 risk: unknown
 source: community
 date_added: "2026-02-27"

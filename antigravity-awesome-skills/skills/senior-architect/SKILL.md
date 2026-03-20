@@ -1,6 +1,6 @@
 ---
 name: senior-architect
-description: "Comprehensive software architecture skill for designing scalable, maintainable systems using ReactJS, NextJS, NodeJS, Express, React Native, Swift, Kotlin, Flutter, Postgres, GraphQL, Go, Python. I..."
+description: "Complete toolkit for senior architect with modern tools and best practices."
 risk: unknown
 source: community
 date_added: "2026-02-27"

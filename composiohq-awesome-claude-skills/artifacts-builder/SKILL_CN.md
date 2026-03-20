@@ -1,74 +1,74 @@
 ---
 name: artifacts-builder
-description: 一套用于使用现代前端 Web 技术（React、Tailwind CSS、shadcn/ui）创建复杂、多组件 claude.ai HTML 工件的工具。用于需要状态管理、路由或 shadcn/ui 组件的复杂工件，而不是简单的单文件 HTML/JSX 工件。
-license: 完整条款见 LICENSE.txt
+description: Suite of tools for creating elaborate, multi-component claude.ai HTML artifacts using modern frontend web technologies (React, Tailwind CSS, shadcn/ui). Use for complex artifacts requiring state management, routing, or shadcn/ui components - not for simple single-file HTML/JSX artifacts.
+license: Complete terms in LICENSE.txt
 ---
 
-# 工件构建器
+# Artifacts Builder
 
-要构建强大的前端 claude.ai 工件，请按照以下步骤操作：
-1. 使用 `scripts/init-artifact.sh` 初始化前端仓库
-2. 通过编辑生成的代码来开发您的工件
-3. 使用 `scripts/bundle-artifact.sh` 将所有代码打包到单个 HTML 文件中
-4. 向用户显示工件
-5. （可选）测试工件
+To build powerful frontend claude.ai artifacts, follow these steps:
+1. Initialize the frontend repo using `scripts/init-artifact.sh`
+2. Develop your artifact by editing the generated code
+3. Bundle all code into a single HTML file using `scripts/bundle-artifact.sh`
+4. Display artifact to user
+5. (Optional) Test the artifact
 
-**技术栈**：React 18 + TypeScript + Vite + Parcel（打包）+ Tailwind CSS + shadcn/ui
+**Stack**: React 18 + TypeScript + Vite + Parcel (bundling) + Tailwind CSS + shadcn/ui
 
-## 设计和样式指南
+## Design & Style Guidelines
 
-非常重要：为了避免通常被称为 "AI 糟粕" 的设计，避免使用过度居中的布局、紫色渐变、统一的圆角和 Inter 字体。
+VERY IMPORTANT: To avoid what is often referred to as "AI slop", avoid using excessive centered layouts, purple gradients, uniform rounded corners, and Inter font.
 
-## 快速开始
+## Quick Start
 
-### 步骤 1：初始化项目
+### Step 1: Initialize Project
 
-运行初始化脚本创建一个新的 React 项目：
+Run the initialization script to create a new React project:
 ```bash
 bash scripts/init-artifact.sh <project-name>
 cd <project-name>
 ```
 
-这会创建一个完全配置的项目，包含：
-- ✅ React + TypeScript（通过 Vite）
-- ✅ Tailwind CSS 3.4.1 与 shadcn/ui 主题系统
-- ✅ 配置了路径别名（`@/`）
-- ✅ 预安装了 40+ 个 shadcn/ui 组件
-- ✅ 包含所有 Radix UI 依赖
-- ✅ 配置了 Parcel 用于打包（通过 .parcelrc）
-- ✅ Node 18+ 兼容性（自动检测并固定 Vite 版本）
+This creates a fully configured project with:
+- ✅ React + TypeScript (via Vite)
+- ✅ Tailwind CSS 3.4.1 with shadcn/ui theming system
+- ✅ Path aliases (`@/`) configured
+- ✅ 40+ shadcn/ui components pre-installed
+- ✅ All Radix UI dependencies included
+- ✅ Parcel configured for bundling (via .parcelrc)
+- ✅ Node 18+ compatibility (auto-detects and pins Vite version)
 
-### 步骤 2：开发您的工件
+### Step 2: Develop Your Artifact
 
-要构建工件，请编辑生成的文件。有关指导，请参见下面的 **常见开发任务**。
+To build the artifact, edit the generated files. See **Common Development Tasks** below for guidance.
 
-### 步骤 3：打包为单个 HTML 文件
+### Step 3: Bundle to Single HTML File
 
-要将 React 应用打包为单个 HTML 工件：
+To bundle the React app into a single HTML artifact:
 ```bash
 bash scripts/bundle-artifact.sh
 ```
 
-这会创建 `bundle.html` - 一个自包含的工件，其中所有 JavaScript、CSS 和依赖项都内联。此文件可以作为工件直接在 Claude 对话中共享。
+This creates `bundle.html` - a self-contained artifact with all JavaScript, CSS, and dependencies inlined. This file can be directly shared in Claude conversations as an artifact.
 
-**要求**：您的项目根目录必须有一个 `index.html` 文件。
+**Requirements**: Your project must have an `index.html` in the root directory.
 
-**脚本功能**：
-- 安装打包依赖（parcel、@parcel/config-default、parcel-resolver-tspaths、html-inline）
-- 创建带有路径别名支持的 `.parcelrc` 配置
-- 使用 Parcel 构建（无源代码映射）
-- 使用 html-inline 将所有资产内联到单个 HTML 中
+**What the script does**:
+- Installs bundling dependencies (parcel, @parcel/config-default, parcel-resolver-tspaths, html-inline)
+- Creates `.parcelrc` config with path alias support
+- Builds with Parcel (no source maps)
+- Inlines all assets into single HTML using html-inline
 
-### 步骤 4：与用户共享工件
+### Step 4: Share Artifact with User
 
-最后，在与用户的对话中共享打包的 HTML 文件，以便他们可以将其作为工件查看。
+Finally, share the bundled HTML file in conversation with the user so they can view it as an artifact.
 
-### 步骤 5：测试/可视化工件（可选）
+### Step 5: Testing/Visualizing the Artifact (Optional)
 
-注意：这是一个完全可选的步骤。仅在必要或请求时执行。
+Note: This is a completely optional step. Only perform if necessary or requested.
 
-要测试/可视化工件，请使用可用工具（包括其他技能或内置工具，如 Playwright 或 Puppeteer）。一般来说，避免预先测试工件，因为这会增加请求和可以看到完成的工件之间的延迟。如果有请求或出现问题，请在呈现工件后测试。
+To test/visualize the artifact, use available tools (including other Skills or built-in tools like Playwright or Puppeteer). In general, avoid testing the artifact upfront as it adds latency between the request and when the finished artifact can be seen. Test later, after presenting the artifact, if requested or if issues arise.
 
-## 参考
+## Reference
 
-- **shadcn/ui 组件**：https://ui.shadcn.com/docs/components
+- **shadcn/ui components**: https://ui.shadcn.com/docs/components

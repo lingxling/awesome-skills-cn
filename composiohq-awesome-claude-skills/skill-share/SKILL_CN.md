@@ -1,80 +1,80 @@
 ---
 name: skill-share
-description: 一个创建新 Claude 技能并使用 Rube 自动在 Slack 上分享的技能，实现无缝团队协作和技能发现。
-license: 完整条款见 LICENSE.txt
+description: A skill that creates new Claude skills and automatically shares them on Slack using Rube for seamless team collaboration and skill discovery.
+license: Complete terms in LICENSE.txt
 ---
 
-## 何时使用此技能
+## When to use this skill
 
-当你需要：
-- **创建新的 Claude 技能**，具有适当的结构和元数据
-- **生成技能包**，准备分发
-- **自动分享创建的技能**到 Slack 频道，提高团队可见性
-- **在分享前验证技能结构**
-- **打包并分发给**你的团队
+Use this skill when you need to:
+- **Create new Claude skills** with proper structure and metadata
+- **Generate skill packages** ready for distribution
+- **Automatically share created skills** on Slack channels for team visibility
+- **Validate skill structure** before sharing
+- **Package and distribute** skills to your team
 
-也在以下情况使用此技能：
-- **用户说他想创建/分享他的技能**
+Also use this skill when:
+- **User says he wants to create/share his skill** 
 
-此技能非常适合：
-- 作为团队工作流程的一部分创建技能
-- 构建需要技能创建 + 团队通知的内部工具
-- 自动化技能开发管道
-- 带团队通知的协作技能创建
+This skill is ideal for:
+- Creating skills as part of team workflows
+- Building internal tools that need skill creation + team notification
+- Automating the skill development pipeline
+- Collaborative skill creation with team notifications
 
-## 关键功能
+## Key Features
 
-### 1. 技能创建
-- 创建带有 SKILL.md 的正确结构化技能目录
-- 生成标准化的 scripts/、references/ 和 assets/ 目录
-- 自动生成带有必需元数据的 YAML 前言
-- 强制执行命名约定（连字符大小写）
+### 1. Skill Creation
+- Creates properly structured skill directories with SKILL.md
+- Generates standardized scripts/, references/, and assets/ directories
+- Auto-generates YAML frontmatter with required metadata
+- Enforces naming conventions (hyphen-case)
 
-### 2. 技能验证
-- 验证 SKILL.md 格式和必需字段
-- 检查命名约定
-- 确保打包前元数据完整性
+### 2. Skill Validation
+- Validates SKILL.md format and required fields
+- Checks naming conventions
+- Ensures metadata completeness before packaging
 
-### 3. 技能打包
-- 创建可分发的 zip 文件
-- 包含所有技能资产和文档
-- 打包前自动运行验证
+### 3. Skill Packaging
+- Creates distributable zip files
+- Includes all skill assets and documentation
+- Runs validation automatically before packaging
 
-### 4. 通过 Rube 的 Slack 集成
-- 自动将创建的技能信息发送到指定的 Slack 频道
-- 分享技能元数据（名称、描述、链接）
-- 发布技能摘要以供团队发现
-- 提供技能文件的直接链接
+### 4. Slack Integration via Rube
+- Automatically sends created skill information to designated Slack channels
+- Shares skill metadata (name, description, link)
+- Posts skill summary for team discovery
+- Provides direct links to skill files
 
-## 工作原理
+## How It Works
 
-1. **初始化**：提供技能名称和描述
-2. **创建**：创建具有适当结构的技能目录
-3. **验证**：验证技能元数据的正确性
-4. **打包**：将技能打包为可分发格式
-5. **Slack 通知**：技能详情发布到团队的 Slack 频道
+1. **Initialization**: Provide skill name and description
+2. **Creation**: Skill directory is created with proper structure
+3. **Validation**: Skill metadata is validated for correctness
+4. **Packaging**: Skill is packaged into a distributable format
+5. **Slack Notification**: Skill details are posted to your team's Slack channel
 
-## 示例用法
+## Example Usage
 
 ```
-当你要求 Claude 创建一个名为 "pdf-analyzer" 的技能时：
-1. 创建 /skill-pdf-analyzer/ 并带有 SKILL.md 模板
-2. 生成结构化目录（scripts/、references/、assets/）
-3. 验证技能结构
-4. 将技能打包为 zip 文件
-5. 发布到 Slack："新技能创建：pdf-analyzer - 高级 PDF 分析和提取功能"
+When you ask Claude to create a skill called "pdf-analyzer":
+1. Creates /skill-pdf-analyzer/ with SKILL.md template
+2. Generates structured directories (scripts/, references/, assets/)
+3. Validates the skill structure
+4. Packages the skill as a zip file
+5. Posts to Slack: "New Skill Created: pdf-analyzer - Advanced PDF analysis and extraction capabilities"
 ```
 
-## 与 Rube 的集成
+## Integration with Rube
 
-此技能利用 Rube 用于：
-- **SLACK_SEND_MESSAGE**：向团队频道发布技能信息
-- **SLACK_POST_MESSAGE_WITH_BLOCKS**：分享丰富格式的技能元数据
-- **SLACK_FIND_CHANNELS**：发现技能公告的目标频道
+This skill leverages Rube for:
+- **SLACK_SEND_MESSAGE**: Posts skill information to team channels
+- **SLACK_POST_MESSAGE_WITH_BLOCKS**: Shares rich formatted skill metadata
+- **SLACK_FIND_CHANNELS**: Discovers target channels for skill announcements
 
-## 要求
+## Requirements
 
-- 通过 Rube 连接的 Slack 工作区
-- 对技能创建目录的写入权限
-- 用于技能创建脚本的 Python 3.7+
-- 用于技能通知的目标 Slack 频道
+- Slack workspace connection via Rube
+- Write access to skill creation directory
+- Python 3.7+ for skill creation scripts
+- Target Slack channel for skill notifications

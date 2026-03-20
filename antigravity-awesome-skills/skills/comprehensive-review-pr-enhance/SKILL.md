@@ -1,49 +1,72 @@
 ---
 name: comprehensive-review-pr-enhance
-description: "You are a PR optimization expert specializing in creating high-quality pull requests that facilitate efficient code reviews. Generate comprehensive PR descriptions, automate review processes, and e..."
+description: >
+  Generate structured PR descriptions from diffs, add review checklists,
+  risk assessments, and test coverage summaries. Use when the user says
+  "write a PR description", "improve this PR", "summarize my changes",
+  "PR review", "pull request", or asks to document a diff for reviewers.
 risk: unknown
 source: community
-date_added: "2026-02-27"
 ---
 
 # Pull Request Enhancement
 
-You are a PR optimization expert specializing in creating high-quality pull requests that facilitate efficient code reviews. Generate comprehensive PR descriptions, automate review processes, and ensure PRs follow best practices for clarity, size, and reviewability.
+## Workflow
 
-## Use this skill when
+1. Run `git diff <base>...HEAD --stat` to identify changed files and scope
+2. Categorise changes: source, test, config, docs, build, styles
+3. Generate the PR description using the template below
+4. Add a review checklist based on which file categories changed
+5. Flag breaking changes, security-sensitive files, or large diffs (>500 lines)
 
-- Writing or improving PR descriptions
-- Summarizing changes for faster reviews
-- Organizing tests, risks, and rollout notes
-- Reducing PR size or improving reviewability
+## PR Description Template
 
-## Do not use this skill when
+```markdown
+## Summary
+<!-- one-paragraph executive summary: what changed and why -->
 
-- There is no PR or change list to summarize
-- You need a full code review instead of PR polishing
-- The task is unrelated to software delivery
+## Changes
+| Category | Files | Key change |
+|----------|-------|------------|
+| source   | `src/auth.ts` | added OAuth2 PKCE flow |
+| test     | `tests/auth.test.ts` | covers token refresh edge case |
+| config   | `.env.example` | new `OAUTH_CLIENT_ID` var |
 
-## Context
-The user needs to create or improve pull requests with detailed descriptions, proper documentation, test coverage analysis, and review facilitation. Focus on making PRs that are easy to review, well-documented, and include all necessary context.
+## Why
+<!-- link to issue/ticket + one sentence on motivation -->
 
-## Requirements
-$ARGUMENTS
+## Testing
+- [ ] unit tests pass (`npm test`)
+- [ ] manual smoke test on staging
+- [ ] no coverage regression
 
-## Instructions
+## Risks & Rollback
+- **Breaking?** yes / no
+- **Rollback**: revert this commit; no migration needed
+- **Risk level**: low / medium / high — because ___
+```
 
-- Analyze the diff and identify intent and scope.
-- Summarize changes, tests, and risks clearly.
-- Highlight breaking changes and rollout notes.
-- Add checklists and reviewer guidance.
-- If detailed templates are required, open `resources/implementation-playbook.md`.
+## Review Checklist Rules
 
-## Output Format
+Add checklist sections only when the matching file category appears in the diff:
 
-- PR summary and scope
-- What changed and why
-- Tests performed and results
-- Risks, rollbacks, and reviewer notes
+| File category | Checklist items |
+|---------------|----------------|
+| source | no debug statements, functions <50 lines, descriptive names, error handling |
+| test | meaningful assertions, edge cases, no flaky tests, AAA pattern |
+| config | no hardcoded secrets, env vars documented, backwards compatible |
+| docs | accurate, examples included, changelog updated |
+| security-sensitive (`auth`, `crypto`, `token`, `password` in path) | input validation, no secrets in logs, authz correct |
+
+## Splitting Large PRs
+
+When diff exceeds 20 files or 1000 lines, suggest splitting by feature area:
+
+```
+git checkout -b feature/part-1
+git cherry-pick <commits-for-part-1>
+```
 
 ## Resources
 
-- `resources/implementation-playbook.md` for detailed templates and examples.
+- `resources/implementation-playbook.md` — Python helpers for automated PR analysis, coverage reports, and risk scoring

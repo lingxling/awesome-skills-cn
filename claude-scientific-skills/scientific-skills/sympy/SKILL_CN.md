@@ -1,164 +1,164 @@
 ---
 name: sympy
-description: 当在Python中处理符号数学时使用此技能。此技能应用于符号计算任务，包括代数求解方程、执行微积分操作（导数、积分、极限）、操作代数表达式、符号矩阵运算、物理计算、数论问题、几何计算，以及从数学表达式生成可执行代码。当用户需要精确的符号结果而不是数值近似，或处理包含变量和参数的数学公式时，应用此技能。
+description: Use this skill when working with symbolic mathematics in Python. This skill should be used for symbolic computation tasks including solving equations algebraically, performing calculus operations (derivatives, integrals, limits), manipulating algebraic expressions, working with matrices symbolically, physics calculations, number theory problems, geometry computations, and generating executable code from mathematical expressions. Apply this skill when the user needs exact symbolic results rather than numerical approximations, or when working with mathematical formulas that contain variables and parameters.
 license: https://github.com/sympy/sympy/blob/master/LICENSE
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# SymPy - Python中的符号数学
+# SymPy - Symbolic Mathematics in Python
 
-## 概述
+## Overview
 
-SymPy是一个Python库，用于符号数学，能够使用数学符号而不是数值近似进行精确计算。此技能提供使用SymPy执行符号代数、微积分、线性代数、方程求解、物理计算和代码生成的综合指导。
+SymPy is a Python library for symbolic mathematics that enables exact computation using mathematical symbols rather than numerical approximations. This skill provides comprehensive guidance for performing symbolic algebra, calculus, linear algebra, equation solving, physics calculations, and code generation using SymPy.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况使用此技能：
-- 符号求解方程（代数、微分、方程组）
-- 执行微积分操作（导数、积分、极限、级数）
-- 操作和简化代数表达式
-- 符号处理矩阵和线性代数
-- 进行物理计算（力学、量子力学、矢量分析）
-- 数论计算（素数、因式分解、模运算）
-- 几何计算（2D/3D几何、解析几何）
-- 将数学表达式转换为可执行代码（Python、C、Fortran）
-- 生成LaTeX或其他格式化数学输出
-- 需要精确的数学结果（例如，`sqrt(2)` 而非 `1.414...`）
+Use this skill when:
+- Solving equations symbolically (algebraic, differential, systems of equations)
+- Performing calculus operations (derivatives, integrals, limits, series)
+- Manipulating and simplifying algebraic expressions
+- Working with matrices and linear algebra symbolically
+- Doing physics calculations (mechanics, quantum mechanics, vector analysis)
+- Number theory computations (primes, factorization, modular arithmetic)
+- Geometric calculations (2D/3D geometry, analytic geometry)
+- Converting mathematical expressions to executable code (Python, C, Fortran)
+- Generating LaTeX or other formatted mathematical output
+- Needing exact mathematical results (e.g., `sqrt(2)` not `1.414...`)
 
-## 核心能力
+## Core Capabilities
 
-### 1. 符号计算基础
+### 1. Symbolic Computation Basics
 
-**创建符号和表达式：**
+**Creating symbols and expressions:**
 ```python
 from sympy import symbols, Symbol
 x, y, z = symbols('x y z')
 expr = x**2 + 2*x + 1
 
-# 带假设
+# With assumptions
 x = symbols('x', real=True, positive=True)
 n = symbols('n', integer=True)
 ```
 
-**简化和操作：**
+**Simplification and manipulation:**
 ```python
 from sympy import simplify, expand, factor, cancel
-simplify(sin(x)**2 + cos(x)**2)  # 返回 1
+simplify(sin(x)**2 + cos(x)**2)  # Returns 1
 expand((x + 1)**3)  # x**3 + 3*x**2 + 3*x + 1
 factor(x**2 - 1)    # (x - 1)*(x + 1)
 ```
 
-**详细基础：** 参见 `references/core-capabilities.md`
+**For detailed basics:** See `references/core-capabilities.md`
 
-### 2. 微积分
+### 2. Calculus
 
-**导数：**
+**Derivatives:**
 ```python
 from sympy import diff
 diff(x**2, x)        # 2*x
-diff(x**4, x, 3)     # 24*x (三阶导数)
-diff(x**2*y**3, x, y)  # 6*x*y**2 (偏导数)
+diff(x**4, x, 3)     # 24*x (third derivative)
+diff(x**2*y**3, x, y)  # 6*x*y**2 (partial derivatives)
 ```
 
-**积分：**
+**Integrals:**
 ```python
 from sympy import integrate, oo
-integrate(x**2, x)              # x**3/3 (不定积分)
-integrate(x**2, (x, 0, 1))      # 1/3 (定积分)
-integrate(exp(-x), (x, 0, oo))  # 1 (广义积分)
+integrate(x**2, x)              # x**3/3 (indefinite)
+integrate(x**2, (x, 0, 1))      # 1/3 (definite)
+integrate(exp(-x), (x, 0, oo))  # 1 (improper)
 ```
 
-**极限和级数：**
+**Limits and Series:**
 ```python
 from sympy import limit, series
 limit(sin(x)/x, x, 0)  # 1
 series(exp(x), x, 0, 6)  # 1 + x + x**2/2 + x**3/6 + x**4/24 + x**5/120 + O(x**6)
 ```
 
-**详细微积分操作：** 参见 `references/core-capabilities.md`
+**For detailed calculus operations:** See `references/core-capabilities.md`
 
-### 3. 方程求解
+### 3. Equation Solving
 
-**代数方程：**
+**Algebraic equations:**
 ```python
 from sympy import solveset, solve, Eq
 solveset(x**2 - 4, x)  # {-2, 2}
 solve(Eq(x**2, 4), x)  # [-2, 2]
 ```
 
-**方程组：**
+**Systems of equations:**
 ```python
 from sympy import linsolve, nonlinsolve
-linsolve([x + y - 2, x - y], x, y)  # {(1, 1)} (线性)
-nonlinsolve([x**2 + y - 2, x + y**2 - 3], x, y)  # (非线性)
+linsolve([x + y - 2, x - y], x, y)  # {(1, 1)} (linear)
+nonlinsolve([x**2 + y - 2, x + y**2 - 3], x, y)  # (nonlinear)
 ```
 
-**微分方程：**
+**Differential equations:**
 ```python
 from sympy import Function, dsolve, Derivative
 f = symbols('f', cls=Function)
 dsolve(Derivative(f(x), x) - f(x), f(x))  # Eq(f(x), C1*exp(x))
 ```
 
-**详细求解方法：** 参见 `references/core-capabilities.md`
+**For detailed solving methods:** See `references/core-capabilities.md`
 
-### 4. 矩阵和线性代数
+### 4. Matrices and Linear Algebra
 
-**矩阵创建和操作：**
+**Matrix creation and operations:**
 ```python
 from sympy import Matrix, eye, zeros
 M = Matrix([[1, 2], [3, 4]])
-M_inv = M**-1  # 逆
-M.det()        # 行列式
-M.T            # 转置
+M_inv = M**-1  # Inverse
+M.det()        # Determinant
+M.T            # Transpose
 ```
 
-**特征值和特征向量：**
+**Eigenvalues and eigenvectors:**
 ```python
-eigenvals = M.eigenvals()  # {特征值: 重数}
-eigenvects = M.eigenvects()  # [(特征值, 重数, [特征向量])]
+eigenvals = M.eigenvals()  # {eigenvalue: multiplicity}
+eigenvects = M.eigenvects()  # [(eigenval, mult, [eigenvectors])]
 P, D = M.diagonalize()  # M = P*D*P^-1
 ```
 
-**求解线性系统：**
+**Solving linear systems:**
 ```python
 A = Matrix([[1, 2], [3, 4]])
 b = Matrix([5, 6])
-x = A.solve(b)  # 求解 Ax = b
+x = A.solve(b)  # Solve Ax = b
 ```
 
-**综合线性代数：** 参见 `references/matrices-linear-algebra.md`
+**For comprehensive linear algebra:** See `references/matrices-linear-algebra.md`
 
-### 5. 物理和力学
+### 5. Physics and Mechanics
 
-**经典力学：**
+**Classical mechanics:**
 ```python
 from sympy.physics.mechanics import dynamicsymbols, LagrangesMethod
 from sympy import symbols
 
-# 定义系统
+# Define system
 q = dynamicsymbols('q')
 m, g, l = symbols('m g l')
 
-# 拉格朗日量 (T - V)
+# Lagrangian (T - V)
 L = m*(l*q.diff())**2/2 - m*g*l*(1 - cos(q))
 
-# 应用拉格朗日方法
+# Apply Lagrange's method
 LM = LagrangesMethod(L, [q])
 ```
 
-**矢量分析：**
+**Vector analysis:**
 ```python
 from sympy.physics.vector import ReferenceFrame, dot, cross
 N = ReferenceFrame('N')
 v1 = 3*N.x + 4*N.y
 v2 = 1*N.x + 2*N.z
-dot(v1, v2)  # 点积
-cross(v1, v2)  # 叉积
+dot(v1, v2)  # Dot product
+cross(v1, v2)  # Cross product
 ```
 
-**量子力学：**
+**Quantum mechanics:**
 ```python
 from sympy.physics.quantum import Ket, Bra, Commutator
 psi = Ket('psi')
@@ -166,36 +166,36 @@ A = Operator('A')
 comm = Commutator(A, B).doit()
 ```
 
-**详细物理能力：** 参见 `references/physics-mechanics.md`
+**For detailed physics capabilities:** See `references/physics-mechanics.md`
 
-### 6. 高级数学
+### 6. Advanced Mathematics
 
-该技能包括对以下内容的全面支持：
+The skill includes comprehensive support for:
 
-- **几何：** 2D/3D解析几何、点、线、圆、多边形、变换
-- **数论：** 素数、因式分解、GCD/LCM、模运算、丢番图方程
-- **组合数学：** 排列、组合、分拆、群论
-- **逻辑和集合：** 布尔逻辑、集合论、有限和无限集合
-- **统计学：** 概率分布、随机变量、期望、方差
-- **特殊函数：** Gamma、Bessel、正交多项式、超几何函数
-- **多项式：** 多项式代数、根、因式分解、Groebner基
+- **Geometry:** 2D/3D analytic geometry, points, lines, circles, polygons, transformations
+- **Number Theory:** Primes, factorization, GCD/LCM, modular arithmetic, Diophantine equations
+- **Combinatorics:** Permutations, combinations, partitions, group theory
+- **Logic and Sets:** Boolean logic, set theory, finite and infinite sets
+- **Statistics:** Probability distributions, random variables, expectation, variance
+- **Special Functions:** Gamma, Bessel, orthogonal polynomials, hypergeometric functions
+- **Polynomials:** Polynomial algebra, roots, factorization, Groebner bases
 
-**详细高级主题：** 参见 `references/advanced-topics.md`
+**For detailed advanced topics:** See `references/advanced-topics.md`
 
-### 7. 代码生成和输出
+### 7. Code Generation and Output
 
-**转换为可执行函数：**
+**Convert to executable functions:**
 ```python
 from sympy import lambdify
 import numpy as np
 
 expr = x**2 + 2*x + 1
-f = lambdify(x, expr, 'numpy')  # 创建NumPy函数
+f = lambdify(x, expr, 'numpy')  # Create NumPy function
 x_vals = np.linspace(0, 10, 100)
-y_vals = f(x_vals)  # 快速数值评估
+y_vals = f(x_vals)  # Fast numerical evaluation
 ```
 
-**生成C/Fortran代码：**
+**Generate C/Fortran code:**
 ```python
 from sympy.utilities.codegen import codegen
 [(c_name, c_code), (h_name, h_header)] = codegen(
@@ -203,145 +203,145 @@ from sympy.utilities.codegen import codegen
 )
 ```
 
-**LaTeX输出：**
+**LaTeX output:**
 ```python
 from sympy import latex
-latex_str = latex(expr)  # 转换为LaTeX用于文档
+latex_str = latex(expr)  # Convert to LaTeX for documents
 ```
 
-**综合代码生成：** 参见 `references/code-generation-printing.md`
+**For comprehensive code generation:** See `references/code-generation-printing.md`
 
-## 使用SymPy的最佳实践
+## Working with SymPy: Best Practices
 
-### 1. 始终首先定义符号
+### 1. Always Define Symbols First
 
 ```python
 from sympy import symbols
 x, y, z = symbols('x y z')
-# 现在x, y, z可以用于表达式
+# Now x, y, z can be used in expressions
 ```
 
-### 2. 使用假设获得更好的简化
+### 2. Use Assumptions for Better Simplification
 
 ```python
 x = symbols('x', positive=True, real=True)
-sqrt(x**2)  # 返回 x（而非 Abs(x)），因为有正假设
+sqrt(x**2)  # Returns x (not Abs(x)) due to positive assumption
 ```
 
-常见假设：`real`, `positive`, `negative`, `integer`, `rational`, `complex`, `even`, `odd`
+Common assumptions: `real`, `positive`, `negative`, `integer`, `rational`, `complex`, `even`, `odd`
 
-### 3. 使用精确算术
+### 3. Use Exact Arithmetic
 
 ```python
 from sympy import Rational, S
-# 正确（精确）：
+# Correct (exact):
 expr = Rational(1, 2) * x
 expr = S(1)/2 * x
 
-# 错误（浮点数）：
-expr = 0.5 * x  # 创建近似值
+# Incorrect (floating-point):
+expr = 0.5 * x  # Creates approximate value
 ```
 
-### 4. 在需要时进行数值评估
+### 4. Numerical Evaluation When Needed
 
 ```python
 from sympy import pi, sqrt
 result = sqrt(8) + pi
 result.evalf()    # 5.96371554103586
-result.evalf(50)  # 50位精度
+result.evalf(50)  # 50 digits of precision
 ```
 
-### 5. 转换为NumPy以提高性能
+### 5. Convert to NumPy for Performance
 
 ```python
-# 多次评估时较慢：
+# Slow for many evaluations:
 for x_val in range(1000):
     result = expr.subs(x, x_val).evalf()
 
-# 快速：
+# Fast:
 f = lambdify(x, expr, 'numpy')
 results = f(np.arange(1000))
 ```
 
-### 6. 使用适当的求解器
+### 6. Use Appropriate Solvers
 
-- `solveset`：代数方程（主要）
-- `linsolve`：线性系统
-- `nonlinsolve`：非线性系统
-- `dsolve`：微分方程
-- `solve`：通用（传统，但灵活）
+- `solveset`: Algebraic equations (primary)
+- `linsolve`: Linear systems
+- `nonlinsolve`: Nonlinear systems
+- `dsolve`: Differential equations
+- `solve`: General purpose (legacy, but flexible)
 
-## 参考文件结构
+## Reference Files Structure
 
-此技能使用模块化参考文件来处理不同的能力：
+This skill uses modular reference files for different capabilities:
 
-1. **`core-capabilities.md`**：符号、代数、微积分、简化、方程求解
-   - 加载时机：基本符号计算、微积分或求解方程
+1. **`core-capabilities.md`**: Symbols, algebra, calculus, simplification, equation solving
+   - Load when: Basic symbolic computation, calculus, or solving equations
 
-2. **`matrices-linear-algebra.md`**：矩阵操作、特征值、线性系统
-   - 加载时机：处理矩阵或线性代数问题
+2. **`matrices-linear-algebra.md`**: Matrix operations, eigenvalues, linear systems
+   - Load when: Working with matrices or linear algebra problems
 
-3. **`physics-mechanics.md`**：经典力学、量子力学、矢量、单位
-   - 加载时机：物理计算或力学问题
+3. **`physics-mechanics.md`**: Classical mechanics, quantum mechanics, vectors, units
+   - Load when: Physics calculations or mechanics problems
 
-4. **`advanced-topics.md`**：几何、数论、组合数学、逻辑、统计学
-   - 加载时机：超越基本代数和微积分的高级数学主题
+4. **`advanced-topics.md`**: Geometry, number theory, combinatorics, logic, statistics
+   - Load when: Advanced mathematical topics beyond basic algebra and calculus
 
-5. **`code-generation-printing.md`**：Lambdify、codegen、LaTeX输出、打印
-   - 加载时机：将表达式转换为代码或生成格式化输出
+5. **`code-generation-printing.md`**: Lambdify, codegen, LaTeX output, printing
+   - Load when: Converting expressions to code or generating formatted output
 
-## 常见用例模式
+## Common Use Case Patterns
 
-### 模式1：求解和验证
+### Pattern 1: Solve and Verify
 
 ```python
 from sympy import symbols, solve, simplify
 x = symbols('x')
 
-# 解方程
+# Solve equation
 equation = x**2 - 5*x + 6
 solutions = solve(equation, x)  # [2, 3]
 
-# 验证解
+# Verify solutions
 for sol in solutions:
     result = simplify(equation.subs(x, sol))
     assert result == 0
 ```
 
-### 模式2：符号到数值管道
+### Pattern 2: Symbolic to Numeric Pipeline
 
 ```python
-# 1. 定义符号问题
+# 1. Define symbolic problem
 x, y = symbols('x y')
 expr = sin(x) + cos(y)
 
-# 2. 符号操作
+# 2. Manipulate symbolically
 simplified = simplify(expr)
 derivative = diff(simplified, x)
 
-# 3. 转换为数值函数
+# 3. Convert to numerical function
 f = lambdify((x, y), derivative, 'numpy')
 
-# 4. 数值评估
+# 4. Evaluate numerically
 results = f(x_data, y_data)
 ```
 
-### 模式3：记录数学结果
+### Pattern 3: Document Mathematical Results
 
 ```python
-# 符号计算结果
+# Compute result symbolically
 integral_expr = Integral(x**2, (x, 0, 1))
 result = integral_expr.doit()
 
-# 生成文档
+# Generate documentation
 print(f"LaTeX: {latex(integral_expr)} = {latex(result)}")
 print(f"Pretty: {pretty(integral_expr)} = {pretty(result)}")
 print(f"Numerical: {result.evalf()}")
 ```
 
-## 与科学工作流的集成
+## Integration with Scientific Workflows
 
-### 与NumPy集成
+### With NumPy
 
 ```python
 import numpy as np
@@ -355,7 +355,7 @@ x_array = np.linspace(-5, 5, 100)
 y_array = f(x_array)
 ```
 
-### 与Matplotlib集成
+### With Matplotlib
 
 ```python
 import matplotlib.pyplot as plt
@@ -373,56 +373,56 @@ plt.plot(x_vals, y_vals)
 plt.show()
 ```
 
-### 与SciPy集成
+### With SciPy
 
 ```python
 from scipy.optimize import fsolve
 from sympy import symbols, lambdify
 
-# 符号定义方程
+# Define equation symbolically
 x = symbols('x')
 equation = x**3 - 2*x - 5
 
-# 转换为数值函数
+# Convert to numerical function
 f = lambdify(x, equation, 'numpy')
 
-# 用初始猜测数值求解
+# Solve numerically with initial guess
 solution = fsolve(f, 2)
 ```
 
-## 快速参考：最常用函数
+## Quick Reference: Most Common Functions
 
 ```python
-# 符号
+# Symbols
 from sympy import symbols, Symbol
 x, y = symbols('x y')
 
-# 基本操作
+# Basic operations
 from sympy import simplify, expand, factor, collect, cancel
 from sympy import sqrt, exp, log, sin, cos, tan, pi, E, I, oo
 
-# 微积分
+# Calculus
 from sympy import diff, integrate, limit, series, Derivative, Integral
 
-# 求解
+# Solving
 from sympy import solve, solveset, linsolve, nonlinsolve, dsolve
 
-# 矩阵
+# Matrices
 from sympy import Matrix, eye, zeros, ones, diag
 
-# 逻辑和集合
+# Logic and sets
 from sympy import And, Or, Not, Implies, FiniteSet, Interval, Union
 
-# 输出
+# Output
 from sympy import latex, pprint, lambdify, init_printing
 
-# 工具
+# Utilities
 from sympy import evalf, N, nsimplify
 ```
 
-## 入门示例
+## Getting Started Examples
 
-### 示例1：求解二次方程
+### Example 1: Solve Quadratic Equation
 ```python
 from sympy import symbols, solve, sqrt
 x = symbols('x')
@@ -430,7 +430,7 @@ solution = solve(x**2 - 5*x + 6, x)
 # [2, 3]
 ```
 
-### 示例2：计算导数
+### Example 2: Calculate Derivative
 ```python
 from sympy import symbols, diff, sin
 x = symbols('x')
@@ -439,7 +439,7 @@ df_dx = diff(f, x)
 # 2*x*cos(x**2)
 ```
 
-### 示例3：评估积分
+### Example 3: Evaluate Integral
 ```python
 from sympy import symbols, integrate, exp
 x = symbols('x')
@@ -447,7 +447,7 @@ integral = integrate(x * exp(-x**2), (x, 0, oo))
 # 1/2
 ```
 
-### 示例4：矩阵特征值
+### Example 4: Matrix Eigenvalues
 ```python
 from sympy import Matrix
 M = Matrix([[1, 2], [2, 1]])
@@ -455,7 +455,7 @@ eigenvals = M.eigenvals()
 # {3: 1, -1: 1}
 ```
 
-### 示例5：生成Python函数
+### Example 5: Generate Python Function
 ```python
 from sympy import symbols, lambdify
 import numpy as np
@@ -466,32 +466,33 @@ f(np.array([1, 2, 3]))
 # array([ 4,  9, 16])
 ```
 
-## 常见问题排查
+## Troubleshooting Common Issues
 
 1. **"NameError: name 'x' is not defined"**
-   - 解决方案：在使用前始终使用 `symbols()` 定义符号
+   - Solution: Always define symbols using `symbols()` before use
 
-2. **意外的数值结果**
-   - 问题：使用 `0.5` 等浮点数而不是 `Rational(1, 2)`
-   - 解决方案：使用 `Rational()` 或 `S()` 进行精确算术
+2. **Unexpected numerical results**
+   - Issue: Using floating-point numbers like `0.5` instead of `Rational(1, 2)`
+   - Solution: Use `Rational()` or `S()` for exact arithmetic
 
-3. **循环中的性能缓慢**
-   - 问题：重复使用 `subs()` 和 `evalf()`
-   - 解决方案：使用 `lambdify()` 创建快速数值函数
+3. **Slow performance in loops**
+   - Issue: Using `subs()` and `evalf()` repeatedly
+   - Solution: Use `lambdify()` to create a fast numerical function
 
-4. **"无法求解此方程"**
-   - 尝试不同的求解器：`solve`、`solveset`、`nsolve`（数值）
-   - 检查方程是否可代数求解
-   - 如果没有闭式解，使用数值方法
+4. **"Can't solve this equation"**
+   - Try different solvers: `solve`, `solveset`, `nsolve` (numerical)
+   - Check if the equation is solvable algebraically
+   - Use numerical methods if no closed-form solution exists
 
-5. **简化不如预期工作**
-   - 尝试不同的简化函数：`simplify`、`factor`、`expand`、`trigsimp`
-   - 向符号添加假设（例如，`positive=True`）
-   - 使用 `simplify(expr, force=True)` 进行积极简化
+5. **Simplification not working as expected**
+   - Try different simplification functions: `simplify`, `factor`, `expand`, `trigsimp`
+   - Add assumptions to symbols (e.g., `positive=True`)
+   - Use `simplify(expr, force=True)` for aggressive simplification
 
-## 其他资源
+## Additional Resources
 
-- 官方文档：https://docs.sympy.org/
-- 教程：https://docs.sympy.org/latest/tutorials/intro-tutorial/index.html
-- API参考：https://docs.sympy.org/latest/reference/index.html
-- 示例：https://github.com/sympy/sympy/tree/master/examples
+- Official Documentation: https://docs.sympy.org/
+- Tutorial: https://docs.sympy.org/latest/tutorials/intro-tutorial/index.html
+- API Reference: https://docs.sympy.org/latest/reference/index.html
+- Examples: https://github.com/sympy/sympy/tree/master/examples
+

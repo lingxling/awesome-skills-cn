@@ -1,6 +1,6 @@
 ---
 name: debugging-strategies
-description: "Master systematic debugging techniques, profiling tools, and root cause analysis to efficiently track down bugs across any codebase or technology stack. Use when investigating bugs, performance iss..."
+description: "Transform debugging from frustrating guesswork into systematic problem-solving with proven strategies, powerful tools, and methodical approaches."
 risk: unknown
 source: community
 date_added: "2026-02-27"

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <g fill="#38bdf8">
+    <circle cx="180" cy="135" r="42" opacity="0.22" />
+    <circle cx="1060" cy="540" r="56" opacity="0.18" />
+  </g>
+  <text x="80" y="180" font-family="Arial, Helvetica, sans-serif" font-size="56" fill="#e2e8f0" font-weight="700">Antigravity Awesome Skills</text>
+  <text x="80" y="275" font-family="Arial, Helvetica, sans-serif" font-size="40" fill="#cbd5e1" font-weight="600">1,273+ installable AI skills</text>
+  <text x="80" y="360" font-family="Arial, Helvetica, sans-serif" font-size="36" fill="#94a3b8">Discover, install and use ready-to-run agentic skills.</text>
+  <text x="80" y="470" font-family="Consolas, Monaco, monospace" font-size="44" fill="#7dd3fc">npx antigravity-awesome-skills</text>
+</svg>

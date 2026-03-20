@@ -1,6 +1,6 @@
 ---
 name: pyopenms
-description: 完整的质谱分析平台。用于蛋白质组学工作流程的特征检测、肽段鉴定、蛋白质定量和复杂的LC-MS/MS管线。支持广泛的文件格式和算法。最适合蛋白质组学、全面的MS数据处理。对于简单的光谱比较和代谢物ID使用matchms。
+description: Complete mass spectrometry analysis platform. Use for proteomics workflows feature detection, peptide identification, protein quantification, and complex LC-MS/MS pipelines. Supports extensive file formats and algorithms. Best for proteomics, comprehensive MS data processing. For simple spectral comparison and metabolite ID use matchms.
 license: 3 clause BSD license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,60 +8,60 @@ metadata:
 
 # PyOpenMS
 
-## 概述
+## Overview
 
-PyOpenMS为OpenMS库提供Python绑定，用于计算质谱分析，实现蛋白质组学和代谢组学数据的分析。用于处理质谱文件格式、处理光谱数据、检测特征、鉴定肽段/蛋白质以及执行定量分析。
+PyOpenMS provides Python bindings to the OpenMS library for computational mass spectrometry, enabling analysis of proteomics and metabolomics data. Use for handling mass spectrometry file formats, processing spectral data, detecting features, identifying peptides/proteins, and performing quantitative analysis.
 
-## 安装
+## Installation
 
-使用uv安装：
+Install using uv:
 
 ```bash
-uv pip install pyopenms
+uv uv pip install pyopenms
 ```
 
-验证安装：
+Verify installation:
 
 ```python
 import pyopenms
 print(pyopenms.__version__)
 ```
 
-## 核心功能
+## Core Capabilities
 
-PyOpenMS将功能组织为以下领域：
+PyOpenMS organizes functionality into these domains:
 
-### 1. 文件I/O和数据格式
+### 1. File I/O and Data Formats
 
-处理质谱文件格式并在表示之间转换。
+Handle mass spectrometry file formats and convert between representations.
 
-**支持的格式**：mzML, mzXML, TraML, mzTab, FASTA, pepXML, protXML, mzIdentML, featureXML, consensusXML, idXML
+**Supported formats**: mzML, mzXML, TraML, mzTab, FASTA, pepXML, protXML, mzIdentML, featureXML, consensusXML, idXML
 
-基本文件读取：
+Basic file reading:
 
 ```python
 import pyopenms as ms
 
-# 读取mzML文件
+# Read mzML file
 exp = ms.MSExperiment()
 ms.MzMLFile().load("data.mzML", exp)
 
-# 访问光谱
+# Access spectra
 for spectrum in exp:
     mz, intensity = spectrum.get_peaks()
     print(f"Spectrum: {len(mz)} peaks")
 ```
 
-**详细文件处理**：请参见 `references/file_io.md`
+**For detailed file handling**: See `references/file_io.md`
 
-### 2. 信号处理
+### 2. Signal Processing
 
-使用平滑、过滤、中心化和归一化处理原始光谱数据。
+Process raw spectral data with smoothing, filtering, centroiding, and normalization.
 
-基本光谱处理：
+Basic spectrum processing:
 
 ```python
-# 使用高斯过滤器平滑光谱
+# Smooth spectrum with Gaussian filter
 gaussian = ms.GaussFilter()
 params = gaussian.getParameters()
 params.setValue("gaussian_width", 0.1)
@@ -69,84 +69,84 @@ gaussian.setParameters(params)
 gaussian.filterExperiment(exp)
 ```
 
-**算法详情**：请参见 `references/signal_processing.md`
+**For algorithm details**: See `references/signal_processing.md`
 
-### 3. 特征检测
+### 3. Feature Detection
 
-检测并链接跨光谱和样本的特征以进行定量分析。
+Detect and link features across spectra and samples for quantitative analysis.
 
 ```python
-# 检测特征
+# Detect features
 ff = ms.FeatureFinder()
 ff.run("centroided", exp, features, params, ms.FeatureMap())
 ```
 
-**完整工作流**：请参见 `references/feature_detection.md`
+**For complete workflows**: See `references/feature_detection.md`
 
-### 4. 肽段和蛋白质鉴定
+### 4. Peptide and Protein Identification
 
-集成搜索引擎并处理鉴定结果。
+Integrate with search engines and process identification results.
 
-**支持的引擎**：Comet, Mascot, MSGFPlus, XTandem, OMSSA, Myrimatch
+**Supported engines**: Comet, Mascot, MSGFPlus, XTandem, OMSSA, Myrimatch
 
-基本鉴定工作流：
+Basic identification workflow:
 
 ```python
-# 加载鉴定数据
+# Load identification data
 protein_ids = []
 peptide_ids = []
 ms.IdXMLFile().load("identifications.idXML", protein_ids, peptide_ids)
 
-# 应用FDR过滤
+# Apply FDR filtering
 fdr = ms.FalseDiscoveryRate()
 fdr.apply(peptide_ids)
 ```
 
-**详细工作流**：请参见 `references/identification.md`
+**For detailed workflows**: See `references/identification.md`
 
-### 5. 代谢组学分析
+### 5. Metabolomics Analysis
 
-执行非靶向代谢组学前处理和分析。
+Perform untargeted metabolomics preprocessing and analysis.
 
-典型工作流：
-1. 加载和处理原始数据
-2. 检测特征
-3. 跨样本对齐保留时间
-4. 将特征链接到共识图谱
-5. 使用化合物数据库进行注释
+Typical workflow:
+1. Load and process raw data
+2. Detect features
+3. Align retention times across samples
+4. Link features to consensus map
+5. Annotate with compound databases
 
-**完整代谢组学工作流**：请参见 `references/metabolomics.md`
+**For complete metabolomics workflows**: See `references/metabolomics.md`
 
-## 数据结构
+## Data Structures
 
-PyOpenMS使用以下主要对象：
+PyOpenMS uses these primary objects:
 
-- **MSExperiment**：光谱和色谱图的集合
-- **MSSpectrum**：具有m/z和强度对的单个质谱
-- **MSChromatogram**：色谱迹
-- **Feature**：检测到的色谱峰，带有质量指标
-- **FeatureMap**：特征的集合
-- **PeptideIdentification**：肽段的搜索结果
-- **ProteinIdentification**：蛋白质的搜索结果
+- **MSExperiment**: Collection of spectra and chromatograms
+- **MSSpectrum**: Single mass spectrum with m/z and intensity pairs
+- **MSChromatogram**: Chromatographic trace
+- **Feature**: Detected chromatographic peak with quality metrics
+- **FeatureMap**: Collection of features
+- **PeptideIdentification**: Search results for peptides
+- **ProteinIdentification**: Search results for proteins
 
-**详细文档**：请参见 `references/data_structures.md`
+**For detailed documentation**: See `references/data_structures.md`
 
-## 常见工作流
+## Common Workflows
 
-### 快速开始：加载和探索数据
+### Quick Start: Load and Explore Data
 
 ```python
 import pyopenms as ms
 
-# 加载mzML文件
+# Load mzML file
 exp = ms.MSExperiment()
 ms.MzMLFile().load("sample.mzML", exp)
 
-# 获取基本统计信息
+# Get basic statistics
 print(f"Number of spectra: {exp.getNrSpectra()}")
 print(f"Number of chromatograms: {exp.getNrChromatograms()}")
 
-# 检查第一个光谱
+# Examine first spectrum
 spec = exp.getSpectrum(0)
 print(f"MS level: {spec.getMSLevel()}")
 print(f"Retention time: {spec.getRT()}")
@@ -154,61 +154,62 @@ mz, intensity = spec.get_peaks()
 print(f"Peaks: {len(mz)}")
 ```
 
-### 参数管理
+### Parameter Management
 
-大多数算法使用参数系统：
+Most algorithms use a parameter system:
 
 ```python
-# 获取算法参数
+# Get algorithm parameters
 algo = ms.GaussFilter()
 params = algo.getParameters()
 
-# 查看可用参数
+# View available parameters
 for param in params.keys():
     print(f"{param}: {params.getValue(param)}")
 
-# 修改参数
+# Modify parameters
 params.setValue("gaussian_width", 0.2)
 algo.setParameters(params)
 ```
 
-### 导出到Pandas
+### Export to Pandas
 
-将数据转换为pandas DataFrame进行分析：
+Convert data to pandas DataFrames for analysis:
 
 ```python
 import pyopenms as ms
 import pandas as pd
 
-# 加载特征图谱
+# Load feature map
 fm = ms.FeatureMap()
 ms.FeatureXMLFile().load("features.featureXML", fm)
 
-# 转换为DataFrame
+# Convert to DataFrame
 df = fm.get_df()
 print(df.head())
 ```
 
-## 与其他工具集成
+## Integration with Other Tools
 
-PyOpenMS与以下工具集成：
-- **Pandas**：将数据导出到DataFrame
-- **NumPy**：处理峰数组
-- **Scikit-learn**：对MS数据进行机器学习
-- **Matplotlib/Seaborn**：可视化
-- **R**：通过rpy2桥接
+PyOpenMS integrates with:
+- **Pandas**: Export data to DataFrames
+- **NumPy**: Work with peak arrays
+- **Scikit-learn**: Machine learning on MS data
+- **Matplotlib/Seaborn**: Visualization
+- **R**: Via rpy2 bridge
 
-## 资源
+## Resources
 
-- **官方文档**：https://pyopenms.readthedocs.io
-- **OpenMS文档**：https://www.openms.org
-- **GitHub**：https://github.com/OpenMS/OpenMS
+- **Official documentation**: https://pyopenms.readthedocs.io
+- **OpenMS documentation**: https://www.openms.org
+- **GitHub**: https://github.com/OpenMS/OpenMS
 
-## 参考
+## References
 
-- `references/file_io.md` - 综合文件格式处理
-- `references/signal_processing.md` - 信号处理算法
-- `references/feature_detection.md` - 特征检测和链接
-- `references/identification.md` - 肽段和蛋白质鉴定
-- `references/metabolomics.md` - 代谢组学特定工作流
-- `references/data_structures.md` - 核心对象和数据结构
+- `references/file_io.md` - Comprehensive file format handling
+- `references/signal_processing.md` - Signal processing algorithms
+- `references/feature_detection.md` - Feature detection and linking
+- `references/identification.md` - Peptide and protein identification
+- `references/metabolomics.md` - Metabolomics-specific workflows
+- `references/data_structures.md` - Core objects and data structures
+

@@ -1,57 +1,57 @@
 ---
 name: gnomad-database
-description: 查询gnomAD（基因组聚合数据库）获取群体等位基因频率、变体约束评分（pLI、LOEUF）和功能缺失耐受性。用于变体致病性解释、罕见疾病遗传学和识别功能缺失不耐受基因。
+description: Query gnomAD (Genome Aggregation Database) for population allele frequencies, variant constraint scores (pLI, LOEUF), and loss-of-function intolerance. Essential for variant pathogenicity interpretation, rare disease genetics, and identifying loss-of-function intolerant genes.
 license: CC0-1.0
 metadata:
     skill-author: Kuan-lin Huang
 ---
 
-# gnomAD 数据库
+# gnomAD Database
 
-## 概述
+## Overview
 
-基因组聚合数据库（gnomAD）是来自大规模测序项目的人类遗传变异的最大公开可用集合。gnomAD v4包含来自730,947个个体的外显子序列和来自76,215个个体的基因组序列，涵盖多样化的祖先。它提供群体等位基因频率、变体后果注释和基因级约束指标，对于解释遗传变异的临床意义至关重要。
+The Genome Aggregation Database (gnomAD) is the largest publicly available collection of human genetic variation, aggregated from large-scale sequencing projects. gnomAD v4 contains exome sequences from 730,947 individuals and genome sequences from 76,215 individuals across diverse ancestries. It provides population allele frequencies, variant consequence annotations, and gene-level constraint metrics that are essential for interpreting the clinical significance of genetic variants.
 
-**关键资源：**
-- gnomAD浏览器：https://gnomad.broadinstitute.org/
-- GraphQL API：https://gnomad.broadinstitute.org/api
-- 数据下载：https://gnomad.broadinstitute.org/downloads
-- 文档：https://gnomad.broadinstitute.org/help
+**Key resources:**
+- gnomAD browser: https://gnomad.broadinstitute.org/
+- GraphQL API: https://gnomad.broadinstitute.org/api
+- Data downloads: https://gnomad.broadinstitute.org/downloads
+- Documentation: https://gnomad.broadinstitute.org/help
 
-## 何时使用此技能
+## When to Use This Skill
 
-使用gnomAD当：
+Use gnomAD when:
 
-- **变体频率查找**：检查变体是罕见、常见还是在一般群体中不存在
-- **致病性评估**：罕见变体（MAF < 1%）是疾病致病的候选者；gnomAD帮助过滤良性常见变体
-- **功能缺失不耐受性**：使用pLI和LOEUF评分评估基因是否耐受蛋白质截断变体
-- **群体分层频率**：跨祖先比较等位基因频率（非洲/非裔美国人、混合美洲人、阿什肯纳兹犹太人、东亚人、芬兰人、中东人、非芬兰欧洲人、南亚人）
-- **ClinVar/ACMG变体分类**：gnomAD频率数据输入BA1/BS1证据代码用于变体分类
-- **约束分析**：识别缺失错义或功能缺失变异的基因（z评分、pLI、LOEUF）
+- **Variant frequency lookup**: Checking if a variant is rare, common, or absent in the general population
+- **Pathogenicity assessment**: Rare variants (MAF < 1%) are candidates for disease causation; gnomAD helps filter benign common variants
+- **Loss-of-function intolerance**: Using pLI and LOEUF scores to assess whether a gene tolerates protein-truncating variants
+- **Population-stratified frequencies**: Comparing allele frequencies across ancestries (African/African American, Admixed American, Ashkenazi Jewish, East Asian, Finnish, Middle Eastern, Non-Finnish European, South Asian)
+- **ClinVar/ACMG variant classification**: gnomAD frequency data feeds into BA1/BS1 evidence codes for variant classification
+- **Constraint analysis**: Identifying genes depleted of missense or loss-of-function variation (z-scores, pLI, LOEUF)
 
-## 核心功能
+## Core Capabilities
 
 ### 1. gnomAD GraphQL API
 
-gnomAD使用位于`https://gnomad.broadinstitute.org/api`的GraphQL API。大多数查询通过基因或特定基因组位置获取变体。
+gnomAD uses a GraphQL API accessible at `https://gnomad.broadinstitute.org/api`. Most queries fetch variants by gene or specific genomic position.
 
-**可用数据集：**
-- `gnomad_r4` — gnomAD v4外显子（推荐默认，GRCh38）
-- `gnomad_r4_genomes` — gnomAD v4基因组（GRCh38）
-- `gnomad_r3` — gnomAD v3基因组（GRCh38）
-- `gnomad_r2_1` — gnomAD v2外显子（GRCh37）
+**Datasets available:**
+- `gnomad_r4` — gnomAD v4 exomes (recommended default, GRCh38)
+- `gnomad_r4_genomes` — gnomAD v4 genomes (GRCh38)
+- `gnomad_r3` — gnomAD v3 genomes (GRCh38)
+- `gnomad_r2_1` — gnomAD v2 exomes (GRCh37)
 
-**参考基因组：**
-- `GRCh38` — v3/v4的默认
-- `GRCh37` — 用于v2
+**Reference genomes:**
+- `GRCh38` — default for v3/v4
+- `GRCh37` — for v2
 
-### 2. 按基因查询变体
+### 2. Querying Variants by Gene
 
 ```python
 import requests
 
 def query_gnomad_gene(gene_symbol, dataset="gnomad_r4", reference_genome="GRCh38"):
-    """从gnomAD获取基因中的变体。"""
+    """Fetch variants in a gene from gnomAD."""
     url = "https://gnomad.broadinstitute.org/api"
 
     query = """
@@ -100,27 +100,27 @@ def query_gnomad_gene(gene_symbol, dataset="gnomad_r4", reference_genome="GRCh38
     response = requests.post(url, json={"query": query, "variables": variables})
     return response.json()
 
-# 示例
+# Example
 result = query_gnomad_gene("BRCA1")
 gene_data = result["data"]["gene"]
 variants = gene_data["variants"]
 
-# 过滤到罕见PTV
+# Filter to rare PTVs
 rare_ptvs = [
     v for v in variants
     if v.get("lof") == "LC" or v.get("consequence") in ["stop_gained", "frameshift_variant"]
     and v.get("genome", {}).get("af", 1) < 0.001
 ]
-print(f"在{gene_data['gene_symbol']}中找到{len(rare_ptvs)}个罕见PTV")
+print(f"Found {len(rare_ptvs)} rare PTVs in {gene_data['gene_symbol']}")
 ```
 
-### 3. 查询特定变体
+### 3. Querying a Specific Variant
 
 ```python
 import requests
 
 def query_gnomad_variant(variant_id, dataset="gnomad_r4"):
-    """获取特定变体（例如'1-55516888-G-GA'）的详情。"""
+    """Fetch details for a specific variant (e.g., '1-55516888-G-GA')."""
     url = "https://gnomad.broadinstitute.org/api"
 
     query = """
@@ -174,29 +174,29 @@ def query_gnomad_variant(variant_id, dataset="gnomad_r4"):
     )
     return response.json()
 
-# 示例：查询特定变体
-result = query_gnomad_variant("17-43094692-G-A")  # BRCA1错义
+# Example: query a specific variant
+result = query_gnomad_variant("17-43094692-G-A")  # BRCA1 missense
 variant = result["data"]["variant"]
 
 if variant:
     genome_af = variant.get("genome", {}).get("af", "N/A")
     exome_af = variant.get("exome", {}).get("af", "N/A")
-    print(f"变体：{variant['variant_id']}")
-    print(f"  后果：{variant['consequence']}")
-    print(f"  基因组AF：{genome_af}")
-    print(f"  外显子AF：{exome_af}")
-    print(f"  LoF：{variant.get('lof')}")
+    print(f"Variant: {variant['variant_id']}")
+    print(f"  Consequence: {variant['consequence']}")
+    print(f"  Genome AF: {genome_af}")
+    print(f"  Exome AF: {exome_af}")
+    print(f"  LoF: {variant.get('lof')}")
 ```
 
-### 4. 基因约束评分
+### 4. Gene Constraint Scores
 
-gnomAD约束评分评估基因相对于预期对变异的耐受程度：
+gnomAD constraint scores assess how tolerant a gene is to variation relative to expectation:
 
 ```python
 import requests
 
 def query_gnomad_constraint(gene_symbol, reference_genome="GRCh38"):
-    """获取基因的约束评分。"""
+    """Fetch constraint scores for a gene."""
     url = "https://gnomad.broadinstitute.org/api"
 
     query = """
@@ -231,35 +231,35 @@ def query_gnomad_constraint(gene_symbol, reference_genome="GRCh38"):
     )
     return response.json()
 
-# 示例
+# Example
 result = query_gnomad_constraint("KCNQ2")
 gene = result["data"]["gene"]
 constraint = gene["gnomad_constraint"]
 
-print(f"基因：{gene['gene_symbol']}")
-print(f"  pLI：   {constraint['pLI']:.3f}  (>0.9 = LoF不耐受）")
-print(f"  LOEUF： {constraint['oe_lof_upper']:.3f}  (<0.35 = 高度约束）")
-print(f"  Obs/Exp LoF：{constraint['oe_lof']:.3f}")
-print(f"  错义Z：  {constraint['mis_z']:.3f}")
+print(f"Gene: {gene['gene_symbol']}")
+print(f"  pLI:   {constraint['pLI']:.3f}  (>0.9 = LoF intolerant)")
+print(f"  LOEUF: {constraint['oe_lof_upper']:.3f}  (<0.35 = highly constrained)")
+print(f"  Obs/Exp LoF: {constraint['oe_lof']:.3f}")
+print(f"  Missense Z:  {constraint['mis_z']:.3f}")
 ```
 
-**约束评分解释：**
-| 评分 | 范围 | 含义 |
+**Constraint score interpretation:**
+| Score | Range | Meaning |
 |-------|-------|---------|
-| `pLI` | 0–1 | LoF不耐受概率；>0.9 = 高度不耐受 |
-| `LOEUF` | 0–∞ | LoF观察/期望上限；<0.35 = 约束 |
-| `oe_lof` | 0–∞ | LoF变体的观察/期望比率 |
-| `mis_z` | −∞ 到 ∞ | 错义约束z评分；>3.09 = 约束 |
-| `syn_z` | −∞ 到 ∞ | 同义z评分（对照；应接近0） |
+| `pLI` | 0–1 | Probability of LoF intolerance; >0.9 = highly intolerant |
+| `LOEUF` | 0–∞ | LoF observed/expected upper bound; <0.35 = constrained |
+| `oe_lof` | 0–∞ | Observed/expected ratio for LoF variants |
+| `mis_z` | −∞ to ∞ | Missense constraint z-score; >3.09 = constrained |
+| `syn_z` | −∞ to ∞ | Synonymous z-score (control; should be near 0) |
 
-### 5. 群体频率分析
+### 5. Population Frequency Analysis
 
 ```python
 import requests
 import pandas as pd
 
 def get_population_frequencies(variant_id, dataset="gnomad_r4"):
-    """提取变体的每个群体等位基因频率。"""
+    """Extract per-population allele frequencies for a variant."""
     url = "https://gnomad.broadinstitute.org/api"
 
     query = """
@@ -292,28 +292,28 @@ def get_population_frequencies(variant_id, dataset="gnomad_r4"):
     df = df.sort_values("af", ascending=False)
     return df
 
-# gnomAD v4中的群体ID：
-# afr = 非洲/非裔美国人
-# ami = 阿米什人
-# amr = 混合美洲人
-# asj = 阿什肯纳兹犹太人
-# eas = 东亚人
-# fin = 芬兰人
-# mid = 中东人
-# nfe = 非芬兰欧洲人
-# sas = 南亚人
-# remaining = 其他
+# Population IDs in gnomAD v4:
+# afr = African/African American
+# ami = Amish
+# amr = Admixed American
+# asj = Ashkenazi Jewish
+# eas = East Asian
+# fin = Finnish
+# mid = Middle Eastern
+# nfe = Non-Finnish European
+# sas = South Asian
+# remaining = Other
 ```
 
-### 6. 结构变体（gnomAD-SV）
+### 6. Structural Variants (gnomAD-SV)
 
-gnomAD还包含结构变体数据集：
+gnomAD also contains a structural variant dataset:
 
 ```python
 import requests
 
 def query_gnomad_sv(gene_symbol):
-    """查询与基因重叠的结构变体。"""
+    """Query structural variants overlapping a gene."""
     url = "https://gnomad.broadinstitute.org/api"
 
     query = """
@@ -337,59 +337,59 @@ def query_gnomad_sv(gene_symbol):
     return response.json()
 ```
 
-## 查询工作流
+## Query Workflows
 
-### 工作流1：变体致病性评估
+### Workflow 1: Variant Pathogenicity Assessment
 
-1. **检查群体频率** — 变体是否足够罕见以致可能是致病性的？
-   - 对隐性使用gnomAD AF < 1%，对显性条件使用< 0.1%
-   - 检查祖先特异性频率（在一个群体中罕见的变体可能在另一个群体中常见）
+1. **Check population frequency** — Is the variant rare enough to be pathogenic?
+   - Use gnomAD AF < 1% for recessive, < 0.1% for dominant conditions
+   - Check ancestry-specific frequencies (a variant rare overall may be common in one population)
 
-2. **评估功能影响** — LoF变体具有最高的先验概率
-   - 检查`lof`字段：`HC` = 高置信度LoF，`LC` = 低置信度
-   - 检查`lof_flags`是否存在"NAGNAG_SITE"、"PHYLOCSF_WEAK"等问题
+2. **Assess functional impact** — LoF variants have highest prior probability
+   - Check `lof` field: `HC` = high-confidence LoF, `LC` = low-confidence
+   - Check `lof_flags` for issues like "NAGNAG_SITE", "PHYLOCSF_WEAK"
 
-3. **应用ACMG标准：**
-   - BA1：AF > 5% → 良性独立证据
-   - BS1：AF > 疾病患病率阈值 → 良性支持证据
-   - PM2：在gnomAD中不存在或非常罕见 → 致病性中度证据
+3. **Apply ACMG criteria:**
+   - BA1: AF > 5% → Benign Stand-Alone
+   - BS1: AF > disease prevalence threshold → Benign Supporting
+   - PM2: Absent or very rare in gnomAD → Pathogenic Moderate
 
-### 工作流2：罕见疾病中的基因优先级排序
+### Workflow 2: Gene Prioritization in Rare Disease
 
-1. 查询候选基因的约束评分
-2. 过滤pLI > 0.9（单倍体剂量不足）或LOEUF < 0.35的基因
-3. 与基因中观察到的LoF变体交叉引用
-4. 与ClinVar和疾病数据库集成
+1. Query constraint scores for candidate genes
+2. Filter for pLI > 0.9 (haploinsufficient) or LOEUF < 0.35
+3. Cross-reference with observed LoF variants in the gene
+4. Integrate with ClinVar and disease databases
 
-### 工作流3：群体遗传学研究
+### Workflow 3: Population Genetics Research
 
-1. 从GWAS或临床数据识别感兴趣的变体
-2. 查询每个群体的频率
-3. 跨祖先比较频率差异
-4. 测试特定始祖群体中的富集
+1. Identify variant of interest from GWAS or clinical data
+2. Query per-population frequencies
+3. Compare frequency differences across ancestries
+4. Test for enrichment in specific founder populations
 
-## 最佳实践
+## Best Practices
 
-- **使用gnomAD v4（gnomad_r4）**获取最新数据；仅当GRCh37兼容性需要时使用v2（gnomad_r2_1）
-- **处理空响应**：在gnomAD中未观察到的变体不一定是致病性的——不存在是有信息的
-- **区分外显子与基因组数据**：基因组数据具有更均匀的覆盖；外显子数据更大但可能有覆盖缺口
-- **限制GraphQL查询**：在请求之间添加延迟；尽可能批量查询
-- **纯合子计数**（`ac_hom`）与隐性疾病分析相关
-- **LOEUF优于pLI**用于基因约束（对样本量不太敏感）
+- **Use gnomAD v4 (gnomad_r4)** for the most current data; use v2 (gnomad_r2_1) only for GRCh37 compatibility
+- **Handle null responses**: Variants not observed in gnomAD are not necessarily pathogenic — absence is informative
+- **Distinguish exome vs. genome data**: Genome data has more uniform coverage; exome data is larger but may have coverage gaps
+- **Rate limit GraphQL queries**: Add delays between requests; batch queries when possible
+- **Homozygous counts** (`ac_hom`) are relevant for recessive disease analysis
+- **LOEUF is preferred over pLI** for gene constraint (less sensitive to sample size)
 
-## 数据访问
+## Data Access
 
-- **浏览器**：https://gnomad.broadinstitute.org/ — 交互式变体和基因浏览
-- **GraphQL API**：https://gnomad.broadinstitute.org/api — 程序化访问
-- **下载**：https://gnomad.broadinstitute.org/downloads — VCF、Hail表、约束表
-- **Google Cloud**：gs://gcp-public-data--gnomad/
+- **Browser**: https://gnomad.broadinstitute.org/ — interactive variant and gene browsing
+- **GraphQL API**: https://gnomad.broadinstitute.org/api — programmatic access
+- **Downloads**: https://gnomad.broadinstitute.org/downloads — VCF, Hail tables, constraint tables
+- **Google Cloud**: gs://gcp-public-data--gnomad/
 
-## 其他资源
+## Additional Resources
 
-- **gnomAD网站**：https://gnomad.broadinstitute.org/
-- **gnomAD博客**：https://gnomad.broadinstitute.org/news
-- **下载**：https://gnomad.broadinstitute.org/downloads
-- **API资源管理器**：https://gnomad.broadinstitute.org/api（交互式GraphiQL）
-- **约束文档**：https://gnomad.broadinstitute.org/help/constraint
-- **引用**：Karczewski KJ et al. (2020) Nature. PMID: 32461654; Chen S et al. (2024) Nature. PMID: 38conservation
-- **GitHub**：https://github.com/broadinstitute/gnomad-browser
+- **gnomAD website**: https://gnomad.broadinstitute.org/
+- **gnomAD blog**: https://gnomad.broadinstitute.org/news
+- **Downloads**: https://gnomad.broadinstitute.org/downloads
+- **API explorer**: https://gnomad.broadinstitute.org/api (interactive GraphiQL)
+- **Constraint documentation**: https://gnomad.broadinstitute.org/help/constraint
+- **Citation**: Karczewski KJ et al. (2020) Nature. PMID: 32461654; Chen S et al. (2024) Nature. PMID: 38conservation
+- **GitHub**: https://github.com/broadinstitute/gnomad-browser

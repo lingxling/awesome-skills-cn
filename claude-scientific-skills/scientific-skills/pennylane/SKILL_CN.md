@@ -1,6 +1,6 @@
 ---
 name: pennylane
-description: 硬件无关的量子机器学习框架，具有自动微分功能。用于通过梯度训练量子电路、构建混合量子-经典模型，或在IBM/Google/Rigetti/IonQ等设备之间实现可移植性。最适合变分算法（VQE、QAOA）、量子神经网络以及与PyTorch/JAX/TensorFlow的集成。对于硬件特定优化，请使用qiskit（IBM）或cirq（Google）；对于开放量子系统，请使用qutip。
+description: Hardware-agnostic quantum ML framework with automatic differentiation. Use when training quantum circuits via gradients, building hybrid quantum-classical models, or needing device portability across IBM/Google/Rigetti/IonQ. Best for variational algorithms (VQE, QAOA), quantum neural networks, and integration with PyTorch/JAX/TensorFlow. For hardware-specific optimizations use qiskit (IBM) or cirq (Google); for open quantum systems use qutip.
 license: Apache-2.0 license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,19 +8,19 @@ metadata:
 
 # PennyLane
 
-## 概述
+## Overview
 
-PennyLane是一个量子计算库，使训练量子计算机像训练神经网络一样。它提供量子电路的自动微分、设备无关编程以及与经典机器学习框架的无缝集成。
+PennyLane is a quantum computing library that enables training quantum computers like neural networks. It provides automatic differentiation of quantum circuits, device-independent programming, and seamless integration with classical machine learning frameworks.
 
-## 安装
+## Installation
 
-使用uv安装：
+Install using uv:
 
 ```bash
 uv pip install pennylane
 ```
 
-对于量子硬件访问，安装设备插件：
+For quantum hardware access, install device plugins:
 
 ```bash
 # IBM Quantum
@@ -39,18 +39,18 @@ uv pip install pennylane-rigetti
 uv pip install pennylane-ionq
 ```
 
-## 快速开始
+## Quick Start
 
-构建量子电路并优化其参数：
+Build a quantum circuit and optimize its parameters:
 
 ```python
 import pennylane as qml
 from pennylane import numpy as np
 
-# 创建设备
+# Create device
 dev = qml.device('default.qubit', wires=2)
 
-# 定义量子电路
+# Define quantum circuit
 @qml.qnode(dev)
 def circuit(params):
     qml.RX(params[0], wires=0)
@@ -58,7 +58,7 @@ def circuit(params):
     qml.CNOT(wires=[0, 1])
     return qml.expval(qml.PauliZ(0))
 
-# 优化参数
+# Optimize parameters
 opt = qml.GradientDescentOptimizer(stepsize=0.1)
 params = np.array([0.1, 0.2], requires_grad=True)
 
@@ -66,158 +66,159 @@ for i in range(100):
     params = opt.step(circuit, params)
 ```
 
-## 核心功能
+## Core Capabilities
 
-### 1. 量子电路构建
+### 1. Quantum Circuit Construction
 
-使用门、测量和状态准备构建电路。请参阅`references/quantum_circuits.md`了解：
-- 单量子比特和多量子比特门
-- 受控操作和条件逻辑
-- 电路中间测量和自适应电路
-- 各种测量类型（期望值、概率、样本）
-- 电路检查和调试
+Build circuits with gates, measurements, and state preparation. See `references/quantum_circuits.md` for:
+- Single and multi-qubit gates
+- Controlled operations and conditional logic
+- Mid-circuit measurements and adaptive circuits
+- Various measurement types (expectation, probability, samples)
+- Circuit inspection and debugging
 
-### 2. 量子机器学习
+### 2. Quantum Machine Learning
 
-创建混合量子-经典模型。请参阅`references/quantum_ml.md`了解：
-- 与PyTorch、JAX、TensorFlow的集成
-- 量子神经网络和变分分类器
-- 数据编码策略（角度、振幅、基、IQP）
-- 使用反向传播训练混合模型
-- 量子电路的迁移学习
+Create hybrid quantum-classical models. See `references/quantum_ml.md` for:
+- Integration with PyTorch, JAX, TensorFlow
+- Quantum neural networks and variational classifiers
+- Data encoding strategies (angle, amplitude, basis, IQP)
+- Training hybrid models with backpropagation
+- Transfer learning with quantum circuits
 
-### 3. 量子化学
+### 3. Quantum Chemistry
 
-模拟分子并计算基态能量。请参阅`references/quantum_chemistry.md`了解：
-- 分子哈密顿量生成
-- 变分量子本征求解器（VQE）
-- 用于化学的UCCSD ansatz
-- 几何优化和解离曲线
-- 分子性质计算
+Simulate molecules and compute ground state energies. See `references/quantum_chemistry.md` for:
+- Molecular Hamiltonian generation
+- Variational Quantum Eigensolver (VQE)
+- UCCSD ansatz for chemistry
+- Geometry optimization and dissociation curves
+- Molecular property calculations
 
-### 4. 设备管理
+### 4. Device Management
 
-在模拟器或量子硬件上执行。请参阅`references/devices_backends.md`了解：
-- 内置模拟器（default.qubit、lightning.qubit、default.mixed）
-- 硬件插件（IBM、Amazon Braket、Google、Rigetti、IonQ）
-- 设备选择和配置
-- 性能优化和缓存
-- GPU加速和JIT编译
+Execute on simulators or quantum hardware. See `references/devices_backends.md` for:
+- Built-in simulators (default.qubit, lightning.qubit, default.mixed)
+- Hardware plugins (IBM, Amazon Braket, Google, Rigetti, IonQ)
+- Device selection and configuration
+- Performance optimization and caching
+- GPU acceleration and JIT compilation
 
-### 5. 优化
+### 5. Optimization
 
-使用各种优化器训练量子电路。请参阅`references/optimization.md`了解：
-- 内置优化器（Adam、梯度下降、动量、RMSProp）
-- 梯度计算方法（反向传播、参数移位、伴随）
-- 变分算法（VQE、QAOA）
-- 训练策略（学习率调度、小批量）
-- 处理 barren plateaus和局部最小值
+Train quantum circuits with various optimizers. See `references/optimization.md` for:
+- Built-in optimizers (Adam, gradient descent, momentum, RMSProp)
+- Gradient computation methods (backprop, parameter-shift, adjoint)
+- Variational algorithms (VQE, QAOA)
+- Training strategies (learning rate schedules, mini-batches)
+- Handling barren plateaus and local minima
 
-### 6. 高级功能
+### 6. Advanced Features
 
-利用模板、变换和编译。请参阅`references/advanced_features.md`了解：
-- 电路模板和层
-- 变换和电路优化
-- 脉冲级编程
-- Catalyst JIT编译
-- 噪声模型和错误缓解
-- 资源估计
+Leverage templates, transforms, and compilation. See `references/advanced_features.md` for:
+- Circuit templates and layers
+- Transforms and circuit optimization
+- Pulse-level programming
+- Catalyst JIT compilation
+- Noise models and error mitigation
+- Resource estimation
 
-## 常见工作流程
+## Common Workflows
 
-### 训练变分分类器
+### Train a Variational Classifier
 
 ```python
-# 1. 定义ansatz
+# 1. Define ansatz
 @qml.qnode(dev)
 def classifier(x, weights):
-    # 编码数据
+    # Encode data
     qml.AngleEmbedding(x, wires=range(4))
 
-    # 变分层
+    # Variational layers
     qml.StronglyEntanglingLayers(weights, wires=range(4))
 
     return qml.expval(qml.PauliZ(0))
 
-# 2. 训练
+# 2. Train
 opt = qml.AdamOptimizer(stepsize=0.01)
-weights = np.random.random((3, 4, 3))  # 3层，4个量子比特
+weights = np.random.random((3, 4, 3))  # 3 layers, 4 wires
 
 for epoch in range(100):
     for x, y in zip(X_train, y_train):
         weights = opt.step(lambda w: (classifier(x, w) - y)**2, weights)
 ```
 
-### 运行VQE计算分子基态
+### Run VQE for Molecular Ground State
 
 ```python
 from pennylane import qchem
 
-# 1. 构建哈密顿量
+# 1. Build Hamiltonian
 symbols = ['H', 'H']
 coords = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.74])
 H, n_qubits = qchem.molecular_hamiltonian(symbols, coords)
 
-# 2. 定义ansatz
+# 2. Define ansatz
 @qml.qnode(dev)
 def vqe_circuit(params):
     qml.BasisState(qchem.hf_state(2, n_qubits), wires=range(n_qubits))
     qml.UCCSD(params, wires=range(n_qubits))
     return qml.expval(H)
 
-# 3. 优化
+# 3. Optimize
 opt = qml.AdamOptimizer(stepsize=0.1)
 params = np.zeros(10, requires_grad=True)
 
 for i in range(100):
     params, energy = opt.step_and_cost(vqe_circuit, params)
-    print(f"步骤 {i}: 能量 = {energy:.6f} Ha")
+    print(f"Step {i}: Energy = {energy:.6f} Ha")
 ```
 
-### 在设备之间切换
+### Switch Between Devices
 
 ```python
-# 相同电路，不同后端
+# Same circuit, different backends
 circuit_def = lambda dev: qml.qnode(dev)(circuit_function)
 
-# 在模拟器上测试
+# Test on simulator
 dev_sim = qml.device('default.qubit', wires=4)
 result_sim = circuit_def(dev_sim)(params)
 
-# 在量子硬件上运行
+# Run on quantum hardware
 dev_hw = qml.device('qiskit.ibmq', wires=4, backend='ibmq_manila')
 result_hw = circuit_def(dev_hw)(params)
 ```
 
-## 详细文档
+## Detailed Documentation
 
-有关特定主题的全面覆盖，请参考参考文件：
+For comprehensive coverage of specific topics, consult the reference files:
 
-- **入门**：`references/getting_started.md` - 安装、基本概念、第一步
-- **量子电路**：`references/quantum_circuits.md` - 门、测量、电路模式
-- **量子机器学习**：`references/quantum_ml.md` - 混合模型、框架集成、QNN
-- **量子化学**：`references/quantum_chemistry.md` - VQE、分子哈密顿量、化学工作流
-- **设备**：`references/devices_backends.md` - 模拟器、硬件插件、设备配置
-- **优化**：`references/optimization.md` - 优化器、梯度、变分算法
-- **高级**：`references/advanced_features.md` - 模板、变换、JIT编译、噪声
+- **Getting started**: `references/getting_started.md` - Installation, basic concepts, first steps
+- **Quantum circuits**: `references/quantum_circuits.md` - Gates, measurements, circuit patterns
+- **Quantum ML**: `references/quantum_ml.md` - Hybrid models, framework integration, QNNs
+- **Quantum chemistry**: `references/quantum_chemistry.md` - VQE, molecular Hamiltonians, chemistry workflows
+- **Devices**: `references/devices_backends.md` - Simulators, hardware plugins, device configuration
+- **Optimization**: `references/optimization.md` - Optimizers, gradients, variational algorithms
+- **Advanced**: `references/advanced_features.md` - Templates, transforms, JIT compilation, noise
 
-## 最佳实践
+## Best Practices
 
-1. **从模拟器开始** - 在部署到硬件之前在`default.qubit`上测试
-2. **对硬件使用参数移位** - 反向传播仅适用于模拟器
-3. **选择适当的编码** - 将数据编码与问题结构匹配
-4. **仔细初始化** - 使用小随机值避免barren plateaus
-5. **监控梯度** - 检查深度电路中的梯度消失
-6. **缓存设备** - 重用设备对象以减少初始化开销
-7. **分析电路** - 使用`qml.specs()`分析电路复杂性
-8. **本地测试** - 在提交到硬件之前在模拟器上验证
-9. **使用模板** - 利用内置模板进行常见电路模式
-10. **尽可能编译** - 对性能关键代码使用Catalyst JIT
+1. **Start with simulators** - Test on `default.qubit` before deploying to hardware
+2. **Use parameter-shift for hardware** - Backpropagation only works on simulators
+3. **Choose appropriate encodings** - Match data encoding to problem structure
+4. **Initialize carefully** - Use small random values to avoid barren plateaus
+5. **Monitor gradients** - Check for vanishing gradients in deep circuits
+6. **Cache devices** - Reuse device objects to reduce initialization overhead
+7. **Profile circuits** - Use `qml.specs()` to analyze circuit complexity
+8. **Test locally** - Validate on simulators before submitting to hardware
+9. **Use templates** - Leverage built-in templates for common circuit patterns
+10. **Compile when possible** - Use Catalyst JIT for performance-critical code
 
-## 资源
+## Resources
 
-- 官方文档：https://docs.pennylane.ai
-- 代码手册（教程）：https://pennylane.ai/codebook
-- QML演示：https://pennylane.ai/qml/demonstrations
-- 社区论坛：https://discuss.pennylane.ai
-- GitHub：https://github.com/PennyLaneAI/pennylane
+- Official documentation: https://docs.pennylane.ai
+- Codebook (tutorials): https://pennylane.ai/codebook
+- QML demonstrations: https://pennylane.ai/qml/demonstrations
+- Community forum: https://discuss.pennylane.ai
+- GitHub: https://github.com/PennyLaneAI/pennylane
+

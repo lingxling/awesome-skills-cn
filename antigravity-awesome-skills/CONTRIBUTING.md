@@ -33,6 +33,7 @@ git push origin my-branch
 ```
 
 Open the PR with the default template and enable **Allow edits from maintainers** so conflicts can be resolved without extra back-and-forth.
+If your PR adds or edits `SKILL.md`, GitHub will also run the automated `skill-review` workflow on the pull request.
 
 If you only want to improve docs, editing directly in GitHub is still perfectly fine.
 
@@ -49,9 +50,9 @@ You don't need to be an expert! Here are ways anyone can help:
 - Translate documentation to other languages
 
 ### 2. Report Issues
-- Found something confusing? Tell us!
-- Skill not working? Let us know!
-- Have suggestions? We want to hear them!
+- Found a reproducible bug? Open an Issue.
+- Need help, want feedback, or have an early-stage idea? Start a Discussion.
+- Skill not working? If you can reproduce it, open an Issue. If you're unsure, start in Q&A.
 
 ### 3. Create New Skills
 - Share your expertise as a skill
@@ -230,6 +231,8 @@ For a **skill-only PR**:
 npm install
 npm run validate
 ```
+
+GitHub will also run the automated `skill-review` check for PRs that touch `SKILL.md`.
 
 For **docs / workflows / infra changes**:
 

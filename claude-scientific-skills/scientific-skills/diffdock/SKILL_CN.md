@@ -1,54 +1,54 @@
 ---
 name: diffdock
-description: 基于扩散的分子对接。从 PDB/SMILES 预测蛋白质-配体结合位姿、置信度评分、虚拟筛选，用于基于结构的药物设计。不适用于亲和力预测。
+description: Diffusion-based molecular docking. Predict protein-ligand binding poses from PDB/SMILES, confidence scores, virtual screening, for structure-based drug design. Not for affinity prediction.
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# DiffDock：使用扩散模型的分子对接
+# DiffDock: Molecular Docking with Diffusion Models
 
-## 概述
+## Overview
 
-DiffDock 是一个基于扩散的深度学习工具，用于分子对接，可预测小分子配体与蛋白质靶点的 3D 结合位姿。它代表了计算对接的最先进技术，对于基于结构的药物发现和化学生物学至关重要。
+DiffDock is a diffusion-based deep learning tool for molecular docking that predicts 3D binding poses of small molecule ligands to protein targets. It represents the state-of-the-art in computational docking, crucial for structure-based drug discovery and chemical biology.
 
-**核心能力：**
-- 使用深度学习以高精度预测配体结合位姿
-- 支持蛋白质结构（PDB 文件）或序列（通过 ESMFold）
-- 处理单个复合物或批处理虚拟筛选活动
-- 生成置信度评分以评估预测可靠性
-- 处理多样化的配体输入（SMILES、SDF、MOL2）
+**Core Capabilities:**
+- Predict ligand binding poses with high accuracy using deep learning
+- Support protein structures (PDB files) or sequences (via ESMFold)
+- Process single complexes or batch virtual screening campaigns
+- Generate confidence scores to assess prediction reliability
+- Handle diverse ligand inputs (SMILES, SDF, MOL2)
 
-**关键区别：**DiffDock 预测**结合位姿**（3D 结构）和**置信度**（预测确定性），而不是结合亲和力（ΔG、Kd）。始终结合评分函数（GNINA、MM/GBSA）进行亲和力评估。
+**Key Distinction:** DiffDock predicts **binding poses** (3D structure) and **confidence** (prediction certainty), NOT binding affinity (ΔG, Kd). Always combine with scoring functions (GNINA, MM/GBSA) for affinity assessment.
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况下使用：
+This skill should be used when:
 
-- "对接这个配体到蛋白质"或"预测结合位姿"
-- "运行分子对接"或"执行蛋白质-配体对接"
-- "虚拟筛选"或"筛选化合物库"
-- "这个分子在哪里结合？"或"预测结合位点"
-- 基于结构的药物设计或先导优化任务
-- 涉及 PDB 文件 + SMILES 字符串或配体结构的任务
-- 批处理多个蛋白质-配体对
+- "Dock this ligand to a protein" or "predict binding pose"
+- "Run molecular docking" or "perform protein-ligand docking"
+- "Virtual screening" or "screen compound library"
+- "Where does this molecule bind?" or "predict binding site"
+- Structure-based drug design or lead optimization tasks
+- Tasks involving PDB files + SMILES strings or ligand structures
+- Batch docking of multiple protein-ligand pairs
 
-## 安装和环境设置
+## Installation and Environment Setup
 
-### 检查环境状态
+### Check Environment Status
 
-在继续 DiffDock 任务之前，验证环境设置：
+Before proceeding with DiffDock tasks, verify the environment setup:
 
 ```bash
-# 使用提供的设置检查器
+# Use the provided setup checker
 python scripts/setup_check.py
 ```
 
-此脚本验证 Python 版本、带有 CUDA 的 PyTorch、PyTorch Geometric、RDKit、ESM 和其他依赖项。
+This script validates Python version, PyTorch with CUDA, PyTorch Geometric, RDKit, ESM, and other dependencies.
 
-### 安装选项
+### Installation Options
 
-**选项 1：Conda（推荐）**
+**Option 1: Conda (Recommended)**
 ```bash
 git clone https://github.com/gcorso/DiffDock.git
 cd DiffDock
@@ -56,29 +56,29 @@ conda env create --file environment.yml
 conda activate diffdock
 ```
 
-**选项 2：Docker**
+**Option 2: Docker**
 ```bash
 docker pull rbgcsail/diffdock
 docker run -it --gpus all --entrypoint /bin/bash rbgcsail/diffdock
 micromamba activate diffdock
 ```
 
-**重要说明：**
-- 强烈推荐 GPU（与 CPU 相比，速度提升 10-100 倍）
-- 首次运行预计算 SO(2)/SO(3) 查找表（约 2-5 分钟）
-- 模型检查点（约 500MB）如果不存在会自动下载
+**Important Notes:**
+- GPU strongly recommended (10-100x speedup vs CPU)
+- First run pre-computes SO(2)/SO(3) lookup tables (~2-5 minutes)
+- Model checkpoints (~500MB) download automatically if not present
 
-## 核心工作流
+## Core Workflows
 
-### 工作流 1：单个蛋白质-配体对接
+### Workflow 1: Single Protein-Ligand Docking
 
-**用例**：将一个配体对接到一个蛋白质靶点
+**Use Case:** Dock one ligand to one protein target
 
-**输入要求：**
-- 蛋白质：PDB 文件或氨基酸序列
-- 配体：SMILES 字符串或结构文件（SDF/MOL2）
+**Input Requirements:**
+- Protein: PDB file OR amino acid sequence
+- Ligand: SMILES string OR structure file (SDF/MOL2)
 
-**命令：**
+**Command:**
 ```bash
 python -m inference \
   --config default_inference_args.yaml \
@@ -87,7 +87,7 @@ python -m inference \
   --out_dir results/single_docking/
 ```
 
-**替代方案（蛋白质序列）：**
+**Alternative (protein sequence):**
 ```bash
 python -m inference \
   --config default_inference_args.yaml \
@@ -96,33 +96,33 @@ python -m inference \
   --out_dir results/sequence_docking/
 ```
 
-**输出结构：**
+**Output Structure:**
 ```
 results/single_docking/
-├── rank_1.sdf          # 排名第一的位姿
-├── rank_2.sdf          # 排名第二的位姿
+├── rank_1.sdf          # Top-ranked pose
+├── rank_2.sdf          # Second-ranked pose
 ├── ...
-├── rank_10.sdf         # 第 10 个位姿（默认：10 个样本）
+├── rank_10.sdf         # 10th pose (default: 10 samples)
 └── confidence_scores.txt
 ```
 
-### 工作流 2：批处理多个复合物
+### Workflow 2: Batch Processing Multiple Complexes
 
-**用例**：将多个配体对接到蛋白质、虚拟筛选活动
+**Use Case:** Dock multiple ligands to proteins, virtual screening campaigns
 
-**步骤 1：准备批处理 CSV**
+**Step 1: Prepare Batch CSV**
 
-使用提供的脚本创建或验证批处理输入：
+Use the provided script to create or validate batch input:
 
 ```bash
-# 创建模板
+# Create template
 python scripts/prepare_batch_csv.py --create --output batch_input.csv
 
-# 验证现有 CSV
+# Validate existing CSV
 python scripts/prepare_batch_csv.py my_input.csv --validate
 ```
 
-**CSV 格式：**
+**CSV Format:**
 ```csv
 complex_name,protein_path,ligand_description,protein_sequence
 complex1,protein1.pdb,CC(=O)Oc1ccccc1C(=O)O,
@@ -130,13 +130,13 @@ complex2,,COc1ccc(C#N)cc1,MSKGEELFT...
 complex3,protein3.pdb,ligand3.sdf,
 ```
 
-**必需列：**
-- `complex_name`：唯一标识符
-- `protein_path`：PDB 文件路径（如果使用序列则留空）
-- `ligand_description`：SMILES 字符串或配体文件路径
-- `protein_sequence`：氨基酸序列（如果使用 PDB 则留空）
+**Required Columns:**
+- `complex_name`: Unique identifier
+- `protein_path`: PDB file path (leave empty if using sequence)
+- `ligand_description`: SMILES string or ligand file path
+- `protein_sequence`: Amino acid sequence (leave empty if using PDB)
 
-**步骤 2：运行批处理对接**
+**Step 2: Run Batch Docking**
 
 ```bash
 python -m inference \
@@ -146,17 +146,16 @@ python -m inference \
   --batch_size 10
 ```
 
-**对于大型虚拟筛选（>100 个化合物）：**
+**For Large Virtual Screening (>100 compounds):**
 
-预计算蛋白质嵌入以加快处理速度：
-
+Pre-compute protein embeddings for faster processing:
 ```bash
-# 预计算嵌入
+# Pre-compute embeddings
 python datasets/esm_embedding_preparation.py \
   --protein_ligand_csv screening_input.csv \
   --out_file protein_embeddings.pt
 
-# 使用预计算的嵌入运行
+# Run with pre-computed embeddings
 python -m inference \
   --config default_inference_args.yaml \
   --protein_ligand_csv screening_input.csv \
@@ -164,103 +163,103 @@ python -m inference \
   --out_dir results/screening/
 ```
 
-### 工作流 3：分析结果
+### Workflow 3: Analyzing Results
 
-对接完成后，分析置信度评分并对预测进行排名：
+After docking completes, analyze confidence scores and rank predictions:
 
 ```bash
-# 分析所有结果
+# Analyze all results
 python scripts/analyze_results.py results/batch/
 
-# 显示每个复合物的前 5 个
+# Show top 5 per complex
 python scripts/analyze_results.py results/batch/ --top 5
 
-# 按置信度阈值过滤
+# Filter by confidence threshold
 python scripts/analyze_results.py results/batch/ --threshold 0.0
 
-# 导出到 CSV
+# Export to CSV
 python scripts/analyze_results.py results/batch/ --export summary.csv
 
-# 显示所有复合物的前 20 个预测
+# Show top 20 predictions across all complexes
 python scripts/analyze_results.py results/batch/ --best 20
 ```
 
-分析脚本：
-- 解析所有预测的置信度评分
-- 分类为高（>0）、中（-1.5 到 0）、低（<-1.5）
-- 在复合物内和跨复合物对预测进行排名
-- 生成统计摘要
-- 导出到 CSV 以进行下游分析
+The analysis script:
+- Parses confidence scores from all predictions
+- Classifies as High (>0), Moderate (-1.5 to 0), or Low (<-1.5)
+- Ranks predictions within and across complexes
+- Generates statistical summaries
+- Exports results to CSV for downstream analysis
 
-## 置信度评分解读
+## Confidence Score Interpretation
 
-**理解评分：**
+**Understanding Scores:**
 
-| 评分范围 | 置信度水平 | 解读 |
-|------------|--------------|------|
-| **> 0** | 高 | 强预测，可能准确 |
-| **-1.5 到 0** | 中 | 合理预测，仔细验证 |
-| **< -1.5** | 低 | 不确定预测，需要验证 |
+| Score Range | Confidence Level | Interpretation |
+|------------|------------------|----------------|
+| **> 0** | High | Strong prediction, likely accurate |
+| **-1.5 to 0** | Moderate | Reasonable prediction, validate carefully |
+| **< -1.5** | Low | Uncertain prediction, requires validation |
 
-**关键说明：**
-1. **置信度 ≠ 亲和力**：高置信度意味着模型对结构的确定性，而不是强结合
-2. **上下文很重要**：根据以下调整预期：
-   - 大配体（>500 Da）：预期置信度较低
-   - 多蛋白质链：可能会降低置信度
-   - 新颖蛋白质家族：可能表现不佳
-3. **多个样本**：查看前 3-5 个预测，寻找一致性
+**Critical Notes:**
+1. **Confidence ≠ Affinity**: High confidence means model certainty about structure, NOT strong binding
+2. **Context Matters**: Adjust expectations for:
+   - Large ligands (>500 Da): Lower confidence expected
+   - Multiple protein chains: May decrease confidence
+   - Novel protein families: May underperform
+3. **Multiple Samples**: Review top 3-5 predictions, look for consensus
 
-**有关详细指导**：使用 Read 工具阅读 `references/confidence_and_limitations.md`
+**For detailed guidance:** Read `references/confidence_and_limitations.md` using the Read tool
 
-## 参数自定义
+## Parameter Customization
 
-### 使用自定义配置
+### Using Custom Configuration
 
-为特定用例创建自定义配置：
+Create custom configuration for specific use cases:
 
 ```bash
-# 复制模板
+# Copy template
 cp assets/custom_inference_config.yaml my_config.yaml
 
-# 编辑参数（参见模板中的预设）
-# 然后使用自定义配置运行
+# Edit parameters (see template for presets)
+# Then run with custom config
 python -m inference \
   --config my_config.yaml \
   --protein_ligand_csv input.csv \
   --out_dir results/
 ```
 
-### 要调整的关键参数
+### Key Parameters to Adjust
 
-**采样密度：**
-- `samples_per_complex: 10` → 增加到 20-40 用于困难情况
-- 更多样本 = 更好的覆盖范围但运行时间更长
+**Sampling Density:**
+- `samples_per_complex: 10` → Increase to 20-40 for difficult cases
+- More samples = better coverage but longer runtime
 
-**推理步骤：**
-- `inference_steps: 20` → 增加到 25-30 以获得更高精度
-- 更多步骤 = 可能更好的质量但更慢
+**Inference Steps:**
+- `inference_steps: 20` → Increase to 25-30 for higher accuracy
+- More steps = potentially better quality but slower
 
-**温度参数（控制多样性）：**
-- `temp_sampling_tor: 7.04` → 为柔性配体增加（8-10）
-- `temp_sampling_tor: 7.04` → 为刚性配体减少（5-6）
-- 更高温度 = 更多样的位姿
+**Temperature Parameters (control diversity):**
+- `temp_sampling_tor: 7.04` → Increase for flexible ligands (8-10)
+- `temp_sampling_tor: 7.04` → Decrease for rigid ligands (5-6)
+- Higher temperature = more diverse poses
 
-**模板中可用的预设：**
-1. 高精度：更多样本 + 步骤，较低温度
-2. 快速筛选：更少样本，更快
-3. 柔性配体：增加扭转温度
-4. 刚性配体：减少扭转温度
+**Presets Available in Template:**
+1. High Accuracy: More samples + steps, lower temperature
+2. Fast Screening: Fewer samples, faster
+3. Flexible Ligands: Increased torsion temperature
+4. Rigid Ligands: Decreased torsion temperature
 
-**有关完整的参数参考**：使用 Read 工具阅读 `references/parameters_reference.md`
+**For complete parameter reference:** Read `references/parameters_reference.md` using the Read tool
 
-## 高级技术
+## Advanced Techniques
 
-### 集成对接（蛋白质柔性）
+### Ensemble Docking (Protein Flexibility)
 
-对于已知柔性的蛋白质，对接到多个构象：
+For proteins with known flexibility, dock to multiple conformations:
 
 ```python
-# 创建集成 CSV
+# Create ensemble CSV
 import pandas as pd
 
 conformations = ["conf1.pdb", "conf2.pdb", "conf3.pdb"]
@@ -276,8 +275,7 @@ data = {
 pd.DataFrame(data).to_csv("ensemble_input.csv", index=False)
 ```
 
-使用增加的采样运行对接：
-
+Run docking with increased sampling:
 ```bash
 python -m inference \
   --config default_inference_args.yaml \
@@ -286,197 +284,198 @@ python -m inference \
   --out_dir results/ensemble/
 ```
 
-### 与评分函数集成
+### Integration with Scoring Functions
 
-DiffDock 生成位姿；结合其他工具进行亲和力：
+DiffDock generates poses; combine with other tools for affinity:
 
-**GNINA（快速神经网络评分）：**
+**GNINA (Fast neural network scoring):**
 ```bash
 for pose in results/*.sdf; do
     gnina -r protein.pdb -l "$pose" --score_only
 done
 ```
 
-**MM/GBSA（更准确，更慢）：**
-在能量最小化后使用 AmberTools MMPBSA.py 或 gmx_MMPBSA
+**MM/GBSA (More accurate, slower):**
+Use AmberTools MMPBSA.py or gmx_MMPBSA after energy minimization
 
-**自由能计算（最准确）：**
-使用 OpenMM + OpenFE 或 GROMACS 进行 FEP/TI 计算
+**Free Energy Calculations (Most accurate):**
+Use OpenMM + OpenFE or GROMACS for FEP/TI calculations
 
-**推荐工作流：**
-1. DiffDock → 生成带置信度评分的位姿
-2. 视觉检查 → 检查结构合理性
-3. GNINA 或 MM/GBSA → 重新评分并按亲和力排名
-4. 实验验证 → 生化测定
+**Recommended Workflow:**
+1. DiffDock → Generate poses with confidence scores
+2. Visual inspection → Check structural plausibility
+3. GNINA or MM/GBSA → Rescore and rank by affinity
+4. Experimental validation → Biochemical assays
 
-## 限制和范围
+## Limitations and Scope
 
-**DiffDock 适用于：**
-- 小分子配体（通常 100-1000 Da）
-- 类药物有机化合物
-- 小肽（<20 个残基）
-- 单链或多链蛋白质
+**DiffDock IS Designed For:**
+- Small molecule ligands (typically 100-1000 Da)
+- Drug-like organic compounds
+- Small peptides (<20 residues)
+- Single or multi-chain proteins
 
-**DiffDock 不适用于：**
-- 大生物分子（蛋白质-蛋白质对接）→ 使用 DiffDock-PP 或 AlphaFold-Multimer
-- 大肽（>20 个残基）→ 使用替代方法
-- 共价对接 → 使用专门的共价对接工具
-- 结合亲和力预测 → 结合评分函数
-- 膜蛋白 → 未专门训练，谨慎使用
+**DiffDock IS NOT Designed For:**
+- Large biomolecules (protein-protein docking) → Use DiffDock-PP or AlphaFold-Multimer
+- Large peptides (>20 residues) → Use alternative methods
+- Covalent docking → Use specialized covalent docking tools
+- Binding affinity prediction → Combine with scoring functions
+- Membrane proteins → Not specifically trained, use with caution
 
-**有关完整的限制**：使用 Read 工具阅读 `references/confidence_and_limitations.md`
+**For complete limitations:** Read `references/confidence_and_limitations.md` using the Read tool
 
-## 故障排除
+## Troubleshooting
 
-### 常见问题
+### Common Issues
 
-**问题：所有预测的置信度评分都很低**
-- 原因：大/异常配体、结合位点不明确、蛋白质柔性
-- 解决方案：增加 `samples_per_complex`（20-40），尝试集成对接，验证蛋白质结构
+**Issue: Low confidence scores across all predictions**
+- Cause: Large/unusual ligands, unclear binding site, protein flexibility
+- Solution: Increase `samples_per_complex` (20-40), try ensemble docking, validate protein structure
 
-**问题：内存不足**
-- 原因：GPU 内存不足以处理批次大小
-- 解决方案：减少 `--batch_size 2` 或一次处理更少的复合物
+**Issue: Out of memory errors**
+- Cause: GPU memory insufficient for batch size
+- Solution: Reduce `--batch_size 2` or process fewer complexes at once
 
-**问题：性能缓慢**
-- 原因：在 CPU 而不是 GPU 上运行
-- 解决方案：使用 `python -c "import torch; print(torch.cuda.is_available())"` 验证 CUDA，使用 GPU
+**Issue: Slow performance**
+- Cause: Running on CPU instead of GPU
+- Solution: Verify CUDA with `python -c "import torch; print(torch.cuda.is_available())"`, use GPU
 
-**问题：不现实的结合位姿**
-- 原因：蛋白质准备不当、配体太大、结合位点错误
-- 解决方案：检查蛋白质是否有缺失残基，移除远端水，考虑指定结合位点
+**Issue: Unrealistic binding poses**
+- Cause: Poor protein preparation, ligand too large, wrong binding site
+- Solution: Check protein for missing residues, remove far waters, consider specifying binding site
 
-**问题："Module not found"错误**
-- 原因：缺少依赖项或环境错误
-- 解决方案：运行 `python scripts/setup_check.py` 进行诊断
+**Issue: "Module not found" errors**
+- Cause: Missing dependencies or wrong environment
+- Solution: Run `python scripts/setup_check.py` to diagnose
 
-### 性能优化
+### Performance Optimization
 
-**获得最佳结果：**
-1. 使用 GPU（实际使用必不可少）
-2. 为重复的蛋白质使用预计算 ESM 嵌入
-3. 一起批处理多个复合物
-4. 从默认参数开始，然后根据需要调整
-5. 验证蛋白质结构（解决缺失残基）
-6. 对配体使用规范 SMILES
+**For Best Results:**
+1. Use GPU (essential for practical use)
+2. Pre-compute ESM embeddings for repeated protein use
+3. Batch process multiple complexes together
+4. Start with default parameters, then tune if needed
+5. Validate protein structures (resolve missing residues)
+6. Use canonical SMILES for ligands
 
-## 图形用户界面
+## Graphical User Interface
 
-对于交互式使用，启动 Web 界面：
+For interactive use, launch the web interface:
 
 ```bash
 python app/main.py
-# 导航到 http://localhost:7860
+# Navigate to http://localhost:7860
 ```
 
-或使用在线演示而无需安装：
+Or use the online demo without installation:
 - https://huggingface.co/spaces/reginabarzilaygroup/DiffDock-Web
 
-## 资源
+## Resources
 
-### 辅助脚本（`scripts/`）
+### Helper Scripts (`scripts/`)
 
-**`prepare_batch_csv.py`**：创建和验证批处理输入 CSV 文件
-- 使用示例条目创建模板
-- 验证文件路径和 SMILES 字符串
-- 检查必需列和格式问题
+**`prepare_batch_csv.py`**: Create and validate batch input CSV files
+- Create templates with example entries
+- Validate file paths and SMILES strings
+- Check for required columns and format issues
 
-**`analyze_results.py`**：分析置信度评分并对预测进行排名
-- 解析来自单个或批处理运行的结果
-- 生成统计摘要
-- 导出到 CSV 以进行下游分析
-- 识别跨复合物的顶级预测
+**`analyze_results.py`**: Analyze confidence scores and rank predictions
+- Parse results from single or batch runs
+- Generate statistical summaries
+- Export to CSV for downstream analysis
+- Identify top predictions across complexes
 
-**`setup_check.py`**：验证 DiffDock 环境设置
-- 检查 Python 版本和依赖项
-- 验证 PyTorch 和 CUDA 可用性
-- 测试 RDKit 和 PyTorch Geometric 安装
-- 如果需要，提供安装说明
+**`setup_check.py`**: Verify DiffDock environment setup
+- Check Python version and dependencies
+- Verify PyTorch and CUDA availability
+- Test RDKit and PyTorch Geometric installation
+- Provide installation instructions if needed
 
-### 参考文档（`references/`）
+### Reference Documentation (`references/`)
 
-**`parameters_reference.md`**：完整的参数文档
-- 所有命令行选项和配置参数
-- 默认值和可接受范围
-- 用于控制多样性的温度参数
-- 模型检查点位置和版本标志
+**`parameters_reference.md`**: Complete parameter documentation
+- All command-line options and configuration parameters
+- Default values and acceptable ranges
+- Temperature parameters for controlling diversity
+- Model checkpoint locations and version flags
 
-当用户需要时阅读此文件：
-- 详细的参数说明
-- 特定系统的微调指导
-- 替代采样策略
+Read this file when users need:
+- Detailed parameter explanations
+- Fine-tuning guidance for specific systems
+- Alternative sampling strategies
 
-**`confidence_and_limitations.md`**：置信度评分解读和工具限制
-- 详细的置信度评分解读
-- 何时信任预测
-- DiffDock 的范围和限制
-- 与互补工具的集成
-- 预测质量的故障排除
+**`confidence_and_limitations.md`**: Confidence score interpretation and tool limitations
+- Detailed confidence score interpretation
+- When to trust predictions
+- Scope and limitations of DiffDock
+- Integration with complementary tools
+- Troubleshooting prediction quality
 
-当用户需要时阅读此文件：
-- 帮助解读置信度评分
-- 了解何时不使用 DiffDock
-- 结合其他工具的指导
-- 验证策略
+Read this file when users need:
+- Help interpreting confidence scores
+- Understanding when NOT to use DiffDock
+- Guidance on combining with other tools
+- Validation strategies
 
-**`workflows_examples.md`**：全面的工作流示例
-- 详细的安装说明
-- 所有工作流的分步示例
-- 高级集成模式
-- 常见问题的故障排除
-- 最佳实践和优化技巧
+**`workflows_examples.md`**: Comprehensive workflow examples
+- Detailed installation instructions
+- Step-by-step examples for all workflows
+- Advanced integration patterns
+- Troubleshooting common issues
+- Best practices and optimization tips
 
-当用户需要时阅读此文件：
-- 带有代码的完整工作流示例
-- 与 GNINA、OpenMM 或其他工具的集成
-- 虚拟筛选工作流
-- 集成对接程序
+Read this file when users need:
+- Complete workflow examples with code
+- Integration with GNINA, OpenMM, or other tools
+- Virtual screening workflows
+- Ensemble docking procedures
 
-### 资产（`assets/`）
+### Assets (`assets/`)
 
-**`batch_template.csv`**：批处理的模板
-- 预格式化的 CSV，带有必需列
-- 显示不同输入类型的示例条目
-- 准备好使用实际数据自定义
+**`batch_template.csv`**: Template for batch processing
+- Pre-formatted CSV with required columns
+- Example entries showing different input types
+- Ready to customize with actual data
 
-**`custom_inference_config.yaml`**：配置模板
-- 带有所有参数的注释 YAML
-- 常见用例的四个预设配置
-- 解释每个参数的详细注释
-- 准备好自定义和使用
+**`custom_inference_config.yaml`**: Configuration template
+- Annotated YAML with all parameters
+- Four preset configurations for common use cases
+- Detailed comments explaining each parameter
+- Ready to customize and use
 
-## 最佳实践
+## Best Practices
 
-1. **始终验证环境**，在开始大型作业之前使用 `setup_check.py`
-2. **验证批处理 CSV**，使用 `prepare_batch_csv.py` 尽早捕获错误
-3. **从默认开始**，然后根据系统特定需求调整参数
-4. **生成多个样本**（10-40）以获得鲁棒的预测
-5. **视觉检查**下游分析前的顶级位姿
-6. **结合评分**函数进行亲和力评估
-7. **使用置信度评分**进行初始排名，而不是最终决策
-8. **预计算嵌入**用于虚拟筛选活动
-9. **记录参数**以确保可重复性
-10. **尽可能验证结果**实验
+1. **Always verify environment** with `setup_check.py` before starting large jobs
+2. **Validate batch CSVs** with `prepare_batch_csv.py` to catch errors early
+3. **Start with defaults** then tune parameters based on system-specific needs
+4. **Generate multiple samples** (10-40) for robust predictions
+5. **Visual inspection** of top poses before downstream analysis
+6. **Combine with scoring** functions for affinity assessment
+7. **Use confidence scores** for initial ranking, not final decisions
+8. **Pre-compute embeddings** for virtual screening campaigns
+9. **Document parameters** used for reproducibility
+10. **Validate results** experimentally when possible
 
-## 引用
+## Citations
 
-使用 DiffDock 时，引用适当的论文：
+When using DiffDock, cite the appropriate papers:
 
-**DiffDock-L（当前默认模型）：**
+**DiffDock-L (current default model):**
 ```
 Stärk et al. (2024) "DiffDock-L: Improving Molecular Docking with Diffusion Models"
 arXiv:2402.18396
 ```
 
-**原始 DiffDock：**
+**Original DiffDock:**
 ```
 Corso et al. (2023) "DiffDock: Diffusion Steps, Twists, and Turns for Molecular Docking"
 ICLR 2023, arXiv:2210.01776
 ```
 
-## 其他资源
+## Additional Resources
 
-- **GitHub 仓库**：https://github.com/gcorso/DiffDock
-- **在线演示**：https://huggingface.co/spaces/reginabarzilaygroup/DiffDock-Web
-- **DiffDock-L 论文**：https://arxiv.org/abs/2402.18396
-- **原始论文**：https://arxiv.org/abs/2210.01776
+- **GitHub Repository**: https://github.com/gcorso/DiffDock
+- **Online Demo**: https://huggingface.co/spaces/reginabarzilaygroup/DiffDock-Web
+- **DiffDock-L Paper**: https://arxiv.org/abs/2402.18396
+- **Original Paper**: https://arxiv.org/abs/2210.01776
+

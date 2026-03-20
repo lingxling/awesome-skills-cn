@@ -1,192 +1,192 @@
 ---
 name: zinc-database
-description: 访问ZINC（2.3亿+可购买化合物）。通过ZINC ID/SMILES搜索，相似性搜索，用于对接的3D就绪结构，类似物发现，用于虚拟筛选和药物发现。
+description: Access ZINC (230M+ purchasable compounds). Search by ZINC ID/SMILES, similarity searches, 3D-ready structures for docking, analog discovery, for virtual screening and drug discovery.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# ZINC数据库
+# ZINC Database
 
-## 概述
+## Overview
 
-ZINC是由UCSF维护的可自由访问的2.3亿+可购买化合物库。通过ZINC ID或SMILES搜索，执行相似性搜索，下载用于对接的3D就绪结构，发现用于虚拟筛选和药物发现的类似物。
+ZINC is a freely accessible repository of 230M+ purchasable compounds maintained by UCSF. Search by ZINC ID or SMILES, perform similarity searches, download 3D-ready structures for docking, discover analogs for virtual screening and drug discovery.
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况使用：
+This skill should be used when:
 
-- **虚拟筛选**：为分子对接研究寻找化合物
-- **先导发现**：识别可商购的药物开发化合物
-- **结构搜索**：通过SMILES执行相似性或类似物搜索
-- **化合物检索**：通过ZINC ID或供应商代码查找分子
-- **化学空间探索**：探索可购买的化学多样性
-- **对接研究**：访问3D就绪的分子结构
-- **类似物搜索**：基于结构相似性寻找相似化合物
-- **供应商查询**：识别来自特定化学供应商的化合物
-- **随机采样**：获取用于筛选的随机化合物集
+- **Virtual screening**: Finding compounds for molecular docking studies
+- **Lead discovery**: Identifying commercially-available compounds for drug development
+- **Structure searches**: Performing similarity or analog searches by SMILES
+- **Compound retrieval**: Looking up molecules by ZINC IDs or supplier codes
+- **Chemical space exploration**: Exploring purchasable chemical diversity
+- **Docking studies**: Accessing 3D-ready molecular structures
+- **Analog searches**: Finding similar compounds based on structural similarity
+- **Supplier queries**: Identifying compounds from specific chemical vendors
+- **Random sampling**: Obtaining random compound sets for screening
 
-## 数据库版本
+## Database Versions
 
-ZINC经历了多个版本：
+ZINC has evolved through multiple versions:
 
-- **ZINC22**（当前）：最大版本，包含2.3亿+可购买化合物和数十亿规模的按需合成化合物
-- **ZINC20**：仍在维护，专注于类先导和类药物化合物
-- **ZINC15**：前身版本，传统但仍有文档
+- **ZINC22** (Current): Largest version with 230+ million purchasable compounds and multi-billion scale make-on-demand compounds
+- **ZINC20**: Still maintained, focused on lead-like and drug-like compounds
+- **ZINC15**: Predecessor version, legacy but still documented
 
-此技能主要关注ZINC22，最当前和全面的版本。
+This skill primarily focuses on ZINC22, the most current and comprehensive version.
 
-## 访问方法
+## Access Methods
 
-### Web界面
+### Web Interface
 
-主要访问点：https://zinc.docking.org/
-交互式搜索：https://cartblanche22.docking.org/
+Primary access point: https://zinc.docking.org/
+Interactive searching: https://cartblanche22.docking.org/
 
-### API访问
+### API Access
 
-所有ZINC22搜索都可以通过CartBlanche22 API以编程方式执行：
+All ZINC22 searches can be performed programmatically via the CartBlanche22 API:
 
-**基础URL**：`https://cartblanche22.docking.org/`
+**Base URL**: `https://cartblanche22.docking.org/`
 
-所有API端点以文本或JSON格式返回数据，具有可自定义字段。
+All API endpoints return data in text or JSON format with customizable fields.
 
-## 核心功能
+## Core Capabilities
 
-### 1. 通过ZINC ID搜索
+### 1. Search by ZINC ID
 
-使用ZINC标识符检索特定化合物。
+Retrieve specific compounds using their ZINC identifiers.
 
-**Web界面**：https://cartblanche22.docking.org/search/zincid
+**Web interface**: https://cartblanche22.docking.org/search/zincid
 
-**API端点**：
+**API endpoint**:
 ```bash
 curl "https://cartblanche22.docking.org/[email protected]_fields=smiles,zinc_id"
 ```
 
-**多个ID**：
+**Multiple IDs**:
 ```bash
 curl "https://cartblanche22.docking.org/substances.txt:zinc_id=ZINC000000000001,ZINC000000000002&output_fields=smiles,zinc_id,tranche"
 ```
 
-**响应字段**：`zinc_id`、`smiles`、`sub_id`、`supplier_code`、`catalogs`、`tranche`（包括H计数、LogP、MW、phase）
+**Response fields**: `zinc_id`, `smiles`, `sub_id`, `supplier_code`, `catalogs`, `tranche` (includes H-count, LogP, MW, phase)
 
-### 2. 通过SMILES搜索
+### 2. Search by SMILES
 
-使用SMILES表示法按化学结构查找化合物，具有用于类似物搜索的可选距离参数。
+Find compounds by chemical structure using SMILES notation, with optional distance parameters for analog searching.
 
-**Web界面**：https://cartblanche22.docking.org/search/smiles
+**Web interface**: https://cartblanche22.docking.org/search/smiles
 
-**API端点**：
+**API endpoint**:
 ```bash
 curl "https://cartblanche22.docking.org/[email protected]=4-Fadist=4"
 ```
 
-**参数**：
-- `smiles`：查询SMILES字符串（必要时URL编码）
-- `dist`：Tanimoto距离阈值（默认：0表示精确匹配）
-- `adist`：用于更广泛搜索的替代距离参数（默认：0）
-- `output_fields`：所需输出字段的逗号分隔列表
+**Parameters**:
+- `smiles`: Query SMILES string (URL-encoded if necessary)
+- `dist`: Tanimoto distance threshold (default: 0 for exact match)
+- `adist`: Alternative distance parameter for broader searches (default: 0)
+- `output_fields`: Comma-separated list of desired output fields
 
-**示例 - 精确匹配**：
+**Example - Exact match**:
 ```bash
 curl "https://cartblanche22.docking.org/smiles.txt:smiles=c1ccccc1"
 ```
 
-**示例 - 相似性搜索**：
+**Example - Similarity search**:
 ```bash
 curl "https://cartblanche22.docking.org/smiles.txt:smiles=c1ccccc1&dist=3&output_fields=zinc_id,smiles,tranche"
 ```
 
-### 3. 通过供应商代码搜索
+### 3. Search by Supplier Codes
 
-查询来自特定化学供应商的化合物或检索特定目录中的所有分子。
+Query compounds from specific chemical suppliers or retrieve all molecules from particular catalogs.
 
-**Web界面**：https://cartblanche22.docking.org/search/catitems
+**Web interface**: https://cartblanche22.docking.org/search/catitems
 
-**API端点**：
+**API endpoint**:
 ```bash
 curl "https://cartblanche22.docking.org/catitems.txt:catitem_id=SUPPLIER-CODE-123"
 ```
 
-**用例**：
-- 验证来自特定供应商的化合物可用性
-- 检索目录中的所有化合物
-- 将供应商代码与ZINC ID交叉引用
+**Use cases**:
+- Verify compound availability from specific vendors
+- Retrieve all compounds from a catalog
+- Cross-reference supplier codes with ZINC IDs
 
-### 4. 随机化合物采样
+### 4. Random Compound Sampling
 
-生成用于筛选或基准测试的随机化合物集。
+Generate random compound sets for screening or benchmarking purposes.
 
-**Web界面**：https://cartblanche22.docking.org/search/random
+**Web interface**: https://cartblanche22.docking.org/search/random
 
-**API端点**：
+**API endpoint**:
 ```bash
 curl "https://cartblanche22.docking.org/substance/random.txt:count=100"
 ```
 
-**参数**：
-- `count`：要检索的随机化合物数量（默认：100）
-- `subset`：按子集筛选（例如，'lead-like'、'drug-like'、'fragment'）
-- `output_fields`：自定义返回数据字段
+**Parameters**:
+- `count`: Number of random compounds to retrieve (default: 100)
+- `subset`: Filter by subset (e.g., 'lead-like', 'drug-like', 'fragment')
+- `output_fields`: Customize returned data fields
 
-**示例 - 随机类先导分子**：
+**Example - Random lead-like molecules**:
 ```bash
 curl "https://cartblanche22.docking.org/substance/random.txt:count=1000&subset=lead-like&output_fields=zinc_id,smiles,tranche"
 ```
 
-## 常见工作流程
+## Common Workflows
 
-### 工作流程1：准备对接库
+### Workflow 1: Preparing a Docking Library
 
-1. **基于目标属性或所需化学空间定义搜索条件**
+1. **Define search criteria** based on target properties or desired chemical space
 
-2. **使用适当的搜索方法查询ZINC22**：
+2. **Query ZINC22** using appropriate search method:
    ```bash
-   # 示例：获取具有特定LogP和MW的类药物化合物
+   # Example: Get drug-like compounds with specific LogP and MW
    curl "https://cartblanche22.docking.org/substance/random.txt:count=10000&subset=drug-like&output_fields=zinc_id,smiles,tranche" > docking_library.txt
    ```
 
-3. **解析结果以提取ZINC ID和SMILES**：
+3. **Parse results** to extract ZINC IDs and SMILES:
    ```python
    import pandas as pd
 
-   # 加载结果
+   # Load results
    df = pd.read_csv('docking_library.txt', sep='\t')
 
-   # 按tranche数据中的属性筛选
-   # Tranche格式：H##P###M###-phase
-   # H = H键供体，P = LogP*10，M = MW
+   # Filter by properties in tranche data
+   # Tranche format: H##P###M###-phase
+   # H = H-bond donors, P = LogP*10, M = MW
    ```
 
-4. **使用ZINC ID下载3D结构**或从文件存储库下载用于对接
+4. **Download 3D structures** for docking using ZINC ID or download from file repositories
 
-### 工作流程2：寻找命中化合物的类似物
+### Workflow 2: Finding Analogs of a Hit Compound
 
-1. **获取命中化合物的SMILES**：
+1. **Obtain SMILES** of the hit compound:
    ```python
-   hit_smiles = "CC(C)Cc1ccc(cc1)C(C)C(=O)O"  # 示例：布洛芬
+   hit_smiles = "CC(C)Cc1ccc(cc1)C(C)C(=O)O"  # Example: Ibuprofen
    ```
 
-2. **执行带距离阈值的相似性搜索**：
+2. **Perform similarity search** with distance threshold:
    ```bash
    curl "https://cartblanche22.docking.org/smiles.txt:smiles=CC(C)Cc1ccc(cc1)C(C)C(=O)O&dist=5&output_fields=zinc_id,smiles,catalogs" > analogs.txt
    ```
 
-3. **分析结果以识别可购买的类似物**：
+3. **Analyze results** to identify purchasable analogs:
    ```python
    import pandas as pd
 
    analogs = pd.read_csv('analogs.txt', sep='\t')
-   print(f"找到 {len(analogs)} 个类似物")
+   print(f"Found {len(analogs)} analogs")
    print(analogs[['zinc_id', 'smiles', 'catalogs']].head(10))
    ```
 
-4. **为最有前景的类似物检索3D结构**
+4. **Retrieve 3D structures** for the most promising analogs
 
-### 工作流程3：批量化合物检索
+### Workflow 3: Batch Compound Retrieval
 
-1. **从文献、数据库或先前的筛选中编译ZINC ID列表**：
+1. **Compile list of ZINC IDs** from literature, databases, or previous screens:
    ```python
    zinc_ids = [
        "ZINC000000000001",
@@ -196,98 +196,98 @@ curl "https://cartblanche22.docking.org/substance/random.txt:count=1000&subset=l
    zinc_ids_str = ",".join(zinc_ids)
    ```
 
-2. **查询ZINC22 API**：
+2. **Query ZINC22 API**:
    ```bash
    curl "https://cartblanche22.docking.org/substances.txt:zinc_id=ZINC000000000001,ZINC000000000002&output_fields=zinc_id,smiles,supplier_code,catalogs"
    ```
 
-3. **处理结果用于下游分析或采购**
+3. **Process results** for downstream analysis or purchasing
 
-### 工作流程4：化学空间采样
+### Workflow 4: Chemical Space Sampling
 
-1. **根据筛选目标选择子集参数**：
-   - 片段：MW < 250，适合基于片段的药物发现
-   - 类先导：MW 250-350，LogP ≤ 3.5
-   - 类药物：MW 350-500，遵循Lipinski五规则
+1. **Select subset parameters** based on screening goals:
+   - Fragment: MW < 250, good for fragment-based drug discovery
+   - Lead-like: MW 250-350, LogP ≤ 3.5
+   - Drug-like: MW 350-500, follows Lipinski's Rule of Five
 
-2. **生成随机样本**：
+2. **Generate random sample**:
    ```bash
    curl "https://cartblanche22.docking.org/substance/random.txt:count=5000&subset=lead-like&output_fields=zinc_id,smiles,tranche" > chemical_space_sample.txt
    ```
 
-3. **分析化学多样性**并为虚拟筛选做准备
+3. **Analyze chemical diversity** and prepare for virtual screening
 
-## 输出字段
+## Output Fields
 
-使用`output_fields`参数自定义API响应：
+Customize API responses with the `output_fields` parameter:
 
-**可用字段**：
-- `zinc_id`：ZINC标识符
-- `smiles`：SMILES字符串表示
-- `sub_id`：内部物质ID
-- `supplier_code`：供应商目录号
-- `catalogs`：提供化合物的供应商列表
-- `tranche`：编码的分子属性（H计数、LogP、MW、反应性阶段）
+**Available fields**:
+- `zinc_id`: ZINC identifier
+- `smiles`: SMILES string representation
+- `sub_id`: Internal substance ID
+- `supplier_code`: Vendor catalog number
+- `catalogs`: List of suppliers offering the compound
+- `tranche`: Encoded molecular properties (H-count, LogP, MW, reactivity phase)
 
-**示例**：
+**Example**:
 ```bash
 curl "https://cartblanche22.docking.org/substances.txt:zinc_id=ZINC000000000001&output_fields=zinc_id,smiles,catalogs,tranche"
 ```
 
-## Tranche系统
+## Tranche System
 
-ZINC根据分子属性将化合物组织为"tranche"：
+ZINC organizes compounds into "tranches" based on molecular properties:
 
-**格式**：`H##P###M###-phase`
+**Format**: `H##P###M###-phase`
 
-- **H##**：氢键供体数量（00-99）
-- **P###**：LogP × 10（例如，P035 = LogP 3.5）
-- **M###**：分子量（道尔顿）（例如，M400 = 400 Da）
-- **phase**：反应性分类
+- **H##**: Number of hydrogen bond donors (00-99)
+- **P###**: LogP × 10 (e.g., P035 = LogP 3.5)
+- **M###**: Molecular weight in Daltons (e.g., M400 = 400 Da)
+- **phase**: Reactivity classification
 
-**示例tranche**：`H05P035M400-0`
-- 5个H键供体
+**Example tranche**: `H05P035M400-0`
+- 5 H-bond donors
 - LogP = 3.5
 - MW = 400 Da
-- 反应性阶段0
+- Reactivity phase 0
 
-使用tranche数据按药物相似性标准筛选化合物。
+Use tranche data to filter compounds by drug-likeness criteria.
 
-## 下载3D结构
+## Downloading 3D Structures
 
-对于分子对接，3D结构可通过文件存储库获取：
+For molecular docking, 3D structures are available via file repositories:
 
-**文件存储库**：https://files.docking.org/zinc22/
+**File repository**: https://files.docking.org/zinc22/
 
-结构按tranche组织，有多种格式可用：
-- MOL2：带3D坐标的多分子格式
-- SDF：结构数据文件格式
-- DB2.GZ：DOCK的压缩数据库格式
+Structures are organized by tranches and available in multiple formats:
+- MOL2: Multi-molecule format with 3D coordinates
+- SDF: Structure-data file format
+- DB2.GZ: Compressed database format for DOCK
 
-有关下载协议和批量访问方法，请参阅ZINC文档：https://wiki.docking.org
+Refer to ZINC documentation at https://wiki.docking.org for downloading protocols and batch access methods.
 
-## Python集成
+## Python Integration
 
-### 使用curl与Python
+### Using curl with Python
 
 ```python
 import subprocess
 import json
 
 def query_zinc_by_id(zinc_id, output_fields="zinc_id,smiles,catalogs"):
-    """通过ZINC ID查询ZINC22。"""
+    """Query ZINC22 by ZINC ID."""
     url = f"https://cartblanche22.docking.org/[email protected]_id={zinc_id}&output_fields={output_fields}"
     result = subprocess.run(['curl', url], capture_output=True, text=True)
     return result.stdout
 
 def search_by_smiles(smiles, dist=0, adist=0, output_fields="zinc_id,smiles"):
-    """通过SMILES搜索ZINC22，带有可选距离参数。"""
+    """Search ZINC22 by SMILES with optional distance parameters."""
     url = f"https://cartblanche22.docking.org/smiles.txt:smiles={smiles}&dist={dist}&adist={adist}&output_fields={output_fields}"
     result = subprocess.run(['curl', url], capture_output=True, text=True)
     return result.stdout
 
 def get_random_compounds(count=100, subset=None, output_fields="zinc_id,smiles,tranche"):
-    """从ZINC22获取随机化合物。"""
+    """Get random compounds from ZINC22."""
     url = f"https://cartblanche22.docking.org/substance/random.txt:count={count}&output_fields={output_fields}"
     if subset:
         url += f"&subset={subset}"
@@ -295,20 +295,20 @@ def get_random_compounds(count=100, subset=None, output_fields="zinc_id,smiles,t
     return result.stdout
 ```
 
-### 解析结果
+### Parsing Results
 
 ```python
 import pandas as pd
 from io import StringIO
 
-# 查询ZINC并解析为DataFrame
+# Query ZINC and parse as DataFrame
 result = query_zinc_by_id("ZINC000000000001")
 df = pd.read_csv(StringIO(result), sep='\t')
 
-# 提取tranche属性
+# Extract tranche properties
 def parse_tranche(tranche_str):
-    """解析ZINC tranche代码以提取属性。"""
-    # 格式：H##P###M###-phase
+    """Parse ZINC tranche code to extract properties."""
+    # Format: H##P###M###-phase
     import re
     match = re.match(r'H(\d+)P(\d+)M(\d+)-(\d+)', tranche_str)
     if match:
@@ -323,79 +323,80 @@ def parse_tranche(tranche_str):
 df['tranche_props'] = df['tranche'].apply(parse_tranche)
 ```
 
-## 最佳实践
+## Best Practices
 
-### 查询优化
+### Query Optimization
 
-- **开始具体**：在扩展到相似性搜索之前，先进行精确搜索
-- **使用适当的距离参数**：小的dist值（1-3）用于接近类似物，大的（5-10）用于多样化类似物
-- **限制输出字段**：仅请求必要的字段以减少数据传输
-- **批量查询**：尽可能在单个API调用中组合多个ZINC ID
+- **Start specific**: Begin with exact searches before expanding to similarity searches
+- **Use appropriate distance parameters**: Small dist values (1-3) for close analogs, larger (5-10) for diverse analogs
+- **Limit output fields**: Request only necessary fields to reduce data transfer
+- **Batch queries**: Combine multiple ZINC IDs in a single API call when possible
 
-### 性能考虑
+### Performance Considerations
 
-- **速率限制**：尊重服务器资源；避免快速连续请求
-- **缓存**：在本地存储频繁访问的化合物
-- **并行下载**：下载3D结构时，对文件存储库使用并行wget或aria2c
-- **子集筛选**：使用类先导、类药物或片段子集来减少搜索空间
+- **Rate limiting**: Respect server resources; avoid rapid consecutive requests
+- **Caching**: Store frequently accessed compounds locally
+- **Parallel downloads**: When downloading 3D structures, use parallel wget or aria2c for file repositories
+- **Subset filtering**: Use lead-like, drug-like, or fragment subsets to reduce search space
 
-### 数据质量
+### Data Quality
 
-- **验证可用性**：供应商目录会变化；在大量订单前确认化合物可用性
-- **检查立体化学**：SMILES可能未完全指定立体化学；验证3D结构
-- **验证结构**：使用化学信息学工具（RDKit、OpenBabel）验证结构有效性
-- **交叉引用**：可能时，与其他数据库（PubChem、ChEMBL）交叉检查
+- **Verify availability**: Supplier catalogs change; confirm compound availability before large orders
+- **Check stereochemistry**: SMILES may not fully specify stereochemistry; verify 3D structures
+- **Validate structures**: Use cheminformatics tools (RDKit, OpenBabel) to verify structure validity
+- **Cross-reference**: When possible, cross-check with other databases (PubChem, ChEMBL)
 
-## 资源
+## Resources
 
 ### references/api_reference.md
 
-综合文档包括：
+Comprehensive documentation including:
 
-- 完整的API端点参考
-- URL语法和参数规范
-- 高级查询模式和示例
-- 文件存储库组织和访问
-- 批量下载方法
-- 错误处理和故障排除
-- 与分子对接软件的集成
+- Complete API endpoint reference
+- URL syntax and parameter specifications
+- Advanced query patterns and examples
+- File repository organization and access
+- Bulk download methods
+- Error handling and troubleshooting
+- Integration with molecular docking software
 
-请参考此文档获取详细的技术信息和高级使用模式。
+Consult this document for detailed technical information and advanced usage patterns.
 
-## 重要免责声明
+## Important Disclaimers
 
-### 数据可靠性
+### Data Reliability
 
-ZINC明确声明：**"我们不保证任何分子用于任何目的的质量，对使用本数据库引起的错误不承担任何责任。"**
+ZINC explicitly states: **"We do not guarantee the quality of any molecule for any purpose and take no responsibility for errors arising from the use of this database."**
 
-- 化合物可用性可能会随时更改，恕不通知
-- 结构表示可能包含错误
-- 供应商信息应独立验证
-- 在实验工作前使用适当的验证
+- Compound availability may change without notice
+- Structure representations may contain errors
+- Supplier information should be verified independently
+- Use appropriate validation before experimental work
 
-### 适当使用
+### Appropriate Use
 
-- ZINC旨在用于药物发现的学术和研究目的
-- 验证商业使用的许可条款
-- 处理专利化合物时尊重知识产权
-- 遵循您机构的化合物采购指南
+- ZINC is intended for academic and research purposes in drug discovery
+- Verify licensing terms for commercial use
+- Respect intellectual property when working with patented compounds
+- Follow your institution's guidelines for compound procurement
 
-## 其他资源
+## Additional Resources
 
-- **ZINC网站**：https://zinc.docking.org/
-- **CartBlanche22界面**：https://cartblanche22.docking.org/
-- **ZINC Wiki**：https://wiki.docking.org/
-- **文件存储库**：https://files.docking.org/zinc22/
-- **GitHub**：https://github.com/docking-org/
-- **主要出版物**：Irwin et al., J. Chem. Inf. Model 2020 (ZINC15)
-- **ZINC22出版物**：Irwin et al., J. Chem. Inf. Model 2023
+- **ZINC Website**: https://zinc.docking.org/
+- **CartBlanche22 Interface**: https://cartblanche22.docking.org/
+- **ZINC Wiki**: https://wiki.docking.org/
+- **File Repository**: https://files.docking.org/zinc22/
+- **GitHub**: https://github.com/docking-org/
+- **Primary Publication**: Irwin et al., J. Chem. Inf. Model 2020 (ZINC15)
+- **ZINC22 Publication**: Irwin et al., J. Chem. Inf. Model 2023
 
-## 引用
+## Citations
 
-在出版物中使用ZINC时，请引用适当的版本：
+When using ZINC in publications, cite the appropriate version:
 
-**ZINC22**：
+**ZINC22**:
 Irwin, J. J., et al. "ZINC22—A Free Multi-Billion-Scale Database of Tangible Compounds for Ligand Discovery." *Journal of Chemical Information and Modeling* 2023.
 
-**ZINC15**：
+**ZINC15**:
 Irwin, J. J., et al. "ZINC15 – Ligand Discovery for Everyone." *Journal of Chemical Information and Modeling* 2020, 60, 6065–6073.
+

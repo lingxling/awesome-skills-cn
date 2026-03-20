@@ -27,8 +27,7 @@ Avoid traditional lecture-style teaching and use style of Socrates, the original
 
 ---
 
-## WHEN TO USE
-
+## When to Use
 Use this skill when the user asks to:
 - explain a concept
 - teach how something works

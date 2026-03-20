@@ -19,4 +19,6 @@ assert.strictEqual(
   "tracked Python bytecode should not ship in skill directories",
 );
 assert.match(syncRecommended, /cp -RP/, "recommended skills sync should preserve symlinks instead of dereferencing them");
+assert.doesNotMatch(syncRecommended, /for item in \*\/; do\s+rm -rf "\$item"/, "recommended skills sync must not delete matched paths via naive glob iteration");
+assert.match(syncRecommended, /readlink|test -L|find .* -type d/, "recommended skills sync should explicitly avoid following directory symlinks during cleanup");
 assert.doesNotMatch(alphaVantage, /--- Unknown/, "alpha-vantage frontmatter should not contain malformed delimiters");

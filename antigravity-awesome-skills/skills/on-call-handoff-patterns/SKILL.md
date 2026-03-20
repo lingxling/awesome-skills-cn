@@ -1,6 +1,6 @@
 ---
 name: on-call-handoff-patterns
-description: "Master on-call shift handoffs with context transfer, escalation procedures, and documentation. Use when transitioning on-call responsibilities, documenting shift summaries, or improving on-call pro..."
+description: "Effective patterns for on-call shift transitions, ensuring continuity, context transfer, and reliable incident response across shifts."
 risk: unknown
 source: community
 date_added: "2026-02-27"

@@ -1,244 +1,381 @@
 ---
 name: modal
-description: 用于部署Python函数和应用程序的云平台。使用装饰器将函数部署为无服务器端点、容器化应用、定时任务、Web服务、机器学习模型等。支持GPU、自定义Docker镜像、持久化存储、队列、定时器和Webhooks。适用于数据管道、机器学习推理、批处理作业、API端点和后台任务。
-license: Unknown
+description: Run Python code in the cloud with serverless containers, GPUs, and autoscaling. Use when deploying ML models, running batch processing jobs, scheduling compute-intensive tasks, or serving APIs that require GPU acceleration or dynamic scaling.
+license: Apache-2.0 license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
 # Modal
 
-## 概述
+## Overview
 
-Modal是一个用于部署Python函数和应用程序的云平台。它使用装饰器将函数部署为无服务器端点、容器化应用、定时任务、Web服务、机器学习模型等。Modal支持GPU、自定义Docker镜像、持久化存储、队列、定时器和Webhooks，适用于数据管道、机器学习推理、批处理作业、API端点和后台任务。
+Modal is a serverless platform for running Python code in the cloud with minimal configuration. Execute functions on powerful GPUs, scale automatically to thousands of containers, and pay only for compute used.
 
-## 核心能力
+Modal is particularly suited for AI/ML workloads, high-performance batch processing, scheduled jobs, GPU inference, and serverless APIs. Sign up for free at https://modal.com and receive $30/month in credits.
 
-### 1. 函数部署
+## When to Use This Skill
 
-使用装饰器将Python函数部署为无服务器函数：
+Use Modal for:
+- Deploying and serving ML models (LLMs, image generation, embedding models)
+- Running GPU-accelerated computation (training, inference, rendering)
+- Batch processing large datasets in parallel
+- Scheduling compute-intensive jobs (daily data processing, model training)
+- Building serverless APIs that need automatic scaling
+- Scientific computing requiring distributed compute or specialized hardware
 
-- **@app.function**：基本函数部署
-- **@app.method**：方法部署
-- **@app.web_endpoint**：Web端点部署
-- **@app.scheduled**：定时任务部署
-- **@app.batch**：批处理作业部署
+## Authentication and Setup
 
-### 2. 容器化
+Modal requires authentication via API token.
 
-- **自定义Docker镜像**：使用自定义Docker镜像
-- **Python环境**：指定Python版本和依赖项
-- **GPU支持**：自动分配GPU资源
-- **持久化卷**：挂载持久化存储
-
-### 3. 存储
-
-- **网络挂载**：挂载网络文件系统
-- **持久化卷**：创建持久化卷
-- **对象存储**：集成S3兼容的对象存储
-- **临时存储**：使用临时存储
-
-### 4. 队列和任务
-
-- **任务队列**：创建任务队列
-- **批处理**：批量处理任务
-- **并行执行**：并行执行任务
-- **任务监控**：监控任务执行
-
-### 5. 定时器和Webhooks
-
-- **定时任务**：使用cron表达式定时执行任务
-- **Webhooks**：创建Webhook端点
-- **事件触发**：响应事件触发任务
-
-### 6. Web服务
-
-- **API端点**：创建REST API端点
-- **WebSocket**：支持WebSocket连接
-- **静态文件**：提供静态文件服务
-- **反向代理**：配置反向代理
-
-## 何时使用此技能
-
-在以下情况下使用此技能：
-- 部署Python函数到云端
-- 创建无服务器API端点
-- 部署机器学习模型
-- 运行批处理作业
-- 创建定时任务
-- 构建数据管道
-- 部署Web服务
-- 运行GPU加速任务
-
-## 安装和设置
+### Initial Setup
 
 ```bash
-# 安装Modal客户端
-pip install modal
+# Install Modal
+uv uv pip install modal
 
-# 登录Modal
+# Authenticate (opens browser for login)
 modal token new
 ```
 
-## 使用示例
+This creates a token stored in `~/.modal.toml`. The token authenticates all Modal operations.
 
-### 基本函数部署
+### Verify Setup
 
 ```python
 import modal
 
-app = modal.App("example-app")
+app = modal.App("test-app")
 
 @app.function()
-def hello(name: str) -> str:
-    return f"Hello, {name}!"
-
-# 远程调用
-with modal.run():
-    print(hello.remote("World"))
+def hello():
+    print("Modal is working!")
 ```
 
-### Web端点
+Run with: `modal run script.py`
+
+## Core Capabilities
+
+Modal provides serverless Python execution through Functions that run in containers. Define compute requirements, dependencies, and scaling behavior declaratively.
+
+### 1. Define Container Images
+
+Specify dependencies and environment for functions using Modal Images.
 
 ```python
-@app.web_endpoint(method="GET")
-def greet(name: str) -> str:
-    return f"Hello, {name}!"
-```
+import modal
 
-### 定时任务
-
-```python
-@app.scheduled(cron="0 9 * * *")  # 每天上午9点运行
-def daily_report():
-    print("Running daily report...")
-```
-
-### GPU加速
-
-```python
-@app.function(gpu="A100")
-def gpu_task():
-    import torch
-    print(f"GPU available: {torch.cuda.is_available()}")
-```
-
-### 批处理
-
-```python
-@app.batch()
-def process_batch(items: list[str]) -> list[str]:
-    return [item.upper() for item in items]
-
-with modal.run():
-    results = process_batch.map(["a", "b", "c"])
-```
-
-### 持久化存储
-
-```python
-@app.function(volumes={"/data": modal.Volume.from_name("my-volume")})
-def save_data(data: str):
-    with open("/data/output.txt", "w") as f:
-        f.write(data)
-```
-
-### Web服务
-
-```python
-@app.web_endpoint(method="POST")
-def predict(image: bytes) -> dict:
-    import torch
-    from PIL import Image
-    import io
-
-    # 加载图像
-    img = Image.open(io.BytesIO(image))
-
-    # 预处理和推理
-    # ...
-
-    return {"prediction": "cat"}
-```
-
-## 高级功能
-
-### 自定义Docker镜像
-
-```python
-image = modal.Image.debian_slim().pip_install(
-    "torch",
-    "transformers",
-    "pillow"
+# Basic image with Python packages
+image = (
+    modal.Image.debian_slim(python_version="3.12")
+    .uv_pip_install("torch", "transformers", "numpy")
 )
 
-@app.function(image=image)
-def ml_task():
+app = modal.App("ml-app", image=image)
+```
+
+**Common patterns:**
+- Install Python packages: `.uv_pip_install("pandas", "scikit-learn")`
+- Install system packages: `.apt_install("ffmpeg", "git")`
+- Use existing Docker images: `modal.Image.from_registry("nvidia/cuda:12.1.0-base")`
+- Add local code: `.add_local_python_source("my_module")`
+
+See `references/images.md` for comprehensive image building documentation.
+
+### 2. Create Functions
+
+Define functions that run in the cloud with the `@app.function()` decorator.
+
+```python
+@app.function()
+def process_data(file_path: str):
+    import pandas as pd
+    df = pd.read_csv(file_path)
+    return df.describe()
+```
+
+**Call functions:**
+```python
+# From local entrypoint
+@app.local_entrypoint()
+def main():
+    result = process_data.remote("data.csv")
+    print(result)
+```
+
+Run with: `modal run script.py`
+
+See `references/functions.md` for function patterns, deployment, and parameter handling.
+
+### 3. Request GPUs
+
+Attach GPUs to functions for accelerated computation.
+
+```python
+@app.function(gpu="H100")
+def train_model():
     import torch
-    print(f"PyTorch version: {torch.__version__}")
+    assert torch.cuda.is_available()
+    # GPU-accelerated code here
 ```
 
-### 任务队列
+**Available GPU types:**
+- `T4`, `L4` - Cost-effective inference
+- `A10`, `A100`, `A100-80GB` - Standard training/inference
+- `L40S` - Excellent cost/performance balance (48GB)
+- `H100`, `H200` - High-performance training
+- `B200` - Flagship performance (most powerful)
+
+**Request multiple GPUs:**
+```python
+@app.function(gpu="H100:8")  # 8x H100 GPUs
+def train_large_model():
+    pass
+```
+
+See `references/gpu.md` for GPU selection guidance, CUDA setup, and multi-GPU configuration.
+
+### 4. Configure Resources
+
+Request CPU cores, memory, and disk for functions.
+
+```python
+@app.function(
+    cpu=8.0,           # 8 physical cores
+    memory=32768,      # 32 GiB RAM
+    ephemeral_disk=10240  # 10 GiB disk
+)
+def memory_intensive_task():
+    pass
+```
+
+Default allocation: 0.125 CPU cores, 128 MiB memory. Billing based on reservation or actual usage, whichever is higher.
+
+See `references/resources.md` for resource limits and billing details.
+
+### 5. Scale Automatically
+
+Modal autoscales functions from zero to thousands of containers based on demand.
+
+**Process inputs in parallel:**
+```python
+@app.function()
+def analyze_sample(sample_id: int):
+    # Process single sample
+    return result
+
+@app.local_entrypoint()
+def main():
+    sample_ids = range(1000)
+    # Automatically parallelized across containers
+    results = list(analyze_sample.map(sample_ids))
+```
+
+**Configure autoscaling:**
+```python
+@app.function(
+    max_containers=100,      # Upper limit
+    min_containers=2,        # Keep warm
+    buffer_containers=5      # Idle buffer for bursts
+)
+def inference():
+    pass
+```
+
+See `references/scaling.md` for autoscaling configuration, concurrency, and scaling limits.
+
+### 6. Store Data Persistently
+
+Use Volumes for persistent storage across function invocations.
+
+```python
+volume = modal.Volume.from_name("my-data", create_if_missing=True)
+
+@app.function(volumes={"/data": volume})
+def save_results(data):
+    with open("/data/results.txt", "w") as f:
+        f.write(data)
+    volume.commit()  # Persist changes
+```
+
+Volumes persist data between runs, store model weights, cache datasets, and share data between functions.
+
+See `references/volumes.md` for volume management, commits, and caching patterns.
+
+### 7. Manage Secrets
+
+Store API keys and credentials securely using Modal Secrets.
+
+```python
+@app.function(secrets=[modal.Secret.from_name("huggingface")])
+def download_model():
+    import os
+    token = os.environ["HF_TOKEN"]
+    # Use token for authentication
+```
+
+**Create secrets in Modal dashboard or via CLI:**
+```bash
+modal secret create my-secret KEY=value API_TOKEN=xyz
+```
+
+See `references/secrets.md` for secret management and authentication patterns.
+
+### 8. Deploy Web Endpoints
+
+Serve HTTP endpoints, APIs, and webhooks with `@modal.web_endpoint()`.
 
 ```python
 @app.function()
-def process_item(item: str) -> str:
-    return item.upper()
-
-# 创建队列
-queue = process_item.starmap([("a",), ("b",), ("c",)])
-
-# 等待结果
-results = list(queue)
+@modal.web_endpoint(method="POST")
+def predict(data: dict):
+    # Process request
+    result = model.predict(data["input"])
+    return {"prediction": result}
 ```
 
-### Webhooks
-
-```python
-@app.web_endpoint(method="POST")
-def webhook_handler(data: dict) -> dict:
-    print(f"Received webhook: {data}")
-    return {"status": "success"}
+**Deploy with:**
+```bash
+modal deploy script.py
 ```
 
-### 并行执行
+Modal provides HTTPS URL for the endpoint.
+
+See `references/web-endpoints.md` for FastAPI integration, streaming, authentication, and WebSocket support.
+
+### 9. Schedule Jobs
+
+Run functions on a schedule with cron expressions.
 
 ```python
+@app.function(schedule=modal.Cron("0 2 * * *"))  # Daily at 2 AM
+def daily_backup():
+    # Backup data
+    pass
+
+@app.function(schedule=modal.Period(hours=4))  # Every 4 hours
+def refresh_cache():
+    # Update cache
+    pass
+```
+
+Scheduled functions run automatically without manual invocation.
+
+See `references/scheduled-jobs.md` for cron syntax, timezone configuration, and monitoring.
+
+## Common Workflows
+
+### Deploy ML Model for Inference
+
+```python
+import modal
+
+# Define dependencies
+image = modal.Image.debian_slim().uv_pip_install("torch", "transformers")
+app = modal.App("llm-inference", image=image)
+
+# Download model at build time
 @app.function()
-def parallel_task(x: int) -> int:
-    return x * 2
+def download_model():
+    from transformers import AutoModel
+    AutoModel.from_pretrained("bert-base-uncased")
 
-with modal.run():
-    results = parallel_task.map([1, 2, 3, 4, 5])
-    print(results)
+# Serve model
+@app.cls(gpu="L40S")
+class Model:
+    @modal.enter()
+    def load_model(self):
+        from transformers import pipeline
+        self.pipe = pipeline("text-classification", device="cuda")
+
+    @modal.method()
+    def predict(self, text: str):
+        return self.pipe(text)
+
+@app.local_entrypoint()
+def main():
+    model = Model()
+    result = model.predict.remote("Modal is great!")
+    print(result)
 ```
 
-## 最佳实践
+### Batch Process Large Dataset
 
-1. **函数设计**：保持函数简单和独立
-2. **错误处理**：实现适当的错误处理
-3. **资源管理**：合理配置CPU、内存和GPU
-4. **日志记录**：添加详细的日志记录
-5. **测试**：在本地测试函数后再部署
-6. **监控**：监控函数执行和性能
-7. **成本优化**：优化资源使用以降低成本
+```python
+@app.function(cpu=2.0, memory=4096)
+def process_file(file_path: str):
+    import pandas as pd
+    df = pd.read_csv(file_path)
+    # Process data
+    return df.shape[0]
 
-## 常见问题
+@app.local_entrypoint()
+def main():
+    files = ["file1.csv", "file2.csv", ...]  # 1000s of files
+    # Automatically parallelized across containers
+    for count in process_file.map(files):
+        print(f"Processed {count} rows")
+```
 
-**Q: Modal支持哪些GPU？**
-A: Modal支持A100、V100、T4等多种GPU。
+### Train Model on GPU
 
-**Q: 如何持久化数据？**
-A: 使用持久化卷或对象存储。
+```python
+@app.function(
+    gpu="A100:2",      # 2x A100 GPUs
+    timeout=3600       # 1 hour timeout
+)
+def train_model(config: dict):
+    import torch
+    # Multi-GPU training code
+    model = create_model(config)
+    train(model)
+    return metrics
+```
 
-**Q: 如何调试函数？**
-A: 使用日志记录和Modal的调试工具。
+## Reference Documentation
 
-**Q: Modal的定价如何？**
-A: Modal按使用量计费，详见定价页面。
+Detailed documentation for specific features:
 
-## 资源
+- **`references/getting-started.md`** - Authentication, setup, basic concepts
+- **`references/images.md`** - Image building, dependencies, Dockerfiles
+- **`references/functions.md`** - Function patterns, deployment, parameters
+- **`references/gpu.md`** - GPU types, CUDA, multi-GPU configuration
+- **`references/resources.md`** - CPU, memory, disk management
+- **`references/scaling.md`** - Autoscaling, parallel execution, concurrency
+- **`references/volumes.md`** - Persistent storage, data management
+- **`references/secrets.md`** - Environment variables, authentication
+- **`references/web-endpoints.md`** - APIs, webhooks, endpoints
+- **`references/scheduled-jobs.md`** - Cron jobs, periodic tasks
+- **`references/examples.md`** - Common patterns for scientific computing
 
-- **Modal文档**：https://modal.com/docs
-- **Modal GitHub**：https://github.com/modal-labs/modal
-- **Modal定价**：https://modal.com/pricing
+## Best Practices
+
+1. **Pin dependencies** in `.uv_pip_install()` for reproducible builds
+2. **Use appropriate GPU types** - L40S for inference, H100/A100 for training
+3. **Leverage caching** - Use Volumes for model weights and datasets
+4. **Configure autoscaling** - Set `max_containers` and `min_containers` based on workload
+5. **Import packages in function body** if not available locally
+6. **Use `.map()` for parallel processing** instead of sequential loops
+7. **Store secrets securely** - Never hardcode API keys
+8. **Monitor costs** - Check Modal dashboard for usage and billing
+
+## Troubleshooting
+
+**"Module not found" errors:**
+- Add packages to image with `.uv_pip_install("package-name")`
+- Import packages inside function body if not available locally
+
+**GPU not detected:**
+- Verify GPU specification: `@app.function(gpu="A100")`
+- Check CUDA availability: `torch.cuda.is_available()`
+
+**Function timeout:**
+- Increase timeout: `@app.function(timeout=3600)`
+- Default timeout is 5 minutes
+
+**Volume changes not persisting:**
+- Call `volume.commit()` after writing files
+- Verify volume mounted correctly in function decorator
+
+For additional help, see Modal documentation at https://modal.com/docs or join Modal Slack community.
+

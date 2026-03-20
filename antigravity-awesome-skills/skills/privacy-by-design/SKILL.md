@@ -205,5 +205,4 @@ When building a feature that touches user data:
 ---
 
 ## When to Use
-
 This skill is applicable when building software that collects, stores, or processes personal data. Apply it proactively during design and implementation.

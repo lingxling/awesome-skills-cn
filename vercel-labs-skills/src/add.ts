@@ -4,7 +4,7 @@ import { existsSync } from 'fs';
 import { homedir } from 'os';
 import { sep } from 'path';
 import { parseSource, getOwnerRepo, parseOwnerRepo, isRepoPrivate } from './source-parser.ts';
-import { searchMultiselect, cancelSymbol } from './prompts/search-multiselect.ts';
+import { searchMultiselect } from './prompts/search-multiselect.ts';
 
 // Helper to check if a value is a cancel symbol (works with both clack and our custom prompts)
 const isCancelled = (value: unknown): value is symbol => typeof value === 'symbol';
@@ -26,7 +26,6 @@ import { discoverSkills, getSkillDisplayName, filterSkills } from './skills.ts';
 import {
   installSkillForAgent,
   isSkillInstalled,
-  getInstallPath,
   getCanonicalPath,
   installWellKnownSkillForAgent,
   type InstallMode,
@@ -43,7 +42,6 @@ import {
   setVersion,
   fetchAuditData,
   type AuditResponse,
-  type SkillAuditData,
   type PartnerAudit,
 } from './telemetry.ts';
 import { wellKnownProvider, type WellKnownSkill } from './providers/index.ts';

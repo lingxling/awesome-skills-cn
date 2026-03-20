@@ -1,235 +1,235 @@
 ---
 name: scientific-schematics
-description: 使用Nano Banana 2 AI创建 publication 质量的科学图表，具有智能迭代改进功能。使用Gemini 3.1 Pro Preview进行质量审查。仅当质量低于您的文档类型阈值时才会重新生成。专门用于神经网络架构、系统图表、流程图、生物通路和复杂科学可视化。
+description: Create publication-quality scientific diagrams using Nano Banana 2 AI with smart iterative refinement. Uses Gemini 3.1 Pro Preview for quality review. Only regenerates if quality is below threshold for your document type. Specialized in neural network architectures, system diagrams, flowcharts, biological pathways, and complex scientific visualizations.
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# 科学示意图和图表
+# Scientific Schematics and Diagrams
 
-## 概述
+## Overview
 
-科学示意图和图表将复杂概念转化为清晰的视觉表示，用于发表。**此技能使用Nano Banana 2 AI进行图表生成，并使用Gemini 3.1 Pro Preview进行质量审查。**
+Scientific schematics and diagrams transform complex concepts into clear visual representations for publication. **This skill uses Nano Banana 2 AI for diagram generation with Gemini 3.1 Pro Preview quality review.**
 
-**工作原理：**
-- 用自然语言描述您的图表
-- Nano Banana 2自动生成 publication 质量的图像
-- **Gemini 3.1 Pro Preview根据文档类型阈值评估质量**
-- **智能迭代**：仅当质量低于阈值时才会重新生成
-- 几分钟内即可获得 publication 就绪的输出
-- 无需编码、模板或手动绘制
+**How it works:**
+- Describe your diagram in natural language
+- Nano Banana 2 generates publication-quality images automatically
+- **Gemini 3.1 Pro Preview reviews quality** against document-type thresholds
+- **Smart iteration**: Only regenerates if quality is below threshold
+- Publication-ready output in minutes
+- No coding, templates, or manual drawing required
 
-**按文档类型的质量阈值：**
-| 文档类型 | 阈值 | 描述 |
-|---------|------|------|
-| journal | 8.5/10 | Nature、Science、同行评审期刊 |
-| conference | 8.0/10 | 会议论文 |
-| thesis | 8.0/10 | 学位论文、论文 |
-| grant | 8.0/10 | 资助提案 |
-| preprint | 7.5/10 | arXiv、bioRxiv等 |
-| report | 7.5/10 | 技术报告 |
-| poster | 7.0/10 | 学术海报 |
-| presentation | 6.5/10 | 幻灯片、演讲 |
-| default | 7.5/10 | 通用目的 |
+**Quality Thresholds by Document Type:**
+| Document Type | Threshold | Description |
+|---------------|-----------|-------------|
+| journal | 8.5/10 | Nature, Science, peer-reviewed journals |
+| conference | 8.0/10 | Conference papers |
+| thesis | 8.0/10 | Dissertations, theses |
+| grant | 8.0/10 | Grant proposals |
+| preprint | 7.5/10 | arXiv, bioRxiv, etc. |
+| report | 7.5/10 | Technical reports |
+| poster | 7.0/10 | Academic posters |
+| presentation | 6.5/10 | Slides, talks |
+| default | 7.5/10 | General purpose |
 
-**只需描述您想要的内容，Nano Banana 2就会创建它。** 所有图表都存储在figures/子文件夹中，并在论文/海报中引用。
+**Simply describe what you want, and Nano Banana 2 creates it.** All diagrams are stored in the figures/ subfolder and referenced in papers/posters.
 
-## 快速开始：生成任何图表
+## Quick Start: Generate Any Diagram
 
-只需描述即可创建任何科学图表。Nano Banana 2通过**智能迭代**自动处理所有内容：
+Create any scientific diagram by simply describing it. Nano Banana 2 handles everything automatically with **smart iteration**:
 
 ```bash
-# 为期刊论文生成（最高质量阈值：8.5/10）
-python scripts/generate_schematic.py "CONSORT参与者流程图，500人筛选，150人排除，350人随机化" -o figures/consort.png --doc-type journal
+# Generate for journal paper (highest quality threshold: 8.5/10)
+python scripts/generate_schematic.py "CONSORT participant flow diagram with 500 screened, 150 excluded, 350 randomized" -o figures/consort.png --doc-type journal
 
-# 为演示生成（较低阈值：6.5/10 - 更快）
-python scripts/generate_schematic.py "显示多头注意力的Transformer编码器-解码器架构" -o figures/transformer.png --doc-type presentation
+# Generate for presentation (lower threshold: 6.5/10 - faster)
+python scripts/generate_schematic.py "Transformer encoder-decoder architecture showing multi-head attention" -o figures/transformer.png --doc-type presentation
 
-# 为海报生成（中等阈值：7.0/10）
-python scripts/generate_schematic.py "从EGFR到基因转录的MAPK信号通路" -o figures/mapk_pathway.png --doc-type poster
+# Generate for poster (moderate threshold: 7.0/10)
+python scripts/generate_schematic.py "MAPK signaling pathway from EGFR to gene transcription" -o figures/mapk_pathway.png --doc-type poster
 
-# 自定义最大迭代次数（最多2次）
-python scripts/generate_schematic.py "带有运算放大器、电阻器和电容器的复杂电路图表" -o figures/circuit.png --iterations 2 --doc-type journal
+# Custom max iterations (max 2)
+python scripts/generate_schematic.py "Complex circuit diagram with op-amp, resistors, and capacitors" -o figures/circuit.png --iterations 2 --doc-type journal
 ```
 
-**背后发生的事情：**
-1. **生成1**：Nano Banana 2创建遵循科学图表最佳实践的初始图像
-2. **审查1**：**Gemini 3.1 Pro Preview**根据文档类型阈值评估质量
-3. **决策**：如果质量 >= 阈值 → **完成**（不需要更多迭代！）
-4. **如果低于阈值**：基于批评改进提示，重新生成
-5. **重复**：直到质量达到阈值或达到最大迭代次数
+**What happens behind the scenes:**
+1. **Generation 1**: Nano Banana 2 creates initial image following scientific diagram best practices
+2. **Review 1**: **Gemini 3.1 Pro Preview** evaluates quality against document-type threshold
+3. **Decision**: If quality >= threshold → **DONE** (no more iterations needed!)
+4. **If below threshold**: Improved prompt based on critique, regenerate
+5. **Repeat**: Until quality meets threshold OR max iterations reached
 
-**智能迭代优势：**
-- ✅ 如果第一次生成足够好，节省API调用
-- ✅ 期刊论文的更高质量标准
-- ✅ 演示/海报的更快周转
-- ✅ 每个用例的适当质量
+**Smart Iteration Benefits:**
+- ✅ Saves API calls if first generation is good enough
+- ✅ Higher quality standards for journal papers
+- ✅ Faster turnaround for presentations/posters
+- ✅ Appropriate quality for each use case
 
-**输出**：版本化图像加上详细的审查日志，包含质量分数、批评和提前停止信息。
+**Output**: Versioned images plus a detailed review log with quality scores, critiques, and early-stop information.
 
-### 配置
+### Configuration
 
-设置您的OpenRouter API密钥：
+Set your OpenRouter API key:
 ```bash
 export OPENROUTER_API_KEY='your_api_key_here'
 ```
 
-在以下位置获取API密钥：https://openrouter.ai/keys
+Get an API key at: https://openrouter.ai/keys
 
-### AI生成最佳实践
+### AI Generation Best Practices
 
-**科学图表的有效提示：**
+**Effective Prompts for Scientific Diagrams:**
 
-✓ **好的提示**（具体、详细）：
-- "CONSORT流程图，显示参与者从筛选（n=500）到随机化再到最终分析的流程"
-- "Transformer神经网络架构，左侧编码器堆栈，右侧解码器堆栈，显示多头注意力和交叉注意力连接"
-- "生物信号级联：EGFR受体 → RAS → RAF → MEK → ERK → 细胞核，标记磷酸化步骤"
-- "物联网系统框图：传感器 → 微控制器 → WiFi模块 → 云服务器 → 移动应用"
+✓ **Good prompts** (specific, detailed):
+- "CONSORT flowchart showing participant flow from screening (n=500) through randomization to final analysis"
+- "Transformer neural network architecture with encoder stack on left, decoder stack on right, showing multi-head attention and cross-attention connections"
+- "Biological signaling cascade: EGFR receptor → RAS → RAF → MEK → ERK → nucleus, with phosphorylation steps labeled"
+- "Block diagram of IoT system: sensors → microcontroller → WiFi module → cloud server → mobile app"
 
-✗ **避免模糊提示**：
-- "制作流程图"（过于通用）
-- "神经网络"（哪种类型？什么组件？）
-- "通路图"（哪个通路？什么分子？）
+✗ **Avoid vague prompts**:
+- "Make a flowchart" (too generic)
+- "Neural network" (which type? what components?)
+- "Pathway diagram" (which pathway? what molecules?)
 
-**要包含的关键元素：**
-- **类型**：流程图、架构图、通路、电路等
-- **组件**：要包含的特定元素
-- **流程/方向**：元素如何连接（从左到右，从上到下）
-- **标签**：要包含的关键注释或文本
-- **风格**：任何特定的视觉要求
+**Key elements to include:**
+- **Type**: Flowchart, architecture diagram, pathway, circuit, etc.
+- **Components**: Specific elements to include
+- **Flow/Direction**: How elements connect (left-to-right, top-to-bottom)
+- **Labels**: Key annotations or text to include
+- **Style**: Any specific visual requirements
 
-**科学质量指南**（自动应用）：
-- 干净的白色/浅色背景
-- 高对比度以提高可读性
-- 清晰、可读的标签（最小10pt）
-- 专业排版（无衬线字体）
-- 色盲友好的颜色（Okabe-Ito调色板）
-- 适当的间距以防止拥挤
-- 适当的比例尺、图例、坐标轴
+**Scientific Quality Guidelines** (automatically applied):
+- Clean white/light background
+- High contrast for readability
+- Clear, readable labels (minimum 10pt)
+- Professional typography (sans-serif fonts)
+- Colorblind-friendly colors (Okabe-Ito palette)
+- Proper spacing to prevent crowding
+- Scale bars, legends, axes where appropriate
 
-## 何时使用此技能
+## When to Use This Skill
 
-当您需要以下操作时，应使用此技能：
-- 创建神经网络架构图（Transformer、CNN、RNN等）
-- 说明系统架构和数据流图
-- 绘制研究设计的方法流程图（CONSORT、PRISMA）
-- 可视化算法工作流程和处理管道
-- 创建电路图表和电气示意图
-- 描绘生物通路和分子相互作用
-- 生成网络拓扑和层次结构
-- 说明概念框架和理论模型
-- 为技术论文设计框图
+This skill should be used when:
+- Creating neural network architecture diagrams (Transformers, CNNs, RNNs, etc.)
+- Illustrating system architectures and data flow diagrams
+- Drawing methodology flowcharts for study design (CONSORT, PRISMA)
+- Visualizing algorithm workflows and processing pipelines
+- Creating circuit diagrams and electrical schematics
+- Depicting biological pathways and molecular interactions
+- Generating network topologies and hierarchical structures
+- Illustrating conceptual frameworks and theoretical models
+- Designing block diagrams for technical papers
 
-## 如何使用此技能
+## How to Use This Skill
 
-**只需用自然语言描述您的图表。** Nano Banana 2会自动生成：
+**Simply describe your diagram in natural language.** Nano Banana 2 generates it automatically:
 
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o output.png
 ```
 
-**就是这样！** AI处理：
-- ✓ 布局和构图
-- ✓ 标签和注释
-- ✓ 颜色和样式
-- ✓ 质量审查和完善
-- ✓ publication 就绪的输出
+**That's it!** The AI handles:
+- ✓ Layout and composition
+- ✓ Labels and annotations
+- ✓ Colors and styling
+- ✓ Quality review and refinement
+- ✓ Publication-ready output
 
-**适用于所有图表类型：**
-- 流程图（CONSORT、PRISMA等）
-- 神经网络架构
-- 生物通路
-- 电路图表
-- 系统架构
-- 框图
-- 任何科学可视化
+**Works for all diagram types:**
+- Flowcharts (CONSORT, PRISMA, etc.)
+- Neural network architectures
+- Biological pathways
+- Circuit diagrams
+- System architectures
+- Block diagrams
+- Any scientific visualization
 
-**无需编码，无需模板，无需手动绘制。**
+**No coding, no templates, no manual drawing required.**
 
 ---
 
-# AI生成模式（Nano Banana 2 + Gemini 3.1 Pro Preview审查）
+# AI Generation Mode (Nano Banana 2 + Gemini 3.1 Pro Preview Review)
 
-## 智能迭代改进工作流程
+## Smart Iterative Refinement Workflow
 
-AI生成系统使用**智能迭代** - 仅当质量低于您的文档类型阈值时才会重新生成：
+The AI generation system uses **smart iteration** - it only regenerates if quality is below the threshold for your document type:
 
-### 智能迭代如何工作
+### How Smart Iteration Works
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│  1. 使用Nano Banana 2生成图像                      │
+│  1. Generate image with Nano Banana 2             │
 │                    ↓                                │
-│  2. 使用Gemini 3.1 Pro Preview审查质量              │
+│  2. Review quality with Gemini 3.1 Pro Preview                │
 │                    ↓                                │
-│  3. 分数 >= 阈值？                                  │
-│       是 → 完成！（提前停止）                      │
-│       否 → 改进提示，转到步骤1                      │
+│  3. Score >= threshold?                             │
+│       YES → DONE! (early stop)                      │
+│       NO  → Improve prompt, go to step 1            │
 │                    ↓                                │
-│  4. 重复直到达到质量或最大迭代次数                  │
+│  4. Repeat until quality met OR max iterations      │
 └─────────────────────────────────────────────────────┘
 ```
 
-### 迭代1：初始生成
-**提示构建：**
+### Iteration 1: Initial Generation
+**Prompt Construction:**
 ```
-科学图表指南 + 用户请求
-```
-
-**输出：** `diagram_v1.png`
-
-### Gemini 3.1 Pro Preview质量审查
-
-Gemini 3.1 Pro Preview从以下方面评估图表：
-1. **科学准确性**（0-2分）- 正确的概念、符号、关系
-2. **清晰度和可读性**（0-2分）- 易于理解，清晰的层次结构
-3. **标签质量**（0-2分）- 完整、可读、一致的标签
-4. **布局和构图**（0-2分）- 逻辑流程，平衡，无重叠
-5. **专业外观**（0-2分）- Publication就绪质量
-
-**审查输出示例：**
-```
-分数：8.0
-
-优势：
-- 从上到下的清晰流程
-- 所有阶段都正确标记
-- 专业排版
-
-问题：
-- 参与者计数略小
-- 排除框上的轻微重叠
-
-结论：可接受（对于海报，阈值7.0）
+Scientific diagram guidelines + User request
 ```
 
-### 决策点：继续或停止？
+**Output:** `diagram_v1.png`
 
-| 如果分数... | 操作 |
-|------------|------|
-| >= 阈值 | **停止** - 质量对此文档类型足够好 |
-| < 阈值 | 继续下一次迭代，改进提示 |
+### Quality Review by Gemini 3.1 Pro Preview
 
-**示例：**
-- 对于**海报**（阈值7.0）：分数7.5 → **1次迭代后完成！**
-- 对于**期刊**（阈值8.5）：分数7.5 → 继续改进
+Gemini 3.1 Pro Preview evaluates the diagram on:
+1. **Scientific Accuracy** (0-2 points) - Correct concepts, notation, relationships
+2. **Clarity and Readability** (0-2 points) - Easy to understand, clear hierarchy
+3. **Label Quality** (0-2 points) - Complete, readable, consistent labels
+4. **Layout and Composition** (0-2 points) - Logical flow, balanced, no overlaps
+5. **Professional Appearance** (0-2 points) - Publication-ready quality
 
-### 后续迭代（仅在需要时）
+**Example Review Output:**
+```
+SCORE: 8.0
 
-如果质量低于阈值，系统：
-1. 从Gemini 3.1 Pro Preview的审查中提取具体问题
-2. 用改进说明增强提示
-3. 使用Nano Banana 2重新生成
-4. 再次使用Gemini 3.1 Pro Preview审查
-5. 重复直到达到阈值或达到最大迭代次数
+STRENGTHS:
+- Clear flow from top to bottom
+- All phases properly labeled
+- Professional typography
 
-### 审查日志
-所有迭代都保存有JSON审查日志，包括提前停止信息：
+ISSUES:
+- Participant counts slightly small
+- Minor overlap on exclusion box
+
+VERDICT: ACCEPTABLE (for poster, threshold 7.0)
+```
+
+### Decision Point: Continue or Stop?
+
+| If Score... | Action |
+|-------------|--------|
+| >= threshold | **STOP** - Quality is good enough for this document type |
+| < threshold | Continue to next iteration with improved prompt |
+
+**Example:**
+- For a **poster** (threshold 7.0): Score of 7.5 → **DONE after 1 iteration!**
+- For a **journal** (threshold 8.5): Score of 7.5 → Continue improving
+
+### Subsequent Iterations (Only If Needed)
+
+If quality is below threshold, the system:
+1. Extracts specific issues from Gemini 3.1 Pro Preview's review
+2. Enhances the prompt with improvement instructions
+3. Regenerates with Nano Banana 2
+4. Reviews again with Gemini 3.1 Pro Preview
+5. Repeats until threshold met or max iterations reached
+
+### Review Log
+All iterations are saved with a JSON review log that includes early-stop information:
 ```json
 {
-  "user_prompt": "CONSORT参与者流程图...",
+  "user_prompt": "CONSORT participant flow diagram...",
   "doc_type": "poster",
   "quality_threshold": 7.0,
   "iterations": [
@@ -238,380 +238,382 @@ Gemini 3.1 Pro Preview从以下方面评估图表：
       "image_path": "figures/consort_v1.png",
       "score": 7.5,
       "needs_improvement": false,
-      "critique": "分数：7.5\n优势：..."
+      "critique": "SCORE: 7.5\nSTRENGTHS:..."
     }
   ],
   "final_score": 7.5,
   "early_stop": true,
-  "early_stop_reason": "质量分数7.5满足海报阈值7.0"
+  "early_stop_reason": "Quality score 7.5 meets threshold 7.0 for poster"
 }
 ```
 
-**注意：** 使用智能迭代，如果早期达到质量，您可能只看到1次迭代而不是完整的2次！
+**Note:** With smart iteration, you may see only 1 iteration instead of the full 2 if quality is achieved early!
 
-## 高级AI生成用法
+## Advanced AI Generation Usage
 
 ### Python API
 
 ```python
 from scripts.generate_schematic_ai import ScientificSchematicGenerator
 
-# 初始化生成器
+# Initialize generator
 generator = ScientificSchematicGenerator(
     api_key="your_openrouter_key",
     verbose=True
 )
 
-# 生成带有迭代改进（最多2次迭代）
+# Generate with iterative refinement (max 2 iterations)
 results = generator.generate_iterative(
-    user_prompt="Transformer架构图",
+    user_prompt="Transformer architecture diagram",
     output_path="figures/transformer.png",
     iterations=2
 )
 
-# 访问结果
-print(f"最终分数：{results['final_score']}/10")
-print(f"最终图像：{results['final_image']}")
+# Access results
+print(f"Final score: {results['final_score']}/10")
+print(f"Final image: {results['final_image']}")
 
-# 审查各个迭代
+# Review individual iterations
 for iteration in results['iterations']:
-    print(f"迭代 {iteration['iteration']}：{iteration['score']}/10")
-    print(f"批评：{iteration['critique']}")
+    print(f"Iteration {iteration['iteration']}: {iteration['score']}/10")
+    print(f"Critique: {iteration['critique']}")
 ```
 
-### 命令行选项
+### Command-Line Options
 
 ```bash
-# 基本用法（默认阈值7.5/10）
-python scripts/generate_schematic.py "图表描述" -o output.png
+# Basic usage (default threshold 7.5/10)
+python scripts/generate_schematic.py "diagram description" -o output.png
 
-# 指定文档类型以获得适当的质量阈值
-python scripts/generate_schematic.py "图表" -o out.png --doc-type journal      # 8.5/10
-python scripts/generate_schematic.py "图表" -o out.png --doc-type conference   # 8.0/10
-python scripts/generate_schematic.py "图表" -o out.png --doc-type poster       # 7.0/10
-python scripts/generate_schematic.py "图表" -o out.png --doc-type presentation # 6.5/10
+# Specify document type for appropriate quality threshold
+python scripts/generate_schematic.py "diagram" -o out.png --doc-type journal      # 8.5/10
+python scripts/generate_schematic.py "diagram" -o out.png --doc-type conference   # 8.0/10
+python scripts/generate_schematic.py "diagram" -o out.png --doc-type poster       # 7.0/10
+python scripts/generate_schematic.py "diagram" -o out.png --doc-type presentation # 6.5/10
 
-# 自定义最大迭代次数（1-2）
-python scripts/generate_schematic.py "复杂图表" -o diagram.png --iterations 2
+# Custom max iterations (1-2)
+python scripts/generate_schematic.py "complex diagram" -o diagram.png --iterations 2
 
-# 详细输出（查看所有API调用和审查）
-python scripts/generate_schematic.py "流程图" -o flow.png -v
+# Verbose output (see all API calls and reviews)
+python scripts/generate_schematic.py "flowchart" -o flow.png -v
 
-# 通过标志提供API密钥
-python scripts/generate_schematic.py "图表" -o out.png --api-key "sk-or-v1-..."
+# Provide API key via flag
+python scripts/generate_schematic.py "diagram" -o out.png --api-key "sk-or-v1-..."
 
-# 组合选项
-python scripts/generate_schematic.py "神经网络" -o nn.png --doc-type journal --iterations 2 -v
+# Combine options
+python scripts/generate_schematic.py "neural network" -o nn.png --doc-type journal --iterations 2 -v
 ```
 
-### 提示工程技巧
+### Prompt Engineering Tips
 
-**1. 具体说明布局：**
+**1. Be Specific About Layout:**
 ```
-✓ "垂直流的流程图，从上到下"
-✓ "左侧编码器，右侧解码器的架构图"
-✓ "顺时针流的圆形通路图"
-```
-
-**2. 包含定量细节：**
-```
-✓ "输入层（784个节点）、隐藏层（128个节点）、输出（10个节点）的神经网络"
-✓ "显示n=500筛选，n=150排除，n=350随机化的流程图"
-✓ "带有1kΩ电阻、10µF电容器、5V电源的电路"
+✓ "Flowchart with vertical flow, top to bottom"
+✓ "Architecture diagram with encoder on left, decoder on right"
+✓ "Circular pathway diagram with clockwise flow"
 ```
 
-**3. 指定视觉风格：**
+**2. Include Quantitative Details:**
 ```
-✓ "带有干净线条的简约框图"
-✓ "带有蛋白质结构的详细生物通路"
-✓ "带有工程符号的技术示意图"
-```
-
-**4. 请求特定标签：**
-```
-✓ "用激活/抑制标记所有箭头"
-✓ "在每个框中包含层维度"
-✓ "用时间戳显示时间进展"
+✓ "Neural network with input layer (784 nodes), hidden layer (128 nodes), output (10 nodes)"
+✓ "Flowchart showing n=500 screened, n=150 excluded, n=350 randomized"
+✓ "Circuit with 1kΩ resistor, 10µF capacitor, 5V source"
 ```
 
-**5. 提及颜色要求：**
+**3. Specify Visual Style:**
 ```
-✓ "使用色盲友好的颜色"
-✓ "灰度兼容设计"
-✓ "按功能编码颜色：输入为蓝色，处理为绿色，输出为红色"
+✓ "Minimalist block diagram with clean lines"
+✓ "Detailed biological pathway with protein structures"
+✓ "Technical schematic with engineering notation"
 ```
 
-## AI生成示例
+**4. Request Specific Labels:**
+```
+✓ "Label all arrows with activation/inhibition"
+✓ "Include layer dimensions in each box"
+✓ "Show time progression with timestamps"
+```
 
-### 示例1：CONSORT流程图
+**5. Mention Color Requirements:**
+```
+✓ "Use colorblind-friendly colors"
+✓ "Grayscale-compatible design"
+✓ "Color-code by function: blue for input, green for processing, red for output"
+```
+
+## AI Generation Examples
+
+### Example 1: CONSORT Flowchart
 ```bash
 python scripts/generate_schematic.py \
-  "随机对照试验的CONSORT参与者流程图。\
-   顶部开始为'评估资格（n=500）'。\
-   显示'排除（n=150）'，原因：年龄<18（n=80），拒绝（n=50），其他（n=20）。\
-   然后'随机化（n=350）'分为两个组：\
-   '治疗组（n=175）'和'对照组（n=175）'。\
-   每组显示'失访'（n=15和n=10）。\
-   以'分析'结束（n=160和n=165）。\
-   处理步骤使用蓝色框，排除使用橙色，最终分析使用绿色。" \
+  "CONSORT participant flow diagram for randomized controlled trial. \
+   Start with 'Assessed for eligibility (n=500)' at top. \
+   Show 'Excluded (n=150)' with reasons: age<18 (n=80), declined (n=50), other (n=20). \
+   Then 'Randomized (n=350)' splits into two arms: \
+   'Treatment group (n=175)' and 'Control group (n=175)'. \
+   Each arm shows 'Lost to follow-up' (n=15 and n=10). \
+   End with 'Analyzed' (n=160 and n=165). \
+   Use blue boxes for process steps, orange for exclusion, green for final analysis." \
   -o figures/consort.png
 ```
 
-### 示例2：神经网络架构
+### Example 2: Neural Network Architecture
 ```bash
 python scripts/generate_schematic.py \
-  "Transformer编码器-解码器架构图。\
-   左侧：编码器堆栈，包含输入嵌入、位置编码、\
-   多头自注意力、添加与归一化、前馈、添加与归一化。\
-   右侧：解码器堆栈，包含输出嵌入、位置编码、\
-   掩码自注意力、添加与归一化、交叉注意力（接收来自编码器）、\
-   添加与归一化、前馈、添加与归一化、线性与softmax。\
-   用虚线显示从编码器到解码器的交叉注意力连接。\
-   编码器使用浅蓝色，解码器使用浅红色。\
-   清晰标记所有组件。" \
+  "Transformer encoder-decoder architecture diagram. \
+   Left side: Encoder stack with input embedding, positional encoding, \
+   multi-head self-attention, add & norm, feed-forward, add & norm. \
+   Right side: Decoder stack with output embedding, positional encoding, \
+   masked self-attention, add & norm, cross-attention (receiving from encoder), \
+   add & norm, feed-forward, add & norm, linear & softmax. \
+   Show cross-attention connection from encoder to decoder with dashed line. \
+   Use light blue for encoder, light red for decoder. \
+   Label all components clearly." \
   -o figures/transformer.png --iterations 2
 ```
 
-### 示例3：生物通路
+### Example 3: Biological Pathway
 ```bash
 python scripts/generate_schematic.py \
-  "MAPK信号通路图。\
-   顶部细胞膜处开始于EGFR受体。\
-   向下箭头到RAS（带有GTP标签）。\
-   箭头到RAF激酶。\
-   箭头到MEK激酶。\
-   箭头到ERK激酶。\
-   最终箭头到显示基因转录的细胞核。\
-   用'磷酸化'或'激活'标记每个箭头。\
-   蛋白质使用圆角矩形，每个使用不同颜色。\
-   顶部包含膜边界线。" \
+  "MAPK signaling pathway diagram. \
+   Start with EGFR receptor at cell membrane (top). \
+   Arrow down to RAS (with GTP label). \
+   Arrow to RAF kinase. \
+   Arrow to MEK kinase. \
+   Arrow to ERK kinase. \
+   Final arrow to nucleus showing gene transcription. \
+   Label each arrow with 'phosphorylation' or 'activation'. \
+   Use rounded rectangles for proteins, different colors for each. \
+   Include membrane boundary line at top." \
   -o figures/mapk_pathway.png
 ```
 
-### 示例4：系统架构
+### Example 4: System Architecture
 ```bash
 python scripts/generate_schematic.py \
-  "物联网系统架构框图。\
-   底层：传感器（温度、湿度、运动）在绿色框中。\
-   中层：微控制器（ESP32）在蓝色框中。\
-   连接到WiFi模块（橙色框）和显示器（紫色框）。\
-   顶层：云服务器（灰色框）连接到移动应用（浅蓝色框）。\
-   显示所有组件之间的数据流箭头。\
-   用协议标记连接：I2C、UART、WiFi、HTTPS。" \
+  "IoT system architecture block diagram. \
+   Bottom layer: Sensors (temperature, humidity, motion) in green boxes. \
+   Middle layer: Microcontroller (ESP32) in blue box. \
+   Connections to WiFi module (orange box) and Display (purple box). \
+   Top layer: Cloud server (gray box) connected to mobile app (light blue box). \
+   Show data flow arrows between all components. \
+   Label connections with protocols: I2C, UART, WiFi, HTTPS." \
   -o figures/iot_architecture.png
 ```
 
 ---
 
-## 命令行使用
+## Command-Line Usage
 
-生成科学示意图的主要入口点：
+The main entry point for generating scientific schematics:
 
 ```bash
-# 基本用法
-python scripts/generate_schematic.py "图表描述" -o output.png
+# Basic usage
+python scripts/generate_schematic.py "diagram description" -o output.png
 
-# 自定义迭代次数（最多2次）
-python scripts/generate_schematic.py "复杂图表" -o diagram.png --iterations 2
+# Custom iterations (max 2)
+python scripts/generate_schematic.py "complex diagram" -o diagram.png --iterations 2
 
-# 详细模式
-python scripts/generate_schematic.py "图表" -o out.png -v
+# Verbose mode
+python scripts/generate_schematic.py "diagram" -o out.png -v
 ```
 
-**注意：** Nano Banana 2 AI生成系统在其迭代改进过程中包含自动质量审查。每次迭代都会评估科学准确性、清晰度和可访问性。
+**Note:** The Nano Banana 2 AI generation system includes automatic quality review in its iterative refinement process. Each iteration is evaluated for scientific accuracy, clarity, and accessibility.
 
-## 最佳实践摘要
+## Best Practices Summary
 
-### 设计原则
+### Design Principles
 
-1. **清晰胜于复杂** - 简化，移除不必要的元素
-2. **一致的样式** - 使用模板和样式文件
-3. **色盲可访问性** - 使用Okabe-Ito调色板，冗余编码
-4. **适当的排版** - 无衬线字体，最小7-8 pt
-5. **矢量格式** - 始终使用PDF/SVG用于发表
+1. **Clarity over complexity** - Simplify, remove unnecessary elements
+2. **Consistent styling** - Use templates and style files
+3. **Colorblind accessibility** - Use Okabe-Ito palette, redundant encoding
+4. **Appropriate typography** - Sans-serif fonts, minimum 7-8 pt
+5. **Vector format** - Always use PDF/SVG for publication
 
-### 技术要求
+### Technical Requirements
 
-1. **分辨率** - 首选矢量，或300+ DPI的光栅
-2. **文件格式** - LaTeX使用PDF，网络使用SVG，PNG作为备选
-3. **色彩空间** - 数字使用RGB，印刷使用CMYK（必要时转换）
-4. **线宽** - 最小0.5 pt，典型1-2 pt
-5. **文本大小** - 最终大小至少7-8 pt
+1. **Resolution** - Vector preferred, or 300+ DPI for raster
+2. **File format** - PDF for LaTeX, SVG for web, PNG as fallback
+3. **Color space** - RGB for digital, CMYK for print (convert if needed)
+4. **Line weights** - Minimum 0.5 pt, typical 1-2 pt
+5. **Text size** - 7-8 pt minimum at final size
 
-### 集成指南
+### Integration Guidelines
 
-1. **包含在LaTeX中** - 使用`\includegraphics{}`插入生成的图像
-2. **详细说明** - 描述所有元素和缩写
-3. **在文本中引用** - 在叙述流程中解释图表
-4. **保持一致性** - 论文中所有图表使用相同样式
-5. **版本控制** - 在存储库中保留提示和生成的图像
+1. **Include in LaTeX** - Use `\includegraphics{}` for generated images
+2. **Caption thoroughly** - Describe all elements and abbreviations
+3. **Reference in text** - Explain diagram in narrative flow
+4. **Maintain consistency** - Same style across all figures in paper
+5. **Version control** - Keep prompts and generated images in repository
 
-## 常见问题故障排除
+## Troubleshooting Common Issues
 
-### AI生成问题
+### AI Generation Issues
 
-**问题**：文本或元素重叠
-- **解决方案**：AI生成自动处理间距
-- **解决方案**：增加迭代次数：`--iterations 2`以获得更好的改进
+**Problem**: Overlapping text or elements
+- **Solution**: AI generation automatically handles spacing
+- **Solution**: Increase iterations: `--iterations 2` for better refinement
 
-**问题**：元素连接不正确
-- **解决方案**：使您的提示更具体地说明连接和布局
-- **解决方案**：增加迭代次数以获得更好的改进
+**Problem**: Elements not connecting properly
+- **Solution**: Make your prompt more specific about connections and layout
+- **Solution**: Increase iterations for better refinement
 
-### 图像质量问题
+### Image Quality Issues
 
-**问题**：导出质量差
-- **解决方案**：AI生成自动生成高质量图像
-- **解决方案**：增加迭代次数以获得更好的结果：`--iterations 2`
+**Problem**: Export quality poor
+- **Solution**: AI generation produces high-quality images automatically
+- **Solution**: Increase iterations for better results: `--iterations 2`
 
-**问题**：生成后元素重叠
-- **解决方案**：AI生成自动处理间距
-- **解决方案**：增加迭代次数：`--iterations 2`以获得更好的改进
-- **解决方案**：使您的提示更具体地说明布局和间距要求
+**Problem**: Elements overlap after generation
+- **Solution**: AI generation automatically handles spacing
+- **Solution**: Increase iterations: `--iterations 2` for better refinement
+- **Solution**: Make your prompt more specific about layout and spacing requirements
 
-### 质量检查问题
+### Quality Check Issues
 
-**问题**：假阳性重叠检测
-- **解决方案**：调整阈值：`detect_overlaps(image_path, threshold=0.98)`
-- **解决方案**：手动审查视觉报告中的标记区域
+**Problem**: False positive overlap detection
+- **Solution**: Adjust threshold: `detect_overlaps(image_path, threshold=0.98)`
+- **Solution**: Manually review flagged regions in visual report
 
-**问题**：生成的图像质量低
-- **解决方案**：AI生成默认生成高质量图像
-- **解决方案**：增加迭代次数以获得更好的结果：`--iterations 2`
+**Problem**: Generated image quality is low
+- **Solution**: AI generation produces high-quality images by default
+- **Solution**: Increase iterations for better results: `--iterations 2`
 
-**问题**：色盲模拟显示对比度差
-- **解决方案**：在代码中明确切换到Okabe-Ito调色板
-- **解决方案**：添加冗余编码（形状、图案、线条样式）
-- **解决方案**：增加颜色饱和度和亮度差异
+**Problem**: Colorblind simulation shows poor contrast
+- **Solution**: Switch to Okabe-Ito palette explicitly in code
+- **Solution**: Add redundant encoding (shapes, patterns, line styles)
+- **Solution**: Increase color saturation and lightness differences
 
-**问题**：检测到高严重性重叠
-- **解决方案**：查看overlap_report.json获取精确位置
-- **解决方案**：增加这些特定区域的间距
-- **解决方案**：使用调整后的参数重新运行并再次验证
+**Problem**: High-severity overlaps detected
+- **Solution**: Review overlap_report.json for exact positions
+- **Solution**: Increase spacing in those specific regions
+- **Solution**: Re-run with adjusted parameters and verify again
 
-**问题**：视觉报告生成失败
-- **解决方案**：检查Pillow和matplotlib安装
-- **解决方案**：确保图像文件可读：`Image.open(path).verify()`
-- **解决方案**：检查报告生成的足够磁盘空间
+**Problem**: Visual report generation fails
+- **Solution**: Check Pillow and matplotlib installations
+- **Solution**: Ensure image file is readable: `Image.open(path).verify()`
+- **Solution**: Check sufficient disk space for report generation
 
-### 可访问性问题
+### Accessibility Problems
 
-**问题**：灰度中颜色无法区分
-- **解决方案**：运行可访问性检查器：`verify_accessibility(image_path)`
-- **解决方案**：添加图案、形状或线条样式以增加冗余
-- **解决方案**：增加相邻元素之间的对比度
+**Problem**: Colors indistinguishable in grayscale
+- **Solution**: Run accessibility checker: `verify_accessibility(image_path)`
+- **Solution**: Add patterns, shapes, or line styles for redundancy
+- **Solution**: Increase contrast between adjacent elements
 
-**问题**：打印时文本太小
-- **解决方案**：运行分辨率验证器：`validate_resolution(image_path)`
-- **解决方案**：以最终大小设计，使用最小7-8 pt字体
-- **解决方案**：在分辨率报告中检查物理尺寸
+**Problem**: Text too small when printed
+- **Solution**: Run resolution validator: `validate_resolution(image_path)`
+- **Solution**: Design at final size, use minimum 7-8 pt fonts
+- **Solution**: Check physical dimensions in resolution report
 
-**问题**：可访问性检查一致失败
-- **解决方案**：查看accessibility_report.json获取具体失败原因
-- **解决方案**：将颜色对比度至少增加20%
-- **解决方案**：在最终确定前使用实际灰度转换进行测试
+**Problem**: Accessibility checks consistently fail
+- **Solution**: Review accessibility_report.json for specific failures
+- **Solution**: Increase color contrast by at least 20%
+- **Solution**: Test with actual grayscale conversion before finalizing
 
-## 资源和参考
+## Resources and References
 
-### 详细参考
+### Detailed References
 
-加载这些文件以获取特定主题的综合信息：
+Load these files for comprehensive information on specific topics:
 
-- **`references/diagram_types.md`** - 科学图表类型目录，带有示例
-- **`references/best_practices.md`** - 发表标准和可访问性指南
+- **`references/diagram_types.md`** - Catalog of scientific diagram types with examples
+- **`references/best_practices.md`** - Publication standards and accessibility guidelines
 
-### 外部资源
+### External Resources
 
-**Python库**
-- Schemdraw文档：https://schemdraw.readthedocs.io/
-- NetworkX文档：https://networkx.org/documentation/
-- Matplotlib文档：https://matplotlib.org/
+**Python Libraries**
+- Schemdraw Documentation: https://schemdraw.readthedocs.io/
+- NetworkX Documentation: https://networkx.org/documentation/
+- Matplotlib Documentation: https://matplotlib.org/
 
-**发表标准**
-- Nature图表指南：https://www.nature.com/nature/for-authors/final-submission
-- Science图表指南：https://www.science.org/content/page/instructions-preparing-initial-manuscript
-- CONSORT图表：http://www.consort-statement.org/consort-statement/flow-diagram
+**Publication Standards**
+- Nature Figure Guidelines: https://www.nature.com/nature/for-authors/final-submission
+- Science Figure Guidelines: https://www.science.org/content/page/instructions-preparing-initial-manuscript
+- CONSORT Diagram: http://www.consort-statement.org/consort-statement/flow-diagram
 
-## 与其他技能集成
+## Integration with Other Skills
 
-此技能与以下技能协同工作：
+This skill works synergistically with:
 
-- **科学写作** - 图表遵循图表最佳实践
-- **科学可视化** - 共享调色板和样式
-- **LaTeX海报** - 为海报演示生成图表
-- **研究资助** - 提案的方法学图表
-- **同行评审** - 评估图表清晰度和可访问性
+- **Scientific Writing** - Diagrams follow figure best practices
+- **Scientific Visualization** - Shares color palettes and styling
+- **LaTeX Posters** - Generate diagrams for poster presentations
+- **Research Grants** - Methodology diagrams for proposals
+- **Peer Review** - Evaluate diagram clarity and accessibility
 
-## 快速参考清单
+## Quick Reference Checklist
 
-提交图表前，验证：
+Before submitting diagrams, verify:
 
-### 视觉质量
-- [ ] 高质量图像格式（AI生成的PNG）
-- [ ] 无重叠元素（AI自动处理）
-- [ ] 所有组件之间有足够的间距（AI优化）
-- [ ] 干净、专业的对齐
-- [ ] 所有箭头正确连接到预期目标
+### Visual Quality
+- [ ] High-quality image format (PNG from AI generation)
+- [ ] No overlapping elements (AI handles automatically)
+- [ ] Adequate spacing between all components (AI optimizes)
+- [ ] Clean, professional alignment
+- [ ] All arrows connect properly to intended targets
 
-### 可访问性
-- [ ] 使用色盲安全调色板（Okabe-Ito）
-- [ ] 在灰度下工作（使用可访问性检查器测试）
-- [ ] 元素之间有足够的对比度（已验证）
-- [ ] 适当的冗余编码（形状 + 颜色）
-- [ ] 色盲模拟通过所有检查
+### Accessibility
+- [ ] Colorblind-safe palette (Okabe-Ito) used
+- [ ] Works in grayscale (tested with accessibility checker)
+- [ ] Sufficient contrast between elements (verified)
+- [ ] Redundant encoding where appropriate (shapes + colors)
+- [ ] Colorblind simulation passes all checks
 
-### 排版和可读性
-- [ ] 最终大小的文本最小7-8 pt
-- [ ] 所有元素都清晰完整地标记
-- [ ] 一致的字体系列和大小
-- [ ] 无文本重叠或截断
-- [ ] 适用时包含单位
+### Typography and Readability
+- [ ] Text minimum 7-8 pt at final size
+- [ ] All elements labeled clearly and completely
+- [ ] Consistent font family and sizing
+- [ ] No text overlaps or cutoffs
+- [ ] Units included where applicable
 
-### 发表标准
-- [ ] 与手稿中其他图表一致的样式
-- [ ] 全面的说明，定义所有缩写
-- [ ] 在手稿文本中适当引用
-- [ ] 满足期刊特定的尺寸要求
-- [ ] 以期刊要求的格式导出（PDF/EPS/TIFF）
+### Publication Standards
+- [ ] Consistent styling with other figures in manuscript
+- [ ] Comprehensive caption written with all abbreviations defined
+- [ ] Referenced appropriately in manuscript text
+- [ ] Meets journal-specific dimension requirements
+- [ ] Exported in required format for journal (PDF/EPS/TIFF)
 
-### 质量验证（必需）
-- [ ] 运行`run_quality_checks()`并获得PASS状态
-- [ ] 审查重叠检测报告（零高严重性重叠）
-- [ ] 通过可访问性验证（灰度和色盲）
-- [ ] 以目标DPI验证分辨率（打印300+）
-- [ ] 生成并审查视觉质量报告
-- [ ] 所有质量报告与图表文件一起保存
+### Quality Verification (Required)
+- [ ] Ran `run_quality_checks()` and achieved PASS status
+- [ ] Reviewed overlap detection report (zero high-severity overlaps)
+- [ ] Passed accessibility verification (grayscale and colorblind)
+- [ ] Resolution validated at target DPI (300+ for print)
+- [ ] Visual quality report generated and reviewed
+- [ ] All quality reports saved with figure files
 
-### 文档和版本控制
-- [ ] 保存源文件（.tex, .py）以便将来修订
-- [ ] 质量报告存档在`quality_reports/`目录中
-- [ ] 记录配置参数（颜色、间距、大小）
-- [ ] Git提交包括源、输出和质量报告
-- [ ] README或注释解释如何重新生成图表
+### Documentation and Version Control
+- [ ] Source files (.tex, .py) saved for future revision
+- [ ] Quality reports archived in `quality_reports/` directory
+- [ ] Configuration parameters documented (colors, spacing, sizes)
+- [ ] Git commit includes source, output, and quality reports
+- [ ] README or comments explain how to regenerate figure
 
-### 最终集成检查
-- [ ] 图表在编译的手稿中正确显示
-- [ ] 交叉引用工作（`\ref{}`指向正确的图表）
-- [ ] 图表编号与文本引用匹配
-- [ ] 说明出现在相对于图表的正确页面上
-- [ ] 无与图表相关的编译警告或错误
+### Final Integration Check
+- [ ] Figure displays correctly in compiled manuscript
+- [ ] Cross-references work (`\ref{}` points to correct figure)
+- [ ] Figure number matches text citations
+- [ ] Caption appears on correct page relative to figure
+- [ ] No compilation warnings or errors related to figure
 
-## 环境设置
+## Environment Setup
 
 ```bash
-# 必需
+# Required
 export OPENROUTER_API_KEY='your_api_key_here'
 
-# 在以下位置获取密钥：https://openrouter.ai/keys
+# Get key at: https://openrouter.ai/keys
 ```
 
-## 入门
+## Getting Started
 
-**最简单的使用方式：**
+**Simplest possible usage:**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o output.png
 ```
 
 ---
 
-使用此技能创建清晰、可访问、 publication 质量的图表，有效传达复杂的科学概念。带有迭代改进的AI驱动工作流程确保图表满足专业标准。
+Use this skill to create clear, accessible, publication-quality diagrams that effectively communicate complex scientific concepts. The AI-powered workflow with iterative refinement ensures diagrams meet professional standards.
+
+

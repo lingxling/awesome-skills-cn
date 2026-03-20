@@ -1,241 +1,240 @@
 ---
 name: fda-database
-description: 查询openFDA API获取药物、器械、不良事件、召回、监管提交（510k、PMA）、物质识别（UNII），用于FDA监管数据分析和安全研究。
+description: Query openFDA API for drugs, devices, adverse events, recalls, regulatory submissions (510k, PMA), substance identification (UNII), for FDA regulatory data analysis and safety research.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# FDA 数据库访问
+# FDA Database Access
 
-## 概述
+## Overview
 
-通过openFDA访问全面的FDA监管数据，这是FDA为公共数据集提供开放API的倡议。使用Python和标准化接口查询有关药物、医疗器械、食品、动物/兽医产品以及物质的信息。
+Access comprehensive FDA regulatory data through openFDA, the FDA's initiative to provide open APIs for public datasets. Query information about drugs, medical devices, foods, animal/veterinary products, and substances using Python with standardized interfaces.
 
-**核心功能：**
-- 查询药物、器械、食品和兽医产品的不良事件
-- 访问产品标签、批准和监管提交
-- 监控召回和执法行动
-- 查找国家药品代码（NDC）和物质标识符（UNII）
-- 分析器械分类和批准（510k、PMA）
-- 跟踪药物短缺和供应问题
-- 研究化学结构和物质关系
+**Key capabilities:**
+- Query adverse events for drugs, devices, foods, and veterinary products
+- Access product labeling, approvals, and regulatory submissions
+- Monitor recalls and enforcement actions
+- Look up National Drug Codes (NDC) and substance identifiers (UNII)
+- Analyze device classifications and clearances (510k, PMA)
+- Track drug shortages and supply issues
+- Research chemical structures and substance relationships
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况下使用：
+This skill should be used when working with:
+- **Drug research**: Safety profiles, adverse events, labeling, approvals, shortages
+- **Medical device surveillance**: Adverse events, recalls, 510(k) clearances, PMA approvals
+- **Food safety**: Recalls, allergen tracking, adverse events, dietary supplements
+- **Veterinary medicine**: Animal drug adverse events by species and breed
+- **Chemical/substance data**: UNII lookup, CAS number mapping, molecular structures
+- **Regulatory analysis**: Approval pathways, enforcement actions, compliance tracking
+- **Pharmacovigilance**: Post-market surveillance, safety signal detection
+- **Scientific research**: Drug interactions, comparative safety, epidemiological studies
 
-- **药物研究：** 安全概况、不良事件、标签、批准、短缺
-- **医疗器械监测：** 不良事件、召回、510(k)批准、PMA批准
-- **食品安全：** 召回、过敏原追踪、不良事件、膳食补充剂
-- **兽医学：** 按物种和品种的动物药物不良事件
-- **化学/物质数据：** UNII查找、CAS编号映射、分子结构
-- **监管分析：** 批准途径、执法行动、合规性追踪
-- **药物警戒：** 上市后监测、安全信号检测
-- **科学研究：** 药物相互作用、比较安全性、流行病学研究
+## Quick Start
 
-## 快速开始
-
-### 1. 基本设置
+### 1. Basic Setup
 
 ```python
 from scripts.fda_query import FDAQuery
 
-# 初始化（API密钥可选但推荐）
+# Initialize (API key optional but recommended)
 fda = FDAQuery(api_key="YOUR_API_KEY")
 
-# 查询药物不良事件
+# Query drug adverse events
 events = fda.query_drug_events("aspirin", limit=100)
 
-# 获取药物标签
+# Get drug labeling
 label = fda.query_drug_label("Lipitor", brand=True)
 
-# 搜索器械召回
+# Search device recalls
 recalls = fda.query("device", "enforcement",
                    search="classification:Class+I",
                    limit=50)
 ```
 
-### 2. API 密钥设置
+### 2. API Key Setup
 
-虽然API在没有密钥的情况下工作，但注册提供更高的速率限制：
-- **无密钥：** 240请求/分钟，1,000/天
-- **有密钥：** 240请求/分钟，120,000/天
+While the API works without a key, registering provides higher rate limits:
+- **Without key**: 240 requests/min, 1,000/day
+- **With key**: 240 requests/min, 120,000/day
 
-在以下位置注册：https://open.fda.gov/apis/authentication/
+Register at: https://open.fda.gov/apis/authentication/
 
-设置为环境变量：
+Set as environment variable:
 ```bash
 export FDA_API_KEY="your_key_here"
 ```
 
-### 3. 运行示例
+### 3. Running Examples
 
 ```bash
-# 运行综合示例
+# Run comprehensive examples
 python scripts/fda_examples.py
 
-# 这演示了：
-# - 药物安全概况
-# - 器械监测
-# - 食品召回监测
-# - 物质查找
-# - 比较药物分析
-# - 兽医药物分析
+# This demonstrates:
+# - Drug safety profiles
+# - Device surveillance
+# - Food recall monitoring
+# - Substance lookup
+# - Comparative drug analysis
+# - Veterinary drug analysis
 ```
 
-## FDA 数据库类别
+## FDA Database Categories
 
-### 药物
+### Drugs
 
-访问6个药物相关端点，涵盖从批准到上市后监测的完整药物生命周期。
+Access 6 drug-related endpoints covering the full drug lifecycle from approval to post-market surveillance.
 
-**端点：**
-1. **不良事件** - 副作用、错误和治疗失败的报告
-2. **产品标签** - 处方信息、警告、适应症
-3. **NDC目录** - 国家药品代码产品信息
-4. **执法报告** - 药物召回和安全行动
-5. **Drugs@FDA** - 自1939年以来的历史批准数据
-6. **药物短缺** - 当前和已解决的供应问题
+**Endpoints:**
+1. **Adverse Events** - Reports of side effects, errors, and therapeutic failures
+2. **Product Labeling** - Prescribing information, warnings, indications
+3. **NDC Directory** - National Drug Code product information
+4. **Enforcement Reports** - Drug recalls and safety actions
+5. **Drugs@FDA** - Historical approval data since 1939
+6. **Drug Shortages** - Current and resolved supply issues
 
-**常见用例：**
+**Common use cases:**
 ```python
-# 安全信号检测
+# Safety signal detection
 fda.count_by_field("drug", "event",
                   search="patient.drug.medicinalproduct:metformin",
                   field="patient.reaction.reactionmeddrapt")
 
-# 获取处方信息
+# Get prescribing information
 label = fda.query_drug_label("Keytruda", brand=True)
 
-# 检查召回
+# Check for recalls
 recalls = fda.query_drug_recalls(drug_name="metformin")
 
-# 监控短缺
+# Monitor shortages
 shortages = fda.query("drug", "drugshortages",
                      search="status:Currently+in+Shortage")
 ```
 
-**参考：** 参见 `references/drugs.md` 获取详细文档
+**Reference:** See `references/drugs.md` for detailed documentation
 
-### 器械
+### Devices
 
-访问9个器械相关端点，涵盖医疗器械安全、批准和注册。
+Access 9 device-related endpoints covering medical device safety, approvals, and registrations.
 
-**端点：**
-1. **不良事件** - 器械故障、伤害、死亡
-2. **510(k)批准** - 上市前通知
-3. **分类** - 器械类别和风险类别
-4. **执法报告** - 器械召回
-5. **召回** - 详细召回信息
-6. **PMA** - III类器械的上市前批准数据
-7. **注册和上市** - 制造设施数据
-8. **UDI** - 唯一器械识别数据库
-9. **COVID-19血清学** - 抗体检测性能数据
+**Endpoints:**
+1. **Adverse Events** - Device malfunctions, injuries, deaths
+2. **510(k) Clearances** - Premarket notifications
+3. **Classification** - Device categories and risk classes
+4. **Enforcement Reports** - Device recalls
+5. **Recalls** - Detailed recall information
+6. **PMA** - Premarket approval data for Class III devices
+7. **Registrations & Listings** - Manufacturing facility data
+8. **UDI** - Unique Device Identification database
+9. **COVID-19 Serology** - Antibody test performance data
 
-**常见用例：**
+**Common use cases:**
 ```python
-# 监测器械安全
+# Monitor device safety
 events = fda.query_device_events("pacemaker", limit=100)
 
-# 查找器械分类
+# Look up device classification
 classification = fda.query_device_classification("DQY")
 
-# 查找510(k)批准
+# Find 510(k) clearances
 clearances = fda.query_device_510k(applicant="Medtronic")
 
-# 按UDI搜索
+# Search by UDI
 device_info = fda.query("device", "udi",
                        search="identifiers.id:00884838003019")
 ```
 
-**参考：** 参见 `references/devices.md` 获取详细文档
+**Reference:** See `references/devices.md` for detailed documentation
 
-### 食品
+### Foods
 
-访问2个食品相关端点，用于安全监测和召回。
+Access 2 food-related endpoints for safety monitoring and recalls.
 
-**端点：**
-1. **不良事件** - 食品、膳食补充剂和化妆品事件
-2. **执法报告** - 食品产品召回
+**Endpoints:**
+1. **Adverse Events** - Food, dietary supplement, and cosmetic events
+2. **Enforcement Reports** - Food product recalls
 
-**常见用例：**
+**Common use cases:**
 ```python
-# 监控过敏原召回
+# Monitor allergen recalls
 recalls = fda.query_food_recalls(reason="undeclared peanut")
 
-# 追踪膳食补充剂事件
+# Track dietary supplement events
 events = fda.query_food_events(
     industry="Dietary Supplements")
 
-# 查找污染召回
+# Find contamination recalls
 listeria = fda.query_food_recalls(
     reason="listeria",
     classification="I")
 ```
 
-**参考：** 参见 `references/foods.md` 获取详细文档
+**Reference:** See `references/foods.md` for detailed documentation
 
-### 动物和兽医
+### Animal & Veterinary
 
-访问具有物种特定信息的兽医药物不良事件数据。
+Access veterinary drug adverse event data with species-specific information.
 
-**端点：**
-1. **不良事件** - 按物种、品种和产品的动物药物副作用
+**Endpoint:**
+1. **Adverse Events** - Animal drug side effects by species, breed, and product
 
-**常见用例：**
+**Common use cases:**
 ```python
-# 物种特定事件
+# Species-specific events
 dog_events = fda.query_animal_events(
     species="Dog",
     drug_name="flea collar")
 
-# 品种易感性分析
+# Breed predisposition analysis
 breed_query = fda.query("animalandveterinary", "event",
     search="reaction.veddra_term_name:*seizure*+AND+"
            "animal.breed.breed_component:*Labrador*")
 ```
 
-**参考：** 参见 `references/animal_veterinary.md` 获取详细文档
+**Reference:** See `references/animal_veterinary.md` for detailed documentation
 
-### 物质和其他
+### Substances & Other
 
-访问分子级物质数据，包括UNII代码、化学结构和关系。
+Access molecular-level substance data with UNII codes, chemical structures, and relationships.
 
-**端点：**
-1. **物质数据** - UNII、CAS、化学结构、关系
-2. **NSDE** - 历史物质数据（遗留）
+**Endpoints:**
+1. **Substance Data** - UNII, CAS, chemical structures, relationships
+2. **NSDE** - Historical substance data (legacy)
 
-**常见用例：**
+**Common use cases:**
 ```python
-# UNII到CAS映射
+# UNII to CAS mapping
 substance = fda.query_substance_by_unii("R16CO5Y76E")
 
-# 按名称搜索
+# Search by name
 results = fda.query_substance_by_name("acetaminophen")
 
-# 获取化学结构
+# Get chemical structure
 structure = fda.query("other", "substance",
     search="names.name:ibuprofen+AND+substanceClass:chemical")
 ```
 
-**参考：** 参见 `references/other.md` 获取详细文档
+**Reference:** See `references/other.md` for detailed documentation
 
-## 常见查询模式
+## Common Query Patterns
 
-### 模式1：安全概况分析
+### Pattern 1: Safety Profile Analysis
 
-创建结合多个数据源的综合安全概况：
+Create comprehensive safety profiles combining multiple data sources:
 
 ```python
 def drug_safety_profile(fda, drug_name):
-    """生成完整的安全概况。"""
+    """Generate complete safety profile."""
 
-    # 1. 不良事件总数
+    # 1. Total adverse events
     events = fda.query_drug_events(drug_name, limit=1)
     total = events["meta"]["results"]["total"]
 
-    # 2. 最常见反应
+    # 2. Most common reactions
     reactions = fda.count_by_field(
         "drug", "event",
         search=f"patient.drug.medicinalproduct:*{drug_name}*",
@@ -243,12 +242,12 @@ def drug_safety_profile(fda, drug_name):
         exact=True
     )
 
-    # 3. 严重事件
+    # 3. Serious events
     serious = fda.query("drug", "event",
         search=f"patient.drug.medicinalproduct:*{drug_name}*+AND+serious:1",
         limit=1)
 
-    # 4. 最近召回
+    # 4. Recent recalls
     recalls = fda.query_drug_recalls(drug_name=drug_name)
 
     return {
@@ -259,15 +258,15 @@ def drug_safety_profile(fda, drug_name):
     }
 ```
 
-### 模式2：时间趋势分析
+### Pattern 2: Temporal Trend Analysis
 
-使用日期范围分析趋势：
+Analyze trends over time using date ranges:
 
 ```python
 from datetime import datetime, timedelta
 
 def get_monthly_trends(fda, drug_name, months=12):
-    """获取月度不良事件趋势。"""
+    """Get monthly adverse event trends."""
     trends = []
 
     for i in range(months):
@@ -288,21 +287,21 @@ def get_monthly_trends(fda, drug_name, months=12):
     return trends
 ```
 
-### 模式3：比较分析
+### Pattern 3: Comparative Analysis
 
-并排比较多个产品：
+Compare multiple products side-by-side:
 
 ```python
 def compare_drugs(fda, drug_list):
-    """比较多个药物的安全概况。"""
+    """Compare safety profiles of multiple drugs."""
     comparison = {}
 
     for drug in drug_list:
-        # 总事件数
+        # Total events
         events = fda.query_drug_events(drug, limit=1)
         total = events["meta"]["results"]["total"] if "meta" in events else 0
 
-        # 严重事件
+        # Serious events
         serious = fda.query("drug", "event",
             search=f"patient.drug.medicinalproduct:*{drug}*+AND+serious:1",
             limit=1)
@@ -317,13 +316,13 @@ def compare_drugs(fda, drug_list):
     return comparison
 ```
 
-### 模式4：跨数据库查找
+### Pattern 4: Cross-Database Lookup
 
-链接多个端点的数据：
+Link data across multiple endpoints:
 
 ```python
 def comprehensive_device_lookup(fda, device_name):
-    """跨所有相关数据库查找器械。"""
+    """Look up device across all relevant databases."""
 
     return {
         "adverse_events": fda.query_device_events(device_name, limit=10),
@@ -335,11 +334,11 @@ def comprehensive_device_lookup(fda, device_name):
     }
 ```
 
-## 处理结果
+## Working with Results
 
-### 响应结构
+### Response Structure
 
-所有API响应遵循此结构：
+All API responses follow this structure:
 
 ```python
 {
@@ -352,165 +351,166 @@ def comprehensive_device_lookup(fda, device_name):
         }
     },
     "results": [
-        # 结果对象数组
+        # Array of result objects
     ]
 }
 ```
 
-### 错误处理
+### Error Handling
 
-始终处理潜在错误：
+Always handle potential errors:
 
 ```python
 result = fda.query_drug_events("aspirin", limit=10)
 
 if "error" in result:
-    print(f"错误: {result['error']}")
+    print(f"Error: {result['error']}")
 elif "results" not in result or len(result["results"]) == 0:
-    print("未找到结果")
+    print("No results found")
 else:
-    # 处理结果
+    # Process results
     for event in result["results"]:
-        # 处理事件数据
+        # Handle event data
         pass
 ```
 
-### 分页
+### Pagination
 
-对于大型结果集，使用分页：
+For large result sets, use pagination:
 
 ```python
-# 自动分页
+# Automatic pagination
 all_results = fda.query_all(
     "drug", "event",
     search="patient.drug.medicinalproduct:aspirin",
     max_results=5000
 )
 
-# 手动分页
+# Manual pagination
 for skip in range(0, 1000, 100):
     batch = fda.query("drug", "event",
                      search="...",
                      limit=100,
                      skip=skip)
-    # 处理批次
+    # Process batch
 ```
 
-## 最佳实践
+## Best Practices
 
-### 1. 使用特定搜索
+### 1. Use Specific Searches
 
-**做：**
+**DO:**
 ```python
-# 特定字段搜索
+# Specific field search
 search="patient.drug.medicinalproduct:aspirin"
 ```
 
-**不做：**
+**DON'T:**
 ```python
-# 过于宽泛的通配符
+# Overly broad wildcard
 search="*aspirin*"
 ```
 
-### 2. 实施速率限制
+### 2. Implement Rate Limiting
 
-`FDAQuery`类自动处理速率限制，但请注意限制：
-- 每分钟240个请求
-- 每天120,000个请求（带API密钥）
+The `FDAQuery` class handles rate limiting automatically, but be aware of limits:
+- 240 requests per minute
+- 120,000 requests per day (with API key)
 
-### 3. 缓存频繁访问的数据
+### 3. Cache Frequently Accessed Data
 
-`FDAQuery`类包含内置缓存（默认启用）：
+The `FDAQuery` class includes built-in caching (enabled by default):
 
 ```python
-# 缓存是自动的
+# Caching is automatic
 fda = FDAQuery(api_key=api_key, use_cache=True, cache_ttl=3600)
 ```
 
-### 4. 使用精确匹配进行计数
+### 4. Use Exact Matching for Counting
 
-计数/聚合时，使用`.exact`后缀：
+When counting/aggregating, use `.exact` suffix:
 
 ```python
-# 计数精确短语
+# Count exact phrases
 fda.count_by_field("drug", "event",
                   search="...",
                   field="patient.reaction.reactionmeddrapt",
-                  exact=True)  # 自动添加.exact
+                  exact=True)  # Adds .exact automatically
 ```
 
-### 5. 验证输入数据
+### 5. Validate Input Data
 
-清理和验证搜索词：
+Clean and validate search terms:
 
 ```python
 def clean_drug_name(name):
-    """清理药物名称以进行查询。"""
+    """Clean drug name for query."""
     return name.strip().replace('"', '\\"')
 
 drug_name = clean_drug_name(user_input)
 ```
 
-## API 参考
+## API Reference
 
-有关详细信息，请参阅：
-- **身份验证和速率限制** → 参见 `references/api_basics.md`
-- **药物数据库** → 参见 `references/drugs.md`
-- **器械数据库** → 参见 `references/devices.md`
-- **食品数据库** → 参见 `references/foods.md`
-- **动物/兽医数据库** → 参见 `references/animal_veterinary.md`
-- **物质数据库** → 参见 `references/other.md`
+For detailed information about:
+- **Authentication and rate limits** → See `references/api_basics.md`
+- **Drug databases** → See `references/drugs.md`
+- **Device databases** → See `references/devices.md`
+- **Food databases** → See `references/foods.md`
+- **Animal/veterinary databases** → See `references/animal_veterinary.md`
+- **Substance databases** → See `references/other.md`
 
-## 脚本
+## Scripts
 
 ### `scripts/fda_query.py`
 
-主要查询模块，提供`FDAQuery`类：
-- 统一接口访问所有FDA端点
-- 自动速率限制和缓存
-- 错误处理和重试逻辑
-- 常见查询模式
+Main query module with `FDAQuery` class providing:
+- Unified interface to all FDA endpoints
+- Automatic rate limiting and caching
+- Error handling and retry logic
+- Common query patterns
 
 ### `scripts/fda_examples.py`
 
-综合示例演示：
-- 药物安全概况分析
-- 器械监测
-- 食品召回追踪
-- 物质查找
-- 比较药物分析
-- 兽医药物分析
+Comprehensive examples demonstrating:
+- Drug safety profile analysis
+- Device surveillance monitoring
+- Food recall tracking
+- Substance lookup
+- Comparative drug analysis
+- Veterinary drug analysis
 
-运行示例：
+Run examples:
 ```bash
 python scripts/fda_examples.py
 ```
 
-## 其他资源
+## Additional Resources
 
-- **openFDA主页**: https://open.fda.gov/
-- **API文档**: https://open.fda.gov/apis/
-- **交互式API资源管理器**: https://open.fda.gov/apis/try-the-api/
-- **GitHub仓库**: https://github.com/FDA/openfda
-- **服务条款**: https://open.fda.gov/terms/
+- **openFDA Homepage**: https://open.fda.gov/
+- **API Documentation**: https://open.fda.gov/apis/
+- **Interactive API Explorer**: https://open.fda.gov/apis/try-the-api/
+- **GitHub Repository**: https://github.com/FDA/openfda
+- **Terms of Service**: https://open.fda.gov/terms/
 
-## 支持和故障排除
+## Support and Troubleshooting
 
-### 常见问题
+### Common Issues
 
-**问题**: 超过速率限制
-- **解决方案**: 使用API密钥，实施延迟或减少请求频率
+**Issue**: Rate limit exceeded
+- **Solution**: Use API key, implement delays, or reduce request frequency
 
-**问题**: 未找到结果
-- **解决方案**: 尝试更宽泛的搜索词，检查拼写，使用通配符
+**Issue**: No results found
+- **Solution**: Try broader search terms, check spelling, use wildcards
 
-**问题**: 无效的查询语法
-- **解决方案**: 查阅`references/api_basics.md`中的查询语法
+**Issue**: Invalid query syntax
+- **Solution**: Review query syntax in `references/api_basics.md`
 
-**问题**: 结果中缺少字段
-- **解决方案**: 并非所有记录都包含所有字段；始终检查字段是否存在
+**Issue**: Missing fields in results
+- **Solution**: Not all records contain all fields; always check field existence
 
-### 获取帮助
+### Getting Help
 
-- **GitHub问题**: https://github.com/FDA/openfda/issues
-- **电子邮件**: open-fda@fda.hhs.gov
+- **GitHub Issues**: https://github.com/FDA/openfda/issues
+- **Email**: open-fda@fda.hhs.gov
+

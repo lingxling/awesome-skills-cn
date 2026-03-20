@@ -1,37 +1,37 @@
 ---
 name: glycoengineering
-description: 分析和工程化蛋白质糖基化。扫描序列中的N-糖基化序列子（N-X-S/T）、预测O-糖基化热点，并访问精选的糖基化工程工具（NetOGlyc、GlycoShield、GlycoWorkbench）。用于糖蛋白工程、治疗性抗体优化和疫苗设计。
+description: Analyze and engineer protein glycosylation. Scan sequences for N-glycosylation sequons (N-X-S/T), predict O-glycosylation hotspots, and access curated glycoengineering tools (NetOGlyc, GlycoShield, GlycoWorkbench). For glycoprotein engineering, therapeutic antibody optimization, and vaccine design.
 license: Unknown
 metadata:
     skill-author: Kuan-lin Huang
 ---
 
-# 糖基化工程
+# Glycoengineering
 
-## 概述
+## Overview
 
-糖基化是蛋白质最常见和最复杂的翻译后修饰（PTM），影响超过50%的所有人类蛋白质。糖链调节蛋白质折叠、稳定性、免疫识别、受体相互作用和治疗性蛋白质的药代动力学。糖基化工程涉及对糖基化模式进行合理修饰，以提高治疗功效、稳定性或免疫逃逸。
+Glycosylation is the most common and complex post-translational modification (PTM) of proteins, affecting over 50% of all human proteins. Glycans regulate protein folding, stability, immune recognition, receptor interactions, and pharmacokinetics of therapeutic proteins. Glycoengineering involves rational modification of glycosylation patterns for improved therapeutic efficacy, stability, or immune evasion.
 
-**两种主要糖基化类型：**
-- **N-糖基化**：附着于序列子N-X-[S/T]中的天冬酰胺（N），其中X ≠ 脯氨酸；发生在内质网/高尔基体中
-- **O-糖基化**：附着于丝氨酸（S）或苏氨酸（T）；无严格共识基序；主要是GalNAc起始
+**Two major glycosylation types:**
+- **N-glycosylation**: Attached to asparagine (N) in the sequon N-X-[S/T] where X ≠ Proline; occurs in the ER/Golgi
+- **O-glycosylation**: Attached to serine (S) or threonine (T); no strict consensus motif; primarily GalNAc initiation
 
-## 何时使用此技能
+## When to Use This Skill
 
-使用此技能当：
+Use this skill when:
 
-- **抗体工程**：优化Fc糖基化以增强ADCC、CDC或降低免疫原性
-- **治疗性蛋白质设计**：识别影响半衰期、稳定性或免疫原性的糖基化位点
-- **疫苗抗原设计**：工程化糖链屏蔽以将免疫反应集中在保守表位上
-- **生物类似药表征**：比较参考药和生物类似药之间的糖链模式
-- **药物靶点分析**：糖基化是否影响受体的靶点参与？
-- **蛋白质稳定性**：N-糖链通常稳定蛋白质；识别稳定化突变的位点
+- **Antibody engineering**: Optimize Fc glycosylation for enhanced ADCC, CDC, or reduced immunogenicity
+- **Therapeutic protein design**: Identify glycosylation sites that affect half-life, stability, or immunogenicity
+- **Vaccine antigen design**: Engineer glycan shields to focus immune responses on conserved epitopes
+- **Biosimilar characterization**: Compare glycan patterns between reference and biosimilar
+- **Drug target analysis**: Does glycosylation affect target engagement for a receptor?
+- **Protein stability**: N-glycans often stabilize proteins; identify sites for stabilizing mutations
 
-## N-糖基化序列子分析
+## N-Glycosylation Sequon Analysis
 
-### 扫描N-糖基化位点
+### Scanning for N-Glycosylation Sites
 
-N-糖基化发生在序列子**N-X-[S/T]**，其中X ≠ 脯氨酸。
+N-glycosylation occurs at the sequon **N-X-[S/T]** where X ≠ Proline.
 
 ```python
 import re
@@ -39,14 +39,14 @@ from typing import List, Tuple
 
 def find_n_glycosylation_sequons(sequence: str) -> List[dict]:
     """
-    扫描蛋白质序列以查找规范N连接糖基化序列子。
-    基序：N-X-[S/T]，其中X ≠ 脯氨酸。
+    Scan a protein sequence for canonical N-linked glycosylation sequons.
+    Motif: N-X-[S/T], where X ≠ Proline.
 
-    参数:
-        sequence: 单字母氨基酸序列
+    Args:
+        sequence: Single-letter amino acid sequence
 
-    返回:
-        包含位置（1-based）、基序和上下文的字典列表
+    Returns:
+        List of dicts with position (1-based), motif, and context
     """
     seq = sequence.upper()
     results = []
@@ -54,7 +54,7 @@ def find_n_glycosylation_sequons(sequence: str) -> List[dict]:
     while i <= len(seq) - 3:
         triplet = seq[i:i+3]
         if triplet[0] == 'N' and triplet[1] != 'P' and triplet[2] in {'S', 'T'}:
-            context = seq[max(0, i-3):i+6]  # ±3残基上下文
+            context = seq[max(0, i-3):i+6]  # ±3 residue context
             results.append({
                 'position': i + 1,   # 1-based
                 'motif': triplet,
@@ -67,79 +67,79 @@ def find_n_glycosylation_sequons(sequence: str) -> List[dict]:
     return results
 
 def summarize_glycosylation_sites(sequence: str, protein_name: str = "") -> str:
-    """生成N-糖基化位点的研究日志摘要。"""
+    """Generate a research log summary of N-glycosylation sites."""
     sequons = find_n_glycosylation_sequons(sequence)
 
-    lines = [f"# N-糖基化序列子分析：{protein_name or '蛋白质'}"]
-    lines.append(f"序列长度：{len(sequence)}")
-    lines.append(f"总N-糖基化序列子：{len(sequons)}")
+    lines = [f"# N-Glycosylation Sequon Analysis: {protein_name or 'Protein'}"]
+    lines.append(f"Sequence length: {len(sequence)}")
+    lines.append(f"Total N-glycosylation sequons: {len(sequons)}")
 
     if sequons:
-        lines.append(f"\nN-X-S位点：{sum(1 for s in sequons if s['sequon_type'] == 'NXS')}")
-        lines.append(f"N-X-T位点：{sum(1 for s in sequons if s['sequon_type'] == 'NXT')}")
-        lines.append(f"\n位点详情：")
+        lines.append(f"\nN-X-S sites: {sum(1 for s in sequons if s['sequon_type'] == 'NXS')}")
+        lines.append(f"N-X-T sites: {sum(1 for s in sequons if s['sequon_type'] == 'NXT')}")
+        lines.append(f"\nSite details:")
         for s in sequons:
-            lines.append(f"  位置 {s['position']}：{s['motif']}（上下文：...{s['context']}...）")
+            lines.append(f"  Position {s['position']}: {s['motif']} (context: ...{s['context']}...)")
     else:
-        lines.append("未检测到规范N-糖基化序列子。")
+        lines.append("No canonical N-glycosylation sequons detected.")
 
     return "\n".join(lines)
 
-# 示例：IgG1 Fc区域
+# Example: IgG1 Fc region
 fc_sequence = "APELLGGPSVFLFPPKPKDTLMISRTPEVTCVVVDVSHEDPEVKFNWYVDGVEVHNAKTKPREEQYNSTYRVVSVLTVLHQDWLNGKEYKCKVSNKALPAPIEKTISKAKGQPREPQVYTLPPSREEMTKNQVSLTCLVKGFYPSDIAVEWESNGQPENNYKTTPPVLDSDGSFFLYSKLTVDKSRWQQGNVFSCSVMHEALHNHYTQKSLSLSPGK"
 print(summarize_glycosylation_sites(fc_sequence, "IgG1 Fc"))
 ```
 
-### 突变N-糖基化位点
+### Mutating N-Glycosylation Sites
 
 ```python
 def eliminate_glycosite(sequence: str, position: int, replacement: str = "Q") -> str:
     """
-    通过将天冬酰胺突变为谷氨酰胺（保守）来消除N-糖基化位点。
+    Eliminate an N-glycosylation site by substituting Asn → Gln (conservative).
 
-    参数:
-        sequence: 蛋白质序列
-        position: 要突变的天冬酰胺的1-based位置
-        replacement: 要替换的氨基酸（默认Q = 谷氨酰胺；大小相似，不被糖基化）
+    Args:
+        sequence: Protein sequence
+        position: 1-based position of the Asn to mutate
+        replacement: Amino acid to substitute (default Q = Gln; similar size, not glycosylated)
 
-    返回:
-        突变后的序列
+    Returns:
+        Mutated sequence
     """
     seq = list(sequence.upper())
     idx = position - 1
-    assert seq[idx] == 'N', f"位置{position}是'{seq[idx]}'，不是'N'"
+    assert seq[idx] == 'N', f"Position {position} is '{seq[idx]}', not 'N'"
     seq[idx] = replacement.upper()
     return ''.join(seq)
 
 def add_glycosite(sequence: str, position: int, flanking_context: str = "S") -> str:
     """
-    通过将残基突变为天冬酰胺来引入N-糖基化位点，
-    并确保X ≠ 脯氨酸且+2 = S/T。
+    Introduce an N-glycosylation site by mutating a residue to Asn,
+    and ensuring X ≠ Pro and +2 = S/T.
 
-    参数:
-        position: 要引入天冬酰胺的1-based位置
-        flanking_context: 位置+2处的'S'或'T'（如果需要修改）
+    Args:
+        position: 1-based position to introduce Asn
+        flanking_context: 'S' or 'T' at position+2 (if modification needed)
     """
     seq = list(sequence.upper())
     idx = position - 1
 
-    # 突变为天冬酰胺
+    # Mutate to Asn
     seq[idx] = 'N'
 
-    # 确保X+1 != 脯氨酸（如果需要则突变为丙氨酸）
+    # Ensure X+1 != Pro (mutate to Ala if needed)
     if idx + 1 < len(seq) and seq[idx + 1] == 'P':
         seq[idx + 1] = 'A'
 
-    # 确保X+2 = S或T
+    # Ensure X+2 = S or T
     if idx + 2 < len(seq) and seq[idx + 2] not in ('S', 'T'):
         seq[idx + 2] = flanking_context
 
     return ''.join(seq)
 ```
 
-## O-糖基化分析
+## O-Glycosylation Analysis
 
-### 启发式O-糖基化热点预测
+### Heuristic O-Glycosylation Hotspot Prediction
 
 ```python
 def predict_o_glycosylation_hotspots(
@@ -149,17 +149,17 @@ def predict_o_glycosylation_hotspots(
     disallow_proline_next: bool = True
 ) -> List[dict]:
     """
-    基于局部S/T密度的启发式O-糖基化热点评分。
-    不能替代NetOGlyc；用作快速基线。
+    Heuristic O-glycosylation hotspot scoring based on local S/T density.
+    Not a substitute for NetOGlyc; use as fast baseline.
 
-    规则:
-    - O-GalNAc糖基化聚集在富含S/T的片段上
-    - 标记S/T残基在富含S/T的窗口中
-    - 避免S/T紧随脯氨酸（TP/SP基序抑制GalNAc-T）
+    Rules:
+    - O-GalNAc glycosylation clusters on Ser/Thr-rich segments
+    - Flag Ser/Thr residues in windows enriched for S/T
+    - Avoid S/T immediately followed by Pro (TP/SP motifs inhibit GalNAc-T)
 
-    参数:
-        window: 局部S/T密度的奇数窗口大小
-        min_st_fraction: 标记位点的窗口中S/T的最小分数
+    Args:
+        window: Odd window size for local S/T density
+        min_st_fraction: Minimum fraction of S/T in window to flag site
     """
     if window % 2 == 0:
         window = 7
@@ -191,48 +191,48 @@ def predict_o_glycosylation_hotspots(
     return candidates
 ```
 
-## 外部糖基化工程工具
+## External Glycoengineering Tools
 
-### 1. NetOGlyc 4.0（O-糖基化预测）
+### 1. NetOGlyc 4.0 (O-glycosylation prediction)
 
-用于高精度O-GalNAc位点预测的Web服务：
-- **URL**：https://services.healthtech.dtu.dk/services/NetOGlyc-4.0/
-- **输入**：FASTA蛋白质序列
-- **输出**：每个残基的O-糖基化概率评分
-- **方法**：在实验验证的O-GalNAc位点上训练的神经网络
+Web service for high-accuracy O-GalNAc site prediction:
+- **URL**: https://services.healthtech.dtu.dk/services/NetOGlyc-4.0/
+- **Input**: FASTA protein sequence
+- **Output**: Per-residue O-glycosylation probability scores
+- **Method**: Neural network trained on experimentally verified O-GalNAc sites
 
 ```python
 import requests
 
 def submit_netoglycv4(fasta_sequence: str) -> str:
     """
-    将序列提交到NetOGlyc 4.0 Web服务。
-    返回结果检索的作业URL。
+    Submit sequence to NetOGlyc 4.0 web service.
+    Returns the job URL for result retrieval.
 
-    注意：这使用DTU Health Tech Web服务。结果需要~1-5分钟。
+    Note: This uses the DTU Health Tech web service. Results take ~1-5 min.
     """
     url = "https://services.healthtech.dtu.dk/cgi-bin/webface2.cgi"
-    # NetOGlyc提交（参数可能随Web服务版本变化）
-    # 建议大多数用例直接使用Web界面
-    print("在以下位置提交序列：https://services.healthtech.dtu.dk/services/NetOGlyc-4.0/")
+    # NetOGlyc submission (parameters may vary with web service version)
+    # Recommend using the web interface directly for most use cases
+    print("Submit sequence at: https://services.healthtech.dtu.dk/services/NetOGlyc-4.0/")
     return url
 
-# 还有：NetNGlyc用于N-糖基化预测
+# Also: NetNGlyc for N-glycosylation prediction
 # URL: https://services.healthtech.dtu.dk/services/NetNGlyc-1.0/
 ```
 
-### 2. GlycoShield-MD（糖链屏蔽分析）
+### 2. GlycoShield-MD (Glycan Shielding Analysis)
 
-GlycoShield-MD在MD模拟期间分析糖链如何屏蔽蛋白质表面：
-- **URL**：https://gitlab.mpcdf.mpg.de/dioscuri-biophysics/glycoshield-md/
-- **用途**：在MD轨迹上映射糖链屏蔽
-- **输出**：每个残基的屏蔽分数、可视化
+GlycoShield-MD analyzes how glycans shield protein surfaces during MD simulations:
+- **URL**: https://gitlab.mpcdf.mpg.de/dioscuri-biophysics/glycoshield-md/
+- **Use**: Map glycan shielding on protein surface over MD trajectory
+- **Output**: Per-residue shielding fraction, visualization
 
 ```bash
-# 安装
+# Installation
 pip install glycoshield
 
-# 基本用法：分析糖基化蛋白质MD轨迹的糖链屏蔽
+# Basic usage: analyze glycan shielding from glycosylated protein MD trajectory
 glycoshield \
     --topology glycoprotein.pdb \
     --trajectory glycoprotein.xtc \
@@ -240,99 +240,99 @@ glycoshield \
     --output shielding_analysis/
 ```
 
-### 3. GlycoWorkbench（糖链结构绘制/分析）
+### 3. GlycoWorkbench (Glycan Structure Drawing/Analysis)
 
-- **URL**：https://www.eurocarbdb.org/project/glycoworkbench
-- **用途**：绘制糖链结构、计算质量、注释MS谱
-- **格式**：GlycoCT、IUPAC浓缩糖链表示法
+- **URL**: https://www.eurocarbdb.org/project/glycoworkbench
+- **Use**: Draw glycan structures, calculate masses, annotate MS spectra
+- **Format**: GlycoCT, IUPAC condensed glycan notation
 
-### 4. GlyConnect（糖链-蛋白质数据库）
+### 4. GlyConnect (Glycan-Protein Database)
 
-- **URL**：https://glyconnect.expasy.org/
-- **用途**：查找实验验证的糖蛋白和糖基化位点
-- **查询**：按蛋白质（UniProt ID）、糖链结构或组织
+- **URL**: https://glyconnect.expasy.org/
+- **Use**: Find experimentally verified glycoproteins and glycosylation sites
+- **Query**: By protein (UniProt ID), glycan structure, or tissue
 
 ```python
 import requests
 
 def query_glyconnect(uniprot_id: str) -> dict:
-    """查询蛋白质的糖基化数据。"""
+    """Query GlyConnect for glycosylation data for a protein."""
     url = f"https://glyconnect.expasy.org/api/proteins/uniprot/{uniprot_id}"
     response = requests.get(url, headers={"Accept": "application/json"})
     if response.status_code == 200:
         return response.json()
     return {}
 
-# 示例：查询EGFR糖基化
+# Example: query EGFR glycosylation
 egfr_glyco = query_glyconnect("P00533")
 ```
 
-### 5. UniCarbKB（糖链结构数据库）
+### 5. UniCarbKB (Glycan Structure Database)
 
-- **URL**：https://unicarbkb.org/
-- **用途**：浏览糖链结构、按质量或组成搜索
-- **格式**：GlycoCT或IUPAC表示法
+- **URL**: https://unicarbkb.org/
+- **Use**: Browse glycan structures, search by mass or composition
+- **Format**: GlycoCT or IUPAC notation
 
-## 关键糖基化工程策略
+## Key Glycoengineering Strategies
 
-### 用于治疗性抗体
+### For Therapeutic Antibodies
 
-| 目标 | 策略 | 注意 |
+| Goal | Strategy | Notes |
 |------|----------|-------|
-| 增强ADCC | 去岩藻糖化于Fc Asn297 | 去岩藻糖基化IgG1的FcγRIIIa结合力提高约50倍 |
-| 降低免疫原性 | 去除非人类糖链 | 消除α-Gal、NGNA表位 |
-| 改善PK半衰期 | 唾酸化 | 唾酸化糖链延长半衰期 |
-| 减少炎症 | 超唾液酸化 | IVIG抗炎机制 |
-| 创建糖链屏蔽 | 添加N-糖基化位点到表面 | 屏蔽脆弱表位（疫苗设计） |
+| Enhance ADCC | Defucosylation at Fc Asn297 | Afucosylated IgG1 has ~50× better FcγRIIIa binding |
+| Reduce immunogenicity | Remove non-human glycans | Eliminate α-Gal, NGNA epitopes |
+| Improve PK half-life | Sialylation | Sialylated glycans extend half-life |
+| Reduce inflammation | Hypersialylation | IVIG anti-inflammatory mechanism |
+| Create glycan shield | Add N-glycosites to surface | Masks vulnerable epitopes (vaccine design) |
 
-### 常用突变
+### Common Mutations Used
 
-| 突变 | 效应 |
+| Mutation | Effect |
 |----------|--------|
-| N297A/Q（IgG1） | 移除Fc糖基化（无糖） |
-| N297D（IgG1） | 移除Fc糖基化 |
-| S298A/E333A/K334A | 增加FcγRIIIa结合 |
-| F243L（IgG1） | 增加去岩藻糖化 |
-| T299A | 移除Fc糖基化 |
+| N297A/Q (IgG1) | Removes Fc glycosylation (aglycosyl) |
+| N297D (IgG1) | Removes Fc glycosylation |
+| S298A/E333A/K334A | Increases FcγRIIIa binding |
+| F243L (IgG1) | Increases defucosylation |
+| T299A | Removes Fc glycosylation |
 
-## 糖链表示法
+## Glycan Notation
 
-### IUPAC 浓缩表示法（单糖缩写）
+### IUPAC Condensed Notation (Monosaccharide abbreviations)
 
-| 符号 | 全名 | 类型 |
+| Symbol | Full Name | Type |
 |--------|-----------|------|
-| Glc | 葡萄糖 | 己糖 |
-| GlcNAc | N-乙酰葡萄糖 | 己糖胺 |
-| Man | 甘露糖 | 己糖 |
-| Gal | 半乳糖 | 己糖 |
-| Fuc | 岩藻糖 | 脱氧己糖 |
-| Neu5Ac | N-乙酰神经氨酸（唾液酸） | 唾液酸 |
-| GalNAc | N-乙酰半乳糖胺 | 己糖胺 |
+| Glc | Glucose | Hexose |
+| GlcNAc | N-Acetylglucosamine | HexNAc |
+| Man | Mannose | Hexose |
+| Gal | Galactose | Hexose |
+| Fuc | Fucose | Deoxyhexose |
+| Neu5Ac | N-Acetylneuraminic acid (Sialic acid) | Sialic acid |
+| GalNAc | N-Acetylgalactosamine | HexNAc |
 
-### 复杂N-糖链结构
+### Complex N-Glycan Structure
 
 ```
-典型复杂双天线N-糖链：
+Typical complex biantennary N-glycan:
 Neu5Ac-Gal-GlcNAc-Man\
                        Man-GlcNAc-GlcNAc-[Asn]
 Neu5Ac-Gal-GlcNAc-Man/
-（±核心岩藻糖在最内层GlcNAc上）
+(±Core Fuc at innermost GlcNAc)
 ```
 
-## 最佳实践
+## Best Practices
 
-- **从NetNGlyc/NetOGlyc开始**，在实验验证之前进行计算预测
-- **用质谱验证**：糖蛋白质组学（Byonic、Mascot）用于位点特异性糖链谱分析
-- **考虑位点上下文**：并非所有预测的序列子实际上都被糖基化（可及性、细胞类型、蛋白质构象）
-- **对于抗体**：Fc N297糖链至关重要——始终首先表征此位点
-- **使用GlyConnect**检查感兴趣的蛋白质是否具有实验验证的糖基化数据
+- **Start with NetNGlyc/NetOGlyc** for computational prediction before experimental validation
+- **Verify with mass spectrometry**: Glycoproteomics (Byonic, Mascot) for site-specific glycan profiling
+- **Consider site context**: Not all predicted sequons are actually glycosylated (accessibility, cell type, protein conformation)
+- **For antibodies**: Fc N297 glycan is critical — always characterize this site first
+- **Use GlyConnect** to check if your protein of interest has experimentally verified glycosylation data
 
-## 其他资源
+## Additional Resources
 
-- **GlyTouCan**（糖链结构存储库）：https://glytoucan.org/
-- **GlyConnect**：https://glyconnect.expasy.org/
-- **CFG功能糖组学**：http://www.functionalglycomics.org/
-- **DTU Health Tech服务器**（NetNGlyc、NetOGlyc）：https://services.healthtech.dtu.dk/
-- **GlycoWorkbench**：https://glycoworkbench.software.informer.com/
-- **综述**：Apweiler R et al. (1999) Biochim Biophys Acta. PMID: 10564035
-- **治疗性糖基化工程综述**：Jefferis R (2009) Nature Reviews Drug Discovery. PMID: 19448661
+- **GlyTouCan** (glycan structure repository): https://glytoucan.org/
+- **GlyConnect**: https://glyconnect.expasy.org/
+- **CFG Functional Glycomics**: http://www.functionalglycomics.org/
+- **DTU Health Tech servers** (NetNGlyc, NetOGlyc): https://services.healthtech.dtu.dk/
+- **GlycoWorkbench**: https://glycoworkbench.software.informer.com/
+- **Review**: Apweiler R et al. (1999) Biochim Biophys Acta. PMID: 10564035
+- **Therapeutic glycoengineering review**: Jefferis R (2009) Nature Reviews Drug Discovery. PMID: 19448661

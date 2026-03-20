@@ -1,96 +1,96 @@
 ---
 name: connect
-description: 将 Claude 连接到任何应用程序。发送电子邮件、创建问题、发布消息、更新数据库 - 在 Gmail、Slack、GitHub、Notion 和 1000+ 服务上采取实际行动。
+description: Connect Claude to any app. Send emails, create issues, post messages, update databases - take real actions across Gmail, Slack, GitHub, Notion, and 1000+ services.
 ---
 
 # Connect
 
-将 Claude 连接到任何应用程序。停止生成关于你可以做什么的文本 - 实际去做。
+Connect Claude to any app. Stop generating text about what you could do - actually do it.
 
-## 何时使用此技能
+## When to Use This Skill
 
-当你需要 Claude 执行以下操作时使用此技能：
+Use this skill when you need Claude to:
 
-- **发送邮件**而不是起草邮件
-- **创建问题**而不是描述问题
-- **发布消息**而不是建议消息
-- **更新数据库**而不是解释如何更新
+- **Send that email** instead of drafting it
+- **Create that issue** instead of describing it
+- **Post that message** instead of suggesting it
+- **Update that database** instead of explaining how
 
-## 变化
+## What Changes
 
-| 没有 Connect | 有 Connect |
+| Without Connect | With Connect |
 |-----------------|--------------|
-| "这里是一封草稿邮件..." | 发送邮件 |
-| "你应该创建一个问题..." | 创建问题 |
-| "将此发布到 Slack..." | 发布它 |
-| "将此添加到 Notion..." | 添加它 |
+| "Here's a draft email..." | Sends the email |
+| "You should create an issue..." | Creates the issue |
+| "Post this to Slack..." | Posts it |
+| "Add this to Notion..." | Adds it |
 
-## 支持的应用
+## Supported Apps
 
-**1000+ 集成**包括：
+**1000+ integrations** including:
 
-- **邮件**：Gmail、Outlook、SendGrid
-- **聊天**：Slack、Discord、Teams、Telegram
-- **开发**：GitHub、GitLab、Jira、Linear
-- **文档**：Notion、Google Docs、Confluence
-- **数据**：Sheets、Airtable、PostgreSQL
-- **CRM**：HubSpot、Salesforce、Pipedrive
-- **存储**：Drive、Dropbox、S3
-- **社交**：Twitter、LinkedIn、Reddit
+- **Email:** Gmail, Outlook, SendGrid
+- **Chat:** Slack, Discord, Teams, Telegram
+- **Dev:** GitHub, GitLab, Jira, Linear
+- **Docs:** Notion, Google Docs, Confluence
+- **Data:** Sheets, Airtable, PostgreSQL
+- **CRM:** HubSpot, Salesforce, Pipedrive
+- **Storage:** Drive, Dropbox, S3
+- **Social:** Twitter, LinkedIn, Reddit
 
-## 设置
+## Setup
 
-### 1. 获取 API 密钥
+### 1. Get API Key
 
-在 [platform.composio.dev](https://platform.composio.dev/?utm_source=Github&utm_content=AwesomeSkills) 获取你的免费密钥
+Get your free key at [platform.composio.dev](https://platform.composio.dev/?utm_source=Github&utm_content=AwesomeSkills)
 
-### 2. 设置环境变量
+### 2. Set Environment Variable
 
 ```bash
 export COMPOSIO_API_KEY="your-key"
 ```
 
-### 3. 安装
+### 3. Install
 
 ```bash
 pip install composio          # Python
 npm install @composio/core    # TypeScript
 ```
 
-完成。Claude 现在可以连接到任何应用程序。
+Done. Claude can now connect to any app.
 
-## 示例
+## Examples
 
-### 发送邮件
+### Send Email
 ```
 Email sarah@acme.com - Subject: "Shipped!" Body: "v2.0 is live, let me know if issues"
 ```
 
-### 创建 GitHub 问题
+### Create GitHub Issue
 ```
 Create issue in my-org/repo: "Mobile timeout bug" with label:bug
 ```
 
-### 发布到 Slack
+### Post to Slack
 ```
 Post to #engineering: "Deploy complete - v2.4.0 live"
 ```
 
-### 链式操作
+### Chain Actions
 ```
 Find GitHub issues labeled "bug" from this week, summarize, post to #bugs on Slack
 ```
 
-## 工作原理
+## How It Works
 
-使用 Composio Tool Router：
+Uses Composio Tool Router:
 
-1. **你请求** Claude 做某事
-2. **Tool Router 找到**正确的工具（1000+ 选项）
-3. **OAuth 自动处理**
-4. **操作执行**并返回结果
+1. **You ask** Claude to do something
+2. **Tool Router finds** the right tool (1000+ options)
+3. **OAuth handled** automatically
+4. **Action executes** and returns result
 
-### 代码
+### Code
 
 ```python
 from composio import Composio
@@ -116,37 +116,37 @@ async with ClaudeSDKClient(options) as client:
     await client.query("Send Slack message to #general: Hello!")
 ```
 
-## 认证流程
+## Auth Flow
 
-首次使用应用程序：
+First time using an app:
 ```
-要发送电子邮件，我需要 Gmail 访问权限。
-在此授权：https://...
-完成后说"已连接"。
+To send emails, I need Gmail access.
+Authorize here: https://...
+Say "connected" when done.
 ```
 
-之后连接会持续存在。
+Connection persists after that.
 
-## 框架支持
+## Framework Support
 
-| 框架 | 安装 |
+| Framework | Install |
 |-----------|---------|
 | Claude Agent SDK | `pip install composio claude-agent-sdk` |
 | OpenAI Agents | `pip install composio openai-agents` |
 | Vercel AI | `npm install @composio/core @composio/vercel` |
 | LangChain | `pip install composio-langchain` |
-| 任何 MCP 客户端 | 使用 `session.mcp.url` |
+| Any MCP Client | Use `session.mcp.url` |
 
-## 故障排除
+## Troubleshooting
 
-- **需要认证** → 点击链接，授权，说"已连接"
-- **操作失败** → 检查目标应用中的权限
-- **找不到工具** → 具体说明："Slack #general" 而不是 "发送消息"
+- **Auth required** → Click link, authorize, say "connected"
+- **Action failed** → Check permissions in target app
+- **Tool not found** → Be specific: "Slack #general" not "send message"
 
 ---
 
 <p align="center">
-  <b>加入 20,000+ 开发人员构建能够交付的代理</b>
+  <b>Join 20,000+ developers building agents that ship</b>
 </p>
 
 <p align="center">

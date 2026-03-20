@@ -15,7 +15,6 @@ date_added: "2026-03-07"
 This skill is essential for improving UX and engagement through high-quality motion. It works best for animating brand assets, interface elements, and micro-interactions.
 
 ## When to Use
-
 Trigger this skill when:
 
 - Adding life to a static logo or brand mark to make it memorable.

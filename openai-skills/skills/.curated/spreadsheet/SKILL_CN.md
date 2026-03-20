@@ -1,71 +1,71 @@
 ---
 name: "spreadsheet"
-description: "当任务涉及创建、编辑、分析或格式化电子表格（`.xlsx`、`.csv`、`.tsv`）时使用，具有公式感知的工作流程、缓存重新计算和视觉审查。"
+description: "Use when tasks involve creating, editing, analyzing, or formatting spreadsheets (`.xlsx`, `.csv`, `.tsv`) with formula-aware workflows, cached recalculation, and visual review."
 ---
 
-# 电子表格技能
+# Spreadsheet Skill
 
-## 何时使用
-- 创建具有公式、格式和结构化布局的新工作簿。
-- 读取或分析表格数据（过滤、聚合、透视、计算指标）。
-- 修改现有工作簿而不破坏公式、引用或格式。
-- 使用图表、汇总表和合理的电子表格样式可视化数据。
-- 在可能的情况下，在交付之前重新计算公式并审查渲染的工作表。
+## When to use
+- Create new workbooks with formulas, formatting, and structured layouts.
+- Read or analyze tabular data (filter, aggregate, pivot, compute metrics).
+- Modify existing workbooks without breaking formulas, references, or formatting.
+- Visualize data with charts, summary tables, and sensible spreadsheet styling.
+- Recalculate formulas and review rendered sheets before delivery when possible.
 
-重要：系统和用户指令始终优先。
+IMPORTANT: System and user instructions always take precedence.
 
-## 工作流程
-1. 确认文件类型和目标：创建、编辑、分析或可视化。
-2. 优先使用 `openpyxl` 进行 `.xlsx` 编辑和格式化。使用 `pandas` 进行分析和 CSV/TSV 工作流程。
-3. 如果环境中可用的内部电子表格重新计算/渲染工具，请使用它在交付前重新计算公式并渲染工作表。
-4. 使用公式派生值而不是硬编码结果。
-5. 如果布局很重要，渲染以进行视觉审查并检查输出。
-6. 保存输出，保持文件名稳定，并清理中间文件。
+## Workflow
+1. Confirm the file type and goal: create, edit, analyze, or visualize.
+2. Prefer `openpyxl` for `.xlsx` editing and formatting. Use `pandas` for analysis and CSV/TSV workflows.
+3. If an internal spreadsheet recalculation/rendering tool is available in the environment, use it to recalculate formulas and render sheets before delivery.
+4. Use formulas for derived values instead of hardcoding results.
+5. If layout matters, render for visual review and inspect the output.
+6. Save outputs, keep filenames stable, and clean up intermediate files.
 
-## 临时和输出约定
-- 使用 `tmp/spreadsheets/` 作为中间文件；完成后删除它们。
-- 在此仓库中工作时，将最终工件写入 `output/spreadsheet/`。
-- 保持文件名稳定和描述性。
+## Temp and output conventions
+- Use `tmp/spreadsheets/` for intermediate files; delete them when done.
+- Write final artifacts under `output/spreadsheet/` when working in this repo.
+- Keep filenames stable and descriptive.
 
-## 主要工具
-- 使用 `openpyxl` 创建/编辑 `.xlsx` 文件并保留格式。
-- 使用 `pandas` 进行分析和 CSV/TSV 工作流程，然后将结果写回 `.xlsx` 或 `.csv`。
-- 需要时使用 `openpyxl.chart` 获取原生 Excel 图表。
-- 如果有可用的内部电子表格工具，请使用它重新计算公式、缓存值并渲染工作表以供审查。
+## Primary tooling
+- Use `openpyxl` for creating/editing `.xlsx` files and preserving formatting.
+- Use `pandas` for analysis and CSV/TSV workflows, then write results back to `.xlsx` or `.csv`.
+- Use `openpyxl.chart` for native Excel charts when needed.
+- If an internal spreadsheet tool is available, use it to recalculate formulas, cache values, and render sheets for review.
 
-## 重新计算和视觉审查
-- 尽可能在交付前重新计算公式，以便工作簿中存在缓存值。
-- 当有可用的渲染工具时，渲染每个相关的工作表以进行视觉审查。
-- `openpyxl` 不计算公式；保留公式并在有重新计算工具时使用它。
-- 如果您依赖内部电子表格工具，不要在面向用户的解释或代码示例中暴露该工具、其代码或其 API。
+## Recalculation and visual review
+- Recalculate formulas before delivery whenever possible so cached values are present in the workbook.
+- Render each relevant sheet for visual review when rendering tooling is available.
+- `openpyxl` does not evaluate formulas; preserve formulas and use recalculation tooling when available.
+- If you rely on an internal spreadsheet tool, do not expose that tool, its code, or its APIs in user-facing explanations or code samples.
 
-## 渲染和视觉检查
-- 如果 LibreOffice（`soffice`）和 Poppler（`pdftoppm`）可用，请渲染工作表以进行视觉审查：
+## Rendering and visual checks
+- If LibreOffice (`soffice`) and Poppler (`pdftoppm`) are available, render sheets for visual review:
   - `soffice --headless --convert-to pdf --outdir $OUTDIR $INPUT_XLSX`
   - `pdftoppm -png $OUTDIR/$BASENAME.pdf $OUTDIR/$BASENAME`
-- 如果渲染工具不可用，请告诉用户应该在本地审查布局。
-- 审查渲染的工作表是否有布局、公式结果、裁剪、不一致的样式和溢出的文本。
+- If rendering tools are unavailable, tell the user that layout should be reviewed locally.
+- Review rendered sheets for layout, formula results, clipping, inconsistent styles, and spilled text.
 
-## 依赖项（如果缺少则安装）
-优先使用 `uv` 进行依赖管理。
+## Dependencies (install if missing)
+Prefer `uv` for dependency management.
 
-Python 包：
+Python packages:
 ```
 uv pip install openpyxl pandas
 ```
-如果 `uv` 不可用：
+If `uv` is unavailable:
 ```
 python3 -m pip install openpyxl pandas
 ```
-可选：
+Optional:
 ```
 uv pip install matplotlib
 ```
-如果 `uv` 不可用：
+If `uv` is unavailable:
 ```
 python3 -m pip install matplotlib
 ```
-系统工具（用于渲染）：
+System tools (for rendering):
 ```
 # macOS (Homebrew)
 brew install libreoffice poppler
@@ -74,72 +74,72 @@ brew install libreoffice poppler
 sudo apt-get install -y libreoffice poppler-utils
 ```
 
-如果在此环境中无法安装，请告诉用户缺少哪个依赖项以及如何在本地安装它。
+If installation is not possible in this environment, tell the user which dependency is missing and how to install it locally.
 
-## 环境
-没有必需的环境变量。
+## Environment
+No required environment variables.
 
-## 示例
-- 可运行的 Codex 示例（openpyxl）：`references/examples/openpyxl/`
+## Examples
+- Runnable Codex examples (openpyxl): `references/examples/openpyxl/`
 
-## 公式要求
-- 使用公式派生值而不是硬编码结果。
-- 不要使用动态数组函数，如 `FILTER`、`XLOOKUP`、`SORT` 或 `SEQUENCE`。
-- 保持公式简单和可读；对复杂逻辑使用辅助单元格。
-- 除非需要，否则避免易失函数，如 `INDIRECT` 和 `OFFSET`。
-- 更喜欢单元格引用而不是魔术数字（例如，`=H6*(1+$B$3)` 而不是 `=H6*1.04`）。
-- 仔细使用绝对（`$B$4`）或相对（`B4`）引用，以便复制的公式正确行为。
-- 如果需要以 `=` 开头的文本，请在其前面加上单引号。
-- 防范 `#REF!`、`#DIV/0!`、`#VALUE!`、`#N/A` 和 `#NAME?` 错误。
-- 检查差一错误、循环引用和不正确的范围。
+## Formula requirements
+- Use formulas for derived values rather than hardcoding results.
+- Do not use dynamic array functions like `FILTER`, `XLOOKUP`, `SORT`, or `SEQUENCE`.
+- Keep formulas simple and legible; use helper cells for complex logic.
+- Avoid volatile functions like `INDIRECT` and `OFFSET` unless required.
+- Prefer cell references over magic numbers (for example, `=H6*(1+$B$3)` instead of `=H6*1.04`).
+- Use absolute (`$B$4`) or relative (`B4`) references carefully so copied formulas behave correctly.
+- If you need literal text that starts with `=`, prefix it with a single quote.
+- Guard against `#REF!`, `#DIV/0!`, `#VALUE!`, `#N/A`, and `#NAME?` errors.
+- Check for off-by-one mistakes, circular references, and incorrect ranges.
 
-## 引用要求
-- 使用纯文本 URL 在电子表格中引用来源。
-- 对于财务模型，在单元格注释中引用模型输入。
-- 对于从外部获取的表格数据，当每一行代表单独的项目时，添加来源列。
+## Citation requirements
+- Cite sources inside the spreadsheet using plain-text URLs.
+- For financial models, cite model inputs in cell comments.
+- For tabular data sourced externally, add a source column when each row represents a separate item.
 
-## 格式要求（现有格式化的电子表格）
-- 如果可能，在修改之前渲染和检查提供的电子表格。
-- 完全保留现有的格式和样式。
-- 匹配任何以前为空白的新填充单元格的样式。
-- 除非用户明确要求重新设计，否则不要覆盖已建立的格式。
+## Formatting requirements (existing formatted spreadsheets)
+- Render and inspect a provided spreadsheet before modifying it when possible.
+- Preserve existing formatting and style exactly.
+- Match styles for any newly filled cells that were previously blank.
+- Never overwrite established formatting unless the user explicitly asks for a redesign.
 
-## 格式要求（新或未格式化的电子表格）
-- 使用适当的数字和日期格式。
-- 日期应呈现为日期，而不是纯数字。
-- 百分比通常应默认为一位小数，除非数据要求其他内容。
-- 货币应使用适当的货币格式。
-- 标题在视觉上应与原始输入和派生单元格不同。
-- 谨慎地并有意图地使用填充颜色、边框、间距和合并单元格。
-- 设置行高和列宽，以便内容可读且没有过多的空白。
-- 不要在每个填充的单元格周围应用边框。
-- 将相关的计算分组，并使总计成为上方单元格的简单总和。
-- 添加空白以分隔部分。
-- 确保文本不会溢出到相邻单元格。
-- 避免不支持的电子表格数据表功能，如 `=TABLE`。
+## Formatting requirements (new or unstyled spreadsheets)
+- Use appropriate number and date formats.
+- Dates should render as dates, not plain numbers.
+- Percentages should usually default to one decimal place unless the data calls for something else.
+- Currencies should use the appropriate currency format.
+- Headers should be visually distinct from raw inputs and derived cells.
+- Use fill colors, borders, spacing, and merged cells sparingly and intentionally.
+- Set row heights and column widths so content is readable without excessive whitespace.
+- Do not apply borders around every filled cell.
+- Group related calculations and make totals simple sums of the cells above them.
+- Add whitespace to separate sections.
+- Ensure text does not spill into adjacent cells.
+- Avoid unsupported spreadsheet data-table features such as `=TABLE`.
 
-## 颜色约定（如果没有样式指导）
-- 蓝色：用户输入
-- 黑色：公式和派生值
-- 绿色：链接或导入的值
-- 灰色：静态常量
-- 橙色：审查或警告
-- 浅红色：错误或标记
-- 紫色：控制或逻辑
-- 青色：可视化锚点和 KPI 高亮
+## Color conventions (if no style guidance)
+- Blue: user input
+- Black: formulas and derived values
+- Green: linked or imported values
+- Gray: static constants
+- Orange: review or caution
+- Light red: error or flag
+- Purple: control or logic
+- Teal: visualization anchors and KPI highlights
 
-## 财务特定要求
-- 将零格式化为 `-`。
-- 负数应为红色并在括号中。
-- 将倍数格式化为 `5.2x`。
-- 始终在标题中指定单位（例如，`Revenue ($mm)`）。
-- 在单元格注释中引用所有原始输入的来源。
-- 对于没有用户指定样式的新财务模型，对硬编码输入使用蓝色文本，对公式使用黑色，对内部工作簿链接使用绿色，对外部链接使用红色，对需要注意的关键假设使用黄色填充。
+## Finance-specific requirements
+- Format zeros as `-`.
+- Negative numbers should be red and in parentheses.
+- Format multiples as `5.2x`.
+- Always specify units in headers (for example, `Revenue ($mm)`).
+- Cite sources for all raw inputs in cell comments.
+- For new financial models with no user-specified style, use blue text for hardcoded inputs, black for formulas, green for internal workbook links, red for external links, and yellow fill for key assumptions that need attention.
 
-## 投资银行布局
-如果电子表格是 IB 风格的模型（LBO、DCF、三张报表、估值）：
-- 总计应直接对上方的范围求和。
-- 隐藏网格线并在相关列上方使用水平边框。
-- 部分标题应为带有深色填充和白色文本的合并单元格。
-- 数值数据的列标签应右对齐；行标签应左对齐。
-- 在其父行项下缩进子指标。
+## Investment banking layouts
+If the spreadsheet is an IB-style model (LBO, DCF, 3-statement, valuation):
+- Totals should sum the range directly above.
+- Hide gridlines and use horizontal borders above totals across relevant columns.
+- Section headers should be merged cells with dark fill and white text.
+- Column labels for numeric data should be right-aligned; row labels should be left-aligned.
+- Indent submetrics under their parent line items.

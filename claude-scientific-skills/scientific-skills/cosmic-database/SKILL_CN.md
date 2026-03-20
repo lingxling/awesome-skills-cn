@@ -1,552 +1,334 @@
 ---
 name: cosmic-database
-description: 查询 COSMIC 癌症体细胞突变目录。按基因/组织/突变搜索,获取突变频率、功能影响和临床相关性,用于癌症基因组学和转化研究。
+description: Access COSMIC cancer mutation database. Query somatic mutations, Cancer Gene Census, mutational signatures, gene fusions, for cancer research and precision oncology. Requires authentication.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# COSMIC 数据库
+# COSMIC Database
 
-## 概述
+## Overview
 
-COSMIC(Catalogue Of Somatic Mutations In Cancer)是癌症体细胞突变的最全面数据库,由威康桑格研究所维护。它包含来自数千项癌症基因组学研究的策展数据,提供有关突变频率、功能影响和临床相关性的信息。
+COSMIC (Catalogue of Somatic Mutations in Cancer) is the world's largest and most comprehensive database for exploring somatic mutations in human cancer. Access COSMIC's extensive collection of cancer genomics data, including millions of mutations across thousands of cancer types, curated gene lists, mutational signatures, and clinical annotations programmatically.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况下使用此技能:
+This skill should be used when:
+- Downloading cancer mutation data from COSMIC
+- Accessing the Cancer Gene Census for curated cancer gene lists
+- Retrieving mutational signature profiles
+- Querying structural variants, copy number alterations, or gene fusions
+- Analyzing drug resistance mutations
+- Working with cancer cell line genomics data
+- Integrating cancer mutation data into bioinformatics pipelines
+- Researching specific genes or mutations in cancer contexts
 
-- **突变频率分析**: 确定癌症类型中特定基因的突变频率
-- **功能影响**: 了解突变的功能后果(错义、无义、剪接位点等)
-- **临床相关性**: 探索突变与临床结果或治疗反应之间的关联
-- **癌症基因组学**: 分析癌症中的体细胞突变模式
-- **药物靶点识别**: 识别癌症中的可药物突变
-- **转化研究**: 将基因组发现转化为临床应用
-- **生物标志物发现**: 发现诊断或预后生物标志物
-- **比较基因组学**: 比较不同癌症类型的突变谱
+## Prerequisites
 
-## 安装和设置
+### Account Registration
+COSMIC requires authentication for data downloads:
+- **Academic users**: Free access with registration at https://cancer.sanger.ac.uk/cosmic/register
+- **Commercial users**: License required (contact QIAGEN)
 
-### Python 客户端
+### Python Requirements
+```bash
+uv pip install requests pandas
+```
 
-COSMIC 提供用于数据访问的 Python 客户端:
+## Quick Start
+
+### 1. Basic File Download
+
+Use the `scripts/download_cosmic.py` script to download COSMIC data files:
+
+```python
+from scripts.download_cosmic import download_cosmic_file
+
+# Download mutation data
+download_cosmic_file(
+    email="your_email@institution.edu",
+    password="your_password",
+    filepath="GRCh38/cosmic/latest/CosmicMutantExport.tsv.gz",
+    output_filename="cosmic_mutations.tsv.gz"
+)
+```
+
+### 2. Command-Line Usage
 
 ```bash
-uv pip install cosmic-py
+# Download using shorthand data type
+python scripts/download_cosmic.py user@email.com --data-type mutations
+
+# Download specific file
+python scripts/download_cosmic.py user@email.com \
+    --filepath GRCh38/cosmic/latest/cancer_gene_census.csv
+
+# Download for specific genome assembly
+python scripts/download_cosmic.py user@email.com \
+    --data-type gene_census --assembly GRCh37 -o cancer_genes.csv
 ```
 
-### API 访问
-
-COSMIC 提供 REST API 用于编程访问:
+### 3. Working with Downloaded Data
 
 ```python
-import requests
-
-BASE_URL = "https://cancer.sanger.ac.uk/cosmic/api/v0"
-```
-
-**身份验证**: 需要有效的 COSMIC 许可证和 API 密钥
-
-**速率限制**: 每秒最多 10 个请求
-
-## 核心功能
-
-### 1. 基因查询
-
-**检索基因信息**,包括突变频率和功能影响:
-
-```python
-import requests
-
-# 获取基因信息
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/genes/TP53",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
-)
-gene_data = response.json()
-```
-
-**基因信息包括:**
-- 突变频率(按癌症类型)
-- 突变类型(错义、无义、剪接位点等)
-- 功能影响
-- 临床相关性
-- 参考文献引用
-
-### 2. 突变查询
-
-**查询特定突变**:
-
-```python
-# 按基因组坐标查询
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/mutations",
-    params={
-        "chromosome": "17",
-        "position": "7579472",
-        "ref": "G",
-        "alt": "A"
-    },
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
-)
-mutation_data = response.json()
-```
-
-**突变信息包括:**
-- 基因和转录本
-- 蛋白质变化
-- 突变类型
-- 癌症类型分布
-- 功能影响
-- 临床意义
-
-### 3. 癌症类型查询
-
-**按癌症类型搜索突变**:
-
-```python
-# 获取癌症类型的突变谱
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/cancers/lung",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
-)
-cancer_data = response.json()
-```
-
-**癌症类型信息包括:**
-- 突变频率
-- 突变基因列表
-- 突变谱
-- 临床特征
-
-### 4. 样本查询
-
-**查询特定样本的突变**:
-
-```python
-# 获取样本信息
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/samples/COSMIC_ID",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
-)
-sample_data = response.json()
-```
-
-**样本信息包括:**
-- 样本元数据
-- 突变列表
-- 拷贝数变异
-- 结构变异
-- 表达数据
-
-### 5. 批量查询
-
-**批量查询多个基因或突变**:
-
-```python
-# 批量查询基因
-genes = ["TP53", "KRAS", "BRAF"]
-for gene in genes:
-    response = requests.get(
-        f"https://cancer.sanger.ac.uk/cosmic/api/v0/genes/{gene}",
-        headers={"Authorization": "Bearer YOUR_API_KEY"}
-    )
-    data = response.json()
-    # 处理数据
-```
-
-### 6. 突变频率分析
-
-**分析突变频率**:
-
-```python
-# 获取基因的突变频率
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/genes/TP53/frequency",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
-)
-frequency_data = response.json()
-
-# 按癌症类型分析
-for cancer_type, freq in frequency_data.items():
-    print(f"{cancer_type}: {freq}%")
-```
-
-### 7. 功能影响分析
-
-**分析突变的功能影响**:
-
-```python
-# 获取功能影响数据
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/genes/TP53/functional",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
-)
-functional_data = response.json()
-
-# 分析功能影响
-for mutation, impact in functional_data.items():
-    print(f"{mutation}: {impact}")
-```
-
-### 8. 临床相关性分析
-
-**分析临床相关性**:
-
-```python
-# 获取临床相关性数据
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/genes/TP53/clinical",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
-)
-clinical_data = response.json()
-
-# 分析临床相关性
-for association in clinical_data:
-    print(f"Association: {association}")
-```
-
-### 9. 突变谱分析
-
-**分析突变谱**:
-
-```python
-# 获取突变谱
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/cancers/lung/spectrum",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
-)
-spectrum_data = response.json()
-
-# 可视化突变谱
-import matplotlib.pyplot as plt
-plt.bar(spectrum_data.keys(), spectrum_data.values())
-plt.xlabel("Mutation Type")
-plt.ylabel("Frequency")
-plt.show()
-```
-
-### 10. 数据导出
-
-**导出数据为各种格式**:
-
-```python
-# 导出为 CSV
 import pandas as pd
 
-# 获取数据
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/genes/TP53",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
+# Read mutation data
+mutations = pd.read_csv('cosmic_mutations.tsv.gz', sep='\t', compression='gzip')
+
+# Read Cancer Gene Census
+gene_census = pd.read_csv('cancer_gene_census.csv')
+
+# Read VCF format
+import pysam
+vcf = pysam.VariantFile('CosmicCodingMuts.vcf.gz')
+```
+
+## Available Data Types
+
+### Core Mutations
+Download comprehensive mutation data including point mutations, indels, and genomic annotations.
+
+**Common data types**:
+- `mutations` - Complete coding mutations (TSV format)
+- `mutations_vcf` - Coding mutations in VCF format
+- `sample_info` - Sample metadata and tumor information
+
+```python
+# Download all coding mutations
+download_cosmic_file(
+    email="user@email.com",
+    password="password",
+    filepath="GRCh38/cosmic/latest/CosmicMutantExport.tsv.gz"
 )
-data = response.json()
-
-# 转换为 DataFrame
-df = pd.DataFrame(data['mutations'])
-
-# 导出为 CSV
-df.to_csv("tp53_mutations.csv", index=False)
 ```
 
-## 查询工作流程
-
-### 工作流程 1: 分析基因的突变谱
-
-1. **获取基因信息**:
-   ```python
-   response = requests.get(
-       "https://cancer.sanger.ac.uk/cosmic/api/v0/genes/TP53",
-       headers={"Authorization": "Bearer YOUR_API_KEY"}
-   )
-   gene_data = response.json()
-   ```
-
-2. **分析突变频率**:
-   ```python
-   frequencies = gene_data['mutation_frequencies']
-   for cancer_type, freq in frequencies.items():
-       print(f"{cancer_type}: {freq}%")
-   ```
-
-3. **分析突变类型**:
-   ```python
-   mutation_types = gene_data['mutation_types']
-   for mut_type, count in mutation_types.items():
-       print(f"{mut_type}: {count}")
-   ```
-
-4. **可视化突变谱**:
-   ```python
-   import matplotlib.pyplot as plt
-   plt.bar(mutation_types.keys(), mutation_types.values())
-   plt.xlabel("Mutation Type")
-   plt.ylabel("Count")
-   plt.show()
-   ```
-
-### 工作流程 2: 识别癌症中的驱动突变
-
-1. **获取癌症类型信息**:
-   ```python
-   response = requests.get(
-       "https://cancer.sanger.ac.uk/cosmic/api/v0/cancers/lung",
-       headers={"Authorization": "Bearer YOUR_API_KEY"}
-   )
-   cancer_data = response.json()
-   ```
-
-2. **识别高频突变基因**:
-   ```python
-   high_freq_genes = {
-       gene: freq for gene, freq in cancer_data['gene_frequencies'].items()
-       if freq > 5  # 频率 > 5%
-   }
-   ```
-
-3. **分析功能影响**:
-   ```python
-   for gene in high_freq_genes.keys():
-       response = requests.get(
-           f"https://cancer.sanger.ac.uk/cosmic/api/v0/genes/{gene}/functional",
-           headers={"Authorization": "Bearer YOUR_API_KEY"}
-       )
-       functional_data = response.json()
-       # 分析功能影响
-   ```
-
-### 工作流程 3: 探索突变的临床相关性
-
-1. **查询特定突变**:
-   ```python
-   response = requests.get(
-       "https://cancer.sanger.ac.uk/cosmic/api/v0/mutations",
-       params={
-           "gene": "EGFR",
-           "protein_change": "L858R"
-       },
-       headers={"Authorization": "Bearer YOUR_API_KEY"}
-   )
-   mutation_data = response.json()
-   ```
-
-2. **分析临床相关性**:
-   ```python
-   clinical_associations = mutation_data['clinical_associations']
-   for association in clinical_associations:
-       print(f"Association: {association}")
-   ```
-
-3. **分析治疗反应**:
-   ```python
-   treatment_response = mutation_data['treatment_response']
-   for drug, response in treatment_response.items():
-       print(f"{drug}: {response}")
-   ```
-
-## 数据类型
-
-### 突变类型
-
-COSMIC 包含多种突变类型:
-
-- **点突变**: 单核苷酸变异
-- **插入**: 插入一个或多个核苷酸
-- **缺失**: 删除一个或多个核苷酸
-- **拷贝数变异**: 基因拷贝数的变化
-- **结构变异**: 染色体重排、易位等
-- **融合基因**: 两个基因融合形成新的基因
-
-### 功能影响
-
-突变的功能影响分类:
-
-- **错义**: 氨基酸变化
-- **无义**: 提前终止密码子
-- **剪接位点**: 影响剪接
-- **移码**: 阅读框移位
-- **同义**: 无氨基酸变化
-- **非编码**: 非编码区域
-
-### 临床相关性
-
-突变的临床相关性:
-
-- **预后**: 与预后相关
-- **预测**: 预测治疗反应
-- **诊断**: 用于诊断
-- **易感性**: 癌症易感性
-
-## 最佳实践
-
-### 1. 速率限制管理
+### Cancer Gene Census
+Access the expert-curated list of ~700+ cancer genes with substantial evidence of cancer involvement.
 
 ```python
-import time
-
-def rate_limited_request(url, headers, params=None):
-    """进行速率限制的 API 请求"""
-    response = requests.get(url, headers=headers, params=params)
-    time.sleep(0.1)  # 请求之间等待 0.1 秒
-    return response
-```
-
-### 2. 错误处理
-
-```python
-def safe_api_call(url, headers, params=None, max_retries=3):
-    """具有错误处理和重试的 API 调用"""
-    for attempt in range(max_retries):
-        try:
-            response = requests.get(url, headers=headers, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
-        except requests.exceptions.RequestException as e:
-            print(f"Attempt {attempt + 1} failed: {e}")
-            if attempt == max_retries - 1:
-                raise
-            time.sleep(2 ** attempt)  # 指数退避
-```
-
-### 3. 数据验证
-
-```python
-def validate_mutation_data(data):
-    """验证突变数据"""
-    required_fields = ['gene', 'mutation_type', 'protein_change']
-    for field in required_fields:
-        if field not in data:
-            raise ValueError(f"Missing required field: {field}")
-    return True
-```
-
-### 4. 缓存结果
-
-```python
-import json
-from pathlib import Path
-
-def cached_query(cache_file, api_func, *args, **kwargs):
-    """缓存 API 结果"""
-    cache_path = Path(cache_file)
-
-    if cache_path.exists():
-        with open(cache_path) as f:
-            return json.load(f)
-
-    result = api_func(*args, **kwargs)
-
-    with open(cache_path, 'w') as f:
-        json.dump(result, f, indent=2)
-    return result
-```
-
-## 资源
-
-### scripts/query_cosmic.py
-
-Python 脚本,包含常见 COSMIC 查询的即用型函数:
-
-- `get_gene_info(gene_symbol)` - 检索基因详细信息
-- `get_mutation_info(chromosome, position, ref, alt)` - 查询特定突变
-- `get_cancer_info(cancer_type)` - 获取癌症类型信息
-- `get_sample_info(cosmic_id)` - 获取样本信息
-- `analyze_mutation_frequency(gene_symbol)` - 分析突变频率
-- `analyze_functional_impact(gene_symbol)` - 分析功能影响
-- `export_to_csv(data, filename)` - 导出数据为 CSV
-- `visualize_mutation_spectrum(data)` - 可视化突变谱
-
-查阅此脚本以获取实现示例和适当的速率限制及错误处理。
-
-### references/api_reference.md
-
-全面的 API 文档,包括:
-- 完整的端点列表及参数
-- 请求/响应格式规范
-- 每个端点的示例查询
-- 数据架构定义
-- 速率限制详情
-- 身份验证要求
-- 排查常见错误
-
-需要详细 API 信息或构建复杂查询时参考此文档。
-
-## 重要说明
-
-### 数据许可
-
-COSMIC 数据需要有效的许可证:
-- **学术许可证**: 供学术研究使用
-- **商业许可证**: 供商业使用
-- **API 密钥**: 需要用于 API 访问
-
-联系: cosmic@sanger.ac.uk 获取许可证信息
-
-### 数据质量
-
-- **策展数据**: COSMIC 数据是手工策展的
-- **验证**: 数据经过验证和交叉检查
-- **更新**: 数据定期更新
-- **版本控制**: 使用特定版本以确保可重现性
-
-### 数据覆盖
-
-- **癌症类型**: 涵盖多种癌症类型
-- **样本数量**: 数百万个样本
-- **基因覆盖**: 涵盖大多数癌症相关基因
-- **突变类型**: 包含所有主要突变类型
-
-### 技术局限
-
-- **API 速率限制**: 每秒最多 10 个请求
-- **数据大小**: 大型数据集可能需要很长时间下载
-- **复杂性**: 某些查询可能很复杂
-- **网络依赖**: 需要稳定的网络连接
-
-## 常见用例
-
-### 癌症基因组学研究
-
-```python
-# 分析癌症类型中的突变谱
-response = requests.get(
-    "https://cancer.sanger.ac.uk/cosmic/api/v0/cancers/lung",
-    headers={"Authorization": "Bearer YOUR_API_KEY"}
+# Download Cancer Gene Census
+download_cosmic_file(
+    email="user@email.com",
+    password="password",
+    filepath="GRCh38/cosmic/latest/cancer_gene_census.csv"
 )
-cancer_data = response.json()
-
-# 识别驱动突变
-driver_mutations = identify_driver_mutations(cancer_data)
 ```
 
-### 药物靶点识别
+**Use cases**:
+- Identifying known cancer genes
+- Filtering variants by cancer relevance
+- Understanding gene roles (oncogene vs tumor suppressor)
+- Target gene selection for research
+
+### Mutational Signatures
+Download signature profiles for mutational signature analysis.
 
 ```python
-# 识别可药物突变
-drug_targets = []
-for gene in cancer_genes:
-    response = requests.get(
-        f"https://cancer.sanger.ac.uk/cosmic/api/v0/genes/{gene}/clinical",
-        headers={"Authorization": "Bearer YOUR_API_KEY"}
-    )
-    clinical_data = response.json()
-    if is_druggable(clinical_data):
-        drug_targets.append(gene)
+# Download signature definitions
+download_cosmic_file(
+    email="user@email.com",
+    password="password",
+    filepath="signatures/signatures.tsv"
+)
 ```
 
-### 生物标志物发现
+**Signature types**:
+- Single Base Substitution (SBS) signatures
+- Doublet Base Substitution (DBS) signatures
+- Insertion/Deletion (ID) signatures
+
+### Structural Variants and Fusions
+Access gene fusion data and structural rearrangements.
+
+**Available data types**:
+- `structural_variants` - Structural breakpoints
+- `fusion_genes` - Gene fusion events
 
 ```python
-# 发现预后生物标志物
-prognostic_markers = []
-for mutation in mutations:
-    if mutation['clinical_association'] == 'prognostic':
-        prognostic_markers.append(mutation)
+# Download gene fusions
+download_cosmic_file(
+    email="user@email.com",
+    password="password",
+    filepath="GRCh38/cosmic/latest/CosmicFusionExport.tsv.gz"
+)
 ```
 
-## 其他资源
+### Copy Number and Expression
+Retrieve copy number alterations and gene expression data.
 
-- **COSMIC 网站**: https://cancer.sanger.ac.uk/cosmic
-- **COSMIC 文档**: https://cancer.sanger.ac.uk/cosmic/documentation
-- **API 文档**: https://cancer.sanger.ac.uk/cosmic/api/documentation
-- **威康桑格研究所**: https://www.sanger.ac.uk/
-- **联系方式**: cosmic@sanger.ac.uk
+**Available data types**:
+- `copy_number` - Copy number gains/losses
+- `gene_expression` - Over/under-expression data
+
+```python
+# Download copy number data
+download_cosmic_file(
+    email="user@email.com",
+    password="password",
+    filepath="GRCh38/cosmic/latest/CosmicCompleteCNA.tsv.gz"
+)
+```
+
+### Resistance Mutations
+Access drug resistance mutation data with clinical annotations.
+
+```python
+# Download resistance mutations
+download_cosmic_file(
+    email="user@email.com",
+    password="password",
+    filepath="GRCh38/cosmic/latest/CosmicResistanceMutations.tsv.gz"
+)
+```
+
+## Working with COSMIC Data
+
+### Genome Assemblies
+COSMIC provides data for two reference genomes:
+- **GRCh38** (recommended, current standard)
+- **GRCh37** (legacy, for older pipelines)
+
+Specify the assembly in file paths:
+```python
+# GRCh38 (recommended)
+filepath="GRCh38/cosmic/latest/CosmicMutantExport.tsv.gz"
+
+# GRCh37 (legacy)
+filepath="GRCh37/cosmic/latest/CosmicMutantExport.tsv.gz"
+```
+
+### Versioning
+- Use `latest` in file paths to always get the most recent release
+- COSMIC is updated quarterly (current version: v102, May 2025)
+- Specific versions can be used for reproducibility: `v102`, `v101`, etc.
+
+### File Formats
+- **TSV/CSV**: Tab/comma-separated, gzip compressed, read with pandas
+- **VCF**: Standard variant format, use with pysam, bcftools, or GATK
+- All files include headers describing column contents
+
+### Common Analysis Patterns
+
+**Filter mutations by gene**:
+```python
+import pandas as pd
+
+mutations = pd.read_csv('cosmic_mutations.tsv.gz', sep='\t', compression='gzip')
+tp53_mutations = mutations[mutations['Gene name'] == 'TP53']
+```
+
+**Identify cancer genes by role**:
+```python
+gene_census = pd.read_csv('cancer_gene_census.csv')
+oncogenes = gene_census[gene_census['Role in Cancer'].str.contains('oncogene', na=False)]
+tumor_suppressors = gene_census[gene_census['Role in Cancer'].str.contains('TSG', na=False)]
+```
+
+**Extract mutations by cancer type**:
+```python
+mutations = pd.read_csv('cosmic_mutations.tsv.gz', sep='\t', compression='gzip')
+lung_mutations = mutations[mutations['Primary site'] == 'lung']
+```
+
+**Work with VCF files**:
+```python
+import pysam
+
+vcf = pysam.VariantFile('CosmicCodingMuts.vcf.gz')
+for record in vcf.fetch('17', 7577000, 7579000):  # TP53 region
+    print(record.id, record.ref, record.alts, record.info)
+```
+
+## Data Reference
+
+For comprehensive information about COSMIC data structure, available files, and field descriptions, see `references/cosmic_data_reference.md`. This reference includes:
+
+- Complete list of available data types and files
+- Detailed field descriptions for each file type
+- File format specifications
+- Common file paths and naming conventions
+- Data update schedule and versioning
+- Citation information
+
+Use this reference when:
+- Exploring what data is available in COSMIC
+- Understanding specific field meanings
+- Determining the correct file path for a data type
+- Planning analysis workflows with COSMIC data
+
+## Helper Functions
+
+The download script includes helper functions for common operations:
+
+### Get Common File Paths
+```python
+from scripts.download_cosmic import get_common_file_path
+
+# Get path for mutations file
+path = get_common_file_path('mutations', genome_assembly='GRCh38')
+# Returns: 'GRCh38/cosmic/latest/CosmicMutantExport.tsv.gz'
+
+# Get path for gene census
+path = get_common_file_path('gene_census')
+# Returns: 'GRCh38/cosmic/latest/cancer_gene_census.csv'
+```
+
+**Available shortcuts**:
+- `mutations` - Core coding mutations
+- `mutations_vcf` - VCF format mutations
+- `gene_census` - Cancer Gene Census
+- `resistance_mutations` - Drug resistance data
+- `structural_variants` - Structural variants
+- `gene_expression` - Expression data
+- `copy_number` - Copy number alterations
+- `fusion_genes` - Gene fusions
+- `signatures` - Mutational signatures
+- `sample_info` - Sample metadata
+
+## Troubleshooting
+
+### Authentication Errors
+- Verify email and password are correct
+- Ensure account is registered at cancer.sanger.ac.uk/cosmic
+- Check if commercial license is required for your use case
+
+### File Not Found
+- Verify the filepath is correct
+- Check that the requested version exists
+- Use `latest` for the most recent version
+- Confirm genome assembly (GRCh37 vs GRCh38) is correct
+
+### Large File Downloads
+- COSMIC files can be several GB in size
+- Ensure sufficient disk space
+- Download may take several minutes depending on connection
+- The script shows download progress for large files
+
+### Commercial Use
+- Commercial users must license COSMIC through QIAGEN
+- Contact: cosmic-translation@sanger.ac.uk
+- Academic access is free but requires registration
+
+## Integration with Other Tools
+
+COSMIC data integrates well with:
+- **Variant annotation**: VEP, ANNOVAR, SnpEff
+- **Signature analysis**: SigProfiler, deconstructSigs, MuSiCa
+- **Cancer genomics**: cBioPortal, OncoKB, CIViC
+- **Bioinformatics**: Bioconductor, TCGA analysis tools
+- **Data science**: pandas, scikit-learn, PyTorch
+
+## Additional Resources
+
+- **COSMIC Website**: https://cancer.sanger.ac.uk/cosmic
+- **Documentation**: https://cancer.sanger.ac.uk/cosmic/help
+- **Release Notes**: https://cancer.sanger.ac.uk/cosmic/release_notes
+- **Contact**: cosmic@sanger.ac.uk
+
+## Citation
+
+When using COSMIC data, cite:
+Tate JG, Bamford S, Jubb HC, et al. COSMIC: the Catalogue Of Somatic Mutations In Cancer. Nucleic Acids Research. 2019;47(D1):D941-D947.
+

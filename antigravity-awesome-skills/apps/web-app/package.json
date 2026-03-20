@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "generate:sitemap": "node scripts/generate-sitemap.js",
+    "prerender:seo": "node scripts/prerender-routes.js",
+    "prebuild": "npm run generate:sitemap",
+    "verify:seo": "node scripts/verify-seo-assets.js",
+    "build": "tsc && vite build && npm run prerender:seo",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "test": "vitest",
@@ -49,6 +53,9 @@
     "tailwindcss": "^4.2.0",
     "typescript": "^5.4.0",
     "vite": "^7.3.1",
-    "vitest": "^2.0.0"
+    "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "flatted": "^3.4.0"
   }
 }

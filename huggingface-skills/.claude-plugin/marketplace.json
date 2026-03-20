@@ -21,6 +21,12 @@
       "description": "Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating professional markdown-based research articles."
     },
     {
+      "name": "hugging-face-paper-pages",
+      "source": "./skills/hugging-face-paper-pages",
+      "skills": "./",
+      "description": "Look up and read Hugging Face paper pages in markdown, and use the papers API for structured metadata like authors, linked models, datasets, Spaces, and media URLs when needed."
+    },
+    {
       "name": "hugging-face-datasets",
       "source": "./skills/hugging-face-datasets",
       "skills": "./",

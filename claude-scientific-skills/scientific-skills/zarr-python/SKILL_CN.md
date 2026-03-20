@@ -1,6 +1,6 @@
 ---
 name: zarr-python
-description: 用于云存储的分块N维数组。压缩数组、并行I/O、S3/GCS集成、NumPy/Dask/Xarray兼容，适用于大规模科学计算管道。
+description: Chunked N-D arrays for cloud storage. Compressed arrays, parallel I/O, S3/GCS integration, NumPy/Dask/Xarray compatible, for large-scale scientific computing pipelines.
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,31 +8,31 @@ metadata:
 
 # Zarr Python
 
-## 概述
+## Overview
 
-Zarr是一个Python库，用于存储带有分块和压缩的大型N维数组。应用此技能可实现高效并行I/O、云原生工作流，以及与NumPy、Dask和Xarray的无缝集成。
+Zarr is a Python library for storing large N-dimensional arrays with chunking and compression. Apply this skill for efficient parallel I/O, cloud-native workflows, and seamless integration with NumPy, Dask, and Xarray.
 
-## 快速开始
+## Quick Start
 
-### 安装
+### Installation
 
 ```bash
 uv pip install zarr
 ```
 
-需要Python 3.11+。对于云存储支持，安装额外的包：
+Requires Python 3.11+. For cloud storage support, install additional packages:
 ```python
-uv pip install s3fs  # 用于S3
-uv pip install gcsfs  # 用于Google Cloud Storage
+uv pip install s3fs  # For S3
+uv pip install gcsfs  # For Google Cloud Storage
 ```
 
-### 基本数组创建
+### Basic Array Creation
 
 ```python
 import zarr
 import numpy as np
 
-# 创建带有分块和压缩的2D数组
+# Create a 2D array with chunking and compression
 z = zarr.create_array(
     store="data/my_array.zarr",
     shape=(10000, 10000),
@@ -40,159 +40,159 @@ z = zarr.create_array(
     dtype="f4"
 )
 
-# 使用NumPy风格索引写入数据
+# Write data using NumPy-style indexing
 z[:, :] = np.random.random((10000, 10000))
 
-# 读取数据
-data = z[0:100, 0:100]  # 返回NumPy数组
+# Read data
+data = z[0:100, 0:100]  # Returns NumPy array
 ```
 
-## 核心操作
+## Core Operations
 
-### 创建数组
+### Creating Arrays
 
-Zarr提供多个方便的数组创建函数：
+Zarr provides multiple convenience functions for array creation:
 
 ```python
-# 创建空数组
+# Create empty array
 z = zarr.zeros(shape=(10000, 10000), chunks=(1000, 1000), dtype='f4',
                store='data.zarr')
 
-# 创建填充数组
+# Create filled arrays
 z = zarr.ones((5000, 5000), chunks=(500, 500))
 z = zarr.full((1000, 1000), fill_value=42, chunks=(100, 100))
 
-# 从现有数据创建
+# Create from existing data
 data = np.arange(10000).reshape(100, 100)
 z = zarr.array(data, chunks=(10, 10), store='data.zarr')
 
-# 创建与另一个数组相似的数组
-z2 = zarr.zeros_like(z)  # 匹配z的形状、分块和数据类型
+# Create like another array
+z2 = zarr.zeros_like(z)  # Matches shape, chunks, dtype of z
 ```
 
-### 打开现有数组
+### Opening Existing Arrays
 
 ```python
-# 打开数组（默认为读写模式）
+# Open array (read/write mode by default)
 z = zarr.open_array('data.zarr', mode='r+')
 
-# 只读模式
+# Read-only mode
 z = zarr.open_array('data.zarr', mode='r')
 
-# open()函数自动检测数组与组
-z = zarr.open('data.zarr')  # 返回Array或Group
+# The open() function auto-detects arrays vs groups
+z = zarr.open('data.zarr')  # Returns Array or Group
 ```
 
-### 读写数据
+### Reading and Writing Data
 
-Zarr数组支持NumPy风格索引：
+Zarr arrays support NumPy-like indexing:
 
 ```python
-# 写入整个数组
+# Write entire array
 z[:] = 42
 
-# 写入切片
+# Write slices
 z[0, :] = np.arange(100)
 z[10:20, 50:60] = np.random.random((10, 10))
 
-# 读取数据（返回NumPy数组）
+# Read data (returns NumPy array)
 data = z[0:100, 0:100]
 row = z[5, :]
 
-# 高级索引
-z.vindex[[0, 5, 10], [2, 8, 15]]  # 坐标索引
-z.oindex[0:10, [5, 10, 15]]       # 正交索引
-z.blocks[0, 0]                     # 块/分块索引
+# Advanced indexing
+z.vindex[[0, 5, 10], [2, 8, 15]]  # Coordinate indexing
+z.oindex[0:10, [5, 10, 15]]       # Orthogonal indexing
+z.blocks[0, 0]                     # Block/chunk indexing
 ```
 
-### 调整大小和追加
+### Resizing and Appending
 
 ```python
-# 调整数组大小
-z.resize(15000, 15000)  # 扩展或缩小维度
+# Resize array
+z.resize(15000, 15000)  # Expands or shrinks dimensions
 
-# 沿轴追加数据
-z.append(np.random.random((1000, 10000)), axis=0)  # 添加行
+# Append data along an axis
+z.append(np.random.random((1000, 10000)), axis=0)  # Adds rows
 ```
 
-## 分块策略
+## Chunking Strategies
 
-分块对性能至关重要。根据访问模式选择分块大小和形状。
+Chunking is critical for performance. Choose chunk sizes and shapes based on access patterns.
 
-### 分块大小指南
+### Chunk Size Guidelines
 
-- **最小分块大小**：推荐1 MB以获得最佳性能
-- **平衡**：较大的分块 = 较少的元数据操作；较小的分块 = 更好的并行访问
-- **内存考虑**：压缩期间整个分块必须适合内存
+- **Minimum chunk size**: 1 MB recommended for optimal performance
+- **Balance**: Larger chunks = fewer metadata operations; smaller chunks = better parallel access
+- **Memory consideration**: Entire chunks must fit in memory during compression
 
 ```python
-# 配置分块大小（目标为每个分块~1MB）
-# 对于float32数据：1MB = 262,144个元素 = 512×512数组
+# Configure chunk size (aim for ~1MB per chunk)
+# For float32 data: 1MB = 262,144 elements = 512×512 array
 z = zarr.zeros(
     shape=(10000, 10000),
-    chunks=(512, 512),  # ~1MB分块
+    chunks=(512, 512),  # ~1MB chunks
     dtype='f4'
 )
 ```
 
-### 使分块与访问模式对齐
+### Aligning Chunks with Access Patterns
 
-**关键**：分块形状根据数据访问方式显著影响性能。
+**Critical**: Chunk shape dramatically affects performance based on how data is accessed.
 
 ```python
-# 如果频繁访问行（第一维度）
-z = zarr.zeros((10000, 10000), chunks=(10, 10000))  # 分块跨越列
+# If accessing rows frequently (first dimension)
+z = zarr.zeros((10000, 10000), chunks=(10, 10000))  # Chunk spans columns
 
-# 如果频繁访问列（第二维度）
-z = zarr.zeros((10000, 10000), chunks=(10000, 10))  # 分块跨越行
+# If accessing columns frequently (second dimension)
+z = zarr.zeros((10000, 10000), chunks=(10000, 10))  # Chunk spans rows
 
-# 对于混合访问模式（平衡方法）
-z = zarr.zeros((10000, 10000), chunks=(1000, 1000))  # 方形分块
+# For mixed access patterns (balanced approach)
+z = zarr.zeros((10000, 10000), chunks=(1000, 1000))  # Square chunks
 ```
 
-**性能示例**：对于(200, 200, 200)数组，沿第一维度读取：
-- 使用分块(1, 200, 200)：~107ms
-- 使用分块(200, 200, 1)：~1.65ms（快65倍！）
+**Performance example**: For a (200, 200, 200) array, reading along the first dimension:
+- Using chunks (1, 200, 200): ~107ms
+- Using chunks (200, 200, 1): ~1.65ms (65× faster!)
 
-### 大规模存储的分片
+### Sharding for Large-Scale Storage
 
-当数组有数百万个小分块时，使用分片将分块分组为更大的存储对象：
+When arrays have millions of small chunks, use sharding to group chunks into larger storage objects:
 
 ```python
 from zarr.codecs import ShardingCodec, BytesCodec
 from zarr.codecs.blosc import BloscCodec
 
-# 创建带分片的数组
+# Create array with sharding
 z = zarr.create_array(
     store='data.zarr',
     shape=(100000, 100000),
-    chunks=(100, 100),  # 小分块用于访问
-    shards=(1000, 1000),  # 每个分片组100个分块
+    chunks=(100, 100),  # Small chunks for access
+    shards=(1000, 1000),  # Groups 100 chunks per shard
     dtype='f4'
 )
 ```
 
-**好处**：
-- 减少来自数百万小文件的文件系统开销
-- 提高云存储性能（减少对象请求）
-- 防止文件系统块大小浪费
+**Benefits**:
+- Reduces file system overhead from millions of small files
+- Improves cloud storage performance (fewer object requests)
+- Prevents filesystem block size waste
 
-**重要**：写入前整个分片必须适合内存。
+**Important**: Entire shards must fit in memory before writing.
 
-## 压缩
+## Compression
 
-Zarr按分块应用压缩以减少存储同时保持快速访问。
+Zarr applies compression per chunk to reduce storage while maintaining fast access.
 
-### 配置压缩
+### Configuring Compression
 
 ```python
 from zarr.codecs.blosc import BloscCodec
 from zarr.codecs import GzipCodec, ZstdCodec
 
-# 默认：Blosc与Zstandard
-z = zarr.zeros((1000, 1000), chunks=(100, 100))  # 使用默认压缩
+# Default: Blosc with Zstandard
+z = zarr.zeros((1000, 1000), chunks=(100, 100))  # Uses default compression
 
-# 配置Blosc编解码器
+# Configure Blosc codec
 z = zarr.create_array(
     store='data.zarr',
     shape=(1000, 1000),
@@ -201,9 +201,9 @@ z = zarr.create_array(
     codecs=[BloscCodec(cname='zstd', clevel=5, shuffle='shuffle')]
 )
 
-# 可用的Blosc压缩器：'blosclz', 'lz4', 'lz4hc', 'snappy', 'zlib', 'zstd'
+# Available Blosc compressors: 'blosclz', 'lz4', 'lz4hc', 'snappy', 'zlib', 'zstd'
 
-# 使用Gzip压缩
+# Use Gzip compression
 z = zarr.create_array(
     store='data.zarr',
     shape=(1000, 1000),
@@ -212,91 +212,91 @@ z = zarr.create_array(
     codecs=[GzipCodec(level=6)]
 )
 
-# 禁用压缩
+# Disable compression
 z = zarr.create_array(
     store='data.zarr',
     shape=(1000, 1000),
     chunks=(100, 100),
     dtype='f4',
-    codecs=[BytesCodec()]  # 无压缩
+    codecs=[BytesCodec()]  # No compression
 )
 ```
 
-### 压缩性能提示
+### Compression Performance Tips
 
-- **Blosc**（默认）：快速压缩/解压缩，适合交互式工作负载
-- **Zstandard**：更好的压缩率，比LZ4稍慢
-- **Gzip**：最大压缩，性能较慢
-- **LZ4**：最快压缩，较低压缩率
-- **Shuffle**：对数值数据启用shuffle过滤器以获得更好的压缩
+- **Blosc** (default): Fast compression/decompression, good for interactive workloads
+- **Zstandard**: Better compression ratios, slightly slower than LZ4
+- **Gzip**: Maximum compression, slower performance
+- **LZ4**: Fastest compression, lower ratios
+- **Shuffle**: Enable shuffle filter for better compression on numeric data
 
 ```python
-# 对数值科学数据最佳
+# Optimal for numeric scientific data
 codecs=[BloscCodec(cname='zstd', clevel=5, shuffle='shuffle')]
 
-# 对速度最佳
+# Optimal for speed
 codecs=[BloscCodec(cname='lz4', clevel=1)]
 
-# 对压缩率最佳
+# Optimal for compression ratio
 codecs=[GzipCodec(level=9)]
 ```
 
-## 存储后端
+## Storage Backends
 
-Zarr通过灵活的存储接口支持多种存储后端。
+Zarr supports multiple storage backends through a flexible storage interface.
 
-### 本地文件系统（默认）
+### Local Filesystem (Default)
 
 ```python
 from zarr.storage import LocalStore
 
-# 显式创建存储
+# Explicit store creation
 store = LocalStore('data/my_array.zarr')
 z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
 
-# 或使用字符串路径（自动创建LocalStore）
+# Or use string path (creates LocalStore automatically)
 z = zarr.open_array('data/my_array.zarr', mode='w', shape=(1000, 1000),
                     chunks=(100, 100))
 ```
 
-### 内存存储
+### In-Memory Storage
 
 ```python
 from zarr.storage import MemoryStore
 
-# 创建内存存储
+# Create in-memory store
 store = MemoryStore()
 z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
 
-# 数据仅存在于内存中，不持久化
+# Data exists only in memory, not persisted
 ```
 
-### ZIP文件存储
+### ZIP File Storage
 
 ```python
 from zarr.storage import ZipStore
 
-# 写入ZIP文件
+# Write to ZIP file
 store = ZipStore('data.zip', mode='w')
 z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
 z[:] = np.random.random((1000, 1000))
-store.close()  # 重要：必须关闭ZipStore
+store.close()  # IMPORTANT: Must close ZipStore
 
-# 从ZIP文件读取
+# Read from ZIP file
 store = ZipStore('data.zip', mode='r')
 z = zarr.open_array(store=store)
 data = z[:]
 store.close()
 ```
 
-### 云存储（S3, GCS）
+### Cloud Storage (S3, GCS)
 
 ```python
 import s3fs
 import zarr
 
-# S3存储
-s3 = s3fs.S3FileSystem(anon=False)  # 使用凭证
+# S3 storage
+s3 = s3fs.S3FileSystem(anon=False)  # Use credentials
 store = s3fs.S3Map(root='my-bucket/path/to/array.zarr', s3=s3)
 z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
 z[:] = data
@@ -308,27 +308,27 @@ store = gcsfs.GCSMap(root='my-bucket/path/to/array.zarr', gcs=gcs)
 z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
 ```
 
-**云存储最佳实践**：
-- 使用合并元数据减少延迟：`zarr.consolidate_metadata(store)`
-- 将分块大小与云对象大小对齐（通常5-100 MB最佳）
-- 使用Dask进行大规模数据的并行写入
-- 考虑使用分片减少对象数量
+**Cloud Storage Best Practices**:
+- Use consolidated metadata to reduce latency: `zarr.consolidate_metadata(store)`
+- Align chunk sizes with cloud object sizing (typically 5-100 MB optimal)
+- Enable parallel writes using Dask for large-scale data
+- Consider sharding to reduce number of objects
 
-## 组和层次结构
+## Groups and Hierarchies
 
-组以层次结构组织多个数组，类似于目录或HDF5组。
+Groups organize multiple arrays hierarchically, similar to directories or HDF5 groups.
 
-### 创建和使用组
+### Creating and Using Groups
 
 ```python
-# 创建根组
+# Create root group
 root = zarr.group(store='data/hierarchy.zarr')
 
-# 创建子组
+# Create sub-groups
 temperature = root.create_group('temperature')
 precipitation = root.create_group('precipitation')
 
-# 在组内创建数组
+# Create arrays within groups
 temp_array = temperature.create_array(
     name='t2m',
     shape=(365, 720, 1440),
@@ -343,12 +343,12 @@ precip_array = precipitation.create_array(
     dtype='f4'
 )
 
-# 使用路径访问
+# Access using paths
 array = root['temperature/t2m']
 
-# 可视化层次结构
+# Visualize hierarchy
 print(root.tree())
-# 输出：
+# Output:
 # /
 #  ├── temperature
 #  │   └── t2m (365, 720, 1440) f4
@@ -356,53 +356,53 @@ print(root.tree())
 #      └── prcp (365, 720, 1440) f4
 ```
 
-### 兼容H5py的API
+### H5py-Compatible API
 
-Zarr为熟悉HDF5的用户提供h5py兼容接口：
+Zarr provides an h5py-compatible interface for familiar HDF5 users:
 
 ```python
-# 使用h5py风格方法创建组
+# Create group with h5py-style methods
 root = zarr.group('data.zarr')
 dataset = root.create_dataset('my_data', shape=(1000, 1000), chunks=(100, 100),
                               dtype='f4')
 
-# 像h5py一样访问
+# Access like h5py
 grp = root.require_group('subgroup')
 arr = grp.require_dataset('array', shape=(500, 500), chunks=(50, 50), dtype='i4')
 ```
 
-## 属性和元数据
+## Attributes and Metadata
 
-使用属性将自定义元数据附加到数组和组：
+Attach custom metadata to arrays and groups using attributes:
 
 ```python
-# 向数组添加属性
+# Add attributes to array
 z = zarr.zeros((1000, 1000), chunks=(100, 100))
 z.attrs['description'] = 'Temperature data in Kelvin'
 z.attrs['units'] = 'K'
 z.attrs['created'] = '2024-01-15'
 z.attrs['processing_version'] = 2.1
 
-# 属性以JSON形式存储
-print(z.attrs['units'])  # 输出：K
+# Attributes are stored as JSON
+print(z.attrs['units'])  # Output: K
 
-# 向组添加属性
+# Add attributes to groups
 root = zarr.group('data.zarr')
 root.attrs['project'] = 'Climate Analysis'
 root.attrs['institution'] = 'Research Institute'
 
-# 属性与数组/组一起持久化
+# Attributes persist with the array/group
 z2 = zarr.open('data.zarr')
 print(z2.attrs['description'])
 ```
 
-**重要**：属性必须是JSON可序列化的（字符串、数字、列表、字典、布尔值、null）。
+**Important**: Attributes must be JSON-serializable (strings, numbers, lists, dicts, booleans, null).
 
-## 与NumPy、Dask和Xarray的集成
+## Integration with NumPy, Dask, and Xarray
 
-### NumPy集成
+### NumPy Integration
 
-Zarr数组实现NumPy数组接口：
+Zarr arrays implement the NumPy array interface:
 
 ```python
 import numpy as np
@@ -410,66 +410,66 @@ import zarr
 
 z = zarr.zeros((1000, 1000), chunks=(100, 100))
 
-# 直接使用NumPy函数
-result = np.sum(z, axis=0)  # NumPy操作Zarr数组
+# Use NumPy functions directly
+result = np.sum(z, axis=0)  # NumPy operates on Zarr array
 mean = np.mean(z[:100, :100])
 
-# 转换为NumPy数组
-numpy_array = z[:]  # 将整个数组加载到内存
+# Convert to NumPy array
+numpy_array = z[:]  # Loads entire array into memory
 ```
 
-### Dask集成
+### Dask Integration
 
-Dask对Zarr数组提供延迟、并行计算：
+Dask provides lazy, parallel computation on Zarr arrays:
 
 ```python
 import dask.array as da
 import zarr
 
-# 创建大型Zarr数组
+# Create large Zarr array
 z = zarr.open('data.zarr', mode='w', shape=(100000, 100000),
               chunks=(1000, 1000), dtype='f4')
 
-# 加载为Dask数组（延迟，无数据加载）
+# Load as Dask array (lazy, no data loaded)
 dask_array = da.from_zarr('data.zarr')
 
-# 执行计算（并行，核心外）
-result = dask_array.mean(axis=0).compute()  # 并行计算
+# Perform computations (parallel, out-of-core)
+result = dask_array.mean(axis=0).compute()  # Parallel computation
 
-# 将Dask数组写入Zarr
+# Write Dask array to Zarr
 large_array = da.random.random((100000, 100000), chunks=(1000, 1000))
 da.to_zarr(large_array, 'output.zarr')
 ```
 
-**好处**：
-- 处理大于内存的数据集
-- 跨分块自动并行计算
-- 与分块存储的高效I/O
+**Benefits**:
+- Process datasets larger than memory
+- Automatic parallel computation across chunks
+- Efficient I/O with chunked storage
 
-### Xarray集成
+### Xarray Integration
 
-Xarray提供带有Zarr后端的标记多维数组：
+Xarray provides labeled, multidimensional arrays with Zarr backend:
 
 ```python
 import xarray as xr
 import zarr
 
-# 以Xarray Dataset形式打开Zarr存储（延迟加载）
+# Open Zarr store as Xarray Dataset (lazy loading)
 ds = xr.open_zarr('data.zarr')
 
-# 数据集包含坐标和元数据
+# Dataset includes coordinates and metadata
 print(ds)
 
-# 访问变量
+# Access variables
 temperature = ds['temperature']
 
-# 执行标记操作
+# Perform labeled operations
 subset = ds.sel(time='2024-01', lat=slice(30, 60))
 
-# 将Xarray Dataset写入Zarr
+# Write Xarray Dataset to Zarr
 ds.to_zarr('output.zarr')
 
-# 从头创建带有坐标
+# Create from scratch with coordinates
 ds = xr.Dataset(
     {
         'temperature': (['time', 'lat', 'lon'], data),
@@ -484,201 +484,201 @@ ds = xr.Dataset(
 ds.to_zarr('climate_data.zarr')
 ```
 
-**好处**：
-- 命名维度和坐标
-- 基于标签的索引和选择
-- 与pandas集成用于时间序列
-- 气候/地理空间科学家熟悉的NetCDF类接口
+**Benefits**:
+- Named dimensions and coordinates
+- Label-based indexing and selection
+- Integration with pandas for time series
+- NetCDF-like interface familiar to climate/geospatial scientists
 
-## 并行计算和同步
+## Parallel Computing and Synchronization
 
-### 线程安全操作
+### Thread-Safe Operations
 
 ```python
 from zarr import ThreadSynchronizer
 import zarr
 
-# 用于多线程写入
+# For multi-threaded writes
 synchronizer = ThreadSynchronizer()
 z = zarr.open_array('data.zarr', mode='r+', shape=(10000, 10000),
                     chunks=(1000, 1000), synchronizer=synchronizer)
 
-# 可安全地从多个线程并发写入
-# （当写入不跨越分块边界时）
+# Safe for concurrent writes from multiple threads
+# (when writes don't span chunk boundaries)
 ```
 
-### 进程安全操作
+### Process-Safe Operations
 
 ```python
 from zarr import ProcessSynchronizer
 import zarr
 
-# 用于多进程写入
+# For multi-process writes
 synchronizer = ProcessSynchronizer('sync_data.sync')
 z = zarr.open_array('data.zarr', mode='r+', shape=(10000, 10000),
                     chunks=(1000, 1000), synchronizer=synchronizer)
 
-# 可安全地从多个进程并发写入
+# Safe for concurrent writes from multiple processes
 ```
 
-**注意**：
-- 并发读取不需要同步
-- 仅当写入可能跨越分块边界时才需要同步
-- 每个进程/线程写入单独的分块时不需要同步
+**Note**:
+- Concurrent reads require no synchronization
+- Synchronization only needed for writes that may span chunk boundaries
+- Each process/thread writing to separate chunks needs no synchronization
 
-## 合并元数据
+## Consolidated Metadata
 
-对于有许多数组的层次存储，将元数据合并到单个文件中以减少I/O操作：
+For hierarchical stores with many arrays, consolidate metadata into a single file to reduce I/O operations:
 
 ```python
 import zarr
 
-# 创建数组/组后
+# After creating arrays/groups
 root = zarr.group('data.zarr')
-# ... 创建多个数组/组 ...
+# ... create multiple arrays/groups ...
 
-# 合并元数据
+# Consolidate metadata
 zarr.consolidate_metadata('data.zarr')
 
-# 使用合并的元数据打开（更快，尤其是在云存储上）
+# Open with consolidated metadata (faster, especially on cloud storage)
 root = zarr.open_consolidated('data.zarr')
 ```
 
-**好处**：
-- 将元数据读取操作从N（每个数组一个）减少到1
-- 对云存储至关重要（减少延迟）
-- 加快`tree()`操作和组遍历
+**Benefits**:
+- Reduces metadata read operations from N (one per array) to 1
+- Critical for cloud storage (reduces latency)
+- Speeds up `tree()` operations and group traversal
 
-**注意**：
-- 如果数组更新而不重新合并，元数据可能会过时
-- 不适合频繁更新的数据集
-- 多写入器场景可能有不一致的读取
+**Cautions**:
+- Metadata can become stale if arrays update without re-consolidation
+- Not suitable for frequently-updated datasets
+- Multi-writer scenarios may have inconsistent reads
 
-## 性能优化
+## Performance Optimization
 
-### 最佳性能清单
+### Checklist for Optimal Performance
 
-1. **分块大小**：目标为每个分块1-10 MB
+1. **Chunk Size**: Aim for 1-10 MB per chunk
    ```python
-   # 对于float32：1MB = 262,144个元素
-   chunks = (512, 512)  # 512×512×4字节 = ~1MB
+   # For float32: 1MB = 262,144 elements
+   chunks = (512, 512)  # 512×512×4 bytes = ~1MB
    ```
 
-2. **分块形状**：与访问模式对齐
+2. **Chunk Shape**: Align with access patterns
    ```python
-   # 行式访问 → 分块跨越列：(小, 大)
-   # 列式访问 → 分块跨越行：(大, 小)
-   # 随机访问 → 平衡：(中, 中)
+   # Row-wise access → chunk spans columns: (small, large)
+   # Column-wise access → chunk spans rows: (large, small)
+   # Random access → balanced: (medium, medium)
    ```
 
-3. **压缩**：根据工作负载选择
+3. **Compression**: Choose based on workload
    ```python
-   # 交互式/快速：BloscCodec(cname='lz4')
-   # 平衡：BloscCodec(cname='zstd', clevel=5)
-   # 最大压缩：GzipCodec(level=9)
+   # Interactive/fast: BloscCodec(cname='lz4')
+   # Balanced: BloscCodec(cname='zstd', clevel=5)
+   # Maximum compression: GzipCodec(level=9)
    ```
 
-4. **存储后端**：与环境匹配
+4. **Storage Backend**: Match to environment
    ```python
-   # 本地：LocalStore（默认）
-   # 云：S3Map/GCSMap带合并元数据
-   # 临时：MemoryStore
+   # Local: LocalStore (default)
+   # Cloud: S3Map/GCSMap with consolidated metadata
+   # Temporary: MemoryStore
    ```
 
-5. **分片**：用于大规模数据集
+5. **Sharding**: Use for large-scale datasets
    ```python
-   # 当有数百万个小分块时
+   # When you have millions of small chunks
    shards=(10*chunk_size, 10*chunk_size)
    ```
 
-6. **并行I/O**：大型操作使用Dask
+6. **Parallel I/O**: Use Dask for large operations
    ```python
    import dask.array as da
    dask_array = da.from_zarr('data.zarr')
    result = dask_array.compute(scheduler='threads', num_workers=8)
    ```
 
-### 分析和调试
+### Profiling and Debugging
 
 ```python
-# 打印详细的数组信息
+# Print detailed array information
 print(z.info)
 
-# 输出包括：
-# - 类型、形状、分块、数据类型
-# - 压缩编解码器和级别
-# - 存储大小（压缩与未压缩）
-# - 存储位置
+# Output includes:
+# - Type, shape, chunks, dtype
+# - Compression codec and level
+# - Storage size (compressed vs uncompressed)
+# - Storage location
 
-# 检查存储大小
-print(f"压缩大小: {z.nbytes_stored / 1e6:.2f} MB")
-print(f"未压缩大小: {z.nbytes / 1e6:.2f} MB")
-print(f"压缩比: {z.nbytes / z.nbytes_stored:.2f}x")
+# Check storage size
+print(f"Compressed size: {z.nbytes_stored / 1e6:.2f} MB")
+print(f"Uncompressed size: {z.nbytes / 1e6:.2f} MB")
+print(f"Compression ratio: {z.nbytes / z.nbytes_stored:.2f}x")
 ```
 
-## 常见模式和最佳实践
+## Common Patterns and Best Practices
 
-### 模式：时间序列数据
+### Pattern: Time Series Data
 
 ```python
-# 以时间为第一维度存储时间序列
-# 这允许有效追加新时间步
+# Store time series with time as first dimension
+# This allows efficient appending of new time steps
 z = zarr.open('timeseries.zarr', mode='a',
-              shape=(0, 720, 1440),  # 从0个时间步开始
-              chunks=(1, 720, 1440),  # 每个分块一个时间步
+              shape=(0, 720, 1440),  # Start with 0 time steps
+              chunks=(1, 720, 1440),  # One time step per chunk
               dtype='f4')
 
-# 追加新时间步
+# Append new time steps
 new_data = np.random.random((1, 720, 1440))
 z.append(new_data, axis=0)
 ```
 
-### 模式：大型矩阵操作
+### Pattern: Large Matrix Operations
 
 ```python
 import dask.array as da
 
-# 在Zarr中创建大型矩阵
+# Create large matrix in Zarr
 z = zarr.open('matrix.zarr', mode='w',
               shape=(100000, 100000),
               chunks=(1000, 1000),
               dtype='f8')
 
-# 使用Dask进行并行计算
+# Use Dask for parallel computation
 dask_z = da.from_zarr('matrix.zarr')
-result = (dask_z @ dask_z.T).compute()  # 并行矩阵乘法
+result = (dask_z @ dask_z.T).compute()  # Parallel matrix multiply
 ```
 
-### 模式：云原生工作流
+### Pattern: Cloud-Native Workflow
 
 ```python
 import s3fs
 import zarr
 
-# 写入S3
+# Write to S3
 s3 = s3fs.S3FileSystem()
 store = s3fs.S3Map(root='s3://my-bucket/data.zarr', s3=s3)
 
-# 创建具有适合云的分块的数组
+# Create array with appropriate chunking for cloud
 z = zarr.open_array(store=store, mode='w',
                     shape=(10000, 10000),
-                    chunks=(500, 500),  # ~1MB分块
+                    chunks=(500, 500),  # ~1MB chunks
                     dtype='f4')
 z[:] = data
 
-# 合并元数据以加快读取
+# Consolidate metadata for faster reads
 zarr.consolidate_metadata(store)
 
-# 从S3读取（任何地方，任何时间）
+# Read from S3 (anywhere, anytime)
 store_read = s3fs.S3Map(root='s3://my-bucket/data.zarr', s3=s3)
 z_read = zarr.open_consolidated(store_read)
 subset = z_read[0:100, 0:100]
 ```
 
-### 模式：格式转换
+### Pattern: Format Conversion
 
 ```python
-# HDF5到Zarr
+# HDF5 to Zarr
 import h5py
 import zarr
 
@@ -688,89 +688,90 @@ with h5py.File('data.h5', 'r') as h5:
                    chunks=(1000, 1000),
                    store='data.zarr')
 
-# NumPy到Zarr
+# NumPy to Zarr
 import numpy as np
 data = np.load('data.npy')
 z = zarr.array(data, chunks='auto', store='data.zarr')
 
-# Zarr到NetCDF（通过Xarray）
+# Zarr to NetCDF (via Xarray)
 import xarray as xr
 ds = xr.open_zarr('data.zarr')
 ds.to_netcdf('data.nc')
 ```
 
-## 常见问题和解决方案
+## Common Issues and Solutions
 
-### 问题：性能缓慢
+### Issue: Slow Performance
 
-**诊断**：检查分块大小和对齐
+**Diagnosis**: Check chunk size and alignment
 ```python
-print(z.chunks)  # 分块大小是否合适？
-print(z.info)    # 检查压缩比
+print(z.chunks)  # Are chunks appropriate size?
+print(z.info)    # Check compression ratio
 ```
 
-**解决方案**：
-- 将分块大小增加到1-10 MB
-- 使分块与访问模式对齐
-- 尝试不同的压缩编解码器
-- 使用Dask进行并行操作
+**Solutions**:
+- Increase chunk size to 1-10 MB
+- Align chunks with access pattern
+- Try different compression codecs
+- Use Dask for parallel operations
 
-### 问题：内存使用高
+### Issue: High Memory Usage
 
-**原因**：将整个数组或大型分块加载到内存
+**Cause**: Loading entire array or large chunks into memory
 
-**解决方案**：
+**Solutions**:
 ```python
-# 不要加载整个数组
-# 错误：data = z[:]
-# 正确：分块处理
+# Don't load entire array
+# Bad: data = z[:]
+# Good: Process in chunks
 for i in range(0, z.shape[0], 1000):
     chunk = z[i:i+1000, :]
     process(chunk)
 
-# 或使用Dask进行自动分块
+# Or use Dask for automatic chunking
 import dask.array as da
 dask_z = da.from_zarr('data.zarr')
-result = dask_z.mean().compute()  # 分块处理
+result = dask_z.mean().compute()  # Processes in chunks
 ```
 
-### 问题：云存储延迟
+### Issue: Cloud Storage Latency
 
-**解决方案**：
+**Solutions**:
 ```python
-# 1. 合并元数据
+# 1. Consolidate metadata
 zarr.consolidate_metadata(store)
 z = zarr.open_consolidated(store)
 
-# 2. 使用适当的分块大小（云为5-100 MB）
-chunks = (2000, 2000)  # 云用更大的分块
+# 2. Use appropriate chunk sizes (5-100 MB for cloud)
+chunks = (2000, 2000)  # Larger chunks for cloud
 
-# 3. 启用分片
-shards = (10000, 10000)  # 组许多分块
+# 3. Enable sharding
+shards = (10000, 10000)  # Groups many chunks
 ```
 
-### 问题：并发写入冲突
+### Issue: Concurrent Write Conflicts
 
-**解决方案**：使用同步器或确保非重叠写入
+**Solution**: Use synchronizers or ensure non-overlapping writes
 ```python
 from zarr import ProcessSynchronizer
 
 sync = ProcessSynchronizer('sync.sync')
 z = zarr.open_array('data.zarr', mode='r+', synchronizer=sync)
 
-# 或设计工作流，使每个进程写入单独的分块
+# Or design workflow so each process writes to separate chunks
 ```
 
-## 其他资源
+## Additional Resources
 
-有关详细的API文档、高级用法和最新更新：
+For detailed API documentation, advanced usage, and the latest updates:
 
-- **官方文档**：https://zarr.readthedocs.io/
-- **Zarr规范**：https://zarr-specs.readthedocs.io/
-- **GitHub存储库**：https://github.com/zarr-developers/zarr-python
-- **社区聊天**：https://gitter.im/zarr-developers/community
+- **Official Documentation**: https://zarr.readthedocs.io/
+- **Zarr Specifications**: https://zarr-specs.readthedocs.io/
+- **GitHub Repository**: https://github.com/zarr-developers/zarr-python
+- **Community Chat**: https://gitter.im/zarr-developers/community
 
-**相关库**：
-- **Xarray**：https://docs.xarray.dev/（标记数组）
-- **Dask**：https://docs.dask.org/（并行计算）
-- **NumCodecs**：https://numcodecs.readthedocs.io/（压缩编解码器）
+**Related Libraries**:
+- **Xarray**: https://docs.xarray.dev/ (labeled arrays)
+- **Dask**: https://docs.dask.org/ (parallel computing)
+- **NumCodecs**: https://numcodecs.readthedocs.io/ (compression codecs)
+

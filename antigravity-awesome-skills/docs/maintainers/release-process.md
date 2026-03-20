@@ -38,6 +38,7 @@ Use this as a diagnostic signal. It is useful for spotting legacy quality debt, 
 - Add the release entry to [`CHANGELOG.md`](../../CHANGELOG.md).
 - Confirm `README.md` reflects the current version and generated counts.
 - Confirm Credits & Sources, contributors, and support links are still correct.
+- If PR or CI workflow behavior changed during the cycle, confirm maintainer and contributor docs mention the active checks (for example the `skill-review` workflow for `SKILL.md` pull requests).
 
 5. Prepare the release commit and tag locally:
 

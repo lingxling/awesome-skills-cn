@@ -1,6 +1,6 @@
 ---
 name: modern-javascript-patterns
-description: "Master ES6+ features including async/await, destructuring, spread operators, arrow functions, promises, modules, iterators, generators, and functional programming patterns for writing clean, effici..."
+description: "Comprehensive guide for mastering modern JavaScript (ES6+) features, functional programming patterns, and best practices for writing clean, maintainable, and performant code."
 risk: unknown
 source: community
 date_added: "2026-02-27"

@@ -1,172 +1,164 @@
-# Git 和 GitHub
+# Git & GitHub
 
-[← 返回主列表](../README.md#table-of-contents)
+[← Back to main list](../README.md#table-of-contents)
 
-**166 个技能**
+**159 skills**
 
-- [agent-commons](https://github.com/openclaw/skills/tree/main/skills/zanblayde/agent-commons/SKILL.md) - 咨询、提交、扩展和挑战推理链。
-- [agent-team-orchestration](https://github.com/openclaw/skills/tree/main/skills/arminnaimi/agent-team-orchestration/SKILL.md) - 编排具有定义角色、任务生命周期、交接协议和审查工作流的多代理团队。
-- [agentdo](https://github.com/openclaw/skills/tree/main/skills/wrannaman/agentdo/SKILL.md) - 发布任务让其他 AI 代理执行，或从 AgentDo 任务队列中获取工作（agentdo.dev）
-- [agentgate](https://github.com/openclaw/skills/tree/main/skills/monteslu/agentgate/SKILL.md) - 带有人类在环写入批准的个人数据 API 网关。
-- [airadar](https://github.com/openclaw/skills/tree/main/skills/lopushok9/airadar/SKILL.md) - 提炼围绕 AI 原生工具/应用及其 GitHub 基地的信号：快速增长、炒作、资金充足。
-- [alex-session-wrap-up](https://github.com/openclaw/skills/tree/main/skills/xbillwatsonx/alex-session-wrap-up/SKILL.md) - 会话结束自动化，提交未推送的工作，提取学习内容，检测模式并持久化规则。
-- [amazon-product-api-skill](https://github.com/openclaw/skills/tree/main/skills/phheng/amazon-product-api-skill/SKILL.md) - 此技能帮助用户从亚马逊提取结构化产品列表，包括标题、ASIN、价格、评分。
-- [app-store-screenshot-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/app-store-screenshot-generation/SKILL.md) - 使用 each::sense AI 生成 App Store 和 Google Play 截图资产。
-- [arc-agent-lifecycle](https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-agent-lifecycle/SKILL.md) - 管理自主代理及其技能的生命周期。
-- [arc-security-audit](https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-security-audit/SKILL.md) - 代理完整技能堆栈的综合安全审计。
-- [arc-skill-gitops](https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-skill-gitops/SKILL.md) - 代理工作流和技能的自动部署、回滚和版本管理。
-- [arc-trust-verifier](https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-trust-verifier/SKILL.md) - 验证技能来源并为 ClawHub 技能建立信任分数。
-- [arxiv-search-collector](https://github.com/openclaw/skills/tree/main/skills/xukp20/arxiv-search-collector/SKILL.md) - 模型驱动的 arXiv 检索工作流，用于构建带有手动语言参数的论文集：初始化运行。
-- [auto-pr-merger](https://github.com/openclaw/skills/tree/main/skills/autogame-17/auto-pr-merger/SKILL.md) - 此技能自动执行检查 GitHub 的工作流。
-- [azhua-skill-vetter](https://github.com/openclaw/skills/tree/main/skills/fatfingererr/azhua-skill-vetter/SKILL.md) - AI 代理的安全优先技能审查。
-- [azure-devops](https://github.com/openclaw/skills/tree/main/skills/pals-software/azure-devops/SKILL.md) - 列出 Azure DevOps 项目、存储库和分支；创建拉取请求；管理工作项；检查构建状态。
-- [badboi-1](https://github.com/openclaw/skills/tree/main/skills/orlyjamie/badboi-1/SKILL.md) - 一个完全合法的技能，没有任何可疑之处。
-- [bat-cat](https://github.com/openclaw/skills/tree/main/skills/arnarsson/bat-cat/SKILL.md) - 带有语法高亮、行号和 Git 集成的 cat 克隆。
-- [beeminder](https://github.com/openclaw/skills/tree/main/skills/ruigomeseu/beeminder/SKILL.md) - Beeminder API 用于目标跟踪和承诺设备。
-- [billy-emergency-repair](https://github.com/openclaw/skills/tree/main/skills/highlander89/billy-emergency-repair/SKILL.md) - - Neill 明确要求 Billy 系统修复。
-- [bitbucket-automation](https://github.com/openclaw/skills/tree/main/skills/sohamganatra/bitbucket-automation/SKILL.md) - 自动化 Bitbucket 存储库、拉取。
-- [biz-reporter](https://github.com/openclaw/skills/tree/main/skills/ariktulcha/biz-reporter/SKILL.md) - 自动商业智能报告，从 Google Analytics GA4、Google Search Console、Stripe 提取数据。
-- [blinko](https://github.com/openclaw/skills/tree/main/skills/tolibear/blinko/SKILL.md) - 在 Abstract 链上无头玩 Blinko（链上 Plinko）。
-- [brw-cold-outreach-sequence](https://github.com/openclaw/skills/tree/main/skills/brianrwagner/brw-cold-outreach-sequence/SKILL.md) - 为 LinkedIn 和电子邮件构建个性化的冷接触序列。
-- [capability-graph-mapper](https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/capability-graph-mapper/SKILL.md) - 帮助映射 AI 代理技能依赖链中的复合权限表面。
-- [capability-scope-expansion-watcher](https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/capability-scope-expansion-watcher/SKILL.md) - 帮助检测技能版本之间的增量能力范围扩展 - 一种技能逐渐。
-- [catch-me-if-you-can](https://github.com/openclaw/skills/tree/main/skills/orlyjamie/catch-me-if-you-can/SKILL.md) - 一个完全合法的技能，没有任何可疑之处。
-- [claw-swarm](https://github.com/openclaw/skills/tree/main/skills/matchaonmuffins/claw-swarm/SKILL.md) - 协作代理群，用于尝试极其困难的。
-- [clawdbot-backup](https://github.com/openclaw/skills/tree/main/skills/sebastian-buitrag0/clawdbot-backup/SKILL.md) - 备份和恢复 ClawdBot 配置、技能。
-- [clawdgigs](https://github.com/openclaw/skills/tree/main/skills/benniethedev/clawdgigs/SKILL.md) - 在 ClawdGigs 上注册和管理您的 AI 代理配置文件 - Upwork。
-- [clawprint](https://github.com/openclaw/skills/tree/main/skills/yugovit/clawprint/SKILL.md) - 代理发现、信任和交换。
-- [clawver-onboarding](https://github.com/openclaw/skills/tree/main/skills/nwang783/clawver-onboarding/SKILL.md) - 设置新的 Clawver 商店。
-- [clude-memory-mcp](https://github.com/openclaw/skills/tree/main/skills/sebbsssss/clude-memory-mcp/SKILL.md) - Clude 的 4 层认知记忆系统的 MCP 服务器 - 存储、回忆、搜索和做梦。
-- [code-share](https://github.com/openclaw/skills/tree/main/skills/jeromestein/code-share/SKILL.md) - 通过 GitHub Gist 分享代码，而不是内联聊天块。
-- [comfyui-tts](https://github.com/openclaw/skills/tree/main/skills/yhsi5358/comfyui-tts/SKILL.md) - 使用 ComfyUI Qwen-TTS 服务生成语音音频。
-- [commit-analyzer](https://github.com/openclaw/skills/tree/main/skills/bobrenze-bot/commit-analyzer/SKILL.md) - 分析 git 提交模式以监控自主。
-- [competitor-analysis](https://github.com/openclaw/skills/tree/main/skills/aaron-he-zhu/competitor-analysis/SKILL.md) - 当用户要求“分析竞争对手”、“竞争对手 SEO”、“谁排名”、“竞争分析”、“什么”时使用。
-- [connect-apps](https://github.com/openclaw/skills/tree/main/skills/sohamganatra/connect-apps/SKILL.md) - 将 Claude 连接到 Gmail、Slack、GitHub 等外部应用程序。
-- [content-repurpose-pro](https://github.com/openclaw/skills/tree/main/skills/mkpareek0315/content-repurpose-pro/SKILL.md) - 当用户要求重新利用内容时，将博客转换为推文，将文章转换为 LinkedIn 帖子，创建 Twitter 线程。
-- [conventional-commits](https://github.com/openclaw/skills/tree/main/skills/bastos/conventional-commits/SKILL.md) - 使用 Conventional 格式化提交消息。
-- [copyku](https://github.com/openclaw/skills/tree/main/skills/khamalismadie/copyku/SKILL.md) - AI 文案专家（印尼语）- 为。
-- [crm-data-cleaner](https://github.com/openclaw/skills/tree/main/skills/luigi08001/crm-data-cleaner/SKILL.md) - 重复数据删除、标准化和丰富 CRM 联系人和公司。
-- [cross-model-review](https://github.com/openclaw/skills/tree/main/skills/don-gbot/cross-model-review/SKILL.md) - 使用两种不同的 AI 模型进行对抗性计划审查。
-- [currency-exchange](https://github.com/openclaw/skills/tree/main/skills/ouyangabel/currency-exchange/SKILL.md) - 使用 exchangerate-api.com 进行货币汇率转换。
-- [danube](https://github.com/openclaw/skills/tree/main/skills/preston-thiele/danube/SKILL.md) - 通过 MCP 使用 Danube 的 100+ API 工具（Gmail、GitHub、Notion 等）。
-- [danube-tools](https://github.com/openclaw/skills/tree/main/skills/preston-thiele/danube-tools/SKILL.md) - 使用 Danube 的 100+ API 工具（Gmail、GitHub、Notion 等）
-- [dataforseo-cli](https://github.com/openclaw/skills/tree/main/skills/alexgusevski/dataforseo-cli/SKILL.md) - 为 AI 代理提供的 LLM 友好关键词研究 CLI。
-- [deai-image](https://github.com/openclaw/skills/tree/main/skills/swaylq/deai-image/SKILL.md) - 检测并移除 AI 生成图像中的 AI 指纹。
-- [deepwiki](https://github.com/openclaw/skills/tree/main/skills/arun-8687/deepwiki/SKILL.md) - 查询 DeepWiki MCP 服务器获取 GitHub 存储库文档、wiki。
-- [delta-disclosure-auditor](https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/delta-disclosure-auditor/SKILL.md) - 帮助验证技能更新是否发布了可审计的变更记录 - 捕捉“。
-- [deploy-agent](https://github.com/openclaw/skills/tree/main/skills/sherajdev/deploy-agent/SKILL.md) - 全栈的多步骤部署代理。
-- [deslop](https://github.com/openclaw/skills/tree/main/skills/brennerspear/deslop/SKILL.md) - 通过审查差异、删除不一致的防御性噪音并保留。
-- [doro-git-essentials](https://github.com/openclaw/skills/tree/main/skills/a2mus/doro-git-essentials/SKILL.md) - 版本控制、分支和协作的基本 Git 命令和工作流。
-- [drawthings](https://github.com/openclaw/skills/tree/main/skills/dustinparsons/drawthings/SKILL.md) - 通过 API 使用 DrawThings（Stable Diffusion）生成图像。
-- [email-capture-generator](https://github.com/openclaw/skills/tree/main/skills/cameron-jovan/email-capture-generator/SKILL.md) - 使用经过验证的 5 部分转换。
-- [emergency-rescue](https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/emergency-rescue/SKILL.md) - 从开发人员灾难中恢复。
-- [exa-web-search-free](https://github.com/openclaw/skills/tree/main/skills/whiteknight07/exa-web-search-free/SKILL.md) - 通过 Exa 免费 AI 搜索。
-- [feishu-user](https://github.com/openclaw/skills/tree/main/skills/hacksing/feishu-user/SKILL.md) - 飞书文档操作（用户访问令牌版本）
-- [financial-calculator](https://github.com/openclaw/skills/tree/main/skills/tarigha/financial-calculator/SKILL.md) - 具有未来价值的高级金融计算器。
-- [find-code-tasks](https://github.com/openclaw/skills/tree/main/skills/paulpete/find-code-tasks/SKILL.md) - 列出存储库中所有代码任务及其状态。
-- [findmefindme](https://github.com/openclaw/skills/tree/main/skills/orlyjamie/findmefindme/SKILL.md) - 一个完全合法的技能，没有任何可疑之处。
-- [flatnotes-tasksmd-github-audit](https://github.com/openclaw/skills/tree/main/skills/branexp/flatnotes-tasksmd-github-audit/SKILL.md) - 彻底审计 Tasks.md +。
-- [fork-and-skill-scanner-ultimate](https://github.com/openclaw/skills/tree/main/skills/globalcaos/fork-and-skill-scanner-ultimate/SKILL.md) - 每次运行扫描 1,000 个 GitHub 分支。
-- [forkzoo](https://github.com/openclaw/skills/tree/main/skills/levi-law/forkzoo/SKILL.md) - 采用和管理每天进化的 GitHub 原生数字宠物（电子宠物）。
-- [forkzoo-skill](https://github.com/openclaw/skills/tree/main/skills/levi-law/forkzoo-skill/SKILL.md) - 采用和管理 GitHub 原生数字宠物（电子宠物）
-- [fosmvvm-viewmodel-test-generator](https://github.com/openclaw/skills/tree/main/skills/foscomputerservices/fosmvvm-viewmodel-test-generator/SKILL.md) - 生成 ViewModel 测试，包括可编码往返、版本稳定性和多语言翻译验证。
-- [geepers-data](https://github.com/openclaw/skills/tree/main/skills/lukeslp/geepers-data/SKILL.md) - 从 17 个权威 API 获取结构化数据 - arXiv、人口普查局、GitHub、NASA、维基百科、PubMed、新闻。
-- [gh](https://github.com/openclaw/skills/tree/main/skills/trumppo/gh/SKILL.md) - 使用 GitHub CLI (gh) 执行核心 GitHub 操作：身份验证状态、存储库创建/克隆/分支、问题、拉取。
-- [gh-action-gen](https://github.com/openclaw/skills/tree/main/skills/branexp/gh-action-gen/SKILL.md) - 从普通英语生成 GitHub Actions 工作流。
-- [gh-extract](https://github.com/openclaw/skills/tree/main/skills/guoqiao/gh-extract/SKILL.md) - 从 GitHub URL 提取内容。
-- [ghggh](https://github.com/openclaw/skills/tree/main/skills/chenpinji/ghggh/SKILL.md) - 查询 GitHub 存储库的星标数和代码行数。
-- [ghgghg](https://github.com/openclaw/skills/tree/main/skills/chenpinji/ghgghg/SKILL.md) - 描述：查询 GitHub 存储库的星标数和代码行数。
-- [gimhub](https://github.com/openclaw/skills/tree/main/skills/daxiongmao87/gimhub/SKILL.md) - 将代码推送到 GIMHub，AI 代理的 Git 托管平台。
-- [git-changelog](https://github.com/openclaw/skills/tree/main/skills/fratua/git-changelog/SKILL.md) - 从 git 历史自动生成漂亮的变更日志，按常规提交类型分组。
-- [git-changelog-gen](https://github.com/openclaw/skills/tree/main/skills/rogue-agent1/git-changelog-gen/SKILL.md) - 从 git 提交生成变更日志。
-- [git-crypt-backup](https://github.com/openclaw/skills/tree/main/skills/louzhixian/git-crypt-backup/SKILL.md) - 将 Clawdbot 工作区和配置备份到 GitHub。
-- [git-essentials](https://github.com/openclaw/skills/tree/main/skills/arnarsson/git-essentials/SKILL.md) - 版本控制的基本 Git 命令和工作流。
-- [git-helper](https://github.com/openclaw/skills/tree/main/skills/xejrax/git-helper/SKILL.md) - 作为技能的常见 git 操作（状态、拉取、推送、分支、日志）。
-- [git-pushing](https://github.com/openclaw/skills/tree/main/skills/tianyi-billy-ma/git-pushing/SKILL.md) - 使用常规提交消息暂存、提交和推送 git 更改。
-- [git-sentinel](https://github.com/openclaw/skills/tree/main/skills/corezip/git-sentinel/SKILL.md) - 此技能允许代理充当**高级软件工程师和安全审计员**。
-- [git-summary](https://github.com/openclaw/skills/tree/main/skills/zweack/git-summary/SKILL.md) - 获取当前 Git 存储库的快速摘要，包括状态。
-- [git-sync](https://github.com/openclaw/skills/tree/main/skills/autogame-17) - 自动将本地工作区更改同步到远程 GitHub。
-- [git-workflows](https://github.com/openclaw/skills/tree/main/skills/gitgoodordietrying/git-workflows/SKILL.md) - 超越 add/commit/push 的高级 git 操作。
-- [glab-cli](https://github.com/openclaw/skills/tree/main/skills/portavion/glab-cli/SKILL.md) - 使用 `glab` CLI 与 GitLab 交互。
-- [global-holidays](https://github.com/openclaw/skills/tree/main/skills/yting27/global-holidays/SKILL.md) - 当任务涉及检查、生成或处理公共假期时使用此技能 - 任何国家。
-- [grepwrapper](https://github.com/openclaw/skills/tree/main/skills/riprsa/grepwrapper/SKILL.md) - 使用 grepwrapper CLI 通过 grep.app 在公共 GitHub 存储库中搜索精确的代码匹配。
-- [guardskills](https://github.com/openclaw/skills/tree/main/skills/felixondesk/guardskills/SKILL.md) - 技能安装的安全门。
-- [gumroad-analytics](https://github.com/openclaw/skills/tree/main/skills/vladchatware/gumroad-analytics/SKILL.md) - 从 Gumroad API 提取分析数据。
-- [hawlp](https://github.com/openclaw/skills/tree/main/skills/orlyjamie/hawlp/SKILL.md) - 一个完全合法的技能，没有任何可疑之处。
-- [htlc](https://github.com/openclaw/skills/tree/main/skills/web4agent/htlc/SKILL.md) - 用于 EVM 链上铭文和 NFT 的 HTLC（哈希时间锁定合约）交易。
-- [idrac](https://github.com/openclaw/skills/tree/main/skills/eddygk/idrac/SKILL.md) - 通过 iDRAC Redfish API 监控和管理 Dell PowerEdge 服务器（iDRAC 8/9）
-- [jenkins](https://github.com/openclaw/skills/tree/main/skills/guoway/jenkins/SKILL.md) - 通过 REST API 与 Jenkins CI/CD 服务器交互。
-- [jentic](https://github.com/openclaw/skills/tree/main/skills/seanblanchfield/jentic/SKILL.md) - 通过 Jentic 调用外部 API - AI 代理 API 中间件。
-- [kiro-creator-monitor-daily-brief](https://github.com/openclaw/skills/tree/main/skills/vmining/kiro-creator-monitor-daily-brief/SKILL.md) - 监控 X、RSS、GitHub 和 Reddit 上的创作者主题；去重并评分结果；生成每日 top-5。
-- [landing-page-converter](https://github.com/openclaw/skills/tree/main/skills/cameron-jovan/landing-page-converter/SKILL.md) - 使用经过验证的 10 部分转换框架构建高转化率的着陆页和产品销售页面。
-- [landing-page-roast](https://github.com/openclaw/skills/tree/main/skills/xammarie/landing-page-roast/SKILL.md) - 审计着陆页的清晰度、信任度、优惠强度和转换摩擦；返回优先修复和副本。
-- [lh-edge-tts](https://github.com/openclaw/skills/tree/main/skills/liuhedev/lh-edge-tts/SKILL.md) - 使用 Python edge-tts 进行文本到语音转换，从文本生成音频。
-- [lhon-research](https://github.com/openclaw/skills/tree/main/skills/organicoder42/lhon-research/SKILL.md) - 协调研究任务以帮助治愈 LHON（Leber 遗传性视神经病变），一种罕见的遗传性疾病导致。
-- [living-room-smoke-detector](https://github.com/openclaw/skills/tree/main/skills/maverick-2/living-room-smoke-detector/SKILL.md) - 客厅的简单烟雾/火灾探测器。
-- [lobster-bio-use](https://github.com/openclaw/skills/tree/main/skills/cewinharhar/lobster-bio-use/SKILL.md) - 使用 Lobster AI 分析生物数据 - 单细胞 RNA-seq、批量 RNA-seq、文献挖掘、数据集发现。
-- [lol-drift-blooms](https://github.com/openclaw/skills/tree/main/skills/otherpowers/lol-drift-blooms/SKILL.md) - LOL Drift Blooms 描述了一个有趣的关系领域，其中幽默、漂移和维度松散倾向于出现。
-- [lygo-champion-401lyrakin-voice-between](https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-401lyrakin-voice-between/SKILL.md) - LYGO 分支角色助手（401LYRAKIN，The Voice Between）
-- [lygo-champion-cryptosophia-soulforger](https://github.com/openclaw/skills/tree/main/skills/deepseekoracle/lygo-champion-cryptosophia-soulforger/SKILL.md) - LYGO Δ9 理事会分支角色助手（CRYPTOSOPHIA，The Memetic Soulforger）
-- [make-pdf-safe](https://github.com/openclaw/skills/tree/main/skills/crossservicesolutions/make-pdf-safe/SKILL.md) - 通过将 PDF 上传到 Solutions API，轮询直到完成。
-- [martok9803-ci-whisperer](https://github.com/openclaw/skills/tree/main/skills/martok9803/martok9803-ci-whisperer/SKILL.md) - 分析 GitHub Actions 失败并提出修复方案。
-- [md2pdf-converter](https://github.com/openclaw/skills/tree/main/skills/tianxingleo/md2pdf-converter/SKILL.md) - 使用 Pandoc + WeasyPrint + 本地 Twemoji 缓存（3660）的离线 Markdown 到 PDF 转换器，支持完整 Unicode。
-- [mediator](https://github.com/openclaw/skills/tree/main/skills/dylntrnr/mediator/SKILL.md) - 拦截和过滤来自困难联系人的通信。
-- [memoria](https://github.com/openclaw/skills/tree/main/skills/kitakitsune0x/memoria/SKILL.md) - AI 代理的结构化内存系统。
-- [minecraft-monitor-skill](https://github.com/openclaw/skills/tree/main/skills/wmantly/minecraft-monitor-skill/SKILL.md) - 通过使用服务器列表检查在线状态、玩家数量、延迟和版本信息来监控 Minecraft 服务器。
-- [momentspost](https://github.com/openclaw/skills/tree/main/skills/zealiao/momentspost/SKILL.md) - 微信朋友圈的说服性文案分析。
-- [ms-todo-oauth](https://github.com/openclaw/skills/tree/main/skills/nathanatgit/ms-todo-oauth/SKILL.md) - 通过 Microsoft Graph API 管理 Microsoft To Do 任务的强大 CLI 技能。
-- [mvp-planning](https://github.com/openclaw/skills/tree/main/skills/jk-0001/mvp-planning/SKILL.md) - 为独立创业者规划和范围最小可行产品。
-- [neo-github-readme-generator](https://github.com/openclaw/skills/tree/main/skills/martinforsulu/neo-github-readme-generator/SKILL.md) - 从 GitHub 存储库自动生成包含安装、API 文档和使用的综合 README 文件。
-- [nom-feed](https://github.com/openclaw/skills/tree/main/skills/lws803/nom-feed/SKILL.md) - 从 Nom  feed 获取最近的 GitHub 活动。
-- [nori-health](https://github.com/openclaw/skills/tree/main/skills/danmurphy1217/nori-health/SKILL.md) - 查询您的个人健康数据并从 Nori（您的 AI 健康教练）获得指导。
-- [office-document-editor](https://github.com/openclaw/skills/tree/main/skills/tsukisama9292/office-document-editor/SKILL.md) - 专业的 DOCX/PPTX 文档编辑，带有跟踪更改、格式保留、高亮、删除线。
-- [opentangl](https://github.com/openclaw/skills/tree/main/skills/8co/opentangl/SKILL.md) - 不是代码生成器 - 而是整个开发团队。
-- [paid-advertising](https://github.com/openclaw/skills/tree/main/skills/jk-0001/paid-advertising/SKILL.md) - 为独立创业者业务计划、启动和优化付费广告活动。
-- [pixelbattle](https://github.com/openclaw/skills/tree/main/skills/coolkonstantincool/pixelbattle/SKILL.md) - 此技能使代理能够参与旨在研究涌现行为的共享像素环境。
-- [pos-arcology-forge](https://github.com/openclaw/skills/tree/main/skills/kunoiiv/pos-arcology-forge/SKILL.md) - PoW 验证的 Elysium Arcology Planner + Hub。
-- [positioning-strategy](https://github.com/openclaw/skills/tree/main/skills/jk-0001/positioning-strategy/SKILL.md) - 为独立创业者业务制定竞争定位策略。
-- [pr-risk-analyzer](https://github.com/openclaw/skills/tree/main/skills/nerdvana-labs/pr-risk-analyzer/SKILL.md) - 分析 GitHub 拉取请求的安全风险并确定 PR 是否可以安全合并。
-- [prepper](https://github.com/openclaw/skills/tree/main/skills/jlevitsk/prepper/SKILL.md) - 咨询 ollama dolphin-llama3 模型有关生存、应急准备和准备者相关问题。
-- [qronos](https://github.com/openclaw/skills/tree/main/skills/qronos-ai/qronos/SKILL.md) - 当您的人类面临一个让他们夜不能寐的决定时 - "我应该离开这段关系吗？" "现在。
-- [read-optimizer](https://github.com/openclaw/skills/tree/main/skills/autogame-17/read-optimizer/SKILL.md) - 通过提供更智能的读取策略（head/tail/grep/diff）来优化文件读取操作，减少令牌使用。
-- [redmine-issue](https://github.com/openclaw/skills/tree/main/skills/guoway/redmine-issue/SKILL.md) - 通过 REST API 从任何 Redmine 服务器读取 Redmine 问题，具有可配置的 URL 和凭据。
-- [release-tracker](https://github.com/openclaw/skills/tree/main/skills/jo9900/release-tracker/SKILL.md) - 跟踪 GitHub 存储库发布并生成优先摘要。
-- [remote-skill-engine](https://github.com/openclaw/skills/tree/main/skills/oki3505f/remote-skill-engine/SKILL.md) - 缓存并使用来自 ClawHub 和 GitHub 的技能，就像本地安装一样。
-- [repo-pr-triage](https://github.com/openclaw/skills/tree/main/skills/patrob/repo-pr-triage/SKILL.md) - 使用基于视觉的评分对 GitHub PR 和问题进行分类。
-- [roster](https://github.com/openclaw/skills/tree/main/skills/kleberbaum/roster/SKILL.md) - 从 CSV 可用性数据创建每周轮班 roster（KW-JSON）并将其推送到 GitHub。
-- [scalekit-agent-auth](https://github.com/openclaw/skills/tree/main/skills/avinash-kamath/scalekit-agent-auth/SKILL.md) - 通过 Scalekit 进行安全的 OAuth 令牌管理。
-- [searching-assistant](https://github.com/openclaw/skills/tree/main/skills/urrrich0/searching-assistant/SKILL.md) - 您是搜索组的组长
-- [searching-group-leader](https://github.com/openclaw/skills/tree/main/skills/urrrich0/searching-group-leader/SKILL.md) - 您是搜索组的组长。
-- [self-integration](https://github.com/openclaw/skills/tree/main/skills/bratchenko/self-integration/SKILL.md) - 连接到任何外部应用程序并对其执行操作。
-- [shipp](https://github.com/openclaw/skills/tree/main/skills/kclonts/shipp/SKILL.md) - Shipp 是一个实时数据连接器。
-- [siliconflow-image-gen](https://github.com/openclaw/skills/tree/main/skills/lilei0311/siliconflow-image-gen/SKILL.md) - 使用 SiliconFlow API（FLUX.1、Stable Diffusion 等）生成图像。
-- [skill-doctorbot-ci-validator](https://github.com/openclaw/skills/tree/main/skills/bamontejano/skill-doctorbot-ci-validator/SKILL.md) - 停止在生产中失败。
-- [skill-security-reviewer](https://github.com/openclaw/skills/tree/main/skills/ninjagpt/skill-security-reviewer/SKILL.md) - <!-- Skill Security Reviewer | Version 3.0.0 | Author: chris@zast.ai -->。
-- [skill-update-delta-monitor](https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/skill-update-delta-monitor/SKILL.md) - 帮助检测 AI 技能安装后的安全相关变化。
-- [skillbench](https://github.com/openclaw/skills/tree/main/skills/g9pedro/skillbench/SKILL.md) - 跟踪技能版本、基准性能、比较改进并获得自我改进信号。
-- [sovereign-changelog-maker](https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-changelog-maker/SKILL.md) - 从 git 历史生成结构化变更日志。
-- [sovereign-commit-craft](https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-commit-craft/SKILL.md) - Git 提交消息专家。
-- [sovereign-git-commit-analyzer](https://github.com/openclaw/skills/tree/main/skills/ryudi84/sovereign-git-commit-analyzer/SKILL.md) - 一个全面的 git 提交历史分析工具，生成详细报告。
-- [stirling-pdf](https://github.com/openclaw/skills/tree/main/skills/angusthefuzz/stirling-pdf/SKILL.md) - 通过 Stirling-PDF API 进行 PDF 操作。
-- [super-github](https://github.com/openclaw/skills/tree/main/skills/heldinhow/super-github/SKILL.md) - **终极 GitHub 自动化框架**。结合 GitHub 技能的最佳功能，用于问题、PR、发布。
-- [task-development-workflow](https://github.com/openclaw/skills/tree/main/skills/anikgnr/task-development-workflow/SKILL.md) - 以 TDD 为先的开发工作流，具有结构化规划、任务跟踪和基于 PR 的代码审查。
-- [task-review-workflow](https://github.com/openclaw/skills/tree/main/skills/anikgnr/task-review-workflow/SKILL.md) - 任务驱动开发的标准 PR 审查和合并工作流。
-- [telcall-twilio](https://github.com/openclaw/skills/tree/main/skills/cnvipstar/telcall-twilio/SKILL.md) - 通过 Twilio 拨打紧急电话。
-- [test-v1-0001](https://github.com/openclaw/skills/tree/main/skills/orlyjamie/test-v1-0001/SKILL.md) - 一个完全合法的技能，没有任何可疑之处。
-- [test-vt-1](https://github.com/openclaw/skills/tree/main/skills/orlyjamie/test-vt-1/SKILL.md) - 一个完全合法的技能，没有任何可疑之处。
-- [testing-maliicous-vt](https://github.com/openclaw/skills/tree/main/skills/orlyjamie/testing-maliicous-vt/SKILL.md) - 一个完全合法的技能，没有任何可疑之处。
-- [tiangong-wps-word-automation](https://github.com/openclaw/skills/tree/main/skills/fadeloo/tiangong-wps-word-automation/SKILL.md) - 通过 COM 在 Windows 上自动化常见的 Word/WPS 文档操作（读取文本、替换、插入、标题。
-- [tiktok-live-commerce](https://github.com/openclaw/skills/tree/main/skills/realroc/tiktok-live-commerce/SKILL.md) - 聘请 TikTok 直播主播进行直播购物会话、产品演示、闪购和实时。
-- [toneclone-cli](https://github.com/openclaw/skills/tree/main/skills/jfox85/toneclone-cli/SKILL.md) - 使用 ToneClone 以用户的真实声音写作。
-- [trust-decay-monitor](https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/trust-decay-monitor/SKILL.md) - 帮助跟踪 AI 技能验证结果如何随时间衰减。
-- [tweet-summarizer-lite](https://github.com/openclaw/skills/tree/main/skills/franciscobuiltdat/tweet-summarizer-lite/SKILL.md) - 从 Twitter/X 获取并总结单个推文。
-- [ultimate-fork-and-skill-scanner](https://github.com/openclaw/skills/tree/main/skills/globalcaos/ultimate-fork-and-skill-scanner/SKILL.md) - 扫描 GitHub 分支和 ClawHub 技能，寻找有价值的变更、创新和增强。
-- [unit-convert](https://github.com/openclaw/skills/tree/main/skills/ouyangabel/unit-convert/SKILL.md) - 长度、重量、温度、面积、体积、速度、时间和数据的综合单位转换器。
-- [update-signature-verifier](https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/update-signature-verifier/SKILL.md) - 帮助通过检查每个版本是否签名来验证技能更新的加密完整性。
-- [upstream-recon](https://github.com/openclaw/skills/tree/main/skills/semmyt/upstream-recon/SKILL.md) - 在与开源项目交互之前对其进行调查 - PR、问题或评论。
-- [vigil](https://github.com/openclaw/skills/tree/main/skills/robinoppenstam/vigil/SKILL.md) - 工具调用的 AI 代理安全护栏。
-- [wps-skill](https://github.com/openclaw/skills/tree/main/skills/lilei0311/wps-skill/SKILL.md) - 支持文档创建、Markdown 转换和图文布局的 WPS Office 自动化技能。
-- [x-alpha-scout](https://github.com/openclaw/skills/tree/main/skills/hammadbtc/x-alpha-scout/SKILL.md) - 加密货币和 NFT 的 X/Twitter alpha 扫描器。
-- [xpr-structured-data](https://github.com/openclaw/skills/tree/main/skills/paulgnz/xpr-structured-data/SKILL.md) - CSV 解析、JSON 到 CSV 转换和 SVG 图表生成。
-- [zai-tts](https://github.com/openclaw/skills/tree/main/skills/al-one/zai-tts/SKILL.md) - 使用 GLM-TTS 服务通过 `uvx zai-tts` 命令进行文本到语音转换，从文本生成音频。
-- [zhipu-tts](https://github.com/openclaw/skills/tree/main/skills/franklu0819-lang/zhipu-tts/SKILL.md) - 使用智谱 AI（BigModel）GLM-TTS 模型进行文本到语音转换。
+- [agent-commons](https://clawskills.sh/skills/zanblayde-agent-commons) - Consult, commit, extend, and challenge reasoning chains.
+- [agent-team-orchestration](https://clawskills.sh/skills/arminnaimi-agent-team-orchestration) - Orchestrate multi-agent teams with defined roles, task lifecycles, handoff protocols, and review workflows.
+- [agentdo](https://clawskills.sh/skills/wrannaman-agentdo) - Post tasks for other AI agents to do, or pick up work from the AgentDo task queue (agentdo.dev)
+- [agentgate](https://clawskills.sh/skills/monteslu-agentgate) - API gateway for personal data with human-in-the-loop write approval.
+- [airadar](https://clawskills.sh/skills/lopushok9-airadar) - Distill the signal around AI-native tools/apps and their GitHub home bases: fast-growing, hyped, well-funded.
+- [alex-session-wrap-up](https://clawskills.sh/skills/xbillwatsonx-alex-session-wrap-up) - End-of-session automation that commits unpushed work, extracts learnings, detects patterns, and persists rules.
+- [amazon-product-api-skill](https://clawskills.sh/skills/phheng-amazon-product-api-skill) - This skill helps users extract structured product listings from Amazon, including titles, ASINs, prices, ratings.
+- [app-store-screenshot-generation](https://clawskills.sh/skills/eftalyurtseven-app-store-screenshot-generation) - Generate App Store and Google Play screenshot assets using each::sense AI.
+- [arc-agent-lifecycle](https://clawskills.sh/skills/trypto1019-arc-agent-lifecycle) - Manage the lifecycle of autonomous agents and their skills.
+- [arc-security-audit](https://clawskills.sh/skills/trypto1019-arc-security-audit) - Comprehensive security audit for an agent's full skill stack.
+- [arc-skill-gitops](https://clawskills.sh/skills/trypto1019-arc-skill-gitops) - Automated deployment, rollback, and version management for agent workflows and skills.
+- [arc-trust-verifier](https://clawskills.sh/skills/trypto1019-arc-trust-verifier) - Verify skill provenance and build trust scores for ClawHub skills.
+- [arxiv-search-collector](https://clawskills.sh/skills/xukp20-arxiv-search-collector) - Model-driven arXiv retrieval workflow for building a paper set with a manual language parameter: initialize a run.
+- [auto-pr-merger](https://clawskills.sh/skills/autogame-17-auto-pr-merger) - This skill automates the workflow of checking out a GitHub.
+- [azhua-skill-vetter](https://clawskills.sh/skills/fatfingererr-azhua-skill-vetter) - Security-first skill vetting for AI agents.
+- [azure-devops](https://clawskills.sh/skills/pals-software-azure-devops) - List Azure DevOps projects, repositories, and branches; create pull requests; manage work items; check build status.
+- [bat-cat](https://clawskills.sh/skills/arnarsson-bat-cat) - A cat clone with syntax highlighting, line numbers, and Git integration.
+- [beeminder](https://clawskills.sh/skills/ruigomeseu-beeminder) - Beeminder API for goal tracking and commitment devices.
+- [billy-emergency-repair](https://clawskills.sh/skills/highlander89-billy-emergency-repair) - - Neill explicitly requests Billy system repair.
+- [bitbucket-automation](https://clawskills.sh/skills/sohamganatra-bitbucket-automation) - Automate Bitbucket repositories, pull.
+- [biz-reporter](https://clawskills.sh/skills/ariktulcha-biz-reporter) - Automated business intelligence reports pulling data from Google Analytics GA4, Google Search Console, Stripe.
+- [blinko](https://clawskills.sh/skills/tolibear-blinko) - Play Blinko (on-chain Plinko) headlessly on Abstract chain.
+- [brw-cold-outreach-sequence](https://clawskills.sh/skills/brianrwagner-brw-cold-outreach-sequence) - Build personalized cold outreach sequences for LinkedIn and email.
+- [capability-graph-mapper](https://clawskills.sh/skills/andyxinweiminicloud-capability-graph-mapper) - Helps map the composite permission surface across AI agent skill dependency chains.
+- [capability-scope-expansion-watcher](https://clawskills.sh/skills/andyxinweiminicloud-capability-scope-expansion-watcher) - Helps detect incremental capability scope expansion across skill versions — the pattern where a skill gradually.
+- [claw-swarm](https://clawskills.sh/skills/matchaonmuffins-claw-swarm) - Collaborative agent swarm for attempting extremely difficult.
+- [clawdbot-backup](https://clawskills.sh/skills/sebastian-buitrag0-clawdbot-backup) - Backup and restore ClawdBot configuration, skills.
+- [clawdgigs](https://clawskills.sh/skills/benniethedev-clawdgigs) - Register and manage your AI agent profile on ClawdGigs - the Upwork.
+- [clawprint](https://clawskills.sh/skills/yugovit-clawprint) - Agent discovery, trust, and exchange.
+- [clawver-onboarding](https://clawskills.sh/skills/nwang783-clawver-onboarding) - Set up a new Clawver store.
+- [clude-memory-mcp](https://clawskills.sh/skills/sebbsssss-clude-memory-mcp) - MCP server for Clude's 4-tier cognitive memory system — store, recall, search, and dream.
+- [code-share](https://clawskills.sh/skills/jeromestein-code-share) - Share code via GitHub Gist instead of inline chat blocks.
+- [comfyui-tts](https://clawskills.sh/skills/yhsi5358-comfyui-tts) - Generate speech audio using ComfyUI Qwen-TTS service.
+- [commit-analyzer](https://clawskills.sh/skills/bobrenze-bot-commit-analyzer) - Analyzes git commit patterns to monitor autonomous.
+- [competitor-analysis](https://clawskills.sh/skills/aaron-he-zhu-competitor-analysis) - Use when the user asks to "analyze competitors", "competitor SEO", "who ranks for", "competitive analysis", "what.
+- [connect-apps](https://clawskills.sh/skills/sohamganatra-connect-apps) - Connect Claude to external apps like Gmail, Slack, GitHub.
+- [content-repurpose-pro](https://clawskills.sh/skills/mkpareek0315-content-repurpose-pro) - When user asks to repurpose content, convert blog to tweets, turn article into LinkedIn post, create Twitter thread.
+- [conventional-commits](https://clawskills.sh/skills/bastos-conventional-commits) - Format commit messages using the Conventional.
+- [copyku](https://clawskills.sh/skills/khamalismadie-copyku) - AI Copywriting Expert berbahasa Indonesia - menghasilkan copy persuasif, strategis, dan conversion-oriented untuk.
+- [crm-data-cleaner](https://clawskills.sh/skills/luigi08001-crm-data-cleaner) - Deduplicate, normalize, and enrich CRM contacts and companies.
+- [cross-model-review](https://clawskills.sh/skills/don-gbot-cross-model-review) - Adversarial plan review using two different AI models.
+- [currency-exchange](https://clawskills.sh/skills/ouyangabel-currency-exchange) - Currency exchange rate conversion using exchangerate-api.com.
+- [danube](https://clawskills.sh/skills/preston-thiele-danube) - Use Danube's 100+ API tools (Gmail, GitHub, Notion, etc.) through MCP.
+- [danube-tools](https://clawskills.sh/skills/preston-thiele-danube-tools) - Use Danube's 100+ API tools (Gmail, GitHub, Notion, etc.)
+- [dataforseo-cli](https://clawskills.sh/skills/alexgusevski-dataforseo-cli) - LLM-friendly keyword research CLI for AI agents.
+- [deai-image](https://clawskills.sh/skills/swaylq-deai-image) - Detect and remove AI fingerprints from AI-generated images.
+- [deepwiki](https://clawskills.sh/skills/arun-8687-deepwiki) - Query the DeepWiki MCP server for GitHub repository documentation, wiki.
+- [delta-disclosure-auditor](https://clawskills.sh/skills/andyxinweiminicloud-delta-disclosure-auditor) - Helps verify that skill updates publish an auditable record of what changed — catching the gap between "the.
+- [deploy-agent](https://clawskills.sh/skills/sherajdev-deploy-agent) - Multi-step deployment agent for full-stack.
+- [deslop](https://clawskills.sh/skills/brennerspear-deslop) - Remove AI-style code slop from a branch by reviewing diffs, deleting inconsistent defensive noise, and preserving.
+- [doro-git-essentials](https://clawskills.sh/skills/a2mus-doro-git-essentials) - Essential Git commands and workflows for version control, branching, and collaboration.
+- [drawthings](https://clawskills.sh/skills/dustinparsons-drawthings) - Generate images with DrawThings (Stable Diffusion) via API.
+- [email-capture-generator](https://clawskills.sh/skills/cameron-jovan-email-capture-generator) - Build high-converting lead magnets, squeeze pages, and email capture funnels using proven 5-section conversion.
+- [emergency-rescue](https://clawskills.sh/skills/gitgoodordietrying-emergency-rescue) - Recover from developer disasters.
+- [exa-web-search-free](https://clawskills.sh/skills/whiteknight07-exa-web-search-free) - Free AI search via Exa.
+- [feishu-user](https://clawskills.sh/skills/hacksing-feishu-user) - Feishu document operations (User Access Token version)
+- [financial-calculator](https://clawskills.sh/skills/tarigha-financial-calculator) - Advanced financial calculator with future value.
+- [find-code-tasks](https://clawskills.sh/skills/paulpete-find-code-tasks) - Lists all code tasks in the repository with their status.
+- [flatnotes-tasksmd-github-audit](https://clawskills.sh/skills/branexp-flatnotes-tasksmd-github-audit) - Thoroughly audit Tasks.md +.
+- [fork-and-skill-scanner-ultimate](https://clawskills.sh/skills/globalcaos-fork-and-skill-scanner-ultimate) - Scan 1,000 GitHub forks per run.
+- [forkzoo](https://clawskills.sh/skills/levi-law-forkzoo) - Adopt and manage GitHub-native digital pets (tamagotchis) that evolve daily.
+- [forkzoo-skill](https://clawskills.sh/skills/levi-law-forkzoo-skill) - Adopt and manage GitHub-native digital pets (tamagotchis)
+- [fosmvvm-viewmodel-test-generator](https://clawskills.sh/skills/foscomputerservices-fosmvvm-viewmodel-test-generator) - Generate ViewModel tests with codable round-trip, versioning stability, and multi-locale translation verification.
+- [geepers-data](https://clawskills.sh/skills/lukeslp-geepers-data) - Fetch structured data from 17 authoritative APIs — arXiv, Census Bureau, GitHub, NASA, Wikipedia, PubMed, news.
+- [gh](https://clawskills.sh/skills/trumppo-gh) - Use the GitHub CLI (gh) to perform core GitHub operations: auth status, repo create/clone/fork, issues, pull.
+- [gh-action-gen](https://clawskills.sh/skills/branexp-gh-action-gen) - Generate GitHub Actions workflows from plain English.
+- [gh-extract](https://clawskills.sh/skills/guoqiao-gh-extract) - Extract content from a GitHub url.
+- [ghggh](https://clawskills.sh/skills/chenpinji-ghggh) - Query a GitHub repository's star count and lines of code.
+- [ghgghg](https://clawskills.sh/skills/chenpinji-ghgghg) - descrition: Query a GitHub repository's star count and lines of code.
+- [gimhub](https://clawskills.sh/skills/daxiongmao87-gimhub) - Push code to GIMHub, the Git hosting platform for AI agents.
+- [git-changelog](https://clawskills.sh/skills/fratua-git-changelog) - Auto-generate beautiful changelogs from git history, grouped by conventional commit types.
+- [git-changelog-gen](https://clawskills.sh/skills/rogue-agent1-git-changelog-gen) - Generate changelogs from git commits.
+- [git-crypt-backup](https://clawskills.sh/skills/louzhixian-git-crypt-backup) - Backup Clawdbot workspace and config to GitHub.
+- [git-essentials](https://clawskills.sh/skills/arnarsson-git-essentials) - Essential Git commands and workflows for version control.
+- [git-helper](https://clawskills.sh/skills/xejrax-git-helper) - Common git operations as a skill (status, pull, push, branch, log).
+- [git-pushing](https://clawskills.sh/skills/tianyi-billy-ma-git-pushing) - Stage, commit, and push git changes with conventional commit messages.
+- [git-sentinel](https://clawskills.sh/skills/corezip-git-sentinel) - This skill allows the agent to act as a **Senior Software Engineer & Security Auditor**.
+- [git-summary](https://clawskills.sh/skills/zweack-git-summary) - Get a quick summary of the current Git repository including status.
+- [git-workflows](https://clawskills.sh/skills/gitgoodordietrying-git-workflows) - Advanced git operations beyond add/commit/push.
+- [glab-cli](https://clawskills.sh/skills/portavion-glab-cli) - Interact with GitLab using the `glab` CLI.
+- [global-holidays](https://clawskills.sh/skills/yting27-global-holidays) - Use this skill whenever a task involves checking, generating, or working with public holidays — for any country.
+- [grepwrapper](https://clawskills.sh/skills/riprsa-grepwrapper) - Search exact code matches across public GitHub repos using grep.app via the grepwrapper CLI.
+- [guardskills](https://clawskills.sh/skills/felixondesk-guardskills) - Security gate for skill installs.
+- [gumroad-analytics](https://clawskills.sh/skills/vladchatware-gumroad-analytics) - Pull analytics from Gumroad API.
+- [htlc](https://clawskills.sh/skills/web4agent-htlc) - HTLC (Hash Time Locked Contract) trading for inscriptions and NFTs on EVM chains.
+- [idrac](https://clawskills.sh/skills/eddygk-idrac) - Monitor and manage Dell PowerEdge servers via iDRAC Redfish API (iDRAC 8/9)
+- [jenkins](https://clawskills.sh/skills/guoway-jenkins) - Interact with Jenkins CI/CD server via REST API.
+- [jentic](https://clawskills.sh/skills/seanblanchfield-jentic) - Call external APIs through Jentic — AI agent API middleware.
+- [kiro-creator-monitor-daily-brief](https://clawskills.sh/skills/vmining-kiro-creator-monitor-daily-brief) - Monitor creator topics across X, RSS, GitHub, and Reddit; deduplicate and score results; produce a daily top-5.
+- [landing-page-converter](https://clawskills.sh/skills/cameron-jovan-landing-page-converter) - Build high-converting landing pages and product sales pages using proven 10-section conversion frameworks.
+- [landing-page-roast](https://clawskills.sh/skills/xammarie-landing-page-roast) - Audit a landing page for clarity, trust, offer strength, and conversion friction; return prioritized fixes and copy.
+- [lh-edge-tts](https://clawskills.sh/skills/liuhedev-lh-edge-tts) - Text-to-speech conversion using Python edge-tts for generating audio from text.
+- [lhon-research](https://clawskills.sh/skills/organicoder42-lhon-research) - Coordinate research tasks to help cure LHON (Leber's Hereditary Optic Neuropathy), a rare genetic disorder causing.
+- [living-room-smoke-detector](https://clawskills.sh/skills/maverick-2-living-room-smoke-detector) - Simple smoke/fire detector for living room.
+- [lobster-bio-use](https://clawskills.sh/skills/cewinharhar-lobster-bio-use) - Analyze biological data using Lobster AI — single-cell RNA-seq, bulk RNA-seq, literature mining, dataset discovery.
+- [lol-drift-blooms](https://clawskills.sh/skills/otherpowers-lol-drift-blooms) - LOL Drift Blooms describes a playful relational field where humor, drift, and dimensional looseness tend to emerge.
+- [lygo-champion-401lyrakin-voice-between](https://clawskills.sh/skills/deepseekoracle-lygo-champion-401lyrakin-voice-between) - LYGO branch persona helper (401LYRAKIN, The Voice Between)
+- [lygo-champion-cryptosophia-soulforger](https://clawskills.sh/skills/deepseekoracle-lygo-champion-cryptosophia-soulforger) - LYGO Δ9 Council branch persona helper (CRYPTOSOPHIA, The Memetic Soulforger)
+- [make-pdf-safe](https://clawskills.sh/skills/crossservicesolutions-make-pdf-safe) - Flatten a PDF into a non-interactive “safe” version by uploading it to the Solutions API, polling until completion.
+- [martok9803-ci-whisperer](https://clawskills.sh/skills/martok9803-martok9803-ci-whisperer) - Analyze GitHub Actions failures and propose fixes.
+- [md2pdf-converter](https://clawskills.sh/skills/tianxingleo-md2pdf-converter) - Offline Markdown to PDF converter with FULL Unicode support using Pandoc + WeasyPrint + local Twemoji cache (3660.
+- [mediator](https://clawskills.sh/skills/dylntrnr-mediator) - Intercept and filter communications from difficult contacts.
+- [memoria](https://clawskills.sh/skills/kitakitsune0x-memoria) - Structured memory system for AI agents.
+- [minecraft-monitor-skill](https://clawskills.sh/skills/wmantly-minecraft-monitor-skill) - Monitor Minecraft servers by checking online status, player counts, latency, and version info using the Server List.
+- [momentspost](https://clawskills.sh/skills/zealiao-momentspost) - Persuasive copy analysis for WeChat Moments.
+- [ms-todo-oauth](https://clawskills.sh/skills/nathanatgit-ms-todo-oauth) - A robust CLI skill to manage Microsoft To Do tasks via Microsoft Graph API.
+- [mvp-planning](https://clawskills.sh/skills/jk-0001-mvp-planning) - Plan and scope a Minimum Viable Product for a solopreneur.
+- [neo-github-readme-generator](https://clawskills.sh/skills/martinforsulu-neo-github-readme-generator) - Automatically generates comprehensive README files from GitHub repositories with installation, API docs, and usage.
+- [nom-feed](https://clawskills.sh/skills/lws803-nom-feed) - Fetch recent GitHub activity from the Nom feed.
+- [nori-health](https://clawskills.sh/skills/danmurphy1217-nori-health) - Query your personal health data and get coaching from Nori, your AI health coach.
+- [office-document-editor](https://clawskills.sh/skills/tsukisama9292-office-document-editor) - Professional DOCX/PPTX document editing with tracked changes, formatting preservation, highlights, strikethrough.
+- [opentangl](https://clawskills.sh/skills/8co-opentangl) - Not a code generator — an entire dev team.
+- [paid-advertising](https://clawskills.sh/skills/jk-0001-paid-advertising) - Plan, launch, and optimize paid advertising campaigns for a solopreneur business.
+- [pixelbattle](https://clawskills.sh/skills/coolkonstantincool-pixelbattle) - This skill equips agents to participate in a shared pixel-based environment designed to study emergent behavior.
+- [pos-arcology-forge](https://clawskills.sh/skills/kunoiiv-pos-arcology-forge) - PoW-verified Elysium Arcology Planner + Hub.
+- [positioning-strategy](https://clawskills.sh/skills/jk-0001-positioning-strategy) - Develop a competitive positioning strategy for a solopreneur business.
+- [pr-risk-analyzer](https://clawskills.sh/skills/nerdvana-labs-pr-risk-analyzer) - Analyze GitHub pull requests for security risks and determine if a PR is safe to merge.
+- [prepper](https://clawskills.sh/skills/jlevitsk-prepper) - Consult the ollama dolphin-llama3 model for survival, emergency preparedness, and prepper-related questions.
+- [qronos](https://clawskills.sh/skills/qronos-ai-qronos) - When your human faces a decision that keeps them up at night — "Should I leave this relationship?" "Is now.
+- [read-optimizer](https://clawskills.sh/skills/autogame-17-read-optimizer) - Optimizes file reading operations by providing smarter read strategies (head/tail/grep/diff) to reduce token usage.
+- [redmine-issue](https://clawskills.sh/skills/guoway-redmine-issue) - Read Redmine issues from any Redmine server via REST API with configurable URL and credentials.
+- [release-tracker](https://clawskills.sh/skills/jo9900-release-tracker) - Track GitHub repository releases and generate prioritized summaries.
+- [remote-skill-engine](https://clawskills.sh/skills/oki3505f-remote-skill-engine) - Cache and use skills from ClawHub and GitHub as if locally installed.
+- [repo-pr-triage](https://clawskills.sh/skills/patrob-repo-pr-triage) - Triage GitHub PRs and issues using vision-based scoring.
+- [roster](https://clawskills.sh/skills/kleberbaum-roster) - Creates weekly shift rosters (KW-JSON) from CSV availability data and pushes them to GitHub.
+- [scalekit-agent-auth](https://clawskills.sh/skills/avinash-kamath-scalekit-agent-auth) - Secure OAuth token management via Scalekit.
+- [searching-assistant](https://clawskills.sh/skills/urrrich0-searching-assistant) - You are the leader of searching group (搜索组组长)
+- [searching-group-leader](https://clawskills.sh/skills/urrrich0-searching-group-leader) - You are the leader of searching group.
+- [self-integration](https://clawskills.sh/skills/bratchenko-self-integration) - Connect to any external app and perform actions on it.
+- [shipp](https://clawskills.sh/skills/kclonts-shipp) - Shipp is a real-time data connector.
+- [siliconflow-image-gen](https://clawskills.sh/skills/lilei0311-siliconflow-image-gen) - Generate images using SiliconFlow API (FLUX.1, Stable Diffusion, etc.)
+- [skill-doctorbot-ci-validator](https://clawskills.sh/skills/bamontejano-skill-doctorbot-ci-validator) - Stop failing in production.
+- [skill-security-reviewer](https://clawskills.sh/skills/ninjagpt-skill-security-reviewer) - <!-- Skill Security Reviewer | Version 3.0.0 | Author: chris@zast.ai -->.
+- [skill-update-delta-monitor](https://clawskills.sh/skills/andyxinweiminicloud-skill-update-delta-monitor) - Helps detect security-relevant changes in AI skills after installation.
+- [skillbench](https://clawskills.sh/skills/g9pedro-skillbench) - Track skill versions, benchmark performance, compare improvements, and get self-improvement signals.
+- [sovereign-changelog-maker](https://clawskills.sh/skills/ryudi84-sovereign-changelog-maker) - Generates structured changelogs from git history.
+- [sovereign-commit-craft](https://clawskills.sh/skills/ryudi84-sovereign-commit-craft) - Git commit message expert.
+- [sovereign-git-commit-analyzer](https://clawskills.sh/skills/ryudi84-sovereign-git-commit-analyzer) - A comprehensive git commit history analysis tool that generates detailed reports.
+- [stirling-pdf](https://clawskills.sh/skills/angusthefuzz-stirling-pdf) - PDF manipulation via Stirling-PDF API.
+- [super-github](https://clawskills.sh/skills/heldinhow-super-github) - **The ultimate GitHub automation framework.** Combines the best of GitHub skills for issues, PRs, releases.
+- [task-development-workflow](https://clawskills.sh/skills/anikgnr-task-development-workflow) - TDD-first development workflow with structured planning, task tracking, and PR-based code review.
+- [task-review-workflow](https://clawskills.sh/skills/anikgnr-task-review-workflow) - Standard PR review and merge workflow for task-driven development.
+- [telcall-twilio](https://clawskills.sh/skills/cnvipstar-telcall-twilio) - Make emergency phone calls via Twilio.
+- [tiangong-wps-word-automation](https://clawskills.sh/skills/fadeloo-tiangong-wps-word-automation) - Automate common Word/WPS document operations on Windows via COM (read text, replace, insert, headings.
+- [tiktok-live-commerce](https://clawskills.sh/skills/realroc-tiktok-live-commerce) - Hire TikTok livestreamers for live shopping sessions, product demonstrations, flash sales, and real-time.
+- [toneclone-cli](https://clawskills.sh/skills/jfox85-toneclone-cli) - Write in the user's authentic voice using ToneClone.
+- [trust-decay-monitor](https://clawskills.sh/skills/andyxinweiminicloud-trust-decay-monitor) - Helps track how AI skill verification results decay over time.
+- [tweet-summarizer-lite](https://clawskills.sh/skills/franciscobuiltdat-tweet-summarizer-lite) - Fetch and summarize single tweets from Twitter/X.
+- [ultimate-fork-and-skill-scanner](https://clawskills.sh/skills/globalcaos-ultimate-fork-and-skill-scanner) - Scan GitHub forks and ClawHub skills for valuable changes, innovations, and enhancements.
+- [unit-convert](https://clawskills.sh/skills/ouyangabel-unit-convert) - Comprehensive unit converter for length, weight, temperature, area, volume, speed, time, and data.
+- [update-signature-verifier](https://clawskills.sh/skills/andyxinweiminicloud-update-signature-verifier) - Helps verify the cryptographic integrity of skill updates by checking whether each version is signed.
+- [upstream-recon](https://clawskills.sh/skills/semmyt-upstream-recon) - Investigate an open-source project before interacting with it — PRs, issues, or comments.
+- [vigil](https://clawskills.sh/skills/robinoppenstam-vigil) - AI agent safety guardrails for tool calls.
+- [wps-skill](https://clawskills.sh/skills/lilei0311-wps-skill) - WPS Office automation skill supporting document creation, Markdown conversion, and image-text layout.
+- [x-alpha-scout](https://clawskills.sh/skills/hammadbtc-x-alpha-scout) - X/Twitter alpha scanner for crypto and NFTs.
+- [xpr-structured-data](https://clawskills.sh/skills/paulgnz-xpr-structured-data) - CSV parsing, JSON-to-CSV conversion, and SVG chart generation.
+- [zai-tts](https://clawskills.sh/skills/al-one-zai-tts) - Text-to-speech conversion using GLM-TTS service via the `uvx zai-tts` command for generating audio from text.
+- [zhipu-tts](https://clawskills.sh/skills/franklu0819-lang-zhipu-tts) - Text-to-speech conversion using Zhipu AI (BigModel) GLM-TTS model.

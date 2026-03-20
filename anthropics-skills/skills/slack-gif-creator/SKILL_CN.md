@@ -1,228 +1,228 @@
 ---
 name: slack-gif-creator
-description: 为Slack创建优化动画GIF的知识和实用工具。提供约束、验证工具和动画概念。当用户请求Slack动画GIF时使用，例如"为Slack制作一个X做Y的GIF"。
-license: 完整条款见LICENSE.txt
+description: Knowledge and utilities for creating animated GIFs optimized for Slack. Provides constraints, validation tools, and animation concepts. Use when users request animated GIFs for Slack like "make me a GIF of X doing Y for Slack."
+license: Complete terms in LICENSE.txt
 ---
 
-# Slack GIF 创建者
+# Slack GIF Creator
 
-一个提供实用工具和知识的工具包，用于创建为Slack优化的动画GIF。
+A toolkit providing utilities and knowledge for creating animated GIFs optimized for Slack.
 
-## Slack 要求
+## Slack Requirements
 
-**尺寸：**
-- 表情符号GIF：128x128（推荐）
-- 消息GIF：480x480
+**Dimensions:**
+- Emoji GIFs: 128x128 (recommended)
+- Message GIFs: 480x480
 
-**参数：**
-- FPS：10-30（越低文件越小）
-- 颜色：48-128（越少文件越小）
-- 持续时间：表情符号GIF保持在3秒以下
+**Parameters:**
+- FPS: 10-30 (lower is smaller file size)
+- Colors: 48-128 (fewer = smaller file size)
+- Duration: Keep under 3 seconds for emoji GIFs
 
-## 核心工作流程
+## Core Workflow
 
 ```python
 from core.gif_builder import GIFBuilder
 from PIL import Image, ImageDraw
 
-# 1. 创建构建器
+# 1. Create builder
 builder = GIFBuilder(width=128, height=128, fps=10)
 
-# 2. 生成帧
+# 2. Generate frames
 for i in range(12):
     frame = Image.new('RGB', (128, 128), (240, 248, 255))
     draw = ImageDraw.Draw(frame)
 
-    # 使用PIL图元绘制动画
-    # （圆形、多边形、线条等）
+    # Draw your animation using PIL primitives
+    # (circles, polygons, lines, etc.)
 
     builder.add_frame(frame)
 
-# 3. 保存并优化
+# 3. Save with optimization
 builder.save('output.gif', num_colors=48, optimize_for_emoji=True)
 ```
 
-## 绘制图形
+## Drawing Graphics
 
-### 使用用户上传的图像
-如果用户上传图像，考虑他们是否想要：
-- **直接使用**（例如，"制作这个的动画"，"将其拆分为帧"）
-- **作为灵感使用**（例如，"制作类似这样的东西"）
+### Working with User-Uploaded Images
+If a user uploads an image, consider whether they want to:
+- **Use it directly** (e.g., "animate this", "split this into frames")
+- **Use it as inspiration** (e.g., "make something like this")
 
-使用PIL加载和处理图像：
+Load and work with images using PIL:
 ```python
 from PIL import Image
 
 uploaded = Image.open('file.png')
-# 直接使用，或仅作为颜色/样式的参考
+# Use directly, or just as reference for colors/style
 ```
 
-### 从头绘制
-从头绘制图形时，使用PIL ImageDraw图元：
+### Drawing from Scratch
+When drawing graphics from scratch, use PIL ImageDraw primitives:
 
 ```python
 from PIL import ImageDraw
 
 draw = ImageDraw.Draw(frame)
 
-# 圆形/椭圆
+# Circles/ovals
 draw.ellipse([x1, y1, x2, y2], fill=(r, g, b), outline=(r, g, b), width=3)
 
-# 星形、三角形、任何多边形
+# Stars, triangles, any polygon
 points = [(x1, y1), (x2, y2), (x3, y3), ...]
 draw.polygon(points, fill=(r, g, b), outline=(r, g, b), width=3)
 
-# 线条
+# Lines
 draw.line([(x1, y1), (x2, y2)], fill=(r, g, b), width=5)
 
-# 矩形
+# Rectangles
 draw.rectangle([x1, y1, x2, y2], fill=(r, g, b), outline=(r, g, b), width=3)
 ```
 
-**不要使用：** 表情符号字体（跨平台不可靠）或假设此技能中存在预打包的图形。
+**Don't use:** Emoji fonts (unreliable across platforms) or assume pre-packaged graphics exist in this skill.
 
-### 使图形看起来美观
+### Making Graphics Look Good
 
-图形应该看起来精致和有创意，而不是基础。方法如下：
+Graphics should look polished and creative, not basic. Here's how:
 
-**使用更粗的线条** - 始终为轮廓和线条设置`width=2`或更高。细线条（width=1）看起来粗糙和业余。
+**Use thicker lines** - Always set `width=2` or higher for outlines and lines. Thin lines (width=1) look choppy and amateurish.
 
-**添加视觉深度**：
-- 使用渐变背景（`create_gradient_background`）
-- 分层多个形状以增加复杂性（例如，内部有较小星形的星形）
+**Add visual depth**:
+- Use gradients for backgrounds (`create_gradient_background`)
+- Layer multiple shapes for complexity (e.g., a star with a smaller star inside)
 
-**使形状更有趣**：
-- 不要只画一个简单的圆形 - 添加高光、环或图案
-- 星形可以有光晕（在后面绘制更大、半透明的版本）
-- 组合多个形状（星形 + 闪光，圆形 + 环）
+**Make shapes more interesting**:
+- Don't just draw a plain circle - add highlights, rings, or patterns
+- Stars can have glows (draw larger, semi-transparent versions behind)
+- Combine multiple shapes (stars + sparkles, circles + rings)
 
-**注意颜色**：
-- 使用鲜艳、互补的颜色
-- 添加对比（浅色形状上的深色轮廓，深色形状上的浅色轮廓）
-- 考虑整体构图
+**Pay attention to colors**:
+- Use vibrant, complementary colors
+- Add contrast (dark outlines on light shapes, light outlines on dark shapes)
+- Consider the overall composition
 
-**对于复杂形状**（心形、雪花等）：
-- 使用多边形和椭圆的组合
-- 仔细计算点以实现对称
-- 添加细节（心形可以有高光曲线，雪花有复杂的分支）
+**For complex shapes** (hearts, snowflakes, etc.):
+- Use combinations of polygons and ellipses
+- Calculate points carefully for symmetry
+- Add details (a heart can have a highlight curve, snowflakes have intricate branches)
 
-要有创意和细节！一个好的Slack GIF应该看起来精致，而不是像占位符图形。
+Be creative and detailed! A good Slack GIF should look polished, not like placeholder graphics.
 
-## 可用实用工具
+## Available Utilities
 
 ### GIFBuilder (`core.gif_builder`)
-组装帧并为Slack优化：
+Assembles frames and optimizes for Slack:
 ```python
 builder = GIFBuilder(width=128, height=128, fps=10)
-builder.add_frame(frame)  # 添加PIL图像
-builder.add_frames(frames)  # 添加帧列表
+builder.add_frame(frame)  # Add PIL Image
+builder.add_frames(frames)  # Add list of frames
 builder.save('out.gif', num_colors=48, optimize_for_emoji=True, remove_duplicates=True)
 ```
 
-### 验证器 (`core.validators`)
-检查GIF是否符合Slack要求：
+### Validators (`core.validators`)
+Check if GIF meets Slack requirements:
 ```python
 from core.validators import validate_gif, is_slack_ready
 
-# 详细验证
+# Detailed validation
 passes, info = validate_gif('my.gif', is_emoji=True, verbose=True)
 
-# 快速检查
+# Quick check
 if is_slack_ready('my.gif'):
-    print("准备就绪！")
+    print("Ready!")
 ```
 
-### 缓动函数 (`core.easing`)
-平滑运动而非线性：
+### Easing Functions (`core.easing`)
+Smooth motion instead of linear:
 ```python
 from core.easing import interpolate
 
-# 从0.0到1.0的进度
+# Progress from 0.0 to 1.0
 t = i / (num_frames - 1)
 
-# 应用缓动
+# Apply easing
 y = interpolate(start=0, end=400, t=t, easing='ease_out')
 
-# 可用：linear, ease_in, ease_out, ease_in_out,
-#       bounce_out, elastic_out, back_out
+# Available: linear, ease_in, ease_out, ease_in_out,
+#           bounce_out, elastic_out, back_out
 ```
 
-### 帧助手 (`core.frame_composer`)
-常见需求的便捷函数：
+### Frame Helpers (`core.frame_composer`)
+Convenience functions for common needs:
 ```python
 from core.frame_composer import (
-    create_blank_frame,         # 纯色背景
-    create_gradient_background,  # 垂直渐变
-    draw_circle,                # 圆形助手
-    draw_text,                  # 简单文本渲染
-    draw_star                   # 5角星
+    create_blank_frame,         # Solid color background
+    create_gradient_background,  # Vertical gradient
+    draw_circle,                # Helper for circles
+    draw_text,                  # Simple text rendering
+    draw_star                   # 5-pointed star
 )
 ```
 
-## 动画概念
+## Animation Concepts
 
-### 摇晃/振动
-用振荡偏移对象位置：
-- 使用帧索引的`math.sin()`或`math.cos()`
-- 添加小的随机变化以获得自然感
-- 应用于x和/或y位置
+### Shake/Vibrate
+Offset object position with oscillation:
+- Use `math.sin()` or `math.cos()` with frame index
+- Add small random variations for natural feel
+- Apply to x and/or y position
 
-### 脉冲/心跳
-有节奏地缩放对象大小：
-- 使用`math.sin(t * frequency * 2 * math.pi)`进行平滑脉冲
-- 对于心跳：两次快速脉冲然后暂停（调整正弦波）
-- 在基础大小的0.8到1.2之间缩放
+### Pulse/Heartbeat
+Scale object size rhythmically:
+- Use `math.sin(t * frequency * 2 * math.pi)` for smooth pulse
+- For heartbeat: two quick pulses then pause (adjust sine wave)
+- Scale between 0.8 and 1.2 of base size
 
-### 弹跳
-对象下落并弹跳：
-- 使用`interpolate()`和`easing='bounce_out'`进行着陆
-- 使用`easing='ease_in'`进行下落（加速）
-- 通过每帧增加y速度来应用重力
+### Bounce
+Object falls and bounces:
+- Use `interpolate()` with `easing='bounce_out'` for landing
+- Use `easing='ease_in'` for falling (accelerating)
+- Apply gravity by increasing y velocity each frame
 
-### 旋转/旋转
-围绕中心旋转对象：
-- PIL：`image.rotate(angle, resample=Image.BICUBIC)`
-- 对于摆动：使用正弦波作为角度而非线性
+### Spin/Rotate
+Rotate object around center:
+- PIL: `image.rotate(angle, resample=Image.BICUBIC)`
+- For wobble: use sine wave for angle instead of linear
 
-### 淡入/淡出
-逐渐出现或消失：
-- 创建RGBA图像，调整alpha通道
-- 或使用`Image.blend(image1, image2, alpha)`
-- 淡入：alpha从0到1
-- 淡出：alpha从1到0
+### Fade In/Out
+Gradually appear or disappear:
+- Create RGBA image, adjust alpha channel
+- Or use `Image.blend(image1, image2, alpha)`
+- Fade in: alpha from 0 to 1
+- Fade out: alpha from 1 to 0
 
-### 滑动
-将对象从屏幕外移动到位置：
-- 起始位置：帧边界外
-- 结束位置：目标位置
-- 使用`interpolate()`和`easing='ease_out'`进行平滑停止
-- 对于过冲：使用`easing='back_out'`
+### Slide
+Move object from off-screen to position:
+- Start position: outside frame bounds
+- End position: target location
+- Use `interpolate()` with `easing='ease_out'` for smooth stop
+- For overshoot: use `easing='back_out'`
 
-### 缩放
-缩放和定位以产生缩放效果：
-- 放大：从0.1缩放到2.0，裁剪中心
-- 缩小：从2.0缩放到1.0
-- 可以添加运动模糊以增加戏剧性（PIL滤镜）
+### Zoom
+Scale and position for zoom effect:
+- Zoom in: scale from 0.1 to 2.0, crop center
+- Zoom out: scale from 2.0 to 1.0
+- Can add motion blur for drama (PIL filter)
 
-### 爆炸/粒子爆发
-创建向外辐射的粒子：
-- 生成具有随机角度和速度的粒子
-- 更新每个粒子：`x += vx`, `y += vy`
-- 添加重力：`vy += gravity_constant`
-- 随时间淡出粒子（减少alpha）
+### Explode/Particle Burst
+Create particles radiating outward:
+- Generate particles with random angles and velocities
+- Update each particle: `x += vx`, `y += vy`
+- Add gravity: `vy += gravity_constant`
+- Fade out particles over time (reduce alpha)
 
-## 优化策略
+## Optimization Strategies
 
-仅在被要求使文件更小时，实施以下几种方法：
+Only when asked to make the file size smaller, implement a few of the following methods:
 
-1. **更少的帧** - 降低FPS（10而不是20）或更短的持续时间
-2. **更少的颜色** - `num_colors=48`而不是128
-3. **更小的尺寸** - 128x128而不是480x480
-4. **删除重复项** - 在save()中使用`remove_duplicates=True`
-5. **表情符号模式** - `optimize_for_emoji=True`自动优化
+1. **Fewer frames** - Lower FPS (10 instead of 20) or shorter duration
+2. **Fewer colors** - `num_colors=48` instead of 128
+3. **Smaller dimensions** - 128x128 instead of 480x480
+4. **Remove duplicates** - `remove_duplicates=True` in save()
+5. **Emoji mode** - `optimize_for_emoji=True` auto-optimizes
 
 ```python
-# 表情符号的最大优化
+# Maximum optimization for emoji
 builder.save(
     'emoji.gif',
     num_colors=48,
@@ -231,23 +231,23 @@ builder.save(
 )
 ```
 
-## 理念
+## Philosophy
 
-此技能提供：
-- **知识**：Slack的要求和动画概念
-- **实用工具**：GIFBuilder、验证器、缓动函数
-- **灵活性**：使用PIL图元创建动画逻辑
+This skill provides:
+- **Knowledge**: Slack's requirements and animation concepts
+- **Utilities**: GIFBuilder, validators, easing functions
+- **Flexibility**: Create the animation logic using PIL primitives
 
-它不提供：
-- 僵化的动画模板或预制的函数
-- 表情符号字体渲染（跨平台不可靠）
-- 内置于技能中的预打包图形库
+It does NOT provide:
+- Rigid animation templates or pre-made functions
+- Emoji font rendering (unreliable across platforms)
+- A library of pre-packaged graphics built into the skill
 
-**关于用户上传的说明**：此技能不包括预构建的图形，但如果用户上传图像，使用PIL加载和处理它 - 根据他们的请求解释他们是想要直接使用还是仅作为灵感。
+**Note on user uploads**: This skill doesn't include pre-built graphics, but if a user uploads an image, use PIL to load and work with it - interpret based on their request whether they want it used directly or just as inspiration.
 
-要有创意！组合概念（弹跳 + 旋转，脉冲 + 滑动等）并使用PIL的全部功能。
+Be creative! Combine concepts (bouncing + rotating, pulsing + sliding, etc.) and use PIL's full capabilities.
 
-## 依赖项
+## Dependencies
 
 ```bash
 pip install pillow imageio numpy

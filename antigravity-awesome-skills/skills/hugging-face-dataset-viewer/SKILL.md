@@ -1,6 +1,8 @@
 ---
 name: hugging-face-dataset-viewer
 description: Use this skill for Hugging Face Dataset Viewer API workflows that fetch subset/split metadata, paginate rows, search text, apply filters, download parquet URLs, and read size or statistics.
+risk: unknown
+source: community
 ---
 
 # Hugging Face Dataset Viewer
@@ -122,5 +124,4 @@ After upload, call `/parquet` to discover `<config>/<split>/<shard>` values for 
 
 
 ## When to Use
-
 Use this skill when tackling tasks related to its primary domain or functionality as described above.

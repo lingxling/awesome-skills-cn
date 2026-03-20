@@ -1,137 +1,140 @@
 ---
 name: hugging-face-datasets
-description: 在 Hugging Face Hub 上创建和管理数据集。支持初始化存储库、定义配置/系统提示、流式行更新以及基于 SQL 的数据集查询/转换。设计用于与 HF MCP 服务器配合使用,以实现全面的数据集工作流程。
+description: Create and manage datasets on Hugging Face Hub. Supports initializing repos, defining configs/system prompts, streaming row updates, and SQL-based dataset querying/transformation. Designed to work alongside HF MCP server for comprehensive dataset workflows.
 ---
 
-# 概述
-此技能提供工具来在 Hugging Face Hub 上管理数据集,重点关注创建、配置、内容管理和基于 SQL 的数据操作。它旨在补充现有的 Hugging Face MCP 服务器,通过提供数据集编辑和查询功能。
+# Overview
+This skill provides tools to manage datasets on the Hugging Face Hub with a focus on creation, configuration, content management, and SQL-based data manipulation. It is designed to complement the existing Hugging Face MCP server by providing dataset editing and querying capabilities.
 
-## 与 HF MCP 服务器的集成
-- **使用 HF MCP 服务器进行**: 数据集发现、搜索和元数据检索
-- **使用此技能进行**: 数据集创建、内容编辑、SQL 查询、数据转换和结构化数据格式化
+## Integration with HF MCP Server
+- **Use HF MCP Server for**: Dataset discovery, search, and metadata retrieval
+- **Use This Skill for**: Dataset creation, content editing, SQL queries, data transformation, and structured data formatting
 
-# 版本
+# Version
 2.1.0
 
-# 依赖项
-# 此技能使用 PEP 723 脚本,具有内联依赖项管理
-# 使用以下命令运行脚本时会自动安装要求: uv run scripts/script_name.py
+# Dependencies
+# This skill uses PEP 723 scripts with inline dependency management
+# Scripts auto-install requirements when run with: uv run scripts/script_name.py
 
-- uv(Python 包管理器)
-- 入门: 参见下面的"使用说明"了解 PEP 723 用法
+- uv (Python package manager)
+- Getting Started: See "Usage Instructions" below for PEP 723 usage
 
-# 核心功能
+# Core Capabilities
 
-## 1. 数据集生命周期管理
-- **初始化**: 使用适当的结构创建新数据集存储库
-- **配置**: 存储详细配置,包括系统提示和元数据
-- **流式更新**: 高效地添加行而无需下载整个数据集
+## 1. Dataset Lifecycle Management
+- **Initialize**: Create new dataset repositories with proper structure
+- **Configure**: Store detailed configuration including system prompts and metadata
+- **Stream Updates**: Add rows efficiently without downloading entire datasets
 
-## 2. 基于 SQL 的数据集查询(新增)
-使用 `scripts/sql_manager.py` 通过 DuckDB SQL 查询任何 Hugging Face 数据集:
-- **直接查询**: 使用 `hf://` 协议对数据集运行 SQL
-- **架构发现**: 描述数据集结构和列类型
-- **数据采样**: 获取随机样本以进行探索
-- **聚合**: 计数、直方图、唯一值分析
-- **转换**: 使用 SQL 过滤、联接、重塑数据
-- **导出和推送**: 本地保存结果或推送到新 Hub 存储库
+## 2. SQL-Based Dataset Querying (NEW)
+Query any Hugging Face dataset using DuckDB SQL via `scripts/sql_manager.py`:
+- **Direct Queries**: Run SQL on datasets using the `hf://` protocol
+- **Schema Discovery**: Describe dataset structure and column types
+- **Data Sampling**: Get random samples for exploration
+- **Aggregations**: Count, histogram, unique values analysis
+- **Transformations**: Filter, join, reshape data with SQL
+- **Export & Push**: Save results locally or push to new Hub repos
 
-## 3. 多格式数据集支持
-通过模板系统支持多样化的数据集类型:
-- **聊天/对话**: 聊天模板、多轮对话、工具使用示例
-- **文本分类**: 情感分析、意图检测、主题分类
-- **问答**: 阅读理解、事实性问答、知识库
-- **文本补全**: 语言建模、代码补全、创意写作
-- **表格数据**: 用于回归/分类任务的结构化数据
-- **自定义格式**: 用于专业需求的灵活架构定义
+## 3. Multi-Format Dataset Support
+Supports diverse dataset types through template system:
+- **Chat/Conversational**: Chat templating, multi-turn dialogues, tool usage examples
+- **Text Classification**: Sentiment analysis, intent detection, topic classification
+- **Question-Answering**: Reading comprehension, factual QA, knowledge bases
+- **Text Completion**: Language modeling, code completion, creative writing
+- **Tabular Data**: Structured data for regression/classification tasks
+- **Custom Formats**: Flexible schema definition for specialized needs
 
-## 4. 质量保证功能
-- **JSON 验证**: 确保上传期间的数据完整性
-- **批处理**: 高效处理大型数据集
-- **错误恢复**: 优雅地处理上传失败和冲突
+## 4. Quality Assurance Features
+- **JSON Validation**: Ensures data integrity during uploads
+- **Batch Processing**: Efficient handling of large datasets
+- **Error Recovery**: Graceful handling of upload failures and conflicts
 
-# 使用说明
+# Usage Instructions
 
-该技能包含两个使用 PEP 723 内联依赖项管理的 Python 脚本:
+The skill includes two Python scripts that use PEP 723 inline dependency management:
 
-> **所有路径都是相对于包含此 SKILL.md 文件的目录。**
-> 脚本使用以下命令运行: `uv run scripts/script_name.py [arguments]`
+> **All paths are relative to the directory containing this SKILL.md
+file.**
+> Scripts are run with: `uv run scripts/script_name.py [arguments]`
 
-- `scripts/dataset_manager.py` - 数据集创建和管理
-- `scripts/sql_manager.py` - 基于 SQL 的数据集查询和转换
+- `scripts/dataset_manager.py` - Dataset creation and management
+- `scripts/sql_manager.py` - SQL-based dataset querying and transformation
 
-### 先决条件
-- 已安装 `uv` 包管理器
-- 必须设置 `HF_TOKEN` 环境变量,使用写访问令牌
+### Prerequisites
+- `uv` package manager installed
+- `HF_TOKEN` environment variable must be set with a Write-access token
 
 ---
-# SQL 数据集查询(sql_manager.py)
 
-使用 DuckDB SQL 查询、转换和推送 Hugging Face 数据集。`hf://` 协议提供对任何公共数据集(或使用令牌的私有数据集)的直接访问。
+# SQL Dataset Querying (sql_manager.py)
 
-## 快速入门
+Query, transform, and push Hugging Face datasets using DuckDB SQL. The `hf://` protocol provides direct access to any public dataset (or private with token).
+
+## Quick Start
 
 ```bash
-# 查询数据集
+# Query a dataset
 uv run scripts/sql_manager.py query \
   --dataset "cais/mmlu" \
   --sql "SELECT * FROM data WHERE subject='nutrition' LIMIT 10"
 
-# 获取数据集架构
+# Get dataset schema
 uv run scripts/sql_manager.py describe --dataset "cais/mmlu"
 
-# 采样随机行
+# Sample random rows
 uv run scripts/sql_manager.py sample --dataset "cais/mmlu" --n 5
 
-# 使用过滤器计数行
+# Count rows with filter
 uv run scripts/sql_manager.py count --dataset "cais/mmlu" --where "subject='nutrition'"
 ```
 
-## SQL 查询语法
+## SQL Query Syntax
 
-在 SQL 中使用 `data` 作为表名 - 它会被实际的 `hf://` 路径替换:
+Use `data` as the table name in your SQL - it gets replaced with the actual `hf://` path:
+
 ```sql
--- 基本选择
+-- Basic select
 SELECT * FROM data LIMIT 10
 
--- 过滤
+-- Filtering
 SELECT * FROM data WHERE subject='nutrition'
 
--- 聚合
+-- Aggregations
 SELECT subject, COUNT(*) as cnt FROM data GROUP BY subject ORDER BY cnt DESC
 
--- 列选择和转换
+-- Column selection and transformation
 SELECT question, choices[answer] AS correct_answer FROM data
 
--- 正则表达式匹配
+-- Regex matching
 SELECT * FROM data WHERE regexp_matches(question, 'nutrition|diet')
 
--- 字符串函数
+-- String functions
 SELECT regexp_replace(question, '\n', '') AS cleaned FROM data
 ```
 
-## 常见操作
+## Common Operations
 
-### 1. 探索数据集结构
+### 1. Explore Dataset Structure
 ```bash
-# 获取架构
+# Get schema
 uv run scripts/sql_manager.py describe --dataset "cais/mmlu"
 
-# 获取列中的唯一值
+# Get unique values in column
 uv run scripts/sql_manager.py unique --dataset "cais/mmlu" --column "subject"
 
-# 获取值分布
+# Get value distribution
 uv run scripts/sql_manager.py histogram --dataset "cais/mmlu" --column "subject" --bins 20
 ```
 
-### 2. 过滤和转换
+### 2. Filter and Transform
 ```bash
-# 使用 SQL 进行复杂过滤
+# Complex filtering with SQL
 uv run scripts/sql_manager.py query \
   --dataset "cais/mmlu" \
   --sql "SELECT subject, COUNT(*) as cnt FROM data GROUP BY subject HAVING cnt > 100"
 
-# 使用转换命令
+# Using transform command
 uv run scripts/sql_manager.py transform \
   --dataset "cais/mmlu" \
   --select "subject, COUNT(*) as cnt" \
@@ -140,16 +143,16 @@ uv run scripts/sql_manager.py transform \
   --limit 10
 ```
 
-### 3. 创建子集并推送到 Hub
+### 3. Create Subsets and Push to Hub
 ```bash
-# 查询并推送到新数据集
+# Query and push to new dataset
 uv run scripts/sql_manager.py query \
   --dataset "cais/mmlu" \
   --sql "SELECT * FROM data WHERE subject='nutrition'" \
   --push-to "username/mmlu-nutrition-subset" \
   --private
 
-# 转换并推送
+# Transform and push
 uv run scripts/sql_manager.py transform \
   --dataset "ibm/duorc" \
   --config "ParaphraseRC" \
@@ -158,16 +161,16 @@ uv run scripts/sql_manager.py transform \
   --push-to "username/duorc-long-questions"
 ```
 
-### 4. 导出到本地文件
+### 4. Export to Local Files
 ```bash
-# 导出到 Parquet
+# Export to Parquet
 uv run scripts/sql_manager.py export \
   --dataset "cais/mmlu" \
   --sql "SELECT * FROM data WHERE subject='nutrition'" \
   --output "nutrition.parquet" \
   --format parquet
 
-# 导出到 JSONL
+# Export to JSONL
 uv run scripts/sql_manager.py export \
   --dataset "cais/mmlu" \
   --sql "SELECT * FROM data LIMIT 100" \
@@ -175,29 +178,29 @@ uv run scripts/sql_manager.py export \
   --format jsonl
 ```
 
-### 5. 使用数据集配置/拆分
+### 5. Working with Dataset Configs/Splits
 ```bash
-# 指定配置(子集)
+# Specify config (subset)
 uv run scripts/sql_manager.py query \
   --dataset "ibm/duorc" \
   --config "ParaphraseRC" \
   --sql "SELECT * FROM data LIMIT 5"
 
-# 指定拆分
+# Specify split
 uv run scripts/sql_manager.py query \
   --dataset "cais/mmlu" \
   --split "test" \
   --sql "SELECT COUNT(*) FROM data"
 
-# 查询所有拆分
+# Query all splits
 uv run scripts/sql_manager.py query \
   --dataset "cais/mmlu" \
   --split "*" \
   --sql "SELECT * FROM data LIMIT 10"
 ```
 
-### 6. 带有完整路径的原始 SQL
-对于复杂查询或联接数据集:
+### 6. Raw SQL with Full Paths
+For complex queries or joining datasets:
 ```bash
 uv run scripts/sql_manager.py raw --sql "
   SELECT a.*, b.* 
@@ -208,29 +211,29 @@ uv run scripts/sql_manager.py raw --sql "
 "
 ```
 
-## Python API 用法
+## Python API Usage
 
 ```python
 from sql_manager import HFDatasetSQL
 
 sql = HFDatasetSQL()
 
-# 查询
+# Query
 results = sql.query("cais/mmlu", "SELECT * FROM data WHERE subject='nutrition' LIMIT 10")
 
-# 获取架构
+# Get schema
 schema = sql.describe("cais/mmlu")
 
-# 采样
+# Sample
 samples = sql.sample("cais/mmlu", n=5, seed=42)
 
-# 计数
+# Count
 count = sql.count("cais/mmlu", where="subject='nutrition'")
 
-# 直方图
+# Histogram
 dist = sql.histogram("cais/mmlu", "subject")
 
-# 过滤和转换
+# Filter and transform
 results = sql.filter_and_transform(
     "cais/mmlu",
     select="subject, COUNT(*) as cnt",
@@ -239,7 +242,7 @@ results = sql.filter_and_transform(
     limit=10
 )
 
-# 推送到 Hub
+# Push to Hub
 url = sql.push_to_hub(
     "cais/mmlu",
     "username/nutrition-subset",
@@ -247,89 +250,90 @@ url = sql.push_to_hub(
     private=True
 )
 
-# 本地导出
+# Export locally
 sql.export_to_parquet("cais/mmlu", "output.parquet", sql="SELECT * FROM data LIMIT 100")
 
 sql.close()
 ```
 
-## HF 路径格式
+## HF Path Format
 
-DuckDB 使用 `hf://` 协议访问数据集:
+DuckDB uses the `hf://` protocol to access datasets:
 ```
 hf://datasets/{dataset_id}@{revision}/{config}/{split}/*.parquet
 ```
 
-示例:
+Examples:
 - `hf://datasets/cais/mmlu@~parquet/default/train/*.parquet`
 - `hf://datasets/ibm/duorc@~parquet/ParaphraseRC/test/*.parquet`
 
-`@~parquet` 修订版为任何数据集格式提供自动转换的 Parquet 文件。
+The `@~parquet` revision provides auto-converted Parquet files for any dataset format.
 
-## 有用的 DuckDB SQL 函数
+## Useful DuckDB SQL Functions
 
 ```sql
--- 字符串函数
-LENGTH(column)                    -- 字符串长度
-regexp_replace(col, '\n', '')     -- 正则表达式替换
-regexp_matches(col, 'pattern')    -- 正则表达式匹配
-LOWER(col), UPPER(col)           -- 大小写转换
+-- String functions
+LENGTH(column)                    -- String length
+regexp_replace(col, '\n', '')     -- Regex replace
+regexp_matches(col, 'pattern')    -- Regex match
+LOWER(col), UPPER(col)           -- Case conversion
 
--- 数组函数  
-choices[0]                        -- 数组索引(从 0 开始)
-array_length(choices)             -- 数组长度
-unnest(choices)                   -- 将数组扩展为行
+-- Array functions  
+choices[0]                        -- Array indexing (0-based)
+array_length(choices)             -- Array length
+unnest(choices)                   -- Expand array to rows
 
--- 聚合
+-- Aggregations
 COUNT(*), SUM(col), AVG(col)
 GROUP BY col HAVING condition
 
--- 采样
-USING SAMPLE 10                   -- 随机采样
-USING SAMPLE 10 (RESERVOIR, 42)   -- 可重现的采样
+-- Sampling
+USING SAMPLE 10                   -- Random sample
+USING SAMPLE 10 (RESERVOIR, 42)   -- Reproducible sample
 
--- 窗口函数
+-- Window functions
 ROW_NUMBER() OVER (PARTITION BY col ORDER BY col2)
 ```
 
 ---
-# 数据集创建(dataset_manager.py)
 
-### 推荐工作流程
+# Dataset Creation (dataset_manager.py)
 
-**1. 发现(使用 HF MCP 服务器):**
+### Recommended Workflow
+
+**1. Discovery (Use HF MCP Server):**
 ```python
-# 使用 HF MCP 工具查找现有数据集
+# Use HF MCP tools to find existing datasets
 search_datasets("conversational AI training")
 get_dataset_details("username/dataset-name")
 ```
 
-**2. 创建(使用此技能):**
+**2. Creation (Use This Skill):**
 ```bash
-# 初始化新数据集
+# Initialize new dataset
 uv run scripts/dataset_manager.py init --repo_id "your-username/dataset-name" [--private]
 
-# 使用详细的系统提示配置
+# Configure with detailed system prompt
 uv run scripts/dataset_manager.py config --repo_id "your-username/dataset-name" --system_prompt "$(cat system_prompt.txt)"
 ```
 
-**3. 内容管理(使用此技能):**
+**3. Content Management (Use This Skill):**
 ```bash
-# 使用任何模板进行快速设置
+# Quick setup with any template
 uv run scripts/dataset_manager.py quick_setup \
   --repo_id "your-username/dataset-name" \
   --template classification
 
-# 使用模板验证添加数据
+# Add data with template validation
 uv run scripts/dataset_manager.py add_rows \
   --repo_id "your-username/dataset-name" \
   --template qa \
   --rows_json "$(cat your_qa_data.json)"
 ```
 
-### 基于模板的数据结构
+### Template-Based Data Structures
 
-**1. 聊天模板(`--template chat`)**
+**1. Chat Template (`--template chat`)**
 ```json
 {
   "messages": [
@@ -342,7 +346,7 @@ uv run scripts/dataset_manager.py add_rows \
 }
 ```
 
-**2. 分类模板(`--template classification`)**
+**2. Classification Template (`--template classification`)**
 ```json
 {
   "text": "Input text to be classified",
@@ -352,7 +356,7 @@ uv run scripts/dataset_manager.py add_rows \
 }
 ```
 
-**3. 问答模板(`--template qa`)**
+**3. QA Template (`--template qa`)**
 ```json
 {
   "question": "What is the question being asked?",
@@ -363,7 +367,7 @@ uv run scripts/dataset_manager.py add_rows \
 }
 ```
 
-**4. 补全模板(`--template completion`)**
+**4. Completion Template (`--template completion`)**
 ```json
 {
   "prompt": "The beginning text or context",
@@ -373,7 +377,7 @@ uv run scripts/dataset_manager.py add_rows \
 }
 ```
 
-**5. 表格模板(`--template tabular`)**
+**5. Tabular Template (`--template tabular`)**
 ```json
 {
   "columns": [
@@ -387,9 +391,9 @@ uv run scripts/dataset_manager.py add_rows \
 }
 ```
 
-### 高级系统提示模板
+### Advanced System Prompt Template
 
-用于高质量训练数据生成:
+For high-quality training data generation:
 ```text
 You are an AI assistant expert at using MCP tools effectively.
 
@@ -406,83 +410,84 @@ You are an AI assistant expert at using MCP tools effectively.
 [List development workflows, debugging scenarios, data management tasks]
 ```
 
-### 示例类别和模板
+### Example Categories & Templates
 
-该技能包含超越仅 MCP 使用的多样化训练示例:
+The skill includes diverse training examples beyond just MCP usage:
 
-**可用示例集:**
-- `training_examples.json` - MCP 工具使用示例(调试、项目设置、数据库分析)
-- `diverse_training_examples.json` - 更广泛的场景,包括:
-  - **教育聊天** - 解释编程概念、教程
-  - **Git 工作流程** - 功能分支、版本控制指导
-  - **代码分析** - 性能优化、架构审查
-  - **内容生成** - 专业写作、创意头脑风暴
-  - **代码库导航** - 遗留代码探索、系统分析
-  - **对话支持** - 问题解决、技术讨论
+**Available Example Sets:**
+- `training_examples.json` - MCP tool usage examples (debugging, project setup, database analysis)
+- `diverse_training_examples.json` - Broader scenarios including:
+  - **Educational Chat** - Explaining programming concepts, tutorials
+  - **Git Workflows** - Feature branches, version control guidance
+  - **Code Analysis** - Performance optimization, architecture review
+  - **Content Generation** - Professional writing, creative brainstorming
+  - **Codebase Navigation** - Legacy code exploration, systematic analysis
+  - **Conversational Support** - Problem-solving, technical discussions
 
-**使用不同的示例集:**
+**Using Different Example Sets:**
 ```bash
-# 添加 MCP 专注的示例
+# Add MCP-focused examples
 uv run scripts/dataset_manager.py add_rows --repo_id "your-username/dataset-name" \
   --rows_json "$(cat examples/training_examples.json)"
 
-# 添加多样化的对话示例
+# Add diverse conversational examples
 uv run scripts/dataset_manager.py add_rows --repo_id "your-username/dataset-name" \
   --rows_json "$(cat examples/diverse_training_examples.json)"
 
-# 混合两者以获得全面的训练数据
+# Mix both for comprehensive training data
 uv run scripts/dataset_manager.py add_rows --repo_id "your-username/dataset-name" \
   --rows_json "$(jq -s '.[0] + .[1]' examples/training_examples.json examples/diverse_training_examples.json)"
 ```
 
-### 命令参考
+### Commands Reference
 
-**列出可用模板:**
+**List Available Templates:**
 ```bash
 uv run scripts/dataset_manager.py list_templates
 ```
 
-**快速设置(推荐):**
+**Quick Setup (Recommended):**
 ```bash
 uv run scripts/dataset_manager.py quick_setup --repo_id "your-username/dataset-name" --template classification
 ```
 
-**手动设置:**
+**Manual Setup:**
 ```bash
-# 初始化存储库
+# Initialize repository
 uv run scripts/dataset_manager.py init --repo_id "your-username/dataset-name" [--private]
 
-# 使用系统提示配置
+# Configure with system prompt
 uv run scripts/dataset_manager.py config --repo_id "your-username/dataset-name" --system_prompt "Your prompt here"
 
-# 使用验证添加数据
+# Add data with validation
 uv run scripts/dataset_manager.py add_rows \
   --repo_id "your-username/dataset-name" \
   --template qa \
   --rows_json '[{"question": "What is AI?", "answer": "Artificial Intelligence..."}]'
 ```
 
-**查看数据集统计信息:**
+**View Dataset Statistics:**
 ```bash
 uv run scripts/dataset_manager.py stats --repo_id "your-username/dataset-name"
 ```
 
-### 错误处理
-- **存储库存在**: 脚本将通知并继续配置
-- **无效的 JSON**: 清晰的错误消息和解析详细信息
-- **网络问题**: 瞬态失败的自动重试
-- **令牌权限**: 操作开始前的验证
+### Error Handling
+- **Repository exists**: Script will notify and continue with configuration
+- **Invalid JSON**: Clear error message with parsing details
+- **Network issues**: Automatic retry for transient failures
+- **Token permissions**: Validation before operations begin
 
 ---
-# 组合工作流程示例
 
-## 示例 1: 从现有数据集创建训练子集
+# Combined Workflow Examples
+
+## Example 1: Create Training Subset from Existing Dataset
 ```bash
-# 1. 探索源数据集
+# 1. Explore the source dataset
 uv run scripts/sql_manager.py describe --dataset "cais/mmlu"
 uv run scripts/sql_manager.py histogram --dataset "cais/mmlu" --column "subject"
 
-# 2. 查询并创建子集
+# 2. Query and create subset
 uv run scripts/sql_manager.py query \
   --dataset "cais/mmlu" \
   --sql "SELECT * FROM data WHERE subject IN ('nutrition', 'anatomy', 'clinical_knowledge')" \
@@ -490,45 +495,45 @@ uv run scripts/sql_manager.py query \
   --private
 ```
 
-## 示例 2: 转换和重塑数据
+## Example 2: Transform and Reshape Data
 ```bash
-# 将 MMLU 转换为 QA 格式,提取正确答案
+# Transform MMLU to QA format with correct answers extracted
 uv run scripts/sql_manager.py query \
   --dataset "cais/mmlu" \
   --sql "SELECT question, choices[answer] as correct_answer, subject FROM data" \
   --push-to "username/mmlu-qa-format"
 ```
 
-## 示例 3: 合并多个数据集拆分
+## Example 3: Merge Multiple Dataset Splits
 ```bash
-# 导出多个拆分并组合
+# Export multiple splits and combine
 uv run scripts/sql_manager.py export \
   --dataset "cais/mmlu" \
   --split "*" \
   --output "mmlu_all.parquet"
 ```
 
-## 示例 4: 质量过滤
+## Example 4: Quality Filtering
 ```bash
-# 过滤高质量示例
+# Filter for high-quality examples
 uv run scripts/sql_manager.py query \
   --dataset "squad" \
   --sql "SELECT * FROM data WHERE LENGTH(context) > 500 AND LENGTH(question) > 20" \
   --push-to "username/squad-filtered"
 ```
 
-## 示例 5: 创建自定义训练数据集
+## Example 5: Create Custom Training Dataset
 ```bash
-# 1. 查询源数据
+# 1. Query source data
 uv run scripts/sql_manager.py export \
   --dataset "cais/mmlu" \
   --sql "SELECT question, subject FROM data WHERE subject='nutrition'" \
   --output "nutrition_source.jsonl" \
   --format jsonl
 
-# 2. 使用您的管道处理数据(添加答案、格式等)
+# 2. Process with your pipeline (add answers, format, etc.)
 
-# 3. 推送处理后的数据
+# 3. Push processed data
 uv run scripts/dataset_manager.py init --repo_id "username/nutrition-training"
 uv run scripts/dataset_manager.py add_rows \
   --repo_id "username/nutrition-training" \

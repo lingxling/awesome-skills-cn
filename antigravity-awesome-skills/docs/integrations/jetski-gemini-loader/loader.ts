@@ -83,16 +83,34 @@ export async function loadSkillBodies(
 ): Promise<string[]> {
   const bodies: string[] = [];
   const rootPath = path.resolve(skillsRoot);
+  const rootRealPath = await fs.promises.realpath(rootPath);
 
   for (const meta of metas) {
-    const fullPath = path.resolve(rootPath, meta.path, "SKILL.md");
-    const relativePath = path.relative(rootPath, fullPath);
+    const skillDirPath = path.resolve(rootPath, meta.path);
+    const relativePath = path.relative(rootPath, skillDirPath);
 
     if (relativePath.startsWith("..") || path.isAbsolute(relativePath)) {
       throw new Error(`Skill path escapes skills root: ${meta.id}`);
     }
 
-    const text = await fs.promises.readFile(fullPath, "utf8");
+    const skillDirStat = await fs.promises.lstat(skillDirPath);
+    if (!skillDirStat.isDirectory() || skillDirStat.isSymbolicLink()) {
+      throw new Error(`Skill directory must be a regular directory inside the skills root: ${meta.id}`);
+    }
+
+    const fullPath = path.join(skillDirPath, "SKILL.md");
+    const skillFileStat = await fs.promises.lstat(fullPath);
+    if (!skillFileStat.isFile() || skillFileStat.isSymbolicLink()) {
+      throw new Error(`SKILL.md must be a regular file inside the skills root: ${meta.id}`);
+    }
+
+    const realPath = await fs.promises.realpath(fullPath);
+    const realRelativePath = path.relative(rootRealPath, realPath);
+    if (realRelativePath.startsWith("..") || path.isAbsolute(realRelativePath)) {
+      throw new Error(`SKILL.md resolves outside the skills root: ${meta.id}`);
+    }
+
+    const text = await fs.promises.readFile(realPath, "utf8");
     bodies.push(text);
   }
 

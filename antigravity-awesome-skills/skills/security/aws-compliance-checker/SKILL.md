@@ -13,7 +13,6 @@ date_added: "2026-02-27"
 Automated compliance validation against industry standards including CIS AWS Foundations, PCI-DSS, HIPAA, and SOC 2.
 
 ## When to Use
-
 Use this skill when you need to validate AWS compliance against industry standards, prepare for audits, or maintain continuous compliance monitoring.
 
 ## Supported Frameworks

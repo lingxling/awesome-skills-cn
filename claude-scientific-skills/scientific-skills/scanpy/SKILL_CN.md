@@ -1,184 +1,184 @@
 ---
 name: scanpy
-description: 标准单细胞RNA-seq分析流程。用于质量控制、归一化、降维（PCA/UMAP/t-SNE）、聚类、差异表达和可视化。最适合使用已建立工作流程的探索性scRNA-seq分析。对于深度学习模型使用scvi-tools；对于数据格式问题使用anndata。
+description: Standard single-cell RNA-seq analysis pipeline. Use for QC, normalization, dimensionality reduction (PCA/UMAP/t-SNE), clustering, differential expression, and visualization. Best for exploratory scRNA-seq analysis with established workflows. For deep learning models use scvi-tools; for data format questions use anndata.
 license: SD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Scanpy：单细胞分析
+# Scanpy: Single-Cell Analysis
 
-## 概述
+## Overview
 
-Scanpy是一个基于AnnData构建的可扩展Python工具包，用于分析单细胞RNA-seq数据。应用此技能进行完整的单细胞工作流程，包括质量控制、归一化、降维、聚类、标记基因识别、可视化和轨迹分析。
+Scanpy is a scalable Python toolkit for analyzing single-cell RNA-seq data, built on AnnData. Apply this skill for complete single-cell workflows including quality control, normalization, dimensionality reduction, clustering, marker gene identification, visualization, and trajectory analysis.
 
-## 何时使用此技能
+## When to Use This Skill
 
-当您需要以下操作时，应使用此技能：
-- 分析单细胞RNA-seq数据（.h5ad、10X、CSV格式）
-- 对scRNA-seq数据集执行质量控制
-- 创建UMAP、t-SNE或PCA可视化
-- 识别细胞簇并寻找标记基因
-- 基于基因表达注释细胞类型
-- 进行轨迹推断或伪时间分析
-- 生成 publication 质量的单细胞图表
+This skill should be used when:
+- Analyzing single-cell RNA-seq data (.h5ad, 10X, CSV formats)
+- Performing quality control on scRNA-seq datasets
+- Creating UMAP, t-SNE, or PCA visualizations
+- Identifying cell clusters and finding marker genes
+- Annotating cell types based on gene expression
+- Conducting trajectory inference or pseudotime analysis
+- Generating publication-quality single-cell plots
 
-## 快速开始
+## Quick Start
 
-### 基本导入和设置
+### Basic Import and Setup
 
 ```python
 import scanpy as sc
 import pandas as pd
 import numpy as np
 
-# 配置设置
+# Configure settings
 sc.settings.verbosity = 3
 sc.settings.set_figure_params(dpi=80, facecolor='white')
 sc.settings.figdir = './figures/'
 ```
 
-### 加载数据
+### Loading Data
 
 ```python
-# 从10X Genomics
+# From 10X Genomics
 adata = sc.read_10x_mtx('path/to/data/')
 adata = sc.read_10x_h5('path/to/data.h5')
 
-# 从h5ad（AnnData格式）
+# From h5ad (AnnData format)
 adata = sc.read_h5ad('path/to/data.h5ad')
 
-# 从CSV
+# From CSV
 adata = sc.read_csv('path/to/data.csv')
 ```
 
-### 理解AnnData结构
+### Understanding AnnData Structure
 
-AnnData对象是scanpy中的核心数据结构：
+The AnnData object is the core data structure in scanpy:
 
 ```python
-adata.X          # 表达矩阵（细胞 × 基因）
-adata.obs        # 细胞元数据（DataFrame）
-adata.var        # 基因元数据（DataFrame）
-adata.uns        # 非结构化注释（字典）
-adata.obsm       # 多维细胞数据（PCA、UMAP）
-adata.raw        # 原始数据备份
+adata.X          # Expression matrix (cells × genes)
+adata.obs        # Cell metadata (DataFrame)
+adata.var        # Gene metadata (DataFrame)
+adata.uns        # Unstructured annotations (dict)
+adata.obsm       # Multi-dimensional cell data (PCA, UMAP)
+adata.raw        # Raw data backup
 
-# 访问细胞和基因名称
-adata.obs_names  # 细胞条形码
-adata.var_names  # 基因名称
+# Access cell and gene names
+adata.obs_names  # Cell barcodes
+adata.var_names  # Gene names
 ```
 
-## 标准分析工作流程
+## Standard Analysis Workflow
 
-### 1. 质量控制
+### 1. Quality Control
 
-识别并过滤低质量细胞和基因：
+Identify and filter low-quality cells and genes:
 
 ```python
-# 识别线粒体基因
+# Identify mitochondrial genes
 adata.var['mt'] = adata.var_names.str.startswith('MT-')
 
-# 计算QC指标
+# Calculate QC metrics
 sc.pp.calculate_qc_metrics(adata, qc_vars=['mt'], inplace=True)
 
-# 可视化QC指标
+# Visualize QC metrics
 sc.pl.violin(adata, ['n_genes_by_counts', 'total_counts', 'pct_counts_mt'],
              jitter=0.4, multi_panel=True)
 
-# 过滤细胞和基因
+# Filter cells and genes
 sc.pp.filter_cells(adata, min_genes=200)
 sc.pp.filter_genes(adata, min_cells=3)
-adata = adata[adata.obs.pct_counts_mt < 5, :]  # 移除高MT%细胞
+adata = adata[adata.obs.pct_counts_mt < 5, :]  # Remove high MT% cells
 ```
 
-**使用QC脚本进行自动化分析：**
+**Use the QC script for automated analysis:**
 ```bash
 python scripts/qc_analysis.py input_file.h5ad --output filtered.h5ad
 ```
 
-### 2. 归一化和预处理
+### 2. Normalization and Preprocessing
 
 ```python
-# 归一化到每个细胞10,000计数
+# Normalize to 10,000 counts per cell
 sc.pp.normalize_total(adata, target_sum=1e4)
 
-# 对数转换
+# Log-transform
 sc.pp.log1p(adata)
 
-# 保存原始计数供以后使用
+# Save raw counts for later
 adata.raw = adata
 
-# 识别高可变基因
+# Identify highly variable genes
 sc.pp.highly_variable_genes(adata, n_top_genes=2000)
 sc.pl.highly_variable_genes(adata)
 
-# 子集到高可变基因
+# Subset to highly variable genes
 adata = adata[:, adata.var.highly_variable]
 
-# 回归掉不需要的变异
+# Regress out unwanted variation
 sc.pp.regress_out(adata, ['total_counts', 'pct_counts_mt'])
 
-# 缩放数据
+# Scale data
 sc.pp.scale(adata, max_value=10)
 ```
 
-### 3. 降维
+### 3. Dimensionality Reduction
 
 ```python
 # PCA
 sc.tl.pca(adata, svd_solver='arpack')
-sc.pl.pca_variance_ratio(adata, log=True)  # 检查肘图
+sc.pl.pca_variance_ratio(adata, log=True)  # Check elbow plot
 
-# 计算邻域图
+# Compute neighborhood graph
 sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
 
-# UMAP可视化
+# UMAP for visualization
 sc.tl.umap(adata)
 sc.pl.umap(adata, color='leiden')
 
-# 替代方案：t-SNE
+# Alternative: t-SNE
 sc.tl.tsne(adata)
 ```
 
-### 4. 聚类
+### 4. Clustering
 
 ```python
-# Leiden聚类（推荐）
+# Leiden clustering (recommended)
 sc.tl.leiden(adata, resolution=0.5)
 sc.pl.umap(adata, color='leiden', legend_loc='on data')
 
-# 尝试多个分辨率以找到最佳粒度
+# Try multiple resolutions to find optimal granularity
 for res in [0.3, 0.5, 0.8, 1.0]:
     sc.tl.leiden(adata, resolution=res, key_added=f'leiden_{res}')
 ```
 
-### 5. 标记基因识别
+### 5. Marker Gene Identification
 
 ```python
-# 为每个簇找到标记基因
+# Find marker genes for each cluster
 sc.tl.rank_genes_groups(adata, 'leiden', method='wilcoxon')
 
-# 可视化结果
+# Visualize results
 sc.pl.rank_genes_groups(adata, n_genes=25, sharey=False)
 sc.pl.rank_genes_groups_heatmap(adata, n_genes=10)
 sc.pl.rank_genes_groups_dotplot(adata, n_genes=5)
 
-# 获取结果为DataFrame
+# Get results as DataFrame
 markers = sc.get.rank_genes_groups_df(adata, group='0')
 ```
 
-### 6. 细胞类型注释
+### 6. Cell Type Annotation
 
 ```python
-# 为已知细胞类型定义标记基因
+# Define marker genes for known cell types
 marker_genes = ['CD3D', 'CD14', 'MS4A1', 'NKG7', 'FCGR3A']
 
-# 可视化标记
+# Visualize markers
 sc.pl.umap(adata, color=marker_genes, use_raw=True)
 sc.pl.dotplot(adata, var_names=marker_genes, groupby='leiden')
 
-# 手动注释
+# Manual annotation
 cluster_to_celltype = {
     '0': 'CD4 T cells',
     '1': 'CD14+ Monocytes',
@@ -187,31 +187,31 @@ cluster_to_celltype = {
 }
 adata.obs['cell_type'] = adata.obs['leiden'].map(cluster_to_celltype)
 
-# 可视化注释类型
+# Visualize annotated types
 sc.pl.umap(adata, color='cell_type', legend_loc='on data')
 ```
 
-### 7. 保存结果
+### 7. Save Results
 
 ```python
-# 保存处理后的数据
+# Save processed data
 adata.write('results/processed_data.h5ad')
 
-# 导出元数据
+# Export metadata
 adata.obs.to_csv('results/cell_metadata.csv')
 adata.var.to_csv('results/gene_metadata.csv')
 ```
 
-## 常见任务
+## Common Tasks
 
-### 创建Publication质量的图表
+### Creating Publication-Quality Plots
 
 ```python
-# 设置高质量默认值
+# Set high-quality defaults
 sc.settings.set_figure_params(dpi=300, frameon=False, figsize=(5, 5))
 sc.settings.file_format_figs = 'pdf'
 
-# 带有自定义样式的UMAP
+# UMAP with custom styling
 sc.pl.umap(adata, color='cell_type',
            palette='Set2',
            legend_loc='on data',
@@ -220,95 +220,95 @@ sc.pl.umap(adata, color='cell_type',
            frameon=False,
            save='_publication.pdf')
 
-# 标记基因热图
+# Heatmap of marker genes
 sc.pl.heatmap(adata, var_names=genes, groupby='cell_type',
               swap_axes=True, show_gene_labels=True,
               save='_markers.pdf')
 
-# 点图
+# Dot plot
 sc.pl.dotplot(adata, var_names=genes, groupby='cell_type',
               save='_dotplot.pdf')
 ```
 
-请参考`references/plotting_guide.md`获取全面的可视化示例。
+Refer to `references/plotting_guide.md` for comprehensive visualization examples.
 
-### 轨迹推断
+### Trajectory Inference
 
 ```python
-# PAGA（基于分区的图抽象）
+# PAGA (Partition-based graph abstraction)
 sc.tl.paga(adata, groups='leiden')
 sc.pl.paga(adata, color='leiden')
 
-# 扩散伪时间
+# Diffusion pseudotime
 adata.uns['iroot'] = np.flatnonzero(adata.obs['leiden'] == '0')[0]
 sc.tl.dpt(adata)
 sc.pl.umap(adata, color='dpt_pseudotime')
 ```
 
-### 条件间的差异表达
+### Differential Expression Between Conditions
 
 ```python
-# 比较细胞类型内的处理组与对照组
+# Compare treated vs control within cell types
 adata_subset = adata[adata.obs['cell_type'] == 'T cells']
 sc.tl.rank_genes_groups(adata_subset, groupby='condition',
                          groups=['treated'], reference='control')
 sc.pl.rank_genes_groups(adata_subset, groups=['treated'])
 ```
 
-### 基因集评分
+### Gene Set Scoring
 
 ```python
-# 对基因集表达进行细胞评分
+# Score cells for gene set expression
 gene_set = ['CD3D', 'CD3E', 'CD3G']
 sc.tl.score_genes(adata, gene_set, score_name='T_cell_score')
 sc.pl.umap(adata, color='T_cell_score')
 ```
 
-### 批次校正
+### Batch Correction
 
 ```python
-# ComBat批次校正
+# ComBat batch correction
 sc.pp.combat(adata, key='batch')
 
-# 替代方案：使用Harmony或scVI（单独的包）
+# Alternative: use Harmony or scVI (separate packages)
 ```
 
-## 关键参数调整
+## Key Parameters to Adjust
 
-### 质量控制
-- `min_genes`：每个细胞的最小基因数（通常为200-500）
-- `min_cells`：每个基因的最小细胞数（通常为3-10）
-- `pct_counts_mt`：线粒体阈值（通常为5-20%）
+### Quality Control
+- `min_genes`: Minimum genes per cell (typically 200-500)
+- `min_cells`: Minimum cells per gene (typically 3-10)
+- `pct_counts_mt`: Mitochondrial threshold (typically 5-20%)
 
-### 归一化
-- `target_sum`：每个细胞的目标计数（默认1e4）
+### Normalization
+- `target_sum`: Target counts per cell (default 1e4)
 
-### 特征选择
-- `n_top_genes`：HVG数量（通常为2000-3000）
-- `min_mean`, `max_mean`, `min_disp`：HVG选择参数
+### Feature Selection
+- `n_top_genes`: Number of HVGs (typically 2000-3000)
+- `min_mean`, `max_mean`, `min_disp`: HVG selection parameters
 
-### 降维
-- `n_pcs`：主成分数量（检查方差比图）
-- `n_neighbors`：邻居数量（通常为10-30）
+### Dimensionality Reduction
+- `n_pcs`: Number of principal components (check variance ratio plot)
+- `n_neighbors`: Number of neighbors (typically 10-30)
 
-### 聚类
-- `resolution`：聚类粒度（0.4-1.2，越高=更多簇）
+### Clustering
+- `resolution`: Clustering granularity (0.4-1.2, higher = more clusters)
 
-## 常见陷阱和最佳实践
+## Common Pitfalls and Best Practices
 
-1. **始终保存原始计数**：在过滤基因前使用`adata.raw = adata`
-2. **仔细检查QC图**：根据数据集质量调整阈值
-3. **使用Leiden而非Louvain**：更高效且结果更好
-4. **尝试多个聚类分辨率**：找到最佳粒度
-5. **验证细胞类型注释**：使用多个标记基因
-6. **对基因表达图使用`use_raw=True`**：显示原始计数
-7. **检查PCA方差比**：确定最佳PC数量
-8. **保存中间结果**：长工作流程可能在中途失败
+1. **Always save raw counts**: `adata.raw = adata` before filtering genes
+2. **Check QC plots carefully**: Adjust thresholds based on dataset quality
+3. **Use Leiden over Louvain**: More efficient and better results
+4. **Try multiple clustering resolutions**: Find optimal granularity
+5. **Validate cell type annotations**: Use multiple marker genes
+6. **Use `use_raw=True` for gene expression plots**: Shows original counts
+7. **Check PCA variance ratio**: Determine optimal number of PCs
+8. **Save intermediate results**: Long workflows can fail partway through
 
-## 捆绑资源
+## Bundled Resources
 
 ### scripts/qc_analysis.py
-自动化质量控制脚本，计算指标、生成图表并过滤数据：
+Automated quality control script that calculates metrics, generates plots, and filters data:
 
 ```bash
 python scripts/qc_analysis.py input.h5ad --output filtered.h5ad \
@@ -316,68 +316,69 @@ python scripts/qc_analysis.py input.h5ad --output filtered.h5ad \
 ```
 
 ### references/standard_workflow.md
-完整的逐步工作流程，带有详细解释和代码示例：
-- 数据加载和设置
-- 带可视化的质量控制
-- 归一化和缩放
-- 特征选择
-- 降维（PCA、UMAP、t-SNE）
-- 聚类（Leiden、Louvain）
-- 标记基因识别
-- 细胞类型注释
-- 轨迹推断
-- 差异表达
+Complete step-by-step workflow with detailed explanations and code examples for:
+- Data loading and setup
+- Quality control with visualization
+- Normalization and scaling
+- Feature selection
+- Dimensionality reduction (PCA, UMAP, t-SNE)
+- Clustering (Leiden, Louvain)
+- Marker gene identification
+- Cell type annotation
+- Trajectory inference
+- Differential expression
 
-从头执行完整分析时阅读此参考。
+Read this reference when performing a complete analysis from scratch.
 
 ### references/api_reference.md
-按模块组织的scanpy函数快速参考指南：
-- 读取/写入数据（`sc.read_*`、`adata.write_*`）
-- 预处理（`sc.pp.*`）
-- 工具（`sc.tl.*`）
-- 绘图（`sc.pl.*`）
-- AnnData结构和操作
-- 设置和实用程序
+Quick reference guide for scanpy functions organized by module:
+- Reading/writing data (`sc.read_*`, `adata.write_*`)
+- Preprocessing (`sc.pp.*`)
+- Tools (`sc.tl.*`)
+- Plotting (`sc.pl.*`)
+- AnnData structure and manipulation
+- Settings and utilities
 
-用于快速查找函数签名和常见参数。
+Use this for quick lookup of function signatures and common parameters.
 
 ### references/plotting_guide.md
-全面的可视化指南，包括：
-- 质量控制图
-- 降维可视化
-- 聚类可视化
-- 标记基因图（热图、点图、小提琴图）
-- 轨迹和伪时间图
-- Publication质量定制
-- 多面板图
-- 颜色 palette 和样式
+Comprehensive visualization guide including:
+- Quality control plots
+- Dimensionality reduction visualizations
+- Clustering visualizations
+- Marker gene plots (heatmaps, dot plots, violin plots)
+- Trajectory and pseudotime plots
+- Publication-quality customization
+- Multi-panel figures
+- Color palettes and styling
 
-创建 publication 就绪图表时参考。
+Consult this when creating publication-ready figures.
 
 ### assets/analysis_template.py
-完整的分析模板，提供从数据加载到细胞类型注释的完整工作流程。复制并自定义此模板用于新分析：
+Complete analysis template providing a full workflow from data loading through cell type annotation. Copy and customize this template for new analyses:
 
 ```bash
 cp assets/analysis_template.py my_analysis.py
-# 编辑参数并运行
+# Edit parameters and run
 python my_analysis.py
 ```
 
-模板包含所有标准步骤，带有可配置参数和有用的注释。
+The template includes all standard steps with configurable parameters and helpful comments.
 
-## 其他资源
+## Additional Resources
 
-- **官方scanpy文档**：https://scanpy.readthedocs.io/
-- **Scanpy教程**：https://scanpy-tutorials.readthedocs.io/
-- **scverse生态系统**：https://scverse.org/（相关工具：squidpy、scvi-tools、cellrank）
-- **最佳实践**：Luecken & Theis (2019) "Current best practices in single-cell RNA-seq"
+- **Official scanpy documentation**: https://scanpy.readthedocs.io/
+- **Scanpy tutorials**: https://scanpy-tutorials.readthedocs.io/
+- **scverse ecosystem**: https://scverse.org/ (related tools: squidpy, scvi-tools, cellrank)
+- **Best practices**: Luecken & Theis (2019) "Current best practices in single-cell RNA-seq"
 
-## 有效分析的提示
+## Tips for Effective Analysis
 
-1. **从模板开始**：使用`assets/analysis_template.py`作为起点
-2. **首先运行QC脚本**：使用`scripts/qc_analysis.py`进行初始过滤
-3. **根据需要参考**：将工作流程和API参考加载到上下文中
-4. **在聚类上迭代**：尝试多种分辨率和可视化方法
-5. **生物学验证**：检查标记基因是否与预期细胞类型匹配
-6. **记录参数**：记录QC阈值和分析设置
-7. **保存检查点**：在关键步骤写入中间结果
+1. **Start with the template**: Use `assets/analysis_template.py` as a starting point
+2. **Run QC script first**: Use `scripts/qc_analysis.py` for initial filtering
+3. **Consult references as needed**: Load workflow and API references into context
+4. **Iterate on clustering**: Try multiple resolutions and visualization methods
+5. **Validate biologically**: Check marker genes match expected cell types
+6. **Document parameters**: Record QC thresholds and analysis settings
+7. **Save checkpoints**: Write intermediate results at key steps
+

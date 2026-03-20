@@ -1,6 +1,6 @@
 ---
 name: competitive-landscape
-description: This skill should be used when the user asks to \\\"analyze competitors", "assess competitive landscape", "identify differentiation", "evaluate market positioning", "apply Porter's Five Forces",...
+description: "Comprehensive frameworks for analyzing competition, identifying differentiation opportunities, and developing winning market positioning strategies."
 risk: unknown
 source: community
 date_added: '2026-02-27'

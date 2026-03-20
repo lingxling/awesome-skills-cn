@@ -1,86 +1,86 @@
 ---
 name: hugging-face-vision-trainer
-description: 在Hugging Face Jobs云GPU上使用Hugging Face Transformers训练和微调视觉模型，包括目标检测（D-FINE、RT-DETR v2、DETR、YOLOS）、图像分类（timm模型——MobileNetV3、MobileViT、ResNet、ViT/DINOv3——以及任何Transformers分类器）和SAM/SAM2分割。涵盖COCO格式数据集准备、Albumentations增强、mAP/mAR评估、准确率指标、带边界框/点提示的SAM分割、DiceCE损失、硬件选择、成本估算、Trackio监控和Hub持久化。当用户提到在Hugging Face Jobs上训练目标检测、图像分类、SAM、SAM2、分割、图像抠图、DETR、D-FINE、RT-DETR、ViT、timm、MobileNet、ResNet、边界框模型或微调视觉模型时使用。
+description: Trains and fine-tunes vision models for object detection (D-FINE, RT-DETR v2, DETR, YOLOS), image classification (timm models — MobileNetV3, MobileViT, ResNet, ViT/DINOv3 — plus any Transformers classifier), and SAM/SAM2 segmentation using Hugging Face Transformers on Hugging Face Jobs cloud GPUs. Covers COCO-format dataset preparation, Albumentations augmentation, mAP/mAR evaluation, accuracy metrics, SAM segmentation with bbox/point prompts, DiceCE loss, hardware selection, cost estimation, Trackio monitoring, and Hub persistence. Use when users mention training object detection, image classification, SAM, SAM2, segmentation, image matting, DETR, D-FINE, RT-DETR, ViT, timm, MobileNet, ResNet, bounding box models, or fine-tuning vision models on Hugging Face Jobs.
 ---
 
-# 在Hugging Face Jobs上训练视觉模型
+# Vision Model Training on Hugging Face Jobs
 
-在托管的云GPU上训练目标检测、图像分类和SAM/SAM2分割模型。无需本地GPU设置——结果会自动保存到Hugging Face Hub。
+Train object detection, image classification, and SAM/SAM2 segmentation models on managed cloud GPUs. No local GPU setup required—results are automatically saved to the Hugging Face Hub.
 
-## 何时使用此技能
+## When to Use This Skill
 
-当用户想要：
-- 在云GPU或本地微调目标检测模型（D-FINE、RT-DETR v2、DETR、YOLOS）
-- 在云GPU或本地微调图像分类模型（timm：MobileNetV3、MobileViT、ResNet、ViT/DINOv3或任何Transformers分类器）
-- 使用边界框或点提示微调SAM或SAM2模型进行分割/图像抠图
-- 在自定义数据集上训练边界框检测器
-- 在自定义数据集上训练图像分类器
-- 在带提示的自定义掩码数据集上训练分割模型
-- 在Hugging Face Jobs基础设施上运行视觉训练作业
-- 确保训练的视觉模型永久保存到Hub
+Use this skill when users want to:
+- Fine-tune object detection models (D-FINE, RT-DETR v2, DETR, YOLOS) on cloud GPUs or local
+- Fine-tune image classification models (timm: MobileNetV3, MobileViT, ResNet, ViT/DINOv3, or any Transformers classifier) on cloud GPUs or local
+- Fine-tune SAM or SAM2 models for segmentation / image matting using bbox or point prompts
+- Train bounding-box detectors on custom datasets
+- Train image classifiers on custom datasets
+- Train segmentation models on custom mask datasets with prompts
+- Run vision training jobs on Hugging Face Jobs infrastructure
+- Ensure trained vision models are permanently saved to the Hub
 
-## 相关技能
+## Related Skills
 
-- **`hugging-face-jobs`** — 通用HF Jobs基础设施：令牌认证、硬件规格、超时管理、成本估算、密钥、环境变量、计划作业和结果持久化。**有关任何非训练特定的Jobs问题，请参考Jobs技能**（例如，"密钥如何工作？"、"有哪些硬件可用？"、"如何传递令牌？"）。
-- **`hugging-face-model-trainer`** — 基于TRL的语言模型训练（SFT、DPO、GRPO）。使用该技能进行文本/语言模型微调。
+- **`hugging-face-jobs`** — General HF Jobs infrastructure: token authentication, hardware flavors, timeout management, cost estimation, secrets, environment variables, scheduled jobs, and result persistence. **Refer to the Jobs skill for any non-training-specific Jobs questions** (e.g., "how do secrets work?", "what hardware is available?", "how do I pass tokens?").
+- **`hugging-face-model-trainer`** — TRL-based language model training (SFT, DPO, GRPO). Use that skill for text/language model fine-tuning.
 
-## 本地脚本执行
+## Local Script Execution
 
-辅助脚本使用PEP 723内联依赖。使用`uv run`运行它们：
+Helper scripts use PEP 723 inline dependencies. Run them with `uv run`:
 ```bash
 uv run scripts/dataset_inspector.py --dataset username/dataset-name --split train
 uv run scripts/estimate_cost.py --help
 ```
 
-## 先决条件清单
+## Prerequisites Checklist
 
-在开始任何训练作业之前，验证：
+Before starting any training job, verify:
 
-### 账户和认证
-- 拥有[Pro](https://hf.co/pro)、[Team](https://hf.co/enterprise)或[Enterprise](https://hf.co/enterprise)计划的Hugging Face账户（Jobs需要付费计划）
-- 已认证登录：使用`hf_whoami()`（工具）或`hf auth whoami`（终端）检查
-- 令牌具有**写入**权限
-- **必须在作业密钥中传递令牌**——请参阅下面的指令#3了解语法（MCP工具vs Python API）
+### Account & Authentication
+- Hugging Face Account with [Pro](https://hf.co/pro), [Team](https://hf.co/enterprise), or [Enterprise](https://hf.co/enterprise) plan (Jobs require paid plan)
+- Authenticated login: Check with `hf_whoami()` (tool) or `hf auth whoami` (terminal)
+- Token has **write** permissions
+- **MUST pass token in job secrets** — see directive #3 below for syntax (MCP tool vs Python API)
 
-### 数据集要求——目标检测
-- 数据集必须存在于Hub上
-- 注释必须使用带有`bbox`、`category`（可选`area`）子字段的`objects`列
-- 边界框可以是**xywh（COCO）**或**xyxy（Pascal VOC）**格式——自动检测和转换
-- 类别可以是**整数或字符串**——字符串会自动重新映射为整数ID
-- `image_id`列是**可选的**——如果缺失会自动生成
-- **在GPU训练前始终验证未知数据集**（请参阅数据集验证部分）
+### Dataset Requirements — Object Detection
+- Dataset must exist on Hub
+- Annotations must use the `objects` column with `bbox`, `category` (and optionally `area`) sub-fields
+- Bboxes can be in **xywh (COCO)** or **xyxy (Pascal VOC)** format — auto-detected and converted
+- Categories can be **integers or strings** — strings are auto-remapped to integer IDs
+- `image_id` column is **optional** — generated automatically if missing
+- **ALWAYS validate unknown datasets** before GPU training (see Dataset Validation section)
 
-### 数据集要求——图像分类
-- 数据集必须存在于Hub上
-- 必须有一个**`image`列**（PIL图像）和一个**`label`列**（整数类ID或字符串）
-- 标签列可以是`ClassLabel`类型（带名称）或普通整数/字符串——字符串会自动重新映射
-- 常见列名自动检测：`label`、`labels`、`class`、`fine_label`
-- **在GPU训练前始终验证未知数据集**（请参阅数据集验证部分）
+### Dataset Requirements — Image Classification
+- Dataset must exist on Hub
+- Must have an **`image` column** (PIL images) and a **`label` column** (integer class IDs or strings)
+- The label column can be `ClassLabel` type (with names) or plain integers/strings — strings are auto-remapped
+- Common column names auto-detected: `label`, `labels`, `class`, `fine_label`
+- **ALWAYS validate unknown datasets** before GPU training (see Dataset Validation section)
 
-### 数据集要求——SAM/SAM2分割
-- 数据集必须存在于Hub上
-- 必须有一个**`image`列**（PIL图像）和一个**`mask`列**（二元地面真值分割掩码）
-- 必须有一个**提示**——可以是：
-  - 包含JSON的**`prompt`列**，格式为`{"bbox": [x0,y0,x1,y1]}`或`{"point": [x,y]}`
-  - 或专门的**`bbox`**列，值为`[x0,y0,x1,y1]`
-  - 或专门的**`point`**列，值为`[x,y]`或`[[x,y],...]`
-- 边界框应为**xyxy**格式（绝对像素坐标）
-- 示例数据集：`merve/MicroMat-mini`（带边界框提示的图像抠图）
-- **在GPU训练前始终验证未知数据集**（请参阅数据集验证部分）
+### Dataset Requirements — SAM/SAM2 Segmentation
+- Dataset must exist on Hub
+- Must have an **`image` column** (PIL images) and a **`mask` column** (binary ground-truth segmentation mask)
+- Must have a **prompt** — either:
+  - A **`prompt` column** with JSON containing `{"bbox": [x0,y0,x1,y1]}` or `{"point": [x,y]}`
+  - OR a dedicated **`bbox`** column with `[x0,y0,x1,y1]` values
+  - OR a dedicated **`point`** column with `[x,y]` or `[[x,y],...]` values
+- Bboxes should be in **xyxy** format (absolute pixel coordinates)
+- Example dataset: `merve/MicroMat-mini` (image matting with bbox prompts)
+- **ALWAYS validate unknown datasets** before GPU training (see Dataset Validation section)
 
-### 关键设置
-- **超时必须超过预期训练时间**——默认30分钟太短。请参阅指令#6了解推荐值。
-- **必须启用Hub推送**——`push_to_hub=True`，`hub_model_id="username/model-name"`，令牌在`secrets`中
+### Critical Settings
+- **Timeout must exceed expected training time** — Default 30min is TOO SHORT. See directive #6 for recommended values.
+- **Hub push must be enabled** — `push_to_hub=True`, `hub_model_id="username/model-name"`, token in `secrets`
 
-## 数据集验证
+## Dataset Validation
 
-**在启动GPU训练前验证数据集格式，以防止训练失败的首要原因：格式不匹配。**
+**Validate dataset format BEFORE launching GPU training to prevent the #1 cause of training failures: format mismatches.**
 
-**对于**未知/自定义数据集或任何您之前未训练过的数据集，**始终验证**。**跳过**`cppe-5`（训练脚本中的默认值）。
+**ALWAYS validate for** unknown/custom datasets or any dataset you haven't trained with before. **Skip for** `cppe-5` (the default in the training script).
 
-### 运行检查器
+### Running the Inspector
 
-**选项1：通过HF Jobs（推荐——避免本地SSL/依赖问题）：**
+**Option 1: Via HF Jobs (recommended — avoids local SSL/dependency issues):**
 ```python
 hf_jobs("uv", {
     "script": "path/to/dataset_inspector.py",
@@ -88,12 +88,12 @@ hf_jobs("uv", {
 })
 ```
 
-**选项2：本地：**
+**Option 2: Locally:**
 ```bash
 uv run scripts/dataset_inspector.py --dataset username/dataset-name --split train
 ```
 
-**选项3：通过`HfApi().run_uv_job()`（如果hf_jobs MCP不可用）：**
+**Option 3: Via `HfApi().run_uv_job()` (if hf_jobs MCP unavailable):**
 ```python
 from huggingface_hub import HfApi
 api = HfApi()
@@ -105,39 +105,39 @@ api.run_uv_job(
 )
 ```
 
-### 阅读结果
+### Reading Results
 
-- **`✓ READY`** — 数据集兼容，直接使用
-- **`✗ NEEDS FORMATTING`** — 需要预处理（输出中提供映射代码）
+- **`✓ READY`** — Dataset is compatible, use directly
+- **`✗ NEEDS FORMATTING`** — Needs preprocessing (mapping code provided in output)
 
-## 自动边界框预处理
+## Automatic Bbox Preprocessing
 
-目标检测训练脚本（`scripts/object_detection_training.py`）自动处理边界框格式检测（xyxy→xywh转换）、边界框清理、`image_id`生成、字符串类别→整数重新映射和数据集截断。**无需手动预处理**——只需确保数据集有`objects.bbox`和`objects.category`列。
+The object detection training script (`scripts/object_detection_training.py`) automatically handles bbox format detection (xyxy→xywh conversion), bbox sanitization, `image_id` generation, string category→integer remapping, and dataset truncation. **No manual preprocessing needed** — just ensure the dataset has `objects.bbox` and `objects.category` columns.
 
-## 训练工作流程
+## Training workflow
 
-复制此清单并跟踪进度：
+Copy this checklist and track progress:
 
 ```
-训练进度：
-- [ ] 步骤1：验证先决条件（账户、令牌、数据集）
-- [ ] 步骤2：验证数据集格式（运行dataset_inspector.py）
-- [ ] 步骤3：询问用户关于数据集大小和验证分割
-- [ ] 步骤4：准备训练脚本（OD：scripts/object_detection_training.py，IC：scripts/image_classification_training.py，SAM：scripts/sam_segmentation_training.py）
-- [ ] 步骤5：本地保存脚本，提交作业，并报告详细信息
+Training Progress:
+- [ ] Step 1: Verify prerequisites (account, token, dataset)
+- [ ] Step 2: Validate dataset format (run dataset_inspector.py)
+- [ ] Step 3: Ask user about dataset size and validation split
+- [ ] Step 4: Prepare training script (OD: scripts/object_detection_training.py, IC: scripts/image_classification_training.py, SAM: scripts/sam_segmentation_training.py)
+- [ ] Step 5: Save script locally, submit job, and report details
 ```
 
-**步骤1：验证先决条件**
+**Step 1: Verify prerequisites**
 
-遵循上面的先决条件清单。
+Follow the Prerequisites Checklist above.
 
-**步骤2：验证数据集**
+**Step 2: Validate dataset**
 
-在花费GPU时间之前运行数据集检查器。请参阅上面的"数据集验证"部分。
+Run the dataset inspector BEFORE spending GPU time. See "Dataset Validation" section above.
 
-**步骤3：询问用户偏好**
+**Step 3: Ask user preferences**
 
-始终使用AskUserQuestion工具，格式为选项样式：
+ALWAYS use the AskUserQuestion tool with option-style format:
 
 ```python
 AskUserQuestion({
@@ -175,62 +175,62 @@ AskUserQuestion({
 })
 ```
 
-**步骤4：准备训练脚本**
+**Step 4: Prepare training script**
 
-对于目标检测，使用[scripts/object_detection_training.py](scripts/object_detection_training.py)作为生产就绪模板。对于图像分类，使用[scripts/image_classification_training.py](scripts/image_classification_training.py)。对于SAM/SAM2分割，使用[scripts/sam_segmentation_training.py](scripts/sam_segmentation_training.py)。所有脚本使用`HfArgumentParser`——所有配置通过`script_args`中的CLI参数传递，而不是通过编辑Python变量。有关timm模型详情，请参阅[references/timm_trainer.md](references/timm_trainer.md)。有关SAM2训练详情，请参阅[references/finetune_sam2_trainer.md](references/finetune_sam2_trainer.md)。
+For object detection, use [scripts/object_detection_training.py](scripts/object_detection_training.py) as the production-ready template. For image classification, use [scripts/image_classification_training.py](scripts/image_classification_training.py). For SAM/SAM2 segmentation, use [scripts/sam_segmentation_training.py](scripts/sam_segmentation_training.py). All scripts use `HfArgumentParser` — all configuration is passed via CLI arguments in `script_args`, NOT by editing Python variables. For timm model details, see [references/timm_trainer.md](references/timm_trainer.md). For SAM2 training details, see [references/finetune_sam2_trainer.md](references/finetune_sam2_trainer.md).
 
-**步骤5：保存脚本，提交作业，并报告**
+**Step 5: Save script, submit job, and report**
 
-1. **将脚本本地保存**到工作区根目录的`submitted_jobs/`（如果需要创建），使用描述性名称，如`training_<dataset>_<YYYYMMDD_HHMMSS>.py`。告诉用户路径。
-2. **提交**使用`hf_jobs` MCP工具（首选）或`HfApi().run_uv_job()`——请参阅指令#1了解两种方法。通过`script_args`传递所有配置。
-3. **报告**作业ID（来自`.id`属性）、监控URL、Trackio仪表板（`https://huggingface.co/spaces/{username}/trackio`）、预期时间和估计成本。
-4. **等待用户**请求状态检查——不要自动轮询。训练作业异步运行，可能需要数小时。
+1. **Save the script locally** to `submitted_jobs/` in the workspace root (create if needed) with a descriptive name like `training_<dataset>_<YYYYMMDD_HHMMSS>.py`. Tell the user the path.
+2. **Submit** using `hf_jobs` MCP tool (preferred) or `HfApi().run_uv_job()` — see directive #1 for both methods. Pass all config via `script_args`.
+3. **Report** the job ID (from `.id` attribute), monitoring URL, Trackio dashboard (`https://huggingface.co/spaces/{username}/trackio`), expected time, and estimated cost.
+4. **Wait for user** to request status checks — don't poll automatically. Training jobs run asynchronously and can take hours.
 
-## 关键指令
+## Critical directives
 
-这些规则防止常见失败。请严格遵循。
+These rules prevent common failures. Follow them exactly.
 
-### 1. 作业提交：`hf_jobs` MCP工具vs Python API
+### 1. Job submission: `hf_jobs` MCP tool vs Python API
 
-**`hf_jobs()`是MCP工具，不是Python函数。**不要尝试从`huggingface_hub`导入它。将其作为工具调用：
+**`hf_jobs()` is an MCP tool, NOT a Python function.** Do NOT try to import it from `huggingface_hub`. Call it as a tool:
 
 ```
 hf_jobs("uv", {"script": training_script_content, "flavor": "a10g-large", "timeout": "4h", "secrets": {"HF_TOKEN": "$HF_TOKEN"}})
 ```
 
-**如果`hf_jobs` MCP工具不可用**，直接使用Python API：
+**If `hf_jobs` MCP tool is unavailable**, use the Python API directly:
 
 ```python
 from huggingface_hub import HfApi, get_token
 api = HfApi()
 job_info = api.run_uv_job(
-    script="path/to/training_script.py",  # 文件路径，不是内容
+    script="path/to/training_script.py",  # file PATH, NOT content
     script_args=["--dataset_name", "cppe-5", ...],
     flavor="a10g-large",
-    timeout=14400,  # 秒（4小时）
+    timeout=14400,  # seconds (4 hours)
     env={"PYTHONUNBUFFERED": "1"},
-    secrets={"HF_TOKEN": get_token()},  # 必须使用get_token()，不是"$HF_TOKEN"
+    secrets={"HF_TOKEN": get_token()},  # MUST use get_token(), NOT "$HF_TOKEN"
 )
 print(f"Job ID: {job_info.id}")
 ```
 
-**两种方法之间的关键区别：**
+**Critical differences between the two methods:**
 
-| | `hf_jobs` MCP工具 | `HfApi().run_uv_job()` |
+| | `hf_jobs` MCP tool | `HfApi().run_uv_job()` |
 |---|---|---|
-| `script`参数 | Python代码字符串或URL（不是本地路径） | `.py`文件的文件路径（不是内容） |
-| 密钥中的令牌 | `"$HF_TOKEN"`（自动替换） | `get_token()`（实际令牌值） |
-| 超时格式 | 字符串（`"4h"`） | 秒（`14400`） |
+| `script` param | Python code string or URL (NOT local paths) | File path to `.py` file (NOT content) |
+| Token in secrets | `"$HF_TOKEN"` (auto-replaced) | `get_token()` (actual token value) |
+| Timeout format | String (`"4h"`) | Seconds (`14400`) |
 
-**两种方法的规则：**
-- 训练脚本必须包含带有依赖项的PEP 723内联元数据
-- 不要使用`image`或`command`参数（这些属于`run_job()`，不属于`run_uv_job()`）
+**Rules for both methods:**
+- The training script MUST include PEP 723 inline metadata with dependencies
+- Do NOT use `image` or `command` parameters (those belong to `run_job()`, not `run_uv_job()`)
 
-### 2. 通过作业密钥+显式hub_token注入进行认证
+### 2. Authentication via job secrets + explicit hub_token injection
 
-**作业配置**必须在密钥中包含令牌——语法取决于提交方法（见上表）。
+**Job config** MUST include the token in secrets — syntax depends on submission method (see table above).
 
-**训练脚本要求：**当`push_to_hub=True`时，Transformers `Trainer`在`__init__()`期间调用`create_repo(token=self.args.hub_token)`。训练脚本必须在解析参数后但在创建`Trainer`之前将`HF_TOKEN`注入`training_args.hub_token`。模板`scripts/object_detection_training.py`已经包含了这一点：
+**Training script requirement:** The Transformers `Trainer` calls `create_repo(token=self.args.hub_token)` during `__init__()` when `push_to_hub=True`. The training script MUST inject `HF_TOKEN` into `training_args.hub_token` AFTER parsing args but BEFORE creating the `Trainer`. The template `scripts/object_detection_training.py` already includes this:
 
 ```python
 hf_token = os.environ.get("HF_TOKEN")
@@ -239,132 +239,132 @@ if training_args.push_to_hub and not training_args.hub_token:
         training_args.hub_token = hf_token
 ```
 
-如果您编写自定义脚本，必须在`Trainer(...)`调用之前包含此令牌注入。
+If you write a custom script, you MUST include this token injection before the `Trainer(...)` call.
 
-- 除非从`scripts/object_detection_training.py`复制完整模式，否则不要在自定义脚本中调用`login()`
-- 不要依赖隐式令牌解析（`hub_token=None`）——在Jobs中不可靠
-- 有关完整详情，请参阅`hugging-face-jobs`技能→*令牌使用指南*
+- Do NOT call `login()` in custom scripts unless replicating the full pattern from `scripts/object_detection_training.py`
+- Do NOT rely on implicit token resolution (`hub_token=None`) — unreliable in Jobs
+- See the `hugging-face-jobs` skill → *Token Usage Guide* for full details
 
-### 3. JobInfo属性
+### 3. JobInfo attribute
 
-使用`.id`访问作业标识符（不是`.job_id`或`.name`——这些不存在）：
+Access the job identifier using `.id` (NOT `.job_id` or `.name` — these don't exist):
 
 ```python
-job_info = api.run_uv_job(...)  # 或 hf_jobs("uv", {...})
-job_id = job_info.id  # 正确——返回字符串，如"687fb701029421ae5549d998"
+job_info = api.run_uv_job(...)  # or hf_jobs("uv", {...})
+job_id = job_info.id  # Correct -- returns string like "687fb701029421ae5549d998"
 ```
 
-### 4. 必需的训练标志和HfArgumentParser布尔语法
+### 4. Required training flags and HfArgumentParser boolean syntax
 
-`scripts/object_detection_training.py`使用`HfArgumentParser`——所有配置通过`script_args`传递。布尔参数有两种语法：
+`scripts/object_detection_training.py` uses `HfArgumentParser` — all config is passed via `script_args`. Boolean arguments have two syntaxes:
 
-- **`bool`字段**（例如，`push_to_hub`，`do_train`）：使用裸标志（`--push_to_hub`）或用`--no_`前缀否定（`--no_remove_unused_columns`）
-- **`Optional[bool]`字段**（例如，`greater_is_better`）：必须传递显式值（`--greater_is_better True`）。裸`--greater_is_better`会导致`error: expected one argument`
+- **`bool` fields** (e.g., `push_to_hub`, `do_train`): Use as bare flags (`--push_to_hub`) or negate with `--no_` prefix (`--no_remove_unused_columns`)
+- **`Optional[bool]` fields** (e.g., `greater_is_better`): MUST pass explicit value (`--greater_is_better True`). Bare `--greater_is_better` causes `error: expected one argument`
 
-目标检测的必需标志：
+Required flags for object detection:
 
 ```
---no_remove_unused_columns          # 必须：保留image列用于pixel_values
---no_eval_do_concat_batches         # 必须：图像有不同数量的目标框
---push_to_hub                       # 必须：环境是临时的
+--no_remove_unused_columns          # MUST: preserves image column for pixel_values
+--no_eval_do_concat_batches         # MUST: images have different numbers of target boxes
+--push_to_hub                       # MUST: environment is ephemeral
 --hub_model_id username/model-name
 --metric_for_best_model eval_map
---greater_is_better True            # 必须显式传递"True"（Optional[bool]）
+--greater_is_better True            # MUST pass "True" explicitly (Optional[bool])
 --do_train
 --do_eval
 ```
 
-图像分类的必需标志：
+Required flags for image classification:
 
 ```
---no_remove_unused_columns          # 必须：保留image列用于pixel_values
---push_to_hub                       # 必须：环境是临时的
+--no_remove_unused_columns          # MUST: preserves image column for pixel_values
+--push_to_hub                       # MUST: environment is ephemeral
 --hub_model_id username/model-name
 --metric_for_best_model eval_accuracy
---greater_is_better True            # 必须显式传递"True"（Optional[bool]）
+--greater_is_better True            # MUST pass "True" explicitly (Optional[bool])
 --do_train
 --do_eval
 ```
 
-SAM/SAM2分割的必需标志：
+Required flags for SAM/SAM2 segmentation:
 
 ```
---remove_unused_columns False       # 必须：保留input_boxes/input_points
---push_to_hub                       # 必须：环境是临时的
+--remove_unused_columns False       # MUST: preserves input_boxes/input_points
+--push_to_hub                       # MUST: environment is ephemeral
 --hub_model_id username/model-name
 --do_train
---prompt_type bbox                  # 或"point"
---dataloader_pin_memory False       # 必须：避免自定义collator的pin_memory问题
+--prompt_type bbox                  # or "point"
+--dataloader_pin_memory False       # MUST: avoids pin_memory issues with custom collator
 ```
 
-### 5. 超时管理
+### 5. Timeout management
 
-默认30分钟对目标检测来说太短。设置最少2-4小时。为模型加载、预处理和Hub推送添加30%的缓冲区。
+Default 30 min is TOO SHORT for object detection. Set minimum 2-4 hours. Add 30% buffer for model loading, preprocessing, and Hub push.
 
-| 场景 | 超时 |
-|------|------|
-| 快速测试（100-200张图像，5-10个epoch） | 1小时 |
-| 开发（500-1K张图像，15-20个epoch） | 2-3小时 |
-| 生产（1K-5K张图像，30个epoch） | 4-6小时 |
-| 大型数据集（5K+张图像） | 6-12小时 |
+| Scenario | Timeout |
+|----------|---------|
+| Quick test (100-200 images, 5-10 epochs) | 1h |
+| Development (500-1K images, 15-20 epochs) | 2-3h |
+| Production (1K-5K images, 30 epochs) | 4-6h |
+| Large dataset (5K+ images) | 6-12h |
 
-### 6. Trackio监控
+### 6. Trackio monitoring
 
-Trackio在目标检测训练脚本中**始终启用**——它自动调用`trackio.init()`和`trackio.finish()`。无需传递`--report_to trackio`。项目名称取自`--output_dir`，运行名称取自`--run_name`。对于图像分类，在`TrainingArguments`中传递`--report_to trackio`。
+Trackio is **always enabled** in the object detection training script — it calls `trackio.init()` and `trackio.finish()` automatically. No need to pass `--report_to trackio`. The project name is taken from `--output_dir` and the run name from `--run_name`. For image classification, pass `--report_to trackio` in `TrainingArguments`.
 
-仪表板位于：`https://huggingface.co/spaces/{username}/trackio`
+Dashboard at: `https://huggingface.co/spaces/{username}/trackio`
 
-## 模型和硬件选择
+## Model & hardware selection
 
-### 推荐的目标检测模型
+### Recommended object detection models
 
-| 模型 | 参数 | 用例 |
-|------|------|------|
-| `ustc-community/dfine-small-coco` | 10.4M | 最佳起点——快速、便宜、SOTA质量 |
-| `PekingU/rtdetr_v2_r18vd` | 20.2M | 轻量级实时检测器 |
-| `ustc-community/dfine-large-coco` | 31.4M | 更高精度，仍然高效 |
-| `PekingU/rtdetr_v2_r50vd` | 43M | 强大的实时基线 |
-| `ustc-community/dfine-xlarge-obj365` | 63.5M | 最佳精度（在Objects365上预训练） |
-| `PekingU/rtdetr_v2_r101vd` | 76M | 最大的RT-DETR v2变体 |
+| Model | Params | Use case |
+|-------|--------|----------|
+| `ustc-community/dfine-small-coco` | 10.4M | Best starting point — fast, cheap, SOTA quality |
+| `PekingU/rtdetr_v2_r18vd` | 20.2M | Lightweight real-time detector |
+| `ustc-community/dfine-large-coco` | 31.4M | Higher accuracy, still efficient |
+| `PekingU/rtdetr_v2_r50vd` | 43M | Strong real-time baseline |
+| `ustc-community/dfine-xlarge-obj365` | 63.5M | Best accuracy (pretrained on Objects365) |
+| `PekingU/rtdetr_v2_r101vd` | 76M | Largest RT-DETR v2 variant |
 
-从`ustc-community/dfine-small-coco`开始快速迭代。为了更好的精度，迁移到D-FINE Large或RT-DETR v2 R50。
+Start with `ustc-community/dfine-small-coco` for fast iteration. Move to D-FINE Large or RT-DETR v2 R50 for better accuracy.
 
-### 推荐的图像分类模型
+### Recommended image classification models
 
-所有`timm/`模型通过`AutoModelForImageClassification`开箱即用（加载为`TimmWrapperForImageClassification`）。有关详情，请参阅[references/timm_trainer.md](references/timm_trainer.md)。
+All `timm/` models work out of the box via `AutoModelForImageClassification` (loaded as `TimmWrapperForImageClassification`). See [references/timm_trainer.md](references/timm_trainer.md) for details.
 
-| 模型 | 参数 | 用例 |
-|------|------|------|
-| `timm/mobilenetv3_small_100.lamb_in1k` | 2.5M | 超轻量级——移动/边缘，最快训练 |
-| `timm/mobilevit_s.cvnets_in1k` | 5.6M | 移动Transformer——良好的精度/速度权衡 |
-| `timm/resnet50.a1_in1k` | 25.6M | 强大的CNN基线——可靠，研究充分 |
-| `timm/vit_base_patch16_dinov3.lvd1689m` | 86.6M | 最佳精度——DINOv3自监督ViT |
+| Model | Params | Use case |
+|-------|--------|----------|
+| `timm/mobilenetv3_small_100.lamb_in1k` | 2.5M | Ultra-lightweight — mobile/edge, fastest training |
+| `timm/mobilevit_s.cvnets_in1k` | 5.6M | Mobile transformer — good accuracy/speed trade-off |
+| `timm/resnet50.a1_in1k` | 25.6M | Strong CNN baseline — reliable, well-studied |
+| `timm/vit_base_patch16_dinov3.lvd1689m` | 86.6M | Best accuracy — DINOv3 self-supervised ViT |
 
-从`timm/mobilenetv3_small_100.lamb_in1k`开始快速迭代。为了更好的精度，迁移到`timm/resnet50.a1_in1k`或`timm/vit_base_patch16_dinov3.lvd1689m`。
+Start with `timm/mobilenetv3_small_100.lamb_in1k` for fast iteration. Move to `timm/resnet50.a1_in1k` or `timm/vit_base_patch16_dinov3.lvd1689m` for better accuracy.
 
-### 推荐的SAM/SAM2分割模型
+### Recommended SAM/SAM2 segmentation models
 
-| 模型 | 参数 | 用例 |
-|------|------|------|
-| `facebook/sam2.1-hiera-tiny` | 38.9M | 最快的SAM2——适合快速实验 |
-| `facebook/sam2.1-hiera-small` | 46.0M | 最佳起点——良好的质量/速度平衡 |
-| `facebook/sam2.1-hiera-base-plus` | 80.8M | 更高容量，用于复杂分割 |
-| `facebook/sam2.1-hiera-large` | 224.4M | 最佳SAM2精度——需要更多VRAM |
-| `facebook/sam-vit-base` | 93.7M | 原始SAM——ViT-B主干 |
-| `facebook/sam-vit-large` | 312.3M | 原始SAM——ViT-L主干 |
-| `facebook/sam-vit-huge` | 641.1M | 原始SAM——ViT-H，最佳SAM v1精度 |
+| Model | Params | Use case |
+|-------|--------|----------|
+| `facebook/sam2.1-hiera-tiny` | 38.9M | Fastest SAM2 — good for quick experiments |
+| `facebook/sam2.1-hiera-small` | 46.0M | Best starting point — good quality/speed balance |
+| `facebook/sam2.1-hiera-base-plus` | 80.8M | Higher capacity for complex segmentation |
+| `facebook/sam2.1-hiera-large` | 224.4M | Best SAM2 accuracy — requires more VRAM |
+| `facebook/sam-vit-base` | 93.7M | Original SAM — ViT-B backbone |
+| `facebook/sam-vit-large` | 312.3M | Original SAM — ViT-L backbone |
+| `facebook/sam-vit-huge` | 641.1M | Original SAM — ViT-H, best SAM v1 accuracy |
 
-从`facebook/sam2.1-hiera-small`开始快速迭代。SAM2模型通常比同等质量的SAM v1更高效。默认情况下，只有掩码解码器被训练（视觉和提示编码器被冻结）。
+Start with `facebook/sam2.1-hiera-small` for fast iteration. SAM2 models are generally more efficient than SAM v1 at similar quality. Only the mask decoder is trained by default (vision and prompt encoders are frozen).
 
-### 硬件推荐
+### Hardware recommendation
 
-所有推荐的OD和IC模型都在100M参数以下——**`t4-small`（16 GB VRAM，$0.40/小时）对所有模型都足够**。图像分类模型通常比目标检测模型更小、更快——`t4-small`甚至可以舒适地处理ViT-Base。对于SAM2模型（最高`hiera-base-plus`），`t4-small`足够，因为只训练掩码解码器。对于`sam2.1-hiera-large`或SAM v1模型，使用`l4x1`或`a10g-large`。只有在大批次大小导致OOM时才升级——在切换硬件之前先减少批次大小。常见升级路径：`t4-small` → `l4x1`（$0.80/小时，24 GB） → `a10g-large`（$1.50/小时，24 GB）。
+All recommended OD and IC models are under 100M params — **`t4-small` (16 GB VRAM, $0.40/hr) is sufficient for all of them.** Image classification models are generally smaller and faster than object detection models — `t4-small` handles even ViT-Base comfortably. For SAM2 models up to `hiera-base-plus`, `t4-small` is sufficient since only the mask decoder is trained. For `sam2.1-hiera-large` or SAM v1 models, use `l4x1` or `a10g-large`. Only upgrade if you hit OOM from large batch sizes — reduce batch size first before switching hardware. Common upgrade path: `t4-small` → `l4x1` ($0.80/hr, 24 GB) → `a10g-large` ($1.50/hr, 24 GB).
 
-有关完整的硬件规格列表：请参考`hugging-face-jobs`技能。有关成本估算：运行`scripts/estimate_cost.py`。
+For full hardware flavor list: refer to the `hugging-face-jobs` skill. For cost estimation: run `scripts/estimate_cost.py`.
 
-## 快速开始——目标检测
+## Quick start — Object Detection
 
-下面的`script_args`对两种提交方法都相同。请参阅指令#1了解它们之间的关键区别。
+The `script_args` below are the same for both submission methods. See directive #1 for the critical differences between them.
 
 ```python
 OD_SCRIPT_ARGS = [
@@ -404,18 +404,18 @@ job_info = api.run_uv_job(
 print(f"Job ID: {job_info.id}")
 ```
 
-### 关键OD `script_args`
+### Key OD `script_args`
 
-- `--model_name_or_path` — 推荐：`"ustc-community/dfine-small-coco"`（见上面的模型表）
-- `--dataset_name` — Hub数据集ID
-- `--image_square_size` — 480（快速迭代）或800（更好的精度）
-- `--hub_model_id` — `"username/model-name"`用于Hub持久化
-- `--num_train_epochs` — 30通常用于收敛
-- `--train_val_split` — 用于验证的分割比例（默认0.15），如果数据集缺少验证分割则设置
-- `--max_train_samples` — 截断训练集（用于快速测试运行，例如，`"785"`用于7.8K数据集的~10%）
-- `--max_eval_samples` — 截断评估集
+- `--model_name_or_path` — recommended: `"ustc-community/dfine-small-coco"` (see model table above)
+- `--dataset_name` — the Hub dataset ID
+- `--image_square_size` — 480 (fast iteration) or 800 (better accuracy)
+- `--hub_model_id` — `"username/model-name"` for Hub persistence
+- `--num_train_epochs` — 30 typical for convergence
+- `--train_val_split` — fraction to split for validation (default 0.15), set if dataset lacks a validation split
+- `--max_train_samples` — truncate training set (useful for quick test runs, e.g. `"785"` for ~10% of a 7.8K dataset)
+- `--max_eval_samples` — truncate evaluation set
 
-## 快速开始——图像分类
+## Quick start — Image Classification
 
 ```python
 IC_SCRIPT_ARGS = [
@@ -454,19 +454,19 @@ job_info = api.run_uv_job(
 print(f"Job ID: {job_info.id}")
 ```
 
-### 关键IC `script_args`
+### Key IC `script_args`
 
-- `--model_name_or_path` — 任何`timm/`模型或Transformers分类模型（见上面的模型表）
-- `--dataset_name` — Hub数据集ID
-- `--image_column_name` — 包含PIL图像的列（默认：`"image"`）
-- `--label_column_name` — 包含类标签的列（默认：`"label"`）
-- `--hub_model_id` — `"username/model-name"`用于Hub持久化
-- `--num_train_epochs` — 3-5通常用于分类（少于OD）
-- `--per_device_train_batch_size` — 16-64（分类模型比OD使用更少的内存）
-- `--train_val_split` — 用于验证的分割比例（默认0.15），如果数据集缺少验证分割则设置
-- `--max_train_samples` / `--max_eval_samples` — 截断用于快速测试
+- `--model_name_or_path` — any `timm/` model or Transformers classification model (see model table above)
+- `--dataset_name` — the Hub dataset ID
+- `--image_column_name` — column containing PIL images (default: `"image"`)
+- `--label_column_name` — column containing class labels (default: `"label"`)
+- `--hub_model_id` — `"username/model-name"` for Hub persistence
+- `--num_train_epochs` — 3-5 typical for classification (fewer than OD)
+- `--per_device_train_batch_size` — 16-64 (classification models use less memory than OD)
+- `--train_val_split` — fraction to split for validation (default 0.15), set if dataset lacks a validation split
+- `--max_train_samples` / `--max_eval_samples` — truncate for quick tests
 
-## 快速开始——SAM/SAM2分割
+## Quick start — SAM/SAM2 Segmentation
 
 ```python
 SAM_SCRIPT_ARGS = [
@@ -504,90 +504,90 @@ job_info = api.run_uv_job(
 print(f"Job ID: {job_info.id}")
 ```
 
-### 关键SAM `script_args`
+### Key SAM `script_args`
 
-- `--model_name_or_path` — SAM或SAM2模型（见上面的模型表）；自动检测SAM vs SAM2
-- `--dataset_name` — Hub数据集ID（例如，`"merve/MicroMat-mini"`）
-- `--prompt_type` — `"bbox"`或`"point"` — 数据集中的提示类型
-- `--prompt_column_name` — 包含JSON编码提示的列（默认：`"prompt"`）
-- `--bbox_column_name` — 专门的边界框列（JSON提示列的替代方案）
-- `--point_column_name` — 专门的点列（JSON提示列的替代方案）
-- `--mask_column_name` — 包含地面真值掩码的列（默认：`"mask"`）
-- `--hub_model_id` — `"username/model-name"`用于Hub持久化
-- `--num_train_epochs` — 20-30通常用于SAM微调
-- `--per_device_train_batch_size` — 2-4（SAM模型使用大量内存）
-- `--freeze_vision_encoder` / `--freeze_prompt_encoder` — 冻结编码器权重（默认：两者都冻结，只训练掩码解码器）
-- `--train_val_split` — 用于验证的分割比例（默认0.1）
+- `--model_name_or_path` — SAM or SAM2 model (see model table above); auto-detects SAM vs SAM2
+- `--dataset_name` — the Hub dataset ID (e.g., `"merve/MicroMat-mini"`)
+- `--prompt_type` — `"bbox"` or `"point"` — type of prompt in the dataset
+- `--prompt_column_name` — column with JSON-encoded prompts (default: `"prompt"`)
+- `--bbox_column_name` — dedicated bbox column (alternative to JSON prompt column)
+- `--point_column_name` — dedicated point column (alternative to JSON prompt column)
+- `--mask_column_name` — column with ground-truth masks (default: `"mask"`)
+- `--hub_model_id` — `"username/model-name"` for Hub persistence
+- `--num_train_epochs` — 20-30 typical for SAM fine-tuning
+- `--per_device_train_batch_size` — 2-4 (SAM models use significant memory)
+- `--freeze_vision_encoder` / `--freeze_prompt_encoder` — freeze encoder weights (default: both frozen, only mask decoder trains)
+- `--train_val_split` — fraction to split for validation (default 0.1)
 
-## 检查作业状态
+## Checking job status
 
-**MCP工具（如果可用）：**
+**MCP tool (if available):**
 ```
-hf_jobs("ps")                                   # 列出所有作业
-hf_jobs("logs", {"job_id": "your-job-id"})      # 查看日志
-hf_jobs("inspect", {"job_id": "your-job-id"})   # 作业详情
+hf_jobs("ps")                                   # List all jobs
+hf_jobs("logs", {"job_id": "your-job-id"})      # View logs
+hf_jobs("inspect", {"job_id": "your-job-id"})   # Job details
 ```
 
-**Python API回退：**
+**Python API fallback:**
 ```python
 from huggingface_hub import HfApi
 api = HfApi()
-api.list_jobs()                                  # 列出所有作业
-api.get_job_logs(job_id="your-job-id")           # 查看日志
-api.get_job(job_id="your-job-id")                # 作业详情
+api.list_jobs()                                  # List all jobs
+api.get_job_logs(job_id="your-job-id")           # View logs
+api.get_job(job_id="your-job-id")                # Job details
 ```
 
-## 常见失败模式
+## Common failure modes
 
-### OOM（CUDA内存不足）
-减少`per_device_train_batch_size`（尝试4，然后2），减少`IMAGE_SIZE`，或升级硬件。
+### OOM (CUDA out of memory)
+Reduce `per_device_train_batch_size` (try 4, then 2), reduce `IMAGE_SIZE`, or upgrade hardware.
 
-### 数据集格式错误
-首先运行`scripts/dataset_inspector.py`。训练脚本自动检测xyxy vs xywh，将字符串类别转换为整数ID，并在缺失时添加`image_id`。确保`objects.bbox`包含4值坐标列表（绝对像素），`objects.category`包含整数ID或字符串标签。
+### Dataset format errors
+Run `scripts/dataset_inspector.py` first. The training script auto-detects xyxy vs xywh, converts string categories to integer IDs, and adds `image_id` if missing. Ensure `objects.bbox` contains 4-value coordinate lists in absolute pixels and `objects.category` contains either integer IDs or string labels.
 
-### Hub推送失败（401）
-验证：(1) 作业密钥包含令牌（见指令#2），(2) 脚本在创建`Trainer`之前设置`training_args.hub_token`，(3) 设置了`push_to_hub=True`，(4) 正确的`hub_model_id`，(5) 令牌具有写入权限。
+### Hub push failures (401)
+Verify: (1) job secrets include token (see directive #2), (2) script sets `training_args.hub_token` BEFORE creating the `Trainer`, (3) `push_to_hub=True` is set, (4) correct `hub_model_id`, (5) token has write permissions.
 
-### 作业超时
-增加超时（见指令#5表），减少epoch/数据集，或使用`hub_strategy="every_save"`的检查点策略。
+### Job timeout
+Increase timeout (see directive #5 table), reduce epochs/dataset, or use checkpoint strategy with `hub_strategy="every_save"`.
 
-### KeyError: 'test'（缺少测试分割）
-目标检测训练脚本会优雅处理这种情况——它回退到`validation`分割。确保您使用最新的`scripts/object_detection_training.py`。
+### KeyError: 'test' (missing test split)
+The object detection training script handles this gracefully — it falls back to the `validation` split. Ensure you're using the latest `scripts/object_detection_training.py`.
 
-### 单类数据集："iteration over a 0-d tensor"
-当只有一个类时，`torchmetrics.MeanAveragePrecision`返回标量（0维）张量用于每类指标。模板`scripts/object_detection_training.py`通过对这些张量调用`.unsqueeze(0)`来处理这种情况。确保您使用最新的模板。
+### Single-class dataset: "iteration over a 0-d tensor"
+`torchmetrics.MeanAveragePrecision` returns scalar (0-d) tensors for per-class metrics when there's only one class. The template `scripts/object_detection_training.py` handles this by calling `.unsqueeze(0)` on these tensors. Ensure you're using the latest template.
 
-### 检测性能差（mAP < 0.15）
-增加epoch（30-50），确保500+张图像，检查不平衡类的每类mAP，尝试不同的学习率（1e-5到1e-4），增加图像大小。
+### Poor detection performance (mAP < 0.15)
+Increase epochs (30-50), ensure 500+ images, check per-class mAP for imbalanced classes, try different learning rates (1e-5 to 1e-4), increase image size.
 
-有关全面故障排除：请参阅[references/reliability_principles.md](references/reliability_principles.md)
+For comprehensive troubleshooting: see [references/reliability_principles.md](references/reliability_principles.md)
 
-## 参考文件
+## Reference files
 
-- [scripts/object_detection_training.py](scripts/object_detection_training.py) — 生产就绪的目标检测训练脚本
-- [scripts/image_classification_training.py](scripts/image_classification_training.py) — 生产就绪的图像分类训练脚本（支持timm模型）
-- [scripts/sam_segmentation_training.py](scripts/sam_segmentation_training.py) — 生产就绪的SAM/SAM2分割训练脚本（边界框和点提示）
-- [scripts/dataset_inspector.py](scripts/dataset_inspector.py) — 验证OD、分类和SAM分割的数据集格式
-- [scripts/estimate_cost.py](scripts/estimate_cost.py) — 估算任何视觉模型的训练成本（包括SAM/SAM2）
-- [references/object_detection_training_notebook.md](references/object_detection_training_notebook.md) — 目标检测训练工作流程、增强策略和训练模式
-- [references/image_classification_training_notebook.md](references/image_classification_training_notebook.md) — 带ViT、预处理和评估的图像分类训练工作流程
-- [references/finetune_sam2_trainer.md](references/finetune_sam2_trainer.md) — SAM2微调用MicroMat数据集、DiceCE损失和Trainer集成的演练
-- [references/timm_trainer.md](references/timm_trainer.md) — 将timm模型与HF Trainer一起使用（TimmWrapper、变换、完整示例）
-- [references/hub_saving.md](references/hub_saving.md) — 详细的Hub持久化指南和验证清单
-- [references/reliability_principles.md](references/reliability_principles.md) — 来自生产经验的故障预防原则
+- [scripts/object_detection_training.py](scripts/object_detection_training.py) — Production-ready object detection training script
+- [scripts/image_classification_training.py](scripts/image_classification_training.py) — Production-ready image classification training script (supports timm models)
+- [scripts/sam_segmentation_training.py](scripts/sam_segmentation_training.py) — Production-ready SAM/SAM2 segmentation training script (bbox & point prompts)
+- [scripts/dataset_inspector.py](scripts/dataset_inspector.py) — Validate dataset format for OD, classification, and SAM segmentation
+- [scripts/estimate_cost.py](scripts/estimate_cost.py) — Estimate training costs for any vision model (includes SAM/SAM2)
+- [references/object_detection_training_notebook.md](references/object_detection_training_notebook.md) — Object detection training workflow, augmentation strategies, and training patterns
+- [references/image_classification_training_notebook.md](references/image_classification_training_notebook.md) — Image classification training workflow with ViT, preprocessing, and evaluation
+- [references/finetune_sam2_trainer.md](references/finetune_sam2_trainer.md) — SAM2 fine-tuning walkthrough with MicroMat dataset, DiceCE loss, and Trainer integration
+- [references/timm_trainer.md](references/timm_trainer.md) — Using timm models with HF Trainer (TimmWrapper, transforms, full example)
+- [references/hub_saving.md](references/hub_saving.md) — Detailed Hub persistence guide and verification checklist
+- [references/reliability_principles.md](references/reliability_principles.md) — Failure prevention principles from production experience
 
-## 外部链接
+## External links
 
-- [Transformers目标检测指南](https://huggingface.co/docs/transformers/tasks/object_detection)
-- [Transformers图像分类指南](https://huggingface.co/docs/transformers/tasks/image_classification)
-- [DETR模型文档](https://huggingface.co/docs/transformers/model_doc/detr)
-- [ViT模型文档](https://huggingface.co/docs/transformers/model_doc/vit)
-- [HF Jobs指南](https://huggingface.co/docs/huggingface_hub/guides/jobs) — 主要Jobs文档
-- [HF Jobs配置](https://huggingface.co/docs/hub/en/jobs-configuration) — 硬件、密钥、超时、命名空间
-- [HF Jobs CLI参考](https://huggingface.co/docs/huggingface_hub/guides/cli#hf-jobs) — 命令行界面
-- [目标检测模型](https://huggingface.co/models?pipeline_tag=object-detection)
-- [图像分类模型](https://huggingface.co/models?pipeline_tag=image-classification)
-- [SAM2模型文档](https://huggingface.co/docs/transformers/model_doc/sam2)
-- [SAM模型文档](https://huggingface.co/docs/transformers/model_doc/sam)
-- [目标检测数据集](https://huggingface.co/datasets?task_categories=task_categories:object-detection)
-- [图像分类数据集](https://huggingface.co/datasets?task_categories=task_categories:image-classification)
+- [Transformers Object Detection Guide](https://huggingface.co/docs/transformers/tasks/object_detection)
+- [Transformers Image Classification Guide](https://huggingface.co/docs/transformers/tasks/image_classification)
+- [DETR Model Documentation](https://huggingface.co/docs/transformers/model_doc/detr)
+- [ViT Model Documentation](https://huggingface.co/docs/transformers/model_doc/vit)
+- [HF Jobs Guide](https://huggingface.co/docs/huggingface_hub/guides/jobs) — Main Jobs documentation
+- [HF Jobs Configuration](https://huggingface.co/docs/hub/en/jobs-configuration) — Hardware, secrets, timeouts, namespaces
+- [HF Jobs CLI Reference](https://huggingface.co/docs/huggingface_hub/guides/cli#hf-jobs) — Command line interface
+- [Object Detection Models](https://huggingface.co/models?pipeline_tag=object-detection)
+- [Image Classification Models](https://huggingface.co/models?pipeline_tag=image-classification)
+- [SAM2 Model Documentation](https://huggingface.co/docs/transformers/model_doc/sam2)
+- [SAM Model Documentation](https://huggingface.co/docs/transformers/model_doc/sam)
+- [Object Detection Datasets](https://huggingface.co/datasets?task_categories=task_categories:object-detection)
+- [Image Classification Datasets](https://huggingface.co/datasets?task_categories=task_categories:image-classification)

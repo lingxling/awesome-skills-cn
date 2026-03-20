@@ -4,6 +4,8 @@ description: Interactive visualization library. Use when you need hover info, zo
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
+risk: unknown
+source: community
 ---
 
 # Plotly
@@ -262,4 +264,3 @@ app.run_server(debug=True)
 - Official documentation: https://plotly.com/python/
 - API reference: https://plotly.com/python-api-reference/
 - Community forum: https://community.plotly.com/
-

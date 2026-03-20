@@ -1,12 +1,13 @@
 ---
 name: ask-questions-if-underspecified
 description: Clarify requirements before implementing. Use when serious doubts arise.
+risk: unknown
+source: community
 ---
 
 # Ask Questions If Underspecified
 
 ## When to Use
-
 Use this skill when a request has multiple plausible interpretations or key details (objective, scope, constraints, environment, or safety) are unclear.
 
 ## When NOT to Use

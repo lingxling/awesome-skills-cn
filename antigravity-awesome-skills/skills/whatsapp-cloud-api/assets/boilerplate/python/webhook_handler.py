@@ -3,10 +3,14 @@
 import hashlib
 import hmac
 import os
+import re
 from functools import wraps
 from typing import Any
 
-from flask import Request, abort, request
+from flask import Response, abort, request
+
+
+_SAFE_CHALLENGE_RE = re.compile(r"^[A-Za-z0-9._-]{1,200}$")
 
 
 def validate_hmac_signature(app_secret: str | None = None):
@@ -52,10 +56,13 @@ def verify_webhook(verify_token: str | None = None):
     req_token = request.args.get("hub.verify_token")
     challenge = request.args.get("hub.challenge")
 
-    if mode == "subscribe" and req_token == token:
-        return challenge, 200
-    else:
+    if mode != "subscribe" or req_token != token:
         abort(403, "Verification failed")
+
+    if not challenge or not _SAFE_CHALLENGE_RE.fullmatch(challenge):
+        abort(400, "Invalid challenge")
+
+    return Response(challenge, status=200, mimetype="text/plain")
 
 
 def parse_webhook_payload(data: dict[str, Any]) -> dict[str, list]:

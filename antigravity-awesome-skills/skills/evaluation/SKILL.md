@@ -15,8 +15,7 @@ Use this skill when working with build evaluation frameworks for agent systems.
 
 Evaluation of agent systems requires different approaches than traditional software or even standard language model applications. Agents make dynamic decisions, are non-deterministic between runs, and often lack single correct answers. Effective evaluation must account for these characteristics while providing actionable feedback. A robust evaluation framework enables continuous improvement, catches regressions, and validates that context engineering choices achieve intended effects.
 
-## When to Activate
-
+## When to Use
 Activate this skill when:
 - Testing agent performance systematically
 - Validating context engineering choices

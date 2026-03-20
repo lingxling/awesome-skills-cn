@@ -1,6 +1,8 @@
 ---
 name: fixing-motion-performance
 description: Audit and fix animation performance issues including layout thrashing, compositor properties, scroll-linked motion, and blur effects. Use when animations stutter, transitions jank, or reviewing CSS/JS animation performance.
+risk: unknown
+source: community
 ---
 
 # fixing-motion-performance
@@ -20,8 +22,7 @@ Fix animation performance issues.
 
 Do not migrate animation libraries unless explicitly requested. Apply rules within the existing stack.
 
-## when to apply
-
+## When to Use
 Reference these guidelines when:
 - adding or changing UI animations (CSS, WAAPI, Motion, rAF, GSAP)
 - refactoring janky interactions or transitions

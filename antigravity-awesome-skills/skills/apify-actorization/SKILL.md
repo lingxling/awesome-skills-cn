@@ -1,6 +1,8 @@
 ---
 name: apify-actorization
-description: "Convert existing projects into Apify Actors - serverless cloud programs. Actorize JavaScript/TypeScript (SDK with Actor.init/exit), Python (async context manager), or any language (CLI wrapper). Us..."
+description: "Actorization converts existing software into reusable serverless applications compatible with the Apify platform. Actors are programs packaged as Docker images that accept well-defined JSON input, perform an action, and optionally produce structured JSON output."
+risk: unknown
+source: community
 ---
 
 # Apify Actorization
@@ -45,10 +47,9 @@ Verify CLI is logged in:
 apify info  # Should return your username
 ```
 
-If not logged in, check if `APIFY_TOKEN` environment variable is defined. If not, ask the user to generate one at https://console.apify.com/settings/integrations, then:
+If not logged in, check if `APIFY_TOKEN` environment variable is defined. If not, ask the user to generate one at https://console.apify.com/settings/integrations, add it to their shell or secret manager without putting the literal token in command history, then run:
 
 ```bash
-export APIFY_TOKEN="your_token_here"
 apify login
 ```
 

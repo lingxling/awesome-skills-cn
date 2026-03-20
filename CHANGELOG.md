@@ -5,6 +5,24 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.22.0] - 2026-03-20
+
+### 变更
+- 执行 test_run.py 脚本，更新所有项目至最新版本：
+  - anthropics-skills (Already up to date)
+  - claude-scientific-skills (Already up to date)
+  - composiohq-awesome-claude-skills (Already up to date)
+  - huggingface-skills (Already up to date)
+  - obsidian-skills (Already up to date)
+  - openai-skills (Already up to date)
+  - vercel-labs-agent-skills (Fast-forward 更新，新增 vercel-cli-with-tokens 技能)
+  - vercel-labs-skills (Fast-forward 更新，10个文件变更)
+
+- 更新翻译文件以保持与 SKILL.md 的同步：
+  - 递归检查并更新 9 个子文件夹中的 SKILL.md 和 README.md 文件
+  - 更新对应 SKILL_CN.md 和 README_CN.md 文件
+  - 更新 awesome-openclaw-skills/categories/ 下的文件和对应翻译文件
+
 ## [2.21.0] - 2026-03-19
 
 ### 新增

@@ -1,162 +1,187 @@
 ---
 name: dnanexus-integration
-description: DNAnexus 云基因组学平台。构建应用/小程序、管理数据（上传/下载）、dxpy Python SDK、运行工作流、FASTQ/BAM/VCF，用于基因组学管道开发和执行。
+description: DNAnexus cloud genomics platform. Build apps/applets, manage data (upload/download), dxpy Python SDK, run workflows, FASTQ/BAM/VCF, for genomics pipeline development and execution.
 license: Unknown
-compatibility: 需要 DNAnexus 账户
+compatibility: Requires a DNAnexus account
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# DNAnexus 集成
+# DNAnexus Integration
 
-## 概述
+## Overview
 
-DNAnexus 是一个用于生物医学数据分析和基因组学的云平台。构建和部署应用/小程序、管理数据对象、运行工作流，并使用 dxpy Python SDK 进行基因组学管道开发和执行。
+DNAnexus is a cloud platform for biomedical data analysis and genomics. Build and deploy apps/applets, manage data objects, run workflows, and use the dxpy Python SDK for genomics pipeline development and execution.
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况下使用：
-- 创建、构建或修改 DNAnexus 应用/小程序
-- 上传、下载、搜索或组织文件和记录
-- 运行分析、监控作业、创建工作流
-- 编写使用 dxpy 与平台交互的脚本
-- 设置 dxapp.json、管理依赖项、使用 Docker
-- 处理 FASTQ、BAM、VCF 或其他生物信息学文件
-- 管理项目、权限或平台资源
+This skill should be used when:
+- Creating, building, or modifying DNAnexus apps/applets
+- Uploading, downloading, searching, or organizing files and records
+- Running analyses, monitoring jobs, creating workflows
+- Writing scripts using dxpy to interact with the platform
+- Setting up dxapp.json, managing dependencies, using Docker
+- Processing FASTQ, BAM, VCF, or other bioinformatics files
+- Managing projects, permissions, or platform resources
 
-## 核心能力
+## Core Capabilities
 
-此技能组织为五个主要领域，每个领域都有详细的参考文档：
+The skill is organized into five main areas, each with detailed reference documentation:
 
-### 1. 应用开发
+### 1. App Development
 
-**用途**：创建在 DNAnexus 平台上运行的可执行程序（应用/小程序）。
+**Purpose**: Create executable programs (apps/applets) that run on the DNAnexus platform.
 
-**关键操作**：
-- 使用 `dx-app-wizard` 生成应用骨架
-- 使用适当的入口点编写 Python 或 Bash 应用
-- 处理输入/输出数据对象
-- 使用 `dx build` 或 `dx build --app` 部署
-- 在平台上测试应用
+**Key Operations**:
+- Generate app skeleton with `dx-app-wizard`
+- Write Python or Bash apps with proper entry points
+- Handle input/output data objects
+- Deploy with `dx build` or `dx build --app`
+- Test apps on the platform
 
-**常见用例**：
-- 生物信息学管道（比对、变异调用）
-- 数据处理工作流
-- 质量控制和过滤
-- 格式转换工具
+**Common Use Cases**:
+- Bioinformatics pipelines (alignment, variant calling)
+- Data processing workflows
+- Quality control and filtering
+- Format conversion tools
 
-**参考**：有关完整的应用结构和模式、Python 入口点装饰器、使用 dxpy 进行输入/输出处理、开发最佳实践以及常见问题和解决方案，请参阅 `references/app-development.md`。
+**Reference**: See `references/app-development.md` for:
+- Complete app structure and patterns
+- Python entry point decorators
+- Input/output handling with dxpy
+- Development best practices
+- Common issues and solutions
 
-### 2. 数据操作
+### 2. Data Operations
 
-**用途**：管理平台上的文件、记录和其他数据对象。
+**Purpose**: Manage files, records, and other data objects on the platform.
 
-**关键操作**：
-- 使用 `dxpy.upload_local_file()` 和 `dxpy.download_dxfile()` 上传/下载文件
-- 使用元数据创建和管理记录
-- 按名称、属性或类型搜索数据对象
-- 在项目之间克隆数据
-- 管理项目文件夹和权限
+**Key Operations**:
+- Upload/download files with `dxpy.upload_local_file()` and `dxpy.download_dxfile()`
+- Create and manage records with metadata
+- Search for data objects by name, properties, or type
+- Clone data between projects
+- Manage project folders and permissions
 
-**常见用例**：
-- 上传测序数据（FASTQ 文件）
-- 组织分析结果
-- 搜索特定样本或实验
-- 跨项目备份数据
-- 管理参考基因组和注释
+**Common Use Cases**:
+- Uploading sequencing data (FASTQ files)
+- Organizing analysis results
+- Searching for specific samples or experiments
+- Backing up data across projects
+- Managing reference genomes and annotations
 
-**参考**：有关完整的文件和记录操作、数据对象生命周期（打开/关闭状态）、搜索和发现模式、项目管理和批处理操作，请参阅 `references/data-operations.md`。
+**Reference**: See `references/data-operations.md` for:
+- Complete file and record operations
+- Data object lifecycle (open/closed states)
+- Search and discovery patterns
+- Project management
+- Batch operations
 
-### 3. 作业执行
+### 3. Job Execution
 
-**用途**：运行分析、监控执行和编排工作流。
+**Purpose**: Run analyses, monitor execution, and orchestrate workflows.
 
-**关键操作**：
-- 使用 `applet.run()` 或 `app.run()` 启动作业
-- 监控作业状态和日志
-- 为并行处理创建子作业
-- 构建和运行多步工作流
-- 使用输出引用链接作业
+**Key Operations**:
+- Launch jobs with `applet.run()` or `app.run()`
+- Monitor job status and logs
+- Create subjobs for parallel processing
+- Build and run multi-step workflows
+- Chain jobs with output references
 
-**常见用例**：
-- 在测序数据上运行基因组学分析
-- 多个样本的并行处理
-- 多步分析管道
-- 监控长时间运行的计算
-- 调试失败的作业
+**Common Use Cases**:
+- Running genomics analyses on sequencing data
+- Parallel processing of multiple samples
+- Multi-step analysis pipelines
+- Monitoring long-running computations
+- Debugging failed jobs
 
-**参考**：有关完整的作业生命周期和状态、工作流创建和编排、并行执行模式、作业监控和调试以及资源管理，请参阅 `references/job-execution.md`。
+**Reference**: See `references/job-execution.md` for:
+- Complete job lifecycle and states
+- Workflow creation and orchestration
+- Parallel execution patterns
+- Job monitoring and debugging
+- Resource management
 
 ### 4. Python SDK (dxpy)
 
-**用途**：通过 Python 对 DNAnexus 平台进行编程访问。
+**Purpose**: Programmatic access to DNAnexus platform through Python.
 
-**关键操作**：
-- 使用数据对象处理程序（DXFile、DXRecord、DXApplet 等）
-- 将高级函数用于常见任务
-- 对高级操作进行直接 API 调用
-- 在对象之间创建链接和引用
-- 搜索和发现平台资源
+**Key Operations**:
+- Work with data object handlers (DXFile, DXRecord, DXApplet, etc.)
+- Use high-level functions for common tasks
+- Make direct API calls for advanced operations
+- Create links and references between objects
+- Search and discover platform resources
 
-**常见用例**：
-- 数据管理自动化脚本
-- 自定义分析管道
-- 批处理工作流
-- 与外部工具集成
-- 数据迁移和组织
+**Common Use Cases**:
+- Automation scripts for data management
+- Custom analysis pipelines
+- Batch processing workflows
+- Integration with external tools
+- Data migration and organization
 
-**参考**：有关完整的 dxpy 类参考、高级实用函数、API 方法文档、错误处理模式和常见代码模式，请参阅 `references/python-sdk.md`。
+**Reference**: See `references/python-sdk.md` for:
+- Complete dxpy class reference
+- High-level utility functions
+- API method documentation
+- Error handling patterns
+- Common code patterns
 
-### 5. 配置和依赖项
+### 5. Configuration and Dependencies
 
-**用途**：配置应用元数据和管理依赖项。
+**Purpose**: Configure app metadata and manage dependencies.
 
-**关键操作**：
-- 编写带有输入、输出和运行规范的 dxapp.json
-- 安装系统包（execDepends）
-- 捆绑自定义工具和资源
-- 使用共享依赖项的资源
-- 集成 Docker 容器
-- 配置实例类型和超时
+**Key Operations**:
+- Write dxapp.json with inputs, outputs, and run specs
+- Install system packages (execDepends)
+- Bundle custom tools and resources
+- Use assets for shared dependencies
+- Integrate Docker containers
+- Configure instance types and timeouts
 
-**常见用例**：
-- 定义应用输入/输出规范
-- 安装生物信息学工具（samtools、bwa 等）
-- 管理 Python 包依赖项
-- 使用复杂环境的 Docker 镜像
-- 选择计算资源
+**Common Use Cases**:
+- Defining app input/output specifications
+- Installing bioinformatics tools (samtools, bwa, etc.)
+- Managing Python package dependencies
+- Using Docker images for complex environments
+- Selecting computational resources
 
-**参考**：有关完整的 dxapp.json 规范、依赖项管理策略、Docker 集成模式、区域和资源配置以及示例配置，请参阅 `references/configuration.md`。
+**Reference**: See `references/configuration.md` for:
+- Complete dxapp.json specification
+- Dependency management strategies
+- Docker integration patterns
+- Regional and resource configuration
+- Example configurations
 
-## 快速入门示例
+## Quick Start Examples
 
-### 上传和分析数据
+### Upload and Analyze Data
 
 ```python
 import dxpy
 
-# 上传输入文件
+# Upload input file
 input_file = dxpy.upload_local_file("sample.fastq", project="project-xxxx")
 
-# 运行分析
+# Run analysis
 job = dxpy.DXApplet("applet-xxxx").run({
     "reads": dxpy.dxlink(input_file.get_id())
 })
 
-# 等待完成
+# Wait for completion
 job.wait_on_done()
 
-# 下载结果
+# Download results
 output_id = job.describe()["output"]["aligned_reads"]["$dnanexus_link"]
 dxpy.download_dxfile(output_id, "aligned.bam")
 ```
 
-### 搜索和下载文件
+### Search and Download Files
 
 ```python
 import dxpy
 
-# 查找来自特定实验的 BAM 文件
+# Find BAM files from a specific experiment
 files = dxpy.find_data_objects(
     classname="file",
     name="*.bam",
@@ -164,14 +189,14 @@ files = dxpy.find_data_objects(
     project="project-xxxx"
 )
 
-# 下载每个文件
+# Download each file
 for file_result in files:
     file_obj = dxpy.DXFile(file_result["id"])
     filename = file_obj.describe()["name"]
     dxpy.download_dxfile(file_result["id"], filename)
 ```
 
-### 创建简单应用
+### Create Simple App
 
 ```python
 # src/my-app.py
@@ -180,10 +205,10 @@ import subprocess
 
 @dxpy.entry_point('main')
 def main(input_file, quality_threshold=30):
-    # 下载输入
+    # Download input
     dxpy.download_dxfile(input_file["$dnanexus_link"], "input.fastq")
 
-    # 处理
+    # Process
     subprocess.check_call([
         "quality_filter",
         "--input", "input.fastq",
@@ -191,7 +216,7 @@ def main(input_file, quality_threshold=30):
         "--threshold", str(quality_threshold)
     ])
 
-    # 上传输出
+    # Upload output
     output_file = dxpy.upload_local_file("filtered.fastq")
 
     return {
@@ -201,69 +226,69 @@ def main(input_file, quality_threshold=30):
 dxpy.run()
 ```
 
-## 工作流决策树
+## Workflow Decision Tree
 
-使用 DNAnexus 时，遵循此决策树：
+When working with DNAnexus, follow this decision tree:
 
-1. **需要创建新的可执行文件吗？**
-   - 是 → 使用**应用开发**（references/app-development.md）
-   - 否 → 继续到步骤 2
+1. **Need to create a new executable?**
+   - Yes → Use **App Development** (references/app-development.md)
+   - No → Continue to step 2
 
-2. **需要管理文件或数据吗？**
-   - 是 → 使用**数据操作**（references/data-operations.md）
-   - 否 → 继续到步骤 3
+2. **Need to manage files or data?**
+   - Yes → Use **Data Operations** (references/data-operations.md)
+   - No → Continue to step 3
 
-3. **需要运行分析或工作流吗？**
-   - 是 → 使用**作业执行**（references/job-execution.md）
-   - 否 → 继续到步骤 4
+3. **Need to run an analysis or workflow?**
+   - Yes → Use **Job Execution** (references/job-execution.md)
+   - No → Continue to step 4
 
-4. **编写用于自动化的 Python 脚本吗？**
-   - 是 → 使用**Python SDK**（references/python-sdk.md）
-   - 否 → 继续到步骤 5
+4. **Writing Python scripts for automation?**
+   - Yes → Use **Python SDK** (references/python-sdk.md)
+   - No → Continue to step 5
 
-5. **配置应用设置或依赖项吗？**
-   - 是 → 使用**配置**（references/configuration.md）
+5. **Configuring app settings or dependencies?**
+   - Yes → Use **Configuration** (references/configuration.md)
 
-通常您需要结合多种能力（例如，应用开发 + 配置，或数据操作 + 作业执行）。
+Often you'll need multiple capabilities together (e.g., app development + configuration, or data operations + job execution).
 
-## 安装和身份验证
+## Installation and Authentication
 
-### 安装 dxpy
+### Install dxpy
 
 ```bash
 uv pip install dxpy
 ```
 
-### 登录 DNAnexus
+### Login to DNAnexus
 
 ```bash
 dx login
 ```
 
-这将验证您的会话并设置对项目和数据的访问。
+This authenticates your session and sets up access to projects and data.
 
-### 验证安装
+### Verify Installation
 
 ```bash
 dx --version
 dx whoami
 ```
 
-## 常见模式
+## Common Patterns
 
-### 模式 1：批处理
+### Pattern 1: Batch Processing
 
-使用相同分析处理多个文件：
+Process multiple files with the same analysis:
 
 ```python
-# 查找所有 FASTQ 文件
+# Find all FASTQ files
 files = dxpy.find_data_objects(
     classname="file",
     name="*.fastq",
     project="project-xxxx"
 )
 
-# 启动并行作业
+# Launch parallel jobs
 jobs = []
 for file_result in files:
     job = dxpy.DXApplet("applet-xxxx").run({
@@ -271,42 +296,42 @@ for file_result in files:
     })
     jobs.append(job)
 
-# 等待所有完成
+# Wait for all completions
 for job in jobs:
     job.wait_on_done()
 ```
 
-### 模式 2：多步管道
+### Pattern 2: Multi-Step Pipeline
 
-链接多个分析：
+Chain multiple analyses together:
 
 ```python
-# 步骤 1：质量控制
+# Step 1: Quality control
 qc_job = qc_applet.run({"reads": input_file})
 
-# 步骤 2：比对（使用 QC 输出）
+# Step 2: Alignment (uses QC output)
 align_job = align_applet.run({
     "reads": qc_job.get_output_ref("filtered_reads")
 })
 
-# 步骤 3：变异调用（使用比对输出）
+# Step 3: Variant calling (uses alignment output)
 variant_job = variant_applet.run({
     "bam": align_job.get_output_ref("aligned_bam")
 })
 ```
 
-### 模式 3：数据组织
+### Pattern 3: Data Organization
 
-系统地组织分析结果：
+Organize analysis results systematically:
 
 ```python
-# 创建有组织的文件夹结构
+# Create organized folder structure
 dxpy.api.project_new_folder(
     "project-xxxx",
     {"folder": "/experiments/exp001/results", "parents": True}
 )
 
-# 带元数据上传
+# Upload with metadata
 result_file = dxpy.upload_local_file(
     "results.txt",
     project="project-xxxx",
@@ -320,36 +345,37 @@ result_file = dxpy.upload_local_file(
 )
 ```
 
-## 最佳实践
+## Best Practices
 
-1. **错误处理**：始终在 try-except 块中包装 API 调用
-2. **资源管理**：为工作负载选择适当的实例类型
-3. **数据组织**：使用一致的文件夹结构和元数据
-4. **成本优化**：归档旧数据，使用适当的存储类别
-5. **文档**：在 dxapp.json 中包含清晰的描述
-6. **测试**：在生产使用前用各种输入类型测试应用
-7. **版本控制**：对应用使用语义版本控制
-8. **安全性**：永远不要在源代码中硬编码凭据
-9. **日志记录**：包含用于调试的信息性日志消息
-10. **清理**：删除临时文件和失败的作业
+1. **Error Handling**: Always wrap API calls in try-except blocks
+2. **Resource Management**: Choose appropriate instance types for workloads
+3. **Data Organization**: Use consistent folder structures and metadata
+4. **Cost Optimization**: Archive old data, use appropriate storage classes
+5. **Documentation**: Include clear descriptions in dxapp.json
+6. **Testing**: Test apps with various input types before production use
+7. **Version Control**: Use semantic versioning for apps
+8. **Security**: Never hardcode credentials in source code
+9. **Logging**: Include informative log messages for debugging
+10. **Cleanup**: Remove temporary files and failed jobs
 
-## 资源
+## Resources
 
-此技能包含详细的参考文档：
+This skill includes detailed reference documentation:
 
 ### references/
 
-- **app-development.md** - 构建和部署应用/小程序的完整指南
-- **data-operations.md** - 文件管理、记录、搜索和项目操作
-- **job-execution.md** - 运行作业、工作流、监控和并行处理
-- **python-sdk.md** - 全面的 dxpy 库参考，包含所有类和函数
-- **configuration.md** - dxapp.json 规范和依赖项管理
+- **app-development.md** - Complete guide to building and deploying apps/applets
+- **data-operations.md** - File management, records, search, and project operations
+- **job-execution.md** - Running jobs, workflows, monitoring, and parallel processing
+- **python-sdk.md** - Comprehensive dxpy library reference with all classes and functions
+- **configuration.md** - dxapp.json specification and dependency management
 
-当您需要有关特定操作或复杂任务的详细信息时，请加载这些参考。
+Load these references when you need detailed information about specific operations or when working on complex tasks.
 
-## 获取帮助
+## Getting Help
 
-- 官方文档：https://documentation.dnanexus.com/
-- API 参考：http://autodoc.dnanexus.com/
-- GitHub 仓库：https://github.com/dnanexus/dx-toolkit
-- 支持：support@dnanexus.com
+- Official documentation: https://documentation.dnanexus.com/
+- API reference: http://autodoc.dnanexus.com/
+- GitHub repository: https://github.com/dnanexus/dx-toolkit
+- Support: support@dnanexus.com
+

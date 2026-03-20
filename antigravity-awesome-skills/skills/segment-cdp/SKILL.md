@@ -1,6 +1,6 @@
 ---
 name: segment-cdp
-description: "Expert patterns for Segment Customer Data Platform including Analytics.js, server-side tracking, tracking plans with Protocols, identity resolution, destinations configuration, and data governance ..."
+description: "Client-side tracking with Analytics.js. Include track, identify, page, and group calls. Anonymous ID persists until identify merges with user."
 risk: unknown
 source: "vibeship-spawner-skills (Apache 2.0)"
 date_added: "2026-02-27"
@@ -15,20 +15,17 @@ date_added: "2026-02-27"
 Client-side tracking with Analytics.js. Include track, identify, page,
 and group calls. Anonymous ID persists until identify merges with user.
 
-
 ### Server-Side Tracking with Node.js
 
 High-performance server-side tracking using @segment/analytics-node.
 Non-blocking with internal batching. Essential for backend events,
 webhooks, and sensitive data.
 
-
 ### Tracking Plan Design
 
 Design event schemas using Object + Action naming convention.
 Define required properties, types, and validation rules.
 Connect to Protocols for enforcement.
-
 
 ## Anti-Patterns
 

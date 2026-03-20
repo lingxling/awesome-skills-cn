@@ -7,7 +7,6 @@ date_added: '2026-02-27'
 ---
 
 ## When to Use
-
 Use this skill when building and managing a carrier network, conducting freight RFPs, negotiating linehaul and accessorial rates, tracking carrier KPIs via scorecards, or ensuring regulatory compliance of transportation partners.
 
 # Carrier Relationship Management
@@ -183,7 +182,6 @@ Track weekly, review monthly with carrier management team, share quarterly with 
 - For complete communication templates with variables and tone guidance, see [communication-templates.md](references/communication-templates.md)
 
 ## When to Use
-
 Use this skill when you are **designing or tuning your carrier portfolio, routing guides, and freight procurement strategy**:
 
 - Running freight RFPs, renegotiating contract and fuel tables, or balancing spot vs. contract exposure.

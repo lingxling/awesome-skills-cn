@@ -18,7 +18,6 @@ Returns a corrected version plus a structured modification log, or generates an 
 ---
 
 ## When to Use
-
 - Use when user asks to "proofread", "review and correct", "fix grammar", "polish this text", "improve readability while keeping my voice".
 - Use when user asks to proofread a document file (like .docx, .pdf, .txt) and save the updated version as new file with 'UPDATED_' prefix.
 

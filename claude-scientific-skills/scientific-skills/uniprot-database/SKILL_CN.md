@@ -1,145 +1,145 @@
 ---
 name: uniprot-database
-description: 直接通过REST API访问UniProt。蛋白质搜索、FASTA检索、ID映射、Swiss-Prot/TrEMBL。对于使用多个数据库的Python工作流，建议使用bioservices（40+服务的统一接口）。使用此技能进行直接HTTP/REST工作或UniProt特定控制。
+description: Direct REST API access to UniProt. Protein searches, FASTA retrieval, ID mapping, Swiss-Prot/TrEMBL. For Python workflows with multiple databases, prefer bioservices (unified interface to 40+ services). Use this for direct HTTP/REST work or UniProt-specific control.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# UniProt数据库
+# UniProt Database
 
-## 概述
+## Overview
 
-UniProt是世界领先的综合性蛋白质序列和功能信息资源。通过名称、基因或登录号搜索蛋白质，以FASTA格式检索序列，在数据库之间执行ID映射，通过REST API访问Swiss-Prot/TrEMBL注释进行蛋白质分析。
+UniProt is the world's leading comprehensive protein sequence and functional information resource. Search proteins by name, gene, or accession, retrieve sequences in FASTA format, perform ID mapping across databases, access Swiss-Prot/TrEMBL annotations via REST API for protein analysis.
 
-## 何时使用此技能
+## When to Use This Skill
 
-应在以下情况使用此技能：
-- 按名称、基因符号、登录号或生物体搜索蛋白质条目
-- 以FASTA或其他格式检索蛋白质序列
-- 在UniProt和外部数据库（Ensembl、RefSeq、PDB等）之间映射标识符
-- 访问包括GO术语、结构域和功能描述在内的蛋白质注释
-- 高效批量检索多个蛋白质条目
-- 查询已审核（Swiss-Prot）与未审核（TrEMBL）蛋白质数据
-- 流式处理大型蛋白质数据集
-- 使用特定字段的搜索语法构建自定义查询
+This skill should be used when:
+- Searching for protein entries by name, gene symbol, accession, or organism
+- Retrieving protein sequences in FASTA or other formats
+- Mapping identifiers between UniProt and external databases (Ensembl, RefSeq, PDB, etc.)
+- Accessing protein annotations including GO terms, domains, and functional descriptions
+- Batch retrieving multiple protein entries efficiently
+- Querying reviewed (Swiss-Prot) vs. unreviewed (TrEMBL) protein data
+- Streaming large protein datasets
+- Building custom queries with field-specific search syntax
 
-## 核心功能
+## Core Capabilities
 
-### 1. 搜索蛋白质
+### 1. Searching for Proteins
 
-使用自然语言查询或结构化搜索语法搜索UniProt。
+Search UniProt using natural language queries or structured search syntax.
 
-**常见搜索模式：**
+**Common search patterns:**
 ```python
-# 按蛋白质名称搜索
+# Search by protein name
 query = "insulin AND organism_name:\"Homo sapiens\""
 
-# 按基因名称搜索
+# Search by gene name
 query = "gene:BRCA1 AND reviewed:true"
 
-# 按登录号搜索
+# Search by accession
 query = "accession:P12345"
 
-# 按序列长度搜索
+# Search by sequence length
 query = "length:[100 TO 500]"
 
-# 按分类学搜索
-query = "taxonomy_id:9606"  # 人类蛋白质
+# Search by taxonomy
+query = "taxonomy_id:9606"  # Human proteins
 
-# 按GO术语搜索
-query = "go:0005515"  # 蛋白质结合
+# Search by GO term
+query = "go:0005515"  # Protein binding
 ```
 
-使用API搜索端点：`https://rest.uniprot.org/uniprotkb/search?query={query}&format={format}`
+Use the API search endpoint: `https://rest.uniprot.org/uniprotkb/search?query={query}&format={format}`
 
-**支持的格式：** JSON, TSV, Excel, XML, FASTA, RDF, TXT
+**Supported formats:** JSON, TSV, Excel, XML, FASTA, RDF, TXT
 
-### 2. 检索单个蛋白质条目
+### 2. Retrieving Individual Protein Entries
 
-通过登录号检索特定的蛋白质条目。
+Retrieve specific protein entries by accession number.
 
-**登录号格式：**
-- 经典：P12345, Q1AAA9, O15530（6个字符：字母+5个字母数字）
-- 扩展：A0A022YWF9（较新条目的10个字符）
+**Accession number formats:**
+- Classic: P12345, Q1AAA9, O15530 (6 characters: letter + 5 alphanumeric)
+- Extended: A0A022YWF9 (10 characters for newer entries)
 
-**检索端点：** `https://rest.uniprot.org/uniprotkb/{accession}.{format}`
+**Retrieve endpoint:** `https://rest.uniprot.org/uniprotkb/{accession}.{format}`
 
-示例：`https://rest.uniprot.org/uniprotkb/P12345.fasta`
+Example: `https://rest.uniprot.org/uniprotkb/P12345.fasta`
 
-### 3. 批量检索和ID映射
+### 3. Batch Retrieval and ID Mapping
 
-在不同数据库系统之间映射蛋白质标识符并高效检索多个条目。
+Map protein identifiers between different database systems and retrieve multiple entries efficiently.
 
-**ID映射工作流程：**
-1. 提交映射作业至：`https://rest.uniprot.org/idmapping/run`
-2. 检查作业状态：`https://rest.uniprot.org/idmapping/status/{jobId}`
-3. 检索结果：`https://rest.uniprot.org/idmapping/results/{jobId}`
+**ID Mapping workflow:**
+1. Submit mapping job to: `https://rest.uniprot.org/idmapping/run`
+2. Check job status: `https://rest.uniprot.org/idmapping/status/{jobId}`
+3. Retrieve results: `https://rest.uniprot.org/idmapping/results/{jobId}`
 
-**支持映射的数据库：**
+**Supported databases for mapping:**
 - UniProtKB AC/ID
-- 基因名称
+- Gene names
 - Ensembl, RefSeq, EMBL
 - PDB, AlphaFoldDB
-- KEGG, GO术语
-- 以及更多（见`/references/id_mapping_databases.md`）
+- KEGG, GO terms
+- And many more (see `/references/id_mapping_databases.md`)
 
-**限制：**
-- 每个作业最多100,000个ID
-- 结果存储7天
+**Limitations:**
+- Maximum 100,000 IDs per job
+- Results stored for 7 days
 
-### 4. 流式处理大型结果集
+### 4. Streaming Large Result Sets
 
-对于超出分页限制的大型查询，使用流端点：
+For large queries that exceed pagination limits, use the stream endpoint:
 
 `https://rest.uniprot.org/uniprotkb/stream?query={query}&format={format}`
 
-流端点返回所有结果而不分页，适合下载完整数据集。
+The stream endpoint returns all results without pagination, suitable for downloading complete datasets.
 
-### 5. 自定义检索字段
+### 5. Customizing Retrieved Fields
 
-指定要检索的确切字段以实现高效数据传输。
+Specify exactly which fields to retrieve for efficient data transfer.
 
-**常见字段：**
-- `accession` - UniProt登录号
-- `id` - 条目名称
-- `gene_names` - 基因名称
-- `organism_name` - 生物体
-- `protein_name` - 蛋白质名称
-- `sequence` - 氨基酸序列
-- `length` - 序列长度
-- `go_*` - 基因本体论注释
-- `cc_*` - 注释字段（功能、相互作用等）
-- `ft_*` - 特征注释（结构域、位点等）
+**Common fields:**
+- `accession` - UniProt accession number
+- `id` - Entry name
+- `gene_names` - Gene name(s)
+- `organism_name` - Organism
+- `protein_name` - Protein names
+- `sequence` - Amino acid sequence
+- `length` - Sequence length
+- `go_*` - Gene Ontology annotations
+- `cc_*` - Comment fields (function, interaction, etc.)
+- `ft_*` - Feature annotations (domains, sites, etc.)
 
-**示例：** `https://rest.uniprot.org/uniprotkb/search?query=insulin&fields=accession,gene_names,organism_name,length,sequence&format=tsv`
+**Example:** `https://rest.uniprot.org/uniprotkb/search?query=insulin&fields=accession,gene_names,organism_name,length,sequence&format=tsv`
 
-完整字段列表见`/references/api_fields.md`。
+See `/references/api_fields.md` for complete field list.
 
-## Python实现
+## Python Implementation
 
-对于编程访问，使用提供的辅助脚本`scripts/uniprot_client.py`，实现：
+For programmatic access, use the provided helper script `scripts/uniprot_client.py` which implements:
 
-- `search_proteins(query, format)` - 使用任何查询搜索UniProt
-- `get_protein(accession, format)` - 检索单个蛋白质条目
-- `map_ids(ids, from_db, to_db)` - 在标识符类型之间映射
-- `batch_retrieve(accessions, format)` - 检索多个条目
-- `stream_results(query, format)` - 流式处理大型结果集
+- `search_proteins(query, format)` - Search UniProt with any query
+- `get_protein(accession, format)` - Retrieve single protein entry
+- `map_ids(ids, from_db, to_db)` - Map between identifier types
+- `batch_retrieve(accessions, format)` - Retrieve multiple entries
+- `stream_results(query, format)` - Stream large result sets
 
-**替代Python包：**
-- **Unipressed**：现代、类型化的UniProt REST API Python客户端
-- **bioservices**：全面的生物信息学网络服务客户端
+**Alternative Python packages:**
+- **Unipressed**: Modern, typed Python client for UniProt REST API
+- **bioservices**: Comprehensive bioinformatics web services client
 
-## 查询语法示例
+## Query Syntax Examples
 
-**布尔运算符：**
+**Boolean operators:**
 ```
 kinase AND organism_name:human
 (diabetes OR insulin) AND reviewed:true
 cancer NOT lung
 ```
 
-**特定字段搜索：**
+**Field-specific searches:**
 ```
 gene:BRCA1
 accession:P12345
@@ -148,45 +148,46 @@ taxonomy_name:"Homo sapiens"
 annotation:(type:signal)
 ```
 
-**范围查询：**
+**Range queries:**
 ```
 length:[100 TO 500]
 mass:[50000 TO 100000]
 ```
 
-**通配符：**
+**Wildcards:**
 ```
 gene:BRCA*
 protein_name:kinase*
 ```
 
-详细语法文档见`/references/query_syntax.md`。
+See `/references/query_syntax.md` for comprehensive syntax documentation.
 
-## 最佳实践
+## Best Practices
 
-1. **尽可能使用已审核条目**：使用`reviewed:true`过滤Swiss-Prot（人工 curated）条目
-2. **明确指定格式**：选择最合适的格式（序列使用FASTA，表格数据使用TSV，程序解析使用JSON）
-3. **使用字段选择**：仅请求您需要的字段以减少带宽和处理时间
-4. **处理分页**：对于大型结果集，实现适当的分页或使用流端点
-5. **缓存结果**：在本地存储频繁访问的数据以最小化API调用
-6. **速率限制**：尊重API资源；为大型批处理操作实现延迟
-7. **检查数据质量**：TrEMBL条目是计算预测；Swiss-Prot条目是人工审核
+1. **Use reviewed entries when possible**: Filter with `reviewed:true` for Swiss-Prot (manually curated) entries
+2. **Specify format explicitly**: Choose the most appropriate format (FASTA for sequences, TSV for tabular data, JSON for programmatic parsing)
+3. **Use field selection**: Only request fields you need to reduce bandwidth and processing time
+4. **Handle pagination**: For large result sets, implement proper pagination or use the stream endpoint
+5. **Cache results**: Store frequently accessed data locally to minimize API calls
+6. **Rate limiting**: Be respectful of API resources; implement delays for large batch operations
+7. **Check data quality**: TrEMBL entries are computational predictions; Swiss-Prot entries are manually reviewed
 
-## 资源
+## Resources
 
 ### scripts/
-`uniprot_client.py` - 带有辅助函数的Python客户端，用于常见的UniProt操作，包括搜索、检索、ID映射和流式处理。
+`uniprot_client.py` - Python client with helper functions for common UniProt operations including search, retrieval, ID mapping, and streaming.
 
 ### references/
-- `api_fields.md` - 用于自定义查询的可用字段完整列表
-- `id_mapping_databases.md` - ID映射操作支持的数据库
-- `query_syntax.md` - 带有高级示例的综合查询语法
-- `api_examples.md` - 多种语言（Python、curl、R）的代码示例
+- `api_fields.md` - Complete list of available fields for customizing queries
+- `id_mapping_databases.md` - Supported databases for ID mapping operations
+- `query_syntax.md` - Comprehensive query syntax with advanced examples
+- `api_examples.md` - Code examples in multiple languages (Python, curl, R)
 
-## 其他资源
+## Additional Resources
 
-- **API文档**：https://www.uniprot.org/help/api
-- **交互式API浏览器**：https://www.uniprot.org/api-documentation
-- **REST教程**：https://www.uniprot.org/help/uniprot_rest_tutorial
-- **查询语法帮助**：https://www.uniprot.org/help/query-fields
-- **SPARQL端点**：https://sparql.uniprot.org/（用于高级图形查询）
+- **API Documentation**: https://www.uniprot.org/help/api
+- **Interactive API Explorer**: https://www.uniprot.org/api-documentation
+- **REST Tutorial**: https://www.uniprot.org/help/uniprot_rest_tutorial
+- **Query Syntax Help**: https://www.uniprot.org/help/query-fields
+- **SPARQL Endpoint**: https://sparql.uniprot.org/ (for advanced graph queries)
+

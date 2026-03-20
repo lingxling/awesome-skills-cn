@@ -1,224 +1,223 @@
 ---
 name: labarchive-integration
-description: 电子实验记录本API集成。访问笔记本、管理条目/附件、备份笔记本、与Protocols.io/Jupyter/REDCap集成，用于程序化ELN工作流程。
+description: Electronic lab notebook API integration. Access notebooks, manage entries/attachments, backup notebooks, integrate with Protocols.io/Jupyter/REDCap, for programmatic ELN workflows.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# LabArchives集成
+# LabArchives Integration
 
-## 概述
+## Overview
 
-LabArchives是一个用于研究文档和数据管理的电子实验记录本平台。通过REST API以编程方式访问笔记本、管理条目和附件、生成报告，并与第三方工具集成。
+LabArchives is an electronic lab notebook platform for research documentation and data management. Access notebooks, manage entries and attachments, generate reports, and integrate with third-party tools programmatically via REST API.
 
-## 何时使用此技能
+## When to Use This Skill
 
-在以下情况下应使用此技能：
-- 使用LabArchives REST API进行笔记本自动化
-- 以编程方式备份笔记本
-- 创建或管理笔记本条目和附件
-- 生成站点报告和分析
-- 将LabArchives与第三方工具（Protocols.io、Jupyter、REDCap）集成
-- 自动将数据上传到电子实验记录本
-- 以编程方式管理用户访问和权限
+This skill should be used when:
+- Working with LabArchives REST API for notebook automation
+- Backing up notebooks programmatically
+- Creating or managing notebook entries and attachments
+- Generating site reports and analytics
+- Integrating LabArchives with third-party tools (Protocols.io, Jupyter, REDCap)
+- Automating data upload to electronic lab notebooks
+- Managing user access and permissions programmatically
 
-## 核心能力
+## Core Capabilities
 
-### 1. 身份验证和配置
+### 1. Authentication and Configuration
 
-设置LabArchives API集成的API访问凭据和区域端点。
+Set up API access credentials and regional endpoints for LabArchives API integration.
 
-**先决条件：**
-- 带有API访问权限的企业LabArchives许可证
-- LabArchives管理员提供的API访问密钥ID和密码
-- 用户身份验证凭据（电子邮件和外部应用程序密码）
+**Prerequisites:**
+- Enterprise LabArchives license with API access enabled
+- API access key ID and password from LabArchives administrator
+- User authentication credentials (email and external applications password)
 
-**配置设置：**
+**Configuration setup:**
 
-使用`scripts/setup_config.py`脚本创建配置文件：
+Use the `scripts/setup_config.py` script to create a configuration file:
 
 ```bash
 python3 scripts/setup_config.py
 ```
 
-这将创建具有以下结构的`config.yaml`文件：
+This creates a `config.yaml` file with the following structure:
 
 ```yaml
-api_url: https://api.labarchives.com/api  # 或区域端点
+api_url: https://api.labarchives.com/api  # or regional endpoint
 access_key_id: YOUR_ACCESS_KEY_ID
 access_password: YOUR_ACCESS_PASSWORD
 ```
 
-**区域API端点：**
-- 美国/国际：`https://api.labarchives.com/api`
-- 澳大利亚：`https://auapi.labarchives.com/api`
-- 英国：`https://ukapi.labarchives.com/api`
+**Regional API endpoints:**
+- US/International: `https://api.labarchives.com/api`
+- Australia: `https://auapi.labarchives.com/api`
+- UK: `https://ukapi.labarchives.com/api`
 
-有关详细的身份验证说明和故障排除，请参阅`references/authentication_guide.md`。
+For detailed authentication instructions and troubleshooting, refer to `references/authentication_guide.md`.
 
-### 2. 用户信息检索
+### 2. User Information Retrieval
 
-获取后续API操作所需的用户ID（UID）和访问信息。
+Obtain user ID (UID) and access information required for subsequent API operations.
 
-**工作流程：**
+**Workflow:**
 
-1. 使用登录凭据调用`users/user_access_info` API方法
-2. 解析XML/JSON响应以提取用户ID（UID）
-3. 使用UID通过`users/user_info_via_id`检索详细用户信息
+1. Call the `users/user_access_info` API method with login credentials
+2. Parse the XML/JSON response to extract the user ID (UID)
+3. Use the UID to retrieve detailed user information via `users/user_info_via_id`
 
-**使用Python包装器的示例：**
+**Example using Python wrapper:**
 
 ```python
 from labarchivespy.client import Client
 
-# 初始化客户端
+# Initialize client
 client = Client(api_url, access_key_id, access_password)
 
-# 获取用户访问信息
+# Get user access info
 login_params = {'login_or_email': user_email, 'password': auth_token}
 response = client.make_call('users', 'user_access_info', params=login_params)
 
-# 从响应中提取UID
+# Extract UID from response
 import xml.etree.ElementTree as ET
 uid = ET.fromstring(response.content)[0].text
 
-# 获取详细用户信息
+# Get detailed user info
 params = {'uid': uid}
 user_info = client.make_call('users', 'user_info_via_id', params=params)
 ```
 
-### 3. 笔记本操作
+### 3. Notebook Operations
 
-管理笔记本访问、备份和元数据检索。
+Manage notebook access, backup, and metadata retrieval.
 
-**关键操作：**
+**Key operations:**
 
-- **列出笔记本**：检索用户可访问的所有笔记本
-- **备份笔记本**：下载完整的笔记本数据，可选择包含附件
-- **获取笔记本ID**：检索机构定义的笔记本标识符，以便与资助/项目管理系统集成
-- **获取笔记本成员**：列出有权访问特定笔记本的所有用户
-- **获取笔记本设置**：检索笔记本的配置和权限
+- **List notebooks:** Retrieve all notebooks accessible to a user
+- **Backup notebooks:** Download complete notebook data with optional attachment inclusion
+- **Get notebook IDs:** Retrieve institution-defined notebook identifiers for integration with grants/project management systems
+- **Get notebook members:** List all users with access to a specific notebook
+- **Get notebook settings:** Retrieve configuration and permissions for notebooks
 
-**笔记本备份示例：**
+**Notebook backup example:**
 
-使用`scripts/notebook_operations.py`脚本：
+Use the `scripts/notebook_operations.py` script:
 
 ```bash
-# 带有附件的备份（默认，创建7z归档）
+# Backup with attachments (default, creates 7z archive)
 python3 scripts/notebook_operations.py backup --uid USER_ID --nbid NOTEBOOK_ID
 
-# 不带附件的备份，JSON格式
+# Backup without attachments, JSON format
 python3 scripts/notebook_operations.py backup --uid USER_ID --nbid NOTEBOOK_ID --json --no-attachments
 ```
 
-**API端点格式：**
+**API endpoint format:**
 ```
 https://<api_url>/notebooks/notebook_backup?uid=<UID>&nbid=<NOTEBOOK_ID>&json=true&no_attachments=false
 ```
 
-有关全面的API方法文档，请参阅`references/api_reference.md`。
+For comprehensive API method documentation, refer to `references/api_reference.md`.
 
-### 4. 条目和附件管理
+### 4. Entry and Attachment Management
 
-创建、修改和管理笔记本条目和文件附件。
+Create, modify, and manage notebook entries and file attachments.
 
-**条目操作：**
-- 在笔记本中创建新条目
-- 向现有条目添加评论
-- 创建条目部分/组件
-- 向条目上传文件附件
+**Entry operations:**
+- Create new entries in notebooks
+- Add comments to existing entries
+- Create entry parts/components
+- Upload file attachments to entries
 
-**附件工作流程：**
+**Attachment workflow:**
 
-使用`scripts/entry_operations.py`脚本：
+Use the `scripts/entry_operations.py` script:
 
 ```bash
-# 向条目上传附件
+# Upload attachment to an entry
 python3 scripts/entry_operations.py upload --uid USER_ID --nbid NOTEBOOK_ID --entry-id ENTRY_ID --file /path/to/file.pdf
 
-# 创建带文本内容的新条目
-python3 scripts/entry_operations.py create --uid USER_ID --nbid NOTEBOOK_ID --title "实验结果" --content "今天实验的结果..."
+# Create a new entry with text content
+python3 scripts/entry_operations.py create --uid USER_ID --nbid NOTEBOOK_ID --title "Experiment Results" --content "Results from today's experiment..."
 ```
 
-**支持的文件类型：**
-- 文档（PDF、DOCX、TXT）
-- 图像（PNG、JPG、TIFF）
-- 数据文件（CSV、XLSX、HDF5）
-- 科学格式（CIF、MOL、PDB）
-- 归档（ZIP、7Z）
+**Supported file types:**
+- Documents (PDF, DOCX, TXT)
+- Images (PNG, JPG, TIFF)
+- Data files (CSV, XLSX, HDF5)
+- Scientific formats (CIF, MOL, PDB)
+- Archives (ZIP, 7Z)
 
-### 5. 站点报告和分析
+### 5. Site Reports and Analytics
 
-生成机构报告，关于笔记本使用、活动和合规性（企业功能）。
+Generate institutional reports on notebook usage, activity, and compliance (Enterprise feature).
 
-**可用报告：**
-- 详细使用报告：用户活动指标和参与度统计
-- 详细笔记本报告：笔记本元数据、成员列表和设置
-- PDF/离线笔记本生成报告：导出跟踪以实现合规
-- 笔记本成员报告：访问控制和协作分析
-- 笔记本设置报告：配置和权限审核
-- PDF/离线笔记本生成报告：导出跟踪以实现合规
+**Available reports:**
+- Detailed Usage Report: User activity metrics and engagement statistics
+- Detailed Notebook Report: Notebook metadata, member lists, and settings
+- PDF/Offline Notebook Generation Report: Export tracking for compliance
+- Notebook Members Report: Access control and collaboration analytics
+- Notebook Settings Report: Configuration and permission auditing
 
-**报告生成：**
+**Report generation:**
 
 ```python
-# 生成详细使用报告
+# Generate detailed usage report
 response = client.make_call('site_reports', 'detailed_usage_report',
                            params={'start_date': '2025-01-01', 'end_date': '2025-10-20'})
 ```
 
-### 6. 第三方集成
+### 6. Third-Party Integrations
 
-LabArchives与众多科学软件平台集成。该技能提供利用这些集成的程序化指导。
+LabArchives integrates with numerous scientific software platforms. This skill provides guidance on leveraging these integrations programmatically.
 
-**支持的集成：**
-- **Protocols.io**：将协议直接导出到LabArchives笔记本
-- **GraphPad Prism**：导出分析和图形（8.0版及以上）
-- **SnapGene**：直接分子生物学工作流程集成
-- **Geneious**：生物信息学分析导出
-- **Jupyter**：将Jupyter笔记本嵌入为条目
-- **REDCap**：临床数据捕获集成
-- **Qeios**：研究发布平台
-- **SciSpace**：文献管理
+**Supported integrations:**
+- **Protocols.io:** Export protocols directly to LabArchives notebooks
+- **GraphPad Prism:** Export analyses and figures (Version 8+)
+- **SnapGene:** Direct molecular biology workflow integration
+- **Geneious:** Bioinformatics analysis export
+- **Jupyter:** Embed Jupyter notebooks as entries
+- **REDCap:** Clinical data capture integration
+- **Qeios:** Research publishing platform
+- **SciSpace:** Literature management
 
-**OAuth身份验证：**
-LabArchives现在对所有新集成使用OAuth。旧集成可能使用API密钥身份验证。
+**OAuth authentication:**
+LabArchives now uses OAuth for all new integrations. Legacy integrations may use API key authentication.
 
-有关详细的集成设置说明和用例，请参阅`references/integrations.md`。
+For detailed integration setup instructions and use cases, refer to `references/integrations.md`.
 
-## 常见工作流程
+## Common Workflows
 
-### 完整笔记本备份工作流程
+### Complete notebook backup workflow
 
-1. 身份验证并获取用户ID
-2. 列出所有可访问的笔记本
-3. 遍历笔记本并备份每个
-4. 使用时间戳元数据存储备份
+1. Authenticate and obtain user ID
+2. List all accessible notebooks
+3. Iterate through notebooks and backup each one
+4. Store backups with timestamp metadata
 
 ```bash
-# 完整备份脚本
+# Complete backup script
 python3 scripts/notebook_operations.py backup-all --email user@example.edu --password AUTH_TOKEN
 ```
 
-### 自动化数据上传工作流程
+### Automated data upload workflow
 
-1. 使用LabArchives API进行身份验证
-2. 识别目标笔记本和条目
-3. 上传实验数据文件
-4. 向条目添加元数据评论
-5. 生成活动报告
+1. Authenticate with LabArchives API
+2. Identify target notebook and entry
+3. Upload experimental data files
+4. Add metadata comments to entries
+5. Generate activity report
 
-### 集成工作流程示例（Jupyter → LabArchives）
+### Integration workflow example (Jupyter → LabArchives)
 
-1. 将Jupyter笔记本导出为HTML或PDF
-2. 使用entry_operations.py上传到LabArchives
-3. 添加带有执行时间戳和环境信息的评论
-4. 为便于检索标记条目
+1. Export Jupyter notebook to HTML or PDF
+2. Use entry_operations.py to upload to LabArchives
+3. Add comment with execution timestamp and environment info
+4. Tag entry for easy retrieval
 
-## Python包安装
+## Python Package Installation
 
-安装`labarchives-py`包装器以简化API访问：
+Install the `labarchives-py` wrapper for simplified API access:
 
 ```bash
 git clone https://github.com/mcmero/labarchives-py
@@ -226,42 +225,42 @@ cd labarchives-py
 uv pip install .
 ```
 
-或者，通过Python的`requests`库使用直接HTTP请求进行自定义实现。
+Alternatively, use direct HTTP requests via Python's `requests` library for custom implementations.
 
-## 最佳实践
+## Best Practices
 
-1. **速率限制**：实施API调用之间的适当延迟以避免限流
-2. **错误处理**：始终将API调用包装在try-except块中，并带有适当的日志记录
-3. **身份验证安全**：将凭据存储在环境变量或安全配置文件中（绝不存储在代码中）
-4. **备份验证**：笔记本备份后，验证文件完整性和完整性
-5. **增量操作**：对于大型笔记本，使用分页和批处理
-6. **区域端点**：为最佳性能使用正确的区域API端点
-7. **记录所有操作**：跟踪所有API调用、响应时间和错误以进行调试
+1. **Rate limiting:** Implement appropriate delays between API calls to avoid throttling
+2. **Error handling:** Always wrap API calls in try-except blocks with appropriate logging
+3. **Authentication security:** Store credentials in environment variables or secure config files (never in code)
+4. **Backup verification:** After notebook backup, verify file integrity and completeness
+5. **Incremental operations:** For large notebooks, use pagination and batch processing
+6. **Regional endpoints:** Use the correct regional API endpoint for optimal performance
 
-## 故障排除
+## Troubleshooting
 
-**常见问题：**
+**Common issues:**
 
-- **401未授权**：验证访问密钥ID和密码正确；检查您的账户是否启用了API访问
-- **404未找到**：确认笔记本ID（nbid）存在且用户具有访问权限
-- **403禁止**：检查用户对所请求操作的权限
-- **空响应**：确保提供了正确的参数（uid、nbid）
-- **附件上传失败**：验证文件大小限制和格式兼容性
+- **401 Unauthorized:** Verify access key ID and password are correct; check API access is enabled for your account
+- **404 Not Found:** Confirm notebook ID (nbid) exists and user has access permissions
+- **403 Forbidden:** Check user permissions for the requested operation
+- **Empty response:** Ensure required parameters (uid, nbid) are provided correctly
+- **Attachment upload failures:** Verify file size limits and format compatibility
 
-有关其他支持，请通过support@labarchives.com联系LabArchives。
+For additional support, contact LabArchives at support@labarchives.com.
 
-## 资源
+## Resources
 
-此技能包含支持LabArchives API集成的捆绑资源：
+This skill includes bundled resources to support LabArchives API integration:
 
 ### scripts/
 
-- `setup_config.py`：用于API凭据的交互式配置文件生成器
-- `notebook_operations.py`：用于列出、备份和管理笔记本的实用程序
-- `entry_operations.py`：用于创建条目和上传附件的工具
+- `setup_config.py`: Interactive configuration file generator for API credentials
+- `notebook_operations.py`: Utilities for listing, backing up, and managing notebooks
+- `entry_operations.py`: Tools for creating entries and uploading attachments
 
 ### references/
 
-- `api_reference.md`：全面的API端点文档，包含参数和示例
-- `authentication_guide.md`：详细的身份验证设置和配置说明
-- `integrations.md`：第三方集成设置指南和用例
+- `api_reference.md`: Comprehensive API endpoint documentation with parameters and examples
+- `authentication_guide.md`: Detailed authentication setup and configuration instructions
+- `integrations.md`: Third-party integration setup guides and use cases
+

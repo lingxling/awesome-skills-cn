@@ -1,6 +1,8 @@
 ---
 name: native-data-fetching
 description: Use when implementing or debugging ANY network request, API call, or data fetching. Covers fetch API, React Query, SWR, error handling, caching, offline support, and Expo Router data loaders (useLoaderData).
+risk: unknown
+source: community
 version: 1.0.0
 license: MIT
 ---
@@ -19,7 +21,6 @@ references/
 ```
 
 ## When to Use
-
 Use this skill when:
 
 - Implementing API requests

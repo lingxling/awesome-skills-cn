@@ -1,289 +1,289 @@
 ---
 name: pptx
-description: "演示文稿创建、编辑和分析。当 Claude 需要处理演示文稿（.pptx 文件）时，用于：(1) 创建新演示文稿，(2) 修改或编辑内容，(3) 处理布局，(4) 添加评论或演讲者备注，或任何其他演示文稿任务"
+description: "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks"
 license: Proprietary. LICENSE.txt has complete terms
 ---
 
-# PPTX 创建、编辑和分析
+# PPTX creation, editing, and analysis
 
-## 概述
+## Overview
 
-用户可能会要求您创建、编辑或分析 .pptx 文件的内容。.pptx 文件本质上是一个包含 XML 文件和其他资源的 ZIP 归档，您可以读取或编辑这些资源。对于不同的任务，您有不同的工具和工作流程可用。
+A user may ask you to create, edit, or analyze the contents of a .pptx file. A .pptx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
 
-## 阅读和分析内容
+## Reading and analyzing content
 
-### 文本提取
-如果您只需要读取演示文稿的文本内容，应该将文档转换为 markdown：
+### Text extraction
+If you just need to read the text contents of a presentation, you should convert the document to markdown:
 
 ```bash
-# 将文档转换为 markdown
+# Convert document to markdown
 python -m markitdown path-to-file.pptx
 ```
 
-### 原始 XML 访问
-您需要原始 XML 访问来处理：评论、演讲者备注、幻灯片布局、动画、设计元素和复杂格式。对于这些功能中的任何一个，您需要解包演示文稿并读取其原始 XML 内容。
+### Raw XML access
+You need raw XML access for: comments, speaker notes, slide layouts, animations, design elements, and complex formatting. For any of these features, you'll need to unpack a presentation and read its raw XML contents.
 
-#### 解包文件
+#### Unpacking a file
 `python ooxml/scripts/unpack.py <office_file> <output_dir>`
 
-**注意**：unpack.py 脚本位于项目根目录的 `skills/pptx/ooxml/scripts/unpack.py`。如果脚本不在此路径，请使用 `find . -name "unpack.py"` 来定位它。
+**Note**: The unpack.py script is located at `skills/pptx/ooxml/scripts/unpack.py` relative to the project root. If the script doesn't exist at this path, use `find . -name "unpack.py"` to locate it.
 
-#### 关键文件结构
-* `ppt/presentation.xml` - 主要演示文稿元数据和幻灯片引用
-* `ppt/slides/slide{N}.xml` - 单个幻灯片内容（slide1.xml、slide2.xml 等）
-* `ppt/notesSlides/notesSlide{N}.xml` - 每张幻灯片的演讲者备注
-* `ppt/comments/modernComment_*.xml` - 特定幻灯片的评论
-* `ppt/slideLayouts/` - 幻灯片的布局模板
-* `ppt/slideMasters/` - 母版幻灯片模板
-* `ppt/theme/` - 主题和样式信息
-* `ppt/media/` - 图像和其他媒体文件
+#### Key file structures
+* `ppt/presentation.xml` - Main presentation metadata and slide references
+* `ppt/slides/slide{N}.xml` - Individual slide contents (slide1.xml, slide2.xml, etc.)
+* `ppt/notesSlides/notesSlide{N}.xml` - Speaker notes for each slide
+* `ppt/comments/modernComment_*.xml` - Comments for specific slides
+* `ppt/slideLayouts/` - Layout templates for slides
+* `ppt/slideMasters/` - Master slide templates
+* `ppt/theme/` - Theme and styling information
+* `ppt/media/` - Images and other media files
 
-#### 排版和颜色提取
-**当给定示例设计要模仿时**：始终首先使用以下方法分析演示文稿的排版和颜色：
-1. **读取主题文件**：检查 `ppt/theme/theme1.xml` 中的颜色 (`<a:clrScheme>`) 和字体 (`<a:fontScheme>`)
-2. **样本幻灯片内容**：检查 `ppt/slides/slide1.xml` 中的实际字体使用 (`<a:rPr>`) 和颜色
-3. **搜索模式**：使用 grep 在所有 XML 文件中查找颜色 (`<a:solidFill>`、`<a:srgbClr>`) 和字体引用
+#### Typography and color extraction
+**When given an example design to emulate**: Always analyze the presentation's typography and colors first using the methods below:
+1. **Read theme file**: Check `ppt/theme/theme1.xml` for colors (`<a:clrScheme>`) and fonts (`<a:fontScheme>`)
+2. **Sample slide content**: Examine `ppt/slides/slide1.xml` for actual font usage (`<a:rPr>`) and colors
+3. **Search for patterns**: Use grep to find color (`<a:solidFill>`, `<a:srgbClr>`) and font references across all XML files
 
-## 创建新的 PowerPoint 演示文稿 **无模板**
+## Creating a new PowerPoint presentation **without a template**
 
-当从头创建新的 PowerPoint 演示文稿时，使用 **html2pptx** 工作流将 HTML 幻灯片转换为 PowerPoint，具有准确的定位。
+When creating a new PowerPoint presentation from scratch, use the **html2pptx** workflow to convert HTML slides to PowerPoint with accurate positioning.
 
-### 设计原则
+### Design Principles
 
-**关键**：在创建任何演示文稿之前，分析内容并选择适当的设计元素：
-1. **考虑主题**：这个演示文稿是关于什么的？它暗示什么基调、行业或情绪？
-2. **检查品牌**：如果用户提到公司/组织，考虑他们的品牌颜色和身份
-3. **匹配内容的调色板**：选择反映主题的颜色
-4. **说明您的方法**：在编写代码之前解释您的设计选择
+**CRITICAL**: Before creating any presentation, analyze the content and choose appropriate design elements:
+1. **Consider the subject matter**: What is this presentation about? What tone, industry, or mood does it suggest?
+2. **Check for branding**: If the user mentions a company/organization, consider their brand colors and identity
+3. **Match palette to content**: Select colors that reflect the subject
+4. **State your approach**: Explain your design choices before writing code
 
-**要求**：
-- ✅ 在编写代码之前说明基于内容的设计方法
-- ✅ 仅使用网络安全字体：Arial、Helvetica、Times New Roman、Georgia、Courier New、Verdana、Tahoma、Trebuchet MS、Impact
-- ✅ 通过大小、权重和颜色创建清晰的视觉层次结构
-- ✅ 确保可读性：强烈的对比度、适当大小的文本、干净的对齐
-- ✅ 保持一致：在幻灯片之间重复模式、间距和视觉语言
+**Requirements**:
+- ✅ State your content-informed design approach BEFORE writing code
+- ✅ Use web-safe fonts only: Arial, Helvetica, Times New Roman, Georgia, Courier New, Verdana, Tahoma, Trebuchet MS, Impact
+- ✅ Create clear visual hierarchy through size, weight, and color
+- ✅ Ensure readability: strong contrast, appropriately sized text, clean alignment
+- ✅ Be consistent: repeat patterns, spacing, and visual language across slides
 
-#### 调色板选择
+#### Color Palette Selection
 
-**创造性地选择颜色**：
-- **超越默认值**：什么颜色真正匹配这个特定主题？避免自动驾驶选择。
-- **考虑多个角度**：主题、行业、情绪、能量水平、目标受众、品牌身份（如果提到）
-- **勇于尝试**：尝试意外的组合 - 医疗保健演示文稿不一定是绿色的，金融不一定是深蓝色的
-- **构建您的调色板**：选择 3-5 种协同工作的颜色（主导颜色 + 支持色调 + 强调色）
-- **确保对比度**：文本在背景上必须清晰可读
+**Choosing colors creatively**:
+- **Think beyond defaults**: What colors genuinely match this specific topic? Avoid autopilot choices.
+- **Consider multiple angles**: Topic, industry, mood, energy level, target audience, brand identity (if mentioned)
+- **Be adventurous**: Try unexpected combinations - a healthcare presentation doesn't have to be green, finance doesn't have to be navy
+- **Build your palette**: Pick 3-5 colors that work together (dominant colors + supporting tones + accent)
+- **Ensure contrast**: Text must be clearly readable on backgrounds
 
-**示例调色板**（使用这些来激发创造力 - 选择一个、调整它或创建您自己的）：
+**Example color palettes** (use these to spark creativity - choose one, adapt it, or create your own):
 
-1. **经典蓝色**：深蓝色 (#1C2833)、板岩灰 (#2E4053)、银色 (#AAB7B8)、米白色 (#F4F6F6)
-2. **蓝绿色和珊瑚色**：蓝绿色 (#5EA8A7)、深蓝绿色 (#277884)、珊瑚色 (#FE4447)、白色 (#FFFFFF)
-3. **大胆红色**：红色 (#C0392B)、亮红色 (#E74C3C)、橙色 (#F39C12)、黄色 (#F1C40F)、绿色 (#2ECC71)
-4. **温暖腮红**：淡紫色 (#A49393)、腮红 (#EED6D3)、玫瑰色 (#E8B4B8)、奶油色 (#FAF7F2)
-5. **勃艮第奢华**：勃艮第 (#5D1D2E)、深红色 (#951233)、铁锈色 (#C15937)、金色 (#997929)
-6. **深紫色和翡翠色**：紫色 (#B165FB)、深蓝色 (#181B24)、翡翠色 (#40695B)、白色 (#FFFFFF)
-7. **奶油色和森林绿色**：奶油色 (#FFE1C7)、森林绿色 (#40695B)、白色 (#FCFCFC)
-8. **粉色和紫色**：粉色 (#F8275B)、珊瑚色 (#FF574A)、玫瑰色 (#FF737D)、紫色 (#3D2F68)
-9. **酸橙和李子**：酸橙 (#C5DE82)、李子 (#7C3A5F)、珊瑚色 (#FD8C6E)、蓝灰色 (#98ACB5)
-10. **黑色和金色**：金色 (#BF9A4A)、黑色 (#000000)、奶油色 (#F4F6F6)
-11. **鼠尾草和赤陶土**：鼠尾草 (#87A96B)、赤陶土 (#E07A5F)、奶油色 (#F4F1DE)、木炭 (#2C2C2C)
-12. **木炭和红色**：木炭 (#292929)、红色 (#E33737)、浅灰色 (#CCCBCB)
-13. **鲜艳橙色**：橙色 (#F96D00)、浅灰色 (#F2F2F2)、木炭 (#222831)
-14. **森林绿色**：黑色 (#191A19)、绿色 (#4E9F3D)、深绿色 (#1E5128)、白色 (#FFFFFF)
-15. **复古彩虹**：紫色 (#722880)、粉色 (#D72D51)、橙色 (#EB5C18)、琥珀色 (#F08800)、金色 (#DEB600)
-16. **复古土色**：芥末色 (#E3B448)、鼠尾草 (#CBD18F)、森林绿色 (#3A6B35)、奶油色 (#F4F1DE)
-17. **海岸玫瑰**：老玫瑰 (#AD7670)、海狸色 (#B49886)、蛋壳色 (#F3ECDC)、灰灰色 (#BFD5BE)
-18. **橙色和绿松石**：浅橙色 (#FC993E)、灰绿松石 (#667C6F)、白色 (#FCFCFC)
+1. **Classic Blue**: Deep navy (#1C2833), slate gray (#2E4053), silver (#AAB7B8), off-white (#F4F6F6)
+2. **Teal & Coral**: Teal (#5EA8A7), deep teal (#277884), coral (#FE4447), white (#FFFFFF)
+3. **Bold Red**: Red (#C0392B), bright red (#E74C3C), orange (#F39C12), yellow (#F1C40F), green (#2ECC71)
+4. **Warm Blush**: Mauve (#A49393), blush (#EED6D3), rose (#E8B4B8), cream (#FAF7F2)
+5. **Burgundy Luxury**: Burgundy (#5D1D2E), crimson (#951233), rust (#C15937), gold (#997929)
+6. **Deep Purple & Emerald**: Purple (#B165FB), dark blue (#181B24), emerald (#40695B), white (#FFFFFF)
+7. **Cream & Forest Green**: Cream (#FFE1C7), forest green (#40695B), white (#FCFCFC)
+8. **Pink & Purple**: Pink (#F8275B), coral (#FF574A), rose (#FF737D), purple (#3D2F68)
+9. **Lime & Plum**: Lime (#C5DE82), plum (#7C3A5F), coral (#FD8C6E), blue-gray (#98ACB5)
+10. **Black & Gold**: Gold (#BF9A4A), black (#000000), cream (#F4F6F6)
+11. **Sage & Terracotta**: Sage (#87A96B), terracotta (#E07A5F), cream (#F4F1DE), charcoal (#2C2C2C)
+12. **Charcoal & Red**: Charcoal (#292929), red (#E33737), light gray (#CCCBCB)
+13. **Vibrant Orange**: Orange (#F96D00), light gray (#F2F2F2), charcoal (#222831)
+14. **Forest Green**: Black (#191A19), green (#4E9F3D), dark green (#1E5128), white (#FFFFFF)
+15. **Retro Rainbow**: Purple (#722880), pink (#D72D51), orange (#EB5C18), amber (#F08800), gold (#DEB600)
+16. **Vintage Earthy**: Mustard (#E3B448), sage (#CBD18F), forest green (#3A6B35), cream (#F4F1DE)
+17. **Coastal Rose**: Old rose (#AD7670), beaver (#B49886), eggshell (#F3ECDC), ash gray (#BFD5BE)
+18. **Orange & Turquoise**: Light orange (#FC993E), grayish turquoise (#667C6F), white (#FCFCFC)
 
-#### 视觉细节选项
+#### Visual Details Options
 
-**几何图案**：
-- 对角部分分隔符而不是水平的
-- 不对称列宽 (30/70, 40/60, 25/75)
-- 旋转文本标题为 90° 或 270°
-- 图像的圆形/六边形框架
-- 角落的三角形强调形状
-- 重叠形状以增加深度
+**Geometric Patterns**:
+- Diagonal section dividers instead of horizontal
+- Asymmetric column widths (30/70, 40/60, 25/75)
+- Rotated text headers at 90° or 270°
+- Circular/hexagonal frames for images
+- Triangular accent shapes in corners
+- Overlapping shapes for depth
 
-**边框和框架处理**：
-- 仅在一侧的粗单色边框 (10-20pt)
-- 具有对比色的双线边框
-- 角括号而不是完整框架
-- L 形边框（上+左或下+右）
-- 标题下方的下划线强调（3-5pt 粗）
+**Border & Frame Treatments**:
+- Thick single-color borders (10-20pt) on one side only
+- Double-line borders with contrasting colors
+- Corner brackets instead of full frames
+- L-shaped borders (top+left or bottom+right)
+- Underline accents beneath headers (3-5pt thick)
 
-**排版处理**：
-- 极端大小对比（72pt 标题 vs 11pt 正文）
-- 全大写标题，字母间距宽
-- 超大显示类型的编号部分
-- 数据/统计/技术内容的等宽字体（Courier New）
-- 密集信息的 condensed 字体（Arial Narrow）
-- 强调的轮廓文本
+**Typography Treatments**:
+- Extreme size contrast (72pt headlines vs 11pt body)
+- All-caps headers with wide letter spacing
+- Numbered sections in oversized display type
+- Monospace (Courier New) for data/stats/technical content
+- Condensed fonts (Arial Narrow) for dense information
+- Outlined text for emphasis
 
-**图表和数据样式**：
-- 单色图表，关键数据使用单一强调色
-- 水平条形图而不是垂直的
-- 点图而不是条形图
-- 最小网格线或无网格线
-- 直接在元素上的数据标签（无图例）
-- 关键指标的超大数字
+**Chart & Data Styling**:
+- Monochrome charts with single accent color for key data
+- Horizontal bar charts instead of vertical
+- Dot plots instead of bar charts
+- Minimal gridlines or none at all
+- Data labels directly on elements (no legends)
+- Oversized numbers for key metrics
 
-**布局创新**：
-- 带有文本覆盖的全出血图像
-- 侧边栏列（20-30% 宽度）用于导航/上下文
-- 模块化网格系统（3×3、4×4 块）
-- Z 形或 F 形内容流
-- 彩色形状上的浮动文本框
-- 杂志风格的多列布局
+**Layout Innovations**:
+- Full-bleed images with text overlays
+- Sidebar column (20-30% width) for navigation/context
+- Modular grid systems (3×3, 4×4 blocks)
+- Z-pattern or F-pattern content flow
+- Floating text boxes over colored shapes
+- Magazine-style multi-column layouts
 
-**背景处理**：
-- 占据幻灯片 40-60% 的纯色块
-- 渐变填充（仅垂直或对角线）
-- 分割背景（两种颜色，对角线或垂直）
-- 边缘到边缘的色带
-- 负空间作为设计元素
+**Background Treatments**:
+- Solid color blocks occupying 40-60% of slide
+- Gradient fills (vertical or diagonal only)
+- Split backgrounds (two colors, diagonal or vertical)
+- Edge-to-edge color bands
+- Negative space as a design element
 
-### 布局提示
-**创建带有图表或表格的幻灯片时**：
-- **两列布局（首选）**：使用横跨全宽的标题，然后是下面的两列 - 一列中的文本/项目符号和另一列中的特色内容。这提供更好的平衡并使图表/表格更易读。使用具有不等列宽（例如 40%/60% 分割）的 flexbox 来优化每种内容类型的空间。
-- **全幻灯片布局**：让特色内容（图表/表格）占据整个幻灯片，以获得最大的影响和可读性
-- **切勿垂直堆叠**：不要在单列中将图表/表格放在文本下方 - 这会导致可读性差和布局问题
+### Layout Tips
+**When creating slides with charts or tables:**
+- **Two-column layout (PREFERRED)**: Use a header spanning the full width, then two columns below - text/bullets in one column and the featured content in the other. This provides better balance and makes charts/tables more readable. Use flexbox with unequal column widths (e.g., 40%/60% split) to optimize space for each content type.
+- **Full-slide layout**: Let the featured content (chart/table) take up the entire slide for maximum impact and readability
+- **NEVER vertically stack**: Do not place charts/tables below text in a single column - this causes poor readability and layout issues
 
-### 工作流
-1. **必须 - 阅读整个文件**：完整阅读 [`html2pptx.md`](html2pptx.md)，从头到尾。**阅读此文件时切勿设置任何范围限制。**在继续创建演示文稿之前，阅读完整的文件内容以获取详细语法、关键格式规则和最佳实践。
-2. 为每张幻灯片创建具有适当尺寸的 HTML 文件（例如，16:9 的 720pt × 405pt）
-   - 使用 `<p>`、`<h1>`-`<h6>`、`<ul>`、`<ol>` 用于所有文本内容
-   - 使用 `class="placeholder"` 用于将添加图表/表格的区域（渲染为灰色背景以提高可见性）
-   - **关键**：首先使用 Sharp 将渐变和图标光栅化为 PNG 图像，然后在 HTML 中引用
-   - **布局**：对于带有图表/表格/图像的幻灯片，使用全幻灯片布局或两列布局以提高可读性
-3. 使用 [`html2pptx.js`](scripts/html2pptx.js) 库创建并运行 JavaScript 文件，将 HTML 幻灯片转换为 PowerPoint 并保存演示文稿
-   - 使用 `html2pptx()` 函数处理每个 HTML 文件
-   - 使用 PptxGenJS API 将图表和表格添加到占位区域
-   - 使用 `pptx.writeFile()` 保存演示文稿
-4. **视觉验证**：生成缩略图并检查布局问题
-   - 创建缩略图网格：`python scripts/thumbnail.py output.pptx workspace/thumbnails --cols 4`
-   - 读取并仔细检查缩略图以：
-     - **文本截断**：文本被标题栏、形状或幻灯片边缘截断
-     - **文本重叠**：文本与其他文本或形状重叠
-     - **定位问题**：内容过于靠近幻灯片边界或其他元素
-     - **对比度问题**：文本和背景之间的对比度不足
-   - 如果发现问题，调整 HTML 边距/间距/颜色并重新生成演示文稿
-   - 重复直到所有幻灯片在视觉上正确
+### Workflow
+1. **MANDATORY - READ ENTIRE FILE**: Read [`html2pptx.md`](html2pptx.md) completely from start to finish. **NEVER set any range limits when reading this file.** Read the full file content for detailed syntax, critical formatting rules, and best practices before proceeding with presentation creation.
+2. Create an HTML file for each slide with proper dimensions (e.g., 720pt × 405pt for 16:9)
+   - Use `<p>`, `<h1>`-`<h6>`, `<ul>`, `<ol>` for all text content
+   - Use `class="placeholder"` for areas where charts/tables will be added (render with gray background for visibility)
+   - **CRITICAL**: Rasterize gradients and icons as PNG images FIRST using Sharp, then reference in HTML
+   - **LAYOUT**: For slides with charts/tables/images, use either full-slide layout or two-column layout for better readability
+3. Create and run a JavaScript file using the [`html2pptx.js`](scripts/html2pptx.js) library to convert HTML slides to PowerPoint and save the presentation
+   - Use the `html2pptx()` function to process each HTML file
+   - Add charts and tables to placeholder areas using PptxGenJS API
+   - Save the presentation using `pptx.writeFile()`
+4. **Visual validation**: Generate thumbnails and inspect for layout issues
+   - Create thumbnail grid: `python scripts/thumbnail.py output.pptx workspace/thumbnails --cols 4`
+   - Read and carefully examine the thumbnail image for:
+     - **Text cutoff**: Text being cut off by header bars, shapes, or slide edges
+     - **Text overlap**: Text overlapping with other text or shapes
+     - **Positioning issues**: Content too close to slide boundaries or other elements
+     - **Contrast issues**: Insufficient contrast between text and backgrounds
+   - If issues found, adjust HTML margins/spacing/colors and regenerate the presentation
+   - Repeat until all slides are visually correct
 
-## 编辑现有的 PowerPoint 演示文稿
+## Editing an existing PowerPoint presentation
 
-当编辑现有 PowerPoint 演示文稿中的幻灯片时，您需要使用原始 Office Open XML (OOXML) 格式。这涉及解包 .pptx 文件、编辑 XML 内容并重新打包它。
+When edit slides in an existing PowerPoint presentation, you need to work with the raw Office Open XML (OOXML) format. This involves unpacking the .pptx file, editing the XML content, and repacking it.
 
-### 工作流
-1. **必须 - 阅读整个文件**：完整阅读 [`ooxml.md`](ooxml.md)（约 500 行），从头到尾。**阅读此文件时切勿设置任何范围限制。**在进行任何演示文稿编辑之前，阅读完整的文件内容以获取有关 OOXML 结构和编辑工作流程的详细指导。
-2. 解包演示文稿：`python ooxml/scripts/unpack.py <office_file> <output_dir>`
-3. 编辑 XML 文件（主要是 `ppt/slides/slide{N}.xml` 和相关文件）
-4. **关键**：每次编辑后立即验证并在继续之前修复任何验证错误：`python ooxml/scripts/validate.py <dir> --original <file>`
-5. 打包最终演示文稿：`python ooxml/scripts/pack.py <input_directory> <office_file>`
+### Workflow
+1. **MANDATORY - READ ENTIRE FILE**: Read [`ooxml.md`](ooxml.md) (~500 lines) completely from start to finish.  **NEVER set any range limits when reading this file.**  Read the full file content for detailed guidance on OOXML structure and editing workflows before any presentation editing.
+2. Unpack the presentation: `python ooxml/scripts/unpack.py <office_file> <output_dir>`
+3. Edit the XML files (primarily `ppt/slides/slide{N}.xml` and related files)
+4. **CRITICAL**: Validate immediately after each edit and fix any validation errors before proceeding: `python ooxml/scripts/validate.py <dir> --original <file>`
+5. Pack the final presentation: `python ooxml/scripts/pack.py <input_directory> <office_file>`
 
-## 创建新的 PowerPoint 演示文稿 **使用模板**
+## Creating a new PowerPoint presentation **using a template**
 
-当您需要创建遵循现有模板设计的演示文稿时，您需要复制和重新排列模板幻灯片，然后替换占位符上下文。
+When you need to create a presentation that follows an existing template's design, you'll need to duplicate and re-arrange template slides before then replacing placeholder context.
 
-### 工作流
-1. **提取模板文本并创建视觉缩略图网格**：
-   * 提取文本：`python -m markitdown template.pptx > template-content.md`
-   * 阅读 `template-content.md`：阅读整个文件以了解模板演示文稿的内容。**阅读此文件时切勿设置任何范围限制。**
-   * 创建缩略图网格：`python scripts/thumbnail.py template.pptx`
-   * 有关更多详细信息，请参阅 [创建缩略图网格](#creating-thumbnail-grids) 部分
+### Workflow
+1. **Extract template text AND create visual thumbnail grid**:
+   * Extract text: `python -m markitdown template.pptx > template-content.md`
+   * Read `template-content.md`: Read the entire file to understand the contents of the template presentation. **NEVER set any range limits when reading this file.**
+   * Create thumbnail grids: `python scripts/thumbnail.py template.pptx`
+   * See [Creating Thumbnail Grids](#creating-thumbnail-grids) section for more details
 
-2. **分析模板并将清单保存到文件**：
-   * **视觉分析**：查看缩略图网格以了解幻灯片布局、设计模式和视觉结构
-   * 创建并保存 `template-inventory.md` 模板清单文件，包含：
+2. **Analyze template and save inventory to a file**:
+   * **Visual Analysis**: Review thumbnail grid(s) to understand slide layouts, design patterns, and visual structure
+   * Create and save a template inventory file at `template-inventory.md` containing:
      ```markdown
-     # 模板清单分析
-     **总幻灯片数：[count]**
-     **重要：幻灯片是 0 索引的（第一张幻灯片 = 0，最后一张幻灯片 = count-1）**
+     # Template Inventory Analysis
+     **Total Slides: [count]**
+     **IMPORTANT: Slides are 0-indexed (first slide = 0, last slide = count-1)**
 
-     ## [类别名称]
-     - 幻灯片 0：[布局代码（如果可用）] - 描述/用途
-     - 幻灯片 1：[布局代码] - 描述/用途
-     - 幻灯片 2：[布局代码] - 描述/用途
-     [... 每张幻灯片必须单独列出，包括其索引 ...]
+     ## [Category Name]
+     - Slide 0: [Layout code if available] - Description/purpose
+     - Slide 1: [Layout code] - Description/purpose
+     - Slide 2: [Layout code] - Description/purpose
+     [... EVERY slide must be listed individually with its index ...]
      ```
-   * **使用缩略图网格**：参考视觉缩略图以识别：
-     - 布局模式（标题幻灯片、内容布局、节分隔符）
-     - 图像占位符位置和数量
-     - 幻灯片组之间的设计一致性
-     - 视觉层次结构和结构
-   * 此清单文件对于在下一步中选择适当的模板是必需的
+   * **Using the thumbnail grid**: Reference the visual thumbnails to identify:
+     - Layout patterns (title slides, content layouts, section dividers)
+     - Image placeholder locations and counts
+     - Design consistency across slide groups
+     - Visual hierarchy and structure
+   * This inventory file is REQUIRED for selecting appropriate templates in the next step
 
-3. **基于模板清单创建演示文稿大纲**：
-   * 回顾步骤 2 中可用的模板。
-   * 为第一张幻灯片选择介绍或标题模板。这应该是第一个模板之一。
-   * 为其他幻灯片选择安全的、基于文本的布局。
-   * **关键：将布局结构与实际内容匹配**：
-     - 单列布局：用于统一叙述或单个主题
-     - 两列布局：仅在您有恰好 2 个不同的项目/概念时使用
-     - 三列布局：仅在您有恰好 3 个不同的项目/概念时使用
-     - 图像 + 文本布局：仅在您有实际图像要插入时使用
-     - 引用布局：仅用于来自人员的实际引用（带有归因），从不用于强调
-     - 从不使用占位符多于您拥有的内容的布局
-     - 如果您有 2 个项目，不要将它们强制放入 3 列布局
-     - 如果您有 4+ 个项目，考虑分成多张幻灯片或使用列表格式
-   * 在选择布局之前计算您的实际内容部分
-   * 验证所选布局中的每个占位符都将填充有意义的内容
-   * 为每个内容部分选择一个代表**最佳**布局的选项。
-   * 保存 `outline.md`，其中包含内容和利用可用设计的模板映射
-   * 示例模板映射：
+3. **Create presentation outline based on template inventory**:
+   * Review available templates from step 2.
+   * Choose an intro or title template for the first slide. This should be one of the first templates.
+   * Choose safe, text-based layouts for the other slides.
+   * **CRITICAL: Match layout structure to actual content**:
+     - Single-column layouts: Use for unified narrative or single topic
+     - Two-column layouts: Use ONLY when you have exactly 2 distinct items/concepts
+     - Three-column layouts: Use ONLY when you have exactly 3 distinct items/concepts
+     - Image + text layouts: Use ONLY when you have actual images to insert
+     - Quote layouts: Use ONLY for actual quotes from people (with attribution), never for emphasis
+     - Never use layouts with more placeholders than you have content
+     - If you have 2 items, don't force them into a 3-column layout
+     - If you have 4+ items, consider breaking into multiple slides or using a list format
+   * Count your actual content pieces BEFORE selecting the layout
+   * Verify each placeholder in the chosen layout will be filled with meaningful content
+   * Select one option representing the **best** layout for each content section.
+   * Save `outline.md` with content AND template mapping that leverages available designs
+   * Example template mapping:
       ```
-      # 要使用的模板幻灯片（0 索引）
-      # 警告：验证索引在范围内！包含 73 张幻灯片的模板的索引为 0-72
-      # 映射：大纲中的幻灯片编号 -> 模板幻灯片索引
+      # Template slides to use (0-based indexing)
+      # WARNING: Verify indices are within range! Template with 73 slides has indices 0-72
+      # Mapping: slide numbers from outline -> template slide indices
       template_mapping = [
-          0,   # 使用幻灯片 0（标题/封面）
-          34,  # 使用幻灯片 34（B1：标题和正文）
-          34,  # 再次使用幻灯片 34（为第二个 B1 复制）
-          50,  # 使用幻灯片 50（E1：引用）
-          54,  # 使用幻灯片 54（F2：结束 + 文本）
+          0,   # Use slide 0 (Title/Cover)
+          34,  # Use slide 34 (B1: Title and body)
+          34,  # Use slide 34 again (duplicate for second B1)
+          50,  # Use slide 50 (E1: Quote)
+          54,  # Use slide 54 (F2: Closing + Text)
       ]
       ```
 
-4. **使用 `rearrange.py` 复制、重新排序和删除幻灯片**：
-   * 使用 `scripts/rearrange.py` 脚本创建具有所需顺序的幻灯片的新演示文稿：
+4. **Duplicate, reorder, and delete slides using `rearrange.py`**:
+   * Use the `scripts/rearrange.py` script to create a new presentation with slides in the desired order:
      ```bash
      python scripts/rearrange.py template.pptx working.pptx 0,34,34,50,52
      ```
-   * 该脚本自动处理重复重复幻灯片、删除未使用的幻灯片和重新排序
-   * 幻灯片索引是 0 索引的（第一张幻灯片是 0，第二张是 1 等）
-   * 同一个幻灯片索引可以多次出现以复制该幻灯片
+   * The script handles duplicating repeated slides, deleting unused slides, and reordering automatically
+   * Slide indices are 0-based (first slide is 0, second is 1, etc.)
+   * The same slide index can appear multiple times to duplicate that slide
 
-5. **使用 `inventory.py` 脚本提取所有文本**：
-   * **运行清单提取**：
+5. **Extract ALL text using the `inventory.py` script**:
+   * **Run inventory extraction**:
      ```bash
      python scripts/inventory.py working.pptx text-inventory.json
      ```
-   * **阅读 text-inventory.json**：阅读整个 text-inventory.json 文件以了解所有形状及其属性。**阅读此文件时切勿设置任何范围限制。**
+   * **Read text-inventory.json**: Read the entire text-inventory.json file to understand all shapes and their properties. **NEVER set any range limits when reading this file.**
 
-   * 清单 JSON 结构：
+   * The inventory JSON structure:
       ```json
         {
           "slide-0": {
             "shape-0": {
-              "placeholder_type": "TITLE",  // 或非占位符为 null
-              "left": 1.5,                  // 位置（英寸）
+              "placeholder_type": "TITLE",  // or null for non-placeholders
+              "left": 1.5,                  // position in inches
               "top": 2.0,
               "width": 7.5,
               "height": 1.2,
               "paragraphs": [
                 {
                   "text": "Paragraph text",
-                  // 可选属性（仅在非默认时包含）：
-                  "bullet": true,           // 检测到显式项目符号
-                  "level": 0,               // 仅在 bullet 为 true 时包含
-                  "alignment": "CENTER",    // CENTER, RIGHT（不是 LEFT）
-                  "space_before": 10.0,     // 段落前的空格（点）
-                  "space_after": 6.0,       // 段落后的空格（点）
-                  "line_spacing": 22.4,     // 行间距（点）
-                  "font_name": "Arial",     // 来自第一个运行
-                  "font_size": 14.0,        // 点
+                  // Optional properties (only included when non-default):
+                  "bullet": true,           // explicit bullet detected
+                  "level": 0,               // only included when bullet is true
+                  "alignment": "CENTER",    // CENTER, RIGHT (not LEFT)
+                  "space_before": 10.0,     // space before paragraph in points
+                  "space_after": 6.0,       // space after paragraph in points
+                  "line_spacing": 22.4,     // line spacing in points
+                  "font_name": "Arial",     // from first run
+                  "font_size": 14.0,        // in points
                   "bold": true,
                   "italic": false,
                   "underline": false,
-                  "color": "FF0000"         // RGB 颜色
+                  "color": "FF0000"         // RGB color
                 }
               ]
             }
@@ -291,45 +291,45 @@ python -m markitdown path-to-file.pptx
         }
       ```
 
-   * 关键特性：
-     - **幻灯片**：命名为 "slide-0"、"slide-1" 等
-     - **形状**：按视觉位置（从上到下，从左到右）排序为 "shape-0"、"shape-1" 等
-     - **占位符类型**：TITLE、CENTER_TITLE、SUBTITLE、BODY、OBJECT 或 null
-     - **默认字体大小**：从布局占位符中提取的 `default_font_size`（点）（如果可用）
-     - **幻灯片编号被过滤**：具有 SLIDE_NUMBER 占位符类型的形状自动从清单中排除
-     - **项目符号**：当 `bullet: true` 时，`level` 总是包含（即使为 0）
-     - **间距**：`space_before`、`space_after` 和 `line_spacing`（点）（仅在设置时包含）
-     - **颜色**：RGB 的 `color`（例如 "FF0000"），主题颜色的 `theme_color`（例如 "DARK_1"）
-     - **属性**：仅非默认值包含在输出中
+   * Key features:
+     - **Slides**: Named as "slide-0", "slide-1", etc.
+     - **Shapes**: Ordered by visual position (top-to-bottom, left-to-right) as "shape-0", "shape-1", etc.
+     - **Placeholder types**: TITLE, CENTER_TITLE, SUBTITLE, BODY, OBJECT, or null
+     - **Default font size**: `default_font_size` in points extracted from layout placeholders (when available)
+     - **Slide numbers are filtered**: Shapes with SLIDE_NUMBER placeholder type are automatically excluded from inventory
+     - **Bullets**: When `bullet: true`, `level` is always included (even if 0)
+     - **Spacing**: `space_before`, `space_after`, and `line_spacing` in points (only included when set)
+     - **Colors**: `color` for RGB (e.g., "FF0000"), `theme_color` for theme colors (e.g., "DARK_1")
+     - **Properties**: Only non-default values are included in the output
 
-6. **生成替换文本并将数据保存到 JSON 文件**
-   基于上一步的文本清单：
-   - **关键**：首先验证清单中存在哪些形状 - 仅引用实际存在的形状
-   - **验证**：replace.py 脚本将验证您的替换 JSON 中的所有形状是否存在于清单中
-     - 如果您引用不存在的形状，您将收到显示可用形状的错误
-     - 如果您引用不存在的幻灯片，您将收到指示幻灯片不存在的错误
-     - 所有验证错误在脚本退出前一次性显示
-   - **重要**：replace.py 脚本内部使用 inventory.py 来识别所有文本形状
-   - **自动清除**：清单中的所有文本形状将被清除，除非您为它们提供 "paragraphs"
-   - 向需要内容的形状添加 "paragraphs" 字段（不是 "replacement_paragraphs"）
-   - 替换 JSON 中没有 "paragraphs" 的形状将自动清除其文本
-   - 带项目符号的段落将自动左对齐。当 `"bullet": true` 时，不要设置 `alignment` 属性
-   - 为占位符文本生成适当的替换内容
-   - 使用形状大小来确定适当的内容长度
-   - **关键**：包含原始清单中的段落属性 - 不要只提供文本
-   - **重要**：当 bullet: true 时，不要在文本中包含项目符号符号（•, -, *）- 它们会自动添加
-   - **基本格式规则**：
-     - 标题/标题通常应该有 `"bold": true`
-     - 列表项应该有 `"bullet": true, "level": 0`（当 bullet 为 true 时，level 是必需的）
-     - 保留任何对齐属性（例如，居中文本的 `"alignment": "CENTER"`）
-     - 当与默认值不同时包括字体属性（例如，`"font_size": 14.0`, `"font_name": "Lora"`）
-     - 颜色：对于 RGB 使用 `"color": "FF0000"`，对于主题颜色使用 `"theme_color": "DARK_1"`
-     - 替换脚本期望**格式正确的段落**，而不仅仅是文本字符串
-     - **重叠形状**：优先选择具有更大 default_font_size 或更合适的 placeholder_type 的形状
-   - 将带有替换的更新清单保存到 `replacement-text.json`
-   - **警告**：不同的模板布局具有不同的形状计数 - 在创建替换之前始终检查实际清单
+6. **Generate replacement text and save the data to a JSON file**
+   Based on the text inventory from the previous step:
+   - **CRITICAL**: First verify which shapes exist in the inventory - only reference shapes that are actually present
+   - **VALIDATION**: The replace.py script will validate that all shapes in your replacement JSON exist in the inventory
+     - If you reference a non-existent shape, you'll get an error showing available shapes
+     - If you reference a non-existent slide, you'll get an error indicating the slide doesn't exist
+     - All validation errors are shown at once before the script exits
+   - **IMPORTANT**: The replace.py script uses inventory.py internally to identify ALL text shapes
+   - **AUTOMATIC CLEARING**: ALL text shapes from the inventory will be cleared unless you provide "paragraphs" for them
+   - Add a "paragraphs" field to shapes that need content (not "replacement_paragraphs")
+   - Shapes without "paragraphs" in the replacement JSON will have their text cleared automatically
+   - Paragraphs with bullets will be automatically left aligned. Don't set the `alignment` property on when `"bullet": true`
+   - Generate appropriate replacement content for placeholder text
+   - Use shape size to determine appropriate content length
+   - **CRITICAL**: Include paragraph properties from the original inventory - don't just provide text
+   - **IMPORTANT**: When bullet: true, do NOT include bullet symbols (•, -, *) in text - they're added automatically
+   - **ESSENTIAL FORMATTING RULES**:
+     - Headers/titles should typically have `"bold": true`
+     - List items should have `"bullet": true, "level": 0` (level is required when bullet is true)
+     - Preserve any alignment properties (e.g., `"alignment": "CENTER"` for centered text)
+     - Include font properties when different from default (e.g., `"font_size": 14.0`, `"font_name": "Lora"`)
+     - Colors: Use `"color": "FF0000"` for RGB or `"theme_color": "DARK_1"` for theme colors
+     - The replacement script expects **properly formatted paragraphs**, not just text strings
+     - **Overlapping shapes**: Prefer shapes with larger default_font_size or more appropriate placeholder_type
+   - Save the updated inventory with replacements to `replacement-text.json`
+   - **WARNING**: Different template layouts have different shape counts - always check the actual inventory before creating replacements
 
-   显示正确格式的示例段落字段：
+   Example paragraphs field showing proper formatting:
    ```json
    "paragraphs": [
      {
@@ -360,40 +360,40 @@ python -m markitdown path-to-file.pptx
    ]
    ```
 
-   **替换 JSON 中未列出的形状会自动清除**：
+   **Shapes not listed in the replacement JSON are automatically cleared**:
    ```json
    {
      "slide-0": {
        "shape-0": {
-         "paragraphs": [...] // 此形状获取新文本
+         "paragraphs": [...] // This shape gets new text
        }
-       // 清单中的 shape-1 和 shape-2 将自动清除
+       // shape-1 and shape-2 from inventory will be cleared automatically
      }
    }
    ```
 
-   **演示文稿的常见格式模式**：
-   - 标题幻灯片：粗体文本，有时居中
-   - 幻灯片内的节标题：粗体文本
-   - 项目符号列表：每个项目需要 `"bullet": true, "level": 0`
-   - 正文：通常不需要特殊属性
-   - 引用：可能具有特殊对齐或字体属性
+   **Common formatting patterns for presentations**:
+   - Title slides: Bold text, sometimes centered
+   - Section headers within slides: Bold text
+   - Bullet lists: Each item needs `"bullet": true, "level": 0`
+   - Body text: Usually no special properties needed
+   - Quotes: May have special alignment or font properties
 
-7. **使用 `replace.py` 脚本应用替换**
+7. **Apply replacements using the `replace.py` script**
    ```bash
    python scripts/replace.py working.pptx replacement-text.json output.pptx
    ```
 
-   该脚本将：
-   - 首先使用 inventory.py 中的函数提取所有文本形状的清单
-   - 验证替换 JSON 中的所有形状是否存在于清单中
-   - 清除清单中标识的所有形状的文本
-   - 仅将新文本应用于在替换 JSON 中定义了 "paragraphs" 的形状
-   - 通过应用 JSON 中的段落属性来保留格式
-   - 自动处理项目符号、对齐、字体属性和颜色
-   - 保存更新后的演示文稿
+   The script will:
+   - First extract the inventory of ALL text shapes using functions from inventory.py
+   - Validate that all shapes in the replacement JSON exist in the inventory
+   - Clear text from ALL shapes identified in the inventory
+   - Apply new text only to shapes with "paragraphs" defined in the replacement JSON
+   - Preserve formatting by applying paragraph properties from the JSON
+   - Handle bullets, alignment, font properties, and colors automatically
+   - Save the updated presentation
 
-   示例验证错误：
+   Example validation errors:
    ```
    ERROR: Invalid shapes in replacement JSON:
      - Shape 'shape-99' not found on 'slide-0'. Available shapes: shape-0, shape-1, shape-4
@@ -405,80 +405,80 @@ python -m markitdown path-to-file.pptx
      - slide-0/shape-2: overflow worsened by 1.25" (was 0.00", now 1.25")
    ```
 
-## 创建缩略图网格
+## Creating Thumbnail Grids
 
-要创建 PowerPoint 幻灯片的视觉缩略图网格，以便快速分析和参考：
+To create visual thumbnail grids of PowerPoint slides for quick analysis and reference:
 
 ```bash
 python scripts/thumbnail.py template.pptx [output_prefix]
 ```
 
-**特性**：
-- 创建：`thumbnails.jpg`（或大甲板的 `thumbnails-1.jpg`、`thumbnails-2.jpg` 等）
-- 默认：5 列，每个网格最多 30 张幻灯片（5×6）
-- 自定义前缀：`python scripts/thumbnail.py template.pptx my-grid`
-  - 注意：如果您希望在特定目录中输出，输出前缀应包含路径（例如，`workspace/my-grid`）
-- 调整列：`--cols 4`（范围：3-6，影响每个网格的幻灯片数）
-- 网格限制：3 列 = 12 张幻灯片/网格，4 列 = 20，5 列 = 30，6 列 = 42
-- 幻灯片是 0 索引的（幻灯片 0、幻灯片 1 等）
+**Features**:
+- Creates: `thumbnails.jpg` (or `thumbnails-1.jpg`, `thumbnails-2.jpg`, etc. for large decks)
+- Default: 5 columns, max 30 slides per grid (5×6)
+- Custom prefix: `python scripts/thumbnail.py template.pptx my-grid`
+  - Note: The output prefix should include the path if you want output in a specific directory (e.g., `workspace/my-grid`)
+- Adjust columns: `--cols 4` (range: 3-6, affects slides per grid)
+- Grid limits: 3 cols = 12 slides/grid, 4 cols = 20, 5 cols = 30, 6 cols = 42
+- Slides are zero-indexed (Slide 0, Slide 1, etc.)
 
-**用例**：
-- 模板分析：快速了解幻灯片布局和设计模式
-- 内容审查：整个演示文稿的视觉概览
-- 导航参考：通过视觉外观查找特定幻灯片
-- 质量检查：验证所有幻灯片是否格式正确
+**Use cases**:
+- Template analysis: Quickly understand slide layouts and design patterns
+- Content review: Visual overview of entire presentation
+- Navigation reference: Find specific slides by their visual appearance
+- Quality check: Verify all slides are properly formatted
 
-**示例**：
+**Examples**:
 ```bash
-# 基本用法
+# Basic usage
 python scripts/thumbnail.py presentation.pptx
 
-# 组合选项：自定义名称、列数
+# Combine options: custom name, columns
 python scripts/thumbnail.py template.pptx analysis --cols 4
 ```
 
-## 将幻灯片转换为图像
+## Converting Slides to Images
 
-要可视化分析 PowerPoint 幻灯片，使用两步过程将它们转换为图像：
+To visually analyze PowerPoint slides, convert them to images using a two-step process:
 
-1. **将 PPTX 转换为 PDF**：
+1. **Convert PPTX to PDF**:
    ```bash
    soffice --headless --convert-to pdf template.pptx
    ```
 
-2. **将 PDF 页面转换为 JPEG 图像**：
+2. **Convert PDF pages to JPEG images**:
    ```bash
    pdftoppm -jpeg -r 150 template.pdf slide
    ```
-   这会创建 `slide-1.jpg`、`slide-2.jpg` 等文件。
+   This creates files like `slide-1.jpg`, `slide-2.jpg`, etc.
 
-选项：
-- `-r 150`：将分辨率设置为 150 DPI（根据质量/大小平衡调整）
-- `-jpeg`：输出 JPEG 格式（如果首选，使用 `-png` 表示 PNG）
-- `-f N`：要转换的第一页（例如，`-f 2` 从第 2 页开始）
-- `-l N`：要转换的最后一页（例如，`-l 5` 在第 5 页停止）
-- `slide`：输出文件的前缀
+Options:
+- `-r 150`: Sets resolution to 150 DPI (adjust for quality/size balance)
+- `-jpeg`: Output JPEG format (use `-png` for PNG if preferred)
+- `-f N`: First page to convert (e.g., `-f 2` starts from page 2)
+- `-l N`: Last page to convert (e.g., `-l 5` stops at page 5)
+- `slide`: Prefix for output files
 
-特定范围的示例：
+Example for specific range:
 ```bash
-pdftoppm -jpeg -r 150 -f 2 -l 5 template.pdf slide  # 仅转换第 2-5 页
+pdftoppm -jpeg -r 150 -f 2 -l 5 template.pdf slide  # Converts only pages 2-5
 ```
 
-## 代码风格指南
-**重要**：生成用于 PPTX 操作的代码时：
-- 编写简洁的代码
-- 避免冗长的变量名和冗余操作
-- 避免不必要的打印语句
+## Code Style Guidelines
+**IMPORTANT**: When generating code for PPTX operations:
+- Write concise code
+- Avoid verbose variable names and redundant operations
+- Avoid unnecessary print statements
 
-## 依赖项
+## Dependencies
 
-必需的依赖项（应该已经安装）：
+Required dependencies (should already be installed):
 
-- **markitdown**：`pip install "markitdown[pptx]"`（用于从演示文稿中提取文本）
-- **pptxgenjs**：`npm install -g pptxgenjs`（用于通过 html2pptx 创建演示文稿）
-- **playwright**：`npm install -g playwright`（用于 html2pptx 中的 HTML 渲染）
-- **react-icons**：`npm install -g react-icons react react-dom`（用于图标）
-- **sharp**：`npm install -g sharp`（用于 SVG 光栅化和图像处理）
-- **LibreOffice**：`sudo apt-get install libreoffice`（用于 PDF 转换）
-- **Poppler**：`sudo apt-get install poppler-utils`（用于 pdftoppm 转换 PDF 为图像）
-- **defusedxml**：`pip install defusedxml`（用于安全 XML 解析）
+- **markitdown**: `pip install "markitdown[pptx]"` (for text extraction from presentations)
+- **pptxgenjs**: `npm install -g pptxgenjs` (for creating presentations via html2pptx)
+- **playwright**: `npm install -g playwright` (for HTML rendering in html2pptx)
+- **react-icons**: `npm install -g react-icons react react-dom` (for icons)
+- **sharp**: `npm install -g sharp` (for SVG rasterization and image processing)
+- **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion)
+- **Poppler**: `sudo apt-get install poppler-utils` (for pdftoppm to convert PDF to images)
+- **defusedxml**: `pip install defusedxml` (for secure XML parsing)

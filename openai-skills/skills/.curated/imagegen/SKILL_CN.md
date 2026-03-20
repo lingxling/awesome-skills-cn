@@ -1,175 +1,174 @@
 ---
 name: "imagegen"
-description: "当用户要求通过 OpenAI 图像 API 生成或编辑图像时使用（例如：生成图像、编辑/修复/遮罩、背景去除或替换、透明背景、产品照片、概念艺术、封面或批量变体）；运行捆绑的 CLI（`scripts/image_gen.py`）并需要 `OPENAI_API_KEY` 进行实时调用。"
+description: "Use when the user asks to generate or edit images via the OpenAI Image API (for example: generate image, edit/inpaint/mask, background removal or replacement, transparent background, product shots, concept art, covers, or batch variants); run the bundled CLI (`scripts/image_gen.py`) and require `OPENAI_API_KEY` for live calls."
 ---
 
 
-# 图像生成技能
+# Image Generation Skill
 
-为当前项目生成或编辑图像（例如，网站资产、游戏资产、UI 模型、产品模型、线框、徽标设计、照片级真实感图像、信息图）。默认为 `gpt-image-1.5` 和 OpenAI 图像 API，并且更喜欢捆绑的 CLI 以实现确定性、可重现的运行。
+Generates or edits images for the current project (e.g., website assets, game assets, UI mockups, product mockups, wireframes, logo design, photorealistic images, infographics). Defaults to `gpt-image-1.5` and the OpenAI Image API, and prefers the bundled CLI for deterministic, reproducible runs.
 
-## 何时使用
-- 生成新图像（概念艺术、产品照片、封面、网站主图）
-- 编辑现有图像（修复、遮罩编辑、照明或天气转换、背景替换、对象去除、合成、透明背景）
-- 批量运行（许多提示，或跨提示的许多变体）
+## When to use
+- Generate a new image (concept art, product shot, cover, website hero)
+- Edit an existing image (inpainting, masked edits, lighting or weather transformations, background replacement, object removal, compositing, transparent background)
+- Batch runs (many prompts, or many variants across prompts)
 
-## 决策树（生成 vs 编辑 vs 批量）
-- 如果用户提供输入图像（或说"编辑/修饰/修复/遮罩/翻译/本地化/仅更改 X"）→ **编辑**
-- 否则，如果用户需要许多不同的提示/资产 → **生成-批量**
-- 否则 → **生成**
+## Decision tree (generate vs edit vs batch)
+- If the user provides an input image (or says “edit/retouch/inpaint/mask/translate/localize/change only X”) → **edit**
+- Else if the user needs many different prompts/assets → **generate-batch**
+- Else → **generate**
 
-## 工作流程
-1. 确定意图：生成 vs 编辑 vs 批量（见上面的决策树）。
-2. 提前收集输入：提示（一个或多个）、精确文本（逐字）、约束/避免列表以及任何输入图像/遮罩。对于多图像编辑，按索引和角色标记每个输入；对于编辑，明确列出不变量。
-3. 如果是批量：在 tmp/ 下编写临时 JSONL（每行一个作业），运行一次，然后删除 JSONL。
-4. 将提示增强为简短的标记规范（结构 + 约束），而不发明新的创意要求。
-5. 使用合理的默认值运行捆绑的 CLI（`scripts/image_gen.py`）（见 references/cli.md）。
-6. 对于复杂的编辑/生成，检查输出（打开/查看图像）并验证：主题、风格、构图、文本准确性以及不变量/避免项。
-7. 迭代：进行单一目标更改（提示或遮罩），重新运行，重新检查。
-8. 保存/返回最终输出并注意使用的最终提示 + 标志。
+## Workflow
+1. Decide intent: generate vs edit vs batch (see decision tree above).
+2. Collect inputs up front: prompt(s), exact text (verbatim), constraints/avoid list, and any input image(s)/mask(s). For multi-image edits, label each input by index and role; for edits, list invariants explicitly.
+3. If batch: write a temporary JSONL under tmp/ (one job per line), run once, then delete the JSONL.
+4. Augment prompt into a short labeled spec (structure + constraints) without inventing new creative requirements.
+5. Run the bundled CLI (`scripts/image_gen.py`) with sensible defaults (see references/cli.md).
+6. For complex edits/generations, inspect outputs (open/view images) and validate: subject, style, composition, text accuracy, and invariants/avoid items.
+7. Iterate: make a single targeted change (prompt or mask), re-run, re-check.
+8. Save/return final outputs and note the final prompt + flags used.
 
-## 临时和输出约定
-- 使用 `tmp/imagegen/` 作为中间文件（例如 JSONL 批量）；完成后删除。
-- 在此仓库中工作时，将最终工件写入 `output/imagegen/`。
-- 使用 `--out` 或 `--out-dir` 控制输出路径；保持文件名稳定和描述性。
+## Temp and output conventions
+- Use `tmp/imagegen/` for intermediate files (for example JSONL batches); delete when done.
+- Write final artifacts under `output/imagegen/` when working in this repo.
+- Use `--out` or `--out-dir` to control output paths; keep filenames stable and descriptive.
 
-## 依赖项（如果缺少则安装）
-更喜欢 `uv` 进行依赖管理。
+## Dependencies (install if missing)
+Prefer `uv` for dependency management.
 
-Python 包：
+Python packages:
 ```
 uv pip install openai pillow
 ```
-如果 `uv` 不可用：
+If `uv` is unavailable:
 ```
 python3 -m pip install openai pillow
 ```
 
-## 环境
-- 必须设置 `OPENAI_API_KEY` 才能进行实时 API 调用。
+## Environment
+- `OPENAI_API_KEY` must be set for live API calls.
 
-如果缺少密钥，请为用户提供这些步骤：
-1. 在 OpenAI 平台 UI 中创建 API 密钥：https://platform.openai.com/api-keys
-2. 在他们的系统中将 `OPENAI_API_KEY` 设置为环境变量。
-3. 如果需要，提供引导他们为其操作系统/shell 设置环境变量的指导。
-- 永远不要要求用户在聊天中粘贴完整的密钥。要求他们在本地设置并准备好时确认。
+If the key is missing, give the user these steps:
+1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
+2. Set `OPENAI_API_KEY` as an environment variable in their system.
+3. Offer to guide them through setting the environment variable for their OS/shell if needed.
+- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
 
-如果在此环境中无法安装，请告诉用户缺少哪个依赖项以及如何在本地安装它。
+If installation isn't possible in this environment, tell the user which dependency is missing and how to install it locally.
 
-## 默认值和规则
-- 除非用户明确要求 `gpt-image-1-mini` 或明确更喜欢更便宜/更快的模型，否则使用 `gpt-image-1.5`。
-- 除非用户明确要求编辑，否则假设用户想要新图像。
-- 在任何实时 API 调用之前要求 `OPENAI_API_KEY`。
-- 对所有 API 调用使用 OpenAI Python SDK（`openai` 包）；不要使用原始 HTTP。
-- 如果用户请求编辑，请使用 `client.images.edit(...)` 并包括输入图像（如果提供了遮罩）。
-- 更喜欢捆绑的 CLI（`scripts/image_gen.py`）而不是编写新的一次性脚本。
-- 永远不要修改 `scripts/image_gen.py`。如果缺少某些内容，请在做任何其他事情之前询问用户。
-- 如果结果不明确相关或不满足约束，请使用小的目标提示更改进行迭代；仅当缺少的细节阻止成功时才提问。
+## Defaults & rules
+- Use `gpt-image-1.5` unless the user explicitly asks for `gpt-image-1-mini` or explicitly prefers a cheaper/faster model.
+- Assume the user wants a new image unless they explicitly ask for an edit.
+- Require `OPENAI_API_KEY` before any live API call.
+- Use the OpenAI Python SDK (`openai` package) for all API calls; do not use raw HTTP.
+- If the user requests edits, use `client.images.edit(...)` and include input images (and mask if provided).
+- Prefer the bundled CLI (`scripts/image_gen.py`) over writing new one-off scripts.
+- Never modify `scripts/image_gen.py`. If something is missing, ask the user before doing anything else.
+- If the result isn’t clearly relevant or doesn’t satisfy constraints, iterate with small targeted prompt changes; only ask a question if a missing detail blocks success.
 
-## 提示增强
-将用户提示重新格式化为结构化的、面向生产的规范。仅使隐含细节显式化；不要发明新的要求。
+## Prompt augmentation
+Reformat user prompts into a structured, production-oriented spec. Only make implicit details explicit; do not invent new requirements.
 
-## 用例分类法（精确的 slug）
-将每个请求分类到这些存储桶之一，并在提示和参考资料中保持 slug 一致。
+## Use-case taxonomy (exact slugs)
+Classify each request into one of these buckets and keep the slug consistent across prompts and references.
 
-生成：
-- photorealistic-natural — 具有真实纹理和自然光线的真实/编辑生活方式场景。
-- product-mockup — 产品/包装照片、目录图像、商品概念。
-- ui-mockup — 看起来可发布的应用/Web 界面模型。
-- infographic-diagram — 具有结构化布局和文本的图表/信息图。
-- logo-brand — 徽标/标记探索、矢量友好。
-- illustration-story — 漫画、儿童书籍艺术、叙事场景。
-- stylized-concept — 风格驱动的概念艺术、3D/风格化渲染。
-- historical-scene — 时期准确/世界知识场景。
+Generate:
+- photorealistic-natural — candid/editorial lifestyle scenes with real texture and natural lighting.
+- product-mockup — product/packaging shots, catalog imagery, merch concepts.
+- ui-mockup — app/web interface mockups that look shippable.
+- infographic-diagram — diagrams/infographics with structured layout and text.
+- logo-brand — logo/mark exploration, vector-friendly.
+- illustration-story — comics, children’s book art, narrative scenes.
+- stylized-concept — style-driven concept art, 3D/stylized renders.
+- historical-scene — period-accurate/world-knowledge scenes.
 
-编辑：
-- text-localization — 翻译/替换图像内文本，保留布局。
-- identity-preserve — 试穿、场景中的人；锁定面部/身体/姿势。
-- precise-object-edit — 去除/替换特定元素（包括内部交换）。
-- lighting-weather — 仅一天中的时间/季节/氛围变化。
-- background-extraction — 透明背景 / 干净的剪切。
-- style-transfer — 在更改主题/场景的同时应用参考风格。
-- compositing — 多图像插入/合并，匹配照明/透视。
-- sketch-to-render — 绘图/线条艺术到照片级真实感渲染。
+Edit:
+- text-localization — translate/replace in-image text, preserve layout.
+- identity-preserve — try-on, person-in-scene; lock face/body/pose.
+- precise-object-edit — remove/replace a specific element (incl. interior swaps).
+- lighting-weather — time-of-day/season/atmosphere changes only.
+- background-extraction — transparent background / clean cutout.
+- style-transfer — apply reference style while changing subject/scene.
+- compositing — multi-image insert/merge with matched lighting/perspective.
+- sketch-to-render — drawing/line art to photoreal render.
 
-快速澄清（增强 vs 发明）：
-- 如果用户说"着陆页的主图像"，您可以添加*布局/构图约束*，这是该用途所隐含的（例如，"右侧有慷慨的负空间用于标题文本"）。
-- 不要引入用户未要求的新创意元素（例如，添加吉祥物、更改主题、发明品牌名称/徽标）。
+Quick clarification (augmentation vs invention):
+- If the user says “a hero image for a landing page”, you may add *layout/composition constraints* that are implied by that use (e.g., “generous negative space on the right for headline text”).
+- Do not introduce new creative elements the user didn’t ask for (e.g., adding a mascot, changing the subject, inventing brand names/logos).
 
-模板（仅包括相关行）：
+Template (include only relevant lines):
 ```
-用例：<分类法 slug>
-资产类型：<资产将在哪里使用>
-主要请求：<用户的主要提示>
-场景/背景：<环境>
-主题：<主要主题>
-风格/媒介：<照片/插图/3D 等>
-构图/取景：<宽/近/俯视；放置>
-照明/情绪：<照明 + 情绪>
-调色板：<调色板注释>
-材料/纹理：<表面细节>
-质量：<低/中/高/自动>
-输入保真度（编辑）：<低/高>
-文本（逐字）："<精确文本>"
-约束：<必须保留/必须避免>
-避免：<负面约束>
-```
-
-增强规则：
-- 保持简短；仅添加用户已经暗示或别处提供的细节。
-- 始终将请求分类到上面的分类法 slug 中，并将约束/构图/质量定制到该存储桶。使用 slug 在 `references/sample-prompts.md` 中查找匹配的示例。
-- 如果用户给出广泛的请求（例如，"为此网站生成图像"），请使用判断力提出品味高雅、上下文适当的资产，并将每个映射到分类法 slug。
-- 对于编辑，明确列出不变量（"仅更改 X；保持 Y 不变"）。
-- 如果任何关键细节缺失并阻止成功，请提问；否则继续。
-
-## 示例
-
-### 生成示例（主图像）
-```
-用例：stylized-concept
-资产类型：着陆页主图像
-主要请求：陶瓷咖啡杯的最小主图像
-风格/媒介：干净的产品摄影
-构图/取景：居中产品，右侧有慷慨的负空间
-照明/情绪：柔和的工作室照明
-约束：无徽标、无文本、无水印
+Use case: <taxonomy slug>
+Asset type: <where the asset will be used>
+Primary request: <user's main prompt>
+Scene/background: <environment>
+Subject: <main subject>
+Style/medium: <photo/illustration/3D/etc>
+Composition/framing: <wide/close/top-down; placement>
+Lighting/mood: <lighting + mood>
+Color palette: <palette notes>
+Materials/textures: <surface details>
+Quality: <low/medium/high/auto>
+Input fidelity (edits): <low/high>
+Text (verbatim): "<exact text>"
+Constraints: <must keep/must avoid>
+Avoid: <negative constraints>
 ```
 
-### 编辑示例（不变量）
+Augmentation rules:
+- Keep it short; add only details the user already implied or provided elsewhere.
+- Always classify the request into a taxonomy slug above and tailor constraints/composition/quality to that bucket. Use the slug to find the matching example in `references/sample-prompts.md`.
+- If the user gives a broad request (e.g., "Generate images for this website"), use judgment to propose tasteful, context-appropriate assets and map each to a taxonomy slug.
+- For edits, explicitly list invariants ("change only X; keep Y unchanged").
+- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
+
+## Examples
+
+### Generation example (hero image)
 ```
-用例：precise-object-edit
-资产类型：产品照片背景替换
-主要请求：用温暖的日落渐变替换背景
-约束：仅更改背景；保持产品和其边缘不变；无文本；无水印
+Use case: stylized-concept
+Asset type: landing page hero
+Primary request: a minimal hero image of a ceramic coffee mug
+Style/medium: clean product photography
+Composition/framing: centered product, generous negative space on the right
+Lighting/mood: soft studio lighting
+Constraints: no logos, no text, no watermark
 ```
 
-## 提示最佳实践（简短列表）
-- 将提示构建为场景 → 主题 → 细节 → 约束。
-- 包括预期用途（广告、UI 模型、信息图）以设置模式和润色级别。
-- 对于照片级真实感，使用相机/构图语言。
-- 引用精确文本并指定排版 + 放置。
-- 对于棘手的单词，逐字母拼写并要求逐字渲染。
-- 对于多图像输入，按索引引用图像并描述如何组合它们。
-- 对于编辑，每次迭代都重复不变量以减少漂移。
-- 使用单一更改后续进行迭代。
-- 对于延迟敏感的运行，从 quality=low 开始；对于文本繁重或细节关键的输出使用 quality=high。
-- 对于严格的编辑（身份/布局锁定），考虑 input_fidelity=high。
-- 如果结果感觉"俗气"，请添加简短的"Avoid:"行（库存照片氛围；俗气的镜头光晕；过饱和的霓虹灯； harsh bloom；过度锐化；杂乱）并指定克制（"编辑"、"高级"、"微妙"）。
+### Edit example (invariants)
+```
+Use case: precise-object-edit
+Asset type: product photo background replacement
+Primary request: replace the background with a warm sunset gradient
+Constraints: change only the background; keep the product and its edges unchanged; no text; no watermark
+```
 
-更多原则：`references/prompting.md`。复制/粘贴规范：`references/sample-prompts.md`。
+## Prompting best practices (short list)
+- Structure prompt as scene -> subject -> details -> constraints.
+- Include intended use (ad, UI mock, infographic) to set the mode and polish level.
+- Use camera/composition language for photorealism.
+- Quote exact text and specify typography + placement.
+- For tricky words, spell them letter-by-letter and require verbatim rendering.
+- For multi-image inputs, reference images by index and describe how to combine them.
+- For edits, repeat invariants every iteration to reduce drift.
+- Iterate with single-change follow-ups.
+- For latency-sensitive runs, start with quality=low; use quality=high for text-heavy or detail-critical outputs.
+- For strict edits (identity/layout lock), consider input_fidelity=high.
+- If results feel “tacky”, add a brief “Avoid:” line (stock-photo vibe; cheesy lens flare; oversaturated neon; harsh bloom; oversharpening; clutter) and specify restraint (“editorial”, “premium”, “subtle”).
 
-## 按资产类型的指导
+More principles: `references/prompting.md`. Copy/paste specs: `references/sample-prompts.md`.
 
-资产类型模板（网站资产、游戏资产、线框、徽标）在 `references/sample-prompts.md` 中合并。
+## Guidance by asset type
+Asset-type templates (website assets, game assets, wireframes, logo) are consolidated in `references/sample-prompts.md`.
 
-## CLI + 环境说明
-- CLI 命令 + 示例：`references/cli.md`
-- API 参数快速参考：`references/image-api.md`
-- 如果网络批准/沙盒设置阻碍：`references/codex-network.md`
+## CLI + environment notes
+- CLI commands + examples: `references/cli.md`
+- API parameter quick reference: `references/image-api.md`
+- If network approvals / sandbox settings are getting in the way: `references/codex-network.md`
 
-## 参考地图
-- **`references/cli.md`**：如何通过 `scripts/image_gen.py` *运行*图像生成/编辑/批量（命令、标志、配方）。
-- **`references/image-api.md`**：API 级别存在哪些旋钮（参数、大小、质量、背景、仅编辑字段）。
-- **`references/prompting.md`**：提示原则（结构、约束/不变量、迭代模式）。
-- **`references/sample-prompts.md`**：复制/粘贴提示配方（生成 + 编辑工作流程；仅示例）。
-- **`references/codex-network.md`**：环境/沙盒/网络批准故障排除。
+## Reference map
+- **`references/cli.md`**: how to *run* image generation/edits/batches via `scripts/image_gen.py` (commands, flags, recipes).
+- **`references/image-api.md`**: what knobs exist at the API level (parameters, sizes, quality, background, edit-only fields).
+- **`references/prompting.md`**: prompting principles (structure, constraints/invariants, iteration patterns).
+- **`references/sample-prompts.md`**: copy/paste prompt recipes (generate + edit workflows; examples only).
+- **`references/codex-network.md`**: environment/sandbox/network-approval troubleshooting.

@@ -1,6 +1,6 @@
 ---
 name: team-composition-analysis
-description: This skill should be used when the user asks to \\\"plan team structure", "determine hiring needs", "design org chart", "calculate compensation", "plan equity allocation", or requests...
+description: "Design optimal team structures, hiring plans, compensation strategies, and equity allocation for early-stage startups from pre-seed through Series A."
 risk: unknown
 source: community
 date_added: '2026-02-27'

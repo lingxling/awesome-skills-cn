@@ -1,99 +1,97 @@
 ---
 name: ena-database
-description: 通过 API/FTP 访问欧洲核苷酸档案。检索 DNA/RNA 序列、原始读取（FASTQ）、按访问号的基因组组装，用于基因组学和生物信息学管道。支持多种格式。
+description: Access European Nucleotide Archive via API/FTP. Retrieve DNA/RNA sequences, raw reads (FASTQ), genome assemblies by accession, for genomics and bioinformatics pipelines. Supports multiple formats.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# ENA 数据库
+# ENA Database
 
-## 概述
+## Overview
 
-欧洲核苷酸档案（ENA）是一个用于核苷酸序列数据和关联元数据的全面公共存储库。通过 REST API 和 FTP 访问和查询 DNA/RNA 序列、原始测序读取、基因组组装和功能注释，用于基因组学和生物信息学管道。
+The European Nucleotide Archive (ENA) is a comprehensive public repository for nucleotide sequence data and associated metadata. Access and query DNA/RNA sequences, raw reads, genome assemblies, and functional annotations through REST APIs and FTP for genomics and bioinformatics pipelines.
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况下使用：
+This skill should be used when:
 
-- 按访问号检索核苷酸序列或原始测序读取
-- 按元数据标准搜索样本、研究或组装
-- 下载 FASTQ 文件或基因组组装以进行分析
-- 查询生物的分类信息
-- 访问序列注释和功能数据
-- 将 ENA 数据集成到生物信息学管道中
-- 执行与相关数据库的交叉引用搜索
-- 通过 FTP 或 Aspera 批量下载数据集
+- Retrieving nucleotide sequences or raw sequencing reads by accession
+- Searching for samples, studies, or assemblies by metadata criteria
+- Downloading FASTQ files or genome assemblies for analysis
+- Querying taxonomic information for organisms
+- Accessing sequence annotations and functional data
+- Integrating ENA data into bioinformatics pipelines
+- Performing cross-reference searches to related databases
+- Bulk downloading datasets via FTP or Aspera
 
-## 核心能力
+## Core Capabilities
 
-### 1. 数据类型和结构
+### 1. Data Types and Structure
 
-ENA 将数据组织为分层对象类型：
+ENA organizes data into hierarchical object types:
 
-**研究/项目** - 对相关数据进行分组并控制发布日期。研究是引用存档数据的主要单位。
+**Studies/Projects** - Group related data and control release dates. Studies are the primary unit for citing archived data.
 
-**样本** - 代表制备测序文库的生物材料单位。在提交大多数数据类型之前，必须注册样本。
+**Samples** - Represent units of biomaterial from which sequencing libraries were produced. Samples must be registered before submitting most data types.
 
-**原始读取** - 包括：
-- **实验**：关于测序方法、文库制备和仪器细节的元数据
-- **运行**：对来自单次测序运行的数据文件的引用
+**Raw Reads** - Consist of:
+- **Experiments**: Metadata about sequencing methods, library preparation, and instrument details
+- **Runs**: References to data files containing raw sequencing reads from a single sequencing run
 
-**组装** - 各种完成水平的基因组、转录组、宏基因组或宏转录组组装。
+**Assemblies** - Genome, transcriptome, metagenome, or metatranscriptome assemblies at various completion levels.
 
-**序列** - 存储在 EMBL 核苷酸序列数据库中的组装和注释序列，包括编码/非编码区域和功能注释。
+**Sequences** - Assembled and annotated sequences stored in the EMBL Nucleotide Sequence Database, including coding/non-coding regions and functional annotations.
 
-**分析** - 序列数据的计算分析结果。
+**Analyses** - Results from computational analyses of sequence data.
 
-**分类记录** - 包括谱系和等级的分类信息。
+**Taxonomy Records** - Taxonomic information including lineage and rank.
 
-### 2. 编程访问
+### 2. Programmatic Access
 
-ENA 为数据访问提供多个 REST API。有关详细的端点文档，请参阅 `references/api_reference.md`。
+ENA provides multiple REST APIs for data access. Consult `references/api_reference.md` for detailed endpoint documentation.
 
-**关键 API：**
+**Key APIs:**
 
-**ENA 门户 API** - 跨所有 ENA 数据类型的高级搜索功能
-- 文档：https://www.ebi.ac.uk/ena/portal/api/doc
-- 用于复杂查询和元数据搜索
+**ENA Portal API** - Advanced search functionality across all ENA data types
+- Documentation: https://www.ebi.ac.uk/ena/portal/api/doc
+- Use for complex queries and metadata searches
 
-**ENA 浏览器 API** - 记录和元数据的直接检索
-- 文档：https://www.ebi.ac.uk/ena/browser/api/doc
-- 用于按访问号下载特定记录
-- 以 XML 格式返回数据
+**ENA Browser API** - Direct retrieval of records and metadata
+- Documentation: https://www.ebi.ac.uk/ena/browser/api/doc
+- Use for downloading specific records by accession
+- Returns data in XML format
 
-**ENA 分类 REST API** - 查询分类信息
-- 访问谱系、等级和相关分类数据
+**ENA Taxonomy REST API** - Query taxonomic information
+- Access lineage, rank, and related taxonomic data
 
-**ENA 交叉引用服务** - 访问来自外部数据库的相关记录
-- 端点：https://www.ebi.ac.uk/ena/xref/rest/
+**ENA Cross Reference Service** - Access related records from external databases
+- Endpoint: https://www.ebi.ac.uk/ena/xref/rest/
 
-**CRAM 引用注册表** - 检索参考序列
-- 端点：https://www.ebi.ac.uk/ena/cram/
-- 按 MD5 或 SHA1 校验和查询
+**CRAM Reference Registry** - Retrieve reference sequences
+- Endpoint: https://www.ebi.ac.uk/ena/cram/
+- Query by MD5 or SHA1 checksums
 
-**速率限制**：所有 API 的速率限制为每秒 50 个请求。超过此限制将返回 HTTP 429（请求过多）。
+**Rate Limiting**: All APIs have a rate limit of 50 requests per second. Exceeding this returns HTTP 429 (Too Many Requests).
 
-### 3. 搜索和检索数据
+### 3. Searching and Retrieving Data
 
-**基于浏览器的搜索：**
-- 跨所有字段的自由文本搜索
-- 序列相似性搜索（BLAST 集成）
-- 交叉引用搜索以查找相关记录
-- 使用 Rulespace 查询构建器的高级搜索
-- 按数据类型、日期范围、分类或元数据字段过滤
-- 将结果下载为表格化元数据摘要或 XML 记录
+**Browser-Based Search:**
+- Free text search across all fields
+- Sequence similarity search (BLAST integration)
+- Cross-reference search to find related records
+- Advanced search with Rulespace query builder
 
-**编程查询：**
-- 使用门户 API 进行大规模高级搜索
-- 按数据类型、日期范围、分类或元数据字段过滤
-- 将结果下载为表格化元数据摘要或 XML 记录
+**Programmatic Queries:**
+- Use Portal API for advanced searches at scale
+- Filter by data type, date range, taxonomy, or metadata fields
+- Download results as tabulated metadata summaries or XML records
 
-**示例 API 查询模式：**
+**Example API Query Pattern:**
 ```python
 import requests
 
-# 搜索特定研究中的样本
+# Search for samples from a specific study
 base_url = "https://www.ebi.ac.uk/ena/portal/api/search"
 params = {
     "result": "sample",
@@ -106,98 +104,99 @@ response = requests.get(base_url, params=params)
 samples = response.json()
 ```
 
-### 4. 数据检索格式
+### 4. Data Retrieval Formats
 
-**元数据格式：**
-- XML（原生 ENA 格式）
-- JSON（通过门户 API）
-- TSV/CSV（表格化摘要）
+**Metadata Formats:**
+- XML (native ENA format)
+- JSON (via Portal API)
+- TSV/CSV (tabulated summaries)
 
-**序列数据：**
-- FASTQ（原始读取）
-- BAM/CRAM（比对读取）
-- FASTA（组装序列）
-- EMBL 扁平文件格式（注释序列）
+**Sequence Data:**
+- FASTQ (raw reads)
+- BAM/CRAM (aligned reads)
+- FASTA (assembled sequences)
+- EMBL flat file format (annotated sequences)
 
-**下载方法：**
-- 直接 API 下载（小文件）
-- FTP 用于批量数据传输
-- Aspera 用于大型数据集的高速传输
-- enaBrowserTools 命令行实用程序用于批量下载
+**Download Methods:**
+- Direct API download (small files)
+- FTP for bulk data transfer
+- Aspera for high-speed transfer of large datasets
+- enaBrowserTools command-line utility for bulk downloads
 
-### 5. 常见用例
+### 5. Common Use Cases
 
-**按访问号检索原始测序读取：**
+**Retrieve raw sequencing reads by accession:**
 ```python
-# 使用浏览器 API 下载运行文件
+# Download run files using Browser API
 accession = "ERR123456"
 url = f"https://www.ebi.ac.uk/ena/browser/api/xml/{accession}"
 ```
 
-**搜索研究中的所有样本：**
+**Search for all samples in a study:**
 ```python
-# 使用门户 API 列出样本
+# Use Portal API to list samples
 study_id = "PRJNA123456"
 url = f"https://www.ebi.ac.uk/ena/portal/api/search?result=sample&query=study_accession={study_id}&format=tsv"
 ```
 
-**查找特定生物的组装：**
+**Find assemblies for a specific organism:**
 ```python
-# 按分类搜索组装
+# Search assemblies by taxonomy
 organism = "Escherichia coli"
 url = f"https://www.ebi.ac.uk/ena/portal/api/search?result=assembly&query=tax_tree({organism})&format=json"
 ```
 
-**获取分类谱系：**
+**Get taxonomic lineage:**
 ```python
-# 查询分类 API
+# Query taxonomy API
 taxon_id = "562"  # E. coli
 url = f"https://www.ebi.ac.uk/ena/taxonomy/rest/tax-id/{taxon_id}"
 ```
 
-### 6. 与分析管道集成
+### 6. Integration with Analysis Pipelines
 
-**批量下载模式：**
-1. 使用门户 API 搜索匹配标准的访问号
-2. 从搜索结果中提取文件 URL
-3. 通过 FTP 或使用 enaBrowserTools 下载文件
-4. 在管道中处理下载的数据
+**Bulk Download Pattern:**
+1. Search for accessions matching criteria using Portal API
+2. Extract file URLs from search results
+3. Download files via FTP or using enaBrowserTools
+4. Process downloaded data in pipeline
 
-**BLAST 集成：**
-与 EBI 的 NCBI BLAST 服务（REST/SOAP API）集成，以对 ENA 序列进行序列相似性搜索。
+**BLAST Integration:**
+Integrate with EBI's NCBI BLAST service (REST/SOAP API) for sequence similarity searches against ENA sequences.
 
-### 7. 最佳实践
+### 7. Best Practices
 
-**速率限制：**
-- 收到 HTTP 429 响应时实施指数退避
-- 尽可能批处理请求以保持在 50 次/秒的限制内
-- 对于大型数据集，使用批量下载工具而不是迭代 API 调用
+**Rate Limiting:**
+- Implement exponential backoff when receiving HTTP 429 responses
+- Batch requests when possible to stay within 50 req/sec limit
+- Use bulk download tools for large datasets instead of iterating API calls
 
-**数据引用：**
-- 发表时始终使用研究/项目访问号进行引用
-- 包含使用的特定样本、运行或组装的访问号
+**Data Citation:**
+- Always cite using Study/Project accessions when publishing
+- Include accession numbers for specific samples, runs, or assemblies used
 
-**API 响应处理：**
-- 在处理响应之前检查 HTTP 状态代码
-- 使用适当的 XML 库（而不是正则表达式）解析 XML 响应
-- 处理大型结果集的分页
+**API Response Handling:**
+- Check HTTP status codes before processing responses
+- Parse XML responses using proper XML libraries (not regex)
+- Handle pagination for large result sets
 
-**性能：**
-- 使用 FTP/Aspera 下载大文件（>100MB）
-- 如果只需要元数据，则优先使用 TSV/JSON 格式而不是 XML
-- 处理许多记录时本地缓存分类查找
+**Performance:**
+- Use FTP/Aspera for downloading large files (>100MB)
+- Prefer TSV/JSON formats over XML when only metadata is needed
+- Cache taxonomy lookups locally when processing many records
 
-## 资源
+## Resources
 
-此技能包含用于使用 ENA 的详细参考文档：
+This skill includes detailed reference documentation for working with ENA:
 
 ### references/
 
-**api_reference.md** - 全面的 API 端点文档，包括：
-- 门户 API 和浏览器 API 的详细参数
-- 响应格式规范
-- 高级查询语法和运算符
-- 用于过滤和搜索的字段名称
-- 常见 API 模式和示例
+**api_reference.md** - Comprehensive API endpoint documentation including:
+- Detailed parameters for Portal API and Browser API
+- Response format specifications
+- Advanced query syntax and operators
+- Field names for filtering and searching
+- Common API patterns and examples
 
-当构建复杂的 API 查询、调试 API 响应或需要特定参数详细信息时，请加载此参考。
+Load this reference when constructing complex API queries, debugging API responses, or needing specific parameter details.
+

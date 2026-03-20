@@ -15,7 +15,6 @@ date_added: "2026-03-07"
 Use this skill to source breathtaking imagery for websites, apps, and marketing materials. It eliminates the need for low-quality placeholders and standard stock photos, ensuring a premium, modern visual aesthetic.
 
 ## When to Use
-
 Trigger this skill when:
 
 - Creating hero sections, editorial layouts, or product galleries that demand stunning visual impact.

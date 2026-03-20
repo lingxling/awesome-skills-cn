@@ -1,6 +1,6 @@
 ---
 name: gget
-description: "对20+生物信息学数据库的快速CLI/Python查询。用于快速查找：基因信息、BLAST搜索、AlphaFold结构、富集分析。最适合交互式探索、简单查询。对于批量处理或高级BLAST使用biopython；对于多数据库Python工作流使用bioservices。"
+description: "Fast CLI/Python queries to 20+ bioinformatics databases. Use for quick lookups: gene info, BLAST searches, AlphaFold structures, enrichment analysis. Best for interactive exploration, simple queries. For batch processing or advanced BLAST use biopython; for multi-database Python workflows use bioservices."
 license: BSD-2-Clause license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,74 +8,74 @@ metadata:
 
 # gget
 
-## 概述
+## Overview
 
-gget是一个命令行生物信息学工具和Python包，提供对20+基因组数据库和分析方法的统一访问。通过一致的接口查询基因信息、序列分析、蛋白质结构、表达数据和疾病关联。所有gget模块都可用作命令行工具和Python函数。
+gget is a command-line bioinformatics tool and Python package providing unified access to 20+ genomic databases and analysis methods. Query gene information, sequence analysis, protein structures, expression data, and disease associations through a consistent interface. All gget modules work both as command-line tools and as Python functions.
 
-**重要提示**：gget查询的数据库持续更新，这有时会改变其结构。gget模块每两周自动测试一次，并在必要时更新以匹配新的数据库结构。
+**Important**: The databases queried by gget are continuously updated, which sometimes changes their structure. gget modules are tested automatically on a biweekly basis and updated to match new database structures when necessary.
 
-## 安装
+## Installation
 
-在干净的虚拟环境中安装gget以避免冲突：
+Install gget in a clean virtual environment to avoid conflicts:
 
 ```bash
-# 使用uv（推荐）
+# Using uv (recommended)
 uv uv pip install gget
 
-# 或使用pip
+# Or using pip
 uv pip install --upgrade gget
 
-# 在Python/Jupyter中
+# In Python/Jupyter
 import gget
 ```
 
-## 快速开始
+## Quick Start
 
-所有模块的基本使用模式：
+Basic usage pattern for all modules:
 
 ```bash
-# 命令行
-gget <module> [参数] [选项]
+# Command-line
+gget <module> [arguments] [options]
 
 # Python
-gget.module(参数, 选项)
+gget.module(arguments, options)
 ```
 
-大多数模块返回：
-- **命令行**：JSON（默认）或带`-csv`标志的CSV
-- **Python**：DataFrame或字典
+Most modules return:
+- **Command-line**: JSON (default) or CSV with `-csv` flag
+- **Python**: DataFrame or dictionary
 
-跨模块的通用标志：
-- `-o/--out`：将结果保存到文件
-- `-q/--quiet`：抑制进度信息
-- `-csv`：返回CSV格式（仅命令行）
+Common flags across modules:
+- `-o/--out`: Save results to file
+- `-q/--quiet`: Suppress progress information
+- `-csv`: Return CSV format (command-line only)
 
-## 模块类别
+## Module Categories
 
-### 1. 参考和基因信息
+### 1. Reference & Gene Information
 
-#### gget ref - 参考基因组下载
+#### gget ref - Reference Genome Downloads
 
-检索Ensembl参考基因组的下载链接和元数据。
+Retrieve download links and metadata for Ensembl reference genomes.
 
-**参数**：
-- `species`：属_种格式（例如'homo_sapiens'、'mus_musculus'）。快捷方式：'human'、'mouse'
-- `-w/--which`：指定返回类型（gtf、cdna、dna、cds、cdrna、pep）。默认：全部
-- `-r/--release`：Ensembl发布号（默认：最新）
-- `-l/--list_species`：列出可用的脊椎动物物种
-- `-liv/--list_iv_species`：列出可用的无脊椎动物物种
-- `-ftp`：仅返回FTP链接
-- `-d/--download`：下载文件（需要curl）
+**Parameters**:
+- `species`: Genus_species format (e.g., 'homo_sapiens', 'mus_musculus'). Shortcuts: 'human', 'mouse'
+- `-w/--which`: Specify return types (gtf, cdna, dna, cds, cdrna, pep). Default: all
+- `-r/--release`: Ensembl release number (default: latest)
+- `-l/--list_species`: List available vertebrate species
+- `-liv/--list_iv_species`: List available invertebrate species
+- `-ftp`: Return only FTP links
+- `-d/--download`: Download files (requires curl)
 
-**示例**：
+**Examples**:
 ```bash
-# 列出可用物种
+# List available species
 gget ref --list_species
 
-# 获取人类的所有参考文件
+# Get all reference files for human
 gget ref homo_sapiens
 
-# 仅下载小鼠的GTF注释
+# Download only GTF annotation for mouse
 gget ref -w gtf -d mouse
 ```
 
@@ -85,26 +85,26 @@ gget.ref("homo_sapiens")
 gget.ref("mus_musculus", which="gtf", download=True)
 ```
 
-#### gget search - 基因搜索
+#### gget search - Gene Search
 
-按名称或描述跨物种定位基因。
+Locate genes by name or description across species.
 
-**参数**：
-- `searchwords`：一个或多个搜索词（不区分大小写）
-- `-s/--species`：目标物种（例如'homo_sapiens'、'mouse'）
-- `-r/--release`：Ensembl发布号
-- `-t/--id_type`：返回'gene'（默认）或'transcript'
-- `-ao/--andor`：'or'（默认）查找任何searchword；'and'需要所有searchword
-- `-l/--limit`：返回的最大结果数
+**Parameters**:
+- `searchwords`: One or more search terms (case-insensitive)
+- `-s/--species`: Target species (e.g., 'homo_sapiens', 'mouse')
+- `-r/--release`: Ensembl release number
+- `-t/--id_type`: Return 'gene' (default) or 'transcript'
+- `-ao/--andor`: 'or' (default) finds ANY searchword; 'and' requires ALL
+- `-l/--limit`: Maximum results to return
 
-**返回**：ensembl_id、gene_name、ensembl_description、ext_ref_description、biotype、URL
+**Returns**: ensembl_id, gene_name, ensembl_description, ext_ref_description, biotype, URL
 
-**示例**：
+**Examples**:
 ```bash
-# 在人类中搜索GABA相关基因
+# Search for GABA-related genes in human
 gget search -s human gaba gamma-aminobutyric
 
-# 查找特定基因，要求所有词
+# Find specific gene, require all terms
 gget search -s mouse -ao and pax7 transcription
 ```
 
@@ -113,80 +113,80 @@ gget search -s mouse -ao and pax7 transcription
 gget.search(["gaba", "gamma-aminobutyric"], species="homo_sapiens")
 ```
 
-#### gget info - 基因/转录本信息
+#### gget info - Gene/Transcript Information
 
-从Ensembl、UniProt和NCBI检索全面的基因和转录本元数据。
+Retrieve comprehensive gene and transcript metadata from Ensembl, UniProt, and NCBI.
 
-**参数**：
-- `ens_ids`：一个或多个Ensembl ID（也支持WormBase、Flybase ID）。限制：~1000个ID
-- `-n/--ncbi`：禁用NCBI数据检索
-- `-u/--uniprot`：禁用UniProt数据检索
-- `-pdb`：包含PDB标识符（增加运行时间）
+**Parameters**:
+- `ens_ids`: One or more Ensembl IDs (also supports WormBase, Flybase IDs). Limit: ~1000 IDs
+- `-n/--ncbi`: Disable NCBI data retrieval
+- `-u/--uniprot`: Disable UniProt data retrieval
+- `-pdb`: Include PDB identifiers (increases runtime)
 
-**返回**：UniProt ID、NCBI基因ID、主要基因名称、同义词、蛋白质名称、描述、生物型、规范转录本
+**Returns**: UniProt ID, NCBI gene ID, primary gene name, synonyms, protein names, descriptions, biotype, canonical transcript
 
-**示例**：
+**Examples**:
 ```bash
-# 获取多个基因的信息
-gget info ENSG0000034713 ENSG00000104853 ENSG00000170296
+# Get info for multiple genes
+gget info ENSG00000034713 ENSG00000104853 ENSG00000170296
 
-# 包含PDB ID
-gget info ENSG0000034713 -pdb
+# Include PDB IDs
+gget info ENSG00000034713 -pdb
 ```
 
 ```python
 # Python
-gget.info(["ENSG0000034713", "ENSG00000104853"], pdb=True)
+gget.info(["ENSG00000034713", "ENSG00000104853"], pdb=True)
 ```
 
-#### gget seq - 序列检索
+#### gget seq - Sequence Retrieval
 
-获取基因和转录本的核苷酸或氨基酸序列。
+Fetch nucleotide or amino acid sequences for genes and transcripts.
 
-**参数**：
-- `ens_ids`：一个或多个Ensembl标识符
-- `-t/--translate`：获取氨基酸序列而不是核苷酸
-- `-iso/--isoforms`：返回所有转录本变体（仅基因ID）
+**Parameters**:
+- `ens_ids`: One or more Ensembl identifiers
+- `-t/--translate`: Fetch amino acid sequences instead of nucleotide
+- `-iso/--isoforms`: Return all transcript variants (gene IDs only)
 
-**返回**：FASTA格式序列
+**Returns**: FASTA format sequences
 
-**示例**：
+**Examples**:
 ```bash
-# 获取核苷酸序列
-gget seq ENSG0000034713 ENSG00000104853
+# Get nucleotide sequences
+gget seq ENSG00000034713 ENSG00000104853
 
-# 获取所有蛋白质异构体
-gget seq -t -iso ENSG0000034713
+# Get all protein isoforms
+gget seq -t -iso ENSG00000034713
 ```
 
 ```python
 # Python
-gget.seq(["ENSG0000034713"], translate=True, isoforms=True)
+gget.seq(["ENSG00000034713"], translate=True, isoforms=True)
 ```
 
-### 2. 序列分析和比对
+### 2. Sequence Analysis & Alignment
 
-#### gget blast - BLAST搜索
+#### gget blast - BLAST Searches
 
-针对标准数据库BLAST核苷酸或氨基酸序列。
+BLAST nucleotide or amino acid sequences against standard databases.
 
-**参数**：
-- `sequence`：序列字符串或FASTA/.txt文件路径
-- `-p/--program`：blastn、blastp、blastx、tblastn、tblastx（自动检测）
-- `-db/--database`：
-  - 核苷酸：nt、refseq_rna、pdbnt
-  - 蛋白质：nr、swissprot、pdbaa、refseq_protein
-- `-l/--limit`：最大命中数（默认：50）
-- `-e/--expect`：E值截止（默认：10.0）
-- `-lcf/--low_comp_filt`：启用低复杂度过滤
-- `-mbo/--megablast_off`：禁用MegaBLAST（仅blastn）
+**Parameters**:
+- `sequence`: Sequence string or path to FASTA/.txt file
+- `-p/--program`: blastn, blastp, blastx, tblastn, tblastx (auto-detected)
+- `-db/--database`:
+  - Nucleotide: nt, refseq_rna, pdbnt
+  - Protein: nr, swissprot, pdbaa, refseq_protein
+- `-l/--limit`: Max hits (default: 50)
+- `-e/--expect`: E-value cutoff (default: 10.0)
+- `-lcf/--low_comp_filt`: Enable low complexity filtering
+- `-mbo/--megablast_off`: Disable MegaBLAST (blastn only)
 
-**示例**：
+**Examples**:
 ```bash
-# BLAST蛋白质序列
+# BLAST protein sequence
 gget blast MKWMFKEDHSLEHRCVESAKIRAKYPDRVPVIVEKVSGSQIVDIDKRKYLVPSDITVAQFMWIIRKRIQLPSEKAIFLFVDKTVPQSR
 
-# 使用特定数据库从文件BLAST
+# BLAST from file with specific database
 gget blast sequence.fasta -db swissprot -l 10
 ```
 
@@ -195,23 +195,23 @@ gget blast sequence.fasta -db swissprot -l 10
 gget.blast("MKWMFK...", database="swissprot", limit=10)
 ```
 
-#### gget blat - BLAT搜索
+#### gget blat - BLAT Searches
 
-使用UCSC BLAT定位序列的基因组位置。
+Locate genomic positions of sequences using UCSC BLAT.
 
-**参数**：
-- `sequence`：序列字符串或FASTA/.txt文件路径
-- `-st/--seqtype`：'DNA'、'protein'、'translated%20RNA'、'translated%20DNA'（自动检测）
-- `-a/--assembly`：目标组装（默认：'human'/hg38；选项：'mouse'/mm39、'zebrafinch'/taeGut2等）
+**Parameters**:
+- `sequence`: Sequence string or path to FASTA/.txt file
+- `-st/--seqtype`: 'DNA', 'protein', 'translated%20RNA', 'translated%20DNA' (auto-detected)
+- `-a/--assembly`: Target assembly (default: 'human'/hg38; options: 'mouse'/mm39, 'zebrafinch'/taeGut2, etc.)
 
-**返回**：基因组、查询大小、比对位置、匹配、错配、比对百分比
+**Returns**: genome, query size, alignment positions, matches, mismatches, alignment percentage
 
-**示例**：
+**Examples**:
 ```bash
-# 在人类中查找基因组位置
+# Find genomic location in human
 gget blat ATCGATCGATCGATCG
 
-# 在不同组装中搜索
+# Search in different assembly
 gget blat -a mm39 ATCGATCGATCGATCG
 ```
 
@@ -220,22 +220,22 @@ gget blat -a mm39 ATCGATCGATCGATCG
 gget.blat("ATCGATCGATCGATCG", assembly="mouse")
 ```
 
-#### gget muscle - 多序列比对
+#### gget muscle - Multiple Sequence Alignment
 
-使用Muscle5比对多个核苷酸或氨基酸序列。
+Align multiple nucleotide or amino acid sequences using Muscle5.
 
-**参数**：
-- `fasta`：序列或FASTA/.txt文件路径
-- `-s5/--super5`：使用Super5算法进行更快的处理（大数据集）
+**Parameters**:
+- `fasta`: Sequences or path to FASTA/.txt file
+- `-s5/--super5`: Use Super5 algorithm for faster processing (large datasets)
 
-**返回**：ClustalW格式的比对序列或比对FASTA（.afa）
+**Returns**: Aligned sequences in ClustalW format or aligned FASTA (.afa)
 
-**示例**：
+**Examples**:
 ```bash
-# 从文件比对序列
+# Align sequences from file
 gget muscle sequences.fasta -o aligned.afa
 
-# 对大数据集使用Super5
+# Use Super5 for large dataset
 gget muscle large_dataset.fasta -s5
 ```
 
@@ -244,26 +244,26 @@ gget muscle large_dataset.fasta -s5
 gget.muscle("sequences.fasta", save=True)
 ```
 
-#### gget diamond - 本地序列比对
+#### gget diamond - Local Sequence Alignment
 
-使用DIAMOND执行快速的本地蛋白质或翻译DNA比对。
+Perform fast local protein or translated DNA alignment using DIAMOND.
 
-**参数**：
-- 查询：序列（字符串/列表）或FASTA文件路径
-- `--reference`：参考序列（字符串/列表）或FASTA文件路径（必需）
-- `--sensitivity`：fast、mid-sensitive、sensitive、more-sensitive、very-sensitive（默认）、ultra-sensitive
-- `--threads`：CPU线程数（默认：1）
-- `--diamond_db`：保存数据库以供重用
-- `--translated`：启用核苷酸到氨基酸比对
+**Parameters**:
+- Query: Sequences (string/list) or FASTA file path
+- `--reference`: Reference sequences (string/list) or FASTA file path (required)
+- `--sensitivity`: fast, mid-sensitive, sensitive, more-sensitive, very-sensitive (default), ultra-sensitive
+- `--threads`: CPU threads (default: 1)
+- `--diamond_db`: Save database for reuse
+- `--translated`: Enable nucleotide-to-amino acid alignment
 
-**返回**：同一性百分比、序列长度、匹配位置、缺口打开、E值、比特得分
+**Returns**: Identity percentage, sequence lengths, match positions, gap openings, E-values, bit scores
 
-**示例**：
+**Examples**:
 ```bash
-# 与参考比对
+# Align against reference
 gget diamond GGETISAWESQME -ref reference.fasta --threads 4
 
-# 保存数据库以供重用
+# Save database for reuse
 gget diamond query.fasta -ref ref.fasta --diamond_db my_db.dmnd
 ```
 
@@ -272,25 +272,25 @@ gget diamond query.fasta -ref ref.fasta --diamond_db my_db.dmnd
 gget.diamond("GGETISAWESQME", reference="reference.fasta", threads=4)
 ```
 
-### 3. 结构和蛋白质分析
+### 3. Structural & Protein Analysis
 
-#### gget pdb - 蛋白质结构
+#### gget pdb - Protein Structures
 
-查询RCSB蛋白质数据库以获取结构和元数据。
+Query RCSB Protein Data Bank for structure and metadata.
 
-**参数**：
-- `pdb_id`：PDB标识符（例如'7S7U'）
-- `-r/--resource`：数据类型（pdb、entry、pubmed、assembly、entity_types）
-- `-i/--identifier`：组装、实体或链ID
+**Parameters**:
+- `pdb_id`: PDB identifier (e.g., '7S7U')
+- `-r/--resource`: Data type (pdb, entry, pubmed, assembly, entity types)
+- `-i/--identifier`: Assembly, entity, or chain ID
 
-**返回**：PDB格式（结构）或JSON（元数据）
+**Returns**: PDB format (structures) or JSON (metadata)
 
-**示例**：
+**Examples**:
 ```bash
-# 下载PDB结构
+# Download PDB structure
 gget pdb 7S7U -o 7S7U.pdb
 
-# 获取元数据
+# Get metadata
 gget pdb 7S7U -r entry
 ```
 
@@ -299,72 +299,72 @@ gget pdb 7S7U -r entry
 gget.pdb("7S7U", save=True)
 ```
 
-#### gget alphafold - 蛋白质结构预测
+#### gget alphafold - Protein Structure Prediction
 
-使用简化的AlphaFold2预测3D蛋白质结构。
+Predict 3D protein structures using simplified AlphaFold2.
 
-**所需设置**：
+**Setup Required**:
 ```bash
-# 首先安装OpenMM
+# Install OpenMM first
 uv pip install openmm
 
-# 然后设置AlphaFold
+# Then setup AlphaFold
 gget setup alphafold
 ```
 
-**参数**：
-- `sequence`：氨基酸序列（字符串）、多个序列（列表）或FASTA文件。多个序列触发多聚体建模
-- `-mr/--multimer_recycles`：回收迭代次数（默认：3；准确度建议20）
-- `-mfm/--multimer_for_monomer`：对单个蛋白质应用多聚体模型
-- `-r/--relax`：对排名靠前的模型进行AMBER松弛
-- `plot`：仅Python；生成交互式3D可视化（默认：True）
-- `show_sidechains`：仅Python；包含侧链（默认：True）
+**Parameters**:
+- `sequence`: Amino acid sequence (string), multiple sequences (list), or FASTA file. Multiple sequences trigger multimer modeling
+- `-mr/--multimer_recycles`: Recycling iterations (default: 3; recommend 20 for accuracy)
+- `-mfm/--multimer_for_monomer`: Apply multimer model to single proteins
+- `-r/--relax`: AMBER relaxation for top-ranked model
+- `plot`: Python-only; generate interactive 3D visualization (default: True)
+- `show_sidechains`: Python-only; include side chains (default: True)
 
-**返回**：PDB结构文件、JSON比对错误数据、可选的3D可视化
+**Returns**: PDB structure file, JSON alignment error data, optional 3D visualization
 
-**示例**：
+**Examples**:
 ```bash
-# 预测单个蛋白质结构
+# Predict single protein structure
 gget alphafold MKWMFKEDHSLEHRCVESAKIRAKYPDRVPVIVEKVSGSQIVDIDKRKYLVPSDITVAQFMWIIRKRIQLPSEKAIFLFVDKTVPQSR
 
-# 使用更高准确度预测多聚体
+# Predict multimer with higher accuracy
 gget alphafold sequence1.fasta -mr 20 -r
 ```
 
 ```python
-# 带可视化Python
+# Python with visualization
 gget.alphafold("MKWMFK...", plot=True, show_sidechains=True)
 
-# 多聚体预测
+# Multimer prediction
 gget.alphafold(["sequence1", "sequence2"], multimer_recycles=20)
 ```
 
-#### gget elm - 真核线性基序
+#### gget elm - Eukaryotic Linear Motifs
 
-预测蛋白质序列中的真核线性基序。
+Predict Eukaryotic Linear Motifs in protein sequences.
 
-**所需设置**：
+**Setup Required**:
 ```bash
 gget setup elm
 ```
 
-**参数**：
-- `sequence`：氨基酸序列或UniProt访问号
-- `-u/--uniprot`：指示序列是UniProt访问号
-- `-e/--expand`：包含蛋白质名称、生物体、参考文献
-- `-s/--sensitivity`：DIAMOND比对灵敏度（默认："very-sensitive"）
-- `-t/--threads`：线程数（默认：1）
+**Parameters**:
+- `sequence`: Amino acid sequence or UniProt Acc
+- `-u/--uniprot`: Indicates sequence is UniProt Acc
+- `-e/--expand`: Include protein names, organisms, references
+- `-s/--sensitivity`: DIAMOND alignment sensitivity (default: "very-sensitive")
+- `-t/--threads`: Number of threads (default: 1)
 
-**返回**：两个输出：
-1. **ortholog_df**：来自同源蛋白质的线性基序
-2. **regex_df**：直接在输入序列中匹配的基序
+**Returns**: Two outputs:
+1. **ortholog_df**: Linear motifs from orthologous proteins
+2. **regex_df**: Motifs directly matched in input sequence
 
-**示例**：
+**Examples**:
 ```bash
-# 从序列预测基序
+# Predict motifs from sequence
 gget elm LIAQSIGQASFV -o results
 
-# 使用UniProt访问号和扩展信息
+# Use UniProt accession with expanded info
 gget elm --uniprot Q02410 -e
 ```
 
@@ -373,28 +373,28 @@ gget elm --uniprot Q02410 -e
 ortholog_df, regex_df = gget.elm("LIAQSIGQASFV")
 ```
 
-### 4. 表达和疾病数据
+### 4. Expression & Disease Data
 
-#### gget archs4 - 基因相关性和组织表达
+#### gget archs4 - Gene Correlation & Tissue Expression
 
-查询ARCHS4数据库以获取相关基因或组织表达数据。
+Query ARCHS4 database for correlated genes or tissue expression data.
 
-**参数**：
-- `gene`：基因符号或Ensembl ID（使用`--ensembl`标志）
-- `-w/--which`：'correlation'（默认，返回100个最相关基因）或'tissue'（表达图谱）
-- `-s/--species`：'human'（默认）或'mouse'（仅组织数据）
-- `-e/--ensembl`：输入是Ensembl ID
+**Parameters**:
+- `gene`: Gene symbol or Ensembl ID (with `--ensembl` flag)
+- `-w/--which`: 'correlation' (default, returns 100 most correlated genes) or 'tissue' (expression atlas)
+- `-s/--species`: 'human' (default) or 'mouse' (tissue data only)
+- `-e/--ensembl`: Input is Ensembl ID
 
-**返回**：
-- **相关性模式**：基因符号、Pearson相关系数
-- **组织模式**：组织标识符、最小/Q1/中位数/Q3/最大表达值
+**Returns**:
+- **Correlation mode**: Gene symbols, Pearson correlation coefficients
+- **Tissue mode**: Tissue identifiers, min/Q1/median/Q3/max expression values
 
-**示例**：
+**Examples**:
 ```bash
-# 获取相关基因
+# Get correlated genes
 gget archs4 ACE2
 
-# 获取组织表达
+# Get tissue expression
 gget archs4 -w tissue ACE2
 ```
 
@@ -403,33 +403,33 @@ gget archs4 -w tissue ACE2
 gget.archs4("ACE2", which="tissue")
 ```
 
-#### gget cellxgene - 单细胞RNA-seq数据
+#### gget cellxgene - Single-Cell RNA-seq Data
 
-查询CZ CELLxGENE发现普查以获取单细胞数据。
+Query CZ CELLxGENE Discover Census for single-cell data.
 
-**所需设置**：
+**Setup Required**:
 ```bash
 gget setup cellxgene
 ```
 
-**参数**：
-- `--gene`（-g）：基因名称或Ensembl ID（区分大小写！'PAX7'用于人类，'Pax7'用于小鼠）
-- `--tissue`：组织类型
-- `--cell_type`：特定细胞类型
-- `--species`（-s）：'homo_sapiens'（默认）或'mus_musculus'
-- `--census_version`（-cv）：版本（"stable"、"latest"或日期）
-- `--ensembl`（-e）：使用Ensembl ID
-- `--meta_only`（-mo）：仅返回元数据
-- 其他过滤器：disease、development_stage、sex、assay、dataset_id、donor_id、ethnicity、suspension_type
+**Parameters**:
+- `--gene` (-g): Gene names or Ensembl IDs (case-sensitive! 'PAX7' for human, 'Pax7' for mouse)
+- `--tissue`: Tissue type(s)
+- `--cell_type`: Specific cell type(s)
+- `--species` (-s): 'homo_sapiens' (default) or 'mus_musculus'
+- `--census_version` (-cv): Version ("stable", "latest", or dated)
+- `--ensembl` (-e): Use Ensembl IDs
+- `--meta_only` (-mo): Return metadata only
+- Additional filters: disease, development_stage, sex, assay, dataset_id, donor_id, ethnicity, suspension_type
 
-**返回**：包含计数矩阵和元数据的AnnData对象（或仅元数据dataframes）
+**Returns**: AnnData object with count matrices and metadata (or metadata-only dataframes)
 
-**示例**：
+**Examples**:
 ```bash
-# 获取特定基因和细胞类型的单细胞数据
+# Get single-cell data for specific genes and cell types
 gget cellxgene --gene ACE2 ABCA1 --tissue lung --cell_type "mucus secreting cell" -o lung_data.h5ad
 
-# 仅元数据
+# Metadata only
 gget cellxgene --gene PAX7 --tissue muscle --meta_only -o metadata.csv
 ```
 
@@ -438,61 +438,61 @@ gget cellxgene --gene PAX7 --tissue muscle --meta_only -o metadata.csv
 adata = gget.cellxgene(gene=["ACE2", "ABCA1"], tissue="lung", cell_type="mucus secreting cell")
 ```
 
-#### gget enrichr - 富集分析
+#### gget enrichr - Enrichment Analysis
 
-使用Enrichr对基因列表执行本体富集分析。
+Perform ontology enrichment analysis on gene lists using Enrichr.
 
-**参数**：
-- `genes`：基因符号或Ensembl ID
-- `-db/--database`：参考数据库（支持快捷方式：'pathway'、'transcription'、'ontology'、'diseases_drugs'、'celltypes'）
-- `-s/--species`：human（默认）、mouse、fly、yeast、worm、fish
-- `-bkg_l/--background_list`：用于比较的背景基因
-- `-ko/--kegg_out`：保存带有高亮基因的KEGG通路图像
-- `plot`：仅Python；生成图形结果
+**Parameters**:
+- `genes`: Gene symbols or Ensembl IDs
+- `-db/--database`: Reference database (supports shortcuts: 'pathway', 'transcription', 'ontology', 'diseases_drugs', 'celltypes')
+- `-s/--species`: human (default), mouse, fly, yeast, worm, fish
+- `-bkg_l/--background_list`: Background genes for comparison
+- `-ko/--kegg_out`: Save KEGG pathway images with highlighted genes
+- `plot`: Python-only; generate graphical results
 
-**数据库快捷方式**：
+**Database Shortcuts**:
 - 'pathway' → KEGG_2021_Human
 - 'transcription' → ChEA_2016
 - 'ontology' → GO_Biological_Process_2021
 - 'diseases_drugs' → GWAS_Catalog_2019
 - 'celltypes' → PanglaoDB_Augmented_2021
 
-**示例**：
+**Examples**:
 ```bash
-# 本体富集分析
+# Enrichment analysis for ontology
 gget enrichr -db ontology ACE2 AGT AGTR1
 
-# 保存KEGG通路
+# Save KEGG pathways
 gget enrichr -db pathway ACE2 AGT AGTR1 -ko ./kegg_images/
 ```
 
 ```python
-# 带绘图Python
+# Python with plot
 gget.enrichr(["ACE2", "AGT", "AGTR1"], database="ontology", plot=True)
 ```
 
-#### gget bgee - 同源和表达
+#### gget bgee - Orthology & Expression
 
-从Bgee数据库检索同源和基因表达数据。
+Retrieve orthology and gene expression data from Bgee database.
 
-**参数**：
-- `ens_id`：Ensembl基因ID或NCBI基因ID（用于非Ensembl物种）。使用`type=expression`时支持多个ID
-- `-t/--type`：'orthologs'（默认）或'expression'
+**Parameters**:
+- `ens_id`: Ensembl gene ID or NCBI gene ID (for non-Ensembl species). Multiple IDs supported when `type=expression`
+- `-t/--type`: 'orthologs' (default) or 'expression'
 
-**返回**：
-- **同源模式**：跨物种的匹配基因，包含ID、名称、分类信息
-- **表达模式**：解剖实体、置信度分数、表达状态
+**Returns**:
+- **Orthologs mode**: Matching genes across species with IDs, names, taxonomic info
+- **Expression mode**: Anatomical entities, confidence scores, expression status
 
-**示例**：
+**Examples**:
 ```bash
-# 获取同源
+# Get orthologs
 gget bgee ENSG00000169194
 
-# 获取表达数据
+# Get expression data
 gget bgee ENSG00000169194 -t expression
 
-# 多个基因
-gget bgee ENSBTAG0000047356 ENSBTAG0000018317 -t expression
+# Multiple genes
+gget bgee ENSBTAG00000047356 ENSBTAG00000018317 -t expression
 ```
 
 ```python
@@ -500,29 +500,29 @@ gget bgee ENSBTAG0000047356 ENSBTAG0000018317 -t expression
 gget.bgee("ENSG00000169194", type="orthologs")
 ```
 
-#### gget opentargets - 疾病和药物关联
+#### gget opentargets - Disease & Drug Associations
 
-从OpenTargets检索疾病和药物关联。
+Retrieve disease and drug associations from OpenTargets.
 
-**参数**：
-- Ensembl基因ID（必需）
-- `-r/--resource`：diseases（默认）、drugs、tractability、pharmacogenetics、expression、depmap、interactions
-- `-l/--limit`：限制结果计数
-- 过滤器参数（因资源而异）：
-  - drugs：`--filter_disease`
-  - pharmacogenetics：`--filter_drug`
-  - expression/depmap：`--filter_tissue`、`--filter_anat_sys`、`--filter_organ`
-  - interactions：`--filter_protein_a`、`--filter_protein_b`、`--filter_gene_b`
+**Parameters**:
+- Ensembl gene ID (required)
+- `-r/--resource`: diseases (default), drugs, tractability, pharmacogenetics, expression, depmap, interactions
+- `-l/--limit`: Cap results count
+- Filter arguments (vary by resource):
+  - drugs: `--filter_disease`
+  - pharmacogenetics: `--filter_drug`
+  - expression/depmap: `--filter_tissue`, `--filter_anat_sys`, `--filter_organ`
+  - interactions: `--filter_protein_a`, `--filter_protein_b`, `--filter_gene_b`
 
-**示例**：
+**Examples**:
 ```bash
-# 获取相关疾病
+# Get associated diseases
 gget opentargets ENSG00000169194 -r diseases -l 5
 
-# 获取相关药物
+# Get associated drugs
 gget opentargets ENSG00000169194 -r drugs -l 10
 
-# 获取组织表达
+# Get tissue expression
 gget opentargets ENSG00000169194 -r expression --filter_tissue brain
 ```
 
@@ -531,37 +531,37 @@ gget opentargets ENSG00000169194 -r expression --filter_tissue brain
 gget.opentargets("ENSG00000169194", resource="diseases", limit=5)
 ```
 
-#### gget cbio - cBioPortal癌症基因组学
+#### gget cbio - cBioPortal Cancer Genomics
 
-使用cBioPortal数据绘制癌症基因组学热图。
+Plot cancer genomics heatmaps using cBioPortal data.
 
-**两个子命令**：
+**Two subcommands**:
 
-**search** - 查找研究ID：
+**search** - Find study IDs:
 ```bash
 gget cbio search breast lung
 ```
 
-**plot** - 生成热图：
+**plot** - Generate heatmaps:
 
-**参数**：
-- `-s/--study_ids`：空格分隔的cBioPortal研究ID（必需）
-- `-g/--genes`：空格分隔的基因名称或Ensembl ID（必需）
-- `-st/--stratification`：组织数据的列（tissue、cancer_type、cancer_type_detailed、study_id、sample）
-- `-vt/--variation_type`：数据类型（mutation_occurrences、cna_nonbinary、sv_occurrences、cna_occurrences、Consequence）
-- `-f/--filter`：按列值过滤（例如'study_id:msk_impact_2017'）
-- `-dd/--data_dir`：缓存目录（默认：./gget_cbio_cache）
-- `-fd/--figure_dir`：输出目录（默认：./gget_cbio_figures）
-- `-dpi`：分辨率（默认：100）
-- `-sh/--show`：在窗口中显示绘图
-- `-nc/--no_confirm`：跳过下载确认
+**Parameters**:
+- `-s/--study_ids`: Space-separated cBioPortal study IDs (required)
+- `-g/--genes`: Space-separated gene names or Ensembl IDs (required)
+- `-st/--stratification`: Column to organize data (tissue, cancer_type, cancer_type_detailed, study_id, sample)
+- `-vt/--variation_type`: Data type (mutation_occurrences, cna_nonbinary, sv_occurrences, cna_occurrences, Consequence)
+- `-f/--filter`: Filter by column value (e.g., 'study_id:msk_impact_2017')
+- `-dd/--data_dir`: Cache directory (default: ./gget_cbio_cache)
+- `-fd/--figure_dir`: Output directory (default: ./gget_cbio_figures)
+- `-dpi`: Resolution (default: 100)
+- `-sh/--show`: Display plot in window
+- `-nc/--no_confirm`: Skip download confirmations
 
-**示例**：
+**Examples**:
 ```bash
-# 搜索研究
+# Search for studies
 gget cbio search esophag ovary
 
-# 创建热图
+# Create heatmap
 gget cbio plot -s msk_impact_2017 -g AKT1 ALK BRAF -st tissue -vt mutation_occurrences
 ```
 
@@ -571,31 +571,31 @@ gget.cbio_search(["esophag", "ovary"])
 gget.cbio_plot(["msk_impact_2017"], ["AKT1", "ALK"], stratification="tissue")
 ```
 
-#### gget cosmic - COSMIC数据库
+#### gget cosmic - COSMIC Database
 
-搜索COSMIC（癌症体细胞突变目录）数据库。
+Search COSMIC (Catalogue Of Somatic Mutations In Cancer) database.
 
-**重要提示**：商业使用需要许可费。需要COSMIC账户凭据。
+**Important**: License fees apply for commercial use. Requires COSMIC account credentials.
 
-**参数**：
-- `searchterm`：基因名称、Ensembl ID、突变表示法或样本ID
-- `-ctp/--cosmic_tsv_path`：下载的COSMIC TSV文件路径（查询必需）
-- `-l/--limit`：最大结果数（默认：100）
+**Parameters**:
+- `searchterm`: Gene name, Ensembl ID, mutation notation, or sample ID
+- `-ctp/--cosmic_tsv_path`: Path to downloaded COSMIC TSV file (required for querying)
+- `-l/--limit`: Maximum results (default: 100)
 
-**数据库下载标志**：
-- `-d/--download_cosmic`：激活下载模式
-- `-gm/--gget_mutate`：为gget mutate创建版本
-- `-cp/--cosmic_project`：数据库类型（cancer、census、cell_line、resistance、genome_screen、targeted_screen）
-- `-cv/--cosmic_version`：COSMIC版本
-- `-gv/--grch_version`：人类参考基因组（37或38）
-- `--email`、`--password`：COSMIC凭据
+**Database download flags**:
+- `-d/--download_cosmic`: Activate download mode
+- `-gm/--gget_mutate`: Create version for gget mutate
+- `-cp/--cosmic_project`: Database type (cancer, census, cell_line, resistance, genome_screen, targeted_screen)
+- `-cv/--cosmic_version`: COSMIC version
+- `-gv/--grch_version`: Human reference genome (37 or 38)
+- `--email`, `--password`: COSMIC credentials
 
-**示例**：
+**Examples**:
 ```bash
-# 首先下载数据库
+# First download database
 gget cosmic -d --email user@example.com --password xxx -cp cancer
 
-# 然后查询
+# Then query
 gget cosmic EGFR -ctp cosmic_data.tsv -l 10
 ```
 
@@ -604,28 +604,28 @@ gget cosmic EGFR -ctp cosmic_data.tsv -l 10
 gget.cosmic("EGFR", cosmic_tsv_path="cosmic_data.tsv", limit=10)
 ```
 
-### 5. 其他工具
+### 5. Additional Tools
 
-#### gget mutate - 生成突变序列
+#### gget mutate - Generate Mutated Sequences
 
-从突变注释生成突变的核苷酸序列。
+Generate mutated nucleotide sequences from mutation annotations.
 
-**参数**：
-- `sequences`：FASTA文件路径或直接序列输入（字符串/列表）
-- `-m/--mutations`：带有突变数据的CSV/TSV文件或DataFrame（必需）
-- `-mc/--mut_column`：突变列名（默认：'mutation'）
-- `-sic/--seq_id_column`：序列ID列（默认：'seq_ID'）
-- `-mic/--mut_id_column`：突变ID列
-- `-k/--k`：侧翼序列长度（默认：30个核苷酸）
+**Parameters**:
+- `sequences`: FASTA file path or direct sequence input (string/list)
+- `-m/--mutations`: CSV/TSV file or DataFrame with mutation data (required)
+- `-mc/--mut_column`: Mutation column name (default: 'mutation')
+- `-sic/--seq_id_column`: Sequence ID column (default: 'seq_ID')
+- `-mic/--mut_id_column`: Mutation ID column
+- `-k/--k`: Length of flanking sequences (default: 30 nucleotides)
 
-**返回**：FASTA格式的突变序列
+**Returns**: Mutated sequences in FASTA format
 
-**示例**：
+**Examples**:
 ```bash
-# 单个突变
+# Single mutation
 gget mutate ATCGCTAAGCT -m "c.4G>T"
 
-# 使用文件中的多个序列和突变
+# Multiple sequences with mutations from file
 gget mutate sequences.fasta -m mutations.csv -o mutated.fasta
 ```
 
@@ -636,53 +636,53 @@ mutations_df = pd.DataFrame({"seq_ID": ["seq1"], "mutation": ["c.4G>T"]})
 gget.mutate(["ATCGCTAAGCT"], mutations=mutations_df)
 ```
 
-#### gget gpt - OpenAI文本生成
+#### gget gpt - OpenAI Text Generation
 
-使用OpenAI的API生成自然语言文本。
+Generate natural language text using OpenAI's API.
 
-**所需设置**：
+**Setup Required**:
 ```bash
 gget setup gpt
 ```
 
-**重要提示**：免费层在账户创建后限制为3个月。设置每月计费限制。
+**Important**: Free tier limited to 3 months after account creation. Set monthly billing limits.
 
-**参数**：
-- `prompt`：生成的文本输入（必需）
-- `api_key`：OpenAI身份验证（必需）
-- 模型配置：temperature、top_p、max_tokens、frequency_penalty、presence_penalty
-- 默认模型：gpt-3.5-turbo（可配置）
+**Parameters**:
+- `prompt`: Text input for generation (required)
+- `api_key`: OpenAI authentication (required)
+- Model configuration: temperature, top_p, max_tokens, frequency_penalty, presence_penalty
+- Default model: gpt-3.5-turbo (configurable)
 
-**示例**：
+**Examples**:
 ```bash
-gget gpt "解释CRISPR" --api_key your_key_here
+gget gpt "Explain CRISPR" --api_key your_key_here
 ```
 
 ```python
 # Python
-gget.gpt("解释CRISPR", api_key="your_key_here")
+gget.gpt("Explain CRISPR", api_key="your_key_here")
 ```
 
-#### gget setup - 安装依赖项
+#### gget setup - Install Dependencies
 
-为特定模块安装/下载第三方依赖项。
+Install/download third-party dependencies for specific modules.
 
-**参数**：
-- `module`：需要依赖项安装的模块名
-- `-o/--out`：输出文件夹路径（仅elm模块）
+**Parameters**:
+- `module`: Module name requiring dependency installation
+- `-o/--out`: Output folder path (elm module only)
 
-**需要设置的模块**：
-- `alphafold` - 下载~4GB模型参数
-- `cellxgene` - 安装cellxgene-census（可能不支持最新Python）
-- `elm` - 下载本地ELM数据库
-- `gpt` - 配置OpenAI集成
+**Modules requiring setup**:
+- `alphafold` - Downloads ~4GB of model parameters
+- `cellxgene` - Installs cellxgene-census (may not support latest Python)
+- `elm` - Downloads local ELM database
+- `gpt` - Configures OpenAI integration
 
-**示例**：
+**Examples**:
 ```bash
-# 设置AlphaFold
+# Setup AlphaFold
 gget setup alphafold
 
-# 使用自定义目录设置ELM
+# Setup ELM with custom directory
 gget setup elm -o /path/to/elm_data
 ```
 
@@ -691,178 +691,179 @@ gget setup elm -o /path/to/elm_data
 gget.setup("alphafold")
 ```
 
-## 常见工作流
+## Common Workflows
 
-### 工作流1：基因发现到序列分析
+### Workflow 1: Gene Discovery to Sequence Analysis
 
-查找和分析感兴趣的基因：
+Find and analyze genes of interest:
 
 ```python
-# 1. 搜索基因
+# 1. Search for genes
 results = gget.search(["GABA", "receptor"], species="homo_sapiens")
 
-# 2. 获取详细信息
+# 2. Get detailed information
 gene_ids = results["ensembl_id"].tolist()
 info = gget.info(gene_ids[:5])
 
-# 3. 检索序列
+# 3. Retrieve sequences
 sequences = gget.seq(gene_ids[:5], translate=True)
 ```
 
-### 工作流2：序列比对和结构
+### Workflow 2: Sequence Alignment and Structure
 
-比对序列并预测结构：
+Align sequences and predict structures:
 
 ```python
-# 1. 比对多个序列
+# 1. Align multiple sequences
 alignment = gget.muscle("sequences.fasta")
 
-# 2. 查找相似序列
+# 2. Find similar sequences
 blast_results = gget.blast(my_sequence, database="swissprot", limit=10)
 
-# 3. 预测结构
+# 3. Predict structure
 structure = gget.alphafold(my_sequence, plot=True)
 
-# 4. 查找线性基序
+# 4. Find linear motifs
 ortholog_df, regex_df = gget.elm(my_sequence)
 ```
 
-### 工作流3：基因表达和富集
+### Workflow 3: Gene Expression and Enrichment
 
-分析表达模式和功能富集：
+Analyze expression patterns and functional enrichment:
 
 ```python
-# 1. 获取组织表达
+# 1. Get tissue expression
 tissue_expr = gget.archs4("ACE2", which="tissue")
 
-# 2. 查找相关基因
+# 2. Find correlated genes
 correlated = gget.archs4("ACE2", which="correlation")
 
-# 3. 获取单细胞数据
+# 3. Get single-cell data
 adata = gget.cellxgene(gene=["ACE2"], tissue="lung", cell_type="epithelial cell")
 
-# 4. 执行富集分析
+# 4. Perform enrichment analysis
 gene_list = correlated["gene_symbol"].tolist()[:50]
 enrichment = gget.enrichr(gene_list, database="ontology", plot=True)
 ```
 
-### 工作流4：疾病和药物分析
+### Workflow 4: Disease and Drug Analysis
 
-研究疾病关联和治疗靶点：
+Investigate disease associations and therapeutic targets:
 
 ```python
-# 1. 搜索基因
+# 1. Search for genes
 genes = gget.search(["breast cancer"], species="homo_sapiens")
 
-# 2. 获取疾病关联
+# 2. Get disease associations
 diseases = gget.opentargets("ENSG00000169194", resource="diseases")
 
-# 3. 获取药物关联
+# 3. Get drug associations
 drugs = gget.opentargets("ENSG00000169194", resource="drugs")
 
-# 4. 查询癌症基因组学数据
+# 4. Query cancer genomics data
 study_ids = gget.cbio_search(["breast"])
 gget.cbio_plot(study_ids[:2], ["BRCA1", "BRCA2"], stratification="cancer_type")
 
-# 5. 搜索COSMIC突变
+# 5. Search COSMIC for mutations
 cosmic_results = gget.cosmic("BRCA1", cosmic_tsv_path="cosmic.tsv")
 ```
 
-### 工作流5：比较基因组学
+### Workflow 5: Comparative Genomics
 
-跨物种比较蛋白质：
+Compare proteins across species:
 
 ```python
-# 1. 获取同源
+# 1. Get orthologs
 orthologs = gget.bgee("ENSG00000169194", type="orthologs")
 
-# 2. 获取比较序列
+# 2. Get sequences for comparison
 human_seq = gget.seq("ENSG00000169194", translate=True)
 mouse_seq = gget.seq("ENSMUSG00000026091", translate=True)
 
-# 3. 比对序列
+# 3. Align sequences
 alignment = gget.muscle([human_seq, mouse_seq])
 
-# 4. 比较结构
+# 4. Compare structures
 human_structure = gget.pdb("7S7U")
 mouse_structure = gget.alphafold(mouse_seq)
 ```
 
-### 工作流6：构建参考索引
+### Workflow 6: Building Reference Indices
 
-为下游分析准备参考数据（例如kallisto|bustools）：
+Prepare reference data for downstream analysis (e.g., kallisto|bustools):
 
 ```bash
-# 1. 列出可用物种
+# 1. List available species
 gget ref --list_species
 
-# 2. 下载参考文件
+# 2. Download reference files
 gget ref -w gtf -w cdna -d homo_sapiens
 
-# 3. 构建kallisto索引
+# 3. Build kallisto index
 kallisto index -i transcriptome.idx transcriptome.fasta
 
-# 4. 下载基因组以进行比对
+# 4. Download genome for alignment
 gget ref -w dna -d homo_sapiens
 ```
 
-## 最佳实践
+## Best Practices
 
-### 数据检索
-- 使用`--limit`控制大型查询的结果大小
-- 使用`-o/--out`保存结果以实现可重现性
-- 检查数据库版本/发布以实现分析一致性
-- 在生产脚本中使用`--quiet`以减少输出
+### Data Retrieval
+- Use `--limit` to control result sizes for large queries
+- Save results with `-o/--out` for reproducibility
+- Check database versions/releases for consistency across analyses
+- Use `--quiet` in production scripts to reduce output
 
-### 序列分析
-- 对于BLAST/BLAT，从默认参数开始，然后调整灵敏度
-- 使用`--threads`的`gget diamond`进行更快的本地比对
-- 使用`--diamond_db`保存DIAMOND数据库以供重复查询
-- 对于多序列比对，对大数据集使用`-s5/--super5`
+### Sequence Analysis
+- For BLAST/BLAT, start with default parameters, then adjust sensitivity
+- Use `gget diamond` with `--threads` for faster local alignment
+- Save DIAMOND databases with `--diamond_db` for repeated queries
+- For multiple sequence alignment, use `-s5/--super5` for large datasets
 
-### 表达和疾病数据
-- cellxgene中的基因符号区分大小写（例如'PAX7'与'Pax7'）
-- 在首次使用前运行`gget setup`以设置alphafold、cellxgene、elm、gpt
-- 对于富集分析，使用数据库快捷方式以方便
-- 使用`-dd`缓存cBioPortal数据以避免重复下载
+### Expression and Disease Data
+- Gene symbols are case-sensitive in cellxgene (e.g., 'PAX7' vs 'Pax7')
+- Run `gget setup` before first use of alphafold, cellxgene, elm, gpt
+- For enrichment analysis, use database shortcuts for convenience
+- Cache cBioPortal data with `-dd` to avoid repeated downloads
 
-### 结构预测
-- AlphaFold多聚体预测：使用`-mr 20`以获得更高准确度
-- 使用`-r`标志对排名靠前的模型进行AMBER松弛
-- 使用`plot=True`在Python中可视化结果
-- 在运行AlphaFold预测之前先检查PDB数据库
+### Structure Prediction
+- AlphaFold multimer predictions: use `-mr 20` for higher accuracy
+- Use `-r` flag for AMBER relaxation of final structures
+- Visualize results in Python with `plot=True`
+- Check PDB database first before running AlphaFold predictions
 
-### 错误处理
-- 数据库结构会变化；定期更新gget：`uv pip install --upgrade gget`
-- 使用gget info一次处理~1000个Ensembl ID
-- 对于大规模分析，实施API查询的速率限制
-- 使用虚拟环境以避免依赖冲突
+### Error Handling
+- Database structures change; update gget regularly: `uv pip install --upgrade gget`
+- Process max ~1000 Ensembl IDs at once with gget info
+- For large-scale analyses, implement rate limiting for API queries
+- Use virtual environments to avoid dependency conflicts
 
-## 输出格式
+## Output Formats
 
-### 命令行
-- 默认：JSON
-- CSV：添加`-csv`标志
-- FASTA：gget seq、gget mutate
-- PDB：gget pdb、gget alphafold
-- PNG：gget cbio plot
+### Command-line
+- Default: JSON
+- CSV: Add `-csv` flag
+- FASTA: gget seq, gget mutate
+- PDB: gget pdb, gget alphafold
+- PNG: gget cbio plot
 
 ### Python
-- 默认：DataFrame或字典
-- JSON：添加`json=True`参数
-- 保存到文件：添加`save=True`或指定`out="filename"`
-- AnnData：gget cellxgene
+- Default: DataFrame or dictionary
+- JSON: Add `json=True` parameter
+- Save to file: Add `save=True` or specify `out="filename"`
+- AnnData: gget cellxgene
 
-## 资源
+## Resources
 
-此技能包含以下参考文档：
+This skill includes reference documentation for detailed module information:
 
 ### references/
-- `module_reference.md` - 所有模块的全面参数参考
-- `database_info.md` - 有关查询数据库及其更新频率的信息
-- `workflows.md` - 扩展工作流示例和用例模式
+- `module_reference.md` - Comprehensive parameter reference for all modules
+- `database_info.md` - Information about queried databases and their update frequencies
+- `workflows.md` - Extended workflow examples and use cases
 
-需要额外帮助：
-- 官方文档：https://pachterlab.github.io/gget/
-- GitHub问题：https://github.com/pachterlab/gget/issues
-- 引用：Luebbert, L. & Pachter, L. (2023). Efficient querying of genomic reference databases with gget. Bioinformatics. https://doi.org/10.1093/bioinformatics/btac836
+For additional help:
+- Official documentation: https://pachterlab.github.io/gget/
+- GitHub issues: https://github.com/pachterlab/gget/issues
+- Citation: Luebbert, L. & Pachter, L. (2023). Efficient querying of genomic reference databases with gget. Bioinformatics. https://doi.org/10.1093/bioinformatics/btac836
+

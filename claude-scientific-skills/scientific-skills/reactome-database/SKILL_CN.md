@@ -1,92 +1,92 @@
 ---
 name: reactome-database
-description: 查询Reactome REST API进行通路分析、富集分析、基因-通路映射、疾病通路、分子相互作用、表达分析，用于系统生物学研究。
+description: Query Reactome REST API for pathway analysis, enrichment, gene-pathway mapping, disease pathways, molecular interactions, expression analysis, for systems biology studies.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Reactome数据库
+# Reactome Database
 
-## 概述
+## Overview
 
-Reactome是一个免费、开源、经过精心策划的通路数据库，包含2,825+人类通路。通过REST API和Python客户端查询生物通路、执行过表达和表达分析、将基因映射到通路、探索分子相互作用，用于系统生物学研究。
+Reactome is a free, open-source, curated pathway database with 2,825+ human pathways. Query biological pathways, perform overrepresentation and expression analysis, map genes to pathways, explore molecular interactions via REST API and Python client for systems biology research.
 
-## 何时使用此技能
+## When to Use This Skill
 
-当以下情况时应使用此技能：
-- 对基因或蛋白质列表进行通路富集分析
-- 分析基因表达数据以识别相关生物通路
-- 查询特定通路信息、反应或分子相互作用
-- 将基因或蛋白质映射到生物通路和过程
-- 探索疾病相关通路和机制
-- 在Reactome通路浏览器中可视化分析结果
-- 进行跨物种的比较通路分析
+This skill should be used when:
+- Performing pathway enrichment analysis on gene or protein lists
+- Analyzing gene expression data to identify relevant biological pathways
+- Querying specific pathway information, reactions, or molecular interactions
+- Mapping genes or proteins to biological pathways and processes
+- Exploring disease-related pathways and mechanisms
+- Visualizing analysis results in the Reactome Pathway Browser
+- Conducting comparative pathway analysis across species
 
-## 核心功能
+## Core Capabilities
 
-Reactome提供两个主要API服务和一个Python客户端库：
+Reactome provides two main API services and a Python client library:
 
-### 1. 内容服务 - 数据检索
+### 1. Content Service - Data Retrieval
 
-查询和检索生物通路数据、分子相互作用和实体信息。
+Query and retrieve biological pathway data, molecular interactions, and entity information.
 
-**常见操作：**
-- 检索通路信息和层次结构
-- 查询特定实体（蛋白质、反应、复合物）
-- 获取通路中的参与分子
-- 访问数据库版本和元数据
-- 探索通路区室和位置
+**Common operations:**
+- Retrieve pathway information and hierarchies
+- Query specific entities (proteins, reactions, complexes)
+- Get participating molecules in pathways
+- Access database version and metadata
+- Explore pathway compartments and locations
 
-**API基础URL：** `https://reactome.org/ContentService`
+**API Base URL:** `https://reactome.org/ContentService`
 
-### 2. 分析服务 - 通路分析
+### 2. Analysis Service - Pathway Analysis
 
-对基因列表和表达数据执行计算分析。
+Perform computational analysis on gene lists and expression data.
 
-**分析类型：**
-- **过表达分析**：从基因/蛋白质列表中识别统计显著的通路
-- **表达数据分析**：分析基因表达数据集以找到相关通路
-- **物种比较**：比较不同生物体的通路数据
+**Analysis types:**
+- **Overrepresentation Analysis**: Identify statistically significant pathways from gene/protein lists
+- **Expression Data Analysis**: Analyze gene expression datasets to find relevant pathways
+- **Species Comparison**: Compare pathway data across different organisms
 
-**API基础URL：** `https://reactome.org/AnalysisService`
+**API Base URL:** `https://reactome.org/AnalysisService`
 
-### 3. reactome2py Python包
+### 3. reactome2py Python Package
 
-Python客户端库，包装Reactome API调用以实现更简单的编程访问。
+Python client library that wraps Reactome API calls for easier programmatic access.
 
-**安装：**
+**Installation:**
 ```bash
 uv pip install reactome2py
 ```
 
-**注意：** reactome2py包（2021年1月发布的3.0.0版本）功能正常但不再积极维护。对于最新功能，考虑使用直接的REST API调用。
+**Note:** The reactome2py package (version 3.0.0, released January 2021) is functional but not actively maintained. For the most up-to-date functionality, consider using direct REST API calls.
 
-## 查询通路数据
+## Querying Pathway Data
 
-### 使用内容服务REST API
+### Using Content Service REST API
 
-内容服务使用REST协议并以JSON或纯文本格式返回数据。
+The Content Service uses REST protocol and returns data in JSON or plain text formats.
 
-**获取数据库版本：**
+**Get database version:**
 ```python
 import requests
 
 response = requests.get("https://reactome.org/ContentService/data/database/version")
 version = response.text
-print(f"Reactome版本: {version}")
+print(f"Reactome version: {version}")
 ```
 
-**查询特定实体：**
+**Query a specific entity:**
 ```python
 import requests
 
-entity_id = "R-HSA-69278"  # 示例通路ID
+entity_id = "R-HSA-69278"  # Example pathway ID
 response = requests.get(f"https://reactome.org/ContentService/data/query/{entity_id}")
 data = response.json()
 ```
 
-**获取通路中的参与分子：**
+**Get participating molecules in a pathway:**
 ```python
 import requests
 
@@ -97,36 +97,36 @@ response = requests.get(
 molecules = response.json()
 ```
 
-### 使用reactome2py包
+### Using reactome2py Package
 
 ```python
 import reactome2py
 from reactome2py import content
 
-# 查询通路信息
+# Query pathway information
 pathway_info = content.query_by_id("R-HSA-69278")
 
-# 获取数据库版本
+# Get database version
 version = content.get_database_version()
 ```
 
-**详细API端点和参数**，请参阅此技能中的 `references/api_reference.md`。
+**For detailed API endpoints and parameters**, refer to `references/api_reference.md` in this skill.
 
-## 执行通路分析
+## Performing Pathway Analysis
 
-### 过表达分析
+### Overrepresentation Analysis
 
-提交基因/蛋白质标识符列表以找到富集的通路。
+Submit a list of gene/protein identifiers to find enriched pathways.
 
-**使用REST API：**
+**Using REST API:**
 ```python
 import requests
 
-# 准备标识符列表
+# Prepare identifier list
 identifiers = ["TP53", "BRCA1", "EGFR", "MYC"]
 data = "\n".join(identifiers)
 
-# 提交分析
+# Submit analysis
 response = requests.post(
     "https://reactome.org/AnalysisService/identifiers/",
     headers={"Content-Type": "text/plain"},
@@ -134,25 +134,25 @@ response = requests.post(
 )
 
 result = response.json()
-token = result["summary"]["token"]  # 保存令牌以便稍后检索结果
+token = result["summary"]["token"]  # Save token to retrieve results later
 
-# 访问通路
+# Access pathways
 for pathway in result["pathways"]:
-    print(f"{pathway['stId']}: {pathway['name']} (p值: {pathway['entities']['pValue']})")
+    print(f"{pathway['stId']}: {pathway['name']} (p-value: {pathway['entities']['pValue']})")
 ```
 
-**通过令牌检索分析：**
+**Retrieve analysis by token:**
 ```python
-# 令牌有效期为7天
+# Token is valid for 7 days
 response = requests.get(f"https://reactome.org/AnalysisService/token/{token}")
 results = response.json()
 ```
 
-### 表达数据分析
+### Expression Data Analysis
 
-分析具有定量值的基因表达数据集。
+Analyze gene expression datasets with quantitative values.
 
-**输入格式（带#开头的TSV表头）：**
+**Input format (TSV with header starting with #):**
 ```
 #Gene	Sample1	Sample2	Sample3
 TP53	2.5	3.1	2.8
@@ -160,11 +160,11 @@ BRCA1	1.2	1.5	1.3
 EGFR	4.5	4.2	4.8
 ```
 
-**提交表达数据：**
+**Submit expression data:**
 ```python
 import requests
 
-# 读取TSV文件
+# Read TSV file
 with open("expression_data.tsv", "r") as f:
     data = f.read()
 
@@ -177,9 +177,9 @@ response = requests.post(
 result = response.json()
 ```
 
-### 物种投影
+### Species Projection
 
-使用`/projection/`端点将标识符专门映射到人类通路：
+Map identifiers to human pathways exclusively using the `/projection/` endpoint:
 
 ```python
 response = requests.post(
@@ -189,87 +189,88 @@ response = requests.post(
 )
 ```
 
-## 可视化结果
+## Visualizing Results
 
-分析结果可以通过使用分析令牌构建URL在Reactome通路浏览器中可视化：
+Analysis results can be visualized in the Reactome Pathway Browser by constructing URLs with the analysis token:
 
 ```python
 token = result["summary"]["token"]
 pathway_id = "R-HSA-69278"
 url = f"https://reactome.org/PathwayBrowser/#{pathway_id}&DTAB=AN&ANALYSIS={token}"
-print(f"查看结果: {url}")
+print(f"View results: {url}")
 ```
 
-## 使用分析令牌
+## Working with Analysis Tokens
 
-- 分析令牌有效期为**7天**
-- 令牌允许检索先前计算的结果而无需重新提交
-- 存储令牌以在会话间访问结果
-- 使用`GET /token/{TOKEN}`端点检索结果
+- Analysis tokens are valid for **7 days**
+- Tokens allow retrieval of previously computed results without re-submission
+- Store tokens to access results across sessions
+- Use `GET /token/{TOKEN}` endpoint to retrieve results
 
-## 数据格式和标识符
+## Data Formats and Identifiers
 
-### 支持的标识符类型
+### Supported Identifier Types
 
-Reactome接受各种标识符格式：
-- UniProt访问码（例如，P04637）
-- 基因符号（例如，TP53）
-- Ensembl ID（例如，ENSG00000141510）
-- EntrezGene ID（例如，7157）
-- 小分子的ChEBI ID
+Reactome accepts various identifier formats:
+- UniProt accessions (e.g., P04637)
+- Gene symbols (e.g., TP53)
+- Ensembl IDs (e.g., ENSG00000141510)
+- EntrezGene IDs (e.g., 7157)
+- ChEBI IDs for small molecules
 
-系统会自动检测标识符类型。
+The system automatically detects identifier types.
 
-### 输入格式要求
+### Input Format Requirements
 
-**对于过表达分析：**
-- 纯文本标识符列表（每行一个）
-- 或TSV格式的单列
+**For overrepresentation analysis:**
+- Plain text list of identifiers (one per line)
+- OR single column in TSV format
 
-**对于表达分析：**
-- TSV格式，强制表头行以"#"开头
-- 第1列：标识符
-- 第2+列：数值表达值
-- 使用点（.）作为小数分隔符
+**For expression analysis:**
+- TSV format with mandatory header row starting with "#"
+- Column 1: identifiers
+- Columns 2+: numeric expression values
+- Use period (.) as decimal separator
 
-### 输出格式
+### Output Format
 
-所有API响应返回包含以下内容的JSON：
-- `pathways`：带有统计指标的富集通路数组
-- `summary`：分析元数据和令牌
-- `entities`：匹配和未映射的标识符
-- 统计值：pValue、FDR（错误发现率）
+All API responses return JSON containing:
+- `pathways`: Array of enriched pathways with statistical metrics
+- `summary`: Analysis metadata and token
+- `entities`: Matched and unmapped identifiers
+- Statistical values: pValue, FDR (false discovery rate)
 
-## 辅助脚本
+## Helper Scripts
 
-此技能包含`scripts/reactome_query.py`，一个用于常见Reactome操作的辅助脚本：
+This skill includes `scripts/reactome_query.py`, a helper script for common Reactome operations:
 
 ```bash
-# 查询通路信息
+# Query pathway information
 python scripts/reactome_query.py query R-HSA-69278
 
-# 执行过表达分析
+# Perform overrepresentation analysis
 python scripts/reactome_query.py analyze gene_list.txt
 
-# 获取数据库版本
+# Get database version
 python scripts/reactome_query.py version
 ```
 
-## 额外资源
+## Additional Resources
 
-- **API文档**：https://reactome.org/dev
-- **用户指南**：https://reactome.org/userguide
-- **文档门户**：https://reactome.org/documentation
-- **数据下载**：https://reactome.org/download-data
-- **reactome2py文档**：https://reactome.github.io/reactome2py/
+- **API Documentation**: https://reactome.org/dev
+- **User Guide**: https://reactome.org/userguide
+- **Documentation Portal**: https://reactome.org/documentation
+- **Data Downloads**: https://reactome.org/download-data
+- **reactome2py Docs**: https://reactome.github.io/reactome2py/
 
-有关全面的API端点文档，请参阅此技能中的 `references/api_reference.md`。
+For comprehensive API endpoint documentation, see `references/api_reference.md` in this skill.
 
-## 当前数据库统计（2025年9月版本94）
+## Current Database Statistics (Version 94, September 2025)
 
-- 2,825个人类通路
-- 16,002个反应
-- 11,630个蛋白质
-- 2,176个小分子
-- 1,070种药物
-- 41,373个文献引用
+- 2,825 human pathways
+- 16,002 reactions
+- 11,630 proteins
+- 2,176 small molecules
+- 1,070 drugs
+- 41,373 literature references
+

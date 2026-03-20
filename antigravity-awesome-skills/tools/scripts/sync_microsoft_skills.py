@@ -79,6 +79,17 @@ def is_path_within(base_dir: Path, target_path: Path) -> bool:
         return False
 
 
+def is_safe_regular_file(file_path: Path, source_root: Path) -> bool:
+    try:
+        if file_path.is_symlink():
+            return False
+        if not file_path.is_file():
+            return False
+        return is_path_within(source_root, file_path.resolve())
+    except OSError:
+        return False
+
+
 def sanitize_flat_name(candidate: str | None, fallback: str) -> str:
     """Accept only flat skill directory names; fall back on unsafe values."""
     if not candidate:
@@ -102,14 +113,9 @@ def sanitize_flat_name(candidate: str | None, fallback: str) -> str:
 def copy_safe_skill_files(source_dir: Path, target_dir: Path, source_root: Path):
     """Copy regular files only when their resolved path stays inside source_root."""
     for file_item in source_dir.iterdir():
-        if file_item.name == "SKILL.md" or file_item.is_symlink() or not file_item.is_file():
+        if file_item.name == "SKILL.md" or not is_safe_regular_file(file_item, source_root):
             continue
-
-        resolved = file_item.resolve()
-        if not is_path_within(source_root, resolved):
-            continue
-
-        shutil.copy2(resolved, target_dir / file_item.name)
+        shutil.copy2(file_item.resolve(), target_dir / file_item.name)
 
 def extract_skill_name(skill_md_path: Path) -> str | None:
     """Extract the 'name' field from SKILL.md YAML frontmatter using PyYAML."""
@@ -220,13 +226,17 @@ def find_github_skills(source_dir: Path, already_synced_names: set):
         return results
 
     for skill_dir in github_skills.iterdir():
-        if not skill_dir.is_dir() or not (skill_dir / "SKILL.md").exists():
+        if skill_dir.is_symlink() or not skill_dir.is_dir():
+            continue
+
+        skill_md = skill_dir / "SKILL.md"
+        if not is_safe_regular_file(skill_md, source_dir):
             continue
 
         if skill_dir.name not in already_synced_names:
             results.append({
                 "relative_path": Path(".github/skills") / skill_dir.name,
-                "skill_md": skill_dir / "SKILL.md",
+                "skill_md": skill_md,
                 "source_dir": skill_dir,
             })
 

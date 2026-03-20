@@ -1,115 +1,115 @@
 ---
 name: gwas-database
-description: 查询NHGRI-EBI GWAS目录获取SNP-性状关联。按rs ID、疾病/性状、基因搜索变体，检索p值和汇总统计，用于遗传流行病学和多基因风险评分。
+description: Query NHGRI-EBI GWAS Catalog for SNP-trait associations. Search variants by rs ID, disease/trait, gene, retrieve p-values and summary statistics, for genetic epidemiology and polygenic risk scores.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# GWAS 目录数据库
+# GWAS Catalog Database
 
-## 概述
+## Overview
 
-GWAS目录是由国家人类基因组研究所（NHGRI）和欧洲生物信息学研究所（EBI）维护的已发表全基因组关联研究的综合存储库。该目录包含来自数千个GWAS发表的精选SNP-性状关联，包括遗传变体、相关性状和疾病、p值、效应大小，以及许多研究的完整汇总统计。
+The GWAS Catalog is a comprehensive repository of published genome-wide association studies maintained by the National Human Genome Research Institute (NHGRI) and the European Bioinformatics Institute (EBI). The catalog contains curated SNP-trait associations from thousands of GWAS publications, including genetic variants, associated traits and diseases, p-values, effect sizes, and full summary statistics for many studies.
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况下使用：
+This skill should be used when queries involve:
 
-- **遗传变体关联：** 查找与疾病或性状相关的SNP
-- **SNP查找：** 检索特定遗传变体（rs ID）的信息
-- **性状/疾病搜索：** 发现表型的遗传关联
-- **基因关联：** 查找特定基因内或附近的变体
-- **GWAS汇总统计：** 访问完整的全基因组关联数据
-- **研究元数据：** 检索发表和队列信息
-- **群体遗传学：** 探索祖先特异性关联
-- **多基因风险评分：** 识别风险预测模型的变体
-- **功能基因组学：** 理解变体效应和基因组背景
-- **系统评价：** 遗传关联的全面文献综合
+- **Genetic variant associations**: Finding SNPs associated with diseases or traits
+- **SNP lookups**: Retrieving information about specific genetic variants (rs IDs)
+- **Trait/disease searches**: Discovering genetic associations for phenotypes
+- **Gene associations**: Finding variants in or near specific genes
+- **GWAS summary statistics**: Accessing complete genome-wide association data
+- **Study metadata**: Retrieving publication and cohort information
+- **Population genetics**: Exploring ancestry-specific associations
+- **Polygenic risk scores**: Identifying variants for risk prediction models
+- **Functional genomics**: Understanding variant effects and genomic context
+- **Systematic reviews**: Comprehensive literature synthesis of genetic associations
 
-## 核心功能
+## Core Capabilities
 
-### 1. 理解GWAS目录数据结构
+### 1. Understanding GWAS Catalog Data Structure
 
-GWAS目录围绕四个核心实体组织：
+The GWAS Catalog is organized around four core entities:
 
-- **研究：** 具有元数据（PMID、作者、队列详情）的GWAS发表
-- **关联：** 具有统计证据（p ≤ 5×10⁻⁸）的SNP-性状关联
-- **变体：** 具有基因组坐标和等位基因的遗传标记（SNP）
-- **性状：** 表型和疾病（映射到EFO本体术语）
+- **Studies**: GWAS publications with metadata (PMID, author, cohort details)
+- **Associations**: SNP-trait associations with statistical evidence (p ≤ 5×10⁻⁸)
+- **Variants**: Genetic markers (SNPs) with genomic coordinates and alleles
+- **Traits**: Phenotypes and diseases (mapped to EFO ontology terms)
 
-**关键标识符：**
-- 研究访问号：`GCST` ID（例如GCST001234）
-- 变体ID：`rs`编号（例如rs7903146）或`variant_id`格式
-- 性状ID：EFO术语（例如EFO_0001360用于2型糖尿病）
-- 基因符号：HGNC批准的名称（例如TCF7L2）
+**Key Identifiers:**
+- Study accessions: `GCST` IDs (e.g., GCST001234)
+- Variant IDs: `rs` numbers (e.g., rs7903146) or `variant_id` format
+- Trait IDs: EFO terms (e.g., EFO_0001360 for type 2 diabetes)
+- Gene symbols: HGNC approved names (e.g., TCF7L2)
 
-### 2. Web界面搜索
+### 2. Web Interface Searches
 
-位于https://www.ebi.ac.uk/gwas/的Web界面支持多种搜索模式：
+The web interface at https://www.ebi.ac.uk/gwas/ supports multiple search modes:
 
-**按变体（rs ID）：**
+**By Variant (rs ID):**
 ```
 rs7903146
 ```
-返回此SNP的所有性状关联。
+Returns all trait associations for this SNP.
 
-**按疾病/性状：**
+**By Disease/Trait:**
 ```
 type 2 diabetes
 Parkinson disease
 body mass index
 ```
-返回所有相关遗传变体。
+Returns all associated genetic variants.
 
-**按基因：**
+**By Gene:**
 ```
 APOE
 TCF7L2
 ```
-返回基因区域内的变体。
+Returns variants in or near the gene region.
 
-**按染色体区域：**
+**By Chromosomal Region:**
 ```
 10:114000000-115000000
 ```
-返回指定基因组区间内的变体。
+Returns variants in the specified genomic interval.
 
-**按发表：**
+**By Publication:**
 ```
 PMID:20581827
-作者: McCarthy MI
+Author: McCarthy MI
 GCST001234
 ```
-返回研究详情和所有报告的关联。
+Returns study details and all reported associations.
 
-### 3. REST API 访问
+### 3. REST API Access
 
-GWAS目录提供两个REST API用于程序化访问：
+The GWAS Catalog provides two REST APIs for programmatic access:
 
-**基础URL：**
-- GWAS目录API：`https://www.ebi.ac.uk/gwas/rest/api`
-- 汇总统计API：`https://www.ebi.ac.uk/gwas/summary-statistics/api`
+**Base URLs:**
+- GWAS Catalog API: `https://www.ebi.ac.uk/gwas/rest/api`
+- Summary Statistics API: `https://www.ebi.ac.uk/gwas/summary-statistics/api`
 
-**API文档：**
-- 主要API文档：https://www.ebi.ac.uk/gwas/rest/docs/api
-- 汇总统计文档：https://www.ebi.ac.uk/gwas/summary-statistics/docs/
+**API Documentation:**
+- Main API docs: https://www.ebi.ac.uk/gwas/rest/docs/api
+- Summary stats docs: https://www.ebi.ac.uk/gwas/summary-statistics/docs/
 
-**核心端点：**
+**Core Endpoints:**
 
-1. **研究端点** - `/studies/{accessionID}`
+1. **Studies endpoint** - `/studies/{accessionID}`
    ```python
    import requests
 
-   # 获取特定研究
+   # Get a specific study
    url = "https://www.ebi.ac.uk/gwas/rest/api/studies/GCST001795"
    response = requests.get(url, headers={"Content-Type": "application/json"})
    study = response.json()
    ```
 
-2. **关联端点** - `/associations`
+2. **Associations endpoint** - `/associations`
    ```python
-   # 查找变体的关联
+   # Find associations for a variant
    variant = "rs7903146"
    url = f"https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/{variant}/associations"
    params = {"projection": "associationBySnp"}
@@ -117,88 +117,88 @@ GWAS目录提供两个REST API用于程序化访问：
    associations = response.json()
    ```
 
-3. **变体端点** - `/singleNucleotidePolymorphisms/{rsID}`
+3. **Variants endpoint** - `/singleNucleotidePolymorphisms/{rsID}`
    ```python
-   # 获取变体详情
+   # Get variant details
    url = "https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/rs7903146"
    response = requests.get(url, headers={"Content-Type": "application/json"})
    variant_info = response.json()
    ```
 
-4. **性状端点** - `/efoTraits/{efoID}`
+4. **Traits endpoint** - `/efoTraits/{efoID}`
    ```python
-   # 获取性状信息
+   # Get trait information
    url = "https://www.ebi.ac.uk/gwas/rest/api/efoTraits/EFO_0001360"
    response = requests.get(url, headers={"Content-Type": "application/json"})
    trait_info = response.json()
    ```
 
-### 4. 查询示例和模式
+### 4. Query Examples and Patterns
 
-**示例1：查找疾病的所有关联**
+**Example 1: Find all associations for a disease**
 ```python
 import requests
 
-trait = "EFO_0001360"  # 2型糖尿病
+trait = "EFO_0001360"  # Type 2 diabetes
 base_url = "https://www.ebi.ac.uk/gwas/rest/api"
 
-# 查询此性状的关联
+# Query associations for this trait
 url = f"{base_url}/efoTraits/{trait}/associations"
 response = requests.get(url, headers={"Content-Type": "application/json"})
 associations = response.json()
 
-# 处理结果
+# Process results
 for assoc in associations.get('_embedded', {}).get('associations', []):
     variant = assoc.get('rsId')
     pvalue = assoc.get('pvalue')
     risk_allele = assoc.get('strongestAllele')
-    print(f"{variant}: p={pvalue}, 风险等位基因={risk_allele}")
+    print(f"{variant}: p={pvalue}, risk allele={risk_allele}")
 ```
 
-**示例2：获取变体信息和所有性状关联**
+**Example 2: Get variant information and all trait associations**
 ```python
 import requests
 
 variant = "rs7903146"
 base_url = "https://www.ebi.ac.uk/gwas/rest/api"
 
-# 获取变体详情
+# Get variant details
 url = f"{base_url}/singleNucleotidePolymorphisms/{variant}"
 response = requests.get(url, headers={"Content-Type": "application/json"})
 variant_data = response.json()
 
-# 获取此变体的所有关联
+# Get all associations for this variant
 url = f"{base_url}/singleNucleotidePolymorphisms/{variant}/associations"
 params = {"projection": "associationBySnp"}
 response = requests.get(url, params=params, headers={"Content-Type": "application/json"})
 associations = response.json()
 
-# 提取性状名称和p值
+# Extract trait names and p-values
 for assoc in associations.get('_embedded', {}).get('associations', []):
     trait = assoc.get('efoTrait')
     pvalue = assoc.get('pvalue')
-    print(f"性状: {trait}, p值: {pvalue}")
+    print(f"Trait: {trait}, p-value: {pvalue}")
 ```
 
-**示例3：访问汇总统计**
+**Example 3: Access summary statistics**
 ```python
 import requests
 
-# 查询汇总统计API
+# Query summary statistics API
 base_url = "https://www.ebi.ac.uk/gwas/summary-statistics/api"
 
-# 按性状和p值阈值查找关联
-trait = "EFO_0001360"  # 2型糖尿病
+# Find associations by trait with p-value threshold
+trait = "EFO_0001360"  # Type 2 diabetes
 p_upper = "0.000000001"  # p < 1e-9
 url = f"{base_url}/traits/{trait}/associations"
 params = {
     "p_upper": p_upper,
-    "size": 100  # 结果数
+    "size": 100  # Number of results
 }
 response = requests.get(url, params=params)
 results = response.json()
 
-# 处理全基因组显著命中
+# Process genome-wide significant hits
 for hit in results.get('_embedded', {}).get('associations', []):
     variant_id = hit.get('variant_id')
     chromosome = hit.get('chromosome')
@@ -207,11 +207,11 @@ for hit in results.get('_embedded', {}).get('associations', []):
     print(f"{chromosome}:{position} ({variant_id}): p={pvalue}")
 ```
 
-**示例4：按染色体区域查询**
+**Example 4: Query by chromosomal region**
 ```python
 import requests
 
-# 查找特定基因组区域中的变体
+# Find variants in a specific genomic region
 chromosome = "10"
 start_pos = 114000000
 end_pos = 115000000
@@ -227,260 +227,258 @@ response = requests.get(url, params=params, headers={"Content-Type": "applicatio
 variants_in_region = response.json()
 ```
 
-### 5. 使用汇总统计
+### 5. Working with Summary Statistics
 
-GWAS目录为许多研究提供完整汇总统计，提供对所有测试变体（不仅仅是全基因组显著命中）的访问。
+The GWAS Catalog hosts full summary statistics for many studies, providing access to all tested variants (not just genome-wide significant hits).
 
-**访问方法：**
-1. **FTP下载**：http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/
-2. **REST API**：基于查询的汇总统计访问
-3. **Web界面**：通过网站浏览和下载
+**Access Methods:**
+1. **FTP download**: http://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/
+2. **REST API**: Query-based access to summary statistics
+3. **Web interface**: Browse and download via the website
 
-**汇总统计API功能：**
-- 按染色体、位置、p值过滤
-- 跨研究查询特定变体
-- 检索效应大小和等位基因频率
-- 访问标准化和标准化数据
+**Summary Statistics API Features:**
+- Filter by chromosome, position, p-value
+- Query specific variants across studies
+- Retrieve effect sizes and allele frequencies
+- Access harmonized and standardized data
 
-**示例：下载研究汇总统计**
+**Example: Download summary statistics for a study**
 ```python
 import requests
 import gzip
 
-# 获取可用汇总统计
+# Get available summary statistics
 base_url = "https://www.ebi.ac.uk/gwas/summary-statistics/api"
 url = f"{base_url}/studies/GCST001234"
 response = requests.get(url)
 study_info = response.json()
 
-# 下载链接在响应中提供
-# 或者，使用FTP：
+# Download link is provided in the response
+# Alternatively, use FTP:
 # ftp://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCSTXXXXXX/
 ```
 
-### 6. 数据集成和交叉引用
+### 6. Data Integration and Cross-referencing
 
-GWAS目录提供到外部资源的链接：
+The GWAS Catalog provides links to external resources:
 
-**基因组数据库：**
-- Ensembl：基因注释和变体后果
-- dbSNP：变体标识符和群体频率
-- gnomAD：群体等位基因频率
+**Genomic Databases:**
+- Ensembl: Gene annotations and variant consequences
+- dbSNP: Variant identifiers and population frequencies
+- gnomAD: Population allele frequencies
 
-**功能资源：**
-- Open Targets：靶点-疾病关联
-- PGS目录：多基因风险评分
-- UCSC基因组浏览器：基因组背景
+**Functional Resources:**
+- Open Targets: Target-disease associations
+- PGS Catalog: Polygenic risk scores
+- UCSC Genome Browser: Genomic context
 
-**表型资源：**
-- EFO（实验因子本体）：标准化性状术语
-- OMIM：疾病基因关系
-- 疾病本体：疾病层次结构
+**Phenotype Resources:**
+- EFO (Experimental Factor Ontology): Standardized trait terms
+- OMIM: Disease gene relationships
+- Disease Ontology: Disease hierarchies
 
-**在API响应中跟踪链接：**
+**Following Links in API Responses:**
 ```python
 import requests
 
-# API响应包含相关资源的_links
+# API responses include _links for related resources
 response = requests.get("https://www.ebi.ac.uk/gwas/rest/api/studies/GCST001234")
 study = response.json()
 
-# 跟随链接到关联
+# Follow link to associations
 associations_url = study['_links']['associations']['href']
 associations_response = requests.get(associations_url)
 ```
 
-## 查询工作流
+## Query Workflows
 
-### 工作流1：通过eQTL解释GWAS变体
+### Workflow 1: Exploring Genetic Associations for a Disease
 
-1. **识别GWAS变体**（rs ID或染色体位置）
-2. **转换为GTEx变体ID格式**（`chr{chrom}_{pos}_{ref}_{alt}_b38`）
-3. **跨组织查询所有eQTL关联**
-4. **检查效应方向**：GWAS风险等位基因是否与eQTL效应等位基因相同？
-5. **优先考虑组织**：选择与疾病生物学相关的组织
-6. **考虑共定位**：使用`coloc`（R包）和完整汇总统计
+1. **Identify the trait** using EFO terms or free text:
+   - Search web interface for disease name
+   - Note the EFO ID (e.g., EFO_0001360 for type 2 diabetes)
 
-```python
-import requests, pandas as pd
+2. **Query associations via API:**
+   ```python
+   url = f"https://www.ebi.ac.uk/gwas/rest/api/efoTraits/{efo_id}/associations"
+   ```
 
-def interpret_gwas_variant(variant_id, dataset_id="gtex_v10"):
-    """查找GWAS变体调控的所有基因。"""
-    url = "https://gtexportal.org/api/v2/association/singleTissueEqtl"
-    params = {"variantId": variant_id, "datasetId": dataset_id, "itemsPerPage": 500}
-    response = requests.get(url, params=params)
-    data = response.json()
+3. **Filter by significance and population:**
+   - Check p-values (genome-wide significant: p ≤ 5×10⁻⁸)
+   - Review ancestry information in study metadata
+   - Filter by sample size or discovery/replication status
 
-    df = pd.DataFrame(data.get("data", []))
-    if df.empty:
-        return df
-    return df[["geneSymbol", "tissueSiteDetailId", "slope", "pval", "maf"]].sort_values("pval")
+4. **Extract variant details:**
+   - rs IDs for each association
+   - Effect alleles and directions
+   - Effect sizes (odds ratios, beta coefficients)
+   - Population allele frequencies
 
-# 示例
-results = interpret_gwas_variant("chr1_154453788_A_T_b38")
-print(results.groupby("geneSymbol")["tissueSiteDetailId"].count().sort_values(ascending=False))
-```
+5. **Cross-reference with other databases:**
+   - Look up variant consequences in Ensembl
+   - Check population frequencies in gnomAD
+   - Explore gene function and pathways
 
-### 工作流2：调查特定遗传变体
+### Workflow 2: Investigating a Specific Genetic Variant
 
-1. **查询变体：**
+1. **Query the variant:**
    ```python
    url = f"https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/{rs_id}"
    ```
 
-2. **检索所有性状关联：**
+2. **Retrieve all trait associations:**
    ```python
    url = f"https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/{rs_id}/associations"
    ```
 
-3. **分析多效性：**
-   - 识别与此变体相关的所有性状
-   - 跨性状检查效应方向
-   - 寻找共享生物学通路
+3. **Analyze pleiotropy:**
+   - Identify all traits associated with this variant
+   - Review effect directions across traits
+   - Look for shared biological pathways
 
-4. **检查基因组背景：**
-   - 确定附近基因
-   - 识别变体是否在编码/调控区域
-   - 审查与其他变体的连锁不平衡
+4. **Check genomic context:**
+   - Determine nearby genes
+   - Identify if variant is in coding/regulatory regions
+   - Review linkage disequilibrium with other variants
 
-### 工作流3：基因中心关联分析
+### Workflow 3: Gene-Centric Association Analysis
 
-1. **按基因符号搜索**在Web界面或：
+1. **Search by gene symbol** in web interface or:
    ```python
    url = f"https://www.ebi.ac.uk/gwas/rest/api/singleNucleotidePolymorphisms/search/findByGene"
    params = {"geneName": gene_symbol}
    ```
 
-2. **检索基因区域变体：**
-   - 获取基因的染色体坐标
-   - 查询区域变体
-   - 包括启动子和调控区域（扩展边界）
+2. **Retrieve variants in gene region:**
+   - Get chromosomal coordinates for gene
+   - Query variants in region
+   - Include promoter and regulatory regions (extend boundaries)
 
-3. **分析关联模式：**
-   - 识别此基因中关联的性状
-   - 寻找跨研究的一致关联
-   - 审查效应大小和方向
+3. **Analyze association patterns:**
+   - Identify traits associated with variants in this gene
+   - Look for consistent associations across studies
+   - Review effect sizes and directions
 
-4. **功能解释：**
-   - 确定变体后果（错义、调控等）
-   - 检查表达QTL（eQTL）数据
-   - 审查通路和网络背景
+4. **Functional interpretation:**
+   - Determine variant consequences (missense, regulatory, etc.)
+   - Check expression QTL (eQTL) data
+   - Review pathway and network context
 
-### 工作流4：遗传证据系统评价
+### Workflow 4: Systematic Review of Genetic Evidence
 
-1. **定义研究问题：**
-   - 特定性状或疾病
-   - 群体考虑
-   - 研究设计要求
+1. **Define research question:**
+   - Specific trait or disease of interest
+   - Population considerations
+   - Study design requirements
 
-2. **全面变体提取：**
-   - 查询性状的所有关联
-   - 设置显著性阈值
-   - 注意发现和重复研究
+2. **Comprehensive variant extraction:**
+   - Query all associations for trait
+   - Set significance threshold
+   - Note discovery and replication studies
 
-3. **质量评估：**
-   - 审查研究样本量
-   - 检查群体多样性
-   - 评估跨研究异质性
-   - 识别潜在偏差
+3. **Quality assessment:**
+   - Review study sample sizes
+   - Check for population diversity
+   - Assess heterogeneity across studies
+   - Identify potential biases
 
-4. **数据综合：**
-   - 跨研究聚合关联
-   - 如适用，执行荟萃分析
-   - 创建汇总表
-   - 生成曼哈顿或森林图
+4. **Data synthesis:**
+   - Aggregate associations across studies
+   - Perform meta-analysis if applicable
+   - Create summary tables
+   - Generate Manhattan or forest plots
 
-5. **导出和文档：**
-   - 下载完整关联数据
-   - 如需要，导出汇总统计
-   - 记录搜索策略和日期
-   - 创建可重现分析脚本
+5. **Export and documentation:**
+   - Download full association data
+   - Export summary statistics if needed
+   - Document search strategy and date
+   - Create reproducible analysis scripts
 
-### 工作流5：访问和分析汇总统计
+### Workflow 5: Accessing and Analyzing Summary Statistics
 
-1. **识别具有汇总统计的研究：**
-   - 浏览汇总统计门户
-   - 检查FTP目录列表
-   - 查询API获取可用研究
+1. **Identify studies with summary statistics:**
+   - Browse summary statistics portal
+   - Check FTP directory listings
+   - Query API for available studies
 
-2. **下载汇总统计：**
+2. **Download summary statistics:**
    ```bash
-   # 通过FTP
+   # Via FTP
    wget ftp://ftp.ebi.ac.uk/pub/databases/gwas/summary_statistics/GCSTXXXXXX/harmonised/GCSTXXXXXX-harmonised.tsv.gz
    ```
 
-3. **通过API查询特定变体：**
+3. **Query via API for specific variants:**
    ```python
    url = f"https://www.ebi.ac.uk/gwas/summary-statistics/api/chromosomes/{chrom}/associations"
    params = {"start": start_pos, "end": end_pos}
    ```
 
-4. **处理和分析：**
-   - 按p值阈值过滤
-   - 提取效应大小和置信区间
-   - 执行下游分析（精细定位、共定位等）
+4. **Process and analyze:**
+   - Filter by p-value thresholds
+   - Extract effect sizes and confidence intervals
+   - Perform downstream analyses (fine-mapping, colocalization, etc.)
 
-## 响应格式和数据字段
+## Response Formats and Data Fields
 
-**关联记录中的关键字段：**
-- `rsId`：变体标识符（rs编号）
-- `strongestAllele`：关联的风险等位基因
-- `pvalue`：关联p值
-- `pvalueText`：P值作为文本（可能包含不等式）
-- `orPerCopyNum`：优势比或beta系数
-- `betaNum`：效应大小（用于数量性状）
-- `betaUnit`：beta的测量单位
-- `range`：置信区间
-- `efoTrait`：相关性状名称
-- `mappedLabel`：EFO映射的性状术语
+**Key Fields in Association Records:**
+- `rsId`: Variant identifier (rs number)
+- `strongestAllele`: Risk allele for the association
+- `pvalue`: Association p-value
+- `pvalueText`: P-value as text (may include inequality)
+- `orPerCopyNum`: Odds ratio or beta coefficient
+- `betaNum`: Effect size (for quantitative traits)
+- `betaUnit`: Unit of measurement for beta
+- `range`: Confidence interval
+- `efoTrait`: Associated trait name
+- `mappedLabel`: EFO-mapped trait term
 
-**研究元数据字段：**
-- `accessionId`：GCST研究标识符
-- `pubmedId`：PubMed ID
-- `author`：第一作者
-- `publicationDate`：发表日期
-- `ancestryInitial`：发现群体祖先
-- `ancestryReplication`：重复群体祖先
-- `sampleSize`：总样本量
+**Study Metadata Fields:**
+- `accessionId`: GCST study identifier
+- `pubmedId`: PubMed ID
+- `author`: First author
+- `publicationDate`: Publication date
+- `ancestryInitial`: Discovery population ancestry
+- `ancestryReplication`: Replication population ancestry
+- `sampleSize`: Total sample size
 
-**分页：**
-结果已分页（默认每页20项）。使用以下方式导航：
-- `size`参数：每页结果数
-- `page`参数：页码（从0开始索引）
-- 响应中的`_links`：下一页/上一页的URL
+**Pagination:**
+Results are paginated (default 20 items per page). Navigate using:
+- `size` parameter: Number of results per page
+- `page` parameter: Page number (0-indexed)
+- `_links` in response: URLs for next/previous pages
 
-## 最佳实践
+## Best Practices
 
-### 查询策略
-- 从Web界面开始以识别相关EFO术语和研究访问号
-- 对批量数据提取和自动化分析使用API
-- 对大型结果集实施分页处理
-- 最小化冗余请求，缓存API响应
+### Query Strategy
+- Start with web interface to identify relevant EFO terms and study accessions
+- Use API for bulk data extraction and automated analyses
+- Implement pagination handling for large result sets
+- Cache API responses to minimize redundant requests
 
-### 数据解释
-- 始终检查p值阈值（全基因组：5×10⁻⁸）
-- 审查群体信息的群体适用性
-- 考虑评估证据强度时的样本量
-- 检查跨独立研究的重复
-- 注意效应大小估计中的赢家诅咒
+### Data Interpretation
+- Always check p-value thresholds (genome-wide: 5×10⁻⁸)
+- Review ancestry information for population applicability
+- Consider sample size when assessing evidence strength
+- Check for replication across independent studies
+- Be aware of winner's curse in effect size estimates
 
-### 速率限制和伦理
-- 尊重API使用指南（无过度请求）
-- 对全基因组分析使用汇总统计下载
-- 在迭代分析中实施API调用之间的适当延迟
-- 执行迭代分析时在本地缓存结果
-- 在发表时引用GWAS目录
+### Rate Limiting and Ethics
+- Respect API usage guidelines (no excessive requests)
+- Use summary statistics downloads for genome-wide analyses
+- Implement appropriate delays between API calls
+- Cache results locally when performing iterative analyses
+- Cite the GWAS Catalog in publications
 
-### 数据质量考虑
-- GWAS目录精选已发表的关联（可能包含不一致）
-- 按发表报告效应大小（可能需要标准化）
-- 某些研究报告条件或联合关联
-- 组合结果时检查研究重叠
-- 注意抽样和选择偏差
+### Data Quality Considerations
+- GWAS Catalog curates published associations (may contain inconsistencies)
+- Effect sizes reported as published (may need harmonization)
+- Some studies report conditional or joint associations
+- Check for study overlap when combining results
+- Be aware of ascertainment and selection biases
 
-## Python 集成示例
+## Python Integration Example
 
-查询和分析GWAS数据的完整工作流：
+Complete workflow for querying and analyzing GWAS data:
 
 ```python
 import requests
@@ -489,14 +487,14 @@ from time import sleep
 
 def query_gwas_catalog(trait_id, p_threshold=5e-8):
     """
-    查询GWAS目录获取性状关联
+    Query GWAS Catalog for trait associations
 
-    参数:
-        trait_id: EFO性状标识符（例如'EFO_0001360'）
-        p_threshold: P值阈值用于过滤
+    Args:
+        trait_id: EFO trait identifier (e.g., 'EFO_0001360')
+        p_threshold: P-value threshold for filtering
 
-    返回:
-        包含关联结果的pandas DataFrame
+    Returns:
+        pandas DataFrame with association results
     """
     base_url = "https://www.ebi.ac.uk/gwas/rest/api"
     url = f"{base_url}/efoTraits/{trait_id}/associations"
@@ -531,77 +529,78 @@ def query_gwas_catalog(trait_id, p_threshold=5e-8):
                 })
 
         page += 1
-        sleep(0.1)  # 速率限制
+        sleep(0.1)  # Rate limiting
 
     return pd.DataFrame(results)
 
-# 示例用法
-df = query_gwas_catalog('EFO_0001360')  # 2型糖尿病
+# Example usage
+df = query_gwas_catalog('EFO_0001360')  # Type 2 diabetes
 print(df.head())
-print(f"\n总关联数: {len(df)}")
-print(f"唯一变体数: {df['variant'].nunique()}")
+print(f"\nTotal associations: {len(df)}")
+print(f"Unique variants: {df['variant'].nunique()}")
 ```
 
-## 资源
+## Resources
 
 ### references/api_reference.md
 
-全面的API文档包括：
-- 两个API的详细端点规范
-- 完整的查询参数和过滤器列表
-- 响应格式规范和字段描述
-- 高级查询示例和模式
-- 错误处理和故障排除
-- 与外部数据库的集成
+Comprehensive API documentation including:
+- Detailed endpoint specifications for both APIs
+- Complete list of query parameters and filters
+- Response format specifications and field descriptions
+- Advanced query examples and patterns
+- Error handling and troubleshooting
+- Integration with external databases
 
-在以下情况下查阅此参考：
-- 构建复杂的API查询
-- 理解响应结构
-- 实施分页或批量操作
-- 故障排除API错误
-- 探索高级过滤选项
+Consult this reference when:
+- Constructing complex API queries
+- Understanding response structures
+- Implementing pagination or batch operations
+- Troubleshooting API errors
+- Exploring advanced filtering options
 
-### 培训材料
+### Training Materials
 
-GWAS目录团队提供研讨会材料：
-- GitHub仓库：https://github.com/EBISPOT/GWAS_Catalog-workshop
-- 带有示例查询的Jupyter笔记本
-- 用于云执行的Google Colab集成
+The GWAS Catalog team provides workshop materials:
+- GitHub repository: https://github.com/EBISPOT/GWAS_Catalog-workshop
+- Jupyter notebooks with example queries
+- Google Colab integration for cloud execution
 
-## 重要说明
+## Important Notes
 
-### 数据更新
-- GWAS目录定期更新新发表
-- 定期重新运行查询以实现全面覆盖
-- 随着研究发布数据，添加汇总统计
-- EFO映射可能随时间更新
+### Data Updates
+- The GWAS Catalog is updated regularly with new publications
+- Re-run queries periodically for comprehensive coverage
+- Summary statistics are added as studies release data
+- EFO mappings may be updated over time
 
-### 引用要求
-使用GWAS目录数据时，请引用：
+### Citation Requirements
+When using GWAS Catalog data, cite:
 - Sollis E, et al. (2023) The NHGRI-EBI GWAS Catalog: knowledgebase and deposition resource. Nucleic Acids Research. PMID: 37953337
-- 包括访问日期和版本（如果可用）
-- 讨论特定发现时引用原始研究
+- Include access date and version when available
+- Cite original studies when discussing specific findings
 
-### 局限性
-- 并非所有GWAS发表都包括在内（应用精选标准）
-- 汇总统计可用于研究子集
-- 跨研究的效应大小可能需要标准化
-- 群体多样性在增长但历史上有限
-- 某些关联代表条件或联合效应
+### Limitations
+- Not all GWAS publications are included (curation criteria apply)
+- Full summary statistics available for subset of studies
+- Effect sizes may require harmonization across studies
+- Population diversity is growing but historically limited
+- Some associations represent conditional or joint effects
 
-### 数据访问
-- Web界面：免费，无需注册
-- REST API：免费，无需API密钥
-- FTP下载：开放访问
-- API适用速率限制（请尊重）
+### Data Access
+- Web interface: Free, no registration required
+- REST APIs: Free, no API key needed
+- FTP downloads: Open access
+- Rate limiting applies to API (be respectful)
 
-## 其他资源
+## Additional Resources
 
-- **GWAS目录网站**: https://www.ebi.ac.uk/gwas/
-- **文档**: https://www.ebi.ac.uk/gwas/docs
-- **API文档**: https://www.ebi.ac.uk/gwas/rest/docs/api
-- **汇总统计API**: https://www.ebi.ac.uk/gwas/summary-statistics/docs/
-- **FTP站点**: http://ftp.ebi.ac.uk/pub/databases/gwas/
-- **培训材料**: https://github.com/EBISPOT/GWAS_Catalog-workshop
-- **PGS目录**（多基因评分）: https://www.pgscatalog.org/
-- **帮助和支持**: gwas-info@ebi.ac.uk
+- **GWAS Catalog website**: https://www.ebi.ac.uk/gwas/
+- **Documentation**: https://www.ebi.ac.uk/gwas/docs
+- **API documentation**: https://www.ebi.ac.uk/gwas/rest/docs/api
+- **Summary Statistics API**: https://www.ebi.ac.uk/gwas/summary-statistics/docs/
+- **FTP site**: http://ftp.ebi.ac.uk/pub/databases/gwas/
+- **Training materials**: https://github.com/EBISPOT/GWAS_Catalog-workshop
+- **PGS Catalog** (polygenic scores): https://www.pgscatalog.org/
+- **Help and support**: gwas-info@ebi.ac.uk
+

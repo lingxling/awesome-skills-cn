@@ -1,6 +1,6 @@
 ---
 name: datacommons-client
-description: 与 Data Commons 一起工作，这是一个提供对来自全球来源的公共统计数据进行编程访问的平台。当处理人口统计数据、经济指标、健康统计、环境数据或任何可通过 Data Commons 获得的公共数据集时使用此技能。适用于查询人口统计、GDP 数据、失业率、疾病患病率、地理实体解析以及探索统计实体之间的关系。
+description: Work with Data Commons, a platform providing programmatic access to public statistical data from global sources. Use this skill when working with demographic data, economic indicators, health statistics, environmental data, or any public datasets available through Data Commons. Applicable for querying population statistics, GDP figures, unemployment rates, disease prevalence, geographic entity resolution, and exploring relationships between statistical entities.
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
@@ -8,59 +8,59 @@ metadata:
 
 # Data Commons Client
 
-## 概述
+## Overview
 
-提供对 Data Commons Python API v2 的全面访问，用于查询统计观测值、探索知识图谱和解析实体标识符。Data Commons 将来自人口普查局、卫生组织、环境机构和其他权威来源的数据聚合到一个统一的知识图谱中。
+Provides comprehensive access to the Data Commons Python API v2 for querying statistical observations, exploring the knowledge graph, and resolving entity identifiers. Data Commons aggregates data from census bureaus, health organizations, environmental agencies, and other authoritative sources into a unified knowledge graph.
 
-## 安装
+## Installation
 
-安装带有 Pandas 支持的 Data Commons Python 客户端：
+Install the Data Commons Python client with Pandas support:
 
 ```bash
 uv pip install "datacommons-client[Pandas]"
 ```
 
-对于不带 Pandas 的基本用法：
+For basic usage without Pandas:
 ```bash
 uv pip install datacommons-client
 ```
 
-## 核心能力
+## Core Capabilities
 
-Data Commons API 由三个主要端点组成，每个端点在专门的参考文件中有详细说明：
+The Data Commons API consists of three main endpoints, each detailed in dedicated reference files:
 
-### 1. Observation 端点 - 统计数据查询
+### 1. Observation Endpoint - Statistical Data Queries
 
-查询实体的时间序列统计数据。有关综合文档，请参阅 `references/observation.md`。
+Query time-series statistical data for entities. See `references/observation.md` for comprehensive documentation.
 
-**主要用例：**
-- 检索人口、经济、健康或环境统计数据
-- 访问历史时间序列数据以进行趋势分析
-- 查询层次结构的数据（州内所有县、区域内所有国家）
-- 比较多个实体的统计数据
-- 按数据源过滤以确保一致性
+**Primary use cases:**
+- Retrieve population, economic, health, or environmental statistics
+- Access historical time-series data for trend analysis
+- Query data for hierarchies (all counties in a state, all countries in a region)
+- Compare statistics across multiple entities
+- Filter by data source for consistency
 
-**常见模式：**
+**Common patterns:**
 ```python
 from datacommons_client import DataCommonsClient
 
 client = DataCommonsClient()
 
-# 获取最新人口数据
+# Get latest population data
 response = client.observation.fetch(
     variable_dcids=["Count_Person"],
-    entity_dcids=["geoId/06"],  # 加利福尼亚
+    entity_dcids=["geoId/06"],  # California
     date="latest"
 )
 
-# 获取时间序列
+# Get time series
 response = client.observation.fetch(
     variable_dcids=["UnemploymentRate_Person"],
     entity_dcids=["country/USA"],
     date="all"
 )
 
-# 按层次结构查询
+# Query by hierarchy
 response = client.observation.fetch(
     variable_dcids=["MedianIncome_Household"],
     entity_expression="geoId/06<-containedInPlace+{typeOf:County}",
@@ -68,71 +68,71 @@ response = client.observation.fetch(
 )
 ```
 
-### 2. Node 端点 - 知识图谱探索
+### 2. Node Endpoint - Knowledge Graph Exploration
 
-探索知识图谱内的实体关系和属性。有关综合文档，请参阅 `references/node.md`。
+Explore entity relationships and properties within the knowledge graph. See `references/node.md` for comprehensive documentation.
 
-**主要用例：**
-- 发现实体的可用属性
-- 导航地理层次结构（父/子关系）
-- 检索实体名称和元数据
-- 探索实体之间的连接
-- 列出图谱中的所有实体类型
+**Primary use cases:**
+- Discover available properties for entities
+- Navigate geographic hierarchies (parent/child relationships)
+- Retrieve entity names and metadata
+- Explore connections between entities
+- List all entity types in the graph
 
-**常见模式：**
+**Common patterns:**
 ```python
-# 发现属性
+# Discover properties
 labels = client.node.fetch_property_labels(
     node_dcids=["geoId/06"],
     out=True
 )
 
-# 导航层次结构
+# Navigate hierarchy
 children = client.node.fetch_place_children(
     node_dcids=["country/USA"]
 )
 
-# 获取实体名称
+# Get entity names
 names = client.node.fetch_entity_names(
     node_dcids=["geoId/06", "geoId/48"]
 )
 ```
 
-### 3. Resolve 端点 - 实体标识
+### 3. Resolve Endpoint - Entity Identification
 
-将实体名称、坐标或外部 ID 转换为 Data Commons ID（DCID）。有关综合文档，请参阅 `references/resolve.md`。
+Translate entity names, coordinates, or external IDs into Data Commons IDs (DCIDs). See `references/resolve.md` for comprehensive documentation.
 
-**主要用例：**
-- 将地点名称转换为 DCID 以进行查询
-- 将坐标解析为地点
-- 将 Wikidata ID 映射到 Data Commons 实体
-- 处理歧义的实体名称
+**Primary use cases:**
+- Convert place names to DCIDs for queries
+- Resolve coordinates to places
+- Map Wikidata IDs to Data Commons entities
+- Handle ambiguous entity names
 
-**常见模式：**
+**Common patterns:**
 ```python
-# 按名称解析
+# Resolve by name
 response = client.resolve.fetch_dcids_by_name(
     names=["California", "Texas"],
     entity_type="State"
 )
 
-# 按坐标解析
+# Resolve by coordinates
 dcid = client.resolve.fetch_dcid_by_coordinates(
     latitude=37.7749,
     longitude=-122.4194
 )
 
-# 解析 Wikidata ID
+# Resolve Wikidata IDs
 response = client.resolve.fetch_dcids_by_wikidata_id(
     wikidata_ids=["Q30", "Q99"]
 )
 ```
 
-## 典型工作流
+## Typical Workflow
 
-大多数 Data Commons 查询遵循此模式：
+Most Data Commons queries follow this pattern:
 
-1. **解析实体**（如果从名称开始）：
+1. **Resolve entities** (if starting with names):
    ```python
    resolve_response = client.resolve.fetch_dcids_by_name(
        names=["California", "Texas"]
@@ -142,14 +142,14 @@ response = client.resolve.fetch_dcids_by_wikidata_id(
             if r["candidates"]]
    ```
 
-2. **发现可用变量**（可选）：
+2. **Discover available variables** (optional):
    ```python
    variables = client.observation.fetch_available_statistical_variables(
        entity_dcids=dcids
    )
    ```
 
-3. **查询统计数据**：
+3. **Query statistical data**:
    ```python
    response = client.observation.fetch(
        variable_dcids=["Count_Person", "UnemploymentRate_Person"],
@@ -158,41 +158,41 @@ response = client.resolve.fetch_dcids_by_wikidata_id(
    )
    ```
 
-4. **处理结果**：
+4. **Process results**:
    ```python
-   # 作为字典
+   # As dictionary
    data = response.to_dict()
 
-   # 作为 Pandas DataFrame
+   # As Pandas DataFrame
    df = response.to_observations_as_records()
    ```
 
-## 查找统计变量
+## Finding Statistical Variables
 
-Data Commons 中的统计变量使用特定的命名模式：
+Statistical variables use specific naming patterns in Data Commons:
 
-**常见变量模式：**
-- `Count_Person` - 总人口
-- `Count_Person_Female` - 女性人口
-- `UnemploymentRate_Person` - 失业率
-- `Median_Income_Household` - 家庭收入中位数
-- `Count_Death` - 死亡人数
-- `Median_Age_Person` - 年龄中位数
+**Common variable patterns:**
+- `Count_Person` - Total population
+- `Count_Person_Female` - Female population
+- `UnemploymentRate_Person` - Unemployment rate
+- `Median_Income_Household` - Median household income
+- `Count_Death` - Death count
+- `Median_Age_Person` - Median age
 
-**发现方法：**
+**Discovery methods:**
 ```python
-# 检查实体可用的变量
+# Check what variables are available for an entity
 available = client.observation.fetch_available_statistical_variables(
     entity_dcids=["geoId/06"]
 )
 
-# 或通过 Web 界面探索
+# Or explore via the web interface
 # https://datacommons.org/tools/statvar
 ```
 
-## 使用 Pandas
+## Working with Pandas
 
-所有观测响应都与 Pandas 集成：
+All observation responses integrate with Pandas:
 
 ```python
 response = client.observation.fetch(
@@ -201,11 +201,11 @@ response = client.observation.fetch(
     date="all"
 )
 
-# 转换为 DataFrame
+# Convert to DataFrame
 df = response.to_observations_as_records()
-# 列：date、entity、variable、value
+# Columns: date, entity, variable, value
 
-# 重塑以进行分析
+# Reshape for analysis
 pivot = df.pivot_table(
     values='value',
     index='date',
@@ -213,40 +213,41 @@ pivot = df.pivot_table(
 )
 ```
 
-## API 身份验证
+## API Authentication
 
-**对于 datacommons.org（默认）：**
-- 需要 API 密钥
-- 通过环境变量设置：`export DC_API_KEY="your_key"`
-- 或在初始化时传递：`client = DataCommonsClient(api_key="your_key")`
-- 在以下地址请求密钥：https://apikeys.datacommons.org/
+**For datacommons.org (default):**
+- An API key is required
+- Set via environment variable: `export DC_API_KEY="your_key"`
+- Or pass when initializing: `client = DataCommonsClient(api_key="your_key")`
+- Request keys at: https://apikeys.datacommons.org/
 
-**对于自定义 Data Commons 实例：**
-- 不需要 API 密钥
-- 指定自定义端点：`client = DataCommonsClient(url="https://custom.datacommons.org")`
+**For custom Data Commons instances:**
+- No API key required
+- Specify custom endpoint: `client = DataCommonsClient(url="https://custom.datacommons.org")`
 
-## 参考文档
+## Reference Documentation
 
-`references/` 目录中提供了每个端点的综合文档：
+Comprehensive documentation for each endpoint is available in the `references/` directory:
 
-- **`references/observation.md`**：完整的 Observation API 文档，包括所有方法、参数、响应格式和常见用例
-- **`references/node.md`**：完整的 Node API 文档，用于图谱探索、属性查询和层次结构导航
-- **`references/resolve.md`**：完整的 Resolve API 文档，用于实体标识和 DCID 解析
-- **`references/getting_started.md`**：快速入门指南，包含端到端示例和常见模式
+- **`references/observation.md`**: Complete Observation API documentation with all methods, parameters, response formats, and common use cases
+- **`references/node.md`**: Complete Node API documentation for graph exploration, property queries, and hierarchy navigation
+- **`references/resolve.md`**: Complete Resolve API documentation for entity identification and DCID resolution
+- **`references/getting_started.md`**: Quickstart guide with end-to-end examples and common patterns
 
-## 其他资源
+## Additional Resources
 
-- **官方文档**：https://docs.datacommons.org/api/python/v2/
-- **统计变量探索器**：https://datacommons.org/tools/statvar
-- **Data Commons 浏览器**：https://datacommons.org/browser/
-- **GitHub 仓库**：https://github.com/datacommonsorg/api-python
+- **Official Documentation**: https://docs.datacommons.org/api/python/v2/
+- **Statistical Variable Explorer**: https://datacommons.org/tools/statvar
+- **Data Commons Browser**: https://datacommons.org/browser/
+- **GitHub Repository**: https://github.com/datacommonsorg/api-python
 
-## 有效使用技巧
+## Tips for Effective Use
 
-1. **始终从解析开始**：在查询数据之前将名称转换为 DCID
-2. **对层次结构使用关系表达式**：一次性查询所有子项，而不是单独查询
-3. **首先检查数据可用性**：使用 `fetch_available_statistical_variables()` 查看可查询的内容
-4. **利用 Pandas 集成**：将响应转换为 DataFrames 进行分析
-5. **缓存解析结果**：如果重复查询相同的实体，存储 name→DCID 映射
-6. **按方面过滤以确保一致性**：使用 `filter_facet_domains` 确保来自同一来源的数据
-7. **阅读参考文档**：每个端点在 `references/` 目录中都有大量文档
+1. **Always start with resolution**: Convert names to DCIDs before querying data
+2. **Use relation expressions for hierarchies**: Query all children at once instead of individual queries
+3. **Check data availability first**: Use `fetch_available_statistical_variables()` to see what's queryable
+4. **Leverage Pandas integration**: Convert responses to DataFrames for analysis
+5. **Cache resolutions**: If querying the same entities repeatedly, store name→DCID mappings
+6. **Filter by facet for consistency**: Use `filter_facet_domains` to ensure data from the same source
+7. **Read reference docs**: Each endpoint has extensive documentation in the `references/` directory
+

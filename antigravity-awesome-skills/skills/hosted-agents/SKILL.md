@@ -9,8 +9,7 @@ source: community
 
 Hosted agents run in remote sandboxed environments rather than on local machines. When designed well, they provide unlimited concurrency, consistent execution environments, and multiplayer collaboration. The critical insight is that session speed should be limited only by model provider time-to-first-token, with all infrastructure setup completed before the user starts their session.
 
-## When to Activate
-
+## When to Use
 Activate this skill when:
 - Building background coding agents that run independently of user devices
 - Designing sandboxed execution environments for agent workloads
@@ -280,7 +279,5 @@ External resources:
 **Author**: Agent Skills for Context Engineering Contributors
 **Version**: 1.0.0
 
-
 ## When to Use
-
 Use this skill when tackling tasks related to its primary domain or functionality as described above.

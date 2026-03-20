@@ -13,7 +13,6 @@ source: community
 Search and extract data from Burp Suite project files using the burpsuite-project-file-parser extension.
 
 ## When to Use
-
 - Searching response headers or bodies with regex patterns
 - Extracting security audit findings from Burp projects
 - Dumping proxy history or site map data

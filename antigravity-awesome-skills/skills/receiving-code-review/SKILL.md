@@ -1,6 +1,6 @@
 ---
 name: receiving-code-review
-description: "Use when receiving code review feedback, before implementing suggestions, especially if feedback seems unclear or technically questionable - requires technical rigor and verification, not performat..."
+description: "Code review requires technical evaluation, not emotional performance."
 risk: unknown
 source: community
 date_added: "2026-02-27"

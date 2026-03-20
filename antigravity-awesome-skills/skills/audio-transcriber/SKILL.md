@@ -15,7 +15,6 @@ This skill automates audio-to-text transcription with professional Markdown outp
 Inspired by tools like Plaud, this skill transforms raw audio recordings into actionable documentation, making it ideal for meetings, interviews, lectures, and content analysis.
 
 ## When to Use
-
 Invoke this skill when:
 
 - User needs to transcribe audio/video files to text

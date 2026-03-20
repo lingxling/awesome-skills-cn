@@ -194,6 +194,13 @@ Let's actually use a skill right now. Follow these steps:
 
 Don't try to use all 1,254+ skills at once. Here's a sensible approach:
 
+If you want a tool-specific starting point before choosing skills, use:
+
+- [Claude Code skills](claude-code-skills.md)
+- [Cursor skills](cursor-skills.md)
+- [Codex CLI skills](codex-cli-skills.md)
+- [Gemini CLI skills](gemini-cli-skills.md)
+
 ### Start with "The Essentials" (5 skills, everyone needs these)
 
 1. **`@brainstorming`** - Plan before you build

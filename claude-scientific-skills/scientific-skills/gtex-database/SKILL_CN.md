@@ -1,42 +1,42 @@
 ---
 name: gtex-database
-description: 查询GTEx（基因型-组织表达）门户获取组织特异性基因表达、eQTL（表达数量性状位点）和sQTL。对于将GWAS变体链接到基因调控、理解组织特异性表达和解释非编码变体效应至关重要。
+description: Query GTEx (Genotype-Tissue Expression) portal for tissue-specific gene expression, eQTLs (expression quantitative trait loci), and sQTLs. Essential for linking GWAS variants to gene regulation, understanding tissue-specific expression, and interpreting non-coding variant effects.
 license: CC-BY-4.0
 metadata:
     skill-author: Kuan-lin Huang
 ---
 
-# GTEx 数据库
+# GTEx Database
 
-## 概述
+## Overview
 
-基因型-组织表达（GTEx）项目为研究跨54个非疾病人类组织的组织特异性基因表达和遗传调控提供了全面的资源。GTEx v10（最新版本）使研究人员能够理解遗传变体如何以组织特异性方式调控基因表达（eQTL）和剪接（sQTL），这对于解释GWAS位点和识别调控机制至关重要。
+The Genotype-Tissue Expression (GTEx) project provides a comprehensive resource for studying tissue-specific gene expression and genetic regulation across 54 non-diseased human tissues from nearly 1,000 individuals. GTEx v10 (the latest release) enables researchers to understand how genetic variants regulate gene expression (eQTLs) and splicing (sQTLs) in a tissue-specific manner, which is critical for interpreting GWAS loci and identifying regulatory mechanisms.
 
-**关键资源：**
-- GTEx门户：https://gtexportal.org/
-- GTEx API v2：https://gtexportal.org/api/v2/
-- 数据下载：https://gtexportal.org/home/downloads/adult-gtex/
-- 文档：https://gtexportal.org/home/documentationPage
+**Key resources:**
+- GTEx Portal: https://gtexportal.org/
+- GTEx API v2: https://gtexportal.org/api/v2/
+- Data downloads: https://gtexportal.org/home/downloads/adult-gtex/
+- Documentation: https://gtexportal.org/home/documentationPage
 
-## 何时使用此技能
+## When to Use This Skill
 
-使用GTEx当：
+Use GTEx when:
 
-- **GWAS位点解释**：通过eQTL识别非编码GWAS变体调控哪个基因
-- **组织特异性表达**：跨54个人类组织比较基因表达水平
-- **eQTL共定位**：测试GWAS信号和eQTL信号是否共享相同的因果变体
-- **多组织eQTL分析**：查找在多个组织中调控表达的变体
-- **剪接QTL（sQTL）**：识别影响剪接比例的变体
-- **组织特异性分析**：确定哪些组织表达感兴趣的基因
-- **基因表达探索**：检索每个组织的标准化表达水平（TPM）
+- **GWAS locus interpretation**: Identifying which gene a non-coding GWAS variant regulates via eQTLs
+- **Tissue-specific expression**: Comparing gene expression levels across 54 human tissues
+- **eQTL colocalization**: Testing if a GWAS signal and an eQTL signal share the same causal variant
+- **Multi-tissue eQTL analysis**: Finding variants that regulate expression in multiple tissues
+- **Splicing QTLs (sQTLs)**: Identifying variants that affect splicing ratios
+- **Tissue specificity analysis**: Determining which tissues express a gene of interest
+- **Gene expression exploration**: Retrieving normalized expression levels (TPM) per tissue
 
-## 核心功能
+## Core Capabilities
 
 ### 1. GTEx REST API v2
 
-基础URL：`https://gtexportal.org/api/v2/`
+Base URL: `https://gtexportal.org/api/v2/`
 
-API返回JSON，不需要身份验证。所有端点都支持分页。
+The API returns JSON and does not require authentication. All endpoints support pagination.
 
 ```python
 import requests
@@ -44,21 +44,21 @@ import requests
 BASE_URL = "https://gtexportal.org/api/v2"
 
 def gtex_get(endpoint, params=None):
-    """向GTEx API发出GET请求。"""
+    """Make a GET request to the GTEx API."""
     url = f"{BASE_URL}/{endpoint}"
     response = requests.get(url, params=params, headers={"Accept": "application/json"})
     response.raise_for_status()
     return response.json()
 ```
 
-### 2. 按组织的基因表达
+### 2. Gene Expression by Tissue
 
 ```python
 import requests
 import pandas as pd
 
 def get_gene_expression_by_tissue(gene_id_or_symbol, dataset_id="gtex_v10"):
-    """获取所有组织的基因中位数表达。"""
+    """Get median gene expression across all tissues."""
     url = "https://gtexportal.org/api/v2/expression/medianGeneExpression"
     params = {
         "gencodeId": gene_id_or_symbol,
@@ -76,21 +76,21 @@ def get_gene_expression_by_tissue(gene_id_or_symbol, dataset_id="gtex_v10"):
         )
     return df
 
-# 示例：获取APOE跨组织的表达
+# Example: get expression of APOE across tissues
 df = get_gene_expression_by_tissue("ENSG00000130203.10")  # APOE GENCODE ID
-# 或使用基因符号（某些端点接受两者）
+# Or use gene symbol (some endpoints accept both)
 print(df.head(10))
-# 输出：组织名称、中位数TPM，按最高表达排序
+# Output: tissue name, median TPM, sorted by highest expression
 ```
 
-### 3. eQTL查找
+### 3. eQTL Lookup
 
 ```python
 import requests
 import pandas as pd
 
 def query_eqtl(gene_id, tissue_id=None, dataset_id="gtex_v10"):
-    """查询基因的显著eQTL，可选择按组织过滤。"""
+    """Query significant eQTLs for a gene, optionally filtered by tissue."""
     url = "https://gtexportal.org/api/v2/association/singleTissueEqtl"
     params = {
         "gencodeId": gene_id,
@@ -119,21 +119,21 @@ def query_eqtl(gene_id, tissue_id=None, dataset_id="gtex_v10"):
         df = df.sort_values("pval", ascending=True)
     return df
 
-# 示例：查找PCSK9的eQTL
+# Example: Find eQTLs for PCSK9
 df = query_eqtl("ENSG00000169174.14")
 print(df[["snpId", "tissueSiteDetailId", "slope", "pval", "gencodeId"]].head(20))
 ```
 
-### 4. 按变体的单组织eQTL
+### 4. Single-Tissue eQTL by Variant
 
 ```python
 import requests
 
 def query_variant_eqtl(variant_id, tissue_id=None, dataset_id="gtex_v10"):
-    """获取特定变体的所有eQTL关联。"""
+    """Get all eQTL associations for a specific variant."""
     url = "https://gtexportal.org/api/v2/association/singleTissueEqtl"
     params = {
-        "variantId": variant_id,  # 例如"chr1_55516888_G_GA_b38"
+        "variantId": variant_id,  # e.g., "chr1_55516888_G_GA_b38"
         "datasetId": dataset_id,
         "itemsPerPage": 250
     }
@@ -143,17 +143,17 @@ def query_variant_eqtl(variant_id, tissue_id=None, dataset_id="gtex_v10"):
     response = requests.get(url, params=params)
     return response.json()
 
-# GTEx变体ID格式：chr{chrom}_{pos}_{ref}_{alt}_b38
-# 示例："chr17_43094692_G_A_b38"
+# GTEx variant ID format: chr{chrom}_{pos}_{ref}_{alt}_b38
+# Example: "chr17_43094692_G_A_b38"
 ```
 
-### 5. 多组织eQTL（eGenes）
+### 5. Multi-Tissue eQTL (eGenes)
 
 ```python
 import requests
 
 def get_egenes(tissue_id, dataset_id="gtex_v10"):
-    """获取组织中的所有eGenes（至少有一个显著eQTL的基因）。"""
+    """Get all eGenes (genes with at least one significant eQTL) in a tissue."""
     url = "https://gtexportal.org/api/v2/association/egene"
     params = {
         "tissueSiteDetailId": tissue_id,
@@ -176,37 +176,37 @@ def get_egenes(tissue_id, dataset_id="gtex_v10"):
         page += 1
     return all_egenes
 
-# 示例：全血中的所有eGenes
+# Example: all eGenes in whole blood
 egenes = get_egenes("Whole_Blood")
-print(f"在Whole Blood中找到{len(egenes)}个eGenes")
+print(f"Found {len(egenes)} eGenes in Whole Blood")
 ```
 
-### 6. 组织列表
+### 6. Tissue List
 
 ```python
 import requests
 
 def get_tissues(dataset_id="gtex_v10"):
-    """获取所有可用组织及其元数据。"""
+    """Get all available tissues with metadata."""
     url = "https://gtexportal.org/api/v2/dataset/tissueSiteDetail"
     params = {"datasetId": dataset_id, "itemsPerPage": 100}
     response = requests.get(url, params=params)
     return response.json()["data"]
 
 tissues = get_tissues()
-# 关键字段：tissueSiteDetailId、tissueSiteDetail、colorHex、samplingSite
-# 常见组织ID：
-# Whole_Blood、Brain_Cortex、Liver、Kidney_Cortex、Heart_Left_Ventricle、
-# Lung、Muscle_Skeletal、Adipose_Subcutaneous、Colon_Transverse、...
+# Key fields: tissueSiteDetailId, tissueSiteDetail, colorHex, samplingSite
+# Common tissue IDs:
+# Whole_Blood, Brain_Cortex, Liver, Kidney_Cortex, Heart_Left_Ventricle,
+# Lung, Muscle_Skeletal, Adipose_Subcutaneous, Colon_Transverse, ...
 ```
 
-### 7. sQTL（剪接QTL）
+### 7. sQTL (Splicing QTLs)
 
 ```python
 import requests
 
 def query_sqtl(gene_id, tissue_id=None, dataset_id="gtex_v10"):
-    """查询基因的显著sQTL。"""
+    """Query significant sQTLs for a gene."""
     url = "https://gtexportal.org/api/v2/association/singleTissueSqtl"
     params = {
         "gencodeId": gene_id,
@@ -220,22 +220,22 @@ def query_sqtl(gene_id, tissue_id=None, dataset_id="gtex_v10"):
     return response.json()
 ```
 
-## 查询工作流
+## Query Workflows
 
-### 工作流1：通过eQTL解释GWAS变体
+### Workflow 1: Interpreting a GWAS Variant via eQTLs
 
-1. **识别GWAS变体**（rs ID或染色体位置）
-2. **转换为GTEx变体ID格式**（`chr{chrom}_{pos}_{ref}_{alt}_b38`）
-3. **跨组织查询所有eQTL关联**
-4. **检查效应方向**：GWAS风险等位基因是否与eQTL效应等位基因相同？
-5. **优先考虑组织**：选择与疾病生物学相关的组织
-6. **考虑共定位**：使用`coloc`（R包）和完整汇总统计
+1. **Identify the GWAS variant** (rs ID or chromosome position)
+2. **Convert to GTEx variant ID format** (`chr{chrom}_{pos}_{ref}_{alt}_b38`)
+3. **Query all eQTL associations** for that variant across tissues
+4. **Check effect direction**: is the GWAS risk allele the same as the eQTL effect allele?
+5. **Prioritize tissues**: select tissues biologically relevant to the disease
+6. **Consider colocalization** using `coloc` (R package) with full summary statistics
 
 ```python
 import requests, pandas as pd
 
 def interpret_gwas_variant(variant_id, dataset_id="gtex_v10"):
-    """查找GWAS变体调控的所有基因。"""
+    """Find all genes regulated by a GWAS variant."""
     url = "https://gtexportal.org/api/v2/association/singleTissueEqtl"
     params = {"variantId": variant_id, "datasetId": dataset_id, "itemsPerPage": 500}
     response = requests.get(url, params=params)
@@ -246,70 +246,70 @@ def interpret_gwas_variant(variant_id, dataset_id="gtex_v10"):
         return df
     return df[["geneSymbol", "tissueSiteDetailId", "slope", "pval", "maf"]].sort_values("pval")
 
-# 示例
+# Example
 results = interpret_gwas_variant("chr1_154453788_A_T_b38")
 print(results.groupby("geneSymbol")["tissueSiteDetailId"].count().sort_values(ascending=False))
 ```
 
-### 工作流2：基因表达图谱
+### Workflow 2: Gene Expression Atlas
 
-1. 获取基因跨所有组织的中位数表达
-2. 识别主要表达位点
-3. 与疾病相关组织比较
-4. 下载原始数据进行统计比较
+1. Get median expression for a gene across all tissues
+2. Identify the primary expression site(s)
+3. Compare with disease-relevant tissues
+4. Download raw data for statistical comparisons
 
-### 工作流3：组织特异性eQTL分析
+### Workflow 3: Tissue-Specific eQTL Analysis
 
-1. 选择与疾病相关的组织
-2. 查询该组织中的所有eGenes
-3. 与GWAS显著位点交叉引用
-4. 识别共定位信号
+1. Select tissues relevant to your disease
+2. Query all eGenes in that tissue
+3. Cross-reference with GWAS-significant loci
+4. Identify co-localized signals
 
-## 关键API端点
+## Key API Endpoints
 
-| 端点 | 描述 |
+| Endpoint | Description |
 |----------|-------------|
-| `/expression/medianGeneExpression` | 基因每个组织的中位数TPM |
-| `/expression/geneExpression` | 每个组织的完整表达分布 |
-| `/association/singleTissueEqtl` | 显著eQTL关联 |
-| `/association/singleTissueSqtl` | 显著sQTL关联 |
-| `/association/egene` | 组织中的eGenes |
-| `/dataset/tissueSiteDetail` | 具有元数据的可用组织 |
-| `/reference/gene` | 基因元数据（GENCODE ID、坐标） |
-| `/variant/variantPage` | 按rsID或位置查找变体 |
+| `/expression/medianGeneExpression` | Median TPM by tissue for a gene |
+| `/expression/geneExpression` | Full distribution of expression per tissue |
+| `/association/singleTissueEqtl` | Significant eQTL associations |
+| `/association/singleTissueSqtl` | Significant sQTL associations |
+| `/association/egene` | eGenes in a tissue |
+| `/dataset/tissueSiteDetail` | Available tissues with metadata |
+| `/reference/gene` | Gene metadata (GENCODE IDs, coordinates) |
+| `/variant/variantPage` | Variant lookup by rsID or position |
 
-## 可用数据集
+## Datasets Available
 
-| ID | 描述 |
+| ID | Description |
 |----|-------------|
-| `gtex_v10` | GTEx v10（当前；~960个供体，54个组织） |
-| `gtex_v8` | GTEx v8（838个供体，49个组织）——较旧但被广泛引用 |
+| `gtex_v10` | GTEx v10 (current; ~960 donors, 54 tissues) |
+| `gtex_v8` | GTEx v8 (838 donors, 49 tissues) — older but widely cited |
 
-## 最佳实践
+## Best Practices
 
-- **使用GENCODE ID**（例如`ENSG00000130203.10`）进行基因查询；`.version`后缀对某些端点很重要
-- **GTEx变体ID**使用格式`chr{chrom}_{pos}_{ref}_{alt}_b38`（GRCh38）——与rs ID不同
-- **处理分页**：大型查询（例如所有eGenes）需要迭代遍历页面
-- **组织命名法**：对API调用使用`tissueSiteDetailId`（例如`Whole_Blood`）而不是显示名称
-- **FDR校正**：GTEx使用FDR < 0.05（q值）作为eQTL的显著性阈值
-- **效应等位基因**：`slope`字段是替代等位基因的效应；正数=替代等位基因具有更高表达
+- **Use GENCODE IDs** (e.g., `ENSG00000130203.10`) for gene queries; the `.version` suffix matters for some endpoints
+- **GTEx variant IDs** use the format `chr{chrom}_{pos}_{ref}_{alt}_b38` (GRCh38) — different from rs IDs
+- **Handle pagination**: Large queries (e.g., all eGenes) require iterating through pages
+- **Tissue nomenclature**: Use `tissueSiteDetailId` (e.g., `Whole_Blood`) not display names for API calls
+- **FDR correction**: GTEx uses FDR < 0.05 (q-value) as the significance threshold for eQTLs
+- **Effect alleles**: The `slope` field is the effect of the alternative allele; positive = higher expression with alt allele
 
-## 数据下载（用于大规模分析）
+## Data Downloads (for large-scale analysis)
 
-对于全基因组分析，下载完整汇总统计而不是使用API：
+For genome-wide analyses, download full summary statistics rather than using the API:
 
 ```bash
-# 所有显著eQTL（v10）
+# All significant eQTLs (v10)
 wget https://storage.googleapis.com/adult-gtex/bulk-qtl/v10/single-tissue-cis-qtl/GTEx_Analysis_v10_eQTL.tar
 
-# 标准化表达矩阵
+# Normalized expression matrices
 wget https://storage.googleapis.com/adult-gtex/bulk-gex/v10/rna-seq/GTEx_Analysis_v10_RNASeQCv2.4.2_gene_reads.gct.gz
 ```
 
-## 其他资源
+## Additional Resources
 
-- **GTEx门户**: https://gtexportal.org/
-- **API文档**: https://gtexportal.org/api/v2/
-- **数据下载**: https://gtexportal.org/home/downloads/adult-gtex/
+- **GTEx Portal**: https://gtexportal.org/
+- **API documentation**: https://gtexportal.org/api/v2/
+- **Data downloads**: https://gtexportal.org/home/downloads/adult-gtex/
 - **GitHub**: https://github.com/broadinstitute/gtex-pipeline
-- **引用**: GTEx Consortium (2020) Science. PMID: 32913098
+- **Citation**: GTEx Consortium (2020) Science. PMID: 32913098

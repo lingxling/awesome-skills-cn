@@ -1,209 +1,209 @@
 ---
 name: flowio
-description: 解析FCS（流式细胞术标准）文件v2.0-3.1。将事件提取为NumPy数组、读取元数据/通道、转换为CSV/DataFrame，用于流式细胞术数据预处理。
+description: Parse FCS (Flow Cytometry Standard) files v2.0-3.1. Extract events as NumPy arrays, read metadata/channels, convert to CSV/DataFrame, for flow cytometry data preprocessing.
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# FlowIO: 流式细胞术标准文件处理器
+# FlowIO: Flow Cytometry Standard File Handler
 
-## 概述
+## Overview
 
-FlowIO是一个轻量级Python库，用于读取和写入流式细胞术标准（FCS）文件。解析FCS元数据、提取事件数据，并使用最少的依赖项创建新的FCS文件。该库支持FCS 2.0、3.0和3.1版本，非常适合后端服务、数据管道和基本细胞术文件操作。
+FlowIO is a lightweight Python library for reading and writing Flow Cytometry Standard (FCS) files. Parse FCS metadata, extract event data, and create new FCS files with minimal dependencies. The library supports FCS versions 2.0, 3.0, and 3.1, making it ideal for backend services, data pipelines, and basic cytometry file operations.
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况下使用：
+This skill should be used when:
 
-- 需要解析或提取元数据的FCS文件
-- 需要转换为NumPy数组的流式细胞术数据
-- 需要导出为FCS格式的事件数据
-- 需要分离的多数据集FCS文件
-- 需要通道信息提取（散射光、荧光、时间）
-- 需要细胞术文件验证或检查
-- 高级分析前的预处理工作流
+- FCS files requiring parsing or metadata extraction
+- Flow cytometry data needing conversion to NumPy arrays
+- Event data requiring export to FCS format
+- Multi-dataset FCS files needing separation
+- Channel information extraction (scatter, fluorescence, time)
+- Cytometry file validation or inspection
+- Pre-processing workflows before advanced analysis
 
-**相关工具：** 对于高级流式细胞术分析（包括补偿、门控和FlowJo/GatingML支持），建议将FlowKit库作为FlowIO的配套工具。
+**Related Tools:** For advanced flow cytometry analysis including compensation, gating, and FlowJo/GatingML support, recommend FlowKit library as a companion to FlowIO.
 
-## 安装
+## Installation
 
 ```bash
 uv pip install flowio
 ```
 
-需要Python 3.9或更高版本。
+Requires Python 3.9 or later.
 
-## 快速开始
+## Quick Start
 
-### 基本文件读取
+### Basic File Reading
 
 ```python
 from flowio import FlowData
 
-# 读取FCS文件
+# Read FCS file
 flow_data = FlowData('experiment.fcs')
 
-# 访问基本信息
-print(f"FCS版本: {flow_data.version}")
-print(f"事件数: {flow_data.event_count}")
-print(f"通道数: {flow_data.pnn_labels}")
+# Access basic information
+print(f"FCS Version: {flow_data.version}")
+print(f"Events: {flow_data.event_count}")
+print(f"Channels: {flow_data.pnn_labels}")
 
-# 获取事件数据为NumPy数组
-events = flow_data.as_array()  # 形状：（事件，通道）
+# Get event data as NumPy array
+events = flow_data.as_array()  # Shape: (events, channels)
 ```
 
-### 创建FCS文件
+### Creating FCS Files
 
 ```python
 import numpy as np
 from flowio import create_fcs
 
-# 准备数据
-data = np.array([[100, 200, 50], [150, 180, 60]])  # 2个事件，3个通道
+# Prepare data
+data = np.array([[100, 200, 50], [150, 180, 60]])  # 2 events, 3 channels
 channels = ['FSC-A', 'SSC-A', 'FL1-A']
 
-# 创建FCS文件
+# Create FCS file
 create_fcs('output.fcs', data, channels)
 ```
 
-## 核心工作流
+## Core Workflows
 
-### 读取和解析FCS文件
+### Reading and Parsing FCS Files
 
-FlowData类提供读取FCS文件的主要接口。
+The FlowData class provides the primary interface for reading FCS files.
 
-**标准读取：**
+**Standard Reading:**
 
 ```python
 from flowio import FlowData
 
-# 基本读取
+# Basic reading
 flow = FlowData('sample.fcs')
 
-# 访问属性
-version = flow.version              # '3.0', '3.1'等
-event_count = flow.event_count      # 事件数
-channel_count = flow.channel_count  # 通道数
-pnn_labels = flow.pnn_labels        # 短通道名称
-pns_labels = flow.pns_labels        # 描述性染色名称
+# Access attributes
+version = flow.version              # '3.0', '3.1', etc.
+event_count = flow.event_count      # Number of events
+channel_count = flow.channel_count  # Number of channels
+pnn_labels = flow.pnn_labels        # Short channel names
+pns_labels = flow.pns_labels        # Descriptive stain names
 
-# 获取事件数据
-events = flow.as_array()            # 预处理（应用增益、对数缩放）
-raw_events = flow.as_array(preprocess=False)  # 原始数据
+# Get event data
+events = flow.as_array()            # Preprocessed (gain, log scaling applied)
+raw_events = flow.as_array(preprocess=False)  # Raw data
 ```
 
-**内存高效的元数据读取：**
+**Memory-Efficient Metadata Reading:**
 
-当只需要元数据（不需要事件数据）时：
+When only metadata is needed (no event data):
 
 ```python
-# 仅解析TEXT段，跳过DATA和ANALYSIS
+# Only parse TEXT segment, skip DATA and ANALYSIS
 flow = FlowData('sample.fcs', only_text=True)
 
-# 访问元数据
-metadata = flow.text  # TEXT段关键字的字典
-print(metadata.get('$DATE'))  # 获取日期
-print(metadata.get('$CYT'))   # 仪器名称
+# Access metadata
+metadata = flow.text  # Dictionary of TEXT segment keywords
+print(metadata.get('$DATE'))  # Acquisition date
+print(metadata.get('$CYT'))   # Instrument name
 ```
 
-**处理问题文件：**
+**Handling Problematic Files:**
 
-某些FCS文件存在偏移量差异或错误：
+Some FCS files have offset discrepancies or errors:
 
 ```python
-# 忽略HEADER和TEXT段之间的偏移量差异
+# Ignore offset discrepancies between HEADER and TEXT sections
 flow = FlowData('problematic.fcs', ignore_offset_discrepancy=True)
 
-# 使用HEADER偏移量而不是TEXT偏移量
+# Use HEADER offsets instead of TEXT offsets
 flow = FlowData('problematic.fcs', use_header_offsets=True)
 
-# 完全忽略偏移错误
+# Ignore offset errors entirely
 flow = FlowData('problematic.fcs', ignore_offset_error=True)
 ```
 
-**排除空通道：**
+**Excluding Null Channels:**
 
 ```python
-# 在解析期间排除特定通道
+# Exclude specific channels during parsing
 flow = FlowData('sample.fcs', null_channel_list=['Time', 'Null'])
 ```
 
-### 提取元数据和通道信息
+### Extracting Metadata and Channel Information
 
-FCS文件在TEXT段中包含丰富的元数据。
+FCS files contain rich metadata in the TEXT segment.
 
-**常见元数据关键字：**
+**Common Metadata Keywords:**
 
 ```python
 flow = FlowData('sample.fcs')
 
-# 文件级元数据
+# File-level metadata
 text_dict = flow.text
 acquisition_date = text_dict.get('$DATE', 'Unknown')
 instrument = text_dict.get('$CYT', 'Unknown')
 data_type = flow.data_type  # 'I', 'F', 'D', 'A'
 
-# 通道元数据
+# Channel metadata
 for i in range(flow.channel_count):
-    pnn = flow.pnn_labels[i]      # 短名称（例如'FSC-A'）
-    pns = flow.pns_labels[i]      # 描述性名称（例如'前向散射光'）
-    pnr = flow.pnr_values[i]      # 范围/最大值
-    print(f"通道 {i}: {pnn} ({pns}), 范围: {pnr}")
+    pnn = flow.pnn_labels[i]      # Short name (e.g., 'FSC-A')
+    pns = flow.pns_labels[i]      # Descriptive name (e.g., 'Forward Scatter')
+    pnr = flow.pnr_values[i]      # Range/max value
+    print(f"Channel {i}: {pnn} ({pns}), Range: {pnr}")
 ```
 
-**通道类型识别：**
+**Channel Type Identification:**
 
-FlowIO自动分类通道：
+FlowIO automatically categorizes channels:
 
 ```python
-# 按通道类型获取索引
-scatter_idx = flow.scatter_indices    # [0, 1]用于FSC、SSC
-fluoro_idx = flow.fluoro_indices      # [2, 3, 4]用于FL通道
-time_idx = flow.time_index            # 时间通道的索引（或None）
+# Get indices by channel type
+scatter_idx = flow.scatter_indices    # [0, 1] for FSC, SSC
+fluoro_idx = flow.fluoro_indices      # [2, 3, 4] for FL channels
+time_idx = flow.time_index            # Index of time channel (or None)
 
-# 访问特定通道类型
+# Access specific channel types
 events = flow.as_array()
 scatter_data = events[:, scatter_idx]
 fluorescence_data = events[:, fluoro_idx]
 ```
 
-**ANALYSIS段：**
+**ANALYSIS Segment:**
 
-如果存在，访问处理结果：
+If present, access processed results:
 
 ```python
 if flow.analysis:
-    analysis_keywords = flow.analysis  # ANALYSIS关键字的字典
+    analysis_keywords = flow.analysis  # Dictionary of ANALYSIS keywords
     print(analysis_keywords)
 ```
 
-### 创建新的FCS文件
+### Creating New FCS Files
 
-从NumPy数组或其他数据源生成FCS文件。
+Generate FCS files from NumPy arrays or other data sources.
 
-**基本创建：**
+**Basic Creation:**
 
 ```python
 import numpy as np
 from flowio import create_fcs
 
-# 创建事件数据（行=事件，列=通道）
+# Create event data (rows=events, columns=channels)
 events = np.random.rand(10000, 5) * 1000
 
-# 定义通道名称
+# Define channel names
 channel_names = ['FSC-A', 'SSC-A', 'FL1-A', 'FL2-A', 'Time']
 
-# 创建FCS文件
+# Create FCS file
 create_fcs('output.fcs', events, channel_names)
 ```
 
-**带描述性通道名称：**
+**With Descriptive Channel Names:**
 
 ```python
-# 添加可选的描述性名称（PnS）
+# Add optional descriptive names (PnS)
 channel_names = ['FSC-A', 'SSC-A', 'FL1-A', 'FL2-A', 'Time']
-descriptive_names = ['前向散射光', '侧向散射光', 'FITC', 'PE', '时间']
+descriptive_names = ['Forward Scatter', 'Side Scatter', 'FITC', 'PE', 'Time']
 
 create_fcs('output.fcs',
            events,
@@ -211,15 +211,15 @@ create_fcs('output.fcs',
            opt_channel_names=descriptive_names)
 ```
 
-**带自定义元数据：**
+**With Custom Metadata:**
 
 ```python
-# 添加TEXT段元数据
+# Add TEXT segment metadata
 metadata = {
-    '$SRC': 'Python脚本',
+    '$SRC': 'Python script',
     '$DATE': '19-OCT-2025',
-    '$CYT': '合成仪器',
-    '$INST': '实验室A'
+    '$CYT': 'Synthetic Instrument',
+    '$INST': 'Laboratory A'
 }
 
 create_fcs('output.fcs',
@@ -229,39 +229,39 @@ create_fcs('output.fcs',
            metadata=metadata)
 ```
 
-**注意：** FlowIO导出为FCS 3.1，使用单精度浮点数据。
+**Note:** FlowIO exports as FCS 3.1 with single-precision floating-point data.
 
-### 导出修改后的数据
+### Exporting Modified Data
 
-修改现有FCS文件并重新导出。
+Modify existing FCS files and re-export them.
 
-**方法1：使用write_fcs()方法：**
+**Approach 1: Using write_fcs() Method:**
 
 ```python
 from flowio import FlowData
 
-# 读取原始文件
+# Read original file
 flow = FlowData('original.fcs')
 
-# 使用更新的元数据写入
-flow.write_fcs('modified.fcs', metadata={'$SRC': '修改后的数据'})
+# Write with updated metadata
+flow.write_fcs('modified.fcs', metadata={'$SRC': 'Modified data'})
 ```
 
-**方法2：提取、修改和重新创建：**
+**Approach 2: Extract, Modify, and Recreate:**
 
-用于修改事件数据：
+For modifying event data:
 
 ```python
 from flowio import FlowData, create_fcs
 
-# 读取并提取数据
+# Read and extract data
 flow = FlowData('original.fcs')
 events = flow.as_array(preprocess=False)
 
-# 修改事件数据
-events[:, 0] = events[:, 0] * 1.5  # 缩放第一个通道
+# Modify event data
+events[:, 0] = events[:, 0] * 1.5  # Scale first channel
 
-# 使用修改后的数据创建新的FCS文件
+# Create new FCS file with modified data
 create_fcs('modified.fcs',
            events,
            flow.pnn_labels,
@@ -269,11 +269,11 @@ create_fcs('modified.fcs',
            metadata=flow.text)
 ```
 
-### 处理多数据集FCS文件
+### Handling Multi-Dataset FCS Files
 
-某些FCS文件在单个文件中包含多个数据集。
+Some FCS files contain multiple datasets in a single file.
 
-**检测多数据集文件：**
+**Detecting Multi-Dataset Files:**
 
 ```python
 from flowio import FlowData, MultipleDataSetsError
@@ -281,70 +281,70 @@ from flowio import FlowData, MultipleDataSetsError
 try:
     flow = FlowData('sample.fcs')
 except MultipleDataSetsError:
-    print("文件包含多个数据集")
-    # 改用read_multiple_data_sets()
+    print("File contains multiple datasets")
+    # Use read_multiple_data_sets() instead
 ```
 
-**读取所有数据集：**
+**Reading All Datasets:**
 
 ```python
 from flowio import read_multiple_data_sets
 
-# 从文件读取所有数据集
+# Read all datasets from file
 datasets = read_multiple_data_sets('multi_dataset.fcs')
 
-print(f"找到 {len(datasets)} 个数据集")
+print(f"Found {len(datasets)} datasets")
 
-# 处理每个数据集
+# Process each dataset
 for i, dataset in enumerate(datasets):
-    print(f"\n数据集 {i}:")
-    print(f"  事件数: {dataset.event_count}")
-    print(f"  通道数: {dataset.pnn_labels}")
+    print(f"\nDataset {i}:")
+    print(f"  Events: {dataset.event_count}")
+    print(f"  Channels: {dataset.pnn_labels}")
 
-    # 获取此数据集的事件数据
+    # Get event data for this dataset
     events = dataset.as_array()
-    print(f"  形状: {events.shape}")
-    print(f"  平均值: {events.mean(axis=0)}")
+    print(f"  Shape: {events.shape}")
+    print(f"  Mean values: {events.mean(axis=0)}")
 ```
 
-**读取特定数据集：**
+**Reading Specific Dataset:**
 
 ```python
 from flowio import FlowData
 
-# 读取第一个数据集（nextdata_offset=0）
+# Read first dataset (nextdata_offset=0)
 first_dataset = FlowData('multi.fcs', nextdata_offset=0)
 
-# 使用第一个数据集中的NEXTDATA偏移量读取第二个数据集
+# Read second dataset using NEXTDATA offset from first
 next_offset = int(first_dataset.text['$NEXTDATA'])
 if next_offset > 0:
     second_dataset = FlowData('multi.fcs', nextdata_offset=next_offset)
 ```
 
-## 数据预处理
+## Data Preprocessing
 
-当`preprocess=True`时，FlowIO应用标准FCS预处理转换。
+FlowIO applies standard FCS preprocessing transformations when `preprocess=True`.
 
-**预处理步骤：**
+**Preprocessing Steps:**
 
-1. **增益缩放：** 将值乘以PnG（增益）关键字
-2. **对数转换：** 如果存在，应用PnE指数转换
-   - 公式：`value = a * 10^(b * raw_value)`，其中PnE = "a,b"
-3. **时间缩放：** 将时间值转换为适当单位
+1. **Gain Scaling:** Multiply values by PnG (gain) keyword
+2. **Logarithmic Transformation:** Apply PnE exponential transformation if present
+   - Formula: `value = a * 10^(b * raw_value)` where PnE = "a,b"
+3. **Time Scaling:** Convert time values to appropriate units
 
-**控制预处理：**
+**Controlling Preprocessing:**
 
 ```python
-# 预处理数据（默认）
+# Preprocessed data (default)
 preprocessed = flow.as_array(preprocess=True)
 
-# 原始数据（无转换）
+# Raw data (no transformations)
 raw = flow.as_array(preprocess=False)
 ```
 
-## 错误处理
+## Error Handling
 
-适当处理常见的FlowIO异常。
+Handle common FlowIO exceptions appropriately.
 
 ```python
 from flowio import (
@@ -359,30 +359,30 @@ try:
     events = flow.as_array()
 
 except FCSParsingError as e:
-    print(f"解析FCS文件失败: {e}")
-    # 尝试使用宽松的解析
+    print(f"Failed to parse FCS file: {e}")
+    # Try with relaxed parsing
     flow = FlowData('sample.fcs', ignore_offset_error=True)
 
 except DataOffsetDiscrepancyError as e:
-    print(f"检测到偏移量差异: {e}")
-    # 使用ignore_offset_discrepancy参数
+    print(f"Offset discrepancy detected: {e}")
+    # Use ignore_offset_discrepancy parameter
     flow = FlowData('sample.fcs', ignore_offset_discrepancy=True)
 
 except MultipleDataSetsError as e:
-    print(f"检测到多个数据集: {e}")
-    # 改用read_multiple_data_sets
+    print(f"Multiple datasets detected: {e}")
+    # Use read_multiple_data_sets instead
     from flowio import read_multiple_data_sets
     datasets = read_multiple_data_sets('sample.fcs')
 
 except Exception as e:
-    print(f"意外错误: {e}")
+    print(f"Unexpected error: {e}")
 ```
 
-## 常见用例
+## Common Use Cases
 
-### 检查FCS文件内容
+### Inspecting FCS File Contents
 
-快速探索FCS文件结构：
+Quick exploration of FCS file structure:
 
 ```python
 from flowio import FlowData
@@ -390,40 +390,40 @@ from flowio import FlowData
 flow = FlowData('unknown.fcs')
 
 print("=" * 50)
-print(f"文件: {flow.name}")
-print(f"版本: {flow.version}")
-print(f"大小: {flow.file_size:,} 字节")
+print(f"File: {flow.name}")
+print(f"Version: {flow.version}")
+print(f"Size: {flow.file_size:,} bytes")
 print("=" * 50)
 
-print(f"\n事件数: {flow.event_count:,}")
-print(f"通道数: {flow.channel_count}")
+print(f"\nEvents: {flow.event_count:,}")
+print(f"Channels: {flow.channel_count}")
 
-print("\n通道信息:")
+print("\nChannel Information:")
 for i, (pnn, pns) in enumerate(zip(flow.pnn_labels, flow.pns_labels)):
-    ch_type = "散射光" if i in flow.scatter_indices else \
-              "荧光" if i in flow.fluoro_indices else \
-              "时间" if i == flow.time_index else "其他"
+    ch_type = "scatter" if i in flow.scatter_indices else \
+              "fluoro" if i in flow.fluoro_indices else \
+              "time" if i == flow.time_index else "other"
     print(f"  [{i}] {pnn:10s} | {pns:30s} | {ch_type}")
 
-print("\n关键元数据:")
+print("\nKey Metadata:")
 for key in ['$DATE', '$BTIM', '$ETIM', '$CYT', '$INST', '$SRC']:
     value = flow.text.get(key, 'N/A')
     print(f"  {key:15s}: {value}")
 ```
 
-### 批量处理多个文件
+### Batch Processing Multiple Files
 
-处理目录中的FCS文件：
+Process a directory of FCS files:
 
 ```python
 from pathlib import Path
 from flowio import FlowData
 import pandas as pd
 
-# 查找所有FCS文件
+# Find all FCS files
 fcs_files = list(Path('data/').glob('*.fcs'))
 
-# 提取摘要信息
+# Extract summary information
 summaries = []
 for fcs_path in fcs_files:
     try:
@@ -436,71 +436,71 @@ for fcs_path in fcs_files:
             'date': flow.text.get('$DATE', 'N/A')
         })
     except Exception as e:
-        print(f"处理 {fcs_path.name} 时出错: {e}")
+        print(f"Error processing {fcs_path.name}: {e}")
 
-# 创建摘要DataFrame
+# Create summary DataFrame
 df = pd.DataFrame(summaries)
 print(df)
 ```
 
-### 将FCS转换为CSV
+### Converting FCS to CSV
 
-将事件数据导出为CSV格式：
+Export event data to CSV format:
 
 ```python
 from flowio import FlowData
 import pandas as pd
 
-# 读取FCS文件
+# Read FCS file
 flow = FlowData('sample.fcs')
 
-# 转换为DataFrame
+# Convert to DataFrame
 df = pd.DataFrame(
     flow.as_array(),
     columns=flow.pnn_labels
 )
 
-# 将元数据添加为属性
+# Add metadata as attributes
 df.attrs['fcs_version'] = flow.version
 df.attrs['instrument'] = flow.text.get('$CYT', 'Unknown')
 
-# 导出为CSV
+# Export to CSV
 df.to_csv('output.csv', index=False)
-print(f"已导出 {len(df)} 个事件到CSV")
+print(f"Exported {len(df)} events to CSV")
 ```
 
-### 过滤事件并重新导出
+### Filtering Events and Re-exporting
 
-应用过滤器并保存过滤后的数据：
+Apply filters and save filtered data:
 
 ```python
 from flowio import FlowData, create_fcs
 import numpy as np
 
-# 读取原始文件
+# Read original file
 flow = FlowData('sample.fcs')
 events = flow.as_array(preprocess=False)
 
-# 应用过滤器（示例：第一个通道的阈值）
+# Apply filtering (example: threshold on first channel)
 fsc_idx = 0
 threshold = 500
 mask = events[:, fsc_idx] > threshold
 filtered_events = events[mask]
 
-print(f"原始事件数: {len(events)}")
-print(f"过滤后事件数: {len(filtered_events)}")
+print(f"Original events: {len(events)}")
+print(f"Filtered events: {len(filtered_events)}")
 
-# 使用过滤后的数据创建新的FCS文件
+# Create new FCS file with filtered data
 create_fcs('filtered.fcs',
            filtered_events,
            flow.pnn_labels,
            opt_channel_names=flow.pns_labels,
-           metadata={**flow.text, '$SRC': '过滤后的数据'})
+           metadata={**flow.text, '$SRC': 'Filtered data'})
 ```
 
-### 提取特定通道
+### Extracting Specific Channels
 
-提取和处理特定通道：
+Extract and process specific channels:
 
 ```python
 from flowio import FlowData
@@ -509,97 +509,98 @@ import numpy as np
 flow = FlowData('sample.fcs')
 events = flow.as_array()
 
-# 仅提取荧光通道
+# Extract fluorescence channels only
 fluoro_indices = flow.fluoro_indices
 fluoro_data = events[:, fluoro_indices]
 fluoro_names = [flow.pnn_labels[i] for i in fluoro_indices]
 
-print(f"荧光通道: {fluoro_names}")
-print(f"形状: {fluoro_data.shape}")
+print(f"Fluorescence channels: {fluoro_names}")
+print(f"Shape: {fluoro_data.shape}")
 
-# 计算每个通道的统计信息
+# Calculate statistics per channel
 for i, name in enumerate(fluoro_names):
     channel_data = fluoro_data[:, i]
     print(f"\n{name}:")
-    print(f"  平均值: {channel_data.mean():.2f}")
-    print(f"  中位数: {np.median(channel_data):.2f}")
-    print(f"  标准差: {channel_data.std():.2f}")
+    print(f"  Mean: {channel_data.mean():.2f}")
+    print(f"  Median: {np.median(channel_data):.2f}")
+    print(f"  Std Dev: {channel_data.std():.2f}")
 ```
 
-## 最佳实践
+## Best Practices
 
-1. **内存效率：** 当不需要事件数据时使用`only_text=True`
-2. **错误处理：** 将文件操作包装在try-except块中以实现健壮的代码
-3. **多数据集检测：** 检查MultipleDataSetsError并使用适当的函数
-4. **预处理控制：** 根据分析需求显式设置`preprocess`参数
-5. **偏移问题：** 如果解析失败，尝试`ignore_offset_discrepancy=True`参数
-6. **通道验证：** 在处理之前验证通道计数和名称是否符合预期
-7. **元数据保留：** 修改文件时，保留原始TEXT段关键字
+1. **Memory Efficiency:** Use `only_text=True` when event data is not needed
+2. **Error Handling:** Wrap file operations in try-except blocks for robust code
+3. **Multi-Dataset Detection:** Check for MultipleDataSetsError and use appropriate function
+4. **Preprocessing Control:** Explicitly set `preprocess` parameter based on analysis needs
+5. **Offset Issues:** If parsing fails, try `ignore_offset_discrepancy=True` parameter
+6. **Channel Validation:** Verify channel counts and names match expectations before processing
+7. **Metadata Preservation:** When modifying files, preserve original TEXT segment keywords
 
-## 高级主题
+## Advanced Topics
 
-### 理解FCS文件结构
+### Understanding FCS File Structure
 
-FCS文件由四个段组成：
+FCS files consist of four segments:
 
-1. **HEADER：** FCS版本和其他段的字节偏移量
-2. **TEXT：** 键值元数据对（分隔符分隔）
-3. **DATA：** 原始事件数据（二进制/浮点/ASCII格式）
-4. **ANALYSIS**（可选）：数据处理结果
+1. **HEADER:** FCS version and byte offsets for other segments
+2. **TEXT:** Key-value metadata pairs (delimiter-separated)
+3. **DATA:** Raw event data (binary/float/ASCII format)
+4. **ANALYSIS** (optional): Results from data processing
 
-通过FlowData属性访问这些段：
-- `flow.header` - HEADER段
-- `flow.text` - TEXT段关键字
-- `flow.events` - DATA段（作为字节）
-- `flow.analysis` - ANALYSIS段关键字（如果存在）
+Access these segments via FlowData attributes:
+- `flow.header` - HEADER segment
+- `flow.text` - TEXT segment keywords
+- `flow.events` - DATA segment (as bytes)
+- `flow.analysis` - ANALYSIS segment keywords (if present)
 
-### 详细API参考
+### Detailed API Reference
 
-有关全面的API文档，包括所有参数、方法、异常和FCS关键字参考，请查阅详细的参考文件：
+For comprehensive API documentation including all parameters, methods, exceptions, and FCS keyword reference, consult the detailed reference file:
 
-**阅读：** `references/api_reference.md`
+**Read:** `references/api_reference.md`
 
-该参考包括：
-- 完整的FlowData类文档
-- 所有实用函数（read_multiple_data_sets、create_fcs）
-- 异常类和处理
-- FCS文件结构详细信息
-- 常见TEXT段关键字
-- 扩展示例工作流
+The reference includes:
+- Complete FlowData class documentation
+- All utility functions (read_multiple_data_sets, create_fcs)
+- Exception classes and handling
+- FCS file structure details
+- Common TEXT segment keywords
+- Extended example workflows
 
-在处理复杂的FCS操作或遇到不寻常的文件格式时，加载此参考以获取详细指导。
+When working with complex FCS operations or encountering unusual file formats, load this reference for detailed guidance.
 
-## 集成说明
+## Integration Notes
 
-**NumPy数组：** 所有事件数据作为形状为（事件，通道）的NumPy ndarrays返回
+**NumPy Arrays:** All event data is returned as NumPy ndarrays with shape (events, channels)
 
-**Pandas DataFrames：** 轻松转换为DataFrames以进行分析：
+**Pandas DataFrames:** Easily convert to DataFrames for analysis:
 ```python
 import pandas as pd
 df = pd.DataFrame(flow.as_array(), columns=flow.pnn_labels)
 ```
 
-**FlowKit集成：** 对于高级分析（补偿、门控、FlowJo支持），使用构建在FlowIO解析功能之上的FlowKit库
+**FlowKit Integration:** For advanced analysis (compensation, gating, FlowJo support), use FlowKit library which builds on FlowIO's parsing capabilities
 
-**Web应用程序：** FlowIO的最少依赖项使其成为处理FCS上传的Web后端服务的理想选择
+**Web Applications:** FlowIO's minimal dependencies make it ideal for web backend services processing FCS uploads
 
-## 故障排除
+## Troubleshooting
 
-**问题：** "偏移量差异错误"
-**解决方案：** 使用`ignore_offset_discrepancy=True`参数
+**Problem:** "Offset discrepancy error"
+**Solution:** Use `ignore_offset_discrepancy=True` parameter
 
-**问题：** "多个数据集错误"
-**解决方案：** 改用`read_multiple_data_sets()`函数而不是FlowData构造函数
+**Problem:** "Multiple datasets error"
+**Solution:** Use `read_multiple_data_sets()` function instead of FlowData constructor
 
-**问题：** 大文件内存不足
-**解决方案：** 对仅元数据操作使用`only_text=True`，或分块处理事件
+**Problem:** Out of memory with large files
+**Solution:** Use `only_text=True` for metadata-only operations, or process events in chunks
 
-**问题：** 意外的通道计数
-**解决方案：** 检查空通道；使用`null_channel_list`参数排除它们
+**Problem:** Unexpected channel counts
+**Solution:** Check for null channels; use `null_channel_list` parameter to exclude them
 
-**问题：** 无法就地修改事件数据
-**解决方案：** FlowIO不支持直接修改；提取数据，修改，然后使用`create_fcs()`保存
+**Problem:** Cannot modify event data in place
+**Solution:** FlowIO doesn't support direct modification; extract data, modify, then use `create_fcs()` to save
 
-## 摘要
+## Summary
 
-FlowIO为流式细胞术工作流提供基本的FCS文件处理能力。使用它进行解析、元数据提取和文件创建。对于简单的文件操作和数据提取，FlowIO就足够了。对于包括补偿和门控的复杂分析，与FlowKit或其他专用工具集成。
+FlowIO provides essential FCS file handling capabilities for flow cytometry workflows. Use it for parsing, metadata extraction, and file creation. For simple file operations and data extraction, FlowIO is sufficient. For complex analysis including compensation and gating, integrate with FlowKit or other specialized tools.
+

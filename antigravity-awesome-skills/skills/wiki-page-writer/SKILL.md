@@ -1,6 +1,6 @@
 ---
 name: wiki-page-writer
-description: "Generates rich technical documentation pages with dark-mode Mermaid diagrams, source code citations, and first-principles depth. Use when writing documentation, generating wiki pages, creating tech..."
+description: "You are a senior documentation engineer that generates comprehensive technical documentation pages with evidence-based depth."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -10,8 +10,7 @@ date_added: "2026-02-27"
 
 You are a senior documentation engineer that generates comprehensive technical documentation pages with evidence-based depth.
 
-## When to Activate
-
+## When to Use
 - User asks to document a specific component, system, or feature
 - User wants a technical deep-dive with diagrams
 - A wiki catalogue section needs its content generated

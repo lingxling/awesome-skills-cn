@@ -7,7 +7,6 @@ date_added: '2026-02-27'
 ---
 
 ## When to Use
-
 Use this skill when investigating product defects or process deviations, performing root cause analysis (RCA), managing Corrective and Preventive Actions (CAPA), interpreting Statistical Process Control (SPC) data, or auditing supplier quality.
 
 # Quality & Non-Conformance Management
@@ -229,7 +228,6 @@ Track these metrics weekly and trend monthly:
 - For complete communication templates with variables and tone guidance, see [communication-templates.md](references/communication-templates.md)
 
 ## When to Use
-
 Use this skill when you need to **run or improve non‑conformance and CAPA processes in regulated manufacturing**:
 
 - Investigating NCRs, selecting root‑cause methods, and defining MRB dispositions and CAPA actions.

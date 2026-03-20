@@ -1,528 +1,529 @@
 ---
 name: deeptools
-description: NGS 分析工具包。BAM 到 bigWig 转换、QC（相关性、PCA、指纹）、热图/轮廓（TSS、峰），用于 ChIP-seq、RNA-seq、ATAC-seq 可视化。
+description: NGS analysis toolkit. BAM to bigWig conversion, QC (correlation, PCA, fingerprints), heatmaps/profiles (TSS, peaks), for ChIP-seq, RNA-seq, ATAC-seq visualization.
 license: BSD license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# deepTools：NGS 数据分析工具包
+# deepTools: NGS Data Analysis Toolkit
 
-## 概述
+## Overview
 
-deepTools 是一套全面的 Python 命令行工具，用于处理和分析高通量测序数据。使用 deepTools 执行质量控制、归一化数据、比较样本，并为 ChIP-seq、RNA-seq、ATAC-seq、MNase-seq 和其他 NGS 实验生成出版质量的可视化。
+deepTools is a comprehensive suite of Python command-line tools designed for processing and analyzing high-throughput sequencing data. Use deepTools to perform quality control, normalize data, compare samples, and generate publication-quality visualizations for ChIP-seq, RNA-seq, ATAC-seq, MNase-seq, and other NGS experiments.
 
-**核心能力：**
-- 将 BAM 比对转换为归一化的覆盖轨道（bigWig/bedGraph）
-- 质量控制评估（指纹、相关性、覆盖度）
-- 样本比较和相关性分析
-- 在基因组特征周围生成热图和轮廓图
-- 富集分析和峰区域可视化
+**Core capabilities:**
+- Convert BAM alignments to normalized coverage tracks (bigWig/bedGraph)
+- Quality control assessment (fingerprint, correlation, coverage)
+- Sample comparison and correlation analysis
+- Heatmap and profile plot generation around genomic features
+- Enrichment analysis and peak region visualization
 
-## 何时使用此技能
+## When to Use This Skill
 
-此技能应在以下情况下使用：
+This skill should be used when:
 
-- **文件转换**："将 BAM 转换为 bigWig"、"生成覆盖轨道"、"归一化 ChIP-seq 数据"
-- **质量控制**："检查 ChIP 质量"、"比较重复"、"评估测序深度"、"QC 分析"
-- **可视化**："在 TSS 周围创建热图"、"绘制 ChIP 信号"、"可视化富集"、"生成轮廓图"
-- **样本比较**："比较处理与对照"、"关联样本"、"PCA 分析"
-- **分析工作流**："分析 ChIP-seq 数据"、"RNA-seq 覆盖度"、"ATAC-seq 分析"、"完整工作流"
-- **处理特定文件类型**：基因组学背景下的 BAM 文件、bigWig 文件、BED 区域文件
+- **File conversion**: "Convert BAM to bigWig", "generate coverage tracks", "normalize ChIP-seq data"
+- **Quality control**: "check ChIP quality", "compare replicates", "assess sequencing depth", "QC analysis"
+- **Visualization**: "create heatmap around TSS", "plot ChIP signal", "visualize enrichment", "generate profile plot"
+- **Sample comparison**: "compare treatment vs control", "correlate samples", "PCA analysis"
+- **Analysis workflows**: "analyze ChIP-seq data", "RNA-seq coverage", "ATAC-seq analysis", "complete workflow"
+- **Working with specific file types**: BAM files, bigWig files, BED region files in genomics context
 
-## 快速入门
+## Quick Start
 
-对于 deepTools 的新用户，从文件验证和常见工作流开始：
+For users new to deepTools, start with file validation and common workflows:
 
-### 1. 验证输入文件
+### 1. Validate Input Files
 
-在运行任何分析之前，使用验证脚本验证 BAM、bigWig 和 BED 文件：
+Before running any analysis, validate BAM, bigWig, and BED files using the validation script:
 
 ```bash
 python scripts/validate_files.py --bam sample1.bam sample2.bam --bed regions.bed
 ```
 
-这将检查文件存在性、BAM 索引和格式正确性。
+This checks file existence, BAM indices, and format correctness.
 
-### 2. 生成工作流模板
+### 2. Generate Workflow Template
 
-对于标准分析，使用工作流生成器创建自定义脚本：
+For standard analyses, use the workflow generator to create customized scripts:
 
 ```bash
-# 列出可用工作流
+# List available workflows
 python scripts/workflow_generator.py --list
 
-# 生成 ChIP-seq QC 工作流
+# Generate ChIP-seq QC workflow
 python scripts/workflow_generator.py chipseq_qc -o qc_workflow.sh \
     --input-bam Input.bam --chip-bams "ChIP1.bam ChIP2.bam" \
     --genome-size 2913022398
 
-# 使其可执行并运行
+# Make executable and run
 chmod +x qc_workflow.sh
 ./qc_workflow.sh
 ```
 
-### 3. 最常见操作
+### 3. Most Common Operations
 
-有关常用命令和参数，请参阅 `assets/quick_reference.md`。
+See `assets/quick_reference.md` for frequently used commands and parameters.
 
-## 安装
+## Installation
 
 ```bash
 uv pip install deeptools
 ```
 
-## 核心工作流
+## Core Workflows
 
-deepTools 工作流通常遵循此模式：**QC → 归一化 → 比较/可视化**
+deepTools workflows typically follow this pattern: **QC → Normalization → Comparison/Visualization**
 
-### ChIP-seq 质量控制工作流
+### ChIP-seq Quality Control Workflow
 
-当用户请求 ChIP-seq QC 或质量评估时：
+When users request ChIP-seq QC or quality assessment:
 
-1. **生成工作流脚本**，使用 `scripts/workflow_generator.py chipseq_qc`
-2. **关键 QC 步骤**：
-   - 样本相关性（multiBamSummary + plotCorrelation）
-   - PCA 分析（plotPCA）
-   - 覆盖度评估（plotCoverage）
-   - 片段大小验证（bamPEFragmentSize）
-   - ChIP 富集强度（plotFingerprint）
+1. **Generate workflow script** using `scripts/workflow_generator.py chipseq_qc`
+2. **Key QC steps**:
+   - Sample correlation (multiBamSummary + plotCorrelation)
+   - PCA analysis (plotPCA)
+   - Coverage assessment (plotCoverage)
+   - Fragment size validation (bamPEFragmentSize)
+   - ChIP enrichment strength (plotFingerprint)
 
-**结果解读：**
-- **相关性**：重复应聚集在一起，具有高相关性（>0.9）
-- **指纹**：强 ChIP 显示急剧上升；平坦的对角线表示富集不良
-- **覆盖度**：评估测序深度是否足以进行分析
+**Interpreting results:**
+- **Correlation**: Replicates should cluster together with high correlation (>0.9)
+- **Fingerprint**: Strong ChIP shows steep rise; flat diagonal indicates poor enrichment
+- **Coverage**: Assess if sequencing depth is adequate for analysis
 
-完整工作流详情在 `references/workflows.md` → "ChIP-seq Quality Control Workflow"
+Full workflow details in `references/workflows.md` → "ChIP-seq Quality Control Workflow"
 
-### ChIP-seq 完整分析工作流
+### ChIP-seq Complete Analysis Workflow
 
-用于从 BAM 到可视化的完整 ChIP-seq 分析：
+For full ChIP-seq analysis from BAM to visualizations:
 
-1. **生成覆盖轨道**，使用归一化（bamCoverage）
-2. **创建比较轨道**（bamCompare 用于 log2 比率）
-3. **在特征周围计算信号矩阵**（computeMatrix）
-4. **生成可视化**（plotHeatmap、plotProfile）
-5. **峰处富集分析**（plotEnrichment）
+1. **Generate coverage tracks** with normalization (bamCoverage)
+2. **Create comparison tracks** (bamCompare for log2 ratio)
+3. **Compute signal matrices** around features (computeMatrix)
+4. **Generate visualizations** (plotHeatmap, plotProfile)
+5. **Enrichment analysis** at peaks (plotEnrichment)
 
-使用 `scripts/workflow_generator.py chipseq_analysis` 生成模板。
+Use `scripts/workflow_generator.py chipseq_analysis` to generate template.
 
-`references/workflows.md` → "ChIP-seq Analysis Workflow" 中的完整命令序列
+Complete command sequences in `references/workflows.md` → "ChIP-seq Analysis Workflow"
 
-### RNA-seq 覆盖度工作流
+### RNA-seq Coverage Workflow
 
-用于链特异性 RNA-seq 覆盖度轨道：
+For strand-specific RNA-seq coverage tracks:
 
-使用带有 `--filterRNAstrand` 的 bamCoverage 分离前向和反向链。
+Use bamCoverage with `--filterRNAstrand` to separate forward and reverse strands.
 
-**重要**：对于 RNA-seq 永远不要使用 `--extendReads`（会跨越剪接位点）。
+**Important:** NEVER use `--extendReads` for RNA-seq (would extend over splice junctions).
 
-使用归一化：CPM 用于固定箱，RPKM 用于基因级分析。
+Use normalization: CPM for fixed bins, RPKM for gene-level analysis.
 
-可用模板：`scripts/workflow_generator.py rnaseq_coverage`
+Template available: `scripts/workflow_generator.py rnaseq_coverage`
 
-`references/workflows.md` → "RNA-seq Coverage Workflow" 中的详细信息
+Details in `references/workflows.md` → "RNA-seq Coverage Workflow"
 
-### ATAC-seq 分析工作流
+### ATAC-seq Analysis Workflow
 
-ATAC-seq 需要 Tn5 偏移校正：
+ATAC-seq requires Tn5 offset correction:
 
-1. **使用 alignmentSieve 和 `--ATACshift` 移位读取**
-2. **使用 bamCoverage 生成覆盖度**
-3. **分析片段大小**（预期核小体梯形模式）
-4. **在峰处可视化**（如果可用）
+1. **Shift reads** using alignmentSieve with `--ATACshift`
+2. **Generate coverage** with bamCoverage
+3. **Analyze fragment sizes** (expect nucleosome ladder pattern)
+4. **Visualize at peaks** if available
 
-模板：`scripts/workflow_generator.py atacseq`
+Template: `scripts/workflow_generator.py atacseq`
 
-`references/workflows.md` → "ATAC-seq Workflow" 中的完整工作流
+Full workflow in `references/workflows.md` → "ATAC-seq Workflow"
 
-## 工具类别和常见任务
+## Tool Categories and Common Tasks
 
-### BAM/bigWig 处理
+### BAM/bigWig Processing
 
-**将 BAM 转换为归一化覆盖度：**
+**Convert BAM to normalized coverage:**
 ```bash
 bamCoverage --bam input.bam --outFileName output.bw \
     --normalizeUsing RPGC --effectiveGenomeSize 2913022398 \
     --binSize 10 --numberOfProcessors 8
 ```
 
-**比较两个样本（log2 比率）：**
+**Compare two samples (log2 ratio):**
 ```bash
 bamCompare -b1 treatment.bam -b2 control.bam -o ratio.bw \
     --operation log2 --scaleFactorsMethod readCount
 ```
 
-**关键工具**：bamCoverage、bamCompare、multiBamSummary、multiBigwigSummary、correctGCBias、alignmentSieve
+**Key tools:** bamCoverage, bamCompare, multiBamSummary, multiBigwigSummary, correctGCBias, alignmentSieve
 
-完整参考：`references/tools_reference.md` → "BAM and bigWig File Processing Tools"
+Complete reference: `references/tools_reference.md` → "BAM and bigWig File Processing Tools"
 
-### 质量控制
+### Quality Control
 
-**检查 ChIP 富集：**
+**Check ChIP enrichment:**
 ```bash
 plotFingerprint -b input.bam chip.bam -o fingerprint.png \
     --extendReads 200 --ignoreDuplicates
 ```
 
-**样本相关性：**
+**Sample correlation:**
 ```bash
 multiBamSummary bins --bamfiles *.bam -o counts.npz
 plotCorrelation -in counts.npz --corMethod pearson \
     --whatToShow heatmap -o correlation.png
 ```
 
-**关键工具**：plotFingerprint、plotCoverage、plotCorrelation、plotPCA、bamPEFragmentSize
+**Key tools:** plotFingerprint, plotCoverage, plotCorrelation, plotPCA, bamPEFragmentSize
 
-完整参考：`references/tools_reference.md` → "Quality Control Tools"
+Complete reference: `references/tools_reference.md` → "Quality Control Tools"
 
-### 可视化
+### Visualization
 
-**在 TSS 周围创建热图：**
+**Create heatmap around TSS:**
 ```bash
-# 计算矩阵
+# Compute matrix
 computeMatrix reference-point -S signal.bw -R genes.bed \
     -b 3000 -a 3000 --referencePoint TSS -o matrix.gz
 
-# 生成热图
+# Generate heatmap
 plotHeatmap -m matrix.gz -o heatmap.png \
     --colorMap RdBu --kmeans 3
 ```
 
-**创建轮廓图：**
+**Create profile plot:**
 ```bash
 plotProfile -m matrix.gz -o profile.png \
     --plotType lines --colors blue red
 ```
 
-**关键工具**：computeMatrix、plotHeatmap、plotProfile、plotEnrichment
+**Key tools:** computeMatrix, plotHeatmap, plotProfile, plotEnrichment
 
-完整参考：`references/tools_reference.md` → "Visualization Tools"
+Complete reference: `references/tools_reference.md` → "Visualization Tools"
 
-## 归一化方法
+## Normalization Methods
 
-选择正确的归一化对于有效比较至关重要。请参阅 `references/normalization_methods.md` 获取全面指导。
+Choosing the correct normalization is critical for valid comparisons. Consult `references/normalization_methods.md` for comprehensive guidance.
 
-**快速选择指南：**
+**Quick selection guide:**
 
-- **ChIP-seq 覆盖度**：使用 RPGC 或 CPM
-- **ChIP-seq 比较**：使用带有 log2 和 readCount 的 bamCompare
-- **RNA-seq 箱**：使用 CPM
-- **RNA-seq 基因**：使用 RPKM（考虑基因长度）
-- **ATAC-seq**：使用 RPGC 或 CPM
+- **ChIP-seq coverage**: Use RPGC or CPM
+- **ChIP-seq comparison**: Use bamCompare with log2 and readCount
+- **RNA-seq bins**: Use CPM
+- **RNA-seq genes**: Use RPKM (accounts for gene length)
+- **ATAC-seq**: Use RPGC or CPM
 
-**归一化方法：**
-- **RPGC**：1× 基因组覆盖度（需要 --effectiveGenomeSize）
-- **CPM**：每百万映射读取的计数
-- **RPKM**：每千碱基每百万读取（考虑区域长度）
-- **BPM**：每百万箱
-- **None**：原始计数（不推荐用于比较）
+**Normalization methods:**
+- **RPGC**: 1× genome coverage (requires --effectiveGenomeSize)
+- **CPM**: Counts per million mapped reads
+- **RPKM**: Reads per kb per million (accounts for region length)
+- **BPM**: Bins per million
+- **None**: Raw counts (not recommended for comparisons)
 
-完整说明：`references/normalization_methods.md`
+Full explanation: `references/normalization_methods.md`
 
-## 有效基因组大小
+## Effective Genome Sizes
 
-RPGC 归一化需要有效基因组大小。常见值：
+RPGC normalization requires effective genome size. Common values:
 
-| 生物 | 组装 | 大小 | 用法 |
+| Organism | Assembly | Size | Usage |
 |----------|----------|------|-------|
-| 人类 | GRCh38/hg38 | 2,913,022,398 | `--effectiveGenomeSize 2913022398` |
-| 小鼠 | GRCm38/mm10 | 2,652,783,500 | `--effectiveGenomeSize 2652783500` |
-| 斑马鱼 | GRCz11 | 1,368,780,147 | `--effectiveGenomeSize 1368780147` |
-| *果蝇* | dm6 | 142,573,017 | `--effectiveGenomeSize 142573017` |
-| *线虫* | ce10/ce11 | 100,286,401 | `--effectiveGenomeSize 100286401` |
+| Human | GRCh38/hg38 | 2,913,022,398 | `--effectiveGenomeSize 2913022398` |
+| Mouse | GRCm38/mm10 | 2,652,783,500 | `--effectiveGenomeSize 2652783500` |
+| Zebrafish | GRCz11 | 1,368,780,147 | `--effectiveGenomeSize 1368780147` |
+| *Drosophila* | dm6 | 142,573,017 | `--effectiveGenomeSize 142573017` |
+| *C. elegans* | ce10/ce11 | 100,286,401 | `--effectiveGenomeSize 100286401` |
 
-包含读取长度特定值的完整表格：`references/effective_genome_sizes.md`
+Complete table with read-length-specific values: `references/effective_genome_sizes.md`
 
-## 工具间的常见参数
+## Common Parameters Across Tools
 
-许多 deepTools 命令共享这些选项：
+Many deepTools commands share these options:
 
-**性能：**
-- `--numberOfProcessors, -p`：启用并行处理（始终使用可用核心）
-- `--region`：处理特定区域以进行测试（例如，`chr1:1-1000000`）
+**Performance:**
+- `--numberOfProcessors, -p`: Enable parallel processing (always use available cores)
+- `--region`: Process specific regions for testing (e.g., `chr1:1-1000000`)
 
-**读取过滤：**
-- `--ignoreDuplicates`：移除 PCR 重复（推荐用于大多数分析）
-- `--minMappingQuality`：按比对质量过滤（例如，`--minMappingQuality 10`）
-- `--minFragmentLength` / `--maxFragmentLength`：片段长度边界
-- `--samFlagInclude` / `--samFlagExclude`：SAM 标志过滤
+**Read Filtering:**
+- `--ignoreDuplicates`: Remove PCR duplicates (recommended for most analyses)
+- `--minMappingQuality`: Filter by alignment quality (e.g., `--minMappingQuality 10`)
+- `--minFragmentLength` / `--maxFragmentLength`: Fragment length bounds
+- `--samFlagInclude` / `--samFlagExclude`: SAM flag filtering
 
-**读取处理：**
-- `--extendReads`：延伸到片段长度（ChIP-seq：是，RNA-seq：否）
-- `--centerReads`：在片段中点居中以获得更清晰的信号
+**Read Processing:**
+- `--extendReads`: Extend to fragment length (ChIP-seq: YES, RNA-seq: NO)
+- `--centerReads`: Center at fragment midpoint for sharper signals
 
-## 最佳实践
+## Best Practices
 
-### 文件验证
-**始终首先验证文件**，使用 `scripts/validate_files.py` 检查：
-- 文件存在性和可读性
-- BAM 索引存在（.bai 文件）
-- BED 格式正确性
-- 文件大小合理
+### File Validation
+**Always validate files first** using `scripts/validate_files.py` to check:
+- File existence and readability
+- BAM indices present (.bai files)
+- BED format correctness
+- File sizes reasonable
 
-### 分析策略
+### Analysis Strategy
 
-1. **从 QC 开始**：在进行详细分析之前，运行相关性、覆盖度和指纹分析
-2. **在小区域上测试**：使用 `--region chr1:1-10000000` 进行参数测试
-3. **记录命令**：保存完整命令行以确保可重复性
-4. **使用一致的归一化**：在比较中对所有样本应用相同的方法
-5. **验证基因组组装**：确保 BAM 和 BED 文件使用匹配的基因组构建
+1. **Start with QC**: Run correlation, coverage, and fingerprint analysis before proceeding
+2. **Test on small regions**: Use `--region chr1:1-10000000` for parameter testing
+3. **Document commands**: Save full command lines for reproducibility
+4. **Use consistent normalization**: Apply same method across samples in comparisons
+5. **Verify genome assembly**: Ensure BAM and BED files use matching genome builds
 
-### ChIP-seq 特定
+### ChIP-seq Specific
 
-- **始终延伸读取**用于 ChIP-seq：`--extendReads 200`
-- **移除重复**：在大多数情况下使用 `--ignoreDuplicates`
-- **首先检查富集**：在进行详细分析之前运行 plotFingerprint
-- **GC 校正**：仅在检测到显著偏倚时应用；在 GC 校正后永远不要使用 `--ignoreDuplicates`
+- **Always extend reads** for ChIP-seq: `--extendReads 200`
+- **Remove duplicates**: Use `--ignoreDuplicates` in most cases
+- **Check enrichment first**: Run plotFingerprint before detailed analysis
+- **GC correction**: Only apply if significant bias detected; never use `--ignoreDuplicates` after GC correction
 
-### RNA-seq 特定
+### RNA-seq Specific
 
-- **永远不要延伸读取**用于 RNA-seq（会跨越剪接位点）
-- **链特异性**：对于链特异性库使用 `--filterRNAstrand forward/reverse`
-- **归一化**：箱使用 CPM，基因使用 RPKM
+- **Never extend reads** for RNA-seq (would span splice junctions)
+- **Strand-specific**: Use `--filterRNAstrand forward/reverse` for stranded libraries
+- **Normalization**: CPM for bins, RPKM for genes
 
-### ATAC-seq 特定
+### ATAC-seq Specific
 
-- **应用 Tn5 校正**：使用带有 `--ATACshift` 的 alignmentSieve
-- **片段过滤**：设置适当的最小/最大片段长度
-- **检查核小体模式**：片段大小图应显示梯形模式
+- **Apply Tn5 correction**: Use alignmentSieve with `--ATACshift`
+- **Fragment filtering**: Set appropriate min/max fragment lengths
+- **Check nucleosome pattern**: Fragment size plot should show ladder pattern
 
-### 性能优化
+### Performance Optimization
 
-1. **使用多个处理器**：`--numberOfProcessors 8`（或可用核心）
-2. **增加箱大小**以加快处理速度并减小文件大小
-3. **单独处理染色体**以用于内存受限的系统
-4. **使用 alignmentSieve 预过滤 BAM 文件**以创建可重用的过滤文件
-5. **使用 bigWig 而不是 bedGraph**：压缩且处理更快
+1. **Use multiple processors**: `--numberOfProcessors 8` (or available cores)
+2. **Increase bin size** for faster processing and smaller files
+3. **Process chromosomes separately** for memory-limited systems
+4. **Pre-filter BAM files** using alignmentSieve to create reusable filtered files
+5. **Use bigWig over bedGraph**: Compressed and faster to process
 
-## 故障排除
+## Troubleshooting
 
-### 常见问题
+### Common Issues
 
-**缺少 BAM 索引：**
+**BAM index missing:**
 ```bash
 samtools index input.bam
 ```
 
-**内存不足：**
-使用 `--region` 单独处理染色体：
+**Out of memory:**
+Process chromosomes individually using `--region`:
 ```bash
 bamCoverage --bam input.bam -o chr1.bw --region chr1
 ```
 
-**处理缓慢：**
-增加 `--numberOfProcessors` 和/或增加 `--binSize`
+**Slow processing:**
+Increase `--numberOfProcessors` and/or increase `--binSize`
 
-**bigWig 文件太大：**
-增加箱大小：`--binSize 50` 或更大
+**bigWig files too large:**
+Increase bin size: `--binSize 50` or larger
 
-### 验证错误
+### Validation Errors
 
-运行验证脚本以识别问题：
+Run validation script to identify issues:
 ```bash
 python scripts/validate_files.py --bam *.bam --bed regions.bed
 ```
 
-脚本输出中解释了常见错误和解决方案。
+Common errors and solutions explained in script output.
 
-## 参考文档
+## Reference Documentation
 
-此技能包含全面的参考文档：
+This skill includes comprehensive reference documentation:
 
 ### references/tools_reference.md
-所有 deepTools 命令的完整文档，按类别组织：
-- BAM 和 bigWig 处理工具（9 个工具）
-- 质量控制工具（6 个工具）
-- 可视化工具（3 个工具）
-- 其他工具（2 个工具）
+Complete documentation of all deepTools commands organized by category:
+- BAM and bigWig processing tools (9 tools)
+- Quality control tools (6 tools)
+- Visualization tools (3 tools)
+- Miscellaneous tools (2 tools)
 
-每个工具包括：
-- 用途和概述
-- 带有解释的关键参数
-- 使用示例
-- 重要说明和最佳实践
+Each tool includes:
+- Purpose and overview
+- Key parameters with explanations
+- Usage examples
+- Important notes and best practices
 
-**使用此参考**：当用户询问特定工具、参数或详细用法时。
+**Use this reference when:** Users ask about specific tools, parameters, or detailed usage.
 
 ### references/workflows.md
-常见分析的完整工作流示例：
-- ChIP-seq 质量控制工作流
-- ChIP-seq 完整分析工作流
-- RNA-seq 覆盖度工作流
-- ATAC-seq 分析工作流
-- 多样本比较工作流
-- 峰区域分析工作流
-- 故障排除和性能技巧
+Complete workflow examples for common analyses:
+- ChIP-seq quality control workflow
+- ChIP-seq complete analysis workflow
+- RNA-seq coverage workflow
+- ATAC-seq analysis workflow
+- Multi-sample comparison workflow
+- Peak region analysis workflow
+- Troubleshooting and performance tips
 
-**使用此参考**：当用户需要完整的分析管道或工作流示例时。
+**Use this reference when:** Users need complete analysis pipelines or workflow examples.
 
 ### references/normalization_methods.md
-归一化方法的综合指南：
-- 每种方法的详细说明（RPGC、CPM、RPKM、BPM 等）
-- 何时使用每种方法
-- 公式和解读
-- 按实验类型的选择指南
-- 常见陷阱和解决方案
-- 快速参考表
+Comprehensive guide to normalization methods:
+- Detailed explanation of each method (RPGC, CPM, RPKM, BPM, etc.)
+- When to use each method
+- Formulas and interpretation
+- Selection guide by experiment type
+- Common pitfalls and solutions
+- Quick reference table
 
-**使用此参考**：当用户询问归一化、比较样本或使用哪种方法时。
+**Use this reference when:** Users ask about normalization, comparing samples, or which method to use.
 
 ### references/effective_genome_sizes.md
-有效基因组大小值和用法：
-- 常见生物值（人类、小鼠、果蝇、线虫、斑马鱼）
-- 读取长度特定值
-- 计算方法
-- 何时以及在命令中如何使用
-- 自定义基因组计算说明
+Effective genome size values and usage:
+- Common organism values (human, mouse, fly, worm, zebrafish)
+- Read-length-specific values
+- Calculation methods
+- When and how to use in commands
+- Custom genome calculation instructions
 
-**使用此参考**：当用户需要 RPGC 归一化或 GC 偏倚校正的基因组大小时。
+**Use this reference when:** Users need genome size for RPGC normalization or GC bias correction.
 
-## 辅助脚本
+## Helper Scripts
 
 ### scripts/validate_files.py
 
-验证 deepTools 分析的 BAM、bigWig 和 BED 文件。检查文件存在性、索引和格式。
+Validates BAM, bigWig, and BED files for deepTools analysis. Checks file existence, indices, and format.
 
-**用法：**
+**Usage:**
 ```bash
 python scripts/validate_files.py --bam sample1.bam sample2.bam \
     --bed peaks.bed --bigwig signal.bw
 ```
 
-**何时使用**：开始任何分析之前，或在故障排除错误时。
+**When to use:** Before starting any analysis, or when troubleshooting errors.
 
 ### scripts/workflow_generator.py
 
-为常见 deepTools 工作流生成可自定义的 bash 脚本模板。
+Generates customizable bash script templates for common deepTools workflows.
 
-**可用工作流：**
-- `chipseq_qc`：ChIP-seq 质量控制
-- `chipseq_analysis`：完整 ChIP-seq 分析
-- `rnaseq_coverage`：链特异性 RNA-seq 覆盖度
-- `atacseq`：带有 Tn5 校正的 ATAC-seq
+**Available workflows:**
+- `chipseq_qc`: ChIP-seq quality control
+- `chipseq_analysis`: Complete ChIP-seq analysis
+- `rnaseq_coverage`: Strand-specific RNA-seq coverage
+- `atacseq`: ATAC-seq with Tn5 correction
 
-**用法：**
+**Usage:**
 ```bash
-# 列出工作流
+# List workflows
 python scripts/workflow_generator.py --list
 
-# 生成工作流
+# Generate workflow
 python scripts/workflow_generator.py chipseq_qc -o qc.sh \
     --input-bam Input.bam --chip-bams "ChIP1.bam ChIP2.bam" \
     --genome-size 2913022398 --threads 8
 
-# 运行生成的工作流
+# Run generated workflow
 chmod +x qc.sh
 ./qc.sh
 ```
 
-**何时使用**：当用户请求标准工作流或需要模板脚本进行自定义时。
+**When to use:** Users request standard workflows or need template scripts to customize.
 
-## 资产
+## Assets
 
 ### assets/quick_reference.md
 
-包含最常用命令、有效基因组大小和典型工作流模式的快速参考卡。
+Quick reference card with most common commands, effective genome sizes, and typical workflow pattern.
 
-**何时使用**：当用户需要快速命令示例而无需详细文档时。
+**When to use:** Users need quick command examples without detailed documentation.
 
-## 处理用户请求
+## Handling User Requests
 
-### 对于新用户
+### For New Users
 
-1. 从安装验证开始
-2. 使用 `scripts/validate_files.py` 验证输入文件
-3. 根据实验类型推荐适当的工作流
-4. 使用 `scripts/workflow_generator.py` 生成工作流模板
-5. 指导自定义和执行
+1. Start with installation verification
+2. Validate input files using `scripts/validate_files.py`
+3. Recommend appropriate workflow based on experiment type
+4. Generate workflow template using `scripts/workflow_generator.py`
+5. Guide through customization and execution
 
-### 对于有经验的用户
+### For Experienced Users
 
-1. 为请求的操作提供特定的工具命令
-2. 参考 `references/tools_reference.md` 中的适当部分
-3. 建议优化和最佳实践
-4. 为问题提供故障排除
+1. Provide specific tool commands for requested operations
+2. Reference appropriate sections in `references/tools_reference.md`
+3. Suggest optimizations and best practices
+4. Offer troubleshooting for issues
 
-### 对于特定任务
+### For Specific Tasks
 
-**"将 BAM 转换为 bigWig"：**
-- 使用带有适当归一化的 bamCoverage
-- 根据用例推荐 RPGC 或 CPM
-- 为生物提供有效基因组大小
-- 建议相关参数（extendReads、ignoreDuplicates、binSize）
+**"Convert BAM to bigWig":**
+- Use bamCoverage with appropriate normalization
+- Recommend RPGC or CPM based on use case
+- Provide effective genome size for organism
+- Suggest relevant parameters (extendReads, ignoreDuplicates, binSize)
 
-**"检查 ChIP 质量"：**
-- 运行完整的 QC 工作流或专门使用 plotFingerprint
-- 解释结果解读
-- 根据结果建议后续操作
+**"Check ChIP quality":**
+- Run full QC workflow or use plotFingerprint specifically
+- Explain interpretation of results
+- Suggest follow-up actions based on results
 
-**"创建热图"：**
-- 指导两步过程：computeMatrix → plotHeatmap
-- 帮助选择适当的矩阵模式（reference-point 与 scale-regions）
-- 建议可视化参数和聚类选项
+**"Create heatmap":**
+- Guide through two-step process: computeMatrix → plotHeatmap
+- Help choose appropriate matrix mode (reference-point vs scale-regions)
+- Suggest visualization parameters and clustering options
 
-**"比较样本"：**
-- 推荐用于两个样本比较的 bamCompare
-- 建议用于多样本的 multiBamSummary + plotCorrelation
-- 指导归一化方法选择
+**"Compare samples":**
+- Recommend bamCompare for two-sample comparison
+- Suggest multiBamSummary + plotCorrelation for multiple samples
+- Guide normalization method selection
 
-### 参考文档
+### Referencing Documentation
 
-当用户需要详细信息时：
-- **工具详细信息**：指向 `references/tools_reference.md` 中的特定部分
-- **工作流**：使用 `references/workflows.md` 进行完整分析管道
-- **归一化**：查阅 `references/normalization_methods.md` 进行方法选择
-- **基因组大小**：参考 `references/effective_genome_sizes.md`
+When users need detailed information:
+- **Tool details**: Direct to specific sections in `references/tools_reference.md`
+- **Workflows**: Use `references/workflows.md` for complete analysis pipelines
+- **Normalization**: Consult `references/normalization_methods.md` for method selection
+- **Genome sizes**: Reference `references/effective_genome_sizes.md`
 
-使用 grep 模式搜索参考：
+Search references using grep patterns:
 ```bash
-# 查找工具文档
+# Find tool documentation
 grep -A 20 "^### toolname" references/tools_reference.md
 
-# 查找工作流
+# Find workflow
 grep -A 50 "^## Workflow Name" references/workflows.md
 
-# 查找归一化方法
+# Find normalization method
 grep -A 15 "^### Method Name" references/normalization_methods.md
 ```
 
-## 示例交互
+## Example Interactions
 
-**用户："我需要分析我的 ChIP-seq 数据"**
+**User: "I need to analyze my ChIP-seq data"**
 
-响应方法：
-1. 询问可用文件（BAM 文件、峰、基因）
-2. 使用验证脚本验证文件
-3. 生成 chipseq_analysis 工作流模板
-4. 为其特定文件和生物进行自定义
-5. 在脚本运行时解释每个步骤
+Response approach:
+1. Ask about files available (BAM files, peaks, genes)
+2. Validate files using validation script
+3. Generate chipseq_analysis workflow template
+4. Customize for their specific files and organism
+5. Explain each step as script runs
 
-**用户："我应该使用哪种归一化？"**
+**User: "Which normalization should I use?"**
 
-响应方法：
-1. 询问实验类型（ChIP-seq、RNA-seq 等）
-2. 询问比较目标（样本内还是样本间）
-3. 查阅 `references/normalization_methods.md` 选择指南
-4. 推荐适当的方法并给出理由
-5. 提供带有参数的命令示例
+Response approach:
+1. Ask about experiment type (ChIP-seq, RNA-seq, etc.)
+2. Ask about comparison goal (within-sample or between-sample)
+3. Consult `references/normalization_methods.md` selection guide
+4. Recommend appropriate method with justification
+5. Provide command example with parameters
 
-**用户："在 TSS 周围创建热图"**
+**User: "Create a heatmap around TSS"**
 
-响应方法：
-1. 验证 bigWig 和基因 BED 文件可用
-2. 使用 reference-point 模式在 TSS 处使用 computeMatrix
-3. 使用适当的可视化参数生成 plotHeatmap
-4. 如果数据集较大，建议聚类
-5. 提供轮廓图作为补充
+Response approach:
+1. Verify bigWig and gene BED files available
+2. Use computeMatrix with reference-point mode at TSS
+3. Generate plotHeatmap with appropriate visualization parameters
+4. Suggest clustering if dataset is large
+5. Offer profile plot as complement
 
-## 关键提醒
+## Key Reminders
 
-- **首先验证文件**：分析前始终验证输入文件
-- **归一化很重要**：为比较类型选择适当的方法
-- **仔细延伸读取**：ChIP-seq 为是，RNA-seq 为否
-- **使用所有核心**：将 `--numberOfProcessors` 设置为可用核心
-- **在区域上测试**：使用 `--region` 进行参数测试
-- **首先检查 QC**：在进行详细分析之前运行质量控制
-- **记录所有内容**：保存命令以确保可重复性
-- **参考文档**：使用全面参考以获取详细指导
+- **File validation first**: Always validate input files before analysis
+- **Normalization matters**: Choose appropriate method for comparison type
+- **Extend reads carefully**: YES for ChIP-seq, NO for RNA-seq
+- **Use all cores**: Set `--numberOfProcessors` to available cores
+- **Test on regions**: Use `--region` for parameter testing
+- **Check QC first**: Run quality control before detailed analysis
+- **Document everything**: Save commands for reproducibility
+- **Reference documentation**: Use comprehensive references for detailed guidance
+

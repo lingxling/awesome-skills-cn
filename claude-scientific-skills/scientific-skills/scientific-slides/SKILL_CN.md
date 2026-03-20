@@ -1,1153 +1,1154 @@
 ---
 name: scientific-slides
-description: 为研究演讲构建幻灯片和演示文稿。用于制作PowerPoint幻灯片、会议演示、研讨会演讲、研究演示、论文答辩幻灯片或任何科学演讲。提供幻灯片结构、设计模板、时间指导和视觉验证。适用于PowerPoint和LaTeX Beamer。
+description: Build slide decks and presentations for research talks. Use this for making PowerPoint slides, conference presentations, seminar talks, research presentations, thesis defense slides, or any scientific talk. Provides slide structure, design templates, timing guidance, and visual validation. Works with PowerPoint and LaTeX Beamer.
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# 科学幻灯片
+# Scientific Slides
 
-## 概述
+## Overview
 
-科学演示是交流研究、分享发现和与学术及专业受众互动的关键媒介。此技能为创建有效的科学演示提供全面指导，从结构和内容开发到视觉设计和演讲准备。
+Scientific presentations are a critical medium for communicating research, sharing findings, and engaging with academic and professional audiences. This skill provides comprehensive guidance for creating effective scientific presentations, from structure and content development to visual design and delivery preparation.
 
-**重点**：会议、研讨会、答辩和专业演讲的口头演示。
+**Key Focus**: Oral presentations for conferences, seminars, defenses, and professional talks.
 
-**关键设计理念**：科学演示应该视觉吸引人且有研究支持。务必避免枯燥、文本密集的幻灯片。优秀的科学演示结合：
-- **引人入胜的视觉效果**：高质量的图表、图像、图表（不仅仅是项目符号）
-- **研究背景**：来自research-lookup的适当引用，建立可信度
-- **最少文本**：项目符号作为提示，您口头提供解释
-- **专业设计**：现代配色方案、强烈的视觉层次结构、充足的空白
-- **故事驱动**：清晰的叙述弧线，而不仅仅是数据转储
+**CRITICAL DESIGN PHILOSOPHY**: Scientific presentations should be VISUALLY ENGAGING and RESEARCH-BACKED. Avoid dry, text-heavy slides at all costs. Great scientific presentations combine:
+- **Compelling visuals**: High-quality figures, images, diagrams (not just bullet points)
+- **Research context**: Proper citations from research-lookup establishing credibility
+- **Minimal text**: Bullet points as prompts, YOU provide the explanation verbally
+- **Professional design**: Modern color schemes, strong visual hierarchy, generous white space
+- **Story-driven**: Clear narrative arc, not just data dumps
 
-**记住**：枯燥的演示=被遗忘的科学。让您的幻灯片视觉上令人难忘，同时通过适当的引用保持科学严谨性。
+**Remember**: Boring presentations = forgotten science. Make your slides visually memorable while maintaining scientific rigor through proper citations.
 
-## 何时使用此技能
+## When to Use This Skill
 
-当您需要以下操作时，应使用此技能：
-- 准备会议演示（5-20分钟）
-- 开发学术研讨会（45-60分钟）
-- 创建论文或学位论文答辩演示
-- 设计资助提案演示
-- 准备期刊俱乐部演示
-- 在机构或公司进行研究演讲
-- 关于科学主题的教学或教程演示
+This skill should be used when:
+- Preparing conference presentations (5-20 minutes)
+- Developing academic seminars (45-60 minutes)
+- Creating thesis or dissertation defense presentations
+- Designing grant pitch presentations
+- Preparing journal club presentations
+- Giving research talks at institutions or companies
+- Teaching or tutorial presentations on scientific topics
 
-## 使用Nano Banana Pro生成幻灯片
+## Slide Generation with Nano Banana Pro
 
-**此技能使用Nano Banana Pro AI自动生成令人惊叹的演示幻灯片。**
+**This skill uses Nano Banana Pro AI to generate stunning presentation slides automatically.**
 
-根据输出格式有两种工作流程：
+There are two workflows depending on output format:
 
-### 默认工作流程：PDF幻灯片（推荐）
+### Default Workflow: PDF Slides (Recommended)
 
-使用Nano Banana Pro将每张幻灯片生成为完整图像，然后合并为PDF。这产生最视觉惊艳的结果。
+Generate each slide as a complete image using Nano Banana Pro, then combine into a PDF. This produces the most visually stunning results.
 
-**工作原理：**
-1. **规划幻灯片**：为每张幻灯片创建详细计划（标题、要点、视觉元素）
-2. **生成幻灯片**：为每张幻灯片调用Nano Banana Pro创建完整的幻灯片图像
-3. **合并为PDF**：将幻灯片图像组装成单个PDF演示文稿
+**How it works:**
+1. **Plan the deck**: Create a detailed plan for each slide (title, key points, visual elements)
+2. **Generate slides**: Call Nano Banana Pro for each slide to create complete slide images
+3. **Combine to PDF**: Assemble slide images into a single PDF presentation
 
-**步骤1：规划每张幻灯片**
+**Step 1: Plan Each Slide**
 
-生成前，为您的演示创建详细计划：
+Before generating, create a detailed plan for your presentation:
 
 ```markdown
-# 演示计划：机器学习简介
+# Presentation Plan: Introduction to Machine Learning
 
-## 幻灯片1：标题幻灯片
-- 标题："机器学习：从理论到实践"
-- 副标题："AI会议2025"
-- 演讲者：Jane Smith博士，XYZ大学
-- 视觉：现代抽象神经网络背景
+## Slide 1: Title Slide
+- Title: "Machine Learning: From Theory to Practice"
+- Subtitle: "AI Conference 2025"
+- Speaker: Dr. Jane Smith, University of XYZ
+- Visual: Modern abstract neural network background
 
-## 幻灯片2：介绍
-- 标题："为什么机器学习重要"
-- 要点：行业采用、突破性应用、未来潜力
-- 视觉：显示不同ML应用的图标（医疗保健、金融、机器人）
+## Slide 2: Introduction
+- Title: "Why Machine Learning Matters"
+- Key points: Industry adoption, breakthrough applications, future potential
+- Visual: Icons showing different ML applications (healthcare, finance, robotics)
 
-## 幻灯片3：核心概念
-- 标题："三种学习类型"
-- 内容：监督学习、无监督学习、强化学习
-- 视觉：三部分图表，展示每种类型及其示例
+## Slide 3: Core Concepts
+- Title: "The Three Types of Learning"
+- Content: Supervised, Unsupervised, Reinforcement
+- Visual: Three-part diagram showing each type with examples
 
-...（继续所有幻灯片）
+... (continue for all slides)
 ```
 
-**步骤2：生成每张幻灯片**
+**Step 2: Generate Each Slide**
 
-使用`generate_slide_image.py`脚本创建每张幻灯片。
+Use the `generate_slide_image.py` script to create each slide.
 
-**关键：格式一致性协议**
+**CRITICAL: Formatting Consistency Protocol**
 
-为确保演示中所有幻灯片的统一格式：
+To ensure unified formatting across all slides in a presentation:
 
-1. **在演示开始时定义格式目标**，并将其包含在每个提示中：
-   - 配色方案（例如，"深蓝色背景，白色文本，金色强调"）
-   - 排版风格（例如，"粗体无衬线标题，干净的正文文本"）
-   - 视觉风格（例如，"简约、专业、企业美学"）
-   - 布局方法（例如，"充足的空白，左对齐内容"）
+1. **Define a Formatting Goal** at the start of your presentation and include it in EVERY prompt:
+   - Color scheme (e.g., "dark blue background, white text, gold accents")
+   - Typography style (e.g., "bold sans-serif titles, clean body text")
+   - Visual style (e.g., "minimal, professional, corporate aesthetic")
+   - Layout approach (e.g., "generous white space, left-aligned content")
 
-2. **生成后续幻灯片时始终附加前一张幻灯片**，使用`--attach`：
-   - 这允许Nano Banana Pro查看并匹配现有风格
-   - 在整个演示中创建视觉连续性
-   - 确保一致的颜色、字体和设计语言
+2. **Always attach the previous slide** when generating subsequent slides using `--attach`:
+   - This allows Nano Banana Pro to see and match the existing style
+   - Creates visual continuity throughout the deck
+   - Ensures consistent colors, fonts, and design language
 
-3. **默认作者是"K-Dense"**，除非指定其他名称
+3. **Default author is "K-Dense"** unless another name is specified
 
-4. **在提示中直接包含引用**，用于引用研究的幻灯片：
-   - 在提示文本中添加引用，以便它们出现在生成的幻灯片上
-   - 使用格式："包含引用：(作者等，年份)"或"显示参考：作者等，年份"
-   - 对于多个引用，在提示中列出所有引用
-   - 引用应在幻灯片底部或相关内容附近以小文本显示
+4. **Include citations directly in the prompt** for slides that reference research:
+   - Add citations in the prompt text so they appear on the generated slide
+   - Use format: "Include citation: (Author et al., Year)" or "Show reference: Author et al., Year"
+   - For multiple citations, list them all in the prompt
+   - Citations should appear in small text at the bottom of the slide or near relevant content
 
-5. **为结果幻灯片附加现有图表/数据**（对于数据驱动的演示至关重要）：
-   - 创建结果幻灯片时，始终检查以下位置的现有图表：
-     - 工作目录（例如，`figures/`、`results/`、`plots/`、`images/`）
-     - 用户提供的输入文件或目录
-     - 与演示相关的任何数据可视化、图表或图形
-   - 使用`--attach`包含这些图表，以便Nano Banana Pro可以整合它们：
-     - 为结果幻灯片附加实际数据图表
-     - 为方法幻灯片附加相关图表
-     - 为标题幻灯片附加徽标或机构图像
-   - 附加数据图表时，在提示中描述您想要的内容：
-     - "创建一张幻灯片，展示附带的结果图表，突出关键发现"
-     - "围绕这张附带的图表构建幻灯片，添加标题和解释数据的项目符号"
-     - "将附带的图表纳入结果幻灯片并进行解释"
-   - **生成结果幻灯片前**：列出工作目录中的文件以找到相关图表
-   - 可以附加多个图表：`--attach fig1.png --attach fig2.png`
+5. **Attach existing figures/data for results slides** (CRITICAL for data-driven presentations):
+   - When creating slides about results, ALWAYS check for existing figures in:
+     - The working directory (e.g., `figures/`, `results/`, `plots/`, `images/`)
+     - User-provided input files or directories
+     - Any data visualizations, charts, or graphs relevant to the presentation
+   - Use `--attach` to include these figures so Nano Banana Pro can incorporate them:
+     - Attach the actual data figure/chart for results slides
+     - Attach relevant diagrams for methodology slides
+     - Attach logos or institutional images for title slides
+   - When attaching data figures, describe what you want in the prompt:
+     - "Create a slide presenting the attached results chart with key findings highlighted"
+     - "Build a slide around this attached figure, add title and bullet points explaining the data"
+     - "Incorporate the attached graph into a results slide with interpretation"
+   - **Before generating results slides**: List files in the working directory to find relevant figures
+   - Multiple figures can be attached: `--attach fig1.png --attach fig2.png`
 
-**带有格式一致性、引用和图表附件的示例：**
+**Example with formatting consistency, citations, and figure attachments:**
 
 ```bash
-# 标题幻灯片（第一张幻灯片 - 建立风格）
-python scripts/generate_slide_image.py "演示标题幻灯片：'机器学习：从理论到实践'。副标题：'AI会议2025'。演讲者：K-Dense。格式目标：深蓝色背景（#1a237e），白色文本，金色强调（#ffc107），简约设计，无衬线字体，宽敞边距，无装饰元素。" -o slides/01_title.png
+# Title slide (first slide - establishes the style)
+python scripts/generate_slide_image.py "Title slide for presentation: 'Machine Learning: From Theory to Practice'. Subtitle: 'AI Conference 2025'. Speaker: K-Dense. FORMATTING GOAL: Dark blue background (#1a237e), white text, gold accents (#ffc107), minimal design, sans-serif fonts, generous margins, no decorative elements." -o slides/01_title.png
 
-# 带引用的内容幻灯片（附加前一张幻灯片以保持一致性）
-python scripts/generate_slide_image.py "标题为'为什么机器学习重要'的演示幻灯片。三个要点，带简单图标：1) 行业采用，2) 突破性应用，3) 未来潜力。引用：在底部以小文本包含：(LeCun等，2015；Goodfellow等，2016)。格式目标：匹配附加幻灯片风格 - 深蓝色背景，白色文本，金色强调，简约专业设计，无视觉混乱。" -o slides/02_intro.png --attach slides/01_title.png
+# Content slide with citations (attach previous slide for consistency)
+python scripts/generate_slide_image.py "Presentation slide titled 'Why Machine Learning Matters'. Three key points with simple icons: 1) Industry adoption, 2) Breakthrough applications, 3) Future potential. CITATIONS: Include at bottom in small text: (LeCun et al., 2015; Goodfellow et al., 2016). FORMATTING GOAL: Match attached slide style - dark blue background, white text, gold accents, minimal professional design, no visual clutter." -o slides/02_intro.png --attach slides/01_title.png
 
-# 带多个引用的背景幻灯片
-python scripts/generate_slide_image.py "标题为'深度学习革命'的演示幻灯片。关键里程碑：ImageNet突破（2012），Transformer架构（2017），GPT模型（2018-至今）。引用：在底部显示参考：(Krizhevsky等，2012；Vaswani等，2017；Brown等，2020)。格式目标：完全匹配附加幻灯片风格 - 相同的颜色、字体、简约设计。" -o slides/03_background.png --attach slides/02_intro.png
+# Background slide with multiple citations
+python scripts/generate_slide_image.py "Presentation slide titled 'Deep Learning Revolution'. Key milestones: ImageNet breakthrough (2012), transformer architecture (2017), GPT models (2018-present). CITATIONS: Show references at bottom: (Krizhevsky et al., 2012; Vaswani et al., 2017; Brown et al., 2020). FORMATTING GOAL: Match attached slide style exactly - same colors, fonts, minimal design." -o slides/03_background.png --attach slides/02_intro.png
 
-# 结果幻灯片 - 附加工作目录中的实际数据图表
-# 首先，检查存在哪些图表：ls figures/ 或 ls results/
-python scripts/generate_slide_image.py "标题为'模型性能结果'的演示幻灯片。创建一张幻灯片展示附加的准确性图表。要突出的关键发现：1) 达到95%的准确性，2) 优于基线12%，3) 在测试集上一致。引用：在底部包含：(我们的结果，2025)。格式目标：完全匹配附加幻灯片风格。" -o slides/04_results.png --attach slides/03_background.png --attach figures/accuracy_chart.png
+# RESULTS SLIDE - Attach actual data figure from working directory
+# First, check what figures exist: ls figures/ or ls results/
+python scripts/generate_slide_image.py "Presentation slide titled 'Model Performance Results'. Create a slide presenting the attached accuracy chart. Key findings to highlight: 1) 95% accuracy achieved, 2) Outperforms baseline by 12%, 3) Consistent across test sets. CITATIONS: Include at bottom: (Our results, 2025). FORMATTING GOAL: Match attached slide style exactly." -o slides/04_results.png --attach slides/03_background.png --attach figures/accuracy_chart.png
 
-# 结果幻灯片 - 多图表比较
-python scripts/generate_slide_image.py "标题为'前后比较'的演示幻灯片。使用两张附加图表创建并排比较幻灯片。左：基线结果，右：我们改进的结果。添加简短标签解释改进。格式目标：完全匹配附加幻灯片风格。" -o slides/05_comparison.png --attach slides/04_results.png --attach figures/baseline.png --attach figures/improved.png
+# RESULTS SLIDE - Multiple figures comparison
+python scripts/generate_slide_image.py "Presentation slide titled 'Before vs After Comparison'. Build a side-by-side comparison slide using the two attached figures. Left: baseline results, Right: our improved results. Add brief labels explaining the improvement. FORMATTING GOAL: Match attached slide style exactly." -o slides/05_comparison.png --attach slides/04_results.png --attach figures/baseline.png --attach figures/improved.png
 
-# 方法幻灯片 - 附加现有图表
-python scripts/generate_slide_image.py "标题为'系统架构'的演示幻灯片。展示附加的架构图表，带有简短的解释性项目符号：1) 输入处理，2) 模型推理，3) 输出生成。格式目标：完全匹配附加幻灯片风格。" -o slides/06_architecture.png --attach slides/05_comparison.png --attach diagrams/system_architecture.png
+# METHODOLOGY SLIDE - Attach existing diagram
+python scripts/generate_slide_image.py "Presentation slide titled 'System Architecture'. Present the attached architecture diagram with brief explanatory bullet points: 1) Input processing, 2) Model inference, 3) Output generation. FORMATTING GOAL: Match attached slide style exactly." -o slides/06_architecture.png --attach slides/05_comparison.png --attach diagrams/system_architecture.png
 ```
 
-**重要：创建结果幻灯片前，始终：**
-1. 列出工作目录中的文件：`ls -la figures/` 或 `ls -la results/`
-2. 检查用户提供的目录中的相关图表
-3. 附加应该出现在幻灯片上的所有相关图表
-4. 描述Nano Banana Pro应如何整合附加的图表
+**IMPORTANT: Before creating results slides, always:**
+1. List files in working directory: `ls -la figures/` or `ls -la results/`
+2. Check user-provided directories for relevant figures
+3. Attach ALL relevant figures that should appear on the slide
+4. Describe how Nano Banana Pro should incorporate the attached figures
 
-**提示模板：**
+**Prompt Template:**
 
-在每个提示中包含这些元素（根据需要自定义）：
+Include these elements in every prompt (customize as needed):
 ```
-[幻灯片内容描述]
-引用：在底部包含：(作者1等，年份；作者2等，年份)
-格式目标：[背景颜色]，[文本颜色]，[强调颜色]，简约专业设计，无装饰元素，与附加幻灯片风格一致。
+[Slide content description]
+CITATIONS: Include at bottom: (Author1 et al., Year; Author2 et al., Year)
+FORMATTING GOAL: [Background color], [text color], [accent color], minimal professional design, no decorative elements, consistent with attached slide style.
 ```
 
-**步骤3：合并为PDF**
+**Step 3: Combine to PDF**
 
 ```bash
-# 将所有幻灯片合并为PDF演示文稿
+# Combine all slides into a PDF presentation
 python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
 ```
 
-### PPT工作流程：带有生成视觉效果的PowerPoint
+### PPT Workflow: PowerPoint with Generated Visuals
 
-创建PowerPoint演示文稿时，使用Nano Banana Pro为每张幻灯片生成图像和图表，然后使用PPTX技能单独添加文本。
+When creating PowerPoint presentations, use Nano Banana Pro to generate images and figures for each slide, then add text separately using the PPTX skill.
 
-**工作原理：**
-1. **规划幻灯片**：为每张幻灯片创建内容计划
-2. **生成视觉效果**：使用Nano Banana Pro和`--visual-only`标志为幻灯片创建图像
-3. **构建PPTX**：使用PPTX技能（html2pptx或基于模板）创建包含生成的视觉效果和单独文本的幻灯片
+**How it works:**
+1. **Plan the deck**: Create content plan for each slide
+2. **Generate visuals**: Use Nano Banana Pro with `--visual-only` flag to create images for slides
+3. **Build PPTX**: Use the PPTX skill (html2pptx or template-based) to create slides with generated visuals and separate text
 
-**步骤1：为每张幻灯片生成视觉效果**
+**Step 1: Generate Visuals for Each Slide**
 
 ```bash
-# 为介绍幻灯片生成图表
-python scripts/generate_slide_image.py "专业插图，展示机器学习应用：医疗诊断、财务分析、自动驾驶汽车和机器人。现代扁平设计，白色背景上的彩色图标。" -o figures/ml_applications.png --visual-only
+# Generate a figure for the introduction slide
+python scripts/generate_slide_image.py "Professional illustration showing machine learning applications: healthcare diagnosis, financial analysis, autonomous vehicles, and robotics. Modern flat design, colorful icons on white background." -o figures/ml_applications.png --visual-only
 
-# 为方法幻灯片生成图表
-python scripts/generate_slide_image.py "神经网络架构图，显示输入层、三个隐藏层和输出层。干净的技术风格，带节点连接。蓝色和灰色配色方案。" -o figures/neural_network.png --visual-only
+# Generate a diagram for the methods slide
+python scripts/generate_slide_image.py "Neural network architecture diagram showing input layer, three hidden layers, and output layer. Clean, technical style with node connections. Blue and gray color scheme." -o figures/neural_network.png --visual-only
 
-# 为结果生成概念图
-python scripts/generate_slide_image.py "前后比较，显示改进：左侧显示杂乱数据，右侧显示组织化的见解。箭头连接它们。专业商业风格。" -o figures/results_visual.png --visual-only
+# Generate a conceptual graphic for results
+python scripts/generate_slide_image.py "Before and after comparison showing improvement: left side shows cluttered data, right side shows organized insights. Arrow connecting them. Professional business style." -o figures/results_visual.png --visual-only
 ```
 
-**步骤2：使用PPTX技能构建PowerPoint**
+**Step 2: Build PowerPoint with PPTX Skill**
 
-使用PPTX技能的html2pptx工作流程创建包含以下内容的幻灯片：
-- 步骤1中生成的图像
-- 单独添加的标题和正文文本
-- 专业布局和格式
+Use the PPTX skill's html2pptx workflow to create slides that include:
+- Generated images from step 1
+- Title and body text added separately
+- Professional layout and formatting
 
-请参阅`document-skills/pptx/SKILL.md`获取完整的PPTX创建文档。
+See `document-skills/pptx/SKILL.md` for complete PPTX creation documentation.
 
 ---
 
-## Nano Banana Pro脚本参考
+## Nano Banana Pro Script Reference
 
 ### generate_slide_image.py
 
-使用Nano Banana Pro AI生成演示幻灯片或视觉效果。
+Generate presentation slides or visuals using Nano Banana Pro AI.
 
 ```bash
-# 完整幻灯片（默认）- 生成完整幻灯片作为图像
-python scripts/generate_slide_image.py "幻灯片描述" -o output.png
+# Full slide (default) - generates complete slide as image
+python scripts/generate_slide_image.py "slide description" -o output.png
 
-# 仅视觉效果 - 生成仅用于嵌入PPT的图像/图表
-python scripts/generate_slide_image.py "视觉描述" -o output.png --visual-only
+# Visual only - generates just the image/figure for embedding in PPT
+python scripts/generate_slide_image.py "visual description" -o output.png --visual-only
 
-# 附加参考图像（Nano Banana Pro将看到这些）
-python scripts/generate_slide_image.py "创建一张解释此图表的幻灯片" -o slide.png --attach chart.png
-python scripts/generate_slide_image.py "将这些组合成比较幻灯片" -o compare.png --attach before.png --attach after.png
+# With reference images attached (Nano Banana Pro will see these)
+python scripts/generate_slide_image.py "Create a slide explaining this chart" -o slide.png --attach chart.png
+python scripts/generate_slide_image.py "Combine these into a comparison slide" -o compare.png --attach before.png --attach after.png
 ```
 
-**选项：**
-- `-o, --output`：输出文件路径（必需）
-- `--attach IMAGE`：附加图像文件作为生成上下文（可多次使用）
-- `--visual-only`：仅生成视觉效果/图表，而非完整幻灯片
-- `--iterations`：最大改进迭代次数（默认：2）
-- `--api-key`：OpenRouter API密钥（或设置OPENROUTER_API_KEY环境变量）
-- `-v, --verbose`：详细输出
+**Options:**
+- `-o, --output`: Output file path (required)
+- `--attach IMAGE`: Attach image file(s) as context for generation (can use multiple times)
+- `--visual-only`: Generate just the visual/figure, not a complete slide
+- `--iterations`: Max refinement iterations (default: 2)
+- `--api-key`: OpenRouter API key (or set OPENROUTER_API_KEY env var)
+- `-v, --verbose`: Verbose output
 
-**附加参考图像：**
+**Attaching Reference Images:**
 
-当您希望Nano Banana Pro将现有图像作为上下文查看时，使用`--attach`：
-- "创建关于此数据的幻灯片" + 附加数据图表
-- "制作带有此徽标的标题幻灯片" + 附加徽标
-- "将这些图表合并到一张幻灯片中" + 附加多个图像
-- "在幻灯片中解释此图表" + 附加图表
+Use `--attach` when you want Nano Banana Pro to see existing images as context:
+- "Create a slide about this data" + attach the data chart
+- "Make a title slide with this logo" + attach the logo
+- "Combine these figures into one slide" + attach multiple images
+- "Explain this diagram in a slide" + attach the diagram
 
-**环境设置：**
+**Environment Setup:**
 ```bash
 export OPENROUTER_API_KEY='your_api_key_here'
-# 在以下位置获取密钥：https://openrouter.ai/keys
+# Get key at: https://openrouter.ai/keys
 ```
 
 ### slides_to_pdf.py
 
-将多个幻灯片图像合并为单个PDF。
+Combine multiple slide images into a single PDF.
 
 ```bash
-# 合并PNG文件
+# Combine PNG files
 python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
 
-# 按顺序合并特定文件
+# Combine specific files in order
 python scripts/slides_to_pdf.py title.png intro.png methods.png -o talk.pdf
 
-# 从目录（按文件名排序）
+# From directory (sorted by filename)
 python scripts/slides_to_pdf.py slides/ -o presentation.pdf
 ```
 
-**选项：**
-- `-o, --output`：输出PDF路径（必需）
-- `--dpi`：PDF分辨率（默认：150）
-- `-v, --verbose`：详细输出
+**Options:**
+- `-o, --output`: Output PDF path (required)
+- `--dpi`: PDF resolution (default: 150)
+- `-v, --verbose`: Verbose output
 
-**提示：** 用数字命名幻灯片以获得正确顺序：`01_title.png`、`02_intro.png`等。
-
----
-
-## 幻灯片生成的提示编写
-
-### 完整幻灯片提示（PDF工作流程）
-
-对于完整幻灯片，包括：
-1. **幻灯片类型**：标题幻灯片、内容幻灯片、图表幻灯片等
-2. **标题**：幻灯片标题文本
-3. **内容**：要点、项目符号或描述
-4. **视觉元素**：要包含的图像、图标或图形
-5. **设计风格**：配色方案、情绪、美学
-
-**示例提示：**
-
-```
-标题幻灯片：
-"医学研究演示的标题幻灯片。标题：'癌症免疫疗法的进展'。副标题：'2024年临床试验结果'。专业医疗主题，背景中有微妙的DNA螺旋。海军蓝和白色配色方案。"
-
-内容幻灯片：
-"标题为'关键发现'的演示幻灯片。三个项目符号：1) 响应率提高40%，2) 副作用减少，3) 生存结果延长。包含相关医疗图标。干净、专业的设计，绿色和白色配色。"
-
-图表幻灯片：
-"展示研究方法的演示幻灯片。标题：'研究设计'。流程图显示：患者筛选 → 随机化 → 治疗组（A、B、对照）→ 随访 → 分析。CONSORT风格的流程图。专业学术风格。"
-```
-
-### 仅视觉效果提示（PPT工作流程）
-
-对于要嵌入PowerPoint的图像，仅关注视觉元素：
-
-```
-"显示机器学习管道的流程图：数据收集 → 预处理 → 模型训练 → 验证 → 部署。干净的技术风格，蓝色和灰色配色。"
-
-"云计算的概念插图，包含服务器、数据流和连接设备。现代扁平设计，适合商业演示。"
-
-"显示有丝分裂阶段的细胞分裂过程的科学图表。教育风格，带有标签，色盲友好的颜色。"
-```
+**Tip:** Name slides with numbers for correct ordering: `01_title.png`, `02_intro.png`, etc.
 
 ---
 
-## 科学示意图的视觉增强
+## Prompt Writing for Slide Generation
 
-除了幻灯片生成外，使用**scientific-schematics**技能创建技术图表：
+### Full Slide Prompts (PDF Workflow)
 
-**何时使用scientific-schematics：**
-- 复杂的技术图表（电路图、化学结构）
-- 论文的 publication 质量图表（更高质量阈值）
-- 需要科学准确性审查的图表
+For complete slides, include:
+1. **Slide type**: Title slide, content slide, diagram slide, etc.
+2. **Title**: The slide title text
+3. **Content**: Key points, bullet items, or descriptions
+4. **Visual elements**: What imagery, icons, or graphics to include
+5. **Design style**: Color scheme, mood, aesthetic
 
-**如何生成示意图：**
+**Example prompts:**
+
+```
+Title slide:
+"Title slide for a medical research presentation. Title: 'Advances in Cancer Immunotherapy'. Subtitle: 'Clinical Trial Results 2024'. Professional medical theme with subtle DNA helix in background. Navy blue and white color scheme."
+
+Content slide:
+"Presentation slide titled 'Key Findings'. Three bullet points: 1) 40% improvement in response rate, 2) Reduced side effects, 3) Extended survival outcomes. Include relevant medical icons. Clean, professional design with green and white colors."
+
+Diagram slide:
+"Presentation slide showing the research methodology. Title: 'Study Design'. Flowchart showing: Patient Screening → Randomization → Treatment Groups (A, B, Control) → Follow-up → Analysis. CONSORT-style flow diagram. Professional academic style."
+```
+
+### Visual-Only Prompts (PPT Workflow)
+
+For images to embed in PowerPoint, focus on the visual element only:
+
+```
+"Flowchart showing machine learning pipeline: Data Collection → Preprocessing → Model Training → Validation → Deployment. Clean technical style, blue and gray colors."
+
+"Conceptual illustration of cloud computing with servers, data flow, and connected devices. Modern flat design, suitable for business presentation."
+
+"Scientific diagram of cell division process showing mitosis phases. Educational style with labels, colorblind-friendly colors."
+```
+
+---
+
+## Visual Enhancement with Scientific Schematics
+
+In addition to slide generation, use the **scientific-schematics** skill for technical diagrams:
+
+**When to use scientific-schematics instead:**
+- Complex technical diagrams (circuit diagrams, chemical structures)
+- Publication-quality figures for papers (higher quality threshold)
+- Diagrams requiring scientific accuracy review
+
+**How to generate schematics:**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
-有关创建示意图的详细指导，请参考scientific-schematics技能文档。
+For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.
 
 ---
 
-## 核心能力
+## Core Capabilities
 
-### 1. 演示结构和组织
+### 1. Presentation Structure and Organization
 
-构建具有清晰叙述流程和不同上下文适当结构的演示。有关详细指导，请参考`references/presentation_structure.md`。
+Build presentations with clear narrative flow and appropriate structure for different contexts. For detailed guidance, refer to `references/presentation_structure.md`.
 
-**通用故事弧：**
-1. **钩子**：吸引注意力（30-60秒）
-2. **背景**：确立重要性（演讲的5-10%）
-3. **问题/差距**：识别未知内容（演讲的5-10%）
-4. **方法**：解释您的解决方案（演讲的15-25%）
-5. **结果**：呈现关键发现（演讲的40-50%）
-6. **影响**：讨论意义（演讲的15-20%）
-7. **结束**：令人难忘的结论（1-2分钟）
+**Universal Story Arc**:
+1. **Hook**: Grab attention (30-60 seconds)
+2. **Context**: Establish importance (5-10% of talk)
+3. **Problem/Gap**: Identify what's unknown (5-10% of talk)
+4. **Approach**: Explain your solution (15-25% of talk)
+5. **Results**: Present key findings (40-50% of talk)
+6. **Implications**: Discuss meaning (15-20% of talk)
+7. **Closure**: Memorable conclusion (1-2 minutes)
 
-**特定演讲结构：**
-- **会议演讲（15分钟）**：专注于1-2个关键发现，最少方法
-- **学术研讨会（45分钟）**：全面覆盖，详细方法，多项研究
-- **论文答辩（60分钟）**：完整论文概述，涵盖所有研究
-- **资助提案（15分钟）**：强调意义、可行性和影响
-- **期刊俱乐部（30分钟）**：对已发表工作的批判性分析
+**Talk-Specific Structures**:
+- **Conference talks (15 min)**: Focused on 1-2 key findings, minimal methods
+- **Academic seminars (45 min)**: Comprehensive coverage, detailed methods, multiple studies
+- **Thesis defenses (60 min)**: Complete dissertation overview, all studies covered
+- **Grant pitches (15 min)**: Emphasis on significance, feasibility, and impact
+- **Journal clubs (30 min)**: Critical analysis of published work
 
-### 2. 幻灯片设计原则
+### 2. Slide Design Principles
 
-创建专业、可读和可访问的幻灯片，增强理解。有关完整设计指南，请参考`references/slide_design_principles.md`。
+Create professional, readable, and accessible slides that enhance understanding. For complete design guidelines, refer to `references/slide_design_principles.md`.
 
-**反模式：避免枯燥、文本密集的演示**
+**ANTI-PATTERN: Avoid Dry, Text-Heavy Presentations**
 
-❌ **使演示枯燥和易忘的因素：**
-- 文本墙（每张幻灯片超过6个项目符号）
-- 小字体（<24pt正文文本）
-- 仅黑底白字（无视觉兴趣）
-- 无图像或图形（仅项目符号）
-- 无自定义的通用模板
-- 密集、段落式项目符号
-- 缺少研究背景（无引用）
-- 所有幻灯片看起来相同（重复）
+❌ **What Makes Presentations Dry and Forgettable:**
+- Walls of text (more than 6 bullets per slide)
+- Small fonts (<24pt body text)
+- Black text on white background only (no visual interest)
+- No images or graphics (bullet points only)
+- Generic templates with no customization
+- Dense, paragraph-like bullet points
+- Missing research context (no citations)
+- All slides look the same (repetitive)
 
-✅ **使演示引人入胜和难忘的因素：**
-- **高质量视觉效果**占主导地位（图表、照片、图表、图标）
-- 大而清晰的文本作为强调（不是主要内容）
-- 现代、有目的的配色方案（不是默认主题）
-- 充足的空白（幻灯片呼吸）
-- 研究支持的背景（来自research-lookup的适当引用）
-- 幻灯片布局的多样性（不是所有项目符号列表）
-- 故事驱动的流程，带有视觉锚点
-- 专业、抛光的外观
+✅ **What Makes Presentations Engaging and Memorable:**
+- HIGH-QUALITY VISUALS dominate (figures, photos, diagrams, icons)
+- Large, clear text as accent (not the main content)
+- Modern, purposeful color schemes (not default themes)
+- Generous white space (slides breathe)
+- Research-backed context (proper citations from research-lookup)
+- Variety in slide layouts (not all bullet lists)
+- Story-driven flow with visual anchors
+- Professional, polished appearance
 
-**核心设计原则：**
+**Core Design Principles**:
 
-**视觉优先方法**（关键）：
-- 从视觉效果开始（图表、图像、图表），添加文本作为支持
-- 每张幻灯片应具有强烈的视觉元素（图表、图表、照片、图表）
-- 文本解释或补充视觉效果，而非替代它们
-- 思考："我如何展示这个，而不仅仅是讲述它？"
-- 目标：60-70%视觉内容，30-40%文本
+**Visual-First Approach** (CRITICAL):
+- Start with visuals (figures, images, diagrams), add text as support
+- Every slide should have STRONG visual element (figure, chart, photo, diagram)
+- Text explains or complements visuals, not replaces them
+- Think: "How can I show this, not just tell it?"
+- Target: 60-70% visual content, 30-40% text
 
-**简约与影响：**
-- 每张幻灯片一个主要想法
-- 最少文本（3-4个项目符号，每个4-6个字优先）
-- 充足的空白（幻灯片的40-50%）
-- 清晰的视觉焦点
-- 大胆、自信的设计选择
+**Simplicity with Impact**:
+- One main idea per slide
+- MINIMAL text (3-4 bullets, 4-6 words each preferred)
+- Generous white space (40-50% of slide)
+- Clear visual focus
+- Bold, confident design choices
 
-**引人入胜的排版：**
-- 无衬线字体（Arial、Calibri、Helvetica）
-- 大字体：正文文本24-28pt（不仅仅是18pt）
-- 幻灯片标题36-44pt（加粗）
-- 高对比度（最小4.5:1，优选7:1）
-- 使用大小而非仅重量来表示层次结构
+**Typography for Engagement**:
+- Sans-serif fonts (Arial, Calibri, Helvetica)
+- LARGE fonts: 24-28pt for body text (not minimum 18pt)
+- 36-44pt for slide titles (make bold)
+- High contrast (minimum 4.5:1, prefer 7:1)
+- Use size for hierarchy, not just weight
 
-**影响颜色：**
-- 现代配色方案（不是默认的蓝/灰色）
-- 考虑您的主题：生物技术？鲜艳的颜色。物理学？ sleek的深色。健康？温暖的色调。
-- 有限的调色板（总共3-5种颜色）
-- 高对比度组合
-- 色盲安全（避免红绿组合）
-- 有目的地使用颜色（不是装饰）
+**Color for Impact**:
+- MODERN color palettes (not default blue/gray)
+- Consider your topic: biotech? vibrant colors. Physics? sleek darks. Health? warm tones.
+- Limited palette (3-5 colors total)
+- High contrast combinations
+- Color-blind safe (avoid red-green combinations)
+- Use color purposefully (not decoration)
 
-**视觉兴趣布局：**
-- 变化布局（不是所有项目符号列表）
-- 使用双列布局（文本+图表）
-- 关键结果使用全屏图表
-- 不对称构图（比居中更有趣）
-- 三分法则用于焦点
-- 一致但不重复
+**Layout for Visual Interest**:
+- Vary layouts (not all bullet lists)
+- Use two-column layouts (text + figure)
+- Full-slide figures for key results
+- Asymmetric compositions (more interesting than centered)
+- Rule of thirds for focal points
+- Consistent but not repetitive
 
-### 3. 幻灯片的数据可视化
+### 3. Data Visualization for Slides
 
-为演示上下文调整科学图表。有关详细指导，请参考`references/data_visualization_slides.md`。
+Adapt scientific figures for presentation context. For detailed guidance, refer to `references/data_visualization_slides.md`.
 
-**与期刊图表的关键区别：**
-- 简化，不复制
-- 更大的字体（最小18-24pt）
-- 更少的面板（跨幻灯片拆分）
-- 直接标签（不是图例）
-- 通过颜色和大小强调
-- 复杂数据的渐进式披露
+**Key Differences from Journal Figures**:
+- Simplify, don't replicate
+- Larger fonts (18-24pt minimum)
+- Fewer panels (split across slides)
+- Direct labeling (not legends)
+- Emphasis through color and size
+- Progressive disclosure for complex data
 
-**可视化最佳实践：**
-- **条形图**：比较离散类别
-- **线图**：趋势和轨迹
-- **散点图**：关系和相关性
-- **热图**：矩阵数据和模式
-- **网络图**：关系和连接
+**Visualization Best Practices**:
+- **Bar charts**: Comparing discrete categories
+- **Line graphs**: Trends and trajectories
+- **Scatter plots**: Relationships and correlations
+- **Heatmaps**: Matrix data and patterns
+- **Network diagrams**: Relationships and connections
 
-**要避免的常见错误：**
-- 小字体（<18pt）
-- 一张幻灯片上太多面板
-- 复杂图例
-- 不足的对比度
-- 混乱的布局
+**Common Mistakes to Avoid**:
+- Tiny fonts (<18pt)
+- Too many panels on one slide
+- Complex legends
+- Insufficient contrast
+- Cluttered layouts
 
-### 4. 特定演讲指导
+### 4. Talk-Specific Guidance
 
-不同的演示上下文需要不同的方法。有关每种类型的综合指导，请参考`references/talk_types_guide.md`。
+Different presentation contexts require different approaches. For comprehensive guidance on each type, refer to `references/talk_types_guide.md`.
 
-**会议演讲**（10-20分钟）：
-- 结构：简短介绍 → 最少方法 → 关键结果 → 快速结论
-- 焦点：仅1-2个主要发现
-- 风格：引人入胜，快节奏，令人难忘
-- 目标：产生兴趣，建立网络，获得邀请
+**Conference Talks** (10-20 minutes):
+- Structure: Brief intro → minimal methods → key results → quick conclusion
+- Focus: 1-2 main findings only
+- Style: Engaging, fast-paced, memorable
+- Goal: Generate interest, network, get invited
 
-**学术研讨会**（45-60分钟）：
-- 结构：全面覆盖，详细方法
-- 焦点：多个发现，分析深度
-- 风格：学术性，互动性，讨论导向
-- 目标：展示专业知识，获得反馈，合作
+**Academic Seminars** (45-60 minutes):
+- Structure: Comprehensive coverage with detailed methods
+- Focus: Multiple findings, depth of analysis
+- Style: Scholarly, interactive, discussion-oriented
+- Goal: Demonstrate expertise, get feedback, collaborate
 
-**论文答辩**（45-60分钟）：
-- 结构：完整论文概述，所有研究
-- 焦点：展示掌握和独立思考
-- 风格：正式，全面，准备接受质询
-- 目标：通过考试，捍卫研究决策
+**Thesis Defenses** (45-60 minutes):
+- Structure: Complete dissertation overview, all studies
+- Focus: Demonstrating mastery and independent thinking
+- Style: Formal, comprehensive, prepared for interrogation
+- Goal: Pass examination, defend research decisions
 
-**资助提案**（10-20分钟）：
-- 结构：问题 → 意义 → 方法 → 可行性 → 影响
-- 焦点：创新，初步数据，团队资格
-- 风格：有说服力，专注于成果和影响
-- 目标：获得资金，展示可行性
+**Grant Pitches** (10-20 minutes):
+- Structure: Problem → significance → approach → feasibility → impact
+- Focus: Innovation, preliminary data, team qualifications
+- Style: Persuasive, focused on outcomes and impact
+- Goal: Secure funding, demonstrate viability
 
-**期刊俱乐部**（20-45分钟）：
-- 结构：背景 → 方法 → 结果 → 批判性分析
-- 焦点：理解和批判已发表的工作
-- 风格：教育性，批判性，促进讨论
-- 目标：学习，批判，讨论影响
+**Journal Clubs** (20-45 minutes):
+- Structure: Context → methods → results → critical analysis
+- Focus: Understanding and critiquing published work
+- Style: Educational, critical, discussion-facilitating
+- Goal: Learn, critique, discuss implications
 
-### 5. 实现选项
+### 5. Implementation Options
 
-#### Nano Banana Pro PDF（默认 - 推荐）
+#### Nano Banana Pro PDF (Default - Recommended)
 
-**最适合**：视觉惊艳的幻灯片，快速创建，非技术受众
+**Best for**: Visually stunning slides, fast creation, non-technical audiences
 
-**这是默认和推荐的方法。** 使用AI将每张幻灯片生成为完整图像。
+**This is the default and recommended approach.** Generate each slide as a complete image using AI.
 
-**工作流程：**
-1. 规划每张幻灯片（标题、内容、视觉元素）
-2. 使用`generate_slide_image.py`生成每张幻灯片
-3. 使用`slides_to_pdf.py`合并为PDF
+**Workflow**:
+1. Plan each slide (title, content, visual elements)
+2. Generate each slide with `generate_slide_image.py`
+3. Combine into PDF with `slides_to_pdf.py`
 
 ```bash
-# 生成幻灯片
-python scripts/generate_slide_image.py "标题：介绍..." -o slides/01.png
-python scripts/generate_slide_image.py "标题：方法..." -o slides/02.png
+# Generate slides
+python scripts/generate_slide_image.py "Title: Introduction..." -o slides/01.png
+python scripts/generate_slide_image.py "Title: Methods..." -o slides/02.png
 
-# 合并为PDF
+# Combine to PDF
 python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
 ```
 
-**优势：**
-- 最视觉印象深刻的结果
-- 快速创建（描述并生成）
-- 无需设计技能
-- 一致、专业的外观
-- 适合一般受众
+**Advantages**:
+- Most visually impressive results
+- Fast creation (describe and generate)
+- No design skills required
+- Consistent, professional appearance
+- Perfect for general audiences
 
-**最适合：**
-- 会议演讲
-- 商业演示
-- 一般科学演讲
-- 提案演示
+**Best for**:
+- Conference talks
+- Business presentations
+- General scientific talks
+- Pitch presentations
 
-#### 通过PPTX技能的PowerPoint
+#### PowerPoint via PPTX Skill
 
-**最适合**：可编辑幻灯片，自定义设计，基于模板的工作流程
+**Best for**: Editable slides, custom designs, template-based workflows
 
-**参考**：请参阅`document-skills/pptx/SKILL.md`获取完整文档
+**Reference**: See `document-skills/pptx/SKILL.md` for complete documentation
 
-使用Nano Banana Pro和`--visual-only`生成图像，然后用文本构建PPTX。
+Use Nano Banana Pro with `--visual-only` to generate images, then build PPTX with text.
 
-**关键资源：**
-- `assets/powerpoint_design_guide.md`：完整的PowerPoint设计指南
-- PPTX技能的`html2pptx.md`：程序化创建工作流程
-- PPTX技能的脚本：`rearrange.py`、`inventory.py`、`replace.py`、`thumbnail.py`
+**Key Resources**:
+- `assets/powerpoint_design_guide.md`: Complete PowerPoint design guide
+- PPTX skill's `html2pptx.md`: Programmatic creation workflow
+- PPTX skill's scripts: `rearrange.py`, `inventory.py`, `replace.py`, `thumbnail.py`
 
-**工作流程：**
-1. 使用`generate_slide_image.py --visual-only`生成视觉效果
-2. 设计HTML幻灯片（用于程序化）或使用模板
-3. 使用html2pptx或模板编辑创建演示
-4. 添加生成的图像和文本内容
-5. 生成缩略图用于视觉验证
-6. 基于视觉检查进行迭代
+**Workflow**:
+1. Generate visuals with `generate_slide_image.py --visual-only`
+2. Design HTML slides (for programmatic) or use templates
+3. Create presentation using html2pptx or template editing
+4. Add generated images and text content
+5. Generate thumbnails for visual validation
+6. Iterate based on visual inspection
 
-**优势：**
-- 可编辑幻灯片（以后可以修改文本）
-- 复杂的动画和过渡
-- 互动元素
-- 公司模板兼容性
+**Advantages**:
+- Editable slides (can modify text later)
+- Complex animations and transitions
+- Interactive elements
+- Company template compatibility
 
 #### LaTeX Beamer
 
-**最适合**：数学内容，一致的格式，版本控制
+**Best for**: Mathematical content, consistent formatting, version control
 
-**参考**：请参阅`references/beamer_guide.md`获取完整文档
+**Reference**: See `references/beamer_guide.md` for complete documentation
 
-**可用模板：**
-- `assets/beamer_template_conference.tex`：15分钟会议演讲
-- `assets/beamer_template_seminar.tex`：45分钟学术研讨会
-- `assets/beamer_template_defense.tex`：论文答辩
+**Templates Available**:
+- `assets/beamer_template_conference.tex`: 15-minute conference talk
+- `assets/beamer_template_seminar.tex`: 45-minute academic seminar
+- `assets/beamer_template_defense.tex`: Dissertation defense
 
-**工作流程：**
-1. 选择适当的模板
-2. 自定义主题和颜色
-3. 添加内容（LaTeX原生：方程、代码、算法）
-4. 编译为PDF
-5. 转换为图像进行视觉验证
+**Workflow**:
+1. Choose appropriate template
+2. Customize theme and colors
+3. Add content (LaTeX native: equations, code, algorithms)
+4. Compile to PDF
+5. Convert to images for visual validation
 
-**优势：**
-- 美观的数学和方程
-- 一致、专业的外观
-- 版本控制友好（纯文本）
-- 非常适合算法和代码
-- 可重现和程序化
+**Advantages**:
+- Beautiful mathematics and equations
+- Consistent, professional appearance
+- Version control friendly (plain text)
+- Excellent for algorithms and code
+- Reproducible and programmatic
 
-### 6. 视觉审查和迭代
+### 6. Visual Review and Iteration
 
-通过视觉检查实现迭代改进。有关完整工作流程，请参考`references/visual_review_workflow.md`。
+Implement iterative improvement through visual inspection. For complete workflow, refer to `references/visual_review_workflow.md`.
 
-**视觉验证工作流程：**
+**Visual Validation Workflow**:
 
-**步骤1：生成PDF**（如果尚未为PDF）
-- PowerPoint：导出为PDF
-- Beamer：编译LaTeX源
+**Step 1: Generate PDF** (if not already PDF)
+- PowerPoint: Export as PDF
+- Beamer: Compile LaTeX source
 
-**步骤2：转换为图像**
+**Step 2: Convert to Images**
 ```bash
-# 使用pdf_to_images脚本
+# Using the pdf_to_images script
 python scripts/pdf_to_images.py presentation.pdf review/slide --dpi 150
 
-# 或使用pptx技能的缩略图工具
+# Or use pptx skill's thumbnail tool
 python ../document-skills/pptx/scripts/thumbnail.py presentation.pptx review/thumb
 ```
 
-**步骤3：系统检查**
+**Step 3: Systematic Inspection**
 
-检查每张幻灯片：
-- **文本溢出**：文本在边缘被截断
-- **元素重叠**：文本与图像或其他文本重叠
-- **字体大小**：文本太小（<18pt）
-- **对比度**：文本和背景之间对比度不足
-- **布局问题**：错位，间距不当
-- **视觉质量**：像素化图像，渲染不良
+Check each slide for:
+- **Text overflow**: Text cut off at edges
+- **Element overlap**: Text overlapping images or other text
+- **Font sizes**: Text too small (<18pt)
+- **Contrast**: Insufficient contrast between text and background
+- **Layout issues**: Misalignment, poor spacing
+- **Visual quality**: Pixelated images, poor rendering
 
-**步骤4：记录问题**
+**Step 4: Document Issues**
 
-创建问题日志：
+Create issue log:
 ```
-幻灯片 # | 问题类型 | 描述 | 优先级
+Slide # | Issue Type | Description | Priority
 --------|-----------|-------------|----------
-3       | 文本溢出 | 项目符号4超出框 | 高
-7       | 重叠 | 图表与标题重叠 | 高
-12      | 字体大小 | 轴标签太小 | 中
+3       | Text overflow | Bullet 4 extends beyond box | High
+7       | Overlap | Figure overlaps with caption | High
+12      | Font size | Axis labels too small | Medium
 ```
 
-**步骤5：应用修复**
+**Step 5: Apply Fixes**
 
-对源文件进行更正：
-- PowerPoint：编辑文本框，调整元素大小
-- Beamer：调整LaTeX代码，重新编译
+Make corrections to source files:
+- PowerPoint: Edit text boxes, resize elements
+- Beamer: Adjust LaTeX code, recompile
 
-**步骤6：重新验证**
+**Step 6: Re-Validate**
 
-重复步骤1-5，直到没有关键问题。
+Repeat Steps 1-5 until no critical issues remain.
 
-**停止标准：**
-- 无文本溢出
-- 无不当重叠
-- 所有文本可读（≥18pt等效）
-- 足够的对比度（≥4.5:1）
-- 专业外观
+**Stopping Criteria**:
+- No text overflow
+- No inappropriate overlaps
+- All text readable (≥18pt equivalent)
+- Adequate contrast (≥4.5:1)
+- Professional appearance
 
-### 7. 时间和节奏
+### 7. Timing and Pacing
 
-确保演示符合分配的时间。有关综合时间指导，请参考`assets/timing_guidelines.md`。
+Ensure presentations fit allocated time. For comprehensive timing guidance, refer to `assets/timing_guidelines.md`.
 
-**每分钟一张幻灯片规则：**
-- 一般指南：~每分钟1张幻灯片
-- 复杂幻灯片调整（2-3分钟）
-- 简单幻灯片调整（15-30秒）
+**The One-Slide-Per-Minute Rule**:
+- General guideline: ~1 slide per minute
+- Adjust for complex slides (2-3 minutes)
+- Adjust for simple slides (15-30 seconds)
 
-**时间分配：**
-- 介绍：15-20%
-- 方法：15-20%
-- 结果：40-50%（最多时间）
-- 讨论：15-20%
-- 结论：5%
+**Time Allocation**:
+- Introduction: 15-20%
+- Methods: 15-20%
+- Results: 40-50% (MOST TIME)
+- Discussion: 15-20%
+- Conclusion: 5%
 
-**练习要求：**
-- 5分钟演讲：练习5-7次
-- 15分钟演讲：练习3-5次
-- 45分钟演讲：练习3-4次
-- 答辩：练习4-6次
+**Practice Requirements**:
+- 5-minute talk: Practice 5-7 times
+- 15-minute talk: Practice 3-5 times
+- 45-minute talk: Practice 3-4 times
+- Defense: Practice 4-6 times
 
-**时间检查点：**
+**Timing Checkpoints**:
 
-对于15分钟演讲：
-- 3-4分钟：完成介绍
-- 7-8分钟：结果中途
-- 12-13分钟：开始结论
+For 15-minute talk:
+- 3-4 minutes: Finishing introduction
+- 7-8 minutes: Halfway through results
+- 12-13 minutes: Starting conclusions
 
-**应急策略：**
-- 落后：跳过备份幻灯片（提前准备）
-- 提前：扩展示例，稍微放慢
-- 永远不要跳过结论
+**Emergency Strategies**:
+- Running behind: Skip backup slides (prepare in advance)
+- Running ahead: Expand examples, slow slightly
+- Never skip conclusions
 
-### 8. 验证和质量保证
+### 8. Validation and Quality Assurance
 
-**自动验证：**
+**Automated Validation**:
 ```bash
-# 验证幻灯片数量、时间、文件大小
+# Validate slide count, timing, file size
 python scripts/validate_presentation.py presentation.pdf --duration 15
 
-# 生成报告：
-# - 幻灯片数量与推荐范围
-# - 文件大小警告
-# - 幻灯片尺寸
-# - 字体大小问题（PowerPoint）
-# - 编译成功（Beamer）
+# Generates report on:
+# - Slide count vs. recommended range
+# - File size warnings
+# - Slide dimensions
+# - Font size issues (PowerPoint)
+# - Compilation success (Beamer)
 ```
 
-**手动验证清单：**
-- [ ] 幻灯片数量适合持续时间
-- [ ] 标题幻灯片完整（姓名、机构、日期）
-- [ ] 清晰的叙述流程
-- [ ] 每张幻灯片一个主要想法
-- [ ] 字体大小≥18pt（最好24pt+）
-- [ ] 高对比度颜色
-- [ ] 图表大且可读
-- [ ] 无文本溢出或元素重叠
-- [ ] 整个设计一致
-- [ ] 幻灯片编号存在
-- [ ] 最后一张幻灯片上有联系信息
-- [ ] 准备了备份幻灯片
-- [ ] 在投影仪上测试（如果可能）
+**Manual Validation Checklist**:
+- [ ] Slide count appropriate for duration
+- [ ] Title slide complete (name, affiliation, date)
+- [ ] Clear narrative flow
+- [ ] One main idea per slide
+- [ ] Font sizes ≥18pt (preferably 24pt+)
+- [ ] High contrast colors
+- [ ] Figures large and readable
+- [ ] No text overflow or element overlap
+- [ ] Consistent design throughout
+- [ ] Slide numbers present
+- [ ] Contact info on final slide
+- [ ] Backup slides prepared
+- [ ] Tested on projector (if possible)
 
-## 演示开发工作流程
+## Workflow for Presentation Development
 
-### 阶段1：规划（创建幻灯片前）
+### Stage 1: Planning (Before Creating Slides)
 
-**定义上下文：**
-1. 什么类型的演讲？（会议、研讨会、答辩等）
-2. 多长时间？（分钟持续时间）
-3. 观众是谁？（专家、一般、混合）
-4. 场地是什么？（房间大小、A/V设置、虚拟/面对面）
-5. 之后会发生什么？（问答、讨论、网络）
+**Define Context**:
+1. What type of talk? (Conference, seminar, defense, etc.)
+2. How long? (Duration in minutes)
+3. Who is the audience? (Specialists, general, mixed)
+4. What's the venue? (Room size, A/V setup, virtual/in-person)
+5. What happens after? (Q&A, discussion, networking)
 
-**研究和文献综述**（使用research-lookup技能）：
-1. **搜索背景文献**：找到5-10篇建立背景的关键论文
-2. **识别知识差距**：使用research-lookup找到未知内容
-3. **定位比较研究**：找到具有类似方法或结果的论文
-4. **收集支持引用**：收集支持您解释的论文
-5. **建立参考列表**：创建幻灯片的.bib文件或引用列表
-6. **记录要引用的关键发现**：记录要参考的特定结果
+**Research and Literature Review** (Use research-lookup skill):
+1. **Search for background literature**: Find 5-10 key papers establishing context
+2. **Identify knowledge gaps**: Use research-lookup to find what's unknown
+3. **Locate comparison studies**: Find papers with similar methods or results
+4. **Gather supporting citations**: Collect papers supporting your interpretations
+5. **Build reference list**: Create .bib file or citation list for slides
+6. **Note key findings to cite**: Document specific results to reference
 
-**开发内容大纲：**
-1. 确定1-3个核心信息
-2. 选择要呈现的关键发现
-3. 选择必要的图表（15分钟演讲通常为3-6个）
-4. 规划带有适当引用的叙述弧
-5. 按部分分配时间
+**Develop Content Outline**:
+1. Identify 1-3 core messages
+2. Select key findings to present
+3. Choose essential figures (typically 3-6 for 15-min talk)
+4. Plan narrative arc with proper citations
+5. Allocate time by section
 
-**15分钟演讲的示例大纲：**
+**Example Outline for 15-Minute Talk**:
 ```
-1. 标题（30秒）
-2. 钩子：引人注目的问题（60秒）[通过research-lookup引用1-2篇论文]
-3. 背景（90秒）[引用3-4篇建立背景的关键论文]
-4. 研究问题（45秒）[引用显示差距的论文]
-5. 方法概述（2分钟）
-6-8. 主要结果1（3分钟，3张幻灯片）
-9-10. 主要结果2（2分钟，2张幻灯片）
-11-12. 结果3或验证（2分钟，2张幻灯片）
-13-14. 讨论和影响（2分钟）[与2-3项先前研究比较]
-15. 结论（45秒）
-16. 致谢（15秒）
+1. Title (30 sec)
+2. Hook: Compelling problem (60 sec) [Cite 1-2 papers via research-lookup]
+3. Background (90 sec) [Cite 3-4 key papers establishing context]
+4. Research question (45 sec) [Cite papers showing gap]
+5. Methods overview (2 min)
+6-8. Main result 1 (3 min, 3 slides)
+9-10. Main result 2 (2 min, 2 slides)
+11-12. Result 3 or validation (2 min, 2 slides)
+13-14. Discussion and implications (2 min) [Compare to 2-3 prior studies]
+15. Conclusions (45 sec)
+16. Acknowledgments (15 sec)
 
-注意：使用research-lookup在创建幻灯片前找到背景（幻灯片2-4）
-和讨论（幻灯片13-14）的论文。
+NOTE: Use research-lookup to find papers for background (slides 2-4) 
+and discussion (slides 13-14) BEFORE creating slides.
 ```
 
-### 阶段2：设计和创建
+### Stage 2: Design and Creation
 
-**选择实现方法：**
+**Choose Implementation Method**:
 
-**选项A：PowerPoint（通过PPTX技能）**
-1. 阅读`assets/powerpoint_design_guide.md`
-2. 阅读`document-skills/pptx/SKILL.md`
-3. 选择方法（程序化或基于模板）
-4. 创建具有一致设计的母版幻灯片
-5. 按照大纲构建演示
+**Option A: PowerPoint (via PPTX skill)**
+1. Read `assets/powerpoint_design_guide.md`
+2. Read `document-skills/pptx/SKILL.md`
+3. Choose approach (programmatic or template-based)
+4. Create master slides with consistent design
+5. Build presentation following outline
 
-**选项B：LaTeX Beamer**
-1. 阅读`references/beamer_guide.md`
-2. 从`assets/`中选择适当的模板
-3. 自定义主题和颜色
-4. 用LaTeX编写内容
-5. 编译为PDF
+**Option B: LaTeX Beamer**
+1. Read `references/beamer_guide.md`
+2. Select appropriate template from `assets/`
+3. Customize theme and colors
+4. Write content in LaTeX
+5. Compile to PDF
 
-**设计考虑**（使其视觉吸引人）：
-- **选择现代配色方案**：匹配您的主题（生物技术=鲜艳，物理学=sleek，健康=温暖）
-  - 使用pptx技能的调色板示例（蓝绿色和珊瑚色，大胆红色，深紫色和翡翠色等）
-  - 不仅仅是默认的蓝/灰色主题
-  - 3-5种高对比度颜色
-- **选择干净的字体**：无衬线，大尺寸（24pt+正文）
-- **计划视觉元素**：每张幻灯片使用什么图像、图表、图标？
-- **创建各种布局**：混合全屏图表、双列、文本覆盖（不是所有项目符号）
-- **设计部分分隔符**：带有醒目图形的视觉分隔
-- **计划动画/构建**：控制复杂幻灯片的信息流
-- **添加视觉兴趣**：背景图像、颜色块、形状、图标
+**Design Considerations** (Make It Visually Appealing):
+- **Select MODERN color palette**: Match your topic (biotech=vibrant, physics=sleek, health=warm)
+  - Use pptx skill's color palette examples (Teal & Coral, Bold Red, Deep Purple & Emerald, etc.)
+  - NOT just default blue/gray themes
+  - 3-5 colors with high contrast
+- **Choose clean fonts**: Sans-serif, large sizes (24pt+ body)
+- **Plan visual elements**: What images, diagrams, icons for each slide?
+- **Create varied layouts**: Mix full-figure, two-column, text-overlay (not all bullets)
+- **Design section dividers**: Visual breaks with striking graphics
+- **Plan animations/builds**: Control information flow for complex slides
+- **Add visual interest**: Background images, color blocks, shapes, icons
 
-### 阶段3：内容开发
+### Stage 3: Content Development
 
-**填充幻灯片**（视觉优先策略）：
-1. **从视觉效果开始**：为每个关键点计划哪些图表、图像、图表
-2. **广泛使用research-lookup**：找到8-15篇论文用于适当的引用
-3. **首先创建视觉骨架**：添加所有图表、图表、图像、图表
-4. **添加最少文本作为支持**：项目符号补充视觉效果，不要替代它们
-5. **设计部分分隔符**：带有图像或图形的视觉分隔（不仅仅是文本）
-6. **完善标题/结尾**：使其视觉醒目，包含联系信息
-7. **添加过渡/构建**：控制信息流
+**Populate Slides** (Visual-First Strategy):
+1. **Start with visuals**: Plan which figures, images, diagrams for each key point
+2. **Use research-lookup extensively**: Find 8-15 papers for proper citations
+3. **Create visual backbone first**: Add all figures, charts, images, diagrams
+4. **Add minimal text as support**: Bullet points complement visuals, don't replace them
+5. **Design section dividers**: Visual breaks with images or graphics (not just text)
+6. **Polish title/closing**: Make visually striking, include contact info
+7. **Add transitions/builds**: Control information flow
 
-**视觉内容要求**（使幻灯片引人入胜）：
-- **图像**：使用高质量照片、插图、概念图形
-- **图标**：概念的视觉表示（不是装饰）
-- **图表**：流程图、示意图、过程图
-- **图表**：简化的研究图表，带有大标签（18-24pt）
-- **图表**：干净的数据可视化，带有明确的信息
-- **图形**：视觉隐喻，概念插图
-- **颜色块**：使用彩色形状在视觉上组织内容
-- 目标：每张幻灯片至少1-2个强视觉元素
+**VISUAL CONTENT REQUIREMENTS** (Make Slides Engaging):
+- **Images**: Use high-quality photos, illustrations, conceptual graphics
+- **Icons**: Visual representations of concepts (not decoration)
+- **Diagrams**: Flowcharts, schematics, process diagrams
+- **Figures**: Simplified research figures with LARGE labels (18-24pt)
+- **Charts**: Clean data visualizations with clear messages
+- **Graphics**: Visual metaphors, conceptual illustrations
+- **Color blocks**: Use colored shapes to organize content visually
+- Target: MINIMUM 1-2 strong visual elements per slide
 
-**科学内容**（研究支持）：
-- **引用**：广泛使用research-lookup找到相关论文
-  - 介绍：引用3-5篇建立背景和差距的论文
-  - 背景：视觉上显示关键先前工作（不仅仅是引用）
-  - 讨论：引用3-5篇与您的结果比较的论文
-  - 使用作者-年份格式（Smith等，2023）以提高可读性
-  - 引用建立可信度和科学严谨性
-- **图表**：从论文中简化，大标签（最小18-24pt）
-- **方程**：大而清晰，解释每个术语（ sparingly使用）
-- **表格**：最小化，突出关键比较（不是数据转储）
-- **代码/算法**：使用语法高亮，保持简短
+**Scientific Content** (Research-Backed):
+- **Citations**: Use research-lookup EXTENSIVELY to find relevant papers
+  - Introduction: Cite 3-5 papers establishing context and gap
+  - Background: Show key prior work visually (not just cite)
+  - Discussion: Cite 3-5 papers for comparison with your results
+  - Use author-year format (Smith et al., 2023) for readability
+  - Citations establish credibility and scientific rigor
+- **Figures**: Simplified from papers, LARGE labels (18-24pt minimum)
+- **Equations**: Large, clear, explain each term (use sparingly)
+- **Tables**: Minimal, highlight key comparisons (not data dumps)
+- **Code/Algorithms**: Use syntax highlighting, keep brief
 
-**文本指南**（少即是多）：
-- 项目符号，永远不要段落
-- 每张幻灯片3-4个项目符号（仅在必要时最多6个）
-- 每个项目符号4-6个字（比6×6规则更短）
-- 关键点加粗
-- 文本是支持角色，视觉效果是明星
-- 使用构建来控制节奏
+**Text Guidelines** (Less is More):
+- Bullet points, NEVER paragraphs
+- 3-4 bullets per slide (max 6 only if essential)
+- 4-6 words per bullet (shorter than 6×6 rule)
+- Key terms in bold
+- Text is SUPPORTING ROLE, visuals are stars
+- Use builds to control pacing
 
-### 阶段4：视觉验证
+### Stage 4: Visual Validation
 
-**生成图像：**
+**Generate Images**:
 ```bash
-# 将PDF转换为图像
+# Convert PDF to images
 python scripts/pdf_to_images.py presentation.pdf review/slides
 
-# 或创建缩略图网格
+# Or create thumbnail grid
 python ../document-skills/pptx/scripts/thumbnail.py presentation.pptx review/grid
 ```
 
-**系统审查：**
-1. 查看每张幻灯片图像
-2. 根据问题清单检查
-3. 记录带有幻灯片编号的问题
-4. 从远处测试可读性（以50%大小查看）
+**Systematic Review**:
+1. View each slide image
+2. Check against issue checklist
+3. Document problems with slide numbers
+4. Test readability from distance (view at 50% size)
 
-**要修复的常见问题：**
-- 文本超出边界
-- 图表与文本重叠
-- 字体大小太小
-- 对比度差
-- 错位
+**Common Issues to Fix**:
+- Text extending beyond boundaries
+- Figures overlapping with text
+- Font sizes too small
+- Poor contrast
+- Misalignment
 
-**迭代：**
-1. 修复源文件中的已识别问题
-2. 重新生成PDF/演示文稿
-3. 再次转换为图像
-4. 重新检查
-5. 重复直到干净
+**Iteration**:
+1. Fix identified issues in source
+2. Regenerate PDF/presentation
+3. Convert to images again
+4. Re-inspect
+5. Repeat until clean
 
-### 阶段5：练习和完善
+### Stage 5: Practice and Refinement
 
-**练习计划：**
-- 运行1：草稿（会超时）
-- 运行2：平滑过渡
-- 运行3：准确计时
-- 运行4：最终抛光
-- 运行5+：维护（前一天，当天早上）
+**Practice Schedule**:
+- Run 1: Rough draft (will run long)
+- Run 2: Smooth transitions
+- Run 3: Exact timing
+- Run 4: Final polish
+- Run 5+: Maintenance (day before, morning of)
 
-**要练习的内容：**
-- 带计时器的完整演讲
-- 困难的解释
-- 部分之间的过渡
-- 开场和结束（直到完美）
-- 预期问题
+**What to Practice**:
+- Full talk with timer
+- Difficult explanations
+- Transitions between sections
+- Opening and closing (until flawless)
+- Anticipated questions
 
-**基于练习的完善：**
-- 如果超时，削减幻灯片
-- 如果不清楚，扩展解释
-- 调整措辞以提高清晰度
-- 标记时间检查点
-- 准备备份幻灯片
+**Refinement Based on Practice**:
+- Cut slides if running over
+- Expand explanations if unclear
+- Adjust wording for clarity
+- Mark timing checkpoints
+- Prepare backup slides
 
-### 阶段6：最终准备
+### Stage 6: Final Preparation
 
-**技术检查：**
-- [ ] 保存多个副本（笔记本电脑、云、USB）
-- [ ] 在演示计算机上工作
-- [ ] 适配器/电缆可用
-- [ ] 备份PDF版本
-- [ ] 在投影仪上测试（如果可能）
+**Technical Checks**:
+- [ ] Multiple copies saved (laptop, cloud, USB)
+- [ ] Works on presentation computer
+- [ ] Adapters/cables available
+- [ ] Backup PDF version
+- [ ] Tested with projector (if possible)
 
-**内容最终：**
-- [ ] 无拼写错误
-- [ ] 所有图表高质量
-- [ ] 幻灯片编号正确
-- [ ] 最后一张幻灯片上有联系信息
-- [ ] 备份幻灯片准备就绪
+**Content Final**:
+- [ ] No typos or errors
+- [ ] All figures high quality
+- [ ] Slide numbers correct
+- [ ] Contact info on final slide
+- [ ] Backup slides ready
 
-**演讲准备：**
-- [ ] 准备笔记（如果使用）
-- [ ] 计时器/手机准备就绪
-- [ ] 水可用
-- [ ] 名片/讲义
-- [ ] 熟悉材料（3+次练习）
+**Delivery Prep**:
+- [ ] Notes prepared (if using)
+- [ ] Timer/phone ready
+- [ ] Water available
+- [ ] Business cards/handouts
+- [ ] Comfortable with material (3+ practices)
 
-## 与其他技能集成
+## Integration with Other Skills
 
-**研究查找**（科学演示的关键）：
-- **背景开发**：搜索文献以构建介绍背景
-- **引用收集**：找到在演讲中引用的关键论文
-- **差距识别**：识别未知内容以激发研究
-- **先前工作比较**：找到与您的结果比较的论文
-- **支持证据**：找到支持您解释的文献
-- **问题准备**：找到可能为问答提供信息的论文
-- **开发任何科学演示时始终使用research-lookup**，以确保适当的背景和引用
+**Research Lookup** (Critical for Scientific Presentations):
+- **Background development**: Search literature to build introduction context
+- **Citation gathering**: Find key papers to cite in your talk
+- **Gap identification**: Identify what's unknown to motivate research
+- **Prior work comparison**: Find papers to compare your results against
+- **Supporting evidence**: Locate literature supporting your interpretations
+- **Question preparation**: Find papers that might inform Q&A responses
+- **Always use research-lookup** when developing any scientific presentation to ensure proper context and citations
 
-**科学写作：**
-- 将论文内容转换为演示格式
-- 提取关键发现并简化
-- 使用相同的图表（但为幻灯片重新设计）
-- 保持一致的术语
+**Scientific Writing**:
+- Convert paper content to presentation format
+- Extract key findings and simplify
+- Use same figures (but redesigned for slides)
+- Maintain consistent terminology
 
-**PPTX技能：**
-- 用于PowerPoint创建和编辑
-- 利用脚本进行模板工作流程
-- 使用缩略图生成进行验证
-- 参考html2pptx进行程序化创建
+**PPTX Skill**:
+- Use for PowerPoint creation and editing
+- Leverage scripts for template workflows
+- Use thumbnail generation for validation
+- Reference html2pptx for programmatic creation
 
-**数据可视化：**
-- 创建适合演示的图表
-- 简化复杂的可视化
-- 确保从远处可读
-- 使用渐进式披露
+**Data Visualization**:
+- Create presentation-appropriate figures
+- Simplify complex visualizations
+- Ensure readability from distance
+- Use progressive disclosure
 
-## 要避免的常见陷阱
+## Common Pitfalls to Avoid
 
-### 内容错误
+### Content Mistakes
 
-**枯燥、无聊的演示**（必须避免）：
-- 问题：文本密集的幻灯片，无视觉兴趣，缺少研究背景
-- 迹象：所有项目符号，无图像，默认模板，无引用
-- 解决方案：
-  - 使用research-lookup找到8-15篇论文作为可信背景
-  - 为每张幻灯片添加高质量视觉效果（图表、照片、图表、图标）
-  - 选择反映您主题的现代配色方案
-  - 变化幻灯片布局（不是所有项目符号列表）
-  - 用视觉效果讲述故事，少用文本
+**Dry, Boring Presentations** (CRITICAL TO AVOID):
+- Problem: Text-heavy slides with no visual interest, missing research context
+- Signs: All bullet points, no images, default templates, no citations
+- Solution: 
+  - Use research-lookup to find 8-15 papers for credible context
+  - Add high-quality visuals to EVERY slide (figures, photos, diagrams, icons)
+  - Choose modern color palette reflecting your topic
+  - Vary slide layouts (not all bullet lists)
+  - Tell a story with visuals, use text sparingly
 
-**内容过多：**
-- 问题：尝试包含论文中的所有内容
-- 解决方案：短期演讲专注于1-2个关键发现，视觉显示
+**Too Much Content**:
+- Problem: Trying to include everything from paper
+- Solution: Focus on 1-2 key findings for short talks, show visually
 
-**文本过多：**
-- 问题：幻灯片上的完整段落，密集项目符号，逐字阅读
-- 解决方案：3-4个项目符号，每个4-6个字，让视觉效果传达信息
+**Too Much Text**:
+- Problem: Full paragraphs on slides, dense bullet points, reading verbatim
+- Solution: 3-4 bullets with 4-6 words each, let visuals carry the message
 
-**缺少研究背景：**
-- 问题：无引用，无支持的主张，定位不明确
-- 解决方案：使用research-lookup找到论文，在介绍中引用3-5篇，在讨论中引用3-5篇
+**Missing Research Context**:
+- Problem: No citations, claims without support, unclear positioning
+- Solution: Use research-lookup to find papers, cite 3-5 in intro, 3-5 in discussion
 
-**叙述差：**
-- 问题：主题之间跳跃，无清晰故事，无流程
-- 解决方案：遵循故事弧，使用视觉过渡，保持线程
+**Poor Narrative**:
+- Problem: Jumping between topics, no clear story, no flow
+- Solution: Follow story arc, use visual transitions, maintain thread
 
-**匆匆通过结果：**
-- 问题：简短方法，简短结果，冗长讨论
-- 解决方案：将40-50%的时间用于结果，视觉显示数据
+**Rushing Through Results**:
+- Problem: Brief methods, brief results, long discussion
+- Solution: Spend 40-50% of time on results, show data visually
 
-### 设计错误
+### Design Mistakes
 
-**通用、默认外观：**
-- 问题：使用默认PowerPoint/Beamer主题，无自定义，看起来过时
-- 解决方案：选择现代配色方案，自定义字体/布局，添加视觉个性
+**Generic, Default Appearance**:
+- Problem: Using default PowerPoint/Beamer themes without customization, looks dated
+- Solution: Choose modern color palette, customize fonts/layouts, add visual personality
 
-**文本密集，视觉贫乏：**
-- 问题：所有项目符号幻灯片，无图像或图形，看起来无聊
-- 解决方案：为每张幻灯片添加图表、照片、图表、图标，使其视觉有趣
+**Text-Heavy, Visual-Poor**:
+- Problem: All bullet point slides, no images or graphics, boring to look at
+- Solution: Add figures, photos, diagrams, icons to EVERY slide, make visually interesting
 
-**小字体：**
-- 问题：正文文本<18pt，从后面不可读，看起来不专业
-- 解决方案：正文24-28pt（不仅仅是18pt最小），标题36-44pt
+**Small Fonts**:
+- Problem: Body text <18pt, unreadable from back, looks unprofessional
+- Solution: 24-28pt for body (not just 18pt minimum), 36-44pt for titles
 
-**低对比度：**
-- 问题：浅色文本在浅色背景上，可见性差，难以阅读
-- 解决方案：高对比度（优选7:1，不仅仅是4.5:1最小），使用对比度检查器测试
+**Low Contrast**:
+- Problem: Light text on light background, poor visibility, hard to read
+- Solution: High contrast (7:1 preferred, not just 4.5:1 minimum), test with contrast checker
 
-**混乱的幻灯片：**
-- 问题：元素过多，无空白，压倒性
-- 解决方案：每张幻灯片一个想法，40-50%空白，充足间距
+**Cluttered Slides**:
+- Problem: Too many elements, no white space, overwhelming
+- Solution: One idea per slide, 40-50% white space, generous spacing
 
-**不一致的格式：**
-- 问题：幻灯片之间不同的字体、颜色、布局，看起来业余
-- 解决方案：使用母版幻灯片，维护设计系统，专业一致性
+**Inconsistent Formatting**:
+- Problem: Different fonts, colors, layouts slide-to-slide, looks amateurish
+- Solution: Use master slides, maintain design system, professional consistency
 
-**缺少视觉层次结构：**
-- 问题：所有内容相同大小和颜色，无重点，焦点不明确
-- 解决方案：大小差异（标题大，正文中等），颜色用于强调，清晰的焦点
+**Missing Visual Hierarchy**:
+- Problem: Everything same size and color, no emphasis, unclear focus
+- Solution: Size differences (titles large, body medium), color for emphasis, clear focal point
 
-### 时间错误
+### Timing Mistakes
 
-**不练习：**
-- 问题：第一次通过是在演示期间
-- 解决方案：至少练习3次，带计时器
+**Not Practicing**:
+- Problem: First time through is during presentation
+- Solution: Practice minimum 3 times with timer
 
-**无时间检查点：**
-- 问题：直到太晚才意识到落后
-- 解决方案：设置3-4个检查点，全程监控
+**No Time Checkpoints**:
+- Problem: Don't realize running behind until too late
+- Solution: Set 3-4 checkpoints, monitor throughout
 
-**超时：**
-- 问题：极其不专业，占用问答时间
-- 解决方案：练习到准确时间，准备B计划（要跳过的幻灯片）
+**Going Over Time**:
+- Problem: Extremely unprofessional, cuts into Q&A
+- Solution: Practice to exact time, prepare Plan B (slides to skip)
 
-**跳过结论：**
-- 问题：时间耗尽，匆忙通过或跳过结尾
-- 解决方案：永远不要跳过结论，而是削减早期内容
+**Skipping Conclusions**:
+- Problem: Running out of time, rush through or skip ending
+- Solution: Never skip conclusions, cut earlier content instead
 
-## 工具和脚本
+## Tools and Scripts
 
-### Nano Banana Pro脚本
+### Nano Banana Pro Scripts
 
-**generate_slide_image.py** - 使用AI生成幻灯片或视觉效果：
+**generate_slide_image.py** - Generate slides or visuals with AI:
 ```bash
-# 完整幻灯片（用于PDF工作流程）
-python scripts/generate_slide_image.py "标题：介绍\n内容：要点" -o slide.png
+# Full slide (for PDF workflow)
+python scripts/generate_slide_image.py "Title: Introduction\nContent: Key points" -o slide.png
 
-# 仅视觉效果（用于PPT工作流程）
-python scripts/generate_slide_image.py "图表描述" -o figure.png --visual-only
+# Visual only (for PPT workflow)
+python scripts/generate_slide_image.py "Diagram description" -o figure.png --visual-only
 
-# 选项：
-# -o, --output       输出文件路径（必需）
-# --visual-only      仅生成视觉效果，不是完整幻灯片
-# --iterations N     最大改进迭代次数（默认：2）
-# -v, --verbose      详细输出
+# Options:
+# -o, --output       Output file path (required)
+# --visual-only      Generate just the visual, not complete slide
+# --iterations N     Max refinement iterations (default: 2)
+# -v, --verbose      Verbose output
 ```
 
-**slides_to_pdf.py** - 将幻灯片图像合并为PDF：
+**slides_to_pdf.py** - Combine slide images into PDF:
 ```bash
-# 从通配符模式
+# From glob pattern
 python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
 
-# 从目录（按文件名排序）
+# From directory (sorted by filename)
 python scripts/slides_to_pdf.py slides/ -o presentation.pdf
 
-# 选项：
-# -o, --output    输出PDF路径（必需）
-# --dpi N         PDF分辨率（默认：150）
-# -v, --verbose   详细输出
+# Options:
+# -o, --output    Output PDF path (required)
+# --dpi N         PDF resolution (default: 150)
+# -v, --verbose   Verbose output
 ```
 
-### 验证脚本
+### Validation Scripts
 
-**validate_presentation.py**：
+**validate_presentation.py**:
 ```bash
 python scripts/validate_presentation.py presentation.pdf --duration 15
 
-# 检查：
-# - 幻灯片数量与推荐范围
-# - 文件大小警告
-# - 幻灯片尺寸
-# - 字体大小（PowerPoint）
-# - 编译（Beamer）
+# Checks:
+# - Slide count vs. recommended range
+# - File size warnings
+# - Slide dimensions
+# - Font sizes (PowerPoint)
+# - Compilation (Beamer)
 ```
 
-**pdf_to_images.py**：
+**pdf_to_images.py**:
 ```bash
 python scripts/pdf_to_images.py presentation.pdf output/slide --dpi 150
 
-# 将PDF转换为图像用于视觉检查
-# 支持：JPG, PNG
-# 可调整DPI
-# 页面范围选择
+# Converts PDF to images for visual inspection
+# Supports: JPG, PNG
+# Adjustable DPI
+# Page range selection
 ```
 
-### PPTX技能脚本
+### PPTX Skill Scripts
 
-来自`document-skills/pptx/scripts/`：
-- `thumbnail.py`：创建缩略图网格
-- `rearrange.py`：复制和重新排序幻灯片
-- `inventory.py`：提取文本内容
-- `replace.py`：以编程方式更新文本
+From `document-skills/pptx/scripts/`:
+- `thumbnail.py`: Create thumbnail grids
+- `rearrange.py`: Duplicate and reorder slides
+- `inventory.py`: Extract text content
+- `replace.py`: Update text programmatically
 
-### 外部工具
+### External Tools
 
-**推荐：**
-- PDF查看器：用于审查演示
-- 颜色对比度检查器：WebAIM对比度检查器
-- 色盲模拟器：Coblis
-- 计时器应用：用于练习会话
-- 屏幕录像机：用于自我审查
+**Recommended**:
+- PDF viewer: For reviewing presentations
+- Color contrast checker: WebAIM Contrast Checker
+- Color blindness simulator: Coblis
+- Timer app: For practice sessions
+- Screen recorder: For self-review
 
-## 参考文件
+## Reference Files
 
-特定方面的综合指南：
+Comprehensive guides for specific aspects:
 
-- **`references/presentation_structure.md`**：所有演讲类型的详细结构，时间分配，开场/结束策略，过渡技术
-- **`references/slide_design_principles.md`**：排版，色彩理论，布局，可访问性，视觉层次结构，设计工作流程
-- **`references/data_visualization_slides.md`**：简化图表，图表类型，渐进式披露，常见错误，重创建工作流程
-- **`references/talk_types_guide.md`**：会议、研讨会、答辩、资助、期刊俱乐部的具体指导，带有示例
-- **`references/beamer_guide.md`**：完整的LaTeX Beamer文档，主题，自定义，高级功能，编译
-- **`references/visual_review_workflow.md`**：PDF到图像转换，系统检查，问题文档，迭代改进
+- **`references/presentation_structure.md`**: Detailed structure for all talk types, timing allocation, opening/closing strategies, transition techniques
+- **`references/slide_design_principles.md`**: Typography, color theory, layout, accessibility, visual hierarchy, design workflow
+- **`references/data_visualization_slides.md`**: Simplifying figures, chart types, progressive disclosure, common mistakes, recreation workflow
+- **`references/talk_types_guide.md`**: Specific guidance for conferences, seminars, defenses, grants, journal clubs, with examples
+- **`references/beamer_guide.md`**: Complete LaTeX Beamer documentation, themes, customization, advanced features, compilation
+- **`references/visual_review_workflow.md`**: PDF to images conversion, systematic inspection, issue documentation, iterative improvement
 
-## 资产
+## Assets
 
-### 模板
+### Templates
 
-- **`assets/beamer_template_conference.tex`**：15分钟会议演讲模板
-- **`assets/beamer_template_seminar.tex`**：45分钟学术研讨会模板
-- **`assets/beamer_template_defense.tex`**：论文答辩模板
+- **`assets/beamer_template_conference.tex`**: 15-minute conference talk template
+- **`assets/beamer_template_seminar.tex`**: 45-minute academic seminar template
+- **`assets/beamer_template_defense.tex`**: Dissertation defense template
 
-### 指南
+### Guides
 
-- **`assets/powerpoint_design_guide.md`**：完整的PowerPoint设计和实施指南
-- **`assets/timing_guidelines.md`**：综合时间、节奏和练习策略
+- **`assets/powerpoint_design_guide.md`**: Complete PowerPoint design and implementation guide
+- **`assets/timing_guidelines.md`**: Comprehensive timing, pacing, and practice strategies
 
-## 快速入门指南
+## Quick Start Guide
 
-### 15分钟会议演讲（PDF工作流程 - 推荐）
+### For a 15-Minute Conference Talk (PDF Workflow - Recommended)
 
-1. **研究与规划**（45分钟）：
-   - **使用research-lookup**找到8-12篇相关论文用于引用
-   - 建立参考列表（背景，比较研究）
-   - 概述内容（介绍 → 方法 → 2-3个关键结果 → 结论）
-   - **为每张幻灯片创建详细计划**（标题，要点，视觉元素）
-   - 目标15-18张幻灯片
+1. **Research & Plan** (45 minutes):
+   - **Use research-lookup** to find 8-12 relevant papers for citations
+   - Build reference list (background, comparison studies)
+   - Outline content (intro → methods → 2-3 key results → conclusion)
+   - **Create detailed plan for each slide** (title, key points, visual elements)
+   - Target 15-18 slides
 
-2. **使用Nano Banana Pro生成幻灯片**（1-2小时）：
+2. **Generate Slides with Nano Banana Pro** (1-2 hours):
    
-   **重要：使用一致的格式，附加前一张幻灯片，并包含引用！**
+   **Important: Use consistent formatting, attach previous slides, and include citations!**
    
    ```bash
-   # 标题幻灯片（建立风格 - 默认作者：K-Dense）
-   python scripts/generate_slide_image.py "标题幻灯片：'您的研究标题'。会议名称，K-Dense。格式目标：[您的配色方案]，简约专业设计，无装饰元素，干净和企业风格。" -o slides/01_title.png
+   # Title slide (establishes style - default author: K-Dense)
+   python scripts/generate_slide_image.py "Title slide: 'Your Research Title'. Conference name, K-Dense. FORMATTING GOAL: [your color scheme], minimal professional design, no decorative elements, clean and corporate." -o slides/01_title.png
    
-   # 带引用的介绍幻灯片（附加前一张以保持一致性）
-   python scripts/generate_slide_image.py "标题为'为什么这很重要'的幻灯片。三个要点，带简单图标。引用：在底部包含：(Smith等，2023；Jones等，2024)。格式目标：完全匹配附加幻灯片风格。" -o slides/02_intro.png --attach slides/01_title.png
+   # Introduction slide with citations (attach previous for consistency)
+   python scripts/generate_slide_image.py "Slide titled 'Why This Matters'. Three key points with simple icons. CITATIONS: Include at bottom: (Smith et al., 2023; Jones et al., 2024). FORMATTING GOAL: Match attached slide style exactly." -o slides/02_intro.png --attach slides/01_title.png
    
-   # 为每张幻灯片继续（始终附加前一张，在相关处包含引用）
-   python scripts/generate_slide_image.py "标题为'方法'的幻灯片。关键方法要点。引用：(基于Chen等，2022)。格式目标：完全匹配附加幻灯片风格。" -o slides/03_methods.png --attach slides/02_intro.png
+   # Continue for each slide (always attach previous, include citations where relevant)
+   python scripts/generate_slide_image.py "Slide titled 'Methods'. Key methodology points. CITATIONS: (Based on Chen et al., 2022). FORMATTING GOAL: Match attached slide style exactly." -o slides/03_methods.png --attach slides/02_intro.png
    
-   # 合并为PDF
+   # Combine to PDF
    python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
    ```
 
-3. **审查与迭代**（30分钟）：
-   - 打开PDF并审查每张幻灯片
-   - 重新生成任何需要改进的幻灯片
-   - 重新合并为PDF
+3. **Review & Iterate** (30 minutes):
+   - Open the PDF and review each slide
+   - Regenerate any slides that need improvement
+   - Re-combine to PDF
 
-4. **练习**（2-3小时）：
-   - 练习3-5次，带计时器
-   - 目标13-14分钟（留出缓冲）
-   - 录制自己，观看回放
-   - **准备问题**（使用research-lookup预测）
+4. **Practice** (2-3 hours):
+   - Practice 3-5 times with timer
+   - Aim for 13-14 minutes (leave buffer)
+   - Record yourself, watch playback
+   - **Prepare for questions** (use research-lookup to anticipate)
 
-5. **最终确定**（30分钟）：
-   - 如有需要，生成备份/附录幻灯片
-   - 保存多个副本
-   - 在演示计算机上测试
+5. **Finalize** (30 minutes):
+   - Generate backup/appendix slides if needed
+   - Save multiple copies
+   - Test on presentation computer
 
-总时间：高质量AI生成演示约5-6小时
+Total time: ~5-6 hours for quality AI-generated presentation
 
-### 替代方案：PowerPoint工作流程
+### Alternative: PowerPoint Workflow
 
-如果您需要可编辑幻灯片（例如，用于公司模板）：
+If you need editable slides (e.g., for company templates):
 
-1. **规划幻灯片**如上
-2. **生成视觉效果**，使用`--visual-only`标志：
+1. **Plan slides** as above
+2. **Generate visuals** with `--visual-only` flag:
    ```bash
-   python scripts/generate_slide_image.py "图表描述" -o figures/fig1.png --visual-only
+   python scripts/generate_slide_image.py "diagram description" -o figures/fig1.png --visual-only
    ```
-3. **使用PPTX技能**和生成的图像构建PPTX
-4. **使用PPTX工作流程**单独添加文本
+3. **Build PPTX** using the PPTX skill with generated images
+4. **Add text** separately using PPTX workflow
 
-请参阅`document-skills/pptx/SKILL.md`获取完整的PowerPoint工作流程。
+See `document-skills/pptx/SKILL.md` for complete PowerPoint workflow.
 
-## 总结：关键原则
+## Summary: Key Principles
 
-1. **视觉优先设计**：每张幻灯片需要强烈的视觉元素（图表、图像、图表）- 避免纯文本幻灯片
-2. **研究支持**：使用research-lookup找到8-15篇论文，在介绍中引用3-5篇，在讨论中引用3-5篇
-3. **现代美学**：选择与主题匹配的当代配色方案，不是默认主题
-4. **最少文本**：3-4个项目符号，每个4-6个字（24-28pt字体），让视觉效果讲述故事
-5. **结构**：遵循故事弧，40-50%的时间用于结果
-6. **高对比度**：优选7:1以获得专业外观
-7. **多样布局**：混合全屏图表、双列、视觉覆盖（不是所有项目符号）
-8. **时间**：练习3-5次，~每分钟1张幻灯片，永远不要跳过结论
-9. **验证**：视觉审查工作流程以捕获溢出和重叠
-10. **空白**：幻灯片40-50%为空，以提供视觉呼吸空间
+1. **Visual-First Design**: Every slide needs strong visual element (figure, image, diagram) - avoid text-only slides
+2. **Research-Backed**: Use research-lookup to find 8-15 papers, cite 3-5 in intro, 3-5 in discussion
+3. **Modern Aesthetics**: Choose contemporary color palette matching topic, not default themes
+4. **Minimal Text**: 3-4 bullets, 4-6 words each (24-28pt font), let visuals tell story
+5. **Structure**: Follow story arc, spend 40-50% on results
+6. **High Contrast**: 7:1 preferred for professional appearance
+7. **Varied Layouts**: Mix full-figure, two-column, visual overlays (not all bullets)
+8. **Timing**: Practice 3-5 times, ~1 slide per minute, never skip conclusions
+9. **Validation**: Visual review workflow to catch overflow and overlap
+10. **White Space**: 40-50% of slide empty for visual breathing room
 
-**记住**：
-- **枯燥=被遗忘**：枯燥、文本密集的幻灯片无法传达您的科学
-- **视觉+研究=影响**：结合引人入胜的视觉效果与研究支持的背景
-- **您是演示，幻灯片是视觉支持**：它们应该增强，而不是替代您的演讲
+**Remember**: 
+- **Boring = Forgotten**: Dry, text-heavy slides fail to communicate your science
+- **Visual + Research = Impact**: Combine compelling visuals with research-backed context
+- **You are the presentation, slides are visual support**: They should enhance, not replace your talk
+

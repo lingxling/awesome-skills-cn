@@ -1,190 +1,146 @@
-# Hugging Face Skills 中文翻译
-
-> 本文档是 [Hugging Face Skills](https://github.com/huggingface/skills) 项目的中文翻译版本。
-
-## 关于本翻译
-
-### 原项目介绍
-
-**Hugging Face Skills** 是 Hugging Face 为 AI/ML 任务(如数据集创建、模型训练和评估)提供的技能定义。它们与所有主要的编码代理工具兼容,包括 OpenAI Codex、Anthropic 的 Claude Code、Google DeepMind 的 Gemini CLI 和 Cursor。
-
-此仓库中的技能遵循标准化的 [Agent Skill](https://agentskills.io/home) 格式。
-
-每个技能都是自包含的文件夹,将指令、脚本和资源打包在一起,供 AI 代理在特定用例中使用。每个文件夹包含一个 `SKILL.md` 文件,其中包含 YAML 前置数据(名称和描述),后跟随着技能激活时您的编码代理遵循的指导。
-
-### 翻译说明
-
-本翻译包含以下 9 个技能的中文翻译:
-
-- [huggingface-gradio/SKILL_CN.md](skills/huggingface-gradio/SKILL_CN.md) - Gradio Web UI 构建
-- [hugging-face-cli/SKILL_CN.md](skills/hugging-face-cli/SKILL_CN.md) - Hugging Face CLI 操作
-- [hugging-face-datasets/SKILL_CN.md](skills/hugging-face-datasets/SKILL_CN.md) - 数据集创建和管理
-- [hugging-face-evaluation/SKILL_CN.md](skills/hugging-face-evaluation/SKILL_CN.md) - 模型评估管理
-- [hugging-face-jobs/SKILL_CN.md](skills/hugging-face-jobs/SKILL_CN.md) - Hugging Face Jobs 计算任务
-- [hugging-face-model-trainer/SKILL_CN.md](skills/hugging-face-model-trainer/SKILL_CN.md) - 模型训练和微调
-- [hugging-face-paper-publisher/SKILL_CN.md](skills/hugging-face-paper-publisher/SKILL_CN.md) - 研究论文发布
-- [hugging-face-tool-builder/SKILL_CN.md](skills/hugging-face-tool-builder/SKILL_CN.md) - API 工具构建
-- [hugging-face-trackio/SKILL_CN.md](skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
-
-### 原项目链接
-
-- [GitHub 仓库](https://github.com/huggingface/skills)
-- [Agent Skills 规范](https://agentskills.io/home)
-
-### 翻译项目
-
-本翻译属于 [awesome-skills-cn](https://github.com/lingxling/awesome-skills-cn) 项目的一部分,致力于将优秀的英文 SKILL 翻译成中文。
-
----
-
-> **注意:** 本仓库包含 Hugging Face 为 AI/ML 任务提供的技能定义。有关 Agent Skills 标准的信息,请参阅 [agentskills.io](https://agentskills.io/home)。
-
 # Hugging Face Skills
 
-Hugging Face Skills 是 AI/ML 任务(如数据集创建、模型训练和评估)的定义。它们与所有主要的编码代理工具兼容,包括 OpenAI Codex、Anthropic 的 Claude Code、Google DeepMind 的 Gemini CLI 和 Cursor。
+Hugging Face Skills are definitions for AI/ML tasks like dataset creation, model training, and evaluation. They are interoperable with all major coding agent tools like OpenAI Codex, Anthropic's Claude Code, Google DeepMind's Gemini CLI, and Cursor.
 
-此仓库中的技能遵循标准化的 [Agent Skill](https://agentskills.io/home) 格式。
+The skills in this repository follow the standardized [Agent Skills](https://agentskills.io/home) format.
 
-## Skills 如何工作?
+## How do Skills work?
 
-在实践中,技能是自包含的文件夹,将指令、脚本和资源打包在一起,供 AI 代理在特定用例中使用。每个文件夹包含一个 `SKILL.md` 文件,其中包含 YAML 前置数据(名称和描述),后跟随着技能激活时您的编码代理遵循的指导。
+In practice, skills are self-contained folders that package instructions, scripts, and resources together for an AI agent to use on a specific use case. Each folder includes a `SKILL.md` file with YAML frontmatter (name and description) followed by the guidance your coding agent follows while the skill is active. 
 
 > [!NOTE]
-> 'Skills' 实际上是 Anthropic 在 Claude AI 和 Claude Code 中使用的术语,并未被其他代理工具采用,但我们很喜欢它! OpenAI Codex 使用开放的 [Agent Skills](https://agentskills.io/specification) 格式,其中每个技能是一个包含 `SKILL.md` 文件的目录,Codex 从 [Codex Skills 指南](https://developers.openai.com/codex/skills/) 中记录的标准 `.agents/skills` 位置发现该文件。Codex 也可以使用 `AGENTS.md` 文件。Google Gemini 使用 'extensions' 在 `gemini-extension.json` 文件中为您的编码代理定义指令。**此仓库与所有这些都兼容,甚至更多!**
+> 'Skills' is actually an Anthropic term used within Claude AI and Claude Code and not adopted by other agent tools, but we love it! OpenAI Codex uses the open [Agent Skills](https://agentskills.io/specification) format, where each skill is a directory with a `SKILL.md` file that Codex discovers from standard `.agents/skills` locations documented in the [Codex Skills guide](https://developers.openai.com/codex/skills/). Codex can also work with an `AGENTS.md` file. Google Gemini uses 'extensions' to define the instructions for your coding agent in a `gemini-extension.json` file. **This repo is compatible with all of them, and more!**
 
 > [!TIP]
-> 如果您的代理不支持技能,您可以直接使用 [`agents/AGENTS.md`](agents/AGENTS.md) 作为备用。
+> If your agent doesn't support skills, you can use [`agents/AGENTS.md`](agents/AGENTS.md) directly as a fallback.
 
-## 安装
+## Installation
 
-Hugging Face 技能与 Claude Code、Codex、Gemini CLI 和 Cursor 兼容。
+Hugging Face skills are compatible with Claude Code, Codex, Gemini CLI, and Cursor.
 
 ### Claude Code
 
-1. 将仓库注册为插件市场:  
-
+1. Register the repository as a plugin marketplace:  
+   
 ```
 /plugin marketplace add huggingface/skills
 ```
 
-2. 要安装技能,请运行:  
-
+2. To install a skill, run:  
+   
 ```
 /plugin install <skill-name>@huggingface/skills
 ```
 
-例如:  
+For example:  
 
 ```
-/plugin install hugging-face-cli@huggingface/skills
+/plugin install hf-cli@huggingface/skills
 ```
 
 ### Codex
 
-1. 将您要使用的任何技能从此仓库的 `skills/` 目录复制或符号链接到 Codex 的标准 `.agents/skills` 位置之一(例如,`$REPO_ROOT/.agents/skills` 或 `$HOME/.agents/skills`),如 [Codex Skills 指南](https://developers.openai.com/codex/skills/) 中所述。
+1. Copy or symlink any skills you want to use from this repository's `skills/` directory into one of Codex's standard `.agents/skills` locations (for example, `$REPO_ROOT/.agents/skills` or `$HOME/.agents/skills`) as described in the [Codex Skills guide](https://developers.openai.com/codex/skills/).
 
-2. 一旦技能在这些位置之一可用,Codex 将使用 Agent Skills 标准发现它,并在它决定使用该技能或当您显式调用它时加载 `SKILL.md` 指令。
+2. Once a skill is available in one of those locations, Codex will discover it using the Agent Skills standard and load the `SKILL.md` instructions when it decides to use that skill or when you explicitly invoke it.
 
-3. 如果您的 Codex 设置仍然依赖 `AGENTS.md`,您可以使用此仓库中生成的 [`agents/AGENTS.md`](agents/AGENTS.md) 文件作为指令的备用包。
+3. If your Codex setup still relies on `AGENTS.md`, you can use the generated [`agents/AGENTS.md`](agents/AGENTS.md) file in this repo as a fallback bundle of instructions.
 
 ### Gemini CLI
 
-1. 此仓库包含 `gemini-extension.json` 以与 Gemini CLI 集成。
+1. This repo includes `gemini-extension.json` to integrate with the Gemini CLI.
 
-2. 本地安装:  
+2. Install locally:  
 
 ```
 gemini extensions install . --consent
 ```
 
-或使用 GitHub URL:
+or use the GitHub URL:
+
 ```
 gemini extensions install https://github.com/huggingface/skills.git --consent
 ```
 
-4. 有关更多帮助,请参阅 [Gemini CLI 扩展文档](https://geminicli.com/docs/extensions/#installing-an-extension)。
+4. See [Gemini CLI extensions docs](https://geminicli.com/docs/extensions/#installing-an-extension) for more help.
 
 ### Cursor
 
-此仓库包含 Cursor 插件清单:
+This repository includes Cursor plugin manifests:
+
 - `.cursor-plugin/plugin.json`
-- `.mcp.json`(配置了 Hugging Face MCP 服务器 URL)
+- `.mcp.json` (configured with the Hugging Face MCP server URL)
 
-通过 Cursor 插件流程从仓库 URL(或本地签出)安装。
+Install from repository URL (or local checkout) via the Cursor plugin flow.
 
-对于贡献者,使用以下命令重新生成清单:
+For contributors, regenerate manifests with:
+
 ```bash
 ./scripts/publish.sh
 ```
 
 ## Skills
 
-此仓库包含一些技能以帮助您入门。您也可以将自己的技能贡献到仓库。
+This repository contains a few skills to get you started. You can also contribute your own skills to the repository.
 
-### 可用技能
+### Available skills
 
-<!-- 此表由 scripts/generate_agents.py 自动生成。请勿手动编辑。 -->
+<!-- This table is auto-generated by scripts/generate_agents.py. Do not edit manually. -->
 <!-- BEGIN_SKILLS_TABLE -->
-| 名称 | 描述 | 文档 |
+| Name | Description | Documentation |
 |------|-------------|---------------|
-| `gradio` | 使用 Python 构建 Gradio Web UI 和演示。在创建或编辑 Gradio 应用、组件、事件监听器、布局或聊天机器人时使用。 | [SKILL.md](skills/huggingface-gradio/SKILL.md) |
-| `hugging-face-cli` | 使用 hf CLI 执行 Hugging Face Hub 操作。下载模型/数据集、上传文件、管理存储库以及运行云计算作业。 | [SKILL.md](skills/hugging-face-cli/SKILL.md) |
-| `hugging-face-datasets` | 在 Hugging Face Hub 上创建和管理数据集。支持初始化存储库、定义配置/系统提示、流式行更新以及基于 SQL 的数据集查询/转换。 | [SKILL.md](skills/hugging-face-datasets/SKILL.md) |
-| `hugging-face-evaluation` | 在 Hugging Face 模型卡片中添加和管理评估结果。支持从 README 内容中提取评估表、从 Artificial Analysis API 导入分数,以及使用 vLLM/lighteval 运行自定义评估。 | [SKILL.md](skills/hugging-face-evaluation/SKILL.md) |
-| `hugging-face-jobs` | 在 Hugging Face 基础设施上运行计算作业。执行 Python 脚本、管理计划作业以及监控作业状态。 | [SKILL.md](skills/hugging-face-jobs/SKILL.md) |
-| `hugging-face-model-trainer` | 使用 TRL 在 Hugging Face Jobs 基础设施上训练或微调语言模型。涵盖 SFT、DPO、GRPO 和奖励建模训练方法,以及用于本地部署的 GGUF 转换。包括硬件选择、成本估算、Trackio 监控和 Hub 持久化。 | [SKILL.md](skills/hugging-face-model-trainer/SKILL.md) |
-| `hugging-face-paper-publisher` | 在 Hugging Face Hub 上发布和管理研究论文。支持创建论文页面、将论文链接到模型/数据集、声明作者身份以及生成专业的基于 markdown 的研究文章。 | [SKILL.md](skills/hugging-face-paper-publisher/SKILL.md) |
-| `hugging-face-tool-builder` | 为 Hugging Face API 操作构建可重用的脚本。对于链接 API 调用或自动化重复任务很有用。 | [SKILL.md](skills/hugging-face-tool-builder/SKILL.md) |
-| `hugging-face-trackio` | 使用 Trackio 跟踪和可视化 ML 训练实验。通过 Python API 记录指标并通过 CLI 检索它们。支持与 HF Spaces 同步的实时仪表板。 | [SKILL.md](skills/hugging-face-trackio/SKILL.md) |
+| `gradio` | Build Gradio web UIs and demos in Python. Use when creating or editing Gradio apps, components, event listeners, layouts, or chatbots. | [SKILL.md](skills/huggingface-gradio/SKILL.md) |
+| `hf-cli` | Execute Hugging Face Hub operations using the hf CLI. Download models/datasets, upload files, manage repos, and run cloud compute jobs. | [SKILL.md](skills/hf-cli/SKILL.md) |
+| `hugging-face-dataset-viewer` | Explore, query, and extract data from any Hugging Face dataset using the Dataset Viewer REST API and npx tooling. Zero Python dependencies — covers split/config discovery, row pagination, text search, filtering, SQL via parquetlens, and dataset upload via CLI. | [SKILL.md](skills/hugging-face-dataset-viewer/SKILL.md) |
+| `hugging-face-datasets` | Create and manage datasets on Hugging Face Hub. Supports initializing repos, defining configs/system prompts, streaming row updates, and SQL-based dataset querying/transformation. | [SKILL.md](skills/hugging-face-datasets/SKILL.md) |
+| `hugging-face-evaluation` | Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content, importing scores from Artificial Analysis API, and running custom evaluations with vLLM/lighteval. | [SKILL.md](skills/hugging-face-evaluation/SKILL.md) |
+| `hugging-face-jobs` | Run compute jobs on Hugging Face infrastructure. Execute Python scripts, manage scheduled jobs, and monitor job status. | [SKILL.md](skills/hugging-face-jobs/SKILL.md) |
+| `hugging-face-model-trainer` | Train or fine-tune language models using TRL on Hugging Face Jobs infrastructure. Covers SFT, DPO, GRPO and reward modeling training methods, plus GGUF conversion for local deployment. Includes hardware selection, cost estimation, Trackio monitoring, and Hub persistence. | [SKILL.md](skills/hugging-face-model-trainer/SKILL.md) |
+| `hugging-face-paper-pages` | Look up and read Hugging Face paper pages in markdown, and use the papers API for structured metadata like authors, linked models, datasets, Spaces, and media URLs when needed. | [SKILL.md](skills/hugging-face-paper-pages/SKILL.md) |
+| `hugging-face-paper-publisher` | Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating professional markdown-based research articles. | [SKILL.md](skills/hugging-face-paper-publisher/SKILL.md) |
+| `hugging-face-tool-builder` | Build reusable scripts for Hugging Face API operations. Useful for chaining API calls or automating repeated tasks. | [SKILL.md](skills/hugging-face-tool-builder/SKILL.md) |
+| `hugging-face-trackio` | Track and visualize ML training experiments with Trackio. Log metrics via Python API and retrieve them via CLI. Supports real-time dashboards synced to HF Spaces. | [SKILL.md](skills/hugging-face-trackio/SKILL.md) |
+| `hugging-face-vision-trainer` | Train and fine-tune object detection models (RTDETRv2, YOLOS, DETR and others) and image classification models (timm and transformers models — MobileNetV3, MobileViT, ResNet, ViT/DINOv3) using Transformers Trainer API on Hugging Face Jobs infrastructure or locally. Includes COCO dataset format support, Albumentations augmentation, mAP/mAR metrics, trackio tracking, hardware selection, and Hub persistence. | [SKILL.md](skills/hugging-face-vision-trainer/SKILL.md) |
+| `transformers-js` | Run state-of-the-art machine learning models directly in JavaScript/TypeScript for NLP, computer vision, audio processing, and multimodal tasks. Works in Node.js and browsers with WebGPU/WASM using Hugging Face models. | [SKILL.md](skills/transformers.js/SKILL.md) |
 <!-- END_SKILLS_TABLE -->
 
-### 在编码代理中使用技能
+### Using skills in your coding agent
 
-安装技能后,在给编码代理指令时直接提及它:
-- "使用 HF LLM trainer 技能来估计 70B 模型运行所需的 GPU 内存。"
-- "使用 HF model evaluation 技能在最新检查点上启动 `run_eval_job.py`。"
-- "使用 HF dataset creator 技能来起草新的少样本分类模板。"
-- "使用 HF paper publisher 技能来索引我的 arXiv 论文并将其链接到我的模型。"
+Once a skill is installed, mention it directly while giving your coding agent instructions:
 
-您的编码代理在完成任务时自动加载相应的 `SKILL.md` 指令和辅助脚本。
+- "Use the HF LLM trainer skill to estimate the GPU memory needed for a 70B model run."
+- "Use the HF model evaluation skill to launch `run_eval_job.py` on the latest checkpoint."
+- "Use the HF dataset creator skill to draft new few-shot classification templates."
+- "Use the HF paper publisher skill to index my arXiv paper and link it to my model."
 
-### 贡献或自定义技能
+Your coding agent automatically loads the corresponding `SKILL.md` instructions and helper scripts while it completes the task.
 
-1. 复制现有的技能文件夹之一(例如,`hf-datasets/`)并重命名它。
-2. 更新新文件夹的 `SKILL.md` 前置数据:
+### Contribute or customize a skill
+
+1. Copy one of the existing skill folders (for example, `hf-datasets/`) and rename it.
+2. Update the new folder's `SKILL.md` frontmatter:
    ```markdown
    ---
    name: my-skill-name
-   description: 描述技能的作用以及何时使用它
+   description: Describe what the skill does and when to use it
    ---
 
    # Skill Title
-   指导 + 示例 + 保护措施
+   Guidance + examples + guardrails
    ```
-3. 添加或编辑您的指令引用的支持脚本、模板和文档。
-4. 在 `.claude-plugin/marketplace.json` 中添加一个条目,并带有简洁的、人类可读的描述。
-5. 运行:
+3. Add or edit supporting scripts, templates, and documents referenced by your instructions.
+4. Add an entry to `.claude-plugin/marketplace.json` with a concise, human-readable description.
+5. Run:
    ```bash
    ./scripts/publish.sh
    ```
-   以重新生成并验证所有生成的元数据。
-6. 在您的编码代理中重新安装或重新加载技能包,以便更新的文件夹可用。
+   to regenerate and validate all generated metadata.
+6. Reinstall or reload the skill bundle in your coding agent so the updated folder is available.
 
 ### Marketplace
 
-`.claude-plugin/marketplace.json` 文件列出了技能,并带有插件市场的人类可读描述。CI 验证技能名称和路径在 `SKILL.md` 文件和 `marketplace.json` 之间是否匹配,但描述是单独维护的:`SKILL.md` 描述指导 Claude 何时激活技能,而市场描述是为浏览可用技能的人类编写的。
+The `.claude-plugin/marketplace.json` file lists skills with human-readable descriptions for the plugin marketplace. The CI validates that skill names and paths match between `SKILL.md` files and `marketplace.json`, but descriptions are maintained separately: `SKILL.md` descriptions guide when Claude activates the skill, while marketplace descriptions are written for humans browsing available skills.
 
-### 其他参考
-
-- 直接在 [huggingface/skills](https://github.com/huggingface/skills) 浏览最新的指令、脚本和模板。
-- 查看您在每个技能中引用的特定库或工作流程的 Hugging Face 文档。
-
----
-
-## 原项目文档
-
-如需查看原项目的完整英文文档,请访问:
-
-- [README.md (英文原版)](README.md) - 原项目的完整说明文档
-
-原项目由 [Hugging Face](https://github.com/huggingface) 维护。
+### Additional references
+- Browse the latest instructions, scripts, and templates directly at [huggingface/skills](https://github.com/huggingface/skills).
+- Review Hugging Face documentation for the specific libraries or workflows you reference inside each skill.

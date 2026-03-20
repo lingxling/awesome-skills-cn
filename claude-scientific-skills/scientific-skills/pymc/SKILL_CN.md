@@ -1,57 +1,57 @@
 ---
 name: pymc
-description: 使用PyMC进行贝叶斯建模。构建层次模型、MCMC（NUTS）、变分推断、LOO/WAIC比较、后验检查，用于概率编程和推断。
+description: Bayesian modeling with PyMC. Build hierarchical models, MCMC (NUTS), variational inference, LOO/WAIC comparison, posterior checks, for probabilistic programming and inference.
 license: Apache License, Version 2.0
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# PyMC 贝叶斯建模
+# PyMC Bayesian Modeling
 
-## 概述
+## Overview
 
-PyMC是一个用于贝叶斯建模和概率编程的Python库。使用PyMC的现代API（5.x+版本）构建、拟合、验证和比较贝叶斯模型，包括层次模型、MCMC采样（NUTS）、变分推断和模型比较（LOO、WAIC）。
+PyMC is a Python library for Bayesian modeling and probabilistic programming. Build, fit, validate, and compare Bayesian models using PyMC's modern API (version 5.x+), including hierarchical models, MCMC sampling (NUTS), variational inference, and model comparison (LOO, WAIC).
 
-## 使用场景
+## When to Use This Skill
 
-当您需要以下操作时使用此技能：
-- 构建贝叶斯模型（线性/逻辑回归、层次模型、时间序列等）
-- 执行MCMC采样或变分推断
-- 进行先验/后验预测检查
-- 诊断采样问题（发散、收敛、ESS）
-- 使用信息准则（LOO、WAIC）比较多个模型
-- 通过贝叶斯方法实现不确定性量化
-- 处理层次/多级数据结构
-- 以原则性方式处理缺失数据或测量误差
+This skill should be used when:
+- Building Bayesian models (linear/logistic regression, hierarchical models, time series, etc.)
+- Performing MCMC sampling or variational inference
+- Conducting prior/posterior predictive checks
+- Diagnosing sampling issues (divergences, convergence, ESS)
+- Comparing multiple models using information criteria (LOO, WAIC)
+- Implementing uncertainty quantification through Bayesian methods
+- Working with hierarchical/multilevel data structures
+- Handling missing data or measurement error in a principled way
 
-## 标准贝叶斯工作流
+## Standard Bayesian Workflow
 
-按照以下工作流构建和验证贝叶斯模型：
+Follow this workflow for building and validating Bayesian models:
 
-### 1. 数据准备
+### 1. Data Preparation
 
 ```python
 import pymc as pm
 import arviz as az
 import numpy as np
 
-# 加载和准备数据
-X = ...  # 预测变量
-y = ...  # 结果变量
+# Load and prepare data
+X = ...  # Predictors
+y = ...  # Outcomes
 
-# 标准化预测变量以提高采样效率
+# Standardize predictors for better sampling
 X_mean = X.mean(axis=0)
 X_std = X.std(axis=0)
 X_scaled = (X - X_mean) / X_std
 ```
 
-**关键实践：**
-- 标准化连续预测变量（提高采样效率）
-- 尽可能中心化结果变量
-- 明确处理缺失数据（将其视为参数）
-- 使用带有`coords`的命名维度以提高清晰度
+**Key practices:**
+- Standardize continuous predictors (improves sampling efficiency)
+- Center outcomes when possible
+- Handle missing data explicitly (treat as parameters)
+- Use named dimensions with `coords` for clarity
 
-### 2. 模型构建
+### 2. Model Building
 
 ```python
 coords = {
@@ -60,69 +60,69 @@ coords = {
 }
 
 with pm.Model(coords=coords) as model:
-    # 先验
+    # Priors
     alpha = pm.Normal('alpha', mu=0, sigma=1)
     beta = pm.Normal('beta', mu=0, sigma=1, dims='predictors')
     sigma = pm.HalfNormal('sigma', sigma=1)
 
-    # 线性预测器
+    # Linear predictor
     mu = alpha + pm.math.dot(X_scaled, beta)
 
-    # 似然
+    # Likelihood
     y_obs = pm.Normal('y_obs', mu=mu, sigma=sigma, observed=y, dims='obs_id')
 ```
 
-**关键实践：**
-- 使用弱信息先验（非平坦先验）
-- 对尺度参数使用`HalfNormal`或`Exponential`
-- 尽可能使用命名维度（`dims`）而非`shape`
-- 对将用于预测的值使用`pm.Data()`
+**Key practices:**
+- Use weakly informative priors (not flat priors)
+- Use `HalfNormal` or `Exponential` for scale parameters
+- Use named dimensions (`dims`) instead of `shape` when possible
+- Use `pm.Data()` for values that will be updated for predictions
 
-### 3. 先验预测检查
+### 3. Prior Predictive Check
 
-**拟合前务必验证先验：**
+**Always validate priors before fitting:**
 
 ```python
 with model:
     prior_pred = pm.sample_prior_predictive(samples=1000, random_seed=42)
 
-# 可视化
+# Visualize
 az.plot_ppc(prior_pred, group='prior')
 ```
 
-**检查：**
-- 先验预测是否涵盖合理值？
-- 给定领域知识，极端值是否合理？
-- 如果先验生成不合理数据，调整并重新检查
+**Check:**
+- Do prior predictions span reasonable values?
+- Are extreme values plausible given domain knowledge?
+- If priors generate implausible data, adjust and re-check
 
-### 4. 拟合模型
+### 4. Fit Model
 
 ```python
 with model:
-    # 可选：使用ADVI进行快速探索
+    # Optional: Quick exploration with ADVI
     # approx = pm.fit(n=20000)
 
-    # 完整MCMC推断
+    # Full MCMC inference
     idata = pm.sample(
         draws=2000,
         tune=1000,
         chains=4,
         target_accept=0.9,
         random_seed=42,
-        idata_kwargs={'log_likelihood': True}  # 用于模型比较
+        idata_kwargs={'log_likelihood': True}  # For model comparison
     )
 ```
 
-**关键参数：**
-- `draws=2000`：每条链的样本数
-- `tune=1000`：预热样本（丢弃）
-- `chains=4`：运行4条链用于收敛检查
-- `target_accept=0.9`：对于困难的后验分布更高（0.95-0.99）
-- 包含`log_likelihood=True`用于模型比较
+**Key parameters:**
+- `draws=2000`: Number of samples per chain
+- `tune=1000`: Warmup samples (discarded)
+- `chains=4`: Run 4 chains for convergence checking
+- `target_accept=0.9`: Higher for difficult posteriors (0.95-0.99)
+- Include `log_likelihood=True` for model comparison
 
-### 5. 检查诊断
+### 5. Check Diagnostics
 
-**使用诊断脚本：**
+**Use the diagnostic script:**
 
 ```python
 from scripts.model_diagnostics import check_diagnostics
@@ -130,51 +130,51 @@ from scripts.model_diagnostics import check_diagnostics
 results = check_diagnostics(idata, var_names=['alpha', 'beta', 'sigma'])
 ```
 
-**检查：**
-- **R-hat < 1.01**：链已收敛
-- **ESS > 400**：有效样本足够
-- **无发散**：NUTS采样成功
-- **迹图**：链应该混合良好（模糊的毛毛虫）
+**Check:**
+- **R-hat < 1.01**: Chains have converged
+- **ESS > 400**: Sufficient effective samples
+- **No divergences**: NUTS sampled successfully
+- **Trace plots**: Chains should mix well (fuzzy caterpillar)
 
-**如果出现问题：**
-- 发散 → 增加`target_accept=0.95`，使用非中心化参数化
-- 低ESS → 采样更多样本，重新参数化以减少相关性
-- 高R-hat → 运行更长时间，检查多模态性
+**If issues arise:**
+- Divergences → Increase `target_accept=0.95`, use non-centered parameterization
+- Low ESS → Sample more draws, reparameterize to reduce correlation
+- High R-hat → Run longer, check for multimodality
 
-### 6. 后验预测检查
+### 6. Posterior Predictive Check
 
-**验证模型拟合：**
+**Validate model fit:**
 
 ```python
 with model:
     pm.sample_posterior_predictive(idata, extend_inferencedata=True, random_seed=42)
 
-# 可视化
+# Visualize
 az.plot_ppc(idata)
 ```
 
-**检查：**
-- 后验预测是否捕捉到观察数据模式？
-- 是否有系统性偏差（模型错误指定）？
-- 如果拟合不佳，考虑替代模型
+**Check:**
+- Do posterior predictions capture observed data patterns?
+- Are systematic deviations evident (model misspecification)?
+- Consider alternative models if fit is poor
 
-### 7. 分析结果
+### 7. Analyze Results
 
 ```python
-# 汇总统计
+# Summary statistics
 print(az.summary(idata, var_names=['alpha', 'beta', 'sigma']))
 
-# 后验分布
+# Posterior distributions
 az.plot_posterior(idata, var_names=['alpha', 'beta', 'sigma'])
 
-# 系数估计
+# Coefficient estimates
 az.plot_forest(idata, var_names=['beta'], combined=True)
 ```
 
-### 8. 进行预测
+### 8. Make Predictions
 
 ```python
-X_new = ...  # 新的预测变量值
+X_new = ...  # New predictor values
 X_new_scaled = (X_new - X_mean) / X_std
 
 with model:
@@ -185,16 +185,16 @@ with model:
         random_seed=42
     )
 
-# 提取预测区间
+# Extract prediction intervals
 y_pred_mean = post_pred.posterior_predictive['y_obs'].mean(dim=['chain', 'draw'])
 y_pred_hdi = az.hdi(post_pred.posterior_predictive, var_names=['y_obs'])
 ```
 
-## 常见模型模式
+## Common Model Patterns
 
-### 线性回归
+### Linear Regression
 
-对于具有线性关系的连续结果：
+For continuous outcomes with linear relationships:
 
 ```python
 with pm.Model() as linear_model:
@@ -206,11 +206,11 @@ with pm.Model() as linear_model:
     y = pm.Normal('y', mu=mu, sigma=sigma, observed=y_obs)
 ```
 
-**使用模板：** `assets/linear_regression_template.py`
+**Use template:** `assets/linear_regression_template.py`
 
-### 逻辑回归
+### Logistic Regression
 
-对于二元结果：
+For binary outcomes:
 
 ```python
 with pm.Model() as logistic_model:
@@ -221,33 +221,33 @@ with pm.Model() as logistic_model:
     y = pm.Bernoulli('y', logit_p=logit_p, observed=y_obs)
 ```
 
-### 层次模型
+### Hierarchical Models
 
-对于分组数据（使用非中心化参数化）：
+For grouped data (use non-centered parameterization):
 
 ```python
 with pm.Model(coords={'groups': group_names}) as hierarchical_model:
-    # 超先验
+    # Hyperpriors
     mu_alpha = pm.Normal('mu_alpha', mu=0, sigma=10)
     sigma_alpha = pm.HalfNormal('sigma_alpha', sigma=1)
 
-    # 组级（非中心化）
+    # Group-level (non-centered)
     alpha_offset = pm.Normal('alpha_offset', mu=0, sigma=1, dims='groups')
     alpha = pm.Deterministic('alpha', mu_alpha + sigma_alpha * alpha_offset, dims='groups')
 
-    # 观测级
+    # Observation-level
     mu = alpha[group_idx]
     sigma = pm.HalfNormal('sigma', sigma=1)
     y = pm.Normal('y', mu=mu, sigma=sigma, observed=y_obs)
 ```
 
-**使用模板：** `assets/hierarchical_model_template.py`
+**Use template:** `assets/hierarchical_model_template.py`
 
-**关键：** 对于层次模型，始终使用非中心化参数化以避免发散。
+**Critical:** Always use non-centered parameterization for hierarchical models to avoid divergences.
 
-### 泊松回归
+### Poisson Regression
 
-对于计数数据：
+For count data:
 
 ```python
 with pm.Model() as poisson_model:
@@ -258,11 +258,11 @@ with pm.Model() as poisson_model:
     y = pm.Poisson('y', mu=pm.math.exp(log_lambda), observed=y_obs)
 ```
 
-对于过度分散的计数，使用`NegativeBinomial`代替。
+For overdispersed counts, use `NegativeBinomial` instead.
 
-### 时间序列
+### Time Series
 
-对于自回归过程：
+For autoregressive processes:
 
 ```python
 with pm.Model() as ar_model:
@@ -273,42 +273,42 @@ with pm.Model() as ar_model:
     y = pm.AR('y', rho=rho, sigma=sigma, init_dist=init_dist, observed=y_obs)
 ```
 
-## 模型比较
+## Model Comparison
 
-### 比较模型
+### Comparing Models
 
-使用LOO或WAIC进行模型比较：
+Use LOO or WAIC for model comparison:
 
 ```python
 from scripts.model_comparison import compare_models, check_loo_reliability
 
-# 拟合带有log_likelihood的模型
+# Fit models with log_likelihood
 models = {
     'Model1': idata1,
     'Model2': idata2,
     'Model3': idata3
 }
 
-# 使用LOO比较
+# Compare using LOO
 comparison = compare_models(models, ic='loo')
 
-# 检查可靠性
+# Check reliability
 check_loo_reliability(models)
 ```
 
-**解释：**
-- **Δloo < 2**：模型相似，选择更简单的模型
-- **2 < Δloo < 4**：更好模型的弱证据
-- **4 < Δloo < 10**：中等证据
-- **Δloo > 10**：更好模型的强证据
+**Interpretation:**
+- **Δloo < 2**: Models are similar, choose simpler model
+- **2 < Δloo < 4**: Weak evidence for better model
+- **4 < Δloo < 10**: Moderate evidence
+- **Δloo > 10**: Strong evidence for better model
 
-**检查Pareto-k值：**
-- k < 0.7：LOO可靠
-- k > 0.7：考虑WAIC或k折CV
+**Check Pareto-k values:**
+- k < 0.7: LOO reliable
+- k > 0.7: Consider WAIC or k-fold CV
 
-### 模型平均
+### Model Averaging
 
-当模型相似时，平均预测：
+When models are similar, average predictions:
 
 ```python
 from scripts.model_comparison import model_averaging
@@ -316,54 +316,54 @@ from scripts.model_comparison import model_averaging
 averaged_pred, weights = model_averaging(models, var_name='y_obs')
 ```
 
-## 分布选择指南
+## Distribution Selection Guide
 
-### 用于先验
+### For Priors
 
-**尺度参数** (σ, τ)：
-- `pm.HalfNormal('sigma', sigma=1)` - 默认选择
-- `pm.Exponential('sigma', lam=1)` - 替代选择
-- `pm.Gamma('sigma', alpha=2, beta=1)` - 更具信息性
+**Scale parameters** (σ, τ):
+- `pm.HalfNormal('sigma', sigma=1)` - Default choice
+- `pm.Exponential('sigma', lam=1)` - Alternative
+- `pm.Gamma('sigma', alpha=2, beta=1)` - More informative
 
-**无界参数**：
-- `pm.Normal('theta', mu=0, sigma=1)` - 对于标准化数据
-- `pm.StudentT('theta', nu=3, mu=0, sigma=1)` - 对异常值鲁棒
+**Unbounded parameters**:
+- `pm.Normal('theta', mu=0, sigma=1)` - For standardized data
+- `pm.StudentT('theta', nu=3, mu=0, sigma=1)` - Robust to outliers
 
-**正参数**：
+**Positive parameters**:
 - `pm.LogNormal('theta', mu=0, sigma=1)`
 - `pm.Gamma('theta', alpha=2, beta=1)`
 
-**概率**：
-- `pm.Beta('p', alpha=2, beta=2)` - 弱信息
-- `pm.Uniform('p', lower=0, upper=1)` - 非信息（谨慎使用）
+**Probabilities**:
+- `pm.Beta('p', alpha=2, beta=2)` - Weakly informative
+- `pm.Uniform('p', lower=0, upper=1)` - Non-informative (use sparingly)
 
-**相关矩阵**：
-- `pm.LKJCorr('corr', n=n_vars, eta=2)` - eta=1 均匀，eta>1 偏好单位矩阵
+**Correlation matrices**:
+- `pm.LKJCorr('corr', n=n_vars, eta=2)` - eta=1 uniform, eta>1 prefers identity
 
-### 用于似然
+### For Likelihoods
 
-**连续结果**：
-- `pm.Normal('y', mu=mu, sigma=sigma)` - 连续数据的默认选择
-- `pm.StudentT('y', nu=nu, mu=mu, sigma=sigma)` - 对异常值鲁棒
+**Continuous outcomes**:
+- `pm.Normal('y', mu=mu, sigma=sigma)` - Default for continuous data
+- `pm.StudentT('y', nu=nu, mu=mu, sigma=sigma)` - Robust to outliers
 
-**计数数据**：
-- `pm.Poisson('y', mu=lambda)` - 等分散计数
-- `pm.NegativeBinomial('y', mu=mu, alpha=alpha)` - 过度分散计数
-- `pm.ZeroInflatedPoisson('y', psi=psi, mu=mu)` - 过多零值
+**Count data**:
+- `pm.Poisson('y', mu=lambda)` - Equidispersed counts
+- `pm.NegativeBinomial('y', mu=mu, alpha=alpha)` - Overdispersed counts
+- `pm.ZeroInflatedPoisson('y', psi=psi, mu=mu)` - Excess zeros
 
-**二元结果**：
-- `pm.Bernoulli('y', p=p)` 或 `pm.Bernoulli('y', logit_p=logit_p)`
+**Binary outcomes**:
+- `pm.Bernoulli('y', p=p)` or `pm.Bernoulli('y', logit_p=logit_p)`
 
-**分类结果**：
+**Categorical outcomes**:
 - `pm.Categorical('y', p=probs)`
 
-**请参见：** `references/distributions.md` 以获取综合分布参考
+**See:** `references/distributions.md` for comprehensive distribution reference
 
-## 采样和推断
+## Sampling and Inference
 
-### 使用NUTS的MCMC
+### MCMC with NUTS
 
-对于大多数模型的默认推荐：
+Default and recommended for most models:
 
 ```python
 idata = pm.sample(
@@ -375,34 +375,34 @@ idata = pm.sample(
 )
 ```
 
-**需要时调整：**
-- 发散 → `target_accept=0.95` 或更高
-- 采样缓慢 → 使用ADVI进行初始化
-- 离散参数 → 对离散变量使用`pm.Metropolis()`
+**Adjust when needed:**
+- Divergences → `target_accept=0.95` or higher
+- Slow sampling → Use ADVI for initialization
+- Discrete parameters → Use `pm.Metropolis()` for discrete vars
 
-### 变分推断
+### Variational Inference
 
-用于探索或初始化的快速近似：
+Fast approximation for exploration or initialization:
 
 ```python
 with model:
     approx = pm.fit(n=20000, method='advi')
 
-    # 用于初始化
+    # Use for initialization
     start = approx.sample(return_inferencedata=False)[0]
     idata = pm.sample(start=start)
 ```
 
-**权衡：**
-- 比MCMC快得多
-- 近似（可能低估不确定性）
-- 适合大型模型或快速探索
+**Trade-offs:**
+- Much faster than MCMC
+- Approximate (may underestimate uncertainty)
+- Good for large models or quick exploration
 
-**请参见：** `references/sampling_inference.md` 以获取详细采样指南
+**See:** `references/sampling_inference.md` for detailed sampling guide
 
-## 诊断脚本
+## Diagnostic Scripts
 
-### 综合诊断
+### Comprehensive Diagnostics
 
 ```python
 from scripts.model_diagnostics import create_diagnostic_report
@@ -414,15 +414,15 @@ create_diagnostic_report(
 )
 ```
 
-创建：
-- 迹图
-- 秩图（混合检查）
-- 自相关图
-- 能量图
-- ESS演化
-- 汇总统计CSV
+Creates:
+- Trace plots
+- Rank plots (mixing check)
+- Autocorrelation plots
+- Energy plots
+- ESS evolution
+- Summary statistics CSV
 
-### 快速诊断检查
+### Quick Diagnostic Check
 
 ```python
 from scripts.model_diagnostics import check_diagnostics
@@ -430,140 +430,141 @@ from scripts.model_diagnostics import check_diagnostics
 results = check_diagnostics(idata)
 ```
 
-检查R-hat、ESS、发散和树深度。
+Checks R-hat, ESS, divergences, and tree depth.
 
-## 常见问题和解决方案
+## Common Issues and Solutions
 
-### 发散
+### Divergences
 
-**症状：** `idata.sample_stats.diverging.sum() > 0`
+**Symptom:** `idata.sample_stats.diverging.sum() > 0`
 
-**解决方案：**
-1. 增加 `target_accept=0.95` 或 `0.99`
-2. 使用非中心化参数化（层次模型）
-3. 添加更强的先验以约束参数
-4. 检查模型错误指定
+**Solutions:**
+1. Increase `target_accept=0.95` or `0.99`
+2. Use non-centered parameterization (hierarchical models)
+3. Add stronger priors to constrain parameters
+4. Check for model misspecification
 
-### 有效样本量低
+### Low Effective Sample Size
 
-**症状：** `ESS < 400`
+**Symptom:** `ESS < 400`
 
-**解决方案：**
-1. 采样更多样本：`draws=5000`
-2. 重新参数化以减少后验相关性
-3. 对具有相关预测变量的回归使用QR分解
+**Solutions:**
+1. Sample more draws: `draws=5000`
+2. Reparameterize to reduce posterior correlation
+3. Use QR decomposition for regression with correlated predictors
 
-### 高R-hat
+### High R-hat
 
-**症状：** `R-hat > 1.01`
+**Symptom:** `R-hat > 1.01`
 
-**解决方案：**
-1. 运行更长的链：`tune=2000, draws=5000`
-2. 检查多模态性
-3. 使用ADVI改进初始化
+**Solutions:**
+1. Run longer chains: `tune=2000, draws=5000`
+2. Check for multimodality
+3. Improve initialization with ADVI
 
-### 采样缓慢
+### Slow Sampling
 
-**解决方案：**
-1. 使用ADVI初始化
-2. 降低模型复杂度
-3. 增加并行化：`cores=8, chains=8`
-4. 在适当情况下使用变分推断
+**Solutions:**
+1. Use ADVI initialization
+2. Reduce model complexity
+3. Increase parallelization: `cores=8, chains=8`
+4. Use variational inference if appropriate
 
-## 最佳实践
+## Best Practices
 
-### 模型构建
+### Model Building
 
-1. **始终标准化预测变量**以提高采样效率
-2. **使用弱信息先验**（非平坦）
-3. **使用命名维度**（`dims`）以提高清晰度
-4. **对层次模型使用非中心化参数化**
-5. **拟合前检查先验预测**
+1. **Always standardize predictors** for better sampling
+2. **Use weakly informative priors** (not flat)
+3. **Use named dimensions** (`dims`) for clarity
+4. **Non-centered parameterization** for hierarchical models
+5. **Check prior predictive** before fitting
 
-### 采样
+### Sampling
 
-1. **运行多条链**（至少4条）用于收敛
-2. **使用`target_accept=0.9`**作为基线（必要时更高）
-3. **包含`log_likelihood=True`**用于模型比较
-4. **设置随机种子**以确保可重现性
+1. **Run multiple chains** (at least 4) for convergence
+2. **Use `target_accept=0.9`** as baseline (higher if needed)
+3. **Include `log_likelihood=True`** for model comparison
+4. **Set random seed** for reproducibility
 
-### 验证
+### Validation
 
-1. **解释前检查诊断**（R-hat、ESS、发散）
-2. **后验预测检查**用于模型验证
-3. **适当时比较多个模型**
-4. **报告不确定性**（HDI区间，而不仅仅是点估计）
+1. **Check diagnostics** before interpretation (R-hat, ESS, divergences)
+2. **Posterior predictive check** for model validation
+3. **Compare multiple models** when appropriate
+4. **Report uncertainty** (HDI intervals, not just point estimates)
 
-### 工作流
+### Workflow
 
-1. 从简单开始，逐渐增加复杂度
-2. 先验预测检查 → 拟合 → 诊断 → 后验预测检查
-3. 基于检查迭代模型规范
-4. 记录假设和先验选择
+1. Start simple, add complexity gradually
+2. Prior predictive check → Fit → Diagnostics → Posterior predictive check
+3. Iterate on model specification based on checks
+4. Document assumptions and prior choices
 
-## 资源
+## Resources
 
-此技能包括：
+This skill includes:
 
-### 参考 (`references/`)
+### References (`references/`)
 
-- **`distributions.md`**：按类别（连续、离散、多元、混合、时间序列）组织的PyMC分布综合目录。选择先验或似然时使用。
+- **`distributions.md`**: Comprehensive catalog of PyMC distributions organized by category (continuous, discrete, multivariate, mixture, time series). Use when selecting priors or likelihoods.
 
-- **`sampling_inference.md`**：采样算法（NUTS、Metropolis、SMC）、变分推断（ADVI、SVGD）和处理采样问题的详细指南。遇到收敛问题或选择推断方法时使用。
+- **`sampling_inference.md`**: Detailed guide to sampling algorithms (NUTS, Metropolis, SMC), variational inference (ADVI, SVGD), and handling sampling issues. Use when encountering convergence problems or choosing inference methods.
 
-- **`workflows.md`**：常见模型类型、数据准备、先验选择和模型验证的完整工作流示例和代码模式。作为标准贝叶斯分析的食谱使用。
+- **`workflows.md`**: Complete workflow examples and code patterns for common model types, data preparation, prior selection, and model validation. Use as a cookbook for standard Bayesian analyses.
 
-### 脚本 (`scripts/`)
+### Scripts (`scripts/`)
 
-- **`model_diagnostics.py`**：自动诊断检查和报告生成。函数：`check_diagnostics()`用于快速检查，`create_diagnostic_report()`用于带图的综合分析。
+- **`model_diagnostics.py`**: Automated diagnostic checking and report generation. Functions: `check_diagnostics()` for quick checks, `create_diagnostic_report()` for comprehensive analysis with plots.
 
-- **`model_comparison.py`**：使用LOO/WAIC的模型比较工具。函数：`compare_models()`、`check_loo_reliability()`、`model_averaging()`。
+- **`model_comparison.py`**: Model comparison utilities using LOO/WAIC. Functions: `compare_models()`, `check_loo_reliability()`, `model_averaging()`.
 
-### 模板 (`assets/`)
+### Templates (`assets/`)
 
-- **`linear_regression_template.py`**：贝叶斯线性回归的完整模板，包含完整工作流（数据准备、先验检查、拟合、诊断、预测）。
+- **`linear_regression_template.py`**: Complete template for Bayesian linear regression with full workflow (data prep, prior checks, fitting, diagnostics, predictions).
 
-- **`hierarchical_model_template.py`**：层次/多级模型的完整模板，包含非中心化参数化和组级分析。
+- **`hierarchical_model_template.py`**: Complete template for hierarchical/multilevel models with non-centered parameterization and group-level analysis.
 
-## 快速参考
+## Quick Reference
 
-### 模型构建
+### Model Building
 ```python
 with pm.Model(coords={'var': names}) as model:
-    # 先验
+    # Priors
     param = pm.Normal('param', mu=0, sigma=1, dims='var')
-    # 似然
+    # Likelihood
     y = pm.Normal('y', mu=..., sigma=..., observed=data)
 ```
 
-### 采样
+### Sampling
 ```python
 idata = pm.sample(draws=2000, tune=1000, chains=4, target_accept=0.9)
 ```
 
-### 诊断
+### Diagnostics
 ```python
 from scripts.model_diagnostics import check_diagnostics
 check_diagnostics(idata)
 ```
 
-### 模型比较
+### Model Comparison
 ```python
 from scripts.model_comparison import compare_models
 compare_models({'m1': idata1, 'm2': idata2}, ic='loo')
 ```
 
-### 预测
+### Predictions
 ```python
 with model:
     pm.set_data({'X': X_new})
     pred = pm.sample_posterior_predictive(idata.posterior)
 ```
 
-## 其他说明
+## Additional Notes
 
-- PyMC与ArviZ集成用于可视化和诊断
-- 使用`pm.model_to_graphviz(model)`可视化模型结构
-- 使用`idata.to_netcdf('results.nc')`保存结果
-- 使用`az.from_netcdf('results.nc')`加载
-- 对于非常大的模型，考虑小批量ADVI或数据子采样
+- PyMC integrates with ArviZ for visualization and diagnostics
+- Use `pm.model_to_graphviz(model)` to visualize model structure
+- Save results with `idata.to_netcdf('results.nc')`
+- Load with `az.from_netcdf('results.nc')`
+- For very large models, consider minibatch ADVI or data subsampling
+

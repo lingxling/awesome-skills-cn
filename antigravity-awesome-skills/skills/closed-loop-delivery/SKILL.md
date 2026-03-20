@@ -15,7 +15,6 @@ Treat each task as incomplete until acceptance criteria are verified in evidence
 Core rule: **deliver against DoD (Definition of Done), not against code diff size.**
 
 ## When to Use
-
 Use this skill when:
 - user gives a coding/fix task and expects end-to-end completion
 - task spans code + tests + PR comments + dev deploy + runtime checks

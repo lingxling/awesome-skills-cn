@@ -11,7 +11,6 @@ date_added: "2026-02-27"
 A precision skill for agents to find, analyze, and strategize for high-impact Open Source contributions. This skill helps you become a top-tier contributor by identifying the most "mergeable" and influential issues in trending repositories.
 
 ## When to Use
-
 - Use when the user asks to find open source issues to work on.
 - Use when searching for "help wanted" or "good first issue" tasks in specific domains like AI or Web3.
 - Use to generate a "Contribution Dossier" with ready-to-execute strategies for trending projects.

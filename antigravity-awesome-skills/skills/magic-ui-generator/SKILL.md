@@ -15,7 +15,6 @@ Leverage [Magic by 21st.dev](https://21st.dev/magic) to build modern, responsive
 This skill leverages Magic by 21st.dev to build modern, responsive UI components. Instead of generating a single standard solution, it focuses on providing multiple design variations to choose from, drawing inspiration from a curated library of real-world components and premium design patterns (Shadcn UI, Magic UI, Aceternity, etc.).
 
 ## When to Use
-
 Trigger this skill whenever:
 
 - A new UI component is requested (e.g., pricing tables, contact forms, hero sections).
