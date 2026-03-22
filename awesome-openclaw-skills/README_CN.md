@@ -26,6 +26,52 @@
 
 ---
 
+<div align="center">
+
+<a href="https://clawskills.sh/">
+<img width="1500" height="500" alt="social" src="https://github.com/user-attachments/assets/a6f310af-8fed-4766-9649-b190575b399d" />
+</a>
+
+<br/>
+<br/>
+
+<div align="center">
+    <strong>Discover 5490+ community-built OpenClaw skills, organized by category.
+    </strong>
+    <br />
+    <br />
+</div>
+
+[![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
+[![Skills Count](https://img.shields.io/badge/skills-5352-blue?style=flat-square)](#table-of-contents)
+[![Last Update](https://img.shields.io/github/last-commit/VoltAgent/awesome-clawdbot-skills?label=Last%20update&style=flat-square)](https://github.com/VoltAgent/awesome-clawdbot-skills/pulls?q=is%3Apr+is%3Amerged+sort%3Aupdated-desc)
+<a href="https://github.com/VoltAgent/voltagent">
+  <img alt="VoltAgent" src="https://cdn.voltagent.dev/website/logo/logo-2-svg.svg" height="20" />
+</a> 
+[![Discord](https://img.shields.io/discord/1361559153780195478.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://s.voltagent.dev/discord)
+
+</div>
+
+<div align="center">
+    <strong>More awesome collections for developers</strong>
+    <br />
+    <br />
+</div>
+
+<div align="center">
+
+[![Agent Skills](https://img.shields.io/static/v1?label=%E2%9A%A1%20Agent&message=Skills%2012k&color=black&style=classic)](https://github.com/VoltAgent/awesome-agent-skills)
+[![Claude Code Subagents](https://img.shields.io/github/stars/VoltAgent/awesome-claude-code-subagents?style=classic&label=Claude%20Code%20Subagents&color=D97757&logo=claude&logoColor=D97757)](https://github.com/VoltAgent/awesome-claude-code-subagents)
+[![Codex Subagents][codex-badge]][codex-link]
+[![AI Agent Papers](https://img.shields.io/github/stars/VoltAgent/awesome-ai-agent-papers?style=classic&label=AI%20Agent%20Papers&color=b31b1b&logo=arxiv)](https://github.com/VoltAgent/awesome-ai-agent-papers)
+
+</div>
+
+</div>
+
+</div>
+
+
 # Awesome OpenClaw Skills
 
 OpenClaw 是一个在本地运行的 AI 助手，直接在您的机器上操作。技能扩展了它的功能，使其能够与外部服务交互、自动化工作流程并执行专门任务。这个集合帮助您发现和安装适合您需求的技能，也可以作为 OpenClaw 使用案例的灵感来源。
