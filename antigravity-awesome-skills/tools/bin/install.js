@@ -199,19 +199,22 @@ function installForTarget(tempDir, target) {
     const gitDir = path.join(target.path, ".git");
     if (fs.existsSync(gitDir)) {
       console.log(`  Migrating from full-repo install to skills-only layout…`);
-      const entries = fs.readdirSync(target.path);
-      for (const name of entries) {
-        const full = path.join(target.path, name);
-        const stat = fs.lstatSync(full);
-        if (stat.isDirectory() && !stat.isSymbolicLink()) {
-          if (fs.rmSync) {
-            fs.rmSync(full, { recursive: true, force: true });
-          } else {
-            fs.rmdirSync(full, { recursive: true });
-          }
+      const backupPath = `${target.path}_backup_${Date.now()}`;
+      try { 
+        const stats = fs.lstatSync(target.path);
+        const isSymlink = stats.isSymbolicLink();
+        const symlinkTarget = isSymlink ? 
+        fs.readlinkSync(target.path) : null;
+        fs.renameSync(target.path, backupPath);
+        console.log(`  ⚠️  Safety Backup created at: ${backupPath}`);
+        if (isSymlink) {
+          fs.symlinkSync(symlinkTarget, target.path, 'dir');
         } else {
-          fs.unlinkSync(full);
+          fs.mkdirSync(target.path, { recursive: true, mode: stats.mode });
         }
+      } catch (err) {
+        console.error(`  Migration Error: ${err.message}`);
+        process.exit(1);
       }
     } else {
       console.log(`  Updating existing install at ${target.path}…`);

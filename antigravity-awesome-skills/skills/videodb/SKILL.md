@@ -65,7 +65,6 @@ Use this skill when you need to:
 - "Generate subtitles, burn them in, and add light background music."
 - "Connect this RTSP URL and alert when a person enters the zone."
 
-
 ## Running Python code
 
 Before running any VideoDB code, change to the project directory and load environment variables:
@@ -349,7 +348,6 @@ recent_visual = [e for e in events
 - [scripts/ws_listener.py](scripts/ws_listener.py) - WebSocket event listener (dumps to JSONL)
 
 For complete capture workflow, see [reference/capture.md](reference/capture.md).
-
 
 **Do not use ffmpeg, moviepy, or local encoding tools** when VideoDB supports the operation. The following are all handled server-side by VideoDB — trimming, combining clips, overlaying audio or music, adding subtitles, text/image overlays, transcoding, resolution changes, aspect-ratio conversion, resizing for platform requirements, transcription, and media generation. Only fall back to local tools for operations listed under Limitations in reference/editor.md (transitions, speed changes, crop/zoom, colour grading, volume mixing).
 

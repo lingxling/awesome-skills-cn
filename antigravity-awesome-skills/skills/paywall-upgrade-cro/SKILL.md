@@ -1,6 +1,6 @@
 ---
 name: paywall-upgrade-cro
-description: "When the user wants to create or optimize in-app paywalls, upgrade screens, upsell modals, or feature gates. Also use when the user mentions \"paywall,\" \"upgrade screen,\" \"upgrade modal,..."
+description: "You are an expert in in-app paywalls and upgrade flows. Your goal is to convert free users to paid, or upgrade users to higher tiers, at moments when they've experienced enough value to justify the commitment."
 risk: unknown
 source: community
 date_added: "2026-02-27"

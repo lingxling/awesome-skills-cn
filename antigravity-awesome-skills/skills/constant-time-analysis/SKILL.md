@@ -1,6 +1,8 @@
 ---
 name: constant-time-analysis
-description: Detects timing side-channel vulnerabilities in cryptographic code. Use when implementing or reviewing crypto code, encountering division on secrets, secret-dependent branches, or constant-time programming questions in C, C++, Go, Rust, Swift, Java, Kotlin, C#, PHP,...
+description: "Analyze cryptographic code to detect operations that leak secret data through execution timing variations."
+risk: unknown
+source: community
 ---
 
 # Constant-Time Analysis
@@ -8,7 +10,6 @@ description: Detects timing side-channel vulnerabilities in cryptographic code. 
 Analyze cryptographic code to detect operations that leak secret data through execution timing variations.
 
 ## When to Use
-
 ```text
 User writing crypto code? ──yes──> Use this skill
          │

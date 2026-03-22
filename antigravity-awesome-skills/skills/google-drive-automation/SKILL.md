@@ -1,10 +1,9 @@
 ---
 name: google-drive-automation
-description: |
-  Interact with Google Drive - search files, find folders, list contents, download files, upload files,
-  create folders, move, copy, rename, and trash files. Use when user asks to: search Google Drive,
-  find a file/folder, list Drive contents, download or upload files,...
---- Apache-2.0
+description: "Lightweight Google Drive integration with standalone OAuth authentication. No MCP server required. Full read/write access."
+license: Apache-2.0
+risk: unknown
+source: community
 metadata:
   author: sanjay3290
   version: "1.0"

@@ -1,7 +1,9 @@
 ---
 name: varlock
-description: Secure environment variable management with Varlock. Use when handling secrets, API keys, credentials, or any sensitive configuration. Ensures secrets are never exposed in terminals, logs, traces, or Claude's context. Trigger phrases include "environment variables",...
---- 1.0.0
+description: "Secure-by-default environment variable management for Claude Code sessions."
+risk: unknown
+source: "https://github.com/dmno-dev/varlock"
+version: 1.0.0
 ---
 
 <!-- security-allowlist: curl-pipe-bash -->

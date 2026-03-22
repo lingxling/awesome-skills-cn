@@ -5,6 +5,9 @@
 
 name: Publish to npm
 
+permissions:
+  contents: read
+
 on:
   release:
     types: [published]
@@ -16,11 +19,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate references
+        run: npm run validate:references
+
+      - name: Sync release state
+        run: npm run sync:release-state
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Run docs security checks
+        run: npm run security:docs
+
+      - name: Build web app
+        run: npm run app:build
+
+      - name: Verify canonical release state
+        run: git diff --exit-code
+
+      - name: Dry-run npm package
+        run: npm pack --dry-run --json
 
       - name: Publish
         run: npm publish

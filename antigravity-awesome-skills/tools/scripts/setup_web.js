@@ -40,6 +40,14 @@ function copyFolderSync(from, to, rootDir = from) {
     });
 }
 
+function copyIndexFiles(sourceIndex, destIndex, destBackupIndex) {
+    console.log(`Copying ${sourceIndex} -> ${destIndex}...`);
+    fs.copyFileSync(sourceIndex, destIndex);
+
+    console.log(`Copying ${sourceIndex} -> ${destBackupIndex}...`);
+    fs.copyFileSync(sourceIndex, destBackupIndex);
+}
+
 function main() {
     if (!fs.existsSync(WEB_APP_PUBLIC)) {
         fs.mkdirSync(WEB_APP_PUBLIC, { recursive: true });
@@ -47,8 +55,8 @@ function main() {
 
     const sourceIndex = path.join(ROOT_DIR, 'skills_index.json');
     const destIndex = path.join(WEB_APP_PUBLIC, 'skills.json');
-    console.log(`Copying ${sourceIndex} -> ${destIndex}...`);
-    fs.copyFileSync(sourceIndex, destIndex);
+    const destBackupIndex = path.join(WEB_APP_PUBLIC, 'skills.json.backup');
+    copyIndexFiles(sourceIndex, destIndex, destBackupIndex);
 
     const sourceSkills = path.join(ROOT_DIR, 'skills');
     const destSkills = path.join(WEB_APP_PUBLIC, 'skills');
@@ -69,4 +77,4 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     main();
 }
 
-export { copyFolderSync, main };
+export { copyFolderSync, copyIndexFiles, main };

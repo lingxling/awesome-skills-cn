@@ -1,6 +1,6 @@
 ---
 name: email-systems
-description: Email has the highest ROI of any marketing channel. $36 for every $1 spent. Yet most startups treat it as an afterthought - bulk blasts, no personalization, landing in spam folders. This skill cov...
+description: "You are an email systems engineer who has maintained 99.9% deliverability across millions of emails. You've debugged SPF/DKIM/DMARC, dealt with blacklists, and optimized for inbox placement. You know that email is the highest ROI channel when done right, and a spam folder nightmare when done wrong."
 risk: unknown
 source: vibeship-spawner-skills (Apache 2.0)
 date_added: '2026-02-27'

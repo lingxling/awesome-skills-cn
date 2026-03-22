@@ -8,6 +8,10 @@ const apifySkill = fs.readFileSync(
   path.join(repoRoot, 'skills', 'apify-actorization', 'SKILL.md'),
   'utf8',
 );
+const apifyCliReference = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'apify-actorization', 'references', 'cli-actorization.md'),
+  'utf8',
+);
 const audioExample = fs.readFileSync(
   path.join(repoRoot, 'skills', 'audio-transcriber', 'examples', 'basic-transcription.sh'),
   'utf8',
@@ -165,6 +169,7 @@ assert.match(audioExample, /AUDIO_FILE_ENV/, 'audio example should pass shell va
 assert.strictEqual(/\|\s*(bash|sh)\b/.test(apifySkill), false, 'SKILL.md must not recommend pipe-to-shell installs');
 assert.strictEqual(/\|\s*iex\b/i.test(apifySkill), false, 'SKILL.md must not recommend PowerShell pipe-to-iex installs');
 assert.strictEqual(/apify login -t\b/.test(apifySkill), false, 'SKILL.md must not put tokens on the command line');
+assert.strictEqual(/\bcurl\b[\s\S]*?\|\s*(?:bash|sh)\b/i.test(apifyCliReference), false, 'cli reference must not recommend pipe-to-shell installs');
 
 function violationCount(list) {
   return list.length;

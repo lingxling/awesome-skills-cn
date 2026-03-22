@@ -15,7 +15,6 @@ date_added: "2026-03-07"
 Use this skill when tasked with creating photorealistic renders from rough sketches or line art, exploring aesthetic variations of a physical product concept, or generating high-fidelity 3D-like visualizations.
 
 ## When to Use
-
 Trigger this skill when:
 
 - Designing physical products (furniture, electronics, transportation, consumer goods).

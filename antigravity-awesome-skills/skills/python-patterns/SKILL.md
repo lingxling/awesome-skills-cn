@@ -12,7 +12,6 @@ date_added: "2026-02-27"
 > **Learn to THINK, not memorize patterns.**
 
 ## When to Use
-
 Use this skill when making Python architecture decisions, choosing frameworks, designing async patterns, or structuring Python projects.
 
 ---

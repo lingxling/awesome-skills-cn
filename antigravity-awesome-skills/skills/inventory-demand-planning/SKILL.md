@@ -7,7 +7,6 @@ date_added: '2026-02-27'
 ---
 
 ## When to Use
-
 Use this skill when forecasting product demand, calculating optimal safety stock levels, planning inventory replenishment cycles, estimating the impact of retail promotions, or conducting ABC/XYZ inventory segmentation.
 
 # Inventory Demand Planning
@@ -218,7 +217,6 @@ Track weekly and trend monthly:
 - For complete communication templates with variables and tone guidance, see [communication-templates.md](references/communication-templates.md)
 
 ## When to Use
-
 Use this skill when you need to **forecast demand and shape inventory policy across SKUs, stores, and vendors**:
 
 - Selecting and tuning forecasting methods, safety stock policies, and reorder logic for different demand patterns.

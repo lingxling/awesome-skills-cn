@@ -33,6 +33,8 @@ git push origin my-branch
 ```
 
 Open the PR with the default template and enable **Allow edits from maintainers** so conflicts can be resolved without extra back-and-forth.
+If your PR adds or edits `SKILL.md`, GitHub will also run the automated `skill-review` workflow on the pull request.
+Community PRs should stay **source-only**: do not include generated registry artifacts such as `CATALOG.md`, `skills_index.json`, or `data/*.json`.
 
 If you only want to improve docs, editing directly in GitHub is still perfectly fine.
 
@@ -49,9 +51,9 @@ You don't need to be an expert! Here are ways anyone can help:
 - Translate documentation to other languages
 
 ### 2. Report Issues
-- Found something confusing? Tell us!
-- Skill not working? Let us know!
-- Have suggestions? We want to hear them!
+- Found a reproducible bug? Open an Issue.
+- Need help, want feedback, or have an early-stage idea? Start a Discussion.
+- Skill not working? If you can reproduce it, open an Issue. If you're unsure, start in Q&A.
 
 ### 3. Create New Skills
 - Share your expertise as a skill
@@ -210,8 +212,10 @@ More examples...
 
 1. **Copy it to your AI tool's skills directory:**
    ```bash
-   cp -r skills/my-awesome-skill ~/.agent/skills/
+   cp -r skills/my-awesome-skill ~/.gemini/antigravity/skills/
    ```
+
+   Or copy it into the specific tool path you are testing against, such as `~/.claude/skills/`, `~/.cursor/skills/`, or a custom workspace path like `.agent/skills/`.
 
 2. **Try using it:**
    ```
@@ -231,6 +235,8 @@ npm install
 npm run validate
 ```
 
+GitHub will also run the automated `skill-review` check for PRs that touch `SKILL.md`.
+
 For **docs / workflows / infra changes**:
 
 ```bash
@@ -239,6 +245,8 @@ npm run validate
 npm run validate:references
 npm test
 ```
+
+For **any normal community PR**, keep the branch source-only and leave generated registry artifacts out of the diff. `main` canonicalizes those after merge.
 
 Optional maintainer-style preflight:
 

@@ -11,7 +11,6 @@ date_added: "2026-02-27"
 > Modern utility-first CSS with CSS-native configuration.
 
 ## When to Use
-
 Use this skill when configuring Tailwind v4, using CSS-first theme and design tokens, or implementing container queries and modern Tailwind patterns.
 
 ---

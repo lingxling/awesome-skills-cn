@@ -1,9 +1,11 @@
 ---
 name: cirq
-description: Google quantum computing framework. Use when targeting Google Quantum AI hardware, designing noise-aware circuits, or running quantum characterization experiments. Best for Google hardware, noise modeling, and low-level circuit design. For IBM hardware use qiskit; for quantum...
---- Apache-2.0 license
+description: "Cirq is Google Quantum AI's open-source framework for designing, simulating, and running quantum circuits on quantum computers and simulators."
+license: Apache-2.0 license
 metadata:
     skill-author: K-Dense Inc.
+risk: unknown
+source: community
 ---
 
 # Cirq - Quantum Computing with Python
@@ -341,4 +343,3 @@ results = noise_comparison_study(circuit, noise_levels)
 - Density matrix simulation is O(2^2n) - consider reducing qubits
 - Use noise models selectively on critical operations only
 - See `simulation.md` for performance optimization
-

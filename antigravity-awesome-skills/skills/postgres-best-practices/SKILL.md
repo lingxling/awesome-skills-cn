@@ -10,8 +10,7 @@ date_added: "2026-02-27"
 
 Comprehensive performance optimization guide for Postgres, maintained by Supabase. Contains rules across 8 categories, prioritized by impact to guide automated query optimization and schema design.
 
-## When to Apply
-
+## When to Use
 Reference these guidelines when:
 - Writing SQL queries or designing schemas
 - Implementing indexes or query optimization

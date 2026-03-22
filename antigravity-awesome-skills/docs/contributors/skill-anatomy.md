@@ -45,6 +45,8 @@ The frontmatter is at the very top, wrapped in `---`:
 ---
 name: my-skill-name
 description: "Brief description of what this skill does"
+risk: safe
+source: community
 ---
 ```
 
@@ -59,8 +61,25 @@ description: "Brief description of what this skill does"
 #### `description`
 - **What it is:** One-sentence summary
 - **Format:** String in quotes
-- **Length:** Keep it under 150 characters
+- **Length:** Keep it under 200 characters
 - **Example:** `"Stripe payment integration patterns including checkout, subscriptions, and webhooks"`
+
+#### `risk`
+- **What it is:** The safety classification of the skill
+- **Values:** `none` | `safe` | `critical` | `offensive` | `unknown`
+- **Example:** `risk: safe`
+- **Guide:**
+  - `none` — pure text/reasoning, no commands or mutations
+  - `safe` — reads files, runs non-destructive commands
+  - `critical` — modifies state, deletes files, pushes to production
+  - `offensive` — pentesting/red-team tools; **must** include "Authorized Use Only" warning
+  - `unknown` — legacy or unclassified; prefer a concrete level for new skills
+
+#### `source`
+- **What it is:** Attribution for the skill's origin
+- **Format:** URL or a short label
+- **Examples:** `source: community`, `source: "https://example.com/original"`
+- **Use `"self"`** if you are the original author
 
 ### Optional Fields
 
@@ -70,9 +89,11 @@ Some skills include additional metadata:
 ---
 name: my-skill-name
 description: "Brief description"
-version: "1.0.0"
-author: "Your Name"
+risk: safe
+source: community
+author: "your-name-or-handle"
 tags: ["react", "typescript", "testing"]
+tools: [claude, cursor, gemini]
 ---
 ```
 

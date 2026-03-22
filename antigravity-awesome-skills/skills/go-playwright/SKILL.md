@@ -69,7 +69,6 @@ To bypass anti-bot systems (Cloudflare, Akamai), the generated code must **imita
 ## Resources
 - `resources/implementation-playbook.md` for detailed code examples and implementation patterns.
 
-
 ### Summary Checklist for Agent
  - Is Debug Mode on? -> `Headless=false`, `SlowMo=100+`.
  - Is it a new user identity? -> `NewContext`, apply new Proxy, rotate `User-Agent`.

@@ -1,6 +1,8 @@
 ---
 name: speckit-updater
 description: SpecKit Safe Update
+risk: unknown
+source: community
 ---
 
 # SpecKit Safe Update

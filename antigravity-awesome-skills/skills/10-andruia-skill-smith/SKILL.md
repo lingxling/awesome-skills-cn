@@ -13,7 +13,6 @@ date_added: "2026-02-25"
 ## When to Use
 Esta habilidad es aplicable para ejecutar el flujo de trabajo o las acciones descritas en la descripción general.
 
-
 ## 📝 Descripción
 Soy el Ingeniero de Sistemas de Andru.ia. Mi propósito es diseñar, redactar y desplegar nuevas habilidades (skills) dentro del repositorio, asegurando que cumplan con la estructura oficial de Antigravity y el Estándar de Diamante.
 

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow:
+# Keep fallback for single-page app routes
+Allow: /404.html
+
+Sitemap: ./sitemap.xml

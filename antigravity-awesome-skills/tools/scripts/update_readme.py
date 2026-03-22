@@ -15,6 +15,7 @@ SYNC_COMMENT_FIELDS_RE = re.compile(
     r"<!-- registry-sync: version=(?P<version>[^;]+); skills=(?P<skills>\d+); "
     r"stars=(?P<stars>\d+); updated_at=(?P<updated_at>[^ ]+) -->"
 )
+CURRENT_RELEASE_LINE_RE = re.compile(r"^\*\*Current release: V[\d.]+\.\*\* .*?$", re.MULTILINE)
 
 
 def configure_utf8_output() -> None:
@@ -206,8 +207,18 @@ def apply_metadata(content: str, metadata: dict) -> str:
         flags=re.MULTILINE,
     )
     content = re.sub(
-        r"https://img\.shields\.io/badge/⭐%20[\d%2C\+]+%20Stars-gold\?style=for-the-badge",
+        r"https://img\.shields\.io/badge/⭐%20[\dA-Fa-f%,\+]+%20Stars-gold\?style=for-the-badge",
         f"https://img.shields.io/badge/⭐%20{star_badge_count}%20Stars-gold?style=for-the-badge",
+        content,
+        count=1,
+    )
+    content = re.sub(
+        CURRENT_RELEASE_LINE_RE,
+        (
+            f"**Current release: V{version}.** Trusted by {star_celebration}+ GitHub stargazers, "
+            "this repository combines official and community skill collections with bundles, "
+            "workflows, installation paths, and docs that help you go from first install to daily use quickly."
+        ),
         content,
         count=1,
     )

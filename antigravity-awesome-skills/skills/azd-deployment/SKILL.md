@@ -1,6 +1,6 @@
 ---
 name: azd-deployment
-description: "Deploy containerized applications to Azure Container Apps using Azure Developer CLI (azd). Use when setting up azd projects, writing azure.yaml configuration, creating Bicep infrastructure for Cont..."
+description: "Deploy containerized frontend + backend applications to Azure Container Apps with remote builds, managed identity, and idempotent infrastructure."
 risk: unknown
 source: community
 date_added: "2026-02-27"

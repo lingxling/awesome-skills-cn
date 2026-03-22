@@ -249,3 +249,245 @@ npx skills rm my-skill
 ## 支持的代理
 
 技能可以安装到以下任何代理：
+
+<!-- supported-agents:start -->
+| 代理 | `--agent` | 项目路径 | 全局路径 |
+|-------|-----------|--------------|-------------|
+| Amp, Kimi Code CLI, Replit, Universal | `amp`, `kimi-cli`, `replit`, `universal` | `.agents/skills/` | `~/.config/agents/skills/` |
+| Antigravity | `antigravity` | `.agents/skills/` | `~/.gemini/antigravity/skills/` |
+| Augment | `augment` | `.augment/skills/` | `~/.augment/skills/` |
+| Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
+| OpenClaw | `openclaw` | `skills/` | `~/.openclaw/skills/` |
+| Cline, Warp | `cline`, `warp` | `.agents/skills/` | `~/.agents/skills/` |
+| CodeBuddy | `codebuddy` | `.codebuddy/skills/` | `~/.codebuddy/skills/` |
+| Codex | `codex` | `.agents/skills/` | `~/.codex/skills/` |
+| Command Code | `command-code` | `.commandcode/skills/` | `~/.commandcode/skills/` |
+| Continue | `continue` | `.continue/skills/` | `~/.continue/skills/` |
+| Cortex Code | `cortex` | `.cortex/skills/` | `~/.snowflake/cortex/skills/` |
+| Crush | `crush` | `.crush/skills/` | `~/.config/crush/skills/` |
+| Cursor | `cursor` | `.agents/skills/` | `~/.cursor/skills/` |
+| Deep Agents | `deepagents` | `.agents/skills/` | `~/.deepagents/agent/skills/` |
+| Droid | `droid` | `.factory/skills/` | `~/.factory/skills/` |
+| Gemini CLI | `gemini-cli` | `.agents/skills/` | `~/.gemini/skills/` |
+| GitHub Copilot | `github-copilot` | `.agents/skills/` | `~/.copilot/skills/` |
+| Goose | `goose` | `.goose/skills/` | `~/.config/goose/skills/` |
+| Junie | `junie` | `.junie/skills/` | `~/.junie/skills/` |
+| iFlow CLI | `iflow-cli` | `.iflow/skills/` | `~/.iflow/skills/` |
+| Kilo Code | `kilo` | `.kilocode/skills/` | `~/.kilocode/skills/` |
+| Kiro CLI | `kiro-cli` | `.kiro/skills/` | `~/.kiro/skills/` |
+| Kode | `kode` | `.kode/skills/` | `~/.kode/skills/` |
+| MCPJam | `mcpjam` | `.mcpjam/skills/` | `~/.mcpjam/skills/` |
+| Mistral Vibe | `mistral-vibe` | `.vibe/skills/` | `~/.vibe/skills/` |
+| Mux | `mux` | `.mux/skills/` | `~/.mux/skills/` |
+| OpenCode | `opencode` | `.agents/skills/` | `~/.config/opencode/skills/` |
+| OpenHands | `openhands` | `.openhands/skills/` | `~/.openhands/skills/` |
+| Pi | `pi` | `.pi/skills/` | `~/.pi/agent/skills/` |
+| Qoder | `qoder` | `.qoder/skills/` | `~/.qoder/skills/` |
+| Qwen Code | `qwen-code` | `.qwen/skills/` | `~/.qwen/skills/` |
+| Roo Code | `roo` | `.roo/skills/` | `~/.roo/skills/` |
+| Trae | `trae` | `.trae/skills/` | `~/.trae/skills/` |
+| Trae CN | `trae-cn` | `.trae/skills/` | `~/.trae-cn/skills/` |
+| Windsurf | `windsurf` | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` |
+| Zencoder | `zencoder` | `.zencoder/skills/` | `~/.zencoder/skills/` |
+| Neovate | `neovate` | `.neovate/skills/` | `~/.neovate/skills/` |
+| Pochi | `pochi` | `.pochi/skills/` | `~/.pochi/skills/` |
+| AdaL | `adal` | `.adal/skills/` | `~/.adal/skills/` |
+<!-- supported-agents:end -->
+
+> [!NOTE]
+> **Kiro CLI 用户：** 安装技能后，需要在 `.kiro/agents/<agent>.json` 中手动将它们添加到自定义代理的 `resources` 中：
+>
+> ```json
+> {
+>   "resources": ["skill://.kiro/skills/**/SKILL.md"]
+> }
+> ```
+
+CLI 会自动检测您已安装的编码代理。如果没有检测到任何代理，系统会提示您选择要安装到的代理。
+
+## 创建技能
+
+技能是包含带有 YAML 前置数据的 `SKILL.md` 文件的目录：
+
+```markdown
+---
+name: my-skill
+description: What this skill does and when to use it
+---
+
+# My Skill
+
+Instructions for the agent to follow when this skill is activated.
+
+## When to Use
+
+Describe the scenarios where this skill should be used.
+
+## Steps
+
+1. First, do this
+2. Then, do that
+```
+
+### 必填字段
+
+- `name`：唯一标识符（小写，允许使用连字符）
+- `description`：技能功能的简要说明
+
+### 可选字段
+
+- `metadata.internal`：设置为 `true` 以在正常发现中隐藏该技能。内部技能仅在设置了 `INSTALL_INTERNAL_SKILLS=1` 时可见和可安装。适用于进行中的技能或仅用于内部工具的技能。
+
+```markdown
+---
+name: my-internal-skill
+description: An internal skill not shown by default
+metadata:
+  internal: true
+---
+```
+
+### 技能发现
+
+CLI 在仓库中的以下位置搜索技能：
+
+<!-- skill-discovery:start -->
+- 根目录（如果包含 `SKILL.md`）
+- `skills/`
+- `skills/.curated/`
+- `skills/.experimental/`
+- `skills/.system/`
+- `.agents/skills/`
+- `.augment/skills/`
+- `.claude/skills/`
+- `./skills/`
+- `.codebuddy/skills/`
+- `.commandcode/skills/`
+- `.continue/skills/`
+- `.cortex/skills/`
+- `.crush/skills/`
+- `.factory/skills/`
+- `.goose/skills/`
+- `.junie/skills/`
+- `.iflow/skills/`
+- `.kilocode/skills/`
+- `.kiro/skills/`
+- `.kode/skills/`
+- `.mcpjam/skills/`
+- `.vibe/skills/`
+- `.mux/skills/`
+- `.openhands/skills/`
+- `.pi/skills/`
+- `.qoder/skills/`
+- `.qwen/skills/`
+- `.roo/skills/`
+- `.trae/skills/`
+- `.windsurf/skills/`
+- `.zencoder/skills/`
+- `.neovate/skills/`
+- `.pochi/skills/`
+- `.adal/skills/`
+<!-- skill-discovery:end -->
+
+### 插件清单发现
+
+如果存在 `.claude-plugin/marketplace.json` 或 `.claude-plugin/plugin.json`，则也会发现这些文件中声明的技能：
+
+```json
+// .claude-plugin/marketplace.json
+{
+  "metadata": { "pluginRoot": "./plugins" },
+  "plugins": [
+    {
+      "name": "my-plugin",
+      "source": "my-plugin",
+      "skills": ["./skills/review", "./skills/test"]
+    }
+  ]
+}
+```
+
+这实现了与 [Claude Code 插件市场](https://code.claude.com/docs/en/plugin-marketplaces)生态系统的兼容性。
+
+如果在标准位置未找到技能，则执行递归搜索。
+
+## 兼容性
+
+由于技能遵循共享的[代理技能规范](https://agentskills.io)，因此它们在代理之间通常是兼容的。但是，某些功能可能是特定于代理的：
+
+| 特性         | OpenCode | OpenHands | Claude Code | Cline | CodeBuddy | Codex | Command Code | Kiro CLI | Cursor | Antigravity | Roo Code | Github Copilot | Amp | OpenClaw | Neovate | Pi  | Qoder | Zencoder |
+| --------------- | -------- | --------- | ----------- | ----- | --------- | ----- | ------------ | -------- | ------ | ----------- | -------- | -------------- | --- | -------- | ------- | --- | ----- | -------- |
+| 基本技能    | Yes      | Yes       | Yes         | Yes   | Yes       | Yes   | Yes          | Yes      | Yes    | Yes         | Yes      | Yes            | Yes | Yes      | Yes     | Yes | Yes   | Yes      |
+| `allowed-tools` | Yes      | Yes       | Yes         | Yes   | Yes       | Yes   | Yes          | No       | Yes    | Yes         | Yes      | Yes            | Yes | Yes      | Yes     | Yes | Yes   | No       |
+| `context: fork` | No       | No        | Yes         | No    | No        | No    | No           | No       | No     | No          | No       | No             | No  | No       | No      | No  | No    | No       |
+| Hooks           | No       | No        | Yes         | Yes   | No        | No    | No           | No       | No     | No          | No       | No             | No  | No       | No      | No  | No    | No       |
+
+## 故障排除
+
+### "No skills found"
+
+确保仓库包含有效的 `SKILL.md` 文件，其中前置数据中同时包含 `name` 和 `description`。
+
+### 技能未在代理中加载
+
+- 验证技能是否已安装到正确的路径
+- 检查代理文档中的技能加载要求
+- 确保 `SKILL.md` 前置数据是有效的 YAML
+
+### 权限错误
+
+确保您对目标目录具有写入权限。
+
+## 环境变量
+
+| 变量                  | 描述                                                                |
+| ------------------------- | -------------------------------------------------------------------------- |
+| `INSTALL_INTERNAL_SKILLS` | 设置为 `1` 或 `true` 以显示和安装标记为 `internal: true` 的技能 |
+| `DISABLE_TELEMETRY`       | 设置以禁用匿名使用遥测                                   |
+| `DO_NOT_TRACK`            | 禁用遥测的替代方法                                       |
+
+```bash
+# 安装内部技能
+INSTALL_INTERNAL_SKILLS=1 npx skills add vercel-labs/agent-skills --list
+```
+
+## 遥测
+
+此 CLI 收集匿名使用数据以帮助改进工具。不收集任何个人信息。
+
+遥测在 CI 环境中会自动禁用。
+
+## 相关链接
+
+- [代理技能规范](https://agentskills.io)
+- [技能目录](https://skills.sh)
+- [Amp 技能文档](https://ampcode.com/manual#agent-skills)
+- [Antigravity 技能文档](https://antigravity.google/docs/skills)
+- [Factory AI / Droid 技能文档](https://docs.factory.ai/cli/configuration/skills)
+- [Claude Code 技能文档](https://code.claude.com/docs/en/skills)
+- [OpenClaw 技能文档](https://docs.openclaw.ai/tools/skills)
+- [Cline 技能文档](https://docs.cline.bot/features/skills)
+- [CodeBuddy 技能文档](https://www.codebuddy.ai/docs/ide/Features/Skills)
+- [Codex 技能文档](https://developers.openai.com/codex/skills)
+- [Command Code 技能文档](https://commandcode.ai/docs/skills)
+- [Crush 技能文档](https://github.com/charmbracelet/crush?tab=readme-ov-file#agent-skills)
+- [Cursor 技能文档](https://cursor.com/docs/context/skills)
+- [Gemini CLI 技能文档](https://geminicli.com/docs/cli/skills/)
+- [GitHub Copilot 代理技能](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
+- [iFlow CLI 技能文档](https://platform.iflow.cn/en/cli/examples/skill)
+- [Kimi Code CLI 技能文档](https://moonshotai.github.io/kimi-cli/en/customization/skills.html)
+- [Kiro CLI 技能文档](https://kiro.dev/docs/cli/custom-agents/configuration-reference/#skill-resources)
+- [Kode 技能文档](https://github.com/shareAI-lab/kode/blob/main/docs/skills.md)
+- [OpenCode 技能文档](https://opencode.ai/docs/skills)
+- [Qwen Code 技能文档](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/)
+- [OpenHands 技能文档](https://docs.openhands.ai/modules/usage/how-to/using-skills)
+- [Pi 技能文档](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md)
+- [Qoder 技能文档](https://docs.qoder.com/cli/Skills)
+- [Replit 技能文档](https://docs.replit.com/replitai/skills)
+- [Roo Code 技能文档](https://docs.roocode.com/features/skills)
+- [Trae 技能文档](https://docs.trae.ai/ide/skills)
+- [Vercel 代理技能仓库](https://github.com/vercel-labs/agent-skills)
+
+## 许可证
+
+MIT

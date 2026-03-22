@@ -3,11 +3,65 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Copy, Check, FileCode, AlertTriangle, Loader2 } from 'lucide-react';
 import { SkillStarButton } from '../components/SkillStarButton';
 import { useSkills } from '../context/SkillContext';
+import { usePageMeta } from '../hooks/usePageMeta';
+import { buildSkillFallbackMeta, buildSkillMeta, selectTopSkills } from '../utils/seo';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 
 // Lazy load heavy markdown component
 const Markdown = lazy(() => import('react-markdown'));
+
+interface SkillMarkdownUrlInput {
+  baseUrl: string;
+  origin: string;
+  pathname: string;
+  documentBaseUrl?: string;
+  skillPath: string;
+}
+
+function normalizeBasePath(baseUrl: string): string {
+  const normalizedSegments = baseUrl
+    .trim()
+    .split('/')
+    .filter((segment) => segment.length > 0 && segment !== '.');
+
+  const normalizedPath = normalizedSegments.length > 0
+    ? `/${normalizedSegments.join('/')}`
+    : '/';
+
+  return normalizedPath.endsWith('/') ? normalizedPath : `${normalizedPath}/`;
+}
+
+export function getSkillMarkdownCandidateUrls({
+  baseUrl,
+  origin,
+  pathname,
+  documentBaseUrl,
+  skillPath,
+}: SkillMarkdownUrlInput): string[] {
+  const normalizedSkillPath = skillPath
+    .replace(/^\/+/, '')
+    .replace(/\/SKILL\.md$/i, '');
+  const assetPath = `${normalizedSkillPath}/SKILL.md`;
+  const normalizedPathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  const pathSegments = normalizedPathname.split('/').filter(Boolean);
+  const pathCandidates = pathSegments.map((_, index) => {
+    const prefix = `/${pathSegments.slice(0, index + 1).join('/')}/`;
+    return `${origin}${prefix}${assetPath}`;
+  });
+
+  return Array.from(new Set([
+    new URL(assetPath, documentBaseUrl || new URL(normalizeBasePath(baseUrl), origin)).href,
+    new URL(assetPath, new URL(normalizeBasePath(baseUrl), origin)).href,
+    `${origin}/${assetPath}`,
+    ...pathCandidates,
+  ]));
+}
+
+function looksLikeHtmlDocument(text: string): boolean {
+  const trimmed = text.trim().toLowerCase();
+  return trimmed.startsWith('<!doctype html') || trimmed.startsWith('<html');
+}
 
 /** Split YAML frontmatter (--- ... ---) and markdown body */
 function splitFrontmatter(md: string): { frontmatter: string; body: string } {
@@ -58,8 +112,37 @@ export function SkillDetail(): React.ReactElement {
   const [copiedFull, setCopiedFull] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [customContext, setCustomContext] = useState('');
-
+  const [commandCopied, setCommandCopied] = useState(false);
+  const [retryToken, setRetryToken] = useState(0);
+  const installCommand = 'npx antigravity-awesome-skills';
   const skill = useMemo(() => skills.find(s => s.id === id), [skills, id]);
+
+  const topPrioritySkills = useMemo(() => selectTopSkills(skills), [skills]);
+  const topPrioritySkillSet = useMemo(() => new Set(topPrioritySkills.map(topSkill => topSkill.id)), [topPrioritySkills]);
+
+  const canonicalPath = useMemo(() => {
+    const safeId = id ? id : 'skill';
+    return `/skill/${encodeURIComponent(safeId)}`;
+  }, [id]);
+
+  const isPriority = useMemo(() => {
+    if (!skill) {
+      return false;
+    }
+
+    return topPrioritySkillSet.has(skill.id);
+  }, [skill, topPrioritySkillSet]);
+
+  usePageMeta(
+    useMemo(() => {
+      if (!skill) {
+        return buildSkillFallbackMeta(id || 'skill');
+      }
+
+      return buildSkillMeta(skill, isPriority, canonicalPath);
+    }, [id, skill, isPriority, canonicalPath])
+  );
+
   const starCount = useMemo(() => (id ? stars[id] || 0 : 0), [stars, id]);
   const { frontmatter, body: markdownBody } = useMemo(() => splitFrontmatter(content), [content]);
   const frontmatterRows = useMemo(() => parseFrontmatterRows(frontmatter), [frontmatter]);
@@ -69,17 +152,47 @@ export function SkillDetail(): React.ReactElement {
 
     const loadMarkdown = async () => {
       setContentLoading(true);
+      setError(null);
       try {
         const cleanPath = skill.path.startsWith('skills/')
           ? skill.path.replace('skills/', '')
           : skill.path;
 
-        const base = import.meta.env.BASE_URL;
-        const mdRes = await fetch(`${base}skills/${cleanPath}/SKILL.md`);
-        if (!mdRes.ok) throw new Error('Skill file not found');
+        const candidateUrls = getSkillMarkdownCandidateUrls({
+          baseUrl: import.meta.env.BASE_URL,
+          origin: window.location.origin,
+          pathname: window.location.pathname,
+          documentBaseUrl: window.document.baseURI,
+          skillPath: `skills/${cleanPath}`,
+        });
 
-        const text = await mdRes.text();
-        setContent(text);
+        let markdown: string | null = null;
+        let lastError: Error | null = null;
+
+        for (const url of candidateUrls) {
+          try {
+            const mdRes = await fetch(url);
+            if (!mdRes.ok) {
+              throw new Error(`Request failed (${mdRes.status}) for ${url}`);
+            }
+
+            const text = await mdRes.text();
+            if (looksLikeHtmlDocument(text)) {
+              throw new Error(`HTML fallback returned instead of markdown for ${url}`);
+            }
+
+            markdown = text;
+            break;
+          } catch (err) {
+            lastError = err instanceof Error ? err : new Error(String(err));
+          }
+        }
+
+        if (markdown === null) {
+          throw lastError || new Error('Skill file not found');
+        }
+
+        setContent(markdown);
       } catch (err) {
         console.error('Failed to load skill content', err);
         setError(err instanceof Error ? err.message : 'Could not load skill content.');
@@ -89,7 +202,7 @@ export function SkillDetail(): React.ReactElement {
     };
 
     loadMarkdown();
-  }, [skill, contextLoading]);
+  }, [skill, contextLoading, retryToken]);
 
   const copyToClipboard = () => {
     if (!skill) return;
@@ -102,6 +215,12 @@ export function SkillDetail(): React.ReactElement {
     navigator.clipboard.writeText(finalPrompt);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copyInstallCommand = async () => {
+    await navigator.clipboard.writeText(installCommand);
+    setCommandCopied(true);
+    window.setTimeout(() => setCommandCopied(false), 2000);
   };
 
   const copyFullToClipboard = () => {
@@ -139,6 +258,12 @@ export function SkillDetail(): React.ReactElement {
         <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Failed to Load Content</h2>
         <p className="text-slate-500 mt-2">{error || 'Skill details could not be loaded.'}</p>
+        <button
+          onClick={() => setRetryToken((value) => value + 1)}
+          className="mt-6 inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
+        >
+          Retry loading content
+        </button>
         <Link to="/" className="mt-8 inline-flex items-center text-indigo-600 font-medium hover:underline">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Catalog
         </Link>
@@ -201,6 +326,26 @@ export function SkillDetail(): React.ReactElement {
         </div>
 
         <div className="mt-6 bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div className="rounded-lg border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900 p-4 mb-4">
+            <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400 font-semibold">
+              Use it now
+            </p>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+              Start quickly: install the package, open your workspace, and run this skill prompt directly.
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <code className="inline-block rounded-md bg-slate-900 text-slate-50 px-3 py-2 text-sm font-mono border border-slate-800">
+                {installCommand}
+              </code>
+              <button
+                onClick={copyInstallCommand}
+                className="inline-flex items-center text-sm font-medium text-indigo-700 hover:text-indigo-600 dark:text-indigo-300 dark:hover:text-indigo-200"
+              >
+                {commandCopied ? 'Copied' : 'Copy command'}
+              </button>
+            </div>
+          </div>
+
           <label htmlFor="context" className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
             Interactive Prompt Builder (Optional)
           </label>

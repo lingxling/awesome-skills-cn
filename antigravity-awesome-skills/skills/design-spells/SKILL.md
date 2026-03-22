@@ -15,7 +15,6 @@ date_added: "2026-03-07"
 Use this skill specifically to elevate a UI from merely "functional" or "common" into something genuinely "magical." It focuses on the minute details that surprise and delight users, establishing a strong, premium brand personality.
 
 ## When to Use
-
 Trigger this skill when:
 
 - Polishing a finished feature to actively add a "wow" factor.

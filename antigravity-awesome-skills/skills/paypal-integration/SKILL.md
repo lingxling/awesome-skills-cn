@@ -1,6 +1,6 @@
 ---
 name: paypal-integration
-description: "Integrate PayPal payment processing with support for express checkout, subscriptions, and refund management. Use when implementing PayPal payments, processing online transactions, or building e-com..."
+description: "Master PayPal payment integration including Express Checkout, IPN handling, recurring billing, and refund workflows."
 risk: unknown
 source: community
 date_added: "2026-02-27"

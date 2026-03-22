@@ -1,10 +1,9 @@
 ---
 name: gmail-automation
-description: |
-  Interact with Gmail - search emails, read messages, send emails, create drafts, and manage labels.
-  Use when user asks to: search email, read email, send email, create email draft, mark as read,
-  archive email, star email, or manage Gmail labels. Lightweight alternative...
---- Apache-2.0
+description: "Lightweight Gmail integration with standalone OAuth authentication. No MCP server required."
+license: Apache-2.0
+risk: unknown
+source: community
 metadata:
   author: sanjay3290
   version: "1.0"

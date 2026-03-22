@@ -32,10 +32,10 @@ assert.deepStrictEqual(docsOnly.categories, ["docs"]);
 assert.strictEqual(docsOnly.primaryCategory, "docs");
 assert.strictEqual(requiresReferencesValidation(["README.md"], contract), true);
 
-const infraChange = classifyChangedFiles([".github/workflows/ci.yml", "tools/scripts/pr_preflight.js"], contract);
+const infraChange = classifyChangedFiles([".github/workflows/ci.yml", "tools/scripts/pr_preflight.cjs"], contract);
 assert.deepStrictEqual(infraChange.categories, ["infra"]);
 assert.strictEqual(infraChange.primaryCategory, "infra");
-assert.strictEqual(requiresReferencesValidation(["tools/scripts/pr_preflight.js"], contract), true);
+assert.strictEqual(requiresReferencesValidation(["tools/scripts/pr_preflight.cjs"], contract), true);
 
 const mixedChange = classifyChangedFiles(["skills/example/SKILL.md", "README.md"], contract);
 assert.deepStrictEqual(mixedChange.categories, ["skill", "docs"]);

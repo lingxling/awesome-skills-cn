@@ -15,7 +15,6 @@ This skill provides professional mental models and design patterns for **distrib
 Unlike SQL (where you model data entities), or document stores (like MongoDB), these distributed systems require you to **model your queries first**.
 
 ## When to Use
-
 - **Designing for Scale**: Moving beyond simple single-node databases to distributed clusters.
 - **Technology Selection**: Evaluating or using **Cassandra**, **ScyllaDB**, or **DynamoDB**.
 - **Performance Tuning**: Troubleshooting "hot partitions" or high latency in existing NoSQL systems.

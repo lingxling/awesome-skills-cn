@@ -7,6 +7,7 @@
 - Use the GitHub UI **"Squash and merge"** for every accepted PR.
 - The PR must show as **Merged**, not Closed. That way the contributor appears in the repo’s contribution graph and the PR is clearly linked to the merge commit.
 - Do **not** integrate a PR by squashing locally, pushing to `main`, and then closing the PR. That would show "Closed" and the contributor would not get proper credit.
+- Before merging, require the normal PR checks from [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) to be green. If the PR touches `SKILL.md`, also require the separate [`skill-review` workflow](../../.github/workflows/skill-review.yml) to pass.
 
 ## If the PR has merge conflicts
 

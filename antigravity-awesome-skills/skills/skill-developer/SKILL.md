@@ -1,6 +1,6 @@
 ---
 name: skill-developer
-description: "Create and manage Claude Code skills following Anthropic best practices. Use when creating new skills, modifying skill-rules.json, understanding trigger patterns, working with hooks, debugging skil..."
+description: "Comprehensive guide for creating and managing skills in Claude Code with auto-activation system, following Anthropic's official best practices including the 500-line rule and progressive disclosure pattern."
 risk: unknown
 source: community
 date_added: "2026-02-27"

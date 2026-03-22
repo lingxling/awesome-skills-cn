@@ -11,7 +11,6 @@ date_added: "2026-02-27"
 Systematically create high-quality 3D scenes and interactive experiences using Three.js best practices.
 
 ## When to Use
-
 - Requests 3D visualizations or graphics ("create a 3D model", "show in 3D")
 - Wants interactive 3D experiences ("rotating cube", "explorable scene")
 - Needs WebGL or canvas-based rendering

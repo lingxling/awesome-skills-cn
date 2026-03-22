@@ -6,6 +6,7 @@ This document summarizes the repository coherence audit performed after the `app
 
 - Conteggi e numeri (README, package.json, CATALOG)
 - Validazione skill (frontmatter, risk, "When to Use", link)
+- Audit repo-wide per skill (conformance + baseline usability)
 - Riferimenti incrociati (workflows.json, bundles.json, `docs/users/bundles.md`)
 - Documentazione (`docs/contributors/quality-bar.md`, `docs/contributors/skill-anatomy.md`, security/licenses)
 - Script e build (validate, index, readme, catalog, test)
@@ -27,6 +28,16 @@ This document summarizes the repository coherence audit performed after the `app
   - detects high-risk command guidance in `SKILL.md`,
   - requires explicit allowlists for deliberate command-delivery patterns,
   - and blocks token-like examples that look exploitable.
+
+### 2b. Audit repo-wide per skill
+
+- Added `tools/scripts/audit_skills.py` (also exposed as `npm run audit:skills`), which audits every `SKILL.md` and produces a per-skill status (`ok`, `warning`, `error`) with finding codes.
+- The audit is intentionally broader than `validate` and covers:
+  - truncated descriptions that likely map to issue `#365`,
+  - missing examples and missing limitations sections,
+  - overly long `SKILL.md` files that should probably be split into `references/`,
+  - plus the existing structural/safety checks (frontmatter, risk, `When to Use`, offensive disclaimer, dangling links).
+- Use `npm run audit:skills` for the maintainer view and `npm run audit:skills -- --json-out ... --markdown-out ...` when you want artifacts for triage or cleanup tracking.
 
 ### 3. Riferimenti incrociati
 
@@ -61,6 +72,7 @@ This document summarizes the repository coherence audit performed after the `app
 ```bash
 npm run validate          # validazione skill (soft)
 npm run validate:strict   # hardening / diagnostic pass
+npm run audit:skills      # audit completo per skill con finding codes e status
 npm run validate:references  # workflow, bundle, and docs/users/bundles.md references
 npm run security:docs       # documentation command-risk scan (required for security-sensitive guidance)
 npm run build             # chain + catalog

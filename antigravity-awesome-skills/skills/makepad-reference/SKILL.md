@@ -1,11 +1,8 @@
 ---
 name: makepad-reference
-description: |
-  CRITICAL: Use for Makepad troubleshooting and reference. Triggers on:
-  troubleshoot, error, debug, fix, problem, issue,
-  no matching field, parse error, widget not found, UI not updating,
-  code quality, refactor, responsive layout, adaptive,
-  api docs, reference,...
+description: "This category provides reference materials for debugging, code quality, and advanced layout patterns."
+risk: unknown
+source: community
 ---
 
 # Makepad Reference

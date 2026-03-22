@@ -1,0 +1,62 @@
+name: Repo Hygiene
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 7 * * 1"
+
+permissions:
+  contents: write
+
+jobs:
+  sync-repo-state:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run repo-state sync
+        run: npm run sync:repo-state
+
+      - name: Commit and push if changed
+        run: |
+          set -euo pipefail
+
+          managed_files=$(node tools/scripts/generated_files.js --shell --include-mixed)
+
+          if git diff --quiet; then
+            echo "No repo-state drift detected."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add $managed_files || true
+
+          if git diff --cached --quiet; then
+            echo "Repo hygiene produced unmanaged drift."
+            git status --short
+            exit 1
+          fi
+
+          git commit -m "chore: scheduled repo hygiene sync [ci skip]"
+          git pull origin main --rebase
+          git push origin HEAD

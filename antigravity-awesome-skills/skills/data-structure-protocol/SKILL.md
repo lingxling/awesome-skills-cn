@@ -13,7 +13,6 @@ LLM coding agents lose context between tasks. On large codebases they spend most
 DSP is NOT documentation for humans and NOT an AST dump. It captures three things: **meaning** (why an entity exists), **boundaries** (what it imports and exposes), and **reasons** (why each connection exists). This is enough for an agent to navigate, refactor, and generate code without loading the entire source tree into the context window.
 
 ## When to Use
-
 Use this skill when:
 - The project has a `.dsp/` directory (DSP is already set up)
 - The user asks to set up DSP, bootstrap, or map a project's structure

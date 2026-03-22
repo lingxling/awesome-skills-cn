@@ -37,6 +37,9 @@ Start from:
 - ✅ **Cursor** (AI IDE)
 - ✅ **Antigravity IDE**
 - ✅ **OpenCode**
+- ✅ **Kiro CLI** (Amazon)
+- ✅ **Kiro IDE** (Amazon)
+- ✅ **AdaL CLI**
 - ⚠️ **GitHub Copilot** (partial support via copy-paste)
 
 ### Are these skills free to use?
@@ -71,11 +74,13 @@ The skill files themselves are stored locally on your computer, but your AI assi
 
 ### What do the Risk Labels mean?
 
-We classify skills so you know what you're running:
+We classify skills so you know what you're running. These values map directly to the `risk:` field in every `SKILL.md` frontmatter:
 
-- ⚪ **Safe (White/Blue)**: Read-only, planning, or benign skills.
-- 🔴 **Risk (Red)**: Skills that modify files (delete), use network scanners, or perform destructive actions. **Use with caution.**
-- 🟣 **Official (Purple)**: Maintained by trusted vendors (Anthropic, DeepMind, etc.).
+- 🔵 **`none`**: Pure reference or planning content — no shell commands, no mutations, no network access.
+- ⚪ **`safe`**: Community skills that are non-destructive (read-only, planning, code review, analysis).
+- 🔴 **`critical`**: Skills that modify files, drop data, use network scanners, or perform destructive actions. **Use with caution.**
+- 🟣 **`offensive`**: Security-focused offensive techniques (pentesting, exploitation). **Authorized use only** — always confirm the target is in scope.
+- ⬜ **`unknown`**: Legacy or unclassified content. Review the skill manually before use.
 
 ### Can these skills hack my computer?
 
@@ -88,9 +93,16 @@ _Always check the Risk label and review the code._
 
 ### Where should I install the skills?
 
-The universal path that works with most tools is `.agent/skills/`.
+It depends on how you install:
 
-**Using npx:** `npx antigravity-awesome-skills` (or `npx github:sickn33/antigravity-awesome-skills` if you get a 404).
+- **Using the installer CLI (`npx antigravity-awesome-skills`)**:
+  The default install target is `~/.gemini/antigravity/skills/` for Antigravity's global library.
+- **Using a tool-specific flag**:
+  Use `--claude`, `--cursor`, `--gemini`, `--codex`, `--kiro`, or `--antigravity` to target the matching tool path automatically.
+- **Using a manual clone or custom workspace path**:
+  `.agent/skills/` is still a good universal workspace convention for Antigravity/custom setups.
+
+If you get a 404 from npm, use: `npx github:sickn33/antigravity-awesome-skills`
 
 **Using git clone:**
 
@@ -116,10 +128,10 @@ This repository now includes `.claude-plugin/marketplace.json` and `.claude-plug
 
 ### Does this work with Windows?
 
-**Yes.** Use the standard install flow:
+**Yes.** Use the same standard install flow as other platforms:
 
 ```bash
-git clone https://github.com/sickn33/antigravity-awesome-skills.git .agent/skills
+npx antigravity-awesome-skills
 ```
 
 If you have an older clone created around the removed symlink workaround, reinstall into a fresh directory or rerun `npx antigravity-awesome-skills`.
@@ -216,8 +228,10 @@ Include:
 The repository enforces automated quality control. Your skill might be missing:
 
 1. A valid `description`.
-2. Usage examples.
-   Run `npm run validate` locally to check before you push.
+2. Clear usage guidance or examples.
+3. The expected PR template checklist in the PR body.
+
+Run `npm run validate` locally before you push, and make sure you opened the PR with the default template so the Quality Bar checklist is present.
 
 ### My PR failed "security docs" check. What should I do?
 
@@ -236,6 +250,30 @@ Common fixes:
 ```markdown
 <!-- security-allowlist: reason and scope -->
 ```
+
+### My PR triggered the `skill-review` automated check. What is it?
+
+Since v8.0.0, GitHub automatically runs a `skill-review` workflow on any PR that adds or modifies a `SKILL.md` file. It reviews your skill against the quality bar and flags common issues — missing sections, weak triggers, or risky command patterns.
+
+**If it reports findings:**
+
+1. Open the **Checks** tab on your PR and read the `skill-review` job output.
+2. Address any **actionable** findings (missing "When to Use", unclear triggers, blocked security patterns).
+3. Push a new commit to the same branch — the check reruns automatically.
+
+You do not need to close and reopen the PR. Informational or style-only findings do not block merging.
+
+### Do community PRs need generated files like `CATALOG.md` or `skills_index.json`?
+
+**No.** Community PRs should stay **source-only**.
+
+Do **not** include generated registry artifacts like:
+
+- `CATALOG.md`
+- `skills_index.json`
+- `data/*.json`
+
+Maintainers regenerate and canonicalize those files on `main` after merge. If you touch docs, workflows, or infra, run `npm run validate:references` and `npm test` locally instead.
 
 ### Can I update an "Official" skill?
 

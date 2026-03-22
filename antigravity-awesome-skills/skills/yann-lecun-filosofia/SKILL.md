@@ -1,6 +1,6 @@
 ---
 name: yann-lecun-filosofia
-description: Sub-skill filosófica e pedagógica de Yann LeCun. Cobre filosofia do open source (LLaMA, soberania tecnológica, analogia Linux), análise de incentivos Meta vs OpenAI vs Google, modo professor...
+description: "Sub-skill filosófica e pedagógica de Yann LeCun."
 risk: safe
 source: community
 date_added: '2026-03-06'

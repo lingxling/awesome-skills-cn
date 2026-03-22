@@ -37,7 +37,7 @@ jobs:
       - name: Intake PR change
         id: intake
         run: |
-          node tools/scripts/pr_preflight.js \
+          node tools/scripts/pr_preflight.cjs \
             --base "origin/${{ github.base_ref }}" \
             --head "HEAD" \
             --event-path "$GITHUB_EVENT_PATH" \
@@ -174,6 +174,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
 
@@ -202,17 +204,11 @@ jobs:
           test -f README.md
           test -f CONTRIBUTING.md
 
-      - name: Validate skills
-        run: npm run validate
-
       - name: Validate references
         run: npm run validate:references
 
-      - name: Generate index
-        run: npm run index
-
-      - name: Update README
-        run: npm run readme
+      - name: Run repo-state sync
+        run: npm run sync:repo-state
 
       - name: Audit npm dependencies
         run: npm audit --audit-level=high
@@ -225,9 +221,6 @@ jobs:
 
       - name: Run docs security checks
         run: npm run security:docs
-
-      - name: Build catalog
-        run: npm run catalog
 
       - name: Set up GitHub credentials
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -243,12 +236,12 @@ jobs:
 
           git diff --quiet && exit 0
 
-          git pull origin main --rebase || true
           git add $managed_files || true
 
           git diff --cached --quiet && exit 0
 
-          git commit -m "chore: sync generated registry files [ci skip]"
+          git commit -m "chore: sync repo state [ci skip]"
+          git pull origin main --rebase
           git push origin HEAD
 
       - name: Check for uncommitted drift
@@ -260,8 +253,7 @@ jobs:
             echo "Main must be self-healing after the auto-sync step."
             echo "To fix locally, run the canonical maintainer flow:"
             echo "  npm run release:preflight"
-            echo "  npm run chain"
-            echo "  npm run catalog"
+            echo "  npm run sync:repo-state"
             echo "  git status"
             exit 1
           fi

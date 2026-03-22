@@ -1,6 +1,6 @@
 ---
 name: error-handling-patterns
-description: "Master error handling patterns across languages including exceptions, Result types, error propagation, and graceful degradation to build resilient applications. Use when implementing error handling..."
+description: "Build resilient applications with robust error handling strategies that gracefully handle failures and provide excellent debugging experiences."
 risk: unknown
 source: community
 date_added: "2026-02-27"

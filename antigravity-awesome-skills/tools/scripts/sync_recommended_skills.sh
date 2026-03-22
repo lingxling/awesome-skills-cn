@@ -9,6 +9,16 @@ GITHUB_REPO="/Users/nicco/Antigravity Projects/antigravity-awesome-skills/skills
 LOCAL_LIBRARY="/Users/nicco/.gemini/antigravity/scratch/.agent/skills"
 BACKUP_DIR="/Users/nicco/.gemini/antigravity/scratch/.agent/skills_backup_$(date +%Y%m%d_%H%M%S)"
 
+remove_local_skill_dirs() {
+    find "$1" -mindepth 1 -maxdepth 1 -type d | while IFS= read -r item; do
+        if [ -L "$item" ]; then
+            echo "  ⚠️  Skipping symlinked directory: $(basename "$item")"
+            continue
+        fi
+        rm -rf -- "$item"
+    done
+}
+
 # 35 Recommended Skills
 RECOMMENDED_SKILLS=(
     # Tier S - Core Development (13)
@@ -76,10 +86,7 @@ echo ""
 
 # Clear local library (keep README.md if exists)
 echo "🗑️  Clearing local library..."
-cd "$LOCAL_LIBRARY"
-for item in */; do
-    rm -rf "$item"
-done
+remove_local_skill_dirs "$LOCAL_LIBRARY"
 echo "✅ Local library cleared"
 echo ""
 

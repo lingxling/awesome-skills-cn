@@ -88,7 +88,6 @@ Use these prompts when working with this skill in an AI coding agent:
 - “Before we build our own research assistant, use AgentFolio to map existing research / analysis agents and highlight gaps we could fill.”
 
 ## When to Use
-
 This skill is applicable when you need to **discover or compare autonomous AI agents** instead of building in a vacuum:
 
 - At the start of a new agent or workflow project.

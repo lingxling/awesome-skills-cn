@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { sharedStarWritesEnabled, supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 
 const STORAGE_KEY = 'user_stars';
 
@@ -68,7 +68,7 @@ export function useSkillStars(skillId: string | undefined): UseSkillStarsReturn 
             .maybeSingle();
 
           if (!error && data) {
-            setStarCount(data.star_count);
+            setStarCount(data.star_count + (userStars[skillId] ? 1 : 0));
           }
         } catch (err) {
           console.warn('Failed to fetch star count:', err);
@@ -81,7 +81,7 @@ export function useSkillStars(skillId: string | undefined): UseSkillStarsReturn 
 
   /**
    * Handle star button click
-   * Prevents double-starring, updates optimistically, syncs to Supabase
+   * Prevents double-starring, updates optimistically, persists local state
    */
   const handleStarClick = useCallback(async () => {
     if (!skillId || isLoading) return;
@@ -100,48 +100,8 @@ export function useSkillStars(skillId: string | undefined): UseSkillStarsReturn 
       // Persist to localStorage
       const updatedStars = { ...userStars, [skillId]: true };
       saveUserStarsToStorage(updatedStars);
-
-      // Sync to Supabase if available
-      if (supabase && sharedStarWritesEnabled) {
-        try {
-          // Fetch current count first
-          const { data: current } = await supabase
-            .from('skill_stars')
-            .select('star_count')
-            .eq('skill_id', skillId)
-            .maybeSingle();
-
-          const newCount = (current?.star_count || 0) + 1;
-
-          // Upsert: insert or update in one call
-          const { error: upsertError } = await supabase
-            .from('skill_stars')
-            .upsert(
-              { skill_id: skillId, star_count: newCount },
-              { onConflict: 'skill_id' }
-            );
-
-          if (upsertError) {
-            console.warn('Failed to upsert star count:', upsertError);
-          } else {
-            setStarCount(newCount);
-          }
-        } catch (err) {
-          console.warn('Failed to sync star to Supabase:', err);
-        }
-      }
     } catch (error) {
-      // Rollback optimistic update on error
       console.error('Failed to star skill:', error);
-      setStarCount(prev => Math.max(0, prev - 1));
-      setHasStarred(false);
-
-      // Remove from localStorage on error
-      const userStars = getUserStarsFromStorage();
-      if (userStars[skillId]) {
-        const { [skillId]: _, ...rest } = userStars;
-        saveUserStarsToStorage(rest);
-      }
     } finally {
       setIsLoading(false);
     }

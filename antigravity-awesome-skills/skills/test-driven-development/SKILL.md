@@ -17,7 +17,6 @@ Write the test first. Watch it fail. Write minimal code to pass.
 **Violating the letter of the rules is violating the spirit of the rules.**
 
 ## When to Use
-
 **Always:**
 - New features
 - Bug fixes

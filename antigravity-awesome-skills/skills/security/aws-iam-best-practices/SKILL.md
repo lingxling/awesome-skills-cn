@@ -13,7 +13,6 @@ date_added: "2026-02-27"
 Review and harden IAM policies following AWS security best practices and least privilege principles.
 
 ## When to Use
-
 Use this skill when you need to review IAM policies, implement least privilege access, or harden IAM security.
 
 ## Core Principles

@@ -777,6 +777,38 @@
   },
   {
     "ruleId": "",
+    "ruleTitle": "Split Combined Hook Computations",
+    "type": "bad",
+    "code": "const sortedProducts = useMemo(() => {\n  const filtered = products.filter((p) => p.category === category)\n  const sorted = filtered.toSorted((a, b) =>\n    sortOrder === \"asc\" ? a.price - b.price : b.price - a.price\n  )\n  return sorted\n}, [products, category, sortOrder])",
+    "language": "tsx",
+    "description": "changing `sortOrder` recomputes filtering"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Split Combined Hook Computations",
+    "type": "good",
+    "code": "const filteredProducts = useMemo(\n  () => products.filter((p) => p.category === category),\n  [products, category]\n)\n\nconst sortedProducts = useMemo(\n  () =>\n    filteredProducts.toSorted((a, b) =>\n      sortOrder === \"asc\" ? a.price - b.price : b.price - a.price\n    ),\n  [filteredProducts, sortOrder]\n)",
+    "language": "tsx",
+    "description": "filtering only recomputes when products or category change"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Split Combined Hook Computations",
+    "type": "bad",
+    "code": "useEffect(() => {\n  analytics.trackPageView(pathname)\n  document.title = `${pageTitle} | My App`\n}, [pathname, pageTitle])",
+    "language": "tsx",
+    "description": "both effects run when either dependency changes"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Split Combined Hook Computations",
+    "type": "good",
+    "code": "useEffect(() => {\n  analytics.trackPageView(pathname)\n}, [pathname])\n\nuseEffect(() => {\n  document.title = `${pageTitle} | My App`\n}, [pageTitle])",
+    "language": "tsx",
+    "description": "effects run independently"
+  },
+  {
+    "ruleId": "",
     "ruleTitle": "Use Transitions for Non-Urgent Updates",
     "type": "bad",
     "code": "function ScrollTracker() {\n  const [scrollY, setScrollY] = useState(0)\n  useEffect(() => {\n    const handler = () => setScrollY(window.scrollY)\n    window.addEventListener('scroll', handler, { passive: true })\n    return () => window.removeEventListener('scroll', handler)\n  }, [])\n}",
@@ -790,6 +822,22 @@
     "code": "import { startTransition } from 'react'\n\nfunction ScrollTracker() {\n  const [scrollY, setScrollY] = useState(0)\n  useEffect(() => {\n    const handler = () => {\n      startTransition(() => setScrollY(window.scrollY))\n    }\n    window.addEventListener('scroll', handler, { passive: true })\n    return () => window.removeEventListener('scroll', handler)\n  }, [])\n}",
     "language": "tsx",
     "description": "non-blocking updates"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Use useDeferredValue for Expensive Derived Renders",
+    "type": "bad",
+    "code": "function Search({ items }: { items: Item[] }) {\n  const [query, setQuery] = useState('')\n  const filtered = items.filter(item => fuzzyMatch(item, query))\n\n  return (\n    <>\n      <input value={query} onChange={e => setQuery(e.target.value)} />\n      <ResultsList results={filtered} />\n    </>\n  )\n}",
+    "language": "tsx",
+    "description": "input feels laggy while filtering"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Use useDeferredValue for Expensive Derived Renders",
+    "type": "good",
+    "code": "function Search({ items }: { items: Item[] }) {\n  const [query, setQuery] = useState('')\n  const deferredQuery = useDeferredValue(query)\n  const filtered = useMemo(\n    () => items.filter(item => fuzzyMatch(item, deferredQuery)),\n    [items, deferredQuery]\n  )\n  const isStale = query !== deferredQuery\n\n  return (\n    <>\n      <input value={query} onChange={e => setQuery(e.target.value)} />\n      <div style={{ opacity: isStale ? 0.7 : 1 }}>\n        <ResultsList results={filtered} />\n      </div>\n    </>\n  )\n}",
+    "language": "tsx",
+    "description": "input stays snappy, results render when ready"
   },
   {
     "ruleId": "",

@@ -1,6 +1,6 @@
 ---
 name: hugging-face-cli
-description: "Execute Hugging Face Hub operations using the `hf` CLI. Use when the user needs to download models/datasets/spaces, upload files to Hub repositories, create repos, manage local cache, or run comput..."
+description: "The hf CLI provides direct terminal access to the Hugging Face Hub for downloading, uploading, and managing repositories, cache, and compute resources."
 risk: safe
 source: "https://github.com/huggingface/skills/tree/main/skills/hugging-face-cli"
 date_added: "2026-02-27"

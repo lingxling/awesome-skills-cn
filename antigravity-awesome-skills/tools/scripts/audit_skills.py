@@ -1,0 +1,389 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import re
+import sys
+from collections import Counter
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+
+from _project_paths import find_repo_root
+from validate_skills import configure_utf8_output, has_when_to_use_section, parse_frontmatter
+
+
+ELLIPSIS_PATTERN = re.compile(r"(?:\.\.\.|…)\s*$")
+FENCED_CODE_BLOCK_PATTERN = re.compile(r"^```", re.MULTILINE)
+EXAMPLES_HEADING_PATTERNS = [
+    re.compile(r"^##\s+Example(s)?\b", re.MULTILINE | re.IGNORECASE),
+    re.compile(r"^##\s+Usage\b", re.MULTILINE | re.IGNORECASE),
+]
+LIMITATIONS_HEADING_PATTERNS = [
+    re.compile(r"^##\s+Limitations?\b", re.MULTILINE | re.IGNORECASE),
+    re.compile(r"^##\s+Known\s+Limitations?\b", re.MULTILINE | re.IGNORECASE),
+    re.compile(r"^##\s+Constraints?\b", re.MULTILINE | re.IGNORECASE),
+    re.compile(r"^##\s+Out\s+of\s+Scope\b", re.MULTILINE | re.IGNORECASE),
+    re.compile(r"^##\s+What\s+(This\s+Skill\s+)?Does(?:\s+Not|n't)\s+Do\b", re.MULTILINE | re.IGNORECASE),
+]
+MARKDOWN_LINK_PATTERN = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
+DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+SECURITY_DISCLAIMER_PATTERN = re.compile(r"AUTHORIZED USE ONLY", re.IGNORECASE)
+VALID_RISK_LEVELS = {"none", "safe", "critical", "offensive", "unknown"}
+DEFAULT_MARKDOWN_TOP_FINDINGS = 15
+DEFAULT_MARKDOWN_TOP_SKILLS = 20
+
+
+@dataclass(frozen=True)
+class Finding:
+    severity: str
+    code: str
+    message: str
+
+    def to_dict(self) -> dict[str, str]:
+        return {
+            "severity": self.severity,
+            "code": self.code,
+            "message": self.message,
+        }
+
+
+def has_examples(content: str) -> bool:
+    return bool(FENCED_CODE_BLOCK_PATTERN.search(content)) or any(
+        pattern.search(content) for pattern in EXAMPLES_HEADING_PATTERNS
+    )
+
+
+def has_limitations(content: str) -> bool:
+    return any(pattern.search(content) for pattern in LIMITATIONS_HEADING_PATTERNS)
+
+
+def find_dangling_links(content: str, skill_root: Path) -> list[str]:
+    broken_links: list[str] = []
+    for link in MARKDOWN_LINK_PATTERN.findall(content):
+        link_clean = link.split("#", 1)[0].strip()
+        if not link_clean or link_clean.startswith(("http://", "https://", "mailto:", "<", ">")):
+            continue
+        if os.path.isabs(link_clean):
+            continue
+
+        target_path = (skill_root / link_clean).resolve()
+        if not target_path.exists():
+            broken_links.append(link)
+    return broken_links
+
+
+def build_skill_report(skill_root: Path, skills_dir: Path) -> dict[str, object]:
+    skill_file = skill_root / "SKILL.md"
+    rel_dir = skill_root.relative_to(skills_dir).as_posix()
+    rel_file = f"{rel_dir}/SKILL.md"
+    findings: list[Finding] = []
+
+    if skill_file.is_symlink():
+        findings.append(
+            Finding(
+                "warning",
+                "symlinked_skill_markdown",
+                "SKILL.md is a symlink and was not audited for safety or usability.",
+            )
+        )
+        return finalize_skill_report(rel_dir, rel_file, findings)
+
+    try:
+        content = skill_file.read_text(encoding="utf-8")
+    except Exception as exc:  # pragma: no cover - defensive guard
+        findings.append(Finding("error", "unreadable_file", f"Unable to read SKILL.md: {exc}"))
+        return finalize_skill_report(rel_dir, rel_file, findings)
+
+    metadata, fm_errors = parse_frontmatter(content, rel_file)
+    if metadata is None:
+        findings.append(Finding("error", "invalid_frontmatter", "Missing or malformed YAML frontmatter."))
+        return finalize_skill_report(rel_dir, rel_file, findings)
+
+    for error in fm_errors:
+        findings.append(Finding("error", "invalid_frontmatter", error))
+
+    name = metadata.get("name")
+    description = metadata.get("description")
+    risk = metadata.get("risk")
+    source = metadata.get("source")
+    date_added = metadata.get("date_added")
+
+    if name != skill_root.name:
+        findings.append(
+            Finding(
+                "error",
+                "name_mismatch",
+                f"Frontmatter name '{name}' does not match folder name '{skill_root.name}'.",
+            )
+        )
+
+    if description is None:
+        findings.append(Finding("error", "missing_description", "Missing frontmatter description."))
+    elif not isinstance(description, str):
+        findings.append(
+            Finding(
+                "error",
+                "invalid_description_type",
+                f"Description must be a string, got {type(description).__name__}.",
+            )
+        )
+    else:
+        stripped_description = description.strip()
+        if not stripped_description:
+            findings.append(Finding("error", "empty_description", "Description is empty or whitespace only."))
+        if len(description) > 300:
+            findings.append(
+                Finding(
+                    "error",
+                    "description_too_long",
+                    f"Description is {len(description)} characters long; keep it concise.",
+                )
+            )
+        if ELLIPSIS_PATTERN.search(stripped_description):
+            findings.append(
+                Finding(
+                    "warning",
+                    "description_truncated",
+                    "Description ends with an ellipsis and likely needs cleanup for issue #365.",
+                )
+            )
+
+    if risk is None:
+        findings.append(Finding("warning", "missing_risk", "Missing risk classification."))
+    elif risk not in VALID_RISK_LEVELS:
+        findings.append(
+            Finding(
+                "error",
+                "invalid_risk",
+                f"Risk must be one of {sorted(VALID_RISK_LEVELS)}, got '{risk}'.",
+            )
+        )
+
+    if source is None:
+        findings.append(Finding("warning", "missing_source", "Missing source attribution."))
+
+    if date_added is not None and not DATE_PATTERN.match(str(date_added)):
+        findings.append(
+            Finding(
+                "error",
+                "invalid_date_added",
+                f"date_added must use YYYY-MM-DD format, got '{date_added}'.",
+            )
+        )
+
+    if not has_when_to_use_section(content):
+        findings.append(Finding("warning", "missing_when_to_use", "Missing a recognized 'When to Use' section."))
+
+    if not has_examples(content):
+        findings.append(Finding("warning", "missing_examples", "Missing an example section or fenced example block."))
+
+    if not has_limitations(content):
+        findings.append(Finding("warning", "missing_limitations", "Missing a limitations/constraints section."))
+
+    line_count = content.count("\n") + 1
+    if line_count > 500:
+        findings.append(
+            Finding(
+                "warning",
+                "skill_too_long",
+                f"SKILL.md is {line_count} lines long; consider splitting into references/.",
+            )
+        )
+
+    for broken_link in find_dangling_links(content, skill_root):
+        findings.append(
+            Finding(
+                "error",
+                "dangling_link",
+                f"Broken relative markdown link: {broken_link}",
+            )
+        )
+
+    if risk == "offensive" and not SECURITY_DISCLAIMER_PATTERN.search(content):
+        findings.append(
+            Finding(
+                "error",
+                "missing_authorized_use_only",
+                "Offensive skill is missing the required 'AUTHORIZED USE ONLY' disclaimer.",
+            )
+        )
+
+    return finalize_skill_report(rel_dir, rel_file, findings)
+
+
+def finalize_skill_report(skill_id: str, rel_file: str, findings: list[Finding]) -> dict[str, object]:
+    severity_counts = Counter(finding.severity for finding in findings)
+    if severity_counts["error"] > 0:
+        status = "error"
+    elif severity_counts["warning"] > 0:
+        status = "warning"
+    else:
+        status = "ok"
+
+    return {
+        "id": skill_id,
+        "path": rel_file,
+        "status": status,
+        "error_count": severity_counts["error"],
+        "warning_count": severity_counts["warning"],
+        "info_count": severity_counts["info"],
+        "findings": [finding.to_dict() for finding in findings],
+    }
+
+
+def audit_skills(skills_dir: str | Path) -> dict[str, object]:
+    configure_utf8_output()
+
+    skills_root = Path(skills_dir).resolve()
+    reports: list[dict[str, object]] = []
+
+    for root, dirs, files in os.walk(skills_root):
+        dirs[:] = [directory for directory in dirs if not directory.startswith(".")]
+        if "SKILL.md" not in files:
+            continue
+        reports.append(build_skill_report(Path(root), skills_root))
+
+    reports.sort(key=lambda report: str(report["id"]).lower())
+
+    code_counts = Counter()
+    severity_counts = Counter()
+    for report in reports:
+        for finding in report["findings"]:
+            code_counts[finding["code"]] += 1
+            severity_counts[finding["severity"]] += 1
+
+    summary = {
+        "skills_scanned": len(reports),
+        "skills_ok": sum(report["status"] == "ok" for report in reports),
+        "skills_with_errors": sum(report["status"] == "error" for report in reports),
+        "skills_with_warnings_only": sum(report["status"] == "warning" for report in reports),
+        "errors": severity_counts["error"],
+        "warnings": severity_counts["warning"],
+        "infos": severity_counts["info"],
+        "top_finding_codes": [
+            {"code": code, "count": count}
+            for code, count in code_counts.most_common()
+        ],
+    }
+
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "skills_dir": str(skills_root),
+        "summary": summary,
+        "skills": reports,
+    }
+
+
+def write_markdown_report(report: dict[str, object], destination: str | Path) -> None:
+    summary = report["summary"]
+    skills = report["skills"]
+    top_findings = summary["top_finding_codes"][:DEFAULT_MARKDOWN_TOP_FINDINGS]
+    top_skills = [
+        skill for skill in skills if skill["status"] != "ok"
+    ][:DEFAULT_MARKDOWN_TOP_SKILLS]
+
+    lines = [
+        "# Skills Audit Report",
+        "",
+        f"Generated at: `{report['generated_at']}`",
+        "",
+        "## Summary",
+        "",
+        f"- Skills scanned: **{summary['skills_scanned']}**",
+        f"- Skills ready: **{summary['skills_ok']}**",
+        f"- Skills with errors: **{summary['skills_with_errors']}**",
+        f"- Skills with warnings only: **{summary['skills_with_warnings_only']}**",
+        f"- Total errors: **{summary['errors']}**",
+        f"- Total warnings: **{summary['warnings']}**",
+        "",
+        "## Top Finding Codes",
+        "",
+        "| Code | Count |",
+        "| --- | ---: |",
+    ]
+
+    if top_findings:
+        lines.extend(f"| `{item['code']}` | {item['count']} |" for item in top_findings)
+    else:
+        lines.append("| _none_ | 0 |")
+
+    lines.extend(
+        [
+            "",
+            "## Skills Needing Attention",
+            "",
+            "| Skill | Status | Errors | Warnings |",
+            "| --- | --- | ---: | ---: |",
+        ]
+    )
+
+    if top_skills:
+        lines.extend(
+            f"| `{skill['id']}` | {skill['status']} | {skill['error_count']} | {skill['warning_count']} |"
+            for skill in top_skills
+        )
+    else:
+        lines.append("| _none_ | ok | 0 | 0 |")
+
+    Path(destination).write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def print_summary(report: dict[str, object]) -> None:
+    summary = report["summary"]
+    print("🔎 Skills audit completed")
+    print(f"   Skills scanned: {summary['skills_scanned']}")
+    print(f"   Ready: {summary['skills_ok']}")
+    print(f"   Warning only: {summary['skills_with_warnings_only']}")
+    print(f"   With errors: {summary['skills_with_errors']}")
+    print(f"   Total warnings: {summary['warnings']}")
+    print(f"   Total errors: {summary['errors']}")
+
+    top_findings = summary["top_finding_codes"][:10]
+    if top_findings:
+        print("   Top findings:")
+        for item in top_findings:
+            print(f"   - {item['code']}: {item['count']}")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Audit every SKILL.md for conformance and baseline usability.")
+    parser.add_argument(
+        "--json-out",
+        help="Write the full machine-readable audit report to this path.",
+    )
+    parser.add_argument(
+        "--markdown-out",
+        help="Write a concise Markdown summary to this path.",
+    )
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help="Exit with code 1 when warnings are present, not only errors.",
+    )
+    args = parser.parse_args()
+
+    repo_root = find_repo_root(__file__)
+    report = audit_skills(repo_root / "skills")
+    print_summary(report)
+
+    if args.json_out:
+        Path(args.json_out).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        print(f"📝 Wrote JSON audit report to {args.json_out}")
+
+    if args.markdown_out:
+        write_markdown_report(report, args.markdown_out)
+        print(f"📝 Wrote Markdown audit report to {args.markdown_out}")
+
+    summary = report["summary"]
+    if summary["errors"] > 0:
+        return 1
+    if args.strict and summary["warnings"] > 0:
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

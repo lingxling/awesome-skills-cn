@@ -33,3 +33,20 @@ export interface SyncMessage {
 export interface CategoryStats {
   [category: string]: number;
 }
+
+export type TwitterCard = 'summary' | 'summary_large_image';
+
+export type SeoJsonLd = Record<string, unknown> | Record<string, unknown>[];
+export type SeoJsonLdFactory = (canonicalUrl: string) => SeoJsonLd;
+export type SeoJsonLdValue = SeoJsonLd | SeoJsonLdFactory;
+
+export interface SeoMeta {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
+  twitterCard?: TwitterCard;
+  jsonLd?: SeoJsonLdValue | SeoJsonLdValue[];
+}

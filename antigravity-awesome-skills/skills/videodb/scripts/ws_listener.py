@@ -6,7 +6,7 @@ Usage:
   python scripts/ws_listener.py [OPTIONS] [output_dir]
 
 Arguments:
-  output_dir  Directory for output files (default: /tmp or VIDEODB_EVENTS_DIR env var)
+  output_dir  Directory for output files (default: XDG_STATE_HOME/videodb-events or VIDEODB_EVENTS_DIR env var)
 
 Options:
   --clear     Clear the events file before starting (use when starting a new session)
@@ -20,14 +20,15 @@ Output (first line, for parsing):
   WS_ID=<connection_id>
 
 Examples:
-  python scripts/ws_listener.py &                    # Run in background
-  python scripts/ws_listener.py --clear              # Clear events and start fresh
-  python scripts/ws_listener.py --clear /tmp/mydir   # Custom dir with clear
-  kill $(cat /tmp/videodb_ws_pid)                    # Stop the listener
+  python scripts/ws_listener.py &                             # Run in background
+  python scripts/ws_listener.py --clear                       # Clear events and start fresh
+  python scripts/ws_listener.py --clear /path/mydir          # Custom dir with clear
+  kill $(cat ~/.local/state/videodb-events/videodb_ws_pid)   # Stop the listener
 """
 import os
 import sys
 import json
+import stat
 import signal
 import asyncio
 from datetime import datetime, timezone
@@ -42,6 +43,8 @@ import videodb
 MAX_RETRIES = 10
 INITIAL_BACKOFF = 1  # seconds
 MAX_BACKOFF = 60     # seconds
+FILE_MODE = 0o600
+DIR_MODE = 0o700
 
 # Parse arguments
 def parse_args():
@@ -78,18 +81,62 @@ def log(msg: str):
     print(f"[{ts}] {msg}", flush=True)
 
 
+def ensure_output_dir():
+    """Create the output directory if needed and reject symlinked paths."""
+    if OUTPUT_DIR.exists():
+        if OUTPUT_DIR.is_symlink():
+            raise OSError(f"Refusing to use symlinked output directory: {OUTPUT_DIR}")
+        if not OUTPUT_DIR.is_dir():
+            raise OSError(f"Output path is not a directory: {OUTPUT_DIR}")
+        return
+
+    OUTPUT_DIR.mkdir(parents=True, mode=DIR_MODE, exist_ok=True)
+
+
+def secure_open(path: Path, *, append: bool):
+    """Open a regular file without following symlinks."""
+    ensure_output_dir()
+    flags = os.O_WRONLY | os.O_CREAT
+    flags |= os.O_APPEND if append else os.O_TRUNC
+    flags |= getattr(os, "O_NOFOLLOW", 0)
+
+    fd = os.open(path, flags, FILE_MODE)
+    try:
+        file_stat = os.fstat(fd)
+        if not stat.S_ISREG(file_stat.st_mode):
+            raise OSError(f"Refusing to write non-regular file: {path}")
+        if file_stat.st_nlink != 1:
+            raise OSError(f"Refusing to write multiply linked file: {path}")
+        return fd
+    except Exception:
+        os.close(fd)
+        raise
+
+
+def secure_write_text(path: Path, content: str):
+    """Write text to a regular file with private permissions."""
+    fd = secure_open(path, append=False)
+    with os.fdopen(fd, "w", encoding="utf-8") as handle:
+        handle.write(content)
+
+
+def secure_append_text(path: Path, content: str):
+    """Append text to a regular file with private permissions."""
+    fd = secure_open(path, append=True)
+    with os.fdopen(fd, "a", encoding="utf-8") as handle:
+        handle.write(content)
+
+
 def append_event(event: dict):
     """Append event to JSONL file with timestamps."""
     event["ts"] = datetime.now(timezone.utc).isoformat()
     event["unix_ts"] = datetime.now(timezone.utc).timestamp()
-    with open(EVENTS_FILE, "a") as f:
-        f.write(json.dumps(event) + "\n")
+    secure_append_text(EVENTS_FILE, json.dumps(event) + "\n")
 
 
 def write_pid():
     """Write PID file for easy process management."""
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    PID_FILE.write_text(str(os.getpid()))
+    secure_write_text(PID_FILE, str(os.getpid()))
 
 
 def cleanup_pid():
@@ -115,7 +162,7 @@ async def listen_with_retry():
             ws_id = ws.connection_id
             
             # Ensure output directory exists
-            OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+            ensure_output_dir()
             
             # Clear events file only on first connection if --clear flag is set
             if _first_connection and CLEAR_EVENTS:
@@ -124,7 +171,7 @@ async def listen_with_retry():
             _first_connection = False
             
             # Write ws_id to file for easy retrieval
-            WS_ID_FILE.write_text(ws_id)
+            secure_write_text(WS_ID_FILE, ws_id)
             
             # Print ws_id (parseable format for LLM)
             if retry_count == 0:

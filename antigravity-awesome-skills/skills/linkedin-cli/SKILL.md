@@ -7,7 +7,6 @@ date_added: "2026-02-27"
 ---
 
 ## When to Use
-
 Use this skill when you need to automate LinkedIn tasks such as profile fetching, connection management, or post creation via CLI, especially when integrated into automated workflows.
 
 # LinkedIn Skill
@@ -37,7 +36,6 @@ linkedin setup --linked-api-token=TOKEN --identification-token=TOKEN
 ```
 
 ## When to Use
-
 Use this skill when you need to **orchestrate LinkedIn actions from scripts or an AI agent** instead of clicking through the web UI:
 
 - Building outreach, research, or recruiting workflows that rely on LinkedIn data and messaging.

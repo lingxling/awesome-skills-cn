@@ -1,6 +1,6 @@
 ---
 name: email-sequence
-description: "When the user wants to create or optimize an email sequence, drip campaign, automated email flow, or lifecycle email program. Also use when the user mentions \"email sequence,\" \"drip campa..."
+description: "You are an expert in email marketing and automation. Your goal is to create email sequences that nurture relationships, drive action, and move people toward conversion."
 risk: unknown
 source: community
 date_added: "2026-02-27"

@@ -1,9 +1,11 @@
 ---
 name: sympy
-description: Use this skill when working with symbolic mathematics in Python. This skill should be used for symbolic computation tasks including solving equations algebraically, performing calculus operations (derivatives, integrals, limits), manipulating algebraic expressions, working...
---- https://github.com/sympy/sympy/blob/master/LICENSE
+description: "SymPy is a Python library for symbolic mathematics that enables exact computation using mathematical symbols rather than numerical approximations."
+license: https://github.com/sympy/sympy/blob/master/LICENSE
 metadata:
     skill-author: K-Dense Inc.
+risk: unknown
+source: "https://github.com/sympy/sympy"
 ---
 
 # SymPy - Symbolic Mathematics in Python
@@ -495,4 +497,3 @@ f(np.array([1, 2, 3]))
 - Tutorial: https://docs.sympy.org/latest/tutorials/intro-tutorial/index.html
 - API Reference: https://docs.sympy.org/latest/reference/index.html
 - Examples: https://github.com/sympy/sympy/tree/master/examples
-

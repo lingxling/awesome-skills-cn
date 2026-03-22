@@ -9,7 +9,6 @@ date_added: "2026-02-27"
 ---
 
 ## When to Use
-
 Use this skill once the project's niche or industry has been identified. It is essential for injecting domain-specific intelligence, regulatory requirements, and industry-standard UX patterns into the project.
 
 # 🧠 Andru.ia Niche Intelligence (Dominio Experto)
@@ -55,7 +54,6 @@ Generar un informe especializado que incluya:
 - Proporciona las bases para: `@ui-ux-pro-max` y `@security-review`.
 
 ## When to Use
-
 Activa este skill **después de que el nicho de mercado esté claro** y ya exista una visión inicial definida por `@00-andruia-consultant`:
 
 - Cuando quieras profundizar en regulaciones, estándares y patrones UX específicos de un sector concreto (Fintech, HealthTech, logística, etc.).

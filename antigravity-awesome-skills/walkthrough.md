@@ -1,3 +1,63 @@
+# Maintenance Walkthrough - 2026-03-21
+
+- Imported and normalized a new batch of external skills into `skills/`, covering Anthropic Claude API/internal comms entries, marketing workflows, SEO orchestration/sub-skills, and Obsidian-focused file-format/CLI skills.
+- Added and standardized the following imported skill families:
+  - `claude-api`, `internal-comms`
+  - `ad-creative`, `ai-seo`, `churn-prevention`, `cold-email`, `content-strategy`, `lead-magnets`, `product-marketing-context`, `revops`, `sales-enablement`, `site-architecture`
+  - `seo`, `seo-competitor-pages`, `seo-content`, `seo-dataforseo`, `seo-geo`, `seo-hreflang`, `seo-image-gen`, `seo-images`, `seo-page`, `seo-plan`, `seo-programmatic`, `seo-schema`, `seo-sitemap`, `seo-technical`
+  - `defuddle`, `json-canvas`, `obsidian-bases`, `obsidian-cli`, `obsidian-markdown`
+- Preserved the existing `docx`, `pdf`, `pptx`, and `xlsx` aliases as the repository's symlinked `*-official` entries instead of duplicating those directories.
+- Normalized imported frontmatter so the new skills align with repository validation expectations:
+  - shortened oversized descriptions
+  - added missing `risk`, `source`, and `date_added` fields where needed
+  - added `## When to Use` sections across the new imports
+  - removed or rewrote imported dangling links that referenced non-existent upstream paths in this repository
+- Added maintainer provenance notes in `docs/maintainers/skills-import-2026-03-21.md` so the source repository for each imported skill group is documented for future maintenance.
+- Regenerated maintainer-owned derived artifacts after the import:
+  - `README.md`
+  - `skills_index.json`
+  - `CATALOG.md`
+  - `data/catalog.json`
+  - `data/bundles.json`
+- Verified the direct-`main` maintenance flow with:
+  - `npm run validate`
+  - `npm run index`
+  - `npm run catalog`
+  - `npm run chain`
+
+# Maintenance Walkthrough - 2026-03-18
+
+- Fixed issue `#344` by correcting `.claude-plugin/marketplace.json` so the marketplace plugin entry uses `source: "./"` instead of `"."`, matching Claude Code's relative-path schema requirement for marketplace entries.
+- Added `tools/scripts/tests/claude_plugin_marketplace.test.js` and wired it into the local test suite so invalid marketplace `source` paths fail fast in CI/maintainer verification.
+- Merged PRs `#333`, `#336`, `#338`, `#343`, `#340`, `#334`, and `#345` via GitHub squash merge after maintainer refresh of forked workflows and PR metadata.
+- Closed PR `#337` and PR `#342` as superseded by `#338`, then closed issue `#339` manually after confirming the accepted fix path; issue `#335` auto-closed from the merged PR body.
+- Closed issue `#344` with a follow-up comment after shipping the plugin marketplace fix on `main`, and left PR `#341` open with a blocking review comment because the submitted skill content is corrupted even though CI is green.
+- Documented a new maintainer edge case in `.github/MAINTENANCE.md`: forked runs in `action_required`, `pr-policy` failures caused by stale PR bodies, the REST API fallback when `gh pr edit` fails with the Projects Classic GraphQL error, and the need to `close`/`reopen` a PR when a plain rerun does not pick up updated metadata.
+- Refreshed the release-facing docs for `8.2.0` across `README.md`, `docs/users/getting-started.md`, `docs/users/walkthrough.md`, and `CHANGELOG.md`.
+- Published release `v8.2.0` on `main` with:
+  - `npm run release:preflight`
+  - `npm run security:docs`
+  - `npm run release:prepare -- 8.2.0`
+  - `npm run release:publish -- 8.2.0`
+
+# Maintenance Walkthrough - 2026-03-17
+
+- Synced `main` after the six merged community PRs and re-verified all forked PR workflows through GitHub before final release prep.
+- Reopened/approved forked GitHub Actions runs where needed, normalized missing PR quality checklists, and merged PRs `#331`, `#330`, `#326`, `#324`, `#325`, and `#329` with GitHub squash merge.
+- Patched `skills/vibers-code-review/SKILL.md` on the contributor branch for PR `#325` so the skill had valid YAML frontmatter, a `When to Use` section, and explicit limitations; reran CI and merged after green checks.
+- Closed issue `#327` with a release comment pointing to `#331`, and closed issue `#328` as a duplicate of `#269` with links to the README recovery guidance and `docs/users/windows-truncation-recovery.md`.
+- Updated release-facing docs before cutting `v8.1.0`:
+  - `README.md`
+  - `docs/users/getting-started.md`
+  - `CHANGELOG.md`
+  - `walkthrough.md`
+- Refreshed the README contributor acknowledgements to include the latest merged contributors from the maintenance batch.
+- Release workflow to run for `8.1.0`:
+  - `npm run release:preflight`
+  - `npm run security:docs`
+  - `npm run release:prepare -- 8.1.0`
+  - `npm run release:publish -- 8.1.0`
+
 # Maintenance Walkthrough - 2026-03-12
 
 - Merged PRs `#277`, `#272`, `#275`, `#278`, and `#271` via GitHub squash merge after bringing contributor branches into a mergeable state and refreshing PR bodies against the quality checklist in `.github/MAINTENANCE.md`.
@@ -46,3 +106,27 @@
   - `npm run chain`
   - `npm run catalog`
 - Refreshed `CHANGELOG.md`, `README.md`, `docs/users/getting-started.md`, `docs/users/faq.md`, and the contributor acknowledgements to prepare the single `7.8.0` release cut.
+
+# Maintenance Walkthrough - 2026-03-21
+
+- Imported the missing external skill coverage identified from `travisvn/awesome-claude-skills`, `anthropics/skills`, `coreyhaines31/marketingskills`, `AgriciDaniel/claude-seo`, and `kepano/obsidian-skills`, bringing the indexed registry to `1,304` skills on `main`.
+- Added maintainer attribution notes in `docs/maintainers/skills-import-2026-03-21.md` and refreshed the generated registry artifacts after the import batch.
+- Re-aligned the public documentation surface to the current repository state:
+  - `README.md`
+  - `package.json`
+  - `docs/users/getting-started.md`
+  - `docs/users/usage.md`
+  - `docs/users/claude-code-skills.md`
+  - `docs/users/gemini-cli-skills.md`
+  - `docs/users/visual-guide.md`
+  - `docs/users/bundles.md`
+  - `docs/users/kiro-integration.md`
+  - `docs/integrations/jetski-cortex.md`
+  - `docs/maintainers/repo-growth-seo.md`
+  - `docs/maintainers/skills-update-guide.md`
+- Updated the changelog `Unreleased` section so the post-`v8.4.0` main branch state documents both the imported skill families and the docs/About realignment.
+- Automated the recurring docs metadata maintenance by extending `tools/scripts/sync_repo_metadata.py`, wiring it into `npm run chain`, and adding a regression test so future skill-count/version updates propagate through the curated docs surface without manual patching.
+- Added a remote GitHub About sync path (`npm run sync:github-about`) backed by `gh repo edit` + `gh api .../topics` so the public repository metadata can be refreshed from the same source of truth on demand.
+- Added maintainer automation for repo-state hygiene: `sync:contributors` updates the README contributor list from GitHub contributors, `check:stale-claims`/`audit:consistency` catch drift in count-sensitive docs, and `sync:repo-state` now chains the local maintainer sweep into a single command.
+- Hardened automation surfaces beyond the local CLI: `main` CI now runs the unified repo-state sync, tracked web artifacts are refreshed through `sync:web-assets`, release verification now uses a deterministic `sync:release-state` path plus `npm pack --dry-run`, the npm publish workflow reruns those checks before publishing, and a weekly `Repo Hygiene` GitHub Actions workflow now sweeps slow drift on `main`.
+- Added two maintainer niceties on top of the hardening work: `check:warning-budget` freezes the accepted `135` validation warnings so they cannot silently grow, and `audit:maintainer` prints a read-only health snapshot of warning budget, consistency drift, and git cleanliness.

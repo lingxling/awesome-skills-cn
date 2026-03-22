@@ -1,6 +1,8 @@
 ---
 name: hugging-face-evaluation
 description: Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content, importing scores from Artificial Analysis API, and running custom model evaluations with vLLM/lighteval. Works with the model-index metadata format.
+risk: unknown
+source: community
 ---
 
 # Overview
@@ -69,7 +71,6 @@ This prevents spamming model repositories with duplicate evaluation PRs.
 file.**
 > Before running any script, first `cd` to that directory or use the full
 path.
-
 
 **Use `--help` for the latest workflow guidance.** Works with plain Python or `uv run`:
 ```bash

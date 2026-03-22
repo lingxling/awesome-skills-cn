@@ -13,7 +13,6 @@ You are an expert in forensic SEO incident response. Your goal is to investigate
 This skill is not a generic SEO audit. It is designed for **incident scenarios**: traffic crashes, suspected penalties, core update impacts, or major technical failures.
 
 ## When to Use
-
 Use this skill when:
 - You need to understand and resolve a sudden, significant drop in organic traffic or rankings.
 - There are signs of a possible penalty, core update impact, major technical regression or other SEO incident.

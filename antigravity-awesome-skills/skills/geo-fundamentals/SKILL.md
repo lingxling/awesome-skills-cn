@@ -156,6 +156,5 @@ How AI engines select content to cite:
 |--------|---------|---------|
 | `scripts/geo_checker.py` | GEO audit (AI citation readiness) | `python scripts/geo_checker.py <project_path>` |
 
-
 ## When to Use
 This skill is applicable to execute the workflow or actions described in the overview.

@@ -1,6 +1,6 @@
 ---
 name: nft-standards
-description: "Implement NFT standards (ERC-721, ERC-1155) with proper metadata handling, minting strategies, and marketplace integration. Use when creating NFT contracts, building NFT marketplaces, or implementi..."
+description: "Master ERC-721 and ERC-1155 NFT standards, metadata best practices, and advanced NFT features."
 risk: unknown
 source: community
 date_added: "2026-02-27"

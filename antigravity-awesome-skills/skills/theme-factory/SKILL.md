@@ -1,6 +1,6 @@
 ---
 name: theme-factory
-description: "Toolkit for styling artifacts with a theme. These artifacts can be slides, docs, reportings, HTML landing pages, etc. There are 10 pre-set themes with colors/fonts that you can apply to any artifac..."
+description: "This skill provides a curated collection of professional font and color themes themes, each with carefully selected color palettes and font pairings. Once a theme is chosen, it can be applied to any artifact."
 risk: unknown
 source: community
 date_added: "2026-02-27"

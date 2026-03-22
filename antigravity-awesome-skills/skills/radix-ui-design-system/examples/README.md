@@ -59,5 +59,5 @@ These examples use CSS classes. You can:
 ## Learn More
 
 - [Main SKILL.md](../SKILL.md) - Complete guide
-- [Component Template](../templates/component-template.tsx) - Boilerplate
+- [Component Template](../templates/component-template.tsx.template) - Boilerplate
 - [Radix UI Docs](https://www.radix-ui.com/primitives)

@@ -1,6 +1,8 @@
 ---
 name: wellally-tech
-description: Integrate digital health data sources (Apple Health, Fitbit, Oura Ring) and connect to WellAlly.tech knowledge base. Import external health device data, standardize to local format, and recommend relevant WellAlly.tech knowledge base articles based on health data. Support...
+description: "Integrate multiple digital health data sources, connect to [WellAlly.tech](https://www.wellally.tech/) knowledge base, providing data import and knowledge reference for personal health management systems."
+risk: unknown
+source: community
 ---
 
 # WellAlly Digital Health Integration
