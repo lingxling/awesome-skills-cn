@@ -8,7 +8,7 @@
 ## [2.22.0] - 2026-03-20
 
 ### 变更
-- 执行 test_run.py 脚本，更新所有项目至最新版本：
+- 更新所有项目至最新版本：
   - anthropics-skills (Already up to date)
   - claude-scientific-skills (Already up to date)
   - composiohq-awesome-claude-skills (Already up to date)

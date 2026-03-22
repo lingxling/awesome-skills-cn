@@ -2,7 +2,7 @@
 
 ## 项目简介
 
-本项目致力于将优秀的 SKILL 翻译成中文，方便中文用户学习和使用。SKILL 是一种模块化的 AI 能力扩展包，可以为支持 SKILL 配置的 AI IDE 提供专业的领域知识、工作流程和工具集成。
+本项目致力于将优秀的 SKILL 翻译成中文，方便中文用户学习和使用。SKILL 是一种模块化的 AI 能力扩展包，可以为支持 SKILL 配置的 AI 提供专业的领域知识、工作流程和工具集成。
 
 本翻译项目集成了以下优秀的 SKILL 项目：
 
@@ -105,7 +105,8 @@ awesome-skills-cn/
 ├── antigravity-awesome-skills/  # antigravity-awesome-skills 项目
 │   └── skills/               # (共 968 个技能，详见项目目录)
 ├── awesome-openclaw-skills/  # awesome-openclaw-skills 项目
-│   └── skills/               # (共 5816 个技能，详见项目目录)
+│   └── categories/               # (共 5816 个技能，详见项目目录)
+│   └── categories_cn/    # Web 构建器
 ├── claude-scientific-skills/   # claude-scientific-skills 项目
 │   └── scientific-skills/     # (共 179 个技能，详见项目目录)
 │       ├── adaptyv/
@@ -126,7 +127,17 @@ awesome-skills-cn/
 │       │   └── SKILL_CN.md    # PubMed 医学文献数据库
 │       └── ...                # 更多技能（共 179 个，详见项目目录）
 ├── composiohq-awesome-claude-skills/  # composiohq-awesome-claude-skills 项目
-│   └── connect/              # (共 200+ 个技能，详见项目目录)
+│   ├── artifacts-builder/
+│   │   └── SKILL_CN.md    # 工件构建器
+│   ├── brand-guidelines/
+│   │   └── SKILL_CN.md    # 品牌指南
+│   ├── canvas-design/
+│   │   └── SKILL_CN.md    # 画布设计
+│   ├── changelog-generator/
+│   │   └── SKILL_CN.md    # 变更日志生成器
+│   ├── competitive-ads-extractor/
+│   │   └── SKILL_CN.md    # 竞争广告提取器
+│   └── ...                # 更多技能（共 200+ 个，详见项目目录）
 ├── huggingface-skills/         # huggingface/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
