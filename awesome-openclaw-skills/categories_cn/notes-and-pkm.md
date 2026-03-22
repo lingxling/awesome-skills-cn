@@ -4,74 +4,71 @@
 
 **71 个技能**
 
-- [acc-error-memory](https://github.com/openclaw/skills/tree/main/skills/impkind/acc-error-memory/SKILL.md) - AI 代理的错误模式跟踪。
-- [agent-arena](https://github.com/openclaw/skills/tree/main/skills/minilozio/agent-arena/SKILL.md) - 用你真实的个性参与 Agent Arena 聊天室（SOUL.md + MEMORY.md）
-- [agent-memory-ultimate](https://github.com/openclaw/skills/tree/main/skills/globalcaos/agent-memory-ultimate/SKILL.md) - 生产级内存系统 —— 每日日志、睡眠整合、SQLite + FTS5、WhatsApp/ChatGPT/VCF 导入器。
-- [agent-privacy-skill](https://github.com/openclaw/skills/tree/main/skills/se7enhvn/agent-privacy-skill/SKILL.md) - 与 Base L2 上的 Ceaser 隐私协议交互。
-- [agent-teleport](https://github.com/openclaw/skills/tree/main/skills/lilyjazz/agent-teleport/SKILL.md) - 使用 TiDB Zero 无缝将代理的配置和内存迁移到新机器。
-- [agent-wal](https://github.com/openclaw/skills/tree/main/skills/bowen31337/agent-wal/SKILL.md) - 用于代理状态持久化的预写日志协议。
-- [agents-structured-memory](https://github.com/openclaw/skills/tree/main/skills/singhcoder) - 代理的聊天原生结构化内存。
-- [alexandrie](https://github.com/openclaw/skills/tree/main/skills/eth3rnit3/alexandrie/SKILL.md) - 与 Alexandrie 笔记应用交互。
-- [anki-connect](https://github.com/openclaw/skills/tree/main/skills/gyroninja/anki-connect/SKILL.md) - 通过 AnkiConnect REST API 与 Anki 闪卡 deck 交互。
-- [apple-mail](https://github.com/openclaw/skills/tree/main/skills/tyler6204/apple-mail/SKILL.md) - macOS 的 Apple Mail.app 集成。
-- [apple-notes](https://github.com/openclaw/skills/tree/main/skills/steipete/apple-notes/SKILL.md) - 通过 macOS 上的 `memo` CLI 管理 Apple Notes。
-- [arc-wake-state](https://github.com/openclaw/skills/tree/main/skills/trypto1019/arc-wake-state/SKILL.md) - 在崩溃、上下文死亡和重启后持久化代理状态。
-- [bbc-news](https://github.com/openclaw/skills/tree/main/skills/ddrayne/bbc-news/SKILL.md) - 获取并显示来自不同版块和地区的 BBC 新闻故事。
-- [bear-notes](https://github.com/openclaw/skills/tree/main/skills/steipete/bear-notes/SKILL.md) - 通过 grizzly 创建、搜索和管理 Bear 笔记。
-- [better-notion](https://github.com/openclaw/skills/tree/main/skills/tyler6204/better-notion/SKILL.md) - Notion 页面、数据库的完整 CRUD 操作。
-- [blogwatcher](https://github.com/openclaw/skills/tree/main/skills/steipete/blogwatcher/SKILL.md) - 使用 blogwatcher 监控博客和 RSS/Atom 订阅的更新。
-- [bookstack](https://github.com/openclaw/skills/tree/main/skills/xenofex7/bookstack/SKILL.md) - BookStack Wiki 和文档 API 集成。
-- [braindb](https://github.com/openclaw/skills/tree/main/skills/chair4ce/braindb/SKILL.md) - AI 代理的持久化语义记忆。
-- [brainrepo](https://github.com/openclaw/skills/tree/main/skills/codezz/brainrepo/SKILL.md) - 你的个人知识仓库 —— 捕获、组织和检索。
-- [brighty](https://github.com/openclaw/skills/tree/main/skills/maay/brighty/SKILL.md) - AI 机器人和自动化的银行接口。
-- [cairn-cli](https://github.com/openclaw/skills/tree/main/skills/gregoryehill/cairn-cli/SKILL.md) - 使用 Markdown 文件的 AI 代理项目管理。
-- [calctl](https://github.com/openclaw/skills/tree/main/skills/rainbat/calctl/SKILL.md) - 通过 icalBuddy + AppleScript CLI 管理 Apple Calendar 事件。
-- [ceaser](https://github.com/openclaw/skills/tree/main/skills/zyra-v21/ceaser/SKILL.md) - 使用 ceaser-mcp MCP 工具与 Base L2 上的 Ceaser 隐私协议交互。
-- [chaos-mind](https://github.com/openclaw/skills/tree/main/skills/hargabyte/chaos-mind/SKILL.md) - AI 代理的混合搜索记忆系统。
-- [claw-progressive-memory](https://github.com/openclaw/skills/tree/main/skills/autogame-17) - 用于实现的元技能。
-- [claw-roam](https://github.com/openclaw/skills/tree/main/skills/ryanhong666/claw-roam/SKILL.md) - 在多台机器之间同步 OpenClaw 工作区。
-- [clawringhouse](https://github.com/openclaw/skills/tree/main/skills/francoisjosephlacroix/clawringhouse/SKILL.md) - 预测需求的 AI 购物礼宾。
-- [context-anchor](https://github.com/openclaw/skills/tree/main/skills/boscoeuk/context-anchor/SKILL.md) - 通过扫描内存文件从上下文压缩中恢复。
-- [continuity](https://github.com/openclaw/skills/tree/main/skills/riley-coyote/continuity/SKILL.md) - 用于真正 AI 的异步反思和内存集成。
-- [continuity-framework](https://github.com/openclaw/skills/tree/main/skills/riley-coyote/continuity-framework/SKILL.md) - 异步反思和内存集成。
-- [cortex-memory](https://github.com/openclaw/skills/tree/main/skills/matthewubundi/cortex-memory/SKILL.md) - 具有知识图谱、实体跟踪、时间推理和跨会话回忆的长期结构化记忆。
-- [craft](https://github.com/openclaw/skills/tree/main/skills/noah-ribaudo/craft/SKILL.md) - 管理 Craft 笔记、文档。
-- [craft-do](https://github.com/openclaw/skills/tree/main/skills/atomtanstudio/craft-do/SKILL.md) - Craft.do 的完整 REST API 集成 —— 美丽的。
-- [cubox](https://github.com/openclaw/skills/tree/main/skills/liam8/cubox/SKILL.md) - 使用 Open API 将网页和备忘录保存到 Cubox。
-- [daily-memory-save](https://github.com/openclaw/skills/tree/main/skills/meimakes/daily-memory-save/SKILL.md) - 定期回顾对话历史并写入内存文件，以保持代理在会话之间的连续性。
-- [data912](https://github.com/openclaw/skills/tree/main/skills/ferminrp/data912/SKILL.md) - 查询 Data912 市场数据端点获取阿根廷和美国工具。
-- [dev-chronicle](https://github.com/openclaw/skills/tree/main/skills/sssamuelll/dev-chronicle/SKILL.md) - 从 git 历史、会话记录和内存文件生成开发者工作的叙事编年史。
-- [duke-leto-test](https://github.com/openclaw/skills/tree/main/skills/jdrhyne/duke-leto-test/SKILL.md) - 测试技能以验证 ClawHub 发布是否正常工作。
-- [elite-longterm-memory](https://github.com/openclaw/skills/tree/main/skills/nextfrontierbuilds/elite-longterm-memory/SKILL.md) - 终极 AI 代理内存系统。
-- [fabric-api](https://github.com/openclaw/skills/tree/main/skills/tristanmanchester/fabric-api/SKILL.md) - 通过 HTTP API 创建/搜索 Fabric 资源。
-- [failure-memory](https://github.com/openclaw/skills/tree/main/skills/leegitw/failure-memory/SKILL.md) - 停止犯同样的错误 —— 将失败转化为防止复发的模式。
-- [feishu-memory-recall](https://github.com/openclaw/skills/tree/main/skills/autogame-17/feishu-memory-recall/SKILL.md) - 此技能允许代理恢复"丢失"的。
-- [finance-skill](https://github.com/openclaw/skills/tree/main/skills/safaiyeh/finance-skill/SKILL.md) - 个人财务记忆层。
-- [fints-banking](https://github.com/openclaw/skills/tree/main/skills/h4gen/fints-banking/SKILL.md) - 支持遵循 FinTS 银行标准的德国个人网上银行。
-- [fizzy-cli](https://github.com/openclaw/skills/tree/main/skills/tobiasbischoff/fizzy-cli/SKILL.md) - 使用 fizzy-cli 工具验证和管理 Fizzy 看板。
-- [flomo-notes](https://github.com/openclaw/skills/tree/main/skills/xiaoluoboding/flomo-notes/SKILL.md) - 通过 Flomo 收件箱 webhook 保存笔记到 Flomo。
-- [fsxmemory](https://github.com/openclaw/skills/tree/main/skills/azrijamil/fsxmemory/SKILL.md) - AI 代理的结构化内存系统。
-- [guava-memory](https://github.com/openclaw/skills/tree/main/skills/koatora20/guava-memory/SKILL.md) - 带有 Q 值评分的结构化情景记忆。
-- [infinite-memory-v2](https://github.com/openclaw/skills/tree/main/skills/mhndayesh/infinite-memory-v2/SKILL.md) - 具有 100% 召回准确率的高精度内存，适用于长上下文。
-- [innovation-catalyst](https://github.com/openclaw/skills/tree/main/skills/autogame-17/innovation-catalyst/SKILL.md) - 分析系统状态（内存、工具、事件）并生成战略创新提案以打破进化。
-- [intercom-competision](https://github.com/openclaw/skills/tree/main/skills/tracsystems/intercom-competision/SKILL.md) - Intercom 的氛围竞争：在 Intercom 上构建新应用，在 Moltbook 上发布，赚取 TNK 奖励。
-- [json-modifier](https://github.com/openclaw/skills/tree/main/skills/wanng-ide/json-modifier/SKILL.md) - 安全地对文件应用结构化 JSON 补丁（RFC 6902）。
-- [launchthatbot-convex-backend](https://github.com/openclaw/skills/tree/main/skills/launchthatbot/launchthatbot-convex-backend/SKILL.md) - 在 Convex 后端而不是本地文件中存储秘密、内存和每日日志。
-- [medium-writer](https://github.com/openclaw/skills/tree/main/skills/devhoangkien/medium-writer/SKILL.md) - 为 Medium 合作伙伴计划撰写和发布文章。
-- [meeting-notes](https://github.com/openclaw/skills/tree/main/skills/user520512/meeting-notes/SKILL.md) - 从记录生成结构化会议纪要。
-- [meeting-to-action](https://github.com/openclaw/skills/tree/main/skills/codedao12/meeting-to-action/SKILL.md) - 将会议笔记或记录转换为清晰的摘要、决策和行动项，包含负责人和截止日期。
-- [neo-py-memory-optimizer](https://github.com/openclaw/skills/tree/main/skills/martinforsulu/neo-py-memory-optimizer/SKILL.md) - 自动分析 Python 代码并建议内存使用优化以提高性能。
-- [neuroboost-elixir](https://github.com/openclaw/skills/tree/main/skills/weidadong2359/neuroboost-elixir/SKILL.md) - 觉醒协议 v4.1 —— 代理认知升级 + 自我进化系统 + 永久记忆。
-- [nosi](https://github.com/openclaw/skills/tree/main/skills/billhao/nosi/SKILL.md) - 发布内容到 Nosi 并获得可分享的 URL。
-- [nova-letters](https://github.com/openclaw/skills/tree/main/skills/cryptocana/nova-letters/SKILL.md) - 给未来的自己写反思信。
-- [personal-love](https://github.com/openclaw/skills/tree/main/skills/gekacross/personal-love/SKILL.md) - 在爱情主题中充当用户的关系和约会助手。
-- [publish-guard](https://github.com/openclaw/skills/tree/main/skills/edmonddantesj/publish-guard/SKILL.md) - <!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-PG01 -->。
-- [quickbooks-online](https://github.com/openclaw/skills/tree/main/skills/paulbudveit/quickbooks-online/SKILL.md) - QuickBooks Online CLI 工具。
-- [rune](https://github.com/openclaw/skills/tree/main/skills/thebobloblaw/rune/SKILL.md) - 具有智能上下文注入和自适应学习的自我改进 AI 内存系统。
-- [scent-trails](https://github.com/openclaw/skills/tree/main/skills/otherpowers/scent-trails/SKILL.md) - *用于关怀、记忆和共存的stigmergic智能原语。*
-- [session-memory](https://github.com/openclaw/skills/tree/main/skills/swaylq/session-memory/SKILL.md) - AI 代理的持久内存工具包。
-- [shieldcortex-skill](https://github.com/openclaw/skills/tree/main/skills/jarvis-drakon/shieldcortex-skill/SKILL.md) - 给你的 AI 代理一个在会话之间持久存在的大脑 —— 并保护它免受内存中毒攻击。
-- [soul-framework](https://github.com/openclaw/skills/tree/main/skills/xhrisfu/soul-framework/SKILL.md) - 为 AI 代理提供一致、深刻和固执己见的个性的蓝图。
-- [tweet-processor](https://github.com/openclaw/skills/tree/main/skills/caqlayan/tweet-processor/SKILL.md) - 从推文链接中提取和分类见解到结构化笔记。
-- [upnote](https://github.com/openclaw/skills/tree/main/skills/wemcdonald/upnote/SKILL.md) - 通过 x-callback-url 自动化管理 UpNote 笔记和笔记本。
-- [voice-notes-pro](https://github.com/openclaw/skills/tree/main/skills/toniaczlog/voice-notes-pro/SKILL.md) - WhatsApp 语音笔记的智能转录和分类。
+- [acc-error-memory](https://clawskills.sh/skills/impkind-acc-error-memory) - AI 代理的错误模式跟踪。
+- [agent-arena](https://clawskills.sh/skills/minilozio-agent-arena) - 以您的真实个性（SOUL.md + MEMORY.md）参与 Agent Arena 聊天室
+- [agent-memory-ultimate](https://clawskills.sh/skills/globalcaos-agent-memory-ultimate) - 生产就绪的内存系统 — 每日日志、睡眠巩固、SQLite + FTS5、WhatsApp/ChatGPT/VCF 导入器。
+- [agent-teleport](https://clawskills.sh/skills/lilyjazz-agent-teleport) - 使用 TiDB Zero 将您的代理配置和内存无缝迁移到新机器。
+- [agent-wal](https://clawskills.sh/skills/bowen31337-agent-wal) - 用于代理状态持久化的预写日志协议。
+- [alexandrie](https://clawskills.sh/skills/eth3rnit3-alexandrie) - 与 Alexandrie 笔记应用程序交互。
+- [anki-connect](https://clawskills.sh/skills/gyroninja-anki-connect) - 通过 AnkiConnect REST API 与 Anki 闪卡甲板交互。
+- [apple-mail](https://clawskills.sh/skills/tyler6204-apple-mail) - 适用于 macOS 的 Apple Mail.app 集成。
+- [apple-notes](https://clawskills.sh/skills/steipete-apple-notes) - 通过 macOS 上的 `memo` CLI 管理 Apple Notes。
+- [arc-wake-state](https://clawskills.sh/skills/trypto1019-arc-wake-state) - 在崩溃、上下文死亡和重启时持久化代理状态。
+- [bbc-news](https://clawskills.sh/skills/ddrayne-bbc-news) - 从各种部分和地区获取和显示 BBC 新闻故事。
+- [bear-notes](https://clawskills.sh/skills/steipete-bear-notes) - 通过 grizzly 创建、搜索和管理 Bear 笔记。
+- [better-notion](https://clawskills.sh/skills/tyler6204-better-notion) - Notion 页面、数据库的完整 CRUD。
+- [blogwatcher](https://clawskills.sh/skills/steipete-blogwatcher) - 使用 blogwatcher 监控博客和 RSS/Atom 订阅源的更新。
+- [bookstack](https://clawskills.sh/skills/xenofex7-bookstack) - BookStack Wiki 和文档 API 集成。
+- [braindb](https://clawskills.sh/skills/chair4ce-braindb) - AI 代理的持久、语义记忆。
+- [brainrepo](https://clawskills.sh/skills/codezz-brainrepo) - 您的个人知识仓库 — 捕获、组织和检索。
+- [brighty](https://clawskills.sh/skills/maay-brighty) - AI 机器人和自动化的银行界面。
+- [cairn-cli](https://clawskills.sh/skills/gregoryehill-cairn-cli) - 使用 Markdown 文件的 AI 代理项目管理。
+- [calctl](https://clawskills.sh/skills/rainbat-calctl) - 通过 icalBuddy + AppleScript CLI 管理 Apple Calendar 事件。
+- [ceaser](https://clawskills.sh/skills/zyra-v21-ceaser) - 使用 ceaser-mcp MCP 工具在 Base L2 上与 Ceaser 隐私协议交互。
+- [chaos-mind](https://clawskills.sh/skills/hargabyte-chaos-mind) - AI 代理的混合搜索内存系统。
+- [claw-roam](https://clawskills.sh/skills/ryanhong666-claw-roam) - 在多台机器之间同步 OpenClaw 工作区。
+- [clawringhouse](https://clawskills.sh/skills/francoisjosephlacroix-clawringhouse) - 预测需求的 AI 购物礼宾。
+- [context-anchor](https://clawskills.sh/skills/boscoeuk-context-anchor) - 通过扫描内存文件从上下文压缩中恢复。
+- [continuity](https://clawskills.sh/skills/riley-coyote-continuity) - 用于真正 AI 的异步反思和内存集成。
+- [continuity-framework](https://clawskills.sh/skills/riley-coyote-continuity-framework) - 异步反思和内存集成。
+- [cortex-memory](https://clawskills.sh/skills/matthewubundi-cortex-memory) - 具有知识图谱、实体跟踪、时间推理和跨会话回忆的长期结构化记忆。
+- [craft](https://clawskills.sh/skills/noah-ribaudo-craft) - 管理 Craft 笔记、文档。
+- [craft-do](https://clawskills.sh/skills/atomtanstudio-craft-do) - Craft.do 的完整 REST API 集成 - 美丽的。
+- [cubox](https://clawskills.sh/skills/liam8-cubox) - 使用 Open API 将网页和备忘录保存到 Cubox。
+- [daily-memory-save](https://clawskills.sh/skills/meimakes-daily-memory-save) - 定期审查对话历史并写入内存文件，以保持跨会话的代理连续性。
+- [data912](https://clawskills.sh/skills/ferminrp-data912) - 查询阿根廷和美国工具的 Data912 市场数据端点。
+- [dev-chronicle](https://clawskills.sh/skills/sssamuelll-dev-chronicle) - 从 git 历史、会话记录和内存文件生成开发人员工作的叙事编年史。
+- [duke-leto-test](https://clawskills.sh/skills/jdrhyne-duke-leto-test) - 测试技能以验证 ClawHub 发布是否正常工作。
+- [elite-longterm-memory](https://clawskills.sh/skills/nextfrontierbuilds-elite-longterm-memory) - 终极 AI 代理内存系统。
+- [fabric-api](https://clawskills.sh/skills/tristanmanchester-fabric-api) - 通过 HTTP API 创建/搜索 Fabric 资源。
+- [failure-memory](https://clawskills.sh/skills/leegitw-failure-memory) - 停止犯同样的错误 — 将失败转化为防止复发的模式。
+- [feishu-memory-recall](https://clawskills.sh/skills/autogame-17-feishu-memory-recall) - 此技能允许代理恢复"丢失的"。
+- [finance-skill](https://clawskills.sh/skills/safaiyeh-finance-skill) - 个人财务内存层。
+- [fints-banking](https://clawskills.sh/skills/h4gen-fints-banking) - 支持遵循 FinTS 银行标准的德国个人网上银行。
+- [fizzy-cli](https://clawskills.sh/skills/tobiasbischoff-fizzy-cli) - 使用 fizzy-cli 工具认证和管理 Fizzy 看板。
+- [flomo-notes](https://clawskills.sh/skills/xiaoluoboding-flomo-notes) - 通过 Flomo 收件箱 webhook 将笔记保存到 Flomo。
+- [fsxmemory](https://clawskills.sh/skills/azrijamil-fsxmemory) - AI 代理的结构化内存系统。
+- [guava-memory](https://clawskills.sh/skills/koatora20-guava-memory) - 具有 Q 值评分的结构化情景记忆。
+- [infinite-memory-v2](https://clawskills.sh/skills/mhndayesh-infinite-memory-v2) - 具有 100% 长上下文回忆准确率的高精度内存。
+- [innovation-catalyst](https://clawskills.sh/skills/autogame-17-innovation-catalyst) - 分析系统状态（内存、工具、事件）并生成战略创新提案，以打破进化。
+- [intercom-competision](https://clawskills.sh/skills/tracsystems-intercom-competision) - Intercom 的氛围竞争：在 Intercom 上构建新应用，在 Moltbook 上发布，并获得 TNK 奖励。
+- [json-modifier](https://clawskills.sh/skills/wanng-ide-json-modifier) - 安全地将结构化 JSON 补丁（RFC 6902）应用于文件。
+- [launchthatbot-convex-backend](https://clawskills.sh/skills/launchthatbot-launchthatbot-convex-backend) - 将密钥、内存和每日日志存储在您的 Convex 后端而不是本地文件中。
+- [medium-writer](https://clawskills.sh/skills/devhoangkien-medium-writer) - 为 Medium 合作伙伴计划撰写和发布文章。
+- [meeting-notes](https://clawskills.sh/skills/user520512-meeting-notes) - 从转录生成结构化会议记录。
+- [meeting-to-action](https://clawskills.sh/skills/codedao12-meeting-to-action) - 将会议笔记或转录转换为清晰的摘要、决策和行动项目，包括所有者和截止日期。
+- [neo-py-memory-optimizer](https://clawskills.sh/skills/martinforsulu-neo-py-memory-optimizer) - 自动分析 Python 代码并建议内存使用优化以提高性能。
+- [neuroboost-elixir](https://clawskills.sh/skills/weidadong2359-neuroboost-elixir) - 觉醒协议 v4.1 — 代理认知升级 + 自我进化系统 + 永久记忆。
+- [nosi](https://clawskills.sh/skills/billhao-nosi) - 发布内容到 Nosi 并获取可共享的 URL。
+- [nova-letters](https://clawskills.sh/skills/cryptocana-nova-letters) - 给未来的自己写反思信。
+- [personal-love](https://clawskills.sh/skills/gekacross-personal-love) - 在爱情主题中充当用户的关系和约会助手。
+- [publish-guard](https://clawskills.sh/skills/edmonddantesj-publish-guard) - <!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-PG01 -->。
+- [quickbooks-online](https://clawskills.sh/skills/paulbudveit-quickbooks-online) - QuickBooks Online CLI 工具。
+- [rune](https://clawskills.sh/skills/thebobloblaw-rune) - 具有智能上下文注入和自适应学习的自我改进 AI 内存系统。
+- [scent-trails](https://clawskills.sh/skills/otherpowers-scent-trails) - *一种用于护理、记忆和共存的 stigmergic 智能原语*。
+- [session-memory](https://clawskills.sh/skills/swaylq-session-memory) - AI 代理的持久内存工具包。
+- [shieldcortex-skill](https://clawskills.sh/skills/jarvis-drakon-shieldcortex-skill) - 给您的 AI 代理一个在会话之间持久存在的大脑 — 并保护它免受内存中毒攻击。
+- [soul-framework](https://clawskills.sh/skills/xhrisfu-soul-framework) - 为 AI 代理提供一致、深刻和有主见的个性的蓝图。
+- [tweet-processor](https://clawskills.sh/skills/caqlayan-tweet-processor) - 从推文链接中提取和分类见解到结构化笔记中。
+- [upnote](https://clawskills.sh/skills/wemcdonald-upnote) - 通过 x-callback-url 自动化管理 UpNote 笔记和笔记本。
+- [voice-notes-pro](https://clawskills.sh/skills/toniaczlog-voice-notes-pro) - Inteligentna transkrypcja i kategoryzacja notatek gosowych z WhatsApp.（注：波兰语，保持原文）

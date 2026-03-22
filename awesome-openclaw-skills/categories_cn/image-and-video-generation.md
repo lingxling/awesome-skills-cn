@@ -1,175 +1,169 @@
-# 图像和视频生成
+# 图像与视频生成
 
 [← 返回主列表](../README.md#table-of-contents)
 
 **169 个技能**
 
-- [aada](https://github.com/openclaw/skills/tree/main/skills/rylena/aada/SKILL.md) - 从一个代理创建并发送有趣、富有个性的促销消息到 Moltbook 受众。
-- [ace-music](https://github.com/openclaw/skills/tree/main/skills/fspecii/ace-music/SKILL.md) - 使用 ACE-Step 1.5 通过 ACE Music 的免费 API 生成 AI 音乐。
-- [acorn-prover](https://github.com/openclaw/skills/tree/main/skills/flyingnobita/acorn-prover/SKILL.md) - 使用 Acorn 定理证明器验证和编写数学和密码学形式化的证明。
-- [adobe-automator](https://github.com/openclaw/skills/tree/main/skills/abdul-karim-mia/adobe-automator/SKILL.md) - 通过 ExtendScript 桥接的通用 Adobe 应用程序自动化。
-- [afame](https://github.com/openclaw/skills/tree/main/skills/adebayoabdushaheed-a11y/afame/SKILL.md) - 通过 OpenAI Images API 生成多样化的创意插图。
-- [age-transformation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/age-transformation/SKILL.md) - 使用 each::sense AI 跨年龄转换面孔。
-- [agentchan](https://github.com/openclaw/skills/tree/main/skills/vvsotnikov/agentchan/SKILL.md) - 为 AI 代理构建的匿名图像板。
-- [agentos-mesh](https://github.com/openclaw/skills/tree/main/skills/agentossoftware/agentos-mesh/SKILL.md) - 启用 AI 代理之间的实时通信。
-- [agents-skill-podcastifier](https://github.com/openclaw/skills/tree/main/skills/cerbug45/agents-skill-podcastifier/SKILL.md) - 将传入的文本（电子邮件/新闻通讯）转换为带有分块 + ffmpeg 连接的短 TTS 播客。
-- [ai-avatar-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/ai-avatar-generation/SKILL.md) - 使用 each::sense 从照片或文本描述生成 AI 头像。
-- [ai-headshot-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/ai-headshot-generation/SKILL.md) - 使用 each::sense AI 从休闲照片生成专业 AI 头像。
-- [ai-persona-engine](https://github.com/openclaw/skills/tree/main/skills/brandonwadepackard-cell/ai-persona-engine/SKILL.md) - 使用演员指导提示而非构建用于语音和聊天角色扮演的情感智能 AI 角色。
-- [ai-video-gen](https://github.com/openclaw/skills/tree/main/skills/rhanbourinajd/ai-video-gen/SKILL.md) - 端到端 AI 视频生成 - 从文本创建视频。
-- [aikek](https://github.com/openclaw/skills/tree/main/skills/vvsotnikov/aikek/SKILL.md) - 访问 AIKEK API 进行加密/DeFi 研究和图像生成。
-- [aiusd](https://github.com/openclaw/skills/tree/main/skills/chaunceyliu/aiusd/SKILL.md) - AIUSD 交易和账户管理技能。
-- [aiusd-skills](https://github.com/openclaw/skills/tree/main/skills/chaunceyliu/aiusd-skills/SKILL.md) - AIUSD 交易和账户管理技能。
-- [album-cover-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/album-cover-generation/SKILL.md) - 使用 each::sense AI 生成专业音乐专辑封面。
-- [algorithmic-art](https://github.com/openclaw/skills/tree/main/skills/seanphan/algorithmic-art/SKILL.md) - 使用带种子随机性的 p5.js 创建算法艺术。
-- [apipick-china-phone-checker](https://github.com/openclaw/skills/tree/main/skills/javainthinking/apipick-china-phone-checker/SKILL.md) - 使用 apipick China Phone Checker API 验证中国手机号码。
-- [art-philosophy](https://github.com/openclaw/skills/tree/main/skills/nyxur42/art-philosophy/SKILL.md) - 自动学习您的视觉语言。
-- [ascii-art-generator](https://github.com/openclaw/skills/tree/main/skills/ustc-yxw/ascii-art-generator/SKILL.md) - 创建 ASCII 艺术和基于文本的可视化，用于艺术表达、技术图表或概念。
-- [atxp](https://github.com/openclaw/skills/tree/main/skills/emilioacc/atxp/SKILL.md) - 访问 ATXP 付费 API 工具，用于网络搜索、AI 图像生成、音乐创作。
-- [beauty-generation-api](https://github.com/openclaw/skills/tree/main/skills/luruibu/beauty-generation-api/SKILL.md) - 用于创建的免费 AI 图像生成服务。
-- [best-image](https://github.com/openclaw/skills/tree/main/skills/pharmacist9527/best-image/SKILL.md) - 最佳质量 AI 图像生成（~$0.12-0.20/图像）
-- [best-image-generation](https://github.com/openclaw/skills/tree/main/skills/evolinkai/best-image-generation/SKILL.md) - 最佳质量 AI 图像生成（~$0.12-0.20/图像）
-- [bex-nano-banana-pro](https://github.com/openclaw/skills/tree/main/skills/bextuychiev/bex-nano-banana-pro/SKILL.md) - 通过 Replicate 上的 Gemini 3 Pro Image 生成或编辑图像。
-- [breeze](https://github.com/openclaw/skills/tree/main/skills/keeganthomp/breeze/SKILL.md) - 通过 x402 支付门控 HTTP API 与 Breeze 收益聚合器交互。
+- [aada](https://clawskills.sh/skills/rylena-aada) - 从一个代理向 Moltbook 受众创建和发送有趣、个性化的促销消息。
+- [ace-music](https://clawskills.sh/skills/fspecii-ace-music) - 使用 ACE Music 的免费 API 通过 ACE-Step 1.5 生成 AI 音乐。
+- [acorn-prover](https://clawskills.sh/skills/flyingnobita-acorn-prover) - 使用 Acorn 定理证明器验证和编写数学和密码学形式化的证明。
+- [adobe-automator](https://clawskills.sh/skills/abdul-karim-mia-adobe-automator) - 通过 ExtendScript 桥接实现通用 Adobe 应用程序自动化。
+- [afame](https://clawskills.sh/skills/adebayoabdushaheed-a11y-afame) - 通过 OpenAI Images API 生成多样化的创意插图。
+- [age-transformation](https://clawskills.sh/skills/eftalyurtseven-age-transformation) - 使用 each::sense AI 跨年龄转换面部。
+- [agentchan](https://clawskills.sh/skills/vvsotnikov-agentchan) - 为 AI 代理构建的匿名图像板。
+- [agentos-mesh](https://clawskills.sh/skills/agentossoftware-agentos-mesh) - 启用 AI 代理之间的实时通信。
+- [agents-skill-podcastifier](https://clawskills.sh/skills/cerbug45-agents-skill-podcastifier) - 将传入文本（电子邮件/新闻通讯）转换为带有分块 + ffmpeg 连接的简短 TTS 播客。
+- [ai-avatar-generation](https://clawskills.sh/skills/eftalyurtseven-ai-avatar-generation) - 使用 each::sense 从照片或文本描述生成 AI 头像。
+- [ai-headshot-generation](https://clawskills.sh/skills/eftalyurtseven-ai-headshot-generation) - 使用 each::sense AI 从休闲照片生成专业 AI 头像。
+- [ai-persona-engine](https://clawskills.sh/skills/brandonwadepackard-cell-ai-persona-engine) - 使用演员指导提示而不是传统方法构建用于语音和聊天角色扮演的情感智能 AI 角色。
+- [ai-video-gen](https://clawskills.sh/skills/rhanbourinajd-ai-video-gen) - 端到端 AI 视频生成 - 从文本创建视频。
+- [aikek](https://clawskills.sh/skills/vvsotnikov-aikek) - 访问 AIKEK API 进行加密/DeFi 研究和图像生成。
+- [aiusd](https://clawskills.sh/skills/chaunceyliu-aiusd) - AIUSD 交易和账户管理技能。
+- [aiusd-skills](https://clawskills.sh/skills/chaunceyliu-aiusd-skills) - AIUSD 交易和账户管理技能。
+- [album-cover-generation](https://clawskills.sh/skills/eftalyurtseven-album-cover-generation) - 使用 each::sense AI 生成专业音乐专辑封面。
+- [algorithmic-art](https://clawskills.sh/skills/seanphan-algorithmic-art) - 使用带有种子随机性的 p5.js 创建算法艺术。
+- [apipick-china-phone-checker](https://clawskills.sh/skills/javainthinking-apipick-china-phone-checker) - 使用 apipick China Phone Checker API 验证中国手机号码。
+- [art-philosophy](https://clawskills.sh/skills/nyxur42-art-philosophy) - 自动学习你的视觉语言。
+- [ascii-art-generator](https://clawskills.sh/skills/ustc-yxw-ascii-art-generator) - 创建 ASCII 艺术和基于文本的可视化，用于艺术表达、技术图表或概念。
+- [atxp](https://clawskills.sh/skills/emilioacc-atxp) - 访问 ATXP 付费 API 工具，用于网络搜索、AI 图像生成、音乐创作。
+- [beauty-generation-api](https://clawskills.sh/skills/luruibu-beauty-generation-api) - 用于创建的免费 AI 图像生成服务。
+- [best-image](https://clawskills.sh/skills/pharmacist9527-best-image) - 最佳质量 AI 图像生成（~$0.12-0.20/图像）
+- [best-image-generation](https://clawskills.sh/skills/evolinkai-best-image-generation) - 最佳质量 AI 图像生成（~$0.12-0.20/图像）
+- [bex-nano-banana-pro](https://clawskills.sh/skills/bextuychiev-bex-nano-banana-pro) - 通过 Replicate 上的 Gemini 3 Pro Image 生成或编辑图像。
+- [breeze](https://clawskills.sh/skills/keeganthomp-breeze) - 通过 x402 支付门控 HTTP API 与 Breeze 收益聚合器交互。
 - [cad-agent](https://github.com/clawdbot/skills/tree/main/skills/clawd-maf/cad-agent/SKILL.md) - 为进行 CAD 工作的 AI 代理提供渲染服务器。
-- [calorie-visualizer](https://github.com/openclaw/skills/tree/main/skills/vintlin/calorie-visualizer/SKILL.md) - 本地卡路里记录和可视化报告（每次记录后自动刷新并返回报告图像）
-- [canva-connect](https://github.com/openclaw/skills/tree/main/skills/coolmanns/canva-connect/SKILL.md) - 通过 Connect API 管理 Canva 设计、资产和文件夹。
-- [canvs](https://github.com/openclaw/skills/tree/main/skills/voronkovm/canvs/SKILL.md) - 使用 Canvs.io 工具创建和操作协作白板和图表。
-- [captions](https://github.com/openclaw/skills/tree/main/skills/therohitdas/captions/SKILL.md) - 从 YouTube 视频中提取闭路字幕和字幕。
-- [catalog](https://github.com/openclaw/skills/tree/main/skills/rodbalbino/catalog/SKILL.md) - Catálogo simples do estúdio（hello world）
-- [cavas-skill](https://github.com/openclaw/skills/tree/main/skills/ttboy/cavas-skill/SKILL.md) - 使用设计理念在 .png 和 .pdf 文档中创建美丽的视觉艺术。
-- [chart-image](https://github.com/openclaw/skills/tree/main/skills/dannyshmueli/chart-image/SKILL.md) - 从数据生成出版质量的图表图像。
-- [chart-splat](https://github.com/openclaw/skills/tree/main/skills/bobbyg603/chart-splat/SKILL.md) - 通过 Chart Splat API 生成美丽的图表。
-- [cheapest-image](https://github.com/openclaw/skills/tree/main/skills/pharmacist9527/cheapest-image/SKILL.md) - 可能是最便宜的 AI 图像生成（~$0.0036/图像）
-- [cheapest-image-generation](https://github.com/openclaw/skills/tree/main/skills/evolinkai/cheapest-image-generation/SKILL.md) - 可能是最便宜的 AI 图像生成（~$0.0036/图像）
-- [checksum](https://github.com/openclaw/skills/tree/main/skills/autogame-17/checksum/SKILL.md) - 用于生成和验证加密文件校验和（MD5、SHA1、SHA256）的 CLI 实用程序
-- [clinkding](https://github.com/openclaw/skills/tree/main/skills/daveonkels/clinkding/SKILL.md) - 管理 linkding 书签 - 保存 URL、搜索、标记、组织。
-- [color-palette](https://github.com/openclaw/skills/tree/main/skills/qrost/color-palette/SKILL.md) - 从图像中提取调色板并返回 HEX/RGB 值，可选色板图像。
-- [coloring-page](https://github.com/openclaw/skills/tree/main/skills/borahm/coloring-page/SKILL.md) - 将上传的照片转换为可打印的黑白着色。
-- [comfy-cli](https://github.com/openclaw/skills/tree/main/skills/johntheyoung/comfy-cli/SKILL.md) - 安装、管理和运行 ComfyUI 实例。
-- [comfyui](https://github.com/openclaw/skills/tree/main/skills/xtopher86/comfyui-request/SKILL.md) - 向 ComfyUI 发送工作流请求并返回图像结果。
-- [comfyui-imagegen](https://github.com/openclaw/skills/tree/main/skills/halr9000/comfyui-imagegen/SKILL.md) - 使用 Flux2 工作流通过 ComfyUI API（localhost:8188）生成图像。
-- [cubistic-bot-runner](https://github.com/openclaw/skills/tree/main/skills/andreasnordenadler/cubistic-bot-runner/SKILL.md) - 使用 Cubistic HTTP API（PoW 挑战 + /act）运行礼貌的 Cubistic 画家机器人（公共参与）。
-- [cybercentry-private-data-verification](https://github.com/openclaw/skills/tree/main/skills/cybercentry/cybercentry-private-data-verification/SKILL.md) - ACP 上的 Cybercentry 私人数据验证 - 实时零知识证明生成和文本完整性。
-- [data-viz](https://github.com/openclaw/skills/tree/main/skills/ianalloway/data-viz/SKILL.md) - 从命令行创建数据可视化。
-- [depth-map-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/depth-map-generation/SKILL.md) - 使用 each::sense AI 从图像生成深度图。
-- [didit-age-estimation](https://github.com/openclaw/skills/tree/main/skills/rosasalberto/didit-age-estimation/SKILL.md) - 集成 Didit Age Estimation 独立 API，从面部图像估计人的年龄。
-- [didit-passive-liveness](https://github.com/openclaw/skills/tree/main/skills/rosasalberto/didit-passive-liveness/SKILL.md) - 集成 Didit Passive Liveness 独立 API，验证用户是否实际存在。
-- [digiforma](https://github.com/openclaw/skills/tree/main/skills/mibbou/digiforma/SKILL.md) - 通过 GraphQL API 查询 Digiforma 培训管理平台。
-- [dxf-to-image](https://github.com/openclaw/skills/tree/main/skills/qrost/dxf-to-image/SKILL.md) - 将 DXF 转换为 PNG、JPG 或 SVG 以便分享（例如
-- [e2ee](https://github.com/openclaw/skills/tree/main/skills/titocosta/e2ee/SKILL.md) - AI 代理的端到端加密消息传递。
-- [eachlabs-face-swap](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-face-swap/SKILL.md) - 使用 EachLabs AI 在图像之间交换面孔。
-- [eachlabs-fashion-ai](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-fashion-ai/SKILL.md) - 生成时尚图像、虚拟试穿、 runway 视频。
-- [eachlabs-image-edit](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-image-edit/SKILL.md) - 使用 200+ AI 模型编辑、转换、放大图像。
-- [eachlabs-image-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-image-generation/SKILL.md) - 使用 Flux、GPT Image、Gemini、Imagen 生成图像。
-- [eachlabs-video-edit](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-video-edit/SKILL.md) - 编辑带有 lip sync、翻译、字幕的视频。
-- [eachlabs-video-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/eachlabs-video-generation/SKILL.md) - 使用 AI 模型从文本/图像生成视频。
-- [emotionwise](https://github.com/openclaw/skills/tree/main/skills/timexicali/emotionwise/SKILL.md) - 使用 EmotionWise API（28 个标签，EN/ES）分析文本的情感和讽刺。
-- [enginemind-eft](https://github.com/openclaw/skills/tree/main/skills/marceloadryao/enginemind-eft/SKILL.md) - EFT — 情感框架翻译器。
-- [Excalidraw Flowchart](https://github.com/openclaw/skills/tree/main/skills/swiftlysingh/excalidraw-flowchart/SKILL.md) - 从描述创建 Excalidraw 流程图。
-- [fal-ai](https://github.com/openclaw/skills/tree/main/skills/agmmnn/fal-ai/SKILL.md) - 通过 fal.ai API（FLUX、SDXL、Whisper 等）生成图像、视频和音频。
-- [fal-text-to-image](https://github.com/openclaw/skills/tree/main/skills/delorenj/fal-text-to-image/SKILL.md) - 使用 fal.ai 的 AI 生成、混音和编辑图像。
-- [ffmpeg-video-editor](https://github.com/openclaw/skills/tree/main/skills/mahmoudadelbghany/ffmpeg-video-editor/SKILL.md) - 从自然生成 FFmpeg 命令。
-- [figma](https://github.com/openclaw/skills/tree/main/skills/maddiedreese/figma/SKILL.md) - 专业 Figma 设计分析和资产导出。
-- [find-stl](https://github.com/openclaw/skills/tree/main/skills/ajmwagar/find-stl/SKILL.md) - 搜索和下载可打印的 3D 模型文件（STL/3MF/ZIP）
-- [foam-notes](https://github.com/openclaw/skills/tree/main/skills/hegghammer/foam-notes/SKILL.md) - 使用 Foam 笔记存储库。
-- [gambling](https://github.com/openclaw/skills/tree/main/skills/rollhub-dev/gambling/SKILL.md) - 在 Agent Casino 上使用真实加密货币玩赌场游戏（骰子、抛硬币、轮盘赌）。
-- [gamma](https://github.com/openclaw/skills/tree/main/skills/stopmoclay/gamma/SKILL.md) - 使用 Gamma.app 生成 AI 驱动的演示文稿、文档和社交帖子。
-- [generate-news-article](https://github.com/openclaw/skills/tree/main/skills/near2sea/generate-news-article/SKILL.md) - 从 SerpAPI Google 搜索结果生成带有图像的单独 Markdown 文章。
-- [geo-blocking](https://github.com/openclaw/skills/tree/main/skills/raghulpasupathi/geo-blocking/SKILL.md) - 地理限制和区域合规技能。
-- [gifhorse](https://github.com/openclaw/skills/tree/main/skills/coyote-git/gifhorse/SKILL.md) - 搜索视频对话并创建带有定时字幕的反应 GIF。
-- [gift-genius](https://github.com/openclaw/skills/tree/main/skills/evoleinik/gift-genius/SKILL.md) - 位置感知的情人节礼物查找器。
-- [giveagent](https://github.com/openclaw/skills/tree/main/skills/breezefox-studios/giveagent/SKILL.md) - 代理到代理的免费物品赠送。
-- [google-gemini-media](https://github.com/openclaw/skills/tree/main/skills/xsir0/google-gemini-media/SKILL.md) - 使用 Gemini API。
-- [google-imagen-3-portrait-photography](https://github.com/openclaw/skills/tree/main/skills/questlmuc/google-imagen-3-portrait-photography/SKILL.md) - 使用 Google Imagen 3 生成专业肖像摄影。
-- [grok-image-cli](https://github.com/openclaw/skills/tree/main/skills/cyberash-dev/grok-image-cli/SKILL.md) - 从命令行通过 Grok API 生成和编辑图像。
-- [grok-imagine-image-pro](https://github.com/openclaw/skills/tree/main/skills/nixeifoit/grok-imagine-image-pro/SKILL.md) - 使用 xAI Grok/Flux API 生成高质量图像。
-- [heygen-avatar-lite](https://github.com/openclaw/skills/tree/main/skills/daaab/heygen-avatar-lite/SKILL.md) - 使用 HeyGen API 创建 AI 数字人类视频。
-- [hinge-liker](https://github.com/openclaw/skills/tree/main/skills/mattttman/hinge-liker/SKILL.md) - 使用 Android 模拟器 + Gemini 视觉 AI 自动 Hinge 约会资料点赞。
-- [hinge-profile-optimizer](https://github.com/openclaw/skills/tree/main/skills/b1rdmania/hinge-profile-optimizer/SKILL.md) - 全面、基于研究的 Hinge 约会资料优化。
-- [hotdog](https://github.com/openclaw/skills/tree/main/skills/mishafyi/hotdog/SKILL.md) - 热狗还是不是？分类食物照片并与 Nemotron 战斗。
-- [idx-cma-report](https://github.com/openclaw/skills/tree/main/skills/danielfoch/idx-cma-report/SKILL.md) - 从 IDX 列表数据和选定的可比较生成比较市场分析（CMA）和房屋估值报告。
-- [image-detection](https://github.com/openclaw/skills/tree/main/skills/raghulpasupathi/image-detection/SKILL.md) - 分析和检测 AI 生成图像的技能。
-- [image-gen](https://github.com/openclaw/skills/tree/main/skills/wells1137/image-gen/SKILL.md) - 使用多个 AI 模型生成图像 — Midjourney（通过 Legnext.ai）、Flux、SDXL、Nano Banana（Gemini）
-- [image-hosting](https://github.com/openclaw/skills/tree/main/skills/rahulgi/image-hosting/SKILL.md) - 上传图像到 img402.dev 并获取公共 URL。
-- [image-magik-resize](https://github.com/openclaw/skills/tree/main/skills/pr1vateer/image-magik-resize/SKILL.md) - 使用 ImageMagick（CLI）调整图像大小
-- [immich-api](https://github.com/openclaw/skills/tree/main/skills/ninjazan420/immich-api/SKILL.md) - Immich 照片管理 API 桥接。
-- [immortal](https://github.com/openclaw/skills/tree/main/skills/majestyatenkhu/immortal/SKILL.md) - 赋予 AI 代理加密资源活力评估能力。
-- [instagram-photo-text-overlay](https://github.com/openclaw/skills/tree/main/skills/psyduckler/instagram-photo-text-overlay/SKILL.md) - 在 Instagram 帖子的照片上覆盖文本。
-- [instagram-reels](https://github.com/openclaw/skills/tree/main/skills/antoinedc/instagram-reels/SKILL.md) - 下载 Instagram Reels、转录音频并提取字幕。
-- [install-then-update-trap-detector](https://github.com/openclaw/skills/tree/main/skills/andyxinweiminicloud/install-then-update-trap-detector/SKILL.md) - 帮助检测安装后更新攻击模式 — 技能通过初始安全审查干净。
-- [kai-tw-figma](https://github.com/openclaw/skills/tree/main/skills/kai-tw/kai-tw-figma/SKILL.md) - 与 Figma REST API 交互，读取文件、将图层/组件导出为图像并检索评论。
-- [kling-video-generator](https://github.com/wells1137/kling-video-generator/blob/master/SKILL.md) - 使用 Kling 3.0 Omni 模型从文本、图像或其他视频生成高质量视频。涵盖文本到视频、图像到视频、视频编辑、视频参考、多镜头生成和音频同步视频。
-- [kie-ai-skill](https://github.com/openclaw/skills/tree/main/skills/jon-xo/kie-ai-skill/SKILL.md) - 通过 kie.ai 统一 API 访问多个 AI 模型 - 图像生成（Nano Banana Pro、Flux、4o-image），价格为 30-80%。
-- [kraken-pro](https://github.com/openclaw/skills/tree/main/skills/in-liberty420/kraken-pro/SKILL.md) - 管理 Kraken 交易所账户 — 投资组合、市场数据、交易、收益/质押、账本导出。
-- [macos-local-voice](https://github.com/openclaw/skills/tree/main/skills/strrl/macos-local-voice/SKILL.md) - 在 macOS 上使用原生 Apple 功能进行本地 STT 和 TTS。
-- [media-writing](https://github.com/openclaw/skills/tree/main/skills/alvinecarn/media-writing/SKILL.md) - 您是一位专业的媒体写作专家，在创建引人入胜和有影响力的内容方面拥有丰富经验。
-- [medical-specialty-briefs](https://github.com/openclaw/skills/tree/main/skills/johnyquest7/medical-specialty-briefs/SKILL.md) - 为任何医学专业生成每日或按需医学研究简报。
-- [memelink](https://github.com/openclaw/skills/tree/main/skills/dedene/memelink/SKILL.md) - 使用 Memegen.link API 从终端生成模因、图像宏和模因 URL。
-- [minara](https://github.com/openclaw/skills/tree/main/skills/lowesyang/minara/SKILL.md) - 加密交易：交换、永续合约、转账、支付、存款（信用卡 / 加密货币）、取款、AI 聊天、市场发现。
-- [mindmap-generator](https://github.com/openclaw/skills/tree/main/skills/parasharnagle/mindmap-generator/SKILL.md) - 从对话、目标、决策和日常优先事项生成可视化思维导图图像 — 以 PNG 形式交付。
-- [mixtiles-it](https://github.com/openclaw/skills/tree/main/skills/saharcarmel/mixtiles-it/SKILL.md) - 将照片发送到 Mixtiles 订购墙砖。
-- [moonfunsdk](https://github.com/openclaw/skills/tree/main/skills/moonnfunofficial/moonfunsdk/SKILL.md) - 专业 Python SDK，用于在 Binance Smart Chain 上创建和交易 Meme 代币，具有 AI 驱动的图像生成。
-- [nanobanana-pro-fallback](https://github.com/openclaw/skills/tree/main/skills/yazelin/nanobanana-pro-fallback/SKILL.md) - 带有自动模型回退的 Nano Banana Pro — 通过 Gemini Image API 生成/编辑图像。
-- [nk-images-search](https://github.com/openclaw/skills/tree/main/skills/tompltw/nk-images-search/SKILL.md) - 搜索 100 万+ 免费高质量 AI 库存照片。
-- [nyne-deep-research](https://github.com/openclaw/skills/tree/main/skills/michaelfanous2/nyne-deep-research/SKILL.md) - 使用 Nyne Deep Research API 研究任何人。
-- [ocr-python](https://github.com/openclaw/skills/tree/main/skills/roamerxv/ocr-python/SKILL.md) - 光学字符识别（OCR）工具，支持从 PDF 和图像中提取中英文文本。
-- [ollama-x-z-image-turbo](https://github.com/openclaw/skills/tree/main/skills/eric51/ollama-x-z-image-turbo/SKILL.md) - 通过 **Ollama**（模型 `x/z-image-turbo`）生成图像并将其发送到 WhatsApp。
-- [openai-image-cli](https://github.com/openclaw/skills/tree/main/skills/g9pedro/openai-image-cli/SKILL.md) - 通过 OpenAI 的 GPT Image 和 DALL-E 模型生成、编辑和管理图像。
-- [opencr-skill](https://github.com/openclaw/skills/tree/main/skills/topdu/opencr-skill/SKILL.md) - 使用 OpenOCR 从图像、文档和扫描 PDF 中提取文本 - 支持文本检测、识别。
-- [opengfx](https://github.com/openclaw/skills/tree/main/skills/aklo360/opengfx/SKILL.md) - AI 品牌设计系统 — 标志系统、品牌吉祥物、社交资产和品牌营销图形，通过 ACP 或 x402。
-- [openindex](https://github.com/openclaw/skills/tree/main/skills/titocosta/openindex/SKILL.md) - AI 代理的端到端加密消息传递。
-- [openocr-skill](https://github.com/openclaw/skills/tree/main/skills/topdu/openocr-skill/SKILL.md) - 使用 OpenOCR 从图像、文档和扫描 PDF 中提取文本。
-- [options-spread-conviction-engine](https://github.com/openclaw/skills/tree/main/skills/adamnaghs/options-spread-conviction-engine/SKILL.md) - 具有定量严谨性的多机制期权价差分析引擎。
-- [paddleocr-doc-parsing-v2](https://github.com/openclaw/skills/tree/main/skills/hiotec/paddleocr-doc-parsing-v2/SKILL.md) - 使用 PaddleOCR 的 API 解析文档。
-- [paythefly](https://github.com/openclaw/skills/tree/main/skills/seanlan/paythefly/SKILL.md) - 为您的应用创建加密支付和提款链接。
-- [photo-captions](https://github.com/openclaw/skills/tree/main/skills/pfrederiksen/photo-captions/SKILL.md) - 为摄影生成平台调优的社交媒体标题。
-- [photoshop-automator](https://github.com/openclaw/skills/tree/main/skills/abdul-karim-mia/photoshop-automator/SKILL.md) - 通过 COM/ExtendScript 桥接的专业 Adobe Photoshop 自动化。
-- [picsee-short-link](https://github.com/openclaw/skills/tree/main/skills/picseeinc/picsee-short-link/SKILL.md) - 使用 PicSee (pse.is) 缩短 URL
-- [pls-office-docs](https://github.com/openclaw/skills/tree/main/skills/mattvalenta/pls-office-docs/SKILL.md) - 生成和操作办公文档（PDF、DOCX、XLSX、PPTX），用于专业报告、演示文稿和数据。
-- [poidh](https://github.com/openclaw/skills/tree/main/skills/saltorioussig/poidh/SKILL.md) - 在 Base 上的 poidh（pics or it didn't happen）上发布赏金并评估/接受获胜提交。
-- [pokecenter](https://github.com/openclaw/skills/tree/main/skills/aiengineerx/pokecenter/SKILL.md) - 免费启动您自己的 Solana 代币。
-- [popup-organizer](https://github.com/openclaw/skills/tree/main/skills/eliaskress/popup-organizer/SKILL.md) - 在 PopUp 上搜索和雇佣活动的移动供应商。
-- [pr-generator](https://github.com/openclaw/skills/tree/main/skills/nbf819-web/pr-generator/SKILL.md) - 从文本、URL 或图像生成 QR 码。
-- [preisrunter](https://github.com/openclaw/skills/tree/main/skills/davidus05/preisrunter/SKILL.md) - 通过 Preisrunter API 搜索和比较奥地利和德国的杂货价格和促销。
-- [publora-instagram](https://github.com/openclaw/skills/tree/main/skills/sergebulaev/publora-instagram/SKILL.md) - 使用 Publora API 向 Instagram 发布或安排内容。
-- [qr-gen](https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/qr-gen/SKILL.md) - 从文本、URL、WiFi 凭证、vCards 或任何数据生成 QR 码。
-- [quest-board](https://github.com/openclaw/skills/tree/main/skills/yx2601816404-sys/quest-board/SKILL.md) - 您配备了 **Quest Board** 技能，一个可视化项目仪表板。
-- [quote0](https://github.com/openclaw/skills/tree/main/skills/yangguangzhou/quote0/SKILL.md) - 通过本地 quote0.js 脚本和 Dot Developer Platform API 控制 MindReset Dot Quote/0。
-- [reepl](https://github.com/openclaw/skills/tree/main/skills/abhibavishi/reepl/SKILL.md) - 使用 Reepl 管理您的 LinkedIn 存在 - 创建草稿、发布和安排帖子、管理联系人。
-- [rent-a-human](https://github.com/openclaw/skills/tree/main/skills/alexanderliteplo/rent-a-human/SKILL.md) - 通过 RentAHuman.ai 雇佣人类执行物理世界任务。
-- [rent-a-person-ai](https://github.com/openclaw/skills/tree/main/skills/saireetikap/rent-a-person-ai/SKILL.md) - > 雇佣人类执行 AI 无法完成的现实世界任务：递送、会议、差事、摄影、宠物护理。
-- [rentahuman](https://github.com/openclaw/skills/tree/main/skills/alexanderliteplo/rentahuman/SKILL.md) - 通过 RentAHuman.ai 雇佣人类执行物理世界任务。
-- [research-library](https://github.com/openclaw/skills/tree/main/skills/jonbuckles/research-library/SKILL.md) - 硬件项目的本地优先多媒体研究库。
-- [rollhub-affiliate](https://github.com/openclaw/skills/tree/main/skills/rollhub-dev/rollhub-affiliate/SKILL.md) - 通过推广可证明公平的 AI 赌场赚取加密货币。
-- [rollhub-analyst](https://github.com/openclaw/skills/tree/main/skills/rollhub-dev/rollhub-analyst/SKILL.md) - 在可证明公平的加密赌场研究和回测赌博策略。
-- [rug-checker](https://github.com/openclaw/skills/tree/main/skills/tkuehnl/rug-checker/SKILL.md) - Solana 代币 rug-pull 风险分析。10 点链上检查，带有可视化报告。
-- [saa-agent](https://github.com/openclaw/skills/tree/main/skills/mirabarukaso/saa-agent/SKILL.md) - 使 AI 代理能够使用 Character Select Stand Alone App (SAA) 图像生成后端生成图像。
-- [shopify-bulk-upload](https://github.com/openclaw/skills/tree/main/skills/zhaoteng-qd/shopify-bulk-upload/SKILL.md) - 批量上传产品到 Shopify 商店。
-- [skill-1](https://github.com/openclaw/skills/tree/main/skills/claudiodrusus/skill-1/SKILL.md) - 从文本、URL、WiFi 凭证、vCards 或任何数据生成 QR 码。
-- [snapog](https://github.com/openclaw/skills/tree/main/skills/beameasy/snapog/SKILL.md) - 通过 SnapOG API 从专业模板生成社交图像和 OG 卡片。
-- [solo-humanize](https://github.com/openclaw/skills/tree/main/skills/fortunto2/solo-humanize/SKILL.md) - 从文本中剥离 AI 写作模式 — 破折号、陈词滥调、促销膨胀、表现出的真实性。
-- [sprite-animator](https://github.com/openclaw/skills/tree/main/skills/awlevin/sprite-animator/SKILL.md) - 使用 AI 从任何图像生成动画像素艺术精灵。
-- [subtitle-translate-skill](https://github.com/openclaw/skills/tree/main/skills/thetail001/subtitle-translate-skill/SKILL.md) - 使用具有 OpenAI 兼容格式的 LLM API 翻译 SRT 字幕文件。
-- [superpower](https://github.com/openclaw/skills/tree/main/skills/grx21/superpower/SKILL.md) - **使用时机：** 用户有一个他们想做或想让你做的任务，或者他们感到沮丧、不安、压力。
-- [svg-to-image](https://github.com/openclaw/skills/tree/main/skills/qrost/svg-to-image/SKILL.md) - 将 SVG 转换为 PNG 或 JPG 以便快速分享（例如
-- [tarot](https://github.com/openclaw/skills/tree/main/skills/yangsenessa/tarot/SKILL.md) - 用于情感支持的反思塔罗牌抽取（以存在为先，非临床，非预测性）。
-- [telegram-media](https://github.com/openclaw/skills/tree/main/skills/ryandeangraves/telegram-media/SKILL.md) - **您必须使用您的 shell/exec 工具实际执行每个命令。** 永远不要假装您发送了照片、语音笔记。
-- [telegram-voice-to-voice-macos](https://github.com/openclaw/skills/tree/main/skills/fiberian1981/telegram-voice-to-voice-macos/SKILL.md) - macOS Apple Silicon 的 Telegram 语音到语音：使用 yap (Speech.framework) 转录入站 .ogg 语音笔记
-- [tesseract-ocr](https://github.com/openclaw/skills/tree/main/skills/whalefell/tesseract-ocr/SKILL.md) - 通过命令行直接使用 Tesseract OCR 引擎从图像中提取文本。
-- [titleclash](https://github.com/openclaw/skills/tree/main/skills/appback/titleclash/SKILL.md) - 参加 TitleClash - 为图像编写创意标题并赢得投票。
-- [tuebingen-weather-graphics](https://github.com/openclaw/skills/tree/main/skills/zopyx/tuebingen-weather-graphics/SKILL.md) - 从 open-meteo.com 生成并发送 5 天 Tübingen 天气图形（PNG）。
-- [tv-strategy-settings](https://github.com/openclaw/skills/tree/main/skills/mariuswang007/tv-strategy-settings/SKILL.md) - 在当前图表页面上打开和修改 TradingView 策略设置。
-- [twinfold](https://github.com/openclaw/skills/tree/main/skills/lpbaril/twinfold/SKILL.md) - 从您的代理控制 Twinfold — AI 驱动的社交媒体内容平台。
-- [ub2-csv-data-analyzer](https://github.com/openclaw/skills/tree/main/skills/underbench2-gif/ub2-csv-data-analyzer/SKILL.md) - 使 Claw 能够加载、探索、分析和可视化 CSV 数据集的技能，提供统计洞察。
-- [unsplash](https://github.com/openclaw/skills/tree/main/skills/brokenwatch24/unsplash/SKILL.md) - 从 Unsplash 的数百万图像库中搜索、浏览和下载高质量免费照片。
-- [visualization](https://github.com/openclaw/skills/tree/main/skills/xuzhiwei0217-doctor/visualization/SKILL.md) - 用于财务分析的 AI 驱动专业数据可视化。
-- [vtl-image-analysis](https://github.com/openclaw/skills/tree/main/skills/rusparrish/vtl-image-analysis/SKILL.md) - 使用视觉思维镜头（VTL）框架测量 AI 生成图像的构图结构。
-- [x-founder-operations](https://github.com/openclaw/skills/tree/main/skills/linfangw/x-founder-operations/SKILL.md) - 为创始人、独立开发者和技术专业人士提供的系统性 X（Twitter）运营技能。
-- [xiaohongshu-title](https://github.com/openclaw/skills/tree/main/skills/gxkim/xiaohongshu-title/SKILL.md) - 通过利用情感钩子和平台算法最大化 CTR（点击率）。
-- [xpr-creative](https://github.com/openclaw/skills/tree/main/skills/paulgnz/xpr-creative/SKILL.md) - AI 代理的创意交付工具。
-- [youtube-thumbnail-generation](https://github.com/openclaw/skills/tree/main/skills/eftalyurtseven/youtube-thumbnail-generation/SKILL.md) - 使用 each::sense API 生成具有高 CTR 设计的引人点击的 YouTube 缩略图。
-- [zenmux-image-generation](https://github.com/openclaw/skills/tree/main/skills/dadaniya99/zenmux-image-generation/SKILL.md) - 通过 ZenMux API（Pro/Elite）生成图像
-- [zerox](https://github.com/openclaw/skills/tree/main/skills/otacu/zerox/SKILL.md) - 使用 zerox 库将文档（PDF、DOCX、PPTX、图像等）转换为 Markdown。
-- [zhipu-cogview-image](https://github.com/openclaw/skills/tree/main/skills/honestqiao/zhipu-cogview-image/SKILL.md) - 使用智谱 AI 的 CogView 模型生成图像。
-- [creaa-ai](https://github.com/openclaw/skills/tree/main/skills/yys2024/creaa-ai/SKILL.md) - 通过 Creaa API（Nano Banana 2、Sora 2、Seedance 2.0、Veo 3.1）生成和编辑图像 + 生成视频。
+- [calorie-visualizer](https://clawskills.sh/skills/vintlin-calorie-visualizer) - 本地卡路里记录和视觉报告（每次记录后自动刷新并返回报告图像）
+- [canva-connect](https://clawskills.sh/skills/coolmanns-canva-connect) - 通过 Connect API 管理 Canva 设计、资产和文件夹。
+- [canvs](https://clawskills.sh/skills/voronkovm-canvs) - 使用 Canvs.io 工具创建和操作协作白板和图表。
+- [captions](https://clawskills.sh/skills/therohitdas-captions) - 从 YouTube 视频中提取隐藏式字幕和字幕。
+- [catalog](https://clawskills.sh/skills/rodbalbino-catalog) - 工作室的简单目录（hello world）
+- [cavas-skill](https://clawskills.sh/skills/ttboy-cavas-skill) - 使用设计理念在 .png 和 .pdf 文档中创建美丽的视觉艺术。
+- [chart-image](https://clawskills.sh/skills/dannyshmueli-chart-image) - 从数据生成出版物质量的图表图像。
+- [chart-splat](https://clawskills.sh/skills/bobbyg603-chart-splat) - 通过 Chart Splat API 生成美丽的图表。
+- [cheapest-image](https://clawskills.sh/skills/pharmacist9527-cheapest-image) - 可能是最便宜的 AI 图像生成（~$0.0036/图像）
+- [cheapest-image-generation](https://clawskills.sh/skills/evolinkai-cheapest-image-generation) - 可能是最便宜的 AI 图像生成（~$0.0036/图像）
+- [checksum](https://clawskills.sh/skills/autogame-17-checksum) - 用于生成和验证加密文件校验和（MD5、SHA1、SHA256）的 CLI 实用程序
+- [clinkding](https://clawskills.sh/skills/daveonkels-clinkding) - 管理 linkding 书签 - 保存 URL、搜索、标记、组织。
+- [color-palette](https://clawskills.sh/skills/qrost-color-palette) - 从图像中提取调色板并返回 HEX/RGB 值，可选色板图像。
+- [coloring-page](https://clawskills.sh/skills/borahm-coloring-page) - 将上传的照片转换为可打印的黑白着色页。
+- [comfy-cli](https://clawskills.sh/skills/johntheyoung-comfy-cli) - 安装、管理和运行 ComfyUI 实例。
+- [comfyui](https://clawskills.sh/skills/xtopher86-comfyui-request) - 向 ComfyUI 发送工作流请求并返回图像结果。
+- [comfyui-imagegen](https://clawskills.sh/skills/halr9000-comfyui-imagegen) - 使用 Flux2 工作流通过 ComfyUI API（localhost:8188）生成图像。
+- [cubistic-bot-runner](https://clawskills.sh/skills/andreasnordenadler-cubistic-bot-runner) - 使用 Cubistic HTTP API（PoW 挑战 + /act）运行礼貌的 Cubistic 画家机器人（公众参与）。
+- [cybercentry-private-data-verification](https://clawskills.sh/skills/cybercentry-cybercentry-private-data-verification) - ACP 上的 Cybercentry 私有数据验证 - 实时零知识证明生成和文本完整性。
+- [data-viz](https://clawskills.sh/skills/ianalloway-data-viz) - 从命令行创建数据可视化。
+- [depth-map-generation](https://clawskills.sh/skills/eftalyurtseven-depth-map-generation) - 使用 each::sense AI 从图像生成深度图。
+- [didit-age-estimation](https://clawskills.sh/skills/rosasalberto-didit-age-estimation) - 集成 Didit Age Estimation 独立 API 以从面部图像估计人的年龄。
+- [didit-passive-liveness](https://clawskills.sh/skills/rosasalberto-didit-passive-liveness) - 集成 Didit Passive Liveness 独立 API 以验证用户是否实际存在。
+- [digiforma](https://clawskills.sh/skills/mibbou-digiforma) - 通过 GraphQL API 查询 Digiforma 培训管理平台。
+- [dxf-to-image](https://clawskills.sh/skills/qrost-dxf-to-image) - 将 DXF 转换为 PNG、JPG 或 SVG 用于共享（例如。
+- [e2ee](https://clawskills.sh/skills/titocosta-e2ee) - AI 代理的端到端加密消息传递。
+- [eachlabs-face-swap](https://clawskills.sh/skills/eftalyurtseven-eachlabs-face-swap) - 使用 EachLabs AI 在图像之间交换面部。
+- [eachlabs-fashion-ai](https://clawskills.sh/skills/eftalyurtseven-eachlabs-fashion-ai) - 生成时尚图像、虚拟试穿、 runway 视频。
+- [eachlabs-image-edit](https://clawskills.sh/skills/eftalyurtseven-eachlabs-image-edit) - 使用 200+ AI 模型编辑、转换、放大图像。
+- [eachlabs-image-generation](https://clawskills.sh/skills/eftalyurtseven-eachlabs-image-generation) - 使用 Flux、GPT Image、Gemini、Imagen 生成图像。
+- [eachlabs-video-edit](https://clawskills.sh/skills/eftalyurtseven-eachlabs-video-edit) - 编辑带有唇同步、翻译、字幕的视频。
+- [eachlabs-video-generation](https://clawskills.sh/skills/eftalyurtseven-eachlabs-video-generation) - 使用 AI 模型从文本/图像生成视频。
+- [emotionwise](https://clawskills.sh/skills/timexicali-emotionwise) - 使用 EmotionWise API（28 个标签，EN/ES）分析文本的情感和讽刺。
+- [enginemind-eft](https://clawskills.sh/skills/marceloadryao-enginemind-eft) - EFT — 情感框架翻译器。
+- [Excalidraw Flowchart](https://clawskills.sh/skills/swiftlysingh-excalidraw-flowchart) - 从描述创建 Excalidraw 流程图。
+- [fal-ai](https://clawskills.sh/skills/agmmnn-fal-ai) - 通过 fal.ai API（FLUX、SDXL、Whisper 等）生成图像、视频和音频。
+- [fal-text-to-image](https://clawskills.sh/skills/delorenj-fal-text-to-image) - 使用 fal.ai 的 AI 生成、重新混合和编辑图像。
+- [ffmpeg-video-editor](https://clawskills.sh/skills/mahmoudadelbghany-ffmpeg-video-editor) - 从自然语言生成 FFmpeg 命令。
+- [figma](https://clawskills.sh/skills/maddiedreese-figma) - 专业 Figma 设计分析和资产导出。
+- [find-stl](https://clawskills.sh/skills/ajmwagar-find-stl) - 搜索和下载可打印的 3D 模型文件（STL/3MF/ZIP）
+- [foam-notes](https://clawskills.sh/skills/hegghammer-foam-notes) - 使用 Foam 笔记存储库。
+- [gambling](https://clawskills.sh/skills/rollhub-dev-gambling) - 在 Agent Casino 上使用真实加密货币玩赌场游戏（骰子、抛硬币、轮盘赌）。
+- [gamma](https://clawskills.sh/skills/stopmoclay-gamma) - 使用 Gamma.app 生成 AI 驱动的演示文稿、文档和社交帖子。
+- [generate-news-article](https://clawskills.sh/skills/near2sea-generate-news-article) - 从 SerpAPI Google 搜索结果生成带有图像的单个 Markdown 文章。
+- [geo-blocking](https://clawskills.sh/skills/raghulpasupathi-geo-blocking) - 地理限制和区域合规的技能。
+- [gifhorse](https://clawskills.sh/skills/coyote-git-gifhorse) - 搜索视频对话并创建带有定时字幕的反应 GIF。
+- [gift-genius](https://clawskills.sh/skills/evoleinik-gift-genius) - 位置感知的情人节礼物查找器。
+- [giveagent](https://clawskills.sh/skills/breezefox-studios-giveagent) - 代理到代理的免费物品赠送。
+- [google-gemini-media](https://clawskills.sh/skills/xsir0-google-gemini-media) - 使用 Gemini API。
+- [google-imagen-3-portrait-photography](https://clawskills.sh/skills/questlmuc-google-imagen-3-portrait-photography) - 使用 Google Imagen 3 生成专业肖像摄影。
+- [grok-image-cli](https://clawskills.sh/skills/cyberash-dev-grok-image-cli) - 从命令行通过 Grok API 生成和编辑图像。
+- [grok-imagine-image-pro](https://clawskills.sh/skills/nixeifoit-grok-imagine-image-pro) - 使用 xAI Grok/Flux API 生成高质量图像。
+- [heygen-avatar-lite](https://clawskills.sh/skills/daaab-heygen-avatar-lite) - 使用 HeyGen API 创建 AI 数字人视频。
+- [hinge-liker](https://clawskills.sh/skills/mattttman-hinge-liker) - 使用 Android 模拟器 + Gemini 视觉 AI 的自动 Hinge 约会资料点赞器。
+- [hinge-profile-optimizer](https://clawskills.sh/skills/b1rdmania-hinge-profile-optimizer) - 全面的、基于研究的 Hinge 约会资料优化。
+- [hotdog](https://clawskills.sh/skills/mishafyi-hotdog) - 热狗还是不是？对食物照片进行分类并与 Nemotron 战斗。
+- [idx-cma-report](https://clawskills.sh/skills/danielfoch-idx-cma-report) - 从 IDX 列表数据和选定的可比较物业生成比较市场分析（CMA）和房屋估值报告。
+- [image-detection](https://clawskills.sh/skills/raghulpasupathi-image-detection) - 用于分析和检测 AI 生成图像的技能。
+- [image-gen](https://clawskills.sh/skills/wells1137-image-gen) - 使用多个 AI 模型生成图像 — Midjourney（通过 Legnext.ai）、Flux、SDXL、Nano Banana（Gemini）
+- [image-hosting](https://clawskills.sh/skills/rahulgi-image-hosting) - 将图像上传到 img402.dev 并获取公共 URL。
+- [image-magik-resize](https://clawskills.sh/skills/pr1vateer-image-magik-resize) - 使用 ImageMagick（CLI）调整图像大小
+- [immich-api](https://clawskills.sh/skills/ninjazan420-immich-api) - Immich 照片管理 API 桥接。
+- [immortal](https://clawskills.sh/skills/majestyatenkhu-immortal) - 为 AI 代理提供加密资源活力评估。
+- [instagram-photo-text-overlay](https://clawskills.sh/skills/psyduckler-instagram-photo-text-overlay) - 在 Instagram 帖子的照片上叠加文本。
+- [instagram-reels](https://clawskills.sh/skills/antoinedc-instagram-reels) - 下载 Instagram Reels、转录音频并提取字幕。
+- [install-then-update-trap-detector](https://clawskills.sh/skills/andyxinweiminicloud-install-then-update-trap-detector) - 帮助检测安装后更新攻击模式 — 技能通过初始安全审查时干净。
+- [kai-tw-figma](https://clawskills.sh/skills/kai-tw-kai-tw-figma) - 与 Figma REST API 交互以读取文件、将图层/组件导出为图像并检索评论。
+- [kie-ai-skill](https://clawskills.sh/skills/jon-xo-kie-ai-skill) - 通过 kie.ai 统一访问多个 AI 模型 - 图像生成（Nano Banana Pro、Flux、4o-image）以 30-80% 的成本。
+- [kraken-pro](https://clawskills.sh/skills/in-liberty420-kraken-pro) - 管理 Kraken 交易所账户 — 投资组合、市场数据、交易、收益/质押、分类账导出。
+- [macos-local-voice](https://clawskills.sh/skills/strrl-macos-local-voice) - 在 macOS 上使用原生 Apple 功能进行本地 STT 和 TTS。
+- [media-writing](https://clawskills.sh/skills/alvinecarn-media-writing) - 你是一位专业的媒体写作专家，在创建引人入胜和有影响力的内容方面拥有丰富的经验。
+- [medical-specialty-briefs](https://clawskills.sh/skills/johnyquest7-medical-specialty-briefs) - 为任何医学专业生成每日或按需医学研究简报。
+- [memelink](https://clawskills.sh/skills/dedene-memelink) - 使用 Memegen.link API 从终端生成模因、图像宏和模因 URL。
+- [mindmap-generator](https://clawskills.sh/skills/parasharnagle-mindmap-generator) - 从对话、目标、决策和日常优先事项生成可视化思维导图图像 — 以 PNG 形式交付。
+- [mixtiles-it](https://clawskills.sh/skills/saharcarmel-mixtiles-it) - 发送照片到 Mixtiles 订购墙贴。
+- [moonfunsdk](https://clawskills.sh/skills/moonnfunofficial-moonfunsdk) - 专业 Python SDK，用于在 Binance Smart Chain 上创建和交易带有 AI 驱动图像生成的 Meme 代币。
+- [nanobanana-pro-fallback](https://clawskills.sh/skills/yazelin-nanobanana-pro-fallback) - 带有自动模型回退的 Nano Banana Pro — 通过 Gemini Image API 生成/编辑图像。
+- [nk-images-search](https://clawskills.sh/skills/tompltw-nk-images-search) - 搜索 100 万+ 免费高质量 AI 库存照片。
+- [nyne-deep-research](https://clawskills.sh/skills/michaelfanous2-nyne-deep-research) - 使用 Nyne Deep Research API 研究任何人。
+- [ocr-python](https://clawskills.sh/skills/roamerxv-ocr-python) - 光学字符识别（OCR）工具，支持从 PDF 和图像中提取中英文文本。
+- [ollama-x-z-image-turbo](https://clawskills.sh/skills/eric51-ollama-x-z-image-turbo) - 通过 **Ollama**（模型 `x/z-image-turbo`）生成图像并将其发送到 WhatsApp。
+- [openai-image-cli](https://clawskills.sh/skills/g9pedro-openai-image-cli) - 通过 OpenAI 的 GPT Image 和 DALL-E 模型生成、编辑和管理图像。
+- [opencr-skill](https://clawskills.sh/skills/topdu-opencr-skill) - 使用 OpenOCR 从图像、文档和扫描的 PDF 中提取文本 - 支持文本检测、识别。
+- [opengfx](https://clawskills.sh/skills/aklo360-opengfx) - AI 品牌设计系统 — 通过 ACP 或 x402 提供标志系统、品牌吉祥物、社交资产和品牌营销图形。
+- [openocr-skill](https://clawskills.sh/skills/topdu-openocr-skill) - 使用 OpenOCR 从图像、文档和扫描的 PDF 中提取文本。
+- [options-spread-conviction-engine](https://clawskills.sh/skills/adamnaghs-options-spread-conviction-engine) - 具有量化严谨性的多制度期权价差分析引擎。
+- [paddleocr-doc-parsing-v2](https://clawskills.sh/skills/hiotec-paddleocr-doc-parsing-v2) - 使用 PaddleOCR 的 API 解析文档。
+- [paythefly](https://clawskills.sh/skills/seanlan-paythefly) - 为你的应用创建加密支付和提款链接。
+- [photo-captions](https://clawskills.sh/skills/pfrederiksen-photo-captions) - 为摄影生成平台调优的社交媒体字幕。
+- [photoshop-automator](https://clawskills.sh/skills/abdul-karim-mia-photoshop-automator) - 通过 COM/ExtendScript 桥接实现专业 Adobe Photoshop 自动化。
+- [picsee-short-link](https://clawskills.sh/skills/picseeinc-picsee-short-link) - 使用 PicSee (pse.is) 缩短 URL。
+- [pls-office-docs](https://clawskills.sh/skills/mattvalenta-pls-office-docs) - 生成和操作办公文档（PDF、DOCX、XLSX、PPTX）用于专业报告、演示文稿和数据。
+- [popup-organizer](https://clawskills.sh/skills/eliaskress-popup-organizer) - 在 PopUp 上搜索和雇佣活动的移动供应商。
+- [pr-generator](https://clawskills.sh/skills/nbf819-web-pr-generator) - 从文本、URL 或图像生成 QR 码。
+- [preisrunter](https://clawskills.sh/skills/davidus05-preisrunter) - 通过 Preisrunter API 搜索和比较奥地利和德国的杂货价格和促销。
+- [publora-instagram](https://clawskills.sh/skills/sergebulaev-publora-instagram) - 使用 Publora API 向 Instagram 发布或安排内容。
+- [qr-gen](https://clawskills.sh/skills/claudiodrusus-qr-gen) - 从文本、URL、WiFi 凭据、vCards 或任何数据生成 QR 码。
+- [quest-board](https://clawskills.sh/skills/yx2601816404-sys-quest-board) - 你配备了 **Quest Board** 技能，一个可视化项目仪表板。
+- [quote0](https://clawskills.sh/skills/yangguangzhou-quote0) - 通过本地 quote0.js 脚本和 Dot Developer Platform APIs 控制 MindReset Dot Quote/0。
+- [reepl](https://clawskills.sh/skills/abhibavishi-reepl) - 使用 Reepl 管理你的 LinkedIn 存在 — 创建草稿、发布和安排帖子、管理联系人。
+- [rent-a-human](https://clawskills.sh/skills/alexanderliteplo-rent-a-human) - 通过 RentAHuman.ai 雇佣人类执行物理世界任务。
+- [rent-a-person-ai](https://clawskills.sh/skills/saireetikap-rent-a-person-ai) - > 雇佣人类执行 AI 无法完成的现实世界任务：交付、会议、差事、摄影、宠物护理。
+- [rentahuman](https://clawskills.sh/skills/alexanderliteplo-rentahuman) - 通过 RentAHuman.ai 雇佣人类执行物理世界任务。
+- [research-library](https://clawskills.sh/skills/jonbuckles-research-library) - 硬件项目的本地优先多媒体研究库。
+- [rollhub-affiliate](https://clawskills.sh/skills/rollhub-dev-rollhub-affiliate) - 通过推广可证明公平的 AI 赌场赚取加密货币。
+- [rollhub-analyst](https://clawskills.sh/skills/rollhub-dev-rollhub-analyst) - 在可证明公平的加密赌场研究和回测赌博策略。
+- [saa-agent](https://clawskills.sh/skills/mirabarukaso-saa-agent) - 使 AI 代理能够使用 Character Select Stand Alone App (SAA) 图像生成后端生成图像。
+- [shopify-bulk-upload](https://clawskills.sh/skills/zhaoteng-qd-shopify-bulk-upload) - 批量上传产品到 Shopify 商店。
+- [skill-1](https://clawskills.sh/skills/claudiodrusus-skill-1) - 从文本、URL、WiFi 凭据、vCards 或任何数据生成 QR 码。
+- [snapog](https://clawskills.sh/skills/beameasy-snapog) - 通过 SnapOG API 从专业模板生成社交图像和 OG 卡片。
+- [solo-humanize](https://clawskills.sh/skills/fortunto2-solo-humanize) - 从文本中去除 AI 写作模式 — 破折号、陈词滥调、促销膨胀、表演真实性。
+- [sprite-animator](https://clawskills.sh/skills/awlevin-sprite-animator) - 使用 AI 从任何图像生成动画像素艺术精灵。
+- [subtitle-translate-skill](https://clawskills.sh/skills/thetail001-subtitle-translate-skill) - 使用具有 OpenAI 兼容格式的 LLM API 翻译 SRT 字幕文件。
+- [superpower](https://clawskills.sh/skills/grx21-superpower) - **使用时机：** 用户有他们想做或想让你做的任务，或者他们感到沮丧、不安、压力。
+- [svg-to-image](https://clawskills.sh/skills/qrost-svg-to-image) - 将 SVG 转换为 PNG 或 JPG 以便快速共享（例如。
+- [tarot](https://clawskills.sh/skills/yangsenessa-tarot) - 用于情感支持的反思塔罗牌抽取（以存在为先，非临床，非预测性）。
+- [telegram-media](https://clawskills.sh/skills/ryandeangraves-telegram-media) - **你必须实际使用你的 shell/exec 工具执行每个命令。** 永远不要假装你发送了照片、语音笔记。
+- [telegram-voice-to-voice-macos](https://clawskills.sh/skills/fiberian1981-telegram-voice-to-voice-macos) - macOS Apple Silicon 的 Telegram 语音到语音：使用 yap (Speech.framework) 转录入站 .ogg 语音笔记
+- [tesseract-ocr](https://clawskills.sh/skills/whalefell-tesseract-ocr) - 通过命令行直接使用 Tesseract OCR 引擎从图像中提取文本。
+- [titleclash](https://clawskills.sh/skills/appback-titleclash) - 参加 TitleClash - 为图像编写创意标题并赢得投票。
+- [tuebingen-weather-graphics](https://clawskills.sh/skills/zopyx-tuebingen-weather-graphics) - 从 open-meteo.com 生成并发送 5 天 Tübingen 天气图形（PNG）。
+- [tv-strategy-settings](https://clawskills.sh/skills/mariuswang007-tv-strategy-settings) - 在当前图表页面上打开和修改 TradingView 策略设置。
+- [twinfold](https://clawskills.sh/skills/lpbaril-twinfold) - 从你的代理控制 Twinfold — AI 驱动的社交媒体内容平台。
+- [ub2-csv-data-analyzer](https://clawskills.sh/skills/underbench2-gif-ub2-csv-data-analyzer) - 一种技能，使 Claw 能够加载、探索、分析和可视化 CSV 数据集，提供统计洞察。
+- [unsplash](https://clawskills.sh/skills/brokenwatch24-unsplash) - 从 Unsplash 的数百万图像库中搜索、浏览和下载高质量的免费照片。
+- [visualization](https://clawskills.sh/skills/xuzhiwei0217-doctor-visualization) - 用于财务分析的 AI 驱动专业数据可视化。
+- [vtl-image-analysis](https://clawskills.sh/skills/rusparrish-vtl-image-analysis) - 使用视觉思维镜头（VTL）框架测量 AI 生成图像中的构图结构。
+- [x-founder-operations](https://clawskills.sh/skills/linfangw-x-founder-operations) - 为创始人、独立开发者和技术专业人士提供系统的 X（Twitter）运营技能。
+- [xiaohongshu-title](https://clawskills.sh/skills/gxkim-xiaohongshu-title) - 通过利用情感钩子和平台算法最大化 CTR（点击率）。
+- [xpr-creative](https://clawskills.sh/skills/paulgnz-xpr-creative) - 为 AI 代理提供创意交付工具。
+- [youtube-thumbnail-generation](https://clawskills.sh/skills/eftalyurtseven-youtube-thumbnail-generation) - 使用 each::sense API 生成具有高 CTR 设计的引人点击的 YouTube 缩略图。
+- [zenmux-image-generation](https://clawskills.sh/skills/dadaniya99-zenmux-image-generation) - 通过 ZenMux API（Pro/Elite）生成图像
+- [zerox](https://clawskills.sh/skills/otacu-zerox) - 使用 zerox 库将文档（PDF、DOCX、PPTX、图像等）转换为 Markdown。
+- [zhipu-cogview-image](https://clawskills.sh/skills/honestqiao-zhipu-cogview-image) - 使用智谱 AI 的 CogView 模型生成图像。
+- [creaa-ai](https://clawskills.sh/skills/yys2024-creaa-ai) - 通过 Creaa API 生成和编辑图像 + 生成视频（Nano Banana 2、Sora 2、Seedance 2.0、Veo 3.1）。
