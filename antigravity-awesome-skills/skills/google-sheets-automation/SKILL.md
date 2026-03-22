@@ -1,9 +1,12 @@
 ---
 name: google-sheets-automation
-description: "Lightweight Google Sheets integration with standalone OAuth authentication. No MCP server required. Full read/write access."
+description: |
+  Read and write Google Sheets spreadsheets - get content, update cells, append rows, fetch specific ranges,
+  search for spreadsheets, and view metadata. Use when user asks to: read a spreadsheet, update cells,
+  add data to Google Sheets, find a spreadsheet, check sheet...
 risk: unknown
 source: community
-license: Apache-2.0
+--- Apache-2.0
 metadata:
   author: sanjay3290
   version: "1.0"
@@ -141,4 +144,5 @@ Tokens automatically refresh when expired using Google's cloud function.
 
 
 ## When to Use
+
 Use this skill when tackling tasks related to its primary domain or functionality as described above.

@@ -1,6 +1,6 @@
 ---
 name: test-fixing
-description: "Systematically identify and fix all failing tests using smart grouping strategies."
+description: "Run tests and systematically fix all failing tests using smart error grouping. Use when user asks to fix failing tests, mentions test failures, runs test suite and failures occur, or requests to ma..."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -11,6 +11,7 @@ date_added: "2026-02-27"
 Systematically identify and fix all failing tests using smart grouping strategies.
 
 ## When to Use
+
 - Explicitly asks to fix tests ("fix these tests", "make tests pass")
 - Reports test failures ("tests are failing", "test suite is broken")
 - Completes implementation and wants tests passing

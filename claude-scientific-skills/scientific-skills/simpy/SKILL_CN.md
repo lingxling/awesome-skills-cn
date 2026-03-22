@@ -1,76 +1,76 @@
 ---
 name: simpy
-description: Process-based discrete-event simulation framework in Python. Use this skill when building simulations of systems with processes, queues, resources, and time-based events such as manufacturing systems, service operations, network traffic, logistics, or any system where entities interact with shared resources over time.
+description: Python 中基于过程的离散事件模拟框架。当构建包含过程、队列、资源和基于时间的事件的系统模拟时使用此技能，例如制造系统、服务操作、网络流量、物流或任何实体随时间与共享资源交互的系统。
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# SimPy - Discrete-Event Simulation
+# SimPy - 离散事件模拟
 
-## Overview
+## 概述
 
-SimPy is a process-based discrete-event simulation framework based on standard Python. Use SimPy to model systems where entities (customers, vehicles, packets, etc.) interact with each other and compete for shared resources (servers, machines, bandwidth, etc.) over time.
+SimPy 是一个基于标准 Python 的过程式离散事件模拟框架。使用 SimPy 建模系统，其中实体（客户、车辆、数据包等）相互交互并随时间竞争共享资源（服务器、机器、带宽等）。
 
-**Core capabilities:**
-- Process modeling using Python generator functions
-- Shared resource management (servers, containers, stores)
-- Event-driven scheduling and synchronization
-- Real-time simulations synchronized with wall-clock time
-- Comprehensive monitoring and data collection
+**核心功能：**
+- 使用 Python 生成器函数进行过程建模
+- 共享资源管理（服务器、容器、存储）
+- 事件驱动的调度和同步
+- 与 wall-clock 时间同步的实时模拟
+- 全面的监控和数据收集
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use the SimPy skill when:
+当以下情况时使用 SimPy 技能：
 
-1. **Modeling discrete-event systems** - Systems where events occur at irregular intervals
-2. **Resource contention** - Entities compete for limited resources (servers, machines, staff)
-3. **Queue analysis** - Studying waiting lines, service times, and throughput
-4. **Process optimization** - Analyzing manufacturing, logistics, or service processes
-5. **Network simulation** - Packet routing, bandwidth allocation, latency analysis
-6. **Capacity planning** - Determining optimal resource levels for desired performance
-7. **System validation** - Testing system behavior before implementation
+1. **建模离散事件系统** - 事件以不规则间隔发生的系统
+2. **资源竞争** - 实体竞争有限资源（服务器、机器、人员）
+3. **队列分析** - 研究等待线、服务时间和吞吐量
+4. **过程优化** - 分析制造、物流或服务过程
+5. **网络模拟** - 数据包路由、带宽分配、延迟分析
+6. **容量规划** - 确定所需性能的最佳资源水平
+7. **系统验证** - 在实施前测试系统行为
 
-**Not suitable for:**
-- Continuous simulations with fixed time steps (consider SciPy ODE solvers)
-- Independent processes without resource sharing
-- Pure mathematical optimization (consider SciPy optimize)
+**不适合：**
+- 固定时间步长的连续模拟（考虑 SciPy ODE 求解器）
+- 无资源共享的独立过程
+- 纯数学优化（考虑 SciPy optimize）
 
-## Quick Start
+## 快速入门
 
-### Basic Simulation Structure
+### 基本模拟结构
 
 ```python
 import simpy
 
 def process(env, name):
-    """A simple process that waits and prints."""
+    """一个简单的等待和打印过程。"""
     print(f'{name} starting at {env.now}')
     yield env.timeout(5)
     print(f'{name} finishing at {env.now}')
 
-# Create environment
+# 创建环境
 env = simpy.Environment()
 
-# Start processes
+# 启动过程
 env.process(process(env, 'Process 1'))
 env.process(process(env, 'Process 2'))
 
-# Run simulation
+# 运行模拟
 env.run(until=10)
 ```
 
-### Resource Usage Pattern
+### 资源使用模式
 
 ```python
 import simpy
 
 def customer(env, name, resource):
-    """Customer requests resource, uses it, then releases."""
+    """客户请求资源，使用它，然后释放。"""
     with resource.request() as req:
-        yield req  # Wait for resource
+        yield req  # 等待资源
         print(f'{name} got resource at {env.now}')
-        yield env.timeout(3)  # Use resource
+        yield env.timeout(3)  # 使用资源
         print(f'{name} released resource at {env.now}')
 
 env = simpy.Environment()
@@ -81,102 +81,102 @@ env.process(customer(env, 'Customer 2', server))
 env.run()
 ```
 
-## Core Concepts
+## 核心概念
 
-### 1. Environment
+### 1. 环境
 
-The simulation environment manages time and schedules events.
+模拟环境管理时间和调度事件。
 
 ```python
 import simpy
 
-# Standard environment (runs as fast as possible)
+# 标准环境（尽可能快地运行）
 env = simpy.Environment(initial_time=0)
 
-# Real-time environment (synchronized with wall-clock)
+# 实时环境（与 wall-clock 同步）
 import simpy.rt
 env_rt = simpy.rt.RealtimeEnvironment(factor=1.0)
 
-# Run simulation
-env.run(until=100)  # Run until time 100
-env.run()  # Run until no events remain
+# 运行模拟
+env.run(until=100)  # 运行到时间 100
+env.run()  # 运行直到没有事件剩余
 ```
 
-### 2. Processes
+### 2. 过程
 
-Processes are defined using Python generator functions (functions with `yield` statements).
+过程使用 Python 生成器函数（带有 `yield` 语句的函数）定义。
 
 ```python
 def my_process(env, param1, param2):
-    """Process that yields events to pause execution."""
+    """产生事件以暂停执行的过程。"""
     print(f'Starting at {env.now}')
 
-    # Wait for time to pass
+    # 等待时间流逝
     yield env.timeout(5)
 
     print(f'Resumed at {env.now}')
 
-    # Wait for another event
+    # 等待另一个事件
     yield env.timeout(3)
 
     print(f'Done at {env.now}')
     return 'result'
 
-# Start the process
+# 启动过程
 env.process(my_process(env, 'value1', 'value2'))
 ```
 
-### 3. Events
+### 3. 事件
 
-Events are the fundamental mechanism for process synchronization. Processes yield events and resume when those events are triggered.
+事件是过程同步的基本机制。过程产生事件并在这些事件触发时恢复。
 
-**Common event types:**
-- `env.timeout(delay)` - Wait for time to pass
-- `resource.request()` - Request a resource
-- `env.event()` - Create a custom event
-- `env.process(func())` - Process as an event
-- `event1 & event2` - Wait for all events (AllOf)
-- `event1 | event2` - Wait for any event (AnyOf)
+**常见事件类型：**
+- `env.timeout(delay)` - 等待时间流逝
+- `resource.request()` - 请求资源
+- `env.event()` - 创建自定义事件
+- `env.process(func())` - 作为事件的过程
+- `event1 & event2` - 等待所有事件（AllOf）
+- `event1 | event2` - 等待任何事件（AnyOf）
 
-## Resources
+## 资源
 
-SimPy provides several resource types for different scenarios. For comprehensive details, see `references/resources.md`.
+SimPy 为不同场景提供多种资源类型。有关综合详细信息，请参阅 `references/resources.md`。
 
-### Resource Types Summary
+### 资源类型摘要
 
-| Resource Type | Use Case |
+| 资源类型 | 用例 |
 |---------------|----------|
-| Resource | Limited capacity (servers, machines) |
-| PriorityResource | Priority-based queuing |
-| PreemptiveResource | High-priority can interrupt low-priority |
-| Container | Bulk materials (fuel, water) |
-| Store | Python object storage (FIFO) |
-| FilterStore | Selective item retrieval |
-| PriorityStore | Priority-ordered items |
+| Resource | 有限容量（服务器、机器） |
+| PriorityResource | 基于优先级的排队 |
+| PreemptiveResource | 高优先级可以中断低优先级 |
+| Container | 散装材料（燃料、水） |
+| Store | Python 对象存储（FIFO） |
+| FilterStore | 选择性项目检索 |
+| PriorityStore | 优先级排序项目 |
 
-### Quick Reference
+### 快速参考
 
 ```python
 import simpy
 
 env = simpy.Environment()
 
-# Basic resource (e.g., servers)
+# 基本资源（例如，服务器）
 resource = simpy.Resource(env, capacity=2)
 
-# Priority resource
+# 优先级资源
 priority_resource = simpy.PriorityResource(env, capacity=1)
 
-# Container (e.g., fuel tank)
+# 容器（例如，油箱）
 fuel_tank = simpy.Container(env, capacity=100, init=50)
 
-# Store (e.g., warehouse)
+# 存储（例如，仓库）
 warehouse = simpy.Store(env, capacity=10)
 ```
 
-## Common Simulation Patterns
+## 常见模拟模式
 
-### Pattern 1: Customer-Server Queue
+### 模式 1：客户-服务器队列
 
 ```python
 import simpy
@@ -203,7 +203,7 @@ env.process(customer_generator(env, server))
 env.run(until=20)
 ```
 
-### Pattern 2: Producer-Consumer
+### 模式 2：生产者-消费者
 
 ```python
 import simpy
@@ -230,7 +230,7 @@ env.process(consumer(env, store))
 env.run(until=20)
 ```
 
-### Pattern 3: Parallel Task Execution
+### 模式 3：并行任务执行
 
 ```python
 import simpy
@@ -242,12 +242,12 @@ def task(env, name, duration):
     return f'{name} result'
 
 def coordinator(env):
-    # Start tasks in parallel
+    # 并行启动任务
     task1 = env.process(task(env, 'Task 1', 5))
     task2 = env.process(task(env, 'Task 2', 3))
     task3 = env.process(task(env, 'Task 3', 4))
 
-    # Wait for all to complete
+    # 等待所有完成
     results = yield task1 & task2 & task3
     print(f'All done at {env.now}')
 
@@ -256,108 +256,108 @@ env.process(coordinator(env))
 env.run()
 ```
 
-## Workflow Guide
+## 工作流指南
 
-### Step 1: Define the System
+### 步骤 1：定义系统
 
-Identify:
-- **Entities**: What moves through the system? (customers, parts, packets)
-- **Resources**: What are the constraints? (servers, machines, bandwidth)
-- **Processes**: What are the activities? (arrival, service, departure)
-- **Metrics**: What to measure? (wait times, utilization, throughput)
+确定：
+- **实体**：什么在系统中移动？（客户、零件、数据包）
+- **资源**：约束是什么？（服务器、机器、带宽）
+- **过程**：活动是什么？（到达、服务、离开）
+- **指标**：要测量什么？（等待时间、利用率、吞吐量）
 
-### Step 2: Implement Process Functions
+### 步骤 2：实现过程函数
 
-Create generator functions for each process type:
+为每种过程类型创建生成器函数：
 
 ```python
 def entity_process(env, name, resources, parameters):
-    # Arrival logic
+    # 到达逻辑
     arrival_time = env.now
 
-    # Request resources
+    # 请求资源
     with resource.request() as req:
         yield req
 
-        # Service logic
+        # 服务逻辑
         service_time = calculate_service_time(parameters)
         yield env.timeout(service_time)
 
-    # Departure logic
+    # 离开逻辑
     collect_statistics(env.now - arrival_time)
 ```
 
-### Step 3: Set Up Monitoring
+### 步骤 3：设置监控
 
-Use monitoring utilities to collect data. See `references/monitoring.md` for comprehensive techniques.
+使用监控工具收集数据。有关综合技术，请参阅 `references/monitoring.md`。
 
 ```python
 from scripts.resource_monitor import ResourceMonitor
 
-# Create and monitor resource
+# 创建并监控资源
 resource = simpy.Resource(env, capacity=2)
 monitor = ResourceMonitor(env, resource, "Server")
 
-# After simulation
+# 模拟后
 monitor.report()
 ```
 
-### Step 4: Run and Analyze
+### 步骤 4：运行和分析
 
 ```python
-# Run simulation
+# 运行模拟
 env.run(until=simulation_time)
 
-# Generate reports
+# 生成报告
 monitor.report()
 stats.report()
 
-# Export data for further analysis
+# 导出数据以进行进一步分析
 monitor.export_csv('results.csv')
 ```
 
-## Advanced Features
+## 高级功能
 
-### Process Interaction
+### 过程交互
 
-Processes can interact through events, process yields, and interrupts. See `references/process-interaction.md` for detailed patterns.
+过程可以通过事件、过程产生和中断进行交互。有关详细模式，请参阅 `references/process-interaction.md`。
 
-**Key mechanisms:**
-- **Event signaling**: Shared events for coordination
-- **Process yields**: Wait for other processes to complete
-- **Interrupts**: Forcefully resume processes for preemption
+**关键机制：**
+- **事件信号**：用于协调的共享事件
+- **过程产生**：等待其他过程完成
+- **中断**：强制恢复过程以进行抢占
 
-### Real-Time Simulations
+### 实时模拟
 
-Synchronize simulation with wall-clock time for hardware-in-the-loop or interactive applications. See `references/real-time.md`.
+将模拟与 wall-clock 时间同步，用于硬件在环或交互式应用程序。请参阅 `references/real-time.md`。
 
 ```python
 import simpy.rt
 
-env = simpy.rt.RealtimeEnvironment(factor=1.0)  # 1:1 time mapping
-# factor=0.5 means 1 sim unit = 0.5 seconds (2x faster)
+env = simpy.rt.RealtimeEnvironment(factor=1.0)  # 1:1 时间映射
+# factor=0.5 表示 1 模拟单位 = 0.5 秒（快 2 倍）
 ```
 
-### Comprehensive Monitoring
+### 综合监控
 
-Monitor processes, resources, and events. See `references/monitoring.md` for techniques including:
-- State variable tracking
-- Resource monkey-patching
-- Event tracing
-- Statistical collection
+监控过程、资源和事件。有关技术，请参阅 `references/monitoring.md`，包括：
+- 状态变量跟踪
+- 资源猴子补丁
+- 事件跟踪
+- 统计收集
 
-## Scripts and Templates
+## 脚本和模板
 
 ### basic_simulation_template.py
 
-Complete template for building queue simulations with:
-- Configurable parameters
-- Statistics collection
-- Customer generation
-- Resource usage
-- Report generation
+构建队列模拟的完整模板，包括：
+- 可配置参数
+- 统计收集
+- 客户生成
+- 资源使用
+- 报告生成
 
-**Usage:**
+**用法：**
 ```python
 from scripts.basic_simulation_template import SimulationConfig, run_simulation
 
@@ -370,58 +370,57 @@ stats.report()
 
 ### resource_monitor.py
 
-Reusable monitoring utilities:
-- `ResourceMonitor` - Track single resource
-- `MultiResourceMonitor` - Monitor multiple resources
-- `ContainerMonitor` - Track container levels
-- Automatic statistics calculation
-- CSV export functionality
+可重用监控工具：
+- `ResourceMonitor` - 跟踪单个资源
+- `MultiResourceMonitor` - 监控多个资源
+- `ContainerMonitor` - 跟踪容器级别
+- 自动统计计算
+- CSV 导出功能
 
-**Usage:**
+**用法：**
 ```python
 from scripts.resource_monitor import ResourceMonitor
 
 monitor = ResourceMonitor(env, resource, "My Resource")
-# ... run simulation ...
+# ... 运行模拟 ...
 monitor.report()
 monitor.export_csv('data.csv')
 ```
 
-## Reference Documentation
+## 参考文档
 
-Detailed guides for specific topics:
+特定主题的详细指南：
 
-- **`references/resources.md`** - All resource types with examples
-- **`references/events.md`** - Event system and patterns
-- **`references/process-interaction.md`** - Process synchronization
-- **`references/monitoring.md`** - Data collection techniques
-- **`references/real-time.md`** - Real-time simulation setup
+- **`references/resources.md`** - 所有资源类型及示例
+- **`references/events.md`** - 事件系统和模式
+- **`references/process-interaction.md`** - 过程同步
+- **`references/monitoring.md`** - 数据收集技术
+- **`references/real-time.md`** - 实时模拟设置
 
-## Best Practices
+## 最佳实践
 
-1. **Generator functions**: Always use `yield` in process functions
-2. **Resource context managers**: Use `with resource.request() as req:` for automatic cleanup
-3. **Reproducibility**: Set `random.seed()` for consistent results
-4. **Monitoring**: Collect data throughout simulation, not just at the end
-5. **Validation**: Compare simple cases with analytical solutions
-6. **Documentation**: Comment process logic and parameter choices
-7. **Modular design**: Separate process logic, statistics, and configuration
+1. **生成器函数**：在过程函数中始终使用 `yield`
+2. **资源上下文管理器**：使用 `with resource.request() as req:` 进行自动清理
+3. **可重现性**：设置 `random.seed()` 以获得一致的结果
+4. **监控**：在整个模拟过程中收集数据，而不仅仅是在结束时
+5. **验证**：将简单案例与分析解决方案进行比较
+6. **文档**：注释过程逻辑和参数选择
+7. **模块化设计**：分离过程逻辑、统计和配置
 
-## Common Pitfalls
+## 常见陷阱
 
-1. **Forgetting yield**: Processes must yield events to pause
-2. **Event reuse**: Events can only be triggered once
-3. **Resource leaks**: Use context managers or ensure release
-4. **Blocking operations**: Avoid Python blocking calls in processes
-5. **Time units**: Stay consistent with time unit interpretation
-6. **Deadlocks**: Ensure at least one process can make progress
+1. **忘记 yield**：过程必须产生事件以暂停
+2. **事件重用**：事件只能触发一次
+3. **资源泄漏**：使用上下文管理器或确保释放
+4. **阻塞操作**：避免在过程中使用 Python 阻塞调用
+5. **时间单位**：保持时间单位解释的一致性
+6. **死锁**：确保至少一个过程可以取得进展
 
-## Example Use Cases
+## 示例用例
 
-- **Manufacturing**: Machine scheduling, production lines, inventory management
-- **Healthcare**: Emergency room simulation, patient flow, staff allocation
-- **Telecommunications**: Network traffic, packet routing, bandwidth allocation
-- **Transportation**: Traffic flow, logistics, vehicle routing
-- **Service operations**: Call centers, retail checkout, appointment scheduling
-- **Computer systems**: CPU scheduling, memory management, I/O operations
-
+- **制造业**：机器调度、生产线、库存管理
+- **医疗保健**：急诊室模拟、患者流程、人员分配
+- **电信**：网络流量、数据包路由、带宽分配
+- **交通运输**：交通流、物流、车辆路由
+- **服务运营**：呼叫中心、零售结账、预约调度
+- **计算机系统**：CPU 调度、内存管理、I/O 操作

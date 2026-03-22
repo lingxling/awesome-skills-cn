@@ -8,6 +8,7 @@ source: self
 # Skill Router
 
 ## When to Use
+
 Use this skill when:
 - The user says "I don't know where to start" or "which skill should I use"
 - The user has a vague goal without a clear method

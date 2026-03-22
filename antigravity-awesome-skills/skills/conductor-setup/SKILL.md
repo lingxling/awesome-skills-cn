@@ -3,8 +3,6 @@ name: conductor-setup
 description: Configure a Rails project to work with Conductor (parallel coding agents)
 allowed-tools: Bash(chmod *), Bash(bundle *), Bash(npm *), Bash(script/server)
 context: fork
-risk: unknown
-source: community
 metadata:
   author: Shpigford
   version: "1.0"

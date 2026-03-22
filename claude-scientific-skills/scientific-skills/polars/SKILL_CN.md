@@ -1,6 +1,6 @@
 ---
 name: polars
-description: Fast in-memory DataFrame library for datasets that fit in RAM. Use when pandas is too slow but data still fits in memory. Lazy evaluation, parallel execution, Apache Arrow backend. Best for 1-100GB datasets, ETL pipelines, faster pandas replacement. For larger-than-RAM data use dask or vaex.
+description: 用于适合RAM的数据集的快速内存中DataFrame库。当pandas太慢但数据仍适合内存时使用。惰性评估、并行执行、Apache Arrow后端。最适合1-100GB数据集、ETL管道、更快的pandas替代品。对于大于RAM的数据，使用dask或vaex。
 license: https://github.com/pola-rs/polars/blob/main/LICENSE
 metadata:
     skill-author: K-Dense Inc.
@@ -8,137 +8,137 @@ metadata:
 
 # Polars
 
-## Overview
+## 概述
 
-Polars is a lightning-fast DataFrame library for Python and Rust built on Apache Arrow. Work with Polars' expression-based API, lazy evaluation framework, and high-performance data manipulation capabilities for efficient data processing, pandas migration, and data pipeline optimization.
+Polars是一个基于Apache Arrow构建的Python和Rust的闪电快速DataFrame库。使用Polars的基于表达式的API、惰性评估框架和高性能数据操作功能，进行高效数据处理、pandas迁移和数据管道优化。
 
-## Quick Start
+## 快速开始
 
-### Installation and Basic Usage
+### 安装和基本使用
 
-Install Polars:
+安装Polars：
 ```python
 uv pip install polars
 ```
 
-Basic DataFrame creation and operations:
+基本DataFrame创建和操作：
 ```python
 import polars as pl
 
-# Create DataFrame
+# 创建DataFrame
 df = pl.DataFrame({
     "name": ["Alice", "Bob", "Charlie"],
     "age": [25, 30, 35],
     "city": ["NY", "LA", "SF"]
 })
 
-# Select columns
+# 选择列
 df.select("name", "age")
 
-# Filter rows
+# 过滤行
 df.filter(pl.col("age") > 25)
 
-# Add computed columns
+# 添加计算列
 df.with_columns(
     age_plus_10=pl.col("age") + 10
 )
 ```
 
-## Core Concepts
+## 核心概念
 
-### Expressions
+### 表达式
 
-Expressions are the fundamental building blocks of Polars operations. They describe transformations on data and can be composed, reused, and optimized.
+表达式是Polars操作的基本构建块。它们描述数据的转换，可以组合、重用和优化。
 
-**Key principles:**
-- Use `pl.col("column_name")` to reference columns
-- Chain methods to build complex transformations
-- Expressions are lazy and only execute within contexts (select, with_columns, filter, group_by)
+**关键原则：**
+- 使用`pl.col("column_name")`引用列
+- 链式方法构建复杂转换
+- 表达式是惰性的，只在上下文中执行（select、with_columns、filter、group_by）
 
-**Example:**
+**示例：**
 ```python
-# Expression-based computation
+# 基于表达式的计算
 df.select(
     pl.col("name"),
     (pl.col("age") * 12).alias("age_in_months")
 )
 ```
 
-### Lazy vs Eager Evaluation
+### 惰性vs即时评估
 
-**Eager (DataFrame):** Operations execute immediately
+**即时（DataFrame）：** 操作立即执行
 ```python
-df = pl.read_csv("file.csv")  # Reads immediately
-result = df.filter(pl.col("age") > 25)  # Executes immediately
+df = pl.read_csv("file.csv")  # 立即读取
+result = df.filter(pl.col("age") > 25)  # 立即执行
 ```
 
-**Lazy (LazyFrame):** Operations build a query plan, optimized before execution
+**惰性（LazyFrame）：** 操作构建查询计划，执行前优化
 ```python
-lf = pl.scan_csv("file.csv")  # Doesn't read yet
+lf = pl.scan_csv("file.csv")  # 尚未读取
 result = lf.filter(pl.col("age") > 25).select("name", "age")
-df = result.collect()  # Now executes optimized query
+df = result.collect()  # 现在执行优化查询
 ```
 
-**When to use lazy:**
-- Working with large datasets
-- Complex query pipelines
-- When only some columns/rows are needed
-- Performance is critical
+**何时使用惰性：**
+- 处理大型数据集
+- 复杂查询管道
+- 只需要部分列/行
+- 性能至关重要
 
-**Benefits of lazy evaluation:**
-- Automatic query optimization
-- Predicate pushdown
-- Projection pushdown
-- Parallel execution
+**惰性评估的好处：**
+- 自动查询优化
+- 谓词下推
+- 投影下推
+- 并行执行
 
-For detailed concepts, load `references/core_concepts.md`.
+有关详细概念，请加载`references/core_concepts.md`。
 
-## Common Operations
+## 常见操作
 
 ### Select
-Select and manipulate columns:
+选择和操作列：
 ```python
-# Select specific columns
+# 选择特定列
 df.select("name", "age")
 
-# Select with expressions
+# 用表达式选择
 df.select(
     pl.col("name"),
     (pl.col("age") * 2).alias("double_age")
 )
 
-# Select all columns matching a pattern
+# 选择匹配模式的所有列
 df.select(pl.col("^.*_id$"))
 ```
 
 ### Filter
-Filter rows by conditions:
+按条件过滤行：
 ```python
-# Single condition
+# 单个条件
 df.filter(pl.col("age") > 25)
 
-# Multiple conditions (cleaner than using &)
+# 多个条件（比使用&更清晰）
 df.filter(
     pl.col("age") > 25,
     pl.col("city") == "NY"
 )
 
-# Complex conditions
+# 复杂条件
 df.filter(
     (pl.col("age") > 25) | (pl.col("city") == "LA")
 )
 ```
 
 ### With Columns
-Add or modify columns while preserving existing ones:
+添加或修改列，同时保留现有列：
 ```python
-# Add new columns
+# 添加新列
 df.with_columns(
     age_plus_10=pl.col("age") + 10,
     name_upper=pl.col("name").str.to_uppercase()
 )
 
-# Parallel computation (all columns computed in parallel)
+# 并行计算（所有列并行计算）
 df.with_columns(
     pl.col("value") * 10,
     pl.col("value") * 100,
@@ -146,157 +146,157 @@ df.with_columns(
 ```
 
 ### Group By and Aggregations
-Group data and compute aggregations:
+分组数据并计算聚合：
 ```python
-# Basic grouping
+# 基本分组
 df.group_by("city").agg(
     pl.col("age").mean().alias("avg_age"),
     pl.len().alias("count")
 )
 
-# Multiple group keys
+# 多个分组键
 df.group_by("city", "department").agg(
     pl.col("salary").sum()
 )
 
-# Conditional aggregations
+# 条件聚合
 df.group_by("city").agg(
     (pl.col("age") > 30).sum().alias("over_30")
 )
 ```
 
-For detailed operation patterns, load `references/operations.md`.
+有关详细操作模式，请加载`references/operations.md`。
 
-## Aggregations and Window Functions
+## 聚合和窗口函数
 
-### Aggregation Functions
-Common aggregations within `group_by` context:
-- `pl.len()` - count rows
-- `pl.col("x").sum()` - sum values
-- `pl.col("x").mean()` - average
-- `pl.col("x").min()` / `pl.col("x").max()` - extremes
-- `pl.first()` / `pl.last()` - first/last values
+### 聚合函数
+`group_by`上下文中的常见聚合：
+- `pl.len()` - 计数行
+- `pl.col("x").sum()` - 求和值
+- `pl.col("x").mean()` - 平均值
+- `pl.col("x").min()` / `pl.col("x").max()` - 极值
+- `pl.first()` / `pl.last()` - 第一个/最后一个值
 
-### Window Functions with `over()`
-Apply aggregations while preserving row count:
+### 使用`over()`的窗口函数
+应用聚合同时保留行数：
 ```python
-# Add group statistics to each row
+# 向每行添加分组统计
 df.with_columns(
     avg_age_by_city=pl.col("age").mean().over("city"),
     rank_in_city=pl.col("salary").rank().over("city")
 )
 
-# Multiple grouping columns
+# 多个分组列
 df.with_columns(
     group_avg=pl.col("value").mean().over("category", "region")
 )
 ```
 
-**Mapping strategies:**
-- `group_to_rows` (default): Preserves original row order
-- `explode`: Faster but groups rows together
-- `join`: Creates list columns
+**映射策略：**
+- `group_to_rows`（默认）：保留原始行顺序
+- `explode`：更快但将分组行放在一起
+- `join`：创建列表列
 
-## Data I/O
+## 数据I/O
 
-### Supported Formats
-Polars supports reading and writing:
-- CSV, Parquet, JSON, Excel
-- Databases (via connectors)
-- Cloud storage (S3, Azure, GCS)
+### 支持的格式
+Polars支持读取和写入：
+- CSV、Parquet、JSON、Excel
+- 数据库（通过连接器）
+- 云存储（S3、Azure、GCS）
 - Google BigQuery
-- Multiple/partitioned files
+- 多个/分区文件
 
-### Common I/O Operations
+### 常见I/O操作
 
-**CSV:**
+**CSV：**
 ```python
-# Eager
+# 即时
 df = pl.read_csv("file.csv")
 df.write_csv("output.csv")
 
-# Lazy (preferred for large files)
+# 惰性（大文件首选）
 lf = pl.scan_csv("file.csv")
 result = lf.filter(...).select(...).collect()
 ```
 
-**Parquet (recommended for performance):**
+**Parquet（性能推荐）：**
 ```python
 df = pl.read_parquet("file.parquet")
 df.write_parquet("output.parquet")
 ```
 
-**JSON:**
+**JSON：**
 ```python
 df = pl.read_json("file.json")
 df.write_json("output.json")
 ```
 
-For comprehensive I/O documentation, load `references/io_guide.md`.
+有关全面的I/O文档，请加载`references/io_guide.md`。
 
-## Transformations
+## 转换
 
 ### Joins
-Combine DataFrames:
+合并DataFrames：
 ```python
-# Inner join
+# 内连接
 df1.join(df2, on="id", how="inner")
 
-# Left join
+# 左连接
 df1.join(df2, on="id", how="left")
 
-# Join on different column names
+# 不同列名连接
 df1.join(df2, left_on="user_id", right_on="id")
 ```
 
 ### Concatenation
-Stack DataFrames:
+堆叠DataFrames：
 ```python
-# Vertical (stack rows)
+# 垂直（堆叠行）
 pl.concat([df1, df2], how="vertical")
 
-# Horizontal (add columns)
+# 水平（添加列）
 pl.concat([df1, df2], how="horizontal")
 
-# Diagonal (union with different schemas)
+# 对角线（不同模式的联合）
 pl.concat([df1, df2], how="diagonal")
 ```
 
 ### Pivot and Unpivot
-Reshape data:
+重塑数据：
 ```python
-# Pivot (wide format)
+# Pivot（宽格式）
 df.pivot(values="sales", index="date", columns="product")
 
-# Unpivot (long format)
+# Unpivot（长格式）
 df.unpivot(index="id", on=["col1", "col2"])
 ```
 
-For detailed transformation examples, load `references/transformations.md`.
+有关详细转换示例，请加载`references/transformations.md`。
 
-## Pandas Migration
+## Pandas迁移
 
-Polars offers significant performance improvements over pandas with a cleaner API. Key differences:
+Polars提供比pandas显著的性能改进，同时拥有更简洁的API。关键差异：
 
-### Conceptual Differences
-- **No index**: Polars uses integer positions only
-- **Strict typing**: No silent type conversions
-- **Lazy evaluation**: Available via LazyFrame
-- **Parallel by default**: Operations parallelized automatically
+### 概念差异
+- **无索引**：Polars仅使用整数位置
+- **严格类型**：无静默类型转换
+- **惰性评估**：通过LazyFrame可用
+- **默认并行**：操作自动并行化
 
-### Common Operation Mappings
+### 常见操作映射
 
-| Operation | Pandas | Polars |
+| 操作 | Pandas | Polars |
 |-----------|--------|--------|
-| Select column | `df["col"]` | `df.select("col")` |
-| Filter | `df[df["col"] > 10]` | `df.filter(pl.col("col") > 10)` |
-| Add column | `df.assign(x=...)` | `df.with_columns(x=...)` |
-| Group by | `df.groupby("col").agg(...)` | `df.group_by("col").agg(...)` |
-| Window | `df.groupby("col").transform(...)` | `df.with_columns(...).over("col")` |
+| 选择列 | `df["col"]` | `df.select("col")` |
+| 过滤 | `df[df["col"] > 10]` | `df.filter(pl.col("col") > 10)` |
+| 添加列 | `df.assign(x=...)` | `df.with_columns(x=...)` |
+| 分组 | `df.groupby("col").agg(...)` | `df.group_by("col").agg(...)` |
+| 窗口 | `df.groupby("col").transform(...)` | `df.with_columns(...).over("col")` |
 
-### Key Syntax Patterns
+### 关键语法模式
 
-**Pandas sequential (slow):**
+**Pandas顺序（慢）：**
 ```python
 df.assign(
     col_a=lambda df_: df_.value * 10,
@@ -304,7 +304,7 @@ df.assign(
 )
 ```
 
-**Polars parallel (fast):**
+**Polars并行（快）：**
 ```python
 df.with_columns(
     col_a=pl.col("value") * 10,
@@ -312,74 +312,73 @@ df.with_columns(
 )
 ```
 
-For comprehensive migration guide, load `references/pandas_migration.md`.
+有关全面的迁移指南，请加载`references/pandas_migration.md`。
 
-## Best Practices
+## 最佳实践
 
-### Performance Optimization
+### 性能优化
 
-1. **Use lazy evaluation for large datasets:**
+1. **对大型数据集使用惰性评估：**
    ```python
-   lf = pl.scan_csv("large.csv")  # Don't use read_csv
+   lf = pl.scan_csv("large.csv")  # 不要使用read_csv
    result = lf.filter(...).select(...).collect()
    ```
 
-2. **Avoid Python functions in hot paths:**
-   - Stay within expression API for parallelization
-   - Use `.map_elements()` only when necessary
-   - Prefer native Polars operations
+2. **避免热路径中的Python函数：**
+   - 留在表达式API内以实现并行化
+   - 仅在必要时使用`.map_elements()`
+   - 优先使用原生Polars操作
 
-3. **Use streaming for very large data:**
+3. **对非常大的数据使用流式处理：**
    ```python
    lf.collect(streaming=True)
    ```
 
-4. **Select only needed columns early:**
+4. **尽早选择所需列：**
    ```python
-   # Good: Select columns early
+   # 好：尽早选择列
    lf.select("col1", "col2").filter(...)
 
-   # Bad: Filter on all columns first
+   # 坏：先对所有列过滤
    lf.filter(...).select("col1", "col2")
    ```
 
-5. **Use appropriate data types:**
-   - Categorical for low-cardinality strings
-   - Appropriate integer sizes (i32 vs i64)
-   - Date types for temporal data
+5. **使用适当的数据类型：**
+   - 低基数字符串使用分类
+   - 适当的整数大小（i32 vs i64）
+   - 时间数据使用日期类型
 
-### Expression Patterns
+### 表达式模式
 
-**Conditional operations:**
+**条件操作：**
 ```python
 pl.when(condition).then(value).otherwise(other_value)
 ```
 
-**Column operations across multiple columns:**
+**跨多列的列操作：**
 ```python
-df.select(pl.col("^.*_value$") * 2)  # Regex pattern
+df.select(pl.col("^.*_value$") * 2)  # 正则模式
 ```
 
-**Null handling:**
+**空值处理：**
 ```python
 pl.col("x").fill_null(0)
 pl.col("x").is_null()
 pl.col("x").drop_nulls()
 ```
 
-For additional best practices and patterns, load `references/best_practices.md`.
+有关其他最佳实践和模式，请加载`references/best_practices.md`。
 
-## Resources
+## 资源
 
-This skill includes comprehensive reference documentation:
+此技能包括全面的参考文档：
 
 ### references/
-- `core_concepts.md` - Detailed explanations of expressions, lazy evaluation, and type system
-- `operations.md` - Comprehensive guide to all common operations with examples
-- `pandas_migration.md` - Complete migration guide from pandas to Polars
-- `io_guide.md` - Data I/O operations for all supported formats
-- `transformations.md` - Joins, concatenation, pivots, and reshaping operations
-- `best_practices.md` - Performance optimization tips and common patterns
+- `core_concepts.md` - 表达式、惰性评估和类型系统的详细解释
+- `operations.md` - 所有常见操作的综合指南，带有示例
+- `pandas_migration.md` - 从pandas到Polars的完整迁移指南
+- `io_guide.md` - 所有支持格式的数据I/O操作
+- `transformations.md` - 连接、连接、透视和重塑操作
+- `best_practices.md` - 性能优化技巧和常见模式
 
-Load these references as needed when users require detailed information about specific topics.
-
+当用户需要有关特定主题的详细信息时，根据需要加载这些参考。

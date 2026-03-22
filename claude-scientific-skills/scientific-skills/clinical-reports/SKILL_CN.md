@@ -1,1131 +1,1129 @@
 ---
 name: clinical-reports
-description: Write comprehensive clinical reports including case reports (CARE guidelines), diagnostic reports (radiology/pathology/lab), clinical trial reports (ICH-E3, SAE, CSR), and patient documentation (SOAP, H&P, discharge summaries). Full support with templates, regulatory compliance (HIPAA, FDA, ICH-GCP), and validation tools.
+description: 编写全面的临床报告,包括病例报告(CARE 指南)、诊断报告(放射学/病理学/实验室)、临床试验报告(ICH-E3、SAE、CSR)和患者文档(SOAP、H&P、出院摘要)。全面支持模板、监管合规性(HIPAA、FDA、ICH-GCP)和验证工具。
 allowed-tools: Read Write Edit Bash
-license: MIT License
+license: MIT 许可证
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Clinical Report Writing
+# 临床报告编写
 
-## Overview
+## 概述
 
-Clinical report writing is the process of documenting medical information with precision, accuracy, and compliance with regulatory standards. This skill covers four major categories of clinical reports: case reports for journal publication, diagnostic reports for clinical practice, clinical trial reports for regulatory submission, and patient documentation for medical records. Apply this skill for healthcare documentation, research dissemination, and regulatory compliance.
+临床报告编写是以精确、准确和符合监管标准的方式记录医疗信息的过程。此技能涵盖临床报告的四个主要类别:用于期刊发表的病例报告、用于临床实践的诊断报告、用于监管提交的临床试验报告以及用于医疗记录的患者文档。将此技能应用于医疗保健文档、研究传播和监管合规。
 
-**Critical Principle: Clinical reports must be accurate, complete, objective, and compliant with applicable regulations (HIPAA, FDA, ICH-GCP).** Patient privacy and data integrity are paramount. All clinical documentation must support evidence-based decision-making and meet professional standards.
+**关键原则: 临床报告必须准确、完整、客观并符合适用法规(HIPAA、FDA、ICH-GCP)。患者隐私和数据完整性至关重要。所有临床文档必须支持基于证据的决策制定并符合专业标准。**
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
-- Writing clinical case reports for journal submission (CARE guidelines)
-- Creating diagnostic reports (radiology, pathology, laboratory)
-- Documenting clinical trial data and adverse events
-- Preparing clinical study reports (CSR) for regulatory submission
-- Writing patient progress notes, SOAP notes, and clinical summaries
-- Drafting discharge summaries, H&P documents, or consultation notes
-- Ensuring HIPAA compliance and proper de-identification
-- Validating clinical documentation for completeness and accuracy
-- Preparing serious adverse event (SAE) reports
-- Creating data safety monitoring board (DSMB) reports
+在以下情况下使用此技能:
+- 编写用于期刊提交的临床病例报告(CARE 指南)
+- 创建诊断报告(放射学、病理学、实验室)
+- 记录临床试验数据和不良事件
+- 准备用于监管提交的临床研究报告(CSR)
+- 编写患者进展记录、SOAP 记录和临床摘要
+- 起草出院摘要、H&P 文档或咨询记录
+- 确保 HIPAA 合规性和正确的去标识化
+- 验证临床文档的完整性和准确性
+- 准备严重不良事件(SAE)报告
+- 创建数据安全监测委员会(DSMB)报告
 
-## Visual Enhancement with Scientific Schematics
+## 使用科学原理图进行视觉增强
 
-**⚠️ MANDATORY: Every clinical report MUST include at least 1 AI-generated figure using the scientific-schematics skill.**
+**⚠️ 强制要求: 每个临床报告必须包含至少 1 个使用 scientific-schematics 技能生成的 AI 图。**
 
-This is not optional. Clinical reports benefit greatly from visual elements. Before finalizing any document:
-1. Generate at minimum ONE schematic or diagram (e.g., patient timeline, diagnostic algorithm, or treatment workflow)
-2. For case reports: include clinical progression timeline
-3. For trial reports: include CONSORT flow diagram
+这不是可选的。临床报告从视觉元素中受益匪浅。在定稿任何文档之前:
+1. 至少生成一个原理图或图表(例如,患者时间线、诊断算法或治疗工作流程)
+2. 对于病例报告: 包括临床进展时间线
+3. 对于试验报告: 包括 CONSORT 流程图
 
-**How to generate figures:**
-- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
-- Simply describe your desired diagram in natural language
-- Nano Banana Pro will automatically generate, review, and refine the schematic
+**如何生成图表:**
+- 使用 **scientific-schematics** 技能生成 AI 驱动的出版质量图表
+- 只需用自然语言描述您想要的图表
+- Nano Banana Pro 将自动生成、审查和精炼原理图
 
-**How to generate schematics:**
+**如何生成原理图:**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
-The AI will automatically:
-- Create publication-quality images with proper formatting
-- Review and refine through multiple iterations
-- Ensure accessibility (colorblind-friendly, high contrast)
-- Save outputs in the figures/ directory
+AI 将自动:
+- 创建具有正确格式的出版质量图像
+- 通过多次迭代审查和精炼
+- 确保可访问性(色盲友好、高对比度)
+- 将输出保存在 figures/ 目录中
 
-**When to add schematics:**
-- Patient case timelines and clinical progression diagrams
-- Diagnostic algorithm flowcharts
-- Treatment protocol workflows
-- Anatomical diagrams for case reports
-- Clinical trial participant flow diagrams (CONSORT)
-- Adverse event classification trees
-- Any complex concept that benefits from visualization
+**何时添加原理图:**
+- 患者病例时间线和临床进展图表
+- 诊断算法流程图
+- 治疗方案工作流程
+- 病例报告的解剖图表
+- 临床试验参与者流程图(CONSORT)
+- 不良事件分类树
+- 任何受益于可视化的复杂概念
 
-For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.
+有关创建原理图的详细指导,请参阅 scientific-schematics 技能文档。
 
 ---
 
-## Core Capabilities
-
-### 1. Clinical Case Reports for Journal Publication
-
-Clinical case reports describe unusual clinical presentations, novel diagnoses, or rare complications. They contribute to medical knowledge and are published in peer-reviewed journals.
-
-#### CARE Guidelines Compliance
-
-The CARE (CAse REport) guidelines provide a standardized framework for case report writing. All case reports should follow this checklist:
-
-**Title**
-- Include the words "case report" or "case study"
-- Indicate the area of focus
-- Example: "Unusual Presentation of Acute Myocardial Infarction in a Young Patient: A Case Report"
-
-**Keywords**
-- 2-5 keywords for indexing and searchability
-- Use MeSH (Medical Subject Headings) terms when possible
-
-**Abstract** (structured or unstructured, 150-250 words)
-- Introduction: What is unique or novel about the case?
-- Patient concerns: Primary symptoms and key medical history
-- Diagnoses: Primary and secondary diagnoses
-- Interventions: Key treatments and procedures
-- Outcomes: Clinical outcome and follow-up
-- Conclusions: Main takeaway or clinical lesson
-
-**Introduction**
-- Brief background on the medical condition
-- Why this case is novel or important
-- Literature review of similar cases (brief)
-- What makes this case worth reporting
-
-**Patient Information**
-- Demographics (age, sex, race/ethnicity if relevant)
-- Medical history, family history, social history
-- Relevant comorbidities
-- **De-identification**: Remove or alter 18 HIPAA identifiers
-- **Patient consent**: Document informed consent for publication
-
-**Clinical Findings**
-- Chief complaint and presenting symptoms
-- Physical examination findings
-- Timeline of symptoms (consider timeline figure or table)
-- Relevant clinical observations
-
-**Timeline**
-- Chronological summary of key events
-- Dates of symptoms, diagnosis, interventions, outcomes
-- Can be presented as a table or figure
-- Example format:
-  - Day 0: Initial presentation with symptoms X, Y, Z
-  - Day 2: Diagnostic test A performed, revealed finding B
-  - Day 5: Treatment initiated with drug C
-  - Day 14: Clinical improvement noted
-  - Month 3: Follow-up examination shows complete resolution
-
-**Diagnostic Assessment**
-- Diagnostic tests performed (labs, imaging, procedures)
-- Results and interpretation
-- Differential diagnosis considered
-- Rationale for final diagnosis
-- Challenges in diagnosis
-
-**Therapeutic Interventions**
-- Medications (names, dosages, routes, duration)
-- Procedures or surgeries performed
-- Non-pharmacological interventions
-- Reasoning for treatment choices
-- Alternative treatments considered
-
-**Follow-up and Outcomes**
-- Clinical outcome (resolution, improvement, unchanged, worsened)
-- Follow-up duration and frequency
-- Long-term outcomes if available
-- Patient-reported outcomes
-- Adherence to treatment
-
-**Discussion**
-- Strengths and novelty of the case
-- How this case compares to existing literature
-- Limitations of the case report
-- Potential mechanisms or explanations
-- Clinical implications and lessons learned
-- Unanswered questions or areas for future research
-
-**Patient Perspective** (optional but encouraged)
-- Patient's experience and viewpoint
-- Impact on quality of life
-- Patient-reported outcomes
-- Quote from patient if appropriate
-
-**Informed Consent**
-- Statement documenting patient consent for publication
-- If patient deceased or unable to consent, describe proxy consent
-- For pediatric cases, parental/guardian consent
-- Example: "Written informed consent was obtained from the patient for publication of this case report and accompanying images. A copy of the written consent is available for review by the Editor-in-Chief of this journal."
-
-For detailed CARE guidelines, refer to `references/case_report_guidelines.md`.
-
-#### Journal-Specific Requirements
-
-Different journals have specific formatting requirements:
-- Word count limits (typically 1500-3000 words)
-- Number of figures/tables allowed
-- Reference style (AMA, Vancouver, APA)
-- Structured vs. unstructured abstract
-- Supplementary materials policies
-
-Check journal instructions for authors before submission.
-
-#### De-identification and Privacy
-
-**18 HIPAA Identifiers to Remove or Alter:**
-1. Names
-2. Geographic subdivisions smaller than state
-3. Dates (except year)
-4. Telephone numbers
-5. Fax numbers
-6. Email addresses
-7. Social Security numbers
-8. Medical record numbers
-9. Health plan beneficiary numbers
-10. Account numbers
-11. Certificate/license numbers
-12. Vehicle identifiers and serial numbers
-13. Device identifiers and serial numbers
-14. Web URLs
-15. IP addresses
-16. Biometric identifiers
-17. Full-face photographs
-18. Any other unique identifying characteristic
-
-**Best Practices:**
-- Use "the patient" instead of names
-- Report age ranges (e.g., "a woman in her 60s") or exact age if relevant
-- Use approximate dates or time intervals (e.g., "3 months prior")
-- Remove institution names unless necessary
-- Blur or crop identifying features in images
-- Obtain explicit consent for any potentially identifying information
-
-### 2. Clinical Diagnostic Reports
-
-Diagnostic reports communicate findings from imaging studies, pathological examinations, and laboratory tests. They must be clear, accurate, and actionable.
-
-#### Radiology Reports
-
-Radiology reports follow a standardized structure to ensure clarity and completeness.
-
-**Standard Structure:**
-
-**1. Patient Demographics**
-- Patient name (or ID in research contexts)
-- Date of birth or age
-- Medical record number
-- Examination date and time
-
-**2. Clinical Indication**
-- Reason for examination
-- Relevant clinical history
-- Specific clinical question to be answered
-- Example: "Rule out pulmonary embolism in patient with acute dyspnea"
-
-**3. Technique**
-- Imaging modality (X-ray, CT, MRI, ultrasound, PET, etc.)
-- Anatomical region examined
-- Contrast administration (type, route, volume)
-- Protocol or sequence used
-- Technical quality and limitations
-- Example: "Contrast-enhanced CT of the chest, abdomen, and pelvis was performed using 100 mL of intravenous iodinated contrast. Oral contrast was not administered."
-
-**4. Comparison**
-- Prior imaging studies available for comparison
-- Dates of prior studies
-- Stability or change from prior imaging
-- Example: "Comparison: CT chest from [date]"
-
-**5. Findings**
-- Systematic description of imaging findings
-- Organ-by-organ or region-by-region approach
-- Positive findings first, then pertinent negatives
-- Measurements of lesions or abnormalities
-- Use of standardized terminology (ACR lexicon, RadLex)
-- Example:
-  - Lungs: Bilateral ground-glass opacities, predominant in the lower lobes. No consolidation or pleural effusion.
-  - Mediastinum: No lymphadenopathy. Heart size normal.
-  - Abdomen: Liver, spleen, pancreas unremarkable. No free fluid.
-
-**6. Impression/Conclusion**
-- Concise summary of key findings
-- Answers to the clinical question
-- Differential diagnosis if applicable
-- Recommendations for follow-up or additional studies
-- Level of suspicion or diagnostic certainty
-- Example:
-  - "1. Bilateral ground-glass opacities consistent with viral pneumonia or atypical infection. COVID-19 cannot be excluded. Clinical correlation recommended.
-  - 2. No evidence of pulmonary embolism.
-  - 3. Recommend follow-up imaging in 4-6 weeks to assess resolution."
-
-**Structured Reporting:**
-
-Many radiology departments use structured reporting templates for common examinations:
-- Lung nodule reporting (Lung-RADS)
-- Breast imaging (BI-RADS)
-- Liver imaging (LI-RADS)
-- Prostate imaging (PI-RADS)
-- CT colonography (C-RADS)
-
-Structured reports improve consistency, reduce ambiguity, and facilitate data extraction.
-
-For radiology reporting standards, see `references/diagnostic_reports_standards.md`.
-
-#### Pathology Reports
-
-Pathology reports document microscopic findings from tissue specimens and provide diagnostic conclusions.
-
-**Surgical Pathology Report Structure:**
-
-**1. Patient Information**
-- Patient name and identifiers
-- Date of birth, age, sex
-- Ordering physician
-- Medical record number
-- Specimen received date
-
-**2. Specimen Information**
-- Specimen type (biopsy, excision, resection)
-- Anatomical site
-- Laterality if applicable
-- Number of specimens/blocks/slides
-- Example: "Skin, left forearm, excisional biopsy"
-
-**3. Clinical History**
-- Relevant clinical information
-- Indication for biopsy
-- Prior diagnoses
-- Example: "History of melanoma. New pigmented lesion, rule out recurrence."
-
-**4. Gross Description**
-- Macroscopic appearance of specimen
-- Size, weight, color, consistency
-- Orientation markers if present
-- Sectioning and sampling approach
-- Example: "The specimen consists of an ellipse of skin measuring 2.5 x 1.0 x 0.5 cm. A pigmented lesion measuring 0.6 cm in diameter is present on the surface. The specimen is serially sectioned and entirely submitted in cassettes A1-A3."
-
-**5. Microscopic Description**
-- Histological findings
-- Cellular characteristics
-- Architectural patterns
-- Presence of malignancy
-- Margins if applicable
-- Special stains or immunohistochemistry results
-
-**6. Diagnosis**
-- Primary diagnosis
-- Grade and stage if applicable (cancer)
-- Margin status
-- Lymph node status if applicable
-- Synoptic reporting for cancers (CAP protocols)
-- Example:
-  - "MALIGNANT MELANOMA, SUPERFICIAL SPREADING TYPE
-  - Breslow thickness: 1.2 mm
-  - Clark level: IV
-  - Mitotic rate: 3/mm²
-  - Ulceration: Absent
-  - Margins: Negative (closest margin 0.4 cm)
-  - Lymphovascular invasion: Not identified"
-
-**7. Comment** (if needed)
-- Additional context or interpretation
-- Differential diagnosis
-- Recommendations for additional studies
-- Clinical correlation suggestions
-
-**Synoptic Reporting:**
-
-The College of American Pathologists (CAP) provides synoptic reporting templates for cancer specimens. These checklists ensure all relevant diagnostic elements are documented.
-
-Key elements for cancer reporting:
-- Tumor site
-- Tumor size
-- Histologic type
-- Histologic grade
-- Extent of invasion
-- Lymph-vascular invasion
-- Perineural invasion
-- Margins
-- Lymph nodes (number examined, number positive)
-- Pathologic stage (TNM classification)
-- Ancillary studies (molecular markers, biomarkers)
-
-#### Laboratory Reports
-
-Laboratory reports communicate test results for clinical specimens (blood, urine, tissue, etc.).
-
-**Standard Components:**
-
-**1. Patient and Specimen Information**
-- Patient identifiers
-- Specimen type (blood, serum, urine, CSF, etc.)
-- Collection date and time
-- Received date and time
-- Ordering provider
-
-**2. Test Name and Method**
-- Full test name
-- Methodology (immunoassay, spectrophotometry, PCR, etc.)
-- Laboratory accession number
-
-**3. Results**
-- Quantitative or qualitative result
-- Units of measurement
-- Reference range (normal values)
-- Flags for abnormal values (H = high, L = low)
-- Critical values highlighted
-- Example:
-  - Hemoglobin: 8.5 g/dL (L) [Reference: 12.0-16.0 g/dL]
-  - White Blood Cell Count: 15.2 x10³/μL (H) [Reference: 4.5-11.0 x10³/μL]
-
-**4. Interpretation** (when applicable)
-- Clinical significance of results
-- Suggested follow-up or additional testing
-- Correlation with diagnosis
-- Drug levels and therapeutic ranges
-
-**5. Quality Control Information**
-- Specimen adequacy
-- Specimen quality issues (hemolyzed, lipemic, clotted)
-- Delays in processing
-- Technical limitations
-
-**Critical Value Reporting:**
-- Life-threatening results require immediate notification
-- Examples: glucose <40 or >500 mg/dL, potassium <2.5 or >6.5 mEq/L
-- Document notification time and recipient
-
-For laboratory standards and terminology, see `references/diagnostic_reports_standards.md`.
-
-### 3. Clinical Trial Reports
-
-Clinical trial reports document the conduct, results, and safety of clinical research studies. These reports are essential for regulatory submissions and scientific publication.
-
-#### Serious Adverse Event (SAE) Reports
-
-SAE reports document unexpected serious adverse reactions during clinical trials. Regulatory requirements mandate timely reporting to IRBs, sponsors, and regulatory agencies.
-
-**Definition of Serious Adverse Event:**
-An adverse event is serious if it:
-- Results in death
-- Is life-threatening
-- Requires inpatient hospitalization or prolongation of existing hospitalization
-- Results in persistent or significant disability/incapacity
-- Is a congenital anomaly/birth defect
-- Requires intervention to prevent permanent impairment or damage
-
-**SAE Report Components:**
-
-**1. Study Information**
-- Protocol number and title
-- Study phase
-- Sponsor name
-- Principal investigator
-- IND/IDE number (if applicable)
-- Clinical trial registry number (NCT number)
-
-**2. Patient Information (De-identified)**
-- Subject ID or randomization number
-- Age, sex, race/ethnicity
-- Study arm or treatment group
-- Date of informed consent
-- Date of first study intervention
-
-**3. Event Information**
-- Event description (narrative)
-- Date of onset
-- Date of resolution (or ongoing)
-- Severity (mild, moderate, severe)
-- Seriousness criteria met
-- Outcome (recovered, recovering, not recovered, fatal, unknown)
-
-**4. Causality Assessment**
-- Relationship to study intervention (unrelated, unlikely, possible, probable, definite)
-- Relationship to study procedures
-- Relationship to underlying disease
-- Rationale for causality determination
-
-**5. Action Taken**
-- Modification of study intervention (dose reduction, temporary hold, permanent discontinuation)
-- Concomitant medications or treatments administered
-- Hospitalization details
-- Outcome and follow-up plan
-
-**6. Expectedness**
-- Expected per protocol or investigator's brochure
-- Unexpected event requiring expedited reporting
-- Comparison to known safety profile
-
-**7. Narrative**
-- Detailed description of the event
-- Timeline of events
-- Clinical course and management
-- Laboratory and diagnostic test results
-- Final diagnosis or conclusion
-
-**8. Reporter Information**
-- Name and contact of reporter
-- Report date
-- Signature
-
-**Regulatory Timelines:**
-- Fatal or life-threatening unexpected SAEs: 7 days for preliminary report, 15 days for complete report
-- Other serious unexpected events: 15 days
-- IRB notification: per institutional policy, typically within 5-10 days
-
-For detailed SAE reporting guidance, see `references/clinical_trial_reporting.md`.
-
-#### Clinical Study Reports (CSR)
-
-Clinical study reports are comprehensive documents summarizing the design, conduct, and results of clinical trials. They are submitted to regulatory agencies as part of drug approval applications.
-
-**ICH-E3 Structure:**
-
-The ICH E3 guideline defines the structure and content of clinical study reports.
-
-**Main Sections:**
-
-**1. Title Page**
-- Study title and protocol number
-- Sponsor and investigator information
-- Report date and version
-
-**2. Synopsis** (5-15 pages)
-- Brief summary of entire study
-- Objectives, methods, results, conclusions
-- Key efficacy and safety findings
-- Can stand alone
-
-**3. Table of Contents**
-
-**4. List of Abbreviations and Definitions**
-
-**5. Ethics** (Section 2)
-- IRB/IEC approvals
-- Informed consent process
-- GCP compliance statement
-
-**6. Investigators and Study Administrative Structure** (Section 3)
-- List of investigators and sites
-- Study organization
-- Monitoring and quality assurance
-
-**7. Introduction** (Section 4)
-- Background and rationale
-- Study objectives and purpose
-
-**8. Study Objectives and Plan** (Section 5)
-- Overall design and plan
-- Objectives (primary and secondary)
-- Endpoints (efficacy and safety)
-- Sample size determination
-
-**9. Study Patients** (Section 6)
-- Inclusion and exclusion criteria
-- Patient disposition
-- Protocol deviations
-- Demographic and baseline characteristics
-
-**10. Efficacy Evaluation** (Section 7)
-- Data sets analyzed (ITT, PP, safety)
-- Demographic and other baseline characteristics
-- Efficacy results for primary and secondary endpoints
-- Subgroup analyses
-- Dropouts and missing data
-
-**11. Safety Evaluation** (Section 8)
-- Extent of exposure
-- Adverse events (summary tables)
-- Serious adverse events (narratives)
-- Laboratory values
-- Vital signs and physical findings
-- Deaths and other serious events
-
-**12. Discussion and Overall Conclusions** (Section 9)
-- Interpretation of results
-- Benefit-risk assessment
-- Clinical implications
-
-**13. Tables, Figures, and Graphs** (Section 10)
-
-**14. Reference List** (Section 11)
-
-**15. Appendices** (Section 12)
-- Study protocol and amendments
-- Sample case report forms
-- List of investigators and ethics committees
-- Patient information and consent forms
-- Investigator's brochure references
-- Publications based on the study
-
-**Key Principles:**
-- Objectivity and transparency
-- Comprehensive data presentation
-- Adherence to statistical analysis plan
-- Clear presentation of safety data
-- Integration of appendices
-
-For ICH-E3 templates and detailed guidance, see `references/clinical_trial_reporting.md` and `assets/clinical_trial_csr_template.md`.
-
-#### Protocol Deviations
-
-Protocol deviations are departures from the approved study protocol. They must be documented, assessed, and reported.
-
-**Categories:**
-- **Minor deviation**: Does not significantly impact patient safety or data integrity
-- **Major deviation**: May impact patient safety, data integrity, or study conduct
-- **Violation**: Serious deviation requiring immediate action and reporting
-
-**Documentation Requirements:**
-- Description of deviation
-- Date of occurrence
-- Subject ID affected
-- Impact on safety and data
-- Corrective and preventive actions (CAPA)
-- Root cause analysis
-- Preventive measures implemented
-
-### 4. Patient Clinical Documentation
-
-Patient documentation records clinical encounters, progress, and care plans. Accurate documentation supports continuity of care, billing, and legal protection.
-
-#### SOAP Notes
-
-SOAP notes are the most common format for progress notes in clinical practice.
-
-**Structure:**
-
-**S - Subjective**
-- Patient's reported symptoms and concerns
-- History of present illness (HPI)
-- Review of systems (ROS) relevant to visit
-- Patient's own words (use quotes when helpful)
-- Example: "Patient reports worsening shortness of breath over the past 3 days, particularly with exertion. Denies chest pain, fever, or cough."
-
-**O - Objective**
-- Measurable clinical findings
-- Vital signs (temperature, blood pressure, heart rate, respiratory rate, oxygen saturation)
-- Physical examination findings (organized by system)
-- Laboratory and imaging results
-- Example:
-  - Vitals: T 98.6°F, BP 142/88, HR 92, RR 22, SpO2 91% on room air
-  - General: Mild respiratory distress
-  - Cardiovascular: Regular rhythm, no murmurs
-  - Pulmonary: Bilateral crackles at bases
-  - Extremities: 2+ pitting edema bilaterally
-
-**A - Assessment**
-- Clinical impression or diagnosis
-- Differential diagnosis
-- Severity and stability
-- Progress toward treatment goals
-- Example:
-  - "1. Acute decompensated heart failure, NYHA Class III
-  - 2. Hypertension, poorly controlled
-  - 3. Chronic kidney disease, stage 3"
-
-**P - Plan**
-- Diagnostic plan (further testing)
-- Therapeutic plan (medications, procedures)
-- Patient education and counseling
-- Follow-up arrangements
-- Example:
-  - "Diagnostics: BNP, chest X-ray, echocardiogram
-  - Therapeutics: Increase furosemide to 40 mg PO BID, continue lisinopril 10 mg daily, strict fluid restriction to 1.5 L/day
-  - Education: Signs of worsening heart failure, daily weights
-  - Follow-up: Cardiology appointment in 1 week, call if weight gain >2 lbs in 1 day"
-
-**Documentation Tips:**
-- Be concise but complete
-- Use standard medical abbreviations
-- Document time of encounter
-- Sign and date all notes
-- Avoid speculation or judgment
-- Document medical necessity for billing
-- Include patient's response to treatment
-
-For SOAP note templates and examples, see `assets/soap_note_template.md`.
-
-#### History and Physical (H&P)
-
-The H&P is a comprehensive assessment performed at admission or initial encounter.
-
-**Components:**
-
-**1. Chief Complaint (CC)**
-- Brief statement of why patient is seeking care
-- Use patient's own words
-- Example: "Chest pain for 2 hours"
-
-**2. History of Present Illness (HPI)**
-- Detailed chronological narrative of current problem
-- Use OPQRST mnemonic for pain:
-  - Onset: When did it start?
-  - Provocation/Palliation: What makes it better or worse?
-  - Quality: What does it feel like?
-  - Region/Radiation: Where is it? Does it spread?
-  - Severity: How bad is it (0-10 scale)?
-  - Timing: Constant or intermittent? Duration?
-- Associated symptoms
-- Prior evaluations or treatments
-
-**3. Past Medical History (PMH)**
-- Chronic medical conditions
-- Previous hospitalizations
-- Surgeries and procedures
-- Example: "Hypertension (diagnosed 2015), type 2 diabetes mellitus (diagnosed 2018), prior appendectomy (2010)"
-
-**4. Medications**
-- Current medications with doses and frequencies
-- Over-the-counter medications
-- Herbal supplements
-- Allergies and reactions
-
-**5. Allergies**
-- Drug allergies with type of reaction
-- Food allergies
-- Environmental allergies
-- Example: "Penicillin (rash), shellfish (anaphylaxis)"
-
-**6. Family History (FH)**
-- Medical conditions in first-degree relatives
-- Age and cause of death of parents
-- Hereditary conditions
-- Example: "Father with coronary artery disease (MI at age 55), mother with breast cancer (diagnosed age 62)"
-
-**7. Social History (SH)**
-- Tobacco use (pack-years)
-- Alcohol use (drinks per week)
-- Illicit drug use
-- Occupation
-- Living situation
-- Sexual history if relevant
-- Example: "Former smoker, quit 5 years ago (20 pack-year history). Occasional alcohol (2-3 drinks/week). Works as accountant. Lives with spouse."
-
-**8. Review of Systems (ROS)**
-- Systematic review of symptoms by organ system
-- Typically 10-14 systems
-- Pertinent positives and negatives
-- Systems: Constitutional, Eyes, ENT, Cardiovascular, Respiratory, GI, GU, Musculoskeletal, Skin, Neurological, Psychiatric, Endocrine, Hematologic/Lymphatic, Allergic/Immunologic
-
-**9. Physical Examination**
-- Vital signs
-- General appearance
-- Systematic examination by organ system
-- HEENT, Neck, Cardiovascular, Pulmonary, Abdomen, Extremities, Neurological, Skin
-- Use standard terminology and abbreviations
-
-**10. Assessment and Plan**
-- Problem list with assessment and plan for each
-- Numbered list format
-- Diagnostic and therapeutic plans
-- Disposition (admit, discharge, transfer)
-
-For H&P templates, see `assets/history_physical_template.md`.
-
-#### Discharge Summaries
-
-Discharge summaries document the hospital stay and communicate care plan to outpatient providers.
-
-**Required Elements:**
-
-**1. Patient Identification**
-- Name, date of birth, medical record number
-- Admission and discharge dates
-- Attending physician
-- Admitting and discharge diagnoses
-
-**2. Reason for Hospitalization**
-- Brief description of presenting problem
-- Chief complaint
-
-**3. Hospital Course**
-- Chronological narrative of key events
-- Significant findings and procedures
-- Response to treatment
-- Complications
-- Consultations obtained
-- Organized by problem or chronologically
-
-**4. Discharge Diagnoses**
-- Primary diagnosis
-- Secondary diagnoses
-- Complications
-- Comorbidities
-
-**5. Procedures Performed**
-- Surgeries
-- Invasive procedures
-- Diagnostic procedures
-
-**6. Discharge Medications**
-- Complete medication list with instructions
-- Changes from admission medications
-- New medications with indications
-
-**7. Discharge Condition**
-- Stable, improved, unchanged, expired
-- Functional status
-- Mental status
-
-**8. Discharge Disposition**
-- Home, skilled nursing facility, rehabilitation, hospice
-- With or without services
-
-**9. Follow-up Plans**
-- Appointments scheduled
-- Recommended follow-up timing
-- Pending tests or studies
-- Referrals
-
-**10. Patient Instructions**
-- Activity restrictions
-- Dietary restrictions
-- Wound care
-- Warning signs to seek care
-- Medication instructions
-
-**Best Practices:**
-- Complete within 24-48 hours of discharge
-- Use clear language for outpatient providers
-- Highlight important pending results
-- Document code status discussions
-- Include patient education provided
-
-For discharge summary templates, see `assets/discharge_summary_template.md`.
-
-## Regulatory Compliance and Privacy
-
-### HIPAA Compliance
-
-The Health Insurance Portability and Accountability Act (HIPAA) mandates protection of patient health information.
-
-**Key Requirements:**
-- Minimum necessary disclosure
-- Patient authorization for use beyond treatment/payment/operations
-- Secure storage and transmission
-- Audit trails for electronic records
-- Breach notification procedures
-
-**De-identification Methods:**
-1. **Safe Harbor Method**: Remove 18 identifiers
-2. **Expert Determination**: Statistical method confirming low re-identification risk
-
-**Business Associate Agreements:**
-Required when PHI is shared with third parties for services
-
-For detailed HIPAA guidance, see `references/regulatory_compliance.md`.
-
-### FDA Regulations
-
-Clinical trial documentation must comply with FDA regulations:
-- 21 CFR Part 11 (Electronic Records and Signatures)
-- 21 CFR Part 50 (Informed Consent)
-- 21 CFR Part 56 (IRB Standards)
-- 21 CFR Part 312 (IND Regulations)
-
-### ICH-GCP Guidelines
-
-Good Clinical Practice (GCP) guidelines ensure quality and ethical standards in clinical trials:
-- Protocol adherence
-- Informed consent documentation
-- Source document requirements
-- Audit trails and data integrity
-- Investigator responsibilities
-
-For ICH-GCP compliance, see `references/regulatory_compliance.md`.
-
-## Medical Terminology and Standards
-
-### Standardized Nomenclature
-
-**SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms)**
-- Comprehensive clinical terminology
-- Used for electronic health records
-- Enables semantic interoperability
-
-**LOINC (Logical Observation Identifiers Names and Codes)**
-- Standard for laboratory and clinical observations
-- Facilitates data exchange and reporting
-
-**ICD-10-CM (International Classification of Diseases, 10th Revision, Clinical Modification)**
-- Diagnosis coding for billing and epidemiology
-- Required for reimbursement
-
-**CPT (Current Procedural Terminology)**
-- Procedure coding for billing
-- Maintained by AMA
-
-### Abbreviation Standards
-
-**Acceptable Abbreviations:**
-Use standard abbreviations to improve efficiency while maintaining clarity.
-
-**Do Not Use List (Joint Commission):**
-- U (unit) - write "unit"
-- IU (international unit) - write "international unit"
-- QD, QOD (daily, every other day) - write "daily" or "every other day"
-- Trailing zero (X.0 mg) - never use after decimal
-- Lack of leading zero (.X mg) - always use before decimal (0.X mg)
-- MS, MSO4, MgSO4 - write "morphine sulfate" or "magnesium sulfate"
-
-For comprehensive terminology standards, see `references/medical_terminology.md`.
-
-## Quality Assurance and Validation
-
-### Documentation Quality Principles
-
-**Completeness:**
-- All required elements present
-- No missing data fields
-- Comprehensive patient information
-
-**Accuracy:**
-- Factually correct information
-- Verified data sources
-- Appropriate clinical reasoning
-
-**Timeliness:**
-- Documented contemporaneously or shortly after encounter
-- Time-sensitive reports prioritized
-- Regulatory deadlines met
-
-**Clarity:**
-- Clear and unambiguous language
-- Organized logical structure
-- Appropriate use of medical terminology
-
-**Compliance:**
-- Regulatory requirements met
-- Privacy protections in place
-- Institutional policies followed
-
-### Validation Checklists
-
-For each report type, use validation checklists to ensure quality:
-- Case report CARE checklist
-- Diagnostic report completeness
-- SAE report regulatory compliance
-- Clinical documentation billing requirements
-
-Validation scripts are available in the `scripts/` directory.
-
-## Data Presentation in Clinical Reports
-
-### Tables and Figures
-
-**Tables for Clinical Data:**
-- Demographic and baseline characteristics
-- Adverse events summary
-- Laboratory values over time
-- Efficacy outcomes
-
-**Table Design Principles:**
-- Clear column headers with units
-- Footnotes for abbreviations and statistical notes
-- Consistent formatting
-- Appropriate precision (significant figures)
-
-**Figures for Clinical Data:**
-- Kaplan-Meier survival curves
-- Forest plots for subgroup analyses
-- Patient flow diagrams (CONSORT)
-- Timeline figures for case reports
-- Before-and-after images
-
-**Image Guidelines:**
-- High resolution (300 dpi minimum)
-- Appropriate scale bars
-- Annotations for key features
-- De-identified (no patient identifiers visible)
-- Informed consent for recognizable images
-
-For data presentation standards, see `references/data_presentation.md`.
-
-## Integration with Other Skills
-
-This clinical reports skill integrates with:
-- **Scientific Writing**: For clear, professional medical writing
-- **Peer Review**: For quality assessment of case reports
-- **Citation Management**: For literature references in case reports
-- **Research Grants**: For clinical trial protocol development
-- **Literature Review**: For background sections in case reports
-
-## Workflow for Clinical Report Writing
-
-### Case Report Workflow
-
-**Phase 1: Case Identification and Consent (Week 1)**
-- Identify novel or educational case
-- Obtain patient informed consent
-- De-identify patient information
-- Collect clinical data and images
-
-**Phase 2: Literature Review (Week 1-2)**
-- Search for similar cases
-- Review relevant pathophysiology
-- Identify knowledge gaps
-- Determine novelty and significance
-
-**Phase 3: Drafting (Week 2-3)**
-- Write structured outline following CARE guidelines
-- Draft all sections (abstract through discussion)
-- Create timeline and figures
-- Format references
-
-**Phase 4: Internal Review (Week 3-4)**
-- Co-author review
-- Attending physician review
-- Institutional review if required
-- Patient review of de-identified draft
-
-**Phase 5: Journal Selection and Submission (Week 4-5)**
-- Select appropriate journal
-- Format per journal guidelines
-- Prepare cover letter
-- Submit manuscript
-
-**Phase 6: Revision (Variable)**
-- Respond to peer reviewer comments
-- Revise manuscript
-- Resubmit
-
-### Diagnostic Report Workflow
-
-**Real-time Workflow:**
-- Review clinical indication and prior studies
-- Interpret imaging, pathology, or laboratory findings
-- Dictate or type report using structured format
-- Peer review for complex cases
-- Final sign-out and distribution
-- Critical value notification if applicable
-
-**Turnaround Time Benchmarks:**
-- STAT reports: <1 hour
-- Routine reports: 24-48 hours
-- Complex cases: 2-5 days
-- Pending additional studies: documented delay
-
-### Clinical Trial Report Workflow
-
-**SAE Report: 24 hours to 15 days**
-- Event identified by site
-- Initial assessment and documentation
-- Causality and expectedness determination
-- Report completion and review
-- Submission to sponsor, IRB, FDA (as required)
-- Follow-up reporting until resolution
-
-**CSR: 6-12 months post-study completion**
-- Database lock and data cleaning
-- Statistical analysis per SAP
-- Drafting by medical writer
-- Review by biostatistician and clinical team
-- Quality control review
-- Final approval and regulatory submission
-
-## Resources
-
-This skill includes comprehensive reference files and templates:
-
-### Reference Files
-
-- `references/case_report_guidelines.md` - CARE guidelines, journal requirements, writing tips
-- `references/diagnostic_reports_standards.md` - ACR, CAP, laboratory reporting standards
-- `references/clinical_trial_reporting.md` - ICH-E3, CONSORT, SAE reporting, CSR structure
-- `references/patient_documentation.md` - SOAP notes, H&P, discharge summaries, coding
-- `references/regulatory_compliance.md` - HIPAA, 21 CFR Part 11, ICH-GCP, FDA requirements
-- `references/medical_terminology.md` - SNOMED, LOINC, ICD-10, abbreviations, nomenclature
-- `references/data_presentation.md` - Tables, figures, safety data, CONSORT diagrams
-- `references/peer_review_standards.md` - Review criteria for clinical manuscripts
-
-### Template Assets
-
-- `assets/case_report_template.md` - Structured case report following CARE guidelines
-- `assets/radiology_report_template.md` - Standard radiology report format
-- `assets/pathology_report_template.md` - Surgical pathology report with synoptic elements
-- `assets/lab_report_template.md` - Clinical laboratory report format
-- `assets/clinical_trial_sae_template.md` - Serious adverse event report form
-- `assets/clinical_trial_csr_template.md` - Clinical study report outline per ICH-E3
-- `assets/soap_note_template.md` - SOAP progress note format
-- `assets/history_physical_template.md` - Comprehensive H&P template
-- `assets/discharge_summary_template.md` - Hospital discharge summary
-- `assets/consult_note_template.md` - Consultation note format
-- `assets/quality_checklist.md` - Quality assurance checklist for all report types
-- `assets/hipaa_compliance_checklist.md` - Privacy and de-identification checklist
-
-### Automation Scripts
-
-- `scripts/validate_case_report.py` - Check CARE guideline compliance and completeness
-- `scripts/validate_trial_report.py` - Verify ICH-E3 structure and required elements
-- `scripts/check_deidentification.py` - Scan for 18 HIPAA identifiers in text
-- `scripts/format_adverse_events.py` - Generate AE summary tables from data
-- `scripts/generate_report_template.py` - Interactive template selection and generation
-- `scripts/extract_clinical_data.py` - Parse structured data from clinical reports
-- `scripts/compliance_checker.py` - Verify regulatory compliance requirements
-- `scripts/terminology_validator.py` - Validate medical terminology and coding
-
-Load these resources as needed when working on specific clinical reports.
-
-## Common Pitfalls to Avoid
-
-### Case Reports
-- **Privacy violations**: Inadequate de-identification or missing consent
-- **Lack of novelty**: Reporting common or well-documented cases
-- **Insufficient detail**: Missing key clinical information
-- **Poor literature review**: Failure to contextualize within existing knowledge
-- **Overgeneralization**: Drawing broad conclusions from single case
-
-### Diagnostic Reports
-- **Vague language**: Using ambiguous terms like "unremarkable" without specifics
-- **Incomplete comparison**: Not reviewing prior imaging
-- **Missing clinical correlation**: Failing to answer clinical question
-- **Technical jargon**: Overuse of terminology without explanation
-- **Delayed critical value notification**: Not communicating urgent findings
-
-### Clinical Trial Reports
-- **Late reporting**: Missing regulatory deadlines for SAE reporting
-- **Incomplete causality**: Inadequate causality assessment
-- **Data inconsistencies**: Discrepancies between data sources
-- **Protocol deviations**: Unreported or inadequately documented deviations
-- **Selective reporting**: Omitting negative or unfavorable results
-
-### Patient Documentation
-- **Illegibility**: Poor handwriting in paper records
-- **Copy-forward errors**: Propagating outdated information
-- **Insufficient detail**: Vague or incomplete documentation affecting billing
-- **Lack of medical necessity**: Not documenting indication for services
-- **Missing signatures**: Unsigned or undated notes
-
-## Final Checklist
-
-Before finalizing any clinical report, verify:
-
-- [ ] All required sections complete
-- [ ] Patient privacy protected (HIPAA compliance)
-- [ ] Informed consent obtained (if applicable)
-- [ ] Accurate and verified clinical data
-- [ ] Appropriate medical terminology and coding
-- [ ] Clear, professional language
-- [ ] Proper formatting per guidelines
-- [ ] References cited appropriately
-- [ ] Figures and tables labeled correctly
-- [ ] Spell-checked and proofread
-- [ ] Regulatory requirements met
-- [ ] Institutional policies followed
-- [ ] Signatures and dates present
-- [ ] Quality assurance review completed
+## 核心功能
+
+### 1. 用于期刊发表的临床病例报告
+
+临床病例报告描述不寻常的临床表现、新诊断或罕见并发症。它们有助于医学知识并在同行评审期刊上发表。
+
+#### CARE 指南合规性
+
+CARE(CAse REport)指南为病例报告编写提供了标准化框架。所有病例报告都应遵循此检查清单:
+
+**标题**
+- 包含"病例报告"或"病例研究"等词
+- 指明关注领域
+- 示例:"年轻患者急性心肌梗死的不寻常表现:一例病例报告"
+
+**关键词**
+- 2-5 个关键词,用于索引和搜索
+- 尽可能使用 MeSH(医学主题词)术语
+
+**摘要**(结构化或非结构化,150-250 字)
+- 引言: 该病例的独特或新颖之处
+- 患者关注: 主要症状和关键病史
+- 诊断: 主要和次要诊断
+- 干预: 关键治疗和程序
+- 结果: 临床结果和随访
+- 结论: 主要收获或临床教训
+
+**引言**
+- 医疗状况的简要背景
+- 该病例为何新颖或重要
+- 类似病例的文献综述(简要)
+- 该病例为何值得报告
+
+**患者信息**
+- 人口统计学(年龄、性别、种族/民族,如相关)
+- 病史、家族史、社会史
+- 相关合并症
+- **去标识化**: 删除或更改 18 个 HIPAA 标识符
+- **患者同意**: 记录发表的知情同意
+
+**临床发现**
+- 主诉和表现症状
+- 体格检查发现
+- 症状时间线(考虑时间线图表或表格)
+- 相关临床观察
+
+**时间线**
+- 关键事件的按时间顺序摘要
+- 症状、诊断、干预和结果的日期
+- 可以表格或图表形式呈现
+- 示例格式:
+  - 第 0 天: 出现症状 X、Y、Z
+  - 第 2 天: 进行诊断检测 A,发现结果 B
+  - 第 5 天: 开始使用药物 C 治疗
+  - 第 14 天: 注意到临床改善
+  - 第 3 个月: 随访检查显示完全缓解
+
+**诊断评估**
+- 执行的诊断检测(实验室、影像、程序)
+- 结果和解释
+- 考虑的鉴别诊断
+- 最终诊断的理由
+- 诊断中的挑战
+
+**治疗干预**
+- 药物(名称、剂量、途径、持续时间)
+- 执行的程序或手术
+- 非药物干预
+- 治疗选择的理由
+- 考虑的替代治疗
+
+**随访和结果**
+- 临床结果(缓解、改善、不变、恶化)
+- 随访持续时间和频率
+- 长期结果(如可用)
+- 患者报告的结果
+- 治疗依从性
+
+**讨论**
+- 病例的优势和新颖性
+- 该病例与现有文献的比较
+- 病例报告的局限性
+- 潜在机制或解释
+- 临床意义和经验教训
+- 未回答的问题或未来研究领域
+
+**患者视角**(可选但鼓励)
+- 患者的体验和观点
+- 对生活质量的影响
+- 患者报告的结果
+- 患者引用(如适当)
+
+**知情同意**
+- 记录患者同意发表的声明
+- 如果患者已故或无法同意,描述代理同意
+- 对于儿科病例,父母/监护人同意
+- 示例:"已获得患者对发表此病例报告及伴随图像的书面知情同意。书面同意书的副本可供主编审查。"
+
+详细的 CARE 指南,请参阅 `references/case_report_guidelines.md`。
+
+#### 期刊特定要求
+
+不同期刊有特定的格式要求:
+- 字数限制(通常 1500-3000 字)
+- 允许的图表/表格数量
+- 参考文献样式(AMA、Vancouver、APA)
+- 结构化与非结构化摘要
+- 补充材料政策
+
+提交前查看期刊作者指南。
+
+#### 去标识化和隐私
+
+**需删除或更改的 18 个 HIPAA 标识符:**
+1. 姓名
+2. 小于州的地理细分
+3. 日期(年份除外)
+4. 电话号码
+5. 传真号码
+6. 电子邮件地址
+7. 社会安全号码
+8. 医疗记录号码
+9. 健康计划受益人号码
+10. 账号
+11. 证书/执照号码
+12. 车辆标识符和序列号
+13. 设备标识符和序列号
+14. Web URL
+15. IP 地址
+16. 生物特征标识符
+17. 全脸照片
+18. 任何其他唯一的识别特征
+
+**最佳实践:**
+- 使用"患者"而不是姓名
+- 报告年龄范围(例如"60 多岁的女性")或相关时的确切年龄
+- 使用近似日期或时间间隔(例如"3 个月前")
+- 删除机构名称,除非必要
+- 模糊或裁剪图像中的识别特征
+- 获得任何潜在识别信息的明确同意
+
+### 2. 临床诊断报告
+
+诊断报告传达来自影像研究、病理检查和实验室测试的发现。它们必须清晰、准确且可操作。
+
+#### 放射学报告
+
+放射学报告遵循标准化结构,以确保清晰度和完整性。
+
+**标准结构:**
+
+**1. 患者人口统计学**
+- 患者姓名(或研究背景下的 ID)
+- 出生日期或年龄
+- 医疗记录号码
+- 检查日期和时间
+
+**2. 临床指征**
+- 检查原因
+- 相关临床病史
+- 需要回答的具体临床问题
+- 示例:"排除急性呼吸困难患者的肺栓塞"
+
+**3. 技术**
+- 影像方式(X 射线、CT、MRI、超声、PET 等)
+- 检查的解剖区域
+- 对比剂给药(类型、途径、体积)
+- 使用的协议或序列
+- 技术质量和局限性
+- 示例:"使用 100 mL 静脉碘化对比剂进行胸部、腹部和骨盆的增强 CT。未给予口服对比剂。"
+
+**4. 对比**
+- 可用的既往影像研究
+- 既往研究的日期
+- 与既往影像的稳定性或变化
+- 示例:"对比: [日期] 的 CT 胸部"
+
+**5. 发现**
+- 影像发现的系统描述
+- 逐器官或逐区域方法
+- 阳性发现优先,然后是相关的阴性发现
+- 病变或异常的测量
+- 使用标准化术语(ACR 词汇表、RadLex)
+- 示例:
+  - 肺部: 双肺下叶为主的磨玻璃样混浊。无实变或胸腔积液。
+  - 纵隔: 无淋巴结病。心脏大小正常。
+  - 腹部: 肝、脾、胰脏正常。无游离液体。
+
+**6. 印象/结论**
+- 关键发现的简明摘要
+- 对临床问题的回答
+- 鉴别诊断(如适用)
+- 随访或额外研究的建议
+- 诊断确定性水平
+- 示例:
+  - "1. 双肺磨玻璃样混浊,符合病毒性肺炎或非典型感染。不能排除 COVID-19。建议临床相关。
+  - 2. 无肺栓塞证据。
+  - 3. 建议 4-6 周后随访影像以评估缓解。"
+
+**结构化报告:**
+
+许多放射科部门对常见检查使用结构化报告模板:
+- 肺结节报告(Lung-RADS)
+- 乳腺影像(BI-RADS)
+- 肝脏影像(LI-RADS)
+- 前列腺影像(PI-RADS)
+- CT 结肠镜检查(C-RADS)
+
+结构化报告提高一致性,减少歧义,并促进数据提取。
+
+有关放射学报告标准,请参阅 `references/diagnostic_reports_standards.md`。
+
+#### 病理学报告
+
+病理学报告记录来自组织标本的显微镜发现并提供诊断结论。
+
+**外科病理报告结构:**
+
+**1. 患者信息**
+- 患者姓名和标识符
+- 出生日期、年龄、性别
+- 开具医师
+- 医疗记录号码
+- 收到标本日期
+
+**2. 标本信息**
+- 标本类型(活检、切除、切除)
+- 解剖部位
+- 侧别(如适用)
+- 标本/玻片数量
+- 示例:"皮肤,左前臂,切除活检"
+
+**3. 临床病史**
+- 相关临床信息
+- 活检指征
+- 既往诊断
+- 示例:"黑色素瘤病史。新色素性病变,排除复发。"
+
+**4. 大体描述**
+- 标本的大体外观
+- 大小、重量、颜色、一致性
+- 方向标记(如存在)
+- 切片和取样方法
+- 示例:"标本由 2.5 x 1.0 x 0.5 cm 的皮肤椭圆组成。表面存在直径 0.6 cm 的色素性病变。标本被连续切片并完全提交到盒 A1-A3。"
+
+**5. 显微镜描述**
+- 组织学发现
+- 细胞特征
+- 结构模式
+- 恶性存在
+- 边缘(如适用)
+- 特殊染色或免疫组织化学结果
+
+**6. 诊断**
+- 主要诊断
+- 分级和分期(如癌症)
+- 边缘状态
+- 淋巴结状态(如适用)
+- 癌症的汇总报告(CAP 方案)
+- 示例:
+  - "恶性黑色素瘤,浅表扩散型
+  - Breslow 厚度: 1.2 mm
+  - Clark 级别: IV
+  - 有丝分裂率: 3/mm²
+  - 溃疡: 无
+  - 边缘: 阴性(最近边缘 0.4 cm)
+  - 淋巴血管侵犯: 未识别"
+
+**7. 评论**(如需要)
+- 额外背景或解释
+- 鉴别诊断
+- 额外研究的建议
+- 临床相关建议
+
+**汇总报告:**
+
+美国病理学家学会(CAP)为癌症标本提供汇总报告模板。这些检查清单确保记录所有相关的诊断要素。
+
+癌症报告的关键要素:
+- 肿瘤部位
+- 肿瘤大小
+- 组织学类型
+- 组织学分级
+- 侵犯程度
+- 淋巴血管侵犯
+- 神经周围侵犯
+- 边缘
+- 淋巴结(检查数量、阳性数量)
+- 病理分期(TNM 分类)
+- 辅助研究(分子标记、生物标志物)
+
+#### 实验室报告
+
+实验室报告传达临床标本(血液、尿液、组织等)的测试结果。
+
+**标准组件:**
+
+**1. 患者和标本信息**
+- 患者标识符
+- 标本类型(血液、血清、尿液、CSF 等)
+- 采集日期和时间
+- 收到日期和时间
+- 开具医师
+
+**2. 测试名称和方法**
+- 完整测试名称
+- 方法(免疫分析、分光光度法、PCR 等)
+- 实验室存取编号
+
+**3. 结果**
+- 定量或定性结果
+- 测量单位
+- 参考范围(正常值)
+- 异常值的标志(H = 高,L = 低)
+- 突出显示的关键值
+- 示例:
+  - 血红蛋白: 8.5 g/dL (L) [参考值: 12.0-16.0 g/dL]
+  - 白细胞计数: 15.2 x10³/μL (H) [参考值: 4.5-11.0 x10³/μL]
+
+**4. 解释**(如适用)
+- 结果的临床意义
+- 建议的随访或额外测试
+- 与诊断的相关性
+- 药物水平和治疗范围
+
+**5. 质量控制信息**
+- 标本充分性
+- 标本质量问题(溶血、脂血、凝块)
+- 处理延迟
+- 技术局限性
+
+**关键值报告:**
+- 需要立即通知的危及生命的结果
+- 示例: 葡萄糖 <40 或 >500 mg/dL,钾 <2.5 或 >6.5 mEq/L
+- 记录通知时间和接收者
+
+有关实验室标准和术语,请参阅 `references/diagnostic_reports_standards.md`。
+
+### 3. 临床试验报告
+
+临床试验报告记录临床研究的行为、结果和安全性。这些报告对于监管提交和科学发表至关重要。
+
+#### 严重不良事件(SAE)报告
+
+SAE 报告记录临床试验期间发生的意外严重不良反应。监管要求及时向 IRB、主办机构和监管机构报告。
+
+**严重不良事件的定义:**
+如果不良事件符合以下情况,则为严重:
+- 导致死亡
+- 危及生命
+- 需要住院或延长现有住院
+- 导致持续或显著的残疾/无能力
+- 是先天性异常/出生缺陷
+- 需要干预以防止永久性损害或损伤
+
+**SAE 报告组件:**
+
+**1. 研究信息**
+- 方案编号和标题
+- 研究阶段
+- 主办机构名称
+- 主要研究者
+- IND/IDE 编号(如适用)
+- 临床试验注册号(NCT 编号)
+
+**2. 患者信息(去标识化)**
+- 受试者 ID 或随机化编号
+- 年龄、性别、种族/民族
+- 研究组或治疗组
+- 知情同意日期
+- 首次研究干预日期
+
+**3. 事件信息**
+- 事件描述(叙述)
+- 发作日期
+- 解决日期(或进行中)
+- 严重性(轻度、中度、重度)
+- 满足的严重性标准
+- 结果(恢复、恢复中、未恢复、致命、未知)
+
+**4. 因果关系评估**
+- 与研究干预的关系(无关、不太可能、可能、很可能、确定)
+- 与研究程序的关系
+- 与潜在疾病的关系
+- 因果关系确定的理由
+
+**5. 采取的行动**
+- 修改研究干预(剂量减少、暂时暂停、永久停药)
+- 给予的合并药物或治疗
+- 住院详情
+- 结果和随访计划
+
+**6. 预期性**
+- 根据方案或研究者手册预期
+- 需要加速报告的意外事件
+- 与已知安全性概况的比较
+
+**7. 叙述**
+- 事件的详细描述
+- 事件时间线
+- 临床病程和管理
+- 实验室和诊断测试结果
+- 最终诊断或结论
+
+**8. 报告者信息**
+- 报告者姓名和联系方式
+- 报告日期
+- 签名
+
+**监管时间线:**
+- 致命或危及生命的意外 SAE: 初步报告 7 天,完整报告 15 天
+- 其他严重意外事件: 15 天
+- IRB 通知: 根据机构政策,通常 5-10 天内
+
+详细的 SAE 报告指导,请参阅 `references/clinical_trial_reporting.md`。
+
+#### 临床研究报告(CSR)
+
+临床研究报告是总结临床试验设计、行为和结果的综合文档。它们作为药物批准申请的一部分提交给监管机构。
+
+**ICH-E3 结构:**
+
+ICH E3 指南定义了临床研究报告的结构和内容。
+
+**主要部分:**
+
+**1. 标题页**
+- 研究标题和方案编号
+- 主办机构和研究者信息
+- 报告日期和版本
+
+**2. 摘要**(5-15 页)
+- 整个研究的简要摘要
+- 目标、方法、结果、结论
+- 关键疗效和安全性发现
+- 可独立存在
+
+**3. 目录**
+
+**4. 缩写和定义列表**
+
+**5. 伦理**(第 2 部分)
+- IRB/IEC 批准
+- 知情同意流程
+- GCP 合规声明
+
+**6. 研究者和研究行政结构**(第 3 部分)
+- 研究者和地点列表
+- 研究组织
+- 监测和质量保证
+
+**7. 引言**(第 4 部分)
+- 背景和理由
+- 研究目标和目的
+
+**8. 研究目标和计划**(第 5 部分)
+- 总体设计和计划
+- 目标(主要和次要)
+- 端点(疗效和安全性)
+- 样本量确定
+
+**9. 研究患者**(第 6 部分)
+- 纳入和排除标准
+- 患者处置
+- 方案偏离
+- 人口统计学和基线特征
+
+**10. 疗效评估**(第 7 部分)
+- 分析的数据集(ITT、PP、安全性)
+- 人口统计学和其他基线特征
+- 主要和次要终点的疗效结果
+- 亚组分析
+- 脱落和缺失数据
+
+**11. 安全性评估**(第 8 部分)
+- 暴露程度
+- 不良事件(汇总表)
+- 严重不良事件(叙述)
+- 实验室值
+- 生命体征和体格检查
+- 死亡和其他严重事件
+
+**12. 讨论和总体结论**(第 9 部分)
+- 结果的解释
+- 效益-风险评估
+- 临床意义
+
+**13. 表格、图表和图形**(第 10 部分)
+
+**14. 参考文献列表**(第 11 部分)
+
+**15. 附录**(第 12 部分)
+- 方案和修订
+- 样本病例报告表
+- 研究者和伦理委员会列表
+- 患者信息和同意书
+- 研究者手册参考文献
+- 基于研究的发表
+
+**关键原则:**
+- 客观性和透明度
+- 全面的数据呈现
+- 遵守统计分析计划
+- 清晰的安全性数据呈现
+- 附录的整合
+
+有关 ICH-E3 模板和详细指导,请参阅 `references/clinical_trial_reporting.md` 和 `assets/clinical_trial_csr_template.md`。
+
+#### 方案偏离
+
+方案偏离是对批准研究方案的偏离。必须记录、评估和报告。
+
+**类别:**
+- **轻微偏离**: 不会显著影响患者安全性或数据完整性
+- **主要偏离**: 可能影响患者安全性、数据完整性或研究行为
+- **违规**: 需要立即行动和报告的严重偏离
+
+**文档要求:**
+- 偏离描述
+- 发生日期
+- 受影响的受试者 ID
+- 对安全性和数据的影响
+- 纠正和预防措施(CAPA)
+- 根本原因分析
+- 实施的预防措施
+
+### 4. 患者临床文档
+
+患者临床文档记录临床遇到、进展和护理计划。准确的文档支持护理连续性、计费和法律保护。
+
+#### SOAP 记录
+
+SOAP 记录是临床实践中进展记录最常见的格式。
+
+**结构:**
+
+**S - 主观**
+- 患者报告的症状和关注
+- 现病史(HPI)
+- 系统审查(ROS),与就诊相关
+- 患者自己的话(有帮助时使用引号)
+- 示例:"患者报告过去 3 天呼吸困难加重,特别是劳累时。否认胸痛、发热或咳嗽。"
+
+**O - 客观**
+- 可测量的临床发现
+- 生命体征(体温、血压、心率、呼吸频率、血氧饱和度)
+- 体格检查发现(按系统组织)
+- 实验室和影像结果
+- 示例:
+  - 生命体征: T 98.6°F,BP 142/88,HR 92,RR 22,SpO2 91%(室内空气)
+  - 一般情况: 轻度呼吸窘迫
+  - 心血管: 心律规整,无杂音
+  - 肺部: 双肺底部湿啰音
+  - 四肢: 双侧 2+ 凹陷性水肿
+
+**A - 评估**
+- 临床印象或诊断
+- 鉴别诊断
+- 严重程度和稳定性
+- 向治疗目标的进展
+- 示例:
+  - "1. 急性失代偿性心力衰竭,NYHA III 级
+  - 2. 高血压,控制不佳
+  - 3. 慢性肾脏病,3 期"
+
+**P - 计划**
+- 诊断计划(进一步测试)
+- 治疗计划(药物、程序)
+- 患者教育和咨询
+- 随访安排
+- 示例:
+  - "诊断: BNP、胸部 X 光、超声心动图
+  - 治疗: 呋塞米增加至 40 mg PO BID,继续赖诺普利 10 mg 每日,严格液体限制至 1.5 L/天
+  - 教育: 心力衰竭恶化的体征,每日体重
+  - 随访: 1 周后心脏科预约,如果 1 天内体重增加 >2 磅则致电"
+
+**文档提示:**
+- 简洁但完整
+- 使用标准医学缩写
+- 记录就诊时间
+- 签署并注明所有记录的日期
+- 避免推测或判断
+- 记录计费的医学必要性
+- 包括患者对治疗的反应
+
+有关 SOAP 记录模板和示例,请参阅 `assets/soap_note_template.md`。
+
+#### 病史和体格检查(H&P)
+
+H&P 是入院或初次就诊时进行的综合评估。
+
+**组件:**
+
+**1. 主诉(CC)**
+- 患者寻求护理原因的简要陈述
+- 使用患者自己的话
+- 示例:"胸痛 2 小时"
+
+**2. 现病史(HPI)**
+- 当前问题的详细按时间顺序叙述
+- 对疼痛使用 OPQRST 助记符:
+  - 发作: 何时开始?
+  - 诱因/缓解: 什么使其好转或恶化?
+  - 性质: 感觉如何?
+  - 部位/放射: 在哪里?会扩散吗?
+  - 严重程度: 有多坏(0-10 分量表)?
+  - 时间: 持续还是间歇?持续时间?
+- 相关症状
+- 既往评估或治疗
+
+**3. 既往病史(PMH)**
+- 慢性医疗状况
+- 既往住院
+- 手术和程序
+- 示例:"高血压(2015 年诊断),2 型糖尿病(2018 年诊断),既往阑尾切除术(2010 年)"
+
+**4. 药物**
+- 当前药物及剂量和频率
+- 非处方药
+- 草草补充剂
+- 过敏和反应
+
+**5. 过敏**
+- 药物过敏及反应类型
+- 食物过敏
+- 环境过敏
+- 示例:"青霉素(皮疹),贝类(过敏反应)"
+
+**6. 家族史(FH)**
+- 一级亲属的医疗状况
+- 父母的年龄和死因
+- 遗传状况
+- 示例:"父亲有冠心病(55 岁时心肌梗死),母亲有乳腺癌(62 岁时诊断)"
+
+**7. 社会史(SH)**
+- 吸烟(包-年)
+- 饮酒(每周饮酒量)
+- 非法药物使用
+- 职业
+- 居住情况
+- 性史(如相关)
+- 示例:"前吸烟者,5 年前戒烟(20 包-年史)。偶尔饮酒(每周 2-3 杯)。会计师。与配偶同住。"
+
+**8. 系统审查(ROS)**
+- 按器官系统系统审查症状
+- 通常 10-14 个系统
+- 相关阳性和阴性发现
+- 系统: 全身、眼、耳鼻喉、心血管、呼吸、胃肠道、泌尿生殖、肌肉骨骼、皮肤、神经、精神、内分泌、血液/淋巴、过敏/免疫
+
+**9. 体格检查**
+- 生命体征
+- 一般外观
+- 按器官系统的系统检查
+- HEENT、颈部、心血管、肺、腹部、四肢、神经、皮肤
+- 使用标准术语和缩写
+
+**10. 评估和计划**
+- 每个问题的评估和计划列表
+- 编号列表格式
+- 诊断和治疗计划
+- 处置(入院、出院、转院)
+
+有关 H&P 模板,请参阅 `assets/history_physical_template.md`。
+
+#### 出院摘要
+
+出院摘要记录住院情况并向门诊提供者传达护理计划。
+
+**必填元素:**
+
+**1. 患者识别**
+- 姓名、出生日期、医疗记录号码
+- 入院和出院日期
+- 主治医师
+- 入院和出院诊断
+
+**2. 住院原因**
+- 表现问题的简要描述
+- 主诉
+
+**3. 住院过程**
+- 关键事件的按时间顺序叙述
+- 重要发现和程序
+- 对治疗的反应
+- 并发症
+- 获得的咨询
+- 按问题或按时间顺序组织
+
+**4. 出院诊断**
+- 主要诊断
+- 次要诊断
+- 并发症
+- 合并症
+
+**5. 执行的程序**
+- 手术
+- 侵入性程序
+- 诊断程序
+
+**6. 出院药物**
+- 带有说明的完整药物列表
+- 与入院药物的变化
+- 带有适应症的新药物
+
+**7. 出院状况**
+- 稳定、改善、不变、已故
+- 功能状态
+- 精神状态
+
+**8. 出院处置**
+- 回家、专业护理机构、康复、临终关怀
+- 有/无服务
+
+**9. 随访计划**
+- 预约就诊
+- 建议的随访时间
+- 待定测试或研究
+- 转诊
+
+**10. 患者说明**
+- 活动限制
+- 饮食限制
+- 伤口护理
+- 寻求护理的警示信号
+- 药物说明
+
+**最佳实践:**
+- 出院后 24-48 小时内完成
+- 为门诊提供者使用清晰的语言
+- 突出重要的待定结果
+- 记录代码状态讨论
+- 包括提供的患者教育
+
+有关出院摘要模板,请参阅 `assets/discharge_summary_template.md`。
+
+## 监管合规性和隐私
+
+### HIPAA 合规性
+
+健康保险携带和责任法案(HIPAA)要求保护患者健康信息。
+
+**关键要求:**
+- 最小必要披露
+- 超出治疗/付款/操作的使用需患者授权
+- 安全存储和传输
+- 电子记录的审计跟踪
+- 违反通知程序
+
+**去标识化方法:**
+1. **安全港方法**: 删除 18 个标识符
+2. **专家判定**: 确认低重新识别风险的统计方法
+
+**商业伙伴协议:**
+与第三方共享 PHI 以提供服务时需要商业伙伴协议。
+
+详细的 HIPAA 指导,请参阅 `references/regulatory_compliance.md`。
+
+### FDA 法规
+
+临床试验文档必须符合 FDA 法规:
+- 21 CFR Part 11(电子记录和签名)
+- 21 CFR Part 50(知情同意)
+- 21 CFR Part 56(IRB 标准)
+- 21 CFR Part 312(IND 法规)
+
+### ICH-GCP 指南
+
+良好临床实践(GCP)指南确保临床试验的质量和伦理标准:
+- 方案依从性
+- 知情同意文档
+- 源文件要求
+- 审计跟踪和数据完整性
+- 研究者责任
+
+有关 ICH-GCP 合规性,请参阅 `references/regulatory_compliance.md`。
+
+## 医学术语和标准
+
+### 标准化命名法
+
+**SNOMED CT(医学系统化命名法 - 临床术语)**
+- 全面的临床术语
+- 用于电子健康记录
+- 实现语义互操作性
+
+**LOINC(逻辑观察标识符名称和代码)**
+- 实验室和临床观察的标准
+- 促进数据交换和报告
+
+**ICD-10-CM(国际疾病分类,第 10 次修订,临床修改)**
+- 用于计费和流行病学的诊断编码
+- 报销必需
+
+**CPT(当前操作术语)**
+- 用于计费的程序编码
+- 由 AMA 维护
+
+### 缩写标准
+
+**可接受的缩写:**
+使用标准缩写以提高效率,同时保持清晰。
+
+**请勿使用列表(联合委员会):**
+- U(单位) - 写"unit"
+- IU(国际单位) - 写"international unit"
+- QD、QOD(每日、隔日) - 写"daily"或"every other day"
+- 尾随零(X.0 mg) - 小数点后从不使用
+- 缺少前导零(.X mg) - 小数点前始终使用(0.X mg)
+- MS、MSO4、MgSO4 - 写"morphine sulfate"或"magnesium sulfate"
+
+全面的术语标准,请参阅 `references/medical_terminology.md`。
+
+## 质量保证和验证
+
+### 文档质量原则
+
+**完整性:**
+- 所有必填元素都存在
+- 无缺失数据字段
+- 全面的患者信息
+
+**准确性:**
+- 事实正确的信息
+- 已验证的数据源
+- 适当的临床推理
+
+**及时性:**
+- 在就诊时或之后不久记录
+- 优先考虑时间敏感的报告
+- 满足监管截止日期
+
+**清晰度:**
+- 清晰且无歧义的语言
+- 有组织的逻辑结构
+- 适当的医学术语使用
+
+**合规性:**
+- 满足监管要求
+- 存在隐私保护
+- 遵循机构政策
+
+### 验证检查清单
+
+对于每种报告类型,使用验证检查清单以确保质量:
+- 病例报告 CARE 检查清单
+- 诊断报告完整性
+- SAE 报告监管合规性
+- 临床文档计费要求
+
+验证脚本在 `scripts/` 目录中可用。
+
+## 临床报告中的数据呈现
+
+### 表格和图表
+
+**临床数据表格:**
+- 人口统计学和基线特征
+- 不良事件汇总
+- 随时间的实验室值
+- 疗效结果
+
+**表格设计原则:**
+- 带单位的清晰列标题
+- 缩写和统计说明的脚注
+- 一致的格式
+- 适当的精度(有效数字)
+
+**临床数据图表:**
+- Kaplan-Meier 生存曲线
+- 用于亚组分析的森林图
+- 患者流程图(CONSORT)
+- 病例报告的时间线图表
+- 前后图像
+
+**图像指南:**
+- 高分辨率(最低 300 dpi)
+- 适当的比例尺
+- 关键特征的注释
+- 去标识化(无可见的患者标识符)
+- 可识别图像的知情同意
+
+有关数据呈现标准,请参阅 `references/data_presentation.md`。
+
+## 与其他技能集成
+
+此临床报告技能与以下技能集成:
+- **Scientific Writing**: 清晰、专业的医学写作
+- **Peer Review**: 病例报告的质量评估
+- **Citation Management**: 病例报告中的文献参考
+- **Research Grants**: 临床试验方案开发
+- **Literature Review**: 病例报告中的背景部分
+
+## 临床报告编写工作流程
+
+### 病例报告工作流程
+
+**第一阶段: 病例识别和同意(第 1 周)**
+- 识别新颖或教育性病例
+- 获得患者知情同意
+- 去标识化患者信息
+- 收集临床数据和图像
+
+**第二阶段: 文献综述(第 1-2 周)**
+- 搜索类似病例
+- 审查相关病理生理学
+- 识别知识空白
+- 确定新颖性和意义
+
+**第三阶段: 起草(第 2-3 周)**
+- 遵循 CARE 指南编写结构化大纲
+- 起草所有部分(摘要至讨论)
+- 创建时间线和图表
+- 格式化参考文献
+
+**第四阶段: 内部审查(第 3-4 周)**
+- 共同作者审查
+- 主治医师审查
+- 机构审查(如需要)
+- 患者审查去标识化草稿
+
+**第五阶段: 期刊选择和提交(第 4-5 周)**
+- 选择适当的期刊
+- 按期刊指南格式化
+- 准备投稿信
+- 提交手稿
+
+**第六阶段: 修订(可变)**
+- 回应同行评审意见
+- 修订手稿
+- 重新提交
+
+### 诊断报告工作流程
+
+**实时工作流程:**
+- 审查临床指征和既往研究
+- 解释影像、病理或实验室发现
+- 使用结构化格式口述或键入报告
+- 复杂病例的同行评审
+- 最终签发和分发
+- 如适用,关键值通知
+
+**周转时间基准:**
+- STAT 报告:<1 小时
+- 常规报告:24-48 小时
+- 复杂病例:2-5 天
+- 待定额外研究: 记录延迟
+
+### 临床试验报告工作流程
+
+**SAE 报告:24 小时至 15 天**
+- 站点识别事件
+- 初始评估和文档
+- 因果关系和预期性确定
+- 报告完成和审查
+- 提交给主办机构、IRB、FDA(如需要)
+- 随访报告直至解决
+
+**CSR:研究完成后 6-12 个月**
+- 数据库锁定和数据清理
+- 按 SAP 进行统计分析
+- 医学撰稿人起草
+- 生物统计学家和临床团队审查
+- 质量控制审查
+- 最终批准和监管提交
+
+## 资源
+
+此技能包括全面的参考文件和模板:
+
+### 参考文件
+
+- `references/case_report_guidelines.md` - CARE 指南、期刊要求、写作提示
+- `references/diagnostic_reports_standards.md` - ACR、CAP、实验室报告标准
+- `references/clinical_trial_reporting.md` - ICH-E3、CONSORT、SAE 报告、CSR 结构
+- `references/patient_documentation.md` - SOAP 记录、H&P、出院摘要、编码
+- `references/regulatory_compliance.md` - HIPAA、21 CFR Part 11、ICH-GCP、FDA 要求
+- `references/medical_terminology.md` - SNOMED、LOINC、ICD-10、缩写、命名法
+- `references/data_presentation.md` - 表格、图表、安全性数据、CONSORT 图表
+- `references/peer_review_standards.md` - 临床手稿的审查标准
+
+### 模板资产
+
+- `assets/case_report_template.md` - 遵循 CARE 指南的结构化病例报告
+- `assets/radiology_report_template.md` - 标准放射学报告格式
+- `assets/pathology_report_template.md` - 带有汇总要素的外科病理报告
+- `assets/lab_report_template.md` - 临床实验室报告格式
+- `assets/clinical_trial_sae_template.md` - 严重不良事件报告表
+- `assets/clinical_trial_csr_template.md` - ICH-E3 临床研究报告大纲
+- `assets/soap_note_template.md` - SOAP 进展记录格式
+- `assets/history_physical_template.md` - 综合 H&P 模板
+- `assets/discharge_summary_template.md` - 医院出院摘要
+- `assets/consult_note_template.md` - 咨询记录格式
+- `assets/quality_checklist.md` - 所有报告类型的质量保证检查清单
+- `assets/hipaa_compliance_checklist.md` - 隐私和去标识化检查清单
+
+### 自动化脚本
+
+- `scripts/validate_case_report.py` - 检查 CARE 指南合规性和完整性
+- `scripts/validate_trial_report.py` - 验证 ICH-E3 结构和必填元素
+- `scripts/check_deidentification.py` - 扫描文本中的 18 个 HIPAA 标识符
+- `scripts/format_adverse_events.py` - 从数据生成 AE 汇总表
+- `scripts/generate_report_template.py` - 交互式模板选择和生成
+- `scripts/extract_clinical_data.py` - 从临床报告解析结构化数据
+- `scripts/compliance_checker.py` - 验证监管合规性要求
+- `scripts/terminology_validator.py` - 验证医学术语和编码
+
+根据需要加载这些资源以处理特定的临床报告。
+
+## 常见陷阱
+
+### 病例报告
+- **隐私违规**: 去标识化不充分或缺少同意
+- **缺乏新颖性**: 报告常见或记录充分的病例
+- **细节不足**: 缺少关键临床信息
+- **文献综述差**: 未能与现有知识结合
+- **过度概括**: 从单个病例得出广泛结论
+
+### 诊断报告
+- **模糊语言**: 使用"未见异常"等模糊术语,无具体细节
+- **对比不完整**: 未审查既往影像
+- **缺乏临床相关性**: 未能回答临床问题
+- **技术术语**: 过度使用术语而不解释
+- **关键值通知延迟**: 未传达紧急发现
+
+### 临床试验报告
+- **报告延迟**: 错过 SAE 报告的监管截止日期
+- **因果关系不完整**: 因果关系评估不充分
+- **数据不一致**: 数据源之间存在差异
+- **方案偏离**: 未报告或文档不充分的偏离
+- **选择性报告**: 省略负面或不利的结果
+
+### 患者文档
+- **字迹不清**: 纸质记录中的字迹差
+- **复制转发错误**: 传播过时信息
+- **细节不足**: 模糊或不完整的文档影响计费
+- **缺乏医学必要性**: 未记录服务指征
+- **缺少签名**: 未签名或未注明日期的记录
+
+## 最终检查清单
+
+定稿任何临床报告之前,验证:
+
+- [ ] 所有必填部分完整
+- [ ] 患者隐私得到保护(HIPAA 合规)
+- [ ] 获得知情同意(如适用)
+- [ ] 准确且已验证的临床数据
+- [ ] 适当的医学术语和编码
+- [ ] 清晰、专业的语言
+- [ ] 符合适当指南的格式
+- [ ] 正确引用参考文献
+- [ ] 图表和表格正确标记
+- [ ] 拼写检查和校对
+- [ ] 满足监管要求
+- [ ] 遵循机构政策
+- [ ] 存在签名和日期
+- [ ] 完成质量保证审查
 
 ---
 
-**Final Note**: Clinical report writing requires attention to detail, medical accuracy, regulatory compliance, and clear communication. Whether documenting patient care, reporting research findings, or communicating diagnostic results, the quality of clinical reports directly impacts patient safety, healthcare delivery, and medical knowledge advancement. Always prioritize accuracy, privacy, and professionalism in all clinical documentation.
-
-
+**最终说明**: 临床报告编写需要注重细节、医学准确性、监管合规和清晰沟通。无论是记录患者护理、报告研究结果还是传达诊断结果,临床报告的质量直接影响患者安全、医疗保健提供和医学知识进步。在所有临床文档中始终优先考虑准确性、隐私和专业性。

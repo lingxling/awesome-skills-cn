@@ -2,8 +2,6 @@ import crypto from 'crypto';
 import { Request, Response, NextFunction } from 'express';
 import { WebhookPayload, IncomingMessage, StatusUpdate } from './types';
 
-const SAFE_CHALLENGE_RE = /^[A-Za-z0-9._-]{1,200}$/;
-
 /**
  * Middleware para validar assinatura HMAC-SHA256 dos webhooks do WhatsApp.
  *
@@ -68,12 +66,12 @@ export function handleWebhookVerification(verifyToken: string) {
     const token = req.query['hub.verify_token'] as string;
     const challenge = req.query['hub.challenge'] as string;
 
-    if (mode === 'subscribe' && token === verifyToken && SAFE_CHALLENGE_RE.test(challenge)) {
+    if (mode === 'subscribe' && token === verifyToken) {
       console.log('Webhook verified successfully');
-      res.type('text/plain').status(200).send(challenge);
+      res.status(200).send(challenge);
     } else {
       console.warn('Webhook verification failed: invalid token');
-      res.status(mode === 'subscribe' && token === verifyToken ? 400 : 403).send();
+      res.sendStatus(403);
     }
   };
 }

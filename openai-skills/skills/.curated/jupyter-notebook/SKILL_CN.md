@@ -1,45 +1,45 @@
 ---
 name: "jupyter-notebook"
-description: "Use when the user asks to create, scaffold, or edit Jupyter notebooks (`.ipynb`) for experiments, explorations, or tutorials; prefer the bundled templates and run the helper script `new_notebook.py` to generate a clean starting notebook."
+description: "当用户要求创建、搭建或编辑 Jupyter 笔记本（`.ipynb`）用于实验、探索或教程时使用；更喜欢捆绑的模板并运行辅助脚本 `new_notebook.py` 生成一个干净的起始笔记本。"
 ---
 
 
-# Jupyter Notebook Skill
+# Jupyter 笔记本技能
 
-Create clean, reproducible Jupyter notebooks for two primary modes:
+为两种主要模式创建干净、可重现的 Jupyter 笔记本：
 
-- Experiments and exploratory analysis
-- Tutorials and teaching-oriented walkthroughs
+- 实验和探索性分析
+- 教程和面向教学的演练
 
-Prefer the bundled templates and the helper script for consistent structure and fewer JSON mistakes.
+更喜欢捆绑的模板和辅助脚本以获得一致的结构和更少的 JSON 错误。
 
-## When to use
-- Create a new `.ipynb` notebook from scratch.
-- Convert rough notes or scripts into a structured notebook.
-- Refactor an existing notebook to be more reproducible and skimmable.
-- Build experiments or tutorials that will be read or re-run by other people.
+## 何时使用
+- 从头创建新的 `.ipynb` 笔记本。
+- 将粗略的笔记或脚本转换为结构化的笔记本。
+- 重构现有笔记本以更具可重现性和可浏览性。
+- 构建将被其他人阅读或重新运行的实验或教程。
 
-## Decision tree
-- If the request is exploratory, analytical, or hypothesis-driven, choose `experiment`.
-- If the request is instructional, step-by-step, or audience-specific, choose `tutorial`.
-- If editing an existing notebook, treat it as a refactor: preserve intent and improve structure.
+## 决策树
+- 如果请求是探索性的、分析性的或假设驱动的，请选择 `experiment`。
+- 如果请求是指示性的、分步的或特定于受众的，请选择 `tutorial`。
+- 如果编辑现有笔记本，请将其视为重构：保留意图并改进结构。
 
-## Skill path (set once)
+## 技能路径（设置一次）
 
 ```bash
 export CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 export JUPYTER_NOTEBOOK_CLI="$CODEX_HOME/skills/jupyter-notebook/scripts/new_notebook.py"
 ```
 
-User-scoped skills install under `$CODEX_HOME/skills` (default: `~/.codex/skills`).
+用户范围的技能安装在 `$CODEX_HOME/skills` 下（默认：`~/.codex/skills`）。
 
-## Workflow
-1. Lock the intent.
-Identify the notebook kind: `experiment` or `tutorial`.
-Capture the objective, audience, and what "done" looks like.
+## 工作流程
+1. 锁定意图。
+确定笔记本类型：`experiment` 或 `tutorial`。
+捕获目标、受众以及"完成"的样子。
 
-2. Scaffold from the template.
-Use the helper script to avoid hand-authoring raw notebook JSON.
+2. 从模板搭建。
+使用辅助程序以避免手动编写原始笔记本 JSON。
 
 ```bash
 uv run --python 3.12 python "$JUPYTER_NOTEBOOK_CLI" \
@@ -55,53 +55,53 @@ uv run --python 3.12 python "$JUPYTER_NOTEBOOK_CLI" \
   --out output/jupyter-notebook/intro-to-embeddings.ipynb
 ```
 
-3. Fill the notebook with small, runnable steps.
-Keep each code cell focused on one step.
-Add short markdown cells that explain the purpose and expected result.
-Avoid large, noisy outputs when a short summary works.
+3. 用小的、可运行的步骤填充笔记本。
+保持每个代码单元格专注于一个步骤。
+添加解释目的和预期结果的简短 markdown 单元格。
+当简短摘要有效时，避免大的、嘈杂的输出。
 
-4. Apply the right pattern.
-For experiments, follow `references/experiment-patterns.md`.
-For tutorials, follow `references/tutorial-patterns.md`.
+4. 应用正确的模式。
+对于实验，请遵循 `references/experiment-patterns.md`。
+对于教程，请遵循 `references/tutorial-patterns.md`。
 
-5. Edit safely when working with existing notebooks.
-Preserve the notebook structure; avoid reordering cells unless it improves the top-to-bottom story.
-Prefer targeted edits over full rewrites.
-If you must edit raw JSON, review `references/notebook-structure.md` first.
+5. 使用现有笔记本时安全编辑。
+保留笔记本结构；除非它改进从上到下的故事，否则避免重新排序单元格。
+更喜欢有针对性的编辑而不是完全重写。
+如果必须编辑原始 JSON，请先查看 `references/notebook-structure.md`。
 
-6. Validate the result.
-Run the notebook top-to-bottom when the environment allows.
-If execution is not possible, say so explicitly and call out how to validate locally.
-Use the final pass checklist in `references/quality-checklist.md`.
+6. 验证结果。
+当环境允许时，从上到下运行笔记本。
+如果执行不可能，请明确说明并说明如何在本地验证。
+使用 `references/quality-checklist.md` 中的最终通过检查清单。
 
-## Templates and helper script
-- Templates live in `assets/experiment-template.ipynb` and `assets/tutorial-template.ipynb`.
-- The helper script loads a template, updates the title cell, and writes a notebook.
+## 模板和辅助脚本
+- 模板位于 `assets/experiment-template.ipynb` 和 `assets/tutorial-template.ipynb` 中。
+- 辅助脚本加载模板、更新标题单元格并写入笔记本。
 
-Script path:
-- `$JUPYTER_NOTEBOOK_CLI` (installed default: `$CODEX_HOME/skills/jupyter-notebook/scripts/new_notebook.py`)
+脚本路径：
+- `$JUPYTER_NOTEBOOK_CLI`（安装默认：`$CODEX_HOME/skills/jupyter-notebook/scripts/new_notebook.py`）
 
-## Temp and output conventions
-- Use `tmp/jupyter-notebook/` for intermediate files; delete when done.
-- Write final artifacts under `output/jupyter-notebook/` when working in this repo.
-- Use stable, descriptive filenames (for example, `ablation-temperature.ipynb`).
+## 临时和输出约定
+- 使用 `tmp/jupyter-notebook/` 作为中间文件；完成后删除。
+- 在此仓库中工作时，将最终工件写入 `output/jupyter-notebook/`。
+- 使用稳定的、描述性的文件名（例如，`ablation-temperature.ipynb`）。
 
-## Dependencies (install only when needed)
-Prefer `uv` for dependency management.
+## 依赖项（仅在需要时安装）
+更喜欢 `uv` 进行依赖管理。
 
-Optional Python packages for local notebook execution:
+用于本地笔记本执行的可选 Python 包：
 
 ```bash
 uv pip install jupyterlab ipykernel
 ```
 
-The bundled scaffold script uses only the Python standard library and does not require extra dependencies.
+捆绑的搭建脚本仅使用 Python 标准库，不需要额外的依赖项。
 
-## Environment
-No required environment variables.
+## 环境
+没有必需的环境变量。
 
-## Reference map
-- `references/experiment-patterns.md`: experiment structure and heuristics.
-- `references/tutorial-patterns.md`: tutorial structure and teaching flow.
-- `references/notebook-structure.md`: notebook JSON shape and safe editing rules.
-- `references/quality-checklist.md`: final validation checklist.
+## 参考地图
+- `references/experiment-patterns.md`：实验结构和启发式方法。
+- `references/tutorial-patterns.md`：教程结构和教学流程。
+- `references/notebook-structure.md`：笔记本 JSON 形状和安全编辑规则。
+- `references/quality-checklist.md`：最终验证检查清单。

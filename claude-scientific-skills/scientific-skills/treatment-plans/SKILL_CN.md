@@ -1,1269 +1,1269 @@
 ---
 name: treatment-plans
-description: Generate concise (3-4 page), focused medical treatment plans in LaTeX/PDF format for all clinical specialties. Supports general medical treatment, rehabilitation therapy, mental health care, chronic disease management, perioperative care, and pain management. Includes SMART goal frameworks, evidence-based interventions with minimal text citations, regulatory compliance (HIPAA), and professional formatting. Prioritizes brevity and clinical actionability.
+description: 生成简洁（3-4页）、重点突出的LaTeX/PDF格式医疗治疗计划，适用于所有临床专科。支持一般医疗治疗、康复治疗、心理健康护理、慢性病管理、围手术期护理和疼痛管理。包括SMART目标框架、基于证据的干预措施（最小化文本引用）、监管合规（HIPAA）和专业格式化。优先考虑简洁性和临床可操作性。
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Treatment Plan Writing
+# 治疗计划编写
 
-## Overview
+## 概述
 
-Treatment plan writing is the systematic documentation of clinical care strategies designed to address patient health conditions through evidence-based interventions, measurable goals, and structured follow-up. This skill provides comprehensive LaTeX templates and validation tools for creating **concise, focused** treatment plans (3-4 pages standard) across all medical specialties with full regulatory compliance.
+治疗计划编写是通过循证干预、可测量目标和结构化随访来解决患者健康状况的临床护理策略的系统记录。此技能提供全面的LaTeX模板和验证工具，用于创建**简洁、重点突出**的治疗计划（标准3-4页），涵盖所有医学专科，完全符合监管要求。
 
-**Critical Principles:**
-1. **CONCISE & ACTIONABLE**: Treatment plans default to 3-4 pages maximum, focusing only on clinically essential information that impacts care decisions
-2. **Patient-Centered**: Plans must be evidence-based, measurable, and compliant with healthcare regulations (HIPAA, documentation standards)
-3. **Minimal Citations**: Use brief in-text citations only when needed to support clinical recommendations; avoid extensive bibliographies
+**关键原则：**
+1. **简洁且可操作**：治疗计划默认最多3-4页，仅关注影响护理决策的临床必要信息
+2. **以患者为中心**：计划必须基于证据、可测量且符合医疗保健法规（HIPAA、文档标准）
+3. **最小化引用**：仅在需要支持临床建议时使用简短的文本引用；避免冗长的参考书目
 
-Every treatment plan should include clear goals, specific interventions, defined timelines, monitoring parameters, and expected outcomes that align with patient preferences and current clinical guidelines - all presented as efficiently as possible.
+每个治疗计划应包括明确的目标、具体的干预措施、定义的时间表、监测参数和预期结果，这些都应与患者偏好和当前临床指南相一致 - 所有内容都以尽可能高效的方式呈现。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
-- Creating individualized treatment plans for patient care
-- Documenting therapeutic interventions for chronic disease management
-- Developing rehabilitation programs (physical therapy, occupational therapy, cardiac rehab)
-- Writing mental health and psychiatric treatment plans
-- Planning perioperative and surgical care pathways
-- Establishing pain management protocols
-- Setting patient-centered goals using SMART criteria
-- Coordinating multidisciplinary care across specialties
-- Ensuring regulatory compliance in treatment documentation
-- Generating professional treatment plans for medical records
+应在以下情况使用此技能：
+- 为患者护理创建个性化治疗计划
+- 记录慢性病管理的治疗干预措施
+- 制定康复计划（物理治疗、职业治疗、心脏康复）
+- 编写心理健康和精神科治疗计划
+- 规划围手术期和外科护理路径
+- 建立疼痛管理协议
+- 使用SMART标准设定以患者为中心的目标
+- 协调跨专科的多学科护理
+- 确保治疗文档中的监管合规性
+- 为医疗记录生成专业治疗计划
 
-## Visual Enhancement with Scientific Schematics
+## 使用科学示意图进行视觉增强
 
-**⚠️ MANDATORY: Every treatment plan MUST include at least 1 AI-generated figure using the scientific-schematics skill.**
+**⚠️ 强制性：每个治疗计划必须至少包含1个使用scientific-schematics技能生成的AI示意图。**
 
-This is not optional. Treatment plans benefit greatly from visual elements. Before finalizing any document:
-1. Generate at minimum ONE schematic or diagram (e.g., treatment pathway flowchart, care coordination diagram, or therapy timeline)
-2. For complex plans: include decision algorithm flowchart
-3. For rehabilitation plans: include milestone progression diagram
+这不是可选的。治疗计划从视觉元素中受益匪浅。在最终确定任何文档之前：
+1. 至少生成一个示意图或图表（例如，治疗路径流程图、护理协调图或治疗时间表）
+2. 对于复杂计划：包括决策算法流程图
+3. 对于康复计划：包括里程碑进展图
 
-**How to generate figures:**
-- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
-- Simply describe your desired diagram in natural language
-- Nano Banana Pro will automatically generate, review, and refine the schematic
+**如何生成图表：**
+- 使用**scientific-schematics**技能生成AI驱动的出版物质量图表
+- 只需用自然语言描述您想要的图表
+- Nano Banana Pro将自动生成、审查和完善示意图
 
-**How to generate schematics:**
+**如何生成示意图：**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
-The AI will automatically:
-- Create publication-quality images with proper formatting
-- Review and refine through multiple iterations
-- Ensure accessibility (colorblind-friendly, high contrast)
-- Save outputs in the figures/ directory
+AI将自动：
+- 创建具有适当格式的出版物质量图像
+- 通过多次迭代进行审查和完善
+- 确保可访问性（色盲友好、高对比度）
+- 将输出保存在figures/目录中
 
-**When to add schematics:**
-- Treatment pathway flowcharts
-- Care coordination diagrams
-- Therapy progression timelines
-- Multidisciplinary team interaction diagrams
-- Medication management flowcharts
-- Rehabilitation protocol visualizations
-- Clinical decision algorithm diagrams
-- Any complex concept that benefits from visualization
+**何时添加示意图：**
+- 治疗路径流程图
+- 护理协调图
+- 治疗进展时间表
+- 多学科团队互动图
+- 药物管理流程图
+- 康复方案可视化
+- 临床决策算法图
+- 任何受益于可视化的复杂概念
 
-For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.
+有关创建示意图的详细指导，请参考scientific-schematics技能文档。
 
 ---
 
-## Document Format and Best Practices
+## 文档格式和最佳实践
 
-### Document Length Options
+### 文档长度选项
 
-Treatment plans come in three format options based on clinical complexity and use case:
+治疗计划根据临床复杂性和用例有三种格式选项：
 
-#### Option 1: One-Page Treatment Plan (PREFERRED for most cases)
+#### 选项1：单页治疗计划（大多数情况下首选）
 
-**When to use**: Straightforward clinical scenarios, standard protocols, busy clinical settings
+**使用场景**：简单的临床场景、标准协议、繁忙的临床环境
 
-**Format**: Single page containing all essential treatment information in scannable sections
-- No table of contents needed
-- No extensive narratives
-- Focused on actionable items only
-- Similar to precision oncology reports or treatment recommendation cards
+**格式**：单页包含所有必要的治疗信息，分为可扫描的部分
+- 不需要目录
+- 没有冗长的叙述
+- 仅关注可操作项目
+- 类似于精准肿瘤学报告或治疗建议卡
 
-**Required sections** (all on one page):
-1. **Header Box**: Patient info, diagnosis, date, molecular/risk profile if applicable
-2. **Treatment Regimen**: Numbered list of specific interventions
-3. **Supportive Care**: Brief bullet points
-4. **Rationale**: 1-2 sentence justification (optional for standard protocols)
-5. **Monitoring**: Key parameters and frequency
-6. **Evidence Level**: Guideline reference or evidence grade (e.g., "Level 1, FDA approved")
-7. **Expected Outcome**: Timeline and success metrics
+**必需部分**（全部在一页上）：
+1. **标题框**：患者信息、诊断、日期、分子/风险概况（如适用）
+2. **治疗方案**：特定干预措施的编号列表
+3. **支持性护理**：简短的要点
+4. **基本原理**：1-2句理由（标准方案可选）
+5. **监测**：关键参数和频率
+6. **证据水平**：指南参考或证据等级（例如，"1级，FDA批准"）
+7. **预期结果**：时间表和成功指标
 
-**Design principles**:
-- Use small boxes/tables for organization (like the clinical treatment recommendation card format)
-- Eliminate all non-essential text
-- Use abbreviations familiar to clinicians
-- Dense information layout - maximize information per square inch
-- Think "quick reference card" not "comprehensive documentation"
+**设计原则**：
+- 使用小框/表格进行组织（如临床治疗建议卡格式）
+- 消除所有非必要文本
+- 使用临床医生熟悉的缩写
+- 密集信息布局 - 最大化每平方英寸的信息
+- 考虑"快速参考卡"而非"全面文档"
 
-**Example structure**:
+**示例结构**：
 ```latex
-[Patient ID/Diagnosis Box at top]
+[患者ID/诊断框在顶部]
 
-TARGET PATIENT POPULATION
-  Number of patients, demographics, key features
+目标患者人群
+  患者数量、人口统计数据、关键特征
 
-PRIMARY TREATMENT REGIMEN
-  • Medication 1: dose, frequency, duration
-  • Procedure: specific details
-  • Monitoring: what and when
+主要治疗方案
+  • 药物1：剂量、频率、持续时间
+  • 程序：具体细节
+  • 监测：内容和时间
 
-SUPPORTIVE CARE
-  • Key supportive medications
+支持性护理
+  • 关键支持性药物
 
-RATIONALE
-  Brief clinical justification
+基本原理
+  简要临床理由
 
-MOLECULAR TARGETS / RISK FACTORS
-  Relevant biomarkers or risk stratification
+分子靶点/风险因素
+  相关生物标志物或风险分层
 
-EVIDENCE LEVEL
-  Guideline reference, trial data
+证据水平
+  指南参考、试验数据
 
-MONITORING REQUIREMENTS
-  Key labs/vitals, frequency
+监测要求
+  关键实验室/生命体征、频率
 
-EXPECTED CLINICAL BENEFIT
-  Primary endpoint, timeline
+预期临床获益
+  主要终点、时间表
 ```
 
-#### Option 2: Standard 3-4 Page Format
+#### 选项2：标准3-4页格式
 
-**When to use**: Moderate complexity, need for patient education materials, multidisciplinary coordination
+**使用场景**：中等复杂性、需要患者教育材料、多学科协调
 
-Uses the Foundation Medicine first-page summary model with 2-3 additional pages of details.
+采用Foundation Medicine首页摘要模型，外加2-3页详细内容。
 
-#### Option 3: Extended 5-6 Page Format
+#### 选项3：扩展5-6页格式
 
-**When to use**: Complex comorbidities, research protocols, extensive safety monitoring required
+**使用场景**：复杂的合并症、研究方案、需要广泛的安全监测
 
-### First Page Summary (Foundation Medicine Model)
+### 首页摘要（Foundation Medicine模型）
 
-**CRITICAL REQUIREMENT: All treatment plans MUST have a complete executive summary on the first page ONLY, before any table of contents or detailed sections.**
+**关键要求：所有治疗计划必须在第一页（仅第一页）上有完整的执行摘要，位于任何目录或详细部分之前。**
 
-Following the Foundation Medicine model for precision medicine reporting and clinical summary documents, treatment plans begin with a one-page executive summary that provides immediate access to key actionable information. This entire summary must fit on the first page.
+遵循Foundation Medicine的精准医学报告和临床摘要文档模型，治疗计划以一页执行摘要开始，提供对关键可操作信息的即时访问。整个摘要必须适合第一页。
 
-**Required First Page Structure (in order):**
+**必需的首页结构（按顺序）：**
 
-1. **Title and Subtitle**
-   - Main title: Treatment plan type (e.g., "Comprehensive Treatment Plan")
-   - Subtitle: Specific condition or focus (e.g., "Type 2 Diabetes Mellitus - Young Adult Patient")
+1. **标题和副标题**
+   - 主标题：治疗计划类型（例如，"综合治疗计划"）
+   - 副标题：特定条件或重点（例如，"2型糖尿病 - 年轻成人患者"）
 
-2. **Report Information Box** (using `\begin{infobox}` or `\begin{patientinfo}`)
-   - Report type/document purpose
-   - Date of plan creation
-   - Patient demographics (age, sex, de-identified)
-   - Primary diagnosis with ICD-10 code
-   - Report author/clinic (if applicable)
-   - Analysis approach or framework used
+2. **报告信息框**（使用`\begin{infobox}`或`\begin{patientinfo}`）
+   - 报告类型/文档目的
+   - 计划创建日期
+   - 患者人口统计数据（年龄、性别、去识别化）
+   - 主要诊断及ICD-10代码
+   - 报告作者/诊所（如适用）
+   - 使用的分析方法或框架
 
-3. **Key Findings or Treatment Highlights** (2-4 colored boxes using appropriate box types)
-   - **Primary Treatment Goals** (using `\begin{goalbox}`)
-     - 2-3 SMART goals in bullet format
-   - **Main Interventions** (using `\begin{keybox}` or `\begin{infobox}`)
-     - 2-3 key interventions (pharmacological, non-pharmacological, monitoring)
-   - **Critical Decision Points** (using `\begin{warningbox}` if urgent)
-     - Important monitoring thresholds or safety considerations
-   - **Timeline Overview** (using `\begin{infobox}`)
-     - Brief treatment duration/phases
-     - Key milestone dates
+3. **关键发现或治疗亮点**（2-4个使用适当框类型的彩色框）
+   - **主要治疗目标**（使用`\begin{goalbox}`）
+     - 2-3个项目符号格式的SMART目标
+   - **主要干预措施**（使用`\begin{keybox}`或`\begin{infobox}`）
+     - 2-3个关键干预措施（药物、非药物、监测）
+   - **关键决策点**（如紧急，使用`\begin{warningbox}`）
+     - 重要的监测阈值或安全考虑
+   - **时间表概述**（使用`\begin{infobox}`）
+     - 简要治疗持续时间/阶段
+     - 关键里程碑日期
 
-**Visual Format Requirements:**
-- Use `\thispagestyle{empty}` to remove page numbers from first page
-- All content must fit on page 1 (before `\newpage`)
-- Use colored boxes (tcolorbox package) with different colors for different information types
-- Boxes should be visually prominent and easy to scan
-- Use concise, bullet-point format
-- Table of contents (if included) starts on page 2
-- Detailed sections start on page 3
+**视觉格式要求：**
+- 使用`\thispagestyle{empty}`从第一页移除页码
+- 所有内容必须适合第1页（在`\newpage`之前）
+- 使用彩色框（tcolorbox包），不同颜色用于不同信息类型
+- 框应视觉突出且易于扫描
+- 使用简洁的项目符号格式
+- 目录（如包含）从第2页开始
+- 详细部分从第3页开始
 
-**Example First Page Structure:**
+**示例首页结构：**
 ```latex
 \maketitle
 \thispagestyle{empty}
 
-% Report Information Box
+% 报告信息框
 \begin{patientinfo}
-  Report Type, Date, Patient Info, Diagnosis, etc.
+  报告类型、日期、患者信息、诊断等
 \end{patientinfo}
 
-% Key Finding #1: Treatment Goals
-\begin{goalbox}[Primary Treatment Goals]
-  • Goal 1
-  • Goal 2
-  • Goal 3
+% 关键发现 #1：治疗目标
+\begin{goalbox}[主要治疗目标]
+  • 目标1
+  • 目标2
+  • 目标3
 \end{goalbox}
 
-% Key Finding #2: Main Interventions
-\begin{keybox}[Core Interventions]
-  • Intervention 1
-  • Intervention 2
-  • Intervention 3
+% 关键发现 #2：主要干预措施
+\begin{keybox}[核心干预措施]
+  • 干预措施1
+  • 干预措施2
+  • 干预措施3
 \end{keybox}
 
-% Key Finding #3: Critical Monitoring (if applicable)
-\begin{warningbox}[Critical Decision Points]
-  • Decision point 1
-  • Decision point 2
+% 关键发现 #3：关键监测（如适用）
+\begin{warningbox}[关键决策点]
+  • 决策点1
+  • 决策点2
 \end{warningbox}
 
 \newpage
-\tableofcontents  % TOC on page 2
-\newpage  % Detailed content starts page 3
+\tableofcontents  % 目录在第2页
+\newpage  % 详细内容从第3页开始
 ```
 
-### Concise Documentation
-
-**CRITICAL: Treatment plans MUST prioritize brevity and clinical relevance. Default to 3-4 pages maximum unless clinical complexity absolutely demands more detail.**
-
-Treatment plans should prioritize **clarity and actionability** over exhaustive detail:
-
-- **Focused**: Include only clinically essential information that impacts care decisions
-- **Actionable**: Emphasize what needs to be done, when, and why
-- **Efficient**: Facilitate quick decision-making without sacrificing clinical quality
-- **Target length options**:
-  - **1-page format** (preferred for straightforward cases): Quick-reference card with all essential information
-  - **3-4 pages standard**: Standard format with first-page summary + supporting details
-  - **5-6 pages** (rare): Only for highly complex cases with multiple comorbidities or multidisciplinary interventions
-
-**Streamlining Guidelines:**
-- **First Page Summary**: Use individual colored boxes to consolidate key information (goals, interventions, decision points) - this alone can often convey the essential treatment plan
-- **Eliminate Redundancy**: If information is in the first-page summary, don't repeat it verbatim in detailed sections
-- **Patient Education section**: 3-5 key bullet points on critical topics and warning signs only
-- **Risk Mitigation section**: Highlight only critical medication safety concerns and emergency actions (not exhaustive lists)
-- **Expected Outcomes section**: 2-3 concise statements on anticipated responses and timelines
-- **Interventions**: Focus on primary interventions; secondary/supportive measures in brief bullet format
-- **Use tables and bullet points** extensively for efficient presentation
-- **Avoid narrative prose** where structured lists suffice
-- **Combine related sections** when appropriate to reduce page count
-
-### Quality Over Quantity
-
-The goal is professional, clinically complete documentation that respects clinicians' time while ensuring comprehensive patient care. Every section should add value; remove or condense sections that don't directly inform treatment decisions.
-
-### Citations and Evidence Support
-
-**Use minimal, targeted citations to support clinical recommendations:**
-
-- **Text Citations Preferred**: Use brief in-text citations (Author Year) or simple references rather than extensive bibliographies unless specifically requested
-- **When to Cite**:
-  - Clinical practice guideline recommendations (e.g., "per ADA 2024 guidelines")
-  - Specific medication dosing or protocols (e.g., "ACC/AHA recommendations")
-  - Novel or controversial interventions requiring evidence support
-  - Risk stratification tools or validated assessment scales
-- **When NOT to Cite**:
-  - Standard-of-care interventions widely accepted in the field
-  - Basic medical facts and routine clinical practices
-  - General patient education content
-- **Citation Format**: 
-  - Inline: "Initiate metformin as first-line therapy (ADA Standards of Care 2024)"
-  - Minimal: "Treatment follows ACC/AHA heart failure guidelines"
-  - Avoid formal numbered references and extensive bibliography sections unless document is for academic/research purposes
-- **Keep it Brief**: A 3-4 page treatment plan should have 0-3 citations maximum, only where essential for clinical credibility or novel recommendations
-
-## Core Capabilities
-
-### 1. General Medical Treatment Plans
-
-General medical treatment plans address common chronic conditions and acute medical issues requiring structured therapeutic interventions.
-
-#### Standard Components
-
-**Patient Information (De-identified)**
-- Demographics (age, sex, relevant medical background)
-- Active medical conditions and comorbidities
-- Current medications and allergies
-- Relevant social and family history
-- Functional status and baseline assessments
-- **HIPAA Compliance**: Remove all 18 identifiers per Safe Harbor method
-
-**Diagnosis and Assessment Summary**
-- Primary diagnosis with ICD-10 code
-- Secondary diagnoses and comorbidities
-- Severity classification and staging
-- Functional limitations and quality of life impact
-- Risk stratification (e.g., cardiovascular risk, fall risk)
-- Prognostic indicators
-
-**Treatment Goals (SMART Format)**
-
-Short-term goals (1-3 months):
-- **Specific**: Clearly defined outcome (e.g., "Reduce HbA1c to <7%")
-- **Measurable**: Quantifiable metrics (e.g., "Decrease systolic BP by 10 mmHg")
-- **Achievable**: Realistic given patient capabilities
-- **Relevant**: Aligned with patient priorities and values
-- **Time-bound**: Specific timeframe (e.g., "within 8 weeks")
-
-Long-term goals (6-12 months):
-- Disease control or remission targets
-- Functional improvement objectives
-- Quality of life enhancement
-- Prevention of complications
-- Maintenance of independence
-
-**Interventions**
-
-*Pharmacological*:
-- Medications with specific dosages, routes, frequencies
-- Titration schedules and target doses
-- Drug-drug interaction considerations
-- Monitoring for adverse effects
-- Medication reconciliation
-
-*Non-pharmacological*:
-- Lifestyle modifications (diet, exercise, smoking cessation)
-- Behavioral interventions
-- Patient education and self-management
-- Monitoring and self-tracking (glucose, blood pressure, weight)
-- Assistive devices or adaptive equipment
-
-*Procedural*:
-- Planned procedures or interventions
-- Referrals to specialists
-- Diagnostic testing schedule
-- Preventive care (vaccinations, screenings)
-
-**Timeline and Schedule**
-- Treatment phases with specific timeframes
-- Appointment frequency (weekly, monthly, quarterly)
-- Milestone assessments and goal evaluations
-- Medication adjustments schedule
-- Expected duration of treatment
-
-**Monitoring Parameters**
-- Clinical outcomes to track (vital signs, lab values, symptoms)
-- Assessment tools and scales (e.g., PHQ-9, pain scales)
-- Frequency of monitoring
-- Thresholds for intervention or escalation
-- Patient-reported outcomes
-
-**Expected Outcomes**
-- Primary outcome measures
-- Success criteria and benchmarks
-- Expected timeline for improvement
-- Criteria for treatment modification
-- Long-term prognosis
-
-**Follow-up Plan**
-- Scheduled appointments and reassessments
-- Communication plan (phone calls, secure messaging)
-- Emergency contact procedures
-- Criteria for urgent evaluation
-- Transition or discharge planning
-
-**Patient Education**
-- Understanding of condition and treatment rationale
-- Self-management skills training
-- Medication administration and adherence
-- Warning signs and when to seek help
-- Resources and support services
-
-**Risk Mitigation**
-- Potential adverse effects and management
-- Drug interactions and contraindications
-- Fall prevention, infection prevention
-- Emergency action plans
-- Safety monitoring
-
-#### Common Applications
-
-- Diabetes mellitus management
-- Hypertension control
-- Heart failure treatment
-- COPD management
-- Asthma care plans
-- Hyperlipidemia treatment
-- Osteoarthritis management
-- Chronic kidney disease
-
-### 2. Rehabilitation Treatment Plans
-
-Rehabilitation plans focus on restoring function, improving mobility, and enhancing quality of life through structured therapeutic programs.
-
-#### Core Components
-
-**Functional Assessment**
-- Baseline functional status (ADLs, IADLs)
-- Range of motion, strength, balance, endurance
-- Gait analysis and mobility assessment
-- Standardized measures (FIM, Barthel Index, Berg Balance Scale)
-- Environmental assessment (home safety, accessibility)
-
-**Rehabilitation Goals**
-
-*Impairment-level goals*:
-- Improve shoulder flexion to 140 degrees
-- Increase quadriceps strength by 2/5 MMT grades
-- Enhance balance (Berg Score >45/56)
-
-*Activity-level goals*:
-- Independent ambulation 150 feet with assistive device
-- Climb 12 stairs with handrail supervision
-- Transfer bed-to-chair independently
-
-*Participation-level goals*:
-- Return to work with modifications
-- Resume recreational activities
-- Independent community mobility
-
-**Therapeutic Interventions**
-
-*Physical Therapy*:
-- Therapeutic exercises (strengthening, stretching, endurance)
-- Manual therapy techniques
-- Gait training and balance activities
-- Modalities (heat, ice, electrical stimulation, ultrasound)
-- Assistive device training
-
-*Occupational Therapy*:
-- ADL training (bathing, dressing, grooming, feeding)
-- Upper extremity strengthening and coordination
-- Adaptive equipment and modifications
-- Energy conservation techniques
-- Cognitive rehabilitation
-
-*Speech-Language Pathology*:
-- Swallowing therapy and dysphagia management
-- Communication strategies and augmentative devices
-- Cognitive-linguistic therapy
-- Voice therapy
-
-*Other Services*:
-- Recreational therapy
-- Aquatic therapy
-- Cardiac rehabilitation
-- Pulmonary rehabilitation
-- Vestibular rehabilitation
-
-**Treatment Schedule**
-- Frequency: 3x/week PT, 2x/week OT (example)
-- Session duration: 45-60 minutes
-- Treatment phase durations (acute, subacute, maintenance)
-- Expected total duration: 8-12 weeks
-- Reassessment intervals
-
-**Progress Monitoring**
-- Weekly functional assessments
-- Standardized outcome measures
-- Goal attainment scaling
-- Pain and symptom tracking
-- Patient satisfaction
-
-**Home Exercise Program**
-- Specific exercises with repetitions/sets/frequency
-- Precautions and safety instructions
-- Progression criteria
-- Self-monitoring strategies
-
-#### Specialty Rehabilitation
-
-- Post-stroke rehabilitation
-- Orthopedic rehabilitation (joint replacement, fracture)
-- Cardiac rehabilitation (post-MI, post-surgery)
-- Pulmonary rehabilitation
-- Vestibular rehabilitation
-- Neurological rehabilitation
-- Sports injury rehabilitation
-
-### 3. Mental Health Treatment Plans
-
-Mental health treatment plans address psychiatric conditions through integrated psychotherapeutic, pharmacological, and psychosocial interventions.
-
-#### Essential Components
-
-**Psychiatric Assessment**
-- Primary psychiatric diagnosis (DSM-5 criteria)
-- Symptom severity and functional impairment
-- Co-occurring mental health conditions
-- Substance use assessment
-- Suicide/homicide risk assessment
-- Trauma history and PTSD screening
-- Social determinants of mental health
-
-**Treatment Goals**
-
-*Symptom reduction*:
-- Decrease depression severity (PHQ-9 score from 18 to <10)
-- Reduce anxiety symptoms (GAD-7 score <5)
-- Improve sleep quality (Pittsburgh Sleep Quality Index)
-- Stabilize mood (reduced mood episodes)
-
-*Functional improvement*:
-- Return to work or school
-- Improve social relationships and support
-- Enhance coping skills and emotional regulation
-- Increase engagement in meaningful activities
-
-*Recovery-oriented goals*:
-- Build resilience and self-efficacy
-- Develop crisis management skills
-- Establish sustainable wellness routines
-- Achieve personal recovery goals
-
-**Therapeutic Interventions**
-
-*Psychotherapy*:
-- Evidence-based modality (CBT, DBT, ACT, psychodynamic, IPT)
-- Session frequency (weekly, biweekly)
-- Treatment duration (12-16 weeks, ongoing)
-- Specific techniques and targets
-- Group therapy participation
-
-*Psychopharmacology*:
-- Medication class and rationale
-- Starting dose and titration schedule
-- Target symptoms
-- Expected response timeline (2-4 weeks for antidepressants)
-- Side effect monitoring
-- Combination therapy considerations
-
-*Psychosocial Interventions*:
-- Case management services
-- Peer support programs
-- Family therapy or psychoeducation
-- Vocational rehabilitation
-- Supported housing or community integration
-- Substance abuse treatment
-
-**Safety Planning**
-- Crisis contacts and emergency services
-- Warning signs and triggers
-- Coping strategies and self-soothing techniques
-- Safe environment modifications
-- Means restriction (firearms, medications)
-- Support system activation
-
-**Monitoring and Assessment**
-- Symptom rating scales (weekly or biweekly)
-- Medication adherence and side effects
-- Suicidal ideation screening
-- Functional status assessments
-- Treatment engagement and therapeutic alliance
-
-**Patient and Family Education**
-- Psychoeducation about diagnosis
-- Treatment rationale and expectations
-- Medication information
-- Relapse prevention strategies
-- Community resources
-
-#### Mental Health Conditions
-
-- Major depressive disorder
-- Anxiety disorders (GAD, panic, social anxiety)
-- Bipolar disorder
-- Schizophrenia and psychotic disorders
-- PTSD and trauma-related disorders
-- Eating disorders
-- Substance use disorders
-- Personality disorders
-
-### 4. Chronic Disease Management Plans
-
-Comprehensive long-term care plans for chronic conditions requiring ongoing monitoring, treatment adjustments, and multidisciplinary coordination.
-
-#### Key Features
-
-**Disease-Specific Targets**
-- Evidence-based treatment goals per guidelines
-- Stage-appropriate interventions
-- Complication prevention strategies
-- Disease progression monitoring
-
-**Self-Management Support**
-- Patient activation and engagement
-- Shared decision-making
-- Action plans for symptom changes
-- Technology-enabled monitoring (apps, remote monitoring)
-
-**Care Coordination**
-- Primary care physician oversight
-- Specialist consultations and co-management
-- Care transitions (hospital to home)
-- Medication management across providers
-- Communication protocols
-
-**Population Health Integration**
-- Registry tracking and outreach
-- Preventive care and screening schedules
-- Quality measure reporting
-- Care gaps identification
-
-#### Applicable Conditions
-
-- Type 1 and Type 2 diabetes
-- Cardiovascular disease (CHF, CAD)
-- Chronic respiratory diseases (COPD, asthma)
-- Chronic kidney disease
-- Inflammatory bowel disease
-- Rheumatoid arthritis and autoimmune conditions
+### 简洁文档
+
+**关键：治疗计划必须优先考虑简洁性和临床相关性。默认最多3-4页，除非临床复杂性绝对需要更多细节。**
+
+治疗计划应优先考虑**清晰度和可操作性**而非详尽细节：
+
+- **重点突出**：仅包含影响护理决策的临床必要信息
+- **可操作**：强调需要做什么、何时做以及为什么做
+- **高效**：促进快速决策，同时不牺牲临床质量
+- **目标长度选项**：
+  - **1页格式**（简单病例首选）：包含所有必要信息的快速参考卡
+  - **3-4页标准**：标准格式，包含首页摘要+支持性细节
+  - **5-6页**（罕见）：仅适用于具有多种合并症或多学科干预的高度复杂病例
+
+**简化指南：**
+- **首页摘要**：使用单独的彩色框整合关键信息（目标、干预措施、决策点）- 这 alone 通常可以传达基本治疗计划
+- **消除冗余**：如果信息在首页摘要中，不要在详细部分中逐字重复
+- **患者教育部分**：仅包含3-5个关于关键主题和警告信号的要点
+- **风险缓解部分**：仅突出关键药物安全问题和紧急行动（非详尽列表）
+- **预期结果部分**：2-3个关于预期反应和时间表的简洁陈述
+- **干预措施**：关注主要干预措施；次要/支持性措施以简短要点格式呈现
+- **广泛使用表格和要点**以实现高效呈现
+- **避免叙述性散文**，在结构化列表足够的情况下
+- **在适当情况下合并相关部分**以减少页数
+
+### 质量胜于数量
+
+目标是专业、临床完整的文档，尊重临床医生的时间，同时确保全面的患者护理。每个部分都应增加价值；删除或浓缩不直接指导治疗决策的部分。
+
+### 引用和证据支持
+
+**使用最小、有针对性的引用来支持临床建议：**
+
+- **首选文本引用**：使用简短的文本引用（作者年份）或简单参考，而非详尽的参考书目，除非特别要求
+- **何时引用**：
+  - 临床实践指南建议（例如，"根据ADA 2024指南"）
+  - 特定药物剂量或方案（例如，"ACC/AHA建议"）
+  - 需要证据支持的新颖或有争议的干预措施
+  - 风险分层工具或经过验证的评估量表
+- **何时不引用**：
+  - 该领域广泛接受的标准护理干预措施
+  - 基本医疗事实和常规临床实践
+  - 一般患者教育内容
+- **引用格式**：
+  - 内联："开始使用二甲双胍作为一线治疗（ADA 2024年护理标准）"
+  - 最小化："治疗遵循ACC/AHA心力衰竭指南"
+  - 避免正式编号引用和详尽的参考书目部分，除非文档用于学术/研究目的
+- **保持简洁**：3-4页的治疗计划最多应有0-3个引用，仅在对临床可信度或新颖建议必要时使用
+
+## 核心功能
+
+### 1. 一般医疗治疗计划
+
+一般医疗治疗计划针对需要结构化治疗干预的常见慢性疾病和急性医疗问题。
+
+#### 标准组件
+
+**患者信息（去识别化）**
+- 人口统计数据（年龄、性别、相关医疗背景）
+- 活跃的医疗状况和合并症
+- 当前药物和过敏
+- 相关社会和家族史
+- 功能状态和基线评估
+- **HIPAA合规**：根据安全港方法移除所有18个标识符
+
+**诊断和评估摘要**
+- 主要诊断及ICD-10代码
+- 次要诊断和合并症
+- 严重程度分类和分期
+- 功能限制和生活质量影响
+- 风险分层（例如，心血管风险、跌倒风险）
+- 预后指标
+
+**治疗目标（SMART格式）**
+
+短期目标（1-3个月）：
+- **具体**：明确定义的结果（例如，"将HbA1c降至<7%"）
+- **可测量**：可量化指标（例如，"将收缩压降低10 mmHg"）
+- **可实现**：考虑患者能力的现实目标
+- **相关**：与患者优先事项和价值观一致
+- **有时限**：特定的时间框架（例如，"在8周内"）
+
+长期目标（6-12个月）：
+- 疾病控制或缓解目标
+- 功能改善目标
+- 生活质量提高
+- 并发症预防
+- 维持独立性
+
+**干预措施**
+
+*药物治疗*：
+- 具有特定剂量、途径、频率的药物
+- 滴定计划和目标剂量
+- 药物相互作用考虑
+- 不良反应监测
+- 药物核对
+
+*非药物治疗*：
+- 生活方式修改（饮食、运动、戒烟）
+- 行为干预
+- 患者教育和自我管理
+- 监测和自我跟踪（血糖、血压、体重）
+- 辅助设备或适应性设备
+
+*程序*：
+- 计划的程序或干预措施
+- 转诊至专科医生
+- 诊断测试计划
+- 预防保健（疫苗接种、筛查）
+
+**时间表和计划**
+- 具有特定时间框架的治疗阶段
+- 预约频率（每周、每月、每季度）
+- 里程碑评估和目标评估
+- 药物调整计划
+- 预期治疗持续时间
+
+**监测参数**
+- 要跟踪的临床结果（生命体征、实验室值、症状）
+- 评估工具和量表（例如，PHQ-9、疼痛量表）
+- 监测频率
+- 干预或升级的阈值
+- 患者报告的结果
+
+**预期结果**
+- 主要结果测量
+- 成功标准和基准
+- 预期改善时间表
+- 治疗修改标准
+- 长期预后
+
+**随访计划**
+- 预定的预约和重新评估
+- 沟通计划（电话、安全消息传递）
+- 紧急联系程序
+- 紧急评估标准
+- 过渡或出院计划
+
+**患者教育**
+- 对病情和治疗原理的理解
+- 自我管理技能培训
+- 药物管理和依从性
+- 警告信号和何时寻求帮助
+- 资源和支持服务
+
+**风险缓解**
+- 潜在不良反应和管理
+- 药物相互作用和禁忌症
+- 跌倒预防、感染预防
+- 紧急行动计划
+- 安全监测
+
+#### 常见应用
+
+- 糖尿病管理
+- 高血压控制
+- 心力衰竭治疗
+- COPD管理
+- 哮喘护理计划
+- 高脂血症治疗
+- 骨关节炎管理
+- 慢性肾病
+
+### 2. 康复治疗计划
+
+康复计划专注于通过结构化治疗计划恢复功能、改善 mobility 和提高生活质量。
+
+#### 核心组件
+
+**功能评估**
+- 基线功能状态（ADLs、IADLs）
+- 活动范围、力量、平衡、耐力
+- 步态分析和移动性评估
+- 标准化测量（FIM、Barthel指数、Berg平衡量表）
+- 环境评估（家庭安全、可访问性）
+
+**康复目标**
+
+*损伤级目标*：
+- 将肩部屈曲改善至140度
+- 股四头肌力量增加2/5 MMT等级
+- 增强平衡（Berg评分>45/56）
+
+*活动级目标*：
+- 使用辅助设备独立行走150英尺
+- 在扶手监督下爬12级楼梯
+- 独立转移床到椅子
+
+*参与级目标*：
+- 重返工作岗位（带修改）
+- 恢复娱乐活动
+- 独立社区移动
+
+**治疗干预措施**
+
+*物理治疗*：
+- 治疗性运动（加强、拉伸、耐力）
+- 手动治疗技术
+- 步态训练和平衡活动
+- 物理因子（热、冰、电刺激、超声波）
+- 辅助设备训练
+
+*职业治疗*：
+- ADL训练（洗澡、穿衣、梳理、进食）
+- 上肢力量和协调
+- 适应性设备和修改
+- 能量节约技术
+- 认知康复
+
+*言语语言病理学*：
+- 吞咽治疗和吞咽困难管理
+- 沟通策略和辅助设备
+- 认知语言治疗
+- 语音治疗
+
+*其他服务*：
+- 娱乐治疗
+- 水疗
+- 心脏康复
+- 肺康复
+- 前庭康复
+
+**治疗计划**
+- 频率：3次/周PT，2次/周OT（示例）
+- 会话持续时间：45-60分钟
+- 治疗阶段持续时间（急性、亚急性、维持）
+- 预期总持续时间：8-12周
+- 重新评估间隔
+
+**进展监测**
+- 每周功能评估
+- 标准化结果测量
+- 目标达成量表
+- 疼痛和症状跟踪
+- 患者满意度
+
+**家庭锻炼计划**
+- 具体练习，包括重复/组数/频率
+- 注意事项和安全说明
+- 进展标准
+- 自我监测策略
+
+#### 专科康复
+
+- 卒中后康复
+- 骨科康复（关节置换、骨折）
+- 心脏康复（MI后、手术后）
+- 肺康复
+- 前庭康复
+- 神经康复
+- 运动损伤康复
+
+### 3. 心理健康治疗计划
+
+心理健康治疗计划通过综合心理治疗、药物治疗和心理社会干预来解决精神疾病。
+
+#### 基本组件
+
+**精神科评估**
+- 主要精神科诊断（DSM-5标准）
+- 症状严重程度和功能障碍
+- 共存的心理健康状况
+- 物质使用评估
+- 自杀/杀人风险评估
+- 创伤史和PTSD筛查
+- 心理健康的社会决定因素
+
+**治疗目标**
+
+*症状减少*：
+- 降低抑郁严重程度（PHQ-9评分从18降至<10）
+- 减少焦虑症状（GAD-7评分<5）
+- 改善睡眠质量（匹兹堡睡眠质量指数）
+- 稳定情绪（减少情绪发作）
+
+*功能改善*：
+- 重返工作或学校
+- 改善社会关系和支持
+- 增强应对技能和情绪调节
+- 增加参与有意义活动
+
+*恢复导向目标*：
+- 建立韧性和自我效能
+- 发展危机管理技能
+- 建立可持续的健康常规
+- 实现个人恢复目标
+
+**治疗干预措施**
+
+*心理治疗*：
+- 循证模式（CBT、DBT、ACT、心理动力学、IPT）
+- 会话频率（每周、每两周）
+- 治疗持续时间（12-16周，持续）
+- 具体技术和目标
+- 团体治疗参与
+
+*精神药理学*：
+- 药物类别和原理
+- 起始剂量和滴定计划
+- 目标症状
+- 预期反应时间表（抗抑郁药为2-4周）
+- 副作用监测
+- 联合治疗考虑
+
+*心理社会干预*：
+- 病例管理服务
+- 同伴支持计划
+- 家庭治疗或心理教育
+- 职业康复
+- 支持性住房或社区融合
+- 物质滥用治疗
+
+**安全计划**
+- 危机联系人和紧急服务
+- 警告信号和触发因素
+- 应对策略和自我安慰技术
+- 安全环境修改
+- 手段限制（枪支、药物）
+- 支持系统激活
+
+**监测和评估**
+- 症状评分量表（每周或每两周）
+- 药物依从性和副作用
+- 自杀意念筛查
+- 功能状态评估
+- 治疗参与和治疗联盟
+
+**患者和家庭教育**
+- 关于诊断的心理教育
+- 治疗原理和期望
+- 药物信息
+- 复发预防策略
+- 社区资源
+
+#### 心理健康状况
+
+- 重度抑郁症
+- 焦虑障碍（GAD、恐慌、社交焦虑）
+- 双相情感障碍
+- 精神分裂症和精神障碍
+- PTSD和创伤相关障碍
+- 进食障碍
+- 物质使用障碍
+- 人格障碍
+
+### 4. 慢性病管理计划
+
+针对需要持续监测、治疗调整和多学科协调的慢性疾病的综合长期护理计划。
+
+#### 关键特点
+
+**疾病特定目标**
+- 基于指南的循证治疗目标
+- 适合阶段的干预措施
+- 并发症预防策略
+- 疾病进展监测
+
+**自我管理支持**
+- 患者激活和参与
+- 共享决策
+- 症状变化的行动计划
+- 技术支持的监测（应用程序、远程监测）
+
+**护理协调**
+- 初级保健医生监督
+- 专科咨询和共同管理
+- 护理过渡（医院到家庭）
+- 跨提供者的药物管理
+- 沟通协议
+
+**人群健康整合**
+- 登记跟踪和外展
+- 预防保健和筛查计划
+- 质量措施报告
+- 护理差距识别
+
+#### 适用条件
+
+- 1型和2型糖尿病
+- 心血管疾病（CHF、CAD）
+- 慢性呼吸系统疾病（COPD、哮喘）
+- 慢性肾病
+- 炎症性肠病
+- 类风湿关节炎和自身免疫性疾病
 - HIV/AIDS
-- Cancer survivorship care
+- 癌症幸存者护理
 
-### 5. Perioperative Care Plans
+### 5. 围手术期护理计划
 
-Structured plans for surgical and procedural patients covering preoperative preparation, intraoperative management, and postoperative recovery.
+针对外科和手术患者的结构化计划，涵盖术前准备、术中管理和术后恢复。
 
-#### Components
+#### 组件
 
-**Preoperative Assessment**
-- Surgical indication and planned procedure
-- Preoperative risk stratification (ASA class, cardiac risk)
-- Optimization of medical conditions
-- Medication management (continuation, discontinuation)
-- Preoperative testing and clearances
-- Informed consent and patient education
+**术前评估**
+- 手术适应症和计划程序
+- 术前风险分层（ASA分级、心脏风险）
+- 医疗状况优化
+- 药物管理（继续、停用）
+- 术前测试和许可
+- 知情同意和患者教育
 
-**Perioperative Interventions**
-- Enhanced recovery after surgery (ERAS) protocols
-- Venous thromboembolism prophylaxis
-- Antibiotic prophylaxis
-- Glycemic control strategies
-- Pain management plan (multimodal analgesia)
+**围手术期干预措施**
+- 增强术后恢复（ERAS）协议
+- 静脉血栓栓塞预防
+- 抗生素预防
+- 血糖控制策略
+- 疼痛管理计划（多模式镇痛）
 
-**Postoperative Care**
-- Immediate recovery goals (24-48 hours)
-- Early mobilization protocols
-- Diet advancement
-- Wound care and drain management
-- Pain control regimen
-- Complication monitoring
+**术后护理**
+- 立即恢复目标（24-48小时）
+- 早期活动协议
+- 饮食进展
+- 伤口护理和引流管理
+- 疼痛控制方案
+- 并发症监测
 
-**Discharge Planning**
-- Activity restrictions and progression
-- Medication reconciliation
-- Follow-up appointments
-- Home health or rehabilitation services
-- Return-to-work timeline
+**出院计划**
+- 活动限制和进展
+- 药物核对
+- 随访预约
+- 家庭健康或康复服务
+- 重返工作时间表
 
-### 6. Pain Management Plans
+### 6. 疼痛管理计划
 
-Multimodal approaches to acute and chronic pain using evidence-based interventions and opioid-sparing strategies.
+使用循证干预和阿片类药物节约策略的急性和慢性疼痛多模式方法。
 
-#### Comprehensive Components
+#### 综合组件
 
-**Pain Assessment**
-- Pain location, quality, intensity (0-10 scale)
-- Temporal pattern (constant, intermittent, breakthrough)
-- Aggravating and alleviating factors
-- Functional impact (sleep, activities, mood)
-- Previous treatments and responses
-- Psychosocial contributors
+**疼痛评估**
+- 疼痛位置、性质、强度（0-10量表）
+- 时间模式（持续、间歇性、突破性）
+- 加重和缓解因素
+- 功能影响（睡眠、活动、情绪）
+- 以前的治疗和反应
+- 心理社会因素
 
-**Multimodal Interventions**
+**多模式干预**
 
-*Pharmacological*:
-- Non-opioid analgesics (acetaminophen, NSAIDs)
-- Adjuvant medications (antidepressants, anticonvulsants, muscle relaxants)
-- Topical agents (lidocaine, capsaicin, diclofenac)
-- Opioid therapy (when appropriate, with risk mitigation)
-- Titration and rotation strategies
+*药物治疗*：
+- 非阿片类镇痛药（对乙酰氨基酚、NSAIDs）
+- 辅助药物（抗抑郁药、抗惊厥药、肌肉松弛剂）
+- 局部药物（利多卡因、辣椒素、双氯芬酸）
+- 阿片类药物治疗（适当时，带风险缓解）
+- 滴定和轮换策略
 
-*Interventional Procedures*:
-- Nerve blocks and injections
-- Radiofrequency ablation
-- Spinal cord stimulation
-- Intrathecal drug delivery
+*介入程序*：
+- 神经阻滞和注射
+- 射频消融
+- 脊髓刺激
+- 鞘内药物递送
 
-*Non-pharmacological*:
-- Physical therapy and exercise
-- Cognitive-behavioral therapy for pain
-- Mindfulness and relaxation techniques
-- Acupuncture
-- TENS units
+*非药物治疗*：
+- 物理治疗和运动
+- 疼痛认知行为治疗
+- 正念和放松技术
+- 针灸
+- TENS装置
 
-**Opioid Safety (when prescribed)**
-- Indication and planned duration
-- Prescription drug monitoring program (PDMP) check
-- Opioid risk assessment tools
-- Naloxone prescription
-- Treatment agreements
-- Random urine drug screening
-- Frequent follow-up and reassessment
+**阿片类药物安全（当处方时）**
+- 适应症和计划持续时间
+- 处方药监测计划（PDMP）检查
+- 阿片类药物风险评估工具
+- 纳洛酮处方
+- 治疗协议
+- 随机尿药物筛查
+- 频繁随访和重新评估
 
-**Functional Goals**
-- Specific activity improvements
-- Sleep quality enhancement
-- Reduced pain interference
-- Improved quality of life
-- Return to work or meaningful activities
+**功能目标**
+- 特定活动改善
+- 睡眠质量提高
+- 疼痛干扰减少
+- 生活质量改善
+- 重返工作或有意义的活动
 
-## Best Practices
+## 最佳实践
 
-### Brevity and Focus (HIGHEST PRIORITY)
+### 简洁和重点（最高优先级）
 
-**Treatment plans MUST be concise and focused on actionable clinical information:**
+**治疗计划必须简洁并专注于可操作的临床信息：**
 
-- **1-page format is PREFERRED**: For most clinical scenarios, a single-page treatment plan (like precision oncology reports) provides all necessary information
-- **Default to shortest format possible**: Start with 1-page; only expand if clinical complexity genuinely requires it
-- **Every sentence must add value**: If a section doesn't change clinical decision-making, omit it entirely
-- **Think "quick reference card" not "comprehensive textbook"**: Busy clinicians need scannable, dense information
-- **Avoid academic verbosity**: This is clinical documentation, not a literature review or teaching document
-- **Maximum lengths by complexity**:
-  - Simple/standard cases: 1 page
-  - Moderate complexity: 3-4 pages (first-page summary + details)
-  - High complexity (rare): 5-6 pages maximum
+- **1页格式是首选**：对于大多数临床场景，单页治疗计划（如精准肿瘤学报告）提供所有必要信息
+- **默认使用最短格式**：从1页开始；仅在临床复杂性真正需要时扩展
+- **每个句子必须增加价值**：如果一个部分不改变临床决策，完全省略它
+- **考虑"快速参考卡"而非"全面教科书"**：忙碌的临床医生需要可扫描、密集的信息
+- **避免学术冗长**：这是临床文档，不是文献综述或教学文档
+- **按复杂性划分的最大长度**：
+  - 简单/标准病例：1页
+  - 中等复杂性：3-4页（首页摘要+详细信息）
+  - 高复杂性（罕见）：最多5-6页
 
-### First Page Summary (Most Important)
+### 首页摘要（最重要）
 
-**ALWAYS create a one-page executive summary as the first page:**
-- The first page must contain ONLY: Title, Report Info Box, and Key Findings boxes
-- This provides an at-a-glance overview similar to precision medicine reports
-- Table of contents and detailed sections start on page 2 or later
-- Think of it as a "clinical highlights" page that a busy clinician can scan in 30 seconds
-- Use 2-4 colored boxes for different key findings (goals, interventions, decision points)
-- **A strong first page can often stand alone** - subsequent pages are for details, not repetition
+**始终创建一页执行摘要作为第一页：**
+- 第一页必须仅包含：标题、报告信息框和关键发现框
+- 这提供了类似于精准医学报告的一目了然的概述
+- 目录和详细部分从第2页或之后开始
+- 将其视为忙碌临床医生可以在30秒内扫描的"临床亮点"页面
+- 为不同的关键发现（目标、干预措施、决策点）使用2-4个彩色框
+- **一个强有力的首页通常可以独立存在** - 后续页面用于详细信息，而非重复
 
-### SMART Goal Setting
+### SMART目标设定
 
-All treatment goals should meet SMART criteria:
+所有治疗目标应符合SMART标准：
 
-- **Specific**: "Improve HbA1c to <7%" not "Better diabetes control"
-- **Measurable**: Use quantifiable metrics, validated scales, objective measures
-- **Achievable**: Consider patient capabilities, resources, social support
-- **Relevant**: Align with patient values, priorities, and life circumstances
-- **Time-bound**: Define clear timeframes for goal achievement and reassessment
+- **具体**："将HbA1c降至<7%"而非"更好的糖尿病控制"
+- **可测量**：使用可量化指标、经过验证的量表、客观测量
+- **可实现**：考虑患者能力、资源、社会支持
+- **相关**：与患者价值观、优先事项和生活环境一致
+- **有时限**：为目标实现和重新评估定义明确的时间框架
 
-### Patient-Centered Care
+### 以患者为中心的护理
 
-✓ **Shared Decision-Making**: Involve patients in goal-setting and treatment choices  
-✓ **Cultural Competence**: Respect cultural beliefs, language preferences, health literacy  
-✓ **Patient Preferences**: Honor treatment preferences and personal values  
-✓ **Individualization**: Tailor plans to patient's unique circumstances  
-✓ **Empowerment**: Support patient activation and self-management  
+✓ **共享决策**：让患者参与目标设定和治疗选择  
+✓ **文化能力**：尊重文化信仰、语言偏好、健康素养  
+✓ **患者偏好**：尊重治疗偏好和个人价值观  
+✓ **个性化**：根据患者的独特情况定制计划  
+✓ **赋权**：支持患者激活和自我管理  
 
-### Evidence-Based Practice
+### 循证实践
 
-✓ **Clinical Guidelines**: Follow current specialty society recommendations  
-✓ **Quality Measures**: Incorporate HEDIS, CMS quality measures  
-✓ **Comparative Effectiveness**: Use treatments with proven efficacy  
-✓ **Avoid Low-Value Care**: Eliminate unnecessary tests and interventions  
-✓ **Stay Current**: Update plans based on emerging evidence  
+✓ **临床指南**：遵循当前专业学会建议  
+✓ **质量措施**：纳入HEDIS、CMS质量措施  
+✓ **比较有效性**：使用已证明有效的治疗  
+✓ **避免低价值护理**：消除不必要的测试和干预  
+✓ **保持更新**：根据新兴证据更新计划  
 
-### Documentation Standards
+### 文档标准
 
-✓ **Completeness**: Include all required elements  
-✓ **Clarity**: Use clear, professional medical language  
-✓ **Accuracy**: Ensure factual correctness and current information  
-✓ **Timeliness**: Document plans promptly  
-✓ **Legibility**: Professional formatting and organization  
-✓ **Signature and Date**: Authenticate all treatment plans  
+✓ **完整性**：包含所有必需元素  
+✓ **清晰度**：使用清晰、专业的医学语言  
+✓ **准确性**：确保事实正确性和当前信息  
+✓ **及时性**：及时记录计划  
+✓ **可读性**：专业格式和组织  
+✓ **签名和日期**：认证所有治疗计划  
 
-### Regulatory Compliance
+### 监管合规
 
-✓ **HIPAA Privacy**: De-identify all protected health information  
-✓ **Informed Consent**: Document patient understanding and agreement  
-✓ **Billing Support**: Include documentation to support medical necessity  
-✓ **Quality Reporting**: Enable extraction of quality metrics  
-✓ **Legal Protection**: Maintain defensible clinical documentation  
+✓ **HIPAA隐私**：去识别所有受保护的健康信息  
+✓ **知情同意**：记录患者理解和同意  
+✓ **账单支持**：包含支持医疗必要性的文档  
+✓ **质量报告**：能够提取质量指标  
+✓ **法律保护**：维护可辩护的临床文档  
 
-### Multidisciplinary Coordination
+### 多学科协调
 
-✓ **Team Communication**: Share plans across care team  
-✓ **Role Clarity**: Define responsibilities for each team member  
-✓ **Care Transitions**: Ensure continuity across settings  
-✓ **Specialist Integration**: Coordinate with subspecialty care  
-✓ **Patient-Centered Medical Home**: Align with PCMH principles  
+✓ **团队沟通**：在护理团队中共享计划  
+✓ **角色明确**：定义每个团队成员的责任  
+✓ **护理过渡**：确保跨设置的连续性  
+✓ **专科整合**：与亚专科护理协调  
+✓ **以患者为中心的医疗之家**：与PCMH原则一致  
 
-## LaTeX Template Usage
+## LaTeX模板使用
 
-### Template Selection
+### 模板选择
 
-Choose the appropriate template based on clinical context and desired length:
+根据临床背景和所需长度选择适当的模板：
 
-#### Concise Templates (PREFERRED)
+#### 简洁模板（首选）
 
-1. **one_page_treatment_plan.tex** - **FIRST CHOICE** for most cases
-   - All clinical specialties
-   - Standard protocols and straightforward cases
-   - Quick-reference format similar to precision oncology reports
-   - Dense, scannable, clinician-focused
-   - Use this unless complexity demands more detail
+1. **one_page_treatment_plan.tex** - **大多数情况下的首选**
+   - 所有临床专科
+   - 标准协议和简单病例
+   - 类似于精准肿瘤学报告的快速参考格式
+   - 密集、可扫描、以临床医生为中心
+   - 除非复杂性要求更多细节，否则使用此模板
 
-#### Standard Templates (3-4 pages)
+#### 标准模板（3-4页）
 
-Use only when one-page format is insufficient due to complexity:
+仅在单页格式因复杂性不足时使用：
 
-2. **general_medical_treatment_plan.tex** - Primary care, chronic disease, general medicine
-3. **rehabilitation_treatment_plan.tex** - PT/OT, post-surgery, injury recovery
-4. **mental_health_treatment_plan.tex** - Psychiatric conditions, behavioral health
-5. **chronic_disease_management_plan.tex** - Complex chronic diseases, multiple conditions
-6. **perioperative_care_plan.tex** - Surgical patients, procedural care
-7. **pain_management_plan.tex** - Acute or chronic pain conditions
+2. **general_medical_treatment_plan.tex** - 初级保健、慢性病、一般医学
+3. **rehabilitation_treatment_plan.tex** - PT/OT、术后、损伤恢复
+4. **mental_health_treatment_plan.tex** - 精神疾病、行为健康
+5. **chronic_disease_management_plan.tex** - 复杂慢性病、多种疾病
+6. **perioperative_care_plan.tex** - 手术患者、程序护理
+7. **pain_management_plan.tex** - 急性或慢性疼痛状况
 
-**Note**: Even when using standard templates, adapt them to be concise (3-4 pages max) by removing non-essential sections.
+**注意**：即使使用标准模板，也要通过删除非必要部分来调整它们以保持简洁（最多3-4页）。
 
-### Template Structure
+### 模板结构
 
-All LaTeX templates include:
-- Professional formatting with appropriate margins and fonts
-- Structured sections for all required components
-- Tables for medications, interventions, timelines
-- Goal-tracking sections with SMART criteria
-- Space for provider signatures and dates
-- HIPAA-compliant de-identification guidance
-- Comments with detailed instructions
+所有LaTeX模板包括：
+- 具有适当边距和字体的专业格式
+- 所有必需组件的结构化部分
+- 药物、干预措施、时间表的表格
+- 带有SMART标准的目标跟踪部分
+- 提供者签名和日期的空间
+- HIPAA合规的去识别指南
+- 带有详细说明的注释
 
-### Generating PDFs
+### 生成PDF
 
 ```bash
-# Compile LaTeX template to PDF
+# 编译LaTeX模板为PDF
 pdflatex general_medical_treatment_plan.tex
 
-# For templates with references
+# 对于带有引用的模板
 pdflatex treatment_plan.tex
 bibtex treatment_plan
 pdflatex treatment_plan.tex
 pdflatex treatment_plan.tex
 ```
 
-## Validation and Quality Assurance
+## 验证和质量保证
 
-### Completeness Checking
+### 完整性检查
 
-Use validation scripts to ensure all required sections are present:
+使用验证脚本来确保所有必需部分都存在：
 
 ```bash
 python check_completeness.py my_treatment_plan.tex
 ```
 
-The script checks for:
-- Patient information section
-- Diagnosis and assessment
-- SMART goals (short-term and long-term)
-- Interventions (pharmacological, non-pharmacological)
-- Timeline and schedule
-- Monitoring parameters
-- Expected outcomes
-- Follow-up plan
-- Patient education
-- Risk mitigation
+该脚本检查：
+- 患者信息部分
+- 诊断和评估
+- SMART目标（短期和长期）
+- 干预措施（药物、非药物）
+- 时间表和计划
+- 监测参数
+- 预期结果
+- 随访计划
+- 患者教育
+- 风险缓解
 
-### Treatment Plan Validation
+### 治疗计划验证
 
-Comprehensive validation of treatment plan quality:
+治疗计划质量的综合验证：
 
 ```bash
 python validate_treatment_plan.py my_treatment_plan.tex
 ```
 
-Validation includes:
-- SMART goal criteria assessment
-- Evidence-based intervention verification
-- Timeline feasibility check
-- Monitoring parameter adequacy
-- Safety and risk mitigation review
-- Regulatory compliance check
+验证包括：
+- SMART目标标准评估
+- 循证干预验证
+- 时间表可行性检查
+- 监测参数充分性
+- 安全和风险缓解审查
+- 监管合规检查
 
-### Quality Checklist
+### 质量清单
 
-Review treatment plans against the quality checklist (`quality_checklist.md`):
+根据质量清单（`quality_checklist.md`）审查治疗计划：
 
-**Clinical Quality**
-- [ ] Diagnosis is accurate and properly coded (ICD-10)
-- [ ] Goals are SMART and patient-centered
-- [ ] Interventions are evidence-based and guideline-concordant
-- [ ] Timeline is realistic and clearly defined
-- [ ] Monitoring plan is comprehensive
-- [ ] Safety considerations are addressed
+**临床质量**
+- [ ] 诊断准确且编码正确（ICD-10）
+- [ ] 目标是SMART且以患者为中心
+- [ ] 干预措施基于证据且符合指南
+- [ ] 时间表现实且明确定义
+- [ ] 监测计划全面
+- [ ] 安全考虑得到解决
 
-**Patient-Centered Care**
-- [ ] Patient preferences and values incorporated
-- [ ] Shared decision-making documented
-- [ ] Health literacy appropriate language
-- [ ] Cultural considerations addressed
-- [ ] Patient education plan included
+**以患者为中心的护理**
+- [ ] 纳入患者偏好和价值观
+- [ ] 记录共享决策
+- [ ] 健康素养适当的语言
+- [ ] 解决文化考虑
+- [ ] 包含患者教育计划
 
-**Regulatory Compliance**
-- [ ] HIPAA-compliant de-identification
-- [ ] Medical necessity documented
-- [ ] Informed consent noted
-- [ ] Provider signature and credentials
-- [ ] Date of plan creation/revision
+**监管合规**
+- [ ] HIPAA合规的去识别
+- [ ] 记录医疗必要性
+- [ ] 注明知情同意
+- [ ] 提供者签名和资质
+- [ ] 计划创建/修订日期
 
-**Coordination and Communication**
-- [ ] Specialist referrals documented
-- [ ] Care team roles defined
-- [ ] Follow-up schedule clear
-- [ ] Emergency contacts provided
-- [ ] Transition planning addressed
+**协调和沟通**
+- [ ] 记录专科转诊
+- [ ] 定义护理团队角色
+- [ ] 随访时间表清晰
+- [ ] 提供紧急联系
+- [ ] 解决过渡计划
 
-## Integration with Other Skills
+## 与其他技能的集成
 
-### Clinical Reports Integration
+### 临床报告集成
 
-Treatment plans often accompany other clinical documentation:
+治疗计划通常伴随其他临床文档：
 
-- **SOAP Notes** (`clinical-reports` skill): Document ongoing implementation
-- **H&P** (`clinical-reports` skill): Initial assessment informs treatment plan
-- **Discharge Summaries** (`clinical-reports` skill): Summarize treatment plan execution
-- **Progress Notes**: Track goal achievement and plan modifications
+- **SOAP笔记**（`clinical-reports`技能）：记录持续实施
+- **H&P**（`clinical-reports`技能）：初始评估为治疗计划提供信息
+- **出院摘要**（`clinical-reports`技能）：总结治疗计划执行
+- **进展笔记**：跟踪目标实现和计划修改
 
-### Scientific Writing Integration
+### 科学写作集成
 
-Evidence-based treatment planning requires literature support:
+循证治疗计划需要文献支持：
 
-- **Citation Management** (`citation-management` skill): Reference clinical guidelines
-- **Literature Review** (`literature-review` skill): Understand treatment evidence base
-- **Research Lookup** (`research-lookup` skill): Find current best practices
+- **引用管理**（`citation-management`技能）：参考临床指南
+- **文献综述**（`literature-review`技能）：了解治疗证据基础
+- **研究查找**（`research-lookup`技能）：找到当前最佳实践
 
-### Research Integration
+### 研究集成
 
-Treatment plans may be developed for clinical trials or research studies:
+治疗计划可能为临床试验或研究研究开发：
 
-- **Research Grants** (`research-grants` skill): Treatment protocols for funded studies
-- **Clinical Trial Reports** (`clinical-reports` skill): Intervention documentation
+- **研究 grants**（`research-grants`技能）：资助研究的治疗方案
+- **临床试验报告**（`clinical-reports`技能）：干预文档
 
-## Common Use Cases
+## 常见用例
 
-### Example 1: Type 2 Diabetes Management
+### 示例1：2型糖尿病管理
 
-**Scenario**: 58-year-old patient with newly diagnosed Type 2 diabetes, HbA1c 8.5%, BMI 32
+**场景**：58岁新诊断2型糖尿病患者，HbA1c 8.5%，BMI 32
 
-**Template**: `general_medical_treatment_plan.tex`
+**模板**：`general_medical_treatment_plan.tex`
 
-**Goals**:
-- Short-term: Reduce HbA1c to <7.5% in 3 months
-- Long-term: Achieve HbA1c <7%, lose 15 pounds in 6 months
+**目标**：
+- 短期：3个月内将HbA1c降至<7.5%
+- 长期：6个月内达到HbA1c <7%，减重15磅
 
-**Interventions**:
-- Pharmacological: Metformin 500mg BID, titrate to 1000mg BID
-- Lifestyle: Mediterranean diet, 150 min/week moderate exercise
-- Education: Diabetes self-management education, glucose monitoring
+**干预措施**：
+- 药物治疗：二甲双胍500mg BID，滴定至1000mg BID
+- 生活方式：地中海饮食，每周150分钟中等运动
+- 教育：糖尿病自我管理教育，血糖监测
 
-### Example 2: Post-Stroke Rehabilitation
+### 示例2：卒中后康复
 
-**Scenario**: 70-year-old patient s/p left MCA stroke with right hemiparesis
+**场景**：70岁左侧MCA卒中患者，右侧偏瘫
 
-**Template**: `rehabilitation_treatment_plan.tex`
+**模板**：`rehabilitation_treatment_plan.tex`
 
-**Goals**:
-- Short-term: Improve right arm strength 2/5 to 3/5 in 4 weeks
-- Long-term: Independent ambulation 150 feet with cane in 12 weeks
+**目标**：
+- 短期：4周内将右臂力量从2/5改善至3/5
+- 长期：12周内使用手杖独立行走150英尺
 
-**Interventions**:
-- PT 3x/week: Gait training, balance, strengthening
-- OT 3x/week: ADL training, upper extremity function
-- SLP 2x/week: Dysphagia therapy
+**干预措施**：
+- PT 3次/周：步态训练、平衡、加强
+- OT 3次/周：ADL训练、上肢功能
+- SLP 2次/周：吞咽治疗
 
-### Example 3: Major Depressive Disorder
+### 示例3：重度抑郁症
 
-**Scenario**: 35-year-old with moderate depression, PHQ-9 score 16
+**场景**：35岁中度抑郁症患者，PHQ-9评分16
 
-**Template**: `mental_health_treatment_plan.tex`
+**模板**：`mental_health_treatment_plan.tex`
 
-**Goals**:
-- Short-term: Reduce PHQ-9 to <10 in 8 weeks
-- Long-term: Achieve remission (PHQ-9 <5), return to work
+**目标**：
+- 短期：8周内将PHQ-9降至<10
+- 长期：达到缓解（PHQ-9 <5），重返工作
 
-**Interventions**:
-- Psychotherapy: CBT weekly sessions
-- Medication: Sertraline 50mg daily, titrate to 100mg
-- Lifestyle: Sleep hygiene, exercise 30 min 5x/week
+**干预措施**：
+- 心理治疗：每周CBT会话
+- 药物：舍曲林50mg每日，滴定至100mg
+- 生活方式：睡眠卫生，每周5次30分钟运动
 
-### Example 4: Total Knee Arthroplasty
+### 示例4：全膝关节置换术
 
-**Scenario**: 68-year-old scheduled for right TKA for osteoarthritis
+**场景**：68岁因骨关节炎计划进行右侧TKA
 
-**Template**: `perioperative_care_plan.tex`
+**模板**：`perioperative_care_plan.tex`
 
-**Preoperative Goals**:
-- Optimize diabetes control (glucose <180)
-- Discontinue anticoagulation per protocol
-- Complete medical clearance
+**术前目标**：
+- 优化糖尿病控制（血糖<180）
+- 按协议停用抗凝药物
+- 完成医疗许可
 
-**Postoperative Goals**:
-- Ambulate 50 feet by POD 1
-- 90-degree knee flexion by POD 3
-- Discharge home with PT services by POD 2-3
+**术后目标**：
+- POD 1前行走50英尺
+- POD 3前膝关节屈曲90度
+- POD 2-3前出院回家，带PT服务
 
-### Example 5: Chronic Low Back Pain
+### 示例5：慢性下背痛
 
-**Scenario**: 45-year-old with chronic non-specific low back pain, pain 7/10
+**场景**：45岁慢性非特异性下背痛患者，疼痛7/10
 
-**Template**: `pain_management_plan.tex`
+**模板**：`pain_management_plan.tex`
 
-**Goals**:
-- Short-term: Reduce pain to 4/10 in 6 weeks
-- Long-term: Return to work full-time, pain 2-3/10
+**目标**：
+- 短期：6周内将疼痛降至4/10
+- 长期：全职重返工作，疼痛2-3/10
 
-**Interventions**:
-- Pharmacological: Gabapentin 300mg TID, duloxetine 60mg daily
-- PT: Core strengthening, McKenzie exercises 2x/week x 8 weeks
-- Behavioral: CBT for pain, mindfulness meditation
-- Interventional: Consider lumbar ESI if inadequate response
+**干预措施**：
+- 药物治疗：加巴喷丁300mg TID，度洛西汀60mg每日
+- PT：核心加强，麦肯齐练习2次/周×8周
+- 行为：疼痛CBT，正念冥想
+- 介入：如反应不足，考虑腰椎ESI
 
-## Professional Standards and Guidelines
+## 专业标准和指南
 
-Treatment plans should align with:
+治疗计划应符合：
 
-### General Medicine
-- American Diabetes Association (ADA) Standards of Care
-- ACC/AHA Cardiovascular Guidelines
-- GOLD COPD Guidelines
-- JNC-8 Hypertension Guidelines
-- KDIGO Chronic Kidney Disease Guidelines
+### 一般医学
+- 美国糖尿病协会（ADA）护理标准
+- ACC/AHA心血管指南
+- GOLD COPD指南
+- JNC-8高血压指南
+- KDIGO慢性肾病指南
 
-### Rehabilitation
-- APTA Clinical Practice Guidelines
-- AOTA Practice Guidelines
-- Cardiac Rehabilitation Guidelines (AHA/AACVPR)
-- Stroke Rehabilitation Guidelines
+### 康复
+- APTA临床实践指南
+- AOTA实践指南
+- 心脏康复指南（AHA/AACVPR）
+- 卒中康复指南
 
-### Mental Health
-- APA Practice Guidelines
-- VA/DoD Clinical Practice Guidelines
-- NICE Guidelines (National Institute for Health and Care Excellence)
-- Cochrane Reviews for psychiatric interventions
+### 心理健康
+- APA实践指南
+- VA/DoD临床实践指南
+- NICE指南（国家健康与护理卓越研究所）
+- 精神科干预的Cochrane评价
 
-### Pain Management
-- CDC Opioid Prescribing Guidelines
-- AAPM/APS Chronic Pain Guidelines
-- WHO Pain Ladder
-- Multimodal Analgesia Best Practices
+### 疼痛管理
+- CDC阿片类药物处方指南
+- AAPM/APS慢性疼痛指南
+- WHO疼痛阶梯
+- 多模式镇痛最佳实践
 
-## Timeline Generation
+## 时间表生成
 
-Use the timeline generator script to create visual treatment timelines:
+使用时间表生成器脚本来创建视觉治疗时间表：
 
 ```bash
 python timeline_generator.py --plan my_treatment_plan.tex --output timeline.pdf
 ```
 
-Generates:
-- Gantt chart of treatment phases
-- Milestone markers for goal assessments
-- Medication titration schedules
-- Follow-up appointment calendar
-- Intervention intensity over time
+生成：
+- 治疗阶段的甘特图
+- 目标评估的里程碑标记
+- 药物滴定计划
+- 随访预约日历
+- 随时间变化的干预强度
 
-## Support and Resources
+## 支持和资源
 
-### Template Generation
+### 模板生成
 
-Interactive template selection:
+交互式模板选择：
 
 ```bash
 cd .claude/skills/treatment-plans/scripts
 python generate_template.py
 
-# Or specify type directly
+# 或直接指定类型
 python generate_template.py --type mental_health --output depression_treatment_plan.tex
 ```
 
-### Validation Workflow
+### 验证工作流程
 
-1. **Create treatment plan** using appropriate LaTeX template
-2. **Check completeness**: `python check_completeness.py plan.tex`
-3. **Validate quality**: `python validate_treatment_plan.py plan.tex`
-4. **Review checklist**: Compare against `quality_checklist.md`
-5. **Generate PDF**: `pdflatex plan.tex`
-6. **Review with patient**: Ensure understanding and agreement
-7. **Implement and document**: Track progress in clinical notes
+1. **创建治疗计划**使用适当的LaTeX模板
+2. **检查完整性**：`python check_completeness.py plan.tex`
+3. **验证质量**：`python validate_treatment_plan.py plan.tex`
+4. **审查清单**：与`quality_checklist.md`比较
+5. **生成PDF**：`pdflatex plan.tex`
+6. **与患者审查**：确保理解和同意
+7. **实施和记录**：在临床笔记中跟踪进展
 
-### Additional Resources
+### 其他资源
 
-- Clinical practice guidelines from specialty societies
-- AHRQ Effective Health Care Program
-- Cochrane Library for intervention evidence
-- UpToDate and DynaMed for treatment recommendations
-- CMS Quality Measures and HEDIS specifications
+- 专业学会的临床实践指南
+- AHRQ有效医疗保健计划
+- 干预证据的Cochrane图书馆
+- UpToDate和DynaMed的治疗建议
+- CMS质量措施和HEDIS规范
 
-## Professional Document Styling
+## 专业文档样式
 
-### Overview
+### 概述
 
-Treatment plans can be enhanced with professional medical document styling using the `medical_treatment_plan.sty` LaTeX package. This custom style transforms plain academic documents into visually appealing, color-coded clinical documents that maintain scientific rigor while improving readability and usability.
+治疗计划可以使用`medical_treatment_plan.sty` LaTeX包进行专业医疗文档样式增强。此自定义样式将普通学术文档转换为视觉吸引力强、颜色编码的临床文档，在保持科学严谨性的同时提高可读性和可用性。
 
-### Medical Treatment Plan Style Package
+### 医疗治疗计划样式包
 
-The `medical_treatment_plan.sty` package (located in `assets/medical_treatment_plan.sty`) provides:
+`medical_treatment_plan.sty`包（位于`assets/medical_treatment_plan.sty`）提供：
 
-**Professional Color Scheme**
-- **Primary Blue** (RGB: 0, 102, 153): Headers, section titles, primary accents
-- **Secondary Blue** (RGB: 102, 178, 204): Light backgrounds, subtle accents
-- **Accent Blue** (RGB: 0, 153, 204): Hyperlinks, key highlights
-- **Success Green** (RGB: 0, 153, 76): Goals, positive outcomes
-- **Warning Red** (RGB: 204, 0, 0): Warnings, critical information
-- **Dark Gray** (RGB: 64, 64, 64): Body text
-- **Light Gray** (RGB: 245, 245, 245): Background fills
+**专业配色方案**
+- **主蓝色**（RGB：0, 102, 153）：标题、章节标题、主要强调
+- **次蓝色**（RGB：102, 178, 204）：浅色背景、微妙强调
+- **强调蓝色**（RGB：0, 153, 204）：超链接、关键亮点
+- **成功绿色**（RGB：0, 153, 76）：目标、积极结果
+- **警告红色**（RGB：204, 0, 0）：警告、关键信息
+- **深灰色**（RGB：64, 64, 64）：正文
+- **浅灰色**（RGB：245, 245, 245）：背景填充
 
-**Styled Elements**
-- Custom colored headers and footers with professional rules
-- Blue section titles with underlines for clear hierarchy
-- Enhanced table formatting with colored headers and alternating rows
-- Optimized list spacing with colored bullets and numbering
-- Professional page layout with appropriate margins
+**样式元素**
+- 带有专业规则的自定义彩色页眉和页脚
+- 带有下划线的蓝色章节标题，层次清晰
+- 带有彩色标题和交替行的增强表格格式
+- 带有彩色项目符号和编号的优化列表间距
+- 具有适当边距的专业页面布局
 
-### Custom Information Boxes
+### 自定义信息框
 
-The style package includes five specialized box environments for organizing clinical information:
+样式包包括五个专门的框环境，用于组织临床信息：
 
-#### 1. Info Box (Blue Border, Light Gray Background)
+#### 1. 信息框（蓝色边框，浅灰色背景）
 
-For general information, clinical assessments, and testing schedules:
+用于一般信息、临床评估和测试计划：
 
 ```latex
-\begin{infobox}[Title]
-  \textbf{Key Information:}
+\begin{infobox}[标题]
+  \textbf{关键信息：}
   \begin{itemize}
-    \item Clinical assessment details
-    \item Testing schedules
-    \item General guidance
+    \item 临床评估详情
+    \item 测试计划
+    \item 一般指导
   \end{itemize}
 \end{infobox}
 ```
 
-**Use cases**: Metabolic status, baseline assessments, monitoring schedules, titration protocols
+**使用场景**：代谢状态、基线评估、监测计划、滴定方案
 
-#### 2. Warning Box (Red Border, Yellow Background)
+#### 2. 警告框（红色边框，黄色背景）
 
-For critical decision points, safety protocols, and alerts:
+用于关键决策点、安全协议和警报：
 
 ```latex
-\begin{warningbox}[Alert Title]
-  \textbf{Important Safety Information:}
+\begin{warningbox}[警报标题]
+  \textbf{重要安全信息：}
   \begin{itemize}
-    \item Critical drug interactions
-    \item Safety monitoring requirements
-    \item Red flag symptoms requiring immediate action
+    \item 关键药物相互作用
+    \item 安全监测要求
+    \item 需要立即行动的红旗症状
   \end{itemize}
 \end{warningbox}
 ```
 
-**Use cases**: Medication safety, decision points, contraindications, emergency protocols
+**使用场景**：药物安全、决策点、禁忌症、紧急协议
 
-#### 3. Goal Box (Green Border, Green-Tinted Background)
+#### 3. 目标框（绿色边框，绿色 tint背景）
 
-For treatment goals, targets, and success criteria:
+用于治疗目标、目标和成功标准：
 
 ```latex
-\begin{goalbox}[Treatment Goals]
-  \textbf{Primary Objectives:}
+\begin{goalbox}[治疗目标]
+  \textbf{主要目标：}
   \begin{itemize}
-    \item Reduce HbA1c to <7\% within 3 months
-    \item Achieve 5-7\% weight loss in 12 weeks
-    \item Complete diabetes education program
+    \item 3个月内将HbA1c降至<7\%
+    \item 12周内实现5-7\%体重减轻
+    \item 完成糖尿病教育计划
   \end{itemize}
 \end{goalbox}
 ```
 
-**Use cases**: SMART goals, target outcomes, success metrics, CGM goals
+**使用场景**：SMART目标、目标结果、成功指标、CGM目标
 
-#### 4. Key Points Box (Blue Background)
+#### 4. 关键点框（蓝色背景）
 
-For executive summaries, key takeaways, and important recommendations:
+用于执行摘要、关键要点和重要建议：
 
 ```latex
-\begin{keybox}[Key Highlights]
-  \textbf{Essential Points:}
+\begin{keybox}[关键亮点]
+  \textbf{基本要点：}
   \begin{itemize}
-    \item Main therapeutic approach
-    \item Critical patient instructions
-    \item Priority interventions
+    \item 主要治疗方法
+    \item 关键患者指导
+    \item 优先干预措施
   \end{itemize}
 \end{keybox}
 ```
 
-**Use cases**: Plan overview, plate method instructions, important dietary guidelines
+**使用场景**：计划概述、板块方法指导、重要饮食指南
 
-#### 5. Emergency Box (Large Red Design)
+#### 5. 紧急框（大红色设计）
 
-For emergency contacts and urgent protocols:
+用于紧急联系人和紧急协议：
 
 ```latex
 \begin{emergencybox}
   \begin{itemize}
-    \item \textbf{Emergency Services:} 911
-    \item \textbf{Endocrinology Office:} [Phone] (business hours)
-    \item \textbf{After-Hours Hotline:} [Phone] (nights/weekends)
-    \item \textbf{Pharmacy:} [Phone and location]
+    \item \textbf{紧急服务：} 911
+    \item \textbf{内分泌科办公室：} [电话]（工作时间）
+    \item \textbf{下班后热线：} [电话]（晚上/周末）
+    \item \textbf{药房：} [电话和位置]
   \end{itemize}
 \end{emergencybox}
 ```
 
-**Use cases**: Emergency contacts, critical hotlines, urgent resource information
+**使用场景**：紧急联系、关键热线、紧急资源信息
 
-#### 6. Patient Info Box (White with Blue Border)
+#### 6. 患者信息框（白色带蓝色边框）
 
-For patient demographics and baseline information:
+用于患者人口统计和基线信息：
 
 ```latex
 \begin{patientinfo}
   \begin{tabular}{ll}
-    \textbf{Age:} & 23 years \\
-    \textbf{Sex:} & Male \\
-    \textbf{Diagnosis:} & Type 2 Diabetes Mellitus \\
-    \textbf{Plan Start Date:} & \today \\
+    \textbf{年龄：} & 23岁 \\
+    \textbf{性别：} & 男 \\
+    \textbf{诊断：} & 2型糖尿病 \\
+    \textbf{计划开始日期：} & \today \\
   \end{tabular}
 \end{patientinfo}
 ```
 
-**Use cases**: Patient information sections, demographic data
+**使用场景**：患者信息部分、人口统计数据
 
-### Professional Table Formatting
+### 专业表格格式
 
-Enhanced table environment with medical styling:
+带有医疗样式的增强表格环境：
 
 ```latex
-\begin{medtable}{Caption Text}
+\begin{medtable}{标题文本}
 \begin{tabular}{|p{5cm}|p{4cm}|p{4.5cm}|}
 \hline
-\tableheadercolor  % Blue header with white text
-\textcolor{white}{\textbf{Column 1}} & 
-\textcolor{white}{\textbf{Column 2}} & 
-\textcolor{white}{\textbf{Column 3}} \\
+\tableheadercolor  % 蓝色标题带白色文本
+\textcolor{white}{\textbf{列1}} & 
+\textcolor{white}{\textbf{列2}} & 
+\textcolor{white}{\textbf{列3}} \\
 \hline
-Data row 1 content & Value 1 & Details 1 \\
+数据行1内容 & 值1 & 详情1 \\
 \hline
-\tablerowcolor  % Alternating light gray row
-Data row 2 content & Value 2 & Details 2 \\
+\tablerowcolor  % 交替浅灰色行
+数据行2内容 & 值2 & 详情2 \\
 \hline
-Data row 3 content & Value 3 & Details 3 \\
+数据行3内容 & 值3 & 详情3 \\
 \hline
 \end{tabular}
-\caption{Table caption}
+\caption{表格标题}
 \end{medtable}
 ```
 
-**Features:**
-- Blue headers with white text for visual prominence
-- Alternating row colors (`\tablerowcolor`) for improved readability
-- Automatic centering and spacing
-- Professional borders and padding
+**特点：**
+- 蓝色标题带白色文本，视觉突出
+- 交替行颜色（`\tablerowcolor`）提高可读性
+- 自动居中和间距
+- 专业边框和填充
 
-### Using the Style Package
+### 使用样式包
 
-#### Basic Setup
+#### 基本设置
 
-1. **Add to document preamble:**
+1. **添加到文档前言：**
 
 ```latex
 % !TEX program = xelatex
 \documentclass[11pt,letterpaper]{article}
 
-% Use custom medical treatment plan style
+% 使用自定义医疗治疗计划样式
 \usepackage{medical_treatment_plan}
 \usepackage{natbib}
 
 \begin{document}
 \maketitle
-% Your content here
+% 您的内容在这里
 \end{document}
 ```
 
-2. **Ensure style file is in same directory** as your `.tex` file, or install to LaTeX path
+2. **确保样式文件在与`.tex`文件相同的目录中**，或安装到LaTeX路径
 
-3. **Compile with XeLaTeX** (recommended for best results):
+3. **使用XeLaTeX编译**（推荐以获得最佳效果）：
 
 ```bash
 xelatex treatment_plan.tex
@@ -1272,213 +1272,213 @@ xelatex treatment_plan.tex
 xelatex treatment_plan.tex
 ```
 
-#### Custom Title Page
+#### 自定义标题页
 
-The package automatically formats the title with a professional blue header:
+该包自动使用专业蓝色标题格式化标题：
 
 ```latex
-\title{\textbf{Individualized Diabetes Treatment Plan}\\
-\large{23-Year-Old Male Patient with Type 2 Diabetes}}
-\author{Comprehensive Care Plan}
+\title{\textbf{个性化糖尿病治疗计划}\\
+\large{23岁男性2型糖尿病患者}}
+\author{综合护理计划}
 \date{\today}
 
 \begin{document}
 \maketitle
 ```
 
-This creates an eye-catching blue box with white text and clear hierarchy.
+这创建了一个引人注目的蓝色框，带有白色文本和清晰的层次结构。
 
-### Compilation Requirements
+### 编译要求
 
-**Required LaTeX Packages** (automatically loaded by the style):
-- `geometry` - Page layout and margins
-- `xcolor` - Color support
-- `tcolorbox` with `[most]` library - Custom colored boxes
-- `tikz` - Graphics and drawing
-- `fontspec` - Font management (XeLaTeX/LuaLaTeX)
-- `fancyhdr` - Custom headers and footers
-- `titlesec` - Section styling
-- `enumitem` - Enhanced list formatting
-- `booktabs` - Professional table rules
-- `longtable` - Multi-page tables
-- `array` - Enhanced table features
-- `colortbl` - Colored table cells
-- `hyperref` - Hyperlinks and PDF metadata
-- `natbib` - Bibliography management
+**必需的LaTeX包**（由样式自动加载）：
+- `geometry` - 页面布局和边距
+- `xcolor` - 颜色支持
+- `tcolorbox` 带 `[most]` 库 - 自定义彩色框
+- `tikz` - 图形和绘图
+- `fontspec` - 字体管理（XeLaTeX/LuaLaTeX）
+- `fancyhdr` - 自定义页眉和页脚
+- `titlesec` - 章节样式
+- `enumitem` - 增强列表格式
+- `booktabs` - 专业表格规则
+- `longtable` - 多页表格
+- `array` - 增强表格功能
+- `colortbl` - 彩色表格单元格
+- `hyperref` - 超链接和PDF元数据
+- `natbib` - 参考书目管理
 
-**Recommended Compilation:**
+**推荐编译：**
 
 ```bash
-# Using XeLaTeX (best font support)
+# 使用XeLaTeX（最佳字体支持）
 xelatex document.tex
 bibtex document
 xelatex document.tex
 xelatex document.tex
 
-# Using PDFLaTeX (alternative)
+# 使用PDFLaTeX（替代）
 pdflatex document.tex
 bibtex document
 pdflatex document.tex
 pdflatex document.tex
 ```
 
-### Customization Options
+### 自定义选项
 
-#### Changing Colors
+#### 更改颜色
 
-Edit the style file to modify the color scheme:
+编辑样式文件以修改配色方案：
 
 ```latex
-% In medical_treatment_plan.sty
-\definecolor{primaryblue}{RGB}{0, 102, 153}      % Modify these
+% 在medical_treatment_plan.sty中
+\definecolor{primaryblue}{RGB}{0, 102, 153}      % 修改这些
 \definecolor{secondaryblue}{RGB}{102, 178, 204}
 \definecolor{accentblue}{RGB}{0, 153, 204}
 \definecolor{successgreen}{RGB}{0, 153, 76}
 \definecolor{warningred}{RGB}{204, 0, 0}
 ```
 
-#### Adjusting Page Layout
+#### 调整页面布局
 
-Modify geometry settings in the style file:
+在样式文件中修改几何设置：
 
 ```latex
 \RequirePackage[margin=1in, top=1.2in, bottom=1.2in]{geometry}
 ```
 
-#### Custom Fonts (XeLaTeX only)
+#### 自定义字体（仅XeLaTeX）
 
-Uncomment and modify in the style file:
+在样式文件中取消注释并修改：
 
 ```latex
 \setmainfont{Your Preferred Font}
 \setsansfont{Your Sans-Serif Font}
 ```
 
-#### Header/Footer Customization
+#### 页眉/页脚自定义
 
-Modify in the style file:
+在样式文件中修改：
 
 ```latex
-\fancyhead[L]{\color{primaryblue}\sffamily\small\textbf{Treatment Plan Title}}
-\fancyhead[R]{\color{darkgray}\sffamily\small Patient Info}
+\fancyhead[L]{\color{primaryblue}\sffamily\small\textbf{治疗计划标题}}
+\fancyhead[R]{\color{darkgray}\sffamily\small 患者信息}
 ```
 
-### Style Package Download and Installation
+### 样式包下载和安装
 
-#### Option 1: Copy to Project Directory
+#### 选项1：复制到项目目录
 
-Copy `assets/medical_treatment_plan.sty` to the same directory as your `.tex` file.
+将`assets/medical_treatment_plan.sty`复制到与`.tex`文件相同的目录中。
 
-#### Option 2: Install to User TeX Directory
+#### 选项2：安装到用户TeX目录
 
 ```bash
-# Find your local texmf directory
+# 找到您的本地texmf目录
 kpsewhich -var-value TEXMFHOME
 
-# Copy to appropriate location (usually ~/texmf/tex/latex/)
+# 复制到适当位置（通常是~/texmf/tex/latex/）
 mkdir -p ~/texmf/tex/latex/medical_treatment_plan
 cp assets/medical_treatment_plan.sty ~/texmf/tex/latex/medical_treatment_plan/
 
-# Update TeX file database
+# 更新TeX文件数据库
 texhash ~/texmf
 ```
 
-#### Option 3: System-Wide Installation
+#### 选项3：系统范围安装
 
 ```bash
-# Copy to system texmf directory (requires sudo)
+# 复制到系统texmf目录（需要sudo）
 sudo cp assets/medical_treatment_plan.sty /usr/local/texlive/texmf-local/tex/latex/
 sudo texhash
 ```
 
-### Additional Professional Styles (Optional)
+### 其他专业样式（可选）
 
-Other medical/clinical document styles available from CTAN:
+CTAN上可用的其他医疗/临床文档样式：
 
-**Journal Styles:**
+**期刊样式：**
 ```bash
-# Install via TeX Live Manager
-tlmgr install nejm        # New England Journal of Medicine
-tlmgr install jama        # JAMA style
-tlmgr install bmj         # British Medical Journal
+# 通过TeX Live Manager安装
+tlmgr install nejm        # 新英格兰医学杂志
+tlmgr install jama        # JAMA样式
+tlmgr install bmj         # 英国医学杂志
 ```
 
-**General Professional Styles:**
+**一般专业样式：**
 ```bash
-tlmgr install apa7        # APA 7th edition (health sciences)
-tlmgr install IEEEtran    # IEEE (medical devices/engineering)
-tlmgr install springer    # Springer journals
+tlmgr install apa7        # APA第7版（健康科学）
+tlmgr install IEEEtran    # IEEE（医疗设备/工程）
+tlmgr install springer    # 施普林格期刊
 ```
 
-**Download from CTAN:**
-- Visit: https://ctan.org/
-- Search for medical document classes
-- Download and install per package instructions
+**从CTAN下载：**
+- 访问：https://ctan.org/
+- 搜索医疗文档类
+- 按照包说明下载并安装
 
-### Troubleshooting
+### 故障排除
 
-**Issue: Package not found**
+**问题：包未找到**
 ```bash
-# Install missing packages via TeX Live Manager
+# 通过TeX Live Manager安装缺失的包
 sudo tlmgr update --self
 sudo tlmgr install tcolorbox tikz pgf
 ```
 
-**Issue: Missing characters (✓, ≥, etc.)**
-- Use XeLaTeX instead of PDFLaTeX
-- Or replace with LaTeX commands: `$\checkmark$`, `$\geq$`
-- Requires `amssymb` package for math symbols
+**问题：缺少字符（✓, ≥等）**
+- 使用XeLaTeX而不是PDFLaTeX
+- 或替换为LaTeX命令：`$\checkmark$`，`$\geq$`
+- 需要`amssymb`包用于数学符号
 
-**Issue: Header height warnings**
-- Style file sets `\setlength{\headheight}{22pt}`
-- Adjust if needed for your content
+**问题：页眉高度警告**
+- 样式文件设置`\setlength{\headheight}{22pt}`
+- 根据您的内容需要进行调整
 
-**Issue: Boxes not rendering**
+**问题：框未渲染**
 ```bash
-# Ensure complete tcolorbox installation
+# 确保完整安装tcolorbox
 sudo tlmgr install tcolorbox tikz pgf
 ```
 
-**Issue: Font not found (XeLaTeX)**
-- Comment out custom font lines in .sty file
-- Or install specified fonts on your system
+**问题：字体未找到（XeLaTeX）**
+- 注释掉.sty文件中的自定义字体行
+- 或在系统上安装指定的字体
 
-### Best Practices for Styled Documents
+### 样式文档的最佳实践
 
-1. **Appropriate Box Usage**
-   - Match box type to content purpose (goals→green, warnings→yellow/red)
-   - Don't overuse boxes; reserve for truly important information
-   - Keep box content concise and focused
+1. **适当的框使用**
+   - 将框类型与内容目的匹配（目标→绿色，警告→黄色/红色）
+   - 不要过度使用框；仅用于真正重要的信息
+   - 保持框内容简洁和重点突出
 
-2. **Visual Hierarchy**
-   - Use section styling for structure
-   - Boxes for emphasis and organization
-   - Tables for comparative data
-   - Lists for sequential or grouped items
+2. **视觉层次**
+   - 使用章节样式进行结构
+   - 框用于强调和组织
+   - 表格用于比较数据
+   - 列表用于顺序或分组项目
 
-3. **Color Consistency**
-   - Stick to defined color scheme
-   - Use `\textcolor{primaryblue}{\textbf{Text}}` for emphasis
-   - Maintain consistent meaning (red=warning, green=goals)
+3. **颜色一致性**
+   - 坚持定义的配色方案
+   - 使用`\textcolor{primaryblue}{\textbf{文本}}`进行强调
+   - 保持一致的含义（红色=警告，绿色=目标）
 
-4. **White Space**
-   - Don't overcrowd pages with boxes
-   - Use `\vspace{0.5cm}` between major sections
-   - Allow breathing room around colored elements
+4. **白色空间**
+   - 不要用框过度拥挤页面
+   - 在主要部分之间使用`\vspace{0.5cm}`
+   - 在彩色元素周围留出呼吸空间
 
-5. **Professional Appearance**
-   - Maintain readability as top priority
-   - Ensure sufficient contrast for accessibility
-   - Test print output in grayscale
-   - Keep styling consistent throughout document
+5. **专业外观**
+   - 保持可读性为首要任务
+   - 确保足够的对比度以提高可访问性
+   - 测试灰度打印输出
+   - 保持整个文档的样式一致
 
-6. **Table Formatting**
-   - Use `\tableheadercolor` for all header rows
-   - Apply `\tablerowcolor` to alternating rows in tables >3 rows
-   - Keep column widths balanced
-   - Use `\small\sffamily` for large tables
+6. **表格格式**
+   - 对所有标题行使用`\tableheadercolor`
+   - 对>3行的表格应用`\tablerowcolor`到交替行
+   - 保持列宽平衡
+   - 对大型表格使用`\small\sffamily`
 
-### Example: Styled Treatment Plan Structure
+### 示例：样式化治疗计划结构
 
 ```latex
 % !TEX program = xelatex
@@ -1486,43 +1486,43 @@ sudo tlmgr install tcolorbox tikz pgf
 \usepackage{medical_treatment_plan}
 \usepackage{natbib}
 
-\title{\textbf{Comprehensive Treatment Plan}\\
-\large{Patient-Centered Care Strategy}}
-\author{Multidisciplinary Care Team}
+\title{\textbf{综合治疗计划}\\
+\large{以患者为中心的护理策略}}
+\author{多学科护理团队}
 \date{\today}
 
 \begin{document}
 \maketitle
 
-\section*{Patient Information}
+\section*{患者信息}
 \begin{patientinfo}
-  % Demographics table
+  % 人口统计表格
 \end{patientinfo}
 
-\section{Executive Summary}
-\begin{keybox}[Plan Overview]
-  % Key highlights
+\section{执行摘要}
+\begin{keybox}[计划概述]
+  % 关键亮点
 \end{keybox}
 
-\section{Treatment Goals}
-\begin{goalbox}[SMART Goals - 3 Months]
-  \begin{medtable}{Primary Treatment Targets}
-    % Goals table with colored headers
+\section{治疗目标}
+\begin{goalbox}[SMART目标 - 3个月]
+  \begin{medtable}{主要治疗目标}
+    % 带有彩色标题的目标表格
   \end{medtable}
 \end{goalbox}
 
-\section{Medication Plan}
-\begin{infobox}[Titration Schedule]
-  % Medication instructions
+\section{药物计划}
+\begin{infobox}[滴定计划]
+  % 药物指导
 \end{infobox}
 
-\begin{warningbox}[Critical Decision Point]
-  % Important safety information
+\begin{warningbox}[关键决策点]
+  % 重要安全信息
 \end{warningbox}
 
-\section{Emergency Protocols}
+\section{紧急协议}
 \begin{emergencybox}
-  % Emergency contacts
+  % 紧急联系
 \end{emergencybox}
 
 \bibliographystyle{plainnat}
@@ -1530,51 +1530,8 @@ sudo tlmgr install tcolorbox tikz pgf
 \end{document}
 ```
 
-### Benefits of Professional Styling
+### 专业样式的好处
 
-**Clinical Practice:**
-- Faster information scanning during patient encounters
-- Clear visual hierarchy for critical vs. routine information
-- Professional appearance suitable for patient-facing documents
-- Color-coded sections reduce cognitive load
-
-**Educational Use:**
-- Enhanced readability for teaching materials
-- Visual differentiation of concept types (goals, warnings, procedures)
-- Professional presentation for case discussions
-- Print and digital-ready formats
-
-**Documentation Quality:**
-- Modern, polished appearance
-- Maintains clinical accuracy while improving aesthetics
-- Standardized formatting across treatment plans
-- Easy to customize for institutional branding
-
-**Patient Engagement:**
-- More approachable than dense text documents
-- Color coding helps patients identify key sections
-- Professional appearance builds trust
-- Clear organization facilitates understanding
-
-## Ethical Considerations
-
-### Informed Consent
-All treatment plans should involve patient understanding and voluntary agreement to proposed interventions.
-
-### Cultural Sensitivity
-Treatment plans must respect diverse cultural beliefs, health practices, and communication styles.
-
-### Health Equity
-Consider social determinants of health, access barriers, and health disparities when developing plans.
-
-### Privacy Protection
-Maintain strict HIPAA compliance; de-identify all protected health information in shared documents.
-
-### Autonomy and Beneficence
-Balance medical recommendations with patient autonomy and values while promoting patient welfare.
-
-## License
-
-Part of the Claude Scientific Writer project. See main LICENSE file.
-
-
+**临床实践：**
+- 患者就诊期间更快的信息扫描
+- 关键与常规信息的清晰视觉层次

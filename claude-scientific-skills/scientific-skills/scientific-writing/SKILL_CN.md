@@ -1,443 +1,430 @@
 ---
 name: scientific-writing
-description: Core skill for the deep research and writing tool. Write scientific manuscripts in full paragraphs (never bullet points). Use two-stage process with (1) section outlines with key points using research-lookup then (2) convert to flowing prose. IMRAD structure, citations (APA/AMA/Vancouver), figures/tables, reporting guidelines (CONSORT/STROBE/PRISMA), for research papers and journal submissions.
+description: 深度研究和写作工具的核心技能。用完整段落撰写科学手稿（绝不是要点列表）。使用两阶段流程：(1) 使用research-lookup创建带关键点的章节大纲，然后(2) 转换为流畅的散文。IMRAD结构、引用（APA/AMA/Vancouver）、图表、报告指南（CONSORT/STROBE/PRISMA），适用于研究论文和期刊投稿。
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Scientific Writing
+# 科学写作
 
-## Overview
+## 概述
 
-**This is the core skill for the deep research and writing tool**—combining AI-driven deep research with well-formatted written outputs. Every document produced is backed by comprehensive literature search and verified citations through the research-lookup skill.
+**这是深度研究和写作工具的核心技能**——结合了AI驱动的深度研究和格式良好的书面输出。每篇生成的文档都通过research-lookup技能得到全面的文献搜索和验证引用的支持。
 
-Scientific writing is a process for communicating research with precision and clarity. Write manuscripts using IMRAD structure, citations (APA/AMA/Vancouver), figures/tables, and reporting guidelines (CONSORT/STROBE/PRISMA). Apply this skill for research papers and journal submissions.
+科学写作是一种以精确和清晰的方式传达研究的过程。使用IMRAD结构、引用（APA/AMA/Vancouver）、图表和报告指南（CONSORT/STROBE/PRISMA）撰写手稿。将此技能应用于研究论文和期刊投稿。
 
-**Critical Principle: Always write in full paragraphs with flowing prose. Never submit bullet points in the final manuscript.** Use a two-stage process: first create section outlines with key points using research-lookup, then convert those outlines into complete paragraphs.
+**关键原则：始终以完整段落和流畅的散文写作。绝不在最终手稿中提交要点列表。** 使用两阶段流程：首先使用research-lookup创建带有关键点的章节大纲，然后将这些大纲转换为完整段落。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
-- Writing or revising any section of a scientific manuscript (abstract, introduction, methods, results, discussion)
-- Structuring a research paper using IMRAD or other standard formats
-- Formatting citations and references in specific styles (APA, AMA, Vancouver, Chicago, IEEE)
-- Creating, formatting, or improving figures, tables, and data visualizations
-- Applying study-specific reporting guidelines (CONSORT for trials, STROBE for observational studies, PRISMA for reviews)
-- Drafting abstracts that meet journal requirements (structured or unstructured)
-- Preparing manuscripts for submission to specific journals
-- Improving writing clarity, conciseness, and precision
-- Ensuring proper use of field-specific terminology and nomenclature
-- Addressing reviewer comments and revising manuscripts
+当以下情况时应使用此技能：
+- 撰写或修改科学手稿的任何部分（摘要、引言、方法、结果、讨论）
+- 使用IMRAD或其他标准格式构建研究论文
+- 以特定风格（APA、AMA、Vancouver、Chicago、IEEE）格式化引用和参考文献
+- 创建、格式化或改进图表和数据可视化
+- 应用特定研究的报告指南（CONSORT用于试验，STROBE用于观察性研究，PRISMA用于综述）
+- 起草符合期刊要求的摘要（结构化或非结构化）
+- 准备提交给特定期刊的手稿
+- 提高写作的清晰度、简洁性和精确性
+- 确保正确使用特定领域的术语和命名法
+- 处理审稿人意见并修改手稿
 
-## Visual Enhancement with Scientific Schematics
+## 科学图表的视觉增强
 
-**⚠️ MANDATORY: Every scientific paper MUST include a graphical abstract plus 1-2 additional AI-generated figures using the scientific-schematics skill.**
+**⚠️ 强制性要求：每篇科学论文必须包含一个图形摘要和使用scientific-schematics技能生成的1-2个额外AI生成图形。**
 
-This is not optional. Scientific papers without visual elements are incomplete. Before finalizing any document:
-1. **ALWAYS generate a graphical abstract** as the first visual element
-2. Generate at minimum ONE additional schematic or diagram using scientific-schematics
-3. Prefer 3-4 total figures for comprehensive papers (graphical abstract + methods flowchart + results visualization + conceptual diagram)
+这不是可选的。没有视觉元素的科学论文是不完整的。在完成任何文档之前：
+1. **始终生成图形摘要**作为第一个视觉元素
+2. 至少使用scientific-schematics生成一个额外的示意图或图表
+3. 对于综合论文，最好有3-4个总图形（图形摘要+方法流程图+结果可视化+概念图）
 
-### Graphical Abstract (REQUIRED)
+### 图形摘要（必需）
 
-**Every scientific writeup MUST include a graphical abstract.** This is a visual summary of your paper that:
-- Appears before or immediately after the text abstract
-- Captures the entire paper's key message in one image
-- Is suitable for journal table of contents display
-- Uses landscape orientation (typically 1200x600px)
+**每篇科学写作必须包含图形摘要。** 这是您论文的视觉摘要，它：
+- 出现在文本摘要之前或之后
+- 在一张图像中捕获整篇论文的关键信息
+- 适合期刊目录显示
+- 使用横向方向（通常为1200x600px）
 
-**Generate the graphical abstract FIRST:**
+**首先生成图形摘要：**
 ```bash
-python scripts/generate_schematic.py "Graphical abstract for [paper title]: [brief description showing workflow from input → methods → key findings → conclusions]" -o figures/graphical_abstract.png
+python scripts/generate_schematic.py "[论文标题]的图形摘要：[简要描述，显示从输入→方法→关键发现→结论的工作流程]" -o figures/graphical_abstract.png
 ```
 
-**Graphical Abstract Requirements:**
-- **Content**: Visual summary showing workflow, key methods, main findings, and conclusions
-- **Style**: Clean, professional, suitable for journal TOC
-- **Elements**: Include 3-5 key steps/concepts with connecting arrows or flow
-- **Text**: Minimal labels, large readable fonts
-- Log: `[HH:MM:SS] GENERATED: Graphical abstract for paper summary`
+**图形摘要要求：**
+- **内容**：视觉摘要，显示工作流程、关键方法、主要发现和结论
+- **风格**：干净、专业，适合期刊目录
+- **元素**：包含3-5个关键步骤/概念，带有连接箭头或流程
+- **文本**：最小标签，大而易读的字体
+- 日志：`[HH:MM:SS] GENERATED: Graphical abstract for paper summary`
 
-### Additional Figures (GENERATE EXTENSIVELY)
+### 额外图形（广泛生成）
 
-**⚠️ CRITICAL: Use BOTH scientific-schematics AND generate-image EXTENSIVELY throughout all documents.**
+**⚠️ 关键：在所有文档中广泛使用scientific-schematics和generate-image。**
 
-Every document should be richly illustrated. Generate figures liberally - when in doubt, add a visual.
+每个文档都应该有丰富的插图。大量生成图形 - 如有疑问，添加视觉效果。
 
-**MINIMUM Figure Requirements:**
+**最小图形要求：**
 
-| Document Type | Minimum | Recommended |
-|--------------|---------|-------------|
-| Research Papers | 5 | 6-8 |
-| Literature Reviews | 4 | 5-7 |
-| Market Research | 20 | 25-30 |
-| Presentations | 1/slide | 1-2/slide |
-| Posters | 6 | 8-10 |
-| Grants | 4 | 5-7 |
-| Clinical Reports | 3 | 4-6 |
+| 文档类型 | 最小值 | 推荐值 |
+|---------|--------|--------|
+| 研究论文 | 5 | 6-8 |
+| 文献综述 | 4 | 5-7 |
+| 市场研究 | 20 | 25-30 |
+| 演示文稿 | 1/幻灯片 | 1-2/幻灯片 |
+| 海报 | 6 | 8-10 |
+| 拨款申请 | 4 | 5-7 |
+| 临床报告 | 3 | 4-6 |
 
-**Use scientific-schematics EXTENSIVELY for technical diagrams:**
+**广泛使用scientific-schematics创建技术图表：**
 ```bash
-python scripts/generate_schematic.py "your diagram description" -o figures/output.png
+python scripts/generate_schematic.py "您的图表描述" -o figures/output.png
 ```
 
-- Study design and methodology flowcharts (CONSORT, PRISMA, STROBE)
-- Conceptual framework diagrams
-- Experimental workflow illustrations
-- Data analysis pipeline diagrams
-- Biological pathway or mechanism diagrams
-- System architecture visualizations
-- Neural network architectures
-- Decision trees, algorithm flowcharts
-- Comparison matrices, timeline diagrams
-- Any technical concept that benefits from schematic visualization
+- 研究设计和方法流程图（CONSORT、PRISMA、STROBE）
+- 概念框架图
+- 实验工作流程说明
+- 数据分析管道图
+- 生物通路或机制图
+- 系统架构可视化
+- 神经网络架构
+- 决策树、算法流程图
+- 比较矩阵、时间线图
+- 任何受益于示意图可视化的技术概念
 
-**Use generate-image EXTENSIVELY for visual content:**
+**广泛使用generate-image创建视觉内容：**
 ```bash
-python scripts/generate_image.py "your image description" -o figures/output.png
+python scripts/generate_image.py "您的图像描述" -o figures/output.png
 ```
 
-- Photorealistic illustrations of concepts
-- Medical/anatomical illustrations
-- Environmental/ecological scenes
-- Equipment and lab setup visualizations
-- Artistic visualizations, infographics
-- Cover images, header graphics
-- Product mockups, prototype visualizations
-- Any visual that enhances understanding or engagement
+- 概念的逼真插图
+- 医学/解剖学插图
+- 环境/生态场景
+- 设备和实验室设置可视化
+- 艺术可视化、信息图表
+- 封面图像、标题图形
+- 产品模型、原型可视化
+- 任何增强理解或参与度的视觉效果
 
-The AI will automatically:
-- Create publication-quality images with proper formatting
-- Review and refine through multiple iterations
-- Ensure accessibility (colorblind-friendly, high contrast)
-- Save outputs in the figures/ directory
+AI将自动：
+- 创建具有适当格式的出版质量图像
+- 通过多次迭代进行审查和完善
+- 确保可访问性（色盲友好，高对比度）
+- 将输出保存在figures/目录中
 
-**When in Doubt, Generate a Figure:**
-- Complex concept → generate a schematic
-- Data discussion → generate a visualization
-- Process description → generate a flowchart
-- Comparison → generate a comparison diagram
-- Reader benefit → generate a visual
+**如有疑问，生成图形：**
+- 复杂概念 → 生成示意图
+- 数据讨论 → 生成可视化
+- 过程描述 → 生成流程图
+- 比较 → 生成比较图
+- 读者受益 → 生成视觉效果
 
-For detailed guidance, refer to the scientific-schematics and generate-image skill documentation.
+有关详细指导，请参考scientific-schematics和generate-image技能文档。
 
 ---
 
-## Core Capabilities
+## 核心能力
 
-### 1. Manuscript Structure and Organization
+### 1. 手稿结构和组织
 
-**IMRAD Format**: Guide papers through the standard Introduction, Methods, Results, And Discussion structure used across most scientific disciplines. This includes:
-- **Introduction**: Establish research context, identify gaps, state objectives
-- **Methods**: Detail study design, populations, procedures, and analysis approaches
-- **Results**: Present findings objectively without interpretation
-- **Discussion**: Interpret results, acknowledge limitations, propose future directions
+**IMRAD格式**：指导论文通过大多数科学学科使用的标准引言、方法、结果和讨论结构。这包括：
+- **引言**：建立研究背景，识别差距，陈述目标
+- **方法**：详细说明研究设计、人群、程序和分析方法
+- **结果**：客观呈现发现，不加解释
+- **讨论**：解释结果，承认局限性，提出未来方向
 
-For detailed guidance on IMRAD structure, refer to `references/imrad_structure.md`.
+有关IMRAD结构的详细指导，请参考`references/imrad_structure.md`。
 
-**Alternative Structures**: Support discipline-specific formats including:
-- Review articles (narrative, systematic, scoping)
-- Case reports and case series
-- Meta-analyses and pooled analyses
-- Theoretical/modeling papers
-- Methods papers and protocols
+**替代结构**：支持特定学科的格式，包括：
+- 综述文章（叙述性、系统性、范围性）
+- 病例报告和病例系列
+- 荟萃分析和汇总分析
+- 理论/建模论文
+- 方法论文和协议
 
-### 2. Section-Specific Writing Guidance
+### 2. 特定章节的写作指导
 
-**Abstract Composition**: Craft concise, standalone summaries (100-250 words) that capture the paper's purpose, methods, results, and conclusions. Support both structured abstracts (with labeled sections) and unstructured single-paragraph formats.
+**摘要撰写**：撰写简洁、独立的摘要（100-250字），捕捉论文的目的、方法、结果和结论。支持结构化摘要（带标签部分）和非结构化单段格式。
 
-**Introduction Development**: Build compelling introductions that:
-- Establish the research problem's importance
-- Review relevant literature systematically
-- Identify knowledge gaps or controversies
-- State clear research questions or hypotheses
-- Explain the study's novelty and significance
+**引言开发**：构建引人入胜的引言，包括：
+- 确立研究问题的重要性
+- 系统回顾相关文献
+- 识别知识差距或争议
+- 陈述明确的研究问题或假设
+- 解释研究的新颖性和意义
 
-**Methods Documentation**: Ensure reproducibility through:
-- Detailed participant/sample descriptions
-- Clear procedural documentation
-- Statistical methods with justification
-- Equipment and materials specifications
-- Ethical approval and consent statements
+**方法文档**：通过以下方式确保可重复性：
+- 详细的参与者/样本描述
+- 清晰的程序文档
+- 带有理由的统计方法
+- 设备和材料规格
+- 伦理批准和同意声明
 
-**Results Presentation**: Present findings with:
-- Logical flow from primary to secondary outcomes
-- Integration with figures and tables
-- Statistical significance with effect sizes
-- Objective reporting without interpretation
+**结果呈现**：通过以下方式呈现发现：
+- 从主要到次要结果的逻辑流程
+- 与图表的整合
+- 具有效应大小的统计显著性
+- 客观报告，无解释
 
-**Discussion Construction**: Synthesize findings by:
-- Relating results to research questions
-- Comparing with existing literature
-- Acknowledging limitations honestly
-- Proposing mechanistic explanations
-- Suggesting practical implications and future research
+**讨论构建**：通过以下方式综合发现：
+- 将结果与研究问题相关联
+- 与现有文献进行比较
+- 诚实地承认局限性
+- 提出机制解释
+- 建议实际意义和未来研究
 
-### 3. Citation and Reference Management
+### 3. 引用和参考文献管理
 
-Apply citation styles correctly across disciplines. For comprehensive style guides, refer to `references/citation_styles.md`.
+正确应用各学科的引用样式。有关全面的样式指南，请参考`references/citation_styles.md`。
 
-**Major Citation Styles:**
-- **AMA (American Medical Association)**: Numbered superscript citations, common in medicine
-- **Vancouver**: Numbered citations in square brackets, biomedical standard
-- **APA (American Psychological Association)**: Author-date in-text citations, common in social sciences
-- **Chicago**: Notes-bibliography or author-date, humanities and sciences
-- **IEEE**: Numbered square brackets, engineering and computer science
+**主要引用样式：**
+- **AMA（美国医学协会）**：上标数字引用，医学中常见
+- **Vancouver**：方括号中的数字引用，生物医学标准
+- **APA（美国心理协会）**：作者-日期文本内引用，社会科学中常见
+- **Chicago**：注释-参考书目或作者-日期，人文和科学
+- **IEEE**：方括号中的数字，工程和计算机科学
 
-**Best Practices:**
-- Cite primary sources when possible
-- Include recent literature (last 5-10 years for active fields)
-- Balance citation distribution across introduction and discussion
-- Verify all citations against original sources
-- Use reference management software (Zotero, Mendeley, EndNote)
+**最佳实践：**
+- 尽可能引用主要来源
+- 包含近期文献（活跃领域的最近5-10年）
+- 在引言和讨论中平衡引用分布
+- 对照原始来源验证所有引用
+- 使用参考文献管理软件（Zotero、Mendeley、EndNote）
 
-### 4. Figures and Tables
+### 4. 图表和表格
 
-Create effective data visualizations that enhance comprehension. For detailed best practices, refer to `references/figures_tables.md`.
+创建有效的数据可视化，增强理解。有关详细的最佳实践，请参考`references/figures_tables.md`。
 
-**When to Use Tables vs. Figures:**
-- **Tables**: Precise numerical data, complex datasets, multiple variables requiring exact values
-- **Figures**: Trends, patterns, relationships, comparisons best understood visually
+**何时使用表格与图形：**
+- **表格**：精确的数值数据，复杂的数据集，需要精确值的多个变量
+- **图形**：趋势、模式、关系，通过视觉方式最易理解的比较
 
-**Design Principles:**
-- Make each table/figure self-explanatory with complete captions
-- Use consistent formatting and terminology across all display items
-- Label all axes, columns, and rows with units
-- Include sample sizes (n) and statistical annotations
-- Follow the "one table/figure per 1000 words" guideline
-- Avoid duplicating information between text, tables, and figures
+**设计原则：**
+- 使每个表格/图形通过完整的标题自解释
+- 在所有显示项目中使用一致的格式和术语
+- 为所有轴、列和行标注单位
+- 包括样本大小（n）和统计注释
+- 遵循"每1000字一个表格/图形"的指南
+- 避免在文本、表格和图形之间重复信息
 
-**Common Figure Types:**
-- Bar graphs: Comparing discrete categories
-- Line graphs: Showing trends over time
-- Scatterplots: Displaying correlations
-- Box plots: Showing distributions and outliers
-- Heatmaps: Visualizing matrices and patterns
+**常见图形类型：**
+- 条形图：比较离散类别
+- 折线图：显示随时间的趋势
+- 散点图：显示相关性
+- 箱线图：显示分布和异常值
+- 热图：可视化矩阵和模式
 
-### 5. Reporting Guidelines by Study Type
+### 5. 按研究类型的报告指南
 
-Ensure completeness and transparency by following established reporting standards. For comprehensive guideline details, refer to `references/reporting_guidelines.md`.
+通过遵循既定的报告标准确保完整性和透明度。有关全面的指南详情，请参考`references/reporting_guidelines.md`。
 
-**Key Guidelines:**
-- **CONSORT**: Randomized controlled trials
-- **STROBE**: Observational studies (cohort, case-control, cross-sectional)
-- **PRISMA**: Systematic reviews and meta-analyses
-- **STARD**: Diagnostic accuracy studies
-- **TRIPOD**: Prediction model studies
-- **ARRIVE**: Animal research
-- **CARE**: Case reports
-- **SQUIRE**: Quality improvement studies
-- **SPIRIT**: Study protocols for clinical trials
-- **CHEERS**: Economic evaluations
+**关键指南：**
+- **CONSORT**：随机对照试验
+- **STROBE**：观察性研究（队列、病例对照、横断面）
+- **PRISMA**：系统综述和荟萃分析
+- **STARD**：诊断准确性研究
+- **TRIPOD**：预测模型研究
+- **ARRIVE**：动物研究
+- **CARE**：病例报告
+- **SQUIRE**：质量改进研究
+- **SPIRIT**：临床试验研究方案
+- **CHEERS**：经济评估
 
-Each guideline provides checklists ensuring all critical methodological elements are reported.
+每个指南都提供清单，确保报告所有关键方法要素。
 
-### 6. Writing Principles and Style
+### 6. 写作原则和风格
 
-Apply fundamental scientific writing principles. For detailed guidance, refer to `references/writing_principles.md`.
+应用基本的科学写作原则。有关详细指导，请参考`references/writing_principles.md`。
 
-**Clarity**:
-- Use precise, unambiguous language
-- Define technical terms and abbreviations at first use
-- Maintain logical flow within and between paragraphs
-- Use active voice when appropriate for clarity
+**清晰度：**
+- 使用精确、明确的语言
+- 在首次使用时定义技术术语和缩写
+- 保持段落内和段落间的逻辑流程
+- 适当时使用主动语态以提高清晰度
 
-**Conciseness**:
-- Eliminate redundant words and phrases
-- Favor shorter sentences (15-20 words average)
-- Remove unnecessary qualifiers
-- Respect word limits strictly
+**简洁性：**
+- 消除冗余单词和短语
+- 倾向于较短的句子（平均15-20字）
+- 移除不必要的修饰语
+- 严格遵守字数限制
 
-**Accuracy**:
-- Report exact values with appropriate precision
-- Use consistent terminology throughout
-- Distinguish between observations and interpretations
-- Acknowledge uncertainty appropriately
+**准确性：**
+- 报告具有适当精度的确切值
+- 在整个过程中使用一致的术语
+- 区分观察和解释
+- 适当地承认不确定性
 
-**Objectivity**:
-- Present results without bias
-- Avoid overstating findings or implications
-- Acknowledge conflicting evidence
-- Maintain professional, neutral tone
+**客观性：**
+- 无偏见地呈现结果
+- 避免夸大发现或影响
+- 承认相互矛盾的证据
+- 保持专业、中立的语气
 
-### 7. Writing Process: From Outline to Full Paragraphs
+### 7. 写作过程：从大纲到完整段落
 
-**CRITICAL: Always write in full paragraphs, never submit bullet points in scientific papers.**
+**关键：始终以完整段落写作，绝不在科学论文中提交要点列表。**
 
-Scientific papers must be written in complete, flowing prose. Use this two-stage approach for effective writing:
+科学论文必须以完整、流畅的散文形式撰写。使用这种两阶段方法进行有效写作：
 
-**Stage 1: Create Section Outlines with Key Points**
+**第一阶段：创建带有关键点的章节大纲**
 
-When starting a new section:
-1. Use the research-lookup skill to gather relevant literature and data
-2. Create a structured outline with bullet points marking:
-   - Main arguments or findings to present
-   - Key studies to cite
-   - Data points and statistics to include
-   - Logical flow and organization
-3. These bullet points serve as scaffolding—they are NOT the final manuscript
+开始新章节时：
+1. 使用research-lookup技能收集相关文献和数据
+2. 创建结构化大纲，用要点标记：
+   - 要呈现的主要论点或发现
+   - 要引用的关键研究
+   - 要包含的数据点和统计数据
+   - 逻辑流程和组织
+3. 这些要点作为脚手架——它们不是最终手稿
 
-**Example outline (Introduction section):**
+**示例大纲（引言部分）：**
 ```
-- Background: AI in drug discovery gaining traction
-  * Cite recent reviews (Smith 2023, Jones 2024)
-  * Traditional methods are slow and expensive
-- Gap: Limited application to rare diseases
-  * Only 2 prior studies (Lee 2022, Chen 2023)
-  * Small datasets remain a challenge
-- Our approach: Transfer learning from common diseases
-  * Novel architecture combining X and Y
-- Study objectives: Validate on 3 rare disease datasets
-```
-
-**Stage 2: Convert Key Points to Full Paragraphs**
-
-Once the outline is complete, expand each bullet point into proper prose:
-
-1. **Transform bullet points into complete sentences** with subjects, verbs, and objects
-2. **Add transitions** between sentences and ideas (however, moreover, in contrast, subsequently)
-3. **Integrate citations naturally** within sentences, not as lists
-4. **Expand with context and explanation** that bullet points omit
-5. **Ensure logical flow** from one sentence to the next within each paragraph
-6. **Vary sentence structure** to maintain reader engagement
-
-**Example conversion to prose:**
-
-```
-Artificial intelligence approaches have gained significant traction in drug discovery 
-pipelines over the past decade (Smith, 2023; Jones, 2024). While these computational 
-methods show promise for accelerating the identification of therapeutic candidates, 
-traditional experimental approaches remain slow and resource-intensive, often requiring 
-years of laboratory work and substantial financial investment. However, the application 
-of AI to rare diseases has been limited, with only two prior studies demonstrating 
-proof-of-concept results (Lee, 2022; Chen, 2023). The primary obstacle has been the 
-scarcity of training data for conditions affecting small patient populations. 
-
-To address this challenge, we developed a transfer learning approach that leverages 
-knowledge from well-characterized common diseases to predict therapeutic targets for 
-rare conditions. Our novel neural architecture combines convolutional layers for 
-molecular feature extraction with attention mechanisms for protein-ligand interaction 
-modeling. The objective of this study was to validate our approach across three 
-independent rare disease datasets, assessing both predictive accuracy and biological 
-interpretability of the results.
+- 背景：AI在药物发现中获得牵引力
+  * 引用最近的综述（Smith 2023, Jones 2024）
+  * 传统方法缓慢且昂贵
+- 差距：罕见疾病应用有限
+  * 仅有2项先前研究（Lee 2022, Chen 2023）
+  * 小数据集仍然是挑战
+- 我们的方法：从常见疾病转移学习
+  * 结合X和Y的新型架构
+- 研究目标：在3个罕见疾病数据集上验证
 ```
 
-**Key Differences Between Outlines and Final Text:**
+**第二阶段：将关键点转换为完整段落**
 
-| Outline (Planning Stage) | Final Manuscript |
-|--------------------------|------------------|
-| Bullet points and fragments | Complete sentences and paragraphs |
-| Telegraphic notes | Full explanations with context |
-| List of citations | Citations integrated into prose |
-| Abbreviated ideas | Developed arguments with transitions |
-| For your eyes only | For publication and peer review |
+大纲完成后，将每个要点扩展为适当的散文：
 
-**Common Mistakes to Avoid:**
+1. **将要点转换为完整句子**，带有主语、动词和宾语
+2. **添加过渡**在句子和想法之间（然而，此外，相比之下，随后）
+3. **自然地整合引用**在句子内，而不是作为列表
+4. **用上下文和解释扩展**要点省略的内容
+5. **确保逻辑流程**在每个段落中从一个句子到下一个句子
+6. **变化句子结构**以保持读者参与
 
-- ❌ **Never** leave bullet points in the final manuscript
-- ❌ **Never** submit lists where paragraphs should be
-- ❌ **Don't** use numbered or bulleted lists in Results or Discussion sections (except for specific cases like study hypotheses or inclusion criteria)
-- ❌ **Don't** write sentence fragments or incomplete thoughts
-- ✅ **Do** use occasional lists only in Methods (e.g., inclusion/exclusion criteria, materials lists)
-- ✅ **Do** ensure every section flows as connected prose
-- ✅ **Do** read paragraphs aloud to check for natural flow
+**转换为散文的示例：**
 
-**When Lists ARE Acceptable (Limited Cases):**
+```
+人工智能方法在过去十年中在药物发现管线中获得了显著牵引力（Smith, 2023; Jones, 2024）。虽然这些计算方法在加速治疗候选物的识别方面显示出前景，但传统的实验方法仍然缓慢且资源密集，通常需要多年的实验室工作和大量的财务投资。然而，人工智能在罕见疾病中的应用受到限制，只有两项先前的研究证明了概念验证结果（Lee, 2022; Chen, 2023）。主要障碍是影响小患者群体的疾病训练数据的稀缺性。
 
-Lists may appear in scientific papers only in specific contexts:
-- **Methods**: Inclusion/exclusion criteria, materials and reagents, participant characteristics
-- **Supplementary Materials**: Extended protocols, equipment lists, detailed parameters
-- **Never in**: Abstract, Introduction, Results, Discussion, Conclusions
+为了应对这一挑战，我们开发了一种转移学习方法，利用来自特征明确的常见疾病的知识来预测罕见疾病的治疗靶点。我们的新型神经架构结合了用于分子特征提取的卷积层和用于蛋白质-配体相互作用建模的注意力机制。本研究的目的是在三个独立的罕见疾病数据集上验证我们的方法，评估预测准确性和结果的生物学可解释性。
+```
 
-**Abstract Format Rule:**
-- ❌ **NEVER** use labeled sections (Background:, Methods:, Results:, Conclusions:)
-- ✅ **ALWAYS** write as flowing paragraph(s) with natural transitions
-- Exception: Only use structured format if journal explicitly requires it in author guidelines
+**大纲与最终文本的关键区别：**
 
-**Integration with Research Lookup:**
+| 大纲（规划阶段） | 最终手稿 |
+|----------------|----------|
+| 要点和片段 | 完整句子和段落 |
+| 电报式笔记 | 带上下文的完整解释 |
+| 引用列表 | 融入散文的引用 |
+| 缩写的想法 | 带有过渡的发展论点 |
+| 仅供您参考 | 用于出版和同行评审 |
 
-The research-lookup skill is essential for Stage 1 (creating outlines):
-1. Search for relevant papers using research-lookup
-2. Extract key findings, methods, and data
-3. Organize findings as bullet points in your outline
-4. Then convert the outline to full paragraphs in Stage 2
+**要避免的常见错误：**
 
-This two-stage process ensures you:
-- Gather and organize information systematically
-- Create logical structure before writing
-- Produce polished, publication-ready prose
-- Maintain focus on the narrative flow
+- ❌ **永远不要**在最终手稿中留下要点
+- ❌ **永远不要**在应该有段落的地方提交列表
+- ❌ **不要**在结果或讨论部分使用编号或要点列表（除了特定情况，如研究假设或纳入标准）
+- ❌ **不要**写句子片段或不完整的想法
+- ✅ **可以**仅在方法中使用偶尔的列表（例如，纳入/排除标准，材料列表）
+- ✅ **确保**每个部分都作为连接的散文流动
+- ✅ **大声朗读**段落以检查自然流动
 
-### 8. Professional Report Formatting (Non-Journal Documents)
+**列表可接受的情况（有限）：**
 
-For research reports, technical reports, white papers, and other professional documents that are NOT journal manuscripts, use the `scientific_report.sty` LaTeX style package for a polished, professional appearance.
+列表可能仅在特定上下文中出现在科学论文中：
+- **方法**：纳入/排除标准，材料和试剂，参与者特征
+- **补充材料**：扩展协议，设备列表，详细参数
+- **永远不要在**：摘要，引言，结果，讨论，结论中使用
 
-**When to Use Professional Report Formatting:**
-- Research reports and technical reports
-- White papers and policy briefs
-- Grant reports and progress reports
-- Industry reports and technical documentation
-- Internal research summaries
-- Feasibility studies and project deliverables
+**摘要格式规则：**
+- ❌ **永远不要**使用标记部分（背景：，方法：，结果：，结论：）
+- ✅ **始终**以带有自然过渡的流动段落形式写作
+- 例外：仅在期刊明确要求的情况下使用结构化格式
 
-**When NOT to Use (Use Venue-Specific Formatting Instead):**
-- Journal manuscripts → Use `venue-templates` skill
-- Conference papers → Use `venue-templates` skill
-- Academic theses → Use institutional templates
+**与研究查找的集成：**
 
-**The `scientific_report.sty` Style Package Provides:**
+research-lookup技能对于第一阶段（创建大纲）至关重要：
+1. 使用research-lookup搜索相关论文
+2. 提取关键发现、方法和数据
+3. 将发现组织为大纲中的要点
+4. 然后在第二阶段将大纲转换为完整段落
 
-| Feature | Description |
-|---------|-------------|
-| Typography | Helvetica font family for modern, professional appearance |
-| Color Scheme | Professional blues, greens, and accent colors |
-| Box Environments | Colored boxes for key findings, methods, recommendations, limitations |
-| Tables | Alternating row colors, professional headers |
-| Figures | Consistent caption formatting |
-| Scientific Commands | Shortcuts for p-values, effect sizes, confidence intervals |
+这种两阶段过程确保您：
+- 系统地收集和组织信息
+- 在写作前创建逻辑结构
+- 生成抛光的、出版就绪的散文
+- 保持对叙述流程的关注
 
-**Box Environments for Content Organization:**
+### 8. 专业报告格式（非期刊文档）
+
+对于研究报告、技术报告、白皮书和其他不是期刊手稿的专业文档，使用`scientific_report.sty` LaTeX样式包，以获得抛光、专业的外观。
+
+**何时使用专业报告格式：**
+- 研究报告和技术报告
+- 白皮书和政策简报
+- 拨款报告和进度报告
+- 行业报告和技术文档
+- 内部研究摘要
+- 可行性研究和项目交付物
+
+**何时不使用（使用特定场所格式）：**
+- 期刊手稿 → 使用`venue-templates`技能
+- 会议论文 → 使用`venue-templates`技能
+- 学术论文 → 使用机构模板
+
+**`scientific_report.sty`样式包提供：**
+
+| 功能 | 描述 |
+|------|------|
+| 排版 | Helvetica字体家族，现代、专业的外观 |
+| 配色方案 | 专业的蓝色、绿色和强调色 |
+| 框环境 | 用于关键发现、方法、建议、限制的彩色框 |
+| 表格 | 交替行颜色，专业标题 |
+| 图形 | 一致的标题格式 |
+| 科学命令 | p值、效应大小、置信区间的快捷方式 |
+
+**内容组织的框环境：**
 
 ```latex
-% Key findings (blue) - for major discoveries
-\begin{keyfindings}[Title]
-Content with key findings and statistics.
+% 关键发现（蓝色）- 用于主要发现
+\begin{keyfindings}[标题]
+内容与关键发现和统计数据。
 \end{keyfindings}
 
-% Methodology (green) - for methods highlights
-\begin{methodology}[Study Design]
-Description of methods and procedures.
+% 方法（绿色）- 用于方法亮点
+\begin{methodology}[研究设计]
+方法和程序的描述。
 \end{methodology}
 
-% Recommendations (purple) - for action items
-\begin{recommendations}[Clinical Implications]
+% 建议（紫色）- 用于行动项目
+\begin{recommendations}[临床意义]
 \begin{enumerate}
-    \item Specific recommendation 1
-    \item Specific recommendation 2
+    \item 具体建议1
+    \item 具体建议2
 \end{enumerate}
 \end{recommendations}
 
-% Limitations (orange) - for caveats and cautions
-\begin{limitations}[Study Limitations]
-Description of limitations and their implications.
+% 限制（橙色）- 用于警告和注意事项
+\begin{limitations}[研究限制]
+限制及其影响的描述。
 \end{limitations}
 ```
 
-**Professional Table Formatting:**
+**专业表格格式：**
 
 ```latex
 \begin{table}[htbp]
 \centering
-\caption{Results Summary}
+\caption{结果摘要}
 \begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Variable} & \textbf{Treatment} & \textbf{Control} & \textbf{p} \\
+\textbf{变量} & \textbf{治疗组} & \textbf{对照组} & \textbf{p} \\
 \midrule
-Outcome 1 & \meansd{42.5}{8.3} & \meansd{35.2}{7.9} & <.001\sigthree \\
-\rowcolor{tablealt} Outcome 2 & \meansd{3.8}{1.2} & \meansd{3.1}{1.1} & .012\sigone \\
-Outcome 3 & \meansd{18.2}{4.5} & \meansd{17.8}{4.2} & .58\signs \\
+结果1 & \meansd{42.5}{8.3} & \meansd{35.2}{7.9} & <.001\sigthree \\
+\rowcolor{tablealt} 结果2 & \meansd{3.8}{1.2} & \meansd{3.1}{1.1} & .012\sigone \\
+结果3 & \meansd{18.2}{4.5} & \meansd{17.8}{4.2} & .58\signs \\
 \bottomrule
 \end{tabular}
 
@@ -445,19 +432,19 @@ Outcome 3 & \meansd{18.2}{4.5} & \meansd{17.8}{4.2} & .58\signs \\
 \end{table}
 ```
 
-**Scientific Notation Commands:**
+**科学符号命令：**
 
-| Command | Output | Purpose |
-|---------|--------|---------|
-| `\pvalue{0.023}` | *p* = 0.023 | P-values |
-| `\psig{< 0.001}` | ***p* = < 0.001** | Significant p-values (bold) |
-| `\CI{0.45}{0.72}` | 95% CI [0.45, 0.72] | Confidence intervals |
-| `\effectsize{d}{0.75}` | d = 0.75 | Effect sizes |
-| `\samplesize{250}` | *n* = 250 | Sample sizes |
-| `\meansd{42.5}{8.3}` | 42.5 ± 8.3 | Mean with SD |
-| `\sigone`, `\sigtwo`, `\sigthree` | *, **, *** | Significance stars |
+| 命令 | 输出 | 目的 |
+|------|------|------|
+| `\pvalue{0.023}` | *p* = 0.023 | P值 |
+| `\psig{< 0.001}` | ***p* = < 0.001** | 显著p值（粗体） |
+| `\CI{0.45}{0.72}` | 95% CI [0.45, 0.72] | 置信区间 |
+| `\effectsize{d}{0.75}` | d = 0.75 | 效应大小 |
+| `\samplesize{250}` | *n* = 250 | 样本大小 |
+| `\meansd{42.5}{8.3}` | 42.5 ± 8.3 | 均值与标准差 |
+| `\sigone`, `\sigtwo`, `\sigthree` | *, **, *** | 显著性星号 |
 
-**Getting Started:**
+**入门：**
 
 ```latex
 \documentclass[11pt,letterpaper]{report}
@@ -465,254 +452,253 @@ Outcome 3 & \meansd{18.2}{4.5} & \meansd{17.8}{4.2} & .58\signs \\
 
 \begin{document}
 \makereporttitle
-    {Report Title}
-    {Subtitle}
-    {Author Name}
-    {Institution}
-    {Date}
+    {报告标题}
+    {副标题}
+    {作者姓名}
+    {机构}
+    {日期}
 
-% Your content with professional formatting
+% 您的内容，具有专业格式
 \end{document}
 ```
 
-**Compilation**: Use XeLaTeX or LuaLaTeX for proper Helvetica font rendering:
+**编译**：使用XeLaTeX或LuaLaTeX以正确渲染Helvetica字体：
 ```bash
 xelatex report.tex
 ```
 
-For complete documentation, refer to:
-- `assets/scientific_report.sty`: The style package
-- `assets/scientific_report_template.tex`: Complete template example
-- `assets/REPORT_FORMATTING_GUIDE.md`: Quick reference guide
-- `references/professional_report_formatting.md`: Comprehensive formatting guide
+完整文档，请参考：
+- `assets/scientific_report.sty`：样式包
+- `assets/scientific_report_template.tex`：完整模板示例
+- `assets/REPORT_FORMATTING_GUIDE.md`：快速参考指南
+- `references/professional_report_formatting.md`：综合格式指南
 
-### 9. Journal-Specific Formatting
+### 9. 期刊特定格式
 
-Adapt manuscripts to journal requirements:
-- Follow author guidelines for structure, length, and format
-- Apply journal-specific citation styles
-- Meet figure/table specifications (resolution, file formats, dimensions)
-- Include required statements (funding, conflicts of interest, data availability, ethical approval)
-- Adhere to word limits for each section
-- Format according to template requirements when provided
+使手稿适应期刊要求：
+- 遵循作者指南的结构、长度和格式
+- 应用期刊特定的引用样式
+- 满足图表规范（分辨率、文件格式、尺寸）
+- 包含所需声明（资金、利益冲突、数据可用性、伦理批准）
+- 遵守每个部分的字数限制
+- 按照提供的模板要求进行格式化
 
-### 10. Field-Specific Language and Terminology
+### 10. 特定领域的语言和术语
 
-Adapt language, terminology, and conventions to match the specific scientific discipline. Each field has established vocabulary, preferred phrasings, and domain-specific conventions that signal expertise and ensure clarity for the target audience.
+使语言、术语和约定适应特定的科学学科。每个领域都有既定的词汇、首选措辞和特定领域的约定，这些信号专业知识并确保目标受众的清晰度。
 
-**Identify Field-Specific Linguistic Conventions:**
-- Review terminology used in recent high-impact papers in the target journal
-- Note field-specific abbreviations, units, and notation systems
-- Identify preferred terms (e.g., "participants" vs. "subjects," "compound" vs. "drug," "specimens" vs. "samples")
-- Observe how methods, organisms, or techniques are typically described
+**识别特定领域的语言约定：**
+- 审查目标期刊中近期高影响力论文使用的术语
+- 注意特定领域的缩写、单位和符号系统
+- 识别首选术语（例如，"参与者"与"受试者"，"化合物"与"药物"，"标本"与"样本"）
+- 观察方法、生物体或技术通常如何描述
 
-**Biomedical and Clinical Sciences:**
-- Use precise anatomical and clinical terminology (e.g., "myocardial infarction" not "heart attack" in formal writing)
-- Follow standardized disease nomenclature (ICD, DSM, SNOMED-CT)
-- Specify drug names using generic names first, brand names in parentheses if needed
-- Use "patients" for clinical studies, "participants" for community-based research
-- Follow Human Genome Variation Society (HGVS) nomenclature for genetic variants
-- Report lab values with standard units (SI units in most international journals)
+**生物医学和临床科学：**
+- 使用精确的解剖学和临床术语（例如，正式写作中使用"心肌梗死"而不是"心脏病发作"）
+- 遵循标准化疾病命名法（ICD、DSM、SNOMED-CT）
+- 首先使用通用名称指定药物名称，必要时在括号中使用品牌名称
+- 临床研究使用"患者"，社区研究使用"参与者"
+- 遵循人类基因组变异协会（HGVS）的遗传变异命名法
+- 报告带有标准单位的实验室值（大多数国际期刊使用SI单位）
 
-**Molecular Biology and Genetics:**
-- Use italics for gene symbols (e.g., *TP53*), regular font for proteins (e.g., p53)
-- Follow species-specific gene nomenclature (uppercase for human: *BRCA1*; sentence case for mouse: *Brca1*)
-- Specify organism names in full at first mention, then use accepted abbreviations (e.g., *Escherichia coli*, then *E. coli*)
-- Use standard genetic notation (e.g., +/+, +/-, -/- for genotypes)
-- Employ established terminology for molecular techniques (e.g., "quantitative PCR" or "qPCR," not "real-time PCR")
+**分子生物学和遗传学：**
+- 基因符号使用斜体（例如，*TP53*），蛋白质使用常规字体（例如，p53）
+- 遵循物种特异性基因命名法（人类大写：*BRCA1*；小鼠句子大小写：*Brca1*）
+- 首次提及时完整指定生物体名称，然后使用公认的缩写（例如，*Escherichia coli*，然后*E. coli*）
+- 使用标准遗传符号（例如，+/+、+/-、-/-表示基因型）
+- 使用分子技术的既定术语（例如，"定量PCR"或"qPCR"，不是"实时PCR"）
 
-**Chemistry and Pharmaceutical Sciences:**
-- Follow IUPAC nomenclature for chemical compounds
-- Use systematic names for novel compounds, common names for well-known substances
-- Specify chemical structures using standard notation (e.g., SMILES, InChI for databases)
-- Report concentrations with appropriate units (mM, μM, nM, or % w/v, v/v)
-- Describe synthesis routes using accepted reaction nomenclature
-- Use terms like "bioavailability," "pharmacokinetics," "IC50" consistently with field definitions
+**化学和制药科学：**
+- 遵循化合物的IUPAC命名法
+- 新化合物使用系统名称，知名物质使用通用名称
+- 使用标准符号指定化学结构（例如，数据库的SMILES、InChI）
+- 报告浓度时使用适当的单位（mM、μM、nM或% w/v、v/v）
+- 使用公认的反应命名法描述合成路线
+- 与领域定义一致地使用"生物利用度"、"药代动力学"、"IC50"等术语
 
-**Ecology and Environmental Sciences:**
-- Use binomial nomenclature for species (italicized: *Homo sapiens*)
-- Specify taxonomic authorities at first species mention when relevant
-- Employ standardized habitat and ecosystem classifications
-- Use consistent terminology for ecological metrics (e.g., "species richness," "Shannon diversity index")
-- Describe sampling methods with field-standard terms (e.g., "transect," "quadrat," "mark-recapture")
+**生态学和环境科学：**
+- 物种使用双名命名法（斜体：*Homo sapiens*）
+- 相关时在首次物种提及时指定分类权威
+- 使用标准化的栖息地和生态系统分类
+- 对生态指标使用一致的术语（例如，"物种丰富度"、"香农多样性指数"）
+- 使用实地标准术语描述采样方法（例如，"样带"、"样方"、"标记-重捕"）
 
-**Physics and Engineering:**
-- Follow SI units consistently unless field conventions dictate otherwise
-- Use standard notation for physical quantities (scalars vs. vectors, tensors)
-- Employ established terminology for phenomena (e.g., "quantum entanglement," "laminar flow")
-- Specify equipment with model numbers and manufacturers when relevant
-- Use mathematical notation consistent with field standards (e.g., ℏ for reduced Planck constant)
+**物理学和工程学：**
+- 除非领域约定另有规定，否则始终使用SI单位
+- 对物理量使用标准符号（标量与矢量、张量）
+- 对现象使用既定术语（例如，"量子纠缠"、"层流"）
+- 相关时指定设备的型号和制造商
+- 使用与领域标准一致的数学符号（例如，ℏ表示约化普朗克常数）
 
-**Neuroscience:**
-- Use standardized brain region nomenclature (e.g., refer to atlases like Allen Brain Atlas)
-- Specify coordinates for brain regions using established stereotaxic systems
-- Follow conventions for neural terminology (e.g., "action potential" not "spike" in formal writing)
-- Use "neural activity," "neuronal firing," "brain activation" appropriately based on measurement method
-- Describe recording techniques with proper specificity (e.g., "whole-cell patch clamp," "extracellular recording")
+**神经科学：**
+- 使用标准化的脑区命名法（例如，参考Allen Brain Atlas等图谱）
+- 使用已建立的立体定位系统指定脑区坐标
+- 遵循神经术语的约定（例如，正式写作中使用"动作电位"而不是"尖峰"）
+- 根据测量方法适当使用"神经活动"、"神经元放电"、"脑激活"
+- 以适当的特异性描述记录技术（例如，"全细胞膜片钳"、"细胞外记录"）
 
-**Social and Behavioral Sciences:**
-- Use person-first language when appropriate (e.g., "people with schizophrenia" not "schizophrenics")
-- Employ standardized psychological constructs and validated assessment names
-- Follow APA guidelines for reducing bias in language
-- Specify theoretical frameworks using established terminology
-- Use "participants" rather than "subjects" for human research
+**社会和行为科学：**
+- 适当时使用以人为先的语言（例如，"精神分裂症患者"而不是"精神分裂症患者"）
+- 使用标准化的心理结构和经过验证的评估名称
+- 遵循APA关于减少语言偏见的指南
+- 使用既定术语指定理论框架
+- 人类研究使用"参与者"而不是"受试者"
 
-**General Principles:**
+**一般原则：**
 
-**Match Audience Expertise:**
-- For specialized journals: Use field-specific terminology freely, define only highly specialized or novel terms
-- For broad-impact journals (e.g., *Nature*, *Science*): Define more technical terms, provide context for specialized concepts
-- For interdisciplinary audiences: Balance precision with accessibility, define terms at first use
+**匹配受众专业知识：**
+- 对于专业期刊：自由使用特定领域的术语，仅定义高度专业或新颖的术语
+- 对于广泛影响的期刊（例如，*Nature*、*Science*）：定义更多技术术语，为专业概念提供上下文
+- 对于跨学科受众：平衡精确性和可访问性，在首次使用时定义术语
 
-**Define Technical Terms Strategically:**
-- Define abbreviations at first use: "messenger RNA (mRNA)"
-- Provide brief explanations for specialized techniques when writing for broader audiences
-- Avoid over-defining terms well-known to the target audience (signals unfamiliarity with field)
-- Create a glossary if numerous specialized terms are unavoidable
+**战略性地定义技术术语：**
+- 首次使用时定义缩写："信使RNA (mRNA)"
+- 为更广泛的受众写作时，为专业技术提供简要解释
+- 避免过度定义目标受众熟知的术语（表明对领域不熟悉）
+- 如果不可避免地使用大量专业术语，创建词汇表
 
-**Maintain Consistency:**
-- Use the same term for the same concept throughout (don't alternate between "medication," "drug," and "pharmaceutical")
-- Follow a consistent system for abbreviations (decide on "PCR" or "polymerase chain reaction" after first definition)
-- Apply the same nomenclature system throughout (especially for genes, species, chemicals)
+**保持一致性：**
+- 对同一概念始终使用相同的术语（不要在"药物"、"药物"和"制药"之间交替）
+- 遵循一致的缩写系统（首次定义后决定使用"PCR"或"聚合酶链反应"）
+- 在整个过程中应用相同的命名法系统（尤其是对于基因、物种、化学品）
 
-**Avoid Field Mixing Errors:**
-- Don't use clinical terminology for basic science (e.g., don't call mice "patients")
-- Avoid colloquialisms or overly general terms in place of precise field terminology
-- Don't import terminology from adjacent fields without ensuring proper usage
+**避免领域混合错误：**
+- 不要将临床术语用于基础科学（例如，不要将小鼠称为"患者"）
+- 避免使用口语或过于一般的术语代替精确的领域术语
+- 不要从相邻领域导入术语而不确保正确使用
 
-**Verify Terminology Usage:**
-- Consult field-specific style guides and nomenclature resources
-- Check how terms are used in recent papers from the target journal
-- Use domain-specific databases and ontologies (e.g., Gene Ontology, MeSH terms)
-- When uncertain, cite a key reference that establishes terminology
+**验证术语使用：**
+- 查阅特定领域的风格指南和命名法资源
+- 检查目标期刊近期论文中术语的使用方式
+- 使用特定领域的数据库和本体（例如，基因本体、MeSH术语）
+- 不确定时，引用建立术语的关键参考
 
-### 11. Common Pitfalls to Avoid
+### 11. 应避免的常见陷阱
 
-**Top Rejection Reasons:**
-1. Inappropriate, incomplete, or insufficiently described statistics
-2. Over-interpretation of results or unsupported conclusions
-3. Poorly described methods affecting reproducibility
-4. Small, biased, or inappropriate samples
-5. Poor writing quality or difficult-to-follow text
-6. Inadequate literature review or context
-7. Figures and tables that are unclear or poorly designed
-8. Failure to follow reporting guidelines
+**主要拒绝原因：**
+1. 不当、不完整或描述不足的统计数据
+2. 对结果的过度解释或无支持的结论
+3. 描述不良的方法影响可重复性
+4. 小、有偏见或不适当的样本
+5. 写作质量差或难以理解的文本
+6. 文献综述或背景不足
+7. 图表不清晰或设计不良
+8. 未遵循报告指南
 
-**Writing Quality Issues:**
-- Mixing tenses inappropriately (use past tense for methods/results, present for established facts)
-- Excessive jargon or undefined acronyms
-- Paragraph breaks that disrupt logical flow
-- Missing transitions between sections
-- Inconsistent notation or terminology
+**写作质量问题：**
+- 不恰当地混合时态（方法/结果使用过去时，已确立的事实使用现在时）
+- 过度的行话或未定义的首字母缩略词
+- 破坏逻辑流程的段落分隔
+- 部分之间缺少过渡
+- 符号或术语不一致
 
-## Workflow for Manuscript Development
+## 手稿开发工作流程
 
-**Stage 1: Planning**
-1. Identify target journal and review author guidelines
-2. Determine applicable reporting guideline (CONSORT, STROBE, etc.)
-3. Outline manuscript structure (usually IMRAD)
-4. Plan figures and tables as the backbone of the paper
+**第一阶段：规划**
+1. 确定目标期刊并审查作者指南
+2. 确定适用的报告指南（CONSORT、STROBE等）
+3. 概述手稿结构（通常是IMRAD）
+4. 计划图表作为论文的主干
 
-**Stage 2: Drafting** (Use two-stage writing process for each section)
-1. Start with figures and tables (the core data story)
-2. For each section below, follow the two-stage process:
-   - **First**: Create outline with bullet points using research-lookup
-   - **Second**: Convert bullet points to full paragraphs with flowing prose
-3. Write Methods (often easiest to draft first)
-4. Draft Results (describing figures/tables objectively)
-5. Compose Discussion (interpreting findings)
-6. Write Introduction (setting up the research question)
-7. Craft Abstract (synthesizing the complete story)
-8. Create Title (concise and descriptive)
+**第二阶段：起草**（对每个部分使用两阶段写作过程）
+1. 从图表开始（核心数据故事）
+2. 对于以下每个部分，遵循两阶段过程：
+   - **首先**：使用research-lookup创建带要点的大纲
+   - **其次**：将要点转换为带有流畅散文的完整段落
+3. 撰写方法（通常最容易首先起草）
+4. 起草结果（客观描述图表）
+5. 撰写讨论（解释发现）
+6. 撰写引言（设置研究问题）
+7. 撰写摘要（综合完整故事）
+8. 创建标题（简洁且描述性）
 
-**Remember**: Bullet points are for planning only—the final manuscript must be in complete paragraphs.
+**记住**：要点仅用于规划——最终手稿必须是完整段落。
 
-**Stage 3: Revision**
-1. Check logical flow and "red thread" throughout
-2. Verify consistency in terminology and notation
-3. Ensure figures/tables are self-explanatory
-4. Confirm adherence to reporting guidelines
-5. Verify all citations are accurate and properly formatted
-6. Check word counts for each section
-7. Proofread for grammar, spelling, and clarity
+**第三阶段：修订**
+1. 检查逻辑流程和贯穿始终的"红线"
+2. 验证术语和符号的一致性
+3. 确保图表自解释
+4. 确认遵守报告指南
+5. 验证所有引用准确且格式正确
+6. 检查每个部分的字数
+7. 校对语法、拼写和清晰度
 
-**Stage 4: Final Preparation**
-1. Format according to journal requirements
-2. Prepare supplementary materials
-3. Write cover letter highlighting significance
-4. Complete submission checklists
-5. Gather all required statements and forms
+**第四阶段：最终准备**
+1. 根据期刊要求格式化
+2. 准备补充材料
+3. 撰写突出重要性的求职信
+4. 完成提交清单
+5. 收集所有必需的声明和表格
 
-## Integration with Other Scientific Skills
+## 与其他科学技能的集成
 
-This skill works effectively with:
-- **Data analysis skills**: For generating results to report
-- **Statistical analysis**: For determining appropriate statistical presentations
-- **Literature review skills**: For contextualizing research
-- **Figure creation tools**: For developing publication-quality visualizations
-- **Venue-templates skill**: For venue-specific writing styles and formatting (journal manuscripts)
-- **scientific_report.sty**: For professional reports, white papers, and technical documents
+此技能与以下技能有效配合：
+- **数据分析技能**：用于生成要报告的结果
+- **统计分析**：用于确定适当的统计展示
+- **文献综述技能**：用于将研究置于背景中
+- **图形创建工具**：用于开发出版质量的可视化
+- **venue-templates技能**：用于特定场所的写作风格和格式（期刊手稿）
+- **scientific_report.sty**：用于专业报告、白皮书和技术文档
 
-### Professional Reports vs. Journal Manuscripts
+### 专业报告与期刊手稿
 
-**Choose the right formatting approach:**
+**选择正确的格式化方法：**
 
-| Document Type | Formatting Approach |
-|---------------|---------------------|
-| Journal manuscripts | Use `venue-templates` skill |
-| Conference papers | Use `venue-templates` skill |
-| Research reports | Use `scientific_report.sty` (this skill) |
-| White papers | Use `scientific_report.sty` (this skill) |
-| Technical reports | Use `scientific_report.sty` (this skill) |
-| Grant reports | Use `scientific_report.sty` (this skill) |
+| 文档类型 | 格式化方法 |
+|---------|------------|
+| 期刊手稿 | 使用`venue-templates`技能 |
+| 会议论文 | 使用`venue-templates`技能 |
+| 研究报告 | 使用`scientific_report.sty`（此技能） |
+| 白皮书 | 使用`scientific_report.sty`（此技能） |
+| 技术报告 | 使用`scientific_report.sty`（此技能） |
+| 拨款报告 | 使用`scientific_report.sty`（此技能） |
 
-### Venue-Specific Writing Styles
+### 特定场所的写作风格
 
-**Before writing for a specific venue, consult the venue-templates skill for writing style guides:**
+**为特定场所写作前，请咨询venue-templates技能获取写作风格指南：**
 
-Different venues have dramatically different writing expectations:
-- **Nature/Science**: Accessible, story-driven, broad significance
-- **Cell Press**: Mechanistic depth, graphical abstracts, Highlights
-- **Medical journals (NEJM, Lancet)**: Structured abstracts, evidence language
-- **ML conferences (NeurIPS, ICML)**: Contribution bullets, ablation studies
-- **CS conferences (CHI, ACL)**: Field-specific conventions
+不同场所有显著不同的写作期望：
+- **Nature/Science**：可访问、故事驱动、广泛意义
+- **Cell Press**：机制深度、图形摘要、亮点
+- **医学期刊（NEJM、Lancet）**：结构化摘要、证据语言
+- **ML会议（NeurIPS、ICML）**：贡献要点、消融研究
+- **CS会议（CHI、ACL）**：特定领域约定
 
-The venue-templates skill provides:
-- `venue_writing_styles.md`: Master style comparison
-- Venue-specific guides: `nature_science_style.md`, `cell_press_style.md`, `medical_journal_styles.md`, `ml_conference_style.md`, `cs_conference_style.md`
-- `reviewer_expectations.md`: What reviewers look for at each venue
-- Writing examples in `assets/examples/`
+venue-templates技能提供：
+- `venue_writing_styles.md`：主风格比较
+- 特定场所指南：`nature_science_style.md`、`cell_press_style.md`、`medical_journal_styles.md`、`ml_conference_style.md`、`cs_conference_style.md`
+- `reviewer_expectations.md`：每个场所的审稿人期望
+- `assets/examples/`中的写作示例
 
-**Workflow**: First use this skill for general scientific writing principles (IMRAD, clarity, citations), then consult venue-templates for venue-specific style adaptation.
+**工作流程**：首先使用此技能获取一般科学写作原则（IMRAD、清晰度、引用），然后咨询venue-templates进行特定场所的风格调整。
 
-## References
+## 参考
 
-This skill includes comprehensive reference files covering specific aspects of scientific writing:
+此技能包含涵盖科学写作特定方面的综合参考文件：
 
-- `references/imrad_structure.md`: Detailed guide to IMRAD format and section-specific content
-- `references/citation_styles.md`: Complete citation style guides (APA, AMA, Vancouver, Chicago, IEEE)
-- `references/figures_tables.md`: Best practices for creating effective data visualizations
-- `references/reporting_guidelines.md`: Study-specific reporting standards and checklists
-- `references/writing_principles.md`: Core principles of effective scientific communication
-- `references/professional_report_formatting.md`: Guide to professional report styling with `scientific_report.sty`
+- `references/imrad_structure.md`：IMRAD格式和特定章节内容的详细指南
+- `references/citation_styles.md`：完整的引用样式指南（APA、AMA、Vancouver、Chicago、IEEE）
+- `references/figures_tables.md`：创建有效数据可视化的最佳实践
+- `references/reporting_guidelines.md`：特定研究的报告标准和清单
+- `references/writing_principles.md`：有效科学交流的核心原则
+- `references/professional_report_formatting.md`：使用`scientific_report.sty`的专业报告样式指南
 
-## Assets
+## 资产
 
-This skill includes LaTeX style packages and templates for professional report formatting:
+此技能包含LaTeX样式包和专业报告格式化模板：
 
-- `assets/scientific_report.sty`: Professional LaTeX style package with Helvetica fonts, colored boxes, and attractive tables
-- `assets/scientific_report_template.tex`: Complete report template demonstrating all style features
-- `assets/REPORT_FORMATTING_GUIDE.md`: Quick reference guide for the style package
+- `assets/scientific_report.sty`：专业LaTeX样式包，带有Helvetica字体、彩色框和美观的表格
+- `assets/scientific_report_template.tex`：完整的报告模板，展示所有样式功能
+- `assets/REPORT_FORMATTING_GUIDE.md`：样式包的快速参考指南
 
-**Key Features of `scientific_report.sty`:**
-- Helvetica font family for modern, professional appearance
-- Professional color scheme (blues, greens, oranges, purples)
-- Box environments: `keyfindings`, `methodology`, `resultsbox`, `recommendations`, `limitations`, `criticalnotice`, `definition`, `executivesummary`, `hypothesis`
-- Tables with alternating row colors and professional headers
-- Scientific notation commands for p-values, effect sizes, confidence intervals
-- Professional headers and footers
+**`scientific_report.sty`的关键功能：**
+- Helvetica字体家族，现代、专业的外观
+- 专业配色方案（蓝色、绿色、橙色、紫色）
+- 框环境：`keyfindings`、`methodology`、`resultsbox`、`recommendations`、`limitations`、`criticalnotice`、`definition`、`executivesummary`、`hypothesis`
+- 带有交替行颜色和专业标题的表格
+- 用于p值、效应大小、置信区间的科学符号命令
+- 专业的页眉和页脚
 
-**For venue-specific writing styles** (tone, voice, abstract format, reviewer expectations), see the **venue-templates** skill which provides comprehensive style guides for Nature/Science, Cell Press, medical journals, ML conferences, and CS conferences.
+**对于特定场所的写作风格**（语气、声音、摘要格式、审稿人期望），请参阅**venue-templates**技能，该技能提供Nature/Science、Cell Press、医学期刊、ML会议和CS会议的综合风格指南。
 
-Load these references as needed when working on specific aspects of scientific writing.
-
+在处理科学写作的特定方面时，根据需要加载这些参考。

@@ -1,56 +1,56 @@
 ---
 name: ginkgo-cloud-lab
-description: Submit and manage protocols on Ginkgo Bioworks Cloud Lab (cloud.ginkgo.bio), a web-based interface for autonomous lab execution on Reconfigurable Automation Carts (RACs). Use when the user wants to run cell-free protein expression (validation or optimization), generate fluorescent pixel art, or interact with Ginkgo Cloud Lab services. Covers protocol selection, input preparation, pricing, and ordering workflows.
+description: 在Ginkgo Bioworks Cloud Lab（cloud.ginkgo.bio）上提交和管理协议，这是一个用于在可重构自动化车（RACs）上执行自主实验室的基于Web的界面。用于用户想要运行无细胞蛋白表达（验证或优化）、生成荧光像素艺术或与Ginkgo Cloud Lab服务交互时。涵盖协议选择、输入准备、定价和订购工作流。
 ---
 
 # Ginkgo Cloud Lab
 
-## Overview
+## 概述
 
-Ginkgo Cloud Lab (https://cloud.ginkgo.bio) provides remote access to Ginkgo Bioworks' autonomous lab infrastructure. Protocols are executed on Reconfigurable Automation Carts (RACs) -- modular units with robotic arms, maglev sample transport, and industrial-grade software spanning 70+ instruments.
+Ginkgo Cloud Lab（https://cloud.ginkgo.bio）提供对Ginkgo Bioworks自主实验室基础设施的远程访问。协议在可重构自动化车（RACs）上执行——具有机械臂、磁悬浮样品运输和工业级软件的模块化单元，跨越70多种仪器。
 
-The platform also includes **EstiMate**, an AI agent that accepts human-language protocol descriptions and returns feasibility assessments and pricing for custom workflows beyond the listed protocols.
+该平台还包括**EstiMate**，这是一个接受人类语言协议描述并返回自定义工作流的可行性评估和定价的AI代理。
 
-## Available Protocols
+## 可用协议
 
-### 1. Cell Free Protein Expression Validation
+### 1. 无细胞蛋白表达验证
 
-Rapid go/no-go expression screening using reconstituted E. coli CFPS. Submit a FASTA sequence (up to 1800 bp) and receive expression confirmation, baseline titer (mg/L), and initial purity with virtual gel images.
+使用重组大肠杆菌CFPS进行快速通过/不通过表达筛选。提交FASTA序列（最多1800 bp），接收表达确认、基线滴度（mg/L）和初始纯度以及虚拟凝胶图像。
 
-- **Price:** $39/sample | **Turnaround:** 5-10 days | **Status:** Certified
-- **Details:** See [references/cell-free-protein-expression-validation.md](references/cell-free-protein-expression-validation.md)
+- **价格**：$39/样本 | **周转时间**：5-10天 | **状态**：已认证
+- **详情**：参见 [references/cell-free-protein-expression-validation.md](references/cell-free-protein-expression-validation.md)
 
-### 2. Cell Free Protein Expression Optimization
+### 2. 无细胞蛋白表达优化
 
-DoE-based optimization across up to 24 conditions per protein (lysates, temperatures, chaperones, disulfide enhancers, cofactors). Designed for difficult-to-express and membrane proteins.
+使用DoE方法在多达24种条件/蛋白质（裂解物、温度、分子伴侣、二硫键增强剂、辅因子）中进行优化。设计用于难表达蛋白质和膜蛋白。
 
-- **Price:** $199/sample | **Turnaround:** 6-11 days | **Status:** Certified
-- **Details:** See [references/cell-free-protein-expression-optimization.md](references/cell-free-protein-expression-optimization.md)
+- **价格**：$199/样本 | **周转时间**：6-11天 | **状态**：已认证
+- **详情**：参见 [references/cell-free-protein-expression-optimization.md](references/cell-free-protein-expression-optimization.md)
 
-### 3. Fluorescent Pixel Art Generation
+### 3. 荧光像素艺术生成
 
-Transform a pixel art image (48x48 to 96x96 px, PNG/SVG) into fluorescent bacterial artwork using up to 11 E. coli strains via acoustic dispensing. Delivered as high-res UV photographs.
+通过声学分配将像素艺术图像（48x48到96x96像素，PNG/SVG）转换为使用多达11种大肠杆菌菌株的荧光细菌艺术品。以高分辨率UV照片形式交付。
 
-- **Price:** $25/plate | **Turnaround:** 5-7 days | **Status:** Beta
-- **Details:** See [references/fluorescent-pixel-art-generation.md](references/fluorescent-pixel-art-generation.md)
+- **价格**：$25/平板 | **周转时间**：5-7天 | **状态**：测试版
+- **详情**：参见 [references/fluorescent-pixel-art-generation.md](references/fluorescent-pixel-art-generation.md)
 
-## General Ordering Workflow
+## 通用订购工作流
 
-1. Select a protocol at https://cloud.ginkgo.bio/protocols
-2. Configure parameters (number of samples/proteins, replicates, plates)
-3. Upload input files (FASTA for protein protocols, PNG/SVG for pixel art)
-4. Add any special requirements in the Additional Details field
-5. Submit and receive a feasibility report and price quote
+1. 在 https://cloud.ginkgo.bio/protocols 选择协议
+2. 配置参数（样本/蛋白质数量、重复、平板）
+3. 上传输入文件（蛋白质协议的FASTA，像素艺术的PNG/SVG）
+4. 在附加详情字段中添加任何特殊要求
+5. 提交并接收可行性报告和价格报价
 
-For protocols not listed above, use the **EstiMate** chat to describe a custom protocol in plain language and receive compatibility assessment and pricing.
+对于上述未列出的协议，使用**EstiMate**聊天以自然语言描述自定义协议并接收兼容性评估和定价。
 
-## Authentication
+## 身份验证
 
-Access Ginkgo Cloud Lab at https://cloud.ginkgo.bio. Account creation or institutional access may be required. Contact Ginkgo at cloud@ginkgo.bio for access questions.
+在 https://cloud.ginkgo.bio 访问Ginkgo Cloud Lab。可能需要创建账户或机构访问。如有访问问题，请联系Ginkgo：cloud@ginkgo.bio。
 
-## Key Infrastructure
+## 关键基础设施
 
-- **RACs (Reconfigurable Automation Carts):** Modular robotic units with high-precision arms and maglev transport
-- **Catalyst Software:** Protocol orchestration, scheduling, parameterization, and real-time monitoring
-- **70+ integrated instruments:** Sample prep, liquid handling, analytical readouts, storage, incubation
-- **Nebula:** Ginkgo's autonomous lab facility in Boston, MA
+- **RACs（可重构自动化车）**：具有高精度机械臂和磁悬浮运输的模块化机器人单元
+- **Catalyst软件**：协议编排、调度、参数化和实时监控
+- **70多种集成仪器**：样品制备、液体处理、分析读出、存储、培养
+- **Nebula**：Ginkgo在马萨诸塞州波士顿的自主实验室设施

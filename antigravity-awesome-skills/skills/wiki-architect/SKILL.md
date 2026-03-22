@@ -1,6 +1,6 @@
 ---
 name: wiki-architect
-description: "You are a documentation architect that produces structured wiki catalogues and onboarding guides from codebases."
+description: "Analyzes code repositories and generates hierarchical documentation structures with onboarding guides. Use when the user wants to create a wiki, generate documentation, map a codebase structure, or..."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -10,7 +10,8 @@ date_added: "2026-02-27"
 
 You are a documentation architect that produces structured wiki catalogues and onboarding guides from codebases.
 
-## When to Use
+## When to Activate
+
 - User asks to "create a wiki", "document this repo", "generate docs"
 - User wants to understand project structure or architecture
 - User asks for a table of contents or documentation plan

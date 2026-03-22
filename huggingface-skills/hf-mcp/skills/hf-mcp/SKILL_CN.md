@@ -1,15 +1,15 @@
 ---
 name: hf-mcp
-description: Use Hugging Face Hub via MCP server tools. Search models, datasets, Spaces, papers. Get repo details, fetch documentation, run compute jobs, and use Gradio Spaces as AI tools. Available when connected to the HF MCP server.
+description: 通过MCP服务器工具使用Hugging Face Hub。搜索模型、数据集、Spaces、论文。获取仓库详情、获取文档、运行计算作业，并将Gradio Spaces用作AI工具。连接到HF MCP服务器时可用。
 ---
 
-# Hugging Face MCP Server
+# Hugging Face MCP服务器
 
-Connect AI assistants to the Hugging Face Hub. Setup: https://huggingface.co/settings/mcp
+将AI助手连接到Hugging Face Hub。设置：https://huggingface.co/settings/mcp
 
-## Use Cases & Examples
+## 使用场景和示例
 
-### Find the Best Model for a Task
+### 找到适合任务的最佳模型
 
 ```
 User: "Find the best model for code generation"
@@ -18,7 +18,7 @@ User: "Find the best model for code generation"
 2. hub_repo_details(repo_ids=["top-result-id"], include_readme=true)
 ```
 
-### Compare Models from Different Providers
+### 比较不同提供商的模型
 
 ```
 User: "Compare Llama vs Qwen for text generation"
@@ -28,7 +28,7 @@ User: "Compare Llama vs Qwen for text generation"
 3. hub_repo_details(repo_ids=["meta-llama/Llama-3.2-1B", "Qwen/Qwen3-8B"], include_readme=true)
 ```
 
-### Find Training Datasets
+### 查找训练数据集
 
 ```
 User: "Find datasets for sentiment analysis in English"
@@ -37,7 +37,7 @@ User: "Find datasets for sentiment analysis in English"
 2. hub_repo_details(repo_ids=["top-dataset-id"], repo_type="dataset", include_readme=true)
 ```
 
-### Discover AI Tools (MCP Spaces)
+### 发现AI工具（MCP Spaces）
 
 ```
 User: "Find a tool that can remove image backgrounds"
@@ -47,25 +47,25 @@ User: "Find a tool that can remove image backgrounds"
 3. dynamic_space(operation="invoke", space_name="result-space-id", parameters="{...}")
 ```
 
-### Generate Images
+### 生成图像
 
 ```
 User: "Create an image of a robot reading a book"
 
-1. dynamic_space(operation="discover")  # See available tasks
+1. dynamic_space(operation="discover")  # 查看可用任务
 2. gr1_flux1_schnell_infer(prompt="a robot sitting in a library reading a book, warm lighting, detailed")
 ```
 
-### Research a Topic
+### 研究某个主题
 
 ```
 User: "What are the latest papers on RLHF?"
 
 1. paper_search(query="reinforcement learning from human feedback", results_limit=10)
-2. hub_repo_details(repo_ids=["paper-linked-model"], include_readme=true)  # If paper links to models
+2. hub_repo_details(repo_ids=["paper-linked-model"], include_readme=true)  # 如果论文链接到模型
 ```
 
-### Learn How to Use a Library
+### 学习如何使用库
 
 ```
 User: "How do I fine-tune with LoRA using PEFT?"
@@ -74,7 +74,7 @@ User: "How do I fine-tune with LoRA using PEFT?"
 2. hf_doc_fetch(doc_url="https://huggingface.co/docs/peft/...")
 ```
 
-### Run a Quick GPU Job
+### 运行快速GPU作业
 
 ```
 User: "Run this Python script on a GPU"
@@ -85,7 +85,7 @@ hf_jobs(operation="uv", args={
 })
 ```
 
-### Train a Model on Cloud GPU
+### 在云GPU上训练模型
 
 ```
 User: "Run my training script on an A10G"
@@ -98,7 +98,7 @@ hf_jobs(operation="run", args={
 })
 ```
 
-### Check Job Status
+### 检查作业状态
 
 ```
 User: "What's happening with my training job?"
@@ -107,7 +107,7 @@ User: "What's happening with my training job?"
 2. hf_jobs(operation="logs", args={"job_id": "job-xxxxx"})
 ```
 
-### Explore What's Trending
+### 探索当前趋势
 
 ```
 User: "What models are trending right now?"
@@ -115,7 +115,7 @@ User: "What models are trending right now?"
 model_search(sort="trendingScore", limit=20)
 ```
 
-### Get Model Card Details
+### 获取模型卡片详情
 
 ```
 User: "Tell me about Mistral-7B"
@@ -123,7 +123,7 @@ User: "Tell me about Mistral-7B"
 hub_repo_details(repo_ids=["mistralai/Mistral-7B-v0.1"], include_readme=true)
 ```
 
-### Find Quantized Models
+### 查找量化模型
 
 ```
 User: "Find GGUF versions of Llama 3"
@@ -131,7 +131,7 @@ User: "Find GGUF versions of Llama 3"
 model_search(query="Llama 3 GGUF", sort="downloads", limit=10)
 ```
 
-### Use a Gradio Space as a Tool
+### 将Gradio Space用作工具
 
 ```
 User: "Transcribe this audio file"
@@ -141,7 +141,7 @@ User: "Transcribe this audio file"
 3. dynamic_space(operation="invoke", space_name="openai/whisper", parameters="{\"audio\": \"...\"}")
 ```
 
-### Schedule Recurring Jobs
+### 安排定期作业
 
 ```
 User: "Run this data sync every day at midnight"
@@ -153,26 +153,26 @@ hf_jobs(operation="scheduled uv", args={
 })
 ```
 
-## Tool Selection Guide
+## 工具选择指南
 
-| Goal | Tool |
+| 目标 | 工具 |
 |------|------|
-| Find models | `model_search` |
-| Find datasets | `dataset_search` |
-| Find Spaces/apps | `space_search` |
-| Find papers | `paper_search` |
-| Get repo README/details | `hub_repo_details` |
-| Learn library usage | `hf_doc_search` → `hf_doc_fetch` |
-| Run code on GPU/CPU | `hf_jobs` |
-| Use Gradio apps as tools | `dynamic_space` |
-| Generate images | `gr1_flux1_schnell_infer` or `dynamic_space` |
-| Check auth | `hf_whoami` |
+| 查找模型 | `model_search` |
+| 查找数据集 | `dataset_search` |
+| 查找Spaces/应用 | `space_search` |
+| 查找论文 | `paper_search` |
+| 获取仓库README/详情 | `hub_repo_details` |
+| 学习库使用 | `hf_doc_search` → `hf_doc_fetch` |
+| 在GPU/CPU上运行代码 | `hf_jobs` |
+| 将Gradio应用用作工具 | `dynamic_space` |
+| 生成图像 | `gr1_flux1_schnell_infer` 或 `dynamic_space` |
+| 检查认证 | `hf_whoami` |
 
-## Tips
+## 提示
 
-- Use `sort="trendingScore"` to find what's popular now
-- Use `sort="downloads"` to find battle-tested options
-- Set `mcp=true` in `space_search` to find Spaces usable as tools
-- Use `include_readme=true` in `hub_repo_details` for full model/dataset documentation
-- For jobs accessing private repos, always include `secrets: {"HF_TOKEN": "$HF_TOKEN"}`
-- Use `dynamic_space(operation="discover")` to see all available Space-based tasks
+- 使用 `sort="trendingScore"` 查找当前流行的内容
+- 使用 `sort="downloads"` 查找经过验证的选项
+- 在 `space_search` 中设置 `mcp=true` 以查找可用作工具的Spaces
+- 在 `hub_repo_details` 中使用 `include_readme=true` 获取完整的模型/数据集文档
+- 对于访问私有仓库的作业，始终包含 `secrets: {"HF_TOKEN": "$HF_TOKEN"}`
+- 使用 `dynamic_space(operation="discover")` 查看所有可用的基于Space的任务

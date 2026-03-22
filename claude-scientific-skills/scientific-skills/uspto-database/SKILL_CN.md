@@ -1,106 +1,106 @@
 ---
 name: uspto-database
-description: Access USPTO APIs for patent/trademark searches, examination history (PEDS), assignments, citations, office actions, TSDR, for IP analysis and prior art searches.
+description: 访问USPTO API进行专利/商标搜索、审查历史（PEDS）、转让、引用、审查意见、TSDR，用于知识产权分析和现有技术搜索。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# USPTO Database
+# USPTO数据库
 
-## Overview
+## 概述
 
-USPTO provides specialized APIs for patent and trademark data. Search patents by keywords/inventors/assignees, retrieve examination history via PEDS, track assignments, analyze citations and office actions, access TSDR for trademarks, for IP analysis and prior art searches.
+USPTO提供专门的专利和商标数据API。通过关键词/发明人/受让人搜索专利，通过PEDS检索审查历史，跟踪转让，分析引用和审查意见，访问TSDR获取商标信息，用于知识产权分析和现有技术搜索。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
+当以下情况时应使用此技能：
 
-- **Patent Search**: Finding patents by keywords, inventors, assignees, classifications, or dates
-- **Patent Details**: Retrieving full patent data including claims, abstracts, citations
-- **Trademark Search**: Looking up trademarks by serial or registration number
-- **Trademark Status**: Checking trademark status, ownership, and prosecution history
-- **Examination History**: Accessing patent prosecution data from PEDS (Patent Examination Data System)
-- **Office Actions**: Retrieving office action text, citations, and rejections
-- **Assignments**: Tracking patent/trademark ownership transfers
-- **Citations**: Analyzing patent citations (forward and backward)
-- **Litigation**: Accessing patent litigation records
-- **Portfolio Analysis**: Analyzing patent/trademark portfolios for companies or inventors
+- **专利搜索**：按关键词、发明人、受让人、分类或日期查找专利
+- **专利详情**：检索完整专利数据，包括权利要求、摘要、引用
+- **商标搜索**：通过序列号或注册号查找商标
+- **商标状态**：检查商标状态、所有权和审查历史
+- **审查历史**：从PEDS（专利审查数据系统）访问专利审查数据
+- **审查意见**：检索审查意见文本、引用和驳回
+- **转让**：跟踪专利/商标所有权转移
+- **引用**：分析专利引用（前向和后向）
+- **诉讼**：访问专利诉讼记录
+- **组合分析**：分析公司或发明人的专利/商标组合
 
-## USPTO API Ecosystem
+## USPTO API生态系统
 
-The USPTO provides multiple specialized APIs for different data needs:
+USPTO为不同数据需求提供多个专门的API：
 
-### Core APIs
+### 核心API
 
-1. **PatentSearch API** - Modern ElasticSearch-based patent search (replaced legacy PatentsView in May 2025)
-   - Search patents by keywords, inventors, assignees, classifications, dates
-   - Access to patent data through June 30, 2025
-   - 45 requests/minute rate limit
-   - **Base URL**: `https://search.patentsview.org/api/v1/`
+1. **PatentSearch API** - 基于ElasticSearch的现代专利搜索（2025年5月取代了旧版PatentsView）
+   - 按关键词、发明人、受让人、分类、日期搜索专利
+   - 访问截至2025年6月30日的专利数据
+   - 45次请求/分钟的速率限制
+   - **基础URL**：`https://search.patentsview.org/api/v1/`
 
-2. **PEDS (Patent Examination Data System)** - Patent examination history
-   - Application status and transaction history from 1981-present
-   - Office action dates and examination events
-   - Use `uspto-opendata-python` Python library
-   - **Replaced**: PAIR Bulk Data (PBD) - decommissioned
+2. **PEDS（专利审查数据系统）** - 专利审查历史
+   - 1981年至今的申请状态和交易历史
+   - 审查意见日期和审查事件
+   - 使用`uspto-opendata-python` Python库
+   - **替代**：PAIR批量数据（PBD）- 已停用
 
-3. **TSDR (Trademark Status & Document Retrieval)** - Trademark data
-   - Trademark status, ownership, prosecution history
-   - Search by serial or registration number
-   - **Base URL**: `https://tsdrapi.uspto.gov/ts/cd/`
+3. **TSDR（商标状态与文档检索）** - 商标数据
+   - 商标状态、所有权、审查历史
+   - 按序列号或注册号搜索
+   - **基础URL**：`https://tsdrapi.uspto.gov/ts/cd/`
 
-### Additional APIs
+### 其他API
 
-4. **Patent Assignment Search** - Ownership records and transfers
-5. **Trademark Assignment Search** - Trademark ownership changes
-6. **Enriched Citation API** - Patent citation analysis
-7. **Office Action Text Retrieval** - Full text of office actions
-8. **Office Action Citations** - Citations from office actions
-9. **Office Action Rejection** - Rejection reasons and types
-10. **PTAB API** - Patent Trial and Appeal Board proceedings
-11. **Patent Litigation Cases** - Federal district court litigation data
-12. **Cancer Moonshot Data Set** - Cancer-related patents
+4. **专利转让搜索** - 所有权记录和转移
+5. **商标转让搜索** - 商标所有权变更
+6. **增强引用API** - 专利引用分析
+7. **审查意见文本检索** - 审查意见全文
+8. **审查意见引用** - 审查意见中的引用
+9. **审查意见驳回** - 驳回原因和类型
+10. **PTAB API** - 专利审判和上诉委员会程序
+11. **专利诉讼案件** - 联邦地区法院诉讼数据
+12. **癌症登月数据集** - 癌症相关专利
 
-## Quick Start
+## 快速开始
 
-### API Key Registration
+### API密钥注册
 
-USPTO APIs require an API key. Register at:
+USPTO API需要API密钥。在以下地址注册：
 **https://account.uspto.gov/api-manager/**
 
-API key for **PatentSearch API** is provided by PatentsView. Register at:
+**PatentSearch API**的API密钥由PatentsView提供。在以下地址注册：
 **https://patentsview.org/api-v01-information-page**
 
-Set the API key as an environment variable:
+将API密钥设置为环境变量：
 ```bash
 export USPTO_API_KEY="your_api_key_here"
 export PATENTSVIEW_API_KEY="you_api_key_here"
 ```
 
-### Helper Scripts
+### 辅助脚本
 
-This skill includes Python scripts for common operations:
+此技能包含用于常见操作的Python脚本：
 
-- **`scripts/patent_search.py`** - PatentSearch API client for searching patents
-- **`scripts/peds_client.py`** - PEDS client for examination history
-- **`scripts/trademark_client.py`** - TSDR client for trademark data
+- **`scripts/patent_search.py`** - 用于搜索专利的PatentSearch API客户端
+- **`scripts/peds_client.py`** - 用于审查历史的PEDS客户端
+- **`scripts/trademark_client.py`** - 用于商标数据的TSDR客户端
 
-## Task 1: Searching Patents
+## 任务1：搜索专利
 
-### Using the PatentSearch API
+### 使用PatentSearch API
 
-The PatentSearch API uses a JSON query language with various operators for flexible searching.
+PatentSearch API使用JSON查询语言，带有各种运算符用于灵活搜索。
 
-#### Basic Patent Search Examples
+#### 基本专利搜索示例
 
-**Search by keywords in abstract:**
+**按摘要中的关键词搜索：**
 ```python
 from scripts.patent_search import PatentSearchClient
 
 client = PatentSearchClient()
 
-# Search for machine learning patents
+# 搜索机器学习专利
 results = client.search_patents({
     "_text_all": {"patent_abstract": "machine learning"}
 })
@@ -109,29 +109,29 @@ for patent in results['patents']:
     print(f"{patent['patent_number']}: {patent['patent_title']}")
 ```
 
-**Search by inventor:**
+**按发明人搜索：**
 ```python
 results = client.search_by_inventor("John Smith")
 ```
 
-**Search by assignee/company:**
+**按受让人/公司搜索：**
 ```python
 results = client.search_by_assignee("Google")
 ```
 
-**Search by date range:**
+**按日期范围搜索：**
 ```python
 results = client.search_by_date_range("2024-01-01", "2024-12-31")
 ```
 
-**Search by CPC classification:**
+**按CPC分类搜索：**
 ```python
-results = client.search_by_classification("H04N")  # Video/image tech
+results = client.search_by_classification("H04N")  # 视频/图像技术
 ```
 
-#### Advanced Patent Search
+#### 高级专利搜索
 
-Combine multiple criteria with logical operators:
+使用逻辑运算符组合多个条件：
 
 ```python
 results = client.advanced_search(
@@ -139,13 +139,13 @@ results = client.advanced_search(
     assignee="Microsoft",
     start_date="2023-01-01",
     end_date="2024-12-31",
-    cpc_codes=["G06N", "G06F"]  # AI and computing classifications
+    cpc_codes=["G06N", "G06F"]  # AI和计算分类
 )
 ```
 
-#### Direct API Usage
+#### 直接API使用
 
-For complex queries, use the API directly:
+对于复杂查询，直接使用API：
 
 ```python
 import requests
@@ -173,66 +173,66 @@ response = requests.post(url, headers=headers, json=query)
 results = response.json()
 ```
 
-### Query Operators
+### 查询运算符
 
-- **Equality**: `{"field": "value"}` or `{"field": {"_eq": "value"}}`
-- **Comparison**: `_gt`, `_gte`, `_lt`, `_lte`, `_neq`
-- **Text search**: `_text_all`, `_text_any`, `_text_phrase`
-- **String matching**: `_begins`, `_contains`
-- **Logical**: `_and`, `_or`, `_not`
+- **相等**：`{"field": "value"}` 或 `{"field": {"_eq": "value"}}`
+- **比较**：`_gt`, `_gte`, `_lt`, `_lte`, `_neq`
+- **文本搜索**：`_text_all`, `_text_any`, `_text_phrase`
+- **字符串匹配**：`_begins`, `_contains`
+- **逻辑**：`_and`, `_or`, `_not`
 
-**Best Practice**: Use `_text_*` operators for text fields (more performant than `_contains` or `_begins`)
+**最佳实践**：对文本字段使用`_text_*`运算符（比`_contains`或`_begins`更高效）
 
-### Available Patent Endpoints
+### 可用的专利端点
 
-- `/patent` - Granted patents
-- `/publication` - Pregrant publications
-- `/inventor` - Inventor information
-- `/assignee` - Assignee information
-- `/cpc_subclass`, `/cpc_at_issue` - CPC classifications
-- `/uspc` - US Patent Classification
-- `/ipc` - International Patent Classification
-- `/claims`, `/brief_summary_text`, `/detail_description_text` - Text data (beta)
+- `/patent` - 授权专利
+- `/publication` - 预授权公开
+- `/inventor` - 发明人信息
+- `/assignee` - 受让人信息
+- `/cpc_subclass`, `/cpc_at_issue` - CPC分类
+- `/uspc` - 美国专利分类
+- `/ipc` - 国际专利分类
+- `/claims`, `/brief_summary_text`, `/detail_description_text` - 文本数据（测试版）
 
-### Reference Documentation
+### 参考文档
 
-See `references/patentsearch_api.md` for complete PatentSearch API documentation including:
-- All available endpoints
-- Complete field reference
-- Query syntax and examples
-- Response formats
-- Rate limits and best practices
+见`references/patentsearch_api.md`获取完整的PatentSearch API文档，包括：
+- 所有可用端点
+- 完整字段参考
+- 查询语法和示例
+- 响应格式
+- 速率限制和最佳实践
 
-## Task 2: Retrieving Patent Examination Data
+## 任务2：检索专利审查数据
 
-### Using PEDS (Patent Examination Data System)
+### 使用PEDS（专利审查数据系统）
 
-PEDS provides comprehensive prosecution history including transaction events, status changes, and examination timeline.
+PEDS提供全面的审查历史，包括交易事件、状态变更和审查时间线。
 
-#### Installation
+#### 安装
 
 ```bash
 uv pip install uspto-opendata-python
 ```
 
-#### Basic PEDS Usage
+#### 基本PEDS使用
 
-**Get application data:**
+**获取申请数据：**
 ```python
 from scripts.peds_client import PEDSHelper
 
 helper = PEDSHelper()
 
-# By application number
+# 通过申请号
 app_data = helper.get_application("16123456")
-print(f"Title: {app_data['title']}")
-print(f"Status: {app_data['app_status']}")
+print(f"标题: {app_data['title']}")
+print(f"状态: {app_data['app_status']}")
 
-# By patent number
+# 通过专利号
 patent_data = helper.get_patent("11234567")
 ```
 
-**Get transaction history:**
+**获取交易历史：**
 ```python
 transactions = helper.get_transaction_history("16123456")
 
@@ -240,119 +240,119 @@ for trans in transactions:
     print(f"{trans['date']}: {trans['code']} - {trans['description']}")
 ```
 
-**Get office actions:**
+**获取审查意见：**
 ```python
 office_actions = helper.get_office_actions("16123456")
 
 for oa in office_actions:
     if oa['code'] == 'CTNF':
-        print(f"Non-final rejection: {oa['date']}")
+        print(f"非最终驳回: {oa['date']}")
     elif oa['code'] == 'CTFR':
-        print(f"Final rejection: {oa['date']}")
+        print(f"最终驳回: {oa['date']}")
     elif oa['code'] == 'NOA':
-        print(f"Notice of allowance: {oa['date']}")
+        print(f"授权通知: {oa['date']}")
 ```
 
-**Get status summary:**
+**获取状态摘要：**
 ```python
 summary = helper.get_status_summary("16123456")
 
-print(f"Current status: {summary['current_status']}")
-print(f"Filing date: {summary['filing_date']}")
-print(f"Pendency: {summary['pendency_days']} days")
+print(f"当前状态: {summary['current_status']}")
+print(f"申请日期: {summary['filing_date']}")
+print(f"审查时间: {summary['pendency_days']} 天")
 
 if summary['is_patented']:
-    print(f"Patent number: {summary['patent_number']}")
-    print(f"Issue date: {summary['issue_date']}")
+    print(f"专利号: {summary['patent_number']}")
+    print(f"授权日期: {summary['issue_date']}")
 ```
 
-#### Prosecution Analysis
+#### 审查分析
 
-Analyze prosecution patterns:
+分析审查模式：
 
 ```python
 analysis = helper.analyze_prosecution("16123456")
 
-print(f"Total office actions: {analysis['total_office_actions']}")
-print(f"Non-final rejections: {analysis['non_final_rejections']}")
-print(f"Final rejections: {analysis['final_rejections']}")
-print(f"Allowed: {analysis['allowance']}")
-print(f"Responses filed: {analysis['responses']}")
+print(f"总审查意见: {analysis['total_office_actions']}")
+print(f"非最终驳回: {analysis['non_final_rejections']}")
+print(f"最终驳回: {analysis['final_rejections']}")
+print(f"授权: {analysis['allowance']}")
+print(f"提交的答辩: {analysis['responses']}")
 ```
 
-### Common Transaction Codes
+### 常见交易代码
 
-- **CTNF** - Non-final rejection mailed
-- **CTFR** - Final rejection mailed
-- **NOA** - Notice of allowance mailed
-- **WRIT** - Response filed
-- **ISS.FEE** - Issue fee payment
-- **ABND** - Application abandoned
-- **AOPF** - Office action mailed
+- **CTNF** - 非最终驳回邮寄
+- **CTFR** - 最终驳回邮寄
+- **NOA** - 授权通知邮寄
+- **WRIT** - 答辩提交
+- **ISS.FEE** - 授权费支付
+- **ABND** - 申请放弃
+- **AOPF** - 审查意见邮寄
 
-### Reference Documentation
+### 参考文档
 
-See `references/peds_api.md` for complete PEDS documentation including:
-- All available data fields
-- Transaction code reference
-- Python library usage
-- Portfolio analysis examples
+见`references/peds_api.md`获取完整的PEDS文档，包括：
+- 所有可用数据字段
+- 交易代码参考
+- Python库使用
+- 组合分析示例
 
-## Task 3: Searching and Monitoring Trademarks
+## 任务3：搜索和监控商标
 
-### Using TSDR (Trademark Status & Document Retrieval)
+### 使用TSDR（商标状态与文档检索）
 
-Access trademark status, ownership, and prosecution history.
+访问商标状态、所有权和审查历史。
 
-#### Basic Trademark Usage
+#### 基本商标使用
 
-**Get trademark by serial number:**
+**通过序列号获取商标：**
 ```python
 from scripts.trademark_client import TrademarkClient
 
 client = TrademarkClient()
 
-# By serial number
+# 通过序列号
 tm_data = client.get_trademark_by_serial("87654321")
 
-# By registration number
+# 通过注册号
 tm_data = client.get_trademark_by_registration("5678901")
 ```
 
-**Get trademark status:**
+**获取商标状态：**
 ```python
 status = client.get_trademark_status("87654321")
 
-print(f"Mark: {status['mark_text']}")
-print(f"Status: {status['status']}")
-print(f"Filing date: {status['filing_date']}")
+print(f"商标: {status['mark_text']}")
+print(f"状态: {status['status']}")
+print(f"申请日期: {status['filing_date']}")
 
 if status['is_registered']:
-    print(f"Registration #: {status['registration_number']}")
-    print(f"Registration date: {status['registration_date']}")
+    print(f"注册号: {status['registration_number']}")
+    print(f"注册日期: {status['registration_date']}")
 ```
 
-**Check trademark health:**
+**检查商标健康状况：**
 ```python
 health = client.check_trademark_health("87654321")
 
-print(f"Mark: {health['mark']}")
-print(f"Status: {health['status']}")
+print(f"商标: {health['mark']}")
+print(f"状态: {health['status']}")
 
 for alert in health['alerts']:
     print(alert)
 
 if health['needs_attention']:
-    print("⚠️  This mark needs attention!")
+    print("⚠️  此商标需要关注！")
 ```
 
-#### Trademark Portfolio Monitoring
+#### 商标组合监控
 
-Monitor multiple trademarks:
+监控多个商标：
 
 ```python
 def monitor_portfolio(serial_numbers, api_key):
-    """Monitor trademark portfolio health."""
+    """监控商标组合健康状况。"""
     client = TrademarkClient(api_key)
 
     results = {
@@ -374,36 +374,36 @@ def monitor_portfolio(serial_numbers, api_key):
     return results
 ```
 
-### Common Trademark Statuses
+### 常见商标状态
 
-- **REGISTERED** - Active registered mark
-- **PENDING** - Under examination
-- **PUBLISHED FOR OPPOSITION** - In opposition period
-- **ABANDONED** - Application abandoned
-- **CANCELLED** - Registration cancelled
-- **SUSPENDED** - Examination suspended
-- **REGISTERED AND RENEWED** - Registration renewed
+- **REGISTERED** - 活跃注册商标
+- **PENDING** - 审查中
+- **PUBLISHED FOR OPPOSITION** - 异议期内
+- **ABANDONED** - 申请放弃
+- **CANCELLED** - 注册取消
+- **SUSPENDED** - 审查暂停
+- **REGISTERED AND RENEWED** - 注册续展
 
-### Reference Documentation
+### 参考文档
 
-See `references/trademark_api.md` for complete trademark API documentation including:
-- TSDR API reference
-- Trademark Assignment Search API
-- All status codes
-- Prosecution history access
-- Ownership tracking
+见`references/trademark_api.md`获取完整的商标API文档，包括：
+- TSDR API参考
+- 商标转让搜索API
+- 所有状态代码
+- 审查历史访问
+- 所有权跟踪
 
-## Task 4: Tracking Assignments and Ownership
+## 任务4：跟踪转让和所有权
 
-### Patent and Trademark Assignments
+### 专利和商标转让
 
-Both patents and trademarks have Assignment Search APIs for tracking ownership changes.
+专利和商标都有转让搜索API用于跟踪所有权变更。
 
-#### Patent Assignment API
+#### 专利转让API
 
-**Base URL**: `https://assignment-api.uspto.gov/patent/v1.4/`
+**基础URL**：`https://assignment-api.uspto.gov/patent/v1.4/`
 
-**Search by patent number:**
+**按专利号搜索：**
 ```python
 import requests
 import xml.etree.ElementTree as ET
@@ -414,7 +414,7 @@ def get_patent_assignments(patent_number, api_key):
 
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
-        return response.text  # Returns XML
+        return response.text  # 返回XML
 
 assignments_xml = get_patent_assignments("11234567", api_key)
 root = ET.fromstring(assignments_xml)
@@ -426,10 +426,10 @@ for assignment in root.findall('.//assignment'):
     conveyance = assignment.find('conveyanceText').text
 
     print(f"{recorded_date}: {assignor} → {assignee}")
-    print(f"  Type: {conveyance}\n")
+    print(f"  类型: {conveyance}\n")
 ```
 
-**Search by company name:**
+**按公司名称搜索：**
 ```python
 def find_company_patents(company_name, api_key):
     url = "https://assignment-api.uspto.gov/patent/v1.4/assignment/search"
@@ -440,166 +440,165 @@ def find_company_patents(company_name, api_key):
     return response.text
 ```
 
-### Common Assignment Types
+### 常见转让类型
 
-- **ASSIGNMENT OF ASSIGNORS INTEREST** - Ownership transfer
-- **SECURITY AGREEMENT** - Collateral/security interest
-- **MERGER** - Corporate merger
-- **CHANGE OF NAME** - Name change
-- **ASSIGNMENT OF PARTIAL INTEREST** - Partial ownership
+- **ASSIGNMENT OF ASSIGNORS INTEREST** - 所有权转移
+- **SECURITY AGREEMENT** - 抵押/担保权益
+- **MERGER** - 公司合并
+- **CHANGE OF NAME** - 名称变更
+- **ASSIGNMENT OF PARTIAL INTEREST** - 部分所有权
 
-## Task 5: Accessing Additional USPTO Data
+## 任务5：访问其他USPTO数据
 
-### Office Actions, Citations, and Litigation
+### 审查意见、引用和诉讼
 
-Multiple specialized APIs provide additional patent data.
+多个专门的API提供额外的专利数据。
 
-#### Office Action Text Retrieval
+#### 审查意见文本检索
 
-Retrieve full text of office actions using application number. Integrate with PEDS to identify which office actions exist, then retrieve full text.
+使用申请号检索审查意见全文。与PEDS集成以识别存在哪些审查意见，然后检索全文。
 
-#### Enriched Citation API
+#### 增强引用API
 
-Analyze patent citations:
-- Forward citations (patents citing this patent)
-- Backward citations (prior art cited)
-- Examiner vs. applicant citations
-- Citation context
+分析专利引用：
+- 前向引用（引用此专利的专利）
+- 后向引用（引用的现有技术）
+- 审查员vs申请人引用
+- 引用上下文
 
-#### Patent Litigation Cases API
+#### 专利诉讼案件API
 
-Access federal district court patent litigation records:
-- 74,623+ litigation records
-- Patents asserted
-- Parties and venues
-- Case outcomes
+访问联邦地区法院专利诉讼记录：
+- 74,623+诉讼记录
+- 主张的专利
+- 当事人和地点
+- 案件结果
 
 #### PTAB API
 
-Patent Trial and Appeal Board proceedings:
-- Inter partes review (IPR)
-- Post-grant review (PGR)
-- Appeal decisions
+专利审判和上诉委员会程序：
+- 多方审查（IPR）
+- 授权后审查（PGR）
+- 上诉决定
 
-### Reference Documentation
+### 参考文档
 
-See `references/additional_apis.md` for comprehensive documentation on:
-- Enriched Citation API
-- Office Action APIs (Text, Citations, Rejections)
-- Patent Litigation Cases API
+见`references/additional_apis.md`获取关于以下内容的综合文档：
+- 增强引用API
+- 审查意见API（文本、引用、驳回）
+- 专利诉讼案件API
 - PTAB API
-- Cancer Moonshot Data Set
-- OCE Status/Event Codes
+- 癌症登月数据集
+- OCE状态/事件代码
 
-## Complete Analysis Example
+## 完整分析示例
 
-### Comprehensive Patent Analysis
+### 综合专利分析
 
-Combine multiple APIs for complete patent intelligence:
+组合多个API进行完整的专利情报分析：
 
 ```python
 def comprehensive_patent_analysis(patent_number, api_key):
     """
-    Full patent analysis using multiple USPTO APIs.
+    使用多个USPTO API进行完整的专利分析。
     """
     from scripts.patent_search import PatentSearchClient
     from scripts.peds_client import PEDSHelper
 
     results = {}
 
-    # 1. Get patent details
+    # 1. 获取专利详情
     patent_client = PatentSearchClient(api_key)
     patent_data = patent_client.get_patent(patent_number)
     results['patent'] = patent_data
 
-    # 2. Get examination history
+    # 2. 获取审查历史
     peds = PEDSHelper()
     results['prosecution'] = peds.analyze_prosecution(patent_number)
     results['status'] = peds.get_status_summary(patent_number)
 
-    # 3. Get assignment history
+    # 3. 获取转让历史
     import requests
     assign_url = f"https://assignment-api.uspto.gov/patent/v1.4/assignment/patent/{patent_number}"
     assign_resp = requests.get(assign_url, headers={"X-Api-Key": api_key})
     results['assignments'] = assign_resp.text if assign_resp.status_code == 200 else None
 
-    # 4. Analyze results
-    print(f"\n=== Patent {patent_number} Analysis ===\n")
-    print(f"Title: {patent_data['patent_title']}")
-    print(f"Assignee: {', '.join(patent_data.get('assignee_organization', []))}")
-    print(f"Issue Date: {patent_data['patent_date']}")
+    # 4. 分析结果
+    print(f"\n=== 专利 {patent_number} 分析 ===\n")
+    print(f"标题: {patent_data['patent_title']}")
+    print(f"受让人: {', '.join(patent_data.get('assignee_organization', []))}")
+    print(f"授权日期: {patent_data['patent_date']}")
 
-    print(f"\nProsecution:")
-    print(f"  Office Actions: {results['prosecution']['total_office_actions']}")
-    print(f"  Rejections: {results['prosecution']['non_final_rejections']} non-final, {results['prosecution']['final_rejections']} final")
-    print(f"  Pendency: {results['prosecution']['pendency_days']} days")
+    print(f"\n审查情况:")
+    print(f"  审查意见: {results['prosecution']['total_office_actions']}")
+    print(f"  驳回: {results['prosecution']['non_final_rejections']} 非最终, {results['prosecution']['final_rejections']} 最终")
+    print(f"  审查时间: {results['prosecution']['pendency_days']} 天")
 
-    # Analyze citations
+    # 分析引用
     if 'cited_patent_number' in patent_data:
-        print(f"\nCitations:")
-        print(f"  Cites: {len(patent_data['cited_patent_number'])} patents")
+        print(f"\n引用:")
+        print(f"  引用: {len(patent_data['cited_patent_number'])} 项专利")
     if 'citedby_patent_number' in patent_data:
-        print(f"  Cited by: {len(patent_data['citedby_patent_number'])} patents")
+        print(f"  被引用: {len(patent_data['citedby_patent_number'])} 项专利")
 
     return results
 ```
 
-## Best Practices
+## 最佳实践
 
-1. **API Key Management**
-   - Store API key in environment variables
-   - Never commit keys to version control
-   - Use same key across all USPTO APIs
+1. **API密钥管理**
+   - 将API密钥存储在环境变量中
+   - 永远不要将密钥提交到版本控制
+   - 在所有USPTO API中使用相同的密钥
 
-2. **Rate Limiting**
-   - PatentSearch: 45 requests/minute
-   - Implement exponential backoff for rate limit errors
-   - Cache responses when possible
+2. **速率限制**
+   - PatentSearch: 45次请求/分钟
+   - 对速率限制错误实现指数退避
+   - 可能时缓存响应
 
-3. **Query Optimization**
-   - Use `_text_*` operators for text fields (more performant)
-   - Request only needed fields to reduce response size
-   - Use date ranges to narrow searches
+3. **查询优化**
+   - 对文本字段使用`_text_*`运算符（更高效）
+   - 仅请求需要的字段以减少响应大小
+   - 使用日期范围缩小搜索范围
 
-4. **Data Handling**
-   - Not all fields populated for all patents/trademarks
-   - Handle missing data gracefully
-   - Parse dates consistently
+4. **数据处理**
+   - 并非所有专利/商标都填充了所有字段
+   - 优雅处理缺失数据
+   - 一致解析日期
 
-5. **Combining APIs**
-   - Use PatentSearch for discovery
-   - Use PEDS for prosecution details
-   - Use Assignment APIs for ownership tracking
-   - Combine data for comprehensive analysis
+5. **组合API**
+   - 使用PatentSearch进行发现
+   - 使用PEDS获取审查详情
+   - 使用转让API进行所有权跟踪
+   - 组合数据进行综合分析
 
-## Important Notes
+## 重要说明
 
-- **Legacy API Sunset**: PatentsView legacy API discontinued May 1, 2025 - use PatentSearch API
-- **PAIR Bulk Data Decommissioned**: Use PEDS instead
-- **Data Coverage**: PatentSearch has data through June 30, 2025; PEDS from 1981-present
-- **Text Endpoints**: Claims and description endpoints are in beta with ongoing backfilling
-- **Rate Limits**: Respect rate limits to avoid service disruptions
+- **旧API停用**：PatentsView旧API于2025年5月1日停止使用 - 使用PatentSearch API
+- **PAIR批量数据已停用**：使用PEDS代替
+- **数据覆盖范围**：PatentSearch包含截至2025年6月30日的数据；PEDS从1981年至今
+- **文本端点**：权利要求和描述端点处于测试阶段，正在进行回填
+- **速率限制**：尊重速率限制以避免服务中断
 
-## Resources
+## 资源
 
-### API Documentation
-- **PatentSearch API**: https://search.patentsview.org/docs/
-- **USPTO Developer Portal**: https://developer.uspto.gov/
-- **USPTO Open Data Portal**: https://data.uspto.gov/
-- **API Key Registration**: https://account.uspto.gov/api-manager/
+### API文档
+- **PatentSearch API**：https://search.patentsview.org/docs/
+- **USPTO开发者门户**：https://developer.uspto.gov/
+- **USPTO开放数据门户**：https://data.uspto.gov/
+- **API密钥注册**：https://account.uspto.gov/api-manager/
 
-### Python Libraries
-- **uspto-opendata-python**: https://pypi.org/project/uspto-opendata-python/
-- **USPTO Docs**: https://docs.ip-tools.org/uspto-opendata-python/
+### Python库
+- **uspto-opendata-python**：https://pypi.org/project/uspto-opendata-python/
+- **USPTO文档**：https://docs.ip-tools.org/uspto-opendata-python/
 
-### Reference Files
-- `references/patentsearch_api.md` - Complete PatentSearch API reference
-- `references/peds_api.md` - PEDS API and library documentation
-- `references/trademark_api.md` - Trademark APIs (TSDR and Assignment)
-- `references/additional_apis.md` - Citations, Office Actions, Litigation, PTAB
+### 参考文件
+- `references/patentsearch_api.md` - 完整的PatentSearch API参考
+- `references/peds_api.md` - PEDS API和库文档
+- `references/trademark_api.md` - 商标API（TSDR和转让）
+- `references/additional_apis.md` - 引用、审查意见、诉讼、PTAB
 
-### Scripts
-- `scripts/patent_search.py` - PatentSearch API client
-- `scripts/peds_client.py` - PEDS examination data client
-- `scripts/trademark_client.py` - Trademark search client
-
+### 脚本
+- `scripts/patent_search.py` - PatentSearch API客户端
+- `scripts/peds_client.py` - PEDS审查数据客户端
+- `scripts/trademark_client.py` - 商标搜索客户端

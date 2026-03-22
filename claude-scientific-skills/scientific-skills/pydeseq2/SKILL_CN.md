@@ -1,6 +1,6 @@
 ---
 name: pydeseq2
-description: Differential gene expression analysis (Python DESeq2). Identify DE genes from bulk RNA-seq counts, Wald tests, FDR correction, volcano/MA plots, for RNA-seq analysis.
+description: 差异基因表达分析（Python DESeq2）。从批量RNA-seq计数数据中识别差异表达基因，执行Wald检验，FDR校正，火山/MA图，用于RNA-seq分析。
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,38 +8,38 @@ metadata:
 
 # PyDESeq2
 
-## Overview
+## 概述
 
-PyDESeq2 is a Python implementation of DESeq2 for differential expression analysis with bulk RNA-seq data. Design and execute complete workflows from data loading through result interpretation, including single-factor and multi-factor designs, Wald tests with multiple testing correction, optional apeGLM shrinkage, and integration with pandas and AnnData.
+PyDESeq2是DESeq2的Python实现，用于批量RNA-seq数据的差异表达分析。设计并执行从数据加载到结果解释的完整工作流程，包括单因素和多因素设计、带多重测试校正的Wald检验、可选的apeGLM收缩，以及与pandas和AnnData的集成。
 
-## When to Use This Skill
+## 使用场景
 
-This skill should be used when:
-- Analyzing bulk RNA-seq count data for differential expression
-- Comparing gene expression between experimental conditions (e.g., treated vs control)
-- Performing multi-factor designs accounting for batch effects or covariates
-- Converting R-based DESeq2 workflows to Python
-- Integrating differential expression analysis into Python-based pipelines
-- Users mention "DESeq2", "differential expression", "RNA-seq analysis", or "PyDESeq2"
+本技能适用于以下情况：
+- 分析批量RNA-seq计数数据的差异表达
+- 比较实验条件之间的基因表达（例如，处理组vs对照组）
+- 执行考虑批次效应或协变量的多因素设计
+- 将基于R的DESeq2工作流转换为Python
+- 将差异表达分析集成到基于Python的管道中
+- 用户提到"DESeq2"、"差异表达"、"RNA-seq分析"或"PyDESeq2"
 
-## Quick Start Workflow
+## 快速开始工作流程
 
-For users who want to perform a standard differential expression analysis:
+对于想要执行标准差异表达分析的用户：
 
 ```python
 import pandas as pd
 from pydeseq2.dds import DeseqDataSet
 from pydeseq2.ds import DeseqStats
 
-# 1. Load data
-counts_df = pd.read_csv("counts.csv", index_col=0).T  # Transpose to samples × genes
+# 1. 加载数据
+counts_df = pd.read_csv("counts.csv", index_col=0).T  # 转置为样本 × 基因
 metadata = pd.read_csv("metadata.csv", index_col=0)
 
-# 2. Filter low-count genes
+# 2. 过滤低计数基因
 genes_to_keep = counts_df.columns[counts_df.sum(axis=0) >= 10]
 counts_df = counts_df[genes_to_keep]
 
-# 3. Initialize and fit DESeq2
+# 3. 初始化并拟合DESeq2
 dds = DeseqDataSet(
     counts=counts_df,
     metadata=metadata,
@@ -48,79 +48,79 @@ dds = DeseqDataSet(
 )
 dds.deseq2()
 
-# 4. Perform statistical testing
+# 4. 执行统计测试
 ds = DeseqStats(dds, contrast=["condition", "treated", "control"])
 ds.summary()
 
-# 5. Access results
+# 5. 访问结果
 results = ds.results_df
 significant = results[results.padj < 0.05]
 print(f"Found {len(significant)} significant genes")
 ```
 
-## Core Workflow Steps
+## 核心工作流程步骤
 
-### Step 1: Data Preparation
+### 步骤1：数据准备
 
-**Input requirements:**
-- **Count matrix:** Samples × genes DataFrame with non-negative integer read counts
-- **Metadata:** Samples × variables DataFrame with experimental factors
+**输入要求：**
+- **计数矩阵：** 样本 × 基因的DataFrame，包含非负整数读取计数
+- **元数据：** 样本 × 变量的DataFrame，包含实验因素
 
-**Common data loading patterns:**
+**常见数据加载模式：**
 
 ```python
-# From CSV (typical format: genes × samples, needs transpose)
+# 从CSV（典型格式：基因 × 样本，需要转置）
 counts_df = pd.read_csv("counts.csv", index_col=0).T
 metadata = pd.read_csv("metadata.csv", index_col=0)
 
-# From TSV
+# 从TSV
 counts_df = pd.read_csv("counts.tsv", sep="\t", index_col=0).T
 
-# From AnnData
+# 从AnnData
 import anndata as ad
 adata = ad.read_h5ad("data.h5ad")
 counts_df = pd.DataFrame(adata.X, index=adata.obs_names, columns=adata.var_names)
 metadata = adata.obs
 ```
 
-**Data filtering:**
+**数据过滤：**
 
 ```python
-# Remove low-count genes
+# 移除低计数基因
 genes_to_keep = counts_df.columns[counts_df.sum(axis=0) >= 10]
 counts_df = counts_df[genes_to_keep]
 
-# Remove samples with missing metadata
+# 移除元数据缺失的样本
 samples_to_keep = ~metadata.condition.isna()
 counts_df = counts_df.loc[samples_to_keep]
 metadata = metadata.loc[samples_to_keep]
 ```
 
-### Step 2: Design Specification
+### 步骤2：设计规范
 
-The design formula specifies how gene expression is modeled.
+设计公式指定基因表达的建模方式。
 
-**Single-factor designs:**
+**单因素设计：**
 ```python
-design = "~condition"  # Simple two-group comparison
+design = "~condition"  # 简单的两组比较
 ```
 
-**Multi-factor designs:**
+**多因素设计：**
 ```python
-design = "~batch + condition"  # Control for batch effects
-design = "~age + condition"     # Include continuous covariate
-design = "~group + condition + group:condition"  # Interaction effects
+design = "~batch + condition"  # 控制批次效应
+design = "~age + condition"     # 包含连续协变量
+design = "~group + condition + group:condition"  # 交互效应
 ```
 
-**Design formula guidelines:**
-- Use Wilkinson formula notation (R-style)
-- Put adjustment variables (e.g., batch) before the main variable of interest
-- Ensure variables exist as columns in the metadata DataFrame
-- Use appropriate data types (categorical for discrete variables)
+**设计公式指南：**
+- 使用Wilkinson公式表示法（R风格）
+- 将调整变量（如批次）放在主要感兴趣变量之前
+- 确保变量作为元数据DataFrame中的列存在
+- 使用适当的数据类型（离散变量使用分类类型）
 
-### Step 3: DESeq2 Fitting
+### 步骤3：DESeq2拟合
 
-Initialize the DeseqDataSet and run the complete pipeline:
+初始化DeseqDataSet并运行完整管道：
 
 ```python
 from pydeseq2.dds import DeseqDataSet
@@ -129,94 +129,94 @@ dds = DeseqDataSet(
     counts=counts_df,
     metadata=metadata,
     design="~condition",
-    refit_cooks=True,  # Refit after removing outliers
-    n_cpus=1           # Parallel processing (adjust as needed)
+    refit_cooks=True,  # 移除异常值后重新拟合
+    n_cpus=1           # 并行处理（根据需要调整）
 )
 
-# Run the complete DESeq2 pipeline
+# 运行完整的DESeq2管道
 dds.deseq2()
 ```
 
-**What `deseq2()` does:**
-1. Computes size factors (normalization)
-2. Fits genewise dispersions
-3. Fits dispersion trend curve
-4. Computes dispersion priors
-5. Fits MAP dispersions (shrinkage)
-6. Fits log fold changes
-7. Calculates Cook's distances (outlier detection)
-8. Refits if outliers detected (optional)
+**`deseq2()`的功能：**
+1. 计算大小因子（标准化）
+2. 拟合基因级分散度
+3. 拟合分散度趋势曲线
+4. 计算分散度先验
+5. 拟合MAP分散度（收缩）
+6. 拟合对数倍数变化
+7. 计算Cook距离（异常值检测）
+8. 如果检测到异常值则重新拟合（可选）
 
-### Step 4: Statistical Testing
+### 步骤4：统计测试
 
-Perform Wald tests to identify differentially expressed genes:
+执行Wald检验以识别差异表达基因：
 
 ```python
 from pydeseq2.ds import DeseqStats
 
 ds = DeseqStats(
     dds,
-    contrast=["condition", "treated", "control"],  # Test treated vs control
-    alpha=0.05,                # Significance threshold
-    cooks_filter=True,         # Filter outliers
-    independent_filter=True    # Filter low-power tests
+    contrast=["condition", "treated", "control"],  # 测试treated vs control
+    alpha=0.05,                # 显著性阈值
+    cooks_filter=True,         # 过滤异常值
+    independent_filter=True    # 过滤低功效测试
 )
 
 ds.summary()
 ```
 
-**Contrast specification:**
-- Format: `[variable, test_level, reference_level]`
-- Example: `["condition", "treated", "control"]` tests treated vs control
-- If `None`, uses the last coefficient in the design
+**对比规范：**
+- 格式：`[variable, test_level, reference_level]`
+- 示例：`["condition", "treated", "control"]` 测试treated vs control
+- 如果为`None`，使用设计中的最后一个系数
 
-**Result DataFrame columns:**
-- `baseMean`: Mean normalized count across samples
-- `log2FoldChange`: Log2 fold change between conditions
-- `lfcSE`: Standard error of LFC
-- `stat`: Wald test statistic
-- `pvalue`: Raw p-value
-- `padj`: Adjusted p-value (FDR-corrected via Benjamini-Hochberg)
+**结果DataFrame列：**
+- `baseMean`：跨样本的平均标准化计数
+- `log2FoldChange`：条件之间的log2倍数变化
+- `lfcSE`：LFC的标准误差
+- `stat`：Wald检验统计量
+- `pvalue`：原始p值
+- `padj`：调整后的p值（通过Benjamini-Hochberg进行FDR校正）
 
-### Step 5: Optional LFC Shrinkage
+### 步骤5：可选的LFC收缩
 
-Apply shrinkage to reduce noise in fold change estimates:
+应用收缩以减少倍数变化估计中的噪声：
 
 ```python
-ds.lfc_shrink()  # Applies apeGLM shrinkage
+ds.lfc_shrink()  # 应用apeGLM收缩
 ```
 
-**When to use LFC shrinkage:**
-- For visualization (volcano plots, heatmaps)
-- For ranking genes by effect size
-- When prioritizing genes for follow-up experiments
+**何时使用LFC收缩：**
+- 用于可视化（火山图，热图）
+- 用于按效应大小对基因进行排序
+- 当优先考虑用于后续实验的基因时
 
-**Important:** Shrinkage affects only the log2FoldChange values, not the statistical test results (p-values remain unchanged). Use shrunk values for visualization but report unshrunken p-values for significance.
+**重要：** 收缩仅影响log2FoldChange值，不影响统计测试结果（p值保持不变）。使用收缩值进行可视化，但报告未收缩的p值用于显著性。
 
-### Step 6: Result Export
+### 步骤6：结果导出
 
-Save results and intermediate objects:
+保存结果和中间对象：
 
 ```python
 import pickle
 
-# Export results as CSV
+# 导出结果为CSV
 ds.results_df.to_csv("deseq2_results.csv")
 
-# Save significant genes only
+# 仅保存显著基因
 significant = ds.results_df[ds.results_df.padj < 0.05]
 significant.to_csv("significant_genes.csv")
 
-# Save DeseqDataSet for later use
+# 保存DeseqDataSet供以后使用
 with open("dds_result.pkl", "wb") as f:
     pickle.dump(dds.to_picklable_anndata(), f)
 ```
 
-## Common Analysis Patterns
+## 常见分析模式
 
-### Two-Group Comparison
+### 两组比较
 
-Standard case-control comparison:
+标准病例对照比较：
 
 ```python
 dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~condition")
@@ -229,9 +229,9 @@ results = ds.results_df
 significant = results[results.padj < 0.05]
 ```
 
-### Multiple Comparisons
+### 多重比较
 
-Testing multiple treatment groups against control:
+测试多个治疗组与对照组：
 
 ```python
 dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~condition")
@@ -249,26 +249,26 @@ for treatment in treatments:
     print(f"{treatment}: {sig_count} significant genes")
 ```
 
-### Accounting for Batch Effects
+### 考虑批次效应
 
-Control for technical variation:
+控制技术变异：
 
 ```python
-# Include batch in design
+# 在设计中包含批次
 dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~batch + condition")
 dds.deseq2()
 
-# Test condition while controlling for batch
+# 在控制批次的同时测试条件
 ds = DeseqStats(dds, contrast=["condition", "treated", "control"])
 ds.summary()
 ```
 
-### Continuous Covariates
+### 连续协变量
 
-Include continuous variables like age or dosage:
+包含年龄或剂量等连续变量：
 
 ```python
-# Ensure continuous variable is numeric
+# 确保连续变量是数值型
 metadata["age"] = pd.to_numeric(metadata["age"])
 
 dds = DeseqDataSet(counts=counts_df, metadata=metadata, design="~age + condition")
@@ -278,12 +278,12 @@ ds = DeseqStats(dds, contrast=["condition", "treated", "control"])
 ds.summary()
 ```
 
-## Using the Analysis Script
+## 使用分析脚本
 
-This skill includes a complete command-line script for standard analyses:
+本技能包含一个完整的命令行脚本，用于标准分析：
 
 ```bash
-# Basic usage
+# 基本用法
 python scripts/run_deseq2_analysis.py \
   --counts counts.csv \
   --metadata metadata.csv \
@@ -291,7 +291,7 @@ python scripts/run_deseq2_analysis.py \
   --contrast condition treated control \
   --output results/
 
-# With additional options
+# 带有附加选项
 python scripts/run_deseq2_analysis.py \
   --counts counts.csv \
   --metadata metadata.csv \
@@ -304,31 +304,31 @@ python scripts/run_deseq2_analysis.py \
   --plots
 ```
 
-**Script features:**
-- Automatic data loading and validation
-- Gene and sample filtering
-- Complete DESeq2 pipeline execution
-- Statistical testing with customizable parameters
-- Result export (CSV, pickle)
-- Optional visualization (volcano and MA plots)
+**脚本功能：**
+- 自动数据加载和验证
+- 基因和样本过滤
+- 完整的DESeq2管道执行
+- 具有可自定义参数的统计测试
+- 结果导出（CSV，pickle）
+- 可选的可视化（火山图和MA图）
 
-Refer users to `scripts/run_deseq2_analysis.py` when they need a standalone analysis tool or want to batch process multiple datasets.
+当用户需要独立分析工具或想要批量处理多个数据集时，请参考`scripts/run_deseq2_analysis.py`。
 
-## Result Interpretation
+## 结果解释
 
-### Identifying Significant Genes
+### 识别显著基因
 
 ```python
-# Filter by adjusted p-value
+# 按调整后p值过滤
 significant = ds.results_df[ds.results_df.padj < 0.05]
 
-# Filter by both significance and effect size
+# 同时按显著性和效应大小过滤
 sig_and_large = ds.results_df[
     (ds.results_df.padj < 0.05) &
     (abs(ds.results_df.log2FoldChange) > 1)
 ]
 
-# Separate up- and down-regulated
+# 分离上调和下调基因
 upregulated = significant[significant.log2FoldChange > 0]
 downregulated = significant[significant.log2FoldChange < 0]
 
@@ -336,29 +336,29 @@ print(f"Upregulated: {len(upregulated)}")
 print(f"Downregulated: {len(downregulated)}")
 ```
 
-### Ranking and Sorting
+### 排序和排名
 
 ```python
-# Sort by adjusted p-value
+# 按调整后p值排序
 top_by_padj = ds.results_df.sort_values("padj").head(20)
 
-# Sort by absolute fold change (use shrunk values)
+# 按绝对倍数变化排序（使用收缩值）
 ds.lfc_shrink()
 ds.results_df["abs_lfc"] = abs(ds.results_df.log2FoldChange)
 top_by_lfc = ds.results_df.sort_values("abs_lfc", ascending=False).head(20)
 
-# Sort by a combined metric
+# 按组合指标排序
 ds.results_df["score"] = -np.log10(ds.results_df.padj) * abs(ds.results_df.log2FoldChange)
 top_combined = ds.results_df.sort_values("score", ascending=False).head(20)
 ```
 
-### Quality Metrics
+### 质量指标
 
 ```python
-# Check normalization (size factors should be close to 1)
+# 检查标准化（大小因子应接近1）
 print("Size factors:", dds.obsm["size_factors"])
 
-# Examine dispersion estimates
+# 检查分散度估计
 import matplotlib.pyplot as plt
 plt.hist(dds.varm["dispersions"], bins=50)
 plt.xlabel("Dispersion")
@@ -366,7 +366,7 @@ plt.ylabel("Frequency")
 plt.title("Dispersion Distribution")
 plt.show()
 
-# Check p-value distribution (should be mostly flat with peak near 0)
+# 检查p值分布（应大部分平坦，在0附近有峰值）
 plt.hist(ds.results_df.pvalue.dropna(), bins=50)
 plt.xlabel("P-value")
 plt.ylabel("Frequency")
@@ -374,11 +374,11 @@ plt.title("P-value Distribution")
 plt.show()
 ```
 
-## Visualization Guidelines
+## 可视化指南
 
-### Volcano Plot
+### 火山图
 
-Visualize significance vs effect size:
+可视化显著性与效应大小：
 
 ```python
 import matplotlib.pyplot as plt
@@ -409,9 +409,9 @@ plt.legend()
 plt.savefig("volcano_plot.png", dpi=300)
 ```
 
-### MA Plot
+### MA图
 
-Show fold change vs mean expression:
+显示倍数变化与平均表达：
 
 ```python
 plt.figure(figsize=(10, 6))
@@ -434,109 +434,111 @@ plt.title("MA Plot")
 plt.savefig("ma_plot.png", dpi=300)
 ```
 
-## Troubleshooting Common Issues
+## 排查常见问题
 
-### Data Format Problems
+### 数据格式问题
 
-**Issue:** "Index mismatch between counts and metadata"
+**问题：** "Index mismatch between counts and metadata"
 
-**Solution:** Ensure sample names match exactly
+**解决方案：** 确保样本名称完全匹配
 ```python
 print("Counts samples:", counts_df.index.tolist())
 print("Metadata samples:", metadata.index.tolist())
 
-# Take intersection if needed
+# 如有需要，取交集
 common = counts_df.index.intersection(metadata.index)
 counts_df = counts_df.loc[common]
 metadata = metadata.loc[common]
 ```
 
-**Issue:** "All genes have zero counts"
+**问题：** "All genes have zero counts"
 
-**Solution:** Check if data needs transposition
+**解决方案：** 检查数据是否需要转置
 ```python
 print(f"Counts shape: {counts_df.shape}")
-# If genes > samples, transpose is needed
+# 如果基因 > 样本，需要转置
 if counts_df.shape[1] < counts_df.shape[0]:
     counts_df = counts_df.T
 ```
 
-### Design Matrix Issues
+### 设计矩阵问题
 
-**Issue:** "Design matrix is not full rank"
+**问题：** "Design matrix is not full rank"
 
-**Cause:** Confounded variables (e.g., all treated samples in one batch)
+**原因：** 变量混淆（例如，所有处理样本都在一个批次中）
 
-**Solution:** Remove confounded variable or add interaction term
+**解决方案：** 移除混淆变量或添加交互项
 ```python
-# Check confounding
+# 检查混淆
 print(pd.crosstab(metadata.condition, metadata.batch))
 
-# Either simplify design or add interaction
-design = "~condition"  # Remove batch
-# OR
-design = "~condition + batch + condition:batch"  # Model interaction
+# 简化设计或添加交互
+# 移除批次
+design = "~condition"  
+# 或
+# 模型交互
+design = "~condition + batch + condition:batch"  
 ```
 
-### No Significant Genes
+### 无显著基因
 
-**Diagnostics:**
+**诊断：**
 ```python
-# Check dispersion distribution
+# 检查分散度分布
 plt.hist(dds.varm["dispersions"], bins=50)
 plt.show()
 
-# Check size factors
+# 检查大小因子
 print(dds.obsm["size_factors"])
 
-# Look at top genes by raw p-value
+# 查看按原始p值排序的前基因
 print(ds.results_df.nsmallest(20, "pvalue"))
 ```
 
-**Possible causes:**
-- Small effect sizes
-- High biological variability
-- Insufficient sample size
-- Technical issues (batch effects, outliers)
+**可能的原因：**
+- 效应大小小
+- 生物变异性高
+- 样本量不足
+- 技术问题（批次效应，异常值）
 
-## Reference Documentation
+## 参考文档
 
-For comprehensive details beyond this workflow-oriented guide:
+对于超出此工作流导向指南的全面详细信息：
 
-- **API Reference** (`references/api_reference.md`): Complete documentation of PyDESeq2 classes, methods, and data structures. Use when needing detailed parameter information or understanding object attributes.
+- **API参考**（`references/api_reference.md`）：PyDESeq2类、方法和数据结构的完整文档。当需要详细参数信息或理解对象属性时使用。
 
-- **Workflow Guide** (`references/workflow_guide.md`): In-depth guide covering complete analysis workflows, data loading patterns, multi-factor designs, troubleshooting, and best practices. Use when handling complex experimental designs or encountering issues.
+- **工作流指南**（`references/workflow_guide.md`）：深入指南，涵盖完整的分析工作流、数据加载模式、多因素设计、故障排除和最佳实践。当处理复杂的实验设计或遇到问题时使用。
 
-Load these references into context when users need:
-- Detailed API documentation: `Read references/api_reference.md`
-- Comprehensive workflow examples: `Read references/workflow_guide.md`
-- Troubleshooting guidance: `Read references/workflow_guide.md` (see Troubleshooting section)
+当用户需要以下内容时，将这些参考加载到上下文中：
+- 详细的API文档：`Read references/api_reference.md`
+- 综合工作流示例：`Read references/workflow_guide.md`
+- 故障排除指南：`Read references/workflow_guide.md`（见故障排除部分）
 
-## Key Reminders
+## 关键提醒
 
-1. **Data orientation matters:** Count matrices typically load as genes × samples but need to be samples × genes. Always transpose with `.T` if needed.
+1. **数据方向很重要：** 计数矩阵通常以基因 × 样本的形式加载，但需要是样本 × 基因。如果需要，始终使用`.T`进行转置。
 
-2. **Sample filtering:** Remove samples with missing metadata before analysis to avoid errors.
+2. **样本过滤：** 在分析前移除元数据缺失的样本以避免错误。
 
-3. **Gene filtering:** Filter low-count genes (e.g., < 10 total reads) to improve power and reduce computational time.
+3. **基因过滤：** 过滤低计数基因（例如，总读取数 < 10）以提高功效并减少计算时间。
 
-4. **Design formula order:** Put adjustment variables before the variable of interest (e.g., `"~batch + condition"` not `"~condition + batch"`).
+4. **设计公式顺序：** 将调整变量放在感兴趣变量之前（例如，`"~batch + condition"`而不是`"~condition + batch"`）。
 
-5. **LFC shrinkage timing:** Apply shrinkage after statistical testing and only for visualization/ranking purposes. P-values remain based on unshrunken estimates.
+5. **LFC收缩时机：** 在统计测试后应用收缩，仅用于可视化/排名目的。P值基于未收缩的估计值。
 
-6. **Result interpretation:** Use `padj < 0.05` for significance, not raw p-values. The Benjamini-Hochberg procedure controls false discovery rate.
+6. **结果解释：** 使用`padj < 0.05`表示显著性，而不是原始p值。Benjamini-Hochberg程序控制错误发现率。
 
-7. **Contrast specification:** The format is `[variable, test_level, reference_level]` where test_level is compared against reference_level.
+7. **对比规范：** 格式为`[variable, test_level, reference_level]`，其中test_level与reference_level进行比较。
 
-8. **Save intermediate objects:** Use pickle to save DeseqDataSet objects for later use or additional analyses without re-running the expensive fitting step.
+8. **保存中间对象：** 使用pickle保存DeseqDataSet对象，以便以后使用或进行额外分析，而无需重新运行昂贵的拟合步骤。
 
-## Installation and Requirements
+## 安装和要求
 
 ```bash
 uv pip install pydeseq2
 ```
 
-**System requirements:**
+**系统要求：**
 - Python 3.10-3.11
 - pandas 1.4.3+
 - numpy 1.23.0+
@@ -544,14 +546,13 @@ uv pip install pydeseq2
 - scikit-learn 1.1.1+
 - anndata 0.8.0+
 
-**Optional for visualization:**
+**可视化可选依赖：**
 - matplotlib
 - seaborn
 
-## Additional Resources
+## 其他资源
 
-- **Official Documentation:** https://pydeseq2.readthedocs.io
-- **GitHub Repository:** https://github.com/owkin/PyDESeq2
-- **Publication:** Muzellec et al. (2023) Bioinformatics, DOI: 10.1093/bioinformatics/btad547
-- **Original DESeq2 (R):** Love et al. (2014) Genome Biology, DOI: 10.1186/s13059-014-0550-8
-
+- **官方文档：** https://pydeseq2.readthedocs.io
+- **GitHub存储库：** https://github.com/owkin/PyDESeq2
+- **出版物：** Muzellec et al. (2023) Bioinformatics, DOI: 10.1093/bioinformatics/btad547
+- **原始DESeq2 (R)：** Love et al. (2014) Genome Biology, DOI: 10.1186/s13059-014-0550-8

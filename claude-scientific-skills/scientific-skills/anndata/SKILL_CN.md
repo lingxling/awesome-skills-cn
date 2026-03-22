@@ -1,6 +1,6 @@
 ---
 name: anndata
-description: Data structure for annotated matrices in single-cell analysis. Use when working with .h5ad files or integrating with the scverse ecosystem. This is the data format skill—for analysis workflows use scanpy; for probabilistic models use scvi-tools; for population-scale queries use cellxgene-census.
+description: 单细胞分析中注释矩阵的数据结构。在处理 .h5ad 文件或与 scverse 生态系统集成时使用。这是数据格式技能——用于分析工作流程使用 scanpy；用于概率模型使用 scvi-tools；用于群体规模查询使用 cellxgene-census。
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,43 +8,43 @@ metadata:
 
 # AnnData
 
-## Overview
+## 概述
 
-AnnData is a Python package for handling annotated data matrices, storing experimental measurements (X) alongside observation metadata (obs), variable metadata (var), and multi-dimensional annotations (obsm, varm, obsp, varp, uns). Originally designed for single-cell genomics through Scanpy, it now serves as a general-purpose framework for any annotated data requiring efficient storage, manipulation, and analysis.
+AnnData 是一个用于处理注释数据矩阵的 Python 包，存储实验测量值（X）以及观察元数据（obs）、变量元数据（var）和多维注释（obsm、varm、obsp、varp、uns）。最初通过 Scanpy 为单细胞基因组学设计，现在作为任何需要高效存储、操作和分析的注释数据的通用框架。
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use this skill when:
-- Creating, reading, or writing AnnData objects
-- Working with h5ad, zarr, or other genomics data formats
-- Performing single-cell RNA-seq analysis
-- Managing large datasets with sparse matrices or backed mode
-- Concatenating multiple datasets or experimental batches
-- Subsetting, filtering, or transforming annotated data
-- Integrating with scanpy, scvi-tools, or other scverse ecosystem tools
+在以下情况下使用此技能：
+- 创建、读取或写入 AnnData 对象
+- 处理 h5ad、zarr 或其他基因组学数据格式
+- 执行单细胞 RNA-seq 分析
+- 使用稀疏矩阵或支持模式管理大型数据集
+- 连接多个数据集或实验批次
+- 子集化、过滤或转换注释数据
+- 与 scanpy、scvi-tools 或其他 scverse 生态系统工具集成
 
-## Installation
+## 安装
 
 ```bash
 uv pip install anndata
 
-# With optional dependencies
+# 使用可选依赖项
 uv pip install anndata[dev,test,doc]
 ```
 
-## Quick Start
+## 快速开始
 
-### Creating an AnnData object
+### 创建 AnnData 对象
 ```python
 import anndata as ad
 import numpy as np
 import pandas as pd
 
-# Minimal creation
-X = np.random.rand(100, 2000)  # 100 cells × 2000 genes
+# 最小创建
+X = np.random.rand(100, 2000)  # 100 个细胞 × 2000 个基因
 adata = ad.AnnData(X)
 
-# With metadata
+# 使用元数据
 obs = pd.DataFrame({
     'cell_type': ['T cell', 'B cell'] * 50,
     'sample': ['A', 'B'] * 50
@@ -57,101 +57,101 @@ var = pd.DataFrame({
 adata = ad.AnnData(X=X, obs=obs, var=var)
 ```
 
-### Reading data
+### 读取数据
 ```python
-# Read h5ad file
+# 读取 h5ad 文件
 adata = ad.read_h5ad('data.h5ad')
 
-# Read with backed mode (for large files)
+# 使用支持模式读取（用于大文件）
 adata = ad.read_h5ad('large_data.h5ad', backed='r')
 
-# Read other formats
+# 读取其他格式
 adata = ad.read_csv('data.csv')
 adata = ad.read_loom('data.loom')
 adata = ad.read_10x_h5('filtered_feature_bc_matrix.h5')
 ```
 
-### Writing data
+### 写入数据
 ```python
-# Write h5ad file
+# 写入 h5ad 文件
 adata.write_h5ad('output.h5ad')
 
-# Write with compression
+# 使用压缩写入
 adata.write_h5ad('output.h5ad', compression='gzip')
 
-# Write other formats
+# 写入其他格式
 adata.write_zarr('output.zarr')
 adata.write_csvs('output_dir/')
 ```
 
-### Basic operations
+### 基本操作
 ```python
-# Subset by conditions
+# 按条件子集化
 t_cells = adata[adata.obs['cell_type'] == 'T cell']
 
-# Subset by indices
+# 按索引子集化
 subset = adata[0:50, 0:100]
 
-# Add metadata
+# 添加元数据
 adata.obs['quality_score'] = np.random.rand(adata.n_obs)
 adata.var['highly_variable'] = np.random.rand(adata.n_vars) > 0.8
 
-# Access dimensions
-print(f"{adata.n_obs} observations × {adata.n_vars} variables")
+# 访问维度
+print(f"{adata.n_obs} 个观察 × {adata.n_vars} 个变量")
 ```
 
-## Core Capabilities
+## 核心功能
 
-### 1. Data Structure
+### 1. 数据结构
 
-Understand the AnnData object structure including X, obs, var, layers, obsm, varm, obsp, varp, uns, and raw components.
+了解 AnnData 对象结构，包括 X、obs、var、layers、obsm、varm、obsp、varp、uns 和 raw 组件。
 
-**See**: `references/data_structure.md` for comprehensive information on:
-- Core components (X, obs, var, layers, obsm, varm, obsp, varp, uns, raw)
-- Creating AnnData objects from various sources
-- Accessing and manipulating data components
-- Memory-efficient practices
+**请参阅**：`references/data_structure.md` 获取关于以下内容的全面信息：
+- 核心组件（X、obs、var、layers、obsm、varm、obsp、varp、uns、raw）
+- 从各种来源创建 AnnData 对象
+- 访问和操作数据组件
+- 内存高效实践
 
-### 2. Input/Output Operations
+### 2. 输入/输出操作
 
-Read and write data in various formats with support for compression, backed mode, and cloud storage.
+以各种格式读取和写入数据，支持压缩、支持模式和云存储。
 
-**See**: `references/io_operations.md` for details on:
-- Native formats (h5ad, zarr)
-- Alternative formats (CSV, MTX, Loom, 10X, Excel)
-- Backed mode for large datasets
-- Remote data access
-- Format conversion
-- Performance optimization
+**请参阅**：`references/io_operations.md` 获取以下内容的详细信息：
+- 本机格式（h5ad、zarr）
+- 替代格式（CSV、MTX、Loom、10X、Excel）
+- 大型数据集的支持模式
+- 远程数据访问
+- 格式转换
+- 性能优化
 
-Common commands:
+常用命令：
 ```python
-# Read/write h5ad
+# 读取/写入 h5ad
 adata = ad.read_h5ad('data.h5ad', backed='r')
 adata.write_h5ad('output.h5ad', compression='gzip')
 
-# Read 10X data
+# 读取 10X 数据
 adata = ad.read_10x_h5('filtered_feature_bc_matrix.h5')
 
-# Read MTX format
+# 读取 MTX 格式
 adata = ad.read_mtx('matrix.mtx').T
 ```
 
-### 3. Concatenation
+### 3. 连接
 
-Combine multiple AnnData objects along observations or variables with flexible join strategies.
+使用灵活的连接策略沿观察或变量连接多个 AnnData 对象。
 
-**See**: `references/concatenation.md` for comprehensive coverage of:
-- Basic concatenation (axis=0 for observations, axis=1 for variables)
-- Join types (inner, outer)
-- Merge strategies (same, unique, first, only)
-- Tracking data sources with labels
-- Lazy concatenation (AnnCollection)
-- On-disk concatenation for large datasets
+**请参阅**：`references/concatenation.md` 获取以下内容的全面覆盖：
+- 基本连接（axis=0 用于观察，axis=1 用于变量）
+- 连接类型（内连接、外连接）
+- 合并策略（相同、唯一、第一个、仅）
+- 使用标签跟踪数据源
+- 延迟连接（AnnCollection）
+- 大型数据集的磁盘连接
 
-Common commands:
+常用命令：
 ```python
-# Concatenate observations (combine samples)
+# 连接观察（组合样本）
 adata = ad.concat(
     [adata1, adata2, adata3],
     axis=0,
@@ -160,10 +160,10 @@ adata = ad.concat(
     keys=['batch1', 'batch2', 'batch3']
 )
 
-# Concatenate variables (combine modalities)
+# 连接变量（组合模态）
 adata = ad.concat([adata_rna, adata_protein], axis=1)
 
-# Lazy concatenation
+# 延迟连接
 from anndata.experimental import AnnCollection
 collection = AnnCollection(
     ['data1.h5ad', 'data2.h5ad'],
@@ -172,151 +172,151 @@ collection = AnnCollection(
 )
 ```
 
-### 4. Data Manipulation
+### 4. 数据操作
 
-Transform, subset, filter, and reorganize data efficiently.
+高效地转换、子集化、过滤和重新组织数据。
 
-**See**: `references/manipulation.md` for detailed guidance on:
-- Subsetting (by indices, names, boolean masks, metadata conditions)
-- Transposition
-- Copying (full copies vs views)
-- Renaming (observations, variables, categories)
-- Type conversions (strings to categoricals, sparse/dense)
-- Adding/removing data components
-- Reordering
-- Quality control filtering
+**请参阅**：`references/manipulation.md` 获取以下内容的详细指导：
+- 子集化（按索引、名称、布尔掩码、元数据条件）
+- 转置
+- 复制（完整副本 vs 视图）
+- 重命名（观察、变量、类别）
+- 类型转换（字符串到分类、稀疏/密集）
+- 添加/删除数据组件
+- 重新排序
+- 质量控制过滤
 
-Common commands:
+常用命令：
 ```python
-# Subset by metadata
+# 按元数据子集化
 filtered = adata[adata.obs['quality_score'] > 0.8]
 hv_genes = adata[:, adata.var['highly_variable']]
 
-# Transpose
+# 转置
 adata_T = adata.T
 
-# Copy vs view
-view = adata[0:100, :]  # View (lightweight reference)
-copy = adata[0:100, :].copy()  # Independent copy
+# 复制 vs 视图
+view = adata[0:100, :]  # 视图（轻量级引用）
+copy = adata[0:100, :].copy()  # 独立副本
 
-# Convert strings to categoricals
+# 将字符串转换为分类
 adata.strings_to_categoricals()
 ```
 
-### 5. Best Practices
+### 5. 最佳实践
 
-Follow recommended patterns for memory efficiency, performance, and reproducibility.
+遵循推荐的模式以实现内存效率、性能和可重复性。
 
-**See**: `references/best_practices.md` for guidelines on:
-- Memory management (sparse matrices, categoricals, backed mode)
-- Views vs copies
-- Data storage optimization
-- Performance optimization
-- Working with raw data
-- Metadata management
-- Reproducibility
-- Error handling
-- Integration with other tools
-- Common pitfalls and solutions
+**请参阅**：`references/best_practices.md` 获取以下内容的指南：
+- 内存管理（稀疏矩阵、分类、支持模式）
+- 视图 vs 副本
+- 数据存储优化
+- 性能优化
+- 使用原始数据
+- 元数据管理
+- 可重复性
+- 错误处理
+- 与其他工具集成
+- 常见陷阱和解决方案
 
-Key recommendations:
+关键建议：
 ```python
-# Use sparse matrices for sparse data
+# 对稀疏数据使用稀疏矩阵
 from scipy.sparse import csr_matrix
 adata.X = csr_matrix(adata.X)
 
-# Convert strings to categoricals
+# 将字符串转换为分类
 adata.strings_to_categoricals()
 
-# Use backed mode for large files
+# 对大文件使用支持模式
 adata = ad.read_h5ad('large.h5ad', backed='r')
 
-# Store raw before filtering
+# 过滤前存储原始数据
 adata.raw = adata.copy()
 adata = adata[:, adata.var['highly_variable']]
 ```
 
-## Integration with Scverse Ecosystem
+## 与 Scverse 生态系统集成
 
-AnnData serves as the foundational data structure for the scverse ecosystem:
+AnnData 作为 scverse 生态系统的基础数据结构：
 
-### Scanpy (Single-cell analysis)
+### Scanpy（单细胞分析）
 ```python
 import scanpy as sc
 
-# Preprocessing
+# 预处理
 sc.pp.filter_cells(adata, min_genes=200)
 sc.pp.normalize_total(adata, target_sum=1e4)
 sc.pp.log1p(adata)
 sc.pp.highly_variable_genes(adata, n_top_genes=2000)
 
-# Dimensionality reduction
+# 降维
 sc.pp.pca(adata, n_comps=50)
 sc.pp.neighbors(adata, n_neighbors=15)
 sc.tl.umap(adata)
 sc.tl.leiden(adata)
 
-# Visualization
+# 可视化
 sc.pl.umap(adata, color=['cell_type', 'leiden'])
 ```
 
-### Muon (Multimodal data)
+### Muon（多模态数据）
 ```python
 import muon as mu
 
-# Combine RNA and protein data
+# 组合 RNA 和蛋白质数据
 mdata = mu.MuData({'rna': adata_rna, 'protein': adata_protein})
 ```
 
-### PyTorch integration
+### PyTorch 集成
 ```python
 from anndata.experimental import AnnLoader
 
-# Create DataLoader for deep learning
+# 为深度学习创建 DataLoader
 dataloader = AnnLoader(adata, batch_size=128, shuffle=True)
 
 for batch in dataloader:
     X = batch.X
-    # Train model
+    # 训练模型
 ```
 
-## Common Workflows
+## 常见工作流程
 
-### Single-cell RNA-seq analysis
+### 单细胞 RNA-seq 分析
 ```python
 import anndata as ad
 import scanpy as sc
 
-# 1. Load data
+# 1. 加载数据
 adata = ad.read_10x_h5('filtered_feature_bc_matrix.h5')
 
-# 2. Quality control
+# 2. 质量控制
 adata.obs['n_genes'] = (adata.X > 0).sum(axis=1)
 adata.obs['n_counts'] = adata.X.sum(axis=1)
 adata = adata[adata.obs['n_genes'] > 200]
 adata = adata[adata.obs['n_counts'] < 50000]
 
-# 3. Store raw
+# 3. 存储原始数据
 adata.raw = adata.copy()
 
-# 4. Normalize and filter
+# 4. 标准化和过滤
 sc.pp.normalize_total(adata, target_sum=1e4)
 sc.pp.log1p(adata)
 sc.pp.highly_variable_genes(adata, n_top_genes=2000)
 adata = adata[:, adata.var['highly_variable']]
 
-# 5. Save processed data
+# 5. 保存处理后的数据
 adata.write_h5ad('processed.h5ad')
 ```
 
-### Batch integration
+### 批次集成
 ```python
-# Load multiple batches
+# 加载多个批次
 adata1 = ad.read_h5ad('batch1.h5ad')
 adata2 = ad.read_h5ad('batch2.h5ad')
 adata3 = ad.read_h5ad('batch3.h5ad')
 
-# Concatenate with batch labels
+# 使用批次标签连接
 adata = ad.concat(
     [adata1, adata2, adata3],
     label='batch',
@@ -324,75 +324,74 @@ adata = ad.concat(
     join='inner'
 )
 
-# Apply batch correction
+# 应用批次校正
 import scanpy as sc
 sc.pp.combat(adata, key='batch')
 
-# Continue analysis
+# 继续分析
 sc.pp.pca(adata)
 sc.pp.neighbors(adata)
 sc.tl.umap(adata)
 ```
 
-### Working with large datasets
+### 处理大型数据集
 ```python
-# Open in backed mode
+# 以支持模式打开
 adata = ad.read_h5ad('100GB_dataset.h5ad', backed='r')
 
-# Filter based on metadata (no data loading)
+# 基于元数据过滤（无数据加载）
 high_quality = adata[adata.obs['quality_score'] > 0.8]
 
-# Load filtered subset
+# 加载过滤后的子集
 adata_subset = high_quality.to_memory()
 
-# Process subset
+# 处理子集
 process(adata_subset)
 
-# Or process in chunks
+# 或分块处理
 chunk_size = 1000
 for i in range(0, adata.n_obs, chunk_size):
     chunk = adata[i:i+chunk_size, :].to_memory()
     process(chunk)
 ```
 
-## Troubleshooting
+## 故障排除
 
-### Out of memory errors
-Use backed mode or convert to sparse matrices:
+### 内存不足错误
+使用支持模式或转换为稀疏矩阵：
 ```python
-# Backed mode
+# 支持模式
 adata = ad.read_h5ad('file.h5ad', backed='r')
 
-# Sparse matrices
+# 稀疏矩阵
 from scipy.sparse import csr_matrix
 adata.X = csr_matrix(adata.X)
 ```
 
-### Slow file reading
-Use compression and appropriate formats:
+### 文件读取缓慢
+使用压缩和适当的格式：
 ```python
-# Optimize for storage
+# 优化存储
 adata.strings_to_categoricals()
 adata.write_h5ad('file.h5ad', compression='gzip')
 
-# Use Zarr for cloud storage
+# 使用 Zarr 进行云存储
 adata.write_zarr('file.zarr', chunks=(1000, 1000))
 ```
 
-### Index alignment issues
-Always align external data on index:
+### 索引对齐问题
+始终在索引上对齐外部数据：
 ```python
-# Wrong
+# 错误
 adata.obs['new_col'] = external_data['values']
 
-# Correct
+# 正确
 adata.obs['new_col'] = external_data.set_index('cell_id').loc[adata.obs_names, 'values']
 ```
 
-## Additional Resources
+## 其他资源
 
-- **Official documentation**: https://anndata.readthedocs.io/
-- **Scanpy tutorials**: https://scanpy.readthedocs.io/
-- **Scverse ecosystem**: https://scverse.org/
-- **GitHub repository**: https://github.com/scverse/anndata
-
+- **官方文档**：https://anndata.readthedocs.io/
+- **Scanpy 教程**：https://scanpy.readthedocs.io/
+- **Scverse 生态系统**：https://scverse.org/
+- **GitHub 存储库**：https://github.com/scverse/anndata

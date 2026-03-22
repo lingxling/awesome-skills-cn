@@ -1,43 +1,43 @@
 ---
 name: research-lookup
-description: Look up current research information using the Parallel Chat API (primary) or Perplexity sonar-pro-search (academic paper searches). Automatically routes queries to the best backend. Use for finding papers, gathering research data, and verifying scientific information.
+description: 使用Parallel Chat API（主要）或Perplexity sonar-pro-search（学术论文搜索）查找当前研究信息。自动将查询路由到最佳后端。用于查找论文、收集研究数据和验证科学信息。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-compatibility: PARALLEL_API_KEY and OPENROUTER_API_KEY required
+compatibility: PARALLEL_API_KEY和OPENROUTER_API_KEY必需
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Research Information Lookup
+# 研究信息查找
 
-## Overview
+## 概述
 
-This skill provides real-time research information lookup with **intelligent backend routing**:
+此技能提供具有**智能后端路由**的实时研究信息查找：
 
-- **Parallel Chat API** (`core` model): Default backend for all general research queries. Provides comprehensive, multi-source research reports with inline citations via the OpenAI-compatible Chat API at `https://api.parallel.ai`.
-- **Perplexity sonar-pro-search** (via OpenRouter): Used only for academic-specific paper searches where scholarly database access is critical.
+- **Parallel Chat API**（`core`模型）：所有一般研究查询的默认后端。通过位于`https://api.parallel.ai`的OpenAI兼容Chat API提供带内联引用的综合、多源研究报告。
+- **Perplexity sonar-pro-search**（通过OpenRouter）：仅用于学术特定论文搜索，其中学术数据库访问至关重要。
 
-The skill automatically detects query type and routes to the optimal backend.
+该技能自动检测查询类型并路由到最佳后端。
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use this skill when you need:
+当您需要以下内容时使用此技能：
 
-- **Current Research Information**: Latest studies, papers, and findings
-- **Literature Verification**: Check facts, statistics, or claims against current research
-- **Background Research**: Gather context and supporting evidence for scientific writing
-- **Citation Sources**: Find relevant papers and studies to cite
-- **Technical Documentation**: Look up specifications, protocols, or methodologies
-- **Market/Industry Data**: Current statistics, trends, competitive intelligence
-- **Recent Developments**: Emerging trends, breakthroughs, announcements
+- **当前研究信息**：最新研究、论文和发现
+- **文献验证**：根据当前研究检查事实、统计数据或声明
+- **背景研究**：为科学写作收集上下文和支持证据
+- **引用来源**：找到相关的论文和研究进行引用
+- **技术文档**：查找规范、协议或方法
+- **市场/行业数据**：当前统计数据、趋势、竞争情报
+- **最新发展**：新兴趋势、突破、公告
 
-## Visual Enhancement with Scientific Schematics
+## 使用科学示意图进行视觉增强
 
-**When creating documents with this skill, always consider adding scientific diagrams and schematics to enhance visual communication.**
+**使用此技能创建文档时，始终考虑添加科学图表和示意图以增强视觉沟通。**
 
-If your document does not already contain schematics or diagrams:
-- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
-- Simply describe your desired diagram in natural language
+如果您的文档尚未包含示意图或图表：
+- 使用**scientific-schematics**技能生成AI驱动的出版物质量图表
+- 只需用自然语言描述您想要的图表
 
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o figures/output.png
@@ -45,280 +45,280 @@ python scripts/generate_schematic.py "your diagram description" -o figures/outpu
 
 ---
 
-## Automatic Backend Selection
+## 自动后端选择
 
-The skill automatically routes queries to the best backend based on content:
+该技能根据内容自动将查询路由到最佳后端：
 
-### Routing Logic
+### 路由逻辑
 
 ```
-Query arrives
+查询到达
     |
-    +-- Contains academic keywords? (papers, DOI, journal, peer-reviewed, etc.)
-    |       YES --> Perplexity sonar-pro-search (academic search mode)
+    +-- 包含学术关键词？（论文、DOI、期刊、同行评审等）
+    |       是 --> Perplexity sonar-pro-search（学术搜索模式）
     |
-    +-- Everything else (general research, market data, technical info, analysis)
-            --> Parallel Chat API (core model)
+    +-- 其他所有内容（一般研究、市场数据、技术信息、分析）
+            --> Parallel Chat API（核心模型）
 ```
 
-### Academic Keywords (Routes to Perplexity)
+### 学术关键词（路由到Perplexity）
 
-Queries containing these terms are routed to Perplexity for academic-focused search:
+包含这些术语的查询被路由到Perplexity进行学术导向搜索：
 
-- Paper finding: `find papers`, `find articles`, `research papers on`, `published studies`
-- Citations: `cite`, `citation`, `doi`, `pubmed`, `pmid`
-- Academic sources: `peer-reviewed`, `journal article`, `scholarly`, `arxiv`, `preprint`
-- Review types: `systematic review`, `meta-analysis`, `literature search`
-- Paper quality: `foundational papers`, `seminal papers`, `landmark papers`, `highly cited`
+- 论文查找：`find papers`、`find articles`、`research papers on`、`published studies`
+- 引用：`cite`、`citation`、`doi`、`pubmed`、`pmid`
+- 学术来源：`peer-reviewed`、`journal article`、`scholarly`、`arxiv`、`preprint`
+- 综述类型：`systematic review`、`meta-analysis`、`literature search`
+- 论文质量：`foundational papers`、`seminal papers`、`landmark papers`、`highly cited`
 
-### Everything Else (Routes to Parallel)
+### 其他所有内容（路由到Parallel）
 
-All other queries go to the Parallel Chat API (core model), including:
+所有其他查询都进入Parallel Chat API（核心模型），包括：
 
-- General research questions
-- Market and industry analysis
-- Technical information and documentation
-- Current events and recent developments
-- Comparative analysis
-- Statistical data retrieval
-- Complex analytical queries
+- 一般研究问题
+- 市场和行业分析
+- 技术信息和文档
+- 当前事件和最新发展
+- 比较分析
+- 统计数据检索
+- 复杂分析查询
 
-### Manual Override
+### 手动覆盖
 
-You can force a specific backend:
+您可以强制使用特定后端：
 
 ```bash
-# Force Parallel Deep Research
+# 强制使用Parallel深度研究
 python research_lookup.py "your query" --force-backend parallel
 
-# Force Perplexity academic search
+# 强制使用Perplexity学术搜索
 python research_lookup.py "your query" --force-backend perplexity
 ```
 
 ---
 
-## Core Capabilities
+## 核心功能
 
-### 1. General Research Queries (Parallel Chat API)
+### 1. 一般研究查询（Parallel Chat API）
 
-**Default backend.** Provides comprehensive, multi-source research with citations via the Chat API (`core` model).
-
-```
-Query Examples:
-- "Recent advances in CRISPR gene editing 2025"
-- "Compare mRNA vaccines vs traditional vaccines for cancer treatment"
-- "AI adoption in healthcare industry statistics"
-- "Global renewable energy market trends and projections"
-- "Explain the mechanism underlying gut microbiome and depression"
-```
-
-**Response includes:**
-- Comprehensive research report in markdown
-- Inline citations from authoritative web sources
-- Structured sections with key findings
-- Multiple perspectives and data points
-- Source URLs for verification
-
-### 2. Academic Paper Search (Perplexity sonar-pro-search)
-
-**Used for academic-specific queries.** Prioritizes scholarly databases and peer-reviewed sources.
+**默认后端。**通过Chat API（`core`模型）提供带引用的综合、多源研究。
 
 ```
-Query Examples:
+查询示例：
+- "CRISPR基因编辑2025年的最新进展"
+- "比较mRNA疫苗与传统疫苗在癌症治疗中的应用"
+- "医疗保健行业AI采用统计数据"
+- "全球可再生能源市场趋势和预测"
+- "解释肠道微生物组与抑郁症的潜在机制"
+```
+
+**响应包括：**
+- Markdown格式的综合研究报告
+- 来自权威网络来源的内联引用
+- 带有关键发现的结构化部分
+- 多个视角和数据点
+- 用于验证的来源URL
+
+### 2. 学术论文搜索（Perplexity sonar-pro-search）
+
+**用于学术特定查询。**优先考虑学术数据库和同行评审来源。
+
+```
+查询示例：
 - "Find papers on transformer attention mechanisms in NeurIPS 2024"
-- "Foundational papers on quantum error correction"
-- "Systematic review of immunotherapy in non-small cell lung cancer"
-- "Cite the original BERT paper and its most influential follow-ups"
-- "Published studies on CRISPR off-target effects in clinical trials"
+- "量子错误校正的基础论文"
+- "非小细胞肺癌免疫疗法的系统综述"
+- "引用原始BERT论文及其最具影响力的后续研究"
+- "CRISPR在临床试验中的脱靶效应的已发表研究"
 ```
 
-**Response includes:**
-- Summary of key findings from academic literature
-- 5-8 high-quality citations with authors, titles, journals, years, DOIs
-- Citation counts and venue tier indicators
-- Key statistics and methodology highlights
-- Research gaps and future directions
+**响应包括：**
+- 学术文献关键发现的摘要
+- 5-8个高质量引用，包含作者、标题、期刊、年份、DOI
+- 引用次数和发表场所级别指标
+- 关键统计数据和方法亮点
+- 研究差距和未来方向
 
-### 3. Technical and Methodological Information
-
-```
-Query Examples:
-- "Western blot protocol for protein detection"
-- "Statistical power analysis for clinical trials"
-- "Machine learning model evaluation metrics comparison"
-```
-
-### 4. Statistical and Market Data
+### 3. 技术和方法信息
 
 ```
-Query Examples:
-- "Prevalence of diabetes in US population 2025"
-- "Global AI market size and growth projections"
-- "COVID-19 vaccination rates by country"
+查询示例：
+- "蛋白质检测的Western blot协议"
+- "临床试验的统计功效分析"
+- "机器学习模型评估指标比较"
+```
+
+### 4. 统计和市场数据
+
+```
+查询示例：
+- "2025年美国人口糖尿病患病率"
+- "全球AI市场规模和增长预测"
+- "各国COVID-19疫苗接种率"
 ```
 
 ---
 
-## Paper Quality and Popularity Prioritization
+## 论文质量和流行度优先级
 
-**CRITICAL**: When searching for papers, ALWAYS prioritize high-quality, influential papers.
+**关键**：搜索论文时，始终优先考虑高质量、有影响力的论文。
 
-### Citation-Based Ranking
+### 基于引用的排名
 
-| Paper Age | Citation Threshold | Classification |
-|-----------|-------------------|----------------|
-| 0-3 years | 20+ citations | Noteworthy |
-| 0-3 years | 100+ citations | Highly Influential |
-| 3-7 years | 100+ citations | Significant |
-| 3-7 years | 500+ citations | Landmark Paper |
-| 7+ years | 500+ citations | Seminal Work |
-| 7+ years | 1000+ citations | Foundational |
+| 论文年龄 | 引用阈值 | 分类 |
+|---------|----------|------|
+| 0-3年 | 20+引用 | 值得注意 |
+| 0-3年 | 100+引用 | 高度有影响力 |
+| 3-7年 | 100+引用 | 重要 |
+| 3-7年 | 500+引用 | 里程碑论文 |
+| 7+年 | 500+引用 | 开创性工作 |
+| 7+年 | 1000+引用 | 基础性 |
 
-### Venue Quality Tiers
+### 发表场所质量等级
 
-**Tier 1 - Premier Venues** (Always prefer):
-- **General Science**: Nature, Science, Cell, PNAS
-- **Medicine**: NEJM, Lancet, JAMA, BMJ
-- **Field-Specific**: Nature Medicine, Nature Biotechnology, Nature Methods
-- **Top CS/AI**: NeurIPS, ICML, ICLR, ACL, CVPR
+**一级 - 顶级场所**（始终优先）：
+- **一般科学**：Nature、Science、Cell、PNAS
+- **医学**：NEJM、Lancet、JAMA、BMJ
+- **领域特定**：Nature Medicine、Nature Biotechnology、Nature Methods
+- **顶级CS/AI**：NeurIPS、ICML、ICLR、ACL、CVPR
 
-**Tier 2 - High-Impact Specialized** (Strong preference):
-- Journals with Impact Factor > 10
-- Top conferences in subfields (EMNLP, NAACL, ECCV, MICCAI)
+**二级 - 高影响力专业**（强烈偏好）：
+- 影响因子>10的期刊
+- 子领域顶级会议（EMNLP、NAACL、ECCV、MICCAI）
 
-**Tier 3 - Respected Specialized** (Include when relevant):
-- Journals with Impact Factor 5-10
+**三级 - 受尊重的专业**（相关时包括）：
+- 影响因子5-10的期刊
 
 ---
 
-## Technical Integration
+## 技术集成
 
-### Environment Variables
+### 环境变量
 
 ```bash
-# Primary backend (Parallel Chat API) - REQUIRED
+# 主要后端（Parallel Chat API）- 必需
 export PARALLEL_API_KEY="your_parallel_api_key"
 
-# Academic search backend (Perplexity) - REQUIRED for academic queries
+# 学术搜索后端（Perplexity）- 学术查询必需
 export OPENROUTER_API_KEY="your_openrouter_api_key"
 ```
 
-### API Specifications
+### API规格
 
-**Parallel Chat API:**
-- Endpoint: `https://api.parallel.ai` (OpenAI SDK compatible)
-- Model: `core` (60s-5min latency, complex multi-source synthesis)
-- Output: Markdown text with inline citations
-- Citations: Research basis with URLs, reasoning, and confidence levels
-- Rate limits: 300 req/min
-- Python package: `openai`
+**Parallel Chat API：**
+- 端点：`https://api.parallel.ai`（兼容OpenAI SDK）
+- 模型：`core`（60秒-5分钟延迟，复杂多源合成）
+- 输出：带内联引用的Markdown文本
+- 引用：带有URL、推理和置信度级别的研究基础
+- 速率限制：300请求/分钟
+- Python包：`openai`
 
-**Perplexity sonar-pro-search:**
-- Model: `perplexity/sonar-pro-search` (via OpenRouter)
-- Search mode: Academic (prioritizes peer-reviewed sources)
-- Search context: High (comprehensive research)
-- Response time: 5-15 seconds
+**Perplexity sonar-pro-search：**
+- 模型：`perplexity/sonar-pro-search`（通过OpenRouter）
+- 搜索模式：学术（优先考虑同行评审来源）
+- 搜索上下文：高（综合研究）
+- 响应时间：5-15秒
 
-### Command-Line Usage
+### 命令行使用
 
 ```bash
-# Auto-routed research (recommended) — ALWAYS save to sources/
+# 自动路由研究（推荐）— 始终保存到sources/
 python research_lookup.py "your query" -o sources/research_YYYYMMDD_HHMMSS_<topic>.md
 
-# Force specific backend — ALWAYS save to sources/
+# 强制使用特定后端 — 始终保存到sources/
 python research_lookup.py "your query" --force-backend parallel -o sources/research_<topic>.md
 python research_lookup.py "your query" --force-backend perplexity -o sources/papers_<topic>.md
 
-# JSON output — ALWAYS save to sources/
+# JSON输出 — 始终保存到sources/
 python research_lookup.py "your query" --json -o sources/research_<topic>.json
 
-# Batch queries — ALWAYS save to sources/
+# 批量查询 — 始终保存到sources/
 python research_lookup.py --batch "query 1" "query 2" "query 3" -o sources/batch_research_<topic>.md
 ```
 
 ---
 
-## MANDATORY: Save All Results to Sources Folder
+## 强制要求：将所有结果保存到Sources文件夹
 
-**Every research-lookup result MUST be saved to the project's `sources/` folder.**
+**每个research-lookup结果必须保存到项目的`sources/`文件夹。**
 
-This is non-negotiable. Research results are expensive to obtain and critical for reproducibility.
+这是不可协商的。研究结果获取成本高且对可重现性至关重要。
 
-### Saving Rules
+### 保存规则
 
-| Backend | `-o` Flag Target | Filename Pattern |
-|---------|-----------------|------------------|
-| Parallel Deep Research | `sources/research_<topic>.md` | `research_YYYYMMDD_HHMMSS_<brief_topic>.md` |
-| Perplexity (academic) | `sources/papers_<topic>.md` | `papers_YYYYMMDD_HHMMSS_<brief_topic>.md` |
-| Batch queries | `sources/batch_<topic>.md` | `batch_research_YYYYMMDD_HHMMSS_<brief_topic>.md` |
+| 后端 | `-o`标志目标 | 文件名模式 |
+|------|------------|------------|
+| Parallel深度研究 | `sources/research_<topic>.md` | `research_YYYYMMDD_HHMMSS_<brief_topic>.md` |
+| Perplexity（学术） | `sources/papers_<topic>.md` | `papers_YYYYMMDD_HHMMSS_<brief_topic>.md` |
+| 批量查询 | `sources/batch_<topic>.md` | `batch_research_YYYYMMDD_HHMMSS_<brief_topic>.md` |
 
-### How to Save
+### 如何保存
 
-**CRITICAL: Every call to `research_lookup.py` MUST include the `-o` flag pointing to the `sources/` folder.**
+**关键：每个对`research_lookup.py`的调用必须包含指向`sources/`文件夹的`-o`标志。**
 
-**CRITICAL: Saved files MUST preserve all citations, source URLs, and DOIs.** The default text output automatically includes a `Sources` section (with title, date, URL for each source) and an `Additional References` section (with DOIs and academic URLs extracted from the response text). For maximum citation metadata, use `--json`.
+**关键：保存的文件必须保留所有引用、来源URL和DOI。**默认文本输出自动包含一个`Sources`部分（每个来源的标题、日期、URL）和一个`Additional References`部分（从响应文本中提取的DOI和学术URL）。要获取最大引用元数据，请使用`--json`。
 
 ```bash
-# General research — save to sources/ (includes Sources + Additional References sections)
-python research_lookup.py "Recent advances in CRISPR gene editing 2025" \
+# 一般研究 — 保存到sources/（包含Sources + Additional References部分）
+python research_lookup.py "CRISPR基因编辑2025年的最新进展" \
   -o sources/research_20250217_143000_crispr_advances.md
 
-# Academic paper search — save to sources/ (includes paper citations with DOIs)
+# 学术论文搜索 — 保存到sources/（包含带DOI的论文引用）
 python research_lookup.py "Find papers on transformer attention mechanisms in NeurIPS 2024" \
   -o sources/papers_20250217_143500_transformer_attention.md
 
-# JSON format for maximum citation metadata (full citation objects with URLs, DOIs, snippets)
-python research_lookup.py "CRISPR clinical trials" --json \
+# JSON格式获取最大引用元数据（带有URL、DOI、片段的完整引用对象）
+python research_lookup.py "CRISPR临床试验" --json \
   -o sources/research_20250217_143000_crispr_trials.json
 
-# Forced backend — save to sources/
-python research_lookup.py "AI regulation landscape" --force-backend parallel \
+# 强制后端 — 保存到sources/
+python research_lookup.py "AI监管格局" --force-backend parallel \
   -o sources/research_20250217_144000_ai_regulation.md
 
-# Batch queries — save to sources/
-python research_lookup.py --batch "mRNA vaccines efficacy" "mRNA vaccines safety" \
+# 批量查询 — 保存到sources/
+python research_lookup.py --batch "mRNA疫苗 efficacy" "mRNA疫苗 safety" \
   -o sources/batch_research_20250217_144500_mrna_vaccines.md
 ```
 
-### Citation Preservation in Saved Files
+### 保存文件中的引用保留
 
-Each output format preserves citations differently:
+每种输出格式保留引用的方式不同：
 
-| Format | Citations Included | When to Use |
-|--------|-------------------|-------------|
-| Text (default) | `Sources (N):` section with `[title] (date) + URL` + `Additional References (N):` with DOIs and academic URLs | Standard use — human-readable with all citations |
-| JSON (`--json`) | Full citation objects: `url`, `title`, `date`, `snippet`, `doi`, `type` | When you need maximum citation metadata |
+| 格式 | 包含的引用 | 何时使用 |
+|------|-----------|----------|
+| 文本（默认） | `Sources (N):`部分，包含`[title] (date) + URL` + `Additional References (N):`，包含DOI和学术URL | 标准使用 — 人类可读，包含所有引用 |
+| JSON (`--json`) | 完整引用对象：`url`、`title`、`date`、`snippet`、`doi`、`type` | 当您需要最大引用元数据时 |
 
-**For Parallel backend**, saved files include: research report + Sources list (title, URL) + Additional References (DOIs, academic URLs).
-**For Perplexity backend**, saved files include: academic summary + Sources list (title, date, URL, snippet) + Additional References (DOIs, academic URLs).
+**对于Parallel后端**，保存的文件包括：研究报告 + 来源列表（标题、URL） + 附加参考文献（DOI、学术URL）。
+**对于Perplexity后端**，保存的文件包括：学术摘要 + 来源列表（标题、日期、URL、片段） + 附加参考文献（DOI、学术URL）。
 
-**Use `--json` when you need to:**
-- Parse citation metadata programmatically
-- Preserve full DOI and URL data for BibTeX generation
-- Maintain the structured citation objects for cross-referencing
+**当您需要以下内容时使用`--json`：**
+- 以编程方式解析引用元数据
+- 保留完整的DOI和URL数据以生成BibTeX
+- 维护结构化引用对象用于交叉引用
 
-### Why Save Everything
+### 为什么保存所有内容
 
-1. **Reproducibility**: Every citation and claim can be traced back to its raw research source
-2. **Context Window Recovery**: If context is compacted, saved results can be re-read without re-querying
-3. **Audit Trail**: The `sources/` folder documents exactly how all research information was gathered
-4. **Reuse Across Sections**: Multiple sections can reference the same saved research without duplicate queries
-5. **Cost Efficiency**: Check `sources/` for existing results before making new API calls
-6. **Peer Review Support**: Reviewers can verify the research backing every citation
+1. **可重现性**：每个引用和声明都可以追溯到其原始研究来源
+2. **上下文窗口恢复**：如果上下文被压缩，保存的结果可以重新读取而无需重新查询
+3. **审计跟踪**：`sources/`文件夹记录了所有研究信息的收集方式
+4. **跨部分重用**：多个部分可以引用相同的保存研究而无需重复查询
+5. **成本效率**：在进行新API调用前检查`sources/`中是否有现有结果
+6. **同行评审支持**：评审者可以验证每个引用背后的研究
 
-### Before Making a New Query, Check Sources First
+### 进行新查询前，先检查Sources
 
-Before calling `research_lookup.py`, check if a relevant result already exists:
+调用`research_lookup.py`之前，检查是否已存在相关结果：
 
 ```bash
-ls sources/  # Check existing saved results
+ls sources/  # 检查现有的保存结果
 ```
 
-If a prior lookup covers the same topic, re-read the saved file instead of making a new API call.
+如果之前的查找涵盖了相同主题，重新阅读保存的文件而不是进行新的API调用。
 
-### Logging
+### 日志记录
 
-When saving research results, always log:
+保存研究结果时，始终记录：
 
 ```
 [HH:MM:SS] SAVED: Research lookup to sources/research_20250217_143000_crispr_advances.md (3,800 words, 8 citations)
@@ -327,87 +327,87 @@ When saving research results, always log:
 
 ---
 
-## Integration with Scientific Writing
+## 与科学写作的集成
 
-This skill enhances scientific writing by providing:
+此技能通过提供以下内容增强科学写作：
 
-1. **Literature Review Support**: Gather current research for introduction and discussion — **save to `sources/`**
-2. **Methods Validation**: Verify protocols against current standards — **save to `sources/`**
-3. **Results Contextualization**: Compare findings with recent similar studies — **save to `sources/`**
-4. **Discussion Enhancement**: Support arguments with latest evidence — **save to `sources/`**
-5. **Citation Management**: Provide properly formatted citations — **save to `sources/`**
+1. **文献综述支持**：为引言和讨论收集当前研究 — **保存到`sources/`**
+2. **方法验证**：根据当前标准验证协议 — **保存到`sources/`**
+3. **结果情境化**：将发现与最近的类似研究进行比较 — **保存到`sources/`**
+4. **讨论增强**：用最新证据支持论点 — **保存到`sources/`**
+5. **引用管理**：提供格式正确的引用 — **保存到`sources/`**
 
-## Complementary Tools
+## 互补工具
 
-| Task | Tool |
+| 任务 | 工具 |
 |------|------|
-| General web search | `parallel-web` skill (`parallel_web.py search`) |
-| Citation verification | `parallel-web` skill (`parallel_web.py extract`) |
-| Deep research (any topic) | `research-lookup` or `parallel-web` skill |
-| Academic paper search | `research-lookup` (auto-routes to Perplexity) |
-| Google Scholar search | `citation-management` skill |
-| PubMed search | `citation-management` skill |
-| DOI to BibTeX | `citation-management` skill |
-| Metadata verification | `parallel-web` skill (`parallel_web.py search` or `extract`) |
+| 一般网络搜索 | `parallel-web`技能（`parallel_web.py search`） |
+| 引用验证 | `parallel-web`技能（`parallel_web.py extract`） |
+| 深度研究（任何主题） | `research-lookup`或`parallel-web`技能 |
+| 学术论文搜索 | `research-lookup`（自动路由到Perplexity） |
+| Google Scholar搜索 | `citation-management`技能 |
+| PubMed搜索 | `citation-management`技能 |
+| DOI转BibTeX | `citation-management`技能 |
+| 元数据验证 | `parallel-web`技能（`parallel_web.py search`或`extract`） |
 
 ---
 
-## Error Handling and Limitations
+## 错误处理和限制
 
-**Known Limitations:**
-- Parallel Chat API (core model): Complex queries may take up to 5 minutes
-- Perplexity: Information cutoff, may not access full text behind paywalls
-- Both: Cannot access proprietary or restricted databases
+**已知限制：**
+- Parallel Chat API（核心模型）：复杂查询可能需要长达5分钟
+- Perplexity：信息截止，可能无法访问付费墙后的全文
+- 两者：无法访问专有或受限数据库
 
-**Fallback Behavior:**
-- If the selected backend's API key is missing, tries the other backend
-- If both backends fail, returns structured error response
-- Rephrase queries for better results if initial response is insufficient
-
----
-
-## Usage Examples
-
-### Example 1: General Research (Routes to Parallel)
-
-**Query**: "Recent advances in transformer attention mechanisms 2025"
-
-**Backend**: Parallel Chat API (core model)
-
-**Response**: Comprehensive markdown report with citations from authoritative sources, covering recent papers, key innovations, and performance benchmarks.
-
-### Example 2: Academic Paper Search (Routes to Perplexity)
-
-**Query**: "Find papers on CRISPR off-target effects in clinical trials"
-
-**Backend**: Perplexity sonar-pro-search (academic mode)
-
-**Response**: Curated list of 5-8 high-impact papers with full citations, DOIs, citation counts, and venue tier indicators.
-
-### Example 3: Comparative Analysis (Routes to Parallel)
-
-**Query**: "Compare and contrast mRNA vaccines vs traditional vaccines for cancer treatment"
-
-**Backend**: Parallel Chat API (core model)
-
-**Response**: Detailed comparative report with data from multiple sources, structured analysis, and cited evidence.
-
-### Example 4: Market Data (Routes to Parallel)
-
-**Query**: "Global AI adoption in healthcare statistics 2025"
-
-**Backend**: Parallel Chat API (core model)
-
-**Response**: Current market data, adoption rates, growth projections, and regional analysis with source citations.
+**回退行为：**
+- 如果所选后端的API密钥缺失，尝试另一个后端
+- 如果两个后端都失败，返回结构化错误响应
+- 如果初始响应不足，重新措辞查询以获得更好的结果
 
 ---
 
-## Summary
+## 使用示例
 
-This skill serves as the primary research interface with intelligent dual-backend routing:
+### 示例1：一般研究（路由到Parallel）
 
-- **Parallel Chat API** (default, `core` model): Comprehensive, multi-source research for any topic
-- **Perplexity sonar-pro-search**: Academic-specific paper searches only
-- **Automatic routing**: Detects academic queries and routes appropriately
-- **Manual override**: Force any backend when needed
-- **Complementary**: Works alongside `parallel-web` skill for web search and URL extraction
+**查询**："transformer注意力机制2025年的最新进展"
+
+**后端**：Parallel Chat API（核心模型）
+
+**响应**：综合Markdown报告，包含来自权威来源的引用，涵盖最近论文、关键创新和性能基准。
+
+### 示例2：学术论文搜索（路由到Perplexity）
+
+**查询**："Find papers on CRISPR off-target effects in clinical trials"
+
+**后端**：Perplexity sonar-pro-search（学术模式）
+
+**响应**：5-8篇高影响力论文的精选列表，包含完整引用、DOI、引用次数和发表场所级别指标。
+
+### 示例3：比较分析（路由到Parallel）
+
+**查询**："比较mRNA疫苗与传统疫苗在癌症治疗中的应用"
+
+**后端**：Parallel Chat API（核心模型）
+
+**响应**：详细的比较报告，包含来自多个来源的数据、结构化分析和引用证据。
+
+### 示例4：市场数据（路由到Parallel）
+
+**查询**："2025年全球医疗保健AI采用统计数据"
+
+**后端**：Parallel Chat API（核心模型）
+
+**响应**：当前市场数据、采用率、增长预测和带有来源引用的区域分析。
+
+---
+
+## 摘要
+
+此技能作为具有智能双后端路由的主要研究界面：
+
+- **Parallel Chat API**（默认，`core`模型）：任何主题的综合、多源研究
+- **Perplexity sonar-pro-search**：仅用于学术特定论文搜索
+- **自动路由**：检测学术查询并适当路由
+- **手动覆盖**：必要时强制使用任何后端
+- **互补**：与`parallel-web`技能一起用于网络搜索和URL提取

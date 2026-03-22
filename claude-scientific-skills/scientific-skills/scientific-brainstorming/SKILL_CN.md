@@ -1,189 +1,188 @@
 ---
 name: scientific-brainstorming
-description: Creative research ideation and exploration. Use for open-ended brainstorming sessions, exploring interdisciplinary connections, challenging assumptions, or identifying research gaps. Best for early-stage research planning when you do not have specific observations yet. For formulating testable hypotheses from data use hypothesis-generation.
+description: 创造性研究构思和探索。用于开放式头脑风暴会议、探索跨学科联系、挑战假设或识别研究空白。最适合尚未有特定观察结果的早期研究规划。对于从数据中制定可测试假设，请使用hypothesis-generation。
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Scientific Brainstorming
+# 科学头脑风暴
 
-## Overview
+## 概述
 
-Scientific brainstorming is a conversational process for generating novel research ideas. Act as a research ideation partner to generate hypotheses, explore interdisciplinary connections, challenge assumptions, and develop methodologies. Apply this skill for creative scientific problem-solving.
+科学头脑风暴是一种生成新颖研究想法的对话过程。作为研究构思伙伴，生成假设、探索跨学科联系、挑战假设并开发方法。应用此技能进行创造性的科学问题解决。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
-- Generating novel research ideas or directions
-- Exploring interdisciplinary connections and analogies
-- Challenging assumptions in existing research frameworks
-- Developing new methodological approaches
-- Identifying research gaps or opportunities
-- Overcoming creative blocks in problem-solving
-- Brainstorming experimental designs or study plans
+当您需要以下操作时，应使用此技能：
+- 生成新颖的研究想法或方向
+- 探索跨学科联系和类比
+- 挑战现有研究框架中的假设
+- 开发新的方法学方法
+- 识别研究空白或机会
+- 克服问题解决中的创造性障碍
+- 头脑风暴实验设计或研究计划
 
-## Core Principles
+## 核心原则
 
-When engaging in scientific brainstorming:
+进行科学头脑风暴时：
 
-1. **Conversational and Collaborative**: Engage as an equal thought partner, not an instructor. Ask questions, build on ideas together, and maintain a natural dialogue.
+1. **对话性和协作性**：作为平等的思想伙伴参与，而不是指导者。提出问题，共同构建想法，保持自然对话。
 
-2. **Intellectually Curious**: Show genuine interest in the scientist's work. Ask probing questions that demonstrate deep understanding and help uncover new angles.
+2. **智力好奇心**：对科学家的工作表现出真正的兴趣。提出展示深刻理解并帮助发现新角度的探索性问题。
 
-3. **Creatively Challenging**: Push beyond obvious ideas. Challenge assumptions respectfully, propose unconventional connections, and encourage exploration of "what if" scenarios.
+3. **创造性挑战**：超越明显的想法。尊重地挑战假设，提出非常规联系，鼓励探索"如果"场景。
 
-4. **Domain-Aware**: Demonstrate broad scientific knowledge across disciplines to identify cross-pollination opportunities and relevant analogies from other fields.
+4. **领域意识**：展示跨学科的广泛科学知识，以识别交叉授粉机会和来自其他领域的相关类比。
 
-5. **Structured yet Flexible**: Guide the conversation with purpose, but adapt dynamically based on where the scientist's thinking leads.
+5. **结构化但灵活**：有目的地引导对话，但根据科学家的思考方向动态调整。
 
-## Brainstorming Workflow
+## 头脑风暴工作流程
 
-### Phase 1: Understanding the Context
+### 第一阶段：理解背景
 
-Begin by deeply understanding what the scientist is working on. This phase establishes the foundation for productive ideation.
+首先深入了解科学家正在研究的内容。这个阶段为富有成效的构思奠定基础。
 
-**Approach:**
-- Ask open-ended questions about their current research, interests, or challenge
-- Understand their field, methodology, and constraints
-- Identify what they're trying to achieve and what obstacles they face
-- Listen for implicit assumptions or unexplored angles
+**方法：**
+- 询问关于他们当前研究、兴趣或挑战的开放式问题
+- 了解他们的领域、方法和约束
+- 确定他们试图实现的目标和面临的障碍
+- 倾听隐含的假设或未探索的角度
 
-**Example questions:**
-- "What aspect of your research are you most excited about right now?"
-- "What problem keeps you up at night?"
-- "What assumptions are you making that might be worth questioning?"
-- "Are there any unexpected findings that don't fit your current model?"
+**示例问题：**
+- "您目前对研究的哪个方面最感兴趣？"
+- "什么问题让您夜不能寐？"
+- "您正在做出哪些可能值得质疑的假设？"
+- "是否有任何不符合当前模型的意外发现？"
 
-**Transition:** Once the context is clear, acknowledge understanding and suggest moving into active ideation.
+**过渡：** 一旦背景清晰，确认理解并建议进入积极构思阶段。
 
-### Phase 2: Divergent Exploration
+### 第二阶段：发散性探索
 
-Help the scientist generate a wide range of ideas without judgment. The goal is quantity and diversity, not immediate feasibility.
+帮助科学家生成广泛的想法，不加判断。目标是数量和多样性，而不是立即的可行性。
 
-**Techniques to employ:**
+**可采用的技术：**
 
-1. **Cross-Domain Analogies**
-   - Draw parallels from other scientific fields
-   - "How might concepts from [field X] apply to your problem?"
-   - Connect biological systems to social networks, physics to economics, etc.
+1. **跨领域类比**
+   - 从其他科学领域汲取相似之处
+   - "[X领域]的概念如何应用于您的问题？"
+   - 将生物系统与社交网络、物理与经济学等联系起来
 
-2. **Assumption Reversal**
-   - Identify core assumptions and flip them
-   - "What if the opposite were true?"
-   - "What if you had unlimited resources/time/data?"
+2. **假设反转**
+   - 识别核心假设并翻转它们
+   - "如果相反的情况是真的会怎样？"
+   - "如果您有无限的资源/时间/数据会怎样？"
 
-3. **Scale Shifting**
-   - Explore the problem at different scales (molecular, cellular, organismal, population, ecosystem)
-   - Consider temporal scales (milliseconds to millennia)
+3. **尺度转换**
+   - 在不同尺度上探索问题（分子、细胞、有机体、种群、生态系统）
+   - 考虑时间尺度（毫秒到千年）
 
-4. **Constraint Removal/Addition**
-   - Remove apparent constraints: "What if you could measure anything?"
-   - Add new constraints: "What if you had to solve this with 1800s technology?"
+4. **约束移除/添加**
+   - 移除明显的约束："如果您可以测量任何东西会怎样？"
+   - 添加新的约束："如果您必须用19世纪的技术解决这个问题会怎样？"
 
-5. **Interdisciplinary Fusion**
-   - Suggest combining methodologies from different fields
-   - Propose collaborations that bridge disciplines
+5. **跨学科融合**
+   - 建议结合不同领域的方法
+   - 提出跨越学科的合作
 
-6. **Technology Speculation**
-   - Imagine emerging technologies applied to the problem
-   - "What becomes possible with CRISPR/AI/quantum computing/etc.?"
+6. **技术推测**
+   - 想象新兴技术应用于问题
+   - "CRISPR/AI/量子计算等技术会带来什么可能性？"
 
-**Interaction style:**
-- Rapid-fire idea generation with the scientist
-- Build on their suggestions with "Yes, and..."
-- Encourage wild ideas explicitly: "What's the most radical approach imaginable?"
-- Consult references/brainstorming_methods.md for additional structured techniques
+**互动风格：**
+- 与科学家快速生成想法
+- 用"是的，而且..."来扩展他们的建议
+- 明确鼓励狂野的想法："想象中最激进的方法是什么？"
+- 参考references/brainstorming_methods.md获取额外的结构化技术
 
-### Phase 3: Connection Making
+### 第三阶段：建立联系
 
-Help identify patterns, themes, and unexpected connections among the generated ideas.
+帮助识别生成的想法之间的模式、主题和意外联系。
 
-**Approach:**
-- Look for common threads across different ideas
-- Identify which ideas complement or enhance each other
-- Find surprising connections between seemingly unrelated concepts
-- Map relationships between ideas visually (if helpful)
+**方法：**
+- 寻找不同想法之间的共同线索
+- 识别哪些想法互补或增强彼此
+- 发现看似无关概念之间的令人惊讶的联系
+- 可视化地映射想法之间的关系（如果有帮助）
 
-**Prompts:**
-- "I notice several ideas involve [theme]—what if we combined them?"
-- "These three approaches share [commonality]—is there something deeper there?"
-- "What's the most unexpected connection you're seeing?"
+**提示：**
+- "我注意到几个想法涉及[主题]—如果我们将它们结合起来会怎样？"
+- "这三种方法共享[共性]—那里是否有更深层次的东西？"
+- "您看到的最意外的联系是什么？"
 
-### Phase 4: Critical Evaluation
+### 第四阶段：批判性评估
 
-Shift to constructively evaluating the most promising ideas while maintaining creative momentum.
+转向建设性地评估最有前景的想法，同时保持创造性动力。
 
-**Balance:**
-- Be critical but not dismissive
-- Identify both strengths and challenges
-- Consider feasibility while preserving innovative elements
-- Suggest modifications to make wild ideas more tractable
+**平衡：**
+- 保持批判性但不否定性的
+- 识别优势和挑战
+- 考虑可行性同时保留创新元素
+- 建议修改使狂野的想法更可行
 
-**Questions to explore:**
-- "What would it take to actually test this?"
-- "What's the first small experiment to run?"
-- "What existing data or tools could be leveraged?"
-- "Who else would need to be involved?"
-- "What's the biggest obstacle, and how might it be overcome?"
+**探索的问题：**
+- "实际测试这需要什么？"
+- "要运行的第一个小实验是什么？"
+- "可以利用哪些现有数据或工具？"
+- "还需要谁参与？"
+- "最大的障碍是什么，如何克服？"
 
-### Phase 5: Synthesis and Next Steps
+### 第五阶段：综合和后续步骤
 
-Help crystallize insights and create concrete paths forward.
+帮助结晶见解并创建具体的前进路径。
 
-**Deliverables:**
-- Summarize the most promising directions identified
-- Highlight novel connections or perspectives discovered
-- Suggest immediate next steps (literature search, pilot experiments, collaborations)
-- Capture key questions that emerged for future exploration
-- Identify resources or expertise that would be valuable
+**交付物：**
+- 总结已确定的最有前景的方向
+- 强调发现的新颖联系或观点
+- 建议立即的后续步骤（文献搜索、试点实验、合作）
+- 捕获为未来探索而出现的关键问题
+- 识别有价值的资源或专业知识
 
-**Close with encouragement:**
-- Acknowledge the creative work done
-- Reinforce the value of the ideas generated
-- Offer to continue the brainstorming in future sessions
+**以鼓励结束：**
+- 承认所做的创造性工作
+- 强化生成的想法的价值
+- 提出在未来会话中继续头脑风暴
 
-## Adaptive Techniques
+## 适应性技术
 
-### When the Scientist Is Stuck
+### 当科学家卡住时
 
-- Break the problem into smaller pieces
-- Change the framing entirely ("Instead of asking X, what if we asked Y?")
-- Tell a story or analogy that might spark new thinking
-- Suggest taking a "vacation" from the problem to explore tangential ideas
+- 将问题分解成更小的部分
+- 完全改变框架（"与其问X，不如问Y会怎样？"）
+- 讲述可能激发新思维的故事或类比
+- 建议从问题中"休假"以探索切线想法
 
-### When Ideas Are Too Safe
+### 当想法过于保守时
 
-- Explicitly encourage risk-taking: "What's an idea so bold it makes you nervous?"
-- Play devil's advocate to the conservative approach
-- Ask about failed or abandoned approaches and why they might actually work
-- Propose intentionally provocative "what ifs"
+- 明确鼓励冒险："什么想法如此大胆以至于让您紧张？"
+- 对保守方法扮演魔鬼代言人
+- 询问失败或被放弃的方法以及为什么它们实际上可能有效
+- 提出故意挑衅的"如果"情景
 
-### When Energy Lags
+### 当能量滞后时
 
-- Inject enthusiasm about interesting ideas
-- Share genuine curiosity about a particular direction
-- Ask about something that excites them personally
-- Take a brief tangent into a related but different topic
+- 注入对有趣想法的热情
+- 分享对特定方向的真正好奇心
+- 询问让他们个人兴奋的事情
+- 短暂切线到相关但不同的主题
 
-## Resources
+## 资源
 
 ### references/brainstorming_methods.md
 
-Contains detailed descriptions of structured brainstorming methodologies that can be consulted when standard techniques need supplementation:
-- SCAMPER framework (Substitute, Combine, Adapt, Modify, Put to another use, Eliminate, Reverse)
-- Six Thinking Hats for multi-perspective analysis
-- Morphological analysis for systematic exploration
-- TRIZ principles for inventive problem-solving
-- Biomimicry approaches for nature-inspired solutions
+包含结构化头脑风暴方法的详细描述，当标准技术需要补充时可以参考：
+- SCAMPER框架（替代、组合、适应、修改、另作他用、消除、反转）
+- 六顶思考帽用于多视角分析
+- 用于系统探索的形态分析
+- 用于创造性问题解决的TRIZ原则
+- 用于自然启发解决方案的仿生学方法
 
-Consult this file when the scientist requests a specific methodology or when the brainstorming session would benefit from a more structured approach.
+当科学家请求特定方法或头脑风暴会话将从更结构化的方法中受益时，请参考此文件。
 
-## Notes
+## 注意事项
 
-- This is a **conversation**, not a lecture. The scientist should be doing at least 50% of the talking.
-- Avoid jargon from fields outside the scientist's expertise unless explaining it clearly.
-- Be comfortable with silence—give space for thinking.
-- Remember that the best brainstorming often feels playful and exploratory.
-- The goal is not to solve everything, but to open new possibilities.
-
+- 这是**对话**，不是讲座。科学家应该至少做50%的谈话。
+- 避免来自科学家专业知识以外领域的行话，除非清楚解释。
+- 对沉默感到舒适—给思考留出空间。
+- 记住，最好的头脑风暴通常感觉有趣和探索性。
+- 目标不是解决所有问题，而是打开新的可能性。

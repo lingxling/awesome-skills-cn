@@ -1,178 +1,157 @@
 ---
 name: "sora"
-description: "Use when the user asks to generate, edit, extend, poll, list, download, or delete Sora videos, create reusable non-human Sora character references, or run local multi-video queues via the bundled CLI (`scripts/sora.py`); includes requests like: (i) generate AI video, (ii) edit this Sora clip, (iii) extend this video, (iv) create a character reference, (v) download video/thumbnail/spritesheet, and (vi) Sora batch planning; requires `OPENAI_API_KEY` and Sora API access."
+description: "当用户要求通过使用捆绑的 CLI（`scripts/sora.py`）通过 OpenAI 的视频 API 生成、混音、轮询、列表、下载或删除 Sora 视频时使用，包括诸如生成 AI 视频、使用 Sora、视频混音、视频混音、下载视频/缩略图/精灵表和批量视频生成等请求；需要 `OPENAI_API_KEY` 和 Sora API 访问权限。"
 ---
 
+# Sora 视频生成技能
 
-# Sora Video Generation Skill
+为当前项目创建或管理短视频剪辑（产品演示、营销点、电影镜头、UI 模型）。默认为 `sora-2` 和结构化提示增强工作流程，并且更喜欢捆绑的 CLI 以实现确定性运行。注意：`$sora` 是提示中的技能标签，而不是 shell 命令。
 
-Creates or manages Sora video jobs for the current project (product demos, marketing spots, cinematic shots, social clips, UI mocks). Defaults to `sora-2` with structured prompt augmentation and prefers the bundled CLI for deterministic runs. Note: `$sora` is a skill tag in prompts, not a shell command.
+## 何时使用
+- 从提示生成新的视频剪辑
+- 通过 ID 混音现有视频
+- 轮询状态、列出作业或下载资产（视频/缩略图/精灵表）
+- 批量运行（多个提示或变体）
 
-## When to use
-- Generate a new video clip from a prompt
-- Create a reusable character reference from a short non-human source clip
-- Edit an existing generated video with a targeted prompt change
-- Extend a completed video with a continuation prompt
-- Poll status, list jobs, or download assets (video/thumbnail/spritesheet)
-- Run a local multi-job queue now, or plan a true Batch API submission for offline rendering
+## 决策树（创建 vs 混音 vs 状态/下载 vs 批量）
+- 如果用户有**视频 id**并想要更改 → **混音**
+- 如果用户有**视频 id**并想要状态或资产 → **状态/轮询/下载**
+- 如果用户需要许多提示/资产 → **创建-批量**
+- 如果用户要求使用小更改（相同镜头、不同主题/细节）的两个版本 → **创建**基础，然后**混音**以获取变体
+- 否则 → **创建**（或如果他们需要在一个步骤中准备好的资产，则**创建并轮询**）
 
-## Decision tree
-- If the user has a short non-human reference clip they want to reuse across shots → `create-character`
-- If the user has a completed video and wants the next beat/continuation → `extend`
-- If the user has a completed video and wants a targeted change while preserving the shot → `edit`
-- If the user has a video id and wants status or assets → `status`, `poll`, or `download`
-- If the user needs many renders immediately inside Codex → `create-batch` (local fan-out, not the Batch API)
-- If the user needs many renders for offline processing or a studio pipeline → use the official Batch API flow described in `references/video-api.md`
-- Otherwise → `create` (or `create-and-poll` if they need a ready asset in one step)
+## 工作流程
+1. 确定意图：创建 vs 混音 vs 状态/下载 vs 批量。
+2. 收集输入：提示、模型、大小、秒数以及任何输入参考图像。
+3. 如果是批量：在 tmp/ 下编写临时 JSONL（每行一个作业），运行一次，然后删除 JSONL。
+4. 更喜欢 CLI 增强标志（`--use-case`、`--scene`、`--camera` 等）而不是预先编写结构化提示。如果您已经生成了结构化提示文件，请传递 `--no-augment` 以避免双重包装。
+5. 使用合理的默认值运行捆绑的 CLI（`scripts/sora.py`）（见 references/cli.md）。对于长提示，更喜欢 `--prompt-file` 以避免 shell 转义问题；如果提示已经结构化，则配对 `--no-augment`。
+6. 对于异步作业，轮询直到完成（或使用创建并轮询）。
+7. 下载资产（视频/缩略图/精灵表）并在本地保存。
+8. 删除调用期间创建的中间文件（例如 `prompt.txt`、`remix_job.json`、临时 JSONL）。如果沙盒阻止 `rm`，请跳过清理或在不报错的情况下截断文件。
+9. 每个提示使用单一目标更改进行迭代。
 
-## Workflow
-1. Decide intent: create vs create-character vs edit vs extend vs status/download vs local queue vs official Batch API.
-2. Collect inputs: prompt, model, size, seconds, any image reference, and any character IDs.
-3. Prefer CLI augmentation flags (`--use-case`, `--scene`, `--camera`, etc.) instead of hand-writing a long structured prompt. If you already have a structured prompt file, pass `--no-augment`.
-4. Run the bundled CLI (`scripts/sora.py`) with sensible defaults. For long prompts, prefer `--prompt-file` to avoid shell-escaping issues.
-5. For async jobs, poll until terminal status (or use `create-and-poll`).
-6. Download assets (video/thumbnail/spritesheet) and save them locally before URLs expire.
-7. If the user wants continuity across many shots, create character assets first, then reference them in later `create` calls.
-8. If the user wants to iterate on a completed shot, prefer `edit`; if they want the shot to continue in time, prefer `extend`.
-9. Use one targeted change per iteration.
+## 身份验证
 
-## Authentication
-- `OPENAI_API_KEY` must be set for live API calls.
+- 必须设置 `OPENAI_API_KEY` 才能进行实时 API 调用。
 
-If the key is missing, give the user these steps:
-1. Create an API key in the OpenAI platform UI: https://platform.openai.com/api-keys
-2. Set `OPENAI_API_KEY` as an environment variable in their system.
-3. Offer to guide them through setting the environment variable for their OS/shell if needed.
-- Never ask the user to paste the full key in chat. Ask them to set it locally and confirm when ready.
+如果缺少密钥，请为用户提供这些步骤：
+1. 在 OpenAI 平台 UI 中创建 API 密钥：https://platform.openai.com/api-keys
+2. 在他们的系统中将 `OPENAI_API_KEY` 设置为环境变量。
+3. 如果需要，提供引导他们为其操作系统/shell 设置环境变量的指导。
+- 永远不要要求用户在聊天中粘贴完整的密钥。要求他们在本地设置并准备好时确认。
 
-## Defaults & rules
-- Default model: `sora-2` (use `sora-2-pro` for higher fidelity).
-- Default size: `1280x720`.
-- Default seconds: `4` (allowed: `"4"`, `"8"`, `"12"`, `"16"`, `"20"`).
-- Always set size and seconds via API params; prose will not change them.
-- `sora-2-pro` is required for `1920x1080` and `1080x1920`.
-- Use up to two characters per generation.
-- Use the OpenAI Python SDK (`openai` package). If high-level SDK helpers lag the latest Sora guide, use low-level `client.post/get/delete` inside the official SDK rather than standalone HTTP code.
-- Require `OPENAI_API_KEY` before any live API call.
-- If uv cache permissions fail, set `UV_CACHE_DIR=/tmp/uv-cache`.
-- Input reference images must be jpg/png/webp and should match target size.
-- JSON `input_reference` objects use either `file_id` or `image_url`; uploaded file paths use multipart.
-- Download URLs expire after about 1 hour; copy assets to your own storage.
-- Batch-generated videos remain downloadable for up to 24 hours after the batch completes.
-- `create-batch` in `scripts/sora.py` is a local concurrent queue, not the official Batch API.
-- Prefer the bundled CLI and **never modify** `scripts/sora.py` unless the user asks.
-- Sora can generate audio; if a user requests voiceover/audio, specify it explicitly in the `Audio:` and `Dialogue:` lines and keep it short.
+## 默认值和规则
+- 默认模型：`sora-2`（使用 `sora-2-pro` 获取更高保真度）。
+- 默认大小：`1280x720`。
+- 默认秒数：`4`（允许："4"、"8"、"12"作为字符串）。
+- 始终通过 API 参数设置大小和秒数；散文不会更改它们。
+- 对所有 API 调用使用 OpenAI Python SDK（`openai` 包）；不要使用原始 HTTP。
+- 在任何实时 API 调用之前要求 `OPENAI_API_KEY`。
+- 如果 uv 缓存权限失败，请设置 `UV_CACHE_DIR=/tmp/uv-cache`。
+- 输入参考图像必须是 jpg/png/webp 并且应该匹配目标大小。
+- 下载 URL 在大约 1 小时后过期；将资产复制到您自己的存储。
+- 更喜欢捆绑的 CLI 并且**永远不要修改** `scripts/sora.py`，除非用户要求。
+- Sora 可以生成音频；如果用户要求配音/音频，请在 `Audio:` 和 `Dialogue:` 行中明确指定它并保持简短。
 
-## API limitations
-- Models are limited to `sora-2` and `sora-2-pro`.
-- API access to Sora models requires an organization-verified account.
-- Duration must be set via the `seconds` parameter and currently supports `4`, `8`, `12`, `16`, and `20`.
-- Character uploads currently work best with short `2`-`4` second non-human MP4s in `16:9` or `9:16`, at `720p`-`1080p`.
-- Extensions can add up to `20` seconds each, up to six times per source video, for a maximum total length of `120` seconds.
-- Extensions currently do not support characters or image references.
-- This skill supports editing existing generated videos by ID.
-- The official Batch API currently supports `POST /v1/videos` only, with JSON bodies rather than multipart uploads.
-- Output sizes are limited by model (see `references/video-api.md` for the supported sizes).
-- Video creation is async; you must poll for completion before downloading.
-- Rate limits apply by usage tier (do not list specific limits).
-- Content restrictions are enforced by the API (see Guardrails below).
+## API 限制
 
-## Guardrails (must enforce)
-- Only content suitable for audiences under 18.
-- No copyrighted characters or copyrighted music.
-- No real people (including public figures).
-- Input images with human faces are rejected.
-- Character uploads in this skill are for non-human subjects only.
+- 模型限制为 `sora-2` 和 `sora-2-pro`。
+- 访问 Sora 模型需要经过组织验证的帐户。
+- 持续时间限制为 4/8/12 秒，必须通过 `seconds` 参数设置。
+- API 期望 `seconds` 作为字符串枚举（"4"、"8"、"12"）。
+- 输出大小受模型限制（有关支持的大小，请参阅 `references/video-api.md`）。
+- 视频创建是异步的；您必须在下载之前轮询完成。
+- 速率限制按使用层级应用（不要列出具体限制）。
+- API 强制执行内容限制（见下面的防护栏）。
 
-## Prompt augmentation
-Reformat prompts into a structured, production-oriented spec. Only make implicit details explicit; do not invent new creative requirements.
+## 防护栏（必须强制执行）
 
-Template (include only relevant lines):
+- 仅适合 18 岁以下受众的内容。
+- 没有版权字符或受版权保护的音乐。
+- 没有真人（包括公众人物）。
+- 带有人脸的输入图像被拒绝。
+
+## 提示增强
+
+将提示重新格式化为结构化的、面向生产的规范。仅使隐含细节显式化；不要发明新的创意要求。
+
+模板（仅包括相关行）：
 ```
-Use case: <where the clip will be used>
-Primary request: <user's main prompt>
-Scene/background: <location, time of day, atmosphere>
-Subject: <main subject>
-Action: <single clear action>
-Camera: <shot type, angle, motion>
-Lighting/mood: <lighting + mood>
-Color palette: <3-5 color anchors>
-Style/format: <film/animation/format cues>
-Timing/beats: <counts or beats>
-Audio: <ambient cue / music / voiceover if requested>
-Text (verbatim): "<exact text>"
-Dialogue:
-<dialogue>
-- Speaker: "Short line."
-</dialogue>
-Constraints: <must keep/must avoid>
-Avoid: <negative constraints>
+用例：<剪辑将在哪里使用>
+主要请求：<用户的主要提示>
+场景/背景：<位置、一天中的时间、氛围>
+主题：<主要主题>
+行动：<单个明确的行动>
+相机：<镜头类型、角度、运动>
+灯光/情绪：<灯光 + 情绪>
+调色板：<3-5 种颜色锚点>
+风格/格式：<电影/动画格式提示>
+节拍/节拍：<计数或节拍>
+音频：<环境提示 / 音乐 / 如果请求则配音>
+文本（逐字）："<精确文本>"
+对话：
+<对话>
+- 说话人："简短行。"
+</对话>
+约束：<必须保留/必须避免>
+避免：<负面约束>
 ```
 
-Augmentation rules:
-- Keep it short; add only details the user already implied or provided elsewhere.
-- For edits, explicitly list invariants ("same shot, change only X").
-- For character-based shots, mention the character name verbatim in the prompt.
-- If any critical detail is missing and blocks success, ask a question; otherwise proceed.
-- If you pass a structured prompt file to the CLI, add `--no-augment` to avoid the tool re-wrapping it.
+增强规则：
+- 保持简短；仅添加用户已经暗示或别处提供的细节。
+- 对于混音，明确列出变体（"相同镜头、仅更改 X"）。
+- 如果任何关键细节缺失并阻止成功，请提问；否则继续。
+- 如果您将结构化提示文件传递给 CLI，请添加 `--no-augment` 以避免工具重新包装它。
 
-## Examples
+## 示例
 
-### Generation example (single shot)
+### 生成示例（单个镜头）
 ```
-Use case: product teaser
-Primary request: a close-up of a matte black camera on a pedestal
-Action: slow 30-degree orbit over 4 seconds
-Camera: 85mm, shallow depth of field, gentle handheld drift
-Lighting/mood: soft key light, subtle rim, premium studio feel
-Constraints: no logos, no text
-```
-
-### Edit example (invariants)
-```
-Primary request: same shot and framing, switch palette to teal/sand/rust with warmer backlight
-Constraints: keep the subject and camera move unchanged
+用例：产品预告
+主要请求：在基座上对黑色相机的特写，在 4 秒内缓慢 30 度轨道
+行动：缓慢 30 度轨道，持续 4 秒
+相机：85mm、浅景深、轻微的手持漂移
+灯光/情绪：柔和主光、微妙边缘、高级工作室感觉
+约束：无徽标、无文本
 ```
 
-### Character consistency example
+### 混音示例（变体）
 ```
-Primary request: Mossy, a moss-covered teapot mascot, hurries through a lantern-lit market at dusk
-Camera: cinematic tracking shot, 35mm, shoulder height
-Lighting/mood: warm dusk practicals, soft haze
-Constraints: keep Mossy’s silhouette and moss texture consistent across the shot
+主要请求：相同镜头和取景，将调色板切换为蓝绿色/沙/铁锈色，使用更暖的背光
+约束：保持主题和相机移动不变
 ```
 
-## Prompting best practices (short list)
-- One main action + one camera move per shot.
-- Use counts or beats for timing ("two steps, pause, turn").
-- Keep text short and the camera locked-off for UI or on-screen text.
-- Add a brief avoid line when artifacts appear (flicker, jitter, fast motion).
-- Shorter prompts are more creative; longer prompts are more controlled.
-- Put dialogue in a dedicated block; keep lines short for 4-8s clips.
-- Mention character names verbatim when using uploaded character IDs.
-- State invariants explicitly for edits (same shot, same camera move).
-- Prefer `edit` for targeted changes and `extend` for timeline continuation.
-- Iterate with single-change follow-ups to preserve continuity.
+## 提示最佳实践（简短列表）
+- 每个镜头一个主要行动 + 一个相机移动。
+- 使用计数或节拍进行计时（"两步、暂停、转身"）。
+- 保持文本简短并为 UI 或屏幕文本锁定相机。
+- 当伪影出现时添加简短的避免行（抖动、快速运动）。
+- 更短的提示更具创意；更长的提示更受控。
+- 将对话放在专用块中；为 4-8 秒剪辑保持行简短。
+- 对于混音，明确说明变体（相同镜头、相同相机移动）。
+- 使用单一更改后续进行迭代以保持连续性。
 
-## Guidance by asset type
-Use these modules when the request is for a specific artifact. They provide targeted templates and defaults.
-- Cinematic shots: `references/cinematic-shots.md`
-- Social ads: `references/social-ads.md`
+## 按资产类型的指导
 
-## CLI + environment notes
-- CLI commands + examples: `references/cli.md`
-- API parameter quick reference: `references/video-api.md`
-- Prompting guidance: `references/prompting.md`
-- Sample prompts: `references/sample-prompts.md`
-- Troubleshooting: `references/troubleshooting.md`
-- Network/sandbox tips: `references/codex-network.md`
+当请求针对特定资产时，使用这些模块。它们提供有针对性的模板和默认值。
+- 电影镜头：`references/cinematic-shots.md`
+- 社交广告：`references/social-ads.md`
 
-## Reference map
-- **`references/cli.md`**: how to run create/edit/extend/create-character/poll/download/local-queue flows via `scripts/sora.py`.
-- **`references/video-api.md`**: API-level knobs (models, sizes, duration, characters, edits, extensions, official Batch API).
-- **`references/prompting.md`**: prompt structure, character continuity, editing, and extension guidance.
-- **`references/sample-prompts.md`**: copy/paste prompt recipes (examples only; no extra theory).
-- **`references/cinematic-shots.md`**: templates for filmic shots.
-- **`references/social-ads.md`**: templates for short social ad beats.
-- **`references/troubleshooting.md`**: common errors and fixes.
-- **`references/codex-network.md`**: network/approval troubleshooting.
+## CLI + 环境说明
+- CLI 命令 + 示例：`references/cli.md`
+- API 参数快速参考：`references/video-api.md`
+- 提示指导：`references/prompting.md`
+- 示例提示：`references/sample-prompts.md`
+- 故障排除：`references/troubleshooting.md`
+- 网络/沙盒提示：`references/codex-network.md`
+
+## 参考地图
+- **`references/cli.md`**：如何通过 `scripts/sora.py` 运行创建/轮询/混音/下载/批量（命令、标志、配方）。
+- **`references/video-api.md`**：API 级别旋钮（模型、大小、持续时间、变体、状态）。
+- **`references/prompting.md`**：提示结构和迭代指导。
+- **`references/sample-prompts.md`**：复制/粘贴提示配方（仅示例；没有额外的理论）。
+- **`references/cinematic-shots.md`**：电影镜头的模板。
+- **`references/social-ads.md`**：短社交广告节拍的模板。
+- **`references/troubleshooting.md`**：常见错误和修复。
+- **`references/codex-network.md`**：网络/应用程序故障排除。

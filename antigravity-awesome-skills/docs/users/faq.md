@@ -37,9 +37,6 @@ Start from:
 - ✅ **Cursor** (AI IDE)
 - ✅ **Antigravity IDE**
 - ✅ **OpenCode**
-- ✅ **Kiro CLI** (Amazon)
-- ✅ **Kiro IDE** (Amazon)
-- ✅ **AdaL CLI**
 - ⚠️ **GitHub Copilot** (partial support via copy-paste)
 
 ### Are these skills free to use?
@@ -74,13 +71,11 @@ The skill files themselves are stored locally on your computer, but your AI assi
 
 ### What do the Risk Labels mean?
 
-We classify skills so you know what you're running. These values map directly to the `risk:` field in every `SKILL.md` frontmatter:
+We classify skills so you know what you're running:
 
-- 🔵 **`none`**: Pure reference or planning content — no shell commands, no mutations, no network access.
-- ⚪ **`safe`**: Community skills that are non-destructive (read-only, planning, code review, analysis).
-- 🔴 **`critical`**: Skills that modify files, drop data, use network scanners, or perform destructive actions. **Use with caution.**
-- 🟣 **`offensive`**: Security-focused offensive techniques (pentesting, exploitation). **Authorized use only** — always confirm the target is in scope.
-- ⬜ **`unknown`**: Legacy or unclassified content. Review the skill manually before use.
+- ⚪ **Safe (White/Blue)**: Read-only, planning, or benign skills.
+- 🔴 **Risk (Red)**: Skills that modify files (delete), use network scanners, or perform destructive actions. **Use with caution.**
+- 🟣 **Official (Purple)**: Maintained by trusted vendors (Anthropic, DeepMind, etc.).
 
 ### Can these skills hack my computer?
 
@@ -241,18 +236,6 @@ Common fixes:
 ```markdown
 <!-- security-allowlist: reason and scope -->
 ```
-
-### My PR triggered the `skill-review` automated check. What is it?
-
-Since v8.0.0, GitHub automatically runs a `skill-review` workflow on any PR that adds or modifies a `SKILL.md` file. It reviews your skill against the quality bar and flags common issues — missing sections, weak triggers, or risky command patterns.
-
-**If it reports findings:**
-
-1. Open the **Checks** tab on your PR and read the `skill-review` job output.
-2. Address any **actionable** findings (missing "When to Use", unclear triggers, blocked security patterns).
-3. Push a new commit to the same branch — the check reruns automatically.
-
-You do not need to close and reopen the PR. Informational or style-only findings do not block merging.
 
 ### Can I update an "Official" skill?
 

@@ -12,7 +12,6 @@ export type AgentType =
   | 'cortex'
   | 'crush'
   | 'cursor'
-  | 'deepagents'
   | 'droid'
   | 'gemini-cli'
   | 'github-copilot'

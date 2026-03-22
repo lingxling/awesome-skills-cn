@@ -7,7 +7,8 @@ tags: "remotion, video, react, animation, composition"
 date_added: "2026-02-27"
 ---
 
-## When to Use
+## When to use
+
 Use this skills whenever you are dealing with Remotion code to obtain the domain-specific knowledge.
 
 ## How to use

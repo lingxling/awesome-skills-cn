@@ -1,40 +1,40 @@
 ---
 name: obsidian-markdown
-description: Create and edit Obsidian Flavored Markdown with wikilinks, embeds, callouts, properties, and other Obsidian-specific syntax. Use when working with .md files in Obsidian, or when the user mentions wikilinks, callouts, frontmatter, tags, embeds, or Obsidian notes.
+description: 创建和编辑带有维基链接、嵌入、标注、属性和其他Obsidian特定语法的Obsidian风格Markdown。在Obsidian中处理.md文件时，或当用户提到维基链接、标注、前置内容、标签、嵌入或Obsidian笔记时使用。
 ---
 
-# Obsidian Flavored Markdown Skill
+# Obsidian风格Markdown技能
 
-Create and edit valid Obsidian Flavored Markdown. Obsidian extends CommonMark and GFM with wikilinks, embeds, callouts, properties, comments, and other syntax. This skill covers only Obsidian-specific extensions -- standard Markdown (headings, bold, italic, lists, quotes, code blocks, tables) is assumed knowledge.
+创建和编辑有效的Obsidian风格Markdown。Obsidian通过维基链接、嵌入、标注、属性、注释和其他语法扩展了CommonMark和GFM。此技能仅涵盖Obsidian特定的扩展 - 标准Markdown（标题、粗体、斜体、列表、引用、代码块、表格）被视为已知知识。
 
-## Workflow: Creating an Obsidian Note
+## 工作流程：创建Obsidian笔记
 
-1. **Add frontmatter** with properties (title, tags, aliases) at the top of the file. See [PROPERTIES.md](references/PROPERTIES.md) for all property types.
-2. **Write content** using standard Markdown for structure, plus Obsidian-specific syntax below.
-3. **Link related notes** using wikilinks (`[[Note]]`) for internal vault connections, or standard Markdown links for external URLs.
-4. **Embed content** from other notes, images, or PDFs using the `![[embed]]` syntax. See [EMBEDS.md](references/EMBEDS.md) for all embed types.
-5. **Add callouts** for highlighted information using `> [!type]` syntax. See [CALLOUTS.md](references/CALLOUTS.md) for all callout types.
-6. **Verify** the note renders correctly in Obsidian's reading view.
+1. **添加带属性的前置内容**（标题、标签、别名）在文件顶部。有关所有属性类型，请参阅[PROPERTIES.md](references/PROPERTIES.md)。
+2. **编写内容**使用标准Markdown进行结构，加上下面的Obsidian特定语法。
+3. **链接相关笔记**使用维基链接（`[[Note]]`）进行内部库连接，或使用标准Markdown链接用于外部URL。
+4. **嵌入内容**使用`![[embed]]`语法从其他笔记、图像或PDF嵌入内容。有关所有嵌入类型，请参阅[EMBEDS.md](references/EMBEDS.md)。
+5. **添加标注**使用`> [!type]`语法突出显示信息。有关所有标注类型，请参阅[CALLOUTS.md](references/CALLOUTS.md)。
+6. **验证**笔记在Obsidian的阅读视图中正确渲染。
 
-> When choosing between wikilinks and Markdown links: use `[[wikilinks]]` for notes within the vault (Obsidian tracks renames automatically) and `[text](url)` for external URLs only.
+> 在选择维基链接和Markdown链接之间：对库内的笔记使用`[[维基链接]]`（Obsidian自动跟踪重命名），仅对外部URL使用`[text](url)`。
 
-## Internal Links (Wikilinks)
+## 内部链接（维基链接）
 
 ```markdown
-[[Note Name]]                          Link to note
-[[Note Name|Display Text]]             Custom display text
-[[Note Name#Heading]]                  Link to heading
-[[Note Name#^block-id]]                Link to block
-[[#Heading in same note]]              Same-note heading link
+[[Note Name]]                          链接到笔记
+[[Note Name|Display Text]]             自定义显示文本
+[[Note Name#Heading]]                  链接到标题
+[[Note Name#^block-id]]                链接到块
+[[#Heading in same note]]              同一笔记中的标题链接
 ```
 
-Define a block ID by appending `^block-id` to any paragraph:
+通过在任何段落后追加`^block-id`来定义块ID：
 
 ```markdown
 This paragraph can be linked to. ^my-block-id
 ```
 
-For lists and quotes, place the block ID on a separate line after the block:
+对于列表和引用，将块ID放在块后的单独行上：
 
 ```markdown
 > A quote block
@@ -42,21 +42,21 @@ For lists and quotes, place the block ID on a separate line after the block:
 ^quote-id
 ```
 
-## Embeds
+## 嵌入
 
-Prefix any wikilink with `!` to embed its content inline:
+在任何维基链接前加上`!`以内联嵌入其内容：
 
 ```markdown
-![[Note Name]]                         Embed full note
-![[Note Name#Heading]]                 Embed section
-![[image.png]]                         Embed image
-![[image.png|300]]                     Embed image with width
-![[document.pdf#page=3]]               Embed PDF page
+![[Note Name]]                         嵌入完整笔记
+![[Note Name#Heading]]                 嵌入部分
+![[image.png]]                         嵌入图像
+![[image.png|300]]                     嵌入指定宽度的图像
+![[document.pdf#page=3]]               嵌入PDF页面
 ```
 
-See [EMBEDS.md](references/EMBEDS.md) for audio, video, search embeds, and external images.
+有关音频、视频、搜索嵌入和外部图像，请参阅[EMBEDS.md](references/EMBEDS.md)。
 
-## Callouts
+## 标注
 
 ```markdown
 > [!note]
@@ -69,11 +69,11 @@ See [EMBEDS.md](references/EMBEDS.md) for audio, video, search embeds, and exter
 > Foldable callout (- collapsed, + expanded).
 ```
 
-Common types: `note`, `tip`, `warning`, `info`, `example`, `quote`, `bug`, `danger`, `success`, `failure`, `question`, `abstract`, `todo`.
+常见类型：`note`、`tip`、`warning`、`info`、`example`、`quote`、`bug`、`danger`、`success`、`failure`、`question`、`abstract`、`todo`。
 
-See [CALLOUTS.md](references/CALLOUTS.md) for the full list with aliases, nesting, and custom CSS callouts.
+有关带有别名、嵌套和自定义CSS标注的完整列表，请参阅[CALLOUTS.md](references/CALLOUTS.md)。
 
-## Properties (Frontmatter)
+## 属性（前置内容）
 
 ```yaml
 ---
@@ -89,20 +89,20 @@ cssclasses:
 ---
 ```
 
-Default properties: `tags` (searchable labels), `aliases` (alternative note names for link suggestions), `cssclasses` (CSS classes for styling).
+默认属性：`tags`（可搜索标签）、`aliases`（链接建议的替代笔记名称）、`cssclasses`（用于样式的CSS类）。
 
-See [PROPERTIES.md](references/PROPERTIES.md) for all property types, tag syntax rules, and advanced usage.
+有关所有属性类型、标签语法规则和高级用法，请参阅[PROPERTIES.md](references/PROPERTIES.md)。
 
-## Tags
+## 标签
 
 ```markdown
-#tag                    Inline tag
-#nested/tag             Nested tag with hierarchy
+#tag                    内联标签
+#nested/tag             带层次结构的嵌套标签
 ```
 
-Tags can contain letters, numbers (not first character), underscores, hyphens, and forward slashes. Tags can also be defined in frontmatter under the `tags` property.
+标签可以包含字母、数字（不是第一个字符）、下划线、连字符和正斜杠。标签也可以在前置内容中的`tags`属性下定义。
 
-## Comments
+## 注释
 
 ```markdown
 This is visible %%but this is hidden%% text.
@@ -112,24 +112,24 @@ This entire block is hidden in reading view.
 %%
 ```
 
-## Obsidian-Specific Formatting
+## Obsidian特定格式
 
 ```markdown
-==Highlighted text==                   Highlight syntax
+==Highlighted text==                   高亮语法
 ```
 
-## Math (LaTeX)
+## 数学（LaTeX）
 
 ```markdown
-Inline: $e^{i\pi} + 1 = 0$
+内联：$e^{i\pi} + 1 = 0$
 
-Block:
+块：
 $$
 \frac{a}{b} = c
 $$
 ```
 
-## Diagrams (Mermaid)
+## 图表（Mermaid）
 
 ````markdown
 ```mermaid
@@ -140,9 +140,9 @@ graph TD
 ```
 ````
 
-To link Mermaid nodes to Obsidian notes, add `class NodeName internal-link;`.
+要将Mermaid节点链接到Obsidian笔记，添加`class NodeName internal-link;`。
 
-## Footnotes
+## 脚注
 
 ```markdown
 Text with a footnote[^1].
@@ -152,7 +152,7 @@ Text with a footnote[^1].
 Inline footnote.^[This is inline.]
 ```
 
-## Complete Example
+## 完整示例
 
 ````markdown
 ---
@@ -187,10 +187,10 @@ The algorithm uses $O(n \log n)$ sorting. See [[Algorithm Notes#Sorting]] for de
 Reviewed in [[Meeting Notes 2024-01-10#Decisions]].
 ````
 
-## References
+## 参考
 
-- [Obsidian Flavored Markdown](https://help.obsidian.md/obsidian-flavored-markdown)
-- [Internal links](https://help.obsidian.md/links)
-- [Embed files](https://help.obsidian.md/embeds)
-- [Callouts](https://help.obsidian.md/callouts)
-- [Properties](https://help.obsidian.md/properties)
+- [Obsidian风格Markdown](https://help.obsidian.md/obsidian-flavored-markdown)
+- [内部链接](https://help.obsidian.md/links)
+- [嵌入文件](https://help.obsidian.md/embeds)
+- [标注](https://help.obsidian.md/callouts)
+- [属性](https://help.obsidian.md/properties)

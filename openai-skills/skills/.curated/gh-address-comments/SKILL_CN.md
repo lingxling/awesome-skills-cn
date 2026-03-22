@@ -1,25 +1,30 @@
 ---
 name: gh-address-comments
-description: Help address review/issue comments on the open GitHub PR for the current branch using gh CLI; verify gh auth first and prompt the user to authenticate if not logged in.
-metadata:
-  short-description: Address comments in a GitHub PR review
+description: "使用 gh CLI 帮助审查/解决当前分支上的开放 GitHub PR 的评论；首先验证 gh 身份验证，如果未登录则提示用户进行身份验证。"
 ---
 
-# PR Comment Handler
+# PR 评论处理程序
 
-Guide to find the open PR for the current branch and address its comments with gh CLI. Run all `gh` commands with elevated network access.
+指导找到当前分支的开放 PR 并使用 gh CLI 解决其评论。使用提升的网络权限运行所有 `gh` 命令。
 
-Prereq: ensure `gh` is authenticated (for example, run `gh auth login` once), then run `gh auth status` with escalated permissions (include workflow/repo scopes) so `gh` commands succeed. If sandboxing blocks `gh auth status`, rerun it with `sandbox_permissions=require_escalated`.
+## 前置条件
 
-## 1) Inspect comments needing attention
-- Run scripts/fetch_comments.py which will print out all the comments and review threads on the PR
+确保 `gh` 已通过身份验证（例如，运行一次 `gh auth login`），然后运行 `gh auth status` 并使用提升的权限（包括 workflow/repo 范围），以便 `gh` 命令成功。如果沙箱阻止 `gh auth status`，使用 `sandbox_permissions=require_escalated` 重新运行它。
 
-## 2) Ask the user for clarification
-- Number all the review threads and comments and provide a short summary of what would be required to apply a fix for it
-- Ask the user which numbered comments should be addressed
+## 1) 检查需要注意的评论
 
-## 3) If user chooses comments
-- Apply fixes for the selected comments
+- 运行 scripts/fetch_comments.py，它将打印出所有评论和 PR 上的审查线程。
 
-Notes:
-- If gh hits auth/rate issues mid-run, prompt the user to re-authenticate with `gh auth login`, then retry.
+## 2) 向用户寻求澄清
+
+- 对所有审查线程和评论进行编号，并提供需要为它应用修复的简要总结。
+- 询问用户应该解决哪些编号的评论。
+
+## 3) 如果用户选择评论
+
+- 为选定的评论应用修复。
+
+## 注意事项
+
+- 如果 gh 在运行中遇到身份验证/速率限制问题，请提示用户使用 `gh auth login` 重新验证，然后重试。
+- 如果沙箱阻止 `gh auth status`，使用 `sandbox_permissions=require_escalated` 重新运行命令。

@@ -10,7 +10,8 @@ date_added: "2026-02-27"
 
 Comprehensive performance optimization guide for Angular applications. Contains prioritized rules for eliminating performance bottlenecks, optimizing bundles, and improving rendering.
 
-## When to Use
+## When to Apply
+
 Reference these guidelines when:
 
 - Writing new Angular components or pages

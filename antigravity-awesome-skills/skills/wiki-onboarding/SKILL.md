@@ -1,6 +1,6 @@
 ---
 name: wiki-onboarding
-description: "Generate two complementary onboarding documents that together give any engineer — from newcomer to principal — a complete understanding of a codebase."
+description: "Generates two complementary onboarding guides \u2014 a Principal-Level architectural deep-dive and a Zero-to-Hero contributor walkthrough. Use when the user wants onboarding documentation fo..."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -10,7 +10,8 @@ date_added: "2026-02-27"
 
 Generate two complementary onboarding documents that together give any engineer — from newcomer to principal — a complete understanding of a codebase.
 
-## When to Use
+## When to Activate
+
 - User asks for onboarding docs or getting-started guides
 - User runs `/deep-wiki:onboard` command
 - User wants to help new team members understand a codebase

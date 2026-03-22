@@ -1,678 +1,677 @@
 ---
 name: iso-13485-certification
-description: Comprehensive toolkit for preparing ISO 13485 certification documentation for medical device Quality Management Systems. Use when users need help with ISO 13485 QMS documentation, including (1) conducting gap analysis of existing documentation, (2) creating Quality Manuals, (3) developing required procedures and work instructions, (4) preparing Medical Device Files, (5) understanding ISO 13485 requirements, or (6) identifying missing documentation for medical device certification. Also use when users mention medical device regulations, QMS certification, FDA QMSR, EU MDR, or need help with quality system documentation.
+description: 用于准备医疗器械质量管理体系ISO 13485认证文档的综合工具包。当用户需要ISO 13485 QMS文档方面的帮助时使用，包括（1）对现有文档进行差距分析，（2）创建质量手册，（3）开发所需程序和工作指导，（4）准备医疗器械文件，（5）理解ISO 13485要求，或（6）识别医疗器械认证的缺失文档。当用户提及医疗器械法规、QMS认证、FDA QMSR、EU MDR或需要质量体系文档方面的帮助时也使用。
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# ISO 13485 Certification Documentation Assistant
+# ISO 13485认证文档助手
 
-## Overview
+## 概述
 
-This skill helps medical device manufacturers prepare comprehensive documentation for ISO 13485:2016 certification. It provides tools, templates, references, and guidance to create, review, and gap-analyze all required Quality Management System (QMS) documentation.
+此技能帮助医疗器械制造商准备ISO 13485:2016认证的综合文档。它提供工具、模板、参考和指导，以创建、审查和差距分析所有所需的质量管理体系（QMS）文档。
 
-**What this skill provides:**
-- Gap analysis of existing documentation
-- Templates for all mandatory documents
-- Comprehensive requirements guidance
-- Step-by-step documentation creation
-- Identification of missing documentation
-- Compliance checklists
+**此技能提供：**
+- 现有文档的差距分析
+- 所有必需文档的模板
+- 综合要求指导
+- 分步文档创建
+- 识别缺失文档
+- 合规性检查清单
 
-**When to use this skill:**
-- Starting ISO 13485 certification process
-- Conducting gap analysis against ISO 13485
-- Creating or updating QMS documentation
-- Preparing for certification audit
-- Transitioning from FDA QSR to QMSR
-- Harmonizing with EU MDR requirements
+**何时使用此技能：**
+- 开始ISO 13485认证流程
+- 对ISO 13485进行差距分析
+- 创建或更新QMS文档
+- 准备认证审核
+- 从FDA QSR过渡到QMSR
+- 与EU MDR要求协调
 
-## Core Workflow
+## 核心工作流程
 
-### 1. Assess Current State (Gap Analysis)
+### 1. 评估当前状态（差距分析）
 
-**When to start here:** User has existing documentation and needs to identify gaps
+**何时从这里开始：** 用户有现有文档并需要识别差距
 
-**Process:**
+**过程：**
 
-1. **Collect existing documentation:**
-   - Ask user to provide directory of current QMS documents
-   - Documents can be in any format (.txt, .md, .doc, .docx, .pdf)
-   - Include any procedures, manuals, work instructions, forms
+1. **收集现有文档：**
+   - 要求用户提供当前QMS文档的目录
+   - 文档可以是任何格式（.txt、.md、.doc、.docx、.pdf）
+   - 包括任何程序、手册、工作指导、表单
 
-2. **Run gap analysis script:**
+2. **运行差距分析脚本：**
    ```bash
    python scripts/gap_analyzer.py --docs-dir <path_to_docs> --output gap-report.json
    ```
 
-3. **Review results:**
-   - Identify which of the 31 required procedures are present
-   - Identify missing key documents (Quality Manual, MDF, etc.)
-   - Calculate compliance percentage
-   - Prioritize missing documentation
-
-4. **Present findings to user:**
-   - Summarize what exists
-   - Clearly list what's missing
-   - Provide prioritized action plan
-   - Estimate effort required
-
-**Output:** Comprehensive gap analysis report with prioritized action items
-
-### 2. Understand Requirements (Reference Consultation)
-
-**When to use:** User needs to understand specific ISO 13485 requirements
-
-**Available references:**
-- `references/iso-13485-requirements.md` - Complete clause-by-clause breakdown
-- `references/mandatory-documents.md` - All 31 required procedures explained
-- `references/gap-analysis-checklist.md` - Detailed compliance checklist
-- `references/quality-manual-guide.md` - How to create Quality Manual
-
-**How to use:**
-
-1. **For specific clause questions:**
-   - Read relevant section from `iso-13485-requirements.md`
-   - Explain requirements in plain language
-   - Provide practical examples
-
-2. **For document requirements:**
-   - Consult `mandatory-documents.md`
-   - Explain what must be documented
-   - Clarify when documents are applicable vs. excludable
-
-3. **For implementation guidance:**
-   - Use `quality-manual-guide.md` for policy-level documents
-   - Provide step-by-step creation process
-   - Show examples of good vs. poor implementation
-
-**Key reference sections to know:**
-
-- **Clause 4:** QMS requirements, documentation, risk management, software validation
-- **Clause 5:** Management responsibility, quality policy, objectives, management review
-- **Clause 6:** Resources, competence, training, infrastructure
-- **Clause 7:** Product realization, design, purchasing, production, traceability
-- **Clause 8:** Measurement, audits, CAPA, complaints, data analysis
-
-### 3. Create Documentation (Template-Based Generation)
-
-**When to use:** User needs to create specific QMS documents
-
-**Available templates:**
-- Quality Manual: `assets/templates/quality-manual-template.md`
-- CAPA Procedure: `assets/templates/procedures/CAPA-procedure-template.md`
-- Document Control: `assets/templates/procedures/document-control-procedure-template.md`
-
-**Process for document creation:**
-
-1. **Identify what needs to be created:**
-   - Based on gap analysis or user request
-   - Prioritize critical documents first (Quality Manual, CAPA, Complaints, Audits)
-
-2. **Select appropriate template:**
-   - Use Quality Manual template for QM
-   - Use procedure templates as examples for SOPs
-   - Adapt structure to organization's needs
-
-3. **Customize template with user-specific information:**
-   - Replace all placeholder text: [COMPANY NAME], [DATE], [NAME], etc.
-   - Tailor scope to user's actual operations
-   - Add or remove sections based on applicability
-   - Ensure consistency with organization's processes
-
-4. **Key customization areas:**
-   - Company information and addresses
-   - Product types and classifications
-   - Applicable regulatory requirements
-   - Organization structure and responsibilities
-   - Actual processes and procedures
-   - Document numbering schemes
-   - Exclusions and justifications
-
-5. **Validate completeness:**
-   - All required sections present
-   - All placeholders replaced
-   - Cross-references correct
-   - Approval sections complete
-
-**Document creation priority order:**
-
-**Phase 1 - Foundation (Critical):**
-1. Quality Manual
-2. Quality Policy and Objectives
-3. Document Control procedure
-4. Record Control procedure
-
-**Phase 2 - Core Processes (High Priority):**
-5. Corrective and Preventive Action (CAPA)
-6. Complaint Handling
-7. Internal Audit
-8. Management Review
-9. Risk Management
-
-**Phase 3 - Product Realization (High Priority):**
-10. Design and Development (if applicable)
-11. Purchasing
-12. Production and Service Provision
-13. Control of Nonconforming Product
-
-**Phase 4 - Supporting Processes (Medium Priority):**
-14. Training and Competence
-15. Calibration/Control of M&M Equipment
-16. Process Validation
-17. Product Identification and Traceability
-
-**Phase 5 - Additional Requirements (Medium Priority):**
-18. Feedback and Post-Market Surveillance
-19. Regulatory Reporting
-20. Customer Communication
-21. Data Analysis
-
-**Phase 6 - Specialized (If Applicable):**
-22. Installation (if applicable)
-23. Servicing (if applicable)
-24. Sterilization (if applicable)
-25. Contamination Control (if applicable)
-
-### 4. Develop Specific Documents
-
-#### Creating a Quality Manual
-
-**Process:**
-
-1. **Read the comprehensive guide:**
-   - Read `references/quality-manual-guide.md` in full
-   - Understand structure and required content
-   - Review examples provided
-
-2. **Gather organization information:**
-   - Legal company name and addresses
-   - Product types and classifications
-   - Organizational structure
-   - Applicable regulations
-   - Scope of operations
-   - Any exclusions needed
-
-3. **Use template:**
-   - Start with `assets/templates/quality-manual-template.md`
-   - Follow structure exactly (required by ISO 13485)
-   - Replace all placeholders
-
-4. **Complete required sections:**
-   - **Section 0:** Document control, approvals
-   - **Section 1:** Introduction, company overview
-   - **Section 2:** Scope and exclusions (critical - must justify exclusions)
-   - **Section 3:** Quality Policy (must be signed by top management)
-   - **Sections 4-8:** Address each ISO 13485 clause at policy level
-   - **Appendices:** Procedure list, org chart, process map, definitions
-
-5. **Key requirements:**
-   - Must reference all 31 documented procedures (Appendix A)
-   - Must describe process interactions (Appendix C - create process map)
-   - Must define documentation structure (Section 4.2)
-   - Must justify any exclusions (Section 2.4)
-
-6. **Validation checklist:**
-   - [ ] All required content per ISO 13485 Clause 4.2.2
-   - [ ] Quality Policy signed by top management
-   - [ ] All exclusions justified
-   - [ ] All procedures listed in Appendix A
-   - [ ] Process map included
-   - [ ] Organization chart included
-
-#### Creating Procedures (SOPs)
-
-**General approach for all procedures:**
-
-1. **Understand the requirement:**
-   - Read relevant clause in `references/iso-13485-requirements.md`
-   - Understand WHAT must be documented
-   - Identify WHO, WHEN, WHERE for your organization
-
-2. **Use template structure:**
-   - Follow CAPA or Document Control templates as examples
-   - Standard sections: Purpose, Scope, Definitions, Responsibilities, Procedure, Records, References
-   - Keep procedures clear and actionable
-
-3. **Define responsibilities clearly:**
-   - Identify specific roles (not names)
-   - Define responsibilities for each role
-   - Ensure coverage of all required activities
-
-4. **Document the "what" not excessive "how":**
-   - Procedures should define WHAT must be done
-   - Detailed HOW-TO goes in Work Instructions (Tier 3)
-   - Strike balance between guidance and flexibility
-
-5. **Include required elements:**
-   - All elements specified in ISO 13485 clause
-   - Records that must be maintained
-   - Responsibilities for each activity
-   - References to related documents
-
-**Example: Creating CAPA Procedure**
-
-1. Read ISO 13485 Clauses 8.5.2 and 8.5.3 from references
-2. Use `assets/templates/procedures/CAPA-procedure-template.md`
-3. Customize:
-   - CAPA prioritization criteria for your organization
-   - Root cause analysis methods you'll use
-   - Approval authorities and responsibilities
-   - Timeframes based on your operations
-   - Integration with complaint handling, audits, etc.
-4. Add forms as attachments:
-   - CAPA Request Form
-   - Root Cause Analysis Worksheet
-   - Action Plan Template
-   - Effectiveness Verification Checklist
-
-#### Creating Medical Device Files (MDF)
-
-**What is an MDF:**
-- File for each medical device type or family
-- Replaces separate DHF, DMR, DHR (per FDA QMSR harmonization)
-- Contains all documentation about the device
-
-**Required contents per ISO 13485 Clause 4.2.3:**
-
-1. General description and intended use
-2. Label and instructions for use specifications
-3. Product specifications
-4. Manufacturing specifications
-5. Procedures for purchasing, manufacturing, servicing
-6. Procedures for measuring and monitoring
-7. Installation requirements (if applicable)
-8. Risk management file(s)
-9. Verification and validation information
-10. Design and development file(s) (when applicable)
-
-**Process:**
-
-1. Identify each device type or family
-2. Create MDF structure (folder or binder)
-3. Collect or create each required element
-4. Ensure traceability between documents
-5. Maintain as living document (update with changes)
-
-### 5. Conduct Comprehensive Gap Analysis
-
-**When to use:** User wants detailed assessment of all requirements
-
-**Process:**
-
-1. **Use comprehensive checklist:**
-   - Open `references/gap-analysis-checklist.md`
-   - Work through clause by clause
-   - Mark status for each requirement: Compliant, Partial, Non-compliant, N/A
-
-2. **For each clause:**
-   - Read requirement description
-   - Identify existing evidence
-   - Note gaps or deficiencies
-   - Define action required
-   - Assign responsibility and target date
-
-3. **Summarize by clause:**
-   - Calculate compliance percentage per clause
-   - Identify highest-risk gaps
-   - Prioritize actions
-
-4. **Create action plan:**
-   - List all gaps
-   - Prioritize: Critical > High > Medium > Low
-   - Assign owners and dates
-   - Estimate resources needed
-
-5. **Output:**
-   - Completed gap analysis checklist
-   - Summary report with compliance percentages
-   - Prioritized action plan
-   - Timeline and milestones
-
-## Common Scenarios
-
-### Scenario 1: Starting from Scratch
-
-**User request:** "We're a medical device startup and need to implement ISO 13485. Where do we start?"
-
-**Approach:**
-
-1. **Explain the journey:**
-   - ISO 13485 requires comprehensive QMS documentation
-   - Typically 6-12 months for full implementation
-   - Can be done incrementally
-
-2. **Start with foundation:**
-   - Quality Policy and Objectives
-   - Quality Manual
-   - Organization structure and responsibilities
-
-3. **Follow the priority order:**
-   - Use Phase 1-6 priority list above
-   - Create documents in logical sequence
-   - Build on previously created documents
-
-4. **Key milestones:**
-   - Month 1-2: Foundation documents (Quality Manual, policies)
-   - Month 3-4: Core processes (CAPA, Complaints, Audits)
-   - Month 5-6: Product realization processes
-   - Month 7-8: Supporting processes
-   - Month 9-10: Internal audits and refinement
-   - Month 11-12: Management review and certification audit
-
-### Scenario 2: Gap Analysis for Existing QMS
-
-**User request:** "We have some procedures but don't know what we're missing for ISO 13485."
-
-**Approach:**
-
-1. **Run automated gap analysis:**
-   - Ask for document directory
-   - Run `scripts/gap_analyzer.py`
-   - Review automated findings
-
-2. **Conduct detailed assessment:**
-   - Use comprehensive checklist for user's specific situation
-   - Go deeper than automated analysis
-   - Assess quality of existing documents, not just presence
-
-3. **Provide prioritized gap list:**
-   - Missing mandatory procedures
-   - Incomplete procedures
-   - Quality issues with existing documents
-   - Missing records or forms
-
-4. **Create remediation plan:**
-   - High priority: Safety-related, regulatory-required
-   - Medium priority: Core QMS processes
-   - Low priority: Improvement opportunities
-
-### Scenario 3: Creating Specific Document
-
-**User request:** "Help me create a CAPA procedure."
-
-**Approach:**
-
-1. **Explain requirements:**
-   - Read ISO 13485 Clauses 8.5.2 and 8.5.3 from references
-   - Explain what must be in CAPA procedure
-   - Provide examples of good CAPA processes
-
-2. **Use template:**
-   - Start with CAPA procedure template
-   - Explain each section's purpose
-   - Show what needs customization
-
-3. **Gather user-specific info:**
-   - How are CAPAs initiated in their organization?
-   - Who are the responsible parties?
-   - What prioritization criteria make sense?
-   - What RCA methods will they use?
-   - What are appropriate timeframes?
-
-4. **Create customized procedure:**
-   - Replace all placeholders
-   - Adapt to user's processes
-   - Ensure completeness
-
-5. **Add supporting materials:**
-   - CAPA request form
-   - RCA worksheets
-   - Action plan template
-   - Effectiveness verification checklist
-
-### Scenario 4: Updating for Regulatory Changes
-
-**User request:** "We need to update our QMS for FDA QMSR harmonization."
-
-**Approach:**
-
-1. **Explain changes:**
-   - FDA 21 CFR Part 820 harmonized with ISO 13485
-   - Now called QMSR (effective Feb 2, 2026)
-   - Key change: Medical Device File replaces DHF/DMR/DHR
-
-2. **Review current documentation:**
-   - Identify documents referencing QSR
-   - Find separate DHF, DMR, DHR structures
-   - Check for ISO 13485 compliance gaps
-
-3. **Update strategy:**
-   - Update references from QSR to QMSR
-   - Consolidate DHF/DMR/DHR into Medical Device Files
-   - Add any missing ISO 13485 requirements
-   - Maintain backward compatibility during transition
-
-4. **Create transition plan:**
-   - Update Quality Manual
-   - Update MDF procedure
-   - Reorganize device history files
-   - Train personnel on changes
-
-### Scenario 5: Preparing for Certification Audit
-
-**User request:** "We have our documentation ready. How do we prepare for the certification audit?"
-
-**Approach:**
-
-1. **Conduct readiness assessment:**
-   - Use comprehensive gap analysis checklist
-   - Review all documentation for completeness
-   - Verify records exist for all required items
-   - Check for consistent implementation
-
-2. **Pre-audit checklist:**
-   - [ ] All 31 procedures documented and approved
-   - [ ] Quality Manual complete with all required content
-   - [ ] Medical Device Files complete for all products
-   - [ ] Internal audit completed with findings addressed
-   - [ ] Management review completed
-   - [ ] Personnel trained on QMS procedures
-   - [ ] Records maintained per retention requirements
-   - [ ] CAPA system functional with effectiveness demonstrated
-   - [ ] Complaints system operational
-
-3. **Conduct mock audit:**
-   - Use ISO 13485 requirements as audit criteria
-   - Sample records to verify consistent implementation
-   - Interview personnel to verify understanding
-   - Identify any non-conformances
-
-4. **Address findings:**
-   - Correct any deficiencies
-   - Document corrections
-   - Verify effectiveness
-
-5. **Final preparation:**
-   - Brief management and staff
-   - Prepare audit schedule
-   - Organize evidence and records
-   - Designate escorts and support personnel
-
-## Best Practices
-
-### Document Development
-
-1. **Start at policy level, then add detail:**
-   - Quality Manual = policy level
-   - Procedures = what, who, when
-   - Work Instructions = detailed how-to
-   - Forms = data collection
-
-2. **Maintain consistency:**
-   - Use same terminology throughout
-   - Cross-reference related documents
-   - Keep numbering scheme consistent
-   - Update all related documents together
-
-3. **Write for your audience:**
-   - Clear, simple language
-   - Avoid jargon
-   - Define technical terms
-   - Provide examples where helpful
-
-4. **Make procedures usable:**
-   - Action-oriented language
-   - Logical flow
-   - Clear responsibilities
-   - Realistic timeframes
-
-### Exclusions
-
-**When you can exclude:**
-- Design and development (if contract manufacturer only)
-- Installation (if product requires no installation)
-- Servicing (if not offered)
-- Sterilization (if non-sterile product)
-
-**Justification requirements:**
-- Must be in Quality Manual
-- Must explain why excluded
-- Cannot exclude if process performed
-- Cannot affect ability to provide safe, effective devices
-
-**Example good justification:**
-> "Clause 7.3 Design and Development is excluded. ABC Company operates as a contract manufacturer and produces medical devices according to complete design specifications provided by customers. All design activities are performed by the customer and ABC Company has no responsibility for design inputs, outputs, verification, validation, or design changes."
-
-**Example poor justification:**
-> "We don't do design." (Too brief, doesn't explain why or demonstrate no impact)
-
-### Common Mistakes to Avoid
-
-1. **Copying ISO 13485 text verbatim**
-   - Write in your own words
-   - Describe YOUR processes
-   - Make it actionable for your organization
-
-2. **Making procedures too detailed**
-   - Procedures should be stable
-   - Excessive detail belongs in work instructions
-   - Balance guidance with flexibility
-
-3. **Creating documents in isolation**
-   - Ensure consistency across QMS
-   - Cross-reference related documents
-   - Build on previously created documents
-
-4. **Forgetting records**
-   - Every procedure should specify records
-   - Define retention requirements
-   - Ensure records actually maintained
-
-5. **Inadequate approval**
-   - Quality Manual must be signed by top management
-   - All procedures must be properly approved
-   - Train staff before documents become effective
-
-## Resources
+3. **审查结果：**
+   - 识别31个必需程序中哪些存在
+   - 识别缺失的关键文档（质量手册、MDF等）
+   - 计算合规百分比
+   - 优先考虑缺失文档
+
+4. **向用户展示发现：**
+   - 总结存在的内容
+   - 清晰列出缺失的内容
+   - 提供优先行动计划
+   - 估算所需工作量
+
+**输出：** 带有优先行动项的综合差距分析报告
+
+### 2. 理解要求（参考咨询）
+
+**何时使用：** 用户需要理解特定的ISO 13485要求
+
+**可用参考：**
+- `references/iso-13485-requirements.md` - 完整的逐条款分解
+- `references/mandatory-documents.md` - 所有31个必需程序的说明
+- `references/gap-analysis-checklist.md` - 详细合规检查清单
+- `references/quality-manual-guide.md` - 如何创建质量手册
+
+**如何使用：**
+
+1. **对于特定条款问题：**
+   - 从`iso-13485-requirements.md`阅读相关部分
+   - 用通俗语言解释要求
+   - 提供实际示例
+
+2. **对于文档要求：**
+   - 咨询`mandatory-documents.md`
+   - 解释必须记录什么
+   - 澄清何时文档适用与可排除
+
+3. **对于实施指导：**
+   - 使用`quality-manual-guide.md`获取策略级文档
+   - 提供分步创建过程
+   - 展示良好与不良实施的示例
+
+**需要了解的关键参考部分：**
+
+- **条款4：** QMS要求、文档、风险管理、软件验证
+- **条款5：** 管理职责、质量方针、目标、管理评审
+- **条款6：** 资源、能力、培训、基础设施
+- **条款7：** 产品实现、设计、采购、生产、可追溯性
+- **条款8：** 测量、审核、CAPA、投诉、数据分析
+
+### 3. 创建文档（基于模板的生成）
+
+**何时使用：** 用户需要创建特定的QMS文档
+
+**可用模板：**
+- 质量手册：`assets/templates/quality-manual-template.md`
+- CAPA程序：`assets/templates/procedures/CAPA-procedure-template.md`
+- 文档控制：`assets/templates/procedures/document-control-procedure-template.md`
+
+**文档创建过程：**
+
+1. **识别需要创建的内容：**
+   - 基于差距分析或用户请求
+   - 优先考虑关键文档（质量手册、CAPA、投诉、审核）
+
+2. **选择适当的模板：**
+   - 使用质量手册模板获取QM
+   - 使用程序模板作为SOP示例
+   - 根据组织需求调整结构
+
+3. **使用用户特定信息自定义模板：**
+   - 替换所有占位符文本：[COMPANY NAME]、[DATE]、[NAME]等
+   - 根据用户的实际操作定制范围
+   - 根据适用性添加或删除部分
+   - 确保与组织流程的一致性
+
+4. **关键自定义领域：**
+   - 公司信息和地址
+   - 产品类型和分类
+   - 适用法规要求
+   - 组织结构和职责
+   - 实际流程和程序
+   - 文档编号方案
+   - 排除和理由
+
+5. **验证完整性：**
+   - 所有必需部分都存在
+   - 所有占位符已替换
+   - 交叉引用正确
+   - 批准部分完整
+
+**文档创建优先级顺序：**
+
+**阶段1 - 基础（关键）：**
+1. 质量手册
+2. 质量方针和目标
+3. 文档控制程序
+4. 记录控制程序
+
+**阶段2 - 核心流程（高优先级）：**
+5. 纠正和预防措施（CAPA）
+6. 投诉处理
+7. 内部审核
+8. 管理评审
+9. 风险管理
+
+**阶段3 - 产品实现（高优先级）：**
+10. 设计和开发（如适用）
+11. 采购
+12. 生产和提供
+13. 不合格产品控制
+
+**阶段4 - 支持流程（中优先级）：**
+14. 培训和能力
+15. 校准/监控M&M设备
+16. 过程验证
+17. 产品识别和可追溯性
+
+**阶段5 - 附加要求（中优先级）：**
+18. 反馈和上市后监督
+19. 法规报告
+20. 客户沟通
+21. 数据分析
+
+**阶段6 - 专用（如适用）：**
+22. 安装（如适用）
+23. 服务（如适用）
+24. 灭菌（如适用）
+25. 污染控制（如适用）
+
+### 4. 开发特定文档
+
+#### 创建质量手册
+
+**过程：**
+
+1. **阅读综合指南：**
+   - 完整阅读`references/quality-manual-guide.md`
+   - 理解结构和必需内容
+   - 审查提供的示例
+
+2. **收集组织信息：**
+   - 法定公司名称和地址
+   - 产品类型和分类
+   - 组织结构
+   - 适用法规
+   - 操作范围
+   - 任何需要的排除
+
+3. **使用模板：**
+   - 从`assets/templates/quality-manual-template.md`开始
+   - 精确遵循结构（ISO 13485要求）
+   - 替换所有占位符
+
+4. **完成必需部分：**
+   - **第0部分：** 文档控制、批准
+   - **第1部分：** 简介、公司概述
+   - **第2部分：** 范围和排除（关键 - 必须证明排除合理）
+   - **第3部分：** 质量方针（必须由最高管理层签署）
+   - **第4-8部分：** 在策略层面解决每个ISO 13485条款
+   - **附录：** 程序列表、组织图、流程图、定义
+
+5. **关键要求：**
+   - 必须引用附录A中的所有31个记录程序
+   - 必须描述流程交互（附录C - 创建流程图）
+   - 必须定义文档结构（第4.2节）
+   - 必须证明任何排除合理（第2.4节）
+
+6. **验证检查清单：**
+   - [ ] 符合ISO 13485第4.2.2节的所有必需内容
+   - [ ] 质量方针由最高管理层签署
+   - [ ] 所有排除已证明合理
+   - [ ] 附录A中列出了所有程序
+   - [ ] 包含流程图
+   - [ ] 包含组织图
+
+#### 创建程序（SOP）
+
+所有程序的一般方法：
+
+1. **理解要求：**
+   - 从`references/iso-13485-requirements.md`阅读相关条款
+   - 理解必须记录什么
+   - 为您的组织识别WHO、WHEN、WHERE
+
+2. **使用模板结构：**
+   - 遵循CAPA或文档控制模板作为示例
+   - 标准部分：目的、范围、定义、职责、程序、记录、参考
+   - 保持程序清晰且可操作
+
+3. **清晰定义职责：**
+   - 识别特定角色（而非姓名）
+   - 为每个角色定义职责
+   - 确保覆盖所有必需活动
+
+4. **记录"什么"而非过多的"如何"：**
+   - 程序应定义必须做什么
+   - 详细的"如何做"属于工作指导（第3层）
+   - 在指导与灵活性之间取得平衡
+
+5. **包含必需元素：**
+   - ISO 13485条款中指定的所有元素
+   - 必须维护的记录
+   - 每个活动的职责
+   - 相关文档的参考
+
+**示例：创建CAPA程序**
+
+1. 从参考中阅读ISO 13485第8.5.2和8.5.3条
+2. 使用`assets/templates/procedures/CAPA-procedure-template.md`
+3. 自定义：
+   - 您组织的CAPA优先级标准
+   - 您将使用的根本原因分析方法
+   - 批准权限和职责
+   - 基于您操作的时间框架
+   - 与投诉处理、审核等的集成
+4. 添加表单作为附件：
+   - CAPA请求表单
+   - 根本原因分析工作表
+   - 行动计划模板
+   - 有效性验证检查清单
+
+#### 创建医疗器械文件（MDF）
+
+**什么是MDF：**
+- 每种医疗器械类型或家族的文件
+- 替代单独的DHF、DMR、DHR（根据FDA QMSR协调）
+- 包含关于设备的所有文档
+
+**ISO 13485第4.2.3条要求的必需内容：**
+
+1. 一般描述和预期用途
+2. 标签和使用说明书规范
+3. 产品规范
+4. 制造规范
+5. 采购、制造、服务的程序
+6. 测量和监控程序
+7. 安装要求（如适用）
+8. 风险管理文件
+9. 验证和确认信息
+10. 设计和开发文件（如适用）
+
+**过程：**
+
+1. 识别每种设备类型或家族
+2. 创建MDF结构（文件夹或活页夹）
+3. 收集或创建每个必需元素
+4. 确保文档之间的可追溯性
+5. 作为活文档维护（随更改更新）
+
+### 5. 进行全面差距分析
+
+**何时使用：** 用户需要对所有要求进行详细评估
+
+**过程：**
+
+1. **使用综合检查清单：**
+   - 打开`references/gap-analysis-checklist.md`
+   - 逐条条款工作
+   - 标记每个要求的状态：合规、部分、不合规、不适用
+
+2. **对于每个条款：**
+   - 阅读要求描述
+   - 识别现有证据
+   - 注意差距或不足
+   - 定义所需行动
+   - 分配职责和目标日期
+
+3. **按条款总结：**
+   - 计算每个条款的合规百分比
+   - 识别最高风险的差距
+   - 优先考虑行动
+
+4. **创建行动计划：**
+   - 列出所有差距
+   - 优先级：关键 > 高 > 中 > 低
+   - 分配所有者和日期
+   - 估算所需资源
+
+5. **输出：**
+   - 已完成的差距分析检查清单
+   - 带有合规百分比的摘要报告
+   - 优先行动计划
+   - 时间表和里程碑
+
+## 常见场景
+
+### 场景1：从零开始
+
+**用户请求：** "我们是一家医疗器械初创公司，需要实施ISO 13485。我们从哪里开始？"
+
+**方法：**
+
+1. **解释旅程：**
+   - ISO 13485需要全面的QMS文档
+   - 完整实施通常需要6-12个月
+   - 可以增量完成
+
+2. **从基础开始：**
+   - 质量方针和目标
+   - 质量手册
+   - 组织结构和职责
+
+3. **遵循优先级顺序：**
+   - 使用上述阶段1-6优先级列表
+   - 按逻辑顺序创建文档
+   - 在先前创建的文档基础上构建
+
+4. **关键里程碑：**
+   - 第1-2个月：基础文档（质量手册、方针）
+   - 第3-4个月：核心流程（CAPA、投诉、审核）
+   - 第5-6个月：产品实现流程
+   - 第7-8个月：支持流程
+   - 第9-10个月：内部审核和优化
+   - 第11-12个月：管理评审和认证审核
+
+### 场景2：现有QMS的差距分析
+
+**用户请求：** "我们有一些程序，但不知道ISO 13485缺少什么。"
+
+**方法：**
+
+1. **运行自动化差距分析：**
+   - 询问文档目录
+   - 运行`scripts/gap_analyzer.py`
+   - 审查自动化发现
+
+2. **进行详细评估：**
+   - 使用综合检查清单获取用户特定情况
+   - 比自动化分析更深入
+   - 评估现有文档的质量，而不仅仅是存在
+
+3. **提供优先差距列表：**
+   - 缺失的必需程序
+   - 不完整的程序
+   - 现有文档的质量问题
+   - 缺失的记录或表单
+
+4. **创建补救计划：**
+   - 高优先级：安全相关、法规要求
+   - 中优先级：核心QMS流程
+   - 低优先级：改进机会
+
+### 场景3：创建特定文档
+
+**用户请求：** "帮我创建CAPA程序。"
+
+**方法：**
+
+1. **解释要求：**
+   - 从参考中阅读ISO 13485第8.5.2和8.5.3条
+   - 解释CAPA程序必须包含什么
+   - 提供良好CAPA流程的示例
+
+2. **使用模板：**
+   - 从CAPA程序模板开始
+   - 解释每个部分的目的
+   - 展示需要自定义的内容
+
+3. **收集用户特定信息：**
+   - CAPA如何在他们的组织中发起？
+   - 谁是负责方？
+   - 什么优先级标准合理？
+   - 他们将使用什么RCA方法？
+   - 什么时间框架合适？
+
+4. **创建自定义程序：**
+   - 替换所有占位符
+   - 适应用户的流程
+   - 确保完整性
+
+5. **添加支持材料：**
+   - CAPA请求表单
+   - RCA工作表
+   - 行动计划模板
+   - 有效性验证检查清单
+
+### 场景4：为法规变更更新
+
+**用户请求：** "我们需要为FDA QMSR协调更新我们的QMS。"
+
+**方法：**
+
+1. **解释变更：**
+   - FDA 21 CFR第820部分与ISO 13485协调（2026年2月2日生效）
+   - 现在称为QMSR
+   - 关键变更：医疗器械文件取代DHF/DMR/DHR
+
+2. **审查当前文档：**
+   - 识别引用QSR的文档
+   - 查找单独的DHF、DMR、DHR结构
+   - 检查ISO 13485合规差距
+
+3. **更新策略：**
+   - 将引用从QSR更新到QMSR
+   - 将DHF/DMR/DHR整合到医疗器械文件中
+   - 添加任何缺失的ISO 13485要求
+   - 在过渡期间保持向后兼容性
+
+4. **创建过渡计划：**
+   - 更新质量手册
+   - 更新MDF程序
+   - 重新组织设备历史文件
+   - 培训人员了解变更
+
+### 场景5：准备认证审核
+
+**用户请求：** "我们的文档已准备好。我们如何准备认证审核？"
+
+**方法：**
+
+1. **进行准备就绪评估：**
+   - 使用综合差距分析检查清单
+   - 审查所有文档的完整性
+   - 验证所有必需项目的记录存在
+   - 检查一致实施
+
+2. **审核前检查清单：**
+   - [ ] 所有31个程序已记录并批准
+   - [ ] 质量手册包含所有必需内容且完整
+   - [ ] 所有产品的医疗器械文件完整
+   - [ ] 已完成内部审核并解决发现
+   - [ ] 已完成管理评审
+   - [ ] 人员已培训QMS程序
+   - [ ] 按保留要求维护记录
+   - [ ] CAPA系统运行并展示有效性
+   - [ ] 投诉系统运行
+
+3. **进行模拟审核：**
+   - 使用ISO 13485要求作为审核标准
+   - 抽样记录以验证一致实施
+   - 面试人员以验证理解
+   - 识别任何不合格项
+
+4. **解决发现：**
+   - 更正任何不足
+   - 记录更正
+   - 验证有效性
+
+5. **最终准备：**
+   - 向管理层和员工简要介绍
+   - 准备审核时间表
+   - 组织证据和记录
+   - 指定陪同和支持人员
+
+## 最佳实践
+
+### 文档开发
+
+1. **从策略级别开始，然后添加细节：**
+   - 质量手册 = 策略级别
+   - 程序 = 什么、谁、何时
+   - 工作指导 = 详细的如何做
+   - 表单 = 数据收集
+
+2. **保持一致性：**
+   - 在整个过程中使用相同的术语
+   - 交叉引用相关文档
+   - 保持编号方案一致
+   - 一起更新所有相关文档
+
+3. **为您的受众编写：**
+   - 清晰、简单的语言
+   - 避免行话
+   - 定义技术术语
+   - 在有帮助的地方提供示例
+
+4. **使程序可用：**
+   - 面向行动的语言
+   - 逻辑流程
+   - 清晰的职责
+   - 现实的时间框架
+
+### 排除
+
+**何时可以排除：**
+- 设计和开发（如果仅是合同制造商）
+- 安装（如果产品不需要安装）
+- 服务（如果不提供）
+- 灭菌（如果非灭菌产品）
+
+**理由要求：**
+- 必须在质量手册中
+- 必须解释为何排除
+- 如果执行流程则不能排除
+- 不能影响提供安全、有效设备的能力
+
+**良好理由示例：**
+> "第7.3条设计和开发被排除。ABC公司作为合同制造商运营，并根据客户提供的完整设计规范生产医疗器械。所有设计活动由客户执行，ABC公司对设计输入、输出、验证、确认或设计变更不承担责任。"
+
+**不良理由示例：**
+> "我们不进行设计。"（太简短，未解释为何或证明无影响）
+
+### 需避免的常见错误
+
+1. **逐字复制ISO 13485文本**
+   - 用自己的话写
+   - 描述您的流程
+   - 为您的组织使其可操作
+
+2. **使程序过于详细**
+   - 程序应该稳定
+   - 过多的细节属于工作指导
+   - 在指导与灵活性之间取得平衡
+
+3. **孤立地创建文档**
+   - 确保QMS中的一致性
+   - 交叉引用相关文档
+   - 在先前创建的文档基础上构建
+
+4. **忘记记录**
+   - 每个程序应指定记录
+   - 定义保留要求
+   - 确保实际维护记录
+
+5. **批准不足**
+   - 质量手册必须由最高管理层签署
+   - 所有程序必须得到适当批准
+   - 在文档生效前培训员工
+
+## 资源
 
 ### scripts/
-- `gap_analyzer.py` - Automated tool to analyze existing documentation and identify gaps against ISO 13485 requirements
+- `gap_analyzer.py` - 自动化工具，用于分析现有文档并识别与ISO 13485要求的差距
 
 ### references/
-- `iso-13485-requirements.md` - Complete breakdown of ISO 13485:2016 requirements clause by clause
-- `mandatory-documents.md` - Detailed list of all 31 required procedures plus other mandatory documents
-- `gap-analysis-checklist.md` - Comprehensive checklist for detailed gap assessment
-- `quality-manual-guide.md` - Step-by-step guide for creating a compliant Quality Manual
+- `iso-13485-requirements.md` - ISO 13485:2016要求的完整逐条款分解
+- `mandatory-documents.md` - 所有31个必需程序加上其他必需文档的详细列表
+- `gap-analysis-checklist.md` - 详细差距评估的综合检查清单
+- `quality-manual-guide.md` - 创建合规质量手册的分步指南
 
 ### assets/templates/
-- `quality-manual-template.md` - Complete template for Quality Manual with all required sections
-- `procedures/CAPA-procedure-template.md` - Example CAPA procedure following best practices
-- `procedures/document-control-procedure-template.md` - Example document control procedure
+- `quality-manual-template.md` - 质量手册的完整模板，包含所有必需部分
+- `procedures/CAPA-procedure-template.md` - 遵循最佳实践的示例CAPA程序
+- `procedures/document-control-procedure-template.md` - 示例文档控制程序
 
-## Quick Reference
+## 快速参考
 
-### The 31 Required Documented Procedures
+### 31个必需的记录程序
 
-1. Risk Management (4.1.5)
-2. Software Validation (4.1.6)
-3. Control of Documents (4.2.4)
-4. Control of Records (4.2.5)
-5. Internal Communication (5.5.3)
-6. Management Review (5.6.1)
-7. Human Resources/Competence (6.2)
-8. Infrastructure Maintenance (6.3) - when applicable
-9. Contamination Control (6.4.2) - when applicable
-10. Customer Communication (7.2.3)
-11. Design and Development (7.3.1-10) - when applicable
-12. Purchasing (7.4.1)
-13. Verification of Purchased Product (7.4.3)
-14. Production Control (7.5.1)
-15. Product Cleanliness (7.5.2) - when applicable
-16. Installation (7.5.3) - when applicable
-17. Servicing (7.5.4) - when applicable
-18. Process Validation (7.5.6) - when applicable
-19. Sterilization Validation (7.5.7) - when applicable
-20. Product Identification (7.5.8)
-21. Traceability (7.5.9)
-22. Customer Property (7.5.10) - when applicable
-23. Preservation of Product (7.5.11)
-24. Control of M&M Equipment (7.6)
-25. Feedback (8.2.1)
-26. Complaint Handling (8.2.2)
-27. Regulatory Reporting (8.2.3)
-28. Internal Audit (8.2.4)
-29. Process Monitoring (8.2.5)
-30. Product Monitoring (8.2.6)
-31. Control of Nonconforming Product (8.3)
-32. Corrective Action (8.5.2)
-33. Preventive Action (8.5.3)
+1. 风险管理（4.1.5）
+2. 软件验证（4.1.6）
+3. 文档控制（4.2.4）
+4. 记录控制（4.2.5）
+5. 内部沟通（5.5.3）
+6. 管理评审（5.6.1）
+7. 人力资源/能力（6.2）
+8. 基础设施维护（6.3）- 如适用
+9. 污染控制（6.4.2）- 如适用
+10. 客户沟通（7.2.3）
+11. 设计和开发（7.3.1-10）- 如适用
+12. 采购（7.4.1）
+13. 采购产品验证（7.4.3）
+14. 生产控制（7.5.1）
+15. 产品清洁度（7.5.2）- 如适用
+16. 安装（7.5.3）- 如适用
+17. 服务（7.5.4）- 如适用
+18. 过程验证（7.5.6）- 如适用
+19. 灭菌验证（7.5.7）- 如适用
+20. 产品识别（7.5.8）
+21. 可追溯性（7.5.9）
+22. 客户财产（7.5.10）- 如适用
+23. 产品保存（7.5.11）
+24. 监控和控制M&M设备（7.6）
+25. 反馈（8.2.1）
+26. 投诉处理（8.2.2）
+27. 法规报告（8.2.3）
+28. 内部审核（8.2.4）
+29. 过程监控（8.2.5）
+30. 产品监控（8.2.6）
+31. 不合格产品控制（8.3）
+32. 纠正措施（8.5.2）
+33. 预防措施（8.5.3）
 
-*(Note: Traditional count is "31 procedures" though list shows more because some are conditional)*
+*（注：传统计数是"31个程序"，尽管列表显示更多，因为有些是有条件的）*
 
-### Key Regulatory Requirements
+### 关键法规要求
 
-**FDA (United States):**
-- 21 CFR Part 820 (now QMSR) - harmonized with ISO 13485 as of Feb 2026
-- Device classification determines requirements
-- Establishment registration and device listing required
+**FDA（美国）：**
+- 21 CFR第820部分（现为QMSR）- 截至2026年2月与ISO 13485协调
+- 设备分类决定要求
+- 需要机构注册和设备列名
 
-**EU (European Union):**
-- MDR 2017/745 (Medical Devices Regulation)
-- IVDR 2017/746 (In Vitro Diagnostic Regulation)
-- Technical documentation requirements
-- CE marking requirements
+**EU（欧盟）：**
+- MDR 2017/745（医疗器械法规）
+- IVDR 2017/746（体外诊断法规）
+- 技术文档要求
+- CE标志要求
 
-**Canada:**
-- Canadian Medical Devices Regulations (SOR/98-282)
-- Device classification system
-- Medical Device Establishment License (MDEL)
+**加拿大：**
+- 加拿大医疗器械法规（SOR/98-282）
+- 设备分类系统
+- 医疗器械机构许可证（MDEL）
 
-**Other Regions:**
-- Australia TGA, Japan PMDA, China NMPA, etc.
-- Often require or recognize ISO 13485 certification
+**其他地区：**
+- 澳大利亚TGA、日本PMDA、中国NMPA等
+- 通常要求或认可ISO 13485认证
 
-### Document Retention
+### 文档保留
 
-**Minimum retention:** Lifetime of medical device as defined by organization
+**最低保留：** 由组织定义的医疗器械寿命
 
-**Typical retention periods:**
-- Design documents: Life of device + 5-10 years
-- Manufacturing records: Life of device
-- Complaint records: Life of device + 5-10 years
-- CAPA records: 5-10 years minimum
-- Calibration records: Retention period of equipment + 1 calibration cycle
+**典型保留期：**
+- 设计文档：设备寿命 + 5-10年
+- 制造记录：设备寿命
+- 投诉记录：设备寿命 + 5-10年
+- CAPA记录：最少5-10年
+- 校准记录：设备保留期 + 1个校准周期
 
-**Always comply with applicable regulatory requirements which may specify longer periods.**
+**始终遵守可能指定更长期限的适用法规要求。**
 
 ---
 
-## Getting Started
+## 入门指南
 
-**First-time users should:**
+**首次用户应该：**
 
-1. Read `references/iso-13485-requirements.md` to understand the standard
-2. If you have existing documentation, run gap analysis script
-3. Create Quality Manual using template and guide
-4. Develop procedures in priority order
-5. Use comprehensive checklist for final validation
+1. 阅读`references/iso-13485-requirements.md`以理解标准
+2. 如果您有现有文档，运行差距分析脚本
+3. 使用模板和指南创建质量手册
+4. 按优先级顺序开发程序
+5. 使用综合检查清单进行最终验证
 
-**For specific tasks:**
-- Creating Quality Manual → See Section 4 and use quality-manual-guide.md
-- Creating CAPA procedure → See Section 4 and use CAPA template
-- Gap analysis → See Section 1 and 5
-- Understanding requirements → See Section 2
+**对于特定任务：**
+- 创建质量手册 → 参见第4节并使用quality-manual-guide.md
+- 创建CAPA程序 → 参见第4节并使用CAPA模板
+- 差距分析 → 参见第1和5节
+- 理解要求 → 参见第2节
 
-**Need help?** Start by describing your situation: what stage you're at, what you have, and what you need to create.
-
+**需要帮助？** 首先描述您的情况：您处于什么阶段，您有什么，以及您需要创建什么。

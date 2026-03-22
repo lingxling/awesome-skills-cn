@@ -1,15 +1,14 @@
 ---
 name: project-development
-description: "This skill covers the principles for identifying tasks suited to LLM processing, designing effective project architectures, and iterating rapidly using agent-assisted development."
-risk: unknown
-source: community
+description: This skill should be used when the user asks to "start an LLM project", "design batch pipeline", "evaluate task-model fit", "structure agent project", or mentions pipeline architecture, agent-assisted development, cost estimation, or choosing...
 ---
 
 # Project Development Methodology
 
 This skill covers the principles for identifying tasks suited to LLM processing, designing effective project architectures, and iterating rapidly using agent-assisted development. The methodology applies whether building a batch processing pipeline, a multi-agent research system, or an interactive agent application.
 
-## When to Use
+## When to Activate
+
 Activate this skill when:
 - Starting a new project that might benefit from LLM processing
 - Evaluating whether a task is well-suited for agents versus traditional code

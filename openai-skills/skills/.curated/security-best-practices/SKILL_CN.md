@@ -1,86 +1,84 @@
 ---
 name: "security-best-practices"
-description: "Perform language and framework specific security best-practice reviews and suggest improvements. Trigger only when the user explicitly requests security best practices guidance, a security review/report, or secure-by-default coding help. Trigger only for supported languages (python, javascript/typescript, go). Do not trigger for general code review, debugging, or non-security tasks."
+description: "执行语言和框架特定的安全最佳实践审查并建议改进。仅当用户明确请求安全最佳实践指导、安全审查/报告或安全默认编码帮助时触发。仅针对支持的语言（python、javascript/typescript、go）触发。不要为一般代码审查、调试或非安全任务触发。"
 ---
 
-# Security Best Practices
+# 安全最佳实践
 
-## Overview
+## 概述
 
-This skill provides a description of how to identify the language and frameworks used by the current context, and then to load information from this skill's references directory about the security best practices for this language and or frameworks.
+此技能提供了如何识别当前上下文使用的语言和框架的描述，然后从此技能的 references 目录加载有关该语言和/或框架的安全最佳实践的信息。
 
-This information, if present, can be used to write new secure by default code, or to passively detect major issues within existing code, or (if requested by the user) provide a vulnerability report and suggest fixes.
+如果存在此信息，可用于编写新的安全默认代码，或在现有代码中被动检测主要问题，或（如果用户请求）提供漏洞报告并建议修复。
 
-## Workflow
+## 工作流程
 
-The initial step for this skill is to identify ALL languages and ALL frameworks which you are being asked to use or already exist in the scope of the project you are working in. Focus on the primary core frameworks. Often you will want to identify both frontend and backend languages and frameworks.
+此技能的初始步骤是识别您被要求使用或已经存在于您正在工作的项目范围内的所有语言和所有框架。专注于主要核心框架。通常，您需要识别前端和后端语言和框架。
 
-Then check this skill's references directory to see if there are any relevant documentation for the language and or frameworks. Make sure you read ALL reference files which relate to the specific framework or language. The format of the filenames is `<language>-<framework>-<stack>-security.md`. You should also check if there is a `<language>-general-<stack>-security.md` which is agnostic to the framework you may be using.
+然后检查此技能的 references 目录，看看是否有与该语言和/或框架相关的任何相关文档。确保您阅读与特定框架或语言相关的所有参考文件。文件名格式为 `<language>-<framework>-<stack>-security.md`。您还应该检查是否有 `<language>-general-<stack>-security.md`，它对您可能使用的框架不可知。
 
-If working on a web application which includes a frontend and a backend, make sure you have checked for reference documents for BOTH the frontend and backend!
+如果正在处理包括前端和后端的 Web 应用程序，请确保您已检查前端和后端的参考文档！
 
-If you are asked to make a web app which will include both a frontend and backend, but the frontend framework is not specified, also check out `javascript-general-web-frontend-security.md`. It is important that you understand how to secure both the frontend and backend.
+如果您被要求制作将包括前端和后端的 Web 应用，但未指定前端框架，还请查看 `javascript-general-web-frontend-security.md`。重要的是您了解如何保护前端和后端。
 
-If no relevant information is available in the skill's references directory, think a little bit about what you know about the language, the framework, and all well known security best practices for it. If you are unsure you can try to search online for documentation on security best practices.
+如果技能的 references 目录中没有相关信息，请思考一下您对语言、框架及其所有众所周知的安全最佳实践的了解。如果您不确定，可以尝试在线搜索有关安全最佳实践的文档。
 
-From there it can operate in a few ways.
+从那里可以以几种方式操作。
 
-1. The primary mode is to just use the information to write secure by default code from this point forward. This is useful for starting a new project or when writing new code.
+1. 主要模式是仅使用信息从此时开始编写安全默认代码。这对于开始新项目或编写新代码很有用。
+2. 次要模式是在为用户工作的项目和编写代码时被动检测漏洞。关键或非常重要的漏洞或违反安全指导的主要问题可以被标记，并且可以告诉用户它们。这种被动模式应专注于最大影响的漏洞和安全默认值。
+3. 用户可以要求安全报告或改进代码库的安全性。在这种情况下，应生成完整的报告，描述项目如何未能遵循安全最佳实践指导。报告应具有优先级并具有明确严重性和紧急性的部分。然后提议开始处理这些问题的修复。见下面的#修复。
 
-2. The secondary mode is to passively detect vulnerabilities while working in the project and writing code for the user. Critical or very important vulnerabilities or major issues going against security guidance can be flagged and the user can be told about them. This passive mode should focus on the largest impact vulnerabilities and secure defaults.
+## 工作流程决策树
 
-3. The user can ask for a security report or to improve the security of the codebase. In this case a full report should be produced describe anyways the project fails to follow security best practices guidance. The report should be prioritized and have clear sections of severity and urgency. Then offer to start working on fixes for these issues. See #fixes below.
+- 如果语言/框架不清楚，请检查仓库以确定它并列出您的证据。
+- 如果在 `references/` 中存在匹配的指导，请仅加载相关文件并遵循其说明。
+- 如果不存在匹配的指导，请考虑您是否知道所选语言和/或框架的任何众所周知的安全最佳实践，但如果被要求生成报告，请让用户知道具体的指导不可用（您仍然可以生成报告或检测确定的严重漏洞）
 
-## Workflow Decision Tree
+# 覆盖
 
-- If the language/framework is unclear, inspect the repo to determine it and list your evidence.
-- If matching guidance exists in `references/`, load only the relevant files and follow their instructions.
-- If no matching guidance exists, consider if you know any well known security best practices for the chosen language and or frameworks, but if asked to generate a report, let the user know that concrete guidance is not available (you can still generate the report or detect for sure critical vulnerabilities)
+虽然这些参考包含语言和框架的安全最佳实践，但客户可能需要绕过或覆盖这些实践的情况。请注意项目文档和提示文件中的特定规则和说明，这些可能要求您覆盖某些最佳实践。当覆盖最佳实践时，您可以向用户报告，但不要与他们争辩。如果由于某些项目特定原因需要绕过/忽略安全最佳实践，您还可以建议将有关此的文档添加到项目中，以便清楚为什么不遵循最佳实践，并在未来遵循该绕过。
 
-# Overrides
+# 报告格式
 
-While these references contain the security best practices for languages and frameworks, customers may have cases where they need to bypass or override these practices. Pay attention to specific rules and instructions in the project's documentation and prompt files which may require you to override certain best practices. When overriding a best practice, you MAY report it to the user, but do not fight with them. If a security best practice needs to be bypassed / ignored for some project specific reason, you can also suggest to add documentation about this to the project so it is clear why the best practice is not being followed and to follow that bypass in the future.
+生成报告时，您应该在 `security_best_practices_report.md` 或用户提供的其他位置将报告编写为 markdown 文件。您可以询问用户他们希望将报告写入何处。
 
-# Report Format
+报告应在顶部有一个简短的执行摘要。
 
-When producing a report, you should write the report as a markdown file in `security_best_practices_report.md` or some other location if provided by the user. You can ask the user where they would like the report to be written to.
+报告应清楚地根据漏洞的严重性划分为多个部分。报告应专注于最关键的发现，因为这些对用户具有最高影响。所有发现都应使用数字 ID 标记，以便更容易引用。
 
-The report should have a short executive summary at the top.
+对于关键发现，包括一个单句影响声明。
 
-The report should be clearly delineated into multiple sections based on severity of the vulnerability. The report should focus on the most critical findings as these have the highest impact for the user. All findings should be noted with an numeric ID to make them easier to reference.
+编写报告文件后，还直接向用户报告，尽管您可能不太冗长。如果用户想要有关任何发现的更多信息，您可以提供解释任何发现或安全最佳实践指导背后的原因。
 
-For critical findings include a one sentence impact statement.
+重要：在报告中引用代码时，请确保找到并包括您引用的代码的行号。
 
-Once the report is written, also report it to the user directly, although you may be less verbose. You can offer to explain any of the findings or the reasons behind the security best practices guidance if the user wants more info on any findings.
+编写报告文件后，向用户总结发现。
 
-Important: When referencing code in the report, make sure to find and include line numbers for the code you are referencing.
+还告诉用户最终报告写入的位置
 
-After you write the report file, summarize the findings to the user.
+# 修复
 
-Also tell the user where the final report was written to
+如果您生成了报告，请让用户阅读报告并询问开始执行修复。
 
-# Fixes
+如果您被动地发现了关键发现，请通知用户并询问他们是否希望您修复此发现。
 
-If you produced a report, let the user read the report and ask to begin performing fixes.
+生成修复时，专注于一次修复一个发现。修复应具有简洁的清晰注释，解释新代码基于特定的安全最佳实践，也许还有一个非常简短的原因，说明如果不这样做会很危险。
 
-If you passively found a critical finding, notify the user and ask if they would like you to fix this finding.
+始终考虑您想要进行的更改是否会影响用户代码的功能。考虑更改是否可能导致与项目当前工作方式的回归。通常情况下，不安全的代码由于其他原因而被依赖（这就是为什么不安全的代码存在这么长时间）。避免破坏用户的项目，因为这可能会使他们在未来不想应用安全修复。最好编写一个经过深思熟虑的、由项目的其余部分充分告知的修复，而不是快速的临时更改。
 
-When producing fixes, focus on fixing a single finding at a time. The fixes should have concise clear comments explaining that the new code is based on the specific security best practice, and perhaps a very short reason why it would be dangerous to not do it in this way.
+始终遵循用户配置的任何正常更改或提交流程。如果进行 git 提交，请提供清晰的提交消息，解释这是为了与安全最佳实践保持一致。尝试避免将许多不相关的发现归入单个提交。
 
-Always consider if the changes you want to make will impact the functionality of the user's code. Consider if the changes may cause regressions with how the project works currently. It is often the case that insecure code is relied on for other reasons (and this is why insecure code lives on for so long). Avoid breaking the user's project as this may make them not want to apply security fixes in the future. It is better to write a well thought out, well informed by the rest of the project, fix, then a quick slapdash change.
+始终遵循用户配置的任何正常测试流程（如果有）以确认您的更改没有引入回归。考虑更改可能具有的二阶影响，如果有任何更改，请在进行更改之前告知用户。
 
-Always follow any normal change or commit flow the user has configured. If making git commits, provide clear commit messages explaining this is to align with security best practices. Try to avoid bunching a number of unrelated findings into a single commit.
+# 一般安全建议
 
-Always follow any normal testing flows the user has configured (if any) to confirm that your changes are not introducing regressions. Consider the second order impacts the changes may have and inform the user before making them if there are any.
+以下是适用于几乎任何语言或框架的一些安全编码建议。
 
-# General Security Advice
+### 避免为资源的公共 ID 使用递增 ID
 
-Below is a few bits of secure coding advice that applies to almost any language or framework.
+为某些资源分配 ID 时，该 ID 将随后暴露于互联网，请避免使用小的自动递增 ID。改用更长的、随机 UUID4 或随机十六进制字符串。这将防止用户了解资源的数量并能够猜测资源 ID。
 
-### Avoid Using Incrementing IDs for Public IDs of Resources
+### 关于 TLS 的说明
 
-When assigning an ID for some resource, which will then be used by exposed to the internet, avoid using small auto-incrementing IDs. Use longer, random UUID4 or random hex string instead. This will prevent users from learning the quantity of a resource and being able to guess resource IDs.
-
-### A note on TLS
-
-While TLS is important for production deployments, most development work will be with TLS disabled or provided by some out-of-scope TLS proxy. Due to this, be very careful about not reporting lack of TLS as a security issue. Also be very careful around use of "secure" cookies. They should only be set if the application will actually be over TLS. If they are set on non-TLS applications (such as when deployed for local dev or testing), it will break the application. You can provide a env or other flag to override setting secure as a way to keep it off until on a TLS production deployment. Additionally avoid recommending HSTS. It is dangerous to use without full understanding of the lasting impacts (can cause major outages and user lockout) and it is not generally recommended for the scope of projects being reviewed by codex.
+虽然 TLS 对于生产部署很重要，但大多数开发工作将在禁用 TLS 或由一些超出范围的 TLS 代理提供的情况下进行。因此，请非常小心不要将缺乏 TLS 报告为安全问题。还要非常小心使用"secure" cookie。它们应该仅在应用程序实际上通过 TLS 时设置。如果它们在非 TLS 应用程序上设置（例如，当部署用于本地开发或测试时），它将破坏应用程序。您可以提供环境或其他标志来覆盖将 secure 设置为一种方式，以便在 TLS 生产部署之前保持关闭。此外，避免推荐 HSTS。在没有对持久影响的完全理解的情况下使用它是危险的（可能导致主要的中断和用户锁定），并且通常不建议由 codex 审查的项目范围。

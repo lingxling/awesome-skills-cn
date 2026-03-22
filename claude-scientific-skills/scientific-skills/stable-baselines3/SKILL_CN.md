@@ -1,6 +1,6 @@
 ---
 name: stable-baselines3
-description: Production-ready reinforcement learning algorithms (PPO, SAC, DQN, TD3, DDPG, A2C) with scikit-learn-like API. Use for standard RL experiments, quick prototyping, and well-documented algorithm implementations. Best for single-agent RL with Gymnasium environments. For high-performance parallel training, multi-agent systems, or custom vectorized environments, use pufferlib instead.
+description: 生产就绪的强化学习算法（PPO、SAC、DQN、TD3、DDPG、A2C），具有类 scikit-learn API。用于标准 RL 实验、快速原型设计和文档完善的算法实现。最适用于带有 Gymnasium 环境的单智能体 RL。对于高性能并行训练、多智能体系统或自定义向量化环境，请使用 pufferlib。
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,143 +8,143 @@ metadata:
 
 # Stable Baselines3
 
-## Overview
+## 概述
 
-Stable Baselines3 (SB3) is a PyTorch-based library providing reliable implementations of reinforcement learning algorithms. This skill provides comprehensive guidance for training RL agents, creating custom environments, implementing callbacks, and optimizing training workflows using SB3's unified API.
+Stable Baselines3 (SB3) 是一个基于 PyTorch 的库，提供可靠的强化学习算法实现。此技能提供全面的指导，用于使用 SB3 的统一 API 训练 RL 智能体、创建自定义环境、实现回调以及优化训练工作流。
 
-## Core Capabilities
+## 核心功能
 
-### 1. Training RL Agents
+### 1. 训练 RL 智能体
 
-**Basic Training Pattern:**
+**基本训练模式：**
 
 ```python
 import gymnasium as gym
 from stable_baselines3 import PPO
 
-# Create environment
+# 创建环境
 env = gym.make("CartPole-v1")
 
-# Initialize agent
+# 初始化智能体
 model = PPO("MlpPolicy", env, verbose=1)
 
-# Train the agent
+# 训练智能体
 model.learn(total_timesteps=10000)
 
-# Save the model
+# 保存模型
 model.save("ppo_cartpole")
 
-# Load the model (without prior instantiation)
+# 加载模型（无需先实例化）
 model = PPO.load("ppo_cartpole", env=env)
 ```
 
-**Important Notes:**
-- `total_timesteps` is a lower bound; actual training may exceed this due to batch collection
-- Use `model.load()` as a static method, not on an existing instance
-- The replay buffer is NOT saved with the model to save space
+**重要说明：**
+- `total_timesteps` 是下限；实际训练可能会因批次收集而超过此值
+- 使用 `model.load()` 作为静态方法，而不是在现有实例上使用
+- 为节省空间，模型不会保存回放缓冲区
 
-**Algorithm Selection:**
-Use `references/algorithms.md` for detailed algorithm characteristics and selection guidance. Quick reference:
-- **PPO/A2C**: General-purpose, supports all action space types, good for multiprocessing
-- **SAC/TD3**: Continuous control, off-policy, sample-efficient
-- **DQN**: Discrete actions, off-policy
-- **HER**: Goal-conditioned tasks
+**算法选择：**
+使用 `references/algorithms.md` 获取详细的算法特性和选择指南。快速参考：
+- **PPO/A2C**：通用，支持所有动作空间类型，适合多处理
+- **SAC/TD3**：连续控制，离策略，样本高效
+- **DQN**：离散动作，离策略
+- **HER**：目标条件任务
 
-See `scripts/train_rl_agent.py` for a complete training template with best practices.
+有关完整的训练模板和最佳实践，请参阅 `scripts/train_rl_agent.py`。
 
-### 2. Custom Environments
+### 2. 自定义环境
 
-**Requirements:**
-Custom environments must inherit from `gymnasium.Env` and implement:
-- `__init__()`: Define action_space and observation_space
-- `reset(seed, options)`: Return initial observation and info dict
-- `step(action)`: Return observation, reward, terminated, truncated, info
-- `render()`: Visualization (optional)
-- `close()`: Cleanup resources
+**要求：**
+自定义环境必须继承自 `gymnasium.Env` 并实现：
+- `__init__()`：定义 action_space 和 observation_space
+- `reset(seed, options)`：返回初始观察和信息字典
+- `step(action)`：返回观察、奖励、terminated、truncated、信息
+- `render()`：可视化（可选）
+- `close()`：清理资源
 
-**Key Constraints:**
-- Image observations must be `np.uint8` in range [0, 255]
-- Use channel-first format when possible (channels, height, width)
-- SB3 normalizes images automatically by dividing by 255
-- Set `normalize_images=False` in policy_kwargs if pre-normalized
-- SB3 does NOT support `Discrete` or `MultiDiscrete` spaces with `start!=0`
+**关键约束：**
+- 图像观察必须是 `np.uint8` 类型，范围 [0, 255]
+- 尽可能使用通道优先格式（通道, 高度, 宽度）
+- SB3 会自动通过除以 255 来标准化图像
+- 如果已预标准化，在 policy_kwargs 中设置 `normalize_images=False`
+- SB3 不支持 `start!=0` 的 `Discrete` 或 `MultiDiscrete` 空间
 
-**Validation:**
+**验证：**
 ```python
 from stable_baselines3.common.env_checker import check_env
 
 check_env(env, warn=True)
 ```
 
-See `scripts/custom_env_template.py` for a complete custom environment template and `references/custom_environments.md` for comprehensive guidance.
+有关完整的自定义环境模板，请参阅 `scripts/custom_env_template.py`，有关综合指导，请参阅 `references/custom_environments.md`。
 
-### 3. Vectorized Environments
+### 3. 向量化环境
 
-**Purpose:**
-Vectorized environments run multiple environment instances in parallel, accelerating training and enabling certain wrappers (frame-stacking, normalization).
+**目的：**
+向量化环境并行运行多个环境实例，加速训练并启用某些包装器（帧堆叠、标准化）。
 
-**Types:**
-- **DummyVecEnv**: Sequential execution on current process (for lightweight environments)
-- **SubprocVecEnv**: Parallel execution across processes (for compute-heavy environments)
+**类型：**
+- **DummyVecEnv**：在当前进程中顺序执行（适用于轻量级环境）
+- **SubprocVecEnv**：跨进程并行执行（适用于计算密集型环境）
 
-**Quick Setup:**
+**快速设置：**
 ```python
 from stable_baselines3.common.env_util import make_vec_env
 
-# Create 4 parallel environments
+# 创建 4 个并行环境
 env = make_vec_env("CartPole-v1", n_envs=4, vec_env_cls=SubprocVecEnv)
 
 model = PPO("MlpPolicy", env, verbose=1)
 model.learn(total_timesteps=25000)
 ```
 
-**Off-Policy Optimization:**
-When using multiple environments with off-policy algorithms (SAC, TD3, DQN), set `gradient_steps=-1` to perform one gradient update per environment step, balancing wall-clock time and sample efficiency.
+**离策略优化：**
+当使用多个环境与离策略算法（SAC、TD3、DQN）时，设置 `gradient_steps=-1` 以在每个环境步骤执行一次梯度更新，平衡墙钟时间和样本效率。
 
-**API Differences:**
-- `reset()` returns only observations (info available in `vec_env.reset_infos`)
-- `step()` returns 4-tuple: `(obs, rewards, dones, infos)` not 5-tuple
-- Environments auto-reset after episodes
-- Terminal observations available via `infos[env_idx]["terminal_observation"]`
+**API 差异：**
+- `reset()` 仅返回观察（信息可在 `vec_env.reset_infos` 中获取）
+- `step()` 返回 4 元组：`(obs, rewards, dones, infos)` 而不是 5 元组
+- 环境在 episodes 后自动重置
+- 终端观察可通过 `infos[env_idx]["terminal_observation"]` 获取
 
-See `references/vectorized_envs.md` for detailed information on wrappers and advanced usage.
+有关包装器和高级用法的详细信息，请参阅 `references/vectorized_envs.md`。
 
-### 4. Callbacks for Monitoring and Control
+### 4. 用于监控和控制的回调
 
-**Purpose:**
-Callbacks enable monitoring metrics, saving checkpoints, implementing early stopping, and custom training logic without modifying core algorithms.
+**目的：**
+回调启用监控指标、保存检查点、实现早停和自定义训练逻辑，而无需修改核心算法。
 
-**Common Callbacks:**
-- **EvalCallback**: Evaluate periodically and save best model
-- **CheckpointCallback**: Save model checkpoints at intervals
-- **StopTrainingOnRewardThreshold**: Stop when target reward reached
-- **ProgressBarCallback**: Display training progress with timing
+**常见回调：**
+- **EvalCallback**：定期评估并保存最佳模型
+- **CheckpointCallback**：按间隔保存模型检查点
+- **StopTrainingOnRewardThreshold**：当达到目标奖励时停止
+- **ProgressBarCallback**：显示带有计时的训练进度
 
-**Custom Callback Structure:**
+**自定义回调结构：**
 ```python
 from stable_baselines3.common.callbacks import BaseCallback
 
 class CustomCallback(BaseCallback):
     def _on_training_start(self):
-        # Called before first rollout
+        # 在第一次 rollout 之前调用
         pass
 
     def _on_step(self):
-        # Called after each environment step
-        # Return False to stop training
+        # 在每个环境步骤后调用
+        # 返回 False 以停止训练
         return True
 
     def _on_rollout_end(self):
-        # Called at end of rollout
+        # 在 rollout 结束时调用
         pass
 ```
 
-**Available Attributes:**
-- `self.model`: The RL algorithm instance
-- `self.num_timesteps`: Total environment steps
-- `self.training_env`: The training environment
+**可用属性：**
+- `self.model`：RL 算法实例
+- `self.num_timesteps`：总环境步骤
+- `self.training_env`：训练环境
 
-**Chaining Callbacks:**
+**链接回调：**
 ```python
 from stable_baselines3.common.callbacks import CallbackList
 
@@ -152,40 +152,40 @@ callback = CallbackList([eval_callback, checkpoint_callback, custom_callback])
 model.learn(total_timesteps=10000, callback=callback)
 ```
 
-See `references/callbacks.md` for comprehensive callback documentation.
+有关综合回调文档，请参阅 `references/callbacks.md`。
 
-### 5. Model Persistence and Inspection
+### 5. 模型持久化和检查
 
-**Saving and Loading:**
+**保存和加载：**
 ```python
-# Save model
+# 保存模型
 model.save("model_name")
 
-# Save normalization statistics (if using VecNormalize)
+# 保存标准化统计信息（如果使用 VecNormalize）
 vec_env.save("vec_normalize.pkl")
 
-# Load model
+# 加载模型
 model = PPO.load("model_name", env=env)
 
-# Load normalization statistics
+# 加载标准化统计信息
 vec_env = VecNormalize.load("vec_normalize.pkl", vec_env)
 ```
 
-**Parameter Access:**
+**参数访问：**
 ```python
-# Get parameters
+# 获取参数
 params = model.get_parameters()
 
-# Set parameters
+# 设置参数
 model.set_parameters(params)
 
-# Access PyTorch state dict
+# 访问 PyTorch 状态字典
 state_dict = model.policy.state_dict()
 ```
 
-### 6. Evaluation and Recording
+### 6. 评估和记录
 
-**Evaluation:**
+**评估：**
 ```python
 from stable_baselines3.common.evaluation import evaluate_policy
 
@@ -197,11 +197,11 @@ mean_reward, std_reward = evaluate_policy(
 )
 ```
 
-**Video Recording:**
+**视频录制：**
 ```python
 from stable_baselines3.common.vec_env import VecVideoRecorder
 
-# Wrap environment with video recorder
+# 用视频录制器包装环境
 env = VecVideoRecorder(
     env,
     "videos/",
@@ -210,28 +210,28 @@ env = VecVideoRecorder(
 )
 ```
 
-See `scripts/evaluate_agent.py` for a complete evaluation and recording template.
+有关完整的评估和记录模板，请参阅 `scripts/evaluate_agent.py`。
 
-### 7. Advanced Features
+### 7. 高级功能
 
-**Learning Rate Schedules:**
+**学习率调度：**
 ```python
 def linear_schedule(initial_value):
     def func(progress_remaining):
-        # progress_remaining goes from 1 to 0
+        # progress_remaining 从 1 变为 0
         return progress_remaining * initial_value
     return func
 
 model = PPO("MlpPolicy", env, learning_rate=linear_schedule(0.001))
 ```
 
-**Multi-Input Policies (Dict Observations):**
+**多输入策略（字典观察）：**
 ```python
 model = PPO("MultiInputPolicy", env, verbose=1)
 ```
-Use when observations are dictionaries (e.g., combining images with sensor data).
+当观察是字典时使用（例如，结合图像和传感器数据）。
 
-**Hindsight Experience Replay:**
+**事后经验回放：**
 ```python
 from stable_baselines3 import SAC, HerReplayBuffer
 
@@ -246,52 +246,51 @@ model = SAC(
 )
 ```
 
-**TensorBoard Integration:**
+**TensorBoard 集成：**
 ```python
 model = PPO("MlpPolicy", env, tensorboard_log="./tensorboard/")
 model.learn(total_timesteps=10000)
 ```
 
-## Workflow Guidance
+## 工作流指导
 
-**Starting a New RL Project:**
+**开始新的 RL 项目：**
 
-1. **Define the problem**: Identify observation space, action space, and reward structure
-2. **Choose algorithm**: Use `references/algorithms.md` for selection guidance
-3. **Create/adapt environment**: Use `scripts/custom_env_template.py` if needed
-4. **Validate environment**: Always run `check_env()` before training
-5. **Set up training**: Use `scripts/train_rl_agent.py` as starting template
-6. **Add monitoring**: Implement callbacks for evaluation and checkpointing
-7. **Optimize performance**: Consider vectorized environments for speed
-8. **Evaluate and iterate**: Use `scripts/evaluate_agent.py` for assessment
+1. **定义问题**：识别观察空间、动作空间和奖励结构
+2. **选择算法**：使用 `references/algorithms.md` 获取选择指南
+3. **创建/适配环境**：必要时使用 `scripts/custom_env_template.py`
+4. **验证环境**：训练前始终运行 `check_env()`
+5. **设置训练**：使用 `scripts/train_rl_agent.py` 作为起始模板
+6. **添加监控**：实现评估和检查点的回调
+7. **优化性能**：考虑使用向量化环境提高速度
+8. **评估和迭代**：使用 `scripts/evaluate_agent.py` 进行评估
 
-**Common Issues:**
+**常见问题：**
 
-- **Memory errors**: Reduce `buffer_size` for off-policy algorithms or use fewer parallel environments
-- **Slow training**: Consider SubprocVecEnv for parallel environments
-- **Unstable training**: Try different algorithms, tune hyperparameters, or check reward scaling
-- **Import errors**: Ensure `stable_baselines3` is installed: `uv pip install stable-baselines3[extra]`
+- **内存错误**：为离策略算法减少 `buffer_size` 或使用更少的并行环境
+- **训练缓慢**：考虑使用 SubprocVecEnv 进行并行环境
+- **训练不稳定**：尝试不同的算法，调整超参数，或检查奖励缩放
+- **导入错误**：确保安装了 `stable_baselines3`：`uv pip install stable-baselines3[extra]`
 
-## Resources
+## 资源
 
 ### scripts/
-- `train_rl_agent.py`: Complete training script template with best practices
-- `evaluate_agent.py`: Agent evaluation and video recording template
-- `custom_env_template.py`: Custom Gym environment template
+- `train_rl_agent.py`：带有最佳实践的完整训练脚本模板
+- `evaluate_agent.py`：智能体评估和视频录制模板
+- `custom_env_template.py`：自定义 Gym 环境模板
 
 ### references/
-- `algorithms.md`: Detailed algorithm comparison and selection guide
-- `custom_environments.md`: Comprehensive custom environment creation guide
-- `callbacks.md`: Complete callback system reference
-- `vectorized_envs.md`: Vectorized environment usage and wrappers
+- `algorithms.md`：详细的算法比较和选择指南
+- `custom_environments.md`：综合的自定义环境创建指南
+- `callbacks.md`：完整的回调系统参考
+- `vectorized_envs.md`：向量化环境使用和包装器
 
-## Installation
+## 安装
 
 ```bash
-# Basic installation
+# 基本安装
 uv pip install stable-baselines3
 
-# With extra dependencies (Tensorboard, etc.)
+# 带有额外依赖（Tensorboard 等）
 uv pip install stable-baselines3[extra]
 ```
-

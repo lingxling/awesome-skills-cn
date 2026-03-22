@@ -1,142 +1,144 @@
 ---
 name: scikit-survival
-description: Comprehensive toolkit for survival analysis and time-to-event modeling in Python using scikit-survival. Use this skill when working with censored survival data, performing time-to-event analysis, fitting Cox models, Random Survival Forests, Gradient Boosting models, or Survival SVMs, evaluating survival predictions with concordance index or Brier score, handling competing risks, or implementing any survival analysis workflow with the scikit-survival library.
+description: 用于Python中生存分析和时间事件建模的综合工具包，基于scikit-survival。当处理截尾生存数据、执行时间事件分析、拟合Cox模型、随机生存森林、梯度提升模型或生存SVM、使用一致性指数或Brier评分评估生存预测、处理竞争风险或使用scikit-survival库实现任何生存分析工作流时，使用此技能。
 license: GPL-3.0 license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# scikit-survival: Survival Analysis in Python
+# scikit-survival: Python中的生存分析
 
-## Overview
+## 概述
 
-scikit-survival is a Python library for survival analysis built on top of scikit-learn. It provides specialized tools for time-to-event analysis, handling the unique challenge of censored data where some observations are only partially known.
+scikit-survival是一个基于scikit-learn构建的Python生存分析库。它提供专门的工具用于时间事件分析，处理截尾数据的独特挑战，其中一些观察值仅部分已知。
 
-Survival analysis aims to establish connections between covariates and the time of an event, accounting for censored records (particularly right-censored data from studies where participants don't experience events during observation periods).
+生存分析旨在建立协变量与事件时间之间的联系，同时考虑截尾记录（特别是来自研究的右截尾数据，其中参与者在观察期间未经历事件）。
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use this skill when:
-- Performing survival analysis or time-to-event modeling
-- Working with censored data (right-censored, left-censored, or interval-censored)
-- Fitting Cox proportional hazards models (standard or penalized)
-- Building ensemble survival models (Random Survival Forests, Gradient Boosting)
-- Training Survival Support Vector Machines
-- Evaluating survival model performance (concordance index, Brier score, time-dependent AUC)
-- Estimating Kaplan-Meier or Nelson-Aalen curves
-- Analyzing competing risks
-- Preprocessing survival data or handling missing values in survival datasets
-- Conducting any analysis using the scikit-survival library
+当以下情况时使用此技能：
+- 执行生存分析或时间事件建模
+- 处理截尾数据（右截尾、左截尾或区间截尾）
+- 拟合Cox比例风险模型（标准或 penalized）
+- 构建集成生存模型（随机生存森林、梯度提升）
+- 训练生存支持向量机
+- 评估生存模型性能（一致性指数、Brier评分、时间依赖性AUC）
+- 估计Kaplan-Meier或Nelson-Aalen曲线
+- 分析竞争风险
+- 预处理生存数据或处理生存数据集中的缺失值
+- 使用scikit-survival库进行任何分析
 
-## Core Capabilities
+## 核心功能
 
-### 1. Model Types and Selection
+### 1. 模型类型与选择
 
-scikit-survival provides multiple model families, each suited for different scenarios:
+scikit-survival提供多种模型系列，每种适合不同场景：
 
-#### Cox Proportional Hazards Models
-**Use for**: Standard survival analysis with interpretable coefficients
-- `CoxPHSurvivalAnalysis`: Basic Cox model
-- `CoxnetSurvivalAnalysis`: Penalized Cox with elastic net for high-dimensional data
-- `IPCRidge`: Ridge regression for accelerated failure time models
+#### Cox比例风险模型
+**用途**：具有可解释系数的标准生存分析
+- `CoxPHSurvivalAnalysis`：基本Cox模型
+- `CoxnetSurvivalAnalysis`：用于高维数据的弹性网惩罚Cox模型
+- `IPCRidge`：用于加速失效时间模型的岭回归
 
-**See**: `references/cox-models.md` for detailed guidance on Cox models, regularization, and interpretation
+**参考**：`references/cox-models.md` 提供关于Cox模型、正则化和解释的详细指南
 
-#### Ensemble Methods
-**Use for**: High predictive performance with complex non-linear relationships
-- `RandomSurvivalForest`: Robust, non-parametric ensemble method
-- `GradientBoostingSurvivalAnalysis`: Tree-based boosting for maximum performance
-- `ComponentwiseGradientBoostingSurvivalAnalysis`: Linear boosting with feature selection
-- `ExtraSurvivalTrees`: Extremely randomized trees for additional regularization
+#### 集成方法
+**用途**：处理复杂非线性关系的高预测性能
+- `RandomSurvivalForest`：稳健的非参数集成方法
+- `GradientBoostingSurvivalAnalysis`：基于树的提升以获得最佳性能
+- `ComponentwiseGradientBoostingSurvivalAnalysis`：具有特征选择的线性提升
+- `ExtraSurvivalTrees`：用于额外正则化的极端随机树
 
-**See**: `references/ensemble-models.md` for comprehensive guidance on ensemble methods, hyperparameter tuning, and when to use each model
+**参考**：`references/ensemble-models.md` 提供关于集成方法、超参数调优以及何时使用每种模型的综合指南
 
-#### Survival Support Vector Machines
-**Use for**: Medium-sized datasets with margin-based learning
-- `FastSurvivalSVM`: Linear SVM optimized for speed
-- `FastKernelSurvivalSVM`: Kernel SVM for non-linear relationships
-- `HingeLossSurvivalSVM`: SVM with hinge loss
-- `ClinicalKernelTransform`: Specialized kernel for clinical + molecular data
+#### 生存支持向量机
+**用途**：使用基于边际学习的中等大小数据集
+- `FastSurvivalSVM`：为速度优化的线性SVM
+- `FastKernelSurvivalSVM`：用于非线性关系的核SVM
+- `HingeLossSurvivalSVM`：带铰链损失的SVM
+- `ClinicalKernelTransform`：用于临床+分子数据的专用核
 
-**See**: `references/svm-models.md` for detailed SVM guidance, kernel selection, and hyperparameter tuning
+**参考**：`references/svm-models.md` 提供关于SVM指南、核选择和超参数调优的详细信息
 
-#### Model Selection Decision Tree
+#### 模型选择决策树
 
 ```
-Start
-├─ High-dimensional data (p > n)?
-│  ├─ Yes → CoxnetSurvivalAnalysis (elastic net)
-│  └─ No → Continue
+开始
+├─ 高维数据 (p > n)?
+│  ├─ 是 → CoxnetSurvivalAnalysis (弹性网)
+│  └─ 否 → 继续
 │
-├─ Need interpretable coefficients?
-│  ├─ Yes → CoxPHSurvivalAnalysis or ComponentwiseGradientBoostingSurvivalAnalysis
-│  └─ No → Continue
+├─ 需要可解释系数?
+│  ├─ 是 → CoxPHSurvivalAnalysis 或 ComponentwiseGradientBoostingSurvivalAnalysis
+│  └─ 否 → 继续
 │
-├─ Complex non-linear relationships expected?
-│  ├─ Yes
-│  │  ├─ Large dataset (n > 1000) → GradientBoostingSurvivalAnalysis
-│  │  ├─ Medium dataset → RandomSurvivalForest or FastKernelSurvivalSVM
-│  │  └─ Small dataset → RandomSurvivalForest
-│  └─ No → CoxPHSurvivalAnalysis or FastSurvivalSVM
+├─ 预期存在复杂非线性关系?
+│  ├─ 是
+│  │  ├─ 大型数据集 (n > 1000) → GradientBoostingSurvivalAnalysis
+│  │  ├─ 中型数据集 → RandomSurvivalForest 或 FastKernelSurvivalSVM
+│  │  └─ 小型数据集 → RandomSurvivalForest
+│  └─ 否 → CoxPHSurvivalAnalysis 或 FastSurvivalSVM
 │
-└─ For maximum performance → Try multiple models and compare
+└─ 为获得最佳性能 → 尝试多个模型并比较
 ```
 
-### 2. Data Preparation and Preprocessing
+### 2. 数据准备与预处理
 
-Before modeling, properly prepare survival data:
+建模前，正确准备生存数据：
 
-#### Creating Survival Outcomes
+#### 创建生存结果
 ```python
 from sksurv.util import Surv
 
-# From separate arrays
+# 从单独的数组
+
 y = Surv.from_arrays(event=event_array, time=time_array)
 
-# From DataFrame
+# 从DataFrame
+
 y = Surv.from_dataframe('event', 'time', df)
 ```
 
-#### Essential Preprocessing Steps
-1. **Handle missing values**: Imputation strategies for features
-2. **Encode categorical variables**: One-hot encoding or label encoding
-3. **Standardize features**: Critical for SVMs and regularized Cox models
-4. **Validate data quality**: Check for negative times, sufficient events per feature
-5. **Train-test split**: Maintain similar censoring rates across splits
+#### 基本预处理步骤
+1. **处理缺失值**：特征的插补策略
+2. **编码分类变量**：独热编码或标签编码
+3. **标准化特征**：对SVM和正则化Cox模型至关重要
+4. **验证数据质量**：检查负时间、每个特征的足够事件数
+5. **训练-测试分割**：在分割中保持相似的截尾率
 
-**See**: `references/data-handling.md` for complete preprocessing workflows, data validation, and best practices
+**参考**：`references/data-handling.md` 提供完整的预处理工作流、数据验证和最佳实践
 
-### 3. Model Evaluation
+### 3. 模型评估
 
-Proper evaluation is critical for survival models. Use appropriate metrics that account for censoring:
+适当的评估对生存模型至关重要。使用考虑截尾的适当指标：
 
-#### Concordance Index (C-index)
-Primary metric for ranking/discrimination:
-- **Harrell's C-index**: Use for low censoring (<40%)
-- **Uno's C-index**: Use for moderate to high censoring (>40%) - more robust
+#### 一致性指数（C-index）
+用于排序/区分的主要指标：
+- **Harrell的C-index**：用于低截尾（<40%）
+- **Uno的C-index**：用于中等至高截尾（>40%）- 更稳健
 
 ```python
 from sksurv.metrics import concordance_index_censored, concordance_index_ipcw
 
-# Harrell's C-index
+# Harrell的C-index
 c_harrell = concordance_index_censored(y_test['event'], y_test['time'], risk_scores)[0]
 
-# Uno's C-index (recommended)
+# Uno的C-index（推荐）
 c_uno = concordance_index_ipcw(y_train, y_test, risk_scores)[0]
 ```
 
-#### Time-Dependent AUC
-Evaluate discrimination at specific time points:
+#### 时间依赖性AUC
+评估特定时间点的区分能力：
 
 ```python
 from sksurv.metrics import cumulative_dynamic_auc
 
-times = [365, 730, 1095]  # 1, 2, 3 years
+times = [365, 730, 1095]  # 1, 2, 3年
 auc, mean_auc = cumulative_dynamic_auc(y_train, y_test, risk_scores, times)
 ```
 
-#### Brier Score
-Assess both discrimination and calibration:
+#### Brier评分
+评估区分和校准：
 
 ```python
 from sksurv.metrics import integrated_brier_score
@@ -144,47 +146,47 @@ from sksurv.metrics import integrated_brier_score
 ibs = integrated_brier_score(y_train, y_test, survival_functions, times)
 ```
 
-**See**: `references/evaluation-metrics.md` for comprehensive evaluation guidance, metric selection, and using scorers with cross-validation
+**参考**：`references/evaluation-metrics.md` 提供综合评估指南、指标选择以及在交叉验证中使用评分器
 
-### 4. Competing Risks Analysis
+### 4. 竞争风险分析
 
-Handle situations with multiple mutually exclusive event types:
+处理具有多个互斥事件类型的情况：
 
 ```python
 from sksurv.nonparametric import cumulative_incidence_competing_risks
 
-# Estimate cumulative incidence for each event type
+# 估计每种事件类型的累积发生率
 time_points, cif_event1, cif_event2 = cumulative_incidence_competing_risks(y)
 ```
 
-**Use competing risks when**:
-- Multiple mutually exclusive event types exist (e.g., death from different causes)
-- Occurrence of one event prevents others
-- Need probability estimates for specific event types
+**使用竞争风险当**：
+- 存在多个互斥事件类型（例如，不同原因的死亡）
+- 一个事件的发生阻止其他事件
+- 需要特定事件类型的概率估计
 
-**See**: `references/competing-risks.md` for detailed competing risks methods, cause-specific hazard models, and interpretation
+**参考**：`references/competing-risks.md` 提供关于竞争风险方法、特定原因风险模型和解释的详细信息
 
-### 5. Non-parametric Estimation
+### 5. 非参数估计
 
-Estimate survival functions without parametric assumptions:
+无参数假设地估计生存函数：
 
-#### Kaplan-Meier Estimator
+#### Kaplan-Meier估计器
 ```python
 from sksurv.nonparametric import kaplan_meier_estimator
 
 time, survival_prob = kaplan_meier_estimator(y['event'], y['time'])
 ```
 
-#### Nelson-Aalen Estimator
+#### Nelson-Aalen估计器
 ```python
 from sksurv.nonparametric import nelson_aalen_estimator
 
 time, cumulative_hazard = nelson_aalen_estimator(y['event'], y['time'])
 ```
 
-## Typical Workflows
+## 典型工作流
 
-### Workflow 1: Standard Survival Analysis
+### 工作流1：标准生存分析
 
 ```python
 from sksurv.datasets import load_breast_cancer
@@ -193,74 +195,74 @@ from sksurv.metrics import concordance_index_ipcw
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-# 1. Load and prepare data
+# 1. 加载和准备数据
 X, y = load_breast_cancer()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# 2. Preprocess
+# 2. 预处理
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# 3. Fit model
+# 3. 拟合模型
 estimator = CoxPHSurvivalAnalysis()
 estimator.fit(X_train_scaled, y_train)
 
-# 4. Predict
+# 4. 预测
 risk_scores = estimator.predict(X_test_scaled)
 
-# 5. Evaluate
+# 5. 评估
 c_index = concordance_index_ipcw(y_train, y_test, risk_scores)[0]
 print(f"C-index: {c_index:.3f}")
 ```
 
-### Workflow 2: High-Dimensional Data with Feature Selection
+### 工作流2：带特征选择的高维数据
 
 ```python
 from sksurv.linear_model import CoxnetSurvivalAnalysis
 from sklearn.model_selection import GridSearchCV
 from sksurv.metrics import as_concordance_index_ipcw_scorer
 
-# 1. Use penalized Cox for feature selection
-estimator = CoxnetSurvivalAnalysis(l1_ratio=0.9)  # Lasso-like
+# 1. 使用惩罚Cox进行特征选择
+estimator = CoxnetSurvivalAnalysis(l1_ratio=0.9)  # 类Lasso
 
-# 2. Tune regularization with cross-validation
+# 2. 用交叉验证调整正则化
 param_grid = {'alpha_min_ratio': [0.01, 0.001]}
 cv = GridSearchCV(estimator, param_grid,
                   scoring=as_concordance_index_ipcw_scorer(), cv=5)
 cv.fit(X, y)
 
-# 3. Identify selected features
+# 3. 识别选定的特征
 best_model = cv.best_estimator_
 selected_features = np.where(best_model.coef_ != 0)[0]
 ```
 
-### Workflow 3: Ensemble Method for Maximum Performance
+### 工作流3：获得最佳性能的集成方法
 
 ```python
 from sksurv.ensemble import GradientBoostingSurvivalAnalysis
 from sklearn.model_selection import GridSearchCV
 
-# 1. Define parameter grid
+# 1. 定义参数网格
 param_grid = {
     'learning_rate': [0.01, 0.05, 0.1],
     'n_estimators': [100, 200, 300],
     'max_depth': [3, 5, 7]
 }
 
-# 2. Grid search
+# 2. 网格搜索
 gbs = GradientBoostingSurvivalAnalysis()
 cv = GridSearchCV(gbs, param_grid, cv=5,
                   scoring=as_concordance_index_ipcw_scorer(), n_jobs=-1)
 cv.fit(X_train, y_train)
 
-# 3. Evaluate best model
+# 3. 评估最佳模型
 best_model = cv.best_estimator_
 risk_scores = best_model.predict(X_test)
 c_index = concordance_index_ipcw(y_train, y_test, risk_scores)[0]
 ```
 
-### Workflow 4: Comprehensive Model Comparison
+### 工作流4：综合模型比较
 
 ```python
 from sksurv.linear_model import CoxPHSurvivalAnalysis
@@ -268,7 +270,7 @@ from sksurv.ensemble import RandomSurvivalForest, GradientBoostingSurvivalAnalys
 from sksurv.svm import FastSurvivalSVM
 from sksurv.metrics import concordance_index_ipcw, integrated_brier_score
 
-# Define models
+# 定义模型
 models = {
     'Cox': CoxPHSurvivalAnalysis(),
     'RSF': RandomSurvivalForest(n_estimators=100, random_state=42),
@@ -276,7 +278,7 @@ models = {
     'SVM': FastSurvivalSVM(random_state=42)
 }
 
-# Evaluate each model
+# 评估每个模型
 results = {}
 for name, model in models.items():
     model.fit(X_train_scaled, y_train)
@@ -285,90 +287,90 @@ for name, model in models.items():
     results[name] = c_index
     print(f"{name}: C-index = {c_index:.3f}")
 
-# Select best model
+# 选择最佳模型
 best_model_name = max(results, key=results.get)
-print(f"\nBest model: {best_model_name}")
+print(f"\n最佳模型: {best_model_name}")
 ```
 
-## Integration with scikit-learn
+## 与scikit-learn集成
 
-scikit-survival fully integrates with scikit-learn's ecosystem:
+scikit-survival完全集成到scikit-learn的生态系统中：
 
 ```python
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import cross_val_score, GridSearchCV
 
-# Use pipelines
+# 使用管道
 pipeline = Pipeline([
     ('scaler', StandardScaler()),
     ('model', CoxPHSurvivalAnalysis())
 ])
 
-# Use cross-validation
+# 使用交叉验证
 scores = cross_val_score(pipeline, X, y, cv=5,
                          scoring=as_concordance_index_ipcw_scorer())
 
-# Use grid search
+# 使用网格搜索
 param_grid = {'model__alpha': [0.1, 1.0, 10.0]}
 cv = GridSearchCV(pipeline, param_grid, cv=5)
 cv.fit(X, y)
 ```
 
-## Best Practices
+## 最佳实践
 
-1. **Always standardize features** for SVMs and regularized Cox models
-2. **Use Uno's C-index** instead of Harrell's when censoring > 40%
-3. **Report multiple evaluation metrics** (C-index, integrated Brier score, time-dependent AUC)
-4. **Check proportional hazards assumption** for Cox models
-5. **Use cross-validation** for hyperparameter tuning with appropriate scorers
-6. **Validate data quality** before modeling (check for negative times, sufficient events per feature)
-7. **Compare multiple model types** to find best performance
-8. **Use permutation importance** for Random Survival Forests (not built-in importance)
-9. **Consider competing risks** when multiple event types exist
-10. **Document censoring mechanism** and rates in analysis
+1. **始终标准化特征**用于SVM和正则化Cox模型
+2. **当截尾> 40%时使用Uno的C-index**而不是Harrell的
+3. **报告多个评估指标**（C-index、集成Brier评分、时间依赖性AUC）
+4. **检查Cox模型的比例风险假设**
+5. **使用交叉验证**通过适当的评分器进行超参数调优
+6. **建模前验证数据质量**（检查负时间、每个特征的足够事件数）
+7. **比较多种模型类型**以找到最佳性能
+8. **对随机生存森林使用排列重要性**（非内置重要性）
+9. **当存在多种事件类型时考虑竞争风险**
+10. **在分析中记录截尾机制**和率
 
-## Common Pitfalls to Avoid
+## 常见陷阱避免
 
-1. **Using Harrell's C-index with high censoring** → Use Uno's C-index
-2. **Not standardizing features for SVMs** → Always standardize
-3. **Forgetting to pass y_train to concordance_index_ipcw** → Required for IPCW calculation
-4. **Treating competing events as censored** → Use competing risks methods
-5. **Not checking for sufficient events per feature** → Rule of thumb: 10+ events per feature
-6. **Using built-in feature importance for RSF** → Use permutation importance
-7. **Ignoring proportional hazards assumption** → Validate or use alternative models
-8. **Not using appropriate scorers in cross-validation** → Use as_concordance_index_ipcw_scorer()
+1. **使用Harrell的C-index处理高截尾** → 使用Uno的C-index
+2. **不为SVM标准化特征** → 始终标准化
+3. **忘记将y_train传递给concordance_index_ipcw** → IPCW计算所需
+4. **将竞争事件视为截尾** → 使用竞争风险方法
+5. **不检查每个特征的足够事件数** → 经验法则：每个特征10+事件
+6. **对RSF使用内置特征重要性** → 使用排列重要性
+7. **忽略比例风险假设** → 验证或使用替代模型
+8. **在交叉验证中不使用适当的评分器** → 使用as_concordance_index_ipcw_scorer()
 
-## Reference Files
+## 参考文件
 
-This skill includes detailed reference files for specific topics:
+此技能包含特定主题的详细参考文件：
 
-- **`references/cox-models.md`**: Complete guide to Cox proportional hazards models, penalized Cox (CoxNet), IPCRidge, regularization strategies, and interpretation
-- **`references/ensemble-models.md`**: Random Survival Forests, Gradient Boosting, hyperparameter tuning, feature importance, and model selection
-- **`references/evaluation-metrics.md`**: Concordance index (Harrell's vs Uno's), time-dependent AUC, Brier score, comprehensive evaluation pipelines
-- **`references/data-handling.md`**: Data loading, preprocessing workflows, handling missing data, feature encoding, validation checks
-- **`references/svm-models.md`**: Survival Support Vector Machines, kernel selection, clinical kernel transform, hyperparameter tuning
-- **`references/competing-risks.md`**: Competing risks analysis, cumulative incidence functions, cause-specific hazard models
+- **`references/cox-models.md`**：Cox比例风险模型、惩罚Cox（CoxNet）、IPCRidge、正则化策略和解释的完整指南
+- **`references/ensemble-models.md`**：随机生存森林、梯度提升、超参数调优、特征重要性和模型选择
+- **`references/evaluation-metrics.md`**：一致性指数（Harrell vs Uno）、时间依赖性AUC、Brier评分、综合评估管道
+- **`references/data-handling.md`**：数据加载、预处理工作流、处理缺失数据、特征编码、验证检查
+- **`references/svm-models.md`**：生存支持向量机、核选择、临床核变换、超参数调优
+- **`references/competing-risks.md`**：竞争风险分析、累积发生率函数、特定原因风险模型
 
-Load these reference files when detailed information is needed for specific tasks.
+当需要特定任务的详细信息时，加载这些参考文件。
 
-## Additional Resources
+## 其他资源
 
-- **Official Documentation**: https://scikit-survival.readthedocs.io/
-- **GitHub Repository**: https://github.com/sebp/scikit-survival
-- **Built-in Datasets**: Use `sksurv.datasets` for practice datasets (GBSG2, WHAS500, veterans lung cancer, etc.)
-- **API Reference**: Complete list of classes and functions at https://scikit-survival.readthedocs.io/en/stable/api/index.html
+- **官方文档**：https://scikit-survival.readthedocs.io/
+- **GitHub仓库**：https://github.com/sebp/scikit-survival
+- **内置数据集**：使用`sksurv.datasets`获取练习数据集（GBSG2、WHAS500、退伍军人肺癌等）
+- **API参考**：完整的类和函数列表，位于https://scikit-survival.readthedocs.io/en/stable/api/index.html
 
-## Quick Reference: Key Imports
+## 快速参考：关键导入
 
 ```python
-# Models
+# 模型
 from sksurv.linear_model import CoxPHSurvivalAnalysis, CoxnetSurvivalAnalysis, IPCRidge
 from sksurv.ensemble import RandomSurvivalForest, GradientBoostingSurvivalAnalysis
 from sksurv.svm import FastSurvivalSVM, FastKernelSurvivalSVM
 from sksurv.tree import SurvivalTree
 
-# Evaluation metrics
+# 评估指标
 from sksurv.metrics import (
     concordance_index_censored,
     concordance_index_ipcw,
@@ -379,19 +381,18 @@ from sksurv.metrics import (
     as_integrated_brier_score_scorer
 )
 
-# Non-parametric estimation
+# 非参数估计
 from sksurv.nonparametric import (
     kaplan_meier_estimator,
     nelson_aalen_estimator,
     cumulative_incidence_competing_risks
 )
 
-# Data handling
+# 数据处理
 from sksurv.util import Surv
 from sksurv.preprocessing import OneHotEncoder, encode_categorical
 from sksurv.datasets import load_gbsg2, load_breast_cancer, load_veterans_lung_cancer
 
-# Kernels
+# 核
 from sksurv.kernels import ClinicalKernelTransform
 ```
-

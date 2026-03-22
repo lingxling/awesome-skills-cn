@@ -1,510 +1,493 @@
 ---
 name: clinical-decision-support
-description: Generate professional clinical decision support (CDS) documents for pharmaceutical and clinical research settings, including patient cohort analyses (biomarker-stratified with outcomes) and treatment recommendation reports (evidence-based guidelines with decision algorithms). Supports GRADE evidence grading, statistical analysis (hazard ratios, survival curves, waterfall plots), biomarker integration, and regulatory compliance. Outputs publication-ready LaTeX/PDF format optimized for drug development, clinical research, and evidence synthesis.
+description: 为制药和临床研究设置生成专业的临床决策支持(CDS)文档,包括患者队列分析(生物标志物分层和结果)和治疗推荐报告(基于证据的指南和决策算法)。支持 GRADE 证据分级、统计分析(风险比、生存曲线、瀑布图)、生物标志物集成和法规合规性。输出针对药物开发、临床研究和证据综合优化的出版就绪 LaTeX/PDF 格式。
 allowed-tools: Read Write Edit Bash
-license: MIT License
+license: MIT 许可证
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Clinical Decision Support Documents
+# 临床决策支持文档
 
-## Description
+## 描述
 
-Generate professional clinical decision support (CDS) documents for pharmaceutical companies, clinical researchers, and medical decision-makers. This skill specializes in analytical, evidence-based documents that inform treatment strategies and drug development:
+为制药公司、临床研究人员和医疗决策者生成专业的临床决策支持(CDS)文档。此技能专门用于分析和基于证据的文档,为治疗策略和药物开发提供信息:
 
-1. **Patient Cohort Analysis** - Biomarker-stratified group analyses with statistical outcome comparisons
-2. **Treatment Recommendation Reports** - Evidence-based clinical guidelines with GRADE grading and decision algorithms
+1. **患者队列分析** - 基于生物标志物的组分析和统计结果比较
+2. **治疗推荐报告** - 基于 GRADE 分级的证据临床指南和决策算法
 
-All documents are generated as publication-ready LaTeX/PDF files optimized for pharmaceutical research, regulatory submissions, and clinical guideline development.
+所有文档均生成为出版就绪的 LaTeX/PDF 文件,针对制药研究、监管提交和临床指南开发进行了优化。
 
-**Note:** For individual patient treatment plans at the bedside, use the `treatment-plans` skill instead. This skill focuses on group-level analyses and evidence synthesis for pharmaceutical/research settings.
+**注意:** 对于床边的个体患者治疗计划,请使用 `treatment-plans` 技能。此技能专注于制药/研究设置中的组级分析和证据综合。
 
-**Writing Style:** For publication-ready documents targeting medical journals, consult the **venue-templates** skill's `medical_journal_styles.md` for guidance on structured abstracts, evidence language, and CONSORT/STROBE compliance.
+**写作风格:** 对于针对医学期刊的出版就绪文档,请参阅 **venue-templates** 技能的 `medical_journal_styles.md`,了解结构化摘要、证据语言和 CONSORT/STROBE 合规性。
 
-## Capabilities
+## 功能
 
-### Document Types
+### 文档类型
 
-**Patient Cohort Analysis**
-- Biomarker-based patient stratification (molecular subtypes, gene expression, IHC)
-- Molecular subtype classification (e.g., GBM mesenchymal-immune-active vs proneural, breast cancer subtypes)
-- Outcome metrics with statistical analysis (OS, PFS, ORR, DOR, DCR)
-- Statistical comparisons between subgroups (hazard ratios, p-values, 95% CI)
-- Survival analysis with Kaplan-Meier curves and log-rank tests
-- Efficacy tables and waterfall plots
-- Comparative effectiveness analyses
-- Pharmaceutical cohort reporting (trial subgroups, real-world evidence)
+**患者队列分析**
+- 基于生物标志物的患者分层(分子亚型、基因表达、IHC)
+- 分子亚型分类(例如 GBM 间充质-免疫活性 vs 原神经,乳腺癌亚型)
+- 包含统计分析的结果指标(OS、PFS、ORR、DOR、DCR)
+- 亚组间的统计比较(风险比、p 值、95% CI)
+- 生存分析和 Kaplan-Meier 曲线及对数秩检验
+- 疗效表和瀑布图
+- 比较有效性分析
+- 制药队列报告(试验亚组、真实世界证据)
 
-**Treatment Recommendation Reports**
-- Evidence-based treatment guidelines for specific disease states
-- Strength of recommendation grading (GRADE system: 1A, 1B, 2A, 2B, 2C)
-- Quality of evidence assessment (high, moderate, low, very low)
-- Treatment algorithm flowcharts with TikZ diagrams
-- Line-of-therapy sequencing based on biomarkers
-- Decision pathways with clinical and molecular criteria
-- Pharmaceutical strategy documents
-- Clinical guideline development for medical societies
+**治疗推荐报告**
+- 特定疾病状态的基于证据的治疗指南
+- 推荐强度分级(GRADE 系统: 1A、1B、2A、2B、2C)
+- 证据质量评估(高、中、低、很低)
+- 使用 TikZ 图表的治疗算法流程图
+- 基于生物标志物的治疗线排序
+- 包含临床和分子标准的决策路径
+- 制药策略文档
+- 医学会临床指南开发
 
-### Clinical Features
+### 临床功能
 
-- **Biomarker Integration**: Genomic alterations (mutations, CNV, fusions), gene expression signatures, IHC markers, PD-L1 scoring
-- **Statistical Analysis**: Hazard ratios, p-values, confidence intervals, survival curves, Cox regression, log-rank tests
-- **Evidence Grading**: GRADE system (1A/1B/2A/2B/2C), Oxford CEBM levels, quality of evidence assessment
-- **Clinical Terminology**: SNOMED-CT, LOINC, proper medical nomenclature, trial nomenclature
-- **Regulatory Compliance**: HIPAA de-identification, confidentiality headers, ICH-GCP alignment
-- **Professional Formatting**: Compact 0.5in margins, color-coded recommendations, publication-ready, suitable for regulatory submissions
+- **生物标志物集成**: 基因组变异(突变、CNV、融合)、基因表达特征、IHC 标记、PD-L1 评分
+- **统计分析**: 风险比、p 值、置信区间、生存曲线、Cox 回归、对数秩检验
+- **证据分级**: GRADE 系统(1A/1B/2A/2B/2C)、Oxford CEBM 级别、证据质量评估
+- **临床术语**: SNOMED-CT、LOINC、正确的医学术语、试验命名法
+- **法规合规性**: HIPAA 去标识化、保密页眉、ICH-GCP 对齐
+- **专业格式化**: 紧凑的 0.5in 页边距、颜色编码推荐、出版就绪、适合监管提交
 
-## Pharmaceutical and Research Use Cases
+## 制药和研究用例
 
-This skill is specifically designed for pharmaceutical and clinical research applications:
+此技能专为制药和临床研究应用设计:
 
-**Drug Development**
-- **Phase 2/3 Trial Analyses**: Biomarker-stratified efficacy and safety analyses
-- **Subgroup Analyses**: Forest plots showing treatment effects across patient subgroups
-- **Companion Diagnostic Development**: Linking biomarkers to drug response
-- **Regulatory Submissions**: IND/NDA documentation with evidence summaries
+**药物开发**
+- **2/3 期试验分析**: 基于生物标志物的疗效和安全性分析
+- **亚组分析**: 显示跨患者亚组治疗效果的森林图
+- **伴随诊断开发**: 将生物标志物与药物反应联系起来
+- **监管提交**: IND/NDA 文档和证据摘要
 
-**Medical Affairs**
-- **KOL Education Materials**: Evidence-based treatment algorithms for thought leaders
-- **Medical Strategy Documents**: Competitive landscape and positioning strategies
-- **Advisory Board Materials**: Cohort analyses and treatment recommendation frameworks
-- **Publication Planning**: Manuscript-ready analyses for peer-reviewed journals
+**医学事务**
+- **KOL 教育材料**: 为思想领袖提供基于证据的治疗算法
+- **医学策略文档**: 竞争格局和定位策略
+- **顾问委员会材料**: 队列分析和治疗推荐框架
+- **发表计划**: 用于同行评审期刊的手稿就绪分析
 
-**Clinical Guidelines**
-- **Guideline Development**: Evidence synthesis with GRADE methodology for specialty societies
-- **Consensus Recommendations**: Multi-stakeholder treatment algorithm development
-- **Practice Standards**: Biomarker-based treatment selection criteria
-- **Quality Measures**: Evidence-based performance metrics
+**临床指南**
+- **指南开发**: 使用 GRADE 方法论为专业学会进行证据综合
+- **共识推荐**: 多利益相关方治疗算法开发
+- **实践标准**: 基于生物标志物的治疗选择标准
+- **质量指标**: 基于证据的绩效指标
 
-**Real-World Evidence**
-- **RWE Cohort Studies**: Retrospective analyses of patient cohorts from EMR data
-- **Comparative Effectiveness**: Head-to-head treatment comparisons in real-world settings
-- **Outcomes Research**: Long-term survival and safety in clinical practice
-- **Health Economics**: Cost-effectiveness analyses by biomarker subgroup
+**真实世界证据**
+- **RWE 队列研究**: 来自 EMR 数据的患者队列回顾性分析
+- **比较有效性**: 真实世界环境中的头对头治疗比较
+- **结果研究**: 临床实践中的长期生存和安全性
+- **卫生经济学**: 基于生物标志物亚组的成本效益分析
 
-## When to Use
+## 何时使用
 
-Use this skill when you need to:
+在以下情况下使用此技能:
 
-- **Analyze patient cohorts** stratified by biomarkers, molecular subtypes, or clinical characteristics
-- **Generate treatment recommendation reports** with evidence grading for clinical guidelines or pharmaceutical strategies
-- **Compare outcomes** between patient subgroups with statistical analysis (survival, response rates, hazard ratios)
-- **Produce pharmaceutical research documents** for drug development, clinical trials, or regulatory submissions
-- **Develop clinical practice guidelines** with GRADE evidence grading and decision algorithms
-- **Document biomarker-guided therapy selection** at the population level (not individual patients)
-- **Synthesize evidence** from multiple trials or real-world data sources
-- **Create clinical decision algorithms** with flowcharts for treatment sequencing
+- **分析患者队列**,按生物标志物、分子亚型或临床特征分层
+- **生成治疗推荐报告**,为临床指南或制药策略提供证据分级
+- **比较患者亚组间的结果**,包含统计分析(生存、反应率、风险比)
+- **生成制药研究文档**,用于药物开发、临床试验或监管提交
+- **开发临床实践指南**,包含 GRADE 证据分级和决策算法
+- **记录群体水平的生物标志物指导治疗选择**(非个体患者)
+- **综合来自多个试验或真实世界数据来源的证据**
+- **创建包含流程图的治疗临床决策算法**
 
-**Do NOT use this skill for:**
-- Individual patient treatment plans (use `treatment-plans` skill)
-- Bedside clinical care documentation (use `treatment-plans` skill)
-- Simple patient-specific treatment protocols (use `treatment-plans` skill)
+**请勿将此技能用于:**
+- 个体患者治疗计划(使用 `treatment-plans` 技能)
+- 床边临床护理文档(使用 `treatment-plans` 技能)
+- 简单的特定患者治疗方案(使用 `treatment-plans` 技能)
 
-## Visual Enhancement with Scientific Schematics
+## 使用科学原理图进行视觉增强
 
-**⚠️ MANDATORY: Every clinical decision support document MUST include at least 1-2 AI-generated figures using the scientific-schematics skill.**
+**⚠️ 强制要求: 每个临床决策支持文档必须包含至少 1-2 个使用 scientific-schematics 技能生成的 AI 图。**
 
-This is not optional. Clinical decision documents require clear visual algorithms. Before finalizing any document:
-1. Generate at minimum ONE schematic or diagram (e.g., clinical decision algorithm, treatment pathway, or biomarker stratification tree)
-2. For cohort analyses: include patient flow diagram
-3. For treatment recommendations: include decision flowchart
+这不是可选的。临床决策文档需要清晰的视觉算法。在定稿任何文档之前:
+1. 至少生成一个原理图或图表(例如,临床决策算法、治疗路径或生物标志物分层树)
+2. 对于队列分析: 包括患者流程图
+3. 对于治疗推荐: 包括决策流程图
 
-**How to generate figures:**
-- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
-- Simply describe your desired diagram in natural language
-- Nano Banana Pro will automatically generate, review, and refine the schematic
+**如何生成图表:**
+- 使用 **scientific-schematics** 技能生成 AI 驱动的出版质量图表
+- 只需用自然语言描述您想要的图表
+- Nano Banana Pro 将自动生成、审查和精炼原理图
 
-**How to generate schematics:**
+**如何生成原理图:**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
-The AI will automatically:
-- Create publication-quality images with proper formatting
-- Review and refine through multiple iterations
-- Ensure accessibility (colorblind-friendly, high contrast)
-- Save outputs in the figures/ directory
+AI 将自动:
+- 创建具有正确格式的出版质量图像
+- 通过多次迭代审查和精炼
+- 确保可访问性(色盲友好、高对比度)
+- 将输出保存在 figures/ 目录中
 
-**When to add schematics:**
-- Clinical decision algorithm flowcharts
-- Treatment pathway diagrams
-- Biomarker stratification trees
-- Patient cohort flow diagrams (CONSORT-style)
-- Survival curve visualizations
-- Molecular mechanism diagrams
-- Any complex concept that benefits from visualization
+**何时添加原理图:**
+- 临床决策算法流程图
+- 治疗路径图表
+- 生物标志物分层树
+- 患者队列流程图(CONSORT 风格)
+- 生存曲线可视化
+- 分子机制图表
+- 任何受益于可视化的复杂概念
 
-For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.
+有关创建原理图的详细指导,请参阅 scientific-schematics 技能文档。
 
 ---
 
-## Document Structure
+## 文档结构
 
-**CRITICAL REQUIREMENT: All clinical decision support documents MUST begin with a complete executive summary on page 1 that spans the entire first page before any table of contents or detailed sections.**
+**强制要求: 所有临床决策支持文档必须在第一页以完整的执行摘要开始,该页在任何目录或详细部分之前跨越整个第一页。**
 
-### Page 1 Executive Summary Structure
+### 第一页执行摘要结构
 
-The first page of every CDS document should contain ONLY the executive summary with the following components:
+每个 CDS 文档的第一页应仅包含具有以下组件的执行摘要:
 
-**Required Elements (all on page 1):**
-1. **Document Title and Type**
-   - Main title (e.g., "Biomarker-Stratified Cohort Analysis" or "Evidence-Based Treatment Recommendations")
-   - Subtitle with disease state and focus
+**必填元素(全部在第一页):**
+1. **文档标题和类型**
+   - 主标题(例如,"基于生物标志物的队列分析"或"基于证据的治疗推荐")
+   - 包含疾病状态和重点的副标题
    
-2. **Report Information Box** (using colored tcolorbox)
-   - Document type and purpose
-   - Date of analysis/report
-   - Disease state and patient population
-   - Author/institution (if applicable)
-   - Analysis framework or methodology
+2. **报告信息框**(使用彩色 tcolorbox)
+   - 文档类型和目的
+   - 分析/报告日期
+   - 疾病状态和患者人群
+   - 作者/机构(如适用)
+   - 分析框架或方法
    
-3. **Key Findings Boxes** (3-5 colored boxes using tcolorbox)
-   - **Primary Results** (blue box): Main efficacy/outcome findings
-   - **Biomarker Insights** (green box): Key molecular subtype findings
-   - **Clinical Implications** (yellow/orange box): Actionable treatment implications
-   - **Statistical Summary** (gray box): Hazard ratios, p-values, key statistics
-   - **Safety Highlights** (red box, if applicable): Critical adverse events or warnings
+3. **关键发现框**(3-5 个使用 tcolorbox 的彩色框)
+   - **主要结果**(蓝色框): 主要疗效/结果发现
+   - **生物标志物洞察**(绿色框): 关键分子亚型发现
+   - **临床意义**(黄色/橙色框): 可操作的治疗意义
+   - **统计摘要**(灰色框): 风险比、p 值、关键统计
+   - **安全亮点**(红色框,如适用): 关键不良事件或警告
 
-**Visual Requirements:**
-- Use `\thispagestyle{empty}` to remove page numbers from page 1
-- All content must fit on page 1 (before `\newpage`)
-- Use colored tcolorbox environments with different colors for visual hierarchy
-- Boxes should be scannable and highlight most critical information
-- Use bullet points, not narrative paragraphs
-- End page 1 with `\newpage` before table of contents or detailed sections
+**视觉要求:**
+- 使用 `\thispagestyle{empty}` 从第一页删除页码
+- 所有内容必须适合第一页(在 `\newpage` 之前)
+- 使用具有不同颜色的彩色 tcolorbox 环境以实现视觉层次
+- 框应可扫描并突出最关键的信息
+- 使用项目符号,而非叙述段落
+- 在目录或详细部分之前用 `\newpage` 结束第一页
 
-**Example First Page LaTeX Structure:**
+**示例第一页 LaTeX 结构:**
 ```latex
 \maketitle
 \thispagestyle{empty}
 
-% Report Information Box
-\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black, title=Report Information]
-\textbf{Document Type:} Patient Cohort Analysis\\
-\textbf{Disease State:} HER2-Positive Metastatic Breast Cancer\\
-\textbf{Analysis Date:} \today\\
-\textbf{Population:} 60 patients, biomarker-stratified by HR status
+% 报告信息框
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black, title=报告信息]
+\textbf{文档类型:} 患者队列分析\\
+\textbf{疾病状态:} HER2 阳性转移性乳腺癌\\
+\textbf{分析日期:} \today\\
+\textbf{人群:} 60 名患者,按 HR 状态的生物标志物分层
 \end{tcolorbox}
 
 \vspace{0.3cm}
 
-% Key Finding #1: Primary Results
-\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black, title=Primary Efficacy Results]
+% 关键发现 #1: 主要结果
+\begin{tcolorbox}[colback=blue!5!white, colframe=blue!75!black, title=主要疗效结果]
 \begin{itemize}
-    \item Overall ORR: 72\% (95\% CI: 59-83\%)
-    \item Median PFS: 18.5 months (95\% CI: 14.2-22.8)
-    \item Median OS: 35.2 months (95\% CI: 28.1-NR)
+    \item 总体 ORR: 72\% (95\% CI: 59-83\%)
+    \item 中位 PFS: 18.5 个月 (95\% CI: 14.2-22.8)
+    \item 中位 OS: 35.2 个月 (95\% CI: 28.1-NR)
 \end{itemize}
 \end{tcolorbox}
 
 \vspace{0.3cm}
 
-% Key Finding #2: Biomarker Insights
-\begin{tcolorbox}[colback=green!5!white, colframe=green!75!black, title=Biomarker Stratification Findings]
+% 关键发现 #2: 生物标志物发现
+\begin{tcolorbox}[colback=green!5!white, colframe=green!75!black, title=生物标志物分层发现]
 \begin{itemize}
-    \item HR+/HER2+: ORR 68\%, median PFS 16.2 months
-    \item HR-/HER2+: ORR 78\%, median PFS 22.1 months
-    \item HR status significantly associated with outcomes (p=0.041)
+    \item HR+/HER2+: ORR 68\%,中位 PFS 16.2 个月
+    \item HR-/HER2+: ORR 78\%,中位 PFS 22.1 个月
+    \item HR 状态与结果显著相关(p=0.041)
 \end{itemize}
 \end{tcolorbox}
 
 \vspace{0.3cm}
 
-% Key Finding #3: Clinical Implications
-\begin{tcolorbox}[colback=orange!5!white, colframe=orange!75!black, title=Clinical Recommendations]
+% 关键发现 #3: 临床意义
+\begin{tcolorbox}[colback=orange!5!white, colframe=orange!75!black, title=临床推荐]
 \begin{itemize}
-    \item Strong efficacy observed regardless of HR status (Grade 1A)
-    \item HR-/HER2+ patients showed numerically superior outcomes
-    \item Treatment recommended for all HER2+ MBC patients
+    \item 无论 HR 状态如何均观察到强疗效(1A 级)
+    \item HR-/HER2+ 患者显示数值上更优的结果
+    \item 建议对所有 HER2+ MBC 患者进行治疗
 \end{itemize}
 \end{tcolorbox}
 
 \newpage
-\tableofcontents  % TOC on page 2
-\newpage  % Detailed content starts page 3
+\tableofcontents  % 第2页的目录
+\newpage  % 详细内容从第3页开始
 ```
 
-### Patient Cohort Analysis (Detailed Sections - Page 3+)
-- **Cohort Characteristics**: Demographics, baseline features, patient selection criteria
-- **Biomarker Stratification**: Molecular subtypes, genomic alterations, IHC profiles
-- **Treatment Exposure**: Therapies received, dosing, treatment duration by subgroup
-- **Outcome Analysis**: Response rates (ORR, DCR), survival data (OS, PFS), DOR
-- **Statistical Methods**: Kaplan-Meier survival curves, hazard ratios, log-rank tests, Cox regression
-- **Subgroup Comparisons**: Biomarker-stratified efficacy, forest plots, statistical significance
-- **Safety Profile**: Adverse events by subgroup, dose modifications, discontinuations
-- **Clinical Recommendations**: Treatment implications based on biomarker profiles
-- **Figures**: Waterfall plots, swimmer plots, survival curves, forest plots
-- **Tables**: Demographics table, biomarker frequency, outcomes by subgroup
+### 患者队列分析(详细部分 - 第3页+)
+- **队列特征**: 人口统计学、基线特征、患者选择标准
+- **生物标志物分层**: 分子亚型、基因组变异、IHC 档案
+- **治疗暴露**: 亚组接受的治疗、给药、治疗持续时间
+- **结果分析**: 反应率(ORR、DCR)、生存数据(OS、PFS)、DOR
+- **统计方法**: Kaplan-Meier 生存曲线、风险比、对数秩检验、Cox 回归
+- **亚组比较**: 基于生物标志物的疗效、森林图、统计显著性
+- **安全性概况**: 按亚组的不良事件、剂量调整、停药
+- **临床推荐**: 基于生物标志物概况的治疗意义
+- **图表**: 瀑布图、游泳者图、生存曲线、森林图
+- **表格**: 人口统计学表、生物标志物频率、亚组结果
 
-### Treatment Recommendation Reports (Detailed Sections - Page 3+)
+### 治疗推荐报告(详细部分 - 第3页+)
 
-**Page 1 Executive Summary for Treatment Recommendations should include:**
-1. **Report Information Box**: Disease state, guideline version/date, target population
-2. **Key Recommendations Box** (green): Top 3-5 GRADE-graded recommendations by line of therapy
-3. **Biomarker Decision Criteria Box** (blue): Key molecular markers influencing treatment selection
-4. **Evidence Summary Box** (gray): Major trials supporting recommendations (e.g., KEYNOTE-189, FLAURA)
-5. **Critical Monitoring Box** (orange/red): Essential safety monitoring requirements
+**治疗推荐的第一页执行摘要应包括:**
+1. **报告信息框**: 疾病状态、指南版本/日期、目标人群
+2. **关键推荐框**(绿色): 按治疗线的前 3-5 个 GRADE 分级推荐
+3. **生物标志物决策标准框**(蓝色): 影响治疗选择的关键分子标记
+4. **证据摘要框**(灰色): 支持推荐的主要试验(例如 KEYNOTE-189、FLAURA)
+5. **关键监测框**(橙色/红色): 必要的安全性监测要求
 
-**Detailed Sections (Page 3+):**
-- **Clinical Context**: Disease state, epidemiology, current treatment landscape
-- **Target Population**: Patient characteristics, biomarker criteria, staging
-- **Evidence Review**: Systematic literature synthesis, guideline summary, trial data
-- **Treatment Options**: Available therapies with mechanism of action
-- **Evidence Grading**: GRADE assessment for each recommendation (1A, 1B, 2A, 2B, 2C)
-- **Recommendations by Line**: First-line, second-line, subsequent therapies
-- **Biomarker-Guided Selection**: Decision criteria based on molecular profiles
-- **Treatment Algorithms**: TikZ flowcharts showing decision pathways
-- **Monitoring Protocol**: Safety assessments, efficacy monitoring, dose modifications
-- **Special Populations**: Elderly, renal/hepatic impairment, comorbidities
-- **References**: Full bibliography with trial names and citations
+**详细部分(第3页+):**
+- **临床背景**: 疾病状态、流行病学、当前治疗格局
+- **目标人群**: 患者特征、生物标志物标准、分期
+- **证据审查**: 系统文献综合、指南摘要、试验数据
+- **治疗选择**: 可用治疗及其作用机制
+- **证据分级**: 每个推荐的 GRADE 评估(1A、1B、2A、2B、2C)
+- **按线的推荐**: 一线、二线、后续治疗
+- **生物标志物指导选择**: 基于分子概况的决策标准
+- **治疗算法**: 显示决策路径的 TikZ 流程图
+- **监测方案**: 安全性评估、疗效监测、剂量调整
+- **特殊人群**: 老年、肾/肝功能不全、合并症
+- **参考文献**: 包含试验名称和引文的完整参考书目
 
-## Output Format
+## 输出格式
 
-**MANDATORY FIRST PAGE REQUIREMENT:**
-- **Page 1**: Full-page executive summary with 3-5 colored tcolorbox elements
-- **Page 2**: Table of contents (optional)
-- **Page 3+**: Detailed sections with methods, results, figures, tables
+**强制第一页要求:**
+- **第1页**: 包含 3-5 个彩色 tcolorbox 元素的完整页执行摘要
+- **第2页**: 目录(可选)
+- **第3页+**: 包含方法、结果、图表、表格的详细部分
 
-**Document Specifications:**
-- **Primary**: LaTeX/PDF with 0.5in margins for compact, data-dense presentation
-- **Length**: Typically 5-15 pages (1 page executive summary + 4-14 pages detailed content)
-- **Style**: Publication-ready, pharmaceutical-grade, suitable for regulatory submissions
-- **First Page**: Always a complete executive summary spanning entire page 1 (see Document Structure section)
+**文档规范:**
+- **主要格式**: LaTeX/PDF,具有 0.5in 页边距,用于紧凑、数据密集的呈现
+- **长度**: 通常 5-15 页(1 页执行摘要 + 4-14 页详细内容)
+- **风格**: 出版就绪、制药级,适合监管提交
+- **第一页**: 始终是跨越整个第一页的完整执行摘要(参见文档结构部分)
 
-**Visual Elements:**
-- **Colors**: 
-  - Page 1 boxes: blue=data/information, green=biomarkers/recommendations, yellow/orange=clinical implications, red=warnings
-  - Recommendation boxes (green=strong recommendation, yellow=conditional, blue=research needed)
-  - Biomarker stratification (color-coded molecular subtypes)
-  - Statistical significance (color-coded p-values, hazard ratios)
-- **Tables**: 
-  - Demographics with baseline characteristics
-  - Biomarker frequency by subgroup
-  - Outcomes table (ORR, PFS, OS, DOR by molecular subtype)
-  - Adverse events by cohort
-  - Evidence summary tables with GRADE ratings
-- **Figures**: 
-  - Kaplan-Meier survival curves with log-rank p-values and number at risk tables
-  - Waterfall plots showing best response by patient
-  - Forest plots for subgroup analyses with confidence intervals
-  - TikZ decision algorithm flowcharts
-  - Swimmer plots for individual patient timelines
-- **Statistics**: Hazard ratios with 95% CI, p-values, median survival times, landmark survival rates
-- **Compliance**: De-identification per HIPAA Safe Harbor, confidentiality notices for proprietary data
+**视觉元素:**
+- **颜色**: 
+  - 第1页框: 蓝色=数据/信息、绿色=生物标志物/推荐、黄色/橙色=临床意义、红色=警告
+  - 推荐框(绿色=强推荐、黄色=有条件、蓝色=需要研究)
+  - 生物标志物分层(颜色编码的分子亚型)
+  - 统计显著性(颜色编码的 p 值、风险比)
+- **表格**: 
+  - 人口统计学和基线特征
+  - 按亚组的生物标志物频率
+  - 结果表(按分子亚型的 ORR、PFS、OS、DOR)
+  - 按队列的不良事件
+  - 包含 GRADE 评级的证据摘要表
+- **图表**: 
+  - 带有对数秩 p 值和风险数表的 Kaplan-Meier 生存曲线
+  - 显示患者最佳反应的瀑布图
+  - 用于亚组分析的带置信区间的森林图
+  - 用于治疗算法的 TikZ 决策流程图
+  - 用于个体患者时间线的游泳者图
+- **统计**: 带 95% CI 的风险比、p 值、中位生存时间、里程碑生存率
+- **合规性**: 根据 HIPAA Safe Harbor 的去标识化、专有数据的保密通知
 
-## Integration
+## 集成
 
-This skill integrates with:
-- **scientific-writing**: Citation management, statistical reporting, evidence synthesis
-- **clinical-reports**: Medical terminology, HIPAA compliance, regulatory documentation
-- **scientific-schematics**: TikZ flowcharts for decision algorithms and treatment pathways
-- **treatment-plans**: Individual patient applications of cohort-derived insights (bidirectional)
+此技能与以下技能集成:
+- **scientific-writing**: 引文管理、统计报告、证据综合
+- **clinical-reports**: 医学术语、HIPAA 合规、监管文档
+- **scientific-schematics**: 用于决策算法和治疗路径的 TikZ 流程图
+- **treatment-plans**: 队列衍生洞察的个体患者应用(双向)
 
-## Key Differentiators from Treatment-Plans Skill
+## 与 Treatment-Plans 技能的关键区别
 
-**Clinical Decision Support (this skill):**
-- **Audience**: Pharmaceutical companies, clinical researchers, guideline committees, medical affairs
-- **Scope**: Population-level analyses, evidence synthesis, guideline development
-- **Focus**: Biomarker stratification, statistical comparisons, evidence grading
-- **Output**: Multi-page analytical documents (5-15 pages typical) with extensive figures and tables
-- **Use Cases**: Drug development, regulatory submissions, clinical practice guidelines, medical strategy
-- **Example**: "Analyze 60 HER2+ breast cancer patients by hormone receptor status with survival outcomes"
+**临床决策支持(此技能):**
+- **受众**: 制药公司、临床研究人员、指南委员会、医学事务
+- **范围**: 人群级分析、证据综合、指南开发
+- **重点**: 生物标志物分层、统计比较、证据分级
+- **输出**: 多页分析文档(通常 5-15 页),包含大量图表和表格
+- **用例**: 药物开发、监管提交、临床实践指南、医学策略
+- **示例**: "按激素受体状态分析 60 名 HER2+ 乳腺癌患者,包含生存结果"
 
-**Treatment-Plans Skill:**
-- **Audience**: Clinicians, patients, care teams
-- **Scope**: Individual patient care planning
-- **Focus**: SMART goals, patient-specific interventions, monitoring plans
-- **Output**: Concise 1-4 page actionable care plans
-- **Use Cases**: Bedside clinical care, EMR documentation, patient-centered planning
-- **Example**: "Create treatment plan for a 55-year-old patient with newly diagnosed type 2 diabetes"
+**Treatment-Plans 技能:**
+- **受众**: 临床医生、患者、护理团队
+- **范围**: 个体患者护理规划
+- **重点**: SMART 目标、患者特定干预、监测计划
+- **输出**: 简洁的 1-4 页可操作护理计划
+- **用例**: 床边临床护理、EMR 文档、以患者为中心的规划
+- **示例**: "为一名新诊断的 2 型糖尿病的 55 岁患者创建治疗计划"
 
-**When to use each:**
-- Use **clinical-decision-support** for: cohort analyses, biomarker stratification studies, treatment guideline development, pharmaceutical strategy documents
-- Use **treatment-plans** for: individual patient care plans, treatment protocols for specific patients, bedside clinical documentation
+**何时使用每个技能:**
+- 使用 **clinical-decision-support** 进行: 队列分析、生物标志物分层研究、治疗指南开发、制药策略文档
+- 使用 **treatment-plans** 进行: 个体患者护理计划、特定患者的治疗方案、床边临床文档
 
-## Example Usage
+## 示例用法
 
-### Patient Cohort Analysis
+### 患者队列分析
 
-**Example 1: NSCLC Biomarker Stratification**
+**示例 1: NSCLC 生物标志物分层**
 ```
-> Analyze a cohort of 45 NSCLC patients stratified by PD-L1 expression (<1%, 1-49%, ≥50%) 
-> receiving pembrolizumab. Include outcomes: ORR, median PFS, median OS with hazard ratios 
-> comparing PD-L1 ≥50% vs <50%. Generate Kaplan-Meier curves and waterfall plot.
+> 分析 45 名 NSCLC 患者,按 PD-L1 表达(<1%、1-49%、≥50%)分层,接受帕博利珠单抗。包括结果: ORR、中位 PFS、中位 OS,比较 PD-L1 ≥50% 与 <50% 的风险比。生成 Kaplan-Meier 曲线和瀑布图。
 ```
 
-**Example 2: GBM Molecular Subtype Analysis**
+**示例 2: GBM 分子亚型分析**
 ```
-> Generate cohort analysis for 30 GBM patients classified into Cluster 1 (Mesenchymal-Immune-Active) 
-> and Cluster 2 (Proneural) molecular subtypes. Compare outcomes including median OS, 6-month PFS rate, 
-> and response to TMZ+bevacizumab. Include biomarker profile table and statistical comparison.
+> 为 30 名 GBM 患者生成队列分析,分类为簇 1(间充质-免疫活性)和簇 2(原神经)分子亚型。比较结果,包括中位 OS、6 个月 PFS 率以及对 TMZ+贝伐珠单抗的反应。包括生物标志物概况表和统计比较。
 ```
 
-**Example 3: Breast Cancer HER2 Cohort**
+**示例 3: 乳腺癌 HER2 队列**
 ```
-> Analyze 60 HER2-positive metastatic breast cancer patients treated with trastuzumab-deruxtecan, 
-> stratified by prior trastuzumab exposure (yes/no). Include ORR, DOR, median PFS with forest plot 
-> showing subgroup analyses by hormone receptor status, brain metastases, and number of prior lines.
+> 分析 60 名接受 T-DXd 治疗的 HER2 阳性转移性乳腺癌患者,按既往曲妥珠单抗暴露(是/否)分层。包括 ORR、DOR、中位 PFS,显示按激素受体状态、脑转移和既往治疗线数的亚组分析的森林图。
 ```
 
-### Treatment Recommendation Report
+### 治疗推荐报告
 
-**Example 1: HER2+ Metastatic Breast Cancer Guidelines**
+**示例 1: HER2+ 转移性乳腺癌指南**
 ```
-> Create evidence-based treatment recommendations for HER2-positive metastatic breast cancer including 
-> biomarker-guided therapy selection. Use GRADE system to grade recommendations for first-line 
-> (trastuzumab+pertuzumab+taxane), second-line (trastuzumab-deruxtecan), and third-line options. 
-> Include decision algorithm flowchart based on brain metastases, hormone receptor status, and prior therapies.
+> 为 HER2 阳性转移性乳腺癌创建基于证据的治疗推荐,包括生物标志物指导的治疗选择。使用 GRADE 系统对一线(曲妥珠单抗+帕妥珠单抗+紫杉烷)、二线(T-DXd)和三线选项的推荐进行分级。包括基于脑转移、激素受体状态和既往治疗的决策算法流程图。
 ```
 
-**Example 2: Advanced NSCLC Treatment Algorithm**
+**示例 2: 晚期 NSCLC 治疗算法**
 ```
-> Generate treatment recommendation report for advanced NSCLC based on PD-L1 expression, EGFR mutation, 
-> ALK rearrangement, and performance status. Include GRADE-graded recommendations for each molecular subtype, 
-> TikZ flowchart for biomarker-directed therapy selection, and evidence tables from KEYNOTE-189, FLAURA, 
-> and CheckMate-227 trials.
+> 基于 PD-L1 表达、EGFR 突变、ALK 重排和体能状态生成晚期 NSCLC 的治疗推荐报告。包括每个分子亚型的 GRADE 分级推荐、用于生物标志物指导治疗选择的 TikZ 流程图,以及来自 KEYNOTE-189、FLAURA 和 CheckMate-227 试验的证据表。
 ```
 
-**Example 3: Multiple Myeloma Line-of-Therapy Sequencing**
+**示例 3: 多发性骨髓瘤治疗线排序**
 ```
-> Create treatment algorithm for newly diagnosed multiple myeloma through relapsed/refractory setting. 
-> Include GRADE recommendations for transplant-eligible vs ineligible, high-risk cytogenetics considerations, 
-> and sequencing of daratumumab, carfilzomib, and CAR-T therapy. Provide flowchart showing decision points 
-> at each line of therapy.
+> 创建从新诊断到复发/难治性设置的多发性骨髓瘤治疗算法。包括移植合格与不合格、高风险细胞遗传学考虑以及达雷妥尤单抗、卡非佐米单抗和 CAR-T 治疗排序的 GRADE 推荐。提供显示每线治疗决策点的流程图。
 ```
 
-## Key Features
+## 关键功能
 
-### Biomarker Classification
-- Genomic: Mutations, CNV, gene fusions
-- Expression: RNA-seq, IHC scores
-- Molecular subtypes: Disease-specific classifications
-- Clinical actionability: Therapy selection guidance
+### 生物标志物分类
+- 基因组: 突变、CNV、基因融合
+- 表达: RNA-seq、IHC 评分
+- 分子亚型: 疾病特定分类
+- 临床可操作性: 治疗选择指导
 
-### Outcome Metrics
-- Survival: OS (overall survival), PFS (progression-free survival)
-- Response: ORR (objective response rate), DOR (duration of response), DCR (disease control rate)
-- Quality: ECOG performance status, symptom burden
-- Safety: Adverse events, dose modifications
+### 结果指标
+- 生存: OS(总生存期)、PFS(无进展生存期)
+- 反应: ORR(客观反应率)、DOR(反应持续时间)、DCR(疾病控制率)
+- 质量: ECOG 体能状态、症状负担
+- 安全性: 不良事件、剂量调整
 
-### Statistical Methods
-- Survival analysis: Kaplan-Meier curves, log-rank tests
-- Group comparisons: t-tests, chi-square, Fisher's exact
-- Effect sizes: Hazard ratios, odds ratios with 95% CI
-- Significance: p-values, multiple testing corrections
+### 统计方法
+- 生存分析: Kaplan-Meier 曲线、对数秩检验
+- 组比较: t 检验、卡方、Fisher 精确检验
+- 效应大小: 带 95% CI 的风险比、优势比
+- 显著性: p 值、多重检验校正
 
-### Evidence Grading
+### 证据分级
 
-**GRADE System**
-- **1A**: Strong recommendation, high-quality evidence
-- **1B**: Strong recommendation, moderate-quality evidence  
-- **2A**: Weak recommendation, high-quality evidence
-- **2B**: Weak recommendation, moderate-quality evidence
-- **2C**: Weak recommendation, low-quality evidence
+**GRADE 系统**
+- **1A**: 强推荐,高质量证据
+- **1B**: 强推荐,中等质量证据  
+- **2A**: 弱推荐,高质量证据
+- **2B**: 弱推荐,中等质量证据
+- **2C**: 弱推荐,低质量证据
 
-**Recommendation Strength**
-- **Strong**: Benefits clearly outweigh risks
-- **Conditional**: Trade-offs exist, patient values important
-- **Research**: Insufficient evidence, clinical trials needed
+**推荐强度**
+- **强**: 收益明显超过风险
+- **有条件**: 存在权衡,患者价值观重要
+- **研究**: 证据不足,需要临床试验
 
-## Best Practices
+## 最佳实践
 
-### For Cohort Analyses
+### 对于队列分析
 
-1. **Patient Selection Transparency**: Clearly document inclusion/exclusion criteria, patient flow, and reasons for exclusions
-2. **Biomarker Clarity**: Specify assay methods, platforms (e.g., FoundationOne, Caris), cut-points, and validation status
-3. **Statistical Rigor**: 
-   - Report hazard ratios with 95% confidence intervals, not just p-values
-   - Include median follow-up time for survival analyses
-   - Specify statistical tests used (log-rank, Cox regression, Fisher's exact)
-   - Account for multiple comparisons when appropriate
-4. **Outcome Definitions**: Use standard criteria:
-   - Response: RECIST 1.1, iRECIST for immunotherapy
-   - Adverse events: CTCAE version 5.0
-   - Performance status: ECOG or Karnofsky
-5. **Survival Data Presentation**:
-   - Median OS/PFS with 95% CI
-   - Landmark survival rates (6-month, 12-month, 24-month)
-   - Number at risk tables below Kaplan-Meier curves
-   - Censoring clearly indicated
-6. **Subgroup Analyses**: Pre-specify subgroups; clearly label exploratory vs pre-planned analyses
-7. **Data Completeness**: Report missing data and how it was handled
+1. **患者选择透明度**: 清楚记录纳入/排除标准、患者流程和排除原因
+2. **生物标志物清晰度**: 指定检测方法、平台(例如 FoundationOne、Caris)、临界点和验证状态
+3. **统计严谨性**: 
+   - 报告带 95% 置信区间的风险比,而不仅仅是 p 值
+   - 包含生存分析的中位随访时间
+   - 指定使用的统计检验(对数秩、Cox 回归、Fisher 精确)
+   - 适当时考虑多重比较
+4. **结果定义**: 使用标准标准:
+   - 反应: RECIST 1.1、iRECIST 用于免疫治疗
+   - 不良事件: CTCAE 5.0 版
+   - 体能状态: ECOG 或 Karnofsky
+5. **生存数据呈现**:
+   - 带 95% CI 的中位 OS/PFS
+   - 里程碑生存率(6 个月、12 个月、24 个月)
+   - Kaplan-Meier 曲线下方的风险数表
+   - 清楚指示删失
+6. **亚组分析**: 预先指定亚组;清楚标记探索性与计划内分析
+7. **数据完整性**: 报告缺失数据及其处理方式
 
-### For Treatment Recommendation Reports
+### 对于治疗推荐报告
 
-1. **Evidence Grading Transparency**: 
-   - Use GRADE system consistently (1A, 1B, 2A, 2B, 2C)
-   - Document rationale for each grade
-   - Clearly state quality of evidence (high, moderate, low, very low)
-2. **Comprehensive Evidence Review**: 
-   - Include phase 3 randomized trials as primary evidence
-   - Supplement with phase 2 data for emerging therapies
-   - Note real-world evidence and meta-analyses
-   - Cite trial names (e.g., KEYNOTE-189, CheckMate-227)
-3. **Biomarker-Guided Recommendations**:
-   - Link specific biomarkers to therapy recommendations
-   - Specify testing methods and validated assays
-   - Include FDA/EMA approval status for companion diagnostics
-4. **Clinical Actionability**: Every recommendation should have clear implementation guidance
-5. **Decision Algorithm Clarity**: TikZ flowcharts should be unambiguous with clear yes/no decision points
-6. **Special Populations**: Address elderly, renal/hepatic impairment, pregnancy, drug interactions
-7. **Monitoring Guidance**: Specify safety labs, imaging, and frequency
-8. **Update Frequency**: Date recommendations and plan for periodic updates
+1. **证据分级透明度**: 
+   - 始终一致使用 GRADE 系统(1A、1B、2A、2B、2C)
+   - 记录每个等级的理由
+   - 清楚说明证据质量(高、中、低、很低)
+2. **全面证据审查**: 
+   - 包括 3 期随机试验作为主要证据
+   - 用 2 期数据补充新兴治疗
+   - 注意真实世界证据和荟萃分析
+   - 引用试验名称(例如 KEYNOTE-189、CheckMate-227)
+3. **生物标志物指导推荐**:
+   - 将特定生物标志物与治疗推荐联系起来
+   - 指定检测方法和验证的检测
+   - 包含伴随诊断的 FDA/EMA 批准状态
+4. **临床可操作性**: 每个推荐都应有清晰的实施指导
+5. **决策算法清晰度**: TikZ 流程图应有明确的 yes/no 决策点
+6. **特殊人群**: 解决老年、肾/肝功能不全、怀孕、药物相互作用
+7. **监测指导**: 指定安全性实验室、影像和频率
+8. **更新频率**: 日期推荐并计划定期更新
 
-### General Best Practices
+### 一般最佳实践
 
-1. **First Page Executive Summary (MANDATORY)**: 
-   - ALWAYS create a complete executive summary on page 1 that spans the entire first page
-   - Use 3-5 colored tcolorbox elements to highlight key findings
-   - No table of contents or detailed sections on page 1
-   - Use `\thispagestyle{empty}` and end with `\newpage`
-   - This is the single most important page - it should be scannable in 60 seconds
-2. **De-identification**: Remove all 18 HIPAA identifiers before document generation (Safe Harbor method)
-3. **Regulatory Compliance**: Include confidentiality notices for proprietary pharmaceutical data
-4. **Publication-Ready Formatting**: Use 0.5in margins, professional fonts, color-coded sections
-5. **Reproducibility**: Document all statistical methods to enable replication
-6. **Conflict of Interest**: Disclose pharmaceutical funding or relationships when applicable
-7. **Visual Hierarchy**: Use colored boxes consistently (blue=data, green=biomarkers, yellow/orange=recommendations, red=warnings)
+1. **第一页执行摘要(强制)**: 
+   - 始终在第一页创建完整的执行摘要,跨越整个第一页
+   - 使用 3-5 个彩色 tcolorbox 元素突出关键发现
+   - 第1页无目录或详细部分
+   - 使用 `\thispagestyle{empty}` 并用 `\newpage` 结束
+   - 这是最重要的页面 - 应在 60 秒内可扫描
+2. **去标识化**: 在文档生成前删除所有 18 个 HIPAA 标识符
+3. **监管合规性**: 为专有制药数据包含保密通知
+4. **出版就绪格式化**: 使用 0.5in 页边距、专业字体、颜色编码部分
+5. **可重现性**: 记录所有统计方法以实现复制
+6. **利益冲突**: 适用时披露制药资助或关系
+7. **视觉层次**: 一致使用彩色框(蓝色=数据、绿色=生物标志物、黄色/橙色=推荐、红色=警告)
 
-## References
+## 参考
 
-See the `references/` directory for detailed guidance on:
-- Patient cohort analysis and stratification methods
-- Treatment recommendation development
-- Clinical decision algorithms
-- Biomarker classification and interpretation
-- Outcome analysis and statistical methods
-- Evidence synthesis and grading systems
+请参阅 `references/` 目录了解有关以下内容的详细指导:
+- 患者队列分析和分层方法
+- 治疗推荐开发
+- 临床决策算法
+- 生物标志物分类和解释
+- 结果分析和统计方法
+- 证据综合和分级系统
 
-## Templates
+## 模板
 
-See the `assets/` directory for LaTeX templates:
-- `cohort_analysis_template.tex` - Biomarker-stratified patient cohort analysis with statistical comparisons
-- `treatment_recommendation_template.tex` - Evidence-based clinical practice guidelines with GRADE grading
-- `clinical_pathway_template.tex` - TikZ decision algorithm flowcharts for treatment sequencing
-- `biomarker_report_template.tex` - Molecular subtype classification and genomic profile reports
-- `evidence_synthesis_template.tex` - Systematic evidence review and meta-analysis summaries
+请参阅 `assets/` 目录获取 LaTeX 模板:
+- `cohort_analysis_template.tex` - 带有统计比较的基于生物标志物的患者队列分析
+- `treatment_recommendation_template.tex` - 带有 GRADE 分级的基于证据的临床实践指南
+- `clinical_pathway_template.tex` - 用于治疗排序的 TikZ 决策算法流程图
+- `biomarker_report_template.tex` - 分子亚型分类和基因组概况报告
+- `evidence_synthesis_template.tex` - 系统证据审查和荟萃分析摘要
 
-**Template Features:**
-- 0.5in margins for compact presentation
-- Color-coded recommendation boxes
-- Professional tables for demographics, biomarkers, outcomes
-- Built-in support for Kaplan-Meier curves, waterfall plots, forest plots
-- GRADE evidence grading tables
-- Confidentiality headers for pharmaceutical documents
+**模板功能:**
+- 0.5in 页边距,用于紧凑呈现
+- 颜色编码推荐框
+- 用于人口统计学、生物标志物、结果的专业表格
+- 内置支持 Kaplan-Meier 曲线、瀑布图、森林图
+- GRADE 证据分级表
+- 制药文档的保密页眉
 
-## Scripts
+## 脚本
 
-See the `scripts/` directory for analysis and visualization tools:
-- `generate_survival_analysis.py` - Kaplan-Meier curve generation with log-rank tests, hazard ratios, 95% CI
-- `create_waterfall_plot.py` - Best response visualization for cohort analyses
-- `create_forest_plot.py` - Subgroup analysis visualization with confidence intervals
-- `create_cohort_tables.py` - Demographics, biomarker frequency, and outcomes tables
-- `build_decision_tree.py` - TikZ flowchart generation for treatment algorithms
-- `biomarker_classifier.py` - Patient stratification algorithms by molecular subtype
-- `calculate_statistics.py` - Hazard ratios, Cox regression, log-rank tests, Fisher's exact
-- `validate_cds_document.py` - Quality and compliance checks (HIPAA, statistical reporting standards)
-- `grade_evidence.py` - Automated GRADE assessment helper for treatment recommendations
-
-
+请参阅 `scripts/` 目录获取分析和可视化工具:
+- `generate_survival_analysis.py` - Kaplan-Meier 曲线生成,包含对数秩检验、风险比、95% CI
+- `create_waterfall_plot.py` - 用于队列分析的最佳反应可视化
+- `create_forest_plot.py` - 用于亚组分析的可视化,包含置信区间
+- `create_cohort_tables.py` - 人口统计学、生物标志物频率和结果表
+- `build_decision_tree.py` - 用于治疗算法的 TikZ 流程图生成
+- `biomarker_classifier.py` - 按分子亚型的患者分层算法
+- `calculate_statistics.py` - 风险比、Cox 回归、对数秩检验、Fisher 精确检验
+- `validate_cds_document.py` - 质量和合规性检查(HIPAA、统计报告标准)
+- `grade_evidence.py` - 用于治疗推荐的自动 GRADE 评估助手

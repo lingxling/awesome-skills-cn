@@ -1,139 +1,139 @@
 ---
 name: literature-review
-description: Conduct comprehensive, systematic literature reviews using multiple academic databases (PubMed, arXiv, bioRxiv, Semantic Scholar, etc.). This skill should be used when conducting systematic literature reviews, meta-analyses, research synthesis, or comprehensive literature searches across biomedical, scientific, and technical domains. Creates professionally formatted markdown documents and PDFs with verified citations in multiple citation styles (APA, Nature, Vancouver, etc.).
+description: 使用多个学术数据库（PubMed、arXiv、bioRxiv、Semantic Scholar等）进行全面、系统的文献综述。该技能应在进行系统文献综述、荟萃分析、研究综合或跨生物医学、科学和技术领域的全面文献搜索时使用。创建具有多种引文格式（APA、Nature、Vancouver等）验证引文的专业格式化markdown文档和PDF。
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Literature Review
+# 文献综述
 
-## Overview
+## 概述
 
-Conduct systematic, comprehensive literature reviews following rigorous academic methodology. Search multiple literature databases, synthesize findings thematically, verify all citations for accuracy, and generate professional output documents in markdown and PDF formats.
+遵循严格的学术方法论进行系统、全面的文献综述。搜索多个文献数据库，按主题综合发现，验证所有引文的准确性，并生成markdown和PDF格式的专业输出文档。
 
-This skill integrates with multiple scientific skills for database access (gget, bioservices, datacommons-client) and provides specialized tools for citation verification, result aggregation, and document generation.
+该技能集成了多个科学技能用于数据库访问（gget、bioservices、datacommons-client），并提供了专门的引文验证、结果聚合和文档生成工具。
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use this skill when:
-- Conducting a systematic literature review for research or publication
-- Synthesizing current knowledge on a specific topic across multiple sources
-- Performing meta-analysis or scoping reviews
-- Writing the literature review section of a research paper or thesis
-- Investigating the state of the art in a research domain
-- Identifying research gaps and future directions
-- Requiring verified citations and professional formatting
+在以下情况下使用此技能：
+- 为研究或发表进行系统文献综述
+- 跨多个来源综合特定主题的当前知识
+- 进行荟萃分析或范围综述
+- 撰写研究论文或学位论文的文献综述部分
+- 调查研究领域的最新进展
+- 识别研究空白和未来方向
+- 需要验证引文和专业格式
 
-## Visual Enhancement with Scientific Schematics
+## 使用科学图表进行视觉增强
 
-**⚠️ MANDATORY: Every literature review MUST include at least 1-2 AI-generated figures using the scientific-schematics skill.**
+**⚠️ 强制要求：每个文献综述必须至少包含1-2个使用scientific-schematics技能生成的AI生成图表。**
 
-This is not optional. Literature reviews without visual elements are incomplete. Before finalizing any document:
-1. Generate at minimum ONE schematic or diagram (e.g., PRISMA flow diagram for systematic reviews)
-2. Prefer 2-3 figures for comprehensive reviews (search strategy flowchart, thematic synthesis diagram, conceptual framework)
+这不是可选的。没有视觉元素的文献综述是不完整的。在最终确定任何文档之前：
+1. 至少生成一个示意图或图表（例如，系统综述的PRISMA流程图）
+2. 对于全面综述，最好有2-3个图表（搜索策略流程图、主题综合图、概念框架）
 
-**How to generate figures:**
-- Use the **scientific-schematics** skill to generate AI-powered publication-quality diagrams
-- Simply describe your desired diagram in natural language
-- Nano Banana Pro will automatically generate, review, and refine the schematic
+**如何生成图表：**
+- 使用 **scientific-schematics** 技能生成AI驱动的出版质量图表
+- 只需用自然语言描述您想要的图表
+- Nano Banana Pro将自动生成、审查和完善示意图
 
-**How to generate schematics:**
+**如何生成示意图：**
 ```bash
 python scripts/generate_schematic.py "your diagram description" -o figures/output.png
 ```
 
-The AI will automatically:
-- Create publication-quality images with proper formatting
-- Review and refine through multiple iterations
-- Ensure accessibility (colorblind-friendly, high contrast)
-- Save outputs in the figures/ directory
+AI将自动：
+- 创建具有正确格式的出版质量图像
+- 通过多次迭代进行审查和完善
+- 确保可访问性（色盲友好、高对比度）
+- 将输出保存在figures/目录中
 
-**When to add schematics:**
-- PRISMA flow diagrams for systematic reviews
-- Literature search strategy flowcharts
-- Thematic synthesis diagrams
-- Research gap visualization maps
-- Citation network diagrams
-- Conceptual framework illustrations
-- Any complex concept that benefits from visualization
+**何时添加示意图：**
+- 系统综述的PRISMA流程图
+- 文献搜索策略流程图
+- 主题综合图
+- 研究空白可视化图
+- 引文网络图
+- 概念框架图
+- 任何受益于可视化的复杂概念
 
-For detailed guidance on creating schematics, refer to the scientific-schematics skill documentation.
+有关创建示意图的详细指导，请参阅scientific-schematics技能文档。
 
 ---
 
-## Core Workflow
+## 核心工作流程
 
-Literature reviews follow a structured, multi-phase workflow:
+文献综述遵循结构化的多阶段工作流程：
 
-### Phase 1: Planning and Scoping
+### 阶段1：规划和范围界定
 
-1. **Define Research Question**: Use PICO framework (Population, Intervention, Comparison, Outcome) for clinical/biomedical reviews
-   - Example: "What is the efficacy of CRISPR-Cas9 (I) for treating sickle cell disease (P) compared to standard care (C)?"
+1. **定义研究问题**：使用PICO框架（人群、干预、比较、结果）进行临床/生物医学综述
+   - 示例："CRISPR-Cas9（I）治疗镰状细胞病（P）与标准治疗（C）相比的疗效如何？"
 
-2. **Establish Scope and Objectives**:
-   - Define clear, specific research questions
-   - Determine review type (narrative, systematic, scoping, meta-analysis)
-   - Set boundaries (time period, geographic scope, study types)
+2. **确定范围和目标**：
+   - 定义清晰、具体的研究问题
+   - 确定综述类型（叙述性、系统性、范围性、荟萃分析）
+   - 设置边界（时间范围、地理范围、研究类型）
 
-3. **Develop Search Strategy**:
-   - Identify 2-4 main concepts from research question
-   - List synonyms, abbreviations, and related terms for each concept
-   - Plan Boolean operators (AND, OR, NOT) to combine terms
-   - Select minimum 3 complementary databases
+3. **制定搜索策略**：
+   - 从研究问题中识别2-4个主要概念
+   - 列出每个概念的同义词、缩写和相关术语
+   - 规划布尔运算符（AND、OR、NOT）以组合术语
+   - 选择至少3个互补数据库
 
-4. **Set Inclusion/Exclusion Criteria**:
-   - Date range (e.g., last 10 years: 2015-2024)
-   - Language (typically English, or specify multilingual)
-   - Publication types (peer-reviewed, preprints, reviews)
-   - Study designs (RCTs, observational, in vitro, etc.)
-   - Document all criteria clearly
+4. **设置纳入/排除标准**：
+   - 日期范围（例如，最近10年：2015-2024）
+   - 语言（通常为英语，或指定多语言）
+   - 发表类型（同行评审、预印本、综述）
+   - 研究设计（RCT、观察性、体外等）
+   - 清楚记录所有标准
 
-### Phase 2: Systematic Literature Search
+### 阶段2：系统文献搜索
 
-1. **Multi-Database Search**:
+1. **多数据库搜索**：
 
-   Select databases appropriate for the domain:
+   选择适合该领域的数据库：
 
-   **Biomedical & Life Sciences:**
-   - Use `gget` skill: `gget search pubmed "search terms"` for PubMed/PMC
-   - Use `gget` skill: `gget search biorxiv "search terms"` for preprints
-   - Use `bioservices` skill for ChEMBL, KEGG, UniProt, etc.
+   **生物医学与生命科学：**
+   - 使用 `gget` 技能：`gget search pubmed "search terms"` 搜索PubMed/PMC
+   - 使用 `gget` 技能：`gget search biorxiv "search terms"` 搜索预印本
+   - 使用 `bioservices` 技能搜索ChEMBL、KEGG、UniProt等
 
-   **General Scientific Literature:**
-   - Search arXiv via direct API (preprints in physics, math, CS, q-bio)
-   - Search Semantic Scholar via API (200M+ papers, cross-disciplinary)
-   - Use Google Scholar for comprehensive coverage (manual or careful scraping)
+   **通用科学文献：**
+   - 通过直接API搜索arXiv（物理、数学、计算机科学、q-bio的预印本）
+   - 通过API搜索Semantic Scholar（2亿+论文，跨学科）
+   - 使用Google Scholar进行全面覆盖（手动或谨慎爬取）
 
-   **Specialized Databases:**
-   - Use `gget alphafold` for protein structures
-   - Use `gget cosmic` for cancer genomics
-   - Use `datacommons-client` for demographic/statistical data
-   - Use specialized databases as appropriate for the domain
+   **专业数据库：**
+   - 使用 `gget alphafold` 搜索蛋白质结构
+   - 使用 `gget cosmic` 搜索癌症基因组学
+   - 使用 `datacommons-client` 搜索人口统计/统计数据
+   - 根据领域使用适当的专业数据库
 
-2. **Document Search Parameters**:
+2. **记录搜索参数：**
    ```markdown
-   ## Search Strategy
+   ## 搜索策略
 
-   ### Database: PubMed
-   - **Date searched**: 2024-10-25
-   - **Date range**: 2015-01-01 to 2024-10-25
-   - **Search string**:
+   ### 数据库：PubMed
+   - **搜索日期**：2024-10-25
+   - **日期范围**：2015-01-01 至 2024-10-25
+   - **搜索字符串**：
      ```
      ("CRISPR"[Title] OR "Cas9"[Title])
      AND ("sickle cell"[MeSH] OR "SCD"[Title/Abstract])
      AND 2015:2024[Publication Date]
      ```
-   - **Results**: 247 articles
+   - **结果**：247篇文章
    ```
 
-   Repeat for each database searched.
+   对每个搜索的数据库重复此操作。
 
-3. **Export and Aggregate Results**:
-   - Export results in JSON format from each database
-   - Combine all results into a single file
-   - Use `scripts/search_databases.py` for post-processing:
+3. **导出和聚合结果**：
+   - 从每个数据库以JSON格式导出结果
+   - 将所有结果合并到一个文件中
+   - 使用 `scripts/search_databases.py` 进行后处理：
      ```bash
      python search_databases.py combined_results.json \
        --deduplicate \
@@ -141,369 +141,367 @@ Literature reviews follow a structured, multi-phase workflow:
        --output aggregated_results.md
      ```
 
-### Phase 3: Screening and Selection
+### 阶段3：筛选和选择
 
-1. **Deduplication**:
+1. **去重**：
    ```bash
    python search_databases.py results.json --deduplicate --output unique_results.json
    ```
-   - Removes duplicates by DOI (primary) or title (fallback)
-   - Document number of duplicates removed
+   - 按DOI（主要）或标题（后备）删除重复项
+   - 记录删除的重复项数量
 
-2. **Title Screening**:
-   - Review all titles against inclusion/exclusion criteria
-   - Exclude obviously irrelevant studies
-   - Document number excluded at this stage
+2. **标题筛选**：
+   - 根据纳入/排除标准审查所有标题
+   - 排除明显不相关的研究
+   - 记录在此阶段排除的数量
 
-3. **Abstract Screening**:
-   - Read abstracts of remaining studies
-   - Apply inclusion/exclusion criteria rigorously
-   - Document reasons for exclusion
+3. **摘要筛选**：
+   - 阅读剩余研究的摘要
+   - 严格应用纳入/排除标准
+   - 记录排除原因
 
-4. **Full-Text Screening**:
-   - Obtain full texts of remaining studies
-   - Conduct detailed review against all criteria
-   - Document specific reasons for exclusion
-   - Record final number of included studies
+4. **全文筛选**：
+   - 获取剩余研究的全文
+   - 根据所有标准进行详细审查
+   - 记录排除的具体原因
+   - 记录最终纳入的研究数量
 
-5. **Create PRISMA Flow Diagram**:
+5. **创建PRISMA流程图**：
    ```
-   Initial search: n = X
-   ├─ After deduplication: n = Y
-   ├─ After title screening: n = Z
-   ├─ After abstract screening: n = A
-   └─ Included in review: n = B
+   初始搜索：n = X
+   ├─ 去重后：n = Y
+   ├─ 标题筛选后：n = Z
+   ├─ 摘要筛选后：n = A
+   └─ 纳入综述：n = B
    ```
 
-### Phase 4: Data Extraction and Quality Assessment
+### 阶段4：数据提取和质量评估
 
-1. **Extract Key Data** from each included study:
-   - Study metadata (authors, year, journal, DOI)
-   - Study design and methods
-   - Sample size and population characteristics
-   - Key findings and results
-   - Limitations noted by authors
-   - Funding sources and conflicts of interest
+1. **从每个纳入的研究中提取关键数据**：
+   - 研究元数据（作者、年份、期刊、DOI）
+   - 研究设计和方法
+   - 样本量和人群特征
+   - 关键发现和结果
+   - 作者指出的局限性
+   - 资金来源和利益冲突
 
-2. **Assess Study Quality**:
-   - **For RCTs**: Use Cochrane Risk of Bias tool
-   - **For observational studies**: Use Newcastle-Ottawa Scale
-   - **For systematic reviews**: Use AMSTAR 2
-   - Rate each study: High, Moderate, Low, or Very Low quality
-   - Consider excluding very low-quality studies
+2. **评估研究质量**：
+   - **对于RCT**：使用Cochrane偏倚风险工具
+   - **对于观察性研究**：使用Newcastle-Ottawa量表
+   - **对于系统综述**：使用AMSTAR 2
+   - 对每项研究进行评级：高、中、低或极低质量
+   - 考虑排除极低质量的研究
 
-3. **Organize by Themes**:
-   - Identify 3-5 major themes across studies
-   - Group studies by theme (studies may appear in multiple themes)
-   - Note patterns, consensus, and controversies
+3. **按主题组织**：
+   - 识别跨研究的3-5个主要主题
+   - 按主题对研究进行分组（研究可能出现在多个主题中）
+   - 注意模式、共识和争议
 
-### Phase 5: Synthesis and Analysis
+### 阶段5：综合和分析
 
-1. **Create Review Document** from template:
+1. **从模板创建综述文档**：
    ```bash
    cp assets/review_template.md my_literature_review.md
    ```
 
-2. **Write Thematic Synthesis** (NOT study-by-study summaries):
-   - Organize Results section by themes or research questions
-   - Synthesize findings across multiple studies within each theme
-   - Compare and contrast different approaches and results
-   - Identify consensus areas and points of controversy
-   - Highlight the strongest evidence
+2. **撰写主题综合**（而非逐项研究总结）：
+   - 按主题或研究问题组织结果部分
+   - 在每个主题内综合跨多项研究的发现
+   - 比较和对比不同的方法和结果
+   - 识别共识领域和争议点
+   - 突出最有力的证据
 
-   Example structure:
+   示例结构：
    ```markdown
-   #### 3.3.1 Theme: CRISPR Delivery Methods
+   #### 3.3.1 主题：CRISPR递送方法
 
-   Multiple delivery approaches have been investigated for therapeutic
-   gene editing. Viral vectors (AAV) were used in 15 studies^1-15^ and
-   showed high transduction efficiency (65-85%) but raised immunogenicity
-   concerns^3,7,12^. In contrast, lipid nanoparticles demonstrated lower
-   efficiency (40-60%) but improved safety profiles^16-23^.
+   已研究多种递送方法用于治疗性基因编辑。病毒载体（AAV）在15项研究^1-15^中使用，
+   显示出高转导效率（65-85%）但引起免疫原性担忧^3,7,12^。相比之下，脂质纳米颗粒显示出较低的
+   效率（40-60%）但改善了安全性^16-23^。
    ```
 
-3. **Critical Analysis**:
-   - Evaluate methodological strengths and limitations across studies
-   - Assess quality and consistency of evidence
-   - Identify knowledge gaps and methodological gaps
-   - Note areas requiring future research
+3. **批判性分析**：
+   - 评估跨研究的方法学优势和局限性
+   - 评估证据的质量和一致性
+   - 识别知识空白和方法学空白
+   - 注意需要未来研究的领域
 
-4. **Write Discussion**:
-   - Interpret findings in broader context
-   - Discuss clinical, practical, or research implications
-   - Acknowledge limitations of the review itself
-   - Compare with previous reviews if applicable
-   - Propose specific future research directions
+4. **撰写讨论**：
+   - 在更广泛的背景下解释发现
+   - 讨论临床、实践或研究意义
+   - 承认综述本身的局限性
+   - 如适用，与以前的综述进行比较
+   - 提出具体的未来研究方向
 
-### Phase 6: Citation Verification
+### 阶段6：引文验证
 
-**CRITICAL**: All citations must be verified for accuracy before final submission.
+**关键**：所有引文必须在最终提交前进行准确性验证。
 
-1. **Verify All DOIs**:
+1. **验证所有DOI**：
    ```bash
    python scripts/verify_citations.py my_literature_review.md
    ```
 
-   This script:
-   - Extracts all DOIs from the document
-   - Verifies each DOI resolves correctly
-   - Retrieves metadata from CrossRef
-   - Generates verification report
-   - Outputs properly formatted citations
+   该脚本：
+   - 从文档中提取所有DOI
+   - 验证每个DOI正确解析
+   - 从CrossRef检索元数据
+   - 生成验证报告
+   - 输出正确格式的引文
 
-2. **Review Verification Report**:
-   - Check for any failed DOIs
-   - Verify author names, titles, and publication details match
-   - Correct any errors in the original document
-   - Re-run verification until all citations pass
+2. **审查验证报告**：
+   - 检查任何失败的DOI
+   - 验证作者姓名、标题和发表详细信息匹配
+   - 更正原始文档中的任何错误
+   - 重新运行验证直到所有引文通过
 
-3. **Format Citations Consistently**:
-   - Choose one citation style and use throughout (see `references/citation_styles.md`)
-   - Common styles: APA, Nature, Vancouver, Chicago, IEEE
-   - Use verification script output to format citations correctly
-   - Ensure in-text citations match reference list format
+3. **一致格式化引文**：
+   - 选择一种引文格式并在全文中使用（参见 `references/citation_styles.md`）
+   - 常见格式：APA、Nature、Vancouver、Chicago、IEEE
+   - 使用验证脚本输出正确格式化引文
+   - 确保文中引文与参考文献列表格式匹配
 
-### Phase 7: Document Generation
+### 阶段7：文档生成
 
-1. **Generate PDF**:
+1. **生成PDF**：
    ```bash
    python scripts/generate_pdf.py my_literature_review.md \
      --citation-style apa \
      --output my_review.pdf
    ```
 
-   Options:
-   - `--citation-style`: apa, nature, chicago, vancouver, ieee
-   - `--no-toc`: Disable table of contents
-   - `--no-numbers`: Disable section numbering
-   - `--check-deps`: Check if pandoc/xelatex are installed
+   选项：
+   - `--citation-style`：apa、nature、chicago、vancouver、ieee
+   - `--no-toc`：禁用目录
+   - `--no-numbers`：禁用章节编号
+   - `--check-deps`：检查是否安装了pandoc/xelatex
 
-2. **Review Final Output**:
-   - Check PDF formatting and layout
-   - Verify all sections are present
-   - Ensure citations render correctly
-   - Check that figures/tables appear properly
-   - Verify table of contents is accurate
+2. **审查最终输出**：
+   - 检查PDF格式和布局
+   - 验证所有部分都存在
+   - 确保引文正确渲染
+   - 检查图表/表格是否正确显示
+   - 验证目录准确
 
-3. **Quality Checklist**:
-   - [ ] All DOIs verified with verify_citations.py
-   - [ ] Citations formatted consistently
-   - [ ] PRISMA flow diagram included (for systematic reviews)
-   - [ ] Search methodology fully documented
-   - [ ] Inclusion/exclusion criteria clearly stated
-   - [ ] Results organized thematically (not study-by-study)
-   - [ ] Quality assessment completed
-   - [ ] Limitations acknowledged
-   - [ ] References complete and accurate
-   - [ ] PDF generates without errors
+3. **质量检查清单**：
+   - [ ] 所有DOI已通过verify_citations.py验证
+   - [ ] 引文格式一致
+   - [ ] 包含PRISMA流程图（对于系统综述）
+   - [ ] 搜索方法已完整记录
+   - [ ] 纳入/排除标准已清楚说明
+   - [ ] 结果按主题组织（而非逐项研究）
+   - [ ] 质量评估已完成
+   - [ ] 已承认局限性
+   - [ ] 参考文献完整且准确
+   - [ ] PDF生成无错误
 
-## Database-Specific Search Guidance
+## 数据库特定搜索指南
 
 ### PubMed / PubMed Central
 
-Access via `gget` skill:
+通过 `gget` 技能访问：
 ```bash
-# Search PubMed
+# 搜索PubMed
 gget search pubmed "CRISPR gene editing" -l 100
 
-# Search with filters
-# Use PubMed Advanced Search Builder to construct complex queries
-# Then execute via gget or direct Entrez API
+# 使用过滤器
+# 使用PubMed高级搜索构建器构建复杂查询
+# 然后通过gget或直接Entrez API执行
 ```
 
-**Search tips**:
-- Use MeSH terms: `"sickle cell disease"[MeSH]`
-- Field tags: `[Title]`, `[Title/Abstract]`, `[Author]`
-- Date filters: `2020:2024[Publication Date]`
-- Boolean operators: AND, OR, NOT
-- See MeSH browser: https://meshb.nlm.nih.gov/search
+**搜索提示**：
+- 使用MeSH术语：`"sickle cell disease"[MeSH]`
+- 字段标签：`[Title]`、`[Title/Abstract]`、`[Author]`
+- 日期过滤器：`2020:2024[Publication Date]`
+- 布尔运算符：AND、OR、NOT
+- 参见MeSH浏览器：https://meshb.nlm.nih.gov/search
 
 ### bioRxiv / medRxiv
 
-Access via `gget` skill:
+通过 `gget` 技能访问：
 ```bash
 gget search biorxiv "CRISPR sickle cell" -l 50
 ```
 
-**Important considerations**:
-- Preprints are not peer-reviewed
-- Verify findings with caution
-- Check if preprint has been published (CrossRef)
-- Note preprint version and date
+**重要注意事项**：
+- 预印本未经同行评审
+- 谨慎验证发现
+- 检查预印本是否已发表（CrossRef）
+- 记录预印本版本和日期
 
 ### arXiv
 
-Access via direct API or WebFetch:
+通过直接API或WebFetch访问：
 ```python
-# Example search categories:
-# q-bio.QM (Quantitative Methods)
-# q-bio.GN (Genomics)
-# q-bio.MN (Molecular Networks)
-# cs.LG (Machine Learning)
-# stat.ML (Machine Learning Statistics)
+# 示例搜索类别：
+# q-bio.QM（定量方法）
+# q-bio.GN（基因组学）
+# q-bio.MN（分子网络）
+# cs.LG（机器学习）
+# stat.ML（机器学习统计）
 
-# Search format: category AND terms
+# 搜索格式：category AND terms
 search_query = "cat:q-bio.QM AND ti:\"single cell sequencing\""
 ```
 
 ### Semantic Scholar
 
-Access via direct API (requires API key, or use free tier):
-- 200M+ papers across all fields
-- Excellent for cross-disciplinary searches
-- Provides citation graphs and paper recommendations
-- Use for finding highly influential papers
+通过直接API访问（需要API密钥，或使用免费层）：
+- 跨所有领域2亿+论文
+- 非常适合跨学科搜索
+- 提供引文图和论文推荐
+- 用于查找高影响力论文
 
-### Specialized Biomedical Databases
+### 专业生物医学数据库
 
-Use appropriate skills:
-- **ChEMBL**: `bioservices` skill for chemical bioactivity
-- **UniProt**: `gget` or `bioservices` skill for protein information
-- **KEGG**: `bioservices` skill for pathways and genes
-- **COSMIC**: `gget` skill for cancer mutations
-- **AlphaFold**: `gget alphafold` for protein structures
-- **PDB**: `gget` or direct API for experimental structures
+使用适当技能：
+- **ChEMBL**：`bioservices` 技能用于化学生物活性
+- **UniProt**：`gget` 或 `bioservices` 技能用于蛋白质信息
+- **KEGG**：`bioservices` 技能用于通路和基因
+- **COSMIC**：`gget` 技能用于癌症突变
+- **AlphaFold**：`gget alphafold` 用于蛋白质结构
+- **PDB**：`gget` 或直接API用于实验结构
 
-### Citation Chaining
+### 引文链式搜索
 
-Expand search via citation networks:
+通过引文网络扩展搜索：
 
-1. **Forward citations** (papers citing key papers):
-   - Use Google Scholar "Cited by"
-   - Use Semantic Scholar or OpenAlex APIs
-   - Identifies newer research building on seminal work
+1. **前向引文**（引用关键论文的论文）：
+   - 使用Google Scholar"被引用"
+   - 使用Semantic Scholar或OpenAlex API
+   - 识别在开创性工作基础上构建的较新研究
 
-2. **Backward citations** (references from key papers):
-   - Extract references from included papers
-   - Identify highly cited foundational work
-   - Find papers cited by multiple included studies
+2. **后向引文**（关键论文中的参考文献）：
+   - 从纳入的论文中提取参考文献
+   - 识别高引用的基础工作
+   - 查找被多个纳入研究引用的论文
 
-## Citation Style Guide
+## 引文格式指南
 
-Detailed formatting guidelines are in `references/citation_styles.md`. Quick reference:
+`references/citation_styles.md`中有详细的格式化指南。快速参考：
 
-### APA (7th Edition)
-- In-text: (Smith et al., 2023)
-- Reference: Smith, J. D., Johnson, M. L., & Williams, K. R. (2023). Title. *Journal*, *22*(4), 301-318. https://doi.org/10.xxx/yyy
+### APA（第7版）
+- 文中：(Smith et al., 2023)
+- 参考文献：Smith, J. D., Johnson, M. L., & Williams, K. R. (2023). Title. *Journal*, *22*(4), 301-318. https://doi.org/10.xxx/yyy
 
 ### Nature
-- In-text: Superscript numbers^1,2^
-- Reference: Smith, J. D., Johnson, M. L. & Williams, K. R. Title. *Nat. Rev. Drug Discov.* **22**, 301-318 (2023).
+- 文中：上标数字^1,2^
+- 参考文献：Smith, J. D., Johnson, M. L. & Williams, K. R. Title. *Nat. Rev. Drug Discov.* **22**, 301-318 (2023).
 
 ### Vancouver
-- In-text: Superscript numbers^1,2^
-- Reference: Smith JD, Johnson ML, Williams KR. Title. Nat Rev Drug Discov. 2023;22(4):301-18.
+- 文中：上标数字^1,2^
+- 参考文献：Smith JD, Johnson ML, Williams KR. Title. Nat Rev Drug Discov. 2023;22(4):301-18.
 
-**Always verify citations** with verify_citations.py before finalizing.
+**在最终确定之前始终验证引文**，使用verify_citations.py。
 
-### Prioritizing High-Impact Papers (CRITICAL)
+### 优先考虑高影响力论文（关键）
 
-**Always prioritize influential, highly-cited papers from reputable authors and top venues.** Quality matters more than quantity in literature reviews.
+**始终优先考虑来自知名作者和顶级期刊的有影响力、高引用论文。** 在文献综述中，质量比数量更重要。
 
-#### Citation Count Thresholds
+#### 引文计数阈值
 
-Use citation counts to identify the most impactful papers:
+使用引文计数识别最有影响力的论文：
 
-| Paper Age | Citation Threshold | Classification |
-|-----------|-------------------|----------------|
-| 0-3 years | 20+ citations | Noteworthy |
-| 0-3 years | 100+ citations | Highly Influential |
-| 3-7 years | 100+ citations | Significant |
-| 3-7 years | 500+ citations | Landmark Paper |
-| 7+ years | 500+ citations | Seminal Work |
-| 7+ years | 1000+ citations | Foundational |
+| 论文年龄 | 引文阈值 | 分类 |
+|-----------|-----------|--------|
+| 0-3年 | 20+引用 | 值得注意 |
+| 0-3年 | 100+引用 | 高影响力 |
+| 3-7年 | 100+引用 | 重要 |
+| 3-7年 | 500+引用 | 里程碑论文 |
+| 7年以上 | 500+引用 | 开创性工作 |
+| 7年以上 | 1000+引用 | 基础性 |
 
-#### Journal and Venue Tiers
+#### 期刊和场所层级
 
-Prioritize papers from higher-tier venues:
+优先考虑来自更高层级场所的论文：
 
-- **Tier 1 (Always Prefer):** Nature, Science, Cell, NEJM, Lancet, JAMA, PNAS, Nature Medicine, Nature Biotechnology
-- **Tier 2 (Strong Preference):** High-impact specialized journals (IF>10), top conferences (NeurIPS, ICML for ML/AI)
-- **Tier 3 (Include When Relevant):** Respected specialized journals (IF 5-10)
-- **Tier 4 (Use Sparingly):** Lower-impact peer-reviewed venues
+- **层级1（始终首选）**：Nature、Science、Cell、NEJM、Lancet、JAMA、PNAS、Nature Medicine、Nature Biotechnology
+- **层级2（强偏好）**：高影响力专业期刊（IF>10）、顶级会议（ML/AI的NeurIPS、ICML）
+- **层级3（相关时包括）**：受人尊敬的专业期刊（IF 5-10）
+- **层级4（谨慎使用）**：低影响力同行评审场所
 
-#### Author Reputation Assessment
+#### 作者声誉评估
 
-Prefer papers from:
-- **Senior researchers** with high h-index (>40 in established fields)
-- **Leading research groups** at recognized institutions (Harvard, Stanford, MIT, Oxford, etc.)
-- **Authors with multiple Tier-1 publications** in the relevant field
-- **Researchers with recognized expertise** (awards, editorial positions, society fellows)
+优先考虑来自以下机构的论文：
+- **资深研究人员**，具有高h指数（在既定领域>40）
+- **知名机构**的领先研究组（哈佛、斯坦福、麻省理工、牛津等）
+- **在相关领域具有多篇层级1发表**的作者
+- **具有公认专业知识**的研究人员（奖项、编辑职位、学会会员）
 
-#### Identifying Seminal Papers
+#### 识别开创性论文
 
-For any topic, identify foundational work by:
-1. **High citation count** (typically 500+ for papers 5+ years old)
-2. **Frequently cited by other included studies** (appears in many reference lists)
-3. **Published in Tier-1 venues** (Nature, Science, Cell family)
-4. **Written by field pioneers** (often cited as establishing concepts)
+对于任何主题，通过以下方式识别基础工作：
+1. **高引文计数**（通常5年以上论文500+）
+2. **经常被其他纳入研究引用**（出现在许多参考文献列表中）
+3. **发表在层级1场所**（Nature、Science、Cell家族）
+4. **由领域先驱撰写**（通常被引用为建立概念）
 
-## Best Practices
+## 最佳实践
 
-### Search Strategy
-1. **Use multiple databases** (minimum 3): Ensures comprehensive coverage
-2. **Include preprint servers**: Captures latest unpublished findings
-3. **Document everything**: Search strings, dates, result counts for reproducibility
-4. **Test and refine**: Run pilot searches, review results, adjust search terms
-5. **Sort by citations**: When available, sort search results by citation count to surface influential work first
+### 搜索策略
+1. **使用多个数据库**（最少3个）：确保全面覆盖
+2. **包括预印本服务器**：捕获最新的未发表发现
+3. **记录所有内容**：搜索字符串、日期、结果计数以确保可重复性
+4. **测试和完善**：运行试点搜索，审查结果，调整搜索术语
+5. **按引文排序**：可用时，按引文计数对搜索结果进行排序，首先突出有影响力的工作
 
-### Screening and Selection
-1. **Use multiple databases** (minimum 3): Ensures comprehensive coverage
-2. **Include preprint servers**: Captures latest unpublished findings
-3. **Document everything**: Search strings, dates, result counts for reproducibility
-4. **Test and refine**: Run pilot searches, review results, adjust search terms
+### 筛选和选择
+1. **使用多个数据库**（最少3个）：确保全面覆盖
+2. **包括预印本服务器**：捕获最新的未发表发现
+3. **记录所有内容**：搜索字符串、日期、结果计数以确保可重复性
+4. **测试和完善**：运行试点搜索，审查结果，调整搜索术语
 
-### Screening and Selection
-1. **Use clear criteria**: Document inclusion/exclusion criteria before screening
-2. **Screen systematically**: Title → Abstract → Full text
-3. **Document exclusions**: Record reasons for excluding studies
-4. **Consider dual screening**: For systematic reviews, have two reviewers screen independently
+### 筛选和选择
+1. **使用明确标准**：在筛选之前记录纳入/排除标准
+2. **系统筛选**：标题 → 摘要 → 全文
+3. **记录排除**：记录排除研究的原因
+4. **考虑双重筛选**：对于系统综述，让两名评审员独立筛选
 
-### Synthesis
-1. **Organize thematically**: Group by themes, NOT by individual studies
-2. **Synthesize across studies**: Compare, contrast, identify patterns
-3. **Be critical**: Evaluate quality and consistency of evidence
-4. **Identify gaps**: Note what's missing or understudied
+### 综合
+1. **按主题组织**：按主题而非按单项研究分组
+2. **跨研究综合**：比较、对比、识别模式
+3. **批判性**：评估证据的质量和一致性
+4. **识别空白**：注意缺失或研究不足的内容
 
-### Quality and Reproducibility
-1. **Assess study quality**: Use appropriate quality assessment tools
-2. **Verify all citations**: Run verify_citations.py script
-3. **Document methodology**: Provide enough detail for others to reproduce
-4. **Follow guidelines**: Use PRISMA for systematic reviews
+### 质量和可重复性
+1. **评估研究质量**：使用适当的质量评估工具
+2. **验证所有引文**：运行verify_citations.py脚本
+3. **记录方法学**：提供足够的细节供他人重复
+4. **遵循指南**：使用PRISMA进行系统综述
 
-### Writing
-1. **Be objective**: Present evidence fairly, acknowledge limitations
-2. **Be systematic**: Follow structured template
-3. **Be specific**: Include numbers, statistics, effect sizes where available
-4. **Be clear**: Use clear headings, logical flow, thematic organization
+### 写作
+1. **客观**：公平呈现证据，承认局限性
+2. **系统**：遵循结构化模板
+3. **具体**：在可用时包括数字、统计数据、效应大小
+4. **清晰**：使用清晰的标题、逻辑流程、主题组织
 
-## Common Pitfalls to Avoid
+## 常见陷阱
 
-1. **Single database search**: Misses relevant papers; always search multiple databases
-2. **No search documentation**: Makes review irreproducible; document all searches
-3. **Study-by-study summary**: Lacks synthesis; organize thematically instead
-4. **Unverified citations**: Leads to errors; always run verify_citations.py
-5. **Too broad search**: Yields thousands of irrelevant results; refine with specific terms
-6. **Too narrow search**: Misses relevant papers; include synonyms and related terms
-7. **Ignoring preprints**: Misses latest findings; include bioRxiv, medRxiv, arXiv
-8. **No quality assessment**: Treats all evidence equally; assess and report quality
-9. **Publication bias**: Only positive results published; note potential bias
-10. **Outdated search**: Field evolves rapidly; clearly state search date
+1. **单数据库搜索**：遗漏相关论文；始终搜索多个数据库
+2. **无搜索记录**：使综述不可重复；记录所有搜索
+3. **逐项研究总结**：缺乏综合；改为按主题组织
+4. **未验证引文**：导致错误；始终运行verify_citations.py
+5. **搜索过宽**：产生数千个不相关结果；用具体术语完善
+6. **搜索过窄**：遗漏相关论文；包括同义词和相关术语
+7. **忽略预印本**：遗漏最新发现；包括bioRxiv、medRxiv、arXiv
+8. **无质量评估**：同等对待所有证据；评估和报告质量
+9. **发表偏倚**：仅发表阳性结果；注意潜在偏倚
+10. **搜索过时**：领域快速演变；清楚说明搜索日期
 
-## Example Workflow
+## 示例工作流程
 
-Complete workflow for a biomedical literature review:
+生物医学文献综述的完整工作流程：
 
 ```bash
-# 1. Create review document from template
+# 1. 从模板创建综述文档
 cp assets/review_template.md crispr_sickle_cell_review.md
 
-# 2. Search multiple databases using appropriate skills
-# - Use gget skill for PubMed, bioRxiv
-# - Use direct API access for arXiv, Semantic Scholar
-# - Export results in JSON format
+# 2. 使用适当技能搜索多个数据库
+# - 使用gget技能搜索PubMed、bioRxiv
+# - 使用直接API访问arXiv、Semantic Scholar
+# - 以JSON格式导出结果
 
-# 3. Aggregate and process results
+# 3. 聚合和处理结果
 python scripts/search_databases.py combined_results.json \
   --deduplicate \
   --rank citations \
@@ -513,125 +511,124 @@ python scripts/search_databases.py combined_results.json \
   --output search_results.md \
   --summary
 
-# 4. Screen results and extract data
-# - Manually screen titles, abstracts, full texts
-# - Extract key data into the review document
-# - Organize by themes
+# 4. 筛选结果并提取数据
+# - 手动筛选标题、摘要、全文
+# - 将关键数据提取到综述文档中
+# - 按主题组织
 
-# 5. Write the review following template structure
-# - Introduction with clear objectives
-# - Detailed methodology section
-# - Results organized thematically
-# - Critical discussion
-# - Clear conclusions
+# 5. 按照模板结构撰写综述
+# - 带有明确目标的引言
+# - 详细方法学部分
+# - 按主题组织的结果
+# - 批判性讨论
+# - 清晰的结论
 
-# 6. Verify all citations
+# 6. 验证所有引文
 python scripts/verify_citations.py crispr_sickle_cell_review.md
 
-# Review the citation report
+# 审查引文报告
 cat crispr_sickle_cell_review_citation_report.json
 
-# Fix any failed citations and re-verify
+# 修复任何失败的引文并重新验证
 python scripts/verify_citations.py crispr_sickle_cell_review.md
 
-# 7. Generate professional PDF
+# 7. 生成专业PDF
 python scripts/generate_pdf.py crispr_sickle_cell_review.md \
   --citation-style nature \
   --output crispr_sickle_cell_review.pdf
 
-# 8. Review final PDF and markdown outputs
+# 8. 审查最终PDF和markdown输出
 ```
 
-## Integration with Other Skills
+## 与其他技能的集成
 
-This skill works seamlessly with other scientific skills:
+该技能与其他科学技能无缝协作：
 
-### Database Access Skills
-- **gget**: PubMed, bioRxiv, COSMIC, AlphaFold, Ensembl, UniProt
-- **bioservices**: ChEMBL, KEGG, Reactome, UniProt, PubChem
-- **datacommons-client**: Demographics, economics, health statistics
+### 数据库访问技能
+- **gget**：PubMed、bioRxiv、COSMIC、AlphaFold、Ensembl、UniProt
+- **bioservices**：ChEMBL、KEGG、Reactome、UniProt、PubChem
+- **datacommons-client**：人口统计、经济学、健康统计
 
-### Analysis Skills
-- **pydeseq2**: RNA-seq differential expression (for methods sections)
-- **scanpy**: Single-cell analysis (for methods sections)
-- **anndata**: Single-cell data (for methods sections)
-- **biopython**: Sequence analysis (for background sections)
+### 分析技能
+- **pydeseq2**：RNA-seq差异表达（用于方法部分）
+- **scanpy**：单细胞分析（用于方法部分）
+- **anndata**：单细胞数据（用于方法部分）
+- **biopython**：序列分析（用于背景部分）
 
-### Visualization Skills
-- **matplotlib**: Generate figures and plots for review
-- **seaborn**: Statistical visualizations
+### 可视化技能
+- **matplotlib**：为综述生成图表和图
+- **seaborn**：统计可视化
 
-### Writing Skills
-- **brand-guidelines**: Apply institutional branding to PDF
-- **internal-comms**: Adapt review for different audiences
+### 写作技能
+- **brand-guidelines**：将机构品牌应用于PDF
+- **internal-comms**：为不同受众调整综述
 
-## Resources
+## 资源
 
-### Bundled Resources
+### 捆绑资源
 
-**Scripts:**
-- `scripts/verify_citations.py`: Verify DOIs and generate formatted citations
-- `scripts/generate_pdf.py`: Convert markdown to professional PDF
-- `scripts/search_databases.py`: Process, deduplicate, and format search results
+**脚本：**
+- `scripts/verify_citations.py`：验证DOI并生成格式化引文
+- `scripts/generate_pdf.py`：将markdown转换为专业PDF
+- `scripts/search_databases.py`：处理、去重和格式化搜索结果
 
-**References:**
-- `references/citation_styles.md`: Detailed citation formatting guide (APA, Nature, Vancouver, Chicago, IEEE)
-- `references/database_strategies.md`: Comprehensive database search strategies
+**参考资料：**
+- `references/citation_styles.md`：详细的引文格式化指南（APA、Nature、Vancouver、Chicago、IEEE）
+- `references/database_strategies.md`：全面的数据库搜索策略
 
-**Assets:**
-- `assets/review_template.md`: Complete literature review template with all sections
+**资产：**
+- `assets/review_template.md`：包含所有部分的完整文献综述模板
 
-### External Resources
+### 外部资源
 
-**Guidelines:**
-- PRISMA (Systematic Reviews): http://www.prisma-statement.org/
-- Cochrane Handbook: https://training.cochrane.org/handbook
-- AMSTAR 2 (Review Quality): https://amstar.ca/
+**指南：**
+- PRISMA（系统综述）：http://www.prisma-statement.org/
+- Cochrane手册：https://training.cochrane.org/handbook
+- AMSTAR 2（综述质量）：https://amstar.ca/
 
-**Tools:**
-- MeSH Browser: https://meshb.nlm.nih.gov/search
-- PubMed Advanced Search: https://pubmed.ncbi.nlm.nih.gov/advanced/
-- Boolean Search Guide: https://www.ncbi.nlm.nih.gov/books/NBK3827/
+**工具：**
+- MeSH浏览器：https://meshb.nlm.nih.gov/search
+- PubMed高级搜索：https://pubmed.ncbi.nlm.nih.gov/advanced/
+- 布尔搜索指南：https://www.ncbi.nlm.nih.gov/books/NBK3827/
 
-**Citation Styles:**
-- APA Style: https://apastyle.apa.org/
-- Nature Portfolio: https://www.nature.com/nature-portfolio/editorial-policies/reporting-standards
-- NLM/Vancouver: https://www.nlm.nih.gov/bsd/uniform_requirements.html
+**引文格式：**
+- APA样式：https://apastyle.apa.org/
+- Nature组合：https://www.nature.com/nature-portfolio/editorial-policies/reporting-standards
+- NLM/Vancouver：https://www.nlm.nih.gov/bsd/uniform_requirements.html
 
-## Dependencies
+## 依赖项
 
-### Required Python Packages
+### 所需Python包
 ```bash
-pip install requests  # For citation verification
+pip install requests  # 用于引文验证
 ```
 
-### Required System Tools
+### 所需系统工具
 ```bash
-# For PDF generation
+# 用于PDF生成
 brew install pandoc  # macOS
 apt-get install pandoc  # Linux
 
-# For LaTeX (PDF generation)
+# 用于LaTeX（PDF生成）
 brew install --cask mactex  # macOS
 apt-get install texlive-xetex  # Linux
 ```
 
-Check dependencies:
+检查依赖项：
 ```bash
 python scripts/generate_pdf.py --check-deps
 ```
 
-## Summary
+## 总结
 
-This literature-review skill provides:
+该literature-review技能提供：
 
-1. **Systematic methodology** following academic best practices
-2. **Multi-database integration** via existing scientific skills
-3. **Citation verification** ensuring accuracy and credibility
-4. **Professional output** in markdown and PDF formats
-5. **Comprehensive guidance** covering the entire review process
-6. **Quality assurance** with verification and validation tools
-7. **Reproducibility** through detailed documentation requirements
+1. **系统方法学**，遵循学术最佳实践
+2. **多数据库集成**，通过现有科学技能
+3. **引文验证**，确保准确性和可信度
+4. **专业输出**，markdown和PDF格式
+5. **全面指导**，涵盖整个综述过程
+6. **质量保证**，具有验证和验证工具
+7. **可重复性**，通过详细的文档要求
 
-Conduct thorough, rigorous literature reviews that meet academic standards and provide comprehensive synthesis of current knowledge in any domain.
-
+进行全面、严格的文献综述，满足学术标准，并提供任何领域当前知识的综合。

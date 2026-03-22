@@ -1,58 +1,60 @@
 ---
 name: notion-spec-to-implementation
-description: Turn Notion specs into implementation plans, tasks, and progress tracking; use when implementing PRDs/feature specs and creating Notion plans + tasks from them.
+description: 将 Notion 规格转换为实施计划、任务和进度跟踪；当实施 PRD/功能规格并从它们创建 Notion 计划 + 任务时使用。
 metadata:
-  short-description: Turn Notion specs into implementation plans, tasks, and progress tracking
+  short-description: 将 Notion 规格转换为实施计划、任务和进度跟踪
 ---
 
-# Spec to Implementation
+# 规格到实施
 
-Convert a Notion spec into linked implementation plans, tasks, and ongoing status updates.
+将 Notion 规格转换为链接的实施计划、任务和持续的状态更新。
 
-## Quick start
-1) Locate the spec with `Notion:notion-search`, then fetch it with `Notion:notion-fetch`.
-2) Parse requirements and ambiguities using `reference/spec-parsing.md`.
-3) Create a plan page with `Notion:notion-create-pages` (pick a template: quick vs. full).
-4) Find the task database, confirm schema, then create tasks with `Notion:notion-create-pages`.
-5) Link spec ↔ plan ↔ tasks; keep status current with `Notion:notion-update-page`.
+## 快速开始
 
-## Workflow
+1) 使用 `Notion:notion-search` 定位规格，然后使用 `Notion:notion-fetch` 获取它。
+2) 使用 `reference/spec-parsing.md` 解析需求和歧义。
+3) 使用 `Notion:notion-create-pages` 创建计划页面（选择一个模板：快速 vs 完整）。
+4) 查找任务数据库，确认架构，然后使用 `Notion:notion-create-pages` 创建任务。
+5) 链接规格 ↔ 计划 ↔ 任务；使用 `Notion:notion-update-page` 保持状态当前。
 
-### 0) If any MCP call fails because Notion MCP is not connected, pause and set it up:
-1. Add the Notion MCP:
+## 工作流程
+
+### 0) 如果任何 MCP 调用由于 Notion MCP 未连接而失败，请暂停并设置它：
+1. 添加 Notion MCP：
    - `codex mcp add notion --url https://mcp.notion.com/mcp`
-2. Enable remote MCP client:
-   - Set `[features].rmcp_client = true` in `config.toml` **or** run `codex --enable rmcp_client`
-3. Log in with OAuth:
+2. 启用远程 MCP 客户端：
+   - 在 `config.toml` 中设置 `[features].rmcp_client = true` **或**运行 `codex --enable rmcp_client`
+3. 使用 OAuth 登录：
    - `codex mcp login notion`
 
-After successful login, the user will have to restart codex. You should finish your answer and tell them so when they try again they can continue with Step 1.
+成功登录后，用户必须重新启动 codex。您应该完成您的回答并告诉他们，当他们再次尝试时可以从步骤 1 继续。
 
-### 1) Locate and read the spec
-- Search first (`Notion:notion-search`); if multiple hits, ask the user which to use.
-- Fetch the page (`Notion:notion-fetch`) and scan for requirements, acceptance criteria, constraints, and priorities. See `reference/spec-parsing.md` for extraction patterns.
-- Capture gaps/assumptions in a clarifications block before proceeding.
+### 1) 定位和阅读规格
+- 首先搜索（`Notion:notion-search`）；如果有多个命中，请询问用户使用哪一个。
+- 获取页面（`Notion:notion-fetch`）并扫描需求、验收标准、约束和优先级。有关提取模式，请参阅 `reference/spec-parsing.md`。
+- 在继续之前在澄清块中捕获缺口/假设。
 
-### 2) Choose plan depth
-- Simple change → use `reference/quick-implementation-plan.md`.
-- Multi-phase feature/migration → use `reference/standard-implementation-plan.md`.
-- Create the plan via `Notion:notion-create-pages`, include: overview, linked spec, requirements summary, phases, dependencies/risks, and success criteria. Link back to the spec.
+### 2) 选择计划深度
+- 简单更改 → 使用 `reference/quick-implementation-plan.md`。
+- 多阶段功能/迁移 → 使用 `reference/standard-implementation-plan.md`。
+- 通过 `Notion:notion-create-pages` 创建计划，包括：概述、链接的规格、需求摘要、阶段、依赖/风险和成功标准。链接回规格。
 
-### 3) Create tasks
-- Find the task database (`Notion:notion-search` → `Notion:notion-fetch` to confirm the data source and required properties). Patterns in `reference/task-creation.md`.
-- Size tasks to 1–2 days. Use `reference/task-creation-template.md` for content (context, objective, acceptance criteria, dependencies, resources).
-- Set properties: title/action verb, status, priority, relations to spec + plan, due date/story points/assignee if provided.
-- Create pages with `Notion:notion-create-pages` using the database’s `data_source_id`.
+### 3) 创建任务
+- 查找任务数据库（`Notion:notion-search` → `Notion:notion-fetch` 以确认数据源和必需的属性）。`reference/task-creation.md` 中的模式。
+- 将任务调整为 1–2 天。使用 `reference/task-creation-template.md` 获取内容（上下文、目标、验收标准、依赖、资源）。
+- 设置属性：标题/行动动词、状态、优先级、到规格 + 计划的关系、截止日期/故事点（如果提供）或受让人。
+- 使用数据库的 `data_source_id` 通过 `Notion:notion-create-pages` 创建页面。
 
-### 4) Link artifacts
-- Plan links to spec; tasks link to both plan and spec.
-- Optionally update the spec with a short “Implementation” section pointing to the plan and tasks using `Notion:notion-update-page`.
+### 4) 链接工件
+- 计划链接到规格；任务链接到计划和规格。
+- 可选地使用简短的"实施"部分更新规格，该部分指向使用 `Notion:notion-update-page` 的计划和任务。
 
-### 5) Track progress
-- Use the cadence in `reference/progress-tracking.md`.
-- Post updates with `reference/progress-update-template.md`; close phases with `reference/milestone-summary-template.md`.
-- Keep checklists and status fields in plan/tasks in sync; note blockers and decisions.
+### 5) 跟踪进度
+- 使用 `reference/progress-tracking.md` 中的节奏。
+- 使用 `reference/progress-update-template.md` 发布更新；使用 `reference/milestone-summary-template.md` 关闭阶段。
+- 保持计划/任务中的检查清单和状态字段同步；注意阻塞和决策。
 
-## References and examples
-- `reference/` — parsing patterns, plan/task templates, progress cadence (e.g., `spec-parsing.md`, `standard-implementation-plan.md`, `task-creation.md`, `progress-tracking.md`).
-- `examples/` — end-to-end walkthroughs (e.g., `ui-component.md`, `api-feature.md`, `database-migration.md`).
+## 参考资料和示例
+
+- `reference/` — 解析模式、计划/任务模板、进度节奏（例如，`spec-parsing.md`、`standard-implementation-plan.md`、`task-creation.md`、`progress-tracking.md`）。
+- `examples/` — 端到端的演练（例如，`ui-component.md`、`api-feature.md`、`database-migration.md`）。

@@ -11,6 +11,10 @@ const supabaseAnonKey =
   (import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_SUPABASE_ANON_KEY
   || 'sb_publishable_CyVwHGbtT80AuDFmXNkc9Q_YNcamTGg'
 
+export const sharedStarWritesEnabled =
+  ((import.meta as ImportMeta & { env: Record<string, string> }).env.VITE_ENABLE_SHARED_STAR_WRITES ?? '')
+    .toLowerCase() === 'true'
+
 // Create a single supabase client for interacting with the database
 export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey)
 

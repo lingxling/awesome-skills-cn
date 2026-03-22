@@ -19,7 +19,6 @@ from __future__ import annotations
 
 import argparse
 import asyncio
-import html
 import json
 import os
 import sys
@@ -48,15 +47,6 @@ db = Database()
 db.init()
 
 
-def _mask_secret(value: str, keep: int = 4) -> str:
-    """Mask secret-like values before showing them in terminal output."""
-    if not value:
-        return "(hidden)"
-    if len(value) <= keep:
-        return "*" * len(value)
-    return f"{value[:keep]}...masked"
-
-
 # ── OAuth Callback Server ────────────────────────────────────────────────────
 
 class OAuthCallbackHandler(BaseHTTPRequestHandler):
@@ -81,8 +71,7 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
             self.send_response(400)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.end_headers()
-            safe_error = html.escape(error, quote=True)
-            self.wfile.write(f"<html><body><h2>Erro: {safe_error}</h2></body></html>".encode())
+            self.wfile.write(f"<html><body><h2>Erro: {error}</h2></body></html>".encode())
         else:
             self.send_response(404)
             self.end_headers()
@@ -95,7 +84,7 @@ def wait_for_oauth_code() -> Optional[str]:
     """Inicia servidor local e espera pelo código de autorização."""
     server = HTTPServer(("localhost", OAUTH_REDIRECT_PORT), OAuthCallbackHandler)
     server.timeout = 120  # 2 minutos
-    print("Aguardando autorização no callback OAuth local...")
+    print(f"Aguardando autorização em http://localhost:{OAUTH_REDIRECT_PORT}/callback ...")
     print("(Timeout: 2 minutos)\n")
 
     while OAuthCallbackHandler.authorization_code is None:
@@ -296,8 +285,10 @@ async def setup() -> None:
         f"response_type=code"
     )
 
-    print("\nAbrindo browser para autorização...")
-    print("A URL de autorização e o App ID não serão exibidos para evitar vazamento de credenciais.\n")
+    print(f"\nAbrindo browser para autorização...")
+    # Mask client_id in auth URL to avoid logging credentials
+    masked_url = auth_url.replace(app_id, app_id[:4] + "...masked") if app_id else auth_url
+    print(f"URL: {masked_url}\n")
     webbrowser.open(auth_url)
 
     # Esperar callback

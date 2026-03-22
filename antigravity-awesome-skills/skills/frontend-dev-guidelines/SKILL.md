@@ -1,6 +1,6 @@
 ---
 name: frontend-dev-guidelines
-description: "(React · TypeScript · Suspense-First · Production-Grade)"
+description: "Opinionated frontend development standards for modern React + TypeScript applications. Covers Suspense-first data fetching, lazy loading, feature-based architecture, MUI v7 styling, TanStack Router..."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -87,7 +87,8 @@ FFCI = (Architectural Fit + Reusability + Performance) − (Complexity + Mainten
 
 ---
 
-## When to Use
+## 3. When to Use This Skill
+
 Use **frontend-dev-guidelines** when:
 
 * Creating components or pages

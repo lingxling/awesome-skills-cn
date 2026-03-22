@@ -1,8 +1,6 @@
 ---
 name: apify-ultimate-scraper
-description: "AI-driven data extraction from 55+ Actors across all major platforms. This skill automatically selects the best Actor for your task."
-risk: unknown
-source: community
+description: "Universal AI-powered web scraper for any platform. Scrape data from Instagram, Facebook, TikTok, YouTube, Google Maps, Google Search, Google Trends, Booking.com, and TripAdvisor. Use for lead gener..."
 ---
 
 # Universal Web Scraper
@@ -221,6 +219,7 @@ After completion, report:
 | Influencer profiles | Analyze engagement with comment scrapers |
 | Competitor pages | Deep-dive with post/ad scrapers |
 | Trend data | Validate with platform-specific hashtag scrapers |
+
 
 ## Error Handling
 

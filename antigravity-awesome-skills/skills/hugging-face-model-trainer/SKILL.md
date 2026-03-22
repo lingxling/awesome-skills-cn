@@ -1,9 +1,7 @@
 ---
 name: hugging-face-model-trainer
-description: "Train language models using TRL (Transformer Reinforcement Learning) on fully managed Hugging Face infrastructure. No local GPU setup required—models train on cloud GPUs and results are automatically saved to the Hugging Face Hub."
+description: This skill should be used when users want to train or fine-tune language models using TRL (Transformer Reinforcement Learning) on Hugging Face Jobs infrastructure. Covers SFT, DPO, GRPO and reward modeling training methods, plus GGUF conversion for...
 license: Complete terms in LICENSE.txt
-risk: unknown
-source: community
 ---
 
 # TRL Training on Hugging Face Jobs

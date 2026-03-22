@@ -1,6 +1,6 @@
 ---
 name: verification-before-completion
-description: "Claiming work is complete without verification is dishonesty, not efficiency."
+description: "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs - requires running verification commands and confirming output before making any success claims; evide..."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -117,7 +117,8 @@ From 24 failure memories:
 - Time wasted on false completion → redirect → rework
 - Violates: "Honesty is a core value. If you lie, you'll be replaced."
 
-## When to Use
+## When To Apply
+
 **ALWAYS before:**
 - ANY variation of success/completion claims
 - ANY expression of satisfaction

@@ -1,6 +1,6 @@
 ---
 name: git-pushing
-description: "Stage all changes, create a conventional commit, and push to the remote branch."
+description: "Stage, commit, and push git changes with conventional commit messages. Use when user wants to commit and push changes, mentions pushing to remote, or asks to save and push their work. Also activate..."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -11,6 +11,7 @@ date_added: "2026-02-27"
 Stage all changes, create a conventional commit, and push to the remote branch.
 
 ## When to Use
+
 Automatically activate when the user:
 
 - Explicitly asks to push changes ("push this", "commit and push")

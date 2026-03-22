@@ -1,61 +1,61 @@
 ---
 name: pptx-posters
-description: Create research posters using HTML/CSS that can be exported to PDF or PPTX. Use this skill ONLY when the user explicitly requests PowerPoint/PPTX poster format. For standard research posters, use latex-posters instead. This skill provides modern web-based poster design with responsive layouts and easy visual integration.
+description: 使用HTML/CSS创建研究海报，可以导出为PDF或PPTX。仅当用户明确请求PowerPoint/PPTX海报格式时使用此技能。对于标准研究海报，请使用latex-posters。此技能提供现代基于网络的海报设计，具有响应式布局和易于视觉集成。
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# PPTX Research Posters (HTML-Based)
+# PPTX研究海报（基于HTML）
 
-## Overview
+## 概述
 
-**⚠️ USE THIS SKILL ONLY WHEN USER EXPLICITLY REQUESTS PPTX/POWERPOINT POSTER FORMAT.**
+**⚠️ 仅当用户明确请求PPTX/POWERPOINT海报格式时使用此技能。**
 
-For standard research posters, use the **latex-posters** skill instead, which provides better typographic control and is the default for academic conferences.
+对于标准研究海报，请使用**latex-posters**技能，它提供更好的排版控制，是学术会议的默认选择。
 
-This skill creates research posters using HTML/CSS, which can then be exported to PDF or converted to PowerPoint format. The web-based approach offers:
-- Modern, responsive layouts
-- Easy integration of AI-generated visuals
-- Quick iteration and preview in browser
-- Export to PDF via browser print function
-- Conversion to PPTX if specifically needed
+此技能使用HTML/CSS创建研究海报，然后可以导出为PDF或转换为PowerPoint格式。基于网络的方法提供：
+- 现代、响应式布局
+- 易于集成AI生成的视觉效果
+- 在浏览器中快速迭代和预览
+- 通过浏览器打印功能导出为PDF
+- 如果特别需要，转换为PPTX
 
-## When to Use This Skill
+## 何时使用此技能
 
-**ONLY use this skill when:**
-- User explicitly requests "PPTX poster", "PowerPoint poster", or "PPT poster"
-- User specifically asks for HTML-based poster
-- User needs to edit poster in PowerPoint after creation
-- LaTeX is not available or user requests non-LaTeX solution
+**仅在以下情况使用此技能：**
+- 用户明确请求"PPTX海报"、"PowerPoint海报"或"PPT海报"
+- 用户特别要求基于HTML的海报
+- 用户需要在创建后在PowerPoint中编辑海报
+- LaTeX不可用或用户请求非LaTeX解决方案
 
-**DO NOT use this skill when:**
-- User asks for a "poster" without specifying format → Use latex-posters
-- User asks for "research poster" or "conference poster" → Use latex-posters
-- User mentions LaTeX, tikzposter, beamerposter, or baposter → Use latex-posters
+**不要在以下情况使用此技能：**
+- 用户要求"海报"但未指定格式 → 使用latex-posters
+- 用户要求"研究海报"或"会议海报" → 使用latex-posters
+- 用户提到LaTeX、tikzposter、beamerposter或baposter → 使用latex-posters
 
-## AI-Powered Visual Element Generation
+## AI驱动的视觉元素生成
 
-**STANDARD WORKFLOW: Generate ALL major visual elements using AI before creating the HTML poster.**
+**标准工作流程：在创建HTML海报之前，使用AI生成所有主要视觉元素。**
 
-This is the recommended approach for creating visually compelling posters:
-1. Plan all visual elements needed (hero image, intro, methods, results, conclusions)
-2. Generate each element using scientific-schematics or Nano Banana Pro
-3. Assemble generated images in the HTML template
-4. Add text content around the visuals
+这是创建视觉上引人注目的海报的推荐方法：
+1. 计划所有需要的视觉元素（主图像、介绍、方法、结果、结论）
+2. 使用scientific-schematics或Nano Banana Pro生成每个元素
+3. 在HTML模板中组装生成的图像
+4. 在视觉元素周围添加文本内容
 
-**Target: 60-70% of poster area should be AI-generated visuals, 30-40% text.**
+**目标：海报面积的60-70%应该是AI生成的视觉效果，30-40%是文本。**
 
 ---
 
-### CRITICAL: Poster-Size Font Requirements
+### 关键：海报尺寸字体要求
 
-**⚠️ ALL text within AI-generated visualizations MUST be poster-readable.**
+**⚠️ AI生成的可视化中的所有文本必须是海报可读的。**
 
-When generating graphics for posters, you MUST include font size specifications in EVERY prompt. Poster graphics are viewed from 4-6 feet away, so text must be LARGE.
+为海报生成图形时，您必须在每个提示中包含字体大小规格。海报图形从4-6英尺外观看，因此文本必须大。
 
-**MANDATORY prompt requirements for EVERY poster graphic:**
+**每个海报图形的强制提示要求：**
 
 ```
 POSTER FORMAT REQUIREMENTS (STRICTLY ENFORCE):
@@ -71,64 +71,64 @@ POSTER FORMAT REQUIREMENTS (STRICTLY ENFORCE):
 - ONE SINGLE MESSAGE per graphic (not 3 related messages)
 ```
 
-**⚠️ BEFORE GENERATING: Review your prompt and count elements**
-- If your description has 5+ items → STOP. Split into multiple graphics
-- If your workflow has 5+ stages → STOP. Show only 3-4 high-level steps
-- If your comparison has 4+ methods → STOP. Show only top 3 or Our vs Best Baseline
+**⚠️ 生成前：检查您的提示并计算元素**
+- 如果您的描述有5+项 → 停止。拆分为多个图形
+- 如果您的工作流程有5+阶段 → 停止。只显示3-4个高级步骤
+- 如果您的比较有4+方法 → 停止。只显示前3个或我们的vs最佳基线
 
-**Example - WRONG (7-stage workflow):**
+**示例 - 错误（7阶段工作流程）：**
 ```bash
-# ❌ Creates tiny unreadable text
+# ❌ 创建微小不可读的文本
 python scripts/generate_schematic.py "Drug discovery workflow: Stage 1 Target ID, Stage 2 Synthesis, Stage 3 Screening, Stage 4 Lead Opt, Stage 5 Validation, Stage 6 Clinical Trial, Stage 7 FDA Approval with metrics." -o figures/workflow.png
 ```
 
-**Example - CORRECT (3 mega-stages):**
+**示例 - 正确（3个大型阶段）：**
 ```bash
-# ✅ Same content, simplified to readable poster format
+# ✅ 相同内容，简化为可读的海报格式
 python scripts/generate_schematic.py "POSTER FORMAT for A0. ULTRA-SIMPLE 3-box workflow: 'DISCOVER' → 'VALIDATE' → 'APPROVE'. Each word in GIANT bold (120pt+). Thick arrows (10px). 60% white space. ONLY these 3 words. NO substeps. Readable from 12 feet." -o figures/workflow_simple.png
 ```
 
 ---
 
-### CRITICAL: Preventing Content Overflow
+### 关键：防止内容溢出
 
-**⚠️ POSTERS MUST NOT HAVE TEXT OR CONTENT CUT OFF AT EDGES.**
+**⚠️ 海报在边缘处不得有文本或内容被截断。**
 
-**Prevention Rules:**
+**预防规则：**
 
-**1. Limit Content Sections (MAXIMUM 5-6 sections):**
+**1. 限制内容部分（最多5-6个部分）：**
 ```
-✅ GOOD - 5 sections with room to breathe:
-   - Title/Header
-   - Introduction/Problem
-   - Methods
-   - Results (1-2 key findings)
-   - Conclusions
+✅ 良好 - 5个部分，有呼吸空间：
+   - 标题/头部
+   - 介绍/问题
+   - 方法
+   - 结果（1-2个关键发现）
+   - 结论
 
-❌ BAD - 8+ sections crammed together
+❌ 不良 - 8+个部分挤在一起
 ```
 
-**2. Word Count Limits:**
-- **Per section**: 50-100 words maximum
-- **Total poster**: 300-800 words MAXIMUM
-- **If you have more content**: Cut it or make a handout
+**2. 字数限制：**
+- **每个部分**：最多50-100字
+- **总海报**：最多300-800字
+- **如果您有更多内容**：删除或制作手册
 
 ---
 
-## Core Capabilities
+## 核心功能
 
-### 1. HTML/CSS Poster Design
+### 1. HTML/CSS海报设计
 
-The HTML template (`assets/poster_html_template.html`) provides:
-- Fixed poster dimensions (36×48 inches = 2592×3456 pt)
-- Professional header with gradient styling
-- Three-column content layout
-- Block-based sections with modern styling
-- Footer with references and contact info
+HTML模板（`assets/poster_html_template.html`）提供：
+- 固定海报尺寸（36×48英寸 = 2592×3456点）
+- 带有渐变样式的专业头部
+- 三列内容布局
+- 带有现代样式的基于块的部分
+- 带有参考文献和联系信息的页脚
 
-### 2. Poster Structure
+### 2. 海报结构
 
-**Standard Layout:**
+**标准布局：**
 ```
 ┌─────────────────────────────────────────┐
 │  HEADER: Title, Authors, Hero Image     │
@@ -143,16 +143,16 @@ The HTML template (`assets/poster_html_template.html`) provides:
 └─────────────────────────────────────────┘
 ```
 
-### 3. Visual Integration
+### 3. 视觉集成
 
-Each section should prominently feature AI-generated visuals:
+每个部分应突出显示AI生成的视觉效果：
 
-**Hero Image (Header):**
+**主图像（头部）：**
 ```html
 <img src="figures/hero.png" class="hero-image">
 ```
 
-**Section Graphics:**
+**部分图形：**
 ```html
 <div class="block">
   <h2 class="block-title">Methods</h2>
@@ -165,106 +165,106 @@ Each section should prominently feature AI-generated visuals:
 </div>
 ```
 
-### 4. Generating Visual Elements
+### 4. 生成视觉元素
 
-**Before creating the HTML, generate all visual elements:**
+**在创建HTML之前，生成所有视觉元素：**
 
 ```bash
-# Create figures directory
+# 创建figures目录
 mkdir -p figures
 
-# Hero image - SIMPLE, impactful
+# 主图像 - 简单，有冲击力
 python scripts/generate_schematic.py "POSTER FORMAT for A0. Hero banner: '[TOPIC]' in HUGE text (120pt+). Dark blue gradient background. ONE iconic visual. Minimal text. Readable from 15 feet." -o figures/hero.png
 
-# Introduction visual - ONLY 3 elements
+# 介绍视觉 - 仅3个元素
 python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE visual with ONLY 3 icons: [icon1] → [icon2] → [icon3]. ONE word labels (80pt+). 50% white space. Readable from 8 feet." -o figures/intro.png
 
-# Methods flowchart - ONLY 4 steps
+# 方法流程图 - 仅4个步骤
 python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE flowchart with ONLY 4 boxes: STEP1 → STEP2 → STEP3 → STEP4. GIANT labels (100pt+). Thick arrows. 50% white space. NO sub-steps." -o figures/workflow.png
 
-# Results visualization - ONLY 3 bars
+# 结果可视化 - 仅3个条形
 python scripts/generate_schematic.py "POSTER FORMAT for A0. SIMPLE bar chart with ONLY 3 bars: BASELINE (70%), EXISTING (85%), OURS (95%). GIANT percentages ON bars (120pt+). NO axis, NO legend. 50% white space." -o figures/results.png
 
-# Conclusions - EXACTLY 3 key findings
+# 结论 - 恰好3个关键发现
 python scripts/generate_schematic.py "POSTER FORMAT for A0. EXACTLY 3 cards: '95%' (150pt) 'ACCURACY' (60pt), '2X' (150pt) 'FASTER' (60pt), checkmark 'READY' (60pt). 50% white space. NO other text." -o figures/conclusions.png
 ```
 
 ---
 
-## Workflow for PPTX Poster Creation
+## PPTX海报创建工作流程
 
-### Stage 1: Planning
+### 阶段1：规划
 
-1. **Confirm PPTX is explicitly requested**
-2. **Determine poster requirements:**
-   - Size: 36×48 inches (most common) or A0
-   - Orientation: Portrait (most common)
-3. **Develop content outline:**
-   - Identify 1-3 core messages
-   - Plan 3-5 visual elements
-   - Draft minimal text (300-800 words total)
+1. **确认明确请求PPTX**
+2. **确定海报要求：**
+   - 尺寸：36×48英寸（最常见）或A0
+   - 方向：纵向（最常见）
+3. **制定内容大纲：**
+   - 确定1-3个核心信息
+   - 计划3-5个视觉元素
+   - 起草最少文本（总共300-800字）
 
-### Stage 2: Generate Visual Elements (AI-Powered)
+### 阶段2：生成视觉元素（AI驱动）
 
-**CRITICAL: Generate SIMPLE figures with MINIMAL content.**
+**关键：生成简单的图形，内容最少。**
 
 ```bash
 mkdir -p figures
 
-# Generate each element with POSTER FORMAT specifications
-# (See examples in Section 4 above)
+# 使用POSTER FORMAT规格生成每个元素
+# （见上面第4节中的示例）
 ```
 
-### Stage 3: Create HTML Poster
+### 阶段3：创建HTML海报
 
-1. **Copy the template:**
+1. **复制模板：**
    ```bash
    cp skills/pptx-posters/assets/poster_html_template.html poster.html
    ```
 
-2. **Update content:**
-   - Replace placeholder title and authors
-   - Insert AI-generated images
-   - Add minimal supporting text
-   - Update references and contact info
+2. **更新内容：**
+   - 替换占位符标题和作者
+   - 插入AI生成的图像
+   - 添加最少的支持文本
+   - 更新参考文献和联系信息
 
-3. **Preview in browser:**
+3. **在浏览器中预览：**
    ```bash
    open poster.html  # macOS
-   # or
+   # 或
    xdg-open poster.html  # Linux
    ```
 
-### Stage 4: Export to PDF
+### 阶段4：导出为PDF
 
-**Browser Print Method:**
-1. Open poster.html in Chrome or Firefox
-2. Print (Cmd/Ctrl + P)
-3. Select "Save as PDF"
-4. Set paper size to match poster dimensions
-5. Remove margins
-6. Enable "Background graphics"
+**浏览器打印方法：**
+1. 在Chrome或Firefox中打开poster.html
+2. 打印（Cmd/Ctrl + P）
+3. 选择"保存为PDF"
+4. 将纸张大小设置为与海报尺寸匹配
+5. 移除边距
+6. 启用"背景图形"
 
-**Command Line (if Chrome available):**
+**命令行（如果Chrome可用）：**
 ```bash
-# Chrome headless PDF export
+# Chrome无头PDF导出
 google-chrome --headless --print-to-pdf=poster.pdf \
   --print-to-pdf-no-header \
   --no-margins \
   poster.html
 ```
 
-### Stage 5: Convert to PPTX (If Required)
+### 阶段5：转换为PPTX（如果需要）
 
-**Option 1: PDF to PPTX conversion**
+**选项1：PDF到PPTX转换**
 ```bash
-# Using LibreOffice
+# 使用LibreOffice
 libreoffice --headless --convert-to pptx poster.pdf
 
-# Or use online converters for simple cases
+# 或在简单情况下使用在线转换器
 ```
 
-**Option 2: Direct PPTX creation with python-pptx**
+**选项2：使用python-pptx直接创建PPTX**
 ```python
 from pptx import Presentation
 from pptx.util import Inches, Pt
@@ -273,142 +273,141 @@ prs = Presentation()
 prs.slide_width = Inches(48)
 prs.slide_height = Inches(36)
 
-slide = prs.slides.add_slide(prs.slide_layouts[6])  # Blank
+slide = prs.slides.add_slide(prs.slide_layouts[6])  # 空白
 
-# Add images from figures/
+# 从figures/添加图像
 slide.shapes.add_picture("figures/hero.png", Inches(0), Inches(0), width=Inches(48))
-# ... add other elements
+# ... 添加其他元素
 
 prs.save("poster.pptx")
 ```
 
 ---
 
-## HTML Template Structure
+## HTML模板结构
 
-The provided template (`assets/poster_html_template.html`) includes:
+提供的模板（`assets/poster_html_template.html`）包括：
 
-### CSS Variables for Customization
+### 用于自定义的CSS变量
 
 ```css
-/* Poster dimensions */
+/* 海报尺寸 */
 body {
   width: 2592pt;   /* 36 inches */
   height: 3456pt;  /* 48 inches */
 }
 
-/* Color scheme - customize these */
+/* 配色方案 - 自定义这些 */
 .header {
   background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 50%, #3182ce 100%);
 }
 
-/* Typography */
+/* 排版 */
 .poster-title { font-size: 108pt; }
 .authors { font-size: 48pt; }
 .block-title { font-size: 52pt; }
 .block-content { font-size: 34pt; }
 ```
 
-### Key Classes
+### 关键类
 
-| Class | Purpose | Font Size |
+| 类 | 用途 | 字体大小 |
 |-------|---------|-----------|
-| `.poster-title` | Main title | 108pt |
-| `.authors` | Author names | 48pt |
-| `.affiliations` | Institutions | 38pt |
-| `.block-title` | Section headers | 52pt |
-| `.block-content` | Body text | 34pt |
-| `.key-finding` | Highlight box | 36pt |
+| `.poster-title` | 主标题 | 108pt |
+| `.authors` | 作者姓名 | 48pt |
+| `.affiliations` | 机构 | 38pt |
+| `.block-title` | 部分标题 | 52pt |
+| `.block-content` | 正文文本 | 34pt |
+| `.key-finding` | 突出显示框 | 36pt |
 
 ---
 
-## Quality Checklist
+## 质量检查表
 
-### Step 0: Pre-Generation Review (MANDATORY)
+### 步骤0：生成前审查（必需）
 
-**For EACH planned graphic, verify:**
-- [ ] Can describe in 3-4 items or less? (NOT 5+)
-- [ ] Is it a simple workflow (3-4 steps, NOT 7+)?
-- [ ] Can describe all text in 10 words or less?
-- [ ] Does it convey ONE message (not multiple)?
+**对于每个计划的图形，验证：**
+- [ ] 可以用3-4个项目或更少描述吗？（不是5+）
+- [ ] 是简单的工作流程（3-4步骤，不是7+）？
+- [ ] 可以用10个单词或更少描述所有文本吗？
+- [ ] 它传达一个信息（不是多个）吗？
 
-**Reject these patterns:**
-- ❌ "7-stage workflow" → Simplify to "3 mega-stages"
-- ❌ "Multiple case studies" → One case per graphic
-- ❌ "Timeline 2015-2024 annual" → "ONLY 3 key years"
-- ❌ "Compare 6 methods" → "ONLY 2: ours vs best"
+**拒绝这些模式：**
+- ❌ "7阶段工作流程" → 简化为"3个大型阶段"
+- ❌ "多个案例研究" → 每个图形一个案例
+- ❌ "时间线2015-2024年度" → "仅3个关键年份"
+- ❌ "比较6种方法" → "仅2个：我们的vs最佳"
 
-### Step 2b: Post-Generation Review (MANDATORY)
+### 步骤2b：生成后审查（必需）
 
-**For EACH generated figure at 25% zoom:**
+**对于每个25%缩放的生成图形：**
 
-**✅ PASS criteria (ALL must be true):**
-- [ ] Can read ALL text clearly
-- [ ] Count: 3-4 elements or fewer
-- [ ] White space: 50%+ empty
-- [ ] Understand in 2 seconds
-- [ ] NOT a complex 5+ stage workflow
-- [ ] NOT multiple nested sections
+**✅ 通过标准（全部必须为真）：**
+- [ ] 可以清楚阅读所有文本
+- [ ] 计数：3-4个元素或更少
+- [ ] 空白：50%+ 空
+- [ ] 2秒内理解
+- [ ] 不是复杂的5+阶段工作流程
+- [ ] 不是多个嵌套部分
 
-**❌ FAIL criteria (regenerate if ANY true):**
-- [ ] Text small/hard to read → Regenerate with "150pt+"
-- [ ] More than 4 elements → Regenerate "ONLY 3 elements"
-- [ ] Less than 50% white space → Regenerate "60% white space"
-- [ ] Complex multi-stage → SPLIT into 2-3 graphics
-- [ ] Multiple cases cramped → SPLIT into separate graphics
+**❌ 失败标准（如果任何为真，重新生成）：**
+- [ ] 文本小/难以阅读 → 使用"150pt+"重新生成
+- [ ] 超过4个元素 → 重新生成"仅3个元素"
+- [ ] 少于50%空白 → 重新生成"60%空白"
+- [ ] 复杂多阶段 → 拆分为2-3个图形
+- [ ] 多个案例拥挤 → 拆分为单独的图形
 
-### After Export
+### 导出后
 
-- [ ] NO content cut off at ANY of the 4 edges (check carefully)
-- [ ] All images display correctly
-- [ ] Colors render as expected
-- [ ] Text readable at 25% scale
-- [ ] Graphics look SIMPLE (not like complex 7-stage workflows)
-
----
-
-## Common Pitfalls to Avoid
-
-**AI-Generated Graphics Mistakes:**
-- ❌ Too many elements (10+ items) → Keep to 3-5 max
-- ❌ Text too small → Specify "GIANT (100pt+)" in prompts
-- ❌ No white space → Add "50% white space" to every prompt
-- ❌ Complex flowcharts (8+ steps) → Limit to 4-5 steps
-
-**HTML/Export Mistakes:**
-- ❌ Content exceeding poster dimensions → Check overflow in browser
-- ❌ Missing background graphics in PDF → Enable in print settings
-- ❌ Wrong paper size in PDF → Match poster dimensions exactly
-- ❌ Low-resolution images → Use 300 DPI minimum
-
-**Content Mistakes:**
-- ❌ Too much text (over 1000 words) → Cut to 300-800 words
-- ❌ Too many sections (7+) → Consolidate to 5-6
-- ❌ No clear visual hierarchy → Make key findings prominent
+- [ ] 在任何4个边缘没有内容被截断（仔细检查）
+- [ ] 所有图像正确显示
+- [ ] 颜色渲染符合预期
+- [ ] 文本在25%比例下可读
+- [ ] 图形看起来简单（不像复杂的7阶段工作流程）
 
 ---
 
-## Integration with Other Skills
+## 要避免的常见陷阱
 
-This skill works with:
-- **Scientific Schematics**: Generate all poster diagrams and flowcharts
-- **Generate Image / Nano Banana Pro**: Create stylized graphics and hero images
-- **LaTeX Posters**: DEFAULT skill for poster creation (use this instead unless PPTX explicitly requested)
+**AI生成的图形错误：**
+- ❌ 太多元素（10+项）→ 最多保持3-5项
+- ❌ 文本太小 → 在提示中指定"巨大（100pt+）"
+- ❌ 没有空白 → 在每个提示中添加"50%空白"
+- ❌ 复杂流程图（8+步骤）→ 限制为4-5步骤
+
+**HTML/导出错误：**
+- ❌ 内容超出海报尺寸 → 在浏览器中检查溢出
+- ❌ PDF中缺少背景图形 → 在打印设置中启用
+- ❌ PDF中纸张尺寸错误 → 完全匹配海报尺寸
+- ❌ 低分辨率图像 → 使用最低300 DPI
+
+**内容错误：**
+- ❌ 文本过多（超过1000字）→ 减少到300-800字
+- ❌ 部分过多（7+）→ 合并为5-6个
+- ❌ 没有清晰的视觉层次结构 → 使关键发现突出
 
 ---
 
-## Template Assets
+## 与其他技能的集成
 
-Available in `assets/` directory:
+此技能与以下技能配合使用：
+- **Scientific Schematics**：生成所有海报图表和流程图
+- **Generate Image / Nano Banana Pro**：创建风格化图形和主图像
+- **LaTeX Posters**：海报创建的默认技能（除非明确请求PPTX，否则使用此技能）
 
-- `poster_html_template.html`: Main HTML poster template (36×48 inches)
-- `poster_quality_checklist.md`: Pre-submission validation checklist
+---
 
-## References
+## 模板资产
 
-Available in `references/` directory:
+在`assets/`目录中可用：
 
-- `poster_content_guide.md`: Content organization and writing guidelines
-- `poster_design_principles.md`: Typography, color theory, and visual hierarchy
-- `poster_layout_design.md`: Layout principles and grid systems
+- `poster_html_template.html`：主要HTML海报模板（36×48英寸）
+- `poster_quality_checklist.md`：提交前验证检查表
 
+## 参考
+
+在`references/`目录中可用：
+
+- `poster_content_guide.md`：内容组织和写作指南
+- `poster_design_principles.md`：排版、色彩理论和视觉层次结构
+- `poster_layout_design.md`：布局原则和网格系统

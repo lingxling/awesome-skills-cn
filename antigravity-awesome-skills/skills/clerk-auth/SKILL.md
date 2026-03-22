@@ -22,6 +22,7 @@ Key components:
 - <SignIn />, <SignUp />: Pre-built auth forms
 - <UserButton />: User menu with session management
 
+
 ### Middleware Route Protection
 
 Protect routes using clerkMiddleware and createRouteMatcher.
@@ -32,6 +33,7 @@ Best practices:
 - auth.protect() for explicit protection
 - Centralize all auth logic in middleware
 
+
 ### Server Component Authentication
 
 Access auth state in Server Components using auth() and currentUser().
@@ -40,6 +42,7 @@ Key functions:
 - auth(): Returns userId, sessionId, orgId, claims
 - currentUser(): Returns full User object
 - Both require clerkMiddleware to be configured
+
 
 ## ⚠️ Sharp Edges
 

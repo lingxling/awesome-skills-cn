@@ -1,160 +1,160 @@
 ---
 name: opentrons-integration
-description: Official Opentrons Protocol API for OT-2 and Flex robots. Use when writing protocols specifically for Opentrons hardware with full access to Protocol API v2 features. Best for production Opentrons protocols, official API compatibility. For multi-vendor automation or broader equipment control use pylabrobot.
+description: 适用于 OT-2 和 Flex 机器人的官方 Opentrons 协议 API。当专门为 Opentrons 硬件编写协议并完全访问 Protocol API v2 功能时使用。最适合生产级 Opentrons 协议，官方 API 兼容性。对于多厂商自动化或更广泛的设备控制，请使用 pylabrobot。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Opentrons Integration
+# Opentrons 集成
 
-## Overview
+## 概述
 
-Opentrons is a Python-based lab automation platform for Flex and OT-2 robots. Write Protocol API v2 protocols for liquid handling, control hardware modules (heater-shaker, thermocycler), manage labware, for automated pipetting workflows.
+Opentrons 是一个基于 Python 的实验室自动化平台，用于 Flex 和 OT-2 机器人。编写 Protocol API v2 协议用于液体处理、控制硬件模块（加热振荡器、热循环仪）、管理实验器皿、用于自动化移液工作流程。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
-- Writing Opentrons Protocol API v2 protocols in Python
-- Automating liquid handling workflows on Flex or OT-2 robots
-- Controlling hardware modules (temperature, magnetic, heater-shaker, thermocycler)
-- Setting up labware configurations and deck layouts
-- Implementing complex pipetting operations (serial dilutions, plate replication, PCR setup)
-- Managing tip usage and optimizing protocol efficiency
-- Working with multi-channel pipettes for 96-well plate operations
-- Simulating and testing protocols before robot execution
+此技能应在以下情况使用：
+- 在 Python 中编写 Opentrons Protocol API v2 协议
+- 在 Flex 或 OT-2 机器人上自动化液体处理工作流程
+- 控制硬件模块（温度、磁力、加热振荡器、热循环仪）
+- 设置实验器皿配置和工作台布局
+- 实现复杂的移液操作（系列稀释、平板复制、PCR 设置）
+- 管理吸头使用并优化协议效率
+- 使用多通道移液器进行 96 孔板操作
+- 在机器人执行前模拟和测试协议
 
-## Core Capabilities
+## 核心功能
 
-### 1. Protocol Structure and Metadata
+### 1. 协议结构和元数据
 
-Every Opentrons protocol follows a standard structure:
+每个 Opentrons 协议都遵循标准结构：
 
 ```python
 from opentrons import protocol_api
 
-# Metadata
+# 元数据
 metadata = {
     'protocolName': 'My Protocol',
     'author': 'Name <email@example.com>',
     'description': 'Protocol description',
-    'apiLevel': '2.19'  # Use latest available API version
+    'apiLevel': '2.19'  # 使用最新可用的 API 版本
 }
 
-# Requirements (optional)
+# 要求（可选）
 requirements = {
-    'robotType': 'Flex',  # or 'OT-2'
+    'robotType': 'Flex',  # 或 'OT-2'
     'apiLevel': '2.19'
 }
 
-# Run function
+# 运行函数
 def run(protocol: protocol_api.ProtocolContext):
-    # Protocol commands go here
+    # 协议命令在这里
     pass
 ```
 
-**Key elements:**
-- Import `protocol_api` from `opentrons`
-- Define `metadata` dict with protocolName, author, description, apiLevel
-- Optional `requirements` dict for robot type and API version
-- Implement `run()` function receiving `ProtocolContext` as parameter
-- All protocol logic goes inside the `run()` function
+**关键元素：**
+- 从 `opentrons` 导入 `protocol_api`
+- 定义带有 protocolName、author、description、apiLevel 的 `metadata` 字典
+- 可选的 `requirements` 字典，用于机器人类型和 API 版本
+- 实现接收 `ProtocolContext` 作为参数的 `run()` 函数
+- 所有协议逻辑都在 `run()` 函数内部
 
-### 2. Loading Hardware
+### 2. 加载硬件
 
-**Loading Instruments (Pipettes):**
+**加载仪器（移液器）：**
 
 ```python
 def run(protocol: protocol_api.ProtocolContext):
-    # Load pipette on specific mount
+    # 在特定安装位置加载移液器
     left_pipette = protocol.load_instrument(
-        'p1000_single_flex',  # Instrument name
-        'left',               # Mount: 'left' or 'right'
-        tip_racks=[tip_rack]  # List of tip rack labware objects
+        'p1000_single_flex',  # 仪器名称
+        'left',               # 安装位置: 'left' 或 'right'
+        tip_racks=[tip_rack]  # 吸头架实验器皿对象列表
     )
 ```
 
-Common pipette names:
+常见移液器名称：
 - Flex: `p50_single_flex`, `p1000_single_flex`, `p50_multi_flex`, `p1000_multi_flex`
 - OT-2: `p20_single_gen2`, `p300_single_gen2`, `p1000_single_gen2`, `p20_multi_gen2`, `p300_multi_gen2`
 
-**Loading Labware:**
+**加载实验器皿：**
 
 ```python
-# Load labware directly on deck
+# 直接在工作台上加载实验器皿
 plate = protocol.load_labware(
-    'corning_96_wellplate_360ul_flat',  # Labware API name
-    'D1',                                # Deck slot (Flex: A1-D3, OT-2: 1-11)
-    label='Sample Plate'                 # Optional display label
+    'corning_96_wellplate_360ul_flat',  # 实验器皿 API 名称
+    'D1',                                # 工作台槽位 (Flex: A1-D3, OT-2: 1-11)
+    label='Sample Plate'                 # 可选显示标签
 )
 
-# Load tip rack
+# 加载吸头架
 tip_rack = protocol.load_labware('opentrons_flex_96_tiprack_1000ul', 'C1')
 
-# Load labware on adapter
+# 在适配器上加载实验器皿
 adapter = protocol.load_adapter('opentrons_flex_96_tiprack_adapter', 'B1')
 tips = adapter.load_labware('opentrons_flex_96_tiprack_200ul')
 ```
 
-**Loading Modules:**
+**加载模块：**
 
 ```python
-# Temperature module
+# 温度模块
 temp_module = protocol.load_module('temperature module gen2', 'D3')
 temp_plate = temp_module.load_labware('corning_96_wellplate_360ul_flat')
 
-# Magnetic module
+# 磁力模块
 mag_module = protocol.load_module('magnetic module gen2', 'C2')
 mag_plate = mag_module.load_labware('nest_96_wellplate_100ul_pcr_full_skirt')
 
-# Heater-Shaker module
+# 加热振荡器模块
 hs_module = protocol.load_module('heaterShakerModuleV1', 'D1')
 hs_plate = hs_module.load_labware('corning_96_wellplate_360ul_flat')
 
-# Thermocycler module (takes up specific slots automatically)
+# 热循环仪模块（自动占用特定槽位）
 tc_module = protocol.load_module('thermocyclerModuleV2')
 tc_plate = tc_module.load_labware('nest_96_wellplate_100ul_pcr_full_skirt')
 ```
 
-### 3. Liquid Handling Operations
+### 3. 液体处理操作
 
-**Basic Operations:**
+**基本操作：**
 
 ```python
-# Pick up tip
+# 拾取吸头
 pipette.pick_up_tip()
 
-# Aspirate (draw liquid in)
+# 吸取（吸入液体）
 pipette.aspirate(
-    volume=100,           # Volume in µL
-    location=source['A1'] # Well or location object
+    volume=100,           # 体积（微升）
+    location=source['A1'] # 孔或位置对象
 )
 
-# Dispense (expel liquid)
+# 分配（排出液体）
 pipette.dispense(
     volume=100,
     location=dest['B1']
 )
 
-# Drop tip
+# 丢弃吸头
 pipette.drop_tip()
 
-# Return tip to rack
+# 将吸头返回吸头架
 pipette.return_tip()
 ```
 
-**Complex Operations:**
+**复杂操作：**
 
 ```python
-# Transfer (combines pick_up, aspirate, dispense, drop_tip)
+# 转移（组合拾取、吸取、分配、丢弃吸头）
 pipette.transfer(
     volume=100,
     source=source_plate['A1'],
     dest=dest_plate['B1'],
-    new_tip='always'  # 'always', 'once', or 'never'
+    new_tip='always'  # 'always', 'once', 或 'never'
 )
 
-# Distribute (one source to multiple destinations)
+# 分发（一个源到多个目标）
 pipette.distribute(
     volume=50,
     source=reservoir['A1'],
@@ -162,7 +162,7 @@ pipette.distribute(
     new_tip='once'
 )
 
-# Consolidate (multiple sources to one destination)
+# 合并（多个源到一个目标）
 pipette.consolidate(
     volume=50,
     source=[plate['A1'], plate['A2'], plate['A3']],
@@ -171,156 +171,156 @@ pipette.consolidate(
 )
 ```
 
-**Advanced Techniques:**
+**高级技术：**
 
 ```python
-# Mix (aspirate and dispense in same location)
+# 混合（在同一位置吸取和分配）
 pipette.mix(
     repetitions=3,
     volume=50,
     location=plate['A1']
 )
 
-# Air gap (prevent dripping)
+# 空气间隙（防止滴液）
 pipette.aspirate(100, source['A1'])
-pipette.air_gap(20)  # 20µL air gap
+pipette.air_gap(20)  # 20µL 空气间隙
 pipette.dispense(120, dest['A1'])
 
-# Blow out (expel remaining liquid)
+# 吹出（排出剩余液体）
 pipette.blow_out(location=dest['A1'].top())
 
-# Touch tip (remove droplets on tip exterior)
+# 触碰吸头（移除吸头外部的液滴）
 pipette.touch_tip(location=plate['A1'])
 ```
 
-**Flow Rate Control:**
+**流速控制：**
 
 ```python
-# Set flow rates (µL/s)
+# 设置流速（微升/秒）
 pipette.flow_rate.aspirate = 150
 pipette.flow_rate.dispense = 300
 pipette.flow_rate.blow_out = 400
 ```
 
-### 4. Accessing Wells and Locations
+### 4. 访问孔和位置
 
-**Well Access Methods:**
+**孔访问方法：**
 
 ```python
-# By name
+# 按名称
 well_a1 = plate['A1']
 
-# By index
+# 按索引
 first_well = plate.wells()[0]
 
-# All wells
-all_wells = plate.wells()  # Returns list
+# 所有孔
+all_wells = plate.wells()  # 返回列表
 
-# By rows
-rows = plate.rows()  # Returns list of lists
-row_a = plate.rows()[0]  # All wells in row A
+# 按行
+rows = plate.rows()  # 返回列表的列表
+row_a = plate.rows()[0]  # 行 A 中的所有孔
 
-# By columns
-columns = plate.columns()  # Returns list of lists
-column_1 = plate.columns()[0]  # All wells in column 1
+# 按列
+columns = plate.columns()  # 返回列表的列表
+column_1 = plate.columns()[0]  # 列 1 中的所有孔
 
-# Wells by name (dictionary)
+# 按名称访问孔（字典）
 wells_dict = plate.wells_by_name()  # {'A1': Well, 'A2': Well, ...}
 ```
 
-**Location Methods:**
+**位置方法：**
 
 ```python
-# Top of well (default: 1mm below top)
+# 孔顶部（默认：顶部下方 1mm）
 pipette.aspirate(100, well.top())
-pipette.aspirate(100, well.top(z=5))  # 5mm above top
+pipette.aspirate(100, well.top(z=5))  # 顶部上方 5mm
 
-# Bottom of well (default: 1mm above bottom)
+# 孔底部（默认：底部上方 1mm）
 pipette.aspirate(100, well.bottom())
-pipette.aspirate(100, well.bottom(z=2))  # 2mm above bottom
+pipette.aspirate(100, well.bottom(z=2))  # 底部上方 2mm
 
-# Center of well
+# 孔中心
 pipette.aspirate(100, well.center())
 ```
 
-### 5. Hardware Module Control
+### 5. 硬件模块控制
 
-**Temperature Module:**
+**温度模块：**
 
 ```python
-# Set temperature
+# 设置温度
 temp_module.set_temperature(celsius=4)
 
-# Wait for temperature
+# 等待温度
 temp_module.await_temperature(celsius=4)
 
-# Deactivate
+# 停用
 temp_module.deactivate()
 
-# Check status
-current_temp = temp_module.temperature  # Current temperature
-target_temp = temp_module.target  # Target temperature
+# 检查状态
+current_temp = temp_module.temperature  # 当前温度
+target_temp = temp_module.target  # 目标温度
 ```
 
-**Magnetic Module:**
+**磁力模块：**
 
 ```python
-# Engage (raise magnets)
-mag_module.engage(height_from_base=10)  # mm from labware base
+# 接合（升起磁铁）
+mag_module.engage(height_from_base=10)  # 距离实验器皿底部的毫米数
 
-# Disengage (lower magnets)
+# 分离（降下磁铁）
 mag_module.disengage()
 
-# Check status
-is_engaged = mag_module.status  # 'engaged' or 'disengaged'
+# 检查状态
+is_engaged = mag_module.status  # 'engaged' 或 'disengaged'
 ```
 
-**Heater-Shaker Module:**
+**加热振荡器模块：**
 
 ```python
-# Set temperature
+# 设置温度
 hs_module.set_target_temperature(celsius=37)
 
-# Wait for temperature
+# 等待温度
 hs_module.wait_for_temperature()
 
-# Set shake speed
+# 设置振荡速度
 hs_module.set_and_wait_for_shake_speed(rpm=500)
 
-# Close labware latch
+# 关闭实验器皿闩锁
 hs_module.close_labware_latch()
 
-# Open labware latch
+# 打开实验器皿闩锁
 hs_module.open_labware_latch()
 
-# Deactivate heater
+# 停用加热器
 hs_module.deactivate_heater()
 
-# Deactivate shaker
+# 停用振荡器
 hs_module.deactivate_shaker()
 ```
 
-**Thermocycler Module:**
+**热循环仪模块：**
 
 ```python
-# Open lid
+# 打开盖子
 tc_module.open_lid()
 
-# Close lid
+# 关闭盖子
 tc_module.close_lid()
 
-# Set lid temperature
+# 设置盖子温度
 tc_module.set_lid_temperature(celsius=105)
 
-# Set block temperature
+# 设置模块温度
 tc_module.set_block_temperature(
     temperature=95,
     hold_time_seconds=30,
     hold_time_minutes=0.5,
-    block_max_volume=50  # µL per well
+    block_max_volume=50  # 每孔微升
 )
 
-# Execute profile (PCR cycling)
+# 执行配置文件（PCR 循环）
 profile = [
     {'temperature': 95, 'hold_time_seconds': 30},
     {'temperature': 57, 'hold_time_seconds': 30},
@@ -332,31 +332,31 @@ tc_module.execute_profile(
     block_max_volume=50
 )
 
-# Deactivate
+# 停用
 tc_module.deactivate_lid()
 tc_module.deactivate_block()
 ```
 
-**Absorbance Plate Reader:**
+**吸光度读板仪：**
 
 ```python
-# Initialize and read
+# 初始化并读取
 result = plate_reader.read(wavelengths=[450, 650])
 
-# Access readings
-absorbance_data = result  # Dict with wavelength keys
+# 访问读数
+absorbance_data = result  # 带有波长键的字典
 ```
 
-### 6. Liquid Tracking and Labeling
+### 6. 液体跟踪和标记
 
-**Define Liquids:**
+**定义液体：**
 
 ```python
-# Define liquid types
+# 定义液体类型
 water = protocol.define_liquid(
     name='Water',
     description='Ultrapure water',
-    display_color='#0000FF'  # Hex color code
+    display_color='#0000FF'  # 十六进制颜色代码
 )
 
 sample = protocol.define_liquid(
@@ -366,120 +366,120 @@ sample = protocol.define_liquid(
 )
 ```
 
-**Load Liquids into Wells:**
+**将液体加载到孔中：**
 
 ```python
-# Load liquid into specific wells
-reservoir['A1'].load_liquid(liquid=water, volume=50000)  # µL
+# 将液体加载到特定孔中
+reservoir['A1'].load_liquid(liquid=water, volume=50000)  # 微升
 plate['A1'].load_liquid(liquid=sample, volume=100)
 
-# Mark wells as empty
+# 将孔标记为空
 plate['B1'].load_empty()
 ```
 
-### 7. Protocol Control and Utilities
+### 7. 协议控制和实用程序
 
-**Execution Control:**
+**执行控制：**
 
 ```python
-# Pause protocol
+# 暂停协议
 protocol.pause(msg='Replace tip box and resume')
 
-# Delay
+# 延迟
 protocol.delay(seconds=60)
 protocol.delay(minutes=5)
 
-# Comment (appears in logs)
+# 注释（出现在日志中）
 protocol.comment('Starting serial dilution')
 
-# Home robot
+# 机器人归位
 protocol.home()
 ```
 
-**Conditional Logic:**
+**条件逻辑：**
 
 ```python
-# Check if simulating
+# 检查是否在模拟
 if protocol.is_simulating():
     protocol.comment('Running in simulation mode')
 else:
     protocol.comment('Running on actual robot')
 ```
 
-**Rail Lights (Flex only):**
+**轨道灯（仅 Flex）：**
 
 ```python
-# Turn lights on
+# 打开灯
 protocol.set_rail_lights(on=True)
 
-# Turn lights off
+# 关闭灯
 protocol.set_rail_lights(on=False)
 ```
 
-### 8. Multi-Channel and 8-Channel Pipetting
+### 8. 多通道和 8 通道移液
 
-When using multi-channel pipettes:
+使用多通道移液器时：
 
 ```python
-# Load 8-channel pipette
+# 加载 8 通道移液器
 multi_pipette = protocol.load_instrument(
     'p300_multi_gen2',
     'left',
     tip_racks=[tips]
 )
 
-# Access entire column with single well reference
+# 用单个孔引用访问整个列
 multi_pipette.transfer(
     volume=100,
-    source=source_plate['A1'],  # Accesses entire column 1
-    dest=dest_plate['A1']       # Dispenses to entire column 1
+    source=source_plate['A1'],  # 访问整个列 1
+    dest=dest_plate['A1']       # 分配到整个列 1
 )
 
-# Use rows() for row-wise operations
+# 使用 rows() 进行行操作
 for row in plate.rows():
     multi_pipette.transfer(100, reservoir['A1'], row[0])
 ```
 
-### 9. Common Protocol Patterns
+### 9. 常见协议模式
 
-**Serial Dilution:**
+**系列稀释：**
 
 ```python
 def run(protocol: protocol_api.ProtocolContext):
-    # Load labware
+    # 加载实验器皿
     tips = protocol.load_labware('opentrons_flex_96_tiprack_200ul', 'D1')
     reservoir = protocol.load_labware('nest_12_reservoir_15ml', 'D2')
     plate = protocol.load_labware('corning_96_wellplate_360ul_flat', 'D3')
 
-    # Load pipette
+    # 加载移液器
     p300 = protocol.load_instrument('p300_single_flex', 'left', tip_racks=[tips])
 
-    # Add diluent to all wells except first
+    # 除第一个孔外，向所有孔添加稀释剂
     p300.transfer(100, reservoir['A1'], plate.rows()[0][1:])
 
-    # Serial dilution across row
+    # 跨行进行系列稀释
     p300.transfer(
         100,
-        plate.rows()[0][:11],  # Source: wells 0-10
-        plate.rows()[0][1:],   # Dest: wells 1-11
-        mix_after=(3, 50),     # Mix 3x with 50µL after dispense
+        plate.rows()[0][:11],  # 源：孔 0-10
+        plate.rows()[0][1:],   # 目标：孔 1-11
+        mix_after=(3, 50),     # 分配后混合 3 次，每次 50µL
         new_tip='always'
     )
 ```
 
-**Plate Replication:**
+**平板复制：**
 
 ```python
 def run(protocol: protocol_api.ProtocolContext):
-    # Load labware
+    # 加载实验器皿
     tips = protocol.load_labware('opentrons_flex_96_tiprack_1000ul', 'C1')
     source = protocol.load_labware('corning_96_wellplate_360ul_flat', 'D1')
     dest = protocol.load_labware('corning_96_wellplate_360ul_flat', 'D2')
 
-    # Load pipette
+    # 加载移液器
     p1000 = protocol.load_instrument('p1000_single_flex', 'left', tip_racks=[tips])
 
-    # Transfer from all wells in source to dest
+    # 从源中的所有孔转移到目标
     p1000.transfer(
         100,
         source.wells(),
@@ -488,25 +488,25 @@ def run(protocol: protocol_api.ProtocolContext):
     )
 ```
 
-**PCR Setup:**
+**PCR 设置：**
 
 ```python
 def run(protocol: protocol_api.ProtocolContext):
-    # Load thermocycler
+    # 加载热循环仪
     tc_mod = protocol.load_module('thermocyclerModuleV2')
     tc_plate = tc_mod.load_labware('nest_96_wellplate_100ul_pcr_full_skirt')
 
-    # Load tips and reagents
+    # 加载吸头和试剂
     tips = protocol.load_labware('opentrons_flex_96_tiprack_200ul', 'C1')
     reagents = protocol.load_labware('opentrons_24_tuberack_nest_1.5ml_snapcap', 'D1')
 
-    # Load pipette
+    # 加载移液器
     p300 = protocol.load_instrument('p300_single_flex', 'left', tip_racks=[tips])
 
-    # Open thermocycler lid
+    # 打开热循环仪盖子
     tc_mod.open_lid()
 
-    # Distribute master mix
+    # 分发主混合液
     p300.distribute(
         20,
         reagents['A1'],
@@ -514,15 +514,15 @@ def run(protocol: protocol_api.ProtocolContext):
         new_tip='once'
     )
 
-    # Add samples (example for first 8 wells)
+    # 添加样本（前 8 个孔的示例）
     for i, well in enumerate(tc_plate.wells()[:8]):
         p300.transfer(5, reagents.wells()[i+1], well, new_tip='always')
 
-    # Run PCR
+    # 运行 PCR
     tc_mod.close_lid()
     tc_mod.set_lid_temperature(105)
 
-    # PCR profile
+    # PCR 配置文件
     tc_mod.set_block_temperature(95, hold_time_seconds=180)
 
     profile = [
@@ -539,33 +539,32 @@ def run(protocol: protocol_api.ProtocolContext):
     tc_mod.open_lid()
 ```
 
-## Best Practices
+## 最佳实践
 
-1. **Always specify API level**: Use the latest stable API version in metadata
-2. **Use meaningful labels**: Label labware for easier identification in logs
-3. **Check tip availability**: Ensure sufficient tips for protocol completion
-4. **Add comments**: Use `protocol.comment()` for debugging and logging
-5. **Simulate first**: Always test protocols in simulation before running on robot
-6. **Handle errors gracefully**: Add pauses for manual intervention when needed
-7. **Consider timing**: Use delays when protocols require incubation periods
-8. **Track liquids**: Use liquid tracking for better setup validation
-9. **Optimize tip usage**: Use `new_tip='once'` when appropriate to save tips
-10. **Control flow rates**: Adjust flow rates for viscous or volatile liquids
+1. **始终指定 API 级别**：在元数据中使用最新的稳定 API 版本
+2. **使用有意义的标签**：为实验器皿添加标签以便在日志中更容易识别
+3. **检查吸头可用性**：确保有足够的吸头完成协议
+4. **添加注释**：使用 `protocol.comment()` 进行调试和日志记录
+5. **先模拟**：在机器人上运行前始终在模拟中测试协议
+6. **优雅处理错误**：在需要时添加暂停以便手动干预
+7. **考虑时间**：当协议需要孵育期时使用延迟
+8. **跟踪液体**：使用液体跟踪进行更好的设置验证
+9. **优化吸头使用**：在适当的情况下使用 `new_tip='once'` 以节省吸头
+10. **控制流速**：为粘性或挥发性液体调整流速
 
-## Troubleshooting
+## 故障排除
 
-**Common Issues:**
+**常见问题：**
 
-- **Out of tips**: Verify tip rack capacity matches protocol requirements
-- **Labware collisions**: Check deck layout for spatial conflicts
-- **Volume errors**: Ensure volumes don't exceed well or pipette capacities
-- **Module not responding**: Verify module is properly connected and firmware is updated
-- **Inaccurate volumes**: Calibrate pipettes and check for air bubbles
-- **Protocol fails in simulation**: Check API version compatibility and labware definitions
+- **吸头用完**：验证吸头架容量是否与协议要求匹配
+- **实验器皿碰撞**：检查工作台布局是否存在空间冲突
+- **体积错误**：确保体积不超过孔或移液器容量
+- **模块无响应**：验证模块是否正确连接且固件已更新
+- **体积不准确**：校准移液器并检查是否有气泡
+- **协议在模拟中失败**：检查 API 版本兼容性和实验器皿定义
 
-## Resources
+## 资源
 
-For detailed API documentation, see `references/api_reference.md` in this skill directory.
+有关详细的 API 文档，请参阅此技能目录中的 `references/api_reference.md`。
 
-For example protocol templates, see `scripts/` directory.
-
+有关示例协议模板，请参阅 `scripts/` 目录。

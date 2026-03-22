@@ -1,81 +1,80 @@
 ---
 name: "security-threat-model"
-description: "Repository-grounded threat modeling that enumerates trust boundaries, assets, attacker capabilities, abuse paths, and mitigations, and writes a concise Markdown threat model. Trigger only when the user explicitly asks to threat model a codebase or path, enumerate threats/abuse paths, or perform AppSec threat modeling. Do not trigger for general architecture summaries, code review, or non-security design work."
+description: "基于仓库的威胁建模，枚举信任边界、资产、攻击者能力、滥用路径和缓解措施，并编写简洁的 Markdown 威胁模型。仅当用户明确要求对代码库或路径进行威胁建模、枚举威胁/滥用路径或执行 AppSec 威胁建模时触发。不要为一般架构摘要、代码审查或非安全设计工作触发。"
 ---
 
-# Threat Model Source Code Repo
+# 威胁模型源代码仓库
 
-Deliver an actionable AppSec-grade threat model that is specific to the repository or a project path, not a generic checklist. Anchor every architectural claim to evidence in the repo and keep assumptions explicit. Prioritizing realistic attacker goals and concrete impacts over generic checklists.
+提供可操作的 AppSec 级威胁模型，该模型特定于仓库或项目路径，而不是通用检查清单。将每个架构声明锚定到仓库中的证据，并保持假设明确。优先考虑现实的攻击者目标和具体影响，而不是通用检查清单。
 
-## Quick start
+## 快速开始
 
-1) Collect (or infer) inputs:
-- Repo root path and any in-scope paths.
-- Intended usage, deployment model, internet exposure, and auth expectations (if known).
-- Any existing repository summary or architecture spec.
-- Use prompts in `references/prompt-template.md` to generate a repository summary.
-- Follow the required output contract in `references/prompt-template.md`. Use it verbatim when possible.
+1) 收集（或推断）输入：
+- 仓库根路径和任何范围内的路径。
+- 预期用途、部署模型、互联网暴露和身份验证期望（如果已知）。
+- 任何现有的仓库摘要或架构规范。
+- 使用 `references/prompt-template.md` 中的提示生成仓库摘要。
+- 遵循 `references/prompt-template.md` 中所需的输出合同。尽可能逐字使用它。
 
-## Workflow
+## 工作流程
 
-### 1) Scope and extract the system model
-- Identify primary components, data stores, and external integrations from the repo summary.
-- Identify how the system runs (server, CLI, library, worker) and its entrypoints.
-- Separate runtime behavior from CI/build/dev tooling and from tests/examples.
-- Map the in-scope locations to those components and exclude out-of-scope items explicitly.
-- Do not claim components, flows, or controls without evidence.
+### 1) 范围和提取系统模型
+- 从仓库摘要中识别主要组件、数据存储和外部集成。
+- 识别系统如何运行（服务器、CLI、库、worker）及其入口点。
+- 将运行时行为与 CI/构建/开发工具和测试/示例分开。
+- 将范围内的位置映射到这些组件并明确排除范围外的项目。
+- 不要在没有证据的情况下声明组件、流程或控制。
 
-### 2) Derive boundaries, assets, and entry points
-- Enumerate trust boundaries as concrete edges between components, noting protocol, auth, encryption, validation, and rate limiting.
-- List assets that drive risk (data, credentials, models, config, compute resources, audit logs).
-- Identify entry points (endpoints, upload surfaces, parsers/decoders, job triggers, admin tooling, logging/error sinks).
+### 2) 推导边界、资产和入口点
+- 将信任边界枚举为组件之间的具体边缘，注明协议、身份验证、加密、验证和速率限制。
+- 列出驱动风险的资产（数据、凭据、模型、配置、计算资源、审计日志）。
+- 识别入口点（端点、上传表面、解析器/解码器、作业触发器、管理工具、日志/错误接收器）。
 
-### 3) Calibrate assets and attacker capabilities
-- List the assets that drive risk (credentials, PII, integrity-critical state, availability-critical components, build artifacts).
-- Describe realistic attacker capabilities based on exposure and intended usage.
-- Explicitly note non-capabilities to avoid inflated severity.
+### 3) 校准资产和攻击者能力
+- 列出驱动风险的资产（凭据、PII、完整性关键状态、可用性关键组件、构建工件）。
+- 根据暴露和预期用途描述现实的攻击者能力。
+- 明确说明非能力以避免夸大的严重性。
+
+### 4) 将威胁枚举为滥用路径
+- 更喜欢映射到资产和边界的攻击者目标（数据渗漏、权限提升、完整性妥协、拒绝服务）。
+- 对每个威胁进行分类并将其与受影响的资产联系起来。
+- 保持威胁数量少但质量高。
+
+### 5) 使用明确的可能性和影响推理进行优先级排序
+- 使用定性的可能性和影响（低/中/高）以及简短的理由。
+- 使用可能性 x 影响设置总体优先级（关键/高/中/低），针对现有控制进行调整。
+- 说明哪些假设最影响排名。
+
+### 6) 与用户验证服务上下文和假设
+- 总结实质性影响威胁排名或范围的关键假设，然后要求用户确认或更正它们。
+- 提出 1-3 个针对性的问题以解决缺失的上下文（服务所有者和环境、规模/用户、部署模型、身份验证/授权、互联网暴露、数据敏感性、多租户）。
+- 在生成最终报告之前暂停并等待用户反馈。
+- 如果用户拒绝或无法回答，请说明哪些假设仍然存在以及它们如何影响优先级。
+
+### 7) 建议缓解措施和关注路径
+- 将现有缓解措施（带有证据）与建议的缓解措施区分开来。
+- 将缓解措施与具体位置（组件、边界或入口点）和控制类型（身份验证检查、输入验证、架构强制执行、沙盒、速率限制、机密隔离、审计日志）联系起来。
+- 更喜欢具体的实现提示而不是通用建议（例如，"在网关处强制执行上传负载的架构"而不是"验证输入"）。
+- 基于验证的用户上下文提出建议；如果假设仍未解决，请将建议标记为有条件的。
+
+### 8) 在最终确定之前运行质量检查
+- 确认所有发现的入口点都已覆盖。
+- 确认每个信任边界都在威胁中表示。
+- 确认运行时与 CI/开发的分离。
+- 确认用户澄清（或明确的非响应）已得到反映。
+- 确认假设和未决问题都是明确的。
+- 确认报告的格式与提示模板中定义的所需输出格式紧密匹配：`references/prompt-template.md`
+- 将最终的 Markdown 写入名为 `<repo-or-dir-name>-threat-model.md` 的文件（使用仓库根目录的基本名称，或者如果您被要求对子路径进行建模，则为范围内的目录）。
 
 
-### 4) Enumerate threats as abuse paths
-- Prefer attacker goals that map to assets and boundaries (exfiltration, privilege escalation, integrity compromise, denial of service).
-- Classify each threat and tie it to impacted assets.
-- Keep the number of threats small but high quality.
+## 风险优先级排序指导（说明性，非详尽无遗）
+- 高：预身份验证 RCE、身份验证绕过、跨租户访问、敏感数据渗漏、密钥或令牌盗窃、模型或配置完整性妥协、沙盒逃逸。
+- 中：针对关键组件的有针对性 DoS、部分数据暴露、具有可衡量影响的速率限制绕过、影响检测的日志/指标中毒。
+- 低：低敏感性信息泄漏、具有容易缓解的嘈杂 DoS、需要不太可能先决条件的问题。
 
-### 5) Prioritize with explicit likelihood and impact reasoning
-- Use qualitative likelihood and impact (low/medium/high) with short justifications.
-- Set overall priority (critical/high/medium/low) using likelihood x impact, adjusted for existing controls.
-- State which assumptions most influence the ranking.
+## 参考资料
 
-### 6) Validate service context and assumptions with the user
-- Summarize key assumptions that materially affect threat ranking or scope, then ask the user to confirm or correct them.
-- Ask 1–3 targeted questions to resolve missing context (service owner and environment, scale/users, deployment model, authn/authz, internet exposure, data sensitivity, multi-tenancy).
-- Pause and wait for user feedback before producing the final report.
-- If the user declines or can’t answer, state which assumptions remain and how they influence priority.
+- 输出合同和完整提示模板：`references/prompt-template.md`
+- 可选控制/资产列表：`references/security-controls-and-assets.md`
 
-### 7) Recommend mitigations and focus paths
-- Distinguish existing mitigations (with evidence) from recommended mitigations.
-- Tie mitigations to concrete locations (component, boundary, or entry point) and control types (authZ checks, input validation, schema enforcement, sandboxing, rate limits, secrets isolation, audit logging).
-- Prefer specific implementation hints over generic advice (e.g., "enforce schema at gateway for upload payloads" vs "validate inputs").
-- Base recommendations on validated user context; if assumptions remain unresolved, mark recommendations as conditional.
-
-### 8) Run a quality check before finalizing
-- Confirm all discovered entrypoints are covered.
-- Confirm each trust boundary is represented in threats.
-- Confirm runtime vs CI/dev separation.
-- Confirm user clarifications (or explicit non-responses) are reflected.
-- Confirm assumptions and open questions are explicit.
-- Confirm that the format of the report matches closely the required output format defined in prompt template: `references/prompt-template.md`
-- Write the final Markdown to a file named `<repo-or-dir-name>-threat-model.md` (use the basename of the repo root, or the in-scope directory if you were asked to model a subpath).
-
-
-## Risk prioritization guidance (illustrative, not exhaustive)
-- High: pre-auth RCE, auth bypass, cross-tenant access, sensitive data exfiltration, key or token theft, model or config integrity compromise, sandbox escape.
-- Medium: targeted DoS of critical components, partial data exposure, rate-limit bypass with measurable impact, log/metrics poisoning that affects detection.
-- Low: low-sensitivity info leaks, noisy DoS with easy mitigation, issues requiring unlikely preconditions.
-
-## References
-
-- Output contract and full prompt template: `references/prompt-template.md`
-- Optional controls/asset list: `references/security-controls-and-assets.md`
-
-Only load the reference files you need. Keep the final result concise, grounded, and reviewable.
+仅加载您需要的参考文件。保持最终结果简洁、基于证据和可审查。

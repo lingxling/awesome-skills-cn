@@ -1,66 +1,66 @@
 ---
 name: statsmodels
-description: Statistical models library for Python. Use when you need specific model classes (OLS, GLM, mixed models, ARIMA) with detailed diagnostics, residuals, and inference. Best for econometrics, time series, rigorous inference with coefficient tables. For guided statistical test selection with APA reporting use statistical-analysis.
+description: Python的统计模型库。当您需要具有详细诊断、残差和推断的特定模型类（OLS、GLM、混合模型、ARIMA）时使用。最适合计量经济学、时间序列、带有系数表的严格推断。如需带有APA报告的引导式统计测试选择，请使用statistical-analysis。
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Statsmodels: Statistical Modeling and Econometrics
+# Statsmodels：统计建模和计量经济学
 
-## Overview
+## 概述
 
-Statsmodels is Python's premier library for statistical modeling, providing tools for estimation, inference, and diagnostics across a wide range of statistical methods. Apply this skill for rigorous statistical analysis, from simple linear regression to complex time series models and econometric analyses.
+Statsmodels是Python的首要统计建模库，提供用于各种统计方法的估计、推断和诊断工具。将此技能应用于严格的统计分析，从简单的线性回归到复杂的时间序列模型和计量经济分析。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
-- Fitting regression models (OLS, WLS, GLS, quantile regression)
-- Performing generalized linear modeling (logistic, Poisson, Gamma, etc.)
-- Analyzing discrete outcomes (binary, multinomial, count, ordinal)
-- Conducting time series analysis (ARIMA, SARIMAX, VAR, forecasting)
-- Running statistical tests and diagnostics
-- Testing model assumptions (heteroskedasticity, autocorrelation, normality)
-- Detecting outliers and influential observations
-- Comparing models (AIC/BIC, likelihood ratio tests)
-- Estimating causal effects
-- Producing publication-ready statistical tables and inference
+当以下情况时应使用此技能：
+- 拟合回归模型（OLS、WLS、GLS、分位数回归）
+- 执行广义线性建模（逻辑回归、泊松、伽马等）
+- 分析离散结果（二分类、多分类、计数、有序）
+- 进行时间序列分析（ARIMA、SARIMAX、VAR、预测）
+- 运行统计测试和诊断
+- 测试模型假设（异方差性、自相关性、正态性）
+- 检测异常值和有影响力的观察值
+- 比较模型（AIC/BIC、似然比检验）
+- 估计因果效应
+- 生成可发布的统计表格和推断
 
-## Quick Start Guide
+## 快速入门指南
 
-### Linear Regression (OLS)
+### 线性回归（OLS）
 
 ```python
 import statsmodels.api as sm
 import numpy as np
 import pandas as pd
 
-# Prepare data - ALWAYS add constant for intercept
+# 准备数据 - 始终添加常数项以获得截距
 X = sm.add_constant(X_data)
 
-# Fit OLS model
+# 拟合OLS模型
 model = sm.OLS(y, X)
 results = model.fit()
 
-# View comprehensive results
+# 查看综合结果
 print(results.summary())
 
-# Key results
+# 关键结果
 print(f"R-squared: {results.rsquared:.4f}")
-print(f"Coefficients:\\n{results.params}")
-print(f"P-values:\\n{results.pvalues}")
+print(f"Coefficients:\n{results.params}")
+print(f"P-values:\n{results.pvalues}")
 
-# Predictions with confidence intervals
+# 带置信区间的预测
 predictions = results.get_prediction(X_new)
 pred_summary = predictions.summary_frame()
-print(pred_summary)  # includes mean, CI, prediction intervals
+print(pred_summary)  # 包含均值、CI、预测区间
 
-# Diagnostics
+# 诊断
 from statsmodels.stats.diagnostic import het_breuschpagan
 bp_test = het_breuschpagan(results.resid, X)
 print(f"Breusch-Pagan p-value: {bp_test[1]:.4f}")
 
-# Visualize residuals
+# 可视化残差
 import matplotlib.pyplot as plt
 plt.scatter(results.fittedvalues, results.resid)
 plt.axhline(y=0, color='r', linestyle='--')
@@ -69,289 +69,289 @@ plt.ylabel('Residuals')
 plt.show()
 ```
 
-### Logistic Regression (Binary Outcomes)
+### 逻辑回归（二分类结果）
 
 ```python
 from statsmodels.discrete.discrete_model import Logit
 
-# Add constant
+# 添加常数
 X = sm.add_constant(X_data)
 
-# Fit logit model
+# 拟合logit模型
 model = Logit(y_binary, X)
 results = model.fit()
 
 print(results.summary())
 
-# Odds ratios
+# 优势比
 odds_ratios = np.exp(results.params)
-print("Odds ratios:\\n", odds_ratios)
+print("Odds ratios:\n", odds_ratios)
 
-# Predicted probabilities
+# 预测概率
 probs = results.predict(X)
 
-# Binary predictions (0.5 threshold)
+# 二分类预测（0.5阈值）
 predictions = (probs > 0.5).astype(int)
 
-# Model evaluation
+# 模型评估
 from sklearn.metrics import classification_report, roc_auc_score
 
 print(classification_report(y_binary, predictions))
 print(f"AUC: {roc_auc_score(y_binary, probs):.4f}")
 
-# Marginal effects
+# 边际效应
 marginal = results.get_margeff()
 print(marginal.summary())
 ```
 
-### Time Series (ARIMA)
+### 时间序列（ARIMA）
 
 ```python
 from statsmodels.tsa.arima.model import ARIMA
 from statsmodels.graphics.tsaplots import plot_acf, plot_pacf
 
-# Check stationarity
+# 检查平稳性
 from statsmodels.tsa.stattools import adfuller
 
 adf_result = adfuller(y_series)
 print(f"ADF p-value: {adf_result[1]:.4f}")
 
 if adf_result[1] > 0.05:
-    # Series is non-stationary, difference it
+    # 序列非平稳，差分处理
     y_diff = y_series.diff().dropna()
 
-# Plot ACF/PACF to identify p, q
+# 绘制ACF/PACF以识别p, q
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
 plot_acf(y_diff, lags=40, ax=ax1)
 plot_pacf(y_diff, lags=40, ax=ax2)
 plt.show()
 
-# Fit ARIMA(p,d,q)
+# 拟合ARIMA(p,d,q)
 model = ARIMA(y_series, order=(1, 1, 1))
 results = model.fit()
 
 print(results.summary())
 
-# Forecast
+# 预测
 forecast = results.forecast(steps=10)
 forecast_obj = results.get_forecast(steps=10)
 forecast_df = forecast_obj.summary_frame()
 
-print(forecast_df)  # includes mean and confidence intervals
+print(forecast_df)  # 包含均值和置信区间
 
-# Residual diagnostics
+# 残差诊断
 results.plot_diagnostics(figsize=(12, 8))
 plt.show()
 ```
 
-### Generalized Linear Models (GLM)
+### 广义线性模型（GLM）
 
 ```python
 import statsmodels.api as sm
 
-# Poisson regression for count data
+# 泊松回归用于计数数据
 X = sm.add_constant(X_data)
 model = sm.GLM(y_counts, X, family=sm.families.Poisson())
 results = model.fit()
 
 print(results.summary())
 
-# Rate ratios (for Poisson with log link)
+# 比率比（用于带对数链接的泊松）
 rate_ratios = np.exp(results.params)
-print("Rate ratios:\\n", rate_ratios)
+print("Rate ratios:\n", rate_ratios)
 
-# Check overdispersion
+# 检查过度离散
 overdispersion = results.pearson_chi2 / results.df_resid
 print(f"Overdispersion: {overdispersion:.2f}")
 
 if overdispersion > 1.5:
-    # Use Negative Binomial instead
+    # 改用负二项式
     from statsmodels.discrete.count_model import NegativeBinomial
     nb_model = NegativeBinomial(y_counts, X)
     nb_results = nb_model.fit()
     print(nb_results.summary())
 ```
 
-## Core Statistical Modeling Capabilities
+## 核心统计建模能力
 
-### 1. Linear Regression Models
+### 1. 线性回归模型
 
-Comprehensive suite of linear models for continuous outcomes with various error structures.
+用于具有各种误差结构的连续结果的综合线性模型套件。
 
-**Available models:**
-- **OLS**: Standard linear regression with i.i.d. errors
-- **WLS**: Weighted least squares for heteroskedastic errors
-- **GLS**: Generalized least squares for arbitrary covariance structure
-- **GLSAR**: GLS with autoregressive errors for time series
-- **Quantile Regression**: Conditional quantiles (robust to outliers)
-- **Mixed Effects**: Hierarchical/multilevel models with random effects
-- **Recursive/Rolling**: Time-varying parameter estimation
+**可用模型：**
+- **OLS**：具有i.i.d.误差的标准线性回归
+- **WLS**：用于异方差误差的加权最小二乘
+- **GLS**：用于任意协方差结构的广义最小二乘
+- **GLSAR**：具有自回归误差的时间序列GLS
+- **分位数回归**：条件分位数（对异常值稳健）
+- **混合效应**：具有随机效应的层次/多级模型
+- **递归/滚动**：时变参数估计
 
-**Key features:**
-- Comprehensive diagnostic tests
-- Robust standard errors (HC, HAC, cluster-robust)
-- Influence statistics (Cook's distance, leverage, DFFITS)
-- Hypothesis testing (F-tests, Wald tests)
-- Model comparison (AIC, BIC, likelihood ratio tests)
-- Prediction with confidence and prediction intervals
+**关键特性：**
+- 全面的诊断测试
+- 稳健标准误（HC、HAC、聚类稳健）
+- 影响力统计量（库克距离、杠杆率、DFFITS）
+- 假设检验（F检验、Wald检验）
+- 模型比较（AIC、BIC、似然比检验）
+- 带置信和预测区间的预测
 
-**When to use:** Continuous outcome variable, want inference on coefficients, need diagnostics
+**何时使用：**连续结果变量，需要对系数进行推断，需要诊断
 
-**Reference:** See `references/linear_models.md` for detailed guidance on model selection, diagnostics, and best practices.
+**参考：**有关模型选择、诊断和最佳实践的详细指导，请参见`references/linear_models.md`。
 
-### 2. Generalized Linear Models (GLM)
+### 2. 广义线性模型（GLM）
 
-Flexible framework extending linear models to non-normal distributions.
+将线性模型扩展到非正态分布的灵活框架。
 
-**Distribution families:**
-- **Binomial**: Binary outcomes or proportions (logistic regression)
-- **Poisson**: Count data
-- **Negative Binomial**: Overdispersed counts
-- **Gamma**: Positive continuous, right-skewed data
-- **Inverse Gaussian**: Positive continuous with specific variance structure
-- **Gaussian**: Equivalent to OLS
-- **Tweedie**: Flexible family for semi-continuous data
+**分布族：**
+- **二项式**：二分类结果或比例（逻辑回归）
+- **泊松**：计数数据
+- **负二项式**：过度离散的计数
+- **伽马**：正连续、右偏数据
+- **逆高斯**：具有特定方差结构的正连续数据
+- **高斯**：等同于OLS
+- **Tweedie**：用于半连续数据的灵活族
 
-**Link functions:**
-- Logit, Probit, Log, Identity, Inverse, Sqrt, CLogLog, Power
-- Choose based on interpretation needs and model fit
+**链接函数：**
+- Logit、Probit、Log、Identity、Inverse、Sqrt、CLogLog、Power
+- 根据解释需求和模型拟合选择
 
-**Key features:**
-- Maximum likelihood estimation via IRLS
-- Deviance and Pearson residuals
-- Goodness-of-fit statistics
-- Pseudo R-squared measures
-- Robust standard errors
+**关键特性：**
+- 通过IRLS进行最大似然估计
+- 偏差和皮尔逊残差
+- 拟合优度统计量
+- 伪R平方度量
+- 稳健标准误
 
-**When to use:** Non-normal outcomes, need flexible variance and link specifications
+**何时使用：**非正态结果，需要灵活的方差和链接规范
 
-**Reference:** See `references/glm.md` for family selection, link functions, interpretation, and diagnostics.
+**参考：**有关族选择、链接函数、解释和诊断的详细信息，请参见`references/glm.md`。
 
-### 3. Discrete Choice Models
+### 3. 离散选择模型
 
-Models for categorical and count outcomes.
+用于分类和计数结果的模型。
 
-**Binary models:**
-- **Logit**: Logistic regression (odds ratios)
-- **Probit**: Probit regression (normal distribution)
+**二分类模型：**
+- **Logit**：逻辑回归（优势比）
+- **Probit**：Probit回归（正态分布）
 
-**Multinomial models:**
-- **MNLogit**: Unordered categories (3+ levels)
-- **Conditional Logit**: Choice models with alternative-specific variables
-- **Ordered Model**: Ordinal outcomes (ordered categories)
+**多分类模型：**
+- **MNLogit**：无序类别（3+水平）
+- **条件Logit**：具有替代特定变量的选择模型
+- **有序模型**：有序结果（有序类别）
 
-**Count models:**
-- **Poisson**: Standard count model
-- **Negative Binomial**: Overdispersed counts
-- **Zero-Inflated**: Excess zeros (ZIP, ZINB)
-- **Hurdle Models**: Two-stage models for zero-heavy data
+**计数模型：**
+- **泊松**：标准计数模型
+- **负二项式**：过度离散的计数
+- **零膨胀**：过多零值（ZIP、ZINB）
+- **障碍模型**：零值密集数据的两阶段模型
 
-**Key features:**
-- Maximum likelihood estimation
-- Marginal effects at means or average marginal effects
-- Model comparison via AIC/BIC
-- Predicted probabilities and classification
-- Goodness-of-fit tests
+**关键特性：**
+- 最大似然估计
+- 均值边际效应或平均边际效应
+- 通过AIC/BIC进行模型比较
+- 预测概率和分类
+- 拟合优度测试
 
-**When to use:** Binary, categorical, or count outcomes
+**何时使用：**二分类、分类或计数结果
 
-**Reference:** See `references/discrete_choice.md` for model selection, interpretation, and evaluation.
+**参考：**有关模型选择、解释和评估的详细信息，请参见`references/discrete_choice.md`。
 
-### 4. Time Series Analysis
+### 4. 时间序列分析
 
-Comprehensive time series modeling and forecasting capabilities.
+全面的时间序列建模和预测能力。
 
-**Univariate models:**
-- **AutoReg (AR)**: Autoregressive models
-- **ARIMA**: Autoregressive integrated moving average
-- **SARIMAX**: Seasonal ARIMA with exogenous variables
-- **Exponential Smoothing**: Simple, Holt, Holt-Winters
-- **ETS**: Innovations state space models
+**单变量模型：**
+- **AutoReg (AR)**：自回归模型
+- **ARIMA**：自回归综合移动平均
+- **SARIMAX**：带有外生变量的季节性ARIMA
+- **指数平滑**：简单、Holt、Holt-Winters
+- **ETS**：创新状态空间模型
 
-**Multivariate models:**
-- **VAR**: Vector autoregression
-- **VARMAX**: VAR with MA and exogenous variables
-- **Dynamic Factor Models**: Extract common factors
-- **VECM**: Vector error correction models (cointegration)
+**多变量模型：**
+- **VAR**：向量自回归
+- **VARMAX**：带有MA和外生变量的VAR
+- **动态因子模型**：提取共同因子
+- **VECM**：向量误差校正模型（协整）
 
-**Advanced models:**
-- **State Space**: Kalman filtering, custom specifications
-- **Regime Switching**: Markov switching models
-- **ARDL**: Autoregressive distributed lag
+**高级模型：**
+- **状态空间**：卡尔曼滤波、自定义规范
+- **政权切换**：马尔可夫切换模型
+- **ARDL**：自回归分布滞后
 
-**Key features:**
-- ACF/PACF analysis for model identification
-- Stationarity tests (ADF, KPSS)
-- Forecasting with prediction intervals
-- Residual diagnostics (Ljung-Box, heteroskedasticity)
-- Granger causality testing
-- Impulse response functions (IRF)
-- Forecast error variance decomposition (FEVD)
+**关键特性：**
+- 用于模型识别的ACF/PACF分析
+- 平稳性测试（ADF、KPSS）
+- 带预测区间的预测
+- 残差诊断（Ljung-Box、异方差性）
+- Granger因果检验
+- 脉冲响应函数（IRF）
+- 预测误差方差分解（FEVD）
 
-**When to use:** Time-ordered data, forecasting, understanding temporal dynamics
+**何时使用：**时间有序数据、预测、理解时间动态
 
-**Reference:** See `references/time_series.md` for model selection, diagnostics, and forecasting methods.
+**参考：**有关模型选择、诊断和预测方法的详细信息，请参见`references/time_series.md`。
 
-### 5. Statistical Tests and Diagnostics
+### 5. 统计测试和诊断
 
-Extensive testing and diagnostic capabilities for model validation.
+用于模型验证的广泛测试和诊断能力。
 
-**Residual diagnostics:**
-- Autocorrelation tests (Ljung-Box, Durbin-Watson, Breusch-Godfrey)
-- Heteroskedasticity tests (Breusch-Pagan, White, ARCH)
-- Normality tests (Jarque-Bera, Omnibus, Anderson-Darling, Lilliefors)
-- Specification tests (RESET, Harvey-Collier)
+**残差诊断：**
+- 自相关测试（Ljung-Box、Durbin-Watson、Breusch-Godfrey）
+- 异方差性测试（Breusch-Pagan、White、ARCH）
+- 正态性测试（Jarque-Bera、Omnibus、Anderson-Darling、Lilliefors）
+- 规范测试（RESET、Harvey-Collier）
 
-**Influence and outliers:**
-- Leverage (hat values)
-- Cook's distance
-- DFFITS and DFBETAs
-- Studentized residuals
-- Influence plots
+**影响力和异常值：**
+- 杠杆率（帽子值）
+- 库克距离
+- DFFITS和DFBETAs
+- 学生化残差
+- 影响力图
 
-**Hypothesis testing:**
-- t-tests (one-sample, two-sample, paired)
-- Proportion tests
-- Chi-square tests
-- Non-parametric tests (Mann-Whitney, Wilcoxon, Kruskal-Wallis)
-- ANOVA (one-way, two-way, repeated measures)
+**假设检验：**
+- t检验（单样本、两样本、配对）
+- 比例检验
+- 卡方检验
+- 非参数检验（Mann-Whitney、Wilcoxon、Kruskal-Wallis）
+- 方差分析（单因素、双因素、重复测量）
 
-**Multiple comparisons:**
+**多重比较：**
 - Tukey's HSD
-- Bonferroni correction
-- False Discovery Rate (FDR)
+- Bonferroni校正
+- 错误发现率（FDR）
 
-**Effect sizes and power:**
-- Cohen's d, eta-squared
-- Power analysis for t-tests, proportions
-- Sample size calculations
+**效应量和功效：**
+- Cohen's d、eta-squared
+- t检验、比例的功效分析
+- 样本量计算
 
-**Robust inference:**
-- Heteroskedasticity-consistent SEs (HC0-HC3)
-- HAC standard errors (Newey-West)
-- Cluster-robust standard errors
+**稳健推断：**
+- 异方差一致性SEs（HC0-HC3）
+- HAC标准误（Newey-West）
+- 聚类稳健标准误
 
-**When to use:** Validating assumptions, detecting problems, ensuring robust inference
+**何时使用：**验证假设、检测问题、确保稳健推断
 
-**Reference:** See `references/stats_diagnostics.md` for comprehensive testing and diagnostic procedures.
+**参考：**有关综合测试和诊断程序的详细信息，请参见`references/stats_diagnostics.md`。
 
-## Formula API (R-style)
+## 公式API（R风格）
 
-Statsmodels supports R-style formulas for intuitive model specification:
+Statsmodels支持R风格的公式，用于直观的模型规范：
 
 ```python
 import statsmodels.formula.api as smf
 
-# OLS with formula
+# 带公式的OLS
 results = smf.ols('y ~ x1 + x2 + x1:x2', data=df).fit()
 
-# Categorical variables (automatic dummy coding)
+# 分类变量（自动哑变量编码）
 results = smf.ols('y ~ x1 + C(category)', data=df).fit()
 
-# Interactions
+# 交互项
 results = smf.ols('y ~ x1 * x2', data=df).fit()  # x1 + x2 + x1:x2
 
-# Polynomial terms
+# 多项式项
 results = smf.ols('y ~ x + I(x**2)', data=df).fit()
 
 # Logit
@@ -360,15 +360,15 @@ results = smf.logit('y ~ x1 + x2 + C(group)', data=df).fit()
 # Poisson
 results = smf.poisson('count ~ x1 + x2', data=df).fit()
 
-# ARIMA (not available via formula, use regular API)
+# ARIMA（不可通过公式使用，使用常规API）
 ```
 
-## Model Selection and Comparison
+## 模型选择和比较
 
-### Information Criteria
+### 信息准则
 
 ```python
-# Compare models using AIC/BIC
+# 使用AIC/BIC比较模型
 models = {
     'Model 1': model1_results,
     'Model 2': model2_results,
@@ -382,13 +382,13 @@ comparison = pd.DataFrame({
 })
 
 print(comparison.sort_values('AIC'))
-# Lower AIC/BIC indicates better model
+# 较低的AIC/BIC表示更好的模型
 ```
 
-### Likelihood Ratio Test (Nested Models)
+### 似然比检验（嵌套模型）
 
 ```python
-# For nested models (one is subset of the other)
+# 对于嵌套模型（一个是另一个的子集）
 from scipy import stats
 
 lr_stat = 2 * (full_model.llf - reduced_model.llf)
@@ -404,7 +404,7 @@ else:
     print("Reduced model preferred (parsimony)")
 ```
 
-### Cross-Validation
+### 交叉验证
 
 ```python
 from sklearn.model_selection import KFold
@@ -417,196 +417,195 @@ for train_idx, val_idx in kf.split(X):
     X_train, X_val = X.iloc[train_idx], X.iloc[val_idx]
     y_train, y_val = y.iloc[train_idx], y.iloc[val_idx]
 
-    # Fit model
+    # 拟合模型
     model = sm.OLS(y_train, X_train).fit()
 
-    # Predict
+    # 预测
     y_pred = model.predict(X_val)
 
-    # Score
+    # 评分
     rmse = np.sqrt(mean_squared_error(y_val, y_pred))
     cv_scores.append(rmse)
 
 print(f"CV RMSE: {np.mean(cv_scores):.4f} ± {np.std(cv_scores):.4f}")
 ```
 
-## Best Practices
+## 最佳实践
 
-### Data Preparation
+### 数据准备
 
-1. **Always add constant**: Use `sm.add_constant()` unless excluding intercept
-2. **Check for missing values**: Handle or impute before fitting
-3. **Scale if needed**: Improves convergence, interpretation (but not required for tree models)
-4. **Encode categoricals**: Use formula API or manual dummy coding
+1. **始终添加常数**：使用`sm.add_constant()`，除非排除截距
+2. **检查缺失值**：在拟合前处理或插补
+3. **如需要进行缩放**：提高收敛性、解释性（但对于树模型不是必需的）
+4. **编码分类变量**：使用公式API或手动哑变量编码
 
-### Model Building
+### 模型构建
 
-1. **Start simple**: Begin with basic model, add complexity as needed
-2. **Check assumptions**: Test residuals, heteroskedasticity, autocorrelation
-3. **Use appropriate model**: Match model to outcome type (binary→Logit, count→Poisson)
-4. **Consider alternatives**: If assumptions violated, use robust methods or different model
+1. **从简单开始**：从基本模型开始，根据需要增加复杂性
+2. **检查假设**：测试残差、异方差性、自相关性
+3. **使用适当的模型**：匹配模型到结果类型（二分类→Logit、计数→Poisson）
+4. **考虑替代方案**：如果假设被违反，使用稳健方法或不同模型
 
-### Inference
+### 推断
 
-1. **Report effect sizes**: Not just p-values
-2. **Use robust SEs**: When heteroskedasticity or clustering present
-3. **Multiple comparisons**: Correct when testing many hypotheses
-4. **Confidence intervals**: Always report alongside point estimates
+1. **报告效应量**：不仅仅是p值
+2. **使用稳健SEs**：当存在异方差性或聚类时
+3. **多重比较**：测试许多假设时进行校正
+4. **置信区间**：始终与点估计一起报告
 
-### Model Evaluation
+### 模型评估
 
-1. **Check residuals**: Plot residuals vs fitted, Q-Q plot
-2. **Influence diagnostics**: Identify and investigate influential observations
-3. **Out-of-sample validation**: Test on holdout set or cross-validate
-4. **Compare models**: Use AIC/BIC for non-nested, LR test for nested
+1. **检查残差**：绘制残差vs拟合值、Q-Q图
+2. **影响力诊断**：识别和调查有影响力的观察值
+3. **样本外验证**：在保留集上测试或交叉验证
+4. **比较模型**：对非嵌套使用AIC/BIC，对嵌套使用LR检验
 
-### Reporting
+### 报告
 
-1. **Comprehensive summary**: Use `.summary()` for detailed output
-2. **Document decisions**: Note transformations, excluded observations
-3. **Interpret carefully**: Account for link functions (e.g., exp(β) for log link)
-4. **Visualize**: Plot predictions, confidence intervals, diagnostics
+1. **综合摘要**：使用`.summary()`获取详细输出
+2. **记录决策**：注意变换、排除的观察值
+3. **仔细解释**：考虑链接函数（例如，log链接的exp(β)）
+4. **可视化**：绘制预测、置信区间、诊断
 
-## Common Workflows
+## 常见工作流
 
-### Workflow 1: Linear Regression Analysis
+### 工作流1：线性回归分析
 
-1. Explore data (plots, descriptives)
-2. Fit initial OLS model
-3. Check residual diagnostics
-4. Test for heteroskedasticity, autocorrelation
-5. Check for multicollinearity (VIF)
-6. Identify influential observations
-7. Refit with robust SEs if needed
-8. Interpret coefficients and inference
-9. Validate on holdout or via CV
+1. 探索数据（图表、描述性统计）
+2. 拟合初始OLS模型
+3. 检查残差诊断
+4. 测试异方差性、自相关性
+5. 检查多重共线性（VIF）
+6. 识别有影响力的观察值
+7. 如有需要，使用稳健SEs重新拟合
+8. 解释系数和推断
+9. 在保留集上验证或通过CV验证
 
-### Workflow 2: Binary Classification
+### 工作流2：二分类分类
 
-1. Fit logistic regression (Logit)
-2. Check for convergence issues
-3. Interpret odds ratios
-4. Calculate marginal effects
-5. Evaluate classification performance (AUC, confusion matrix)
-6. Check for influential observations
-7. Compare with alternative models (Probit)
-8. Validate predictions on test set
+1. 拟合逻辑回归（Logit）
+2. 检查收敛问题
+3. 解释优势比
+4. 计算边际效应
+5. 评估分类性能（AUC、混淆矩阵）
+6. 检查有影响力的观察值
+7. 与替代模型（Probit）比较
+8. 在测试集上验证预测
 
-### Workflow 3: Count Data Analysis
+### 工作流3：计数数据分析
 
-1. Fit Poisson regression
-2. Check for overdispersion
-3. If overdispersed, fit Negative Binomial
-4. Check for excess zeros (consider ZIP/ZINB)
-5. Interpret rate ratios
-6. Assess goodness of fit
-7. Compare models via AIC
-8. Validate predictions
+1. 拟合泊松回归
+2. 检查过度离散
+3. 如果过度离散，拟合负二项式
+4. 检查过多零值（考虑ZIP/ZINB）
+5. 解释比率比
+6. 评估拟合优度
+7. 通过AIC比较模型
+8. 验证预测
 
-### Workflow 4: Time Series Forecasting
+### 工作流4：时间序列预测
 
-1. Plot series, check for trend/seasonality
-2. Test for stationarity (ADF, KPSS)
-3. Difference if non-stationary
-4. Identify p, q from ACF/PACF
-5. Fit ARIMA or SARIMAX
-6. Check residual diagnostics (Ljung-Box)
-7. Generate forecasts with confidence intervals
-8. Evaluate forecast accuracy on test set
+1. 绘制序列，检查趋势/季节性
+2. 测试平稳性（ADF、KPSS）
+3. 如果非平稳，进行差分
+4. 从ACF/PACF识别p, q
+5. 拟合ARIMA或SARIMAX
+6. 检查残差诊断（Ljung-Box）
+7. 生成带置信区间的预测
+8. 在测试集上评估预测准确性
 
-## Reference Documentation
+## 参考文档
 
-This skill includes comprehensive reference files for detailed guidance:
+此技能包含详细指导的综合参考文件：
 
 ### references/linear_models.md
-Detailed coverage of linear regression models including:
-- OLS, WLS, GLS, GLSAR, Quantile Regression
-- Mixed effects models
-- Recursive and rolling regression
-- Comprehensive diagnostics (heteroskedasticity, autocorrelation, multicollinearity)
-- Influence statistics and outlier detection
-- Robust standard errors (HC, HAC, cluster)
-- Hypothesis testing and model comparison
+线性回归模型的详细覆盖，包括：
+- OLS、WLS、GLS、GLSAR、分位数回归
+- 混合效应模型
+- 递归和滚动回归
+- 综合诊断（异方差性、自相关性、多重共线性）
+- 影响力统计和异常值检测
+- 稳健标准误（HC、HAC、聚类）
+- 假设检验和模型比较
 
 ### references/glm.md
-Complete guide to generalized linear models:
-- All distribution families (Binomial, Poisson, Gamma, etc.)
-- Link functions and when to use each
-- Model fitting and interpretation
-- Pseudo R-squared and goodness of fit
-- Diagnostics and residual analysis
-- Applications (logistic, Poisson, Gamma regression)
+广义线性模型的完整指南：
+- 所有分布族（二项式、泊松、伽马等）
+- 链接函数及何时使用
+- 模型拟合和解释
+- 伪R平方和拟合优度
+- 诊断和残差分析
+- 应用（逻辑、泊松、伽马回归）
 
 ### references/discrete_choice.md
-Comprehensive guide to discrete outcome models:
-- Binary models (Logit, Probit)
-- Multinomial models (MNLogit, Conditional Logit)
-- Count models (Poisson, Negative Binomial, Zero-Inflated, Hurdle)
-- Ordinal models
-- Marginal effects and interpretation
-- Model diagnostics and comparison
+离散结果模型的综合指南：
+- 二分类模型（Logit、Probit）
+- 多分类模型（MNLogit、条件Logit）
+- 计数模型（泊松、负二项式、零膨胀、障碍）
+- 有序模型
+- 边际效应和解释
+- 模型诊断和比较
 
 ### references/time_series.md
-In-depth time series analysis guidance:
-- Univariate models (AR, ARIMA, SARIMAX, Exponential Smoothing)
-- Multivariate models (VAR, VARMAX, Dynamic Factor)
-- State space models
-- Stationarity testing and diagnostics
-- Forecasting methods and evaluation
-- Granger causality, IRF, FEVD
+深入的时间序列分析指导：
+- 单变量模型（AR、ARIMA、SARIMAX、指数平滑）
+- 多变量模型（VAR、VARMAX、动态因子）
+- 状态空间模型
+- 平稳性测试和诊断
+- 预测方法和评估
+- Granger因果关系、IRF、FEVD
 
 ### references/stats_diagnostics.md
-Comprehensive statistical testing and diagnostics:
-- Residual diagnostics (autocorrelation, heteroskedasticity, normality)
-- Influence and outlier detection
-- Hypothesis tests (parametric and non-parametric)
-- ANOVA and post-hoc tests
-- Multiple comparisons correction
-- Robust covariance matrices
-- Power analysis and effect sizes
+综合统计测试和诊断：
+- 残差诊断（自相关性、异方差性、正态性）
+- 影响力和异常值检测
+- 假设检验（参数和非参数）
+- 方差分析和事后检验
+- 多重比较校正
+- 稳健协方差矩阵
+- 功效分析和效应量
 
-**When to reference:**
-- Need detailed parameter explanations
-- Choosing between similar models
-- Troubleshooting convergence or diagnostic issues
-- Understanding specific test statistics
-- Looking for code examples for advanced features
+**何时参考：**
+- 需要详细的参数解释
+- 在类似模型之间选择
+- 解决收敛或诊断问题
+- 理解特定测试统计量
+- 寻找高级功能的代码示例
 
-**Search patterns:**
+**搜索模式：**
 ```bash
-# Find information about specific models
+# 查找有关特定模型的信息
 grep -r "Quantile Regression" references/
 
-# Find diagnostic tests
+# 查找诊断测试
 grep -r "Breusch-Pagan" references/stats_diagnostics.md
 
-# Find time series guidance
+# 查找时间序列指导
 grep -r "SARIMAX" references/time_series.md
 ```
 
-## Common Pitfalls to Avoid
+## 要避免的常见陷阱
 
-1. **Forgetting constant term**: Always use `sm.add_constant()` unless no intercept desired
-2. **Ignoring assumptions**: Check residuals, heteroskedasticity, autocorrelation
-3. **Wrong model for outcome type**: Binary→Logit/Probit, Count→Poisson/NB, not OLS
-4. **Not checking convergence**: Look for optimization warnings
-5. **Misinterpreting coefficients**: Remember link functions (log, logit, etc.)
-6. **Using Poisson with overdispersion**: Check dispersion, use Negative Binomial if needed
-7. **Not using robust SEs**: When heteroskedasticity or clustering present
-8. **Overfitting**: Too many parameters relative to sample size
-9. **Data leakage**: Fitting on test data or using future information
-10. **Not validating predictions**: Always check out-of-sample performance
-11. **Comparing non-nested models**: Use AIC/BIC, not LR test
-12. **Ignoring influential observations**: Check Cook's distance and leverage
-13. **Multiple testing**: Correct p-values when testing many hypotheses
-14. **Not differencing time series**: Fit ARIMA on non-stationary data
-15. **Confusing prediction vs confidence intervals**: Prediction intervals are wider
+1. **忘记常数项**：始终使用`sm.add_constant()`，除非不需要截距
+2. **忽略假设**：检查残差、异方差性、自相关性
+3. **结果类型的错误模型**：二分类→Logit/Probit，计数→Poisson/NB，不是OLS
+4. **不检查收敛**：查找优化警告
+5. **错误解释系数**：记住链接函数（log、logit等）
+6. **使用过度离散的泊松**：检查离散度，必要时使用负二项式
+7. **不使用稳健SEs**：当存在异方差性或聚类时
+8. **过拟合**：参数过多相对于样本大小
+9. **数据泄露**：在测试数据上拟合或使用未来信息
+10. **不验证预测**：始终检查样本外性能
+11. **比较非嵌套模型**：使用AIC/BIC，而不是LR检验
+12. **忽略有影响力的观察值**：检查库克距离和杠杆率
+13. **多重测试**：测试许多假设时校正p值
+14. **不对时间序列进行差分**：在非平稳数据上拟合ARIMA
+15. **混淆预测vs置信区间**：预测区间更宽
 
-## Getting Help
+## 获取帮助
 
-For detailed documentation and examples:
-- Official docs: https://www.statsmodels.org/stable/
-- User guide: https://www.statsmodels.org/stable/user-guide.html
-- Examples: https://www.statsmodels.org/stable/examples/index.html
-- API reference: https://www.statsmodels.org/stable/api.html
-
+有关详细文档和示例：
+- 官方文档：https://www.statsmodels.org/stable/
+- 用户指南：https://www.statsmodels.org/stable/user-guide.html
+- 示例：https://www.statsmodels.org/stable/examples/index.html
+- API参考：https://www.statsmodels.org/stable/api.html

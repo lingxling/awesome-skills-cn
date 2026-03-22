@@ -1,35 +1,35 @@
 ---
 name: biorxiv-database
-description: Efficient database search tool for bioRxiv preprint server. Use this skill when searching for life sciences preprints by keywords, authors, date ranges, or categories, retrieving paper metadata, downloading PDFs, or conducting literature reviews.
+description: 用于 bioRxiv 预印本服务器的高效数据库搜索工具。在通过关键词、作者、日期范围或类别搜索生命科学预印本、检索论文元数据、下载 PDF 或进行文献综述时使用此技能。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# bioRxiv Database
+# bioRxiv 数据库
 
-## Overview
+## 概述
 
-This skill provides efficient Python-based tools for searching and retrieving preprints from the bioRxiv database. It enables comprehensive searches by keywords, authors, date ranges, and categories, returning structured JSON metadata that includes titles, abstracts, DOIs, and citation information. The skill also supports PDF downloads for full-text analysis.
+此技能提供用于从 bioRxiv 数据库搜索和检索预印本的高效 Python 工具。它支持通过关键词、作者、日期范围和类别进行综合搜索，返回包含标题、摘要、DOI 和引用信息的结构化 JSON 元数据。该技能还支持 PDF 下载以进行全文分析。
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use this skill when:
-- Searching for recent preprints in specific research areas
-- Tracking publications by particular authors
-- Conducting systematic literature reviews
-- Analyzing research trends over time periods
-- Retrieving metadata for citation management
-- Downloading preprint PDFs for analysis
-- Filtering papers by bioRxiv subject categories
+在以下情况使用此技能：
+- 搜索特定研究领域的最新预印本
+- 跟踪特定作者的出版物
+- 进行系统性文献综述
+- 分析一段时间内的研究趋势
+- 检索元数据以进行引用管理
+- 下载预印本 PDF 以进行分析
+- 按 bioRxiv 主题类别过滤论文
 
-## Core Search Capabilities
+## 核心搜索能力
 
-### 1. Keyword Search
+### 1. 关键词搜索
 
-Search for preprints containing specific keywords in titles, abstracts, or author lists.
+搜索标题、摘要或作者列表中包含特定关键词的预印本。
 
-**Basic Usage:**
+**基本用法：**
 ```python
 python scripts/biorxiv_search.py \
   --keywords "CRISPR" "gene editing" \
@@ -38,7 +38,7 @@ python scripts/biorxiv_search.py \
   --output results.json
 ```
 
-**With Category Filter:**
+**带类别过滤：**
 ```python
 python scripts/biorxiv_search.py \
   --keywords "neural networks" "deep learning" \
@@ -47,8 +47,8 @@ python scripts/biorxiv_search.py \
   --output recent_neuroscience.json
 ```
 
-**Search Fields:**
-By default, keywords are searched in both title and abstract. Customize with `--search-fields`:
+**搜索字段：**
+默认情况下，关键词在标题和摘要中搜索。使用 `--search-fields` 自定义：
 ```python
 python scripts/biorxiv_search.py \
   --keywords "AlphaFold" \
@@ -56,11 +56,11 @@ python scripts/biorxiv_search.py \
   --days-back 365
 ```
 
-### 2. Author Search
+### 2. 作者搜索
 
-Find all papers by a specific author within a date range.
+在日期范围内查找特定作者的所有论文。
 
-**Basic Usage:**
+**基本用法：**
 ```python
 python scripts/biorxiv_search.py \
   --author "Smith" \
@@ -69,19 +69,19 @@ python scripts/biorxiv_search.py \
   --output smith_papers.json
 ```
 
-**Recent Publications:**
+**最新出版物：**
 ```python
-# Last year by default if no dates specified
+# 如果未指定日期，默认为去年
 python scripts/biorxiv_search.py \
   --author "Johnson" \
   --output johnson_recent.json
 ```
 
-### 3. Date Range Search
+### 3. 日期范围搜索
 
-Retrieve all preprints posted within a specific date range.
+检索在特定日期范围内发布的所有预印本。
 
-**Basic Usage:**
+**基本用法：**
 ```python
 python scripts/biorxiv_search.py \
   --start-date 2024-01-01 \
@@ -89,7 +89,7 @@ python scripts/biorxiv_search.py \
   --output january_2024.json
 ```
 
-**With Category Filter:**
+**带类别过滤：**
 ```python
 python scripts/biorxiv_search.py \
   --start-date 2024-06-01 \
@@ -98,63 +98,63 @@ python scripts/biorxiv_search.py \
   --output genomics_june.json
 ```
 
-**Days Back Shortcut:**
+**天数回溯快捷方式：**
 ```python
-# Last 30 days
+# 最近 30 天
 python scripts/biorxiv_search.py \
   --days-back 30 \
   --output last_month.json
 ```
 
-### 4. Paper Details by DOI
+### 4. 按 DOI 获取论文详细信息
 
-Retrieve detailed metadata for a specific preprint.
+检索特定预印本的详细元数据。
 
-**Basic Usage:**
+**基本用法：**
 ```python
 python scripts/biorxiv_search.py \
   --doi "10.1101/2024.01.15.123456" \
   --output paper_details.json
 ```
 
-**Full DOI URLs Accepted:**
+**接受完整 DOI URL：**
 ```python
 python scripts/biorxiv_search.py \
   --doi "https://doi.org/10.1101/2024.01.15.123456"
 ```
 
-### 5. PDF Downloads
+### 5. PDF 下载
 
-Download the full-text PDF of any preprint.
+下载任何预印本的全文 PDF。
 
-**Basic Usage:**
+**基本用法：**
 ```python
 python scripts/biorxiv_search.py \
   --doi "10.1101/2024.01.15.123456" \
   --download-pdf paper.pdf
 ```
 
-**Batch Processing:**
-For multiple PDFs, extract DOIs from a search result JSON and download each paper:
+**批量处理：**
+对于多个 PDF，从搜索结果 JSON 中提取 DOI 并下载每篇论文：
 ```python
 import json
 from biorxiv_search import BioRxivSearcher
 
-# Load search results
+# 加载搜索结果
 with open('results.json') as f:
     data = json.load(f)
 
 searcher = BioRxivSearcher(verbose=True)
 
-# Download each paper
-for i, paper in enumerate(data['results'][:10]):  # First 10 papers
+# 下载每篇论文
+for i, paper in enumerate(data['results'][:10]):  # 前 10 篇论文
     doi = paper['doi']
     searcher.download_pdf(doi, f"papers/paper_{i+1}.pdf")
 ```
 
-## Valid Categories
+## 有效类别
 
-Filter searches by bioRxiv subject categories:
+按 bioRxiv 主题类别过滤搜索：
 
 - `animal-behavior-and-cognition`
 - `biochemistry`
@@ -184,9 +184,9 @@ Filter searches by bioRxiv subject categories:
 - `systems-biology`
 - `zoology`
 
-## Output Format
+## 输出格式
 
-All searches return structured JSON with the following format:
+所有搜索都返回具有以下格式的结构化 JSON：
 
 ```json
 {
@@ -219,11 +219,11 @@ All searches return structured JSON with the following format:
 }
 ```
 
-## Common Usage Patterns
+## 常见使用模式
 
-### Literature Review Workflow
+### 文献综述工作流程
 
-1. **Broad keyword search:**
+1. **广泛的关键词搜索：**
 ```python
 python scripts/biorxiv_search.py \
   --keywords "organoids" "tissue engineering" \
@@ -233,7 +233,7 @@ python scripts/biorxiv_search.py \
   --output organoid_papers.json
 ```
 
-2. **Extract and review results:**
+2. **提取和审查结果：**
 ```python
 import json
 
@@ -249,7 +249,7 @@ for paper in data['results'][:5]:
     print(f"DOI: {paper['doi']}")
 ```
 
-3. **Download selected papers:**
+3. **下载选定的论文：**
 ```python
 from biorxiv_search import BioRxivSearcher
 
@@ -261,9 +261,9 @@ for doi in selected_dois:
     searcher.download_pdf(doi, f"papers/{filename}")
 ```
 
-### Trend Analysis
+### 趋势分析
 
-Track research trends by analyzing publication frequencies over time:
+通过分析一段时间内的发布频率来跟踪研究趋势：
 
 ```python
 python scripts/biorxiv_search.py \
@@ -274,14 +274,14 @@ python scripts/biorxiv_search.py \
   --output ml_trends.json
 ```
 
-Then analyze the temporal distribution in the results.
+然后分析结果中的时间分布。
 
-### Author Tracking
+### 作者跟踪
 
-Monitor specific researchers' preprints:
+监控特定研究人员的预印本：
 
 ```python
-# Track multiple authors
+# 跟踪多个作者
 authors = ["Smith", "Johnson", "Williams"]
 
 for author in authors:
@@ -291,17 +291,17 @@ for author in authors:
       --output "{author}_papers.json"
 ```
 
-## Python API Usage
+## Python API 使用
 
-For more complex workflows, import and use the `BioRxivSearcher` class directly:
+对于更复杂的工作流程，直接导入和使用 `BioRxivSearcher` 类：
 
 ```python
 from scripts.biorxiv_search import BioRxivSearcher
 
-# Initialize
+# 初始化
 searcher = BioRxivSearcher(verbose=True)
 
-# Multiple search operations
+# 多个搜索操作
 keywords_papers = searcher.search_by_keywords(
     keywords=["CRISPR", "gene editing"],
     start_date="2024-01-01",
@@ -315,43 +315,43 @@ author_papers = searcher.search_by_author(
     end_date="2024-12-31"
 )
 
-# Get specific paper details
+# 获取特定论文详细信息
 paper = searcher.get_paper_details("10.1101/2024.01.15.123456")
 
-# Download PDF
+# 下载 PDF
 success = searcher.download_pdf(
     doi="10.1101/2024.01.15.123456",
     output_path="paper.pdf"
 )
 
-# Format results consistently
+# 一致地格式化结果
 formatted = searcher.format_result(paper, include_abstract=True)
 ```
 
-## Best Practices
+## 最佳实践
 
-1. **Use appropriate date ranges**: Smaller date ranges return faster. For keyword searches over long periods, consider splitting into multiple queries.
+1. **使用适当的日期范围**：较小的日期范围返回更快。对于长时间的关键词搜索，考虑拆分为多个查询。
 
-2. **Filter by category**: When possible, use `--category` to reduce data transfer and improve search precision.
+2. **按类别过滤**：尽可能使用 `--category` 以减少数据传输并提高搜索精度。
 
-3. **Respect rate limits**: The script includes automatic delays (0.5s between requests). For large-scale data collection, add additional delays.
+3. **尊重速率限制**：脚本包含自动延迟（请求之间 0.5 秒）。对于大规模数据收集，添加额外的延迟。
 
-4. **Cache results**: Save search results to JSON files to avoid repeated API calls.
+4. **缓存结果**：将搜索结果保存到 JSON 文件以避免重复的 API 调用。
 
-5. **Version tracking**: Preprints can have multiple versions. The `version` field indicates which version is returned. PDF URLs include the version number.
+5. **版本跟踪**：预印本可以有多个版本。`version` 字段指示返回的版本。PDF URL 包含版本号。
 
-6. **Handle errors gracefully**: Check the `result_count` in output JSON. Empty results may indicate date range issues or API connectivity problems.
+6. **优雅地处理错误**：检查输出 JSON 中的 `result_count`。空结果可能表示日期范围问题或 API 连接问题。
 
-7. **Verbose mode for debugging**: Use `--verbose` flag to see detailed logging of API requests and responses.
+7. **使用详细模式进行调试**：使用 `--verbose` 标志查看 API 请求和响应的详细日志记录。
 
-## Advanced Features
+## 高级功能
 
-### Custom Date Range Logic
+### 自定义日期范围逻辑
 
 ```python
 from datetime import datetime, timedelta
 
-# Last quarter
+# 上一季度
 end_date = datetime.now()
 start_date = end_date - timedelta(days=90)
 
@@ -360,9 +360,9 @@ python scripts/biorxiv_search.py \
   --end-date {end_date.strftime('%Y-%m-%d')}
 ```
 
-### Result Limiting
+### 结果限制
 
-Limit the number of results returned:
+限制返回的结果数量：
 
 ```python
 python scripts/biorxiv_search.py \
@@ -372,12 +372,12 @@ python scripts/biorxiv_search.py \
   --output covid_top50.json
 ```
 
-### Exclude Abstracts for Speed
+### 排除摘要以提高速度
 
-When only metadata is needed:
+当只需要元数据时：
 
 ```python
-# Note: Abstract inclusion is controlled in Python API
+# 注意：摘要包含在 Python API 中控制
 from scripts.biorxiv_search import BioRxivSearcher
 
 searcher = BioRxivSearcher()
@@ -385,56 +385,56 @@ papers = searcher.search_by_keywords(keywords=["AI"], days_back=30)
 formatted = [searcher.format_result(p, include_abstract=False) for p in papers]
 ```
 
-## Programmatic Integration
+## 程序化集成
 
-Integrate search results into downstream analysis pipelines:
+将搜索结果集成到下游分析流程中：
 
 ```python
 import json
 import pandas as pd
 
-# Load results
+# 加载结果
 with open('results.json') as f:
     data = json.load(f)
 
-# Convert to DataFrame for analysis
+# 转换为 DataFrame 以进行分析
 df = pd.DataFrame(data['results'])
 
-# Analyze
+# 分析
 print(f"Total papers: {len(df)}")
 print(f"Date range: {df['date'].min()} to {df['date'].max()}")
 print(f"\nTop authors by paper count:")
 print(df['authors'].str.split(',').explode().str.strip().value_counts().head(10))
 
-# Filter and export
+# 过滤和导出
 recent = df[df['date'] >= '2024-06-01']
 recent.to_csv('recent_papers.csv', index=False)
 ```
 
-## Testing the Skill
+## 测试技能
 
-To verify that the bioRxiv database skill is working correctly, run the comprehensive test suite.
+要验证 bioRxiv 数据库技能是否正常工作，请运行综合测试套件。
 
-**Prerequisites:**
+**先决条件：**
 ```bash
 uv pip install requests
 ```
 
-**Run tests:**
+**运行测试：**
 ```bash
 python tests/test_biorxiv_search.py
 ```
 
-The test suite validates:
-- **Initialization**: BioRxivSearcher class instantiation
-- **Date Range Search**: Retrieving papers within specific date ranges
-- **Category Filtering**: Filtering papers by bioRxiv categories
-- **Keyword Search**: Finding papers containing specific keywords
-- **DOI Lookup**: Retrieving specific papers by DOI
-- **Result Formatting**: Proper formatting of paper metadata
-- **Interval Search**: Fetching recent papers by time intervals
+测试套件验证：
+- **初始化**：BioRxivSearcher 类实例化
+- **日期范围搜索**：检索特定日期范围内的论文
+- **类别过滤**：按 bioRxiv 类别过滤论文
+- **关键词搜索**：查找包含特定关键词的论文
+- **DOI 查找**：按 DOI 检索特定论文
+- **结果格式化**：正确格式化论文元数据
+- **间隔搜索**：按时间间隔获取最新论文
 
-**Expected Output:**
+**预期输出：**
 ```
 🧬 bioRxiv Database Search Skill Test Suite
 ======================================================================
@@ -465,17 +465,16 @@ Results: 7/7 tests passed (100%)
 🎉 All tests passed! The bioRxiv database skill is working correctly.
 ```
 
-**Note:** Some tests may show warnings if no papers are found in specific date ranges or categories. This is normal and does not indicate a failure.
+**注意：** 如果在特定日期范围或类别中未找到论文，某些测试可能会显示警告。这是正常的，并不表示失败。
 
-## Reference Documentation
+## 参考文档
 
-For detailed API specifications, endpoint documentation, and response schemas, refer to:
-- `references/api_reference.md` - Complete bioRxiv API documentation
+有关详细的 API 规范、端点文档和响应架构，请参阅：
+- `references/api_reference.md` - 完整的 bioRxiv API 文档
 
-The reference file includes:
-- Full API endpoint specifications
-- Response format details
-- Error handling patterns
-- Rate limiting guidelines
-- Advanced search patterns
-
+参考文件包括：
+- 完整的 API 端点规范
+- 响应格式详细信息
+- 错误处理模式
+- 速率限制指南
+- 高级搜索模式

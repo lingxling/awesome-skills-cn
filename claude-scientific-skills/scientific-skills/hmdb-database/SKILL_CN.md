@@ -1,194 +1,193 @@
 ---
 name: hmdb-database
-description: Access Human Metabolome Database (220K+ metabolites). Search by name/ID/structure, retrieve chemical properties, biomarker data, NMR/MS spectra, pathways, for metabolomics and identification.
-license: HMDB is offered to the public as a freely available resource. Use and re-distribution of the data, in whole or in part, for commercial purposes requires explicit permission of the authors and explicit acknowledgment of the source material (HMDB) and the original publication (see the HMDB citing page). We ask that users who download significant portions of the database cite the HMDB paper in any resulting publications.
+description: 访问人类代谢组数据库（220K+代谢物）。按名称/ID/结构搜索，检索化学性质、生物标志物数据、NMR/MS光谱、通路，用于代谢组学和鉴定。
+license: HMDB作为免费资源向公众提供。全部或部分使用和再分发数据用于商业目的需要作者的明确许可以及对源材料（HMDB）和原始出版物的明确确认（参见HMDB引用页面）。我们要求下载大量数据库的用户在任何结果出版物中引用HMDB论文。
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# HMDB Database
+# HMDB数据库
 
-## Overview
+## 概述
 
-The Human Metabolome Database (HMDB) is a comprehensive, freely available resource containing detailed information about small molecule metabolites found in the human body.
+人类代谢组数据库（HMDB）是一个全面的、免费提供的资源，包含在人体内发现的小分子代谢物的详细信息。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when performing metabolomics research, clinical chemistry, biomarker discovery, or metabolite identification tasks.
+在进行代谢组学研究、临床化学、生物标志物发现或代谢物鉴定任务时，应使用此技能。
 
-## Database Contents
+## 数据库内容
 
-HMDB version 5.0 (current as of 2025) contains:
+HMDB 5.0版（截至2025年当前版本）包含：
 
-- **220,945 metabolite entries** covering both water-soluble and lipid-soluble compounds
-- **8,610 protein sequences** for enzymes and transporters involved in metabolism
-- **130+ data fields per metabolite** including:
-  - Chemical properties (structure, formula, molecular weight, InChI, SMILES)
-  - Clinical data (biomarker associations, diseases, normal/abnormal concentrations)
-  - Biological information (pathways, reactions, locations)
-  - Spectroscopic data (NMR, MS, MS-MS spectra)
-  - External database links (KEGG, PubChem, MetaCyc, ChEBI, PDB, UniProt, GenBank)
+- **220,945个代谢物条目**，涵盖水溶性和脂溶性化合物
+- **8,610个蛋白质序列**，用于参与代谢的酶和转运蛋白
+- **每个代谢物130+个数据字段**，包括：
+  - 化学性质（结构、分子式、分子量、InChI、SMILES）
+  - 临床数据（生物标志物关联、疾病、正常/异常浓度）
+  - 生物学信息（通路、反应、位置）
+  - 光谱数据（NMR、MS、MS-MS光谱）
+  - 外部数据库链接（KEGG、PubChem、MetaCyc、ChEBI、PDB、UniProt、GenBank）
 
-## Core Capabilities
+## 核心功能
 
-### 1. Web-Based Metabolite Searches
+### 1. 基于Web的代谢物搜索
 
-Access HMDB through the web interface at https://www.hmdb.ca/ for:
+通过https://www.hmdb.ca/访问HMDB进行：
 
-**Text Searches:**
-- Search by metabolite name, synonym, or identifier (HMDB ID)
-- Example HMDB IDs: HMDB0000001, HMDB0001234
-- Search by disease associations or pathway involvement
-- Query by biological specimen type (urine, serum, CSF, saliva, feces, sweat)
+**文本搜索：**
+- 按代谢物名称、同义词或标识符（HMDB ID）搜索
+- 示例HMDB ID：HMDB0000001、HMDB0001234
+- 按疾病关联或通路参与情况搜索
+- 按生物样本类型查询（尿液、血清、脑脊液、唾液、粪便、汗液）
 
-**Structure-Based Searches:**
-- Use ChemQuery for structure and substructure searches
-- Search by molecular weight or molecular weight range
-- Use SMILES or InChI strings to find compounds
+**基于结构的搜索：**
+- 使用ChemQuery进行结构和子结构搜索
+- 按分子量或分子量范围搜索
+- 使用SMILES或InChI字符串查找化合物
 
-**Spectral Searches:**
-- LC-MS spectral matching
-- GC-MS spectral matching
-- NMR spectral searches for metabolite identification
+**光谱搜索：**
+- LC-MS光谱匹配
+- GC-MS光谱匹配
+- 用于代谢物鉴定的NMR光谱搜索
 
-**Advanced Searches:**
-- Combine multiple criteria (name, properties, concentration ranges)
-- Filter by biological locations or specimen types
-- Search by protein/enzyme associations
+**高级搜索：**
+- 组合多个条件（名称、性质、浓度范围）
+- 按生物位置或样本类型过滤
+- 按蛋白质/酶关联搜索
 
-### 2. Accessing Metabolite Information
+### 2. 访问代谢物信息
 
-When retrieving metabolite data, HMDB provides:
+检索代谢物数据时，HMDB提供：
 
-**Chemical Information:**
-- Systematic name, traditional names, and synonyms
-- Chemical formula and molecular weight
-- Structure representations (2D/3D, SMILES, InChI, MOL file)
-- Chemical taxonomy and classification
+**化学信息：**
+- 系统名称、传统名称和同义词
+- 化学式和分子量
+- 结构表示（2D/3D、SMILES、InChI、MOL文件）
+- 化学分类和分类学
 
-**Biological Context:**
-- Metabolic pathways and reactions
-- Associated enzymes and transporters
-- Subcellular locations
-- Biological roles and functions
+**生物学背景：**
+- 代谢通路和反应
+- 相关酶和转运蛋白
+- 亚细胞位置
+- 生物学作用和功能
 
-**Clinical Relevance:**
-- Normal concentration ranges in biological fluids
-- Biomarker associations with diseases
-- Clinical significance
-- Toxicity information when applicable
+**临床相关性：**
+- 生物体液中的正常浓度范围
+- 与疾病的生物标志物关联
+- 临床意义
+- 适用时的毒性信息
 
-**Analytical Data:**
-- Experimental and predicted NMR spectra
-- MS and MS-MS spectra
-- Retention times and chromatographic data
-- Reference peaks for identification
+**分析数据：**
+- 实验性和预测性NMR光谱
+- MS和MS-MS光谱
+- 保留时间和色谱数据
+- 用于鉴定的参考峰
 
-### 3. Downloadable Datasets
+### 3. 可下载数据集
 
-HMDB offers bulk data downloads at https://www.hmdb.ca/downloads in multiple formats:
+HMDB在https://www.hmdb.ca/downloads提供多种格式的批量数据下载：
 
-**Available Formats:**
-- **XML**: Complete metabolite, protein, and spectra data
-- **SDF**: Metabolite structure files for cheminformatics
-- **FASTA**: Protein and gene sequences
-- **TXT**: Raw spectra peak lists
-- **CSV/TSV**: Tabular data exports
+**可用格式：**
+- **XML**：完整的代谢物、蛋白质和光谱数据
+- **SDF**：用于化学信息学的代谢物结构文件
+- **FASTA**：蛋白质和基因序列
+- **TXT**：原始光谱峰列表
+- **CSV/TSV**：表格数据导出
 
-**Dataset Categories:**
-- All metabolites or filtered by specimen type
-- Protein/enzyme sequences
-- Experimental and predicted spectra (NMR, GC-MS, MS-MS)
-- Pathway information
+**数据集类别：**
+- 所有代谢物或按样本类型过滤
+- 蛋白质/酶序列
+- 实验性和预测光谱（NMR、GC-MS、MS-MS）
+- 通路信息
 
-**Best Practices:**
-- Download XML format for comprehensive data including all fields
-- Use SDF format for structure-based analysis and cheminformatics workflows
-- Parse CSV/TSV formats for integration with data analysis pipelines
-- Check version dates to ensure up-to-date data (current: v5.0, 2023-07-01)
+**最佳实践：**
+- 下载XML格式以获取包含所有字段的全面数据
+- 使用SDF格式进行基于结构的分析和化学信息学工作流
+- 解析CSV/TSV格式以与数据分析流程集成
+- 检查版本日期以确保数据是最新的（当前：v5.0，2023-07-01）
 
-**Usage Requirements:**
-- Free for academic and non-commercial research
-- Commercial use requires explicit permission (contact samackay@ualberta.ca)
-- Cite HMDB publication when using data
+**使用要求：**
+- 学术和非商业研究免费
+- 商业使用需要明确许可（联系samackay@ualberta.ca）
+- 使用数据时引用HMDB出版物
 
-### 4. Programmatic API Access
+### 4. 编程API访问
 
-**API Availability:**
-HMDB does not provide a public REST API. Programmatic access requires contacting the development team:
+**API可用性：**
+HMDB不提供公共REST API。编程访问需要联系开发团队：
 
-- **Academic/Research groups:** Contact eponine@ualberta.ca (Eponine) or samackay@ualberta.ca (Scott)
-- **Commercial organizations:** Contact samackay@ualberta.ca (Scott) for customized API access
+- **学术/研究小组：** 联系eponine@ualberta.ca（Eponine）或samackay@ualberta.ca（Scott）
+- **商业组织：** 联系samackay@ualberta.ca（Scott）以获取定制API访问
 
-**Alternative Programmatic Access:**
-- **R/Bioconductor**: Use the `hmdbQuery` package for R-based queries
-  - Install: `BiocManager::install("hmdbQuery")`
-  - Provides HTTP-based querying functions
-- **Downloaded datasets**: Parse XML or CSV files locally for programmatic analysis
-- **Web scraping**: Not recommended; contact team for proper API access instead
+**替代编程访问：**
+- **R/Bioconductor**：使用`hmdbQuery`包进行基于R的查询
+  - 安装：`BiocManager::install("hmdbQuery")`
+  - 提供基于HTTP的查询函数
+- **下载的数据集**：本地解析XML或CSV文件以进行编程分析
+- **Web抓取**：不推荐；联系团队以获取适当的API访问
 
-### 5. Common Research Workflows
+### 5. 常见研究工作流
 
-**Metabolite Identification in Untargeted Metabolomics:**
-1. Obtain experimental MS or NMR spectra from samples
-2. Use HMDB spectral search tools to match against reference spectra
-3. Verify candidates by checking molecular weight, retention time, and MS-MS fragmentation
-4. Review biological plausibility (expected in specimen type, known pathways)
+**非靶向代谢组学中的代谢物鉴定：**
+1. 从样本中获取实验性MS或NMR光谱
+2. 使用HMDB光谱搜索工具与参考光谱匹配
+3. 通过检查分子量、保留时间和MS-MS碎裂来验证候选物
+4. 审查生物学合理性（预期在样本类型中、已知通路）
 
-**Biomarker Discovery:**
-1. Search HMDB for metabolites associated with disease of interest
-2. Review concentration ranges in normal vs. disease states
-3. Identify metabolites with strong differential abundance
-4. Examine pathway context and biological mechanisms
-5. Cross-reference with literature via PubMed links
+**生物标志物发现：**
+1. 搜索HMDB查找与感兴趣的疾病相关的代谢物
+2. 审查正常与疾病状态下的浓度范围
+3. 识别具有强烈差异丰度的代谢物
+4. 检查通路背景和生物学机制
+5. 通过PubMed链接与文献交叉参考
 
-**Pathway Analysis:**
-1. Identify metabolites of interest from experimental data
-2. Look up HMDB entries for each metabolite
-3. Extract pathway associations and enzymatic reactions
-4. Use linked SMPDB (Small Molecule Pathway Database) for pathway diagrams
-5. Identify pathway enrichment for biological interpretation
+**通路分析：**
+1. 从实验数据中识别感兴趣的代谢物
+2. 查找每个代谢物的HMDB条目
+3. 提取通路关联和酶促反应
+4. 使用链接的SMPDB（小分子通路数据库）获取通路图
+5. 识别通路富集以进行生物学解释
 
-**Database Integration:**
-1. Download HMDB data in XML or CSV format
-2. Parse and extract relevant fields for local database
-3. Link with external IDs (KEGG, PubChem, ChEBI) for cross-database queries
-4. Build local tools or pipelines incorporating HMDB reference data
+**数据库集成：**
+1. 以XML或CSV格式下载HMDB数据
+2. 解析并提取相关字段以构建本地数据库
+3. 与外部ID（KEGG、PubChem、ChEBI）链接以进行跨数据库查询
+4. 构建包含HMDB参考数据的本地工具或流程
 
-## Related HMDB Resources
+## 相关HMDB资源
 
-The HMDB ecosystem includes related databases:
+HMDB生态系统包括相关数据库：
 
-- **DrugBank**: ~2,832 drug compounds with pharmaceutical information
-- **T3DB (Toxin and Toxin Target Database)**: ~3,670 toxic compounds
-- **SMPDB (Small Molecule Pathway Database)**: Pathway diagrams and maps
-- **FooDB**: ~70,000 food component compounds
+- **DrugBank**：~2,832个药物化合物及其药物信息
+- **T3DB（毒素和毒素靶点数据库）**：~3,670个有毒化合物
+- **SMPDB（小分子通路数据库）**：通路图和图谱
+- **FooDB**：~70,000个食物成分化合物
 
-These databases share similar structure and identifiers, enabling integrated queries across human metabolome, drug, toxin, and food databases.
+这些数据库共享相似的结构和标识符，能够跨人类代谢组、药物、毒素和食物数据库进行集成查询。
 
-## Best Practices
+## 最佳实践
 
-**Data Quality:**
-- Verify metabolite identifications with multiple evidence types (spectra, structure, properties)
-- Check experimental vs. predicted data quality indicators
-- Review citations and evidence for biomarker associations
+**数据质量：**
+- 使用多种证据类型（光谱、结构、性质）验证代谢物鉴定
+- 检查实验性与预测数据质量指标
+- 审查生物标志物关联的引用和证据
 
-**Version Tracking:**
-- Note HMDB version used in research (current: v5.0)
-- Databases are updated periodically with new entries and corrections
-- Re-query for updates when publishing to ensure current information
+**版本跟踪：**
+- 记录研究中使用的HMDB版本（当前：v5.0）
+- 数据库定期更新，包含新条目和更正
+- 发布时重新查询以确保最新信息
 
-**Citation:**
-- Always cite HMDB in publications using the database
-- Reference specific HMDB IDs when discussing metabolites
-- Acknowledge data sources for downloaded datasets
+**引用：**
+- 在出版物中始终引用使用数据库的HMDB
+- 讨论代谢物时引用特定的HMDB ID
+- 确认下载的数据集的数据源
 
-**Performance:**
-- For large-scale analysis, download complete datasets rather than repeated web queries
-- Use appropriate file formats (XML for comprehensive data, CSV for tabular analysis)
-- Consider local caching of frequently accessed metabolite information
+**性能：**
+- 对于大规模分析，下载完整数据集而不是重复的Web查询
+- 使用适当的文件格式（XML用于全面数据，CSV用于表格分析）
+- 考虑频繁访问的代谢物信息的本地缓存
 
-## Reference Documentation
+## 参考文档
 
-See `references/hmdb_data_fields.md` for detailed information about available data fields and their meanings.
-
+有关可用数据字段及其含义的详细信息，请参阅`references/hmdb_data_fields.md`。

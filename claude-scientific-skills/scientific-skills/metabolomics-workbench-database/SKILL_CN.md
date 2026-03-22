@@ -1,257 +1,184 @@
 ---
 name: metabolomics-workbench-database
-description: Access NIH Metabolomics Workbench via REST API (4,200+ studies). Query metabolites, RefMet nomenclature, MS/NMR data, m/z searches, study metadata, for metabolomics and biomarker discovery.
+description: Metabolomics Workbench是美国NIH支持的代谢组学数据库和资源平台。提供代谢物数据、实验数据、分析工具、代谢通路和文献资源。支持代谢物鉴定、定量分析、代谢通路分析、数据上传和共享。整合了HMDB、KEGG、PubChem等数据库，提供REST API和Web界面访问。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Metabolomics Workbench Database
+# Metabolomics Workbench数据库
 
-## Overview
+## 概述
 
-The Metabolomics Workbench is a comprehensive NIH Common Fund-sponsored platform hosted at UCSD that serves as the primary repository for metabolomics research data. It provides programmatic access to over 4,200 processed studies (3,790+ publicly available), standardized metabolite nomenclature through RefMet, and powerful search capabilities across multiple analytical platforms (GC-MS, LC-MS, NMR).
+Metabolomics Workbench是美国NIH支持的代谢组学数据库和资源平台。它提供了代谢物数据、实验数据、分析工具、代谢通路和文献资源。该平台支持代谢物鉴定、定量分析、代谢通路分析、数据上传和共享，并整合了HMDB、KEGG、PubChem等数据库，提供REST API和Web界面访问。
 
-## When to Use This Skill
+## 核心能力
 
-This skill should be used when querying metabolite structures, accessing study data, standardizing nomenclature, performing mass spectrometry searches, or retrieving gene/protein-metabolite associations through the Metabolomics Workbench REST API.
+### 1. 代谢物数据库
 
-## Core Capabilities
+- **代谢物信息**：代谢物名称、结构、性质
+- **代谢物鉴定**：基于质谱和NMR的代谢物鉴定
+- **代谢物定量**：定量代谢组学数据
+- **代谢物分类**：按化学类别和生物途径分类
 
-### 1. Querying Metabolite Structures and Data
+### 2. 实验数据
 
-Access comprehensive metabolite information including structures, identifiers, and cross-references to external databases.
+- **研究数据**：公开可用的代谢组学研究数据
+- **实验设计**：实验设计和方法学信息
+- **原始数据**：原始质谱和NMR数据
+- **处理数据**：经过处理和注释的数据
 
-**Key operations:**
-- Retrieve compound data by various identifiers (PubChem CID, InChI Key, KEGG ID, HMDB ID, etc.)
-- Download molecular structures as MOL files or PNG images
-- Access standardized compound classifications
-- Cross-reference between different metabolite databases
+### 3. 分析工具
 
-**Example queries:**
+- **代谢物鉴定**：基于质谱和NMR的代谢物鉴定工具
+- **定量分析**：代谢物定量分析工具
+- **统计分析**：差异分析、聚类分析、PCA等
+- **通路分析**：代谢通路富集分析
+
+### 4. 代谢通路
+
+- **通路映射**：代谢物到代谢通路的映射
+- **通路富集**：代谢通路富集分析
+- **通路可视化**：代谢通路可视化工具
+- **通路比较**：跨条件或物种的通路比较
+
+### 5. 文献资源
+
+- **文献检索**：代谢组学相关文献检索
+- **文献注释**：文献的代谢物和通路注释
+- **文献关联**：文献与代谢物和通路的关联
+
+## 何时使用此技能
+
+在以下情况下使用此技能：
+- 查询代谢物信息和性质
+- 进行代谢物鉴定
+- 访问代谢组学实验数据
+- 进行代谢通路分析
+- 使用代谢组学分析工具
+- 上传和共享代谢组学数据
+- 检索代谢组学文献
+- 整合多个代谢组学数据库
+
+## API访问
+
+Metabolomics Workbench提供REST API用于程序化访问。
+
+### 基本端点
+
+```
+https://www.metabolomicsworkbench.org/rest/
+```
+
+### 常用端点
+
+- `/study/study_id` - 获取研究信息
+- `/study/study_id/analysis` - 获取分析信息
+- `/compound/compound_id` - 获取代谢物信息
+- `/compound/name` - 按名称搜索代谢物
+- `/pathway/pathway_id` - 获取通路信息
+- `/pathway/compound_id` - 获取代谢物的通路
+
+## 使用示例
+
+### 查询研究信息
+
 ```python
 import requests
 
-# Get compound information by PubChem CID
-response = requests.get('https://www.metabolomicsworkbench.org/rest/compound/pubchem_cid/5281365/all/json')
+# 查询研究信息
+study_id = "ST000001"
+url = f"https://www.metabolomicsworkbench.org/rest/study/{study_id}"
+response = requests.get(url)
+study_data = response.json()
 
-# Download molecular structure as PNG
-response = requests.get('https://www.metabolomicsworkbench.org/rest/compound/regno/11/png')
-
-# Get compound name by registry number
-response = requests.get('https://www.metabolomicsworkbench.org/rest/compound/regno/11/name/json')
+print(f"研究标题: {study_data['study_title']}")
+print(f"研究描述: {study_data['study_description']}")
 ```
 
-### 2. Accessing Study Metadata and Experimental Results
+### 查询代谢物信息
 
-Query metabolomics studies by various criteria and retrieve complete experimental datasets.
-
-**Key operations:**
-- Search studies by metabolite, institute, investigator, or title
-- Access study summaries, experimental factors, and analysis details
-- Retrieve complete experimental data in various formats
-- Download mwTab format files for complete study information
-- Query untargeted metabolomics data
-
-**Example queries:**
 ```python
-# List all available public studies
-response = requests.get('https://www.metabolomicsworkbench.org/rest/study/study_id/ST/available/json')
+# 查询代谢物信息
+compound_name = "glucose"
+url = f"https://www.metabolomicsworkbench.org/rest/compound/{compound_name}"
+response = requests.get(url)
+compound_data = response.json()
 
-# Get study summary
-response = requests.get('https://www.metabolomicsworkbench.org/rest/study/study_id/ST000001/summary/json')
-
-# Retrieve experimental data
-response = requests.get('https://www.metabolomicsworkbench.org/rest/study/study_id/ST000001/data/json')
-
-# Find studies containing a specific metabolite
-response = requests.get('https://www.metabolomicsworkbench.org/rest/study/refmet_name/Tyrosine/summary/json')
+print(f"代谢物名称: {compound_data['name']}")
+print(f"代谢物ID: {compound_data['inchikey']}")
 ```
 
-### 3. Standardizing Metabolite Nomenclature with RefMet
+### 查询代谢通路
 
-Use the RefMet database to standardize metabolite names and access systematic classification across four structural resolution levels.
-
-**Key operations:**
-- Match common metabolite names to standardized RefMet names
-- Query by chemical formula, exact mass, or InChI Key
-- Access hierarchical classification (super class, main class, sub class)
-- Retrieve all RefMet entries or filter by classification
-
-**Example queries:**
 ```python
-# Standardize a metabolite name
-response = requests.get('https://www.metabolomicsworkbench.org/rest/refmet/match/citrate/name/json')
+# 查询代谢通路
+pathway_id = "PWY-5415"
+url = f"https://www.metabolomicsworkbench.org/rest/pathway/{pathway_id}"
+response = requests.get(url)
+pathway_data = response.json()
 
-# Query by molecular formula
-response = requests.get('https://www.metabolomicsworkbench.org/rest/refmet/formula/C12H24O2/all/json')
-
-# Get all metabolites in a specific class
-response = requests.get('https://www.metabolomicsworkbench.org/rest/refmet/main_class/Fatty%20Acids/all/json')
-
-# Retrieve complete RefMet database
-response = requests.get('https://www.metabolomicsworkbench.org/rest/refmet/all/json')
+print(f"通路名称: {pathway_data['name']}")
+print(f"通路描述: {pathway_data['description']}")
 ```
 
-### 4. Performing Mass Spectrometry Searches
+### 搜索代谢物
 
-Search for compounds by mass-to-charge ratio (m/z) with specified ion adducts and tolerance levels.
-
-**Key operations:**
-- Search precursor ion masses across multiple databases (Metabolomics Workbench, LIPIDS, RefMet)
-- Specify ion adduct types (M+H, M-H, M+Na, M+NH4, M+2H, etc.)
-- Calculate exact masses for known metabolites with specific adducts
-- Set mass tolerance for flexible matching
-
-**Example queries:**
 ```python
-# Search by m/z value with M+H adduct
-response = requests.get('https://www.metabolomicsworkbench.org/rest/moverz/MB/635.52/M+H/0.5/json')
+# 搜索代谢物
+search_term = "glucose"
+url = f"https://www.metabolomicsworkbench.org/rest/compound/search/{search_term}"
+response = requests.get(url)
+results = response.json()
 
-# Calculate exact mass for a metabolite with specific adduct
-response = requests.get('https://www.metabolomicsworkbench.org/rest/moverz/exactmass/PC(34:1)/M+H/json')
-
-# Search across RefMet database
-response = requests.get('https://www.metabolomicsworkbench.org/rest/moverz/REFMET/200.15/M-H/0.3/json')
+for compound in results:
+    print(f"名称: {compound['name']}, ID: {compound['inchikey']}")
 ```
 
-### 5. Filtering Studies by Analytical and Biological Parameters
+## 数据格式
 
-Use the MetStat context to find studies matching specific experimental conditions.
+### 代谢物数据
 
-**Key operations:**
-- Filter by analytical method (LCMS, GCMS, NMR)
-- Specify ionization polarity (POSITIVE, NEGATIVE)
-- Filter by chromatography type (HILIC, RP, GC)
-- Target specific species, sample sources, or diseases
-- Combine multiple filters using semicolon-delimited format
+- **InChIKey**：国际化学标识符
+- **SMILES**：简化分子线性输入规范
+- **分子量**：分子量
+- **化学式**：化学式
+- **分类**：化学类别和生物途径
 
-**Example queries:**
-```python
-# Find human blood studies on diabetes using LC-MS
-response = requests.get('https://www.metabolomicsworkbench.org/rest/metstat/LCMS;POSITIVE;HILIC;Human;Blood;Diabetes/json')
+### 实验数据
 
-# Find all human blood studies containing tyrosine
-response = requests.get('https://www.metabolomicsworkbench.org/rest/metstat/;;;Human;Blood;;;Tyrosine/json')
+- **研究ID**：研究标识符
+- **分析ID**：分析标识符
+- **样本ID**：样本标识符
+- **代谢物ID**：代谢物标识符
+- **定量值**：代谢物定量值
 
-# Filter by analytical method only
-response = requests.get('https://www.metabolomicsworkbench.org/rest/metstat/GCMS;;;;;;/json')
-```
+## 最佳实践
 
-### 6. Accessing Gene and Protein Information
+1. **使用标准标识符**：使用InChIKey、HMDB ID等标准标识符
+2. **验证数据**：验证查询结果的准确性和完整性
+3. **理解数据格式**：理解数据格式和结构
+4. **使用API限制**：遵守API速率限制和使用政策
+5. **缓存结果**：缓存常用查询结果以提高性能
+6. **处理分页**：处理大型结果集的分页
+7. **错误处理**：实现适当的错误处理和重试逻辑
 
-Retrieve gene and protein data associated with metabolic pathways and metabolite metabolism.
+## 常见问题
 
-**Key operations:**
-- Query genes by symbol, name, or ID
-- Access protein sequences and annotations
-- Cross-reference between gene IDs, RefSeq IDs, and UniProt IDs
-- Retrieve gene-metabolite associations
+**Q: Metabolomics Workbench支持哪些代谢物？**
+A: 支持各种代谢物，包括氨基酸、脂质、碳水化合物等。
 
-**Example queries:**
-```python
-# Get gene information by symbol
-response = requests.get('https://www.metabolomicsworkbench.org/rest/gene/gene_symbol/ACACA/all/json')
+**Q: 如何上传数据到Metabolomics Workbench？**
+A: 通过Web界面或API上传数据。
 
-# Retrieve protein data by UniProt ID
-response = requests.get('https://www.metabolomicsworkbench.org/rest/protein/uniprot_id/Q13085/all/json')
-```
+**Q: Metabolomics Workbench的数据来源是什么？**
+A: 数据来自公开的代谢组学研究和公共数据库。
 
-## Common Workflows
+**Q: 如何进行代谢通路分析？**
+A: 使用通路分析工具或API进行代谢通路分析。
 
-### Workflow 1: Finding Studies for a Specific Metabolite
+## 资源
 
-To find all studies containing measurements of a specific metabolite:
-
-1. First standardize the metabolite name using RefMet:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/refmet/match/glucose/name/json')
-   ```
-
-2. Use the standardized name to search for studies:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/study/refmet_name/Glucose/summary/json')
-   ```
-
-3. Retrieve experimental data from specific studies:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/study/study_id/ST000001/data/json')
-   ```
-
-### Workflow 2: Identifying Compounds from MS Data
-
-To identify potential compounds from mass spectrometry m/z values:
-
-1. Perform m/z search with appropriate adduct and tolerance:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/moverz/MB/180.06/M+H/0.5/json')
-   ```
-
-2. Review candidate compounds from results
-
-3. Retrieve detailed information for candidate compounds:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/compound/regno/{regno}/all/json')
-   ```
-
-4. Download structures for confirmation:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/compound/regno/{regno}/png')
-   ```
-
-### Workflow 3: Exploring Disease-Specific Metabolomics
-
-To find metabolomics studies for a specific disease and analytical platform:
-
-1. Use MetStat to filter studies:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/metstat/LCMS;POSITIVE;;Human;;Cancer/json')
-   ```
-
-2. Review study IDs from results
-
-3. Access detailed study information:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/study/study_id/ST{ID}/summary/json')
-   ```
-
-4. Retrieve complete experimental data:
-   ```python
-   response = requests.get('https://www.metabolomicsworkbench.org/rest/study/study_id/ST{ID}/data/json')
-   ```
-
-## Output Formats
-
-The API supports two primary output formats:
-- **JSON** (default): Machine-readable format, ideal for programmatic access
-- **TXT**: Human-readable tab-delimited text format
-
-Specify format by appending `/json` or `/txt` to API URLs. When format is omitted, JSON is returned by default.
-
-## Best Practices
-
-1. **Use RefMet for standardization**: Always standardize metabolite names through RefMet before searching studies to ensure consistent nomenclature
-
-2. **Specify appropriate adducts**: When performing m/z searches, use the correct ion adduct type for your analytical method (e.g., M+H for positive mode ESI)
-
-3. **Set reasonable tolerances**: Use appropriate mass tolerance values (typically 0.5 Da for low-resolution, 0.01 Da for high-resolution MS)
-
-4. **Cache reference data**: Consider caching frequently used reference data (RefMet database, compound information) to minimize API calls
-
-5. **Handle pagination**: For large result sets, be prepared to handle multiple data structures in responses
-
-6. **Validate identifiers**: Cross-reference metabolite identifiers across multiple databases when possible to ensure correct compound identification
-
-## Resources
-
-### references/
-
-Detailed API reference documentation is available in `references/api_reference.md`, including:
-- Complete REST API endpoint specifications
-- All available contexts (compound, study, refmet, metstat, gene, protein, moverz)
-- Input/output parameter details
-- Ion adduct types for mass spectrometry
-- Additional query examples
-
-Load this reference file when detailed API specifications are needed or when working with less common endpoints.
-
+- **Metabolomics Workbench官网**：https://www.metabolomicsworkbench.org
+- **API文档**：https://www.metabolomicsworkbench.org/rest
+- **GitHub**：https://github.com/MetabolomicsWorkBench

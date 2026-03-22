@@ -1,223 +1,223 @@
 ---
 name: rdkit
-description: Cheminformatics toolkit for fine-grained molecular control. SMILES/SDF parsing, descriptors (MW, LogP, TPSA), fingerprints, substructure search, 2D/3D generation, similarity, reactions. For standard workflows with simpler interface, use datamol (wrapper around RDKit). Use rdkit for advanced control, custom sanitization, specialized algorithms.
+description: 用于精细分子控制的化学信息学工具包。SMILES/SDF解析、描述符（分子量、LogP、TPSA）、指纹、子结构搜索、2D/3D生成、相似性、反应。对于具有更简单接口的标准工作流，使用datamol（RDKit的包装器）。对于高级控制、自定义净化、专门算法，使用rdkit。
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# RDKit Cheminformatics Toolkit
+# RDKit化学信息学工具包
 
-## Overview
+## 概述
 
-RDKit is a comprehensive cheminformatics library providing Python APIs for molecular analysis and manipulation. This skill provides guidance for reading/writing molecular structures, calculating descriptors, fingerprinting, substructure searching, chemical reactions, 2D/3D coordinate generation, and molecular visualization. Use this skill for drug discovery, computational chemistry, and cheminformatics research tasks.
+RDKit是一个全面的化学信息学库，提供用于分子分析和操作的Python API。本技能提供了关于读取/写入分子结构、计算描述符、指纹生成、子结构搜索、化学反应、2D/3D坐标生成和分子可视化的指导。使用此技能进行药物发现、计算化学和化学信息学研究任务。
 
-## Core Capabilities
+## 核心功能
 
-### 1. Molecular I/O and Creation
+### 1. 分子I/O和创建
 
-**Reading Molecules:**
+**读取分子：**
 
-Read molecular structures from various formats:
+从各种格式读取分子结构：
 
 ```python
 from rdkit import Chem
 
-# From SMILES strings
-mol = Chem.MolFromSmiles('Cc1ccccc1')  # Returns Mol object or None
+# 从SMILES字符串
+mol = Chem.MolFromSmiles('Cc1ccccc1')  # 返回Mol对象或None
 
-# From MOL files
+# 从MOL文件
 mol = Chem.MolFromMolFile('path/to/file.mol')
 
-# From MOL blocks (string data)
+# 从MOL块（字符串数据）
 mol = Chem.MolFromMolBlock(mol_block_string)
 
-# From InChI
+# 从InChI
 mol = Chem.MolFromInchi('InChI=1S/C6H6/c1-2-4-6-5-3-1/h1-6H')
 ```
 
-**Writing Molecules:**
+**写入分子：**
 
-Convert molecules to text representations:
+将分子转换为文本表示：
 
 ```python
-# To canonical SMILES
+# 转换为规范SMILES
 smiles = Chem.MolToSmiles(mol)
 
-# To MOL block
+# 转换为MOL块
 mol_block = Chem.MolToMolBlock(mol)
 
-# To InChI
+# 转换为InChI
 inchi = Chem.MolToInchi(mol)
 ```
 
-**Batch Processing:**
+**批处理：**
 
-For processing multiple molecules, use Supplier/Writer objects:
+对于处理多个分子，使用Supplier/Writer对象：
 
 ```python
-# Read SDF files
+# 读取SDF文件
 suppl = Chem.SDMolSupplier('molecules.sdf')
 for mol in suppl:
-    if mol is not None:  # Check for parsing errors
-        # Process molecule
+    if mol is not None:  # 检查解析错误
+        # 处理分子
         pass
 
-# Read SMILES files
+# 读取SMILES文件
 suppl = Chem.SmilesMolSupplier('molecules.smi', titleLine=False)
 
-# For large files or compressed data
+# 对于大文件或压缩数据
 with gzip.open('molecules.sdf.gz') as f:
     suppl = Chem.ForwardSDMolSupplier(f)
     for mol in suppl:
-        # Process molecule
+        # 处理分子
         pass
 
-# Multithreaded processing for large datasets
+# 大型数据集的多线程处理
 suppl = Chem.MultithreadedSDMolSupplier('molecules.sdf')
 
-# Write molecules to SDF
+# 将分子写入SDF
 writer = Chem.SDWriter('output.sdf')
 for mol in molecules:
     writer.write(mol)
 writer.close()
 ```
 
-**Important Notes:**
-- All `MolFrom*` functions return `None` on failure with error messages
-- Always check for `None` before processing molecules
-- Molecules are automatically sanitized on import (validates valence, perceives aromaticity)
+**重要说明：**
+- 所有 `MolFrom*` 函数在失败时返回 `None` 并显示错误消息
+- 在处理分子前始终检查 `None`
+- 分子在导入时会自动净化（验证化合价、感知芳香性）
 
-### 2. Molecular Sanitization and Validation
+### 2. 分子净化和验证
 
-RDKit automatically sanitizes molecules during parsing, executing 13 steps including valence checking, aromaticity perception, and chirality assignment.
+RDKit在解析过程中自动净化分子，执行13个步骤，包括化合价检查、芳香性感知和手性分配。
 
-**Sanitization Control:**
+**净化控制：**
 
 ```python
-# Disable automatic sanitization
+# 禁用自动净化
 mol = Chem.MolFromSmiles('C1=CC=CC=C1', sanitize=False)
 
-# Manual sanitization
+# 手动净化
 Chem.SanitizeMol(mol)
 
-# Detect problems before sanitization
+# 净化前检测问题
 problems = Chem.DetectChemistryProblems(mol)
 for problem in problems:
     print(problem.GetType(), problem.Message())
 
-# Partial sanitization (skip specific steps)
+# 部分净化（跳过特定步骤）
 from rdkit.Chem import rdMolStandardize
 Chem.SanitizeMol(mol, sanitizeOps=Chem.SANITIZE_ALL ^ Chem.SANITIZE_PROPERTIES)
 ```
 
-**Common Sanitization Issues:**
-- Atoms with explicit valence exceeding maximum allowed will raise exceptions
-- Invalid aromatic rings will cause kekulization errors
-- Radical electrons may not be properly assigned without explicit specification
+**常见净化问题：**
+- 显式化合价超过最大允许值的原子会引发异常
+- 无效的芳香环会导致kekulization错误
+- 自由基电子可能无法正确分配，除非明确指定
 
-### 3. Molecular Analysis and Properties
+### 3. 分子分析和性质
 
-**Accessing Molecular Structure:**
+**访问分子结构：**
 
 ```python
-# Iterate atoms and bonds
+# 迭代原子和键
 for atom in mol.GetAtoms():
     print(atom.GetSymbol(), atom.GetIdx(), atom.GetDegree())
 
 for bond in mol.GetBonds():
     print(bond.GetBeginAtomIdx(), bond.GetEndAtomIdx(), bond.GetBondType())
 
-# Ring information
+# 环信息
 ring_info = mol.GetRingInfo()
 ring_info.NumRings()
-ring_info.AtomRings()  # Returns tuples of atom indices
+ring_info.AtomRings()  # 返回原子索引的元组
 
-# Check if atom is in ring
+# 检查原子是否在环中
 atom = mol.GetAtomWithIdx(0)
 atom.IsInRing()
-atom.IsInRingSize(6)  # Check for 6-membered rings
+atom.IsInRingSize(6)  # 检查6元环
 
-# Find smallest set of smallest rings (SSSR)
+# 查找最小的最小环集合（SSSR）
 from rdkit.Chem import GetSymmSSSR
 rings = GetSymmSSSR(mol)
 ```
 
-**Stereochemistry:**
+**立体化学：**
 
 ```python
-# Find chiral centers
+# 查找手性中心
 from rdkit.Chem import FindMolChiralCenters
 chiral_centers = FindMolChiralCenters(mol, includeUnassigned=True)
-# Returns list of (atom_idx, chirality) tuples
+# 返回(atom_idx, chirality)元组列表
 
-# Assign stereochemistry from 3D coordinates
+# 从3D坐标分配立体化学
 from rdkit.Chem import AssignStereochemistryFrom3D
 AssignStereochemistryFrom3D(mol)
 
-# Check bond stereochemistry
+# 检查键的立体化学
 bond = mol.GetBondWithIdx(0)
-stereo = bond.GetStereo()  # STEREONONE, STEREOZ, STEREOE, etc.
+stereo = bond.GetStereo()  # STEREONONE, STEREOZ, STEREOE等
 ```
 
-**Fragment Analysis:**
+**片段分析：**
 
 ```python
-# Get disconnected fragments
+# 获取断开的片段
 frags = Chem.GetMolFrags(mol, asMols=True)
 
-# Fragment on specific bonds
+# 在特定键处片段化
 from rdkit.Chem import FragmentOnBonds
 frag_mol = FragmentOnBonds(mol, [bond_idx1, bond_idx2])
 
-# Count ring systems
+# 计算环系统
 from rdkit.Chem.Scaffolds import MurckoScaffold
 scaffold = MurckoScaffold.GetScaffoldForMol(mol)
 ```
 
-### 4. Molecular Descriptors and Properties
+### 4. 分子描述符和性质
 
-**Basic Descriptors:**
+**基本描述符：**
 
 ```python
 from rdkit.Chem import Descriptors
 
-# Molecular weight
+# 分子量
 mw = Descriptors.MolWt(mol)
 exact_mw = Descriptors.ExactMolWt(mol)
 
-# LogP (lipophilicity)
+# LogP（亲脂性）
 logp = Descriptors.MolLogP(mol)
 
-# Topological polar surface area
+# 拓扑极性表面积
 tpsa = Descriptors.TPSA(mol)
 
-# Number of hydrogen bond donors/acceptors
+# 氢键供体/受体数量
 hbd = Descriptors.NumHDonors(mol)
 hba = Descriptors.NumHAcceptors(mol)
 
-# Number of rotatable bonds
+# 可旋转键数量
 rot_bonds = Descriptors.NumRotatableBonds(mol)
 
-# Number of aromatic rings
+# 芳香环数量
 aromatic_rings = Descriptors.NumAromaticRings(mol)
 ```
 
-**Batch Descriptor Calculation:**
+**批量描述符计算：**
 
 ```python
-# Calculate all descriptors at once
+# 一次计算所有描述符
 all_descriptors = Descriptors.CalcMolDescriptors(mol)
-# Returns dictionary: {'MolWt': 180.16, 'MolLogP': 1.23, ...}
+# 返回字典: {'MolWt': 180.16, 'MolLogP': 1.23, ...}
 
-# Get list of available descriptor names
+# 获取可用描述符名称列表
 descriptor_names = [desc[0] for desc in Descriptors._descList]
 ```
 
-**Lipinski's Rule of Five:**
+**Lipinski五规则：**
 
 ```python
-# Check drug-likeness
+# 检查类药性
 mw = Descriptors.MolWt(mol) <= 500
 logp = Descriptors.MolLogP(mol) <= 5
 hbd = Descriptors.NumHDonors(mol) <= 5
@@ -226,71 +226,71 @@ hba = Descriptors.NumHAcceptors(mol) <= 10
 is_drug_like = mw and logp and hbd and hba
 ```
 
-### 5. Fingerprints and Molecular Similarity
+### 5. 指纹和分子相似性
 
-**Fingerprint Types:**
+**指纹类型：**
 
 ```python
 from rdkit.Chem import rdFingerprintGenerator
 from rdkit.Chem import MACCSkeys
 
-# RDKit topological fingerprint
+# RDKit拓扑指纹
 rdk_gen = rdFingerprintGenerator.GetRDKitFPGenerator(minPath=1, maxPath=7, fpSize=2048)
 fp = rdk_gen.GetFingerprint(mol)
 
-# Morgan fingerprints (circular fingerprints, similar to ECFP)
-# Modern API using rdFingerprintGenerator
+# Morgan指纹（圆形指纹，类似于ECFP）
+# 使用rdFingerprintGenerator的现代API
 morgan_gen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
 fp = morgan_gen.GetFingerprint(mol)
-# Count-based fingerprint
+# 基于计数的指纹
 fp_count = morgan_gen.GetCountFingerprint(mol)
 
-# MACCS keys (166-bit structural key)
+# MACCS键（166位结构键）
 fp = MACCSkeys.GenMACCSKeys(mol)
 
-# Atom pair fingerprints
+# 原子对指纹
 ap_gen = rdFingerprintGenerator.GetAtomPairGenerator()
 fp = ap_gen.GetFingerprint(mol)
 
-# Topological torsion fingerprints
+# 拓扑扭转指纹
 tt_gen = rdFingerprintGenerator.GetTopologicalTorsionGenerator()
 fp = tt_gen.GetFingerprint(mol)
 
-# Avalon fingerprints (if available)
+# Avalon指纹（如果可用）
 from rdkit.Avalon import pyAvalonTools
 fp = pyAvalonTools.GetAvalonFP(mol)
 ```
 
-**Similarity Calculation:**
+**相似性计算：**
 
 ```python
 from rdkit import DataStructs
 from rdkit.Chem import rdFingerprintGenerator
 
-# Generate fingerprints using generator
+# 使用生成器生成指纹
 mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
 fp1 = mfpgen.GetFingerprint(mol1)
 fp2 = mfpgen.GetFingerprint(mol2)
 
-# Calculate Tanimoto similarity
+# 计算Tanimoto相似性
 similarity = DataStructs.TanimotoSimilarity(fp1, fp2)
 
-# Calculate similarity for multiple molecules
+# 计算多个分子的相似性
 fps = [mfpgen.GetFingerprint(m) for m in [mol2, mol3, mol4]]
 similarities = DataStructs.BulkTanimotoSimilarity(fp1, fps)
 
-# Other similarity metrics
+# 其他相似性度量
 dice = DataStructs.DiceSimilarity(fp1, fp2)
 cosine = DataStructs.CosineSimilarity(fp1, fp2)
 ```
 
-**Clustering and Diversity:**
+**聚类和多样性：**
 
 ```python
-# Butina clustering based on fingerprint similarity
+# 基于指纹相似性的Butina聚类
 from rdkit.ML.Cluster import Butina
 
-# Calculate distance matrix
+# 计算距离矩阵
 dists = []
 mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
 fps = [mfpgen.GetFingerprint(mol) for mol in mols]
@@ -298,315 +298,315 @@ for i in range(len(fps)):
     sims = DataStructs.BulkTanimotoSimilarity(fps[i], fps[:i])
     dists.extend([1-sim for sim in sims])
 
-# Cluster with distance cutoff
+# 用距离阈值聚类
 clusters = Butina.ClusterData(dists, len(fps), distThresh=0.3, isDistData=True)
 ```
 
-### 6. Substructure Searching and SMARTS
+### 6. 子结构搜索和SMARTS
 
-**Basic Substructure Matching:**
+**基本子结构匹配：**
 
 ```python
-# Define query using SMARTS
-query = Chem.MolFromSmarts('[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1')  # Benzene ring
+# 使用SMARTS定义查询
+query = Chem.MolFromSmarts('[#6]1:[#6]:[#6]:[#6]:[#6]:[#6]:1')  # 苯环
 
-# Check if molecule contains substructure
+# 检查分子是否包含子结构
 has_match = mol.HasSubstructMatch(query)
 
-# Get all matches (returns tuple of tuples with atom indices)
+# 获取所有匹配（返回带有原子索引的元组的元组）
 matches = mol.GetSubstructMatches(query)
 
-# Get only first match
+# 仅获取第一个匹配
 match = mol.GetSubstructMatch(query)
 ```
 
-**Common SMARTS Patterns:**
+**常见SMARTS模式：**
 
 ```python
-# Primary alcohols
+# 伯醇
 primary_alcohol = Chem.MolFromSmarts('[CH2][OH1]')
 
-# Carboxylic acids
+# 羧酸
 carboxylic_acid = Chem.MolFromSmarts('C(=O)[OH]')
 
-# Amides
+# 酰胺
 amide = Chem.MolFromSmarts('C(=O)N')
 
-# Aromatic heterocycles
-aromatic_n = Chem.MolFromSmarts('[nR]')  # Aromatic nitrogen in ring
+# 芳香杂环
+aromatic_n = Chem.MolFromSmarts('[nR]')  # 环中的芳香氮
 
-# Macrocycles (rings > 12 atoms)
+# 大环（>12原子的环）
 macrocycle = Chem.MolFromSmarts('[r{12-}]')
 ```
 
-**Matching Rules:**
-- Unspecified properties in query match any value in target
-- Hydrogens are ignored unless explicitly specified
-- Charged query atom won't match uncharged target atom
-- Aromatic query atom won't match aliphatic target atom (unless query is generic)
+**匹配规则：**
+- 查询中未指定的属性匹配目标中的任何值
+- 除非明确指定，否则忽略氢
+- 带电查询原子不会匹配不带电目标原子
+- 芳香查询原子不会匹配脂肪族目标原子（除非查询是通用的）
 
-### 7. Chemical Reactions
+### 7. 化学反应
 
-**Reaction SMARTS:**
+**反应SMARTS：**
 
 ```python
 from rdkit.Chem import AllChem
 
-# Define reaction using SMARTS: reactants >> products
-rxn = AllChem.ReactionFromSmarts('[C:1]=[O:2]>>[C:1][O:2]')  # Ketone reduction
+# 使用SMARTS定义反应：反应物 >> 产物
+rxn = AllChem.ReactionFromSmarts('[C:1]=[O:2]>>[C:1][O:2]')  # 酮还原
 
-# Apply reaction to molecules
+# 将反应应用于分子
 reactants = (mol1,)
 products = rxn.RunReactants(reactants)
 
-# Products is tuple of tuples (one tuple per product set)
+# 产物是元组的元组（每个产物集一个元组）
 for product_set in products:
     for product in product_set:
-        # Sanitize product
+        # 净化产物
         Chem.SanitizeMol(product)
 ```
 
-**Reaction Features:**
-- Atom mapping preserves specific atoms between reactants and products
-- Dummy atoms in products are replaced by corresponding reactant atoms
-- "Any" bonds inherit bond order from reactants
-- Chirality preserved unless explicitly changed
+**反应特性：**
+- 原子映射在反应物和产物之间保留特定原子
+- 产物中的虚拟原子被相应的反应物原子替换
+- "任意"键从反应物继承键序
+- 手性保持不变，除非明确改变
 
-**Reaction Similarity:**
+**反应相似性：**
 
 ```python
-# Generate reaction fingerprints
+# 生成反应指纹
 fp = AllChem.CreateDifferenceFingerprintForReaction(rxn)
 
-# Compare reactions
+# 比较反应
 similarity = DataStructs.TanimotoSimilarity(fp1, fp2)
 ```
 
-### 8. 2D and 3D Coordinate Generation
+### 8. 2D和3D坐标生成
 
-**2D Coordinate Generation:**
+**2D坐标生成：**
 
 ```python
 from rdkit.Chem import AllChem
 
-# Generate 2D coordinates for depiction
+# 生成用于描绘的2D坐标
 AllChem.Compute2DCoords(mol)
 
-# Align molecule to template structure
+# 将分子对齐到模板结构
 template = Chem.MolFromSmiles('c1ccccc1')
 AllChem.Compute2DCoords(template)
 AllChem.GenerateDepictionMatching2DStructure(mol, template)
 ```
 
-**3D Coordinate Generation and Conformers:**
+**3D坐标生成和构象：**
 
 ```python
-# Generate single 3D conformer using ETKDG
+# 使用ETKDG生成单个3D构象
 AllChem.EmbedMolecule(mol, randomSeed=42)
 
-# Generate multiple conformers
+# 生成多个构象
 conf_ids = AllChem.EmbedMultipleConfs(mol, numConfs=10, randomSeed=42)
 
-# Optimize geometry with force field
-AllChem.UFFOptimizeMolecule(mol)  # UFF force field
-AllChem.MMFFOptimizeMolecule(mol)  # MMFF94 force field
+# 用力场优化几何结构
+AllChem.UFFOptimizeMolecule(mol)  # UFF力场
+AllChem.MMFFOptimizeMolecule(mol)  # MMFF94力场
 
-# Optimize all conformers
+# 优化所有构象
 for conf_id in conf_ids:
     AllChem.MMFFOptimizeMolecule(mol, confId=conf_id)
 
-# Calculate RMSD between conformers
+# 计算构象之间的RMSD
 from rdkit.Chem import AllChem
 rms = AllChem.GetConformerRMS(mol, conf_id1, conf_id2)
 
-# Align molecules
+# 对齐分子
 AllChem.AlignMol(probe_mol, ref_mol)
 ```
 
-**Constrained Embedding:**
+**约束嵌入：**
 
 ```python
-# Embed with part of molecule constrained to specific coordinates
+# 嵌入时将分子的一部分约束到特定坐标
 AllChem.ConstrainedEmbed(mol, core_mol)
 ```
 
-### 9. Molecular Visualization
+### 9. 分子可视化
 
-**Basic Drawing:**
+**基本绘图：**
 
 ```python
 from rdkit.Chem import Draw
 
-# Draw single molecule to PIL image
+# 绘制单个分子到PIL图像
 img = Draw.MolToImage(mol, size=(300, 300))
 img.save('molecule.png')
 
-# Draw to file directly
+# 直接绘制到文件
 Draw.MolToFile(mol, 'molecule.png')
 
-# Draw multiple molecules in grid
+# 在网格中绘制多个分子
 mols = [mol1, mol2, mol3, mol4]
 img = Draw.MolsToGridImage(mols, molsPerRow=2, subImgSize=(200, 200))
 ```
 
-**Highlighting Substructures:**
+**突出显示子结构：**
 
 ```python
-# Highlight substructure match
+# 突出显示子结构匹配
 query = Chem.MolFromSmarts('c1ccccc1')
 match = mol.GetSubstructMatch(query)
 
 img = Draw.MolToImage(mol, highlightAtoms=match)
 
-# Custom highlight colors
-highlight_colors = {atom_idx: (1, 0, 0) for atom_idx in match}  # Red
+# 自定义突出显示颜色
+highlight_colors = {atom_idx: (1, 0, 0) for atom_idx in match}  # 红色
 img = Draw.MolToImage(mol, highlightAtoms=match,
                       highlightAtomColors=highlight_colors)
 ```
 
-**Customizing Visualization:**
+**自定义可视化：**
 
 ```python
 from rdkit.Chem.Draw import rdMolDraw2D
 
-# Create drawer with custom options
+# 创建带有自定义选项的绘图器
 drawer = rdMolDraw2D.MolDraw2DCairo(300, 300)
 opts = drawer.drawOptions()
 
-# Customize options
+# 自定义选项
 opts.addAtomIndices = True
 opts.addStereoAnnotation = True
 opts.bondLineWidth = 2
 
-# Draw molecule
+# 绘制分子
 drawer.DrawMolecule(mol)
 drawer.FinishDrawing()
 
-# Save to file
+# 保存到文件
 with open('molecule.png', 'wb') as f:
     f.write(drawer.GetDrawingText())
 ```
 
-**Jupyter Notebook Integration:**
+**Jupyter Notebook集成：**
 
 ```python
-# Enable inline display in Jupyter
+# 在Jupyter中启用内联显示
 from rdkit.Chem.Draw import IPythonConsole
 
-# Customize default display
-IPythonConsole.ipython_useSVG = True  # Use SVG instead of PNG
-IPythonConsole.molSize = (300, 300)   # Default size
+# 自定义默认显示
+IPythonConsole.ipython_useSVG = True  # 使用SVG而不是PNG
+IPythonConsole.molSize = (300, 300)   # 默认大小
 
-# Molecules now display automatically
-mol  # Shows molecule image
+# 分子现在会自动显示
+mol  # 显示分子图像
 ```
 
-**Visualizing Fingerprint Bits:**
+**可视化指纹位：**
 
 ```python
-# Show what molecular features a fingerprint bit represents
+# 显示指纹位代表的分子特征
 from rdkit.Chem import Draw
 
-# For Morgan fingerprints
+# 对于Morgan指纹
 bit_info = {}
 fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, bitInfo=bit_info)
 
-# Draw environment for specific bit
+# 绘制特定位的环境
 img = Draw.DrawMorganBit(mol, bit_id, bit_info)
 ```
 
-### 10. Molecular Modification
+### 10. 分子修改
 
-**Adding/Removing Hydrogens:**
+**添加/删除氢：**
 
 ```python
-# Add explicit hydrogens
+# 添加显式氢
 mol_h = Chem.AddHs(mol)
 
-# Remove explicit hydrogens
+# 删除显式氢
 mol = Chem.RemoveHs(mol_h)
 ```
 
-**Kekulization and Aromaticity:**
+**Kekulization和芳香性：**
 
 ```python
-# Convert aromatic bonds to alternating single/double
+# 将芳香键转换为交替单/双键
 Chem.Kekulize(mol)
 
-# Set aromaticity
+# 设置芳香性
 Chem.SetAromaticity(mol)
 ```
 
-**Replacing Substructures:**
+**替换子结构：**
 
 ```python
-# Replace substructure with another structure
-query = Chem.MolFromSmarts('c1ccccc1')  # Benzene
-replacement = Chem.MolFromSmiles('C1CCCCC1')  # Cyclohexane
+# 用另一个结构替换子结构
+query = Chem.MolFromSmarts('c1ccccc1')  # 苯
+replacement = Chem.MolFromSmiles('C1CCCCC1')  # 环己烷
 
 new_mol = Chem.ReplaceSubstructs(mol, query, replacement)[0]
 ```
 
-**Neutralizing Charges:**
+**中和电荷：**
 
 ```python
-# Remove formal charges by adding/removing hydrogens
+# 通过添加/删除氢来移除形式电荷
 from rdkit.Chem.MolStandardize import rdMolStandardize
 
-# Using Uncharger
+# 使用Uncharger
 uncharger = rdMolStandardize.Uncharger()
 mol_neutral = uncharger.uncharge(mol)
 ```
 
-### 11. Working with Molecular Hashes and Standardization
+### 11. 分子哈希和标准化
 
-**Molecular Hashing:**
+**分子哈希：**
 
 ```python
 from rdkit.Chem import rdMolHash
 
-# Generate Murcko scaffold hash
+# 生成Murcko骨架哈希
 scaffold_hash = rdMolHash.MolHash(mol, rdMolHash.HashFunction.MurckoScaffold)
 
-# Canonical SMILES hash
+# 规范SMILES哈希
 canonical_hash = rdMolHash.MolHash(mol, rdMolHash.HashFunction.CanonicalSmiles)
 
-# Regioisomer hash (ignores stereochemistry)
+# 区域异构体哈希（忽略立体化学）
 regio_hash = rdMolHash.MolHash(mol, rdMolHash.HashFunction.Regioisomer)
 ```
 
-**Randomized SMILES:**
+**随机SMILES：**
 
 ```python
-# Generate random SMILES representations (for data augmentation)
+# 生成随机SMILES表示（用于数据增强）
 from rdkit.Chem import MolToRandomSmilesVect
 
 random_smiles = MolToRandomSmilesVect(mol, numSmiles=10, randomSeed=42)
 ```
 
-### 12. Pharmacophore and 3D Features
+### 12. 药效团和3D特征
 
-**Pharmacophore Features:**
+**药效团特征：**
 
 ```python
 from rdkit.Chem import ChemicalFeatures
 from rdkit import RDConfig
 import os
 
-# Load feature factory
+# 加载特征工厂
 fdef_path = os.path.join(RDConfig.RDDataDir, 'BaseFeatures.fdef')
 factory = ChemicalFeatures.BuildFeatureFactory(fdef_path)
 
-# Get pharmacophore features
+# 获取药效团特征
 features = factory.GetFeaturesForMol(mol)
 
 for feat in features:
     print(feat.GetFamily(), feat.GetType(), feat.GetAtomIds())
 ```
 
-## Common Workflows
+## 常见工作流
 
-### Drug-likeness Analysis
+### 类药性分析
 
 ```python
 from rdkit import Chem
@@ -617,7 +617,7 @@ def analyze_druglikeness(smiles):
     if mol is None:
         return None
 
-    # Calculate Lipinski descriptors
+    # 计算Lipinski描述符
     results = {
         'MW': Descriptors.MolWt(mol),
         'LogP': Descriptors.MolLogP(mol),
@@ -627,7 +627,7 @@ def analyze_druglikeness(smiles):
         'RotBonds': Descriptors.NumRotatableBonds(mol)
     }
 
-    # Check Lipinski's Rule of Five
+    # 检查Lipinski五规则
     results['Lipinski'] = (
         results['MW'] <= 500 and
         results['LogP'] <= 5 and
@@ -638,7 +638,7 @@ def analyze_druglikeness(smiles):
     return results
 ```
 
-### Similarity Screening
+### 相似性筛选
 
 ```python
 from rdkit import Chem
@@ -661,7 +661,7 @@ def similarity_screen(query_smiles, database_smiles, threshold=0.7):
     return sorted(hits, key=lambda x: x[2], reverse=True)
 ```
 
-### Substructure Filtering
+### 子结构过滤
 
 ```python
 from rdkit import Chem
@@ -678,101 +678,100 @@ def filter_by_substructure(smiles_list, pattern_smarts):
     return hits
 ```
 
-## Best Practices
+## 最佳实践
 
-### Error Handling
+### 错误处理
 
-Always check for `None` when parsing molecules:
+解析分子时始终检查 `None`：
 
 ```python
 mol = Chem.MolFromSmiles(smiles)
 if mol is None:
-    print(f"Failed to parse: {smiles}")
+    print(f"解析失败: {smiles}")
     continue
 ```
 
-### Performance Optimization
+### 性能优化
 
-**Use binary formats for storage:**
+**使用二进制格式存储：**
 
 ```python
 import pickle
 
-# Pickle molecules for fast loading
+# 序列化分子以快速加载
 with open('molecules.pkl', 'wb') as f:
     pickle.dump(mols, f)
 
-# Load pickled molecules (much faster than reparsing)
+# 加载序列化的分子（比重新解析快得多）
 with open('molecules.pkl', 'rb') as f:
     mols = pickle.load(f)
 ```
 
-**Use bulk operations:**
+**使用批量操作：**
 
 ```python
-# Calculate fingerprints for all molecules at once
+# 一次计算所有分子的指纹
 fps = [AllChem.GetMorganFingerprintAsBitVect(mol, 2) for mol in mols]
 
-# Use bulk similarity calculations
+# 使用批量相似性计算
 similarities = DataStructs.BulkTanimotoSimilarity(fps[0], fps[1:])
 ```
 
-### Thread Safety
+### 线程安全
 
-RDKit operations are generally thread-safe for:
-- Molecule I/O (SMILES, mol blocks)
-- Coordinate generation
-- Fingerprinting and descriptors
-- Substructure searching
-- Reactions
-- Drawing
+RDKit操作通常对以下内容是线程安全的：
+- 分子I/O（SMILES、mol块）
+- 坐标生成
+- 指纹生成和描述符
+- 子结构搜索
+- 反应
+- 绘图
 
-**Not thread-safe:** MolSuppliers when accessed concurrently.
+**非线程安全：** 并发访问时的MolSuppliers。
 
-### Memory Management
+### 内存管理
 
-For large datasets:
+对于大型数据集：
 
 ```python
-# Use ForwardSDMolSupplier to avoid loading entire file
+# 使用ForwardSDMolSupplier避免加载整个文件
 with open('large.sdf') as f:
     suppl = Chem.ForwardSDMolSupplier(f)
     for mol in suppl:
-        # Process one molecule at a time
+        # 一次处理一个分子
         pass
 
-# Use MultithreadedSDMolSupplier for parallel processing
+# 使用MultithreadedSDMolSupplier进行并行处理
 suppl = Chem.MultithreadedSDMolSupplier('large.sdf', numWriterThreads=4)
 ```
 
-## Common Pitfalls
+## 常见陷阱
 
-1. **Forgetting to check for None:** Always validate molecules after parsing
-2. **Sanitization failures:** Use `DetectChemistryProblems()` to debug
-3. **Missing hydrogens:** Use `AddHs()` when calculating properties that depend on hydrogen
-4. **2D vs 3D:** Generate appropriate coordinates before visualization or 3D analysis
-5. **SMARTS matching rules:** Remember that unspecified properties match anything
-6. **Thread safety with MolSuppliers:** Don't share supplier objects across threads
+1. **忘记检查None：** 解析后始终验证分子
+2. **净化失败：** 使用 `DetectChemistryProblems()` 进行调试
+3. **缺少氢：** 计算依赖于氢的性质时使用 `AddHs()`
+4. **2D与3D：** 在可视化或3D分析前生成适当的坐标
+5. **SMARTS匹配规则：** 记住未指定的属性匹配任何内容
+6. **MolSuppliers的线程安全：** 不要在线程之间共享supplier对象
 
-## Resources
+## 资源
 
 ### references/
 
-This skill includes detailed API reference documentation:
+本技能包含详细的API参考文档：
 
-- `api_reference.md` - Comprehensive listing of RDKit modules, functions, and classes organized by functionality
-- `descriptors_reference.md` - Complete list of available molecular descriptors with descriptions
-- `smarts_patterns.md` - Common SMARTS patterns for functional groups and structural features
+- `api_reference.md` - 按功能组织的RDKit模块、函数和类的综合列表
+- `descriptors_reference.md` - 可用分子描述符的完整列表及其描述
+- `smarts_patterns.md` - 官能团和结构特征的常见SMARTS模式
 
-Load these references when needing specific API details, parameter information, or pattern examples.
+需要特定API细节、参数信息或模式示例时加载这些参考。
 
 ### scripts/
 
-Example scripts for common RDKit workflows:
+常见RDKit工作流的示例脚本：
 
-- `molecular_properties.py` - Calculate comprehensive molecular properties and descriptors
-- `similarity_search.py` - Perform fingerprint-based similarity screening
-- `substructure_filter.py` - Filter molecules by substructure patterns
+- `molecular_properties.py` - 计算综合分子性质和描述符
+- `similarity_search.py` - 执行基于指纹的相似性筛选
+- `substructure_filter.py` - 按子结构模式过滤分子
 
-These scripts can be executed directly or used as templates for custom workflows.
-
+这些脚本可以直接执行或用作自定义工作流的模板。

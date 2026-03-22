@@ -1,6 +1,6 @@
 ---
 name: shap
-description: Model interpretability and explainability using SHAP (SHapley Additive exPlanations). Use this skill when explaining machine learning model predictions, computing feature importance, generating SHAP plots (waterfall, beeswarm, bar, scatter, force, heatmap), debugging models, analyzing model bias or fairness, comparing models, or implementing explainable AI. Works with tree-based models (XGBoost, LightGBM, Random Forest), deep learning (TensorFlow, PyTorch), linear models, and any black-box model.
+description: 使用 SHAP（SHapley 加性解释）进行模型可解释性和可解释性分析。当解释机器学习模型预测、计算特征重要性、生成 SHAP 图（瀑布图、蜂群图、条形图、散点图、力图、热力图）、调试模型、分析模型偏见或公平性、比较模型或实现可解释 AI 时，使用此技能。适用于基于树的模型（XGBoost、LightGBM、随机森林）、深度学习（TensorFlow、PyTorch）、线性模型和任何黑盒模型。
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,332 +8,332 @@ metadata:
 
 # SHAP (SHapley Additive exPlanations)
 
-## Overview
+## 概述
 
-SHAP is a unified approach to explain machine learning model outputs using Shapley values from cooperative game theory. This skill provides comprehensive guidance for:
+SHAP 是一种使用合作博弈论中的 Shapley 值来解释机器学习模型输出的统一方法。此技能提供全面的指导，包括：
 
-- Computing SHAP values for any model type
-- Creating visualizations to understand feature importance
-- Debugging and validating model behavior
-- Analyzing fairness and bias
-- Implementing explainable AI in production
+- 计算任何模型类型的 SHAP 值
+- 创建可视化以理解特征重要性
+- 调试和验证模型行为
+- 分析公平性和偏见
+- 在生产中实现可解释 AI
 
-SHAP works with all model types: tree-based models (XGBoost, LightGBM, CatBoost, Random Forest), deep learning models (TensorFlow, PyTorch, Keras), linear models, and black-box models.
+SHAP 适用于所有模型类型：基于树的模型（XGBoost、LightGBM、CatBoost、随机森林）、深度学习模型（TensorFlow、PyTorch、Keras）、线性模型和黑盒模型。
 
-## When to Use This Skill
+## 何时使用此技能
 
-**Trigger this skill when users ask about**:
-- "Explain which features are most important in my model"
-- "Generate SHAP plots" (waterfall, beeswarm, bar, scatter, force, heatmap, etc.)
-- "Why did my model make this prediction?"
-- "Calculate SHAP values for my model"
-- "Visualize feature importance using SHAP"
-- "Debug my model's behavior" or "validate my model"
-- "Check my model for bias" or "analyze fairness"
-- "Compare feature importance across models"
-- "Implement explainable AI" or "add explanations to my model"
-- "Understand feature interactions"
-- "Create model interpretation dashboard"
+**当用户询问以下内容时触发此技能**：
+- "解释我的模型中哪些特征最重要"
+- "生成 SHAP 图"（瀑布图、蜂群图、条形图、散点图、力图、热力图等）
+- "为什么我的模型做出这个预测？"
+- "为我的模型计算 SHAP 值"
+- "使用 SHAP 可视化特征重要性"
+- "调试我的模型行为" 或 "验证我的模型"
+- "检查我的模型是否有偏见" 或 "分析公平性"
+- "比较模型间的特征重要性"
+- "实现可解释 AI" 或 "为我的模型添加解释"
+- "理解特征交互"
+- "创建模型解释仪表板"
 
-## Quick Start Guide
+## 快速入门指南
 
-### Step 1: Select the Right Explainer
+### 步骤 1：选择正确的解释器
 
-**Decision Tree**:
+**决策树**：
 
-1. **Tree-based model?** (XGBoost, LightGBM, CatBoost, Random Forest, Gradient Boosting)
-   - Use `shap.TreeExplainer` (fast, exact)
+1. **基于树的模型？**（XGBoost、LightGBM、CatBoost、随机森林、梯度提升）
+   - 使用 `shap.TreeExplainer`（快速，精确）
 
-2. **Deep neural network?** (TensorFlow, PyTorch, Keras, CNNs, RNNs, Transformers)
-   - Use `shap.DeepExplainer` or `shap.GradientExplainer`
+2. **深度神经网络？**（TensorFlow、PyTorch、Keras、CNN、RNN、Transformer）
+   - 使用 `shap.DeepExplainer` 或 `shap.GradientExplainer`
 
-3. **Linear model?** (Linear/Logistic Regression, GLMs)
-   - Use `shap.LinearExplainer` (extremely fast)
+3. **线性模型？**（线性/逻辑回归、GLM）
+   - 使用 `shap.LinearExplainer`（极快）
 
-4. **Any other model?** (SVMs, custom functions, black-box models)
-   - Use `shap.KernelExplainer` (model-agnostic but slower)
+4. **其他模型？**（SVM、自定义函数、黑盒模型）
+   - 使用 `shap.KernelExplainer`（与模型无关但较慢）
 
-5. **Unsure?**
-   - Use `shap.Explainer` (automatically selects best algorithm)
+5. **不确定？**
+   - 使用 `shap.Explainer`（自动选择最佳算法）
 
-**See `references/explainers.md` for detailed information on all explainer types.**
+**有关所有解释器类型的详细信息，请参阅 `references/explainers.md`。**
 
-### Step 2: Compute SHAP Values
+### 步骤 2：计算 SHAP 值
 
 ```python
 import shap
 
-# Example with tree-based model (XGBoost)
+# 基于树的模型示例（XGBoost）
 import xgboost as xgb
 
-# Train model
+# 训练模型
 model = xgb.XGBClassifier().fit(X_train, y_train)
 
-# Create explainer
+# 创建解释器
 explainer = shap.TreeExplainer(model)
 
-# Compute SHAP values
+# 计算 SHAP 值
 shap_values = explainer(X_test)
 
-# The shap_values object contains:
-# - values: SHAP values (feature attributions)
-# - base_values: Expected model output (baseline)
-# - data: Original feature values
+# shap_values 对象包含：
+# - values: SHAP 值（特征归因）
+# - base_values: 预期模型输出（基线）
+# - data: 原始特征值
 ```
 
-### Step 3: Visualize Results
+### 步骤 3：可视化结果
 
-**For Global Understanding** (entire dataset):
+**全局理解**（整个数据集）：
 ```python
-# Beeswarm plot - shows feature importance with value distributions
+# 蜂群图 - 显示特征重要性和值分布
 shap.plots.beeswarm(shap_values, max_display=15)
 
-# Bar plot - clean summary of feature importance
+# 条形图 - 特征重要性的清晰摘要
 shap.plots.bar(shap_values)
 ```
 
-**For Individual Predictions**:
+**单个预测**：
 ```python
-# Waterfall plot - detailed breakdown of single prediction
+# 瀑布图 - 单个预测的详细分解
 shap.plots.waterfall(shap_values[0])
 
-# Force plot - additive force visualization
+# 力图 - 加性力可视化
 shap.plots.force(shap_values[0])
 ```
 
-**For Feature Relationships**:
+**特征关系**：
 ```python
-# Scatter plot - feature-prediction relationship
+# 散点图 - 特征-预测关系
 shap.plots.scatter(shap_values[:, "Feature_Name"])
 
-# Colored by another feature to show interactions
+# 按另一个特征着色以显示交互
 shap.plots.scatter(shap_values[:, "Age"], color=shap_values[:, "Education"])
 ```
 
-**See `references/plots.md` for comprehensive guide on all plot types.**
+**有关所有绘图类型的综合指南，请参阅 `references/plots.md`。**
 
-## Core Workflows
+## 核心工作流
 
-This skill supports several common workflows. Choose the workflow that matches the current task.
+此技能支持几种常见工作流。选择与当前任务匹配的工作流。
 
-### Workflow 1: Basic Model Explanation
+### 工作流 1：基本模型解释
 
-**Goal**: Understand what drives model predictions
+**目标**：了解驱动模型预测的因素
 
-**Steps**:
-1. Train model and create appropriate explainer
-2. Compute SHAP values for test set
-3. Generate global importance plots (beeswarm or bar)
-4. Examine top feature relationships (scatter plots)
-5. Explain specific predictions (waterfall plots)
+**步骤**：
+1. 训练模型并创建适当的解释器
+2. 计算测试集的 SHAP 值
+3. 生成全局重要性图（蜂群图或条形图）
+4. 检查顶部特征关系（散点图）
+5. 解释特定预测（瀑布图）
 
-**Example**:
+**示例**：
 ```python
-# Step 1-2: Setup
+# 步骤 1-2：设置
 explainer = shap.TreeExplainer(model)
 shap_values = explainer(X_test)
 
-# Step 3: Global importance
+# 步骤 3：全局重要性
 shap.plots.beeswarm(shap_values)
 
-# Step 4: Feature relationships
+# 步骤 4：特征关系
 shap.plots.scatter(shap_values[:, "Most_Important_Feature"])
 
-# Step 5: Individual explanation
+# 步骤 5：单个解释
 shap.plots.waterfall(shap_values[0])
 ```
 
-### Workflow 2: Model Debugging
+### 工作流 2：模型调试
 
-**Goal**: Identify and fix model issues
+**目标**：识别并修复模型问题
 
-**Steps**:
-1. Compute SHAP values
-2. Identify prediction errors
-3. Explain misclassified samples
-4. Check for unexpected feature importance (data leakage)
-5. Validate feature relationships make sense
-6. Check feature interactions
+**步骤**：
+1. 计算 SHAP 值
+2. 识别预测错误
+3. 解释错误分类的样本
+4. 检查意外的特征重要性（数据泄漏）
+5. 验证特征关系是否合理
+6. 检查特征交互
 
-**See `references/workflows.md` for detailed debugging workflow.**
+**有关详细的调试工作流，请参阅 `references/workflows.md`。**
 
-### Workflow 3: Feature Engineering
+### 工作流 3：特征工程
 
-**Goal**: Use SHAP insights to improve features
+**目标**：使用 SHAP 见解改进特征
 
-**Steps**:
-1. Compute SHAP values for baseline model
-2. Identify nonlinear relationships (candidates for transformation)
-3. Identify feature interactions (candidates for interaction terms)
-4. Engineer new features
-5. Retrain and compare SHAP values
-6. Validate improvements
+**步骤**：
+1. 计算基线模型的 SHAP 值
+2. 识别非线性关系（转换候选）
+3. 识别特征交互（交互项候选）
+4. 设计新特征
+5. 重新训练并比较 SHAP 值
+6. 验证改进
 
-**See `references/workflows.md` for detailed feature engineering workflow.**
+**有关详细的特征工程工作流，请参阅 `references/workflows.md`。**
 
-### Workflow 4: Model Comparison
+### 工作流 4：模型比较
 
-**Goal**: Compare multiple models to select best interpretable option
+**目标**：比较多个模型以选择最佳可解释选项
 
-**Steps**:
-1. Train multiple models
-2. Compute SHAP values for each
-3. Compare global feature importance
-4. Check consistency of feature rankings
-5. Analyze specific predictions across models
-6. Select based on accuracy, interpretability, and consistency
+**步骤**：
+1. 训练多个模型
+2. 为每个模型计算 SHAP 值
+3. 比较全局特征重要性
+4. 检查特征排名的一致性
+5. 分析跨模型的特定预测
+6. 基于准确性、可解释性和一致性选择
 
-**See `references/workflows.md` for detailed model comparison workflow.**
+**有关详细的模型比较工作流，请参阅 `references/workflows.md`。**
 
-### Workflow 5: Fairness and Bias Analysis
+### 工作流 5：公平性和偏见分析
 
-**Goal**: Detect and analyze model bias across demographic groups
+**目标**：检测和分析人口统计群体间的模型偏见
 
-**Steps**:
-1. Identify protected attributes (gender, race, age, etc.)
-2. Compute SHAP values
-3. Compare feature importance across groups
-4. Check protected attribute SHAP importance
-5. Identify proxy features
-6. Implement mitigation strategies if bias found
+**步骤**：
+1. 识别受保护的属性（性别、种族、年龄等）
+2. 计算 SHAP 值
+3. 比较群体间的特征重要性
+4. 检查受保护属性的 SHAP 重要性
+5. 识别代理特征
+6. 如果发现偏见，实施缓解策略
 
-**See `references/workflows.md` for detailed fairness analysis workflow.**
+**有关详细的公平性分析工作流，请参阅 `references/workflows.md`。**
 
-### Workflow 6: Production Deployment
+### 工作流 6：生产部署
 
-**Goal**: Integrate SHAP explanations into production systems
+**目标**：将 SHAP 解释集成到生产系统中
 
-**Steps**:
-1. Train and save model
-2. Create and save explainer
-3. Build explanation service
-4. Create API endpoints for predictions with explanations
-5. Implement caching and optimization
-6. Monitor explanation quality
+**步骤**：
+1. 训练并保存模型
+2. 创建并保存解释器
+3. 构建解释服务
+4. 为带解释的预测创建 API 端点
+5. 实现缓存和优化
+6. 监控解释质量
 
-**See `references/workflows.md` for detailed production deployment workflow.**
+**有关详细的生产部署工作流，请参阅 `references/workflows.md`。**
 
-## Key Concepts
+## 关键概念
 
-### SHAP Values
+### SHAP 值
 
-**Definition**: SHAP values quantify each feature's contribution to a prediction, measured as the deviation from the expected model output (baseline).
+**定义**：SHAP 值量化每个特征对预测的贡献，测量为与预期模型输出（基线）的偏差。
 
-**Properties**:
-- **Additivity**: SHAP values sum to difference between prediction and baseline
-- **Fairness**: Based on Shapley values from game theory
-- **Consistency**: If a feature becomes more important, its SHAP value increases
+**属性**：
+- **可加性**：SHAP 值总和等于预测与基线的差
+- **公平性**：基于博弈论中的 Shapley 值
+- **一致性**：如果特征变得更重要，其 SHAP 值会增加
 
-**Interpretation**:
-- Positive SHAP value → Feature pushes prediction higher
-- Negative SHAP value → Feature pushes prediction lower
-- Magnitude → Strength of feature's impact
-- Sum of SHAP values → Total prediction change from baseline
+**解释**：
+- 正 SHAP 值 → 特征推动预测更高
+- 负 SHAP 值 → 特征推动预测更低
+- 幅度 → 特征影响的强度
+- SHAP 值之和 → 从基线开始的总预测变化
 
-**Example**:
+**示例**：
 ```
-Baseline (expected value): 0.30
-Feature contributions (SHAP values):
-  Age: +0.15
-  Income: +0.10
-  Education: -0.05
-Final prediction: 0.30 + 0.15 + 0.10 - 0.05 = 0.50
+基线（预期值）：0.30
+特征贡献（SHAP 值）：
+  年龄：+0.15
+  收入：+0.10
+  教育：-0.05
+最终预测：0.30 + 0.15 + 0.10 - 0.05 = 0.50
 ```
 
-### Background Data / Baseline
+### 背景数据 / 基线
 
-**Purpose**: Represents "typical" input to establish baseline expectations
+**目的**：代表"典型"输入以建立基线期望
 
-**Selection**:
-- Random sample from training data (50-1000 samples)
-- Or use kmeans to select representative samples
-- For DeepExplainer/KernelExplainer: 100-1000 samples balances accuracy and speed
+**选择**：
+- 从训练数据中随机采样（50-1000 个样本）
+- 或使用 kmeans 选择代表性样本
+- 对于 DeepExplainer/KernelExplainer：100-1000 个样本平衡准确性和速度
 
-**Impact**: Baseline affects SHAP value magnitudes but not relative importance
+**影响**：基线影响 SHAP 值的幅度但不影响相对重要性
 
-### Model Output Types
+### 模型输出类型
 
-**Critical Consideration**: Understand what your model outputs
+**关键考虑**：了解模型输出的内容
 
-- **Raw output**: For regression or tree margins
-- **Probability**: For classification probability
-- **Log-odds**: For logistic regression (before sigmoid)
+- **原始输出**：用于回归或树的边际
+- **概率**：用于分类概率
+- **对数几率**：用于逻辑回归（sigmoid 之前）
 
-**Example**: XGBoost classifiers explain margin output (log-odds) by default. To explain probabilities, use `model_output="probability"` in TreeExplainer.
+**示例**：XGBoost 分类器默认解释边际输出（对数几率）。要解释概率，在 TreeExplainer 中使用 `model_output="probability"`。
 
-## Common Patterns
+## 常见模式
 
-### Pattern 1: Complete Model Analysis
+### 模式 1：完整模型分析
 
 ```python
-# 1. Setup
+# 1. 设置
 explainer = shap.TreeExplainer(model)
 shap_values = explainer(X_test)
 
-# 2. Global importance
+# 2. 全局重要性
 shap.plots.beeswarm(shap_values)
 shap.plots.bar(shap_values)
 
-# 3. Top feature relationships
+# 3. 顶部特征关系
 top_features = X_test.columns[np.abs(shap_values.values).mean(0).argsort()[-5:]]
 for feature in top_features:
     shap.plots.scatter(shap_values[:, feature])
 
-# 4. Example predictions
+# 4. 示例预测
 for i in range(5):
     shap.plots.waterfall(shap_values[i])
 ```
 
-### Pattern 2: Cohort Comparison
+### 模式 2：队列比较
 
 ```python
-# Define cohorts
+# 定义队列
 cohort1_mask = X_test['Group'] == 'A'
 cohort2_mask = X_test['Group'] == 'B'
 
-# Compare feature importance
+# 比较特征重要性
 shap.plots.bar({
     "Group A": shap_values[cohort1_mask],
     "Group B": shap_values[cohort2_mask]
 })
 ```
 
-### Pattern 3: Debugging Errors
+### 模式 3：调试错误
 
 ```python
-# Find errors
+# 查找错误
 errors = model.predict(X_test) != y_test
 error_indices = np.where(errors)[0]
 
-# Explain errors
+# 解释错误
 for idx in error_indices[:5]:
-    print(f"Sample {idx}:")
+    print(f"样本 {idx}:")
     shap.plots.waterfall(shap_values[idx])
 
-    # Investigate key features
+    # 调查关键特征
     shap.plots.scatter(shap_values[:, "Suspicious_Feature"])
 ```
 
-## Performance Optimization
+## 性能优化
 
-### Speed Considerations
+### 速度考虑
 
-**Explainer Speed** (fastest to slowest):
-1. `LinearExplainer` - Nearly instantaneous
-2. `TreeExplainer` - Very fast
-3. `DeepExplainer` - Fast for neural networks
-4. `GradientExplainer` - Fast for neural networks
-5. `KernelExplainer` - Slow (use only when necessary)
-6. `PermutationExplainer` - Very slow but accurate
+**解释器速度**（从快到慢）：
+1. `LinearExplainer` - 几乎即时
+2. `TreeExplainer` - 非常快
+3. `DeepExplainer` - 对神经网络快速
+4. `GradientExplainer` - 对神经网络快速
+5. `KernelExplainer` - 慢（仅在必要时使用）
+6. `PermutationExplainer` - 非常慢但准确
 
-### Optimization Strategies
+### 优化策略
 
-**For Large Datasets**:
+**对于大型数据集**：
 ```python
-# Compute SHAP for subset
+# 为子集计算 SHAP
 shap_values = explainer(X_test[:1000])
 
-# Or use batching
+# 或使用批处理
 batch_size = 100
 all_shap_values = []
 for i in range(0, len(X_test), batch_size):
@@ -341,83 +341,83 @@ for i in range(0, len(X_test), batch_size):
     all_shap_values.append(batch_shap)
 ```
 
-**For Visualizations**:
+**对于可视化**：
 ```python
-# Sample subset for plots
+# 为图采样子集
 shap.plots.beeswarm(shap_values[:1000])
 
-# Adjust transparency for dense plots
+# 为密集图调整透明度
 shap.plots.scatter(shap_values[:, "Feature"], alpha=0.3)
 ```
 
-**For Production**:
+**对于生产**：
 ```python
-# Cache explainer
+# 缓存解释器
 import joblib
 joblib.dump(explainer, 'explainer.pkl')
 explainer = joblib.load('explainer.pkl')
 
-# Pre-compute for batch predictions
-# Only compute top N features for API responses
+# 为批量预测预计算
+# 仅为 API 响应计算前 N 个特征
 ```
 
-## Troubleshooting
+## 故障排除
 
-### Issue: Wrong explainer choice
-**Problem**: Using KernelExplainer for tree models (slow and unnecessary)
-**Solution**: Always use TreeExplainer for tree-based models
+### 问题：解释器选择错误
+**问题**：对树模型使用 KernelExplainer（缓慢且不必要）
+**解决方案**：始终对基于树的模型使用 TreeExplainer
 
-### Issue: Insufficient background data
-**Problem**: DeepExplainer/KernelExplainer with too few background samples
-**Solution**: Use 100-1000 representative samples
+### 问题：背景数据不足
+**问题**：DeepExplainer/KernelExplainer 背景样本太少
+**解决方案**：使用 100-1000 个代表性样本
 
-### Issue: Confusing units
-**Problem**: Interpreting log-odds as probabilities
-**Solution**: Check model output type; understand whether values are probabilities, log-odds, or raw outputs
+### 问题：单位混淆
+**问题**：将对数几率解释为概率
+**解决方案**：检查模型输出类型；了解值是概率、对数几率还是原始输出
 
-### Issue: Plots don't display
-**Problem**: Matplotlib backend issues
-**Solution**: Ensure backend is set correctly; use `plt.show()` if needed
+### 问题：图不显示
+**问题**：Matplotlib 后端问题
+**解决方案**：确保后端设置正确；必要时使用 `plt.show()`
 
-### Issue: Too many features cluttering plots
-**Problem**: Default max_display=10 may be too many or too few
-**Solution**: Adjust `max_display` parameter or use feature clustering
+### 问题：太多特征使图混乱
+**问题**：默认 max_display=10 可能太多或太少
+**解决方案**：调整 `max_display` 参数或使用特征聚类
 
-### Issue: Slow computation
-**Problem**: Computing SHAP for very large datasets
-**Solution**: Sample subset, use batching, or ensure using specialized explainer (not KernelExplainer)
+### 问题：计算缓慢
+**问题**：为非常大的数据集计算 SHAP
+**解决方案**：采样子集，使用批处理，或确保使用专用解释器（非 KernelExplainer）
 
-## Integration with Other Tools
+## 与其他工具的集成
 
-### Jupyter Notebooks
-- Interactive force plots work seamlessly
-- Inline plot display with `show=True` (default)
-- Combine with markdown for narrative explanations
+### Jupyter 笔记本
+- 交互式力图无缝工作
+- 内联图显示，`show=True`（默认）
+- 与 markdown 结合用于叙述性解释
 
-### MLflow / Experiment Tracking
+### MLflow / 实验跟踪
 ```python
 import mlflow
 
 with mlflow.start_run():
-    # Train model
+    # 训练模型
     model = train_model(X_train, y_train)
 
-    # Compute SHAP
+    # 计算 SHAP
     explainer = shap.TreeExplainer(model)
     shap_values = explainer(X_test)
 
-    # Log plots
+    # 记录图
     shap.plots.beeswarm(shap_values, show=False)
     mlflow.log_figure(plt.gcf(), "shap_beeswarm.png")
     plt.close()
 
-    # Log feature importance metrics
+    # 记录特征重要性指标
     mean_abs_shap = np.abs(shap_values.values).mean(axis=0)
     for feature, importance in zip(X_test.columns, mean_abs_shap):
         mlflow.log_metric(f"shap_{feature}", importance)
 ```
 
-### Production APIs
+### 生产 API
 ```python
 class ExplanationService:
     def __init__(self, model_path, explainer_path):
@@ -435,130 +435,129 @@ class ExplanationService:
         }
 ```
 
-## Reference Documentation
+## 参考文档
 
-This skill includes comprehensive reference documentation organized by topic:
+此技能包含按主题组织的综合参考文档：
 
 ### references/explainers.md
-Complete guide to all explainer classes:
-- `TreeExplainer` - Fast, exact explanations for tree-based models
-- `DeepExplainer` - Deep learning models (TensorFlow, PyTorch)
-- `KernelExplainer` - Model-agnostic (works with any model)
-- `LinearExplainer` - Fast explanations for linear models
-- `GradientExplainer` - Gradient-based for neural networks
-- `PermutationExplainer` - Exact but slow for any model
+所有解释器类的完整指南：
+- `TreeExplainer` - 基于树模型的快速、精确解释
+- `DeepExplainer` - 深度学习模型（TensorFlow、PyTorch）
+- `KernelExplainer` - 与模型无关（适用于任何模型）
+- `LinearExplainer` - 线性模型的快速解释
+- `GradientExplainer` - 基于梯度的神经网络解释
+- `PermutationExplainer` - 对任何模型精确但缓慢
 
-Includes: Constructor parameters, methods, supported models, when to use, examples, performance considerations.
+包括：构造函数参数、方法、支持的模型、何时使用、示例、性能考虑。
 
 ### references/plots.md
-Comprehensive visualization guide:
-- **Waterfall plots** - Individual prediction breakdowns
-- **Beeswarm plots** - Global importance with value distributions
-- **Bar plots** - Clean feature importance summaries
-- **Scatter plots** - Feature-prediction relationships and interactions
-- **Force plots** - Interactive additive force visualizations
-- **Heatmap plots** - Multi-sample comparison grids
-- **Violin plots** - Distribution-focused alternatives
-- **Decision plots** - Multiclass prediction paths
+综合可视化指南：
+- **瀑布图** - 单个预测分解
+- **蜂群图** - 全局重要性与值分布
+- **条形图** - 清晰的特征重要性摘要
+- **散点图** - 特征-预测关系和交互
+- **力图** - 交互式加性力可视化
+- **热力图** - 多样本比较网格
+- **小提琴图** - 关注分布的替代方案
+- **决策图** - 多类预测路径
 
-Includes: Parameters, use cases, examples, best practices, plot selection guide.
+包括：参数、用例、示例、最佳实践、图选择指南。
 
 ### references/workflows.md
-Detailed workflows and best practices:
-- Basic model explanation workflow
-- Model debugging and validation
-- Feature engineering guidance
-- Model comparison and selection
-- Fairness and bias analysis
-- Deep learning model explanation
-- Production deployment
-- Time series model explanation
-- Common pitfalls and solutions
-- Advanced techniques
-- MLOps integration
+详细工作流和最佳实践：
+- 基本模型解释工作流
+- 模型调试和验证
+- 特征工程指南
+- 模型比较和选择
+- 公平性和偏见分析
+- 深度学习模型解释
+- 生产部署
+- 时间序列模型解释
+- 常见陷阱和解决方案
+- 高级技术
+- MLOps 集成
 
-Includes: Step-by-step instructions, code examples, decision criteria, troubleshooting.
+包括：分步说明、代码示例、决策标准、故障排除。
 
 ### references/theory.md
-Theoretical foundations:
-- Shapley values from game theory
-- Mathematical formulas and properties
-- Connection to other explanation methods (LIME, DeepLIFT, etc.)
-- SHAP computation algorithms (Tree SHAP, Kernel SHAP, etc.)
-- Conditional expectations and baseline selection
-- Interpreting SHAP values
-- Interaction values
-- Theoretical limitations and considerations
+理论基础：
+- 博弈论中的 Shapley 值
+- 数学公式和属性
+- 与其他解释方法的连接（LIME、DeepLIFT 等）
+- SHAP 计算算法（Tree SHAP、Kernel SHAP 等）
+- 条件期望和基线选择
+- 解释 SHAP 值
+- 交互值
+- 理论限制和考虑
 
-Includes: Mathematical foundations, proofs, comparisons, advanced topics.
+包括：数学基础、证明、比较、高级主题。
 
-## Usage Guidelines
+## 使用指南
 
-**When to load reference files**:
-- Load `explainers.md` when user needs detailed information about specific explainer types or parameters
-- Load `plots.md` when user needs detailed visualization guidance or exploring plot options
-- Load `workflows.md` when user has complex multi-step tasks (debugging, fairness analysis, production deployment)
-- Load `theory.md` when user asks about theoretical foundations, Shapley values, or mathematical details
+**何时加载参考文件**：
+- 当用户需要有关特定解释器类型或参数的详细信息时，加载 `explainers.md`
+- 当用户需要详细的可视化指导或探索绘图选项时，加载 `plots.md`
+- 当用户有复杂的多步骤任务（调试、公平性分析、生产部署）时，加载 `workflows.md`
+- 当用户询问理论基础、Shapley 值或数学细节时，加载 `theory.md`
 
-**Default approach** (without loading references):
-- Use this SKILL.md for basic explanations and quick start
-- Provide standard workflows and common patterns
-- Reference files are available if more detail is needed
+**默认方法**（不加载参考）：
+- 使用此 SKILL.md 进行基本解释和快速入门
+- 提供标准工作流和常见模式
+- 如果需要更多细节，可使用参考文件
 
-**Loading references**:
+**加载参考**：
 ```python
-# To load reference files, use the Read tool with appropriate file path:
+# 要加载参考文件，请使用 Read 工具和适当的文件路径：
 # /path/to/shap/references/explainers.md
 # /path/to/shap/references/plots.md
 # /path/to/shap/references/workflows.md
 # /path/to/shap/references/theory.md
 ```
 
-## Best Practices Summary
+## 最佳实践摘要
 
-1. **Choose the right explainer**: Use specialized explainers (TreeExplainer, DeepExplainer, LinearExplainer) when possible; avoid KernelExplainer unless necessary
+1. **选择正确的解释器**：尽可能使用专用解释器（TreeExplainer、DeepExplainer、LinearExplainer）；除非必要，否则避免使用 KernelExplainer
 
-2. **Start global, then go local**: Begin with beeswarm/bar plots for overall understanding, then dive into waterfall/scatter plots for details
+2. **从全局开始，然后到局部**：从蜂群图/条形图开始获得整体理解，然后深入到瀑布图/散点图获取细节
 
-3. **Use multiple visualizations**: Different plots reveal different insights; combine global (beeswarm) + local (waterfall) + relationship (scatter) views
+3. **使用多种可视化**：不同的图揭示不同的见解；结合全局（蜂群图）+ 局部（瀑布图）+ 关系（散点图）视图
 
-4. **Select appropriate background data**: Use 50-1000 representative samples from training data
+4. **选择适当的背景数据**：使用来自训练数据的 50-1000 个代表性样本
 
-5. **Understand model output units**: Know whether explaining probabilities, log-odds, or raw outputs
+5. **了解模型输出单位**：知道是否解释概率、对数几率或原始输出
 
-6. **Validate with domain knowledge**: SHAP shows model behavior; use domain expertise to interpret and validate
+6. **使用领域知识验证**：SHAP 显示模型行为；使用领域专业知识解释和验证
 
-7. **Optimize for performance**: Sample subsets for visualization, batch for large datasets, cache explainers in production
+7. **优化性能**：为可视化采样子集，为大型数据集批处理，在生产中缓存解释器
 
-8. **Check for data leakage**: Unexpectedly high feature importance may indicate data quality issues
+8. **检查数据泄漏**：异常高的特征重要性可能表明数据质量问题
 
-9. **Consider feature correlations**: Use TreeExplainer's correlation-aware options or feature clustering for redundant features
+9. **考虑特征相关性**：使用 TreeExplainer 的相关性感知选项或特征聚类处理冗余特征
 
-10. **Remember SHAP shows association, not causation**: Use domain knowledge for causal interpretation
+10. **记住 SHAP 显示关联，而非因果关系**：使用领域知识进行因果解释
 
-## Installation
+## 安装
 
 ```bash
-# Basic installation
+# 基本安装
 uv pip install shap
 
-# With visualization dependencies
+# 带可视化依赖
 uv pip install shap matplotlib
 
-# Latest version
+# 最新版本
 uv pip install -U shap
 ```
 
-**Dependencies**: numpy, pandas, scikit-learn, matplotlib, scipy
+**依赖**：numpy、pandas、scikit-learn、matplotlib、scipy
 
-**Optional**: xgboost, lightgbm, tensorflow, torch (depending on model types)
+**可选**：xgboost、lightgbm、tensorflow、torch（取决于模型类型）
 
-## Additional Resources
+## 其他资源
 
-- **Official Documentation**: https://shap.readthedocs.io/
-- **GitHub Repository**: https://github.com/slundberg/shap
-- **Original Paper**: Lundberg & Lee (2017) - "A Unified Approach to Interpreting Model Predictions"
-- **Nature MI Paper**: Lundberg et al. (2020) - "From local explanations to global understanding with explainable AI for trees"
+- **官方文档**：https://shap.readthedocs.io/
+- **GitHub 仓库**：https://github.com/slundberg/shap
+- **原始论文**：Lundberg & Lee (2017) - "A Unified Approach to Interpreting Model Predictions"
+- **Nature MI 论文**：Lundberg et al. (2020) - "From local explanations to global understanding with explainable AI for trees"
 
-This skill provides comprehensive coverage of SHAP for model interpretability across all use cases and model types.
-
+此技能提供了 SHAP 在所有用例和模型类型中的模型可解释性的全面覆盖。

@@ -1,6 +1,6 @@
 ---
 name: torchdrug
-description: PyTorch-native graph neural networks for molecules and proteins. Use when building custom GNN architectures for drug discovery, protein modeling, or knowledge graph reasoning. Best for custom model development, protein property prediction, retrosynthesis. For pre-trained models and diverse featurizers use deepchem; for benchmark datasets use pytdc.
+description: 用于分子和蛋白质的 PyTorch 原生图神经网络。在构建用于药物发现、蛋白质建模或知识图谱推理的自定义 GNN 架构时使用。最适用于自定义模型开发、蛋白质属性预测、逆合成。对于预训练模型和多样化的特征提取器，请使用 deepchem；对于基准数据集，请使用 pytdc。
 license: Apache-2.0 license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,57 +8,57 @@ metadata:
 
 # TorchDrug
 
-## Overview
+## 概述
 
-TorchDrug is a comprehensive PyTorch-based machine learning toolbox for drug discovery and molecular science. Apply graph neural networks, pre-trained models, and task definitions to molecules, proteins, and biological knowledge graphs, including molecular property prediction, protein modeling, knowledge graph reasoning, molecular generation, retrosynthesis planning, with 40+ curated datasets and 20+ model architectures.
+TorchDrug 是一个基于 PyTorch 的综合机器学习工具箱，用于药物发现和分子科学。将图神经网络、预训练模型和任务定义应用于分子、蛋白质和生物知识图谱，包括分子属性预测、蛋白质建模、知识图谱推理、分子生成、逆合成规划，拥有 40+ 精选数据集和 20+ 模型架构。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when working with:
+当您处理以下任务时，应使用此技能：
 
-**Data Types:**
-- SMILES strings or molecular structures
-- Protein sequences or 3D structures (PDB files)
-- Chemical reactions and retrosynthesis
-- Biomedical knowledge graphs
-- Drug discovery datasets
+**数据类型：**
+- SMILES 字符串或分子结构
+- 蛋白质序列或 3D 结构（PDB 文件）
+- 化学反应和逆合成
+- 生物医学知识图谱
+- 药物发现数据集
 
-**Tasks:**
-- Predicting molecular properties (solubility, toxicity, activity)
-- Protein function or structure prediction
-- Drug-target binding prediction
-- Generating new molecular structures
-- Planning chemical synthesis routes
-- Link prediction in biomedical knowledge bases
-- Training graph neural networks on scientific data
+**任务：**
+- 预测分子属性（溶解度、毒性、活性）
+- 蛋白质功能或结构预测
+- 药物-靶点结合预测
+- 生成新的分子结构
+- 规划化学合成路线
+- 生物医学知识库中的链接预测
+- 在科学数据上训练图神经网络
 
-**Libraries and Integration:**
-- TorchDrug is the primary library
-- Often used with RDKit for cheminformatics
-- Compatible with PyTorch and PyTorch Lightning
-- Integrates with AlphaFold and ESM for proteins
+**库和集成：**
+- TorchDrug 是主要库
+- 通常与 RDKit 一起用于 cheminformatics
+- 与 PyTorch 和 PyTorch Lightning 兼容
+- 与 AlphaFold 和 ESM 集成用于蛋白质
 
-## Getting Started
+## 入门
 
-### Installation
+### 安装
 
 ```bash
 uv pip install torchdrug
-# Or with optional dependencies
+# 或带可选依赖项
 uv pip install torchdrug[full]
 ```
 
-### Quick Example
+### 快速示例
 
 ```python
 from torchdrug import datasets, models, tasks
 from torch.utils.data import DataLoader
 
-# Load molecular dataset
+# 加载分子数据集
 dataset = datasets.BBBP("~/molecule-datasets/")
 train_set, valid_set, test_set = dataset.split()
 
-# Define GNN model
+# 定义 GNN 模型
 model = models.GIN(
     input_dim=dataset.node_feature_dim,
     hidden_dims=[256, 256, 256],
@@ -67,7 +67,7 @@ model = models.GIN(
     readout="mean"
 )
 
-# Create property prediction task
+# 创建属性预测任务
 task = tasks.PropertyPrediction(
     model,
     task=dataset.tasks,
@@ -75,7 +75,7 @@ task = tasks.PropertyPrediction(
     metric=["auroc", "auprc"]
 )
 
-# Train with PyTorch
+# 使用 PyTorch 训练
 optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
 train_loader = DataLoader(train_set, batch_size=32, shuffle=True)
 
@@ -87,251 +87,251 @@ for epoch in range(100):
         optimizer.step()
 ```
 
-## Core Capabilities
+## 核心功能
 
-### 1. Molecular Property Prediction
+### 1. 分子属性预测
 
-Predict chemical, physical, and biological properties of molecules from structure.
+从结构预测分子的化学、物理和生物属性。
 
-**Use Cases:**
-- Drug-likeness and ADMET properties
-- Toxicity screening
-- Quantum chemistry properties
-- Binding affinity prediction
+**用例：**
+- 类药性和 ADMET 属性
+- 毒性筛选
+- 量子化学属性
+- 结合亲和力预测
 
-**Key Components:**
-- 20+ molecular datasets (BBBP, HIV, Tox21, QM9, etc.)
-- GNN models (GIN, GAT, SchNet)
-- PropertyPrediction and MultipleBinaryClassification tasks
+**关键组件：**
+- 20+ 分子数据集（BBBP、HIV、Tox21、QM9 等）
+- GNN 模型（GIN、GAT、SchNet）
+- PropertyPrediction 和 MultipleBinaryClassification 任务
 
-**Reference:** See `references/molecular_property_prediction.md` for:
-- Complete dataset catalog
-- Model selection guide
-- Training workflows and best practices
-- Feature engineering details
+**参考：** 请查看 `references/molecular_property_prediction.md` 了解：
+- 完整的数据集目录
+- 模型选择指南
+- 训练工作流程和最佳实践
+- 特征工程详细信息
 
-### 2. Protein Modeling
+### 2. 蛋白质建模
 
-Work with protein sequences, structures, and properties.
+处理蛋白质序列、结构和属性。
 
-**Use Cases:**
-- Enzyme function prediction
-- Protein stability and solubility
-- Subcellular localization
-- Protein-protein interactions
-- Structure prediction
+**用例：**
+- 酶功能预测
+- 蛋白质稳定性和溶解度
+- 亚细胞定位
+- 蛋白质-蛋白质相互作用
+- 结构预测
 
-**Key Components:**
-- 15+ protein datasets (EnzymeCommission, GeneOntology, PDBBind, etc.)
-- Sequence models (ESM, ProteinBERT, ProteinLSTM)
-- Structure models (GearNet, SchNet)
-- Multiple task types for different prediction levels
+**关键组件：**
+- 15+ 蛋白质数据集（EnzymeCommission、GeneOntology、PDBBind 等）
+- 序列模型（ESM、ProteinBERT、ProteinLSTM）
+- 结构模型（GearNet、SchNet）
+- 不同预测级别的多种任务类型
 
-**Reference:** See `references/protein_modeling.md` for:
-- Protein-specific datasets
-- Sequence vs structure models
-- Pre-training strategies
-- Integration with AlphaFold and ESM
+**参考：** 请查看 `references/protein_modeling.md` 了解：
+- 蛋白质特定数据集
+- 序列与结构模型
+- 预训练策略
+- 与 AlphaFold 和 ESM 的集成
 
-### 3. Knowledge Graph Reasoning
+### 3. 知识图谱推理
 
-Predict missing links and relationships in biological knowledge graphs.
+预测生物知识图谱中缺失的链接和关系。
 
-**Use Cases:**
-- Drug repurposing
-- Disease mechanism discovery
-- Gene-disease associations
-- Multi-hop biomedical reasoning
+**用例：**
+- 药物重定位
+- 疾病机制发现
+- 基因-疾病关联
+- 多跳生物医学推理
 
-**Key Components:**
-- General KGs (FB15k, WN18) and biomedical (Hetionet)
-- Embedding models (TransE, RotatE, ComplEx)
-- KnowledgeGraphCompletion task
+**关键组件：**
+- 通用 KG（FB15k、WN18）和生物医学（Hetionet）
+- 嵌入模型（TransE、RotatE、ComplEx）
+- KnowledgeGraphCompletion 任务
 
-**Reference:** See `references/knowledge_graphs.md` for:
-- Knowledge graph datasets (including Hetionet with 45k biomedical entities)
-- Embedding model comparison
-- Evaluation metrics and protocols
-- Biomedical applications
+**参考：** 请查看 `references/knowledge_graphs.md` 了解：
+- 知识图谱数据集（包括具有 45k 生物医学实体的 Hetionet）
+- 嵌入模型比较
+- 评估指标和协议
+- 生物医学应用
 
-### 4. Molecular Generation
+### 4. 分子生成
 
-Generate novel molecular structures with desired properties.
+生成具有所需属性的新型分子结构。
 
-**Use Cases:**
-- De novo drug design
-- Lead optimization
-- Chemical space exploration
-- Property-guided generation
+**用例：**
+- 从头药物设计
+- 先导优化
+- 化学空间探索
+- 属性引导生成
 
-**Key Components:**
-- Autoregressive generation
-- GCPN (policy-based generation)
+**关键组件：**
+- 自回归生成
+- GCPN（基于策略的生成）
 - GraphAutoregressiveFlow
-- Property optimization workflows
+- 属性优化工作流程
 
-**Reference:** See `references/molecular_generation.md` for:
-- Generation strategies (unconditional, conditional, scaffold-based)
-- Multi-objective optimization
-- Validation and filtering
-- Integration with property prediction
+**参考：** 请查看 `references/molecular_generation.md` 了解：
+- 生成策略（无条件、条件、基于支架）
+- 多目标优化
+- 验证和过滤
+- 与属性预测的集成
 
-### 5. Retrosynthesis
+### 5. 逆合成
 
-Predict synthetic routes from target molecules to starting materials.
+预测从目标分子到起始材料的合成路线。
 
-**Use Cases:**
-- Synthesis planning
-- Route optimization
-- Synthetic accessibility assessment
-- Multi-step planning
+**用例：**
+- 合成规划
+- 路线优化
+- 合成可及性评估
+- 多步规划
 
-**Key Components:**
-- USPTO-50k reaction dataset
-- CenterIdentification (reaction center prediction)
-- SynthonCompletion (reactant prediction)
-- End-to-end Retrosynthesis pipeline
+**关键组件：**
+- USPTO-50k 反应数据集
+- CenterIdentification（反应中心预测）
+- SynthonCompletion（反应物预测）
+- 端到端逆合成管道
 
-**Reference:** See `references/retrosynthesis.md` for:
-- Task decomposition (center ID → synthon completion)
-- Multi-step synthesis planning
-- Commercial availability checking
-- Integration with other retrosynthesis tools
+**参考：** 请查看 `references/retrosynthesis.md` 了解：
+- 任务分解（中心 ID → 合成子完成）
+- 多步合成规划
+- 商业可用性检查
+- 与其他逆合成工具的集成
 
-### 6. Graph Neural Network Models
+### 6. 图神经网络模型
 
-Comprehensive catalog of GNN architectures for different data types and tasks.
+针对不同数据类型和任务的综合 GNN 架构目录。
 
-**Available Models:**
-- General GNNs: GCN, GAT, GIN, RGCN, MPNN
-- 3D-aware: SchNet, GearNet
-- Protein-specific: ESM, ProteinBERT, GearNet
-- Knowledge graph: TransE, RotatE, ComplEx, SimplE
-- Generative: GraphAutoregressiveFlow
+**可用模型：**
+- 通用 GNN：GCN、GAT、GIN、RGCN、MPNN
+- 3D 感知：SchNet、GearNet
+- 蛋白质特定：ESM、ProteinBERT、GearNet
+- 知识图谱：TransE、RotatE、ComplEx、SimplE
+- 生成式：GraphAutoregressiveFlow
 
-**Reference:** See `references/models_architectures.md` for:
-- Detailed model descriptions
-- Model selection guide by task and dataset
-- Architecture comparisons
-- Implementation tips
+**参考：** 请查看 `references/models_architectures.md` 了解：
+- 详细的模型描述
+- 按任务和数据集的模型选择指南
+- 架构比较
+- 实现提示
 
-### 7. Datasets
+### 7. 数据集
 
-40+ curated datasets spanning chemistry, biology, and knowledge graphs.
+40+ 精选数据集，涵盖化学、生物学和知识图谱。
 
-**Categories:**
-- Molecular properties (drug discovery, quantum chemistry)
-- Protein properties (function, structure, interactions)
-- Knowledge graphs (general and biomedical)
-- Retrosynthesis reactions
+**类别：**
+- 分子属性（药物发现、量子化学）
+- 蛋白质属性（功能、结构、相互作用）
+- 知识图谱（通用和生物医学）
+- 逆合成反应
 
-**Reference:** See `references/datasets.md` for:
-- Complete dataset catalog with sizes and tasks
-- Dataset selection guide
-- Loading and preprocessing
-- Splitting strategies (random, scaffold)
+**参考：** 请查看 `references/datasets.md` 了解：
+- 完整的数据集目录，包括大小和任务
+- 数据集选择指南
+- 加载和预处理
+- 分割策略（随机、支架）
 
-## Common Workflows
+## 常见工作流程
 
-### Workflow 1: Molecular Property Prediction
+### 工作流程 1：分子属性预测
 
-**Scenario:** Predict blood-brain barrier penetration for drug candidates.
+**场景：** 预测药物候选物的血脑屏障穿透性。
 
-**Steps:**
-1. Load dataset: `datasets.BBBP()`
-2. Choose model: GIN for molecular graphs
-3. Define task: `PropertyPrediction` with binary classification
-4. Train with scaffold split for realistic evaluation
-5. Evaluate using AUROC and AUPRC
+**步骤：**
+1. 加载数据集：`datasets.BBBP()`
+2. 选择模型：GIN 用于分子图
+3. 定义任务：`PropertyPrediction` 用于二分类
+4. 使用支架分割进行真实评估训练
+5. 使用 AUROC 和 AUPRC 评估
 
-**Navigation:** `references/molecular_property_prediction.md` → Dataset selection → Model selection → Training
+**导航：** `references/molecular_property_prediction.md` → 数据集选择 → 模型选择 → 训练
 
-### Workflow 2: Protein Function Prediction
+### 工作流程 2：蛋白质功能预测
 
-**Scenario:** Predict enzyme function from sequence.
+**场景：** 从序列预测酶功能。
 
-**Steps:**
-1. Load dataset: `datasets.EnzymeCommission()`
-2. Choose model: ESM (pre-trained) or GearNet (with structure)
-3. Define task: `PropertyPrediction` with multi-class classification
-4. Fine-tune pre-trained model or train from scratch
-5. Evaluate using accuracy and per-class metrics
+**步骤：**
+1. 加载数据集：`datasets.EnzymeCommission()`
+2. 选择模型：ESM（预训练）或 GearNet（带结构）
+3. 定义任务：`PropertyPrediction` 用于多分类
+4. 微调预训练模型或从头训练
+5. 使用准确率和每类指标评估
 
-**Navigation:** `references/protein_modeling.md` → Model selection (sequence vs structure) → Pre-training strategies
+**导航：** `references/protein_modeling.md` → 模型选择（序列 vs 结构）→ 预训练策略
 
-### Workflow 3: Drug Repurposing via Knowledge Graphs
+### 工作流程 3：通过知识图谱进行药物重定位
 
-**Scenario:** Find new disease treatments in Hetionet.
+**场景：** 在 Hetionet 中寻找新的疾病治疗方法。
 
-**Steps:**
-1. Load dataset: `datasets.Hetionet()`
-2. Choose model: RotatE or ComplEx
-3. Define task: `KnowledgeGraphCompletion`
-4. Train with negative sampling
-5. Query for "Compound-treats-Disease" predictions
-6. Filter by plausibility and mechanism
+**步骤：**
+1. 加载数据集：`datasets.Hetionet()`
+2. 选择模型：RotatE 或 ComplEx
+3. 定义任务：`KnowledgeGraphCompletion`
+4. 使用负采样训练
+5. 查询 "Compound-treats-Disease" 预测
+6. 按合理性和机制过滤
 
-**Navigation:** `references/knowledge_graphs.md` → Hetionet dataset → Model selection → Biomedical applications
+**导航：** `references/knowledge_graphs.md` → Hetionet 数据集 → 模型选择 → 生物医学应用
 
-### Workflow 4: De Novo Molecule Generation
+### 工作流程 4：从头分子生成
 
-**Scenario:** Generate drug-like molecules optimized for target binding.
+**场景：** 生成为目标结合优化的类药分子。
 
-**Steps:**
-1. Train property predictor on activity data
-2. Choose generation approach: GCPN for RL-based optimization
-3. Define reward function combining affinity, drug-likeness, synthesizability
-4. Generate candidates with property constraints
-5. Validate chemistry and filter by drug-likeness
-6. Rank by multi-objective scoring
+**步骤：**
+1. 在活性数据上训练属性预测器
+2. 选择生成方法：GCPN 用于基于 RL 的优化
+3. 定义结合亲和力、类药性、可合成性的奖励函数
+4. 生成带有属性约束的候选物
+5. 验证化学并按类药性过滤
+6. 按多目标评分排序
 
-**Navigation:** `references/molecular_generation.md` → Conditional generation → Multi-objective optimization
+**导航：** `references/molecular_generation.md` → 条件生成 → 多目标优化
 
-### Workflow 5: Retrosynthesis Planning
+### 工作流程 5：逆合成规划
 
-**Scenario:** Plan synthesis route for target molecule.
+**场景：** 为目标分子规划合成路线。
 
-**Steps:**
-1. Load dataset: `datasets.USPTO50k()`
-2. Train center identification model (RGCN)
-3. Train synthon completion model (GIN)
-4. Combine into end-to-end retrosynthesis pipeline
-5. Apply recursively for multi-step planning
-6. Check commercial availability of building blocks
+**步骤：**
+1. 加载数据集：`datasets.USPTO50k()`
+2. 训练中心识别模型（RGCN）
+3. 训练合成子完成模型（GIN）
+4. 组合成端到端逆合成管道
+5. 递归应用于多步规划
+6. 检查构建块的商业可用性
 
-**Navigation:** `references/retrosynthesis.md` → Task types → Multi-step planning
+**导航：** `references/retrosynthesis.md` → 任务类型 → 多步规划
 
-## Integration Patterns
+## 集成模式
 
-### With RDKit
+### 与 RDKit 集成
 
-Convert between TorchDrug molecules and RDKit:
+在 TorchDrug 分子和 RDKit 之间转换：
 ```python
 from torchdrug import data
 from rdkit import Chem
 
-# SMILES → TorchDrug molecule
+# SMILES → TorchDrug 分子
 smiles = "CCO"
 mol = data.Molecule.from_smiles(smiles)
 
 # TorchDrug → RDKit
-rdkit_mol = mol.to_molecule()
+tdkit_mol = mol.to_molecule()
 
 # RDKit → TorchDrug
-rdkit_mol = Chem.MolFromSmiles(smiles)
-mol = data.Molecule.from_molecule(rdkit_mol)
+tdkit_mol = Chem.MolFromSmiles(smiles)
+mol = data.Molecule.from_molecule(tdkit_mol)
 ```
 
-### With AlphaFold/ESM
+### 与 AlphaFold/ESM 集成
 
-Use predicted structures:
+使用预测结构：
 ```python
 from torchdrug import data
 
-# Load AlphaFold predicted structure
+# 加载 AlphaFold 预测结构
 protein = data.Protein.from_pdb("AF-P12345-F1-model_v4.pdb")
 
-# Build graph with spatial edges
+# 构建带空间边的图
 graph = protein.residue_graph(
     node_position="ca",
     edge_types=["sequential", "radius"],
@@ -339,9 +339,9 @@ graph = protein.residue_graph(
 )
 ```
 
-### With PyTorch Lightning
+### 与 PyTorch Lightning 集成
 
-Wrap tasks for Lightning training:
+包装任务用于 Lightning 训练：
 ```python
 import pytorch_lightning as pl
 
@@ -362,87 +362,86 @@ class LightningTask(pl.LightningModule):
         return torch.optim.Adam(self.parameters(), lr=1e-3)
 ```
 
-## Technical Details
+## 技术细节
 
-For deep dives into TorchDrug's architecture:
+深入了解 TorchDrug 的架构：
 
-**Core Concepts:** See `references/core_concepts.md` for:
-- Architecture philosophy (modular, configurable)
-- Data structures (Graph, Molecule, Protein, PackedGraph)
-- Model interface and forward function signature
-- Task interface (predict, target, forward, evaluate)
-- Training workflows and best practices
-- Loss functions and metrics
-- Common pitfalls and debugging
+**核心概念：** 请查看 `references/core_concepts.md` 了解：
+- 架构理念（模块化、可配置）
+- 数据结构（Graph、Molecule、Protein、PackedGraph）
+- 模型接口和前向函数签名
+- 任务接口（predict、target、forward、evaluate）
+- 训练工作流程和最佳实践
+- 损失函数和指标
+- 常见陷阱和调试
 
-## Quick Reference Cheat Sheet
+## 快速参考速查表
 
-**Choose Dataset:**
-- Molecular property → `references/datasets.md` → Molecular section
-- Protein task → `references/datasets.md` → Protein section
-- Knowledge graph → `references/datasets.md` → Knowledge graph section
+**选择数据集：**
+- 分子属性 → `references/datasets.md` → 分子部分
+- 蛋白质任务 → `references/datasets.md` → 蛋白质部分
+- 知识图谱 → `references/datasets.md` → 知识图谱部分
 
-**Choose Model:**
-- Molecules → `references/models_architectures.md` → GNN section → GIN/GAT/SchNet
-- Proteins (sequence) → `references/models_architectures.md` → Protein section → ESM
-- Proteins (structure) → `references/models_architectures.md` → Protein section → GearNet
-- Knowledge graph → `references/models_architectures.md` → KG section → RotatE/ComplEx
+**选择模型：**
+- 分子 → `references/models_architectures.md` → GNN 部分 → GIN/GAT/SchNet
+- 蛋白质（序列）→ `references/models_architectures.md` → 蛋白质部分 → ESM
+- 蛋白质（结构）→ `references/models_architectures.md` → 蛋白质部分 → GearNet
+- 知识图谱 → `references/models_architectures.md` → KG 部分 → RotatE/ComplEx
 
-**Common Tasks:**
-- Property prediction → `references/molecular_property_prediction.md` or `references/protein_modeling.md`
-- Generation → `references/molecular_generation.md`
-- Retrosynthesis → `references/retrosynthesis.md`
-- KG reasoning → `references/knowledge_graphs.md`
+**常见任务：**
+- 属性预测 → `references/molecular_property_prediction.md` 或 `references/protein_modeling.md`
+- 生成 → `references/molecular_generation.md`
+- 逆合成 → `references/retrosynthesis.md`
+- KG 推理 → `references/knowledge_graphs.md`
 
-**Understand Architecture:**
-- Data structures → `references/core_concepts.md` → Data Structures
-- Model design → `references/core_concepts.md` → Model Interface
-- Task design → `references/core_concepts.md` → Task Interface
+**理解架构：**
+- 数据结构 → `references/core_concepts.md` → 数据结构
+- 模型设计 → `references/core_concepts.md` → 模型接口
+- 任务设计 → `references/core_concepts.md` → 任务接口
 
-## Troubleshooting Common Issues
+## 常见问题排查
 
-**Issue: Dimension mismatch errors**
-→ Check `model.input_dim` matches `dataset.node_feature_dim`
-→ See `references/core_concepts.md` → Essential Attributes
+**问题：维度不匹配错误**
+→ 检查 `model.input_dim` 与 `dataset.node_feature_dim` 匹配
+→ 查看 `references/core_concepts.md` → 基本属性
 
-**Issue: Poor performance on molecular tasks**
-→ Use scaffold splitting, not random
-→ Try GIN instead of GCN
-→ See `references/molecular_property_prediction.md` → Best Practices
+**问题：分子任务性能差**
+→ 使用支架分割，而非随机分割
+→ 尝试 GIN 而非 GCN
+→ 查看 `references/molecular_property_prediction.md` → 最佳实践
 
-**Issue: Protein model not learning**
-→ Use pre-trained ESM for sequence tasks
-→ Check edge construction for structure models
-→ See `references/protein_modeling.md` → Training Workflows
+**问题：蛋白质模型不学习**
+→ 对序列任务使用预训练的 ESM
+→ 检查结构模型的边构建
+→ 查看 `references/protein_modeling.md` → 训练工作流程
 
-**Issue: Memory errors with large graphs**
-→ Reduce batch size
-→ Use gradient accumulation
-→ See `references/core_concepts.md` → Memory Efficiency
+**问题：大图内存错误**
+→ 减少批量大小
+→ 使用梯度累积
+→ 查看 `references/core_concepts.md` → 内存效率
 
-**Issue: Generated molecules are invalid**
-→ Add validity constraints
-→ Post-process with RDKit validation
-→ See `references/molecular_generation.md` → Validation and Filtering
+**问题：生成的分子无效**
+→ 添加有效性约束
+→ 使用 RDKit 验证后处理
+→ 查看 `references/molecular_generation.md` → 验证和过滤
 
-## Resources
+## 资源
 
-**Official Documentation:** https://torchdrug.ai/docs/
-**GitHub:** https://github.com/DeepGraphLearning/torchdrug
-**Paper:** TorchDrug: A Powerful and Flexible Machine Learning Platform for Drug Discovery
+**官方文档：** https://torchdrug.ai/docs/
+**GitHub：** https://github.com/DeepGraphLearning/torchdrug
+**论文：** TorchDrug: A Powerful and Flexible Machine Learning Platform for Drug Discovery
 
-## Summary
+## 总结
 
-Navigate to the appropriate reference file based on your task:
+根据您的任务导航到相应的参考文件：
 
-1. **Molecular property prediction** → `molecular_property_prediction.md`
-2. **Protein modeling** → `protein_modeling.md`
-3. **Knowledge graphs** → `knowledge_graphs.md`
-4. **Molecular generation** → `molecular_generation.md`
-5. **Retrosynthesis** → `retrosynthesis.md`
-6. **Model selection** → `models_architectures.md`
-7. **Dataset selection** → `datasets.md`
-8. **Technical details** → `core_concepts.md`
+1. **分子属性预测** → `molecular_property_prediction.md`
+2. **蛋白质建模** → `protein_modeling.md`
+3. **知识图谱** → `knowledge_graphs.md`
+4. **分子生成** → `molecular_generation.md`
+5. **逆合成** → `retrosynthesis.md`
+6. **模型选择** → `models_architectures.md`
+7. **数据集选择** → `datasets.md`
+8. **技术细节** → `core_concepts.md`
 
-Each reference provides comprehensive coverage of its domain with examples, best practices, and common use cases.
-
+每个参考都提供了其领域的全面覆盖，包括示例、最佳实践和常见用例。

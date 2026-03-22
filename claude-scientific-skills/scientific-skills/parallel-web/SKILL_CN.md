@@ -1,6 +1,6 @@
 ---
 name: parallel-web
-description: Search the web, extract URL content, and run deep research using the Parallel Chat API and Extract API. Use for ALL web searches, research queries, and general information gathering. Provides synthesized summaries with citations.
+description: 使用 Parallel Chat API 和 Extract API 搜索网络、提取 URL 内容并运行深度研究。用于所有网络搜索、研究查询和一般信息收集。提供带有引用的综合摘要。
 allowed-tools: Read Write Edit Bash
 license: MIT license
 compatibility: PARALLEL_API_KEY required
@@ -10,133 +10,133 @@ metadata:
 
 # Parallel Web Systems API
 
-## Overview
+## 概述
 
-This skill provides access to **Parallel Web Systems** APIs for web search, deep research, and content extraction. It is the **primary tool for all web-related operations** in the scientific writer workflow.
+此技能提供对 **Parallel Web Systems** API 的访问，用于网络搜索、深度研究和内容提取。它是科学作家工作流程中**所有网络相关操作的主要工具**。
 
-**Primary interface:** Parallel Chat API (OpenAI-compatible) for search and research.
-**Secondary interface:** Extract API for URL verification and special cases only.
+**主要接口**：Parallel Chat API（与 OpenAI 兼容）用于搜索和研究。
+**次要接口**：Extract API 仅用于 URL 验证和特殊情况。
 
-**API Documentation:** https://docs.parallel.ai
-**API Key:** https://platform.parallel.ai
-**Environment Variable:** `PARALLEL_API_KEY`
+**API 文档**：https://docs.parallel.ai
+**API 密钥**：https://platform.parallel.ai
+**环境变量**：`PARALLEL_API_KEY`
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use this skill for **ALL** of the following:
+将此技能用于**所有**以下情况：
 
-- **Web Search**: Any query that requires searching the internet for information
-- **Deep Research**: Comprehensive research reports on any topic
-- **Market Research**: Industry analysis, competitive intelligence, market data
-- **Current Events**: News, recent developments, announcements
-- **Technical Information**: Documentation, specifications, product details
-- **Statistical Data**: Market sizes, growth rates, industry figures
-- **General Information**: Company profiles, facts, comparisons
+- **网络搜索**：任何需要在互联网上搜索信息的查询
+- **深度研究**：关于任何主题的综合研究报告
+- **市场研究**：行业分析、竞争情报、市场数据
+- **时事**：新闻、最新发展、公告
+- **技术信息**：文档、规格、产品详情
+- **统计数据**：市场规模、增长率、行业数据
+- **一般信息**：公司简介、事实、比较
 
-**Use Extract API only for:**
-- Citation verification (confirming a specific URL's content)
-- Special cases where you need raw content from a known URL
+**仅将 Extract API 用于**：
+- 引用验证（确认特定 URL 的内容）
+- 需要从已知 URL 获取原始内容的特殊情况
 
-**Do NOT use this skill for:**
-- Academic-specific paper searches (use `research-lookup` which routes to Perplexity for purely academic queries)
-- Google Scholar / PubMed database searches (use `citation-management` skill)
+**不要将此技能用于**：
+- 学术特定论文搜索（使用 `research-lookup`，它将纯学术查询路由到 Perplexity）
+- Google Scholar / PubMed 数据库搜索（使用 `citation-management` 技能）
 
 ---
 
-## Two Capabilities
+## 两种功能
 
-### 1. Web Search (`search` command)
+### 1. 网络搜索（`search` 命令）
 
-Search the web via the Parallel Chat API (`base` model) and get a **synthesized summary** with cited sources.
+通过 Parallel Chat API（`base` 模型）搜索网络，获取带有引用来源的**综合摘要**。
 
-**Best for:** General web searches, current events, fact-finding, technical lookups, news, market data.
+**最适合**：一般网络搜索、时事、事实查找、技术查询、新闻、市场数据。
 
 ```bash
-# Basic search
+# 基本搜索
 python scripts/parallel_web.py search "latest advances in quantum computing 2025"
 
-# Use core model for more complex queries
+# 使用核心模型进行更复杂的查询
 python scripts/parallel_web.py search "compare EV battery chemistries NMC vs LFP" --model core
 
-# Save results to file
+# 将结果保存到文件
 python scripts/parallel_web.py search "renewable energy policy updates" -o results.txt
 
-# JSON output for programmatic use
+# 用于编程使用的 JSON 输出
 python scripts/parallel_web.py search "AI regulation landscape" --json -o results.json
 ```
 
-**Key Parameters:**
-- `objective`: Natural language description of what you want to find
-- `--model`: Chat model to use (`base` default, or `core` for deeper research)
-- `-o`: Output file path
-- `--json`: Output as JSON
+**关键参数**：
+- `objective`：您想要找到的内容的自然语言描述
+- `--model`：要使用的聊天模型（默认 `base`，或 `core` 用于更深层次的研究）
+- `-o`：输出文件路径
+- `--json`：以 JSON 格式输出
 
-**Response includes:** Synthesized summary organized by themes, with inline citations and a sources list.
+**响应包括**：按主题组织的综合摘要，带有内联引用和来源列表。
 
-### 2. Deep Research (`research` command)
+### 2. 深度研究（`research` 命令）
 
-Run comprehensive multi-source research via the Parallel Chat API (`core` model) that produces detailed intelligence reports with citations.
+通过 Parallel Chat API（`core` 模型）运行综合多源研究，生成带有引用的详细情报报告。
 
-**Best for:** Market research, comprehensive analysis, competitive intelligence, technology surveys, industry reports, any research question requiring synthesis of multiple sources.
+**最适合**：市场研究、综合分析、竞争情报、技术调查、行业报告、任何需要综合多个来源的研究问题。
 
 ```bash
-# Default deep research (core model)
+# 默认深度研究（核心模型）
 python scripts/parallel_web.py research "comprehensive analysis of the global EV battery market"
 
-# Save research report to file
+# 将研究报告保存到文件
 python scripts/parallel_web.py research "AI adoption in healthcare 2025" -o report.md
 
-# Use base model for faster, lighter research
+# 使用基础模型进行更快、更轻量的研究
 python scripts/parallel_web.py research "latest funding rounds in AI startups" --model base
 
-# JSON output
+# JSON 输出
 python scripts/parallel_web.py research "renewable energy storage market in Europe" --json -o data.json
 ```
 
-**Key Parameters:**
-- `query`: Research question or topic
-- `--model`: Chat model to use (`core` default for deep research, or `base` for faster results)
-- `-o`: Output file path
-- `--json`: Output as JSON
+**关键参数**：
+- `query`：研究问题或主题
+- `--model`：要使用的聊天模型（默认 `core` 用于深度研究，或 `base` 用于更快的结果）
+- `-o`：输出文件路径
+- `--json`：以 JSON 格式输出
 
-### 3. URL Extraction (`extract` command) — Verification Only
+### 3. URL 提取（`extract` 命令）— 仅用于验证
 
-Extract content from specific URLs. **Use only for citation verification and special cases.**
+从特定 URL 提取内容。**仅用于引用验证和特殊情况**。
 
-For general research, use `search` or `research` instead.
+对于一般研究，请使用 `search` 或 `research` 代替。
 
 ```bash
-# Verify a citation's content
+# 验证引用的内容
 python scripts/parallel_web.py extract "https://example.com/article" --objective "key findings"
 
-# Get full page content for verification
+# 获取完整页面内容进行验证
 python scripts/parallel_web.py extract "https://docs.example.com/api" --full-content
 
-# Save extraction to file
+# 将提取内容保存到文件
 python scripts/parallel_web.py extract "https://paper-url.com" --objective "methodology" -o extracted.md
 ```
 
 ---
 
-## Model Selection Guide
+## 模型选择指南
 
-The Chat API supports two research models. Use `base` for most searches and `core` for deep research.
+Chat API 支持两种研究模型。使用 `base` 进行大多数搜索，使用 `core` 进行深度研究。
 
-| Model  | Latency    | Strengths                        | Use When                    |
-|--------|------------|----------------------------------|-----------------------------|
-| `base` | 15s-100s   | Standard research, factual queries | Web searches, quick lookups |
-| `core` | 60s-5min   | Complex research, multi-source synthesis | Deep research, comprehensive reports |
+| 模型   | 延迟      | 优势                              | 使用时机                    |
+|--------|-----------|----------------------------------|-----------------------------|
+| `base` | 15s-100s  | 标准研究，事实查询               | 网络搜索，快速查询          |
+| `core` | 60s-5min  | 复杂研究，多源综合               | 深度研究，综合报告          |
 
-**Recommendations:**
-- `search` command defaults to `base` — fast, good for most queries
-- `research` command defaults to `core` — thorough, good for comprehensive reports
-- Override with `--model` when you need different depth/speed tradeoffs
+**建议**：
+- `search` 命令默认为 `base` — 快速，适合大多数查询
+- `research` 命令默认为 `core` — 彻底，适合综合报告
+- 当需要不同的深度/速度权衡时，使用 `--model` 覆盖
 
 ---
 
-## Python API Usage
+## Python API 使用
 
-### Search
+### 搜索
 
 ```python
 from parallel_web import ParallelSearch
@@ -148,12 +148,12 @@ result = searcher.search(
 )
 
 if result["success"]:
-    print(result["response"])  # Synthesized summary
+    print(result["response"])  # 综合摘要
     for src in result["sources"]:
         print(f"  {src['title']}: {src['url']}")
 ```
 
-### Deep Research
+### 深度研究
 
 ```python
 from parallel_web import ParallelDeepResearch
@@ -165,11 +165,11 @@ result = researcher.research(
 )
 
 if result["success"]:
-    print(result["response"])  # Full research report
+    print(result["response"])  # 完整研究报告
     print(f"Citations: {result['citation_count']}")
 ```
 
-### Extract (Verification Only)
+### 提取（仅用于验证）
 
 ```python
 from parallel_web import ParallelExtract
@@ -187,106 +187,106 @@ if result["success"]:
 
 ---
 
-## MANDATORY: Save All Results to Sources Folder
+## 强制要求：将所有结果保存到 Sources 文件夹
 
-**Every web search and deep research result MUST be saved to the project's `sources/` folder.**
+**每个网络搜索和深度研究结果必须保存到项目的 `sources/` 文件夹中。**
 
-This ensures all research is preserved for reproducibility, auditability, and context window recovery.
+这确保所有研究都被保存，以确保可重现性、可审计性和上下文窗口恢复。
 
-### Saving Rules
+### 保存规则
 
-| Operation | `-o` Flag Target | Filename Pattern |
+| 操作 | `-o` 标志目标 | 文件名模式 |
 |-----------|-----------------|------------------|
-| Web Search | `sources/search_<topic>.md` | `search_YYYYMMDD_HHMMSS_<brief_topic>.md` |
-| Deep Research | `sources/research_<topic>.md` | `research_YYYYMMDD_HHMMSS_<brief_topic>.md` |
-| URL Extract | `sources/extract_<source>.md` | `extract_YYYYMMDD_HHMMSS_<brief_source>.md` |
+| 网络搜索 | `sources/search_<topic>.md` | `search_YYYYMMDD_HHMMSS_<brief_topic>.md` |
+| 深度研究 | `sources/research_<topic>.md` | `research_YYYYMMDD_HHMMSS_<brief_topic>.md` |
+| URL 提取 | `sources/extract_<source>.md` | `extract_YYYYMMDD_HHMMSS_<brief_source>.md` |
 
-### How to Save (Always Use `-o` Flag)
+### 如何保存（始终使用 `-o` 标志）
 
-**CRITICAL: Every call to `parallel_web.py` MUST include the `-o` flag pointing to the `sources/` folder.**
+**关键：每个对 `parallel_web.py` 的调用必须包含指向 `sources/` 文件夹的 `-o` 标志。**
 
 ```bash
-# Web search — ALWAYS save to sources/
+# 网络搜索 — 始终保存到 sources/
 python scripts/parallel_web.py search "latest advances in quantum computing 2025" \
   -o sources/search_20250217_143000_quantum_computing.md
 
-# Deep research — ALWAYS save to sources/
+# 深度研究 — 始终保存到 sources/
 python scripts/parallel_web.py research "comprehensive analysis of the global EV battery market" \
   -o sources/research_20250217_144000_ev_battery_market.md
 
-# URL extraction (verification only) — save to sources/
+# URL 提取（仅用于验证）— 保存到 sources/
 python scripts/parallel_web.py extract "https://example.com/article" --objective "key findings" \
   -o sources/extract_20250217_143500_example_article.md
 ```
 
-### Why Save Everything
+### 为什么保存所有内容
 
-1. **Reproducibility**: Every claim in the final document can be traced back to its raw source material
-2. **Context Window Recovery**: If context is compacted mid-task, saved results can be re-read from `sources/`
-3. **Audit Trail**: The `sources/` folder provides complete transparency into how information was gathered
-4. **Reuse Across Sections**: Saved research can be referenced by multiple sections without duplicate API calls
-5. **Cost Efficiency**: Avoid redundant API calls by checking `sources/` for existing results
-6. **Peer Review Support**: Reviewers can verify the research backing every claim
+1. **可重现性**：最终文档中的每个声明都可以追溯到其原始源材料
+2. **上下文窗口恢复**：如果任务中期上下文被压缩，可以从 `sources/` 重新读取保存的结果
+3. **审计跟踪**：`sources/` 文件夹提供了信息收集方式的完全透明度
+4. **跨部分重用**：保存的研究可以被多个部分引用，而无需重复 API 调用
+5. **成本效率**：通过检查 `sources/` 中的现有结果避免冗余 API 调用
+6. **同行评审支持**：评审人员可以验证支持每个声明的研究
 
-### Logging
+### 日志记录
 
-When saving research results, always log:
+保存研究结果时，始终记录：
 
 ```
 [HH:MM:SS] SAVED: Search results to sources/search_20250217_143000_quantum_computing.md
 [HH:MM:SS] SAVED: Deep research report to sources/research_20250217_144000_ev_battery_market.md
 ```
 
-### Before Making a New Query, Check Sources First
+### 在进行新查询之前，先检查 Sources
 
-Before calling `parallel_web.py`, check if a relevant result already exists in `sources/`:
+在调用 `parallel_web.py` 之前，检查 `sources/` 中是否已存在相关结果：
 
 ```bash
-ls sources/  # Check existing saved results
+ls sources/  # 检查现有的保存结果
 ```
 
 ---
 
-## Integration with Scientific Writer
+## 与科学作家的集成
 
-### Routing Table
+### 路由表
 
-| Task | Tool | Command |
+| 任务 | 工具 | 命令 |
 |------|------|---------|
-| Web search (any) | `parallel_web.py search` | `python scripts/parallel_web.py search "query" -o sources/search_<topic>.md` |
-| Deep research | `parallel_web.py research` | `python scripts/parallel_web.py research "query" -o sources/research_<topic>.md` |
-| Citation verification | `parallel_web.py extract` | `python scripts/parallel_web.py extract "url" -o sources/extract_<source>.md` |
-| Academic paper search | `research_lookup.py` | Routes to Perplexity sonar-pro-search |
-| DOI/metadata lookup | `parallel_web.py extract` | Extract from DOI URLs (verification) |
+| 网络搜索（任何） | `parallel_web.py search` | `python scripts/parallel_web.py search "query" -o sources/search_<topic>.md` |
+| 深度研究 | `parallel_web.py research` | `python scripts/parallel_web.py research "query" -o sources/research_<topic>.md` |
+| 引用验证 | `parallel_web.py extract` | `python scripts/parallel_web.py extract "url" -o sources/extract_<source>.md` |
+| 学术论文搜索 | `research_lookup.py` | 路由到 Perplexity sonar-pro-search |
+| DOI/元数据查询 | `parallel_web.py extract` | 从 DOI URL 提取（验证） |
 
-### When Writing Scientific Documents
+### 编写科学文档时
 
-1. **Before writing any section**, use `search` or `research` to gather background information — **save results to `sources/`**
-2. **For academic citations**, use `research-lookup` (which routes academic queries to Perplexity) — **save results to `sources/`**
-3. **For citation verification** (confirming a specific URL), use `parallel_web.py extract` — **save results to `sources/`**
-4. **For current market/industry data**, use `parallel_web.py research --model core` — **save results to `sources/`**
-5. **Before any new query**, check `sources/` for existing results to avoid duplicate API calls
+1. **在编写任何部分之前**，使用 `search` 或 `research` 收集背景信息 — **将结果保存到 `sources/`**
+2. **对于学术引用**，使用 `research-lookup`（将学术查询路由到 Perplexity）— **将结果保存到 `sources/`**
+3. **对于引用验证**（确认特定 URL），使用 `parallel_web.py extract` — **将结果保存到 `sources/`**
+4. **对于当前市场/行业数据**，使用 `parallel_web.py research --model core` — **将结果保存到 `sources/`**
+5. **在任何新查询之前**，检查 `sources/` 中的现有结果以避免重复 API 调用
 
 ---
 
-## Environment Setup
+## 环境设置
 
 ```bash
-# Required: Set your Parallel API key
+# 必需：设置您的 Parallel API 密钥
 export PARALLEL_API_KEY="your_api_key_here"
 
-# Required Python packages
-pip install openai        # For Chat API (search/research)
-pip install parallel-web  # For Extract API (verification only)
+# 必需的 Python 包
+pip install openai        # 用于 Chat API（搜索/研究）
+pip install parallel-web  # 用于 Extract API（仅验证）
 ```
 
-Get your API key at https://platform.parallel.ai
+在 https://platform.parallel.ai 获取您的 API 密钥
 
 ---
 
-## Error Handling
+## 错误处理
 
-The script handles errors gracefully and returns structured error responses:
+脚本优雅地处理错误并返回结构化的错误响应：
 
 ```json
 {
@@ -296,19 +296,19 @@ The script handles errors gracefully and returns structured error responses:
 }
 ```
 
-**Common issues:**
-- `PARALLEL_API_KEY not set`: Set the environment variable
-- `openai not installed`: Run `pip install openai`
-- `parallel-web not installed`: Run `pip install parallel-web` (only needed for extract)
-- `Rate limit exceeded`: Wait and retry (default: 300 req/min for Chat API)
+**常见问题**：
+- `PARALLEL_API_KEY not set`：设置环境变量
+- `openai not installed`：运行 `pip install openai`
+- `parallel-web not installed`：运行 `pip install parallel-web`（仅提取需要）
+- `Rate limit exceeded`：等待并重试（默认：Chat API 为 300 次请求/分钟）
 
 ---
 
-## Complementary Skills
+## 互补技能
 
-| Skill | Use For |
+| 技能 | 用途 |
 |-------|---------|
-| `research-lookup` | Academic paper searches (routes to Perplexity for scholarly queries) |
-| `citation-management` | Google Scholar, PubMed, CrossRef database searches |
-| `literature-review` | Systematic literature reviews across academic databases |
-| `scientific-schematics` | Generate diagrams from research findings |
+| `research-lookup` | 学术论文搜索（将学术查询路由到 Perplexity） |
+| `citation-management` | Google Scholar、PubMed、CrossRef 数据库搜索 |
+| `literature-review` | 跨学术数据库的系统文献综述 |
+| `scientific-schematics` | 从研究结果生成图表 |

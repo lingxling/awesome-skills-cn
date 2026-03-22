@@ -1,6 +1,6 @@
 ---
 name: arboreto
-description: Infer gene regulatory networks (GRNs) from gene expression data using scalable algorithms (GRNBoost2, GENIE3). Use when analyzing transcriptomics data (bulk RNA-seq, single-cell RNA-seq) to identify transcription factor-target gene relationships and regulatory interactions. Supports distributed computation for large-scale datasets.
+description: 使用可扩展算法（GRNBoost2、GENIE3）从基因表达数据推断基因调控网络（GRN）。在分析转录组数据（bulk RNA-seq、单细胞RNA-seq）以识别转录因子-靶基因关系和调控相互作用时使用。支持大规模数据集的分布式计算。
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,91 +8,91 @@ metadata:
 
 # Arboreto
 
-## Overview
+## 概述
 
-Arboreto is a computational library for inferring gene regulatory networks (GRNs) from gene expression data using parallelized algorithms that scale from single machines to multi-node clusters.
+Arboreto是一个计算库，用于使用并行化算法从基因表达数据推断基因调控网络（GRN），该算法可从单机扩展到多节点集群。
 
-**Core capability**: Identify which transcription factors (TFs) regulate which target genes based on expression patterns across observations (cells, samples, conditions).
+**核心能力**：根据跨观测（细胞、样本、条件）的表达模式，识别哪些转录因子（TF）调控哪些靶基因。
 
-## Quick Start
+## 快速开始
 
-Install arboreto:
+安装 arboreto：
 ```bash
 uv pip install arboreto
 ```
 
-Basic GRN inference:
+基本 GRN 推断：
 ```python
 import pandas as pd
 from arboreto.algo import grnboost2
 
 if __name__ == '__main__':
-    # Load expression data (genes as columns)
+    # 加载表达数据（基因作为列）
     expression_matrix = pd.read_csv('expression_data.tsv', sep='\t')
 
-    # Infer regulatory network
+    # 推断调控网络
     network = grnboost2(expression_data=expression_matrix)
 
-    # Save results (TF, target, importance)
+    # 保存结果（TF、target、importance）
     network.to_csv('network.tsv', sep='\t', index=False, header=False)
 ```
 
-**Critical**: Always use `if __name__ == '__main__':` guard because Dask spawns new processes.
+**关键**：始终使用 `if __name__ == '__main__':` 保护，因为 Dask 会生成新进程。
 
-## Core Capabilities
+## 核心能力
 
-### 1. Basic GRN Inference
+### 1. 基本 GRN 推断
 
-For standard GRN inference workflows including:
-- Input data preparation (Pandas DataFrame or NumPy array)
-- Running inference with GRNBoost2 or GENIE3
-- Filtering by transcription factors
-- Output format and interpretation
+用于标准 GRN 推断工作流程，包括：
+- 输入数据准备（Pandas DataFrame 或 NumPy 数组）
+- 使用 GRNBoost2 或 GENIE3 运行推断
+- 按转录因子过滤
+- 输出格式和解释
 
-**See**: `references/basic_inference.md`
+**参见**：`references/basic_inference.md`
 
-**Use the ready-to-run script**: `scripts/basic_grn_inference.py` for standard inference tasks:
+**使用现成脚本**：`scripts/basic_grn_inference.py` 用于标准推断任务：
 ```bash
 python scripts/basic_grn_inference.py expression_data.tsv output_network.tsv --tf-file tfs.txt --seed 777
 ```
 
-### 2. Algorithm Selection
+### 2. 算法选择
 
-Arboreto provides two algorithms:
+Arboreto 提供两种算法：
 
-**GRNBoost2 (Recommended)**:
-- Fast gradient boosting-based inference
-- Optimized for large datasets (10k+ observations)
-- Default choice for most analyses
+**GRNBoost2（推荐）**：
+- 基于快速梯度提升的推断
+- 针对大型数据集（10k+ 观测）优化
+- 大多数分析的默认选择
 
-**GENIE3**:
-- Random Forest-based inference
-- Original multiple regression approach
-- Use for comparison or validation
+**GENIE3**：
+- 基于随机森林的推断
+- 原始多元回归方法
+- 用于比较或验证
 
-Quick comparison:
+快速比较：
 ```python
 from arboreto.algo import grnboost2, genie3
 
-# Fast, recommended
+# 快速，推荐
 network_grnboost = grnboost2(expression_data=matrix)
 
-# Classic algorithm
+# 经典算法
 network_genie3 = genie3(expression_data=matrix)
 ```
 
-**For detailed algorithm comparison, parameters, and selection guidance**: `references/algorithms.md`
+**有关详细算法比较、参数和选择指导**：`references/algorithms.md`
 
-### 3. Distributed Computing
+### 3. 分布式计算
 
-Scale inference from local multi-core to cluster environments:
+将推断从本地多核扩展到集群环境：
 
-**Local (default)** - Uses all available cores automatically:
+**本地（默认）** - 自动使用所有可用核心：
 ```python
 network = grnboost2(expression_data=matrix)
 ```
 
-**Custom local client** - Control resources:
+**自定义本地客户端** - 控制资源：
 ```python
 from distributed import LocalCluster, Client
 
@@ -105,7 +105,7 @@ client.close()
 local_cluster.close()
 ```
 
-**Cluster computing** - Connect to remote Dask scheduler:
+**集群计算** - 连接到远程 Dask 调度器：
 ```python
 from distributed import Client
 
@@ -113,46 +113,46 @@ client = Client('tcp://scheduler:8786')
 network = grnboost2(expression_data=matrix, client_or_address=client)
 ```
 
-**For cluster setup, performance optimization, and large-scale workflows**: `references/distributed_computing.md`
+**有关集群设置、性能优化和大规模工作流程**：`references/distributed_computing.md`
 
-## Installation
+## 安装
 
 ```bash
 uv pip install arboreto
 ```
 
-**Dependencies**: scipy, scikit-learn, numpy, pandas, dask, distributed
+**依赖项**：scipy、scikit-learn、numpy、pandas、dask、distributed
 
-## Common Use Cases
+## 常见用例
 
-### Single-Cell RNA-seq Analysis
+### 单细胞 RNA-seq 分析
 ```python
 import pandas as pd
 from arboreto.algo import grnboost2
 
 if __name__ == '__main__':
-    # Load single-cell expression matrix (cells x genes)
+    # 加载单细胞表达矩阵（细胞 x 基因）
     sc_data = pd.read_csv('scrna_counts.tsv', sep='\t')
 
-    # Infer cell-type-specific regulatory network
+    # 推断细胞类型特异性调控网络
     network = grnboost2(expression_data=sc_data, seed=42)
 
-    # Filter high-confidence links
+    # 过滤高置信度链接
     high_confidence = network[network['importance'] > 0.5]
     high_confidence.to_csv('grn_high_confidence.tsv', sep='\t', index=False)
 ```
 
-### Bulk RNA-seq with TF Filtering
+### 带 TF 过滤的 Bulk RNA-seq
 ```python
 from arboreto.utils import load_tf_names
 from arboreto.algo import grnboost2
 
 if __name__ == '__main__':
-    # Load data
+    # 加载数据
     expression_data = pd.read_csv('rnaseq_tpm.tsv', sep='\t')
     tf_names = load_tf_names('human_tfs.txt')
 
-    # Infer with TF restriction
+    # 使用 TF 限制进行推断
     network = grnboost2(
         expression_data=expression_data,
         tf_names=tf_names,
@@ -162,12 +162,12 @@ if __name__ == '__main__':
     network.to_csv('tf_target_network.tsv', sep='\t', index=False)
 ```
 
-### Comparative Analysis (Multiple Conditions)
+### 比较分析（多个条件）
 ```python
 from arboreto.algo import grnboost2
 
 if __name__ == '__main__':
-    # Infer networks for different conditions
+    # 为不同条件推断网络
     conditions = ['control', 'treatment_24h', 'treatment_48h']
 
     for condition in conditions:
@@ -176,42 +176,42 @@ if __name__ == '__main__':
         network.to_csv(f'{condition}_network.tsv', sep='\t', index=False)
 ```
 
-## Output Interpretation
+## 输出解释
 
-Arboreto returns a DataFrame with regulatory links:
+Arboreto 返回一个包含调控链接的 DataFrame：
 
-| Column | Description |
+| 列 | 描述 |
 |--------|-------------|
-| `TF` | Transcription factor (regulator) |
-| `target` | Target gene |
-| `importance` | Regulatory importance score (higher = stronger) |
+| `TF` | 转录因子（调控因子） |
+| `target` | 靶基因 |
+| `importance` | 调控重要性评分（越高 = 越强） |
 
-**Filtering strategy**:
-- Top N links per target gene
-- Importance threshold (e.g., > 0.5)
-- Statistical significance testing (permutation tests)
+**过滤策略**：
+- 每个靶基因的前 N 个链接
+- 重要性阈值（例如，> 0.5）
+- 统计显著性检验（置换检验）
 
-## Integration with pySCENIC
+## 与 pySCENIC 集成
 
-Arboreto is a core component of the SCENIC pipeline for single-cell regulatory network analysis:
+Arboreto 是 SCENIC 流程的核心组件，用于单细胞调控网络分析：
 
 ```python
-# Step 1: Use arboreto for GRN inference
+# 步骤 1：使用 arboreto 进行 GRN 推断
 from arboreto.algo import grnboost2
 network = grnboost2(expression_data=sc_data, tf_names=tf_list)
 
-# Step 2: Use pySCENIC for regulon identification and activity scoring
-# (See pySCENIC documentation for downstream analysis)
+# 步骤 2：使用 pySCENIC 进行调控因子识别和活性评分
+# （下游分析请参阅 pySCENIC 文档）
 ```
 
-## Reproducibility
+## 可重现性
 
-Always set a seed for reproducible results:
+始终设置种子以获得可重现的结果：
 ```python
 network = grnboost2(expression_data=matrix, seed=777)
 ```
 
-Run multiple seeds for robustness analysis:
+运行多个种子进行稳健性分析：
 ```python
 from distributed import LocalCluster, Client
 
@@ -225,17 +225,16 @@ if __name__ == '__main__':
         net = grnboost2(expression_data=matrix, client_or_address=client, seed=seed)
         networks.append(net)
 
-    # Combine networks and filter consensus links
+    # 组合网络并过滤共识链接
     consensus = analyze_consensus(networks)
 ```
 
-## Troubleshooting
+## 故障排除
 
-**Memory errors**: Reduce dataset size by filtering low-variance genes or use distributed computing
+**内存错误**：通过过滤低方差基因减少数据集大小，或使用分布式计算
 
-**Slow performance**: Use GRNBoost2 instead of GENIE3, enable distributed client, filter TF list
+**性能缓慢**：使用 GRNBoost2 代替 GENIE3，启用分布式客户端，过滤 TF 列表
 
-**Dask errors**: Ensure `if __name__ == '__main__':` guard is present in scripts
+**Dask 错误**：确保脚本中存在 `if __name__ == '__main__':` 保护
 
-**Empty results**: Check data format (genes as columns), verify TF names match gene names
-
+**空结果**：检查数据格式（基因作为列），验证 TF 名称与基因名称匹配

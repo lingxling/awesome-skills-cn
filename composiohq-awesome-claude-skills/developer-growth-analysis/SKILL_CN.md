@@ -1,322 +1,322 @@
 ---
 name: developer-growth-analysis
-description: Analyzes your recent Claude Code chat history to identify coding patterns, development gaps, and areas for improvement, curates relevant learning resources from HackerNews, and automatically sends a personalized growth report to your Slack DMs.
+description: 分析您最近的 Claude Code 聊天历史，识别编码模式、开发差距和改进领域，从 HackerNews 策划相关学习资源，并自动将个性化成长报告发送到您的 Slack 私信。
 ---
 
-# Developer Growth Analysis
+# 开发者成长分析
 
-This skill provides personalized feedback on your recent coding work by analyzing your Claude Code chat interactions and identifying patterns that reveal strengths and areas for growth.
+此技能通过分析您的 Claude Code 聊天互动并识别揭示优势和成长领域的模式，为您最近的编码工作提供个性化反馈。
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use this skill when you want to:
-- Understand your development patterns and habits from recent work
-- Identify specific technical gaps or recurring challenges
-- Discover which topics would benefit from deeper study
-- Get curated learning resources tailored to your actual work patterns
-- Track improvement areas across your recent projects
-- Find high-quality articles that directly address the skills you're developing
+当您想要：
+- 了解您最近工作中的开发模式和习惯
+- 识别特定的技术差距或反复出现的挑战
+- 发现哪些主题会从更深入的研究中受益
+- 获取根据您实际工作模式定制的策划学习资源
+- 跟踪您最近项目中的改进领域
+- 找到直接解决您正在开发的技能的高质量文章
 
-This skill is ideal for developers who want structured feedback on their growth without waiting for code reviews, and who prefer data-driven insights from their own work history.
+此技能非常适合希望在不等待代码审查的情况下获得关于其成长的结构化反馈的开发者，以及更喜欢从自己的工作历史中获取数据驱动洞察的开发者。
 
-## What This Skill Does
+## 此技能的功能
 
-This skill performs a six-step analysis of your development work:
+此技能对您的开发工作执行六步分析：
 
-1. **Reads Your Chat History**: Accesses your local Claude Code chat history from the past 24-48 hours to understand what you've been working on.
+1. **读取您的聊天历史**：访问过去 24-48 小时的本地 Claude Code 聊天历史，了解您一直在做什么。
 
-2. **Identifies Development Patterns**: Analyzes the types of problems you're solving, technologies you're using, challenges you encounter, and how you approach different kinds of tasks.
+2. **识别开发模式**：分析您解决的问题类型、使用的技术、遇到的挑战以及您如何处理不同类型的任务。
 
-3. **Detects Improvement Areas**: Recognizes patterns that suggest skill gaps, repeated struggles, inefficient approaches, or areas where you might benefit from deeper knowledge.
+3. **检测改进领域**：识别表明技能差距、重复挣扎、低效方法或您可能从更深入知识中受益的领域的模式。
 
-4. **Generates a Personalized Report**: Creates a comprehensive report showing your work summary, identified improvement areas, and specific recommendations for growth.
+4. **生成个性化报告**：创建一份综合报告，显示您的工作总结、已识别的改进领域以及具体的成长建议。
 
-5. **Finds Learning Resources**: Uses HackerNews to curate high-quality articles and discussions directly relevant to your improvement areas, providing you with a reading list tailored to your actual development work.
+5. **查找学习资源**：使用 HackerNews 策划与您的改进领域直接相关的高质量文章和讨论，为您提供根据实际开发工作定制的阅读清单。
 
-6. **Sends to Your Slack DMs**: Automatically delivers the complete report to your own Slack direct messages so you can reference it anytime, anywhere.
+6. **发送到您的 Slack 私信**：自动将完整报告发送到您自己的 Slack 直接消息，以便您可以随时随地参考。
 
-## How to Use
+## 如何使用
 
-Ask Claude to analyze your recent coding work:
+请 Claude 分析您最近的编码工作：
 
 ```
 Analyze my developer growth from my recent chats
 ```
 
-Or be more specific about which time period:
+或者更具体地指定时间段：
 
 ```
 Analyze my work from today and suggest areas for improvement
 ```
 
-The skill will generate a formatted report with:
-- Overview of your recent work
-- Key improvement areas identified
-- Specific recommendations for each area
-- Curated learning resources from HackerNews
-- Action items you can focus on
+该技能将生成一份格式化报告，包含：
+- 您最近工作的概述
+- 已识别的关键改进领域
+- 每个领域的具体建议
+- 来自 HackerNews 的策划学习资源
+- 您可以关注的行动项目
 
-## Instructions
+## 说明
 
-When a user requests analysis of their developer growth or coding patterns from recent work:
+当用户请求分析他们的开发者成长或最近工作中的编码模式时：
 
-1. **Access Chat History**
+1. **访问聊天历史**
 
-   Read the chat history from `~/.claude/history.jsonl`. This file is a JSONL format where each line contains:
-   - `display`: The user's message/request
-   - `project`: The project being worked on
-   - `timestamp`: Unix timestamp (in milliseconds)
-   - `pastedContents`: Any code or content pasted
+   从 `~/.claude/history.jsonl` 读取聊天历史。此文件是 JSONL 格式，每行包含：
+   - `display`：用户的消息/请求
+   - `project`：正在处理的项目
+   - `timestamp`：Unix 时间戳（以毫秒为单位）
+   - `pastedContents`：粘贴的任何代码或内容
 
-   Filter for entries from the past 24-48 hours based on the current timestamp.
+   根据当前时间戳过滤过去 24-48 小时的条目。
 
-2. **Analyze Work Patterns**
+2. **分析工作模式**
 
-   Extract and analyze the following from the filtered chats:
-   - **Projects and Domains**: What types of projects was the user working on? (e.g., backend, frontend, DevOps, data, etc.)
-   - **Technologies Used**: What languages, frameworks, and tools appear in the conversations?
-   - **Problem Types**: What categories of problems are being solved? (e.g., performance optimization, debugging, feature implementation, refactoring, setup/configuration)
-   - **Challenges Encountered**: What problems did the user struggle with? Look for:
-     - Repeated questions about similar topics
-     - Problems that took multiple attempts to solve
-     - Questions indicating knowledge gaps
-     - Complex architectural decisions
-   - **Approach Patterns**: How does the user solve problems? (e.g., methodical, exploratory, experimental)
+   从过滤后的聊天中提取和分析以下内容：
+   - **项目和领域**：用户正在处理什么类型的项目？（例如，后端、前端、DevOps、数据等）
+   - **使用的技术**：对话中出现了什么语言、框架和工具？
+   - **问题类型**：正在解决什么类别的问题？（例如，性能优化、调试、功能实现、重构、设置/配置）
+   - **遇到的挑战**：用户遇到了什么问题？寻找：
+     - 关于类似主题的重复问题
+     - 需要多次尝试才能解决的问题
+     - 表明知识差距的问题
+     - 复杂的架构决策
+   - **方法模式**：用户如何解决问题？（例如，有条不紊、探索性、实验性）
 
-3. **Identify Improvement Areas**
+3. **识别改进领域**
 
-   Based on the analysis, identify 3-5 specific areas where the user could improve. These should be:
-   - **Specific** (not vague like "improve coding skills")
-   - **Evidence-based** (grounded in actual chat history)
-   - **Actionable** (practical improvements that can be made)
-   - **Prioritized** (most impactful first)
+   基于分析，识别用户可以改进的 3-5 个特定领域。这些应该是：
+   - **具体的**（不是模糊的，如"提高编码技能"）
+   - **基于证据的**（基于实际聊天历史）
+   - **可操作的**（可以进行的实际改进）
+   - **优先排序的**（最有影响力的优先）
 
-   Examples of good improvement areas:
-   - "Advanced TypeScript patterns (generics, utility types, type guards) - you struggled with type safety in [specific project]"
-   - "Error handling and validation - I noticed you patched several bugs related to missing null checks"
-   - "Async/await patterns - your recent work shows some race conditions and timing issues"
-   - "Database query optimization - you rewrote the same query multiple times"
+   良好改进领域的示例：
+   - "高级 TypeScript 模式（泛型、实用类型、类型保护）- 您在 [特定项目] 中与类型安全斗争"
+   - "错误处理和验证 - 我注意到您修补了几个与缺少空检查相关的错误"
+   - "Async/await 模式 - 您最近的工作显示一些竞态条件和时序问题"
+   - "数据库查询优化 - 您多次重写了相同的查询"
 
-4. **Generate Report**
+4. **生成报告**
 
-   Create a comprehensive report with this structure:
+   创建具有以下结构的综合报告：
 
    ```markdown
-   # Your Developer Growth Report
+   # 您的开发者成长报告
 
-   **Report Period**: [Yesterday / Today / [Custom Date Range]]
-   **Last Updated**: [Current Date and Time]
+   **报告期间**：[昨天 / 今天 / [自定义日期范围]]
+   **最后更新**：[当前日期和时间]
 
-   ## Work Summary
+   ## 工作总结
 
-   [2-3 paragraphs summarizing what the user worked on, projects touched, technologies used, and overall focus areas]
+   [2-3 个段落总结用户的工作内容、接触的项目、使用的技术以及总体重点领域]
 
-   Example:
-   "Over the past 24 hours, you focused primarily on backend development with three distinct projects. Your work involved TypeScript, React, and deployment infrastructure. You tackled a mix of feature implementation, debugging, and architectural decisions, with a particular focus on API design and database optimization."
+   示例：
+   "在过去 24 小时内，您主要专注于三个不同项目的后端开发。您的工作涉及 TypeScript、React 和部署基础设施。您处理了功能实现、调试和架构决策的混合，特别关注 API 设计和数据库优化。"
 
-   ## Improvement Areas (Prioritized)
+   ## 改进领域（优先排序）
 
-   ### 1. [Area Name]
+   ### 1. [领域名称]
 
-   **Why This Matters**: [Explanation of why this skill is important for the user's work]
+   **为什么这很重要**：[解释为什么此技能对用户工作很重要]
 
-   **What I Observed**: [Specific evidence from chat history showing this gap]
+   **我观察到**：[来自聊天历史的具体证据显示此差距]
 
-   **Recommendation**: [Concrete step(s) to improve in this area]
+   **建议**：[改进该领域的具体步骤]
 
-   **Time to Skill Up**: [Brief estimate of effort required]
+   **技能提升时间**：[所需努力的简要估计]
 
    ---
 
-   [Repeat for 2-4 additional areas]
+   [为 2-4 个其他领域重复]
 
-   ## Strengths Observed
+   ## 观察到的优势
 
-   [2-3 bullet points highlighting things you're doing well - things to continue doing]
+   [2-3 个要点，突出您做得好的事情 - 继续做的事情]
 
-   ## Action Items
+   ## 行动项目
 
-   Priority order:
-   1. [Action item derived from highest priority improvement area]
-   2. [Action item from next area]
-   3. [Action item from next area]
+   优先顺序：
+   1. [来自最高优先级改进领域的行动项目]
+   2. [来自下一个领域的行动项目]
+   3. [来自下一个领域的行动项目]
 
-   ## Learning Resources
+   ## 学习资源
 
-   [Will be populated in next step]
+   [将在下一步填充]
    ```
 
-5. **Search for Learning Resources**
+5. **搜索学习资源**
 
-   Use Rube MCP to search HackerNews for articles related to each improvement area:
+   使用 Rube MCP 搜索 HackerNews 上与每个改进领域相关的文章：
 
-   - For each improvement area, construct a search query targeting high-quality resources
-   - Search HackerNews using RUBE_SEARCH_TOOLS with queries like:
+   - 对于每个改进领域，构建针对高质量资源的搜索查询
+   - 使用 RUBE_SEARCH_TOOLS 搜索 HackerNews，查询如：
      - "Learn [Technology/Pattern] best practices"
      - "[Technology] advanced patterns and techniques"
      - "Debugging [specific problem type] in [language]"
-   - Prioritize posts with high engagement (comments, upvotes)
-   - For each area, include 2-3 most relevant articles with:
-     - Article title
-     - Publication date
-     - Brief description of why it's relevant
-     - Link to the article
+   - 优先考虑高参与度的帖子（评论、点赞）
+   - 对于每个领域，包括 2-3 个最相关的文章，包含：
+     - 文章标题
+     - 发布日期
+     - 关于其相关性的简短描述
+     - 文章链接
 
-   Add this section to the report:
+   将此部分添加到报告：
 
    ```markdown
-   ## Curated Learning Resources
+   ## 策划学习资源
 
-   ### For: [Improvement Area]
+   ### 用于：[改进领域]
 
-   1. **[Article Title]** - [Date]
-      [Description of what it covers and why it's relevant to your improvement area]
-      [Link]
+   1. **[文章标题]** - [日期]
+      [描述它涵盖的内容以及为什么与您的改进领域相关]
+      [链接]
 
-   2. **[Article Title]** - [Date]
-      [Description]
-      [Link]
+   2. **[文章标题]** - [日期]
+      [描述]
+      [链接]
 
-   [Repeat for other improvement areas]
+   [为其他改进领域重复]
    ```
 
-6. **Present the Complete Report**
+6. **呈现完整报告**
 
-   Deliver the report in a clean, readable format that the user can:
-   - Quickly scan for key takeaways
-   - Use for focused learning planning
-   - Reference over the next week as they work on improvements
-   - Share with mentors if they want external feedback
+   以干净、可读的格式交付报告，用户可以：
+   - 快速扫描关键要点
+   - 用于专注的学习规划
+   - 在接下来的一周作为改进工作的参考
+   - 如果需要外部反馈，可以与导师分享
 
-7. **Send Report to Slack DMs**
+7. **将报告发送到 Slack 私信**
 
-   Use Rube MCP to send the complete report to the user's own Slack DMs:
+   使用 Rube MCP 将完整报告发送到用户自己的 Slack 私信：
 
-   - Check if Slack connection is active via RUBE_SEARCH_TOOLS
-   - If not connected, use RUBE_MANAGE_CONNECTIONS to initiate Slack auth
-   - Use RUBE_MULTI_EXECUTE_TOOL to send the report as a formatted message:
-     - Send the report title and period as the first message
-     - Break the report into logical sections (Summary, Improvements, Strengths, Actions, Resources)
-     - Format each section as a well-structured Slack message with proper markdown
-     - Include clickable links for the learning resources
-   - Confirm delivery in the CLI output
+   - 通过 RUBE_SEARCH_TOOLS 检查 Slack 连接是否活跃
+   - 如果未连接，使用 RUBE_MANAGE_CONNECTIONS 启动 Slack 认证
+   - 使用 RUBE_MULTI_EXECUTE_TOOL 将报告作为格式化消息发送：
+     - 将报告标题和期间作为第一条消息发送
+     - 将报告分解为逻辑部分（摘要、改进、优势、行动、资源）
+     - 将每个部分格式化为结构良好的 Slack 消息，使用适当的 Markdown
+     - 为学习资源包含可点击的链接
+   - 在 CLI 输出中确认交付
 
-   This ensures the user has the report in a place they check regularly and can reference it throughout the week.
+   这确保用户在他们定期检查的地方拥有报告，并可以在整个星期参考它。
 
-## Example Usage
+## 示例用法
 
-### Input
+### 输入
 
 ```
 Analyze my developer growth from my recent chats
 ```
 
-### Output
+### 输出
 
 ```markdown
-# Your Developer Growth Report
+# 您的开发者成长报告
 
-**Report Period**: November 9-10, 2024
-**Last Updated**: November 10, 2024, 9:15 PM UTC
+**报告期间**：2024 年 11 月 9-10 日
+**最后更新**：2024 年 11 月 10 日，晚上 9:15 UTC
 
-## Work Summary
+## 工作总结
 
-Over the past two days, you focused on backend infrastructure and API development. Your primary project was an open-source showcase application, where you made significant progress on connections management, UI improvements, and deployment configuration. You worked with TypeScript, React, and Node.js, tackling challenges ranging from data security to responsive design. Your work shows a balance between implementing features and addressing technical debt.
+在过去两天，您专注于后端基础设施和 API 开发。您的主要项目是一个开源展示应用程序，您在连接管理、UI 改进和部署配置方面取得了显著进展。您使用 TypeScript、React 和 Node.js 工作，应对从数据安全到响应式设计的各种挑战。您的工作显示了实现功能和解决技术债务之间的平衡。
 
-## Improvement Areas (Prioritized)
+## 改进领域（优先排序）
 
-### 1. Advanced TypeScript Patterns and Type Safety
+### 1. 高级 TypeScript 模式和类型安全
 
-**Why This Matters**: TypeScript is central to your work, but leveraging its advanced features (generics, utility types, conditional types, type guards) can significantly improve code reliability and reduce runtime errors. Better type safety catches bugs at compile time rather than in production.
+**为什么这很重要**：TypeScript 是您工作的核心，但利用其高级功能（泛型、实用类型、条件类型、类型保护）可以显著提高代码可靠性并减少运行时错误。更好的类型安全在编译时捕获错误，而不是在生产中。
 
-**What I Observed**: In your recent chats, you were working with connection data structures and struggled a few times with typing auth configurations properly. You also had to iterate on union types for different connection states. There's an opportunity to use discriminated unions and type guards more effectively.
+**我观察到**：在您最近的聊天中，您正在处理连接数据结构，并且几次在正确输入 auth 配置时遇到困难。您还必须迭代不同连接状态的联合类型。有机会更有效地使用判别联合和类型保护。
 
-**Recommendation**: Study TypeScript's advanced type system, particularly utility types (Omit, Pick, Record), conditional types, and discriminated unions. Apply these patterns to your connection configuration handling and auth state management.
+**建议**：学习 TypeScript 的高级类型系统，特别是实用类型（Omit、Pick、Record）、条件类型和判别联合。将这些模式应用于您的连接配置处理和 auth 状态管理。
 
-**Time to Skill Up**: 5-8 hours of focused learning and practice
+**技能提升时间**：5-8 小时的专注学习和实践
 
-### 2. Secure Data Handling and Information Hiding in UI
+### 2. 安全数据处理和 UI 中的信息隐藏
 
-**Why This Matters**: You identified and fixed a security concern where sensitive connection data was being displayed in your console. Preventing information leakage is critical for applications handling user credentials and API keys. Good practices here prevent security incidents and user trust violations.
+**为什么这很重要**：您发现并修复了一个安全问题，其中敏感连接数据显示在您的控制台中。防止信息泄露对于处理用户凭据和 API 密钥的应用程序至关重要。这里的良好实践可以防止安全事件和用户信任违规。
 
-**What I Observed**: You caught that your "Your Apps" page was showing full connection data including auth configs. This shows good security instincts, and the next step is building this into your default thinking when handling sensitive information.
+**我观察到**：您发现您的"Your Apps"页面显示完整的连接数据，包括 auth 配置。这显示了良好的安全本能，下一步是将其构建到您处理敏感信息时的默认思维中。
 
-**Recommendation**: Review security best practices for handling sensitive data in frontend applications. Create reusable patterns for filtering/masking sensitive information before displaying it. Consider implementing a secure data layer that explicitly whitelist what can be shown in the UI.
+**建议**：审查前端应用程序中处理敏感数据的安全最佳实践。创建用于在显示之前过滤/掩码敏感信息的可重用模式。考虑实现一个安全数据层，明确白名单可以在 UI 中显示的内容。
 
-**Time to Skill Up**: 3-4 hours
+**技能提升时间**：3-4 小时
 
-### 3. Component Architecture and Responsive UI Patterns
+### 3. 组件架构和响应式 UI 模式
 
-**Why This Matters**: You're designing UIs that need to work across different screen sizes and user interactions. Strong component architecture makes it easier to build complex UIs without bugs and improves maintainability.
+**为什么这很重要**：您正在设计需要在不同屏幕尺寸和用户交互中工作的 UI。强大的组件架构使构建复杂 UI 更容易，无 bug，并提高可维护性。
 
-**What I Observed**: You worked on the "Marketplace" UI (formerly Browse Tools), recreating it from a design image. You also identified and fixed scrolling issues where content was overflowing containers. There's an opportunity to strengthen your understanding of layout containment and responsive design patterns.
+**我观察到**：您处理了"Marketplace"UI（以前的 Browse Tools），从设计图像中重新创建它。您还识别并修复了内容溢出容器的滚动问题。有机会加强您对布局包含和响应式设计模式的理解。
 
-**Recommendation**: Study React component composition patterns and CSS layout best practices (especially flexbox and grid). Focus on container queries and responsive patterns that prevent overflow issues. Look into component composition libraries and design system approaches.
+**建议**：学习 React 组件组合模式和 CSS 布局最佳实践（尤其是 flexbox 和 grid）。关注容器查询和防止溢出问题的响应式模式。研究组件组合库和设计系统方法。
 
-**Time to Skill Up**: 6-10 hours (depending on depth)
+**技能提升时间**：6-10 小时（取决于深度）
 
-## Strengths Observed
+## 观察到的优势
 
-- **Security Awareness**: You proactively identified data leakage issues before they became problems
-- **Iterative Refinement**: You worked through UI requirements methodically, asking clarifying questions and improving designs
-- **Full-Stack Capability**: You comfortably work across backend APIs, frontend UI, and deployment concerns
-- **Problem-Solving Approach**: You break down complex tasks into manageable steps
+- **安全意识**：您主动识别数据泄露问题，在它们成为问题之前
+- **迭代改进**：您有条不紊地处理 UI 需求，提出澄清问题并改进设计
+- **全栈能力**：您舒适地跨后端 API、前端 UI 和部署问题工作
+- **问题解决方法**：您将复杂任务分解为可管理的步骤
 
-## Action Items
+## 行动项目
 
-Priority order:
-1. Spend 1-2 hours learning TypeScript utility types and discriminated unions; apply to your connection data structures
-2. Document security patterns for your project (what data is safe to display, filtering/masking functions)
-3. Study one article on advanced React patterns and apply one pattern to your current UI work
-4. Set up a code review checklist focused on type safety and data security for future PRs
+优先顺序：
+1. 花 1-2 小时学习 TypeScript 实用类型和判别联合；应用于您的连接数据结构
+2. 记录您项目的安全模式（哪些数据可以安全显示，过滤/掩码函数）
+3. 学习一篇关于高级 React 模式的文章，并将一种模式应用到您当前的 UI 工作中
+4. 为未来的 PR 设置专注于类型安全和数据安全的代码审查清单
 
-## Curated Learning Resources
+## 策划学习资源
 
-### For: Advanced TypeScript Patterns
+### 用于：高级 TypeScript 模式
 
-1. **TypeScript's Advanced Types: Generics, Utility Types, and Conditional Types** - HackerNews, October 2024
-   Deep dive into TypeScript's type system with practical examples and real-world applications. Covers discriminated unions, type guards, and patterns for ensuring compile-time safety in complex applications.
-   [Link to discussion]
+1. **TypeScript 的高级类型：泛型、实用类型和条件类型** - HackerNews，2024 年 10 月
+   深入了解 TypeScript 的类型系统，包含实际示例和现实世界应用。涵盖判别联合、类型保护和确保复杂应用中编译时安全的模式。
+   [讨论链接]
 
-2. **Building Type-Safe APIs in TypeScript** - HackerNews, September 2024
-   Practical guide to designing APIs with TypeScript that catch errors early. Particularly relevant for your connection configuration work.
-   [Link to discussion]
+2. **在 TypeScript 中构建类型安全的 API** - HackerNews，2024 年 9 月
+   设计使用 TypeScript 早期捕获错误的 API 的实用指南。与您的连接配置工作特别相关。
+   [讨论链接]
 
-### For: Secure Data Handling in Frontend
+### 用于：前端安全数据处理
 
-1. **Preventing Information Leakage in Web Applications** - HackerNews, August 2024
-   Comprehensive guide to data security in frontend applications, including filtering sensitive information, secure logging, and audit trails.
-   [Link to discussion]
+1. **防止 Web 应用中的信息泄露** - HackerNews，2024 年 8 月
+   前端应用中数据安全的综合指南，包括过滤敏感信息、安全日志记录和审计跟踪。
+   [讨论链接]
 
-2. **OAuth and API Key Management Best Practices** - HackerNews, July 2024
-   How to safely handle authentication tokens and API keys in applications, with examples for different frameworks.
-   [Link to discussion]
+2. **OAuth 和 API 密钥管理最佳实践** - HackerNews，2024 年 7 月
+   如何在应用中安全处理认证令牌和 API 密钥，包含不同框架的示例。
+   [讨论链接]
 
-### For: Component Architecture and Responsive Design
+### 用于：组件架构和响应式设计
 
-1. **Advanced React Patterns: Composition Over Configuration** - HackerNews
-   Explores component composition strategies that scale, with examples using modern React patterns.
-   [Link to discussion]
+1. **高级 React 模式：组合优于配置** - HackerNews
+   探讨可扩展的组件组合策略，包含使用现代 React 模式的示例。
+   [讨论链接]
 
-2. **CSS Layout Mastery: Flexbox, Grid, and Container Queries** - HackerNews, October 2024
-   Learn responsive design patterns that prevent overflow issues and work across all screen sizes.
-   [Link to discussion]
+2. **CSS 布局精通：Flexbox、Grid 和容器查询** - HackerNews，2024 年 10 月
+   学习防止溢出问题并在所有屏幕尺寸上工作的响应式设计模式。
+   [讨论链接]
 ```
 
-## Tips and Best Practices
+## 提示和最佳实践
 
-- Run this analysis once a week to track your improvement trajectory over time
-- Pick one improvement area at a time and focus on it for a few days before moving to the next
-- Use the learning resources as a study guide; work through the recommended materials and practice applying the patterns
-- Revisit this report after focusing on an area for a week to see how your work patterns change
-- The learning resources are intentionally curated for your actual work, not generic topics, so they'll be highly relevant to what you're building
+- 每周运行一次此分析，以跟踪您随时间的改进轨迹
+- 一次选择一个改进领域，专注于它几天，然后再移至下一个
+- 将学习资源用作学习指南；通过推荐材料并练习应用模式
+- 在专注于一个领域一周后重新访问此报告，看看您的工作模式如何变化
+- 学习资源是专门为您的实际工作策划的，而不是通用主题，因此它们将与您正在构建的内容高度相关
 
-## How Accuracy and Quality Are Maintained
+## 如何保持准确性和质量
 
-This skill:
-- Analyzes your actual work patterns from timestamped chat history
-- Generates evidence-based recommendations grounded in real projects
-- Curates learning resources that directly address your identified gaps
-- Focuses on actionable improvements, not vague feedback
-- Provides specific time estimates based on complexity
-- Prioritizes areas that will have the most impact on your development velocity
+此技能：
+- 分析您从带时间戳的聊天历史中获得的实际工作模式
+- 生成基于真实项目的基于证据的建议
+- 策划直接解决您已识别差距的学习资源
+- 专注于可操作的改进，而不是模糊的反馈
+- 根据复杂性提供具体的时间估计
+- 优先考虑将对您的开发速度产生最大影响的领域

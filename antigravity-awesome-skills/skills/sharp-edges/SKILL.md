@@ -1,8 +1,6 @@
 ---
 name: sharp-edges
 description: sharp-edges
-risk: unknown
-source: community
 ---
 
 ---
@@ -15,6 +13,7 @@ description: "Identifies error-prone APIs, dangerous configurations, and footgun
 Evaluates whether APIs, configurations, and interfaces are resistant to developer misuse. Identifies designs where the "easy path" leads to insecurity.
 
 ## When to Use
+
 - Reviewing API or library design decisions
 - Auditing configuration schemas for dangerous options
 - Evaluating cryptographic API ergonomics

@@ -1,99 +1,99 @@
 ---
 name: youtube-downloader
-description: Download YouTube videos with customizable quality and format options. Use this skill when the user asks to download, save, or grab YouTube videos. Supports various quality settings (best, 1080p, 720p, 480p, 360p), multiple formats (mp4, webm, mkv), and audio-only downloads as MP3.
+description: 下载 YouTube 视频，具有可自定义的质量和格式选项。当用户要求下载、保存或获取 YouTube 视频时使用此技能。支持各种质量设置（最佳、1080p、720p、480p、360p）、多种格式（mp4、webm、mkv）以及仅音频下载为 MP3。
 ---
 
-# YouTube Video Downloader
+# YouTube 视频下载器
 
-Download YouTube videos with full control over quality and format settings.
+下载 YouTube 视频，完全控制质量和格式设置。
 
-## Quick Start
+## 快速开始
 
-The simplest way to download a video:
+下载视频的最简单方法：
 
 ```bash
 python scripts/download_video.py "https://www.youtube.com/watch?v=VIDEO_ID"
 ```
 
-This downloads the video in best available quality as MP4 to `/mnt/user-data/outputs/`.
+这会以最佳可用质量将视频作为 MP4 下载到 `/mnt/user-data/outputs/`。
 
-## Options
+## 选项
 
-### Quality Settings
+### 质量设置
 
-Use `-q` or `--quality` to specify video quality:
+使用 `-q` 或 `--quality` 指定视频质量：
 
-- `best` (default): Highest quality available
-- `1080p`: Full HD
-- `720p`: HD
-- `480p`: Standard definition
-- `360p`: Lower quality
-- `worst`: Lowest quality available
+- `best`（默认）：最高可用质量
+- `1080p`：全高清
+- `720p`：高清
+- `480p`：标清
+- `360p`：较低质量
+- `worst`：最低可用质量
 
-Example:
+示例：
 ```bash
 python scripts/download_video.py "URL" -q 720p
 ```
 
-### Format Options
+### 格式选项
 
-Use `-f` or `--format` to specify output format (video downloads only):
+使用 `-f` 或 `--format` 指定输出格式（仅视频下载）：
 
-- `mp4` (default): Most compatible
-- `webm`: Modern format
-- `mkv`: Matroska container
+- `mp4`（默认）：最兼容
+- `webm`：现代格式
+- `mkv`：Matroska 容器
 
-Example:
+示例：
 ```bash
 python scripts/download_video.py "URL" -f webm
 ```
 
-### Audio Only
+### 仅音频
 
-Use `-a` or `--audio-only` to download only audio as MP3:
+使用 `-a` 或 `--audio-only` 仅下载音频为 MP3：
 
 ```bash
 python scripts/download_video.py "URL" -a
 ```
 
-### Custom Output Directory
+### 自定义输出目录
 
-Use `-o` or `--output` to specify a different output directory:
+使用 `-o` 或 `--output` 指定不同的输出目录：
 
 ```bash
 python scripts/download_video.py "URL" -o /path/to/directory
 ```
 
-## Complete Examples
+## 完整示例
 
-1. Download video in 1080p as MP4:
+1. 以 1080p 质量下载视频为 MP4：
 ```bash
 python scripts/download_video.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ" -q 1080p
 ```
 
-2. Download audio only as MP3:
+2. 仅下载音频为 MP3：
 ```bash
 python scripts/download_video.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ" -a
 ```
 
-3. Download in 720p as WebM to custom directory:
+3. 以 720p 质量下载为 WebM 到自定义目录：
 ```bash
 python scripts/download_video.py "https://www.youtube.com/watch?v=dQw4w9WgXcQ" -q 720p -f webm -o /custom/path
 ```
 
-## How It Works
+## 工作原理
 
-The skill uses `yt-dlp`, a robust YouTube downloader that:
-- Automatically installs itself if not present
-- Fetches video information before downloading
-- Selects the best available streams matching your criteria
-- Merges video and audio streams when needed
-- Supports a wide range of YouTube video formats
+该技能使用 `yt-dlp`，一个强大的 YouTube 下载器，它：
+- 如果不存在则自动安装自身
+- 下载前获取视频信息
+- 选择符合您标准的最佳可用流
+- 必要时合并视频和音频流
+- 支持各种 YouTube 视频格式
 
-## Important Notes
+## 重要注意事项
 
-- Downloads are saved to `/mnt/user-data/outputs/` by default
-- Video filename is automatically generated from the video title
-- The script handles installation of yt-dlp automatically
-- Only single videos are downloaded (playlists are skipped by default)
-- Higher quality videos may take longer to download and use more disk space
+- 下载默认保存到 `/mnt/user-data/outputs/`
+- 视频文件名从视频标题自动生成
+- 脚本自动处理 yt-dlp 的安装
+- 仅下载单个视频（默认跳过播放列表）
+- 更高质量的视频可能需要更长时间下载并使用更多磁盘空间

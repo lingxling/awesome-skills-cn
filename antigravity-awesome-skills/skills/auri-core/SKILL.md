@@ -1,6 +1,7 @@
 ---
 name: auri-core
-description: "Auri: assistente de voz inteligente (Alexa + Claude claude-opus-4-20250805). Visao do produto, persona Vitoria Neural, stack AWS, modelo Free/Pro/Business/Enterprise, roadmap 4 fases, GTM, north star WAC e analise competitiva."
+description: 'Auri: assistente de voz inteligente (Alexa + Claude claude-opus-4-20250805). Visao do produto, persona Vitoria Neural, stack AWS, modelo Free/Pro/Business/Enterprise, roadmap 4 fases, GTM,
+  north...'
 risk: none
 source: community
 date_added: '2026-03-06'
@@ -172,7 +173,11 @@ Env vars: ANTHROPIC_API_KEY_SECRET, DYNAMODB_TABLE=auri-user-memory, POLLY_VOICE
 
 Handler de Conversa (handlers/conversation.py):
 
+
+
 DynamoDB Schema:
+
+
 
 ---
 

@@ -1,8 +1,6 @@
 ---
 name: skill-improver
-description: "Iteratively improve a Claude Code skill using the skill-reviewer agent until it meets quality standards."
-risk: unknown
-source: community
+description: Iteratively reviews and fixes Claude Code skill quality issues until they meet standards. Runs automated fix-review cycles using the skill-reviewer agent. Use to fix skill quality issues, improve skill descriptions, run automated skill review loops, or iteratively refine a...
 ---
 
 # Skill Improvement Methodology
@@ -24,6 +22,7 @@ Verify it's enabled: run `/plugins` — `plugin-dev` should appear in the list. 
 5. **Repeat** - Continue until quality bar is met
 
 ## When to Use
+
 - Improving a skill with multiple quality issues
 - Iterating on a new skill until it meets standards
 - Automated fix-review cycles instead of manual editing

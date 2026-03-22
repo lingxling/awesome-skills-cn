@@ -1,77 +1,77 @@
 ---
 name: vercel-deploy
-description: Deploy applications and websites to Vercel. Use when the user requests deployment actions like "deploy my app", "deploy and give me the link", "push this live", or "create a preview deployment".
+description: 将应用程序和网站部署到 Vercel。当用户请求部署操作时使用，例如"部署我的应用程序"、"部署并给我链接"、"上线"或"创建预览部署"。
 ---
 
-# Vercel Deploy
+# Vercel 部署
 
-Deploy any project to Vercel instantly. **Always deploy as preview** (not production) unless the user explicitly asks for production.
+立即将任何项目部署到 Vercel。**始终部署为预览**（而非生产环境），除非用户明确要求生产环境。
 
-## Prerequisites
+## 前置条件
 
-- Check whether the Vercel CLI is installed **without** escalated permissions (for example, `command -v vercel`).
-- Only escalate the actual deploy command if sandboxing blocks the deployment network calls (`sandbox_permissions=require_escalated`).
-- The deployment might take a few minutes. Use appropriate timeout values.
+- 检查是否安装了 Vercel CLI，**不**使用提升权限（例如，`command -v vercel`）。
+- 仅当沙盒阻止部署网络调用（`sandbox_permissions=require_escalated`）时，才提升实际部署命令。
+- 部署可能需要几分钟。使用适当的超时值。
 
-## Quick Start
+## 快速开始
 
-1. Check whether the Vercel CLI is installed (no escalation for this check):
+1. 检查是否安装了 Vercel CLI（不提升此检查）：
 
 ```bash
 command -v vercel
 ```
 
-2. If `vercel` is installed, run this (with a 10 minute timeout):
+2. 如果安装了 `vercel`，运行此命令（超时 10 分钟）：
 ```bash
 vercel deploy [path] -y
 ```
 
-**Important:** Use a 10 minute (600000ms) timeout for the deploy command since builds can take a while.
+**重要：**为部署命令使用 10 分钟（600000ms）超时，因为构建可能需要一段时间。
 
-3. If `vercel` is not installed, or if the CLI fails with "No existing credentials found", use the fallback method below.
+3. 如果未安装 `vercel`，或者 CLI 因"No existing credentials found"而失败，请使用下面的回退方法。
 
-## Fallback (No Auth)
+## 回退（无身份验证）
 
-If CLI fails with auth error, use the deploy script:
+如果 CLI 因身份验证错误而失败，请使用部署脚本：
 
 ```bash
 skill_dir="<path-to-skill>"
 
-# Deploy current directory
+# 部署当前目录
 bash "$skill_dir/scripts/deploy.sh"
 
-# Deploy specific project
+# 部署特定项目
 bash "$skill_dir/scripts/deploy.sh" /path/to/project
 
-# Deploy existing tarball
+# 部署现有 tarball
 bash "$skill_dir/scripts/deploy.sh" /path/to/project.tgz
 ```
 
-The script handles framework detection, packaging, and deployment. It waits for the build to complete and returns JSON with `previewUrl` and `claimUrl`.
+该脚本处理框架检测、打包和部署。它等待构建完成并返回带有 `previewUrl` 和 `claimUrl` 的 JSON。
 
-**Tell the user:** "Your deployment is ready at [previewUrl]. Claim it at [claimUrl] to manage your deployment."
+**告诉用户：**"您的部署已准备就绪，位于 [previewUrl]。在 [claimUrl] 认领以管理您的部署。"
 
-## Production Deploys
+## 生产部署
 
-Only if user explicitly asks:
+仅当用户明确要求时：
 ```bash
 vercel deploy [path] --prod -y
 ```
 
-## Output
+## 输出
 
-Show the user the deployment URL. For fallback deployments, also show the claim URL.
+向用户显示部署 URL。对于回退部署，还显示认领 URL。
 
-**Do not** curl or fetch the deployed URL to verify it works. Just return the link.
+**不要** curl 或获取部署的 URL 以验证它是否工作。只需返回链接。
 
-## Troubleshooting
+## 故障排除
 
-### Escalated Network Access
+### 提升网络访问权限
 
-If deployment fails due to network issues (timeouts, DNS errors, connection resets), rerun the actual deploy command with escalated permissions (use `sandbox_permissions=require_escalated`). Do not escalate the `command -v vercel` installation check. The deploy requires escalated network access when sandbox networking blocks outbound requests.
+如果部署因网络问题（超时、DNS 错误、连接重置）而失败，请使用提升权限重新运行实际部署命令（使用 `sandbox_permissions=require_escalated`）。不要提升 `command -v vercel` 安装检查。当沙盒网络阻止出站请求时，部署需要提升网络访问权限。
 
-Example guidance to the user:
+向用户的示例指导：
 
 ```
-The deploy needs escalated network access to deploy to Vercel. I can rerun the command with escalated permissions—want me to proceed?
+部署需要提升网络访问权限才能部署到 Vercel。我可以使用提升权限重新运行命令——您想让我继续吗？
 ```

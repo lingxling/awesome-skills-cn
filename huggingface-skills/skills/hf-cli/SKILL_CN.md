@@ -1,158 +1,158 @@
 ---
 name: hf-cli
-description: "Hugging Face Hub CLI (`hf`) for downloading, uploading, and managing repositories, models, datasets, and Spaces on the Hugging Face Hub. Replaces now deprecated `huggingface-cli` command."
+description: "Hugging Face Hub CLI (`hf`) 用于在 Hugging Face Hub 上下载、上传和管理存储库、模型、数据集和 Spaces。替代现已弃用的 `huggingface-cli` 命令。"
 ---
 
-Install: `curl -LsSf https://hf.co/cli/install.sh | bash -s`.
+安装：`curl -LsSf https://hf.co/cli/install.sh | bash -s`。
 
-The Hugging Face Hub CLI tool `hf` is available. IMPORTANT: The `hf` command replaces the deprecated `huggingface-cli` command.
+Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用的 `huggingface-cli` 命令。
 
-Use `hf --help` to view available functions. Note that auth commands are now all under `hf auth` e.g. `hf auth whoami`.
+使用 `hf --help` 查看可用功能。注意，身份验证命令现在都在 `hf auth` 下，例如 `hf auth whoami`。
 
-Generated with `huggingface_hub v1.7.1`. Run `hf skills add --force` to regenerate.
+由 `huggingface_hub v1.7.1` 生成。运行 `hf skills add --force` 重新生成。
 
-## Commands
+## 命令
 
-- `hf download REPO_ID` — Download files from the Hub.
-- `hf env` — Print information about the environment.
-- `hf sync` — Sync files between local directory and a bucket.
-- `hf upload REPO_ID` — Upload a file or a folder to the Hub. Recommended for single-commit uploads.
-- `hf upload-large-folder REPO_ID LOCAL_PATH` — Upload a large folder to the Hub. Recommended for resumable uploads.
-- `hf version` — Print information about the hf version.
+- `hf download REPO_ID` — 从 Hub 下载文件。
+- `hf env` — 打印环境信息。
+- `hf sync` — 在本地目录和存储桶之间同步文件。
+- `hf upload REPO_ID` — 上传文件或文件夹到 Hub。推荐用于单次提交上传。
+- `hf upload-large-folder REPO_ID LOCAL_PATH` — 上传大型文件夹到 Hub。推荐用于可恢复的上传。
+- `hf version` — 打印 hf 版本信息。
 
-### `hf auth` — Manage authentication (login, logout, etc.).
+### `hf auth` — 管理身份验证（登录、登出等）。
 
-- `hf auth list` — List all stored access tokens.
-- `hf auth login` — Login using a token from huggingface.co/settings/tokens.
-- `hf auth logout` — Logout from a specific token.
-- `hf auth switch` — Switch between access tokens.
-- `hf auth whoami` — Find out which huggingface.co account you are logged in as.
+- `hf auth list` — 列出所有存储的访问令牌。
+- `hf auth login` — 使用来自 huggingface.co/settings/tokens 的令牌登录。
+- `hf auth logout` — 从特定令牌登出。
+- `hf auth switch` — 在访问令牌之间切换。
+- `hf auth whoami` — 查看你登录的 huggingface.co 账户。
 
-### `hf buckets` — Commands to interact with buckets.
+### `hf buckets` — 与存储桶交互的命令。
 
-- `hf buckets cp SRC` — Copy a single file to or from a bucket.
-- `hf buckets create BUCKET_ID` — Create a new bucket.
-- `hf buckets delete BUCKET_ID` — Delete a bucket.
-- `hf buckets info BUCKET_ID` — Get info about a bucket.
-- `hf buckets list` — List buckets or files in a bucket.
-- `hf buckets move FROM_ID TO_ID` — Move (rename) a bucket to a new name or namespace.
-- `hf buckets remove ARGUMENT` — Remove files from a bucket.
-- `hf buckets sync` — Sync files between local directory and a bucket.
+- `hf buckets cp SRC` — 复制单个文件到存储桶或从存储桶复制。
+- `hf buckets create BUCKET_ID` — 创建新存储桶。
+- `hf buckets delete BUCKET_ID` — 删除存储桶。
+- `hf buckets info BUCKET_ID` — 获取存储桶信息。
+- `hf buckets list` — 列出存储桶或存储桶中的文件。
+- `hf buckets move FROM_ID TO_ID` — 将存储桶移动（重命名）到新名称或命名空间。
+- `hf buckets remove ARGUMENT` — 从存储桶中删除文件。
+- `hf buckets sync` — 在本地目录和存储桶之间同步文件。
 
-### `hf cache` — Manage local cache directory.
+### `hf cache` — 管理本地缓存目录。
 
-- `hf cache list` — List cached repositories or revisions.
-- `hf cache prune` — Remove detached revisions from the cache.
-- `hf cache rm TARGETS` — Remove cached repositories or revisions.
-- `hf cache verify REPO_ID` — Verify checksums for a single repo revision from cache or a local directory.
+- `hf cache list` — 列出缓存的存储库或修订版。
+- `hf cache prune` — 从缓存中删除分离的修订版。
+- `hf cache rm TARGETS` — 删除缓存的存储库或修订版。
+- `hf cache verify REPO_ID` — 验证来自缓存或本地目录的单个存储库修订版的校验和。
 
-### `hf collections` — Interact with collections on the Hub.
+### `hf collections` — 与 Hub 上的集合交互。
 
-- `hf collections add-item COLLECTION_SLUG ITEM_ID ITEM_TYPE` — Add an item to a collection.
-- `hf collections create TITLE` — Create a new collection on the Hub.
-- `hf collections delete COLLECTION_SLUG` — Delete a collection from the Hub.
-- `hf collections delete-item COLLECTION_SLUG ITEM_OBJECT_ID` — Delete an item from a collection.
-- `hf collections info COLLECTION_SLUG` — Get info about a collection on the Hub.
-- `hf collections list` — List collections on the Hub.
-- `hf collections update COLLECTION_SLUG` — Update a collection's metadata on the Hub.
-- `hf collections update-item COLLECTION_SLUG ITEM_OBJECT_ID` — Update an item in a collection.
+- `hf collections add-item COLLECTION_SLUG ITEM_ID ITEM_TYPE` — 向集合添加项目。
+- `hf collections create TITLE` — 在 Hub 上创建新集合。
+- `hf collections delete COLLECTION_SLUG` — 从 Hub 中删除集合。
+- `hf collections delete-item COLLECTION_SLUG ITEM_OBJECT_ID` — 从集合中删除项目。
+- `hf collections info COLLECTION_SLUG` — 获取 Hub 上集合的信息。
+- `hf collections list` — 列出 Hub 上的集合。
+- `hf collections update COLLECTION_SLUG` — 更新 Hub 上集合的元数据。
+- `hf collections update-item COLLECTION_SLUG ITEM_OBJECT_ID` — 更新集合中的项目。
 
-### `hf datasets` — Interact with datasets on the Hub.
+### `hf datasets` — 与 Hub 上的数据集交互。
 
-- `hf datasets info DATASET_ID` — Get info about a dataset on the Hub.
-- `hf datasets list` — List datasets on the Hub.
-- `hf datasets parquet DATASET_ID` — List parquet file URLs available for a dataset.
-- `hf datasets sql SQL` — Execute a raw SQL query with DuckDB against dataset parquet URLs.
+- `hf datasets info DATASET_ID` — 获取 Hub 上数据集的信息。
+- `hf datasets list` — 列出 Hub 上的数据集。
+- `hf datasets parquet DATASET_ID` — 列出数据集可用的 parquet 文件 URL。
+- `hf datasets sql SQL` — 使用 DuckDB 对数据集 parquet URL 执行原始 SQL 查询。
 
-### `hf discussions` — Manage discussions and pull requests on the Hub.
+### `hf discussions` — 管理 Hub 上的讨论和拉取请求。
 
-- `hf discussions close REPO_ID NUM` — Close a discussion or pull request.
-- `hf discussions comment REPO_ID NUM` — Comment on a discussion or pull request.
-- `hf discussions create REPO_ID title` — Create a new discussion or pull request on a repo.
-- `hf discussions diff REPO_ID NUM` — Show the diff of a pull request.
-- `hf discussions info REPO_ID NUM` — Get info about a discussion or pull request.
-- `hf discussions list REPO_ID` — List discussions and pull requests on a repo.
-- `hf discussions merge REPO_ID NUM` — Merge a pull request.
-- `hf discussions rename REPO_ID NUM NEW_TITLE` — Rename a discussion or pull request.
-- `hf discussions reopen REPO_ID NUM` — Reopen a closed discussion or pull request.
+- `hf discussions close REPO_ID NUM` — 关闭讨论或拉取请求。
+- `hf discussions comment REPO_ID NUM` — 对讨论或拉取请求发表评论。
+- `hf discussions create REPO_ID title` — 在存储库上创建新的讨论或拉取请求。
+- `hf discussions diff REPO_ID NUM` — 显示拉取请求的差异。
+- `hf discussions info REPO_ID NUM` — 获取讨论或拉取请求的信息。
+- `hf discussions list REPO_ID` — 列出存储库上的讨论和拉取请求。
+- `hf discussions merge REPO_ID NUM` — 合并拉取请求。
+- `hf discussions rename REPO_ID NUM NEW_TITLE` — 重命名讨论或拉取请求。
+- `hf discussions reopen REPO_ID NUM` — 重新打开已关闭的讨论或拉取请求。
 
-### `hf endpoints` — Manage Hugging Face Inference Endpoints.
+### `hf endpoints` — 管理 Hugging Face 推理端点。
 
-- `hf endpoints catalog` — Interact with the Inference Endpoints catalog.
-- `hf endpoints delete NAME` — Delete an Inference Endpoint permanently.
-- `hf endpoints deploy NAME repo framework accelerator instance_size instance_type region vendor` — Deploy an Inference Endpoint from a Hub repository.
-- `hf endpoints describe NAME` — Get information about an existing endpoint.
-- `hf endpoints list` — Lists all Inference Endpoints for the given namespace.
-- `hf endpoints pause NAME` — Pause an Inference Endpoint.
-- `hf endpoints resume NAME` — Resume an Inference Endpoint.
-- `hf endpoints scale-to-zero NAME` — Scale an Inference Endpoint to zero.
-- `hf endpoints update NAME` — Update an existing endpoint.
+- `hf endpoints catalog` — 与推理端点目录交互。
+- `hf endpoints delete NAME` — 永久删除推理端点。
+- `hf endpoints deploy NAME repo framework accelerator instance_size instance_type region vendor` — 从 Hub 存储库部署推理端点。
+- `hf endpoints describe NAME` — 获取现有端点的信息。
+- `hf endpoints list` — 列出给定命名空间的所有推理端点。
+- `hf endpoints pause NAME` — 暂停推理端点。
+- `hf endpoints resume NAME` — 恢复推理端点。
+- `hf endpoints scale-to-zero NAME` — 将推理端点缩放到零。
+- `hf endpoints update NAME` — 更新现有端点。
 
-### `hf extensions` — Manage hf CLI extensions.
+### `hf extensions` — 管理 hf CLI 扩展。
 
-- `hf extensions exec NAME` — Execute an installed extension.
-- `hf extensions install REPO_ID` — Install an extension from a public GitHub repository.
-- `hf extensions list` — List installed extension commands.
-- `hf extensions remove NAME` — Remove an installed extension.
-- `hf extensions search` — Search extensions available on GitHub (tagged with 'hf-extension' topic).
+- `hf extensions exec NAME` — 执行已安装的扩展。
+- `hf extensions install REPO_ID` — 从公共 GitHub 存储库安装扩展。
+- `hf extensions list` — 列出已安装的扩展命令。
+- `hf extensions remove NAME` — 移除已安装的扩展。
+- `hf extensions search` — 搜索 GitHub 上可用的扩展（标记为 'hf-extension' 主题）。
 
-### `hf jobs` — Run and manage Jobs on the Hub.
+### `hf jobs` — 在 Hub 上运行和管理作业。
 
-- `hf jobs cancel JOB_ID` — Cancel a Job
-- `hf jobs hardware` — List available hardware options for Jobs
-- `hf jobs inspect JOB_IDS` — Display detailed information on one or more Jobs
-- `hf jobs logs JOB_ID` — Fetch the logs of a Job.
-- `hf jobs ps` — List Jobs.
-- `hf jobs run IMAGE COMMAND` — Run a Job.
-- `hf jobs scheduled` — Create and manage scheduled Jobs on the Hub.
-- `hf jobs stats` — Fetch the resource usage statistics and metrics of Jobs
-- `hf jobs uv` — Run UV scripts (Python with inline dependencies) on HF infrastructure.
+- `hf jobs cancel JOB_ID` — 取消作业
+- `hf jobs hardware` — 列出作业可用的硬件选项
+- `hf jobs inspect JOB_IDS` — 显示一个或多个作业的详细信息
+- `hf jobs logs JOB_ID` — 获取作业的日志。
+- `hf jobs ps` — 列出作业。
+- `hf jobs run IMAGE COMMAND` — 运行作业。
+- `hf jobs scheduled` — 在 Hub 上创建和管理计划作业。
+- `hf jobs stats` — 获取作业的资源使用统计信息和指标
+- `hf jobs uv` — 在 HF 基础设施上运行 UV 脚本（具有内联依赖项的 Python）。
 
-### `hf models` — Interact with models on the Hub.
+### `hf models` — 与 Hub 上的模型交互。
 
-- `hf models info MODEL_ID` — Get info about a model on the Hub.
-- `hf models list` — List models on the Hub.
+- `hf models info MODEL_ID` — 获取 Hub 上模型的信息。
+- `hf models list` — 列出 Hub 上的模型。
 
-### `hf papers` — Interact with papers on the Hub.
+### `hf papers` — 与 Hub 上的论文交互。
 
-- `hf papers list` — List daily papers on the Hub.
+- `hf papers list` — 列出 Hub 上的每日论文。
 
-### `hf repos` — Manage repos on the Hub.
+### `hf repos` — 管理 Hub 上的存储库。
 
-- `hf repos branch` — Manage branches for a repo on the Hub.
-- `hf repos create REPO_ID` — Create a new repo on the Hub.
-- `hf repos delete REPO_ID` — Delete a repo from the Hub. This is an irreversible operation.
-- `hf repos delete-files REPO_ID PATTERNS` — Delete files from a repo on the Hub.
-- `hf repos duplicate FROM_ID` — Duplicate a repo on the Hub (model, dataset, or Space).
-- `hf repos move FROM_ID TO_ID` — Move a repository from a namespace to another namespace.
-- `hf repos settings REPO_ID` — Update the settings of a repository.
-- `hf repos tag` — Manage tags for a repo on the Hub.
+- `hf repos branch` — 管理 Hub 上存储库的分支。
+- `hf repos create REPO_ID` — 在 Hub 上创建新存储库。
+- `hf repos delete REPO_ID` — 从 Hub 中删除存储库。这是不可逆的操作。
+- `hf repos delete-files REPO_ID PATTERNS` — 从 Hub 上的存储库中删除文件。
+- `hf repos duplicate FROM_ID` — 在 Hub 上复制存储库（模型、数据集或 Space）。
+- `hf repos move FROM_ID TO_ID` — 将存储库从一个命名空间移动到另一个命名空间。
+- `hf repos settings REPO_ID` — 更新存储库的设置。
+- `hf repos tag` — 管理 Hub 上存储库的标签。
 
-### `hf skills` — Manage skills for AI assistants.
+### `hf skills` — 管理 AI 助手的技能。
 
-- `hf skills add` — Download a skill and install it for an AI assistant.
-- `hf skills preview` — Print the generated SKILL.md to stdout.
+- `hf skills add` — 下载技能并为 AI 助手安装。
+- `hf skills preview` — 将生成的 SKILL.md 打印到标准输出。
 
-### `hf spaces` — Interact with spaces on the Hub.
+### `hf spaces` — 与 Hub 上的 spaces 交互。
 
-- `hf spaces dev-mode SPACE_ID` — Enable or disable dev mode on a Space.
-- `hf spaces hot-reload SPACE_ID` — Hot-reload any Python file of a Space without a full rebuild + restart.
-- `hf spaces info SPACE_ID` — Get info about a space on the Hub.
-- `hf spaces list` — List spaces on the Hub.
+- `hf spaces dev-mode SPACE_ID` — 在 Space 上启用或禁用开发模式。
+- `hf spaces hot-reload SPACE_ID` — 热重载 Space 的任何 Python 文件，无需完全重建 + 重启。
+- `hf spaces info SPACE_ID` — 获取 Hub 上 space 的信息。
+- `hf spaces list` — 列出 Hub 上的 spaces。
 
-### `hf webhooks` — Manage webhooks on the Hub.
+### `hf webhooks` — 管理 Hub 上的 webhook。
 
-- `hf webhooks create watch` — Create a new webhook.
-- `hf webhooks delete WEBHOOK_ID` — Delete a webhook permanently.
-- `hf webhooks disable WEBHOOK_ID` — Disable an active webhook.
-- `hf webhooks enable WEBHOOK_ID` — Enable a disabled webhook.
-- `hf webhooks info WEBHOOK_ID` — Show full details for a single webhook as JSON.
-- `hf webhooks list` — List all webhooks for the current user.
-- `hf webhooks update WEBHOOK_ID` — Update an existing webhook. Only provided options are changed.
+- `hf webhooks create watch` — 创建新 webhook。
+- `hf webhooks delete WEBHOOK_ID` — 永久删除 webhook。
+- `hf webhooks disable WEBHOOK_ID` — 禁用活动的 webhook。
+- `hf webhooks enable WEBHOOK_ID` — 启用已禁用的 webhook。
+- `hf webhooks info WEBHOOK_ID` — 以 JSON 格式显示单个 webhook 的完整详细信息。
+- `hf webhooks list` — 列出当前用户的所有 webhook。
+- `hf webhooks update WEBHOOK_ID` — 更新现有 webhook。仅更改提供的选项。
 
-## Tips
+## 提示
 
-- Use `hf <command> --help` for full options, usage, and real-world examples
-- Use `--format json` for machine-readable output on list commands
-- Use `-q` / `--quiet` to print only IDs
-- Authenticate with `HF_TOKEN` env var (recommended) or with `--token`
+- 使用 `hf <command> --help` 获取完整选项、用法和实际示例
+- 在列表命令上使用 `--format json` 获取机器可读输出
+- 使用 `-q` / `--quiet` 仅打印 ID
+- 使用 `HF_TOKEN` 环境变量（推荐）或 `--token` 进行身份验证

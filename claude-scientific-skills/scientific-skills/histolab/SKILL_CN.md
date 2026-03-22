@@ -1,6 +1,6 @@
 ---
 name: histolab
-description: Lightweight WSI tile extraction and preprocessing. Use for basic slide processing tissue detection, tile extraction, stain normalization for H&E images. Best for simple pipelines, dataset preparation, quick tile-based analysis. For advanced spatial proteomics, multiplexed imaging, or deep learning pipelines use pathml.
+description: 轻量级WSI切片提取和预处理。用于基本幻灯片处理、组织检测、切片提取、H&E图像的染色归一化。最适合简单流程、数据集准备、快速基于切片的分析。对于高级空间蛋白质组学、多重成像或深度学习流程，请使用pathml。
 license: Apache-2.0 license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,28 +8,28 @@ metadata:
 
 # Histolab
 
-## Overview
+## 概述
 
-Histolab is a Python library for processing whole slide images (WSI) in digital pathology. It automates tissue detection, extracts informative tiles from gigapixel images, and prepares datasets for deep learning pipelines. The library handles multiple WSI formats, implements sophisticated tissue segmentation, and provides flexible tile extraction strategies.
+Histolab是一个用于处理数字病理学中全切片图像（WSI）的Python库。它自动化组织检测，从千兆像素图像中提取信息丰富的切片，并为深度学习流程准备数据集。该库支持多种WSI格式，实现了复杂的组织分割，并提供灵活的切片提取策略。
 
-## Installation
+## 安装
 
 ```bash
 uv pip install histolab
 ```
 
-## Quick Start
+## 快速开始
 
-Basic workflow for extracting tiles from a whole slide image:
+从全切片图像提取切片的基本工作流程：
 
 ```python
 from histolab.slide import Slide
 from histolab.tiler import RandomTiler
 
-# Load slide
+# 加载切片
 slide = Slide("slide.svs", processed_path="output/")
 
-# Configure tiler
+# 配置切片器
 tiler = RandomTiler(
     tile_size=(512, 512),
     n_tiles=100,
@@ -37,140 +37,140 @@ tiler = RandomTiler(
     seed=42
 )
 
-# Preview tile locations
+# 预览切片位置
 tiler.locate_tiles(slide, n_tiles=20)
 
-# Extract tiles
+# 提取切片
 tiler.extract(slide)
 ```
 
-## Core Capabilities
+## 核心功能
 
-### 1. Slide Management
+### 1. 切片管理
 
-Load, inspect, and work with whole slide images in various formats.
+加载、检查和处理各种格式的全切片图像。
 
-**Common operations:**
-- Loading WSI files (SVS, TIFF, NDPI, etc.)
-- Accessing slide metadata (dimensions, magnification, properties)
-- Generating thumbnails for visualization
-- Working with pyramidal image structures
-- Extracting regions at specific coordinates
+**常用操作：**
+- 加载WSI文件（SVS、TIFF、NDPI等）
+- 访问切片元数据（尺寸、放大倍数、属性）
+- 生成缩略图用于可视化
+- 处理金字塔图像结构
+- 在特定坐标处提取区域
 
-**Key classes:** `Slide`
+**关键类：** `Slide`
 
-**Reference:** `references/slide_management.md` contains comprehensive documentation on:
-- Slide initialization and configuration
-- Built-in sample datasets (prostate, ovarian, breast, heart, kidney tissues)
-- Accessing slide properties and metadata
-- Thumbnail generation and visualization
-- Working with pyramid levels
-- Multi-slide processing workflows
+**参考：** `references/slide_management.md` 包含关于以下内容的综合文档：
+- 切片初始化和配置
+- 内置样本数据集（前列腺、卵巢、乳腺、心脏、肾脏组织）
+- 访问切片属性和元数据
+- 缩略图生成和可视化
+- 处理金字塔级别
+- 多切片处理工作流
 
-**Example workflow:**
+**示例工作流程：**
 ```python
 from histolab.slide import Slide
 from histolab.data import prostate_tissue
 
-# Load sample data
+# 加载样本数据
 prostate_svs, prostate_path = prostate_tissue()
 
-# Initialize slide
+# 初始化切片
 slide = Slide(prostate_path, processed_path="output/")
 
-# Inspect properties
-print(f"Dimensions: {slide.dimensions}")
-print(f"Levels: {slide.levels}")
-print(f"Magnification: {slide.properties.get('openslide.objective-power')}")
+# 检查属性
+print(f"尺寸：{slide.dimensions}")
+print(f"级别：{slide.levels}")
+print(f"放大倍数：{slide.properties.get('openslide.objective-power')}")
 
-# Save thumbnail
+# 保存缩略图
 slide.save_thumbnail()
 ```
 
-### 2. Tissue Detection and Masks
+### 2. 组织检测和掩膜
 
-Automatically identify tissue regions and filter background/artifacts.
+自动识别组织区域并过滤背景/伪影。
 
-**Common operations:**
-- Creating binary tissue masks
-- Detecting largest tissue region
-- Excluding background and artifacts
-- Custom tissue segmentation
-- Removing pen annotations
+**常用操作：**
+- 创建二进制组织掩膜
+- 检测最大组织区域
+- 排除背景和伪影
+- 自定义组织分割
+- 移除笔注释
 
-**Key classes:** `TissueMask`, `BiggestTissueBoxMask`, `BinaryMask`
+**关键类：** `TissueMask`、`BiggestTissueBoxMask`、`BinaryMask`
 
-**Reference:** `references/tissue_masks.md` contains comprehensive documentation on:
-- TissueMask: Segments all tissue regions using automated filters
-- BiggestTissueBoxMask: Returns bounding box of largest tissue region (default)
-- BinaryMask: Base class for custom mask implementations
-- Visualizing masks with `locate_mask()`
-- Creating custom rectangular and annotation-exclusion masks
-- Mask integration with tile extraction
-- Best practices and troubleshooting
+**参考：** `references/tissue_masks.md` 包含关于以下内容的综合文档：
+- TissueMask：使用自动过滤器分割所有组织区域
+- BiggestTissueBoxMask：返回最大组织区域的边界框（默认）
+- BinaryMask：自定义掩膜实现的基类
+- 使用`locate_mask()`可视化掩膜
+- 创建自定义矩形和注释排除掩膜
+- 掩膜与切片提取的集成
+- 最佳实践和故障排除
 
-**Example workflow:**
+**示例工作流程：**
 ```python
 from histolab.masks import TissueMask, BiggestTissueBoxMask
 
-# Create tissue mask for all tissue regions
+# 为所有组织区域创建组织掩膜
 tissue_mask = TissueMask()
 
-# Visualize mask on slide
+# 在切片上可视化掩膜
 slide.locate_mask(tissue_mask)
 
-# Get mask array
+# 获取掩膜数组
 mask_array = tissue_mask(slide)
 
-# Use largest tissue region (default for most extractors)
+# 使用最大组织区域（大多数提取器的默认设置）
 biggest_mask = BiggestTissueBoxMask()
 ```
 
-**When to use each mask:**
-- `TissueMask`: Multiple tissue sections, comprehensive analysis
-- `BiggestTissueBoxMask`: Single main tissue section, exclude artifacts (default)
-- Custom `BinaryMask`: Specific ROI, exclude annotations, custom segmentation
+**何时使用每种掩膜：**
+- `TissueMask`：多个组织部分，综合分析
+- `BiggestTissueBoxMask`：单个主要组织部分，排除伪影（默认）
+- 自定义`BinaryMask`：特定感兴趣区域ROI，排除注释，自定义分割
 
-### 3. Tile Extraction
+### 3. 切片提取
 
-Extract smaller regions from large WSI using different strategies.
+使用不同策略从大型WSI中提取较小区域。
 
-**Three extraction strategies:**
+**三种提取策略：**
 
-**RandomTiler:** Extract fixed number of randomly positioned tiles
-- Best for: Sampling diverse regions, exploratory analysis, training data
-- Key parameters: `n_tiles`, `seed` for reproducibility
+**RandomTiler：** 提取固定数量的随机定位切片
+- 最适合：采样多样化区域、探索性分析、训练数据
+- 关键参数：`n_tiles`、用于可重复性的`seed`
 
-**GridTiler:** Systematically extract tiles across tissue in grid pattern
-- Best for: Complete coverage, spatial analysis, reconstruction
-- Key parameters: `pixel_overlap` for sliding windows
+**GridTiler：** 以网格模式系统性地提取组织切片
+- 最适合：完整覆盖、空间分析、重建
+- 关键参数：用于滑动窗口的`pixel_overlap`
 
-**ScoreTiler:** Extract top-ranked tiles based on scoring functions
-- Best for: Most informative regions, quality-driven selection
-- Key parameters: `scorer` (NucleiScorer, CellularityScorer, custom)
+**ScoreTiler：** 基于评分函数提取排名靠前的切片
+- 最适合：信息最丰富的区域、质量驱动选择
+- 关键参数：`scorer`（NucleiScorer、CellularityScorer、自定义）
 
-**Common parameters:**
-- `tile_size`: Tile dimensions (e.g., (512, 512))
-- `level`: Pyramid level for extraction (0 = highest resolution)
-- `check_tissue`: Filter tiles by tissue content
-- `tissue_percent`: Minimum tissue coverage (default 80%)
-- `extraction_mask`: Mask defining extraction region
+**常用参数：**
+- `tile_size`：切片尺寸（例如，(512, 512)）
+- `level`：提取的金字塔级别（0 = 最高分辨率）
+- `check_tissue`：按组织内容过滤切片
+- `tissue_percent`：最小组织覆盖率（默认80%）
+- `extraction_mask`：定义提取区域的掩膜
 
-**Reference:** `references/tile_extraction.md` contains comprehensive documentation on:
-- Detailed explanation of each tiler strategy
-- Available scorers (NucleiScorer, CellularityScorer, custom)
-- Tile preview with `locate_tiles()`
-- Extraction workflows and reporting
-- Advanced patterns (multi-level, hierarchical extraction)
-- Performance optimization and troubleshooting
+**参考：** `references/tile_extraction.md` 包含关于以下内容的综合文档：
+- 每种切片器策略的详细说明
+- 可用评分器（NucleiScorer、CellularityScorer、自定义）
+- 使用`locate_tiles()`进行切片预览
+- 提取工作流程和报告
+- 高级模式（多级别、分层提取）
+- 性能优化和故障排除
 
-**Example workflows:**
+**示例工作流程：**
 
 ```python
 from histolab.tiler import RandomTiler, GridTiler, ScoreTiler
 from histolab.scorer import NucleiScorer
 
-# Random sampling (fast, diverse)
+# 随机采样（快速、多样化）
 random_tiler = RandomTiler(
     tile_size=(512, 512),
     n_tiles=100,
@@ -181,7 +181,7 @@ random_tiler = RandomTiler(
 )
 random_tiler.extract(slide)
 
-# Grid coverage (comprehensive)
+# 网格覆盖（全面）
 grid_tiler = GridTiler(
     tile_size=(512, 512),
     level=0,
@@ -190,7 +190,7 @@ grid_tiler = GridTiler(
 )
 grid_tiler.extract(slide)
 
-# Score-based selection (most informative)
+# 基于评分的选择（信息最丰富）
 score_tiler = ScoreTiler(
     tile_size=(512, 512),
     n_tiles=50,
@@ -200,41 +200,41 @@ score_tiler = ScoreTiler(
 score_tiler.extract(slide, report_path="tiles_report.csv")
 ```
 
-**Always preview before extracting:**
+**提取前始终预览：**
 ```python
-# Preview tile locations on thumbnail
+# 在缩略图上预览切片位置
 tiler.locate_tiles(slide, n_tiles=20)
 ```
 
-### 4. Filters and Preprocessing
+### 4. 过滤器和预处理
 
-Apply image processing filters for tissue detection, quality control, and preprocessing.
+应用图像处理过滤器进行组织检测、质量控制和预处理。
 
-**Filter categories:**
+**过滤器类别：**
 
-**Image Filters:** Color space conversions, thresholding, contrast enhancement
-- `RgbToGrayscale`, `RgbToHsv`, `RgbToHed`
-- `OtsuThreshold`, `AdaptiveThreshold`
-- `StretchContrast`, `HistogramEqualization`
+**图像过滤器：** 色彩空间转换、阈值处理、对比度增强
+- `RgbToGrayscale`、`RgbToHsv`、`RgbToHed`
+- `OtsuThreshold`、`AdaptiveThreshold`
+- `StretchContrast`、`HistogramEqualization`
 
-**Morphological Filters:** Structural operations on binary images
-- `BinaryDilation`, `BinaryErosion`
-- `BinaryOpening`, `BinaryClosing`
-- `RemoveSmallObjects`, `RemoveSmallHoles`
+**形态学过滤器：** 二进制图像上的结构操作
+- `BinaryDilation`、`BinaryErosion`
+- `BinaryOpening`、`BinaryClosing`
+- `RemoveSmallObjects`、`RemoveSmallHoles`
 
-**Composition:** Chain multiple filters together
-- `Compose`: Create filter pipelines
+**组合：** 将多个过滤器链接在一起
+- `Compose`：创建过滤器流程
 
-**Reference:** `references/filters_preprocessing.md` contains comprehensive documentation on:
-- Detailed explanation of each filter type
-- Filter composition and chaining
-- Common preprocessing pipelines (tissue detection, pen removal, nuclei enhancement)
-- Applying filters to tiles
-- Custom mask filters
-- Quality control filters (blur detection, tissue coverage)
-- Best practices and troubleshooting
+**参考：** `references/filters_preprocessing.md` 包含关于以下内容的综合文档：
+- 每种过滤器类型的详细说明
+- 过滤器组合和链接
+- 常用预处理流程（组织检测、笔移除、细胞核增强）
+- 将过滤器应用于切片
+- 自定义掩膜过滤器
+- 质量控制过滤器（模糊检测、组织覆盖率）
+- 最佳实践和故障排除
 
-**Example workflows:**
+**示例工作流程：**
 
 ```python
 from histolab.filters.compositions import Compose
@@ -243,7 +243,7 @@ from histolab.filters.morphological_filters import (
     BinaryDilation, RemoveSmallHoles, RemoveSmallObjects
 )
 
-# Standard tissue detection pipeline
+# 标准组织检测流程
 tissue_detection = Compose([
     RgbToGrayscale(),
     OtsuThreshold(),
@@ -252,59 +252,59 @@ tissue_detection = Compose([
     RemoveSmallObjects(area_threshold=500)
 ])
 
-# Use with custom mask
+# 与自定义掩膜一起使用
 from histolab.masks import TissueMask
 custom_mask = TissueMask(filters=tissue_detection)
 
-# Apply filters to tile
+# 将过滤器应用于切片
 from histolab.tile import Tile
 filtered_tile = tile.apply_filters(tissue_detection)
 ```
 
-### 5. Visualization
+### 5. 可视化
 
-Visualize slides, masks, tile locations, and extraction quality.
+可视化切片、掩膜、切片位置和提取质量。
 
-**Common visualization tasks:**
-- Displaying slide thumbnails
-- Visualizing tissue masks
-- Previewing tile locations
-- Assessing tile quality
-- Creating reports and figures
+**常用可视化任务：**
+- 显示切片缩略图
+- 可视化组织掩膜
+- 预览切片位置
+- 评估切片质量
+- 创建报告和图表
 
-**Reference:** `references/visualization.md` contains comprehensive documentation on:
-- Slide thumbnail display and saving
-- Mask visualization with `locate_mask()`
-- Tile location preview with `locate_tiles()`
-- Displaying extracted tiles and mosaics
-- Quality assessment (score distributions, top vs bottom tiles)
-- Multi-slide visualization
-- Filter effect visualization
-- Exporting high-resolution figures and PDF reports
-- Interactive visualization in Jupyter notebooks
+**参考：** `references/visualization.md` 包含关于以下内容的综合文档：
+- 切片缩略图显示和保存
+- 使用`locate_mask()`进行掩膜可视化
+- 使用`locate_tiles()`进行切片位置预览
+- 显示提取的切片和马赛克
+- 质量评估（评分分布、顶部与底部切片）
+- 多切片可视化
+- 过滤器效果可视化
+- 导出高分辨率图表和PDF报告
+- Jupyter笔记本中的交互式可视化
 
-**Example workflows:**
+**示例工作流程：**
 
 ```python
 import matplotlib.pyplot as plt
 from histolab.masks import TissueMask
 
-# Display slide thumbnail
+# 显示切片缩略图
 plt.figure(figsize=(10, 10))
 plt.imshow(slide.thumbnail)
-plt.title(f"Slide: {slide.name}")
+plt.title(f"切片：{slide.name}")
 plt.axis('off')
 plt.show()
 
-# Visualize tissue mask
+# 可视化组织掩膜
 tissue_mask = TissueMask()
 slide.locate_mask(tissue_mask)
 
-# Preview tile locations
+# 预览切片位置
 tiler = RandomTiler(tile_size=(512, 512), n_tiles=50)
 tiler.locate_tiles(slide, n_tiles=20)
 
-# Display extracted tiles in grid
+# 以网格形式显示提取的切片
 from pathlib import Path
 from PIL import Image
 
@@ -322,29 +322,29 @@ plt.tight_layout()
 plt.show()
 ```
 
-## Typical Workflows
+## 典型工作流程
 
-### Workflow 1: Exploratory Tile Extraction
+### 工作流程1：探索性切片提取
 
-Quick sampling of diverse tissue regions for initial analysis.
+对多样化组织区域进行快速采样以进行初步分析。
 
 ```python
 from histolab.slide import Slide
 from histolab.tiler import RandomTiler
 import logging
 
-# Enable logging for progress tracking
+# 启用日志记录以跟踪进度
 logging.basicConfig(level=logging.INFO)
 
-# Load slide
+# 加载切片
 slide = Slide("slide.svs", processed_path="output/random_tiles/")
 
-# Inspect slide
-print(f"Dimensions: {slide.dimensions}")
-print(f"Levels: {slide.levels}")
+# 检查切片
+print(f"尺寸：{slide.dimensions}")
+print(f"级别：{slide.levels}")
 slide.save_thumbnail()
 
-# Configure random tiler
+# 配置随机切片器
 random_tiler = RandomTiler(
     tile_size=(512, 512),
     n_tiles=100,
@@ -354,48 +354,48 @@ random_tiler = RandomTiler(
     tissue_percent=80.0
 )
 
-# Preview locations
+# 预览位置
 random_tiler.locate_tiles(slide, n_tiles=20)
 
-# Extract tiles
+# 提取切片
 random_tiler.extract(slide)
 ```
 
-### Workflow 2: Comprehensive Grid Extraction
+### 工作流程2：全面网格提取
 
-Complete tissue coverage for whole-slide analysis.
+用于全切片分析的完整组织覆盖。
 
 ```python
 from histolab.slide import Slide
 from histolab.tiler import GridTiler
 from histolab.masks import TissueMask
 
-# Load slide
+# 加载切片
 slide = Slide("slide.svs", processed_path="output/grid_tiles/")
 
-# Use TissueMask for all tissue sections
+# 使用TissueMask处理所有组织部分
 tissue_mask = TissueMask()
 slide.locate_mask(tissue_mask)
 
-# Configure grid tiler
+# 配置网格切片器
 grid_tiler = GridTiler(
     tile_size=(512, 512),
-    level=1,  # Use level 1 for faster extraction
+    level=1,  # 使用级别1进行更快的提取
     pixel_overlap=0,
     check_tissue=True,
     tissue_percent=70.0
 )
 
-# Preview grid
+# 预览网格
 grid_tiler.locate_tiles(slide)
 
-# Extract all tiles
+# 提取所有切片
 grid_tiler.extract(slide, extraction_mask=tissue_mask)
 ```
 
-### Workflow 3: Quality-Driven Tile Selection
+### 工作流程3：质量驱动的切片选择
 
-Extract most informative tiles based on nuclei density.
+基于细胞核密度提取信息最丰富的切片。
 
 ```python
 from histolab.slide import Slide
@@ -404,10 +404,10 @@ from histolab.scorer import NucleiScorer
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load slide
+# 加载切片
 slide = Slide("slide.svs", processed_path="output/scored_tiles/")
 
-# Configure score tiler
+# 配置评分切片器
 score_tiler = ScoreTiler(
     tile_size=(512, 512),
     n_tiles=50,
@@ -416,24 +416,24 @@ score_tiler = ScoreTiler(
     check_tissue=True
 )
 
-# Preview top tiles
+# 预览顶部切片
 score_tiler.locate_tiles(slide, n_tiles=15)
 
-# Extract with report
+# 提取并生成报告
 score_tiler.extract(slide, report_path="tiles_report.csv")
 
-# Analyze scores
+# 分析评分
 report_df = pd.read_csv("tiles_report.csv")
 plt.hist(report_df['score'], bins=20, edgecolor='black')
-plt.xlabel('Tile Score')
-plt.ylabel('Frequency')
-plt.title('Distribution of Tile Scores')
+plt.xlabel('切片评分')
+plt.ylabel('频率')
+plt.title('切片评分分布')
 plt.show()
 ```
 
-### Workflow 4: Multi-Slide Processing Pipeline
+### 工作流程4：多切片处理流程
 
-Process entire slide collection with consistent parameters.
+使用一致参数处理整个切片集合。
 
 ```python
 from pathlib import Path
@@ -443,7 +443,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
-# Configure tiler once
+# 配置一次切片器
 tiler = RandomTiler(
     tile_size=(512, 512),
     n_tiles=50,
@@ -452,32 +452,32 @@ tiler = RandomTiler(
     check_tissue=True
 )
 
-# Process all slides
+# 处理所有切片
 slide_dir = Path("slides/")
 output_base = Path("output/")
 
 for slide_path in slide_dir.glob("*.svs"):
-    print(f"\nProcessing: {slide_path.name}")
+    print(f"\n处理中：{slide_path.name}")
 
-    # Create slide-specific output directory
+    # 创建切片特定的输出目录
     output_dir = output_base / slide_path.stem
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Load and process slide
+    # 加载并处理切片
     slide = Slide(slide_path, processed_path=output_dir)
 
-    # Save thumbnail for review
+    # 保存缩略图以供审查
     slide.save_thumbnail()
 
-    # Extract tiles
+    # 提取切片
     tiler.extract(slide)
 
-    print(f"Completed: {slide_path.name}")
+    print(f"完成：{slide_path.name}")
 ```
 
-### Workflow 5: Custom Tissue Detection and Filtering
+### 工作流程5：自定义组织检测和过滤
 
-Handle slides with artifacts, annotations, or unusual staining.
+处理带有伪影、注释或异常染色的切片。
 
 ```python
 from histolab.slide import Slide
@@ -489,188 +489,187 @@ from histolab.filters.morphological_filters import (
     BinaryDilation, RemoveSmallObjects, RemoveSmallHoles
 )
 
-# Define custom filter pipeline for aggressive artifact removal
+# 定义用于激进伪影移除的自定义过滤器流程
 aggressive_filters = Compose([
     RgbToGrayscale(),
     OtsuThreshold(),
     BinaryDilation(disk_size=10),
     RemoveSmallHoles(area_threshold=5000),
-    RemoveSmallObjects(area_threshold=3000)  # Remove larger artifacts
+    RemoveSmallObjects(area_threshold=3000)  # 移除更大的伪影
 ])
 
-# Create custom mask
+# 创建自定义掩膜
 custom_mask = TissueMask(filters=aggressive_filters)
 
-# Load slide and visualize mask
+# 加载切片并可视化掩膜
 slide = Slide("slide.svs", processed_path="output/")
 slide.locate_mask(custom_mask)
 
-# Extract with custom mask
+# 使用自定义掩膜提取
 tiler = RandomTiler(tile_size=(512, 512), n_tiles=100)
 tiler.extract(slide, extraction_mask=custom_mask)
 ```
 
-## Best Practices
+## 最佳实践
 
-### Slide Loading and Inspection
-1. Always inspect slide properties before processing
-2. Save thumbnails for quick visual review
-3. Check pyramid levels and dimensions
-4. Verify tissue is present using thumbnails
+### 切片加载和检查
+1. 处理前始终检查切片属性
+2. 保存缩略图以供快速视觉审查
+3. 检查金字塔级别和尺寸
+4. 使用缩略图验证组织是否存在
 
-### Tissue Detection
-1. Preview masks with `locate_mask()` before extraction
-2. Use `TissueMask` for multiple sections, `BiggestTissueBoxMask` for single sections
-3. Customize filters for specific stains (H&E vs IHC)
-4. Handle pen annotations with custom masks
-5. Test masks on diverse slides
+### 组织检测
+1. 提取前使用`locate_mask()`预览掩膜
+2. 对多个部分使用`TissueMask`，对单个部分使用`BiggestTissueBoxMask`
+3. 为特定染色（H&E vs IHC）自定义过滤器
+4. 使用自定义掩膜处理笔注释
+5. 在多样化切片上测试掩膜
 
-### Tile Extraction
-1. **Always preview with `locate_tiles()` before extracting**
-2. Choose appropriate tiler:
-   - RandomTiler: Sampling and exploration
-   - GridTiler: Complete coverage
-   - ScoreTiler: Quality-driven selection
-3. Set appropriate `tissue_percent` threshold (70-90% typical)
-4. Use seeds for reproducibility in RandomTiler
-5. Extract at appropriate pyramid level for analysis resolution
-6. Enable logging for large datasets
+### 切片提取
+1. **提取前始终使用`locate_tiles()`预览**
+2. 选择适当的切片器：
+   - RandomTiler：采样和探索
+   - GridTiler：完整覆盖
+   - ScoreTiler：质量驱动选择
+3. 设置适当的`tissue_percent`阈值（典型70-90%）
+4. 在RandomTiler中使用种子以确保可重复性
+5. 在适当的金字塔级别提取以进行分辨率分析
+6. 为大型数据集启用日志记录
 
-### Performance
-1. Extract at lower levels (1, 2) for faster processing
-2. Use `BiggestTissueBoxMask` over `TissueMask` when appropriate
-3. Adjust `tissue_percent` to reduce invalid tile attempts
-4. Limit `n_tiles` for initial exploration
-5. Use `pixel_overlap=0` for non-overlapping grids
+### 性能
+1. 在较低级别（1、2）提取以加快处理速度
+2. 适当时使用`BiggestTissueBoxMask`而不是`TissueMask`
+3. 调整`tissue_percent`以减少无效切片尝试
+4. 限制初始探索的`n_tiles`
+5. 对非重叠网格使用`pixel_overlap=0`
 
-### Quality Control
-1. Validate tile quality (check for blur, artifacts, focus)
-2. Review score distributions for ScoreTiler
-3. Inspect top and bottom scoring tiles
-4. Monitor tissue coverage statistics
-5. Filter extracted tiles by additional quality metrics if needed
+### 质量控制
+1. 验证切片质量（检查模糊、伪影、焦点）
+2. 审查ScoreTiler的评分分布
+3. 检查顶部和底部评分切片
+4. 监控组织覆盖率统计
+5. 如有需要，按其他质量指标过滤提取的切片
 
-## Common Use Cases
+## 常见用例
 
-### Training Deep Learning Models
-- Extract balanced datasets using RandomTiler across multiple slides
-- Use ScoreTiler with NucleiScorer to focus on cell-rich regions
-- Extract at consistent resolution (level 0 or level 1)
-- Generate CSV reports for tracking tile metadata
+### 训练深度学习模型
+- 使用RandomTiler跨多个切片提取平衡数据集
+- 使用带有NucleiScorer的ScoreTiler专注于细胞丰富的区域
+- 以一致分辨率提取（级别0或级别1）
+- 生成CSV报告以跟踪切片元数据
 
-### Whole Slide Analysis
-- Use GridTiler for complete tissue coverage
-- Extract at multiple pyramid levels for hierarchical analysis
-- Maintain spatial relationships with grid positions
-- Use `pixel_overlap` for sliding window approaches
+### 全切片分析
+- 使用GridTiler进行完整组织覆盖
+- 在多个金字塔级别提取以进行分层分析
+- 使用网格位置保持空间关系
+- 使用`pixel_overlap`进行滑动窗口方法
 
-### Tissue Characterization
-- Sample diverse regions with RandomTiler
-- Quantify tissue coverage with masks
-- Extract stain-specific information with HED decomposition
-- Compare tissue patterns across slides
+### 组织表征
+- 使用RandomTiler采样多样化区域
+- 使用掩膜量化组织覆盖率
+- 使用HED分解提取染色特定信息
+- 跨切片比较组织模式
 
-### Quality Assessment
-- Identify optimal focus regions with ScoreTiler
-- Detect artifacts using custom masks and filters
-- Assess staining quality across slide collection
-- Flag problematic slides for manual review
+### 质量评估
+- 使用ScoreTiler识别最佳焦点区域
+- 使用自定义掩膜和过滤器检测伪影
+- 跨切片集合评估染色质量
+- 标记有问题的切片以供手动审查
 
-### Dataset Curation
-- Use ScoreTiler to prioritize informative tiles
-- Filter tiles by tissue percentage
-- Generate reports with tile scores and metadata
-- Create stratified datasets across slides and tissue types
+### 数据集策展
+- 使用ScoreTiler优先考虑信息丰富的切片
+- 按组织百分比过滤切片
+- 生成包含切片评分和元数据的报告
+- 跨切片和组织类型创建分层化数据集
 
-## Troubleshooting
+## 故障排除
 
-### No tiles extracted
-- Lower `tissue_percent` threshold
-- Verify slide contains tissue (check thumbnail)
-- Ensure extraction_mask captures tissue regions
-- Check tile_size is appropriate for slide resolution
+### 未提取切片
+- 降低`tissue_percent`阈值
+- 验证切片包含组织（检查缩略图）
+- 确保extraction_mask捕获组织区域
+- 检查tile_size是否适合切片分辨率
 
-### Many background tiles
-- Enable `check_tissue=True`
-- Increase `tissue_percent` threshold
-- Use appropriate mask (TissueMask vs BiggestTissueBoxMask)
-- Customize mask filters to better detect tissue
+### 许多背景切片
+- 启用`check_tissue=True`
+- 提高`tissue_percent`阈值
+- 使用适当的掩膜（TissueMask vs BiggestTissueBoxMask）
+- 自定义掩膜过滤器以更好地检测组织
 
-### Extraction very slow
-- Extract at lower pyramid level (level=1 or 2)
-- Reduce `n_tiles` for RandomTiler/ScoreTiler
-- Use RandomTiler instead of GridTiler for sampling
-- Use BiggestTissueBoxMask instead of TissueMask
+### 提取非常慢
+- 在较低金字塔级别提取（level=1或2）
+- 减少RandomTiler/ScoreTiler的`n_tiles`
+- 使用RandomTiler而不是GridTiler进行采样
+- 使用BiggestTissueBoxMask而不是TissueMask
 
-### Tiles have artifacts
-- Implement custom annotation-exclusion masks
-- Adjust filter parameters for artifact removal
-- Increase small object removal threshold
-- Apply post-extraction quality filtering
+### 切片有伪影
+- 实现自定义注释排除掩膜
+- 调整过滤器参数以进行伪影移除
+- 增加小对象移除阈值
+- 应用提取后质量过滤
 
-### Inconsistent results across slides
-- Use same seed for RandomTiler
-- Normalize staining with preprocessing filters
-- Adjust `tissue_percent` per staining quality
-- Implement slide-specific mask customization
+### 跨切片结果不一致
+- 为RandomTiler使用相同的种子
+- 使用预处理过滤器归一化染色
+- 按染色质量调整`tissue_percent`
+- 实现切片特定的掩膜自定义
 
-## Resources
+## 资源
 
-This skill includes detailed reference documentation in the `references/` directory:
+此技能在`references/`目录中包含详细的参考文档：
 
 ### references/slide_management.md
-Comprehensive guide to loading, inspecting, and working with whole slide images:
-- Slide initialization and configuration
-- Built-in sample datasets
-- Slide properties and metadata
-- Thumbnail generation and visualization
-- Working with pyramid levels
-- Multi-slide processing workflows
-- Best practices and common patterns
+加载、检查和处理全切片图像的综合指南：
+- 切片初始化和配置
+- 内置样本数据集
+- 切片属性和元数据
+- 缩略图生成和可视化
+- 处理金字塔级别
+- 多切片处理工作流
+- 最佳实践和常见模式
 
 ### references/tissue_masks.md
-Complete documentation on tissue detection and masking:
-- TissueMask, BiggestTissueBoxMask, BinaryMask classes
-- How tissue detection filters work
-- Customizing masks with filter chains
-- Visualizing masks
-- Creating custom rectangular and annotation-exclusion masks
-- Integration with tile extraction
-- Best practices and troubleshooting
+组织检测和掩膜的完整文档：
+- TissueMask、BiggestTissueBoxMask、BinaryMask类
+- 组织检测过滤器的工作原理
+- 使用过滤器链自定义掩膜
+- 可视化掩膜
+- 创建自定义矩形和注释排除掩膜
+- 与切片提取的集成
+- 最佳实践和故障排除
 
 ### references/tile_extraction.md
-Detailed explanation of tile extraction strategies:
-- RandomTiler, GridTiler, ScoreTiler comparison
-- Available scorers (NucleiScorer, CellularityScorer, custom)
-- Common and strategy-specific parameters
-- Tile preview with locate_tiles()
-- Extraction workflows and CSV reporting
-- Advanced patterns (multi-level, hierarchical)
-- Performance optimization
-- Troubleshooting common issues
+切片提取策略的详细说明：
+- RandomTiler、GridTiler、ScoreTiler比较
+- 可用评分器（NucleiScorer、CellularityScorer、自定义）
+- 常用和策略特定参数
+- 使用locate_tiles()进行切片预览
+- 提取工作流程和CSV报告
+- 高级模式（多级别、分层）
+- 性能优化
+- 常见问题故障排除
 
 ### references/filters_preprocessing.md
-Complete filter reference and preprocessing guide:
-- Image filters (color conversion, thresholding, contrast)
-- Morphological filters (dilation, erosion, opening, closing)
-- Filter composition and chaining
-- Common preprocessing pipelines
-- Applying filters to tiles
-- Custom mask filters
-- Quality control filters
-- Best practices and troubleshooting
+完整过滤器参考和预处理指南：
+- 图像过滤器（色彩转换、阈值处理、对比度）
+- 形态学过滤器（膨胀、腐蚀、开闭运算）
+- 过滤器组合和链接
+- 常用预处理流程
+- 将过滤器应用于切片
+- 自定义掩膜过滤器
+- 质量控制过滤器
+- 最佳实践和故障排除
 
 ### references/visualization.md
-Comprehensive visualization guide:
-- Slide thumbnail display and saving
-- Mask visualization techniques
-- Tile location preview
-- Displaying extracted tiles and creating mosaics
-- Quality assessment visualizations
-- Multi-slide comparison
-- Filter effect visualization
-- Exporting high-resolution figures and PDFs
-- Interactive visualization in Jupyter notebooks
+综合可视化指南：
+- 切片缩略图显示和保存
+- 掩膜可视化技术
+- 切片位置预览
+- 显示提取的切片和创建马赛克
+- 质量评估可视化
+- 多切片比较
+- 过滤器效果可视化
+- 导出高分辨率图表和PDF
+- Jupyter笔记本中的交互式可视化
 
-**Usage pattern:** Reference files contain in-depth information to support workflows described in this main skill document. Load specific reference files as needed for detailed implementation guidance, troubleshooting, or advanced features.
-
+**使用模式：** 参考文件包含深入信息以支持此主要技能文档中描述的工作流程。根据需要加载特定的参考文件以获取详细实施指导、故障排除或高级功能。

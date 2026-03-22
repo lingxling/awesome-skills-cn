@@ -1,6 +1,6 @@
 ---
 name: backend-dev-guidelines
-description: "(Node.js · Express · TypeScript · Microservices)"
+description: "Opinionated backend development standards for Node.js + Express + TypeScript microservices. Covers layered architecture, BaseController pattern, dependency injection, Prisma repositories, Zod valid..."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -57,7 +57,8 @@ BFRI = (Architectural Fit + Testability) − (Complexity + Data Risk + Operation
 
 ---
 
-## When to Use
+## 2. When to Use This Skill
+
 Automatically applies when working on:
 
 * Routes, controllers, services, repositories

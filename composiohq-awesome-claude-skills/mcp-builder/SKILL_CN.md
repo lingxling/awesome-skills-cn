@@ -1,276 +1,276 @@
 ---
 name: mcp-builder
-description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).
-license: Complete terms in LICENSE.txt
+description: 指导创建高质量的 MCP (Model Context Protocol) 服务器，使 LLM 能够通过设计良好的工具与外部服务交互。当构建 MCP 服务器以集成外部 API 或服务时使用，无论是使用 Python (FastMCP) 还是 Node/TypeScript (MCP SDK)。
+license: 完整条款见 LICENSE.txt
 ---
 
-# MCP Server Development Guide
+# MCP 服务器开发指南
 
-## Overview
+## 概述
 
-To create high-quality MCP (Model Context Protocol) servers that enable LLMs to effectively interact with external services, use this skill. An MCP server provides tools that allow LLMs to access external services and APIs. The quality of an MCP server is measured by how well it enables LLMs to accomplish real-world tasks using the tools provided.
-
----
-
-# Process
-
-## 🚀 High-Level Workflow
-
-Creating a high-quality MCP server involves four main phases:
-
-### Phase 1: Deep Research and Planning
-
-#### 1.1 Understand Agent-Centric Design Principles
-
-Before diving into implementation, understand how to design tools for AI agents by reviewing these principles:
-
-**Build for Workflows, Not Just API Endpoints:**
-- Don't simply wrap existing API endpoints - build thoughtful, high-impact workflow tools
-- Consolidate related operations (e.g., `schedule_event` that both checks availability and creates event)
-- Focus on tools that enable complete tasks, not just individual API calls
-- Consider what workflows agents actually need to accomplish
-
-**Optimize for Limited Context:**
-- Agents have constrained context windows - make every token count
-- Return high-signal information, not exhaustive data dumps
-- Provide "concise" vs "detailed" response format options
-- Default to human-readable identifiers over technical codes (names over IDs)
-- Consider the agent's context budget as a scarce resource
-
-**Design Actionable Error Messages:**
-- Error messages should guide agents toward correct usage patterns
-- Suggest specific next steps: "Try using filter='active_only' to reduce results"
-- Make errors educational, not just diagnostic
-- Help agents learn proper tool usage through clear feedback
-
-**Follow Natural Task Subdivisions:**
-- Tool names should reflect how humans think about tasks
-- Group related tools with consistent prefixes for discoverability
-- Design tools around natural workflows, not just API structure
-
-**Use Evaluation-Driven Development:**
-- Create realistic evaluation scenarios early
-- Let agent feedback drive tool improvements
-- Prototype quickly and iterate based on actual agent performance
-
-#### 1.3 Study MCP Protocol Documentation
-
-**Fetch the latest MCP protocol documentation:**
-
-Use WebFetch to load: `https://modelcontextprotocol.io/llms-full.txt`
-
-This comprehensive document contains the complete MCP specification and guidelines.
-
-#### 1.4 Study Framework Documentation
-
-**Load and read the following reference files:**
-
-- **MCP Best Practices**: [📋 View Best Practices](./reference/mcp_best_practices.md) - Core guidelines for all MCP servers
-
-**For Python implementations, also load:**
-- **Python SDK Documentation**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
-- [🐍 Python Implementation Guide](./reference/python_mcp_server.md) - Python-specific best practices and examples
-
-**For Node/TypeScript implementations, also load:**
-- **TypeScript SDK Documentation**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
-- [⚡ TypeScript Implementation Guide](./reference/node_mcp_server.md) - Node/TypeScript-specific best practices and examples
-
-#### 1.5 Exhaustively Study API Documentation
-
-To integrate a service, read through **ALL** available API documentation:
-- Official API reference documentation
-- Authentication and authorization requirements
-- Rate limiting and pagination patterns
-- Error responses and status codes
-- Available endpoints and their parameters
-- Data models and schemas
-
-**To gather comprehensive information, use web search and the WebFetch tool as needed.**
-
-#### 1.6 Create a Comprehensive Implementation Plan
-
-Based on your research, create a detailed plan that includes:
-
-**Tool Selection:**
-- List the most valuable endpoints/operations to implement
-- Prioritize tools that enable the most common and important use cases
-- Consider which tools work together to enable complex workflows
-
-**Shared Utilities and Helpers:**
-- Identify common API request patterns
-- Plan pagination helpers
-- Design filtering and formatting utilities
-- Plan error handling strategies
-
-**Input/Output Design:**
-- Define input validation models (Pydantic for Python, Zod for TypeScript)
-- Design consistent response formats (e.g., JSON or Markdown), and configurable levels of detail (e.g., Detailed or Concise)
-- Plan for large-scale usage (thousands of users/resources)
-- Implement character limits and truncation strategies (e.g., 25,000 tokens)
-
-**Error Handling Strategy:**
-- Plan graceful failure modes
-- Design clear, actionable, LLM-friendly, natural language error messages which prompt further action
-- Consider rate limiting and timeout scenarios
-- Handle authentication and authorization errors
+要创建高质量的 MCP (Model Context Protocol) 服务器，使 LLM 能够有效地与外部服务交互，请使用此技能。MCP 服务器提供工具，允许 LLM 访问外部服务和 API。MCP 服务器的质量取决于它如何有效地使 LLM 使用提供的工具完成实际任务。
 
 ---
 
-### Phase 2: Implementation
+# 流程
 
-Now that you have a comprehensive plan, begin implementation following language-specific best practices.
+## 🚀 高级工作流
 
-#### 2.1 Set Up Project Structure
+创建高质量的 MCP 服务器涉及四个主要阶段：
 
-**For Python:**
-- Create a single `.py` file or organize into modules if complex (see [🐍 Python Guide](./reference/python_mcp_server.md))
-- Use the MCP Python SDK for tool registration
-- Define Pydantic models for input validation
+### 阶段 1：深入研究和规划
 
-**For Node/TypeScript:**
-- Create proper project structure (see [⚡ TypeScript Guide](./reference/node_mcp_server.md))
-- Set up `package.json` and `tsconfig.json`
-- Use MCP TypeScript SDK
-- Define Zod schemas for input validation
+#### 1.1 理解以代理为中心的设计原则
 
-#### 2.2 Implement Core Infrastructure First
+在开始实现之前，通过审查以下原则了解如何为 AI 代理设计工具：
 
-**To begin implementation, create shared utilities before implementing tools:**
-- API request helper functions
-- Error handling utilities
-- Response formatting functions (JSON and Markdown)
-- Pagination helpers
-- Authentication/token management
+**为工作流程构建，而不仅仅是 API 端点：**
+- 不要简单地包装现有的 API 端点 - 构建深思熟虑、高影响力的工作流工具
+- 整合相关操作（例如，`schedule_event` 同时检查可用性并创建事件）
+- 专注于启用完整任务的工具，而不仅仅是单个 API 调用
+- 考虑代理实际需要完成的工作流程
 
-#### 2.3 Implement Tools Systematically
+**针对有限上下文进行优化：**
+- 代理具有受限的上下文窗口 - 让每个 token 都有价值
+- 返回高信号信息，而不是详尽的数据转储
+- 提供 "简洁" 与 "详细" 响应格式选项
+- 默认为人类可读的标识符，而不是技术代码（名称而不是 ID）
+- 将代理的上下文预算视为稀缺资源
 
-For each tool in the plan:
+**设计可操作的错误消息：**
+- 错误消息应指导代理朝向正确的使用模式
+- 建议具体的后续步骤："尝试使用 filter='active_only' 来减少结果"
+- 使错误具有教育意义，而不仅仅是诊断
+- 通过清晰的反馈帮助代理学习正确的工具使用
 
-**Define Input Schema:**
-- Use Pydantic (Python) or Zod (TypeScript) for validation
-- Include proper constraints (min/max length, regex patterns, min/max values, ranges)
-- Provide clear, descriptive field descriptions
-- Include diverse examples in field descriptions
+**遵循自然任务细分：**
+- 工具名称应反映人类如何思考任务
+- 使用一致的前缀对相关工具进行分组，以提高可发现性
+- 围绕自然工作流程设计工具，而不仅仅是 API 结构
 
-**Write Comprehensive Docstrings/Descriptions:**
-- One-line summary of what the tool does
-- Detailed explanation of purpose and functionality
-- Explicit parameter types with examples
-- Complete return type schema
-- Usage examples (when to use, when not to use)
-- Error handling documentation, which outlines how to proceed given specific errors
+**使用评估驱动的开发：**
+- 尽早创建现实的评估场景
+- 让代理反馈驱动工具改进
+- 快速原型设计并根据实际代理性能进行迭代
 
-**Implement Tool Logic:**
-- Use shared utilities to avoid code duplication
-- Follow async/await patterns for all I/O
-- Implement proper error handling
-- Support multiple response formats (JSON and Markdown)
-- Respect pagination parameters
-- Check character limits and truncate appropriately
+#### 1.3 研究 MCP 协议文档
 
-**Add Tool Annotations:**
-- `readOnlyHint`: true (for read-only operations)
-- `destructiveHint`: false (for non-destructive operations)
-- `idempotentHint`: true (if repeated calls have same effect)
-- `openWorldHint`: true (if interacting with external systems)
+**获取最新的 MCP 协议文档：**
 
-#### 2.4 Follow Language-Specific Best Practices
+使用 WebFetch 加载：`https://modelcontextprotocol.io/llms-full.txt`
 
-**At this point, load the appropriate language guide:**
+此综合文档包含完整的 MCP 规范和指南。
 
-**For Python: Load [🐍 Python Implementation Guide](./reference/python_mcp_server.md) and ensure the following:**
-- Using MCP Python SDK with proper tool registration
-- Pydantic v2 models with `model_config`
-- Type hints throughout
-- Async/await for all I/O operations
-- Proper imports organization
-- Module-level constants (CHARACTER_LIMIT, API_BASE_URL)
+#### 1.4 研究框架文档
 
-**For Node/TypeScript: Load [⚡ TypeScript Implementation Guide](./reference/node_mcp_server.md) and ensure the following:**
-- Using `server.registerTool` properly
-- Zod schemas with `.strict()`
-- TypeScript strict mode enabled
-- No `any` types - use proper types
-- Explicit Promise<T> return types
-- Build process configured (`npm run build`)
+**加载并阅读以下参考文件：**
 
----
+- **MCP 最佳实践**：[📋 查看最佳实践](./reference/mcp_best_practices.md) - 所有 MCP 服务器的核心指南
 
-### Phase 3: Review and Refine
+**对于 Python 实现，还需加载：**
+- **Python SDK 文档**：使用 WebFetch 加载 `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
+- [🐍 Python 实现指南](./reference/python_mcp_server.md) - Python 特定的最佳实践和示例
 
-After initial implementation:
+**对于 Node/TypeScript 实现，还需加载：**
+- **TypeScript SDK 文档**：使用 WebFetch 加载 `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
+- [⚡ TypeScript 实现指南](./reference/node_mcp_server.md) - Node/TypeScript 特定的最佳实践和示例
 
-#### 3.1 Code Quality Review
+#### 1.5 详尽研究 API 文档
 
-To ensure quality, review the code for:
-- **DRY Principle**: No duplicated code between tools
-- **Composability**: Shared logic extracted into functions
-- **Consistency**: Similar operations return similar formats
-- **Error Handling**: All external calls have error handling
-- **Type Safety**: Full type coverage (Python type hints, TypeScript types)
-- **Documentation**: Every tool has comprehensive docstrings/descriptions
+要集成服务，请通读**所有**可用的 API 文档：
+- 官方 API 参考文档
+- 身份验证和授权要求
+- 速率限制和分页模式
+- 错误响应和状态码
+- 可用的端点及其参数
+- 数据模型和架构
 
-#### 3.2 Test and Build
+**要收集全面的信息，根据需要使用网络搜索和 WebFetch 工具。**
 
-**Important:** MCP servers are long-running processes that wait for requests over stdio/stdin or sse/http. Running them directly in your main process (e.g., `python server.py` or `node dist/index.js`) will cause your process to hang indefinitely.
+#### 1.6 创建全面的实施计划
 
-**Safe ways to test the server:**
-- Use the evaluation harness (see Phase 4) - recommended approach
-- Run the server in tmux to keep it outside your main process
-- Use a timeout when testing: `timeout 5s python server.py`
+基于您的研究，创建详细的计划，包括：
 
-**For Python:**
-- Verify Python syntax: `python -m py_compile your_server.py`
-- Check imports work correctly by reviewing the file
-- To manually test: Run server in tmux, then test with evaluation harness in main process
-- Or use the evaluation harness directly (it manages the server for stdio transport)
+**工具选择：**
+- 列出最有价值的端点/操作来实现
+- 优先考虑能够启用最常见和最重要用例的工具
+- 考虑哪些工具一起工作以启用复杂的工作流程
 
-**For Node/TypeScript:**
-- Run `npm run build` and ensure it completes without errors
-- Verify dist/index.js is created
-- To manually test: Run server in tmux, then test with evaluation harness in main process
-- Or use the evaluation harness directly (it manages the server for stdio transport)
+**共享实用程序和助手：**
+- 识别常见的 API 请求模式
+- 计划分页助手
+- 设计过滤和格式化实用程序
+- 计划错误处理策略
 
-#### 3.3 Use Quality Checklist
+**输入/输出设计：**
+- 定义输入验证模型（Python 使用 Pydantic，TypeScript 使用 Zod）
+- 设计一致的响应格式（例如，JSON 或 Markdown），以及可配置的详细程度（例如，详细或简洁）
+- 为大规模使用（数千用户/资源）做计划
+- 实现字符限制和截断策略（例如，25,000 个 token）
 
-To verify implementation quality, load the appropriate checklist from the language-specific guide:
-- Python: see "Quality Checklist" in [🐍 Python Guide](./reference/python_mcp_server.md)
-- Node/TypeScript: see "Quality Checklist" in [⚡ TypeScript Guide](./reference/node_mcp_server.md)
+**错误处理策略：**
+- 计划优雅的失败模式
+- 设计清晰、可操作、对 LLM 友好的自然语言错误消息，提示进一步操作
+- 考虑速率限制和超时场景
+- 处理身份验证和授权错误
 
 ---
 
-### Phase 4: Create Evaluations
+### 阶段 2：实现
 
-After implementing your MCP server, create comprehensive evaluations to test its effectiveness.
+现在您有了全面的计划，开始按照特定语言的最佳实践进行实现。
 
-**Load [✅ Evaluation Guide](./reference/evaluation.md) for complete evaluation guidelines.**
+#### 2.1 设置项目结构
 
-#### 4.1 Understand Evaluation Purpose
+**对于 Python：**
+- 创建单个 `.py` 文件或如果复杂则组织成模块（请参阅 [🐍 Python 指南](./reference/python_mcp_server.md)）
+- 使用 MCP Python SDK 进行工具注册
+- 定义用于输入验证的 Pydantic 模型
 
-Evaluations test whether LLMs can effectively use your MCP server to answer realistic, complex questions.
+**对于 Node/TypeScript：**
+- 创建适当的项目结构（请参阅 [⚡ TypeScript 指南](./reference/node_mcp_server.md)）
+- 设置 `package.json` 和 `tsconfig.json`
+- 使用 MCP TypeScript SDK
+- 定义用于输入验证的 Zod 模式
 
-#### 4.2 Create 10 Evaluation Questions
+#### 2.2 首先实现核心基础设施
 
-To create effective evaluations, follow the process outlined in the evaluation guide:
+**开始实现时，在实现工具之前创建共享实用程序：**
+- API 请求助手函数
+- 错误处理实用程序
+- 响应格式化函数（JSON 和 Markdown）
+- 分页助手
+- 身份验证/令牌管理
 
-1. **Tool Inspection**: List available tools and understand their capabilities
-2. **Content Exploration**: Use READ-ONLY operations to explore available data
-3. **Question Generation**: Create 10 complex, realistic questions
-4. **Answer Verification**: Solve each question yourself to verify answers
+#### 2.3 系统地实现工具
 
-#### 4.3 Evaluation Requirements
+对于计划中的每个工具：
 
-Each question must be:
-- **Independent**: Not dependent on other questions
-- **Read-only**: Only non-destructive operations required
-- **Complex**: Requiring multiple tool calls and deep exploration
-- **Realistic**: Based on real use cases humans would care about
-- **Verifiable**: Single, clear answer that can be verified by string comparison
-- **Stable**: Answer won't change over time
+**定义输入模式：**
+- 使用 Pydantic（Python）或 Zod（TypeScript）进行验证
+- 包括适当的约束（最小/最大长度、正则表达式模式、最小/最大值、范围）
+- 提供清晰、描述性的字段描述
+- 在字段描述中包含多样化的示例
 
-#### 4.4 Output Format
+**编写全面的文档字符串/描述：**
+- 工具功能的单行摘要
+- 目的和功能的详细说明
+- 带有示例的明确参数类型
+- 完整的返回类型架构
+- 使用示例（何时使用，何时不使用）
+- 错误处理文档，概述给定特定错误时如何处理
 
-Create an XML file with this structure:
+**实现工具逻辑：**
+- 使用共享实用程序避免代码重复
+- 对所有 I/O 遵循 async/await 模式
+- 实现适当的错误处理
+- 支持多种响应格式（JSON 和 Markdown）
+- 尊重分页参数
+- 检查字符限制并适当截断
+
+**添加工具注释：**
+- `readOnlyHint`: true（对于只读操作）
+- `destructiveHint`: false（对于非破坏性操作）
+- `idempotentHint`: true（如果重复调用具有相同效果）
+- `openWorldHint`: true（如果与外部系统交互）
+
+#### 2.4 遵循特定语言的最佳实践
+
+**此时，加载适当的语言指南：**
+
+**对于 Python：加载 [🐍 Python 实现指南](./reference/python_mcp_server.md) 并确保：**
+- 使用 MCP Python SDK 进行适当的工具注册
+- 带有 `model_config` 的 Pydantic v2 模型
+- 贯穿始终的类型提示
+- 所有 I/O 操作的 Async/await
+- 适当的导入组织
+- 模块级常量（CHARACTER_LIMIT、API_BASE_URL）
+
+**对于 Node/TypeScript：加载 [⚡ TypeScript 实现指南](./reference/node_mcp_server.md) 并确保：**
+- 正确使用 `server.registerTool`
+- 带有 `.strict()` 的 Zod 模式
+- 启用 TypeScript 严格模式
+- 无 `any` 类型 - 使用适当的类型
+- 明确的 Promise<T> 返回类型
+- 构建过程配置（`npm run build`）
+
+---
+
+### 阶段 3：审查和完善
+
+初始实现后：
+
+#### 3.1 代码质量审查
+
+为确保质量，审查代码以确保：
+- **DRY 原则**：工具之间无重复代码
+- **可组合性**：共享逻辑提取到函数中
+- **一致性**：相似操作返回相似格式
+- **错误处理**：所有外部调用都有错误处理
+- **类型安全**：完全类型覆盖（Python 类型提示，TypeScript 类型）
+- **文档**：每个工具都有全面的文档字符串/描述
+
+#### 3.2 测试和构建
+
+**重要：** MCP 服务器是长期运行的进程，通过 stdio/stdin 或 sse/http 等待请求。直接在主进程中运行它们（例如，`python server.py` 或 `node dist/index.js`）会导致进程无限期挂起。
+
+**安全测试服务器的方法：**
+- 使用评估工具（见阶段 4）- 推荐方法
+- 在 tmux 中运行服务器以将其保持在主进程之外
+- 测试时使用超时：`timeout 5s python server.py`
+
+**对于 Python：**
+- 验证 Python 语法：`python -m py_compile your_server.py`
+- 通过查看文件检查导入是否正确工作
+- 手动测试：在 tmux 中运行服务器，然后在主进程中使用评估工具测试
+- 或直接使用评估工具（它为 stdio 传输管理服务器）
+
+**对于 Node/TypeScript：**
+- 运行 `npm run build` 并确保它完成无错误
+- 验证 dist/index.js 已创建
+- 手动测试：在 tmux 中运行服务器，然后在主进程中使用评估工具测试
+- 或直接使用评估工具（它为 stdio 传输管理服务器）
+
+#### 3.3 使用质量检查表
+
+要验证实现质量，从特定语言的指南中加载适当的检查表：
+- Python：参见 [🐍 Python 指南](./reference/python_mcp_server.md) 中的 "质量检查表"
+- Node/TypeScript：参见 [⚡ TypeScript 指南](./reference/node_mcp_server.md) 中的 "质量检查表"
+
+---
+
+### 阶段 4：创建评估
+
+实现 MCP 服务器后，创建全面的评估以测试其有效性。
+
+**加载 [✅ 评估指南](./reference/evaluation.md) 获取完整的评估指南。**
+
+#### 4.1 理解评估目的
+
+评估测试 LLM 是否能够有效地使用您的 MCP 服务器回答现实、复杂的问题。
+
+#### 4.2 创建 10 个评估问题
+
+要创建有效的评估，请按照评估指南中概述的过程：
+
+1. **工具检查**：列出可用工具并了解其功能
+2. **内容探索**：使用只读操作探索可用数据
+3. **问题生成**：创建 10 个复杂、现实的问题
+4. **答案验证**：自己解决每个问题以验证答案
+
+#### 4.3 评估要求
+
+每个问题必须：
+- **独立**：不依赖于其他问题
+- **只读**：只需要非破坏性操作
+- **复杂**：需要多个工具调用和深入探索
+- **现实**：基于人类关心的实际用例
+- **可验证**：单一、清晰的答案，可以通过字符串比较验证
+- **稳定**：答案不会随时间变化
+
+#### 4.4 输出格式
+
+创建具有以下结构的 XML 文件：
 
 ```xml
 <evaluation>
@@ -284,45 +284,45 @@ Create an XML file with this structure:
 
 ---
 
-# Reference Files
+# 参考文件
 
-## 📚 Documentation Library
+## 📚 文档库
 
-Load these resources as needed during development:
+在开发过程中根据需要加载这些资源：
 
-### Core MCP Documentation (Load First)
-- **MCP Protocol**: Fetch from `https://modelcontextprotocol.io/llms-full.txt` - Complete MCP specification
-- [📋 MCP Best Practices](./reference/mcp_best_practices.md) - Universal MCP guidelines including:
-  - Server and tool naming conventions
-  - Response format guidelines (JSON vs Markdown)
-  - Pagination best practices
-  - Character limits and truncation strategies
-  - Tool development guidelines
-  - Security and error handling standards
+### 核心 MCP 文档（首先加载）
+- **MCP 协议**：从 `https://modelcontextprotocol.io/llms-full.txt` 获取 - 完整的 MCP 规范
+- [📋 MCP 最佳实践](./reference/mcp_best_practices.md) - 通用 MCP 指南，包括：
+  - 服务器和工具命名约定
+  - 响应格式指南（JSON 与 Markdown）
+  - 分页最佳实践
+  - 字符限制和截断策略
+  - 工具开发指南
+  - 安全和错误处理标准
 
-### SDK Documentation (Load During Phase 1/2)
-- **Python SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
-- **TypeScript SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`
+### SDK 文档（在阶段 1/2 期间加载）
+- **Python SDK**：从 `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md` 获取
+- **TypeScript SDK**：从 `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md` 获取
 
-### Language-Specific Implementation Guides (Load During Phase 2)
-- [🐍 Python Implementation Guide](./reference/python_mcp_server.md) - Complete Python/FastMCP guide with:
-  - Server initialization patterns
-  - Pydantic model examples
-  - Tool registration with `@mcp.tool`
-  - Complete working examples
-  - Quality checklist
+### 特定语言实现指南（在阶段 2 期间加载）
+- [🐍 Python 实现指南](./reference/python_mcp_server.md) - 完整的 Python/FastMCP 指南，包括：
+  - 服务器初始化模式
+  - Pydantic 模型示例
+  - 使用 `@mcp.tool` 进行工具注册
+  - 完整的工作示例
+  - 质量检查表
 
-- [⚡ TypeScript Implementation Guide](./reference/node_mcp_server.md) - Complete TypeScript guide with:
-  - Project structure
-  - Zod schema patterns
-  - Tool registration with `server.registerTool`
-  - Complete working examples
-  - Quality checklist
+- [⚡ TypeScript 实现指南](./reference/node_mcp_server.md) - 完整的 TypeScript 指南，包括：
+  - 项目结构
+  - Zod 模式模式
+  - 使用 `server.registerTool` 进行工具注册
+  - 完整的工作示例
+  - 质量检查表
 
-### Evaluation Guide (Load During Phase 4)
-- [✅ Evaluation Guide](./reference/evaluation.md) - Complete evaluation creation guide with:
-  - Question creation guidelines
-  - Answer verification strategies
-  - XML format specifications
-  - Example questions and answers
-  - Running an evaluation with the provided scripts
+### 评估指南（在阶段 4 期间加载）
+- [✅ 评估指南](./reference/evaluation.md) - 完整的评估创建指南，包括：
+  - 问题创建指南
+  - 答案验证策略
+  - XML 格式规范
+  - 示例问题和答案
+  - 使用提供的脚本运行评估

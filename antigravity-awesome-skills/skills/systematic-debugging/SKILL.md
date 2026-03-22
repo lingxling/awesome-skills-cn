@@ -25,6 +25,7 @@ NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
 If you haven't completed Phase 1, you cannot propose fixes.
 
 ## When to Use
+
 Use for ANY technical issue:
 - Test failures
 - Bugs in production

@@ -1,9 +1,7 @@
-import { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Home } from './pages/Home';
+import { SkillDetail } from './pages/SkillDetail';
 import { BookOpen, Github } from 'lucide-react';
-
-const Home = lazy(() => import('./pages/Home'));
-const SkillDetail = lazy(() => import('./pages/SkillDetail'));
 
 function App(): React.ReactElement {
   return (
@@ -32,20 +30,10 @@ function App(): React.ReactElement {
           </div>
         </header>
         <main className="container max-w-screen-2xl mx-auto px-4 py-6">
-          <Suspense
-            fallback={
-              <div
-                className="flex min-h-[40vh] items-center justify-center text-sm text-slate-500 dark:text-slate-400"
-              >
-                Loading...
-              </div>
-            }
-          >
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/skill/:id" element={<SkillDetail />} />
-            </Routes>
-          </Suspense>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/skill/:id" element={<SkillDetail />} />
+          </Routes>
         </main>
       </div>
     </Router>

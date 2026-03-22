@@ -1,12 +1,10 @@
 ---
 name: Bug Report
-about: Report a reproducible bug in the repository, docs, tooling, or skill behavior
+about: Create a report to help us improve the skills
 title: "[BUG] "
 labels: bug
 assignees: sickn33
 ---
-
-> For setup help, troubleshooting questions, or “am I using this correctly?” discussions, please use GitHub Discussions Q&A instead of Issues.
 
 **Describe the bug**
 A clear and concise description of what the bug is.

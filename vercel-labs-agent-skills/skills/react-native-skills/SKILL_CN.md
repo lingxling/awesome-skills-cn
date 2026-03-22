@@ -1,121 +1,116 @@
 ---
 name: vercel-react-native-skills
 description:
-  React Native and Expo best practices for building performant mobile apps. Use
-  when building React Native components, optimizing list performance,
-  implementing animations, or working with native modules. Triggers on tasks
-  involving React Native, Expo, mobile performance, or native platform APIs.
+  用于构建高性能移动应用程序的 React Native 和 Expo 最佳实践。在构建 React Native 组件、优化列表性能、实现动画或使用原生模块时使用。在涉及 React Native、Expo、移动性能或原生平台 API 的任务时触发。
 license: MIT
 metadata:
   author: vercel
   version: '1.0.0'
 ---
 
-# React Native Skills
+# React Native 技能
 
-Comprehensive best practices for React Native and Expo applications. Contains
-rules across multiple categories covering performance, animations, UI patterns,
-and platform-specific optimizations.
+React Native 和 Expo 应用程序的综合最佳实践。包含多个类别的规则，涵盖性能、动画、UI 模式和平台特定优化。
 
-## When to Apply
+## 何时应用
 
-Reference these guidelines when:
+在以下情况下参考这些指南：
 
-- Building React Native or Expo apps
-- Optimizing list and scroll performance
-- Implementing animations with Reanimated
-- Working with images and media
-- Configuring native modules or fonts
-- Structuring monorepo projects with native dependencies
+- 构建 React Native 或 Expo 应用
+- 优化列表和滚动性能
+- 使用 Reanimated 实现动画
+- 处理图像和媒体
+- 配置原生模块或字体
+- 构建具有原生依赖的 monorepo 项目
 
-## Rule Categories by Priority
+## 按优先级分类的规则
 
-| Priority | Category         | Impact   | Prefix               |
+| 优先级 | 类别 | 影响 | 前缀 |
 | -------- | ---------------- | -------- | -------------------- |
-| 1        | List Performance | CRITICAL | `list-performance-`  |
-| 2        | Animation        | HIGH     | `animation-`         |
-| 3        | Navigation       | HIGH     | `navigation-`        |
-| 4        | UI Patterns      | HIGH     | `ui-`                |
-| 5        | State Management | MEDIUM   | `react-state-`       |
-| 6        | Rendering        | MEDIUM   | `rendering-`         |
-| 7        | Monorepo         | MEDIUM   | `monorepo-`          |
-| 8        | Configuration    | LOW      | `fonts-`, `imports-` |
+| 1 | 列表性能 | 关键 | `list-performance-` |
+| 2 | 动画 | 高 | `animation-` |
+| 3 | 导航 | 高 | `navigation-` |
+| 4 | UI 模式 | 高 | `ui-` |
+| 5 | 状态管理 | 中 | `react-state-` |
+| 6 | 渲染 | 中 | `rendering-` |
+| 7 | Monorepo | 中 | `monorepo-` |
+| 8 | 配置 | 低 | `fonts-`, `imports-` |
 
-## Quick Reference
+## 快速参考
 
-### 1. List Performance (CRITICAL)
+### 1. 列表性能 (关键)
 
-- `list-performance-virtualize` - Use FlashList for large lists
-- `list-performance-item-memo` - Memoize list item components
-- `list-performance-callbacks` - Stabilize callback references
-- `list-performance-inline-objects` - Avoid inline style objects
-- `list-performance-function-references` - Extract functions outside render
-- `list-performance-images` - Optimize images in lists
-- `list-performance-item-expensive` - Move expensive work outside items
-- `list-performance-item-types` - Use item types for heterogeneous lists
+- `list-performance-virtualize` - 对大型列表使用 FlashList
+- `list-performance-item-memo` - 记忆化列表项组件
+- `list-performance-callbacks` - 稳定回调引用
+- `list-performance-inline-objects` - 避免内联样式对象
+- `list-performance-function-references` - 将函数提取到渲染外部
+- `list-performance-images` - 优化列表中的图像
+- `list-performance-item-expensive` - 将昂贵的工作移到项外部
+- `list-performance-item-types` - 对异构列表使用项类型
 
-### 2. Animation (HIGH)
+### 2. 动画 (高)
 
-- `animation-gpu-properties` - Animate only transform and opacity
-- `animation-derived-value` - Use useDerivedValue for computed animations
-- `animation-gesture-detector-press` - Use Gesture.Tap instead of Pressable
+- `animation-gpu-properties` - 仅对 transform 和 opacity 进行动画
+- `animation-derived-value` - 使用 useDerivedValue 进行计算动画
+- `animation-gesture-detector-press` - 使用 Gesture.Tap 而不是 Pressable
 
-### 3. Navigation (HIGH)
+### 3. 导航 (高)
 
-- `navigation-native-navigators` - Use native stack and native tabs over JS navigators
+- `navigation-native-navigators` - 使用原生堆栈和原生标签页而不是 JS 导航器
 
-### 4. UI Patterns (HIGH)
+### 4. UI 模式 (高)
 
-- `ui-expo-image` - Use expo-image for all images
-- `ui-image-gallery` - Use Galeria for image lightboxes
-- `ui-pressable` - Use Pressable over TouchableOpacity
-- `ui-safe-area-scroll` - Handle safe areas in ScrollViews
-- `ui-scrollview-content-inset` - Use contentInset for headers
-- `ui-menus` - Use native context menus
-- `ui-native-modals` - Use native modals when possible
-- `ui-measure-views` - Use onLayout, not measure()
-- `ui-styling` - Use StyleSheet.create or Nativewind
+- `ui-expo-image` - 对所有图像使用 expo-image
+- `ui-image-gallery` - 使用 Galeria 进行图像灯箱
+- `ui-pressable` - 使用 Pressable 而不是 TouchableOpacity
+- `ui-safe-area-scroll` - 在 ScrollViews 中处理安全区域
+- `ui-scrollview-content-inset` - 对标题使用 contentInset
+- `ui-menus` - 使用原生上下文菜单
+- `ui-native-modals` - 尽可能使用原生模态框
+- `ui-measure-views` - 使用 onLayout，而不是 measure()
+- `ui-styling` - 使用 StyleSheet.create 或 Nativewind
 
-### 5. State Management (MEDIUM)
+### 5. 状态管理 (中)
 
-- `react-state-minimize` - Minimize state subscriptions
-- `react-state-dispatcher` - Use dispatcher pattern for callbacks
-- `react-state-fallback` - Show fallback on first render
-- `react-compiler-destructure-functions` - Destructure for React Compiler
-- `react-compiler-reanimated-shared-values` - Handle shared values with compiler
+- `react-state-minimize` - 最小化状态订阅
+- `react-state-dispatcher` - 对回调使用调度器模式
+- `react-state-fallback` - 在首次渲染时显示回退
+- `react-compiler-destructure-functions` - 为 React Compiler 解构
+- `react-compiler-reanimated-shared-values` - 使用编译器处理共享值
 
-### 6. Rendering (MEDIUM)
+### 6. 渲染 (中)
 
-- `rendering-text-in-text-component` - Wrap text in Text components
-- `rendering-no-falsy-and` - Avoid falsy && for conditional rendering
+- `rendering-text-in-text-component` - 将文本包装在 Text 组件中
+- `rendering-no-falsy-and` - 避免对条件渲染使用 falsy &&
 
-### 7. Monorepo (MEDIUM)
+### 7. Monorepo (中)
 
-- `monorepo-native-deps-in-app` - Keep native dependencies in app package
-- `monorepo-single-dependency-versions` - Use single versions across packages
+- `monorepo-native-deps-in-app` - 将原生依赖保留在 app 包中
+- `monorepo-single-dependency-versions` - 在包之间使用单一版本
 
-### 8. Configuration (LOW)
+### 8. 配置 (低)
 
-- `fonts-config-plugin` - Use config plugins for custom fonts
-- `imports-design-system-folder` - Organize design system imports
-- `js-hoist-intl` - Hoist Intl object creation
+- `fonts-config-plugin` - 使用配置插件加载自定义字体
+- `imports-design-system-folder` - 组织设计系统导入
+- `js-hoist-intl` - 提升 Intl 对象创建
 
-## How to Use
+## 如何使用
 
-Read individual rule files for detailed explanations and code examples:
+阅读单个规则文件以获取详细说明和代码示例：
 
 ```
 rules/list-performance-virtualize.md
 rules/animation-gpu-properties.md
 ```
 
-Each rule file contains:
+每个规则文件包含：
 
-- Brief explanation of why it matters
-- Incorrect code example with explanation
-- Correct code example with explanation
-- Additional context and references
+- 为什么重要的简要说明
+- 带有说明的错误代码示例
+- 带有说明的正确代码示例
+- 其他上下文和参考
 
-## Full Compiled Document
+## 完整编译文档
 
-For the complete guide with all rules expanded: `AGENTS.md`
+获取所有规则展开的完整指南：`AGENTS.md`

@@ -1,8 +1,10 @@
 ---
 name: makepad-widgets
-description: "Version: makepad-widgets (dev branch) | Last Updated: 2026-01-19 > > Check for updates: https://crates.io/crates/makepad-widgets"
-risk: unknown
-source: community
+description: |
+  CRITICAL: Use for Makepad widgets and UI components. Triggers on:
+  makepad widget, makepad View, makepad Button, makepad Label, makepad Image,
+  makepad TextInput, RoundedView, SolidView, ScrollView, "makepad component",
+  makepad Markdown, makepad Html, TextFlow, rich...
 ---
 
 # Makepad Widgets Skill

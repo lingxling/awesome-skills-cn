@@ -1,13 +1,13 @@
 ---
 name: json-canvas
-description: Create and edit JSON Canvas files (.canvas) with nodes, edges, groups, and connections. Use when working with .canvas files, creating visual canvases, mind maps, flowcharts, or when the user mentions Canvas files in Obsidian.
+description: 创建和编辑包含节点、边、组和连接的 JSON Canvas 文件（.canvas）。在处理 .canvas 文件、创建可视化画布、思维导图、流程图，或用户在 Obsidian 中提及 Canvas 文件时使用。
 ---
 
-# JSON Canvas Skill
+# JSON Canvas 技能
 
-## File Structure
+## 文件结构
 
-A canvas file (`.canvas`) contains two top-level arrays following the [JSON Canvas Spec 1.0](https://jsoncanvas.org/spec/1.0/):
+Canvas 文件（`.canvas`）遵循 [JSON Canvas 规范 1.0](https://jsoncanvas.org/spec/1.0/) 包含两个顶级数组：
 
 ```json
 {
@@ -16,67 +16,67 @@ A canvas file (`.canvas`) contains two top-level arrays following the [JSON Canv
 }
 ```
 
-- `nodes` (optional): Array of node objects
-- `edges` (optional): Array of edge objects connecting nodes
+- `nodes`（可选）：节点对象数组
+- `edges`（可选）：连接节点的边对象数组
 
-## Common Workflows
+## 常见工作流程
 
-### 1. Create a New Canvas
+### 1. 创建新的 Canvas
 
-1. Create a `.canvas` file with the base structure `{"nodes": [], "edges": []}`
-2. Generate unique 16-character hex IDs for each node (e.g., `"6f0ad84f44ce9c17"`)
-3. Add nodes with required fields: `id`, `type`, `x`, `y`, `width`, `height`
-4. Add edges referencing valid node IDs via `fromNode` and `toNode`
-5. **Validate**: Parse the JSON to confirm it is valid. Verify all `fromNode`/`toNode` values exist in the nodes array
+1. 创建具有基本结构 `{"nodes": [], "edges": []}` 的 `.canvas` 文件
+2. 为每个节点生成唯一的 16 字符十六进制 ID（例如，`"6f0ad84f44ce9c17"`）
+3. 添加具有必需字段的节点：`id`、`type`、`x`、`y`、`width`、`height`
+4. 添加通过 `fromNode` 和 `toNode` 引用有效节点 ID 的边
+5. **验证**：解析 JSON 以确认其有效。验证所有 `fromNode`/`toNode` 值存在于节点数组中
 
-### 2. Add a Node to an Existing Canvas
+### 2. 向现有 Canvas 添加节点
 
-1. Read and parse the existing `.canvas` file
-2. Generate a unique ID that does not collide with existing node or edge IDs
-3. Choose position (`x`, `y`) that avoids overlapping existing nodes (leave 50-100px spacing)
-4. Append the new node object to the `nodes` array
-5. Optionally add edges connecting the new node to existing nodes
-6. **Validate**: Confirm all IDs are unique and all edge references resolve to existing nodes
+1. 读取并解析现有的 `.canvas` 文件
+2. 生成一个不与现有节点或边 ID 冲突的唯一 ID
+3. 选择避免与现有节点重叠的位置（`x`、`y`）（保留 50-100px 间距）
+4. 将新节点对象追加到 `nodes` 数组
+5. 可选择添加将新节点连接到现有节点的边
+6. **验证**：确认所有 ID 唯一且所有边引用解析到现有节点
 
-### 3. Connect Two Nodes
+### 3. 连接两个节点
 
-1. Identify the source and target node IDs
-2. Generate a unique edge ID
-3. Set `fromNode` and `toNode` to the source and target IDs
-4. Optionally set `fromSide`/`toSide` (top, right, bottom, left) for anchor points
-5. Optionally set `label` for descriptive text on the edge
-6. Append the edge to the `edges` array
-7. **Validate**: Confirm both `fromNode` and `toNode` reference existing node IDs
+1. 识别源和目标节点 ID
+2. 生成唯一的边 ID
+3. 将 `fromNode` 和 `toNode` 设置为源和目标 ID
+4. 可选择设置 `fromSide`/`toSide`（top、right、bottom、left）作为锚点
+5. 可选择设置 `label` 作为边上的描述性文本
+6. 将边追加到 `edges` 数组
+7. **验证**：确认两个 `fromNode` 和 `toNode` 都引用现有节点 ID
 
-### 4. Edit an Existing Canvas
+### 4. 编辑现有 Canvas
 
-1. Read and parse the `.canvas` file as JSON
-2. Locate the target node or edge by `id`
-3. Modify the desired attributes (text, position, color, etc.)
-4. Write the updated JSON back to the file
-5. **Validate**: Re-check all ID uniqueness and edge reference integrity after editing
+1. 读取并将 `.canvas` 文件解析为 JSON
+2. 通过 `id` 定位目标节点或边
+3. 修改所需属性（文本、位置、颜色等）
+4. 将更新的 JSON 写回文件
+5. **验证**：编辑后重新检查所有 ID 唯一性和边引用完整性
 
-## Nodes
+## 节点
 
-Nodes are objects placed on the canvas. Array order determines z-index: first node = bottom layer, last node = top layer.
+节点是放置在画布上的对象。数组顺序决定 z 索引：第一个节点 = 底层，最后一个节点 = 顶层。
 
-### Generic Node Attributes
+### 通用节点属性
 
-| Attribute | Required | Type | Description |
+| 属性 | 必需 | 类型 | 描述 |
 |-----------|----------|------|-------------|
-| `id` | Yes | string | Unique 16-char hex identifier |
-| `type` | Yes | string | `text`, `file`, `link`, or `group` |
-| `x` | Yes | integer | X position in pixels |
-| `y` | Yes | integer | Y position in pixels |
-| `width` | Yes | integer | Width in pixels |
-| `height` | Yes | integer | Height in pixels |
-| `color` | No | canvasColor | Preset `"1"`-`"6"` or hex (e.g., `"#FF0000"`) |
+| `id` | 是 | 字符串 | 唯一的 16 字符十六进制标识符 |
+| `type` | 是 | 字符串 | `text`、`file`、`link` 或 `group` |
+| `x` | 是 | 整数 | 像素 X 位置 |
+| `y` | 是 | 整数 | 像素 Y 位置 |
+| `width` | 是 | 整数 | 像素宽度 |
+| `height` | 是 | 整数 | 像素高度 |
+| `color` | 否 | canvasColor | 预设 `"1"`-`"6"` 或十六进制（例如，`"#FF0000"`） |
 
-### Text Nodes
+### 文本节点
 
-| Attribute | Required | Type | Description |
+| 属性 | 必需 | 类型 | 描述 |
 |-----------|----------|------|-------------|
-| `text` | Yes | string | Plain text with Markdown syntax |
+| `text` | 是 | 字符串 | 具有 Markdown 语法的纯文本 |
 
 ```json
 {
@@ -86,18 +86,18 @@ Nodes are objects placed on the canvas. Array order determines z-index: first no
   "y": 0,
   "width": 400,
   "height": 200,
-  "text": "# Hello World\n\nThis is **Markdown** content."
+  "text": "# Hello World\n\n这是 **Markdown** 内容。"
 }
 ```
 
-**Newline pitfall**: Use `\n` for line breaks in JSON strings. Do **not** use the literal `\\n` -- Obsidian renders that as the characters `\` and `n`.
+**换行陷阱**：在 JSON 字符串中使用 `\n` 表示换行。**不要**使用字面量 `\\n`——Obsidian 会将其渲染为字符 `\` 和 `n`。
 
-### File Nodes
+### 文件节点
 
-| Attribute | Required | Type | Description |
+| 属性 | 必需 | 类型 | 描述 |
 |-----------|----------|------|-------------|
-| `file` | Yes | string | Path to file within the system |
-| `subpath` | No | string | Link to heading or block (starts with `#`) |
+| `file` | 是 | 字符串 | 系统内的文件路径 |
+| `subpath` | 否 | 字符串 | 链接到标题或块（以 `#` 开头） |
 
 ```json
 {
@@ -111,11 +111,11 @@ Nodes are objects placed on the canvas. Array order determines z-index: first no
 }
 ```
 
-### Link Nodes
+### 链接节点
 
-| Attribute | Required | Type | Description |
+| 属性 | 必需 | 类型 | 描述 |
 |-----------|----------|------|-------------|
-| `url` | Yes | string | External URL |
+| `url` | 是 | 字符串 | 外部 URL |
 
 ```json
 {
@@ -129,15 +129,15 @@ Nodes are objects placed on the canvas. Array order determines z-index: first no
 }
 ```
 
-### Group Nodes
+### 组节点
 
-Groups are visual containers for organizing other nodes. Position child nodes inside the group's bounds.
+组是用于组织其他节点的视觉容器。将子节点放置在组的边界内。
 
-| Attribute | Required | Type | Description |
+| 属性 | 必需 | 类型 | 描述 |
 |-----------|----------|------|-------------|
-| `label` | No | string | Text label for the group |
-| `background` | No | string | Path to background image |
-| `backgroundStyle` | No | string | `cover`, `ratio`, or `repeat` |
+| `label` | 否 | 字符串 | 组的文本标签 |
+| `background` | 否 | 字符串 | 背景图像路径 |
+| `backgroundStyle` | 否 | 字符串 | `cover`、`ratio` 或 `repeat` |
 
 ```json
 {
@@ -147,26 +147,26 @@ Groups are visual containers for organizing other nodes. Position child nodes in
   "y": -50,
   "width": 1000,
   "height": 600,
-  "label": "Project Overview",
+  "label": "项目概览",
   "color": "4"
 }
 ```
 
-## Edges
+## 边
 
-Edges connect nodes via `fromNode` and `toNode` IDs.
+边通过 `fromNode` 和 `toNode` ID 连接节点。
 
-| Attribute | Required | Type | Default | Description |
+| 属性 | 必需 | 类型 | 默认值 | 描述 |
 |-----------|----------|------|---------|-------------|
-| `id` | Yes | string | - | Unique identifier |
-| `fromNode` | Yes | string | - | Source node ID |
-| `fromSide` | No | string | - | `top`, `right`, `bottom`, or `left` |
-| `fromEnd` | No | string | `none` | `none` or `arrow` |
-| `toNode` | Yes | string | - | Target node ID |
-| `toSide` | No | string | - | `top`, `right`, `bottom`, or `left` |
-| `toEnd` | No | string | `arrow` | `none` or `arrow` |
-| `color` | No | canvasColor | - | Line color |
-| `label` | No | string | - | Text label |
+| `id` | 是 | 字符串 | - | 唯一标识符 |
+| `fromNode` | 是 | 字符串 | - | 源节点 ID |
+| `fromSide` | 否 | 字符串 | - | `top`、`right`、`bottom` 或 `left` |
+| `fromEnd` | 否 | 字符串 | `none` | `none` 或 `arrow` |
+| `toNode` | 是 | 字符串 | - | 目标节点 ID |
+| `toSide` | 否 | 字符串 | - | `top`、`right`、`bottom` 或 `left` |
+| `toEnd` | 否 | 字符串 | `arrow` | `none` 或 `arrow` |
+| `color` | 否 | canvasColor | - | 线条颜色 |
+| `label` | 否 | 字符串 | - | 文本标签 |
 
 ```json
 {
@@ -176,69 +176,69 @@ Edges connect nodes via `fromNode` and `toNode` IDs.
   "toNode": "a1b2c3d4e5f67890",
   "toSide": "left",
   "toEnd": "arrow",
-  "label": "leads to"
+  "label": "导致"
 }
 ```
 
-## Colors
+## 颜色
 
-The `canvasColor` type accepts either a hex string or a preset number:
+`canvasColor` 类型接受十六进制字符串或预设数字：
 
-| Preset | Color |
+| 预设 | 颜色 |
 |--------|-------|
-| `"1"` | Red |
-| `"2"` | Orange |
-| `"3"` | Yellow |
-| `"4"` | Green |
-| `"5"` | Cyan |
-| `"6"` | Purple |
+| `"1"` | 红色 |
+| `"2"` | 橙色 |
+| `"3"` | 黄色 |
+| `"4"` | 绿色 |
+| `"5"` | 青色 |
+| `"6"` | 紫色 |
 
-Preset color values are intentionally undefined -- applications use their own brand colors.
+预设颜色值有意未定义——应用程序使用自己的品牌颜色。
 
-## ID Generation
+## ID 生成
 
-Generate 16-character lowercase hexadecimal strings (64-bit random value):
+生成 16 字符小写十六进制字符串（64 位随机值）：
 
 ```
 "6f0ad84f44ce9c17"
 "a3b2c1d0e9f8a7b6"
 ```
 
-## Layout Guidelines
+## 布局指南
 
-- Coordinates can be negative (canvas extends infinitely)
-- `x` increases right, `y` increases down; position is the top-left corner
-- Space nodes 50-100px apart; leave 20-50px padding inside groups
-- Align to grid (multiples of 10 or 20) for cleaner layouts
+- 坐标可以为负数（画布无限延伸）
+- `x` 向右增加，`y` 向下增加；位置是左上角
+- 节点间隔 50-100px；在组内保留 20-50px 内边距
+- 对齐到网格（10 或 20 的倍数）以获得更整洁的布局
 
-| Node Type | Suggested Width | Suggested Height |
+| 节点类型 | 建议宽度 | 建议高度 |
 |-----------|-----------------|------------------|
-| Small text | 200-300 | 80-150 |
-| Medium text | 300-450 | 150-300 |
-| Large text | 400-600 | 300-500 |
-| File preview | 300-500 | 200-400 |
-| Link preview | 250-400 | 100-200 |
+| 小文本 | 200-300 | 80-150 |
+| 中等文本 | 300-450 | 150-300 |
+| 大文本 | 400-600 | 300-500 |
+| 文件预览 | 300-500 | 200-400 |
+| 链接预览 | 250-400 | 100-200 |
 
-## Validation Checklist
+## 验证清单
 
-After creating or editing a canvas file, verify:
+创建或编辑画布文件后，验证：
 
-1. All `id` values are unique across both nodes and edges
-2. Every `fromNode` and `toNode` references an existing node ID
-3. Required fields are present for each node type (`text` for text nodes, `file` for file nodes, `url` for link nodes)
-4. `type` is one of: `text`, `file`, `link`, `group`
-5. `fromSide`/`toSide` values are one of: `top`, `right`, `bottom`, `left`
-6. `fromEnd`/`toEnd` values are one of: `none`, `arrow`
-7. Color presets are `"1"` through `"6"` or valid hex (e.g., `"#FF0000"`)
-8. JSON is valid and parseable
+1. 所有 `id` 值在节点和边中都是唯一的
+2. 每个 `fromNode` 和 `toNode` 引用现有的节点 ID
+3. 每个节点类型都存在必需字段（文本节点为 `text`，文件节点为 `file`，链接节点为 `url`）
+4. `type` 是以下之一：`text`、`file`、`link`、`group`
+5. `fromSide`/`toSide` 值是以下之一：`top`、`right`、`bottom`、`left`
+6. `fromEnd`/`toEnd` 值是以下之一：`none`、`arrow`
+7. 颜色预设是 `"1"` 到 `"6"` 或有效的十六进制（例如，`"#FF0000"`）
+8. JSON 有效且可解析
 
-If validation fails, check for duplicate IDs, dangling edge references, or malformed JSON strings (especially unescaped newlines in text content).
+如果验证失败，检查重复的 ID、悬空的边引用或格式错误的 JSON 字符串（尤其是文本内容中未转义的换行符）。
 
-## Complete Examples
+## 完整示例
 
-See [references/EXAMPLES.md](references/EXAMPLES.md) for full canvas examples including mind maps, project boards, research canvases, and flowcharts.
+参见 [references/EXAMPLES.md](references/EXAMPLES.md) 获取完整的画布示例，包括思维导图、项目板、研究画布和流程图。
 
-## References
+## 参考
 
-- [JSON Canvas Spec 1.0](https://jsoncanvas.org/spec/1.0/)
+- [JSON Canvas 规范 1.0](https://jsoncanvas.org/spec/1.0/)
 - [JSON Canvas GitHub](https://github.com/obsidianmd/jsoncanvas)

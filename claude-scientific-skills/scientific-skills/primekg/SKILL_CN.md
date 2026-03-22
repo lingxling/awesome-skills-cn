@@ -1,97 +1,97 @@
 ---
 name: primekg
-description: Query the Precision Medicine Knowledge Graph (PrimeKG) for multiscale biological data including genes, drugs, diseases, phenotypes, and more.
+description: 查询精准医学知识图谱（PrimeKG）以获取多尺度生物数据，包括基因、药物、疾病、表型等。
 license: Unknown
 metadata:
-    skill-author: K-Dense Inc. (PrimeKG original from Harvard MIMS)
+    skill-author: K-Dense Inc. (PrimeKG 原始数据来自哈佛 MIMS)
 ---
 
-# PrimeKG Knowledge Graph Skill
+# PrimeKG 知识图谱技能
 
-## Overview
+## 概述
 
-PrimeKG is a precision medicine knowledge graph that integrates over 20 primary databases and high-quality scientific literature into a single resource. It contains over 100,000 nodes and 4 million edges across 29 relationship types, including drug-target, disease-gene, and phenotype-disease associations.
+PrimeKG 是一个精准医学知识图谱，整合了20多个主要数据库和高质量科学文献到单一资源中。它包含超过100,000个节点和400万条边，涵盖29种关系类型，包括药物-靶点、疾病-基因和表型-疾病关联。
 
-**Key capabilities:**
-- Search for nodes (genes, proteins, drugs, diseases, phenotypes)
-- Retrieve direct neighbors (associated entities and clinical evidence)
-- Analyze local disease context (related genes, drugs, phenotypes)
-- Identify drug-disease paths (potential repurposing opportunities)
+**核心功能：**
+- 搜索节点（基因、蛋白质、药物、疾病、表型）
+- 检索直接邻居（相关实体和临床证据）
+- 分析局部疾病背景（相关基因、药物、表型）
+- 识别药物-疾病路径（潜在的药物重定位机会）
 
-**Data access:** Programmatic access via `query_primekg.py`. Data is stored at `C:\Users\eamon\Documents\Data\PrimeKG\kg.csv`.
+**数据访问：** 通过 `query_primekg.py` 进行程序化访问。数据存储在 `C:\Users\eamon\Documents\Data\PrimeKG\kg.csv`。
 
-## When to Use This Skill
+## 使用场景
 
-This skill should be used when:
+本技能适用于以下情况：
 
-- **Knowledge-based drug discovery:** Identifying targets and mechanisms for diseases.
-- **Drug repurposing:** Finding existing drugs that might have evidence for new indications.
-- **Phenotype analysis:** Understanding how symptoms/phenotypes relate to diseases and genes.
-- **Multiscale biology:** Bridging the gap between molecular targets (genes) and clinical outcomes (diseases).
-- **Network pharmacology:** Investigating the broader network effects of drug-target interactions.
+- **基于知识的药物发现：** 识别疾病的靶点和机制。
+- **药物重定位：** 寻找可能对新适应症有证据的现有药物。
+- **表型分析：** 了解症状/表型如何与疾病和基因相关。
+- **多尺度生物学：** 弥合分子靶点（基因）和临床结果（疾病）之间的差距。
+- **网络药理学：** 研究药物-靶点相互作用的更广泛网络效应。
 
-## Core Workflow
+## 核心工作流程
 
-### 1. Search for Entities
+### 1. 搜索实体
 
-Find identifiers for genes, drugs, or diseases.
+查找基因、药物或疾病的标识符。
 
 ```python
 from scripts.query_primekg import search_nodes
 
-# Search for Alzheimer's disease nodes
+# 搜索阿尔茨海默病节点
 results = search_nodes("Alzheimer", node_type="disease")
-# Returns: [{"id": "EFO_0000249", "type": "disease", "name": "Alzheimer's disease", ...}]
+# 返回: [{"id": "EFO_0000249", "type": "disease", "name": "Alzheimer's disease", ...}]
 ```
 
-### 2. Get Neighbors (Direct Associations)
+### 2. 获取邻居（直接关联）
 
-Retrieve all connected nodes and relationship types.
+检索所有连接的节点和关系类型。
 
 ```python
 from scripts.query_primekg import get_neighbors
 
-# Get all neighbors of a specific disease ID
+# 获取特定疾病ID的所有邻居
 neighbors = get_neighbors("EFO_0000249")
-# Returns: List of neighbors like {"neighbor_name": "APOE", "relation": "disease_gene", ...}
+# 返回: 邻居列表，如 {"neighbor_name": "APOE", "relation": "disease_gene", ...}
 ```
 
-### 3. Analyze Disease Context
+### 3. 分析疾病背景
 
-A high-level function to summarize associations for a disease.
+一个高级函数，用于总结疾病的关联。
 
 ```python
 from scripts.query_primekg import get_disease_context
 
-# Comprehensive summary for a disease
+# 疾病的综合总结
 context = get_disease_context("Alzheimer's disease")
-# Access: context['associated_genes'], context['associated_drugs'], context['phenotypes']
+# 访问: context['associated_genes'], context['associated_drugs'], context['phenotypes']
 ```
 
-## Relationship Types in PrimeKG
+## PrimeKG 中的关系类型
 
-The graph contains several key relationship types including:
-- `protein_protein`: Physical PPIs
-- `drug_protein`: Drug target/mechanism associations
-- `disease_gene`: Genetic associations
-- `drug_disease`: Indications and contraindications
-- `disease_phenotype`: Clinical signs and symptoms
-- `gwas`: Genome-wide association studies evidence
+该图谱包含几种关键关系类型：
+- `protein_protein`：物理蛋白质-蛋白质相互作用
+- `drug_protein`：药物靶点/机制关联
+- `disease_gene`：遗传关联
+- `drug_disease`：适应症和禁忌症
+- `disease_phenotype`：临床体征和症状
+- `gwas`：全基因组关联研究证据
 
-## Best Practices
+## 最佳实践
 
-1. **Use specific IDs:** When using `get_neighbors`, ensure you have the correct ID from `search_nodes`.
-2. **Context first:** Use `get_disease_context` for a broad overview before diving into specific genes or drugs.
-3. **Filter relationships:** Use the `relation_type` filter in `get_neighbors` to focus on specific evidence (e.g., only `drug_protein`).
-4. **Multiscale integration:** Combine with `OpenTargets` for deeper genetic evidence or `Semantic Scholar` for the latest literature context.
+1. **使用特定ID：** 使用 `get_neighbors` 时，确保从 `search_nodes` 获取正确的ID。
+2. **先了解背景：** 在深入研究特定基因或药物之前，使用 `get_disease_context` 获取广泛概述。
+3. **过滤关系：** 使用 `get_neighbors` 中的 `relation_type` 过滤器专注于特定证据（例如，仅 `drug_protein`）。
+4. **多尺度整合：** 与 `OpenTargets` 结合获取更深入的遗传证据，或与 `Semantic Scholar` 结合获取最新的文献背景。
 
-## Resources
+## 资源
 
-### Scripts
-- `scripts/query_primekg.py`: Core functions for searching and querying the knowledge graph.
+### 脚本
+- `scripts/query_primekg.py`：用于搜索和查询知识图谱的核心函数。
 
-### Data Path
-- Data: `/mnt/c/Users/eamon/Documents/Data/PrimeKG/kg.csv`
-- Total nodes: ~129,000
-- Total edges: ~4,000,000
-- Database: CSV-based, optimized for pandas querying.
+### 数据路径
+- 数据：`/mnt/c/Users/eamon/Documents/Data/PrimeKG/kg.csv`
+- 总节点数：约129,000
+- 总边数：约4,000,000
+- 数据库：基于CSV，为pandas查询优化。

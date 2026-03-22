@@ -105,29 +105,6 @@ describe('refresh-skills plugin security', () => {
         host: '192.168.1.1:5173',
         origin: 'http://192.168.1.1:5173',
       },
-      socket: {
-        remoteAddress: '192.168.1.1',
-      },
-    };
-    const res = createResponse();
-
-    await handler(req, res);
-
-    expect(res.statusCode).toBe(403);
-    expect(JSON.parse(res.body).error).toMatch('loopback');
-  });
-
-  it('rejects requests from a non-loopback remote address even when host headers look local', async () => {
-    const handler = await loadRefreshHandler();
-    const req = {
-      method: 'POST',
-      headers: {
-        host: 'localhost:5173',
-        origin: 'http://localhost:5173',
-      },
-      socket: {
-        remoteAddress: '203.0.113.7',
-      },
     };
     const res = createResponse();
 
@@ -146,9 +123,6 @@ describe('refresh-skills plugin security', () => {
         host: 'localhost:5173',
         origin: 'http://localhost:5173',
       },
-      socket: {
-        remoteAddress: '127.0.0.1',
-      },
     };
     const res = createResponse();
 
@@ -164,9 +138,6 @@ describe('refresh-skills plugin security', () => {
       headers: {
         host: 'localhost:5173',
         origin: 'http://localhost:5173',
-      },
-      socket: {
-        remoteAddress: '127.0.0.1',
       },
     };
     const res = createResponse();
@@ -184,9 +155,6 @@ describe('refresh-skills plugin security', () => {
       headers: {
         host: '[::1]:5173',
         origin: 'http://[::1]:5173',
-      },
-      socket: {
-        remoteAddress: '::1',
       },
     };
     const res = createResponse();

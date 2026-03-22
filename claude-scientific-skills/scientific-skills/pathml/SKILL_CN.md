@@ -1,6 +1,6 @@
 ---
 name: pathml
-description: Full-featured computational pathology toolkit. Use for advanced WSI analysis including multiplexed immunofluorescence (CODEX, Vectra), nucleus segmentation, tissue graph construction, and ML model training on pathology data. Supports 160+ slide formats. For simple tile extraction from H&E slides, histolab may be simpler.
+description: 功能齐全的计算病理学工具包。用于高级 WSI 分析，包括多重免疫荧光（CODEX、Vectra）、细胞核分割、组织图构建和病理学数据的 ML 模型训练。支持 160+ 幻灯片格式。对于从 H&E 幻灯片中提取简单瓦片，histolab 可能更简单。
 license: GPL-2.0 license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,157 +8,156 @@ metadata:
 
 # PathML
 
-## Overview
+## 概述
 
-PathML is a comprehensive Python toolkit for computational pathology workflows, designed to facilitate machine learning and image analysis for whole-slide pathology images. The framework provides modular, composable tools for loading diverse slide formats, preprocessing images, constructing spatial graphs, training deep learning models, and analyzing multiparametric imaging data from technologies like CODEX and multiplex immunofluorescence.
+PathML 是一个用于计算病理学工作流程的综合 Python 工具包，旨在促进全幻灯片病理学图像的机器学习和图像分析。该框架提供模块化、可组合的工具，用于加载各种幻灯片格式、预处理图像、构建空间图、训练深度学习模型，以及分析来自 CODEX 和多重免疫荧光等技术的多参数成像数据。
 
-## When to Use This Skill
+## 何时使用此技能
 
-Apply this skill for:
-- Loading and processing whole-slide images (WSI) in various proprietary formats
-- Preprocessing H&E stained tissue images with stain normalization
-- Nucleus detection, segmentation, and classification workflows
-- Building cell and tissue graphs for spatial analysis
-- Training or deploying machine learning models (HoVer-Net, HACTNet) on pathology data
-- Analyzing multiparametric imaging (CODEX, Vectra, MERFISH) for spatial proteomics
-- Quantifying marker expression from multiplex immunofluorescence
-- Managing large-scale pathology datasets with HDF5 storage
-- Tile-based analysis and stitching operations
+应用此技能用于：
+- 加载和处理各种专有格式的全幻灯片图像（WSI）
+- 使用染色标准化预处理 H&E 染色组织图像
+- 细胞核检测、分割和分类工作流程
+- 构建用于空间分析的细胞和组织图
+- 在病理学数据上训练或部署机器学习模型（HoVer-Net、HACTNet）
+- 分析用于空间蛋白质组学的多参数成像（CODEX、Vectra、MERFISH）
+- 量化来自多重免疫荧光的标记物表达
+- 使用 HDF5 存储管理大规模病理学数据集
+- 基于瓦片的分析和拼接操作
 
-## Core Capabilities
+## 核心功能
 
-PathML provides six major capability areas documented in detail within reference files:
+PathML 提供六个主要功能领域，在参考文件中有详细记录：
 
-### 1. Image Loading & Formats
+### 1. 图像加载和格式
 
-Load whole-slide images from 160+ proprietary formats including Aperio SVS, Hamamatsu NDPI, Leica SCN, Zeiss ZVI, DICOM, and OME-TIFF. PathML automatically handles vendor-specific formats and provides unified interfaces for accessing image pyramids, metadata, and regions of interest.
+从 160+ 专有格式加载全幻灯片图像，包括 Aperio SVS、Hamamatsu NDPI、Leica SCN、Zeiss ZVI、DICOM 和 OME-TIFF。PathML 自动处理供应商特定格式，并提供统一的接口用于访问图像金字塔、元数据和感兴趣区域。
 
-**See:** `references/image_loading.md` for supported formats, loading strategies, and working with different slide types.
+**请参阅：** `references/image_loading.md` 了解支持的格式、加载策略和处理不同幻灯片类型。
 
-### 2. Preprocessing Pipelines
+### 2. 预处理管道
 
-Build modular preprocessing pipelines by composing transforms for image manipulation, quality control, stain normalization, tissue detection, and mask operations. PathML's Pipeline architecture enables reproducible, scalable preprocessing across large datasets.
+通过组合用于图像操作、质量控制、染色标准化、组织检测和掩码操作的变换来构建模块化预处理管道。PathML 的 Pipeline 架构实现了跨大型数据集的可重现、可扩展预处理。
 
-**Key transforms:**
-- `StainNormalizationHE` - Macenko/Vahadane stain normalization
-- `TissueDetectionHE`, `NucleusDetectionHE` - Tissue/nucleus segmentation
-- `MedianBlur`, `GaussianBlur` - Noise reduction
-- `LabelArtifactTileHE` - Quality control for artifacts
+**关键变换：**
+- `StainNormalizationHE` - Macenko/Vahadane 染色标准化
+- `TissueDetectionHE`、`NucleusDetectionHE` - 组织/细胞核分割
+- `MedianBlur`、`GaussianBlur` - 噪声减少
+- `LabelArtifactTileHE` - 伪影的质量控制
 
-**See:** `references/preprocessing.md` for complete transform catalog, pipeline construction, and preprocessing workflows.
+**请参阅：** `references/preprocessing.md` 了解完整的变换目录、管道构建和预处理工作流程。
 
-### 3. Graph Construction
+### 3. 图构建
 
-Construct spatial graphs representing cellular and tissue-level relationships. Extract features from segmented objects to create graph-based representations suitable for graph neural networks and spatial analysis.
+构建表示细胞和组织级别关系的空间图。从分割对象中提取特征，创建适合图神经网络和空间分析的基于图的表示。
 
-**See:** `references/graphs.md` for graph construction methods, feature extraction, and spatial analysis workflows.
+**请参阅：** `references/graphs.md` 了解图构建方法、特征提取和空间分析工作流程。
 
-### 4. Machine Learning
+### 4. 机器学习
 
-Train and deploy deep learning models for nucleus detection, segmentation, and classification. PathML integrates PyTorch with pre-built models (HoVer-Net, HACTNet), custom DataLoaders, and ONNX support for inference.
+训练和部署用于细胞核检测、分割和分类的深度学习模型。PathML 集成 PyTorch，带有预构建模型（HoVer-Net、HACTNet）、自定义 DataLoaders 和用于推理的 ONNX 支持。
 
-**Key models:**
-- **HoVer-Net** - Simultaneous nucleus segmentation and classification
-- **HACTNet** - Hierarchical cell-type classification
+**关键模型：**
+- **HoVer-Net** - 同时进行细胞核分割和分类
+- **HACTNet** - 层次化细胞类型分类
 
-**See:** `references/machine_learning.md` for model training, evaluation, inference workflows, and working with public datasets.
+**请参阅：** `references/machine_learning.md` 了解模型训练、评估、推理工作流程以及处理公共数据集。
 
-### 5. Multiparametric Imaging
+### 5. 多参数成像
 
-Analyze spatial proteomics and gene expression data from CODEX, Vectra, MERFISH, and other multiplex imaging platforms. PathML provides specialized slide classes and transforms for processing multiparametric data, cell segmentation with Mesmer, and quantification workflows.
+分析来自 CODEX、Vectra、MERFISH 和其他多重成像平台的空间蛋白质组学和基因表达数据。PathML 提供专门的幻灯片类和变换，用于处理多参数数据、使用 Mesmer 进行细胞分割和量化工作流程。
 
-**See:** `references/multiparametric.md` for CODEX/Vectra workflows, cell segmentation, marker quantification, and integration with AnnData.
+**请参阅：** `references/multiparametric.md` 了解 CODEX/Vectra 工作流程、细胞分割、标记物量化以及与 AnnData 的集成。
 
-### 6. Data Management
+### 6. 数据管理
 
-Efficiently store and manage large pathology datasets using HDF5 format. PathML handles tiles, masks, metadata, and extracted features in unified storage structures optimized for machine learning workflows.
+使用 HDF5 格式高效存储和管理大型病理学数据集。PathML 在为机器学习工作流程优化的统一存储结构中处理瓦片、掩码、元数据和提取的特征。
 
-**See:** `references/data_management.md` for HDF5 integration, tile management, dataset organization, and batch processing strategies.
+**请参阅：** `references/data_management.md` 了解 HDF5 集成、瓦片管理、数据集组织和批处理策略。
 
-## Quick Start
+## 快速开始
 
-### Installation
+### 安装
 
 ```bash
-# Install PathML
+# 安装 PathML
 uv pip install pathml
 
-# With optional dependencies for all features
+# 安装所有功能的可选依赖
 uv pip install pathml[all]
 ```
 
-### Basic Workflow Example
+### 基本工作流程示例
 
 ```python
 from pathml.core import SlideData
 from pathml.preprocessing import Pipeline, StainNormalizationHE, TissueDetectionHE
 
-# Load a whole-slide image
+# 加载全幻灯片图像
 wsi = SlideData.from_slide("path/to/slide.svs")
 
-# Create preprocessing pipeline
+# 创建预处理管道
 pipeline = Pipeline([
     TissueDetectionHE(),
     StainNormalizationHE(target='normalize', stain_estimation_method='macenko')
 ])
 
-# Run pipeline
+# 运行管道
 pipeline.run(wsi)
 
-# Access processed tiles
+# 访问处理后的瓦片
 for tile in wsi.tiles:
     processed_image = tile.image
     tissue_mask = tile.masks['tissue']
 ```
 
-### Common Workflows
+### 常见工作流程
 
-**H&E Image Analysis:**
-1. Load WSI with appropriate slide class
-2. Apply tissue detection and stain normalization
-3. Perform nucleus detection or train segmentation models
-4. Extract features and build spatial graphs
-5. Conduct downstream analysis
+**H&E 图像分析：**
+1. 使用适当的幻灯片类加载 WSI
+2. 应用组织检测和染色标准化
+3. 执行细胞核检测或训练分割模型
+4. 提取特征并构建空间图
+5. 进行下游分析
 
-**Multiparametric Imaging (CODEX):**
-1. Load CODEX slide with `CODEXSlide`
-2. Collapse multi-run channel data
-3. Segment cells using Mesmer model
-4. Quantify marker expression
-5. Export to AnnData for single-cell analysis
+**多参数成像（CODEX）：**
+1. 使用 `CODEXSlide` 加载 CODEX 幻灯片
+2. 折叠多轮通道数据
+3. 使用 Mesmer 模型分割细胞
+4. 量化标记物表达
+5. 导出到 AnnData 进行单细胞分析
 
-**Training ML Models:**
-1. Prepare dataset with public pathology data
-2. Create PyTorch DataLoader with PathML datasets
-3. Train HoVer-Net or custom models
-4. Evaluate on held-out test sets
-5. Deploy with ONNX for inference
+**训练 ML 模型：**
+1. 使用公共病理学数据准备数据集
+2. 使用 PathML 数据集创建 PyTorch DataLoader
+3. 训练 HoVer-Net 或自定义模型
+4. 在保留的测试集上评估
+5. 使用 ONNX 部署进行推理
 
-## References to Detailed Documentation
+## 详细文档参考
 
-When working on specific tasks, refer to the appropriate reference file for comprehensive information:
+在处理特定任务时，请参考适当的参考文件以获取全面信息：
 
-- **Loading images:** `references/image_loading.md`
-- **Preprocessing workflows:** `references/preprocessing.md`
-- **Spatial analysis:** `references/graphs.md`
-- **Model training:** `references/machine_learning.md`
-- **CODEX/multiplex IF:** `references/multiparametric.md`
-- **Data storage:** `references/data_management.md`
+- **加载图像：** `references/image_loading.md`
+- **预处理工作流程：** `references/preprocessing.md`
+- **空间分析：** `references/graphs.md`
+- **模型训练：** `references/machine_learning.md`
+- **CODEX/多重 IF：** `references/multiparametric.md`
+- **数据存储：** `references/data_management.md`
 
-## Resources
+## 资源
 
-This skill includes comprehensive reference documentation organized by capability area. Each reference file contains detailed API information, workflow examples, best practices, and troubleshooting guidance for specific PathML functionality.
+此技能包括按功能领域组织的综合参考文档。每个参考文件包含详细的 API 信息、工作流程示例、最佳实践以及针对特定 PathML 功能的故障排除指南。
 
 ### references/
 
-Documentation files providing in-depth coverage of PathML capabilities:
+提供 PathML 功能深入覆盖的文档文件：
 
-- `image_loading.md` - Whole-slide image formats, loading strategies, slide classes
-- `preprocessing.md` - Complete transform catalog, pipeline construction, preprocessing workflows
-- `graphs.md` - Graph construction methods, feature extraction, spatial analysis
-- `machine_learning.md` - Model architectures, training workflows, evaluation, inference
-- `multiparametric.md` - CODEX, Vectra, multiplex IF analysis, cell segmentation, quantification
-- `data_management.md` - HDF5 storage, tile management, batch processing, dataset organization
+- `image_loading.md` - 全幻灯片图像格式、加载策略、幻灯片类
+- `preprocessing.md` - 完整的变换目录、管道构建、预处理工作流程
+- `graphs.md` - 图构建方法、特征提取、空间分析
+- `machine_learning.md` - 模型架构、训练工作流程、评估、推理
+- `multiparametric.md` - CODEX、Vectra、多重 IF 分析、细胞分割、量化
+- `data_management.md` - HDF5 存储、瓦片管理、批处理、数据集组织
 
-Load these references as needed when working on specific computational pathology tasks.
-
+在处理特定计算病理学任务时，根据需要加载这些参考资料。

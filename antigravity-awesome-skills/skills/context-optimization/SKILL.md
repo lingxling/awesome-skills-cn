@@ -1,15 +1,14 @@
 ---
 name: context-optimization
-description: "Context optimization extends the effective capacity of limited context windows through strategic compression, masking, caching, and partitioning. The goal is not to magically increase context windows but to make better use of available capacity."
-risk: unknown
-source: community
+description: This skill should be used when the user asks to "optimize context", "reduce token costs", "improve context efficiency", "implement KV-cache optimization", "partition context", or mentions context limits, observation masking, context budgeting, or extending effective context...
 ---
 
 # Context Optimization Techniques
 
 Context optimization extends the effective capacity of limited context windows through strategic compression, masking, caching, and partitioning. The goal is not to magically increase context windows but to make better use of available capacity. Effective optimization can double or triple effective context capacity without requiring larger models or longer contexts.
 
-## When to Use
+## When to Activate
+
 Activate this skill when:
 - Context limits constrain task complexity
 - Optimizing for cost reduction (fewer tokens = lower costs)

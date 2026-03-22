@@ -1,6 +1,6 @@
 ---
 name: cellxgene-census
-description: Query the CELLxGENE Census (61M+ cells) programmatically. Use when you need expression data across tissues, diseases, or cell types from the largest curated single-cell atlas. Best for population-scale queries, reference atlas comparisons. For analyzing your own data use scanpy or scvi-tools.
+description: 以编程方式查询 CELLxGENE Census(6100万+细胞)。当您需要来自最大策展单细胞图谱的组织、疾病或细胞类型的表达数据时使用。最适合人群规模查询、参考图谱比较。分析您自己的数据请使用 scanpy 或 scvi-tools。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
@@ -8,83 +8,83 @@ metadata:
 
 # CZ CELLxGENE Census
 
-## Overview
+## 概述
 
-The CZ CELLxGENE Census provides programmatic access to a comprehensive, versioned collection of standardized single-cell genomics data from CZ CELLxGENE Discover. This skill enables efficient querying and analysis of millions of cells across thousands of datasets.
+CZ CELLxGENE Census 提供对来自 CZ CELLxGENE Discover 的全面、版本化标准化单细胞基因组学数据的编程访问。此技能使您能够高效查询和分析数千个数据集中的数百万个细胞。
 
-The Census includes:
-- **61+ million cells** from human and mouse
-- **Standardized metadata** (cell types, tissues, diseases, donors)
-- **Raw gene expression** matrices
-- **Pre-calculated embeddings** and statistics
-- **Integration with PyTorch, scanpy, and other analysis tools**
+Census 包括:
+- **6100万+细胞**,来自人类和小鼠
+- **标准化元数据**(细胞类型、组织、疾病、供体)
+- **原始基因表达**矩阵
+- **预计算嵌入**和统计信息
+- **与 PyTorch、scanpy 和其他分析工具集成**
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
-- Querying single-cell expression data by cell type, tissue, or disease
-- Exploring available single-cell datasets and metadata
-- Training machine learning models on single-cell data
-- Performing large-scale cross-dataset analyses
-- Integrating Census data with scanpy or other analysis frameworks
-- Computing statistics across millions of cells
-- Accessing pre-calculated embeddings or model predictions
+在以下情况下使用此技能:
+- 按细胞类型、组织或疾病查询单细胞表达数据
+- 探索可用的单细胞数据集和元数据
+- 在单细胞数据上训练机器学习模型
+- 执行大规模跨数据集分析
+- 将 Census 数据与 scanpy 或其他分析框架集成
+- 计算数百万个细胞的统计信息
+- 访问预计算嵌入或模型预测
 
-## Installation and Setup
+## 安装和设置
 
-Install the Census API:
+安装 Census API:
 ```bash
 uv pip install cellxgene-census
 ```
 
-For machine learning workflows, install additional dependencies:
+对于机器学习工作流程,安装额外依赖:
 ```bash
 uv pip install cellxgene-census[experimental]
 ```
 
-## Core Workflow Patterns
+## 核心工作流程模式
 
-### 1. Opening the Census
+### 1. 打开 Census
 
-Always use the context manager to ensure proper resource cleanup:
+始终使用上下文管理器以确保正确的资源清理:
 
 ```python
 import cellxgene_census
 
-# Open latest stable version
+# 打开最新稳定版本
 with cellxgene_census.open_soma() as census:
-    # Work with census data
+    # 使用 census 数据
 
-# Open specific version for reproducibility
+# 打开特定版本以确保可重现性
 with cellxgene_census.open_soma(census_version="2023-07-25") as census:
-    # Work with census data
+    # 使用 census 数据
 ```
 
-**Key points:**
-- Use context manager (`with` statement) for automatic cleanup
-- Specify `census_version` for reproducible analyses
-- Default opens latest "stable" release
+**关键点:**
+- 使用上下文管理器(`with` 语句)进行自动清理
+- 指定 `census_version` 以确保可重现的分析
+- 默认打开最新的"stable"版本
 
-### 2. Exploring Census Information
+### 2. 探索 Census 信息
 
-Before querying expression data, explore available datasets and metadata.
+在查询表达数据之前,探索可用的数据集和元数据。
 
-**Access summary information:**
+**访问摘要信息:**
 ```python
-# Get summary statistics
+# 获取摘要统计信息
 summary = census["census_info"]["summary"].read().concat().to_pandas()
-print(f"Total cells: {summary['total_cell_count'][0]}")
+print(f"总细胞数: {summary['total_cell_count'][0]}")
 
-# Get all datasets
+# 获取所有数据集
 datasets = census["census_info"]["datasets"].read().concat().to_pandas()
 
-# Filter datasets by criteria
+# 按条件筛选数据集
 covid_datasets = datasets[datasets["disease"].str.contains("COVID", na=False)]
 ```
 
-**Query cell metadata to understand available data:**
+**查询细胞元数据以了解可用数据:**
 ```python
-# Get unique cell types in a tissue
+# 获取组织中唯一的细胞类型
 cell_metadata = cellxgene_census.get_obs(
     census,
     "homo_sapiens",
@@ -92,28 +92,28 @@ cell_metadata = cellxgene_census.get_obs(
     column_names=["cell_type"]
 )
 unique_cell_types = cell_metadata["cell_type"].unique()
-print(f"Found {len(unique_cell_types)} cell types in brain")
+print(f"在脑中发现 {len(unique_cell_types)} 种细胞类型")
 
-# Count cells by tissue
+# 按组织统计细胞
 tissue_counts = cell_metadata.groupby("tissue_general").size()
 ```
 
-**Important:** Always filter for `is_primary_data == True` to avoid counting duplicate cells unless specifically analyzing duplicates.
+**重要提示:** 始终筛选 `is_primary_data == True` 以避免重复计数细胞,除非专门分析重复项。
 
-### 3. Querying Expression Data (Small to Medium Scale)
+### 3. 查询表达数据(小到中等规模)
 
-For queries returning < 100k cells that fit in memory, use `get_anndata()`:
+对于返回 <10 万个细胞且适合内存的查询,使用 `get_anndata()`:
 
 ```python
-# Basic query with cell type and tissue filters
+# 使用细胞类型和组织筛选的基本查询
 adata = cellxgene_census.get_anndata(
     census=census,
-    organism="Homo sapiens",  # or "Mus musculus"
+    organism="Homo sapiens",  # 或 "Mus musculus"
     obs_value_filter="cell_type == 'B cell' and tissue_general == 'lung' and is_primary_data == True",
     obs_column_names=["assay", "disease", "sex", "donor_id"],
 )
 
-# Query specific genes with multiple filters
+# 使用多个筛选器查询特定基因
 adata = cellxgene_census.get_anndata(
     census=census,
     organism="Homo sapiens",
@@ -123,23 +123,23 @@ adata = cellxgene_census.get_anndata(
 )
 ```
 
-**Filter syntax:**
-- Use `obs_value_filter` for cell filtering
-- Use `var_value_filter` for gene filtering
-- Combine conditions with `and`, `or`
-- Use `in` for multiple values: `tissue in ['lung', 'liver']`
-- Select only needed columns with `obs_column_names`
+**筛选语法:**
+- 使用 `obs_value_filter` 进行细胞筛选
+- 使用 `var_value_filter` 进行基因筛选
+- 使用 `and`、`or` 组合条件
+- 使用 `in` 表示多个值: `tissue in ['lung', 'liver']`
+- 仅使用 `obs_column_names` 选择所需列
 
-**Getting metadata separately:**
+**单独获取元数据:**
 ```python
-# Query cell metadata
+# 查询细胞元数据
 cell_metadata = cellxgene_census.get_obs(
     census, "homo_sapiens",
     value_filter="disease == 'COVID-19' and is_primary_data == True",
     column_names=["cell_type", "tissue_general", "donor_id"]
 )
 
-# Query gene metadata
+# 查询基因元数据
 gene_metadata = cellxgene_census.get_var(
     census, "homo_sapiens",
     value_filter="feature_name in ['CD4', 'CD8A']",
@@ -147,14 +147,14 @@ gene_metadata = cellxgene_census.get_var(
 )
 ```
 
-### 4. Large-Scale Queries (Out-of-Core Processing)
+### 4. 大规模查询(核外处理)
 
-For queries exceeding available RAM, use `axis_query()` with iterative processing:
+对于超出可用 RAM 的查询,使用 `axis_query()` 进行迭代处理:
 
 ```python
 import tiledbsoma as soma
 
-# Create axis query
+# 创建轴查询
 query = census["census_data"]["homo_sapiens"].axis_query(
     measurement_name="RNA",
     obs_query=soma.AxisQuery(
@@ -165,19 +165,19 @@ query = census["census_data"]["homo_sapiens"].axis_query(
     )
 )
 
-# Iterate through expression matrix in chunks
+# 分批迭代处理表达矩阵
 iterator = query.X("raw").tables()
 for batch in iterator:
-    # batch is a pyarrow.Table with columns:
-    # - soma_data: expression value
-    # - soma_dim_0: cell (obs) coordinate
-    # - soma_dim_1: gene (var) coordinate
+    # batch 是 pyarrow.Table,包含列:
+    # - soma_data: 表达值
+    # - soma_dim_0: 细胞(obs)坐标
+    # - soma_dim_1: 基因(var)坐标
     process_batch(batch)
 ```
 
-**Computing incremental statistics:**
+**计算增量统计信息:**
 ```python
-# Example: Calculate mean expression
+# 示例: 计算平均表达
 n_observations = 0
 sum_values = 0.0
 
@@ -190,15 +190,15 @@ for batch in iterator:
 mean_expression = sum_values / n_observations
 ```
 
-### 5. Machine Learning with PyTorch
+### 5. 使用 PyTorch 进行机器学习
 
-For training models, use the experimental PyTorch integration:
+对于训练模型,使用实验性 PyTorch 集成:
 
 ```python
 from cellxgene_census.experimental.ml import experiment_dataloader
 
 with cellxgene_census.open_soma() as census:
-    # Create dataloader
+    # 创建数据加载器
     dataloader = experiment_dataloader(
         census["census_data"]["homo_sapiens"],
         measurement_name="RNA",
@@ -209,27 +209,27 @@ with cellxgene_census.open_soma() as census:
         shuffle=True,
     )
 
-    # Training loop
+    # 训练循环
     for epoch in range(num_epochs):
         for batch in dataloader:
-            X = batch["X"]  # Gene expression tensor
-            labels = batch["obs"]["cell_type"]  # Cell type labels
+            X = batch["X"]  # 基因表达张量
+            labels = batch["obs"]["cell_type"]  # 细胞类型标签
 
-            # Forward pass
+            # 前向传播
             outputs = model(X)
             loss = criterion(outputs, labels)
 
-            # Backward pass
+            # 反向传播
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 ```
 
-**Train/test splitting:**
+**训练/测试拆分:**
 ```python
 from cellxgene_census.experimental.ml import ExperimentDataset
 
-# Create dataset from experiment
+# 从实验创建数据集
 dataset = ExperimentDataset(
     experiment_axis_query,
     layer_name="raw",
@@ -237,47 +237,47 @@ dataset = ExperimentDataset(
     batch_size=128,
 )
 
-# Split into train and test
+# 拆分为训练和测试
 train_dataset, test_dataset = dataset.random_split(
     split=[0.8, 0.2],
     seed=42
 )
 ```
 
-### 6. Integration with Scanpy
+### 6. 与 Scanpy 集成
 
-Seamlessly integrate Census data with scanpy workflows:
+将 Census 数据与 scanpy 工作流程无缝集成:
 
 ```python
 import scanpy as sc
 
-# Load data from Census
+# 从 Census 加载数据
 adata = cellxgene_census.get_anndata(
     census=census,
     organism="Homo sapiens",
     obs_value_filter="cell_type == 'neuron' and tissue_general == 'cortex' and is_primary_data == True",
 )
 
-# Standard scanpy workflow
+# 标准 scanpy 工作流程
 sc.pp.normalize_total(adata, target_sum=1e4)
 sc.pp.log1p(adata)
 sc.pp.highly_variable_genes(adata, n_top_genes=2000)
 
-# Dimensionality reduction
+# 降维
 sc.pp.pca(adata, n_comps=50)
 sc.pp.neighbors(adata)
 sc.tl.umap(adata)
 
-# Visualization
+# 可视化
 sc.pl.umap(adata, color=["cell_type", "tissue", "disease"])
 ```
 
-### 7. Multi-Dataset Integration
+### 7. 多数据集集成
 
-Query and integrate multiple datasets:
+查询和集成多个数据集:
 
 ```python
-# Strategy 1: Query multiple tissues separately
+# 策略 1: 分别查询多个组织
 tissues = ["lung", "liver", "kidney"]
 adatas = []
 
@@ -290,10 +290,10 @@ for tissue in tissues:
     adata.obs["tissue"] = tissue
     adatas.append(adata)
 
-# Concatenate
+# 连接
 combined = adatas[0].concatenate(adatas[1:])
 
-# Strategy 2: Query multiple datasets directly
+# 策略 2: 直接查询多个数据集
 adata = cellxgene_census.get_anndata(
     census=census,
     organism="Homo sapiens",
@@ -301,53 +301,53 @@ adata = cellxgene_census.get_anndata(
 )
 ```
 
-## Key Concepts and Best Practices
+## 关键概念和最佳实践
 
-### Always Filter for Primary Data
-Unless analyzing duplicates, always include `is_primary_data == True` in queries to avoid counting cells multiple times:
+### 始终筛选主数据
+除非分析重复项,否则始终在查询中包含 `is_primary_data == True` 以避免多次计数细胞:
 ```python
 obs_value_filter="cell_type == 'B cell' and is_primary_data == True"
 ```
 
-### Specify Census Version for Reproducibility
-Always specify the Census version in production analyses:
+### 指定 Census 版本以确保可重现性
+始终在生产分析中指定 Census 版本:
 ```python
 census = cellxgene_census.open_soma(census_version="2023-07-25")
 ```
 
-### Estimate Query Size Before Loading
-For large queries, first check the number of cells to avoid memory issues:
+### 加载前估算查询大小
+对于大型查询,首先检查细胞数量以避免内存问题:
 ```python
-# Get cell count
+# 获取细胞计数
 metadata = cellxgene_census.get_obs(
     census, "homo_sapiens",
     value_filter="tissue_general == 'brain' and is_primary_data == True",
     column_names=["soma_joinid"]
 )
 n_cells = len(metadata)
-print(f"Query will return {n_cells:,} cells")
+print(f"查询将返回 {n_cells:,} 个细胞")
 
-# If too large (>100k), use out-of-core processing
+# 如果太大(>10万),使用核外处理
 ```
 
-### Use tissue_general for Broader Groupings
-The `tissue_general` field provides coarser categories than `tissue`, useful for cross-tissue analyses:
+### 使用 tissue_general 进行更广泛的分组
+`tissue_general` 字段提供比 `tissue` 更粗略的类别,适用于跨组织分析:
 ```python
-# Broader grouping
+# 更广泛的分组
 obs_value_filter="tissue_general == 'immune system'"
 
-# Specific tissue
+# 特定组织
 obs_value_filter="tissue == 'peripheral blood mononuclear cell'"
 ```
 
-### Select Only Needed Columns
-Minimize data transfer by specifying only required metadata columns:
+### 仅选择所需列
+通过仅指定所需的元数据列来最小化数据传输:
 ```python
-obs_column_names=["cell_type", "tissue_general", "disease"]  # Not all columns
+obs_column_names=["cell_type", "tissue_general", "disease"]  # 不是所有列
 ```
 
-### Check Dataset Presence for Gene-Specific Queries
-When analyzing specific genes, verify which datasets measured them:
+### 检查基因特定查询的数据集存在性
+分析特定基因时,验证哪些数据集测量了它们:
 ```python
 presence = cellxgene_census.get_presence_matrix(
     census,
@@ -356,10 +356,10 @@ presence = cellxgene_census.get_presence_matrix(
 )
 ```
 
-### Two-Step Workflow: Explore Then Query
-First explore metadata to understand available data, then query expression:
+### 两步工作流程: 先探索后查询
+首先探索元数据以了解可用数据,然后查询表达:
 ```python
-# Step 1: Explore what's available
+# 步骤 1: 探索可用内容
 metadata = cellxgene_census.get_obs(
     census, "homo_sapiens",
     value_filter="disease == 'COVID-19' and is_primary_data == True",
@@ -367,7 +367,7 @@ metadata = cellxgene_census.get_obs(
 )
 print(metadata.value_counts())
 
-# Step 2: Query based on findings
+# 步骤 2: 基于发现进行查询
 adata = cellxgene_census.get_anndata(
     census=census,
     organism="Homo sapiens",
@@ -375,10 +375,10 @@ adata = cellxgene_census.get_anndata(
 )
 ```
 
-## Available Metadata Fields
+## 可用的元数据字段
 
-### Cell Metadata (obs)
-Key fields for filtering:
+### 细胞元数据(obs)
+筛选的关键字段:
 - `cell_type`, `cell_type_ontology_term_id`
 - `tissue`, `tissue_general`, `tissue_ontology_term_id`
 - `disease`, `disease_ontology_term_id`
@@ -386,42 +386,42 @@ Key fields for filtering:
 - `donor_id`, `sex`, `self_reported_ethnicity`
 - `development_stage`, `development_stage_ontology_term_id`
 - `dataset_id`
-- `is_primary_data` (Boolean: True = unique cell)
+- `is_primary_data`(布尔值: True = 唯一细胞)
 
-### Gene Metadata (var)
-- `feature_id` (Ensembl gene ID, e.g., "ENSG00000161798")
-- `feature_name` (Gene symbol, e.g., "FOXP2")
-- `feature_length` (Gene length in base pairs)
+### 基因元数据(var)
+- `feature_id`(Ensembl 基因 ID,例如 "ENSG00000161798")
+- `feature_name`(基因符号,例如 "FOXP2")
+- `feature_length`(基因长度,以碱基对为单位)
 
-## Reference Documentation
+## 参考文档
 
-This skill includes detailed reference documentation:
+此技能包含详细的参考文档:
 
 ### references/census_schema.md
-Comprehensive documentation of:
-- Census data structure and organization
-- All available metadata fields
-- Value filter syntax and operators
-- SOMA object types
-- Data inclusion criteria
+全面文档包括:
+- Census 数据结构和组织
+- 所有可用的元数据字段
+- 值筛选语法和运算符
+- SOMA 对象类型
+- 数据纳入标准
 
-**When to read:** When you need detailed schema information, full list of metadata fields, or complex filter syntax.
+**何时阅读:** 当您需要详细的架构信息、完整的元数据字段列表或复杂的筛选语法时。
 
 ### references/common_patterns.md
-Examples and patterns for:
-- Exploratory queries (metadata only)
-- Small-to-medium queries (AnnData)
-- Large queries (out-of-core processing)
-- PyTorch integration
-- Scanpy integration workflows
-- Multi-dataset integration
-- Best practices and common pitfalls
+示例和模式包括:
+- 探索性查询(仅元数据)
+- 小到中等查询(AnnData)
+- 大型查询(核外处理)
+- PyTorch 集成
+- Scanpy 集成工作流程
+- 多数据集集成
+- 最佳实践和常见陷阱
 
-**When to read:** When implementing specific query patterns, looking for code examples, or troubleshooting common issues.
+**何时阅读:** 实现特定查询模式、查找代码示例或排查常见问题时。
 
-## Common Use Cases
+## 常见用例
 
-### Use Case 1: Explore Cell Types in a Tissue
+### 用例 1: 探索组织中的细胞类型
 ```python
 with cellxgene_census.open_soma() as census:
     cells = cellxgene_census.get_obs(
@@ -432,7 +432,7 @@ with cellxgene_census.open_soma() as census:
     print(cells["cell_type"].value_counts())
 ```
 
-### Use Case 2: Query Marker Gene Expression
+### 用例 2: 查询标记基因表达
 ```python
 with cellxgene_census.open_soma() as census:
     adata = cellxgene_census.get_anndata(
@@ -443,7 +443,7 @@ with cellxgene_census.open_soma() as census:
     )
 ```
 
-### Use Case 3: Train Cell Type Classifier
+### 用例 3: 训练细胞类型分类器
 ```python
 from cellxgene_census.experimental.ml import experiment_dataloader
 
@@ -458,14 +458,14 @@ with cellxgene_census.open_soma() as census:
         shuffle=True,
     )
 
-    # Train model
+    # 训练模型
     for epoch in range(epochs):
         for batch in dataloader:
-            # Training logic
+            # 训练逻辑
             pass
 ```
 
-### Use Case 4: Cross-Tissue Analysis
+### 用例 4: 跨组织分析
 ```python
 with cellxgene_census.open_soma() as census:
     adata = cellxgene_census.get_anndata(
@@ -474,36 +474,35 @@ with cellxgene_census.open_soma() as census:
         obs_value_filter="cell_type == 'macrophage' and tissue_general in ['lung', 'liver', 'brain'] and is_primary_data == True",
     )
 
-    # Analyze macrophage differences across tissues
+    # 分析不同组织中的巨噬细胞差异
     sc.tl.rank_genes_groups(adata, groupby="tissue_general")
 ```
 
-## Troubleshooting
+## 故障排除
 
-### Query Returns Too Many Cells
-- Add more specific filters to reduce scope
-- Use `tissue` instead of `tissue_general` for finer granularity
-- Filter by specific `dataset_id` if known
-- Switch to out-of-core processing for large queries
+### 查询返回的细胞太多
+- 添加更具体的筛选器以减少范围
+- 使用 `tissue` 而不是 `tissue_general` 以获得更精细的粒度
+- 如果已知,按特定 `dataset_id` 筛选
+- 对于大型查询,切换到核外处理
 
-### Memory Errors
-- Reduce query scope with more restrictive filters
-- Select fewer genes with `var_value_filter`
-- Use out-of-core processing with `axis_query()`
-- Process data in batches
+### 内存错误
+- 使用更严格的筛选器减少查询范围
+- 使用 `var_value_filter` 选择更少的基因
+- 使用 `axis_query()` 进行核外处理
+- 分批处理数据
 
-### Duplicate Cells in Results
-- Always include `is_primary_data == True` in filters
-- Check if intentionally querying across multiple datasets
+### 结果中有重复细胞
+- 始终在筛选器中包含 `is_primary_data == True`
+- 检查是否故意跨多个数据集查询
 
-### Gene Not Found
-- Verify gene name spelling (case-sensitive)
-- Try Ensembl ID with `feature_id` instead of `feature_name`
-- Check dataset presence matrix to see if gene was measured
-- Some genes may have been filtered during Census construction
+### 未找到基因
+- 验证基因名称拼写(区分大小写)
+- 尝试使用 `feature_id` 代替 `feature_name` 的 Ensembl ID
+- 检查数据集存在矩阵以查看是否测量了基因
+- 某些基因可能在 Census 构建期间被过滤掉
 
-### Version Inconsistencies
-- Always specify `census_version` explicitly
-- Use same version across all analyses
-- Check release notes for version-specific changes
-
+### 版本不一致
+- 始终显式指定 `census_version`
+- 在所有分析中使用相同版本
+- 查看版本特定更改的发行说明

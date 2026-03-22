@@ -1,222 +1,222 @@
 ---
 name: qutip
-description: Quantum physics simulation library for open quantum systems. Use when studying master equations, Lindblad dynamics, decoherence, quantum optics, or cavity QED. Best for physics research, open system dynamics, and educational simulations. NOT for circuit-based quantum computing—use qiskit, cirq, or pennylane for quantum algorithms and hardware execution.
+description: 开放量子系统的量子物理模拟库。适用于研究主方程、Lindblad动力学、退相干、量子光学或腔量子电动力学。最适合物理研究、开放系统动力学和教育模拟。不适用于基于电路的量子计算——对于量子算法和硬件执行，请使用qiskit、cirq或pennylane。
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# QuTiP: Quantum Toolbox in Python
+# QuTiP: Python量子工具箱
 
-## Overview
+## 概述
 
-QuTiP provides comprehensive tools for simulating and analyzing quantum mechanical systems. It handles both closed (unitary) and open (dissipative) quantum systems with multiple solvers optimized for different scenarios.
+QuTiP提供了用于模拟和分析量子力学系统的综合工具。它处理封闭（幺正）和开放（耗散）量子系统，并为不同场景优化了多种求解器。
 
-## Installation
+## 安装
 
 ```bash
 uv pip install qutip
 ```
 
-Optional packages for additional functionality:
+可选包以获取额外功能：
 
 ```bash
-# Quantum information processing (circuits, gates)
+# 量子信息处理（电路、门）
 uv pip install qutip-qip
 
-# Quantum trajectory viewer
+# 量子轨迹查看器
 uv pip install qutip-qtrl
 ```
 
-## Quick Start
+## 快速开始
 
 ```python
 from qutip import *
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Create quantum state
-psi = basis(2, 0)  # |0⟩ state
+# 创建量子态
+psi = basis(2, 0)  # |0⟩ 态
 
-# Create operator
-H = sigmaz()  # Hamiltonian
+# 创建算符
+H = sigmaz()  # 哈密顿量
 
-# Time evolution
+# 时间演化
 tlist = np.linspace(0, 10, 100)
 result = sesolve(H, psi, tlist, e_ops=[sigmaz()])
 
-# Plot results
+# 绘制结果
 plt.plot(tlist, result.expect[0])
-plt.xlabel('Time')
+plt.xlabel('时间')
 plt.ylabel('⟨σz⟩')
 plt.show()
 ```
 
-## Core Capabilities
+## 核心功能
 
-### 1. Quantum Objects and States
+### 1. 量子对象和态
 
-Create and manipulate quantum states and operators:
+创建和操作量子态和算符：
 
 ```python
-# States
-psi = basis(N, n)  # Fock state |n⟩
-psi = coherent(N, alpha)  # Coherent state |α⟩
-rho = thermal_dm(N, n_avg)  # Thermal density matrix
+# 态
+psi = basis(N, n)  # Fock态 |n⟩
+psi = coherent(N, alpha)  # 相干态 |α⟩
+rho = thermal_dm(N, n_avg)  # 热密度矩阵
 
-# Operators
-a = destroy(N)  # Annihilation operator
-H = num(N)  # Number operator
-sx, sy, sz = sigmax(), sigmay(), sigmaz()  # Pauli matrices
+# 算符
+a = destroy(N)  # 湮灭算符
+H = num(N)  # 数算符
+sx, sy, sz = sigmax(), sigmay(), sigmaz()  # 泡利矩阵
 
-# Composite systems
-psi_AB = tensor(psi_A, psi_B)  # Tensor product
+# 复合系统
+psi_AB = tensor(psi_A, psi_B)  # 张量积
 ```
 
-**See** `references/core_concepts.md` for comprehensive coverage of quantum objects, states, operators, and tensor products.
+**参见** `references/core_concepts.md` 了解量子对象、态、算符和张量积的全面覆盖。
 
-### 2. Time Evolution and Dynamics
+### 2. 时间演化和动力学
 
-Multiple solvers for different scenarios:
+针对不同场景的多种求解器：
 
 ```python
-# Closed systems (unitary evolution)
+# 封闭系统（幺正演化）
 result = sesolve(H, psi0, tlist, e_ops=[num(N)])
 
-# Open systems (dissipation)
-c_ops = [np.sqrt(0.1) * destroy(N)]  # Collapse operators
+# 开放系统（耗散）
+c_ops = [np.sqrt(0.1) * destroy(N)]  # 坍缩算符
 result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
 
-# Quantum trajectories (Monte Carlo)
+# 量子轨迹（蒙特卡洛）
 result = mcsolve(H, psi0, tlist, c_ops, ntraj=500, e_ops=[num(N)])
 ```
 
-**Solver selection guide:**
-- `sesolve`: Pure states, unitary evolution
-- `mesolve`: Mixed states, dissipation, general open systems
-- `mcsolve`: Quantum jumps, photon counting, individual trajectories
-- `brmesolve`: Weak system-bath coupling
-- `fmmesolve`: Time-periodic Hamiltonians (Floquet)
+**求解器选择指南：**
+- `sesolve`：纯态，幺正演化
+- `mesolve`：混合态，耗散，一般开放系统
+- `mcsolve`：量子跳跃，光子计数，单个轨迹
+- `brmesolve`：弱系统-浴耦合
+- `fmmesolve`：时间周期哈密顿量（Floquet）
 
-**See** `references/time_evolution.md` for detailed solver documentation, time-dependent Hamiltonians, and advanced options.
+**参见** `references/time_evolution.md` 了解详细的求解器文档、时间依赖哈密顿量和高级选项。
 
-### 3. Analysis and Measurement
+### 3. 分析和测量
 
-Compute physical quantities:
+计算物理量：
 
 ```python
-# Expectation values
+# 期望值
 n_avg = expect(num(N), psi)
 
-# Entropy measures
-S = entropy_vn(rho)  # Von Neumann entropy
-C = concurrence(rho)  # Entanglement (two qubits)
+# 熵度量
+S = entropy_vn(rho)  # 冯·诺依曼熵
+C = concurrence(rho)  # 纠缠（两量子比特）
 
-# Fidelity and distance
+# 保真度和距离
 F = fidelity(psi1, psi2)
 D = tracedist(rho1, rho2)
 
-# Correlation functions
+# 关联函数
 corr = correlation_2op_1t(H, rho0, taulist, c_ops, A, B)
 w, S = spectrum_correlation_fft(taulist, corr)
 
-# Steady states
+# 稳态
 rho_ss = steadystate(H, c_ops)
 ```
 
-**See** `references/analysis.md` for entropy, fidelity, measurements, correlation functions, and steady state calculations.
+**参见** `references/analysis.md` 了解熵、保真度、测量、关联函数和稳态计算。
 
-### 4. Visualization
+### 4. 可视化
 
-Visualize quantum states and dynamics:
+可视化量子态和动力学：
 
 ```python
-# Bloch sphere
+# 布洛赫球
 b = Bloch()
 b.add_states(psi)
 b.show()
 
-# Wigner function (phase space)
+# Wigner函数（相空间）
 xvec = np.linspace(-5, 5, 200)
 W = wigner(psi, xvec, xvec)
 plt.contourf(xvec, xvec, W, 100, cmap='RdBu')
 
-# Fock distribution
+# Fock分布
 plot_fock_distribution(psi)
 
-# Matrix visualization
-hinton(rho)  # Hinton diagram
-matrix_histogram(H.full())  # 3D bars
+# 矩阵可视化
+hinton(rho)  # Hinton图
+matrix_histogram(H.full())  # 3D柱状图
 ```
 
-**See** `references/visualization.md` for Bloch sphere animations, Wigner functions, Q-functions, and matrix visualizations.
+**参见** `references/visualization.md` 了解布洛赫球动画、Wigner函数、Q函数和矩阵可视化。
 
-### 5. Advanced Methods
+### 5. 高级方法
 
-Specialized techniques for complex scenarios:
+用于复杂场景的专门技术：
 
 ```python
-# Floquet theory (periodic Hamiltonians)
+# Floquet理论（周期哈密顿量）
 T = 2 * np.pi / w_drive
 f_modes, f_energies = floquet_modes(H, T, args)
 result = fmmesolve(H, psi0, tlist, c_ops, T=T, args=args)
 
-# HEOM (non-Markovian, strong coupling)
+# HEOM（非马尔可夫，强耦合）
 from qutip.nonmarkov.heom import HEOMSolver, BosonicBath
 bath = BosonicBath(Q, ck_real, vk_real)
 hsolver = HEOMSolver(H_sys, [bath], max_depth=5)
 result = hsolver.run(rho0, tlist)
 
-# Permutational invariance (identical particles)
-psi = dicke(N, j, m)  # Dicke states
-Jz = jspin(N, 'z')  # Collective operators
+# 置换不变性（全同粒子）
+psi = dicke(N, j, m)  # Dicke态
+Jz = jspin(N, 'z')  # 集体算符
 ```
 
-**See** `references/advanced.md` for Floquet theory, HEOM, permutational invariance, stochastic solvers, superoperators, and performance optimization.
+**参见** `references/advanced.md` 了解Floquet理论、HEOM、置换不变性、随机求解器、超算符和性能优化。
 
-## Common Workflows
+## 常见工作流
 
-### Simulating a Damped Harmonic Oscillator
+### 模拟阻尼谐振子
 
 ```python
-# System parameters
-N = 20  # Hilbert space dimension
-omega = 1.0  # Oscillator frequency
-kappa = 0.1  # Decay rate
+# 系统参数
+N = 20  # 希尔伯特空间维度
+omega = 1.0  # 振荡器频率
+kappa = 0.1  # 衰减率
 
-# Hamiltonian and collapse operators
+# 哈密顿量和坍缩算符
 H = omega * num(N)
 c_ops = [np.sqrt(kappa) * destroy(N)]
 
-# Initial state
+# 初始态
 psi0 = coherent(N, 3.0)
 
-# Time evolution
+# 时间演化
 tlist = np.linspace(0, 50, 200)
 result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
 
-# Visualize
+# 可视化
 plt.plot(tlist, result.expect[0])
-plt.xlabel('Time')
+plt.xlabel('时间')
 plt.ylabel('⟨n⟩')
-plt.title('Photon Number Decay')
+plt.title('光子数衰减')
 plt.show()
 ```
 
-### Two-Qubit Entanglement Dynamics
+### 两量子比特纠缠动力学
 
 ```python
-# Create Bell state
+# 创建Bell态
 psi0 = bell_state('00')
 
-# Local dephasing on each qubit
+# 每个量子比特的局域退相位
 gamma = 0.1
 c_ops = [
     np.sqrt(gamma) * tensor(sigmaz(), qeye(2)),
     np.sqrt(gamma) * tensor(qeye(2), sigmaz())
 ]
 
-# Track entanglement
+# 跟踪纠缠
 def compute_concurrence(t, psi):
     rho = ket2dm(psi) if psi.isket else psi
     return concurrence(rho)
@@ -224,93 +224,92 @@ def compute_concurrence(t, psi):
 tlist = np.linspace(0, 10, 100)
 result = mesolve(qeye([2, 2]), psi0, tlist, c_ops)
 
-# Compute concurrence for each state
+# 计算每个态的concurrence
 C_t = [concurrence(state.proj()) for state in result.states]
 
 plt.plot(tlist, C_t)
-plt.xlabel('Time')
+plt.xlabel('时间')
 plt.ylabel('Concurrence')
-plt.title('Entanglement Decay')
+plt.title('纠缠衰减')
 plt.show()
 ```
 
-### Jaynes-Cummings Model
+### Jaynes-Cummings模型
 
 ```python
-# System parameters
-N = 10  # Cavity Fock space
-wc = 1.0  # Cavity frequency
-wa = 1.0  # Atom frequency
-g = 0.05  # Coupling strength
+# 系统参数
+N = 10  # 腔Fock空间
+wc = 1.0  # 腔频率
+wa = 1.0  # 原子频率
+g = 0.05  # 耦合强度
 
-# Operators
-a = tensor(destroy(N), qeye(2))  # Cavity
-sm = tensor(qeye(N), sigmam())  # Atom
+# 算符
+a = tensor(destroy(N), qeye(2))  # 腔
+sm = tensor(qeye(N), sigmam())  # 原子
 
-# Hamiltonian (RWA)
+# 哈密顿量（旋转波近似）
 H = wc * a.dag() * a + wa * sm.dag() * sm + g * (a.dag() * sm + a * sm.dag())
 
-# Initial state: cavity in coherent state, atom in ground state
+# 初始态：腔处于相干态，原子处于基态
 psi0 = tensor(coherent(N, 2), basis(2, 0))
 
-# Dissipation
-kappa = 0.1  # Cavity decay
-gamma = 0.05  # Atomic decay
+# 耗散
+kappa = 0.1  # 腔衰减
+gamma = 0.05  # 原子衰减
 c_ops = [np.sqrt(kappa) * a, np.sqrt(gamma) * sm]
 
-# Observables
+# 可观测量
 n_cav = a.dag() * a
 n_atom = sm.dag() * sm
 
-# Evolve
+# 演化
 tlist = np.linspace(0, 50, 200)
 result = mesolve(H, psi0, tlist, c_ops, e_ops=[n_cav, n_atom])
 
-# Plot
+# 绘制
 fig, axes = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
 axes[0].plot(tlist, result.expect[0])
 axes[0].set_ylabel('⟨n_cavity⟩')
 axes[1].plot(tlist, result.expect[1])
 axes[1].set_ylabel('⟨n_atom⟩')
-axes[1].set_xlabel('Time')
+axes[1].set_xlabel('时间')
 plt.tight_layout()
 plt.show()
 ```
 
-## Tips for Efficient Simulations
+## 高效模拟技巧
 
-1. **Truncate Hilbert spaces**: Use smallest dimension that captures dynamics
-2. **Choose appropriate solver**: `sesolve` for pure states is faster than `mesolve`
-3. **Time-dependent terms**: String format (e.g., `'cos(w*t)'`) is fastest
-4. **Store only needed data**: Use `e_ops` instead of storing all states
-5. **Adjust tolerances**: Balance accuracy with computation time via `Options`
-6. **Parallel trajectories**: `mcsolve` automatically uses multiple CPUs
-7. **Check convergence**: Vary `ntraj`, Hilbert space size, and tolerances
+1. **截断希尔伯特空间**：使用捕获动力学的最小维度
+2. **选择适当的求解器**：`sesolve` 对于纯态比 `mesolve` 更快
+3. **时间相关项**：字符串格式（例如 `'cos(w*t)'`）最快
+4. **只存储所需数据**：使用 `e_ops` 而不是存储所有态
+5. **调整公差**：通过 `Options` 平衡精度与计算时间
+6. **并行轨迹**：`mcsolve` 自动使用多个CPU
+7. **检查收敛性**：改变 `ntraj`、希尔伯特空间大小和公差
 
-## Troubleshooting
+## 故障排除
 
-**Memory issues**: Reduce Hilbert space dimension, use `store_final_state` option, or consider Krylov methods
+**内存问题**：减小希尔伯特空间维度，使用 `store_final_state` 选项，或考虑Krylov方法
 
-**Slow simulations**: Use string-based time-dependence, increase tolerances slightly, or try `method='bdf'` for stiff problems
+**模拟缓慢**：使用基于字符串的时间依赖，略微增加公差，或对刚性问题尝试 `method='bdf'`
 
-**Numerical instabilities**: Decrease time steps (`nsteps` option), increase tolerances, or check Hamiltonian/operators are properly defined
+**数值不稳定性**：减小时间步长（`nsteps` 选项），增加公差，或检查哈密顿量/算符是否正确定义
 
-**Import errors**: Ensure QuTiP is installed correctly; quantum gates require `qutip-qip` package
+**导入错误**：确保QuTiP正确安装；量子门需要 `qutip-qip` 包
 
-## References
+## 参考
 
-This skill includes detailed reference documentation:
+本技能包含详细的参考文档：
 
-- **`references/core_concepts.md`**: Quantum objects, states, operators, tensor products, composite systems
-- **`references/time_evolution.md`**: All solvers (sesolve, mesolve, mcsolve, brmesolve, etc.), time-dependent Hamiltonians, solver options
-- **`references/visualization.md`**: Bloch sphere, Wigner functions, Q-functions, Fock distributions, matrix plots
-- **`references/analysis.md`**: Expectation values, entropy, fidelity, entanglement measures, correlation functions, steady states
-- **`references/advanced.md`**: Floquet theory, HEOM, permutational invariance, stochastic methods, superoperators, performance tips
+- **`references/core_concepts.md`**：量子对象、态、算符、张量积、复合系统
+- **`references/time_evolution.md`**：所有求解器（sesolve、mesolve、mcsolve、brmesolve等）、时间依赖哈密顿量、求解器选项
+- **`references/visualization.md`**：布洛赫球、Wigner函数、Q函数、Fock分布、矩阵图
+- **`references/analysis.md`**：期望值、熵、保真度、纠缠度量、关联函数、稳态
+- **`references/advanced.md`**：Floquet理论、HEOM、置换不变性、随机方法、超算符、性能提示
 
-## External Resources
+## 外部资源
 
-- Documentation: https://qutip.readthedocs.io/
-- Tutorials: https://qutip.org/qutip-tutorials/
-- API Reference: https://qutip.readthedocs.io/en/stable/apidoc/apidoc.html
-- GitHub: https://github.com/qutip/qutip
-
+- 文档：https://qutip.readthedocs.io/
+- 教程：https://qutip.org/qutip-tutorials/
+- API参考：https://qutip.readthedocs.io/en/stable/apidoc/apidoc.html
+- GitHub：https://github.com/qutip/qutip

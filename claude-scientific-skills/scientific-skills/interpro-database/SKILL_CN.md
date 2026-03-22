@@ -1,47 +1,47 @@
 ---
 name: interpro-database
-description: Query InterPro for protein family, domain, and functional site annotations. Integrates Pfam, PANTHER, PRINTS, SMART, SUPERFAMILY, and 11 other member databases. Use for protein function prediction, domain architecture analysis, evolutionary classification, and GO term mapping.
+description: 查询InterPro以获取蛋白质家族、域和功能位点注释。整合Pfam、PANTHER、PRINTS、SMART、SUPERFAMILY和其他11个成员数据库。用于蛋白质功能预测、域架构分析、进化分类和GO术语映射。
 license: CC0-1.0
 metadata:
     skill-author: Kuan-lin Huang
 ---
 
-# InterPro Database
+# InterPro数据库
 
-## Overview
+## 概述
 
-InterPro (https://www.ebi.ac.uk/interpro/) is a comprehensive resource for protein family and domain classification maintained by EMBL-EBI. It integrates signatures from 13 member databases including Pfam, PANTHER, PRINTS, ProSite, SMART, TIGRFAM, SUPERFAMILY, CDD, and others, providing a unified view of protein functional annotations for over 100 million protein sequences.
+InterPro（https://www.ebi.ac.uk/interpro/）是由EMBL-EBI维护的蛋白质家族和域分类的综合资源。它整合了来自13个成员数据库的签名，包括Pfam、PANTHER、PRINTS、ProSite、SMART、TIGRFAM、SUPERFAMILY、CDD等，为超过1亿个蛋白质序列提供统一的蛋白质功能注释视图。
 
-InterPro classifies proteins into:
-- **Families**: Groups of proteins sharing common ancestry and function
-- **Domains**: Independently folding structural/functional units
-- **Homologous superfamilies**: Structurally similar protein regions
-- **Repeats**: Short tandem sequences
-- **Sites**: Functional sites (active, binding, PTM)
+InterPro将蛋白质分类为：
+- **家族**：共享共同祖先和功能的蛋白质组
+- **域**：独立折叠的结构/功能单元
+- **同源超家族**：结构相似的蛋白质区域
+- **重复**：短串联序列
+- **位点**：功能位点（活性、结合、PTM）
 
-**Key resources:**
-- InterPro website: https://www.ebi.ac.uk/interpro/
-- REST API: https://www.ebi.ac.uk/interpro/api/
-- API documentation: https://github.com/ProteinsWebTeam/interpro7-api/blob/master/docs/
-- Python client: via `requests`
+**关键资源：**
+- InterPro网站：https://www.ebi.ac.uk/interpro/
+- REST API：https://www.ebi.ac.uk/interpro/api/
+- API文档：https://github.com/ProteinsWebTeam/interpro7-api/blob/master/docs/
+- Python客户端：通过`requests`
 
-## When to Use This Skill
+## 何时使用此技能
 
-Use InterPro when:
+在以下情况下使用InterPro：
 
-- **Protein function prediction**: What function(s) does an uncharacterized protein likely have?
-- **Domain architecture**: What domains make up a protein, and in what order?
-- **Protein family classification**: Which family/superfamily does a protein belong to?
-- **GO term annotation**: Map protein sequences to Gene Ontology terms via InterPro
-- **Evolutionary analysis**: Are two proteins in the same homologous superfamily?
-- **Structure prediction context**: What domains should a new protein structure be compared against?
-- **Pipeline annotation**: Batch-annotate proteomes or novel sequences
+- **蛋白质功能预测**：未表征蛋白质可能具有什么功能？
+- **域架构**：什么域组成蛋白质，以及以什么顺序？
+- **蛋白质家族分类**：蛋白质属于哪个家族/超家族？
+- **GO术语注释**：通过InterPro将蛋白质序列映射到基因本体术语
+- **进化分析**：两个蛋白质是否在同一个同源超家族中？
+- **结构预测背景**：新蛋白质结构应该与哪些域比较？
+- **流程注释**：批量注释蛋白质组或新序列
 
-## Core Capabilities
+## 核心功能
 
 ### 1. InterPro REST API
 
-Base URL: `https://www.ebi.ac.uk/interpro/api/`
+基础URL：`https://www.ebi.ac.uk/interpro/api/`
 
 ```python
 import requests
@@ -56,91 +56,91 @@ def interpro_get(endpoint, params=None):
     return response.json()
 ```
 
-### 2. Look Up a Protein
+### 2. 查找蛋白质
 
 ```python
 def get_protein_entries(uniprot_id):
-    """Get all InterPro entries that match a UniProt protein."""
+    """获取与UniProt蛋白质匹配的所有InterPro条目。"""
     data = interpro_get(f"protein/UniProt/{uniprot_id}/entry/InterPro/")
     return data
 
-# Example: Human p53 (TP53)
+# 示例：人类p53（TP53）
 result = get_protein_entries("P04637")
 entries = result.get("results", [])
 
 for entry in entries:
     meta = entry["metadata"]
     print(f"  {meta['accession']} ({meta['type']}): {meta['name']}")
-    # e.g., IPR011615 (domain): p53, tetramerisation domain
-    #       IPR010991 (domain): p53, DNA-binding domain
-    #       IPR013872 (family): p53 family
+    # 例如，IPR011615 (域): p53，四聚化域
+    #       IPR010991 (域): p53，DNA结合域
+    #       IPR013872 (家族): p53家族
 ```
 
-### 3. Get Specific InterPro Entry
+### 3. 获取特定InterPro条目
 
 ```python
 def get_entry(interpro_id):
-    """Fetch details for an InterPro entry."""
+    """获取InterPro条目的详细信息。"""
     return interpro_get(f"entry/InterPro/{interpro_id}/")
 
-# Example: Get Pfam domain PF00397 (WW domain)
+# 示例：获取Pfam域PF00397（WW域）
 ww_entry = get_entry("IPR001202")
-print(f"Name: {ww_entry['metadata']['name']}")
-print(f"Type: {ww_entry['metadata']['type']}")
+print(f"名称：{ww_entry['metadata']['name']}")
+print(f"类型：{ww_entry['metadata']['type']}")
 
-# Also supports member database IDs:
+# 也支持成员数据库ID：
 def get_pfam_entry(pfam_id):
     return interpro_get(f"entry/Pfam/{pfam_id}/")
 
 pfam = get_pfam_entry("PF00397")
 ```
 
-### 4. Search Proteins by InterPro Entry
+### 4. 按InterPro条目搜索蛋白质
 
 ```python
 def get_proteins_for_entry(interpro_id, database="UniProt", page_size=25):
-    """Get all proteins annotated with an InterPro entry."""
+    """获取用InterPro条目注释的所有蛋白质。"""
     params = {"page_size": page_size}
     data = interpro_get(f"entry/InterPro/{interpro_id}/protein/{database}/", params)
     return data
 
-# Example: Find all human kinase-domain proteins
-kinase_proteins = get_proteins_for_entry("IPR000719")  # Protein kinase domain
-print(f"Total proteins: {kinase_proteins['count']}")
+# 示例：查找所有人类激酶域蛋白质
+kinase_proteins = get_proteins_for_entry("IPR000719")  # 蛋白激酶域
+print(f"总蛋白质数：{kinase_proteins['count']}")
 ```
 
-### 5. Domain Architecture
+### 5. 域架构
 
 ```python
 def get_domain_architecture(uniprot_id):
-    """Get the complete domain architecture of a protein."""
+    """获取蛋白质的完整域架构。"""
     data = interpro_get(f"protein/UniProt/{uniprot_id}/")
     return data
 
-# Example: Get full domain architecture for EGFR
+# 示例：获取EGFR的完整域架构
 egfr = get_domain_architecture("P00533")
 
-# The response includes locations of all matching entries on the sequence
+# 响应包括序列上所有匹配条目的位置
 for entry in egfr.get("entries", []):
     for fragment in entry.get("entry_protein_locations", []):
         for loc in fragment.get("fragments", []):
             print(f"  {entry['accession']}: {loc['start']}-{loc['end']}")
 ```
 
-### 6. GO Term Mapping
+### 6. GO术语映射
 
 ```python
 def get_go_terms_for_protein(uniprot_id):
-    """Get GO terms associated with a protein via InterPro."""
+    """通过InterPro获取与蛋白质关联的GO术语。"""
     data = interpro_get(f"protein/UniProt/{uniprot_id}/")
 
-    # GO terms are embedded in the entry metadata
+    # GO术语嵌入在条目元数据中
     go_terms = []
     for entry in data.get("entries", []):
         go = entry.get("metadata", {}).get("go_terms", [])
         go_terms.extend(go)
 
-    # Deduplicate
+    # 去重
     seen = set()
     unique_go = []
     for term in go_terms:
@@ -150,15 +150,15 @@ def get_go_terms_for_protein(uniprot_id):
 
     return unique_go
 
-# GO terms include:
+# GO术语包括：
 # {"identifier": "GO:0004672", "name": "protein kinase activity", "category": {"code": "F", "name": "Molecular Function"}}
 ```
 
-### 7. Batch Protein Lookup
+### 7. 批量蛋白质查找
 
 ```python
 def batch_lookup_proteins(uniprot_ids, database="UniProt"):
-    """Look up multiple proteins and collect their InterPro entries."""
+    """查找多个蛋白质并收集其InterPro条目。"""
     import time
     results = {}
     for uid in uniprot_ids:
@@ -175,10 +175,10 @@ def batch_lookup_proteins(uniprot_ids, database="UniProt"):
             ]
         except Exception as e:
             results[uid] = {"error": str(e)}
-        time.sleep(0.3)  # Rate limiting
+        time.sleep(0.3)  # 速率限制
     return results
 
-# Example
+# 示例
 proteins = ["P04637", "P00533", "P38398", "Q9Y6I9"]
 domain_info = batch_lookup_proteins(proteins)
 for uid, entries in domain_info.items():
@@ -187,14 +187,14 @@ for uid, entries in domain_info.items():
         print(f"  - {e['accession']} ({e['type']}): {e['name']}")
 ```
 
-### 8. Search by Text or Taxonomy
+### 8. 按文本或分类学搜索
 
 ```python
 def search_entries(query, entry_type=None, taxonomy_id=None):
-    """Search InterPro entries by text."""
+    """按文本搜索InterPro条目。"""
     params = {"search": query, "page_size": 20}
     if entry_type:
-        params["type"] = entry_type  # family, domain, homologous_superfamily, etc.
+        params["type"] = entry_type  # family、domain、homologous_superfamily等
 
     endpoint = "entry/InterPro/"
     if taxonomy_id:
@@ -202,28 +202,28 @@ def search_entries(query, entry_type=None, taxonomy_id=None):
 
     return interpro_get(endpoint, params)
 
-# Search for kinase-related entries
+# 搜索激酶相关条目
 kinase_entries = search_entries("kinase", entry_type="domain")
 ```
 
-## Query Workflows
+## 查询工作流程
 
-### Workflow 1: Characterize an Unknown Protein
+### 工作流程1：表征未知蛋白质
 
-1. **Run InterProScan** locally or via the web (https://www.ebi.ac.uk/interpro/search/sequence/) to scan a protein sequence
-2. **Parse results** to identify domain architecture
-3. **Look up each InterPro entry** for biological context
-4. **Get GO terms** from associated InterPro entries for functional inference
+1. **本地运行InterProScan**或通过web（https://www.ebi.ac.uk/interpro/search/sequence/）扫描蛋白质序列
+2. **解析结果**以识别域架构
+3. **查找每个InterPro条目**以获取生物学背景
+4. **从关联的InterPro条目获取GO术语**以进行功能推断
 
 ```python
-# After running InterProScan and getting a UniProt ID:
+# 运行InterProScan并获取UniProt ID后：
 def characterize_protein(uniprot_id):
-    """Complete characterization workflow."""
+    """完整表征工作流程。"""
 
-    # 1. Get all annotations
+    # 1. 获取所有注释
     entries = get_protein_entries(uniprot_id)
 
-    # 2. Group by type
+    # 2. 按类型分组
     by_type = {}
     for e in entries.get("results", []):
         t = e["metadata"]["type"]
@@ -232,7 +232,7 @@ def characterize_protein(uniprot_id):
             "name": e["metadata"]["name"]
         })
 
-    # 3. Get GO terms
+    # 3. 获取GO术语
     go_terms = get_go_terms_for_protein(uniprot_id)
 
     return {
@@ -243,63 +243,63 @@ def characterize_protein(uniprot_id):
     }
 ```
 
-### Workflow 2: Find All Members of a Protein Family
+### 工作流程2：查找蛋白质家族的所有成员
 
-1. Identify the InterPro family entry ID (e.g., IPR000719 for protein kinases)
-2. Query all UniProt proteins annotated with that entry
-3. Filter by organism/taxonomy if needed
-4. Download FASTA sequences for phylogenetic analysis
+1. 识别InterPro家族条目ID（例如，IPR000719用于蛋白激酶）
+2. 查询用该条目注释的所有UniProt蛋白质
+3. 如有需要，按生物/分类学过滤
+4. 下载FASTA序列以进行系统发育分析
 
-### Workflow 3: Comparative Domain Analysis
+### 工作流程3：比较域分析
 
-1. Collect proteins of interest (e.g., all paralogs)
-2. Get domain architecture for each protein
-3. Compare domain compositions and orders
-4. Identify domain gain/loss events
+1. 收集感兴趣的蛋白质（例如，所有旁系同源物）
+2. 获取每个蛋白质的域架构
+3. 比较域组成和顺序
+4. 识别域获得/丢失事件
 
-## API Endpoint Summary
+## API端点摘要
 
-| Endpoint | Description |
+| 端点 | 描述 |
 |----------|-------------|
-| `/protein/UniProt/{id}/` | Full annotation for a protein |
-| `/protein/UniProt/{id}/entry/InterPro/` | InterPro entries for a protein |
-| `/entry/InterPro/{id}/` | Details of an InterPro entry |
-| `/entry/Pfam/{id}/` | Pfam entry details |
-| `/entry/InterPro/{id}/protein/UniProt/` | Proteins with an entry |
-| `/entry/InterPro/` | Search/list InterPro entries |
-| `/taxonomy/UniProt/{tax_id}/` | Proteins from a taxon |
-| `/structure/PDB/{pdb_id}/` | Structures mapped to InterPro |
+| `/protein/UniProt/{id}/` | 蛋白质的完整注释 |
+| `/protein/UniProt/{id}/entry/InterPro/` | 蛋白质的InterPro条目 |
+| `/entry/InterPro/{id}/` | InterPro条目的详细信息 |
+| `/entry/Pfam/{id}/` | Pfam条目详细信息 |
+| `/entry/InterPro/{id}/protein/UniProt/` | 带有条目的蛋白质 |
+| `/entry/InterPro/` | 搜索/列出InterPro条目 |
+| `/taxonomy/UniProt/{tax_id}/` | 来自分类群的蛋白质 |
+| `/structure/PDB/{pdb_id}/` | 映射到InterPro的结构 |
 
-## Member Databases
+## 成员数据库
 
-| Database | Focus |
+| 数据库 | 重点 |
 |----------|-------|
-| Pfam | Protein domains (HMM profiles) |
-| PANTHER | Protein families and subfamilies |
-| PRINTS | Protein fingerprints |
-| ProSitePatterns | Amino acid patterns |
-| ProSiteProfiles | Protein profile patterns |
-| SMART | Protein domain analysis |
-| TIGRFAM | JCVI curated protein families |
-| SUPERFAMILY | Structural classification |
-| CDD | Conserved Domain Database (NCBI) |
-| HAMAP | Microbial protein families |
-| NCBIfam | NCBI curated TIGRFAMs |
-| Gene3D | CATH structural classification |
-| PIRSR | PIR site rules |
+| Pfam | 蛋白质域（HMM配置文件） |
+| PANTHER | 蛋白质家族和亚家族 |
+| PRINTS | 蛋白质指纹 |
+| ProSitePatterns | 氨基酸模式 |
+| ProSiteProfiles | 蛋白质配置文件模式 |
+| SMART | 蛋白质域分析 |
+| TIGRFAM | JCVI策划的蛋白质家族 |
+| SUPERFAMILY | 结构分类 |
+| CDD | 保守域数据库（NCBI） |
+| HAMAP | 微生物蛋白质家族 |
+| NCBIfam | NCBI策划的TIGRFAM |
+| Gene3D | CATH结构分类 |
+| PIRSR | PIR位点规则 |
 
-## Best Practices
+## 最佳实践
 
-- **Use UniProt accession numbers** (not gene names) for the most reliable lookups
-- **Distinguish types**: `family` gives broad classification; `domain` gives specific structural/functional units
-- **InterProScan is faster for novel sequences**: For sequences not in UniProt, submit to the web service
-- **Handle pagination**: Large result sets require iterating through pages
-- **Combine with UniProt data**: InterPro entries often include links to UniProt, PDB, and GO
+- **使用UniProt登录号**（而非基因名称）以获得最可靠的查找
+- **区分类型**：`family`提供广泛分类；`domain`提供特定结构/功能单元
+- **InterProScan对于新序列更快**：对于UniProt中不存在的序列，提交到web服务
+- **处理分页**：大型结果集需要遍历页面
+- **与UniProt数据结合**：InterPro条目通常包含到UniProt、PDB和GO的链接
 
-## Additional Resources
+## 其他资源
 
-- **InterPro website**: https://www.ebi.ac.uk/interpro/
-- **InterProScan** (run locally): https://github.com/ebi-pf-team/interproscan
-- **API documentation**: https://github.com/ProteinsWebTeam/interpro7-api/blob/master/docs/
-- **Pfam**: https://www.ebi.ac.uk/interpro/entry/pfam/
-- **Citation**: Paysan-Lafosse T et al. (2023) Nucleic Acids Research. PMID: 36350672
+- **InterPro网站**：https://www.ebi.ac.uk/interpro/
+- **InterProScan**（本地运行）：https://github.com/ebi-pf-team/interproscan
+- **API文档**：https://github.com/ProteinsWebTeam/interpro7-api/blob/master/docs/
+- **Pfam**：https://www.ebi.ac.uk/interpro/entry/pfam/
+- **引用**：Paysan-Lafosse T et al. (2023) Nucleic Acids Research. PMID: 36350672

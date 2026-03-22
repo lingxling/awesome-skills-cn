@@ -1,296 +1,293 @@
 ---
 name: deploy-to-vercel
-description: Deploy applications and websites to Vercel. Use when the user requests deployment actions like "deploy my app", "deploy and give me the link", "push this live", or "create a preview deployment".
+description: 将应用程序和网站部署到Vercel。当用户请求部署操作时使用，如"部署我的应用"、"部署并给我链接"、"推送到线上"或"创建预览部署"。
 metadata:
   author: vercel
   version: "3.0.0"
 ---
 
-# Deploy to Vercel
+# 部署到Vercel
 
-Deploy any project to Vercel. **Always deploy as preview** (not production) unless the user explicitly asks for production.
+将任何项目部署到Vercel。**始终以预览方式部署**（而非生产），除非用户明确要求生产环境。
 
-The goal is to get the user into the best long-term setup: their project linked to Vercel with git-push deploys. Every method below tries to move the user closer to that state.
+目标是让用户进入最佳的长期设置：他们的项目链接到Vercel，通过git push进行部署。以下每种方法都试图让用户更接近这种状态。
 
-## Step 1: Gather Project State
+## 步骤1：收集项目状态
 
-Run all four checks before deciding which method to use:
+在决定使用哪种方法之前，运行所有四项检查：
 
 ```bash
-# 1. Check for a git remote
+# 1. 检查git远程仓库
 git remote get-url origin 2>/dev/null
 
-# 2. Check if locally linked to a Vercel project (either file means linked)
+# 2. 检查是否本地链接到Vercel项目（任一文件存在即表示已链接）
 cat .vercel/project.json 2>/dev/null || cat .vercel/repo.json 2>/dev/null
 
-# 3. Check if the Vercel CLI is installed and authenticated
+# 3. 检查Vercel CLI是否已安装并已认证
 vercel whoami 2>/dev/null
 
-# 4. List available teams (if authenticated)
+# 4. 列出可用团队（如果已认证）
 vercel teams list --format json 2>/dev/null
 ```
 
-### Team selection
+### 团队选择
 
-If the user belongs to multiple teams, present all available team slugs as a bulleted list and ask which one to deploy to. Once the user picks a team, proceed immediately to the next step — do not ask for additional confirmation.
+如果用户属于多个团队，将所有可用的团队slug以项目符号列表形式呈现，并询问部署到哪个团队。一旦用户选择了团队，立即进入下一步 — 不要要求额外确认。
 
-Pass the team slug via `--scope` on all subsequent CLI commands (`vercel deploy`, `vercel link`, `vercel inspect`, etc.):
+在所有后续CLI命令（`vercel deploy`、`vercel link`、`vercel inspect`等）上通过`--scope`传递团队slug：
 
 ```bash
 vercel deploy [path] -y --no-wait --scope <team-slug>
 ```
 
-If the project is already linked (`.vercel/project.json` or `.vercel/repo.json` exists), the `orgId` in those files determines the team — no need to ask again. If there is only one team (or just a personal account), skip the prompt and use it directly.
+如果项目已经链接（存在`.vercel/project.json`或`.vercel/repo.json`），这些文件中的`orgId`决定了团队 — 无需再次询问。如果只有一个团队（或只是个人账户），跳过提示并直接使用。
 
-**About the `.vercel/` directory:** A linked project has either:
-- `.vercel/project.json` — created by `vercel link` (single project linking). Contains `projectId` and `orgId`.
-- `.vercel/repo.json` — created by `vercel link --repo` (repo-based linking). Contains `orgId`, `remoteName`, and a `projects` array mapping directories to Vercel project IDs.
+**关于`.vercel/`目录：** 链接的项目有以下两种文件之一：
+- `.vercel/project.json` — 由`vercel link`创建（单个项目链接）。包含`projectId`和`orgId`。
+- `.vercel/repo.json` — 由`vercel link --repo`创建（基于仓库的链接）。包含`orgId`、`remoteName`和将目录映射到Vercel项目ID的`projects`数组。
 
-Either file means the project is linked. Check for both.
+任一文件都表示项目已链接。检查两者。
 
-**Do NOT** use `vercel project inspect`, `vercel ls`, or `vercel link` to detect state in an unlinked directory — without a `.vercel/` config, they will interactively prompt (or with `--yes`, silently link as a side-effect). Only `vercel whoami` is safe to run anywhere.
+**不要**在未链接的目录中使用`vercel project inspect`、`vercel ls`或`vercel link`来检测状态 — 没有`.vercel/`配置，它们会交互式提示（或使用`--yes`时，作为副作用静默链接）。只有`vercel whoami`可以在任何地方安全运行。
 
-## Step 2: Choose a Deploy Method
+## 步骤2：选择部署方法
 
-### Linked (`.vercel/` exists) + has git remote → Git Push
+### 已链接（存在`.vercel/`）+ 有git远程仓库 → Git推送
 
-This is the ideal state. The project is linked and has git integration.
+这是理想状态。项目已链接并具有git集成。
 
-1. **Ask the user before pushing.** Never push without explicit approval:
+1. **推送前询问用户**。未经明确批准，永远不要推送：
    ```
-   This project is connected to Vercel via git. I can commit and push to
-   trigger a deployment. Want me to proceed?
+   此项目通过git连接到Vercel。我可以提交并推送来触发部署。是否要继续？
    ```
 
-2. **Commit and push:**
+2. **提交并推送：**
    ```bash
    git add .
-   git commit -m "deploy: <description of changes>"
+   git commit -m "deploy: <更改描述>"
    git push
    ```
-   Vercel automatically builds from the push. Non-production branches get preview deployments; the production branch (usually `main`) gets a production deployment.
+   Vercel会自动从推送中构建。非生产分支获得预览部署；生产分支（通常是`main`）获得生产部署。
 
-3. **Retrieve the preview URL.** If the CLI is authenticated:
+3. **获取预览URL**。如果CLI已认证：
    ```bash
    sleep 5
    vercel ls --format json
    ```
-   The JSON output has a `deployments` array. Find the latest entry — its `url` field is the preview URL.
+   JSON输出有一个`deployments`数组。找到最新条目 — 其`url`字段是预览URL。
 
-   If the CLI is not authenticated, tell the user to check the Vercel dashboard or the commit status checks on their git provider for the preview URL.
+   如果CLI未认证，告诉用户检查Vercel仪表板或其git提供商上的提交状态检查以获取预览URL。
 
 ---
 
-### Linked (`.vercel/` exists) + no git remote → `vercel deploy`
+### 已链接（存在`.vercel/`）+ 无git远程仓库 → `vercel deploy`
 
-The project is linked but there's no git repo. Deploy directly with the CLI.
+项目已链接但没有git仓库。直接使用CLI部署。
 
 ```bash
 vercel deploy [path] -y --no-wait
 ```
 
-Use `--no-wait` so the CLI returns immediately with the deployment URL instead of blocking until the build finishes (builds can take a while). Then check on the deployment status with:
+使用`--no-wait`，这样CLI会立即返回部署URL，而不是阻塞直到构建完成（构建可能需要一段时间）。然后使用以下命令检查部署状态：
 
 ```bash
 vercel inspect <deployment-url>
 ```
 
-For production deploys (only if user explicitly asks):
+对于生产部署（仅当用户明确要求时）：
 ```bash
 vercel deploy [path] --prod -y --no-wait
 ```
 
 ---
 
-### Not linked + CLI is authenticated → Link first, then deploy
+### 未链接 + CLI已认证 → 先链接，然后部署
 
-The CLI is working but the project isn't linked yet. This is the opportunity to get the user into the best state.
+CLI正常工作但项目尚未链接。这是让用户进入最佳状态的机会。
 
-1. **Ask the user which team to deploy to.** Present the team slugs from Step 1 as a bulleted list. If there's only one team (or just a personal account), skip this step.
+1. **询问用户部署到哪个团队**。将步骤1中的团队slug以项目符号列表形式呈现。如果只有一个团队（或只是个人账户），跳过此步骤。
 
-2. **Once a team is selected, proceed directly to linking.** Tell the user what will happen but do not ask for separate confirmation:
+2. **一旦选择了团队，直接进行链接**。告诉用户会发生什么，但不要要求单独确认：
    ```
-   Linking this project to <team name> on Vercel. This will create a Vercel
-   project to deploy to and enable automatic deployments on future git pushes.
+   将此项目链接到Vercel上的<团队名称>。这将创建一个Vercel项目进行部署，并在未来的git推送时启用自动部署。
    ```
 
-3. **If a git remote exists**, use repo-based linking with the selected team scope:
+3. **如果存在git远程仓库**，使用基于仓库的链接并指定所选团队范围：
    ```bash
    vercel link --repo --scope <team-slug>
    ```
-   This reads the git remote URL and matches it to existing Vercel projects that deploy from that repo. It creates `.vercel/repo.json`. This is much more reliable than `vercel link` (without `--repo`), which tries to match by directory name and often fails when the local folder and Vercel project are named differently.
+   这会读取git远程URL并将其与从该仓库部署的现有Vercel项目匹配。它会创建`.vercel/repo.json`。这比`vercel link`（不带`--repo`）更可靠，后者尝试按目录名称匹配，当本地文件夹和Vercel项目命名不同时经常失败。
 
-   **If there is no git remote**, fall back to standard linking:
+   **如果没有git远程仓库**，回退到标准链接：
    ```bash
    vercel link --scope <team-slug>
    ```
-   This prompts the user to select or create a project. It creates `.vercel/project.json`.
+   这会提示用户选择或创建项目。它会创建`.vercel/project.json`。
 
-4. **Then deploy using the best available method:**
-   - If a git remote exists → commit and push (see git push method above)
-   - If no git remote → `vercel deploy [path] -y --no-wait --scope <team-slug>`, then `vercel inspect <url>` to check status
+4. **然后使用最佳可用方法部署：**
+   - 如果存在git远程仓库 → 提交并推送（参见上面的git推送方法）
+   - 如果没有git远程仓库 → `vercel deploy [path] -y --no-wait --scope <team-slug>`，然后`vercel inspect <url>`检查状态
 
 ---
 
-### Not linked + CLI not authenticated → Install, auth, link, deploy
+### 未链接 + CLI未认证 → 安装、认证、链接、部署
 
-The Vercel CLI isn't set up at all.
+Vercel CLI完全未设置。
 
-1. **Install the CLI (if not already installed):**
+1. **安装CLI（如果尚未安装）：**
    ```bash
    npm install -g vercel
    ```
 
-2. **Authenticate:**
+2. **认证：**
    ```bash
    vercel login
    ```
-   The user completes auth in their browser. If running in a non-interactive environment where login is not possible, skip to the **no-auth fallback** below.
+   用户在浏览器中完成认证。如果在无法登录的非交互式环境中运行，跳转到下面的**无认证回退**。
 
-3. **Ask which team to deploy to** — present team slugs from `vercel teams list --format json` as a bulleted list. If only one team / personal account, skip. Once selected, proceed immediately.
+3. **询问部署到哪个团队** — 将`vercel teams list --format json`中的团队slug以项目符号列表形式呈现。如果只有一个团队/个人账户，跳过。一旦选择，立即继续。
 
-4. **Link the project** with the selected team scope (use `--repo` if a git remote exists, plain `vercel link` otherwise):
+4. **使用所选团队范围链接项目**（如果存在git远程仓库，使用`--repo`，否则使用普通`vercel link`）：
    ```bash
-   vercel link --repo --scope <team-slug>   # if git remote exists
-   vercel link --scope <team-slug>          # if no git remote
+   vercel link --repo --scope <team-slug>   # 如果存在git远程仓库
+   vercel link --scope <team-slug>          # 如果没有git远程仓库
    ```
 
-5. **Deploy** using the best available method (git push if remote exists, otherwise `vercel deploy -y --no-wait --scope <team-slug>`, then `vercel inspect <url>` to check status).
+5. **部署**使用最佳可用方法（如果存在远程仓库，使用git推送，否则使用`vercel deploy -y --no-wait --scope <team-slug>`，然后`vercel inspect <url>`检查状态）。
 
 ---
 
-### No-Auth Fallback — claude.ai sandbox
+### 无认证回退 — claude.ai 沙盒
 
-**When to use:** Last resort when the CLI can't be installed or authenticated in the claude.ai sandbox. This requires no authentication — it returns a **Preview URL** (live site) and a **Claim URL** (transfer to your Vercel account).
+**使用时机：** 当CLI无法在claude.ai沙盒中安装或认证时的最后手段。这不需要认证 — 它返回一个**预览URL**（实时站点）和一个**认领URL**（转移到您的Vercel账户）。
 
 ```bash
 bash /mnt/skills/user/deploy-to-vercel/resources/deploy.sh [path]
 ```
 
-**Arguments:**
-- `path` - Directory to deploy, or a `.tgz` file (defaults to current directory)
+**参数：**
+- `path` - 要部署的目录，或`.tgz`文件（默认为当前目录）
 
-**Examples:**
+**示例：**
 ```bash
-# Deploy current directory
+# 部署当前目录
 bash /mnt/skills/user/deploy-to-vercel/resources/deploy.sh
 
-# Deploy specific project
+# 部署特定项目
 bash /mnt/skills/user/deploy-to-vercel/resources/deploy.sh /path/to/project
 
-# Deploy existing tarball
+# 部署现有压缩包
 bash /mnt/skills/user/deploy-to-vercel/resources/deploy.sh /path/to/project.tgz
 ```
 
-The script auto-detects the framework from `package.json`, packages the project (excluding `node_modules`, `.git`, `.env`), uploads it, and waits for the build to complete.
+脚本会自动从`package.json`检测框架，打包项目（排除`node_modules`、`.git`、`.env`），上传并等待构建完成。
 
-**Tell the user:** "Your deployment is ready at [previewUrl]. Claim it at [claimUrl] to manage your deployment."
+**告诉用户：** "您的部署已准备就绪，地址为[previewUrl]。在[claimUrl]认领它以管理您的部署。"
 
 ---
 
-### No-Auth Fallback — Codex sandbox
+### 无认证回退 — Codex 沙盒
 
-**When to use:** In the Codex sandbox where the CLI may not be authenticated. Codex runs in a sandboxed environment by default — try the CLI first, and fall back to the deploy script if auth fails.
+**使用时机：** 在Codex沙盒中，CLI可能未认证。Codex默认在沙盒环境中运行 — 首先尝试CLI，如果认证失败，回退到部署脚本。
 
-1. **Check whether the Vercel CLI is installed** (no escalation needed for this check):
+1. **检查Vercel CLI是否已安装**（此检查不需要权限提升）：
    ```bash
    command -v vercel
    ```
 
-2. **If `vercel` is installed**, try deploying with the CLI:
+2. **如果`vercel`已安装**，尝试使用CLI部署：
    ```bash
    vercel deploy [path] -y --no-wait
    ```
 
-3. **If `vercel` is not installed, or the CLI fails with "No existing credentials found"**, use the fallback script:
+3. **如果`vercel`未安装，或CLI失败并显示"No existing credentials found"**，使用回退脚本：
    ```bash
-   skill_dir="<path-to-skill>"
+   skill_dir="<skill路径>"
 
-   # Deploy current directory
+   # 部署当前目录
    bash "$skill_dir/resources/deploy-codex.sh"
 
-   # Deploy specific project
+   # 部署特定项目
    bash "$skill_dir/resources/deploy-codex.sh" /path/to/project
 
-   # Deploy existing tarball
+   # 部署现有压缩包
    bash "$skill_dir/resources/deploy-codex.sh" /path/to/project.tgz
    ```
 
-The script handles framework detection, packaging, and deployment. It waits for the build to complete and returns JSON with `previewUrl` and `claimUrl`.
+脚本处理框架检测、打包和部署。它等待构建完成并返回包含`previewUrl`和`claimUrl`的JSON。
 
-**Tell the user:** "Your deployment is ready at [previewUrl]. Claim it at [claimUrl] to manage your deployment."
+**告诉用户：** "您的部署已准备就绪，地址为[previewUrl]。在[claimUrl]认领它以管理您的部署。"
 
-**Escalated network access:** Only escalate the actual deploy command if sandboxing blocks the network call (`sandbox_permissions=require_escalated`). Do **not** escalate the `command -v vercel` check.
+**提升网络访问：** 仅当沙盒阻止网络调用时（`sandbox_permissions=require_escalated`）才提升实际部署命令的权限。**不要**提升`command -v vercel`检查。
 
 ---
 
-## Agent-Specific Notes
+## 代理特定说明
 
-### Claude Code / terminal-based agents
+### Claude Code / 基于终端的代理
 
-You have full shell access. Do NOT use the `/mnt/skills/` path. Follow the decision flow above using the CLI directly.
+您拥有完整的shell访问权限。**不要**使用`/mnt/skills/`路径。直接使用CLI按照上述决策流程操作。
 
-For the no-auth fallback, run the deploy script from the skill's installed location:
+对于无认证回退，从技能的安装位置运行部署脚本：
 ```bash
 bash ~/.claude/skills/deploy-to-vercel/resources/deploy.sh [path]
 ```
-The path may vary depending on where the user installed the skill.
+路径可能因用户安装技能的位置而异。
 
-### Sandboxed environments (claude.ai)
+### 沙盒环境（claude.ai）
 
-You likely cannot run `vercel login` or `git push`. Go directly to the **no-auth fallback — claude.ai sandbox**.
+您可能无法运行`vercel login`或`git push`。直接使用**无认证回退 — claude.ai 沙盒**。
 
 ### Codex
 
-Codex runs in a sandbox. Check if the CLI is available first, then fall back to the deploy script. Go to the **no-auth fallback — Codex sandbox**.
+Codex在沙盒中运行。首先检查CLI是否可用，然后回退到部署脚本。使用**无认证回退 — Codex 沙盒**。
 
 ---
 
-## Output
+## 输出
 
-Always show the user the deployment URL.
+始终向用户显示部署URL。
 
-- **Git push:** Use `vercel ls --format json` to find the preview URL. If the CLI isn't authenticated, tell the user to check the Vercel dashboard or commit status checks.
-- **CLI deploy:** Show the URL returned by `vercel deploy --no-wait`. Use `vercel inspect <url>` to check build status and report it to the user.
-- **No-auth fallback:** Show both the preview URL and the claim URL:
+- **Git推送：** 使用`vercel ls --format json`查找预览URL。如果CLI未认证，告诉用户检查Vercel仪表板或提交状态检查。
+- **CLI部署：** 显示`vercel deploy --no-wait`返回的URL。使用`vercel inspect <url>`检查构建状态并向用户报告。
+- **无认证回退：** 同时显示预览URL和认领URL：
   ```
-  Deployment successful!
+  部署成功！
 
-  Preview URL: https://my-app-abc123.vercel.app
-  Claim URL:   https://vercel.com/claim-deployment?code=...
+  预览URL：https://my-app-abc123.vercel.app
+  认领URL：https://vercel.com/claim-deployment?code=...
 
-  View your site at the Preview URL.
-  To transfer this deployment to your Vercel account, visit the Claim URL.
+  在预览URL查看您的站点。
+  要将此部署转移到您的Vercel账户，请访问认领URL。
   ```
 
-**Do not** curl or fetch the deployed URL to verify it works. Just return the link.
+**不要**通过curl或fetch部署的URL来验证它是否工作。只需返回链接。
 
 ---
 
-## Troubleshooting
+## 故障排除
 
-### Network Egress Error (claude.ai)
+### 网络出口错误（claude.ai）
 
-If deployment fails due to network restrictions on claude.ai, tell the user:
+如果由于claude.ai上的网络限制导致部署失败，告诉用户：
 
 ```
-Deployment failed due to network restrictions. To fix this:
+由于网络限制，部署失败。要解决此问题：
 
-1. Go to https://claude.ai/settings/capabilities
-2. Add *.vercel.com to the allowed domains
-3. Try deploying again
+1. 访问 https://claude.ai/settings/capabilities
+2. 将 *.vercel.com 添加到允许的域
+3. 再次尝试部署
 ```
 
-### Escalated Network Access (Codex / sandboxed environments)
+### 提升网络访问（Codex / 沙盒环境）
 
-If deployment fails due to network issues (timeouts, DNS errors, connection resets) in a sandboxed environment, rerun with escalated permissions (`sandbox_permissions=require_escalated`). Do not escalate the initial CLI availability check — only escalate the actual deploy command.
+如果在沙盒环境中由于网络问题（超时、DNS错误、连接重置）导致部署失败，使用提升的权限重新运行（`sandbox_permissions=require_escalated`）。不要提升初始CLI可用性检查 — 只提升实际的部署命令。
 
-Example guidance to the user:
+向用户的示例指导：
 ```
-The deploy needs escalated network access to deploy to Vercel. I can rerun
-the command with escalated permissions — want me to proceed?
+部署需要提升网络访问权限才能部署到Vercel。我可以使用提升的权限重新运行命令 — 要继续吗？
 ```
 
-### CLI Auth Failure
+### CLI认证失败
 
-If `vercel login` or `vercel deploy` fails with authentication errors, fall back to the no-auth deploy script (claude.ai or Codex variant, depending on the environment).
+如果`vercel login`或`vercel deploy`因认证错误而失败，回退到无认证部署脚本（claude.ai或Codex变体，取决于环境）。

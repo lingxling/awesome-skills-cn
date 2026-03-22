@@ -1,6 +1,6 @@
 ---
 name: pylabrobot
-description: Vendor-agnostic lab automation framework. Use when controlling multiple equipment types (Hamilton, Tecan, Opentrons, plate readers, pumps) or needing unified programming across different vendors. Best for complex workflows, multi-vendor setups, simulation. For Opentrons-only protocols with official API, opentrons-integration may be simpler.
+description: 厂商无关的实验室自动化框架。用于控制多种设备类型（Hamilton、Tecan、Opentrons、读板机、泵）或需要跨不同厂商的统一编程。最适合复杂工作流程、多厂商设置、模拟。对于使用官方API的仅Opentrons协议，opentrons-integration可能更简单。
 license: MIT license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,138 +8,138 @@ metadata:
 
 # PyLabRobot
 
-## Overview
+## 概述
 
-PyLabRobot is a hardware-agnostic, pure Python Software Development Kit for automated and autonomous laboratories. Use this skill to control liquid handling robots, plate readers, pumps, heater shakers, incubators, centrifuges, and other laboratory automation equipment through a unified Python interface that works across platforms (Windows, macOS, Linux).
+PyLabRobot是一个硬件无关的纯Python软件开发工具包，用于自动化和自主实验室。使用此技能通过统一的Python接口控制液体处理机器人、读板机、泵、加热振荡器、培养箱、离心机和其他实验室自动化设备，可跨平台（Windows、macOS、Linux）工作。
 
-## When to Use This Skill
+## 使用场景
 
-Use this skill when:
-- Programming liquid handling robots (Hamilton STAR/STARlet, Opentrons OT-2, Tecan EVO)
-- Automating laboratory workflows involving pipetting, sample preparation, or analytical measurements
-- Managing deck layouts and laboratory resources (plates, tips, containers, troughs)
-- Integrating multiple lab devices (liquid handlers, plate readers, heater shakers, pumps)
-- Creating reproducible laboratory protocols with state management
-- Simulating protocols before running on physical hardware
-- Reading plates using BMG CLARIOstar or other supported plate readers
-- Controlling temperature, shaking, centrifugation, or other material handling operations
-- Working with laboratory automation in Python
+当您需要以下操作时使用此技能：
+- 编程液体处理机器人（Hamilton STAR/STARlet、Opentrons OT-2、Tecan EVO）
+- 自动化涉及移液、样品制备或分析测量的实验室工作流程
+- 管理工作台布局和实验室资源（板、吸头、容器、槽）
+- 集成多个实验室设备（液体处理器、读板机、加热振荡器、泵）
+- 创建具有状态管理的可重现实验室协议
+- 在物理硬件上运行前模拟协议
+- 使用BMG CLARIOstar或其他支持的读板机读取板
+- 控制温度、振荡、离心或其他材料处理操作
+- 在Python中进行实验室自动化
 
-## Core Capabilities
+## 核心功能
 
-PyLabRobot provides comprehensive laboratory automation through six main capability areas, each detailed in the references/ directory:
+PyLabRobot通过六个主要功能领域提供全面的实验室自动化，每个领域在references/目录中详细说明：
 
-### 1. Liquid Handling (`references/liquid-handling.md`)
+### 1. 液体处理 (`references/liquid-handling.md`)
 
-Control liquid handling robots for aspirating, dispensing, and transferring liquids. Key operations include:
-- **Basic Operations**: Aspirate, dispense, transfer liquids between wells
-- **Tip Management**: Pick up, drop, and track pipette tips automatically
-- **Advanced Techniques**: Multi-channel pipetting, serial dilutions, plate replication
-- **Volume Tracking**: Automatic tracking of liquid volumes in wells
-- **Hardware Support**: Hamilton STAR/STARlet, Opentrons OT-2, Tecan EVO, and others
+控制液体处理机器人进行吸液、分液和液体转移。关键操作包括：
+- **基本操作**：吸液、分液、在孔之间转移液体
+- **吸头管理**：自动拾取、丢弃和跟踪移液器吸头
+- **高级技术**：多通道移液、系列稀释、板复制
+- **体积跟踪**：自动跟踪孔中的液体体积
+- **硬件支持**：Hamilton STAR/STARlet、Opentrons OT-2、Tecan EVO等
 
-### 2. Resource Management (`references/resources.md`)
+### 2. 资源管理 (`references/resources.md`)
 
-Manage laboratory resources in a hierarchical system:
-- **Resource Types**: Plates, tip racks, troughs, tubes, carriers, and custom labware
-- **Deck Layout**: Assign resources to deck positions with coordinate systems
-- **State Management**: Track tip presence, liquid volumes, and resource states
-- **Serialization**: Save and load deck layouts and states from JSON files
-- **Resource Discovery**: Access wells, tips, and containers through intuitive APIs
+在分层系统中管理实验室资源：
+- **资源类型**：板、吸头盒、槽、试管、载体和自定义实验室器具
+- **工作台布局**：通过坐标系将资源分配到工作台位置
+- **状态管理**：跟踪吸头存在、液体体积和资源状态
+- **序列化**：从JSON文件保存和加载工作台布局和状态
+- **资源发现**：通过直观的API访问孔、吸头和容器
 
-### 3. Hardware Backends (`references/hardware-backends.md`)
+### 3. 硬件后端 (`references/hardware-backends.md`)
 
-Connect to diverse laboratory equipment through backend abstraction:
-- **Liquid Handlers**: Hamilton STAR (full support), Opentrons OT-2, Tecan EVO
-- **Simulation**: ChatterboxBackend for protocol testing without hardware
-- **Platform Support**: Works on Windows, macOS, Linux, and Raspberry Pi
-- **Backend Switching**: Change robots by swapping backend without rewriting protocols
+通过后端抽象连接到各种实验室设备：
+- **液体处理器**：Hamilton STAR（完全支持）、Opentrons OT-2、Tecan EVO
+- **模拟**：ChatterboxBackend用于无硬件的协议测试
+- **平台支持**：在Windows、macOS、Linux和树莓派上工作
+- **后端切换**：通过交换后端更改机器人，无需重写协议
 
-### 4. Analytical Equipment (`references/analytical-equipment.md`)
+### 4. 分析设备 (`references/analytical-equipment.md`)
 
-Integrate plate readers and analytical instruments:
-- **Plate Readers**: BMG CLARIOstar for absorbance, luminescence, fluorescence
-- **Scales**: Mettler Toledo integration for mass measurements
-- **Integration Patterns**: Combine liquid handlers with analytical equipment
-- **Automated Workflows**: Move plates between devices automatically
+集成读板机和分析仪器：
+- **读板机**：BMG CLARIOstar用于吸光度、发光、荧光
+- **天平**：Mettler Toledo集成用于质量测量
+- **集成模式**：将液体处理器与分析设备结合
+- **自动化工作流程**：自动在设备之间移动板
 
-### 5. Material Handling (`references/material-handling.md`)
+### 5. 材料处理 (`references/material-handling.md`)
 
-Control environmental and material handling equipment:
-- **Heater Shakers**: Hamilton HeaterShaker, Inheco ThermoShake
-- **Incubators**: Inheco and Thermo Fisher incubators with temperature control
-- **Centrifuges**: Agilent VSpin with bucket positioning and spin control
-- **Pumps**: Cole Parmer Masterflex for fluid pumping operations
-- **Temperature Control**: Set and monitor temperatures during protocols
+控制环境和材料处理设备：
+- **加热振荡器**：Hamilton HeaterShaker、Inheco ThermoShake
+- **培养箱**：具有温度控制的Inheco和Thermo Fisher培养箱
+- **离心机**：Agilent VSpin，具有桶定位和旋转控制
+- **泵**：Cole Parmer Masterflex用于流体泵送操作
+- **温度控制**：在协议期间设置和监控温度
 
-### 6. Visualization & Simulation (`references/visualization.md`)
+### 6. 可视化和模拟 (`references/visualization.md`)
 
-Visualize and simulate laboratory protocols:
-- **Browser Visualizer**: Real-time 3D visualization of deck state
-- **Simulation Mode**: Test protocols without physical hardware
-- **State Tracking**: Monitor tip presence and liquid volumes visually
-- **Deck Editor**: Graphical tool for designing deck layouts
-- **Protocol Validation**: Verify protocols before running on hardware
+可视化和模拟实验室协议：
+- **浏览器可视化器**：工作台状态的实时3D可视化
+- **模拟模式**：无需物理硬件测试协议
+- **状态跟踪**：可视化监控吸头存在和液体体积
+- **工作台编辑器**：用于设计工作台布局的图形工具
+- **协议验证**：在硬件上运行前验证协议
 
-## Quick Start
+## 快速开始
 
-To get started with PyLabRobot, install the package and initialize a liquid handler:
+要开始使用PyLabRobot，安装包并初始化液体处理器：
 
 ```python
-# Install PyLabRobot
+# 安装PyLabRobot
 # uv pip install pylabrobot
 
-# Basic liquid handling setup
+# 基本液体处理设置
 from pylabrobot.liquid_handling import LiquidHandler
 from pylabrobot.liquid_handling.backends import STAR
 from pylabrobot.resources import STARLetDeck
 
-# Initialize liquid handler
+# 初始化液体处理器
 lh = LiquidHandler(backend=STAR(), deck=STARLetDeck())
 await lh.setup()
 
-# Basic operations
+# 基本操作
 await lh.pick_up_tips(tip_rack["A1:H1"])
 await lh.aspirate(plate["A1"], vols=100)
 await lh.dispense(plate["A2"], vols=100)
 await lh.drop_tips()
 ```
 
-## Working with References
+## 使用参考
 
-This skill organizes detailed information across multiple reference files. Load the relevant reference when:
-- **Liquid Handling**: Writing pipetting protocols, tip management, transfers
-- **Resources**: Defining deck layouts, managing plates/tips, custom labware
-- **Hardware Backends**: Connecting to specific robots, switching platforms
-- **Analytical Equipment**: Integrating plate readers, scales, or analytical devices
-- **Material Handling**: Using heater shakers, incubators, centrifuges, pumps
-- **Visualization**: Simulating protocols, visualizing deck states
+此技能在多个参考文件中组织详细信息。在以下情况下加载相关参考：
+- **液体处理**：编写移液协议、吸头管理、转移
+- **资源**：定义工作台布局、管理板/吸头、自定义实验室器具
+- **硬件后端**：连接到特定机器人、切换平台
+- **分析设备**：集成读板机、天平或分析设备
+- **材料处理**：使用加热振荡器、培养箱、离心机、泵
+- **可视化**：模拟协议、可视化工作台状态
 
-All reference files can be found in the `references/` directory and contain comprehensive examples, API usage patterns, and best practices.
+所有参考文件都可以在`references/`目录中找到，包含全面的示例、API使用模式和最佳实践。
 
-## Best Practices
+## 最佳实践
 
-When creating laboratory automation protocols with PyLabRobot:
+使用PyLabRobot创建实验室自动化协议时：
 
-1. **Start with Simulation**: Use ChatterboxBackend and the visualizer to test protocols before running on hardware
-2. **Enable Tracking**: Turn on tip tracking and volume tracking for accurate state management
-3. **Resource Naming**: Use clear, descriptive names for all resources (plates, tip racks, containers)
-4. **State Serialization**: Save deck layouts and states to JSON for reproducibility
-5. **Error Handling**: Implement proper async error handling for hardware operations
-6. **Temperature Control**: Set temperatures early as heating/cooling takes time
-7. **Modular Protocols**: Break complex workflows into reusable functions
-8. **Documentation**: Reference official docs at https://docs.pylabrobot.org for latest features
+1. **从模拟开始**：使用ChatterboxBackend和可视化器在硬件上运行前测试协议
+2. **启用跟踪**：开启吸头跟踪和体积跟踪以实现准确的状态管理
+3. **资源命名**：为所有资源（板、吸头盒、容器）使用清晰、描述性的名称
+4. **状态序列化**：将工作台布局和状态保存到JSON以实现可重现性
+5. **错误处理**：为硬件操作实现适当的异步错误处理
+6. **温度控制**：提前设置温度，因为加热/冷却需要时间
+7. **模块化协议**：将复杂工作流程分解为可重用函数
+8. **文档**：参考官方文档 https://docs.pylabrobot.org 获取最新功能
 
-## Common Workflows
+## 常见工作流程
 
-### Liquid Transfer Protocol
+### 液体转移协议
 
 ```python
-# Setup
+# 设置
 lh = LiquidHandler(backend=STAR(), deck=STARLetDeck())
 await lh.setup()
 
-# Define resources
+# 定义资源
 tip_rack = TIP_CAR_480_A00(name="tip_rack")
 source_plate = Cos_96_DW_1mL(name="source")
 dest_plate = Cos_96_DW_1mL(name="dest")
@@ -148,36 +148,35 @@ lh.deck.assign_child_resource(tip_rack, rails=1)
 lh.deck.assign_child_resource(source_plate, rails=10)
 lh.deck.assign_child_resource(dest_plate, rails=15)
 
-# Transfer protocol
+# 转移协议
 await lh.pick_up_tips(tip_rack["A1:H1"])
 await lh.transfer(source_plate["A1:H12"], dest_plate["A1:H12"], vols=100)
 await lh.drop_tips()
 ```
 
-### Plate Reading Workflow
+### 读板工作流程
 
 ```python
-# Setup plate reader
+# 设置读板机
 from pylabrobot.plate_reading import PlateReader
 from pylabrobot.plate_reading.clario_star_backend import CLARIOstarBackend
 
 pr = PlateReader(name="CLARIOstar", backend=CLARIOstarBackend())
 await pr.setup()
 
-# Set temperature and read
+# 设置温度并读取
 await pr.set_temperature(37)
 await pr.open()
-# (manually or robotically load plate)
+# (手动或机器人加载板)
 await pr.close()
 data = await pr.read_absorbance(wavelength=450)
 ```
 
-## Additional Resources
+## 其他资源
 
-- **Official Documentation**: https://docs.pylabrobot.org
-- **GitHub Repository**: https://github.com/PyLabRobot/pylabrobot
-- **Community Forum**: https://discuss.pylabrobot.org
-- **PyPI Package**: https://pypi.org/project/PyLabRobot/
+- **官方文档**：https://docs.pylabrobot.org
+- **GitHub仓库**：https://github.com/PyLabRobot/pylabrobot
+- **社区论坛**：https://discuss.pylabrobot.org
+- **PyPI包**：https://pypi.org/project/PyLabRobot/
 
-For detailed usage of specific capabilities, refer to the corresponding reference file in the `references/` directory.
-
+有关特定功能的详细使用方法，请参考`references/`目录中相应的参考文件。

@@ -1,6 +1,6 @@
 ---
 name: cc-skill-security-review
-description: "This skill ensures all code follows security best practices and identifies potential vulnerabilities."
+description: "Use this skill when adding authentication, handling user input, working with secrets, creating API endpoints, or implementing payment/sensitive features. Provides comprehensive security checklist a..."
 risk: unknown
 source: community
 date_added: "2026-02-27"
@@ -10,7 +10,8 @@ date_added: "2026-02-27"
 
 This skill ensures all code follows security best practices and identifies potential vulnerabilities.
 
-## When to Use
+## When to Activate
+
 - Implementing authentication or authorization
 - Handling user input or file uploads
 - Creating new API endpoints

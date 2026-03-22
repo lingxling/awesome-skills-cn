@@ -1,8 +1,6 @@
 ---
 name: chat-widget
 description: Build a real-time support chat system with a floating widget for users and an admin dashboard for support staff. Use when the user wants live chat, customer support chat, real-time messaging, or in-app support.
-risk: unknown
-source: community
 ---
 
 # Live Support Chat Widget

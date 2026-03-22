@@ -10,6 +10,7 @@ vi.mock('../../lib/supabase', () => ({
   supabase: {
     from,
   },
+  sharedStarWritesEnabled: false,
 }));
 
 describe('useSkillStars shared writes', () => {

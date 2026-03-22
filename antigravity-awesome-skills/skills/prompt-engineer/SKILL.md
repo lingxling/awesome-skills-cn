@@ -17,6 +17,7 @@ The skill operates in "magic mode" - it works silently behind the scenes, only i
 This is a **universal skill** that works in any terminal context, not limited to Obsidian vaults or specific project structures.
 
 ## When to Use
+
 Invoke this skill when:
 
 - User provides a vague or generic prompt (e.g., "help me code Python")

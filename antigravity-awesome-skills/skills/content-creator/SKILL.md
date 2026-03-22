@@ -1,6 +1,6 @@
 ---
 name: content-creator
-description: "Professional-grade brand voice analysis, SEO optimization, and platform-specific content frameworks."
+description: "Create SEO-optimized marketing content with consistent brand voice. Includes brand voice analyzer, SEO optimizer, content frameworks, and social media templates. Use when writing blog posts, creati..."
 category: marketing
 risk: unknown
 source: community
@@ -12,6 +12,7 @@ date_added: "2026-02-27"
 Professional-grade brand voice analysis, SEO optimization, and platform-specific content frameworks.
 
 ## When to Use
+
 Use this skill when writing blog posts, creating social media content, establishing brand voice, optimizing content for SEO, or planning content calendars.
 
 ## Keywords

@@ -46,6 +46,7 @@ Dispatcher for skill creation excellence. Use the decision tree below to find th
 - [Pattern Skill](references/templates/pattern.md) (Design Patterns)
 
 ## When to Use
+
 - Creating a NEW skill from scratch
 - Improving an EXISTING skill that agents ignore
 - Debugging why a skill isn't being triggered

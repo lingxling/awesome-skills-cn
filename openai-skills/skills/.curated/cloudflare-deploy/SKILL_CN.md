@@ -1,118 +1,118 @@
 ---
 name: cloudflare-deploy
-description: Deploy applications and infrastructure to Cloudflare using Workers, Pages, and related platform services. Use when the user asks to deploy, host, publish, or set up a project on Cloudflare.
+description: 使用 Workers、Pages 和相关平台服务将应用程序和基础设施部署到 Cloudflare。当用户要求部署、托管、发布或在 Cloudflare 上设置项目时使用。
 ---
 
-# Cloudflare Deploy
+# Cloudflare 部署
 
-Consolidated skill for building on the Cloudflare platform. Use decision trees below to find the right product, then load detailed references.
+用于在 Cloudflare 平台上构建的整合技能。使用下面的决策树找到正确的产品，然后加载详细的参考文档。
 
-## Prerequisites
+## 前置条件
 
-- When sandboxing blocks the deployment network calls, rerun with `sandbox_permissions=require_escalated`.
-- The deployment might take a few minutes. Use appropriate timeout values.
+- 当沙箱阻止部署网络调用时，使用 `sandbox_permissions=require_escalated` 重新运行
+- 部署可能需要几分钟。使用适当的超时值。
 
-## Authentication (Required Before Deploy)
+## 身份验证（部署前必需）
 
-Verify auth before `wrangler deploy`, `wrangler pages deploy`, or `npm run deploy`:
+在 `wrangler deploy`、`wrangler pages deploy` 或 `npm run deploy` 之前验证身份：
 
 ```bash
-npx wrangler whoami    # Shows account if authenticated
+npx wrangler whoami    # 显示是否已通过身份验证
 ```
 
-Not authenticated? → `references/wrangler/auth.md`
-- Interactive/local: `wrangler login` (one-time OAuth)
-- CI/CD: Set `CLOUDFLARE_API_TOKEN` env var
+未通过身份验证？→ `references/wrangler/auth.md`
+- 交互/本地：`wrangler login`（一次性 OAuth）
+- CI/CD：设置 `CLOUDFLARE_API_TOKEN` 环境变量
 
-## Quick Decision Trees
+## 快速决策树
 
-### "I need to run code"
-
-```
-Need to run code?
-├─ Serverless functions at the edge → workers/
-├─ Full-stack web app with Git deploys → pages/
-├─ Stateful coordination/real-time → durable-objects/
-├─ Long-running multi-step jobs → workflows/
-├─ Run containers → containers/
-├─ Multi-tenant (customers deploy code) → workers-for-platforms/
-├─ Scheduled tasks (cron) → cron-triggers/
-├─ Lightweight edge logic (modify HTTP) → snippets/
-├─ Process Worker execution events (logs/observability) → tail-workers/
-└─ Optimize latency to backend infrastructure → smart-placement/
-```
-
-### "I need to store data"
+### "我需要运行代码"
 
 ```
-Need storage?
-├─ Key-value (config, sessions, cache) → kv/
-├─ Relational SQL → d1/ (SQLite) or hyperdrive/ (existing Postgres/MySQL)
-├─ Object/file storage (S3-compatible) → r2/
-├─ Message queue (async processing) → queues/
-├─ Vector embeddings (AI/semantic search) → vectorize/
-├─ Strongly-consistent per-entity state → durable-objects/ (DO storage)
-├─ Secrets management → secrets-store/
-├─ Streaming ETL to R2 → pipelines/
-└─ Persistent cache (long-term retention) → cache-reserve/
+需要运行代码？
+├─ 边缘的无服务器函数 → workers/
+├─ 具有部署的 Git 的全栈 Web 应用 → pages/
+├─ 有状态协调/实时 → durable-objects/
+├─ 长时间运行的多步骤任务 → workflows/
+├─ 运行容器 → containers/
+├─ 多租户（客户部署代码）→ workers-for-platforms/
+├─ 计划任务（cron）→ cron-triggers/
+├─ 轻量级边缘逻辑（修改 HTTP）→ snippets/
+├─ 处理 Worker 执行事件（日志/可观察性）→ tail-workers/
+└─ 优化后端基础设施的延迟 → smart-placement/
 ```
 
-### "I need AI/ML"
+### "我需要存储数据"
 
 ```
-Need AI?
-├─ Run inference (LLMs, embeddings, images) → workers-ai/
-├─ Vector database for RAG/search → vectorize/
-├─ Build stateful AI agents → agents-sdk/
-├─ Gateway for any AI provider (caching, routing) → ai-gateway/
-└─ AI-powered search widget → ai-search/
+需要存储？
+├─ 键值（配置、会话、缓存）→ kv/
+├─ 关系型 SQL → d1/（SQLite）或 hyperdrive/（现有的 Postgres/MySQL）
+├─ 对象/文件存储（S3 兼容）→ r2/
+├─ 消息队列（异步处理）→ queues/
+├─ 向量嵌入（AI/语义搜索）→ vectorize/
+├─ 强一致性每实体状态 → durable-objects/（DO 存储）
+├─ 密钥管理 → secrets-store/
+├─ 流式 ETL 到 R2 → pipelines/
+└─ 持久缓存（长期保留）→ cache-reserve/
 ```
 
-### "I need networking/connectivity"
+### "我需要 AI/ML"
 
 ```
-Need networking?
-├─ Expose local service to internet → tunnel/
-├─ TCP/UDP proxy (non-HTTP) → spectrum/
-├─ WebRTC TURN server → turn/
-├─ Private network connectivity → network-interconnect/
-├─ Optimize routing → argo-smart-routing/
-├─ Optimize latency to backend (not user) → smart-placement/
-└─ Real-time video/audio → realtimekit/ or realtime-sfu/
+需要 AI？
+├─ 运行推理（LLMs、嵌入、图像）→ workers-ai/
+├─ 向量数据库用于 RAG/搜索 → vectorize/
+├─ 构建有状态的 AI 智能体 → agents-sdk/
+├─ 任何 AI 提供商的网关（缓存、路由）→ ai-gateway/
+└─ AI 驱动的搜索小部件 → ai-search/
 ```
 
-### "I need security"
+### "我需要网络/连接性"
 
 ```
-Need security?
-├─ Web Application Firewall → waf/
-├─ DDoS protection → ddos/
-├─ Bot detection/management → bot-management/
-├─ API protection → api-shield/
-├─ CAPTCHA alternative → turnstile/
-└─ Credential leak detection → waf/ (managed ruleset)
+需要网络？
+├─ 将本地服务暴露到互联网 → tunnel/
+├─ TCP/UDP 代理（非 HTTP）→ spectrum/
+├─ WebRTC TURN 服务器 → turn/
+├─ 私有网络连接性 → network-interconnect/
+├─ 优化路由 → argo-smart-routing/
+├─ 优化后端延迟（非用户）→ smart-placement/
+└─ 实时视频/音频 → realtimekit/ 或 realtime-sfu/
 ```
 
-### "I need media/content"
+### "我需要安全性"
 
 ```
-Need media?
-├─ Image optimization/transformation → images/
-├─ Video streaming/encoding → stream/
-├─ Browser automation/screenshots → browser-rendering/
-└─ Third-party script management → zaraz/
+需要安全性？
+├─ Web 应用程序防火墙 → waf/
+├─ DDoS 保护 → ddos/
+├─ 机器人检测/管理 → bot-management/
+├─ API 保护 → api-shield/
+├─ CAPTCHA 替代方案 → turnstile/
+└─ 凭证泄漏检测 → waf/（托管规则集）
 ```
 
-### "I need infrastructure-as-code"
+### "我需要媒体/内容"
 
 ```
-Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
+需要媒体？
+├─ 图像优化/转换 → images/
+├─ 视频流式传输/编码 → stream/
+├─ 浏览器自动化/截图 → browser-rendering/
+└─ 第三方脚本管理 → zaraz/
 ```
 
-## Product Index
+### "我需要基础设施即代码"
 
-### Compute & Runtime
-| Product | Reference |
+```
+需要 IaC？→ pulumi/（Pulumi）、terraform/（Terraform）或 api/（REST API）
+```
+
+## 产品索引
+
+### 计算与运行时
+| 产品 | 参考 |
 |---------|-----------|
 | Workers | `references/workers/` |
 | Pages | `references/pages/` |
@@ -126,8 +126,8 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | Snippets | `references/snippets/` |
 | Smart Placement | `references/smart-placement/` |
 
-### Storage & Data
-| Product | Reference |
+### 存储与数据
+| 产品 | 参考 |
 |---------|-----------|
 | KV | `references/kv/` |
 | D1 | `references/d1/` |
@@ -140,8 +140,8 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | R2 Data Catalog | `references/r2-data-catalog/` |
 | R2 SQL | `references/r2-sql/` |
 
-### AI & Machine Learning
-| Product | Reference |
+### AI 与机器学习
+| 产品 | 参考 |
 |---------|-----------|
 | Workers AI | `references/workers-ai/` |
 | Vectorize | `references/vectorize/` |
@@ -149,8 +149,8 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | AI Gateway | `references/ai-gateway/` |
 | AI Search | `references/ai-search/` |
 
-### Networking & Connectivity
-| Product | Reference |
+### 网络与连接性
+| 产品 | 参考 |
 |---------|-----------|
 | Tunnel | `references/tunnel/` |
 | Spectrum | `references/spectrum/` |
@@ -159,8 +159,8 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | Argo Smart Routing | `references/argo-smart-routing/` |
 | Workers VPC | `references/workers-vpc/` |
 
-### Security
-| Product | Reference |
+### 安全性
+| 产品 | 参考 |
 |---------|-----------|
 | WAF | `references/waf/` |
 | DDoS Protection | `references/ddos/` |
@@ -168,22 +168,22 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | API Shield | `references/api-shield/` |
 | Turnstile | `references/turnstile/` |
 
-### Media & Content
-| Product | Reference |
+### 媒体与内容
+| 产品 | 参考 |
 |---------|-----------|
 | Images | `references/images/` |
 | Stream | `references/stream/` |
 | Browser Rendering | `references/browser-rendering/` |
 | Zaraz | `references/zaraz/` |
 
-### Real-Time Communication
-| Product | Reference |
+### 实时通信
+| 产品 | 参考 |
 |---------|-----------|
 | RealtimeKit | `references/realtimekit/` |
 | Realtime SFU | `references/realtime-sfu/` |
 
-### Developer Tools
-| Product | Reference |
+### 开发者工具
+| 产品 | 参考 |
 |---------|-----------|
 | Wrangler | `references/wrangler/` |
 | Miniflare | `references/miniflare/` |
@@ -195,15 +195,15 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | Workerd | `references/workerd/` |
 | Workers Playground | `references/workers-playground/` |
 
-### Infrastructure as Code
-| Product | Reference |
+### 基础设施即代码
+| 产品 | 参考 |
 |---------|-----------|
 | Pulumi | `references/pulumi/` |
 | Terraform | `references/terraform/` |
 | API | `references/api/` |
 
-### Other Services
-| Product | Reference |
+### 其他服务
+| 产品 | 参考 |
 |---------|-----------|
 | Email Routing | `references/email-routing/` |
 | Email Workers | `references/email-workers/` |
@@ -211,14 +211,14 @@ Need IaC? → pulumi/ (Pulumi), terraform/ (Terraform), or api/ (REST API)
 | Bindings | `references/bindings/` |
 | Cache Reserve | `references/cache-reserve/` |
 
-## Troubleshooting
+## 故障排除
 
-### Escalated Network Access
+### 升级的网络访问
 
-If deployment fails due to network issues (timeouts, DNS errors, connection resets), rerun the deploy with escalated permissions (use `sandbox_permissions=require_escalated`). The deploy requires escalated network access when sandbox networking blocks outbound requests.
+如果由于网络问题（超时、DNS 错误、连接重置）导致部署失败，使用提升的权限重新运行部署（使用 `sandbox_permissions=require_escalated`）。部署需要提升的网络访问权限，当沙箱网络阻止出站请求时。
 
-Example guidance to the user:
+给用户的示例指导：
 
 ```
-The deploy needs escalated network access to deploy to Cloudflare. I can rerun the command with escalated permissions—want me to proceed?
+部署需要提升的网络访问权限才能部署到 Cloudflare。我可以使用提升的权限重新运行命令—要我继续吗？
 ```

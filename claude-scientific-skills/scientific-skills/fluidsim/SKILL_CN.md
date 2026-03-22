@@ -1,6 +1,6 @@
 ---
 name: fluidsim
-description: Framework for computational fluid dynamics simulations using Python. Use when running fluid dynamics simulations including Navier-Stokes equations (2D/3D), shallow water equations, stratified flows, or when analyzing turbulence, vortex dynamics, or geophysical flows. Provides pseudospectral methods with FFT, HPC support, and comprehensive output analysis.
+description: 使用Python进行计算流体动力学模拟的框架。用于运行流体动力学模拟，包括纳维-斯托克斯方程（2D/3D）、浅水方程、分层流，或分析湍流、涡动力学或地球物理流。提供使用FFT的伪谱方法、HPC支持和全面的输出分析。
 license: CeCILL FREE SOFTWARE LICENSE AGREEMENT
 metadata:
     skill-author: K-Dense Inc.
@@ -8,54 +8,54 @@ metadata:
 
 # FluidSim
 
-## Overview
+## 概述
 
-FluidSim is an object-oriented Python framework for high-performance computational fluid dynamics (CFD) simulations. It provides solvers for periodic-domain equations using pseudospectral methods with FFT, delivering performance comparable to Fortran/C++ while maintaining Python's ease of use.
+FluidSim是一个面向对象的高性能计算流体动力学（CFD）Python框架。它提供使用FFT伪谱方法的周期域方程求解器，在保持Python易用性的同时，提供与Fortran/C++相当的性能。
 
-**Key strengths**:
-- Multiple solvers: 2D/3D Navier-Stokes, shallow water, stratified flows
-- High performance: Pythran/Transonic compilation, MPI parallelization
-- Complete workflow: Parameter configuration, simulation execution, output analysis
-- Interactive analysis: Python-based post-processing and visualization
+**核心优势：**
+- 多个求解器：2D/3D纳维-斯托克斯、浅水、分层流
+- 高性能：Pythran/Transonic编译、MPI并行化
+- 完整工作流：参数配置、模拟执行、输出分析
+- 交互式分析：基于Python的后处理和可视化
 
-## Core Capabilities
+## 核心功能
 
-### 1. Installation and Setup
+### 1. 安装和设置
 
-Install fluidsim using uv with appropriate feature flags:
+使用uv和适当的功能标志安装fluidsim：
 
 ```bash
-# Basic installation
+# 基本安装
 uv uv pip install fluidsim
 
-# With FFT support (required for most solvers)
+# 带FFT支持（大多数求解器需要）
 uv uv pip install "fluidsim[fft]"
 
-# With MPI for parallel computing
+# 带MPI用于并行计算
 uv uv pip install "fluidsim[fft,mpi]"
 ```
 
-Set environment variables for output directories (optional):
+设置输出目录的环境变量（可选）：
 
 ```bash
 export FLUIDSIM_PATH=/path/to/simulation/outputs
 export FLUIDDYN_PATH_SCRATCH=/path/to/working/directory
 ```
 
-No API keys or authentication required.
+不需要API密钥或身份验证。
 
-See `references/installation.md` for complete installation instructions and environment configuration.
+参见 `references/installation.md` 获取完整安装说明和环境配置。
 
-### 2. Running Simulations
+### 2. 运行模拟
 
-Standard workflow consists of five steps:
+标准工作流由五个步骤组成：
 
-**Step 1**: Import solver
+**步骤1**：导入求解器
 ```python
 from fluidsim.solvers.ns2d.solver import Simul
 ```
 
-**Step 2**: Create and configure parameters
+**步骤2**：创建和配置参数
 ```python
 params = Simul.create_default_params()
 params.oper.nx = params.oper.ny = 256
@@ -65,133 +65,133 @@ params.time_stepping.t_end = 10.0
 params.init_fields.type = "noise"
 ```
 
-**Step 3**: Instantiate simulation
+**步骤3**：实例化模拟
 ```python
 sim = Simul(params)
 ```
 
-**Step 4**: Execute
+**步骤4**：执行
 ```python
 sim.time_stepping.start()
 ```
 
-**Step 5**: Analyze results
+**步骤5**：分析结果
 ```python
 sim.output.phys_fields.plot("vorticity")
 sim.output.spatial_means.plot()
 ```
 
-See `references/simulation_workflow.md` for complete examples, restarting simulations, and cluster deployment.
+参见 `references/simulation_workflow.md` 获取完整示例、重启模拟和集群部署。
 
-### 3. Available Solvers
+### 3. 可用求解器
 
-Choose solver based on physical problem:
+根据物理问题选择求解器：
 
-**2D Navier-Stokes** (`ns2d`): 2D turbulence, vortex dynamics
+**2D纳维-斯托克斯** (`ns2d`)：2D湍流、涡动力学
 ```python
 from fluidsim.solvers.ns2d.solver import Simul
 ```
 
-**3D Navier-Stokes** (`ns3d`): 3D turbulence, realistic flows
+**3D纳维-斯托克斯** (`ns3d`)：3D湍流、真实流
 ```python
 from fluidsim.solvers.ns3d.solver import Simul
 ```
 
-**Stratified flows** (`ns2d.strat`, `ns3d.strat`): Oceanic/atmospheric flows
+**分层流** (`ns2d.strat`, `ns3d.strat`)：海洋/大气流
 ```python
 from fluidsim.solvers.ns2d.strat.solver import Simul
-params.N = 1.0  # Brunt-Väisälä frequency
+params.N = 1.0  # 布伦特-维塞拉频率
 ```
 
-**Shallow water** (`sw1l`): Geophysical flows, rotating systems
+**浅水** (`sw1l`)：地球物理流、旋转系统
 ```python
 from fluidsim.solvers.sw1l.solver import Simul
-params.f = 1.0  # Coriolis parameter
+params.f = 1.0  # 科里奥利参数
 ```
 
-See `references/solvers.md` for complete solver list and selection guidance.
+参见 `references/solvers.md` 获取完整求解器列表和选择指南。
 
-### 4. Parameter Configuration
+### 4. 参数配置
 
-Parameters are organized hierarchically and accessed via dot notation:
+参数按层次组织，通过点符号访问：
 
-**Domain and resolution**:
+**域和分辨率：**
 ```python
-params.oper.nx = 256  # grid points
-params.oper.Lx = 2 * pi  # domain size
+params.oper.nx = 256  # 网格点
+params.oper.Lx = 2 * pi  # 域大小
 ```
 
-**Physical parameters**:
+**物理参数：**
 ```python
-params.nu_2 = 1e-3  # viscosity
-params.nu_4 = 0     # hyperviscosity (optional)
+params.nu_2 = 1e-3  # 粘度
+params.nu_4 = 0     # 超粘度（可选）
 ```
 
-**Time stepping**:
+**时间步进：**
 ```python
 params.time_stepping.t_end = 10.0
-params.time_stepping.USE_CFL = True  # adaptive time step
+params.time_stepping.USE_CFL = True  # 自适应时间步
 params.time_stepping.CFL = 0.5
 ```
 
-**Initial conditions**:
+**初始条件：**
 ```python
-params.init_fields.type = "noise"  # or "dipole", "vortex", "from_file", "in_script"
+params.init_fields.type = "noise"  # 或 "dipole", "vortex", "from_file", "in_script"
 ```
 
-**Output settings**:
+**输出设置：**
 ```python
-params.output.periods_save.phys_fields = 1.0  # save every 1.0 time units
+params.output.periods_save.phys_fields = 1.0  # 每1.0时间单位保存一次
 params.output.periods_save.spectra = 0.5
 params.output.periods_save.spatial_means = 0.1
 ```
 
-The Parameters object raises `AttributeError` for typos, preventing silent configuration errors.
+参数对象对拼写错误引发`AttributeError`，防止静默配置错误。
 
-See `references/parameters.md` for comprehensive parameter documentation.
+参见 `references/parameters.md` 获取全面的参数文档。
 
-### 5. Output and Analysis
+### 5. 输出和分析
 
-FluidSim produces multiple output types automatically saved during simulation:
+FluidSim在模拟期间自动生成多种输出类型：
 
-**Physical fields**: Velocity, vorticity in HDF5 format
+**物理场**：速度、涡度，HDF5格式
 ```python
 sim.output.phys_fields.plot("vorticity")
 sim.output.phys_fields.plot("vx")
 ```
 
-**Spatial means**: Time series of volume-averaged quantities
+**空间平均**：体积平均量的时间序列
 ```python
 sim.output.spatial_means.plot()
 ```
 
-**Spectra**: Energy and enstrophy spectra
+**谱**：能量和涡度谱
 ```python
 sim.output.spectra.plot1d()
 sim.output.spectra.plot2d()
 ```
 
-**Load previous simulations**:
+**加载以前的模拟：**
 ```python
 from fluidsim import load_sim_for_plot
 sim = load_sim_for_plot("simulation_dir")
 sim.output.phys_fields.plot()
 ```
 
-**Advanced visualization**: Open `.h5` files in ParaView or VisIt for 3D visualization.
+**高级可视化**：在ParaView或VisIt中打开`.h5`文件进行3D可视化。
 
-See `references/output_analysis.md` for detailed analysis workflows, parametric study analysis, and data export.
+参见 `references/output_analysis.md` 获取详细分析工作流、参数研究和数据导出。
 
-### 6. Advanced Features
+### 6. 高级功能
 
-**Custom forcing**: Maintain turbulence or drive specific dynamics
+**自定义强迫**：维持湍流或驱动特定动力学
 ```python
 params.forcing.enable = True
-params.forcing.type = "tcrandom"  # time-correlated random forcing
+params.forcing.type = "tcrandom"  # 时间相关随机强迫
 params.forcing.forcing_rate = 1.0
 ```
 
-**Custom initial conditions**: Define fields in script
+**自定义初始条件**：在脚本中定义场
 ```python
 params.init_fields.type = "in_script"
 sim = Simul(params)
@@ -201,12 +201,12 @@ vx[:] = sin(X) * cos(Y)
 sim.time_stepping.start()
 ```
 
-**MPI parallelization**: Run on multiple processors
+**MPI并行化**：在多个处理器上运行
 ```bash
 mpirun -np 8 python simulation_script.py
 ```
 
-**Parametric studies**: Run multiple simulations with different parameters
+**参数研究**：使用不同参数运行多个模拟
 ```python
 for nu in [1e-3, 5e-4, 1e-4]:
     params = Simul.create_default_params()
@@ -216,11 +216,11 @@ for nu in [1e-3, 5e-4, 1e-4]:
     sim.time_stepping.start()
 ```
 
-See `references/advanced_features.md` for forcing types, custom solvers, cluster submission, and performance optimization.
+参见 `references/advanced_features.md` 获取强迫类型、自定义求解器、集群提交和性能优化。
 
-## Common Use Cases
+## 常见用例
 
-### 2D Turbulence Study
+### 2D湍流研究
 
 ```python
 from fluidsim.solvers.ns2d.solver import Simul
@@ -239,22 +239,22 @@ params.output.periods_save.spectra = 1.0
 sim = Simul(params)
 sim.time_stepping.start()
 
-# Analyze energy cascade
+# 分析能量级联
 sim.output.spectra.plot1d(tmin=30.0, tmax=50.0)
 ```
 
-### Stratified Flow Simulation
+### 分层流模拟
 
 ```python
 from fluidsim.solvers.ns2d.strat.solver import Simul
 
 params = Simul.create_default_params()
 params.oper.nx = params.oper.ny = 256
-params.N = 2.0  # stratification strength
+params.N = 2.0  # 分层强度
 params.nu_2 = 5e-4
 params.time_stepping.t_end = 20.0
 
-# Initialize with dense layer
+# 使用密集层初始化
 params.init_fields.type = "in_script"
 sim = Simul(params)
 X, Y = sim.oper.get_XY_loc()
@@ -266,7 +266,7 @@ sim.time_stepping.start()
 sim.output.phys_fields.plot("b")
 ```
 
-### High-Resolution 3D Simulation with MPI
+### 带MPI的高分辨率3D模拟
 
 ```python
 from fluidsim.solvers.ns3d.solver import Simul
@@ -281,12 +281,12 @@ sim = Simul(params)
 sim.time_stepping.start()
 ```
 
-Run with:
+运行：
 ```bash
 mpirun -np 64 python script.py
 ```
 
-### Taylor-Green Vortex Validation
+### 泰勒-格林涡验证
 
 ```python
 from fluidsim.solvers.ns2d.solver import Simul
@@ -310,38 +310,37 @@ sim.state.statephys_from_statespect()
 
 sim.time_stepping.start()
 
-# Validate energy decay
+# 验证能量衰减
 df = sim.output.spatial_means.load()
-# Compare with analytical solution
+# 与解析解比较
 ```
 
-## Quick Reference
+## 快速参考
 
-**Import solver**: `from fluidsim.solvers.ns2d.solver import Simul`
+**导入求解器**：`from fluidsim.solvers.ns2d.solver import Simul`
 
-**Create parameters**: `params = Simul.create_default_params()`
+**创建参数**：`params = Simul.create_default_params()`
 
-**Set resolution**: `params.oper.nx = params.oper.ny = 256`
+**设置分辨率**：`params.oper.nx = params.oper.ny = 256`
 
-**Set viscosity**: `params.nu_2 = 1e-3`
+**设置粘度**：`params.nu_2 = 1e-3`
 
-**Set end time**: `params.time_stepping.t_end = 10.0`
+**设置结束时间**：`params.time_stepping.t_end = 10.0`
 
-**Run simulation**: `sim = Simul(params); sim.time_stepping.start()`
+**运行模拟**：`sim = Simul(params); sim.time_stepping.start()`
 
-**Plot results**: `sim.output.phys_fields.plot("vorticity")`
+**绘制结果**：`sim.output.phys_fields.plot("vorticity")`
 
-**Load simulation**: `sim = load_sim_for_plot("path/to/sim")`
+**加载模拟**：`sim = load_sim_for_plot("path/to/sim")`
 
-## Resources
+## 资源
 
-**Documentation**: https://fluidsim.readthedocs.io/
+**文档**：https://fluidsim.readthedocs.io/
 
-**Reference files**:
-- `references/installation.md`: Complete installation instructions
-- `references/solvers.md`: Available solvers and selection guide
-- `references/simulation_workflow.md`: Detailed workflow examples
-- `references/parameters.md`: Comprehensive parameter documentation
-- `references/output_analysis.md`: Output types and analysis methods
-- `references/advanced_features.md`: Forcing, MPI, parametric studies, custom solvers
-
+**参考文件**：
+- `references/installation.md`：完整安装说明
+- `references/solvers.md`：可用求解器和选择指南
+- `references/simulation_workflow.md`：详细工作流示例
+- `references/parameters.md`：全面参数文档
+- `references/output_analysis.md`：输出类型和分析方法
+- `references/advanced_features.md`：强迫、MPI、参数研究、自定义求解器

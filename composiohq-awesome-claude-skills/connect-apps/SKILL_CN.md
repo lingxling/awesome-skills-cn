@@ -1,76 +1,76 @@
 ---
 name: connect-apps
-description: Connect Claude to external apps like Gmail, Slack, GitHub. Use this skill when the user wants to send emails, create issues, post messages, or take actions in external services.
+description: 将 Claude 连接到 Gmail、Slack、GitHub 等外部应用程序。当用户想要发送电子邮件、创建问题、发布消息或在外部服务中采取行动时，使用此技能。
 ---
 
-# Connect Apps
+# 连接应用
 
-Connect Claude to 1000+ apps. Actually send emails, create issues, post messages - not just generate text about it.
+将 Claude 连接到 1000+ 个应用程序。实际发送电子邮件、创建问题、发布消息 - 而不仅仅是生成关于它的文本。
 
-## Quick Start
+## 快速开始
 
-### Step 1: Install the Plugin
+### 步骤 1：安装插件
 
 ```
 /plugin install composio-toolrouter
 ```
 
-### Step 2: Run Setup
+### 步骤 2：运行设置
 
 ```
 /composio-toolrouter:setup
 ```
 
-This will:
-- Ask for your free API key (get one at [platform.composio.dev](https://platform.composio.dev/?utm_source=Github&utm_content=AwesomeSkills))
-- Configure Claude's connection to 1000+ apps
-- Take about 60 seconds
+这将：
+- 询问你的免费 API 密钥（在 [platform.composio.dev](https://platform.composio.dev/?utm_source=Github&utm_content=AwesomeSkills) 获取）
+- 配置 Claude 与 1000+ 个应用程序的连接
+- 大约需要 60 秒
 
-### Step 3: Try It!
+### 步骤 3：尝试一下！
 
-After setup, restart Claude Code and try:
+设置后，重启 Claude Code 并尝试：
 
 ```
 Send me a test email at YOUR_EMAIL@example.com
 ```
 
-If it works, you're connected!
+如果成功，你已连接！
 
-## What You Can Do
+## 你可以做什么
 
-| Ask Claude to... | What happens |
+| 请 Claude... | 会发生什么 |
 |------------------|--------------|
-| "Send email to sarah@acme.com about the launch" | Actually sends the email |
-| "Create GitHub issue: fix login bug" | Creates the issue |
-| "Post to Slack #general: deploy complete" | Posts the message |
-| "Add meeting notes to Notion" | Adds to Notion |
+| "Send email to sarah@acme.com about the launch" | 实际发送邮件 |
+| "Create GitHub issue: fix login bug" | 创建问题 |
+| "Post to Slack #general: deploy complete" | 发布消息 |
+| "Add meeting notes to Notion" | 添加到 Notion |
 
-## Supported Apps
+## 支持的应用
 
-**Email:** Gmail, Outlook, SendGrid
-**Chat:** Slack, Discord, Teams, Telegram
-**Dev:** GitHub, GitLab, Jira, Linear
-**Docs:** Notion, Google Docs, Confluence
-**Data:** Sheets, Airtable, PostgreSQL
-**And 1000+ more...**
+**邮件**：Gmail、Outlook、SendGrid
+**聊天**：Slack、Discord、Teams、Telegram
+**开发**：GitHub、GitLab、Jira、Linear
+**文档**：Notion、Google Docs、Confluence
+**数据**：Sheets、Airtable、PostgreSQL
+**以及 1000+ 更多...**
 
-## How It Works
+## 工作原理
 
-1. You ask Claude to do something
-2. Composio Tool Router finds the right tool
-3. First time? You'll authorize via OAuth (one-time)
-4. Action executes and returns result
+1. 你要求 Claude 做某事
+2. Composio Tool Router 找到正确的工具
+3. 第一次使用？你将通过 OAuth 授权（一次性）
+4. 操作执行并返回结果
 
-## Troubleshooting
+## 故障排除
 
-- **"Plugin not found"** → Make sure you ran `/plugin install composio-toolrouter`
-- **"Need to authorize"** → Click the OAuth link Claude provides, then say "done"
-- **Action failed** → Check you have permissions in the target app
+- **"Plugin not found"** → 确保你运行了 `/plugin install composio-toolrouter`
+- **"Need to authorize"** → 点击 Claude 提供的 OAuth 链接，然后说 "done"
+- **Action failed** → 检查你在目标应用中有权限
 
 ---
 
 <p align="center">
-  <b>Join 20,000+ developers building agents that ship</b>
+  <b>加入 20,000+ 开发人员构建能够交付的代理</b>
 </p>
 
 <p align="center">

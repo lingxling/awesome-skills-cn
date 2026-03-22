@@ -1,125 +1,125 @@
 ---
 name: transformers
-description: This skill should be used when working with pre-trained transformer models for natural language processing, computer vision, audio, or multimodal tasks. Use for text generation, classification, question answering, translation, summarization, image classification, object detection, speech recognition, and fine-tuning models on custom datasets.
+description: 当你需要处理自然语言处理、计算机视觉、音频或多模态任务的预训练Transformer模型时，应使用此技能。适用于文本生成、分类、问答、翻译、摘要、图像分类、目标检测、语音识别以及在自定义数据集上微调模型。
 license: Apache-2.0 license
-compatibility: Some features require an Huggingface token
+compatibility: 某些功能需要Huggingface token
 metadata:
     skill-author: K-Dense Inc.
 ---
 
 # Transformers
 
-## Overview
+## 概述
 
-The Hugging Face Transformers library provides access to thousands of pre-trained models for tasks across NLP, computer vision, audio, and multimodal domains. Use this skill to load models, perform inference, and fine-tune on custom data.
+Hugging Face Transformers库提供了数千个预训练模型，适用于NLP、计算机视觉、音频和多模态领域的任务。使用此技能加载模型、执行推理以及在自定义数据上进行微调。
 
-## Installation
+## 安装
 
-Install transformers and core dependencies:
+安装transformers和核心依赖：
 
 ```bash
 uv pip install torch transformers datasets evaluate accelerate
 ```
 
-For vision tasks, add:
+对于视觉任务，添加：
 ```bash
 uv pip install timm pillow
 ```
 
-For audio tasks, add:
+对于音频任务，添加：
 ```bash
 uv pip install librosa soundfile
 ```
 
-## Authentication
+## 身份验证
 
-Many models on the Hugging Face Hub require authentication. Set up access:
+Hugging Face Hub上的许多模型需要身份验证。设置访问权限：
 
 ```python
 from huggingface_hub import login
-login()  # Follow prompts to enter token
+login()  # 按照提示输入token
 ```
 
-Or set environment variable:
+或设置环境变量：
 ```bash
 export HUGGINGFACE_TOKEN="your_token_here"
 ```
 
-Get tokens at: https://huggingface.co/settings/tokens
+在以下位置获取token：https://huggingface.co/settings/tokens
 
-## Quick Start
+## 快速开始
 
-Use the Pipeline API for fast inference without manual configuration:
+使用Pipeline API进行快速推理，无需手动配置：
 
 ```python
 from transformers import pipeline
 
-# Text generation
+# 文本生成
 generator = pipeline("text-generation", model="gpt2")
 result = generator("The future of AI is", max_length=50)
 
-# Text classification
+# 文本分类
 classifier = pipeline("text-classification")
 result = classifier("This movie was excellent!")
 
-# Question answering
+# 问答
 qa = pipeline("question-answering")
 result = qa(question="What is AI?", context="AI is artificial intelligence...")
 ```
 
-## Core Capabilities
+## 核心功能
 
-### 1. Pipelines for Quick Inference
+### 1. 快速推理的Pipeline
 
-Use for simple, optimized inference across many tasks. Supports text generation, classification, NER, question answering, summarization, translation, image classification, object detection, audio classification, and more.
+用于多种任务的简单、优化推理。支持文本生成、分类、命名实体识别、问答、摘要、翻译、图像分类、目标检测、音频分类等。
 
-**When to use**: Quick prototyping, simple inference tasks, no custom preprocessing needed.
+**使用场景**：快速原型设计、简单推理任务、无需自定义预处理。
 
-See `references/pipelines.md` for comprehensive task coverage and optimization.
+详见`references/pipelines.md`了解全面的任务覆盖和优化。
 
-### 2. Model Loading and Management
+### 2. 模型加载和管理
 
-Load pre-trained models with fine-grained control over configuration, device placement, and precision.
+加载预训练模型，可对配置、设备放置和精度进行精细控制。
 
-**When to use**: Custom model initialization, advanced device management, model inspection.
+**使用场景**：自定义模型初始化、高级设备管理、模型检查。
 
-See `references/models.md` for loading patterns and best practices.
+详见`references/models.md`了解加载模式和最佳实践。
 
-### 3. Text Generation
+### 3. 文本生成
 
-Generate text with LLMs using various decoding strategies (greedy, beam search, sampling) and control parameters (temperature, top-k, top-p).
+使用各种解码策略（贪婪、束搜索、采样）和控制参数（温度、top-k、top-p）生成文本。
 
-**When to use**: Creative text generation, code generation, conversational AI, text completion.
+**使用场景**：创意文本生成、代码生成、对话AI、文本补全。
 
-See `references/generation.md` for generation strategies and parameters.
+详见`references/generation.md`了解生成策略和参数。
 
-### 4. Training and Fine-Tuning
+### 4. 训练和微调
 
-Fine-tune pre-trained models on custom datasets using the Trainer API with automatic mixed precision, distributed training, and logging.
+使用Trainer API在自定义数据集上微调预训练模型，支持自动混合精度、分布式训练和日志记录。
 
-**When to use**: Task-specific model adaptation, domain adaptation, improving model performance.
+**使用场景**：特定任务的模型适应、领域适应、提高模型性能。
 
-See `references/training.md` for training workflows and best practices.
+详见`references/training.md`了解训练工作流和最佳实践。
 
-### 5. Tokenization
+### 5. 分词
 
-Convert text to tokens and token IDs for model input, with padding, truncation, and special token handling.
+将文本转换为模型输入的标记和标记ID，支持填充、截断和特殊标记处理。
 
-**When to use**: Custom preprocessing pipelines, understanding model inputs, batch processing.
+**使用场景**：自定义预处理管道、理解模型输入、批处理。
 
-See `references/tokenizers.md` for tokenization details.
+详见`references/tokenizers.md`了解分词详情。
 
-## Common Patterns
+## 常见模式
 
-### Pattern 1: Simple Inference
-For straightforward tasks, use pipelines:
+### 模式1：简单推理
+对于简单任务，使用pipeline：
 ```python
 pipe = pipeline("task-name", model="model-id")
 output = pipe(input_data)
 ```
 
-### Pattern 2: Custom Model Usage
-For advanced control, load model and tokenizer separately:
+### 模式2：自定义模型使用
+对于高级控制，单独加载模型和分词器：
 ```python
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -131,8 +131,8 @@ outputs = model.generate(**inputs, max_new_tokens=100)
 result = tokenizer.decode(outputs[0])
 ```
 
-### Pattern 3: Fine-Tuning
-For task adaptation, use Trainer:
+### 模式3：微调
+对于任务适应，使用Trainer：
 ```python
 from transformers import Trainer, TrainingArguments
 
@@ -151,12 +151,11 @@ trainer = Trainer(
 trainer.train()
 ```
 
-## Reference Documentation
+## 参考文档
 
-For detailed information on specific components:
-- **Pipelines**: `references/pipelines.md` - All supported tasks and optimization
-- **Models**: `references/models.md` - Loading, saving, and configuration
-- **Generation**: `references/generation.md` - Text generation strategies and parameters
-- **Training**: `references/training.md` - Fine-tuning with Trainer API
-- **Tokenizers**: `references/tokenizers.md` - Tokenization and preprocessing
-
+有关特定组件的详细信息：
+- **Pipelines**：`references/pipelines.md` - 所有支持的任务和优化
+- **Models**：`references/models.md` - 加载、保存和配置
+- **Generation**：`references/generation.md` - 文本生成策略和参数
+- **Training**：`references/training.md` - 使用Trainer API进行微调
+- **Tokenizers**：`references/tokenizers.md` - 分词和预处理

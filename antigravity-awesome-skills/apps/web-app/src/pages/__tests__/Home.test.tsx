@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import { Home } from '../Home';
 import { renderWithRouter } from '../../utils/testUtils';
 import { createMockSkill } from '../../factories/skill';
@@ -20,19 +20,17 @@ vi.mock('../../context/SkillContext', async (importOriginal) => {
   return { ...actual, useSkills: vi.fn() };
 });
 
-const virtuosoGridMock = vi.fn(({ totalCount, itemContent }: any) => (
-  <div data-testid="virtuoso-grid">
-    {Array.from({ length: totalCount || 0 }).map((_, index) => (
-      <div key={index} data-testid="skill-item">
-        {itemContent(index)}
-      </div>
-    ))}
-  </div>
-));
-
 // Mock VirtuosoGrid to render items normally for easier testing
 vi.mock('react-virtuoso', () => ({
-  VirtuosoGrid: (props: any) => virtuosoGridMock(props),
+  VirtuosoGrid: ({ totalCount, itemContent }: any) => (
+    <div data-testid="virtuoso-grid">
+      {Array.from({ length: totalCount || 0 }).map((_, index) => (
+        <div key={index} data-testid="skill-item">
+          {itemContent(index)}
+        </div>
+      ))}
+    </div>
+  ),
 }));
 
 describe('Home', () => {
@@ -47,7 +45,6 @@ describe('Home', () => {
         skills: [],
         stars: {},
         loading: true,
-        error: null,
       });
 
       renderWithRouter(<Home />, { useProvider: false });
@@ -64,7 +61,6 @@ describe('Home', () => {
         skills: mockSkills,
         stars: {},
         loading: false,
-        error: null,
       });
 
       renderWithRouter(<Home />, { useProvider: false });
@@ -73,63 +69,6 @@ describe('Home', () => {
         expect(screen.getByText('@Skill 1')).toBeInTheDocument();
         expect(screen.getByText('@Skill 2')).toBeInTheDocument();
       });
-
-      expect(virtuosoGridMock).toHaveBeenCalledWith(
-        expect.objectContaining({ useWindowScroll: true }),
-      );
-    });
-
-    it('should set homepage SEO metadata', async () => {
-      const mockSkills = [
-        createMockSkill({ id: 'skill-1', name: 'Skill 1' }),
-      ];
-
-      (useSkills as Mock).mockReturnValue({
-        skills: mockSkills,
-        stars: {},
-        loading: false,
-        error: null,
-      });
-
-      renderWithRouter(<Home />, { useProvider: false });
-
-      await waitFor(() => {
-        expect(document.title).toContain('Antigravity Awesome Skills');
-      });
-
-      expect(screen.getByRole('button', { name: /Copy install command/i })).toBeInTheDocument();
-      expect(screen.getByText(/npx antigravity-awesome-skills/i)).toBeInTheDocument();
-      expect(document.querySelector('meta[property="og:title"]')).toHaveAttribute(
-        'content',
-        expect.stringContaining('Antigravity Awesome Skills'),
-      );
-    });
-
-    it('should copy install command from hero CTA', async () => {
-      (useSkills as Mock).mockReturnValue({
-        skills: [],
-        stars: {},
-        loading: false,
-        error: null,
-      });
-
-      renderWithRouter(<Home />, { useProvider: false });
-
-      await waitFor(() => {
-        expect(screen.getByRole('button', { name: /Copy install command/i })).toBeInTheDocument();
-      });
-
-      vi.useFakeTimers();
-      try {
-        await act(async () => {
-          fireEvent.click(screen.getByRole('button', { name: /Copy install command/i }));
-          await vi.runAllTimersAsync();
-        });
-      } finally {
-        vi.useRealTimers();
-      }
-
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('npx antigravity-awesome-skills');
     });
   });
 
@@ -144,7 +83,6 @@ describe('Home', () => {
         skills: mockSkills,
         stars: {},
         loading: false,
-        error: null,
       });
 
       renderWithRouter(<Home />, { useProvider: false });
@@ -169,7 +107,6 @@ describe('Home', () => {
         skills: mockSkills,
         stars: {},
         loading: false,
-        error: null,
       });
 
       renderWithRouter(<Home />, { useProvider: false });
@@ -194,7 +131,6 @@ describe('Home', () => {
         skills: mockSkills,
         stars: { 'skill-1': 5 },
         loading: false,
-        error: null,
         refreshSkills,
       });
 
@@ -213,28 +149,5 @@ describe('Home', () => {
         expect(refreshSkills).toHaveBeenCalled();
       });
     });
-  });
-
-  it('shows a catalog load error instead of a generic empty state', async () => {
-    const refreshSkills = vi.fn().mockResolvedValue(undefined);
-
-    (useSkills as Mock).mockReturnValue({
-      skills: [],
-      stars: {},
-      loading: false,
-      error: 'Non-JSON response from /skills.json (text/html)',
-      refreshSkills,
-    });
-
-    renderWithRouter(<Home />, { useProvider: false });
-
-    await waitFor(() => {
-      expect(screen.getByText(/Unable to load skills/i)).toBeInTheDocument();
-      expect(screen.getByText(/Non-JSON response/i)).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: /Retry loading catalog/i }));
-
-    expect(refreshSkills).toHaveBeenCalled();
   });
 });

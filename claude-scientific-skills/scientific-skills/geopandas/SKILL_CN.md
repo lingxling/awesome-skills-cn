@@ -1,6 +1,6 @@
 ---
 name: geopandas
-description: Python library for working with geospatial vector data including shapefiles, GeoJSON, and GeoPackage files. Use when working with geographic data for spatial analysis, geometric operations, coordinate transformations, spatial joins, overlay operations, choropleth mapping, or any task involving reading/writing/analyzing vector geographic data. Supports PostGIS databases, interactive maps, and integration with matplotlib/folium/cartopy. Use for tasks like buffer analysis, spatial joins between datasets, dissolving boundaries, clipping data, calculating areas/distances, reprojecting coordinate systems, creating maps, or converting between spatial file formats.
+description: 用于处理地理空间矢量数据（包括shapefiles、GeoJSON和GeoPackage文件）的Python库。用于处理地理数据以进行空间分析、几何操作、坐标转换、空间连接、叠加操作、等值线映射或任何涉及读取/写入/分析矢量地理数据的任务。支持PostGIS数据库、交互式地图以及与matplotlib/folium/cartopy集成。用于缓冲区分析、数据集之间的空间连接、边界融合、裁剪数据、计算面积/距离、重新投影坐标系统、创建地图或在不同空间文件格式之间转换。
 license: BSD-3-Clause license
 metadata:
     skill-author: K-Dense Inc.
@@ -8,242 +8,241 @@ metadata:
 
 # GeoPandas
 
-GeoPandas extends pandas to enable spatial operations on geometric types. It combines the capabilities of pandas and shapely for geospatial data analysis.
+GeoPandas扩展pandas以启用几何类型的空间操作。它结合了pandas和shapely的功能，用于地理空间数据分析。
 
-## Installation
+## 安装
 
 ```bash
 uv pip install geopandas
 ```
 
-### Optional Dependencies
+### 可选依赖项
 
 ```bash
-# For interactive maps
+# 用于交互式地图
 uv pip install folium
 
-# For classification schemes in mapping
+# 用于映射中的分类方案
 uv pip install mapclassify
 
-# For faster I/O operations (2-4x speedup)
+# 用于更快的I/O操作（2-4倍加速）
 uv pip install pyarrow
 
-# For PostGIS database support
+# 用于PostGIS数据库支持
 uv pip install psycopg2
 uv pip install geoalchemy2
 
-# For basemaps
+# 用于底图
 uv pip install contextily
 
-# For cartographic projections
+# 用于制图投影
 uv pip install cartopy
 ```
 
-## Quick Start
+## 快速开始
 
 ```python
 import geopandas as gpd
 
-# Read spatial data
+# 读取空间数据
 gdf = gpd.read_file("data.geojson")
 
-# Basic exploration
+# 基本探索
 print(gdf.head())
 print(gdf.crs)
 print(gdf.geometry.geom_type)
 
-# Simple plot
+# 简单绘图
 gdf.plot()
 
-# Reproject to different CRS
+# 重新投影到不同的CRS
 gdf_projected = gdf.to_crs("EPSG:3857")
 
-# Calculate area (use projected CRS for accuracy)
+# 计算面积（使用投影的CRS以获得准确性）
 gdf_projected['area'] = gdf_projected.geometry.area
 
-# Save to file
+# 保存到文件
 gdf.to_file("output.gpkg")
 ```
 
-## Core Concepts
+## 核心概念
 
-### Data Structures
+### 数据结构
 
-- **GeoSeries**: Vector of geometries with spatial operations
-- **GeoDataFrame**: Tabular data structure with geometry column
+- **GeoSeries**：具有空间操作的几何矢量
+- **GeoDataFrame**：具有几何列的表格数据结构
 
-See [data-structures.md](references/data-structures.md) for details.
+参见 [data-structures.md](references/data-structures.md) 获取详细信息。
 
-### Reading and Writing Data
+### 读取和写入数据
 
-GeoPandas reads/writes multiple formats: Shapefile, GeoJSON, GeoPackage, PostGIS, Parquet.
+GeoPandas读取/写入多种格式：Shapefile、GeoJSON、GeoPackage、PostGIS、Parquet。
 
 ```python
-# Read with filtering
+# 带过滤的读取
 gdf = gpd.read_file("data.gpkg", bbox=(xmin, ymin, xmax, ymax))
 
-# Write with Arrow acceleration
+# 使用Arrow加速写入
 gdf.to_file("output.gpkg", use_arrow=True)
 ```
 
-See [data-io.md](references/data-io.md) for comprehensive I/O operations.
+参见 [data-io.md](references/data-io.md) 获取全面的I/O操作。
 
-### Coordinate Reference Systems
+### 坐标参考系统
 
-Always check and manage CRS for accurate spatial operations:
+始终检查和管理CRS以进行准确的空间操作：
 
 ```python
-# Check CRS
+# 检查CRS
 print(gdf.crs)
 
-# Reproject (transforms coordinates)
+# 重新投影（转换坐标）
 gdf_projected = gdf.to_crs("EPSG:3857")
 
-# Set CRS (only when metadata missing)
+# 设置CRS（仅在元数据缺失时）
 gdf = gdf.set_crs("EPSG:4326")
 ```
 
-See [crs-management.md](references/crs-management.md) for CRS operations.
+参见 [crs-management.md](references/crs-management.md) 获取CRS操作。
 
-## Common Operations
+## 常见操作
 
-### Geometric Operations
+### 几何操作
 
-Buffer, simplify, centroid, convex hull, affine transformations:
+缓冲、简化、质心、凸包、仿射变换：
 
 ```python
-# Buffer by 10 units
+# 缓冲10个单位
 buffered = gdf.geometry.buffer(10)
 
-# Simplify with tolerance
+# 使用容差简化
 simplified = gdf.geometry.simplify(tolerance=5, preserve_topology=True)
 
-# Get centroids
+# 获取质心
 centroids = gdf.geometry.centroid
 ```
 
-See [geometric-operations.md](references/geometric-operations.md) for all operations.
+参见 [geometric-operations.md](references/geometric-operations.md) 获取所有操作。
 
-### Spatial Analysis
+### 空间分析
 
-Spatial joins, overlay operations, dissolve:
+空间连接、叠加操作、融合：
 
 ```python
-# Spatial join (intersects)
+# 空间连接（相交）
 joined = gpd.sjoin(gdf1, gdf2, predicate='intersects')
 
-# Nearest neighbor join
+# 最近邻连接
 nearest = gpd.sjoin_nearest(gdf1, gdf2, max_distance=1000)
 
-# Overlay intersection
+# 叠加交集
 intersection = gpd.overlay(gdf1, gdf2, how='intersection')
 
-# Dissolve by attribute
+# 按属性融合
 dissolved = gdf.dissolve(by='region', aggfunc='sum')
 ```
 
-See [spatial-analysis.md](references/spatial-analysis.md) for analysis operations.
+参见 [spatial-analysis.md](references/spatial-analysis.md) 获取分析操作。
 
-### Visualization
+### 可视化
 
-Create static and interactive maps:
+创建静态和交互式地图：
 
 ```python
-# Choropleth map
+# 等值线地图
 gdf.plot(column='population', cmap='YlOrRd', legend=True)
 
-# Interactive map
+# 交互式地图
 gdf.explore(column='population', legend=True).save('map.html')
 
-# Multi-layer map
+# 多层地图
 import matplotlib.pyplot as plt
 fig, ax = plt.subplots()
 gdf1.plot(ax=ax, color='blue')
 gdf2.plot(ax=ax, color='red')
 ```
 
-See [visualization.md](references/visualization.md) for mapping techniques.
+参见 [visualization.md](references/visualization.md) 获取绘图技术。
 
-## Detailed Documentation
+## 详细文档
 
-- **[Data Structures](references/data-structures.md)** - GeoSeries and GeoDataFrame fundamentals
-- **[Data I/O](references/data-io.md)** - Reading/writing files, PostGIS, Parquet
-- **[Geometric Operations](references/geometric-operations.md)** - Buffer, simplify, affine transforms
-- **[Spatial Analysis](references/spatial-analysis.md)** - Joins, overlay, dissolve, clipping
-- **[Visualization](references/visualization.md)** - Plotting, choropleth maps, interactive maps
-- **[CRS Management](references/crs-management.md)** - Coordinate reference systems and projections
+- **[数据结构](references/data-structures.md)** - GeoSeries和GeoDataFrame基础知识
+- **[数据I/O](references/data-io.md)** - 读取/写入文件、PostGIS、Parquet
+- **[几何操作](references/geometric-operations.md)** - 缓冲、简化、仿射变换
+- **[空间分析](references/spatial-analysis.md)** - 连接、叠加、融合、裁剪
+- **[可视化](references/visualization.md)** - 绘图、等值线地图、交互式地图
+- **[CRS管理](references/crs-management.md)** - 坐标参考系统和投影
 
-## Common Workflows
+## 常见工作流
 
-### Load, Transform, Analyze, Export
+### 加载、转换、分析、导出
 
 ```python
-# 1. Load data
+# 1. 加载数据
 gdf = gpd.read_file("data.shp")
 
-# 2. Check and transform CRS
+# 2. 检查并转换CRS
 print(gdf.crs)
 gdf = gdf.to_crs("EPSG:3857")
 
-# 3. Perform analysis
+# 3. 执行分析
 gdf['area'] = gdf.geometry.area
 buffered = gdf.copy()
 buffered['geometry'] = gdf.geometry.buffer(100)
 
-# 4. Export results
+# 4. 导出结果
 gdf.to_file("results.gpkg", layer='original')
 buffered.to_file("results.gpkg", layer='buffered')
 ```
 
-### Spatial Join and Aggregate
+### 空间连接和聚合
 
 ```python
-# Join points to polygons
-points_in_polygons = gpd.sjoin(points_gdf, polygons_gdf, predicate='within')
+# 将点连接到多边形
+points_in_polygons = gpd.sjoin(points_gdf, polygons_gdf, how='inner', predicate='within')
 
-# Aggregate by polygon
+# 按多边形聚合
 aggregated = points_in_polygons.groupby('index_right').agg({
     'value': 'sum',
     'count': 'size'
 })
 
-# Merge back to polygons
+# 合并回多边形
 result = polygons_gdf.merge(aggregated, left_index=True, right_index=True)
 ```
 
-### Multi-Source Data Integration
+### 多源数据集成
 
 ```python
-# Read from different sources
+# 从不同来源读取
 roads = gpd.read_file("roads.shp")
 buildings = gpd.read_file("buildings.geojson")
 parcels = gpd.read_postgis("SELECT * FROM parcels", con=engine, geom_col='geom')
 
-# Ensure matching CRS
+# 确保匹配的CRS
 buildings = buildings.to_crs(roads.crs)
 parcels = parcels.to_crs(roads.crs)
 
-# Perform spatial operations
+# 执行空间操作
 buildings_near_roads = buildings[buildings.geometry.distance(roads.union_all()) < 50]
 ```
 
-## Performance Tips
+## 性能提示
 
-1. **Use spatial indexing**: GeoPandas creates spatial indexes automatically for most operations
-2. **Filter during read**: Use `bbox`, `mask`, or `where` parameters to load only needed data
-3. **Use Arrow for I/O**: Add `use_arrow=True` for 2-4x faster reading/writing
-4. **Simplify geometries**: Use `.simplify()` to reduce complexity when precision isn't critical
-5. **Batch operations**: Vectorized operations are much faster than iterating rows
-6. **Use appropriate CRS**: Projected CRS for area/distance, geographic for visualization
+1. **使用空间索引**：GeoPandas为大多数操作自动创建空间索引
+2. **读取时过滤**：使用`bbox`、`mask`或`where`参数仅加载所需数据
+3. **使用Arrow进行I/O**：添加`use_arrow=True`以获得2-4倍更快的读取/写入
+4. **简化几何**：当精度不重要时使用`.simplify()`减少复杂度
+5. **批量操作**：向量化操作比迭代行快得多
+6. **使用适当的CRS**：面积/距离使用投影的CRS，地理用于可视化
 
-## Best Practices
+## 最佳实践
 
-1. **Always check CRS** before spatial operations
-2. **Use projected CRS** for area and distance calculations
-3. **Match CRS** before spatial joins or overlays
-4. **Validate geometries** with `.is_valid` before operations
-5. **Use `.copy()`** when modifying geometry columns to avoid side effects
-6. **Preserve topology** when simplifying for analysis
-7. **Use GeoPackage** format for modern workflows (better than Shapefile)
-8. **Set max_distance** in sjoin_nearest for better performance
-
+1. **始终检查CRS**在任何空间操作之前
+2. **使用投影的CRS**进行面积和距离计算
+3. **连接之前匹配CRS**进行空间连接或叠加
+4. **验证几何**在操作之前使用`.is_valid`
+5. **修改几何时使用.copy()`**以避免副作用
+6. **简化时保留拓扑**用于分析
+7. **使用GeoPackage格式**用于现代工作流（优于Shapefile）
+8. **在sjoin_nearest中设置max_distance**以获得更好的性能

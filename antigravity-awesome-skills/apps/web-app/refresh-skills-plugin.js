@@ -56,13 +56,6 @@ function isLoopbackHost(hostname) {
         || host.startsWith('127.');
 }
 
-function isLoopbackRemoteAddress(remoteAddress) {
-    const address = normalizeHost(remoteAddress);
-    return address === '::1'
-        || address.startsWith('127.')
-        || address.startsWith('::ffff:127.');
-}
-
 function getRequestHost(req) {
     const hostHeader = req.headers?.host || '';
 
@@ -77,12 +70,8 @@ function getRequestHost(req) {
     }
 }
 
-function getRequestRemoteAddress(req) {
-    return req.socket?.remoteAddress || req.connection?.remoteAddress || '';
-}
-
 function isDevLoopbackRequest(req) {
-    return isLoopbackRemoteAddress(getRequestRemoteAddress(req));
+    return isLoopbackHost(getRequestHost(req));
 }
 
 function isTokenAuthorized(req) {

@@ -1,6 +1,6 @@
 ---
 name: pyzotero
-description: Interact with Zotero reference management libraries using the pyzotero Python client. Retrieve, create, update, and delete items, collections, tags, and attachments via the Zotero Web API v3. Use this skill when working with Zotero libraries programmatically, managing bibliographic references, exporting citations, searching library contents, uploading PDF attachments, or building research automation workflows that integrate with Zotero.
+description: 使用pyzotero Python客户端与Zotero参考文献管理库交互。通过Zotero Web API v3检索、创建、更新和删除项目、集合、标签和附件。当您需要以编程方式处理Zotero库、管理书目参考、导出引用、搜索库内容、上传PDF附件或构建与Zotero集成的研究自动化工作流时，使用此技能。
 allowed-tools: Read Write Edit Bash
 license: MIT License
 metadata:
@@ -9,86 +9,86 @@ metadata:
 
 # Pyzotero
 
-Pyzotero is a Python wrapper for the [Zotero API v3](https://www.zotero.org/support/dev/web_api/v3/start). Use it to programmatically manage Zotero libraries: read items and collections, create and update references, upload attachments, manage tags, and export citations.
+Pyzotero是[Zotero API v3](https://www.zotero.org/support/dev/web_api/v3/start)的Python包装器。使用它以编程方式管理Zotero库：读取项目和集合，创建和更新参考，上传附件，管理标签，以及导出引用。
 
-## Authentication Setup
+## 身份验证设置
 
-**Required credentials** — get from https://www.zotero.org/settings/keys:
-- **User ID**: shown as "Your userID for use in API calls"
-- **API Key**: create at https://www.zotero.org/settings/keys/new
-- **Library ID**: for group libraries, the integer after `/groups/` in the group URL
+**所需凭证** — 从https://www.zotero.org/settings/keys获取：
+- **User ID**：显示为"Your userID for use in API calls"
+- **API Key**：在https://www.zotero.org/settings/keys/new创建
+- **Library ID**：对于群组库，群组URL中`/groups/`后的整数
 
-Store credentials in environment variables or a `.env` file:
+将凭证存储在环境变量或`.env`文件中：
 ```
 ZOTERO_LIBRARY_ID=your_user_id
 ZOTERO_API_KEY=your_api_key
-ZOTERO_LIBRARY_TYPE=user  # or "group"
+ZOTERO_LIBRARY_TYPE=user  # 或 "group"
 ```
 
-See [references/authentication.md](references/authentication.md) for full setup details.
+有关完整设置详细信息，请参见[references/authentication.md](references/authentication.md)。
 
-## Installation
+## 安装
 
 ```bash
 uv add pyzotero
-# or with CLI support:
+# 或带有CLI支持：
 uv add "pyzotero[cli]"
 ```
 
-## Quick Start
+## 快速开始
 
 ```python
 from pyzotero import Zotero
 
 zot = Zotero(library_id='123456', library_type='user', api_key='ABC1234XYZ')
 
-# Retrieve top-level items (returns 100 by default)
+# 检索顶级项目（默认返回100个）
 items = zot.top(limit=10)
 for item in items:
     print(item['data']['title'], item['data']['itemType'])
 
-# Search by keyword
+# 按关键词搜索
 results = zot.items(q='machine learning', limit=20)
 
-# Retrieve all items (use everything() for complete results)
+# 检索所有项目（使用everything()获取完整结果）
 all_items = zot.everything(zot.items())
 ```
 
-## Core Concepts
+## 核心概念
 
-- A `Zotero` instance is bound to a single library (user or group). All methods operate on that library.
-- Item data lives in `item['data']`. Access fields like `item['data']['title']`, `item['data']['creators']`.
-- Pyzotero returns 100 items by default (API default is 25). Use `zot.everything(zot.items())` to get all items.
-- Write methods return `True` on success or raise a `ZoteroError`.
+- 一个`Zotero`实例绑定到单个库（用户或群组）。所有方法都在此库上操作。
+- 项目数据存储在`item['data']`中。访问字段如`item['data']['title']`、`item['data']['creators']`。
+- Pyzotero默认返回100个项目（API默认是25个）。使用`zot.everything(zot.items())`获取所有项目。
+- 写入方法成功时返回`True`或引发`ZoteroError`。
 
-## Reference Files
+## 参考文件
 
-| File | Contents |
-|------|----------|
-| [references/authentication.md](references/authentication.md) | Credentials, library types, local mode |
-| [references/read-api.md](references/read-api.md) | Retrieving items, collections, tags, groups |
-| [references/search-params.md](references/search-params.md) | Filtering, sorting, search parameters |
-| [references/write-api.md](references/write-api.md) | Creating, updating, deleting items |
-| [references/collections.md](references/collections.md) | Collection CRUD operations |
-| [references/tags.md](references/tags.md) | Tag retrieval and management |
-| [references/files-attachments.md](references/files-attachments.md) | File retrieval and attachment uploads |
-| [references/exports.md](references/exports.md) | BibTeX, CSL-JSON, bibliography export |
-| [references/pagination.md](references/pagination.md) | follow(), everything(), generators |
-| [references/full-text.md](references/full-text.md) | Full-text content indexing and retrieval |
-| [references/saved-searches.md](references/saved-searches.md) | Saved search management |
-| [references/cli.md](references/cli.md) | Command-line interface usage |
-| [references/error-handling.md](references/error-handling.md) | Errors and exception handling |
+| 文件 | 内容 |
+|------|------|
+| [references/authentication.md](references/authentication.md) | 凭证、库类型、本地模式 |
+| [references/read-api.md](references/read-api.md) | 检索项目、集合、标签、群组 |
+| [references/search-params.md](references/search-params.md) | 过滤、排序、搜索参数 |
+| [references/write-api.md](references/write-api.md) | 创建、更新、删除项目 |
+| [references/collections.md](references/collections.md) | 集合CRUD操作 |
+| [references/tags.md](references/tags.md) | 标签检索和管理 |
+| [references/files-attachments.md](references/files-attachments.md) | 文件检索和附件上传 |
+| [references/exports.md](references/exports.md) | BibTeX、CSL-JSON、参考文献导出 |
+| [references/pagination.md](references/pagination.md) | follow()、everything()、生成器 |
+| [references/full-text.md](references/full-text.md) | 全文内容索引和检索 |
+| [references/saved-searches.md](references/saved-searches.md) | 保存的搜索管理 |
+| [references/cli.md](references/cli.md) | 命令行界面使用 |
+| [references/error-handling.md](references/error-handling.md) | 错误和异常处理 |
 
-## Common Patterns
+## 常见模式
 
-### Fetch and modify an item
+### 获取并修改项目
 ```python
 item = zot.item('ITEMKEY')
 item['data']['title'] = 'New Title'
 zot.update_item(item)
 ```
 
-### Create an item from a template
+### 从模板创建项目
 ```python
 template = zot.item_template('journalArticle')
 template['title'] = 'My Paper'
@@ -96,15 +96,15 @@ template['creators'][0] = {'creatorType': 'author', 'firstName': 'Jane', 'lastNa
 zot.create_items([template])
 ```
 
-### Export as BibTeX
+### 导出为BibTeX
 ```python
 zot.add_parameters(format='bibtex')
 bibtex = zot.top(limit=50)
-# bibtex is a bibtexparser BibDatabase object
+# bibtex是bibtexparser BibDatabase对象
 print(bibtex.entries)
 ```
 
-### Local mode (read-only, no API key needed)
+### 本地模式（只读，不需要API密钥）
 ```python
 zot = Zotero(library_id='123456', library_type='user', local=True)
 items = zot.items()

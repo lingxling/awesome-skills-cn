@@ -1,68 +1,68 @@
 ---
 name: ensembl-database
-description: Query Ensembl genome database REST API for 250+ species. Gene lookups, sequence retrieval, variant analysis, comparative genomics, orthologs, VEP predictions, for genomic research.
+description: 查询 Ensembl 基因组数据库 REST API，支持 250+ 个物种。基因查找、序列检索、变异分析、比较基因组学、直系同源、VEP 预测，用于基因组学研究。
 license: Unknown
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# Ensembl Database
+# Ensembl 数据库
 
-## Overview
+## 概述
 
-Access and query the Ensembl genome database, a comprehensive resource for vertebrate genomic data maintained by EMBL-EBI. The database provides gene annotations, sequences, variants, regulatory information, and comparative genomics data for over 250 species. Current release is 115 (September 2025).
+访问和查询 Ensembl 基因组数据库，这是由 EMBL-EBI 维护的脊椎动物基因组数据综合资源。该数据库为 250 多个物种提供基因注释、序列、变异、调控信息和比较基因组学数据。当前版本是 115（2025 年 9 月）。
 
-## When to Use This Skill
+## 何时使用此技能
 
-This skill should be used when:
+此技能应在以下情况下使用：
 
-- Querying gene information by symbol or Ensembl ID
-- Retrieving DNA, transcript, or protein sequences
-- Analyzing genetic variants using the Variant Effect Predictor (VEP)
-- Finding orthologs and paralogs across species
-- Accessing regulatory features and genomic annotations
-- Converting coordinates between genome assemblies (e.g., GRCh37 to GRCh38)
-- Performing comparative genomics analyses
-- Integrating Ensembl data into genomic research pipelines
+- 按符号或 Ensembl ID 查询基因信息
+- 检索 DNA、转录本或蛋白质序列
+- 使用变异效应预测器（VEP）分析遗传变异
+- 跨物种查找直系同源和旁系同源
+- 访问调控特征和基因组注释
+- 在不同基因组组装之间转换坐标（例如，GRCh37 到 GRCh38）
+- 执行比较基因组学分析
+- 将 Ensembl 数据集成到基因组学研究管道中
 
-## Core Capabilities
+## 核心能力
 
-### 1. Gene Information Retrieval
+### 1. 基因信息检索
 
-Query gene data by symbol, Ensembl ID, or external database identifiers.
+按符号、Ensembl ID 或外部数据库标识符查询基因数据。
 
-**Common operations:**
-- Look up gene information by symbol (e.g., "BRCA2", "TP53")
-- Retrieve transcript and protein information
-- Get gene coordinates and chromosomal locations
-- Access cross-references to external databases (UniProt, RefSeq, etc.)
+**常见操作：**
+- 按符号查找基因信息（例如，"BRCA2"、"TP53"）
+- 检索转录本和蛋白质信息
+- 获取基因坐标和染色体位置
+- 访问外部数据库的交叉引用（UniProt、RefSeq 等）
 
-**Using the ensembl_rest package:**
+**使用 ensembl_rest 包：**
 ```python
 from ensembl_rest import EnsemblClient
 
 client = EnsemblClient()
 
-# Look up gene by symbol
+# 按符号查找基因
 gene_data = client.symbol_lookup(
     species='human',
     symbol='BRCA2'
 )
 
-# Get detailed gene information
+# 获取详细基因信息
 gene_info = client.lookup_id(
     id='ENSG00000139618',  # BRCA2 Ensembl ID
     expand=True
 )
 ```
 
-**Direct REST API (no package):**
+**直接 REST API（无包）：**
 ```python
 import requests
 
 server = "https://rest.ensembl.org"
 
-# Symbol lookup
+# 符号查找
 response = requests.get(
     f"{server}/lookup/symbol/homo_sapiens/BRCA2",
     headers={"Content-Type": "application/json"}
@@ -70,94 +70,94 @@ response = requests.get(
 gene_data = response.json()
 ```
 
-### 2. Sequence Retrieval
+### 2. 序列检索
 
-Fetch genomic, transcript, or protein sequences in various formats (JSON, FASTA, plain text).
+以各种格式（JSON、FASTA、纯文本）获取基因组、转录本或蛋白质序列。
 
-**Operations:**
-- Get DNA sequences for genes or genomic regions
-- Retrieve transcript sequences (cDNA)
-- Access protein sequences
-- Extract sequences with flanking regions or modifications
+**操作：**
+- 获取基因或基因组区域的 DNA 序列
+- 检索转录本序列（cDNA）
+- 访问蛋白质序列
+- 提取带有侧翼区域或修饰的序列
 
-**Example:**
+**示例：**
 ```python
-# Using ensembl_rest package
+# 使用 ensembl_rest 包
 sequence = client.sequence_id(
-    id='ENSG00000139618',  # Gene ID
+    id='ENSG00000139618',  # 基因 ID
     content_type='application/json'
 )
 
-# Get sequence for a genomic region
+# 获取基因组区域的序列
 region_seq = client.sequence_region(
     species='human',
-    region='7:140424943-140624564'  # chromosome:start-end
+    region='7:140424943-140624564'  # 染色体:起点-终点
 )
 ```
 
-### 3. Variant Analysis
+### 3. 变异分析
 
-Query genetic variation data and predict variant consequences using the Variant Effect Predictor (VEP).
+查询遗传变异数据并使用变异效应预测器（VEP）预测变异后果。
 
-**Capabilities:**
-- Look up variants by rsID or genomic coordinates
-- Predict functional consequences of variants
-- Access population frequency data
-- Retrieve phenotype associations
+**能力：**
+- 按 rsID 或基因组坐标查找变异
+- 预测变异的功能后果
+- 访问群体频率数据
+- 检索表型关联
 
-**VEP example:**
+**VEP 示例：**
 ```python
-# Predict variant consequences
+# 预测变异后果
 vep_result = client.vep_hgvs(
     species='human',
     hgvs_notation='ENST00000380152.7:c.803C>T'
 )
 
-# Query variant by rsID
+# 按 rsID 查询变异
 variant = client.variation_id(
     species='human',
     id='rs699'
 )
 ```
 
-### 4. Comparative Genomics
+### 4. 比较基因组学
 
-Perform cross-species comparisons to identify orthologs, paralogs, and evolutionary relationships.
+执行跨物种比较以识别直系同源、旁系同源和进化关系。
 
-**Operations:**
-- Find orthologs (same gene in different species)
-- Identify paralogs (related genes in same species)
-- Access gene trees showing evolutionary relationships
-- Retrieve gene family information
+**操作：**
+- 查找直系同源（不同物种中的同一基因）
+- 识别旁系同源（同一物种中的相关基因）
+- 访问显示进化关系的基因树
+- 检索基因家族信息
 
-**Example:**
+**示例：**
 ```python
-# Find orthologs for a human gene
+# 查找人类基因的直系同源
 orthologs = client.homology_ensemblgene(
-    id='ENSG00000139618',  # Human BRCA2
+    id='ENSG00000139618',  # 人类 BRCA2
     target_species='mouse'
 )
 
-# Get gene tree
+# 获取基因树
 gene_tree = client.genetree_member_symbol(
     species='human',
     symbol='BRCA2'
 )
 ```
 
-### 5. Genomic Region Analysis
+### 5. 基因组区域分析
 
-Find all genomic features (genes, transcripts, regulatory elements) in a specific region.
+查找特定区域内的所有基因组特征（基因、转录本、调控元件）。
 
-**Use cases:**
-- Identify all genes in a chromosomal region
-- Find regulatory features (promoters, enhancers)
-- Locate variants within a region
-- Retrieve structural features
+**用例：**
+- 识别染色体区域中的所有基因
+- 查找调控特征（启动子、增强子）
+- 在区域内定位变异
+- 检索结构特征
 
-**Example:**
+**示例：**
 ```python
-# Find all features in a region
+# 查找区域内的所有特征
 features = client.overlap_region(
     species='human',
     region='7:140424943-140624564',
@@ -165,17 +165,17 @@ features = client.overlap_region(
 )
 ```
 
-### 6. Assembly Mapping
+### 6. 组装映射
 
-Convert coordinates between different genome assemblies (e.g., GRCh37 to GRCh38).
+在不同基因组组装之间转换坐标（例如，GRCh37 到 GRCh38）。
 
-**Important:** Use `https://grch37.rest.ensembl.org` for GRCh37/hg19 queries and `https://rest.ensembl.org` for current assemblies.
+**重要：** 对 GRCh37/hg19 查询使用 `https://grch37.rest.ensembl.org`，对当前组装使用 `https://rest.ensembl.org`。
 
-**Example:**
+**示例：**
 ```python
 from ensembl_rest import AssemblyMapper
 
-# Map coordinates from GRCh37 to GRCh38
+# 将坐标从 GRCh37 映射到 GRCh38
 mapper = AssemblyMapper(
     species='human',
     asm_from='GRCh37',
@@ -185,20 +185,20 @@ mapper = AssemblyMapper(
 mapped = mapper.map(chrom='7', start=140453136, end=140453136)
 ```
 
-## API Best Practices
+## API 最佳实践
 
-### Rate Limiting
+### 速率限制
 
-The Ensembl REST API has rate limits. Follow these practices:
+Ensembl REST API 有速率限制。遵循这些实践：
 
-1. **Respect rate limits:** Maximum 15 requests per second for anonymous users
-2. **Handle 429 responses:** When rate-limited, check the `Retry-After` header and wait
-3. **Use batch endpoints:** When querying multiple items, use batch endpoints where available
-4. **Cache results:** Store frequently accessed data to reduce API calls
+1. **遵守速率限制：** 匿名用户每秒最多 15 个请求
+2. **处理 429 响应：** 当速率受限时，检查 `Retry-After` 标头并等待
+3. **使用批量端点：** 查询多个项目时，使用可用的批量端点
+4. **缓存结果：** 存储频繁访问的数据以减少 API 调用
 
-### Error Handling
+### 错误处理
 
-Always implement proper error handling:
+始终实施适当的错误处理：
 
 ```python
 import requests
@@ -218,92 +218,91 @@ def query_ensembl(endpoint, params=None, max_retries=3):
         if response.status_code == 200:
             return response.json()
         elif response.status_code == 429:
-            # Rate limited - wait and retry
+            # 速率受限 - 等待并重试
             retry_after = int(response.headers.get('Retry-After', 1))
             time.sleep(retry_after)
         else:
             response.raise_for_status()
 
-    raise Exception(f"Failed after {max_retries} attempts")
+    raise Exception(f"在 {max_retries} 次尝试后失败")
 ```
 
-## Installation
+## 安装
 
-### Python Package (Recommended)
+### Python 包（推荐）
 
 ```bash
 uv pip install ensembl_rest
 ```
 
-The `ensembl_rest` package provides a Pythonic interface to all Ensembl REST API endpoints.
+`ensembl_rest` 包为所有 Ensembl REST API 端点提供了 Pythonic 接口。
 
-### Direct REST API
+### 直接 REST API
 
-No installation needed - use standard HTTP libraries like `requests`:
+无需安装 - 使用标准 HTTP 库，如 `requests`：
 
 ```bash
 uv pip install requests
 ```
 
-## Resources
+## 资源
 
 ### references/
 
-- `api_endpoints.md`: Comprehensive documentation of all 17 API endpoint categories with examples and parameters
+- `api_endpoints.md`：所有 17 个 API 端点类别的综合文档，包含示例和参数
 
 ### scripts/
 
-- `ensembl_query.py`: Reusable Python script for common Ensembl queries with built-in rate limiting and error handling
+- `ensembl_query.py`：用于常见 Ensembl 查询的可重用 Python 脚本，具有内置的速率限制和错误处理
 
-## Common Workflows
+## 常见工作流
 
-### Workflow 1: Gene Annotation Pipeline
+### 工作流 1：基因注释管道
 
-1. Look up gene by symbol to get Ensembl ID
-2. Retrieve transcript information
-3. Get protein sequences for all transcripts
-4. Find orthologs in other species
-5. Export results
+1. 按符号查找基因以获取 Ensembl ID
+2. 检索转录本信息
+3. 获取所有转录本的蛋白质序列
+4. 在其他物种中查找直系同源
+5. 导出结果
 
-### Workflow 2: Variant Analysis
+### 工作流 2：变异分析
 
-1. Query variant by rsID or coordinates
-2. Use VEP to predict functional consequences
-3. Check population frequencies
-4. Retrieve phenotype associations
-5. Generate report
+1. 按 rsID 或坐标查询变异
+2. 使用 VEP 预测功能后果
+3. 检查群体频率
+4. 检索表型关联
+5. 生成报告
 
-### Workflow 3: Comparative Analysis
+### 工作流 3：比较分析
 
-1. Start with gene of interest in reference species
-2. Find orthologs in target species
-3. Retrieve sequences for all orthologs
-4. Compare gene structures and features
-5. Analyze evolutionary conservation
+1. 从参考物种中的感兴趣基因开始
+2. 在目标物种中查找直系同源
+3. 检索所有直系同源的序列
+4. 比较基因结构和特征
+5. 分析进化保守性
 
-## Species and Assembly Information
+## 物种和组装信息
 
-To query available species and assemblies:
+要查询可用的物种和组装：
 
 ```python
-# List all available species
+# 列出所有可用物种
 species_list = client.info_species()
 
-# Get assembly information for a species
+# 获取物种的组装信息
 assembly_info = client.info_assembly(species='human')
 ```
 
-Common species identifiers:
-- Human: `homo_sapiens` or `human`
-- Mouse: `mus_musculus` or `mouse`
-- Zebrafish: `danio_rerio` or `zebrafish`
-- Fruit fly: `drosophila_melanogaster`
+常见物种标识符：
+- 人类：`homo_sapiens` 或 `human`
+- 小鼠：`mus_musculus` 或 `mouse`
+- 斑马鱼：`danio_rerio` 或 `zebrafish`
+- 果蝇：`drosophila_melanogaster`
 
-## Additional Resources
+## 其他资源
 
-- **Official Documentation:** https://rest.ensembl.org/documentation
-- **Python Package Docs:** https://ensemblrest.readthedocs.io
-- **EBI Training:** https://www.ebi.ac.uk/training/online/courses/ensembl-rest-api/
-- **Ensembl Browser:** https://useast.ensembl.org
-- **GitHub Examples:** https://github.com/Ensembl/ensembl-rest/wiki
-
+- **官方文档：** https://rest.ensembl.org/documentation
+- **Python 包文档：** https://ensemblrest.readthedocs.io
+- **EBI 培训：** https://www.ebi.ac.uk/training/online/courses/ensembl-rest-api/
+- **Ensembl 浏览器：** https://useast.ensembl.org
+- **GitHub 示例：** https://github.com/Ensembl/ensembl-rest/wiki

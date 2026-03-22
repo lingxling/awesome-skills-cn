@@ -1,6 +1,6 @@
 ---
 name: azure-identity-ts
-description: "Authenticate to Azure services with various credential types."
+description: "Authenticate to Azure services using Azure Identity SDK for JavaScript (@azure/identity). Use when configuring authentication with DefaultAzureCredential, managed identity, service principals, or i..."
 risk: unknown
 source: community
 date_added: "2026-02-27"

@@ -1,6 +1,6 @@
 ---
 name: azure-functions
-description: "Modern .NET execution model with process isolation"
+description: "Expert patterns for Azure Functions development including isolated worker model, Durable Functions orchestration, cold start optimization, and production patterns. Covers .NET, Python, and Node.js ..."
 risk: unknown
 source: "vibeship-spawner-skills (Apache 2.0)"
 date_added: "2026-02-27"

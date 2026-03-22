@@ -1,8 +1,6 @@
 ---
 name: audit-context-building
 description: Enables ultra-granular, line-by-line code analysis to build deep architectural context before vulnerability or bug finding.
-risk: unknown
-source: community
 ---
 
 # Deep Context Builder Skill (Ultra-Granular Pure Context Mode)
@@ -22,7 +20,8 @@ This skill defines a structured analysis format (see Example: Function Micro-Ana
 
 ---
 
-## When to Use
+## 2. When to Use This Skill
+
 Use when:
 - Deep comprehension is needed before bug or vulnerability discovery.
 - You want bottom-up understanding instead of high-level guessing.

@@ -1,9 +1,10 @@
 ---
 name: google-docs-automation
-description: "Lightweight Google Docs integration with standalone OAuth authentication. No MCP server required."
-license: Apache-2.0
-risk: unknown
-source: community
+description: |
+  Interact with Google Docs - create documents, search by title, read content, and edit text.
+  Use when user asks to: create a Google Doc, find a document, read doc content, add text to a doc,
+  or replace text in a document. Lightweight alternative to full Google...
+--- Apache-2.0
 metadata:
   author: sanjay3290
   version: "1.0"

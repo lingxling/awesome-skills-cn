@@ -1,99 +1,98 @@
 ---
 name: image-enhancer
-description: Improves the quality of images, especially screenshots, by enhancing resolution, sharpness, and clarity. Perfect for preparing images for presentations, documentation, or social media posts.
+description: 提高图像质量，特别是截图，通过增强分辨率、锐度和清晰度。非常适合为演示文稿、文档或社交媒体帖子准备图像。
 ---
 
-# Image Enhancer
+# 图像增强器
 
-This skill takes your images and screenshots and makes them look better—sharper, clearer, and more professional.
+这个技能可以处理您的图像和截图，使它们看起来更好——更清晰、更锐利、更专业。
 
-## When to Use This Skill
+## 何时使用此技能
 
-- Improving screenshot quality for blog posts or documentation
-- Enhancing images before sharing on social media
-- Preparing images for presentations or reports
-- Upscaling low-resolution images
-- Sharpening blurry photos
-- Cleaning up compressed images
+- 提高博客文章或文档的截图质量
+- 在分享到社交媒体之前增强图像
+- 为演示文稿或报告准备图像
+- 放大低分辨率图像
+- 锐化模糊的照片
+- 清理压缩图像
 
-## What This Skill Does
+## 此技能的功能
 
-1. **Analyzes Image Quality**: Checks resolution, sharpness, and compression artifacts
-2. **Enhances Resolution**: Upscales images intelligently
-3. **Improves Sharpness**: Enhances edges and details
-4. **Reduces Artifacts**: Cleans up compression artifacts and noise
-5. **Optimizes for Use Case**: Adjusts based on intended use (web, print, social media)
+1. **分析图像质量**：检查分辨率、锐度和压缩伪影
+2. **增强分辨率**：智能放大图像
+3. **提高锐度**：增强边缘和细节
+4. **减少伪影**：清理压缩伪影和噪声
+5. **根据用例优化**：根据预期用途（网络、打印、社交媒体）进行调整
 
-## How to Use
+## 如何使用
 
-### Basic Enhancement
-
-```
-Improve the image quality of screenshot.png
-```
+### 基本增强
 
 ```
-Enhance all images in this folder
-```
-
-### Specific Improvements
-
-```
-Upscale this image to 4K resolution
+提高 screenshot.png 的图像质量
 ```
 
 ```
-Sharpen this blurry screenshot
+增强此文件夹中的所有图像
+```
+
+### 特定改进
+
+```
+将此图像放大到 4K 分辨率
 ```
 
 ```
-Reduce compression artifacts in this image
+锐化这个模糊的截图
 ```
 
-### Batch Processing
-
 ```
-Improve the quality of all PNG files in this directory
+减少此图像中的压缩伪影
 ```
 
-## Example
+### 批量处理
 
-**User**: "Improve the image quality of screenshot-2024.png"
-
-**Output**:
 ```
-Analyzing screenshot-2024.png...
-
-Current specs:
-- Resolution: 1920x1080
-- Format: PNG
-- Quality: Good, but slight blur
-
-Enhancements applied:
-✓ Upscaled to 2560x1440 (retina)
-✓ Sharpened edges
-✓ Enhanced text clarity
-✓ Optimized file size
-
-Saved as: screenshot-2024-enhanced.png
-Original preserved as: screenshot-2024-original.png
+提高此目录中所有 PNG 文件的质量
 ```
 
-**Inspired by:** Lenny Rachitsky's workflow from his newsletter - used for screenshots in his articles
+## 示例
 
-## Tips
+**用户**："提高 screenshot-2024.png 的图像质量"
 
-- Always keeps original files as backup
-- Works best with screenshots and digital images
-- Can batch process entire folders
-- Specify output format if needed (PNG for quality, JPG for smaller size)
-- For social media, mention the platform for optimal sizing
+**输出**：
+```
+分析 screenshot-2024.png...
 
-## Common Use Cases
+当前规格：
+- 分辨率：1920x1080
+- 格式：PNG
+- 质量：良好，但略有模糊
 
-- **Blog Posts**: Enhance screenshots before publishing
-- **Documentation**: Make UI screenshots crystal clear
-- **Social Media**: Optimize images for Twitter, LinkedIn, Instagram
-- **Presentations**: Upscale images for large screens
-- **Print Materials**: Increase resolution for physical media
+应用的增强：
+✓ 放大到 2560x1440（视网膜）
+✓ 锐化边缘
+✓ 增强文本清晰度
+✓ 优化文件大小
 
+保存为：screenshot-2024-enhanced.png
+原始文件保留为：screenshot-2024-original.png
+```
+
+**灵感来源**：Lenny Rachitsky 的通讯工作流程 - 用于他文章中的截图
+
+## 提示
+
+- 始终保留原始文件作为备份
+- 最适合截图和数字图像
+- 可以批量处理整个文件夹
+- 如果需要，指定输出格式（PNG 质量更好，JPG 大小更小）
+- 对于社交媒体，提及平台以获得最佳尺寸
+
+## 常见用例
+
+- **博客文章**：发布前增强截图
+- **文档**：使 UI 截图非常清晰
+- **社交媒体**：为 Twitter、LinkedIn、Instagram 优化图像
+- **演示文稿**：为大屏幕放大图像
+- **印刷材料**：为物理媒体增加分辨率
