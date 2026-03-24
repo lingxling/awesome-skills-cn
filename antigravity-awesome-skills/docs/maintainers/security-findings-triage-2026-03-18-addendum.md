@@ -6,7 +6,7 @@ This addendum supersedes the previous Jetski loader assessment in
 ## Correction
 
 - Finding: `Example loader trusts manifest paths, enabling file read`
-- Path: `docs/integrations/jetski-gemini-loader/loader.ts`
+- Path: `docs/integrations/jetski-gemini-loader/loader.mjs`
 - Previous triage status on 2026-03-15: `obsolete/not reproducible on current HEAD`
 - Corrected assessment: the loader was still reproducible via a symlinked
   `SKILL.md` that resolved outside `skillsRoot`. A local proof read the linked

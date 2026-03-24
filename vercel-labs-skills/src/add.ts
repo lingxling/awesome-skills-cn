@@ -420,7 +420,8 @@ export interface AddOptions {
 
 /**
  * Handle skills from a well-known endpoint (RFC 8615).
- * Discovers skills from /.well-known/skills/index.json
+ * Discovers skills from /.well-known/agent-skills/index.json (preferred)
+ * or /.well-known/skills/index.json (legacy fallback).
  */
 async function handleWellKnownSkills(
   source: string,
@@ -437,7 +438,7 @@ async function handleWellKnownSkills(
     spinner.stop(pc.red('No skills found'));
     p.outro(
       pc.red(
-        'No skills found at this URL. Make sure the server has a /.well-known/skills/index.json file.'
+        'No skills found at this URL. Make sure the server has a /.well-known/agent-skills/index.json or /.well-known/skills/index.json file.'
       )
     );
     process.exit(1);

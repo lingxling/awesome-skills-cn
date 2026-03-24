@@ -1,13 +1,13 @@
-<!-- registry-sync: version=8.5.0; skills=1306; stars=26267; updated_at=2026-03-21T11:03:30+00:00 -->
-# 🌌 Antigravity Awesome Skills: 1,306+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
+<!-- registry-sync: version=8.7.1; skills=1309; stars=26808; updated_at=2026-03-23T18:12:46+00:00 -->
+# 🌌 Antigravity Awesome Skills: 1,309+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
 
-> **Installable GitHub library of 1,306+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.**
+> **Installable GitHub library of 1,309+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.**
 
 Antigravity Awesome Skills is a GitHub repository and installer CLI for reusable `SKILL.md` playbooks. Instead of collecting random prompts, you get a searchable, installable skill library for planning, coding, debugging, testing, security review, infrastructure work, product workflows, and growth tasks across the major AI coding assistants.
 
 **Start here:** [Star the repo](https://github.com/sickn33/antigravity-awesome-skills/stargazers) · [Install in 1 minute](#installation) · [Choose your tool](#choose-your-tool) · [Best skills by tool](#best-skills-by-tool) · [Bundles](docs/users/bundles.md) · [Workflows](docs/users/workflows.md)
 
-[![GitHub stars](https://img.shields.io/badge/⭐%2026%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
+[![GitHub stars](https://img.shields.io/badge/⭐%2027%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Anthropic-purple)](https://claude.ai)
 [![Cursor](https://img.shields.io/badge/Cursor-AI%20IDE-orange)](https://cursor.sh)
@@ -20,13 +20,13 @@ Antigravity Awesome Skills is a GitHub repository and installer CLI for reusable
 [![OpenCode](https://img.shields.io/badge/OpenCode-CLI-gray?style=for-the-badge)](https://github.com/opencode-ai/opencode)
 [![Antigravity](https://img.shields.io/badge/Antigravity-AI%20IDE-red?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills)
 
-**Current release: V8.5.0.** Trusted by 26k+ GitHub stargazers, this repository combines official and community skill collections with bundles, workflows, installation paths, and docs that help you go from first install to daily use quickly.
+**Current release: V8.7.1.** Trusted by 27k+ GitHub stargazers, this repository combines official and community skill collections with bundles, workflows, installation paths, and docs that help you go from first install to daily use quickly.
 
 ## Why Developers Star This Repo
 
 - **Installable, not just inspirational**: use `npx antigravity-awesome-skills` to put skills where your tool expects them.
 - **Built for major agent workflows**: Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, Kiro, OpenCode, Copilot, and more.
-- **Broad coverage with real utility**: 1,306+ skills across development, testing, security, infrastructure, product, and marketing.
+- **Broad coverage with real utility**: 1,309+ skills across development, testing, security, infrastructure, product, and marketing.
 - **Faster onboarding**: bundles and workflows reduce the time from "I found this repo" to "I used my first skill".
 - **Useful whether you want breadth or curation**: browse the full catalog, start with top bundles, or compare alternatives before installing.
 
@@ -43,7 +43,7 @@ Antigravity Awesome Skills is a GitHub repository and installer CLI for reusable
 - [🧭 Antigravity Workflows](#antigravity-workflows)
 - [⚖️ Alternatives &amp; Comparisons](#alternatives--comparisons)
 - [📦 Features & Categories](#features--categories)
-- [📚 Browse 1,306+ Skills](#browse-1306-skills)
+- [📚 Browse 1,309+ Skills](#browse-1309-skills)
 - [🤝 Contributing](#contributing)
 - [💬 Community](#community)
 - [☕ Support the Project](#support-the-project)
@@ -60,7 +60,7 @@ If you searched for **Claude Code skills**, **Cursor skills**, **Codex CLI skill
 
 ### 1. 🐣 Context: What is this?
 
-**Antigravity Awesome Skills** (Release 8.5.0) is a large, installable skill library for AI coding assistants. It includes onboarding docs, bundles, workflows, generated catalogs, and a CLI installer so you can move from discovery to actual usage without manually stitching together dozens of repos.
+**Antigravity Awesome Skills** (Release 8.7.1) is a large, installable skill library for AI coding assistants. It includes onboarding docs, bundles, workflows, generated catalogs, and a CLI installer so you can move from discovery to actual usage without manually stitching together dozens of repos.
 
 AI agents are smart, but they still need **task-specific operating instructions**. Skills are focused markdown playbooks that teach an agent how to perform a workflow repeatedly and with better context, whether that means deployment, API design, testing, product strategy, SEO, or documentation.
 
@@ -179,7 +179,7 @@ This installs the same repository-backed skill library through Claude Code's plu
 
 ## Best Skills By Tool
 
-If you want a faster answer than "browse all 1,306+ skills", start with a tool-specific guide:
+If you want a faster answer than "browse all 1,309+ skills", start with a tool-specific guide:
 
 - **[Claude Code skills](docs/users/claude-code-skills.md)**: install paths, starter skills, prompt examples, and plugin marketplace flow.
 - **[Cursor skills](docs/users/cursor-skills.md)**: best starter skills for `.cursor/skills/`, UI-heavy work, and pair-programming flows.
@@ -276,7 +276,7 @@ They help you avoid picking through the full catalog one by one.
 
 - ❌ Separate installations or downloads
 - ❌ Different git commands
-- ❌ Something you need to "activate"
+- ❌ Something most users need to activate during normal install
 
 ### How to use bundles:
 
@@ -284,6 +284,8 @@ They help you avoid picking through the full catalog one by one.
 2. **Browse bundles** in [docs/users/bundles.md](docs/users/bundles.md) to find your role
 3. **Pick 3-5 skills** from that bundle to start using in your prompts
 4. **Reference them in your conversations** with your AI (e.g., "Use @brainstorming...")
+
+If Antigravity starts hitting context limits with too many active skills, the optional activation scripts in [`docs/users/agent-overload-recovery.md`](docs/users/agent-overload-recovery.md) can materialize only the bundles or skill ids you want in the live Antigravity directory.
 
 For detailed examples of how to actually use skills, see the [**Usage Guide**](docs/users/usage.md).
 
@@ -339,7 +341,7 @@ The repository is organized into specialized domains to transform your AI into a
 
 Counts change as new skills are added. For the current full registry, see [CATALOG.md](CATALOG.md).
 
-## Browse 1,306+ Skills
+## Browse 1,309+ Skills
 
 - Open the interactive browser in [`apps/web-app`](apps/web-app).
 - Read the full catalog in [`CATALOG.md`](CATALOG.md).
@@ -382,15 +384,34 @@ That guide includes:
 - the storage folders that usually need to be cleared
 - an optional batch helper adapted from [issue #274](https://github.com/sickn33/antigravity-awesome-skills/issues/274)
 
+### Linux and macOS agent overload
+
+If Antigravity becomes unstable only when too many skills are active at once, use the cross-platform overload guide:
+
+- [`docs/users/agent-overload-recovery.md`](docs/users/agent-overload-recovery.md)
+
 ### Fixing agent overload (activation scripts)
 
-If your agent is struggling with context window limits due to too many loaded skills, use the activation script. It keeps the full library in a separate archive folder and only activates the bundles or skills you need into the live Antigravity skills directory.
+If your agent is struggling with context window limits due to too many loaded skills, use the activation scripts. They keep the full library in a separate archive folder and only activate the bundles or skills you need into the live Antigravity skills directory.
 
 **Important Usage Instructions:**
 
 1. **First, manually close the repository** (e.g., exit your AI agent or close your IDE).
 2. Open a terminal inside the folder where you cloned this repository (NOTE: repository has to be cloned).
 3. Run the script located in the `scripts` folder.
+
+macOS/Linux examples:
+
+```bash
+# Activate specific bundles
+./scripts/activate-skills.sh "Web Wizard" "Integration & APIs"
+
+# Activate literal skill ids
+./scripts/activate-skills.sh brainstorming systematic-debugging
+
+# Clear and reset (archives the live directory first)
+./scripts/activate-skills.sh --clear
+```
 
 Windows examples:
 
@@ -546,8 +567,8 @@ We officially thank the following contributors for their help in making this rep
 - [@itsmeares](https://github.com/itsmeares)
 - [@chauey](https://github.com/chauey)
 - [@ar27111994](https://github.com/ar27111994)
-- [@suhaibjanjua](https://github.com/suhaibjanjua)
 - [@Champbreed](https://github.com/Champbreed)
+- [@suhaibjanjua](https://github.com/suhaibjanjua)
 - [@GuppyTheCat](https://github.com/GuppyTheCat)
 - [@Copilot](https://github.com/apps/copilot-swe-agent)
 - [@8hrsk](https://github.com/8hrsk)
@@ -559,27 +580,29 @@ We officially thank the following contributors for their help in making this rep
 - [@fernandorych](https://github.com/fernandorych)
 - [@SnakeEye-sudo](https://github.com/SnakeEye-sudo)
 - [@nikolasdehor](https://github.com/nikolasdehor)
-- [@jackjin1997](https://github.com/jackjin1997)
-- [@HuynhNhatKhanh](https://github.com/HuynhNhatKhanh)
 - [@taksrules](https://github.com/taksrules)
+- [@HuynhNhatKhanh](https://github.com/HuynhNhatKhanh)
+- [@jackjin1997](https://github.com/jackjin1997)
 - [@liyin2015](https://github.com/liyin2015)
-- [@Gizzant](https://github.com/Gizzant)
-- [@AssassinMaeve](https://github.com/AssassinMaeve)
-- [@Musayrlsms](https://github.com/Musayrlsms)
+- [@fullstackcrew-alpha](https://github.com/fullstackcrew-alpha)
 - [@arathiesh](https://github.com/arathiesh)
 - [@Tiger-Foxx](https://github.com/Tiger-Foxx)
 - [@RamonRiosJr](https://github.com/RamonRiosJr)
-- [@ziuus](https://github.com/ziuus)
-- [@Wolfe-Jam](https://github.com/Wolfe-Jam)
-- [@Wittlesus](https://github.com/Wittlesus)
-- [@wahidzzz](https://github.com/wahidzzz)
-- [@Vonfry](https://github.com/Vonfry)
-- [@vprudnikoff](https://github.com/vprudnikoff)
-- [@viktor-ferenczi](https://github.com/viktor-ferenczi)
-- [@code-vj](https://github.com/code-vj)
-- [@babysor](https://github.com/babysor)
-- [@uriva](https://github.com/uriva)
+- [@Musayrlsms](https://github.com/Musayrlsms)
+- [@AssassinMaeve](https://github.com/AssassinMaeve)
+- [@JayeHarrill](https://github.com/JayeHarrill)
+- [@Gizzant](https://github.com/Gizzant)
 - [@truongnmt](https://github.com/truongnmt)
+- [@uriva](https://github.com/uriva)
+- [@babysor](https://github.com/babysor)
+- [@code-vj](https://github.com/code-vj)
+- [@viktor-ferenczi](https://github.com/viktor-ferenczi)
+- [@vprudnikoff](https://github.com/vprudnikoff)
+- [@Vonfry](https://github.com/Vonfry)
+- [@wahidzzz](https://github.com/wahidzzz)
+- [@Wittlesus](https://github.com/Wittlesus)
+- [@Wolfe-Jam](https://github.com/Wolfe-Jam)
+- [@vuth-dogo](https://github.com/vuth-dogo)
 - [@Onsraa](https://github.com/Onsraa)
 - [@SebConejo](https://github.com/SebConejo)
 - [@SuperJMN](https://github.com/SuperJMN)
@@ -592,7 +615,6 @@ We officially thank the following contributors for their help in making this rep
 - [@ProgramadorBrasil](https://github.com/ProgramadorBrasil)
 - [@PabloASMD](https://github.com/PabloASMD)
 - [@yubing744](https://github.com/yubing744)
-- [@vuth-dogo](https://github.com/vuth-dogo)
 - [@yang1002378395-cmyk](https://github.com/yang1002378395-cmyk)
 - [@viliawang-pm](https://github.com/viliawang-pm)
 - [@tsilverberg](https://github.com/tsilverberg)
@@ -604,7 +626,6 @@ We officially thank the following contributors for their help in making this rep
 - [@ksgisang](https://github.com/ksgisang)
 - [@KrisnaSantosa15](https://github.com/KrisnaSantosa15)
 - [@junited31](https://github.com/junited31)
-- [@fullstackcrew-alpha](https://github.com/fullstackcrew-alpha)
 - [@fbientrigo](https://github.com/fbientrigo)
 - [@dz3ai](https://github.com/dz3ai)
 - [@developer-victor](https://github.com/developer-victor)
@@ -616,10 +637,12 @@ We officially thank the following contributors for their help in making this rep
 - [@avimak](https://github.com/avimak)
 - [@antbotlab](https://github.com/antbotlab)
 - [@amalsam](https://github.com/amalsam)
-- [@qcwssss](https://github.com/qcwssss)
+- [@ziuus](https://github.com/ziuus)
+- [@Cerdore](https://github.com/Cerdore)
 - [@rcigor](https://github.com/rcigor)
 - [@hvasconcelos](https://github.com/hvasconcelos)
 - [@Guilherme-ruy](https://github.com/Guilherme-ruy)
+- [@FrancyJGLisboa](https://github.com/FrancyJGLisboa)
 - [@Digidai](https://github.com/Digidai)
 - [@dbhat93](https://github.com/dbhat93)
 - [@decentraliser](https://github.com/decentraliser)
@@ -662,12 +685,14 @@ We officially thank the following contributors for their help in making this rep
 - [@kage-art](https://github.com/kage-art)
 - [@whatiskadudoing](https://github.com/whatiskadudoing)
 - [@jonathimer](https://github.com/jonathimer)
-- [@JayeHarrill](https://github.com/JayeHarrill)
 - [@JaskiratAnand](https://github.com/JaskiratAnand)
+- [@qcwssss](https://github.com/qcwssss)
 
 ## License
 
-MIT License. See [LICENSE](LICENSE) for details.
+Original code and tooling are licensed under the MIT License. See [LICENSE](LICENSE).
+
+Original documentation and other non-code written content are licensed under [CC BY 4.0](LICENSE-CONTENT), unless a more specific upstream notice says otherwise. See [docs/sources/sources.md](docs/sources/sources.md) for attributions and third-party license details.
 
 ---
 

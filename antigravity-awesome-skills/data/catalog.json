@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1306,
+  "total": 1309,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -14527,6 +14527,35 @@
       "path": "skills/gcp-cloud-run/SKILL.md"
     },
     {
+      "id": "gdb-cli",
+      "name": "gdb-cli",
+      "description": "GDB debugging assistant for AI agents - analyze core dumps, debug live processes, investigate crashes and deadlocks with source code correlation",
+      "category": "data-ai",
+      "tags": [
+        "debugging",
+        "gdb",
+        "core-dump",
+        "crash-analysis",
+        "c++",
+        "c"
+      ],
+      "triggers": [
+        "debugging",
+        "gdb",
+        "core-dump",
+        "crash-analysis",
+        "c++",
+        "c",
+        "cli",
+        "assistant",
+        "ai",
+        "agents",
+        "analyze",
+        "core"
+      ],
+      "path": "skills/gdb-cli/SKILL.md"
+    },
+    {
       "id": "gdpr-data-handling",
       "name": "gdpr-data-handling",
       "description": "Practical implementation guide for GDPR-compliant data processing, consent management, and privacy controls.",
@@ -15191,36 +15220,6 @@
         "microservices"
       ],
       "path": "skills/golang-pro/SKILL.md"
-    },
-    {
-      "id": "goldrush-api",
-      "name": "goldrush-api",
-      "description": "Query blockchain data across 100+ chains: wallet balances, token prices, transactions, DEX pairs, and real-time OHLCV streams via the GoldRush API by Covalent.",
-      "category": "data-ai",
-      "tags": [
-        "blockchain",
-        "crypto",
-        "web3",
-        "api",
-        "defi",
-        "wallet",
-        "multi-chain"
-      ],
-      "triggers": [
-        "blockchain",
-        "crypto",
-        "web3",
-        "api",
-        "defi",
-        "wallet",
-        "multi-chain",
-        "goldrush",
-        "query",
-        "data",
-        "100",
-        "chains"
-      ],
-      "path": "skills/goldrush-api/SKILL.md"
     },
     {
       "id": "google-analytics-automation",
@@ -17144,6 +17143,30 @@
         "comments"
       ],
       "path": "skills/jira-automation/SKILL.md"
+    },
+    {
+      "id": "jobgpt",
+      "name": "jobgpt",
+      "description": "Job search automation, auto apply, resume generation, application tracking, salary intelligence, and recruiter outreach using the JobGPT MCP server.",
+      "category": "workflow",
+      "tags": [
+        "jobgpt"
+      ],
+      "triggers": [
+        "jobgpt",
+        "job",
+        "search",
+        "automation",
+        "auto",
+        "apply",
+        "resume",
+        "generation",
+        "application",
+        "tracking",
+        "salary",
+        "intelligence"
+      ],
+      "path": "skills/jobgpt/SKILL.md"
     },
     {
       "id": "json-canvas",
@@ -20052,6 +20075,30 @@
         "lms"
       ],
       "path": "skills/moodle-external-api-development/SKILL.md"
+    },
+    {
+      "id": "moyu",
+      "name": "moyu",
+      "description": "Anti-over-engineering guardrail that activates when an AI coding agent expands scope, adds abstractions, or changes files the user did not request.",
+      "category": "data-ai",
+      "tags": [
+        "moyu"
+      ],
+      "triggers": [
+        "moyu",
+        "anti",
+        "engineering",
+        "guardrail",
+        "activates",
+        "ai",
+        "coding",
+        "agent",
+        "expands",
+        "scope",
+        "adds",
+        "abstractions"
+      ],
+      "path": "skills/moyu/SKILL.md"
     },
     {
       "id": "mtls-configuration",
@@ -31286,6 +31333,31 @@
         "testing"
       ],
       "path": "skills/windows-privilege-escalation/SKILL.md"
+    },
+    {
+      "id": "windows-shell-reliability",
+      "name": "windows-shell-reliability",
+      "description": "Reliable command execution on Windows: paths, encoding, and common binary pitfalls.",
+      "category": "general",
+      "tags": [
+        "windows",
+        "shell",
+        "reliability"
+      ],
+      "triggers": [
+        "windows",
+        "shell",
+        "reliability",
+        "reliable",
+        "command",
+        "execution",
+        "paths",
+        "encoding",
+        "common",
+        "binary",
+        "pitfalls"
+      ],
+      "path": "skills/windows-shell-reliability/SKILL.md"
     },
     {
       "id": "wireshark-analysis",

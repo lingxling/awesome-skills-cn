@@ -42,7 +42,7 @@ function getCatalogBaseUrl(canonicalUrl: string): string {
     const normalizedPath = strippedSkillPath.endsWith('/') ? strippedSkillPath : `${strippedSkillPath}/`;
     const normalizedCatalog = normalizedPath === '' ? '/' : normalizedPath;
     return `${parsed.origin}${normalizedCatalog}`;
-  } catch (_error) {
+  } catch {
     return canonicalUrl;
   }
 }

@@ -1,5 +1,5 @@
 ---
-name: gradio
+name: huggingface-gradio
 description: 使用 Python 构建 Gradio Web UI 和演示。在创建或编辑 Gradio 应用、组件、事件监听器、布局或聊天机器人时使用。
 ---
 

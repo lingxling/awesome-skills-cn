@@ -1,7 +1,6 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Search, Filter, AlertCircle, RefreshCw, ArrowUpDown } from 'lucide-react';
 import { VirtuosoGrid } from 'react-virtuoso';
-import debounce from 'lodash.debounce';
 import { useSkills } from '../context/SkillContext';
 import { SkillCard } from '../components/SkillCard';
 import type { SyncMessage, CategoryStats } from '../types';
@@ -29,17 +28,15 @@ export function Home(): React.ReactElement {
     window.setTimeout(() => setCommandCopied(false), 2000);
   };
 
-  // Debounce search input to avoid excessive filtering on every keystroke
-  const debouncedSetSearch = useCallback(
-    debounce((value: string) => {
-      setDebouncedSearch(value);
-    }, 300),
-    []
-  );
-
   useEffect(() => {
-    debouncedSetSearch(search);
-  }, [search, debouncedSetSearch]);
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 300);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [search]);
 
   const filteredSkills = useMemo(() => {
     let result = [...skills];
@@ -100,7 +97,7 @@ export function Home(): React.ReactElement {
       } else {
         setSyncMsg({ type: 'error', text: `❌ ${data.error}` });
       }
-    } catch (err) {
+    } catch {
       setSyncMsg({ type: 'error', text: '❌ Network error' });
     } finally {
       setSyncing(false);

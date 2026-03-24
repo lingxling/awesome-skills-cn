@@ -12,6 +12,7 @@ const packageJson = JSON.parse(readText("package.json"));
 const generatedFiles = JSON.parse(readText("tools/config/generated-files.json"));
 const ciWorkflow = readText(".github/workflows/ci.yml");
 const publishWorkflow = readText(".github/workflows/publish-npm.yml");
+const releaseWorkflowScript = readText("tools/scripts/release_workflow.js");
 const hygieneWorkflowPath = path.join(repoRoot, ".github", "workflows", "repo-hygiene.yml");
 
 assert.ok(
@@ -49,6 +50,11 @@ assert.match(
   packageJson.scripts["sync:repo-state"],
   /check:warning-budget/,
   "sync:repo-state should enforce the frozen validation warning budget",
+);
+assert.strictEqual(
+  packageJson.scripts["app:install"],
+  "cd apps/web-app && npm ci",
+  "app:install should use npm ci for deterministic web-app installs",
 );
 
 for (const filePath of [
@@ -131,6 +137,11 @@ assert.match(
 assert.match(publishWorkflow, /run: npm ci/, "npm publish workflow should install dependencies");
 assert.match(
   publishWorkflow,
+  /run: npm run app:install/,
+  "npm publish workflow should install web-app dependencies before building",
+);
+assert.match(
+  publishWorkflow,
   /run: npm run sync:release-state/,
   "npm publish workflow should verify canonical release artifacts",
 );
@@ -141,6 +152,11 @@ assert.match(
 );
 assert.match(publishWorkflow, /run: npm run test/, "npm publish workflow should run tests before publish");
 assert.match(publishWorkflow, /run: npm run app:build/, "npm publish workflow should build the app before publish");
+assert.match(
+  releaseWorkflowScript,
+  /runCommand\("npm", \["run", "app:install"\], projectRoot\);[\s\S]*runCommand\("npm", \["run", "app:build"\], projectRoot\);/,
+  "release workflow should install web-app dependencies before building the app",
+);
 assert.match(
   publishWorkflow,
   /npm pack --dry-run --json/,

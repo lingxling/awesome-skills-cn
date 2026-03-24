@@ -12,7 +12,7 @@ Great question! Here's what just happened and what to do next:
 
 When you ran `npx antigravity-awesome-skills` or cloned the repository, you:
 
-✅ **Downloaded 1,306+ skill files** to your computer (default: `~/.gemini/antigravity/skills/`; or a custom path like `~/.agent/skills/` if you used `--path`)  
+✅ **Downloaded 1,309+ skill files** to your computer (default: `~/.gemini/antigravity/skills/`; or a custom path like `~/.agent/skills/` if you used `--path`)  
 ✅ **Made them available** to your AI assistant  
 ❌ **Did NOT enable them all automatically** (they're just sitting there, waiting)
 
@@ -32,7 +32,7 @@ Bundles are **recommended lists** of skills grouped by role. They help you decid
 
 **Analogy:**
 
-- You installed a toolbox with 1,306+ tools (✅ done)
+- You installed a toolbox with 1,309+ tools (✅ done)
 - Bundles are like **labeled organizer trays** saying: "If you're a carpenter, start with these 10 tools"
 - You don't install bundles—you **pick skills from them**
 
@@ -40,7 +40,7 @@ Bundles are **recommended lists** of skills grouped by role. They help you decid
 
 ❌ Separate installations  
 ❌ Different download commands  
-❌ Something you need to "activate"
+❌ Something most users need to activate during normal install
 
 ### Example: The "Web Wizard" Bundle
 
@@ -192,7 +192,7 @@ Let's actually use a skill right now. Follow these steps:
 
 ## Step 5: Picking Your First Skills (Practical Advice)
 
-Don't try to use all 1,306+ skills at once. Here's a sensible approach:
+Don't try to use all 1,309+ skills at once. Here's a sensible approach:
 
 If you want a tool-specific starting point before choosing skills, use:
 
@@ -323,7 +323,7 @@ Usually no, but if your AI doesn't recognize a skill:
 
 ### "Can I load all skills into the model at once?"
 
-No. Even though you have 1,306+ skills installed locally, you should **not** concatenate every `SKILL.md` into a single system prompt or context block.
+No. Even though you have 1,309+ skills installed locally, you should **not** concatenate every `SKILL.md` into a single system prompt or context block.
 
 The intended pattern is:
 

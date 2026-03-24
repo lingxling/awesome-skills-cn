@@ -44,11 +44,13 @@ Start from:
 
 ### Are these skills free to use?
 
-**Yes!** This repository is licensed under MIT License.
+**Yes.** Original code and tooling are licensed under MIT, and original documentation/non-code written content is licensed under CC BY 4.0.
 
 - ✅ Free for personal use
 - ✅ Free for commercial use
 - ✅ You can modify them
+
+See [../../LICENSE](../../LICENSE), [../../LICENSE-CONTENT](../../LICENSE-CONTENT), and [../sources/sources.md](../sources/sources.md) for attribution and third-party license details.
 
 ### How do these skills avoid overflowing the model context?
 
@@ -151,6 +153,14 @@ It includes:
 - the manual cleanup steps for broken Local Storage / Session Storage / IndexedDB state
 - the default Antigravity Windows paths to back up first
 - an optional batch script adapted from [issue #274](https://github.com/sickn33/antigravity-awesome-skills/issues/274)
+
+### I hit context overload on Linux or macOS. What should I do?
+
+If Antigravity becomes unstable only when the full skills library is active, switch to the activation flow instead of exposing every skill at once:
+
+- [agent-overload-recovery.md](agent-overload-recovery.md)
+
+That guide shows how to run `scripts/activate-skills.sh` from a cloned copy of this repository so only the bundles or skill ids you need stay active in `~/.gemini/antigravity/skills`.
 
 ### How do I update skills?
 

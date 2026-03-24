@@ -11,11 +11,11 @@
 - [**Awesome OpenClaw Skills**](https://github.com/VoltAgent/awesome-openclaw-skills) [![GitHub Stars](https://badgen.net/github/stars/VoltAgent/awesome-openclaw-skills)](https://github.com/VoltAgent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能）
 - [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) [![GitHub Stars](https://badgen.net/github/stars/K-Dense-AI/claude-scientific-skills)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（179个技能，已全部翻译）
 - [**Composio Awesome Claude Skills**](https://github.com/ComposioHQ/awesome-claude-skills) [![GitHub Stars](https://badgen.net/github/stars/ComposioHQ/awesome-claude-skills)](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（200+个技能）
-- [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（13个技能，已全部翻译）
+- [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（11个技能，已全部翻译）
 - [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能，已全部翻译）
 - [**OpenAI Skills**](https://github.com/openai/skills) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（38个技能，已全部翻译）
 - [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（7个技能，已全部翻译）
-- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（6个技能，已全部翻译）
+- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（7个技能，6个已翻译）
 - [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
 
 ## SKILL 是什么
@@ -143,27 +143,25 @@ awesome-skills-cn/
 │   └── skills/
 │       ├── hf-cli/
 │       │   └── SKILL_CN.md    # Hugging Face Hub CLI
+│       ├── huggingface-community-evals/
+│       │   └── SKILL_CN.md    # Hugging Face 社区评估
+│       ├── huggingface-datasets/
+│       │   └── SKILL_CN.md    # 数据集创建和管理
 │       ├── huggingface-gradio/
 │       │   └── SKILL_CN.md    # Gradio Web UI 构建
-│       ├── hugging-face-cli/
-│       │   └── SKILL_CN.md    # Hugging Face CLI 操作
-│       ├── hugging-face-datasets/
-│       │   └── SKILL_CN.md    # 数据集创建和管理
-│       ├── hugging-face-dataset-viewer/
-│       │   └── SKILL_CN.md    # 数据集查看器 API 工作流
-│       ├── hugging-face-evaluation/
-│       │   └── SKILL_CN.md    # 模型评估管理
-│       ├── hugging-face-jobs/
+│       ├── huggingface-jobs/
 │       │   └── SKILL_CN.md    # Hugging Face Jobs 计算任务
-│       ├── hugging-face-model-trainer/
-│       │   └── SKILL_CN.md    # 模型训练和微调
-│       ├── hugging-face-paper-publisher/
+│       ├── huggingface-llm-trainer/
+│       │   └── SKILL_CN.md    # LLM 模型训练和微调
+│       ├── huggingface-paper-publisher/
 │       │   └── SKILL_CN.md    # 研究论文发布
-│       ├── hugging-face-tool-builder/
-│       │   └── SKILL_CN.md    # API 工具构建
-│       ├── hugging-face-trackio/
+│       ├── huggingface-papers/
+│       │   └── SKILL_CN.md    # 论文管理
+│       ├── huggingface-trackio/
 │       │   └── SKILL_CN.md    # ML 实验跟踪
-│       └── transformers.js/
+│       ├── huggingface-vision-trainer/
+│       │   └── SKILL_CN.md    # 视觉模型训练
+│       └── transformers-js/
 │           └── SKILL_CN.md    # Transformers.js 机器学习
 ├── obsidian-skills/            # obsidian-skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
@@ -310,13 +308,13 @@ awesome-skills-cn/
 | awesome-openclaw-skills | 5816 | ✓ | 5816/5816 | 已完成 |
 | claude-scientific-skills | 179 | ✓ | 179/179 | 已完成 |
 | composiohq-awesome-claude-skills | 200+ | - | 0/200+ | 未开始 |
-| huggingface-skills | 13 | ✓ | 13/13 | 已完成 |
+| huggingface-skills | 11 | ✓ | 11/11 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | openai-skills | 38 | ✓ | 38/38 | 已完成 |
 | ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
-| vercel-labs-agent-skills | 6 | ✓ | 6/6 | 已完成 |
+| vercel-labs-agent-skills | 7 | ✓ | 6/7 | 进行中 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| **总计** | **7239+** | **75** | **6163/7239+** | **进行中** |
+| **总计** | **7238+** | **75** | **6161/7238+** | **进行中** |
 
 ### anthropics-skills (17个)
 
@@ -396,20 +394,19 @@ awesome-skills-cn/
 - [ ] adobe-automation
 - [ ] ... (共 200+ 个技能，详见项目目录)
 
-### huggingface-skills (13个)
+### huggingface-skills (11个)
 
+- [x] [hf-cli](huggingface-skills/skills/hf-cli/SKILL_CN.md) - Hugging Face Hub CLI
+- [x] [huggingface-community-evals](huggingface-skills/skills/huggingface-community-evals/SKILL_CN.md) - Hugging Face 社区评估
+- [x] [huggingface-datasets](huggingface-skills/skills/huggingface-datasets/SKILL_CN.md) - 数据集创建和管理
 - [x] [huggingface-gradio](huggingface-skills/skills/huggingface-gradio/SKILL_CN.md) - Gradio Web UI 构建
-- [x] [hugging-face-cli](hugging-face-skills/skills/hugging-face-cli/SKILL_CN.md) - Hugging Face CLI 操作
-- [x] [hugging-face-datasets](hugging-face-skills/skills/hugging-face-datasets/SKILL_CN.md) - 数据集创建和管理
-- [x] [hugging-face-dataset-viewer](hugging-face-skills/skills/hugging-face-dataset-viewer/SKILL_CN.md) - 数据集查看器 API 工作流
-- [x] [hugging-face-evaluation](hugging-face-skills/skills/hugging-face-evaluation/SKILL_CN.md) - 模型评估管理
-- [x] [hugging-face-jobs](hugging-face-skills/skills/hugging-face-jobs/SKILL_CN.md) - Hugging Face Jobs 计算任务
-- [x] [hugging-face-model-trainer](hugging-face-skills/skills/hugging-face-model-trainer/SKILL_CN.md) - 模型训练和微调
-- [x] [hugging-face-paper-publisher](hugging-face-skills/skills/hugging-face-paper-publisher/SKILL_CN.md) - 研究论文发布
-- [x] [hugging-face-tool-builder](hugging-face-skills/skills/hugging-face-tool-builder/SKILL_CN.md) - API 工具构建
-- [x] [hugging-face-trackio](hugging-face-skills/skills/hugging-face-trackio/SKILL_CN.md) - ML 实验跟踪
-- [x] [hf-cli](hugging-face-skills/skills/hf-cli/SKILL_CN.md) - Hugging Face Hub CLI
-- [x] [transformers-js](hugging-face-skills/skills/transformers.js/SKILL_CN.md) - Transformers.js 机器学习
+- [x] [huggingface-jobs](huggingface-skills/skills/huggingface-jobs/SKILL_CN.md) - Hugging Face Jobs 计算任务
+- [x] [huggingface-llm-trainer](huggingface-skills/skills/huggingface-llm-trainer/SKILL_CN.md) - LLM 模型训练和微调
+- [x] [huggingface-paper-publisher](huggingface-skills/skills/huggingface-paper-publisher/SKILL_CN.md) - 研究论文发布
+- [x] [huggingface-papers](huggingface-skills/skills/huggingface-papers/SKILL_CN.md) - 论文管理
+- [x] [huggingface-trackio](huggingface-skills/skills/huggingface-trackio/SKILL_CN.md) - ML 实验跟踪
+- [x] [huggingface-vision-trainer](huggingface-skills/skills/huggingface-vision-trainer/SKILL_CN.md) - 视觉模型训练
+- [x] [transformers-js](huggingface-skills/skills/transformers-js/SKILL_CN.md) - Transformers.js 机器学习
 
 ### obsidian-skills (5个)
 
@@ -469,7 +466,7 @@ awesome-skills-cn/
 - [x] [slides](ui-ux-pro-max-skill/.claude/skills/slides/SKILL_CN.md) - 幻灯片
 - [x] [ui-styling](ui-ux-pro-max-skill/.claude/skills/ui-styling/SKILL_CN.md) - UI样式
 
-### vercel-labs-agent-skills (6个)
+### vercel-labs-agent-skills (7个)
 
 - [x] [composition-patterns](vercel-labs-agent-skills/skills/composition-patterns/SKILL_CN.md) - 组合模式
 - [x] [deploy-to-vercel](vercel-labs-agent-skills/skills/deploy-to-vercel/SKILL_CN.md) - 部署到Vercel
@@ -477,6 +474,7 @@ awesome-skills-cn/
 - [x] [react-native-skills](vercel-labs-agent-skills/skills/react-native-skills/SKILL_CN.md) - React Native 技能
 - [x] [vercel-deploy-claimable](vercel-labs-agent-skills/skills/claude.ai/vercel-deploy-claimable/SKILL_CN.md) - Vercel 部署工具
 - [x] [web-design-guidelines](vercel-labs-agent-skills/skills/web-design-guidelines/SKILL_CN.md) - Web 设计指南
+- [ ] [vercel-cli-with-tokens](vercel-labs-agent-skills/skills/vercel-cli-with-tokens/SKILL.md) - Vercel CLI with Tokens
 
 ### vercel-labs-skills (1个)
 

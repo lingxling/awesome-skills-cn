@@ -126,7 +126,7 @@ describe('SkillDetail', () => {
         expect(screen.getByText('React design patterns and best practices')).toBeInTheDocument();
         expect(screen.getByTestId('markdown-content')).toHaveTextContent('This is the skill content.');
         expect(document.title).toContain('react-patterns');
-        expect(document.querySelector('meta[name=\"twitter:title\"]')).toHaveAttribute(
+        expect(document.querySelector('meta[name="twitter:title"]')).toHaveAttribute(
           'content',
           '@react-patterns | Antigravity Awesome Skills',
         );

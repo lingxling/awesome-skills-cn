@@ -9,6 +9,113 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [8.7.1] - 2026-03-23 - "Release Pipeline Repair"
+
+> Patch release to restore npm publication after the `v8.7.0` GitHub Release failed before reaching the npm registry.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This patch release keeps the `8.7.0` skill/library content intact and fixes the release pipeline so npm publication works end-to-end again. The root cause was that the publish workflow only installed root dependencies before building `apps/web-app`, leaving the web app without its own `node_modules` in CI.
+
+## Improvements
+
+- **npm publish repair**: Updated the publish workflow to install `apps/web-app` dependencies before the web build, matching the working GitHub Pages workflow and preventing the missing-React/missing-Vite TypeScript cascade seen in CI.
+- **Release verification hardening**: Added deterministic web-app installation to the maintainer release suite so `release:preflight` and `release:prepare` now catch this class of failure before a GitHub Release is published.
+- **Deterministic installs**: Switched the shared `app:install` script to `npm ci` so local and CI web-app installs use the same locked dependency graph.
+
+## Who should care
+
+- **Maintainers** can cut releases again without the publish workflow failing during the web-app build.
+- **npm users** can finally receive the `8.7.x` catalog and skill updates through the package registry instead of being stuck on `8.4.0`.
+- **Web-app contributors** get a cleaner release contract where CI explicitly prepares the frontend before building it.
+
+## [8.7.0] - 2026-03-23 - "Reference Recovery and Release Reliability"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release packages the maintainer sweep after `v8.6.0`: restored missing C++ reference material, added three new community skills plus the maintainer-integrated `jobgpt` skill, and fixed the Jetski lazy-loader example so release validation no longer fails on a raw TypeScript import.
+
+## New Skills
+
+- **moyu** - anti-over-engineering guardrails for AI coding agents that need to stay narrowly scoped and prefer the smallest viable change (PR #384)
+- **windows-shell-reliability** - practical Windows PowerShell and CMD guidance for encoding, quoting, logging, and detached process launches (PR #386)
+- **jobgpt** - JobGPT MCP integration for job search automation, resume generation, application tracking, salary insights, and recruiter outreach (local maintainer integration from PR #388)
+
+## Improvements
+
+- **cpp-pro restoration**: Restored the missing `cpp-pro` nested reference guides and implementation playbook so the skill's documented deep links work again (PR #383, issue #382).
+- **Release reliability**: Converted the Jetski Gemini loader example from `loader.ts` to a directly importable `loader.mjs`, updated repo references, and restored green local test coverage for the release pipeline.
+- **Registry sync**: Refreshed `README.md`, `CATALOG.md`, `skills_index.json`, `data/catalog.json`, `data/bundles.json`, contributors, and tracked web assets so `main` now reflects `1,309+` indexed skills.
+- **Metadata hardening**: Brought the merged `moyu` skill back within the frozen validation warning budget by adding explicit metadata and a `When to Use` section.
+
+## Who should care
+
+- **Claude Code and Cursor users** get four new or newly repaired skills, including scope-control guidance, better Windows shell reliability tips, and restored `cpp-pro` deep-dive references.
+- **Codex CLI and Gemini CLI users** benefit from the same skill additions plus a working Jetski lazy-loader example that can now be imported directly in Node-based host setups.
+- **Maintainers** get a release path that is green again end-to-end, with generated registry artifacts and contributor data re-synced on `main`.
+
+## Credits
+
+- **[@Champbreed](https://github.com/Champbreed)** for restoring the `cpp-pro` references in PR #383
+- **[@uucz](https://github.com/uucz)** for the new `moyu` skill in PR #384
+- **[@terryspitz](https://github.com/terryspitz)** for the new `windows-shell-reliability` skill in PR #386
+- **[@captainjackrana](https://github.com/captainjackrana)** for the original `jobgpt` contribution in PR #388
+
+Upgrade now: `git pull origin main` to fetch the latest skills.
+
+## [8.6.0] - 2026-03-22 - "Targeted Activation and Catalog Cleanup"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release packages the maintainer sweep after `v8.5.0`: the new `gdb-cli` community skill, removal of the stale in-repo `goldrush-api` copy, and a cross-platform recovery path for Antigravity users who hit truncation or context overload with too many active skills.
+
+## New Skills
+
+- **gdb-cli** - AI-assisted GDB debugging for core dumps, live process attach, crash triage, and deadlock analysis with source correlation (PR #375, closes #374)
+
+## Improvements
+
+- **Antigravity overload recovery**: Added `scripts/activate-skills.sh`, a matching installer hint, and new cross-platform user docs so Linux/macOS users can archive the full library and activate only the bundles or skill ids they need in the live Antigravity directory (issue #381).
+- **Windows/Linux/macOS troubleshooting**: Expanded the recovery guidance with a shared overload guide plus clearer README, FAQ, and getting-started links for truncation and context-limit failures.
+- **Registry cleanup**: Removed the stale in-repo `goldrush-api` mirror, regenerated bundle/catalog artifacts, and refreshed tracked web assets so canonical references no longer point at deleted content (PR #379).
+- **Maintainer sync**: Refreshed `README.md`, `CATALOG.md`, `skills_index.json`, `data/catalog.json`, `data/bundles.json`, contributors, and sitemap output after the PR merge batch so `main` stays release-ready.
+
+## Who should care
+
+- **Antigravity users** get a new activation flow for large repositories and a clearer recovery path when too many active skills trigger truncation-style failures.
+- **Claude Code and Cursor users** benefit from the new `gdb-cli` skill for C/C++ debugging and the cleaned-up catalog/docs surfaces.
+- **Codex CLI users** benefit from the same new debugging skill plus maintainer-driven registry cleanup that keeps generated artifacts and references aligned.
+- **Gemini CLI users** benefit from the updated troubleshooting docs and the removal of stale catalog references in shared bundle metadata.
+
+## Credits
+
+- **[@Cerdore](https://github.com/Cerdore)** for the new `gdb-cli` skill in PR #375
+- **[@JayeHarrill](https://github.com/JayeHarrill)** for removing the stale `goldrush-api` copy in PR #379
+
+Upgrade now: `git pull origin main` to fetch the latest skills.
+
 ## [8.5.0] - 2026-03-21 - "Installer Safety and Maintainer Automation"
 
 > Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.

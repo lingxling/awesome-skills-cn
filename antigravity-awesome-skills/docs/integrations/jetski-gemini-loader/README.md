@@ -20,13 +20,13 @@ This example shows one way to integrate **antigravity-awesome-skills** with a Je
 - How to enforce a **maximum number of skills per turn** via `maxSkillsPerTurn`.
 - How to choose whether to **truncate or error** when too many skills are requested via `overflowBehavior`.
 
-This pattern avoids context overflow when you have 1,306+ skills installed.
+This pattern avoids context overflow when you have 1,309+ skills installed.
 
 ---
 
 ## Files
 
-- `loader.ts`
+- `loader.mjs`
   - Implements:
     - `loadSkillIndex(indexPath)`;
     - `resolveSkillsFromMessages(messages, index, maxSkills)`;
@@ -45,7 +45,7 @@ import {
   loadSkillIndex,
   buildModelMessages,
   Message,
-} from "./loader";
+} from "./loader.mjs";
 
 const REPO_ROOT = "/path/to/antigravity-awesome-skills";
 const SKILLS_ROOT = REPO_ROOT;
@@ -86,7 +86,7 @@ Adapt the paths and model call to your environment.
 - **Do not** iterate through `skills/*/SKILL.md` and load everything at once.
 - This example:
   - assumes skills live under the same repo root as `data/skills_index.json`;
-  - uses Node.js `fs`/`path` APIs and TypeScript types for clarity.
+  - uses a plain Node.js ESM module so it can be imported directly without a TypeScript runtime.
 - In a real host:
   - wire `buildModelMessages` into the point where you currently assemble the prompt before `TrajectoryChatConverter`;
   - consider `overflowBehavior: "error"` if you want a clear user-facing failure instead of silently dropping extra skills;

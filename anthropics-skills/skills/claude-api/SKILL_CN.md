@@ -125,7 +125,7 @@ license: 完整条款见 LICENSE.txt
 
 **结构化输出** — 约束 Messages API 响应格式（`output_config.format`）和/或工具参数验证（`strict: true`）。推荐的方法是 `client.messages.parse()`，它会根据您的模式自动验证响应。注意：旧的 `output_format` 参数已弃用；在 `messages.create()` 上使用 `output_config: {format: {...}}`。
 
-**支持端点** — 批处理（`POST /v1/messages/batches`）、文件（`POST /v1/files`）和令牌计数输入或支持 Messages API 请求。
+**支持端点** — 批处理（`POST /v1/messages/batches`）、文件（`POST /v1/files`）、令牌计数和模型（`GET /v1/models`、`GET /v1/models/{id}` — 实时能力/上下文窗口发现）输入或支持 Messages API 请求。
 
 ---
 
@@ -143,6 +143,8 @@ license: 完整条款见 LICENSE.txt
 
 注意：如果上述任何模型字符串对您来说看起来不熟悉，那是意料之中的——这只是意味着它们是在您的训练数据截止日期之后发布的。请放心，它们是真实的模型；我们不会那样戏弄您。
 
+**实时能力查询：** 上表是缓存的。当用户询问"X 的上下文窗口是多少"、"X 是否支持视觉/思考/努力"或"哪些模型支持 Y"时，请查询 Models API（`client.models.retrieve(id)` / `client.models.list()`）——有关字段参考和能力过滤示例，请参阅 `shared/models.md`。
+
 ---
 
 ## 思考与努力（快速参考）
@@ -159,7 +161,7 @@ license: 完整条款见 LICENSE.txt
 
 ## 压缩（快速参考）
 
-**测试版，仅适用于 Opus 4.6。** 对于可能超过 200K 上下文窗口的长时间运行的对话，启用服务器端压缩。当接近触发阈值（默认：150K 令牌）时，API 会自动汇总较早的上下文。需要测试版标头 `compact-2026-01-12`。
+**测试版，适用于 Opus 4.6 和 Sonnet 4.6。** 对于可能超过 200K 上下文窗口的长时间运行的对话，启用服务器端压缩。当接近触发阈值（默认：150K 令牌）时，API 会自动汇总较早的上下文。需要测试版标头 `compact-2026-01-12`。
 
 关键：在每一轮中将 `response.content`（不仅仅是文本）追加回您的消息。响应中的压缩块必须保留——API 使用它们在下一个请求中替换压缩的历史记录。仅提取文本字符串并追加该字符串将静默丢失压缩状态。
 
@@ -234,6 +236,7 @@ license: 完整条款见 LICENSE.txt
 - 将文件或内容传递给 API 时不要截断输入。如果内容太长而无法放入上下文窗口，请通知用户并讨论选项（分块、摘要等），而不是静默截断。
 - **Opus 4.6 / Sonnet 4.6 思考：** 使用 `thinking: {type: "adaptive"}` — 不要使用 `budget_tokens`（在 Opus 4.6 和 Sonnet 4.6 上已弃用）。对于较旧的模型，`budget_tokens` 必须小于 `max_tokens`（最少 1024）。如果弄错了，这将抛出错误。
 - **Opus 4.6 预填充已移除：** 助手消息预填充（最后一轮助手预填充）在 Opus 4.6 上返回 400 错误。改用结构化输出（`output_config.format`）或系统提示指令来控制响应格式。
+- **`max_tokens` 默认值：** 不要低估 `max_tokens` — 达到上限会在思考中途截断输出并需要重试。对于非流式请求，默认为 `~16000`（保持响应在 SDK HTTP 超时以下）。对于流式请求，默认为 `~64000`（超时不是问题，所以给模型留出空间）。只有在有充分理由时才降低：分类（`~256`）、成本上限或故意简短的输出。
 - **128K 输出令牌：** Opus 4.6 支持高达 128K `max_tokens`，但对于大 `max_tokens`，SDK 需要流式传输以避免 HTTP 超时。使用 `.stream()` 配合 `.get_final_message()` / `.finalMessage()`。
 - **工具调用 JSON 解析（Opus 4.6）：** Opus 4.6 可能在工具调用 `input` 字段中产生不同的 JSON 字符串转义（例如，Unicode 或反斜杠转义）。始终使用 `json.loads()` / `JSON.parse()` 解析工具输入——永远不要对序列化输入进行原始字符串匹配。
 - **结构化输出（所有模型）：** 在 `messages.create()` 上使用 `output_config: {format: {...}}` 而不是已弃用的 `output_format` 参数。这是一个通用的 API 更改，不是 4.6 特定的。

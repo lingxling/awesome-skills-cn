@@ -8,7 +8,7 @@ Antigravity Awesome Skills supports Gemini CLI through the `.gemini/skills/` pat
 
 - It installs directly into the expected Gemini skills path.
 - It includes both core software engineering skills and deeper agent/LLM-oriented skills.
-- It helps new users get started with bundles and workflows rather than forcing a cold start from 1,306+ files.
+- It helps new users get started with bundles and workflows rather than forcing a cold start from 1,309+ files.
 - It is useful whether you want a broad internal skill library or a single repo to test many workflows quickly.
 
 ## Install Gemini CLI Skills

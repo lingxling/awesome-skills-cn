@@ -236,6 +236,23 @@ function installForTarget(tempDir, target) {
   console.log(`  ✓ Installed to ${target.path}`);
 }
 
+function getPostInstallMessages(targets) {
+  const messages = [
+    "Pick a bundle in docs/users/bundles.md and use @skill-name in your AI assistant.",
+  ];
+
+  if (targets.some((target) => target.name === "Antigravity")) {
+    messages.push(
+      "If Antigravity hits context/truncation limits, see docs/users/agent-overload-recovery.md",
+    );
+    messages.push(
+      "For clone-based installs, use scripts/activate-skills.sh or scripts/activate-skills.bat",
+    );
+  }
+
+  return messages;
+}
+
 function main() {
   const opts = parseArgs();
   const { tagArg, versionArg } = opts;
@@ -280,9 +297,9 @@ function main() {
       installForTarget(tempDir, target);
     }
 
-    console.log(
-      "\nPick a bundle in docs/users/bundles.md and use @skill-name in your AI assistant.",
-    );
+    for (const message of getPostInstallMessages(targets)) {
+      console.log(`\n${message}`);
+    }
   } finally {
     try {
       if (fs.existsSync(tempDir)) {
@@ -304,6 +321,7 @@ if (require.main === module) {
 
 module.exports = {
   copyRecursiveSync,
+  getPostInstallMessages,
   installSkillsIntoTarget,
   installForTarget,
   main,

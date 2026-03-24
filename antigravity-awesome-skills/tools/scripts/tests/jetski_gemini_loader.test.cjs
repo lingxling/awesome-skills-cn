@@ -10,7 +10,7 @@ async function main() {
     "docs",
     "integrations",
     "jetski-gemini-loader",
-    "loader.ts",
+    "loader.mjs",
   );
   const {
     loadSkillIndex,

@@ -5890,6 +5890,16 @@
     "date_added": "2026-02-27"
   },
   {
+    "id": "gdb-cli",
+    "path": "skills/gdb-cli",
+    "category": "development",
+    "name": "gdb-cli",
+    "description": "GDB debugging assistant for AI agents - analyze core dumps, debug live processes, investigate crashes and deadlocks with source code correlation",
+    "risk": "critical",
+    "source": "community",
+    "date_added": "2026-03-22"
+  },
+  {
     "id": "gdpr-data-handling",
     "path": "skills/gdpr-data-handling",
     "category": "security",
@@ -6168,16 +6178,6 @@
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27"
-  },
-  {
-    "id": "goldrush-api",
-    "path": "skills/goldrush-api",
-    "category": "blockchain",
-    "name": "goldrush-api",
-    "description": "Query blockchain data across 100+ chains: wallet balances, token prices, transactions, DEX pairs, and real-time OHLCV streams via the GoldRush API by Covalent.",
-    "risk": "safe",
-    "source": "community",
-    "date_added": "2026-03-17"
   },
   {
     "id": "google-analytics-automation",
@@ -6988,6 +6988,16 @@
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27"
+  },
+  {
+    "id": "jobgpt",
+    "path": "skills/jobgpt",
+    "category": "uncategorized",
+    "name": "jobgpt",
+    "description": "Job search automation, auto apply, resume generation, application tracking, salary intelligence, and recruiter outreach using the JobGPT MCP server.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-23"
   },
   {
     "id": "json-canvas",
@@ -8128,6 +8138,16 @@
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27"
+  },
+  {
+    "id": "moyu",
+    "path": "skills/moyu",
+    "category": "ai-ml",
+    "name": "moyu",
+    "description": "Anti-over-engineering guardrail that activates when an AI coding agent expands scope, adds abstractions, or changes files the user did not request.\n",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-23"
   },
   {
     "id": "mtls-configuration",
@@ -12748,6 +12768,16 @@
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27"
+  },
+  {
+    "id": "windows-shell-reliability",
+    "path": "skills/windows-shell-reliability",
+    "category": "uncategorized",
+    "name": "windows-shell-reliability",
+    "description": "Reliable command execution on Windows: paths, encoding, and common binary pitfalls.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-03-19"
   },
   {
     "id": "wireshark-analysis",

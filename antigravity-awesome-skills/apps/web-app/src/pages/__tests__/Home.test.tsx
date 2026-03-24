@@ -5,15 +5,6 @@ import { renderWithRouter } from '../../utils/testUtils';
 import { createMockSkill } from '../../factories/skill';
 import { useSkills } from '../../context/SkillContext';
 
-// Mock lodash.debounce to execute immediately
-vi.mock('lodash.debounce', () => ({
-  default: vi.fn((fn) => {
-    const mockedFn: any = (...args: any[]) => fn(...args);
-    mockedFn.cancel = vi.fn();
-    return mockedFn;
-  }),
-}));
-
 // Mock useSkills hook
 vi.mock('../../context/SkillContext', async (importOriginal) => {
   const actual = await importOriginal<any>();
