@@ -137,7 +137,60 @@ awesome-skills-cn/
 │   │   └── SKILL_CN.md    # 变更日志生成器
 │   ├── competitive-ads-extractor/
 │   │   └── SKILL_CN.md    # 竞争广告提取器
-│   └── ...                # 更多技能（共 200+ 个，详见项目目录）
+│   ├── connect/
+│   │   └── SKILL_CN.md    # 连接工具
+│   ├── connect-apps/
+│   │   └── SKILL_CN.md    # 应用连接
+│   ├── content-research-writer/
+│   │   └── SKILL_CN.md    # 内容研究与写作
+│   ├── developer-growth-analysis/
+│   │   └── SKILL_CN.md    # 开发者增长分析
+│   ├── document-skills/
+│   │   ├── docx/SKILL_CN.md    # Word 文档处理
+│   │   ├── pdf/SKILL_CN.md     # PDF 处理
+│   │   ├── pptx/SKILL_CN.md    # PowerPoint 处理
+│   │   └── xlsx/SKILL_CN.md    # Excel 处理
+│   ├── domain-name-brainstormer/
+│   │   └── SKILL_CN.md    # 域名创意生成器
+│   ├── file-organizer/
+│   │   └── SKILL_CN.md    # 文件整理器
+│   ├── image-enhancer/
+│   │   └── SKILL_CN.md    # 图像增强器
+│   ├── internal-comms/
+│   │   └── SKILL_CN.md    # 内部沟通
+│   ├── invoice-organizer/
+│   │   └── SKILL_CN.md    # 发票整理器
+│   ├── langsmith-fetch/
+│   │   └── SKILL_CN.md    # LangSmith 数据获取
+│   ├── lead-research-assistant/
+│   │   └── SKILL_CN.md    # 潜在客户研究助手
+│   ├── mcp-builder/
+│   │   └── SKILL_CN.md    # MCP 构建器
+│   ├── meeting-insights-analyzer/
+│   │   └── SKILL_CN.md    # 会议洞察分析器
+│   ├── raffle-winner-picker/
+│   │   └── SKILL_CN.md    # 抽奖获奖者选择器
+│   ├── skill-creator/
+│   │   └── SKILL_CN.md    # Skill 创建器
+│   ├── skill-share/
+│   │   └── SKILL_CN.md    # Skill 分享
+│   ├── tailored-resume-generator/
+│   │   └── SKILL_CN.md    # 定制简历生成器
+│   ├── template-skill/
+│   │   └── SKILL_CN.md    # Skill 模板
+│   ├── theme-factory/
+│   │   └── SKILL_CN.md    # 主题工厂
+│   ├── twitter-algorithm-optimizer/
+│   │   └── SKILL_CN.md    # Twitter 算法优化器
+│   ├── video-downloader/
+│   │   └── SKILL_CN.md    # 视频下载器
+│   ├── webapp-testing/
+│   │   └── SKILL_CN.md    # Web 应用测试
+│   └── composio-skills/        # 第三方服务自动化集成技能集合 (833个)
+│       ├── ably-automation/SKILL_CN.md      # Ably 自动化
+│       ├── adobe-automation/SKILL_CN.md     # Adobe 自动化
+│       ├── amara-automation/SKILL_CN.md     # Amara 自动化
+│       └── ...                # 更多第三方自动化技能 (830个未翻译)
 ├── huggingface-skills/         # huggingface/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
@@ -314,7 +367,8 @@ awesome-skills-cn/
 | ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-agent-skills | 7 | ✓ | 6/7 | 进行中 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| **总计** | **7238+** | **75** | **6161/7238+** | **进行中** |
+| **总计** | **7898** | **75** | **6195/7898** | **进行中** |
+
 
 ### anthropics-skills (17个)
 
@@ -388,11 +442,11 @@ awesome-skills-cn/
 - [x] [neuropixels-analysis](claude-scientific-skills/scientific-skills/neuropixels-analysis/SKILL_CN.md) - Neuropixels神经记录分析
 - ... (更多已翻译技能详见项目目录)
 
-### composiohq-awesome-claude-skills (200+个)
+### composiohq-awesome-claude-skills (800+个)
 
 - [ ] active-campaign-automation
 - [ ] adobe-automation
-- [ ] ... (共 200+ 个技能，详见项目目录)
+- [ ] ... (共 800+ 个技能，详见项目目录)
 
 ### huggingface-skills (11个)
 
