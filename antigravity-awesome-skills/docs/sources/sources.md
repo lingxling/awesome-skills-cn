@@ -80,6 +80,16 @@ The following skills were added from the curated collection at [VoltAgent/awesom
 | `fp-ts-react`     | [whatiskadudoing/fp-ts-skills](https://github.com/whatiskadudoing/fp-ts-skills) | Compatible | fp-ts with React 18/19 and Next.js                       |
 | `fp-ts-errors`    | [whatiskadudoing/fp-ts-skills](https://github.com/whatiskadudoing/fp-ts-skills) | Compatible | Type-safe error handling with Either and TaskEither      |
 
+## Skills from Dimillian/Skills
+
+The following skills were added from [Dimillian/Skills](https://github.com/Dimillian/Skills), a curated Codex skills repository focused on Apple platforms, GitHub workflows, refactoring, and performance work.
+
+| Skill / Group | Original Source | License | Notes |
+| :------------ | :-------------- | :------ | :---- |
+| `app-store-changelog`, `github`, `orchestrate-batch-refactor`, `project-skill-audit`, `react-component-performance`, `simplify-code` | [Dimillian/Skills](https://github.com/Dimillian/Skills) | MIT | Workflow, GitHub, React performance, and code simplification skills. |
+| `ios-debugger-agent`, `macos-menubar-tuist-app`, `macos-spm-app-packaging`, `swift-concurrency-expert` | [Dimillian/Skills](https://github.com/Dimillian/Skills) | MIT | Apple-platform debugging, packaging, and Swift concurrency guidance. |
+| `swiftui-liquid-glass`, `swiftui-performance-audit`, `swiftui-ui-patterns`, `swiftui-view-refactor` | [Dimillian/Skills](https://github.com/Dimillian/Skills) | MIT | SwiftUI-specific implementation, performance, and refactoring patterns. |
+
 ---
 
 ## Recently Added Skills (March 2026)

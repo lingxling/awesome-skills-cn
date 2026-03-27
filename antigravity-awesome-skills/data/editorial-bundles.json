@@ -1,0 +1,1319 @@
+{
+  "bundles": [
+    {
+      "id": "essentials",
+      "name": "Essentials",
+      "group": "Essentials & Core",
+      "emoji": "🚀",
+      "tagline": "The \"Essentials\" Starter Pack",
+      "audience": "For everyone. Install these first.",
+      "description": "For everyone. Install these first.",
+      "skills": [
+        {
+          "id": "concise-planning",
+          "summary": "Always start with a plan."
+        },
+        {
+          "id": "lint-and-validate",
+          "summary": "Keep your code clean automatically."
+        },
+        {
+          "id": "git-pushing",
+          "summary": "Save your work safely."
+        },
+        {
+          "id": "kaizen",
+          "summary": "Continuous improvement mindset."
+        },
+        {
+          "id": "systematic-debugging",
+          "summary": "Debug like a pro."
+        }
+      ]
+    },
+    {
+      "id": "security-engineer",
+      "name": "Security Engineer",
+      "group": "Security & Compliance",
+      "emoji": "🛡️",
+      "tagline": "The \"Security Engineer\" Pack",
+      "audience": "For pentesting, auditing, and hardening.",
+      "description": "For pentesting, auditing, and hardening.",
+      "skills": [
+        {
+          "id": "ethical-hacking-methodology",
+          "summary": "The Bible of ethical hacking."
+        },
+        {
+          "id": "burp-suite-testing",
+          "summary": "Web vulnerability scanning."
+        },
+        {
+          "id": "top-web-vulnerabilities",
+          "summary": "OWASP-aligned vulnerability taxonomy."
+        },
+        {
+          "id": "linux-privilege-escalation",
+          "summary": "Advanced Linux security assessment."
+        },
+        {
+          "id": "cloud-penetration-testing",
+          "summary": "AWS/Azure/GCP security."
+        },
+        {
+          "id": "security-auditor",
+          "summary": "Comprehensive security audits."
+        },
+        {
+          "id": "vulnerability-scanner",
+          "summary": "Advanced vulnerability analysis."
+        }
+      ]
+    },
+    {
+      "id": "security-developer",
+      "name": "Security Developer",
+      "group": "Security & Compliance",
+      "emoji": "🔐",
+      "tagline": "The \"Security Developer\" Pack",
+      "audience": "For building secure applications.",
+      "description": "For building secure applications.",
+      "skills": [
+        {
+          "id": "api-security-best-practices",
+          "summary": "Secure API design patterns."
+        },
+        {
+          "id": "auth-implementation-patterns",
+          "summary": "JWT, OAuth2, session management."
+        },
+        {
+          "id": "backend-security-coder",
+          "summary": "Secure backend coding practices."
+        },
+        {
+          "id": "frontend-security-coder",
+          "summary": "XSS prevention and client-side security."
+        },
+        {
+          "id": "cc-skill-security-review",
+          "summary": "Security checklist for features."
+        },
+        {
+          "id": "pci-compliance",
+          "summary": "Payment card security standards."
+        }
+      ]
+    },
+    {
+      "id": "web-wizard",
+      "name": "Web Wizard",
+      "group": "🌐 Web Development",
+      "emoji": "🌐",
+      "tagline": "The \"Web Wizard\" Pack",
+      "audience": "For building modern, high-performance web apps.",
+      "description": "For building modern, high-performance web apps.",
+      "skills": [
+        {
+          "id": "frontend-design",
+          "summary": "UI guidelines and aesthetics."
+        },
+        {
+          "id": "react-best-practices",
+          "summary": "React & Next.js performance optimization."
+        },
+        {
+          "id": "react-patterns",
+          "summary": "Modern React patterns and principles."
+        },
+        {
+          "id": "nextjs-best-practices",
+          "summary": "Next.js App Router patterns."
+        },
+        {
+          "id": "tailwind-patterns",
+          "summary": "Tailwind CSS v4 styling superpowers."
+        },
+        {
+          "id": "form-cro",
+          "summary": "Optimize your forms for conversion."
+        },
+        {
+          "id": "seo-audit",
+          "summary": "Get found on Google."
+        }
+      ]
+    },
+    {
+      "id": "web-designer",
+      "name": "Web Designer",
+      "group": "🌐 Web Development",
+      "emoji": "🖌️",
+      "tagline": "The \"Web Designer\" Pack",
+      "audience": "For pixel-perfect experiences.",
+      "description": "For pixel-perfect experiences.",
+      "skills": [
+        {
+          "id": "ui-ux-pro-max",
+          "summary": "Premium design systems and tokens."
+        },
+        {
+          "id": "frontend-design",
+          "summary": "The base layer of aesthetics."
+        },
+        {
+          "id": "3d-web-experience",
+          "summary": "Three.js & React Three Fiber magic."
+        },
+        {
+          "id": "canvas-design",
+          "summary": "Static visuals and posters."
+        },
+        {
+          "id": "mobile-design",
+          "summary": "Mobile-first design principles."
+        },
+        {
+          "id": "scroll-experience",
+          "summary": "Immersive scroll-driven experiences."
+        }
+      ]
+    },
+    {
+      "id": "full-stack-developer",
+      "name": "Full-Stack Developer",
+      "group": "🌐 Web Development",
+      "emoji": "⚡",
+      "tagline": "The \"Full-Stack Developer\" Pack",
+      "audience": "For end-to-end web application development.",
+      "description": "For end-to-end web application development.",
+      "skills": [
+        {
+          "id": "senior-fullstack",
+          "summary": "Complete fullstack development guide."
+        },
+        {
+          "id": "frontend-developer",
+          "summary": "React 19+ and Next.js 15+ expertise."
+        },
+        {
+          "id": "backend-dev-guidelines",
+          "summary": "Node.js/Express/TypeScript patterns."
+        },
+        {
+          "id": "api-patterns",
+          "summary": "REST vs GraphQL vs tRPC selection."
+        },
+        {
+          "id": "database-design",
+          "summary": "Schema design and ORM selection."
+        },
+        {
+          "id": "stripe-integration",
+          "summary": "Payments and subscriptions."
+        }
+      ]
+    },
+    {
+      "id": "agent-architect",
+      "name": "Agent Architect",
+      "group": "🤖 AI & Agents",
+      "emoji": "🤖",
+      "tagline": "The \"Agent Architect\" Pack",
+      "audience": "For building AI systems and autonomous agents.",
+      "description": "For building AI systems and autonomous agents.",
+      "skills": [
+        {
+          "id": "agent-evaluation",
+          "summary": "Test and benchmark your agents."
+        },
+        {
+          "id": "langgraph",
+          "summary": "Build stateful agent workflows."
+        },
+        {
+          "id": "mcp-builder",
+          "summary": "Create your own MCP tools."
+        },
+        {
+          "id": "prompt-engineering",
+          "summary": "Master the art of talking to LLMs."
+        },
+        {
+          "id": "ai-agents-architect",
+          "summary": "Design autonomous AI agents."
+        },
+        {
+          "id": "rag-engineer",
+          "summary": "Build RAG systems with vector search."
+        }
+      ]
+    },
+    {
+      "id": "llm-application-developer",
+      "name": "LLM Application Developer",
+      "group": "🤖 AI & Agents",
+      "emoji": "🧠",
+      "tagline": "The \"LLM Application Developer\" Pack",
+      "audience": "For building production LLM applications.",
+      "description": "For building production LLM applications.",
+      "skills": [
+        {
+          "id": "llm-app-patterns",
+          "summary": "Production-ready LLM patterns."
+        },
+        {
+          "id": "rag-implementation",
+          "summary": "Retrieval-Augmented Generation."
+        },
+        {
+          "id": "prompt-caching",
+          "summary": "Cache strategies for LLM prompts."
+        },
+        {
+          "id": "context-window-management",
+          "summary": "Manage LLM context efficiently."
+        },
+        {
+          "id": "langfuse",
+          "summary": "LLM observability and tracing."
+        }
+      ]
+    },
+    {
+      "id": "indie-game-dev",
+      "name": "Indie Game Dev",
+      "group": "🎮 Game Development",
+      "emoji": "🎮",
+      "tagline": "The \"Indie Game Dev\" Pack",
+      "audience": "For building games with AI assistants.",
+      "description": "For building games with AI assistants.",
+      "skills": [
+        {
+          "id": "game-development/game-design",
+          "summary": "Mechanics and loops."
+        },
+        {
+          "id": "game-development/2d-games",
+          "summary": "Sprites and physics."
+        },
+        {
+          "id": "game-development/3d-games",
+          "summary": "Models and shaders."
+        },
+        {
+          "id": "unity-developer",
+          "summary": "Unity 6 LTS development."
+        },
+        {
+          "id": "godot-gdscript-patterns",
+          "summary": "Godot 4 GDScript patterns."
+        },
+        {
+          "id": "algorithmic-art",
+          "summary": "Generate assets with code."
+        }
+      ]
+    },
+    {
+      "id": "python-pro",
+      "name": "Python Pro",
+      "group": "🐍 Backend & Languages",
+      "emoji": "🐍",
+      "tagline": "The \"Python Pro\" Pack",
+      "audience": "For backend heavyweights and data scientists.",
+      "description": "For backend heavyweights and data scientists.",
+      "skills": [
+        {
+          "id": "python-pro",
+          "summary": "Master Python 3.12+ with modern features."
+        },
+        {
+          "id": "python-patterns",
+          "summary": "Idiomatic Python code."
+        },
+        {
+          "id": "fastapi-pro",
+          "summary": "High-performance async APIs."
+        },
+        {
+          "id": "fastapi-templates",
+          "summary": "Production-ready FastAPI projects."
+        },
+        {
+          "id": "django-pro",
+          "summary": "The battery-included framework."
+        },
+        {
+          "id": "python-testing-patterns",
+          "summary": "Comprehensive testing with pytest."
+        },
+        {
+          "id": "async-python-patterns",
+          "summary": "Python asyncio mastery."
+        }
+      ]
+    },
+    {
+      "id": "typescript-javascript",
+      "name": "TypeScript & JavaScript",
+      "group": "🐍 Backend & Languages",
+      "emoji": "🟦",
+      "tagline": "The \"TypeScript & JavaScript\" Pack",
+      "audience": "For modern web development.",
+      "description": "For modern web development.",
+      "skills": [
+        {
+          "id": "typescript-expert",
+          "summary": "TypeScript mastery and advanced types."
+        },
+        {
+          "id": "javascript-pro",
+          "summary": "Modern JavaScript with ES6+."
+        },
+        {
+          "id": "react-best-practices",
+          "summary": "React performance optimization."
+        },
+        {
+          "id": "nodejs-best-practices",
+          "summary": "Node.js development principles."
+        },
+        {
+          "id": "nextjs-app-router-patterns",
+          "summary": "Next.js 14+ App Router."
+        }
+      ]
+    },
+    {
+      "id": "systems-programming",
+      "name": "Systems Programming",
+      "group": "🐍 Backend & Languages",
+      "emoji": "🦀",
+      "tagline": "The \"Systems Programming\" Pack",
+      "audience": "For low-level and performance-critical code.",
+      "description": "For low-level and performance-critical code.",
+      "skills": [
+        {
+          "id": "rust-pro",
+          "summary": "Rust 1.75+ with async patterns."
+        },
+        {
+          "id": "go-concurrency-patterns",
+          "summary": "Go concurrency mastery."
+        },
+        {
+          "id": "golang-pro",
+          "summary": "Go development expertise."
+        },
+        {
+          "id": "memory-safety-patterns",
+          "summary": "Memory-safe programming."
+        },
+        {
+          "id": "cpp-pro",
+          "summary": "Modern C++ development."
+        }
+      ]
+    },
+    {
+      "id": "startup-founder",
+      "name": "Startup Founder",
+      "group": "🦄 Product & Business",
+      "emoji": "🦄",
+      "tagline": "The \"Startup Founder\" Pack",
+      "audience": "For building products, not just code.",
+      "description": "For building products, not just code.",
+      "skills": [
+        {
+          "id": "product-manager-toolkit",
+          "summary": "RICE prioritization, PRD templates."
+        },
+        {
+          "id": "competitive-landscape",
+          "summary": "Competitor analysis."
+        },
+        {
+          "id": "competitor-alternatives",
+          "summary": "Create comparison pages."
+        },
+        {
+          "id": "launch-strategy",
+          "summary": "Product launch planning."
+        },
+        {
+          "id": "copywriting",
+          "summary": "Marketing copy that converts."
+        },
+        {
+          "id": "stripe-integration",
+          "summary": "Get paid from day one."
+        }
+      ]
+    },
+    {
+      "id": "business-analyst",
+      "name": "Business Analyst",
+      "group": "🦄 Product & Business",
+      "emoji": "📊",
+      "tagline": "The \"Business Analyst\" Pack",
+      "audience": "For data-driven decision making.",
+      "description": "For data-driven decision making.",
+      "skills": [
+        {
+          "id": "business-analyst",
+          "summary": "AI-powered analytics and KPIs."
+        },
+        {
+          "id": "startup-metrics-framework",
+          "summary": "SaaS metrics and unit economics."
+        },
+        {
+          "id": "startup-financial-modeling",
+          "summary": "3-5 year financial projections."
+        },
+        {
+          "id": "market-sizing-analysis",
+          "summary": "TAM/SAM/SOM calculations."
+        },
+        {
+          "id": "kpi-dashboard-design",
+          "summary": "Effective KPI dashboards."
+        }
+      ]
+    },
+    {
+      "id": "marketing-growth",
+      "name": "Marketing & Growth",
+      "group": "🦄 Product & Business",
+      "emoji": "📈",
+      "tagline": "The \"Marketing & Growth\" Pack",
+      "audience": "For driving user acquisition and retention.",
+      "description": "For driving user acquisition and retention.",
+      "skills": [
+        {
+          "id": "content-creator",
+          "summary": "SEO-optimized marketing content."
+        },
+        {
+          "id": "seo-audit",
+          "summary": "Technical SEO health checks."
+        },
+        {
+          "id": "programmatic-seo",
+          "summary": "Create pages at scale."
+        },
+        {
+          "id": "analytics-tracking",
+          "summary": "Set up GA4/PostHog correctly."
+        },
+        {
+          "id": "ab-test-setup",
+          "summary": "Validated learning experiments."
+        },
+        {
+          "id": "email-sequence",
+          "summary": "Automated email campaigns."
+        }
+      ]
+    },
+    {
+      "id": "devops-cloud",
+      "name": "DevOps & Cloud",
+      "group": "DevOps & Infrastructure",
+      "emoji": "🌧️",
+      "tagline": "The \"DevOps & Cloud\" Pack",
+      "audience": "For infrastructure and scaling.",
+      "description": "For infrastructure and scaling.",
+      "skills": [
+        {
+          "id": "docker-expert",
+          "summary": "Master containers and multi-stage builds."
+        },
+        {
+          "id": "aws-serverless",
+          "summary": "Serverless on AWS (Lambda, DynamoDB)."
+        },
+        {
+          "id": "kubernetes-architect",
+          "summary": "K8s architecture and GitOps."
+        },
+        {
+          "id": "terraform-specialist",
+          "summary": "Infrastructure as Code mastery."
+        },
+        {
+          "id": "environment-setup-guide",
+          "summary": "Standardization for teams."
+        },
+        {
+          "id": "deployment-procedures",
+          "summary": "Safe rollout strategies."
+        },
+        {
+          "id": "bash-linux",
+          "summary": "Terminal wizardry."
+        }
+      ]
+    },
+    {
+      "id": "observability-monitoring",
+      "name": "Observability & Monitoring",
+      "group": "DevOps & Infrastructure",
+      "emoji": "📊",
+      "tagline": "The \"Observability & Monitoring\" Pack",
+      "audience": "For production reliability.",
+      "description": "For production reliability.",
+      "skills": [
+        {
+          "id": "observability-engineer",
+          "summary": "Comprehensive monitoring systems."
+        },
+        {
+          "id": "distributed-tracing",
+          "summary": "Track requests across microservices."
+        },
+        {
+          "id": "slo-implementation",
+          "summary": "Service Level Objectives."
+        },
+        {
+          "id": "incident-responder",
+          "summary": "Rapid incident response."
+        },
+        {
+          "id": "postmortem-writing",
+          "summary": "Blameless postmortems."
+        },
+        {
+          "id": "performance-engineer",
+          "summary": "Application performance optimization."
+        }
+      ]
+    },
+    {
+      "id": "data-analytics",
+      "name": "Data & Analytics",
+      "group": "📊 Data & Analytics",
+      "emoji": "📊",
+      "tagline": "The \"Data & Analytics\" Pack",
+      "audience": "For making sense of the numbers.",
+      "description": "For making sense of the numbers.",
+      "skills": [
+        {
+          "id": "analytics-tracking",
+          "summary": "Set up GA4/PostHog correctly."
+        },
+        {
+          "id": "claude-d3js-skill",
+          "summary": "Beautiful custom visualizations with D3.js."
+        },
+        {
+          "id": "sql-pro",
+          "summary": "Modern SQL with cloud-native databases."
+        },
+        {
+          "id": "postgres-best-practices",
+          "summary": "Postgres optimization."
+        },
+        {
+          "id": "ab-test-setup",
+          "summary": "Validated learning."
+        },
+        {
+          "id": "database-architect",
+          "summary": "Database design from scratch."
+        }
+      ]
+    },
+    {
+      "id": "data-engineering",
+      "name": "Data Engineering",
+      "group": "📊 Data & Analytics",
+      "emoji": "🔄",
+      "tagline": "The \"Data Engineering\" Pack",
+      "audience": "For building data pipelines.",
+      "description": "For building data pipelines.",
+      "skills": [
+        {
+          "id": "data-engineer",
+          "summary": "Data pipeline architecture."
+        },
+        {
+          "id": "airflow-dag-patterns",
+          "summary": "Apache Airflow DAGs."
+        },
+        {
+          "id": "dbt-transformation-patterns",
+          "summary": "Analytics engineering."
+        },
+        {
+          "id": "vector-database-engineer",
+          "summary": "Vector databases for RAG."
+        },
+        {
+          "id": "embedding-strategies",
+          "summary": "Embedding model selection."
+        }
+      ]
+    },
+    {
+      "id": "creative-director",
+      "name": "Creative Director",
+      "group": "🎨 Creative & Content",
+      "emoji": "🎨",
+      "tagline": "The \"Creative Director\" Pack",
+      "audience": "For visuals, content, and branding.",
+      "description": "For visuals, content, and branding.",
+      "skills": [
+        {
+          "id": "canvas-design",
+          "summary": "Generate posters and diagrams."
+        },
+        {
+          "id": "frontend-design",
+          "summary": "UI aesthetics."
+        },
+        {
+          "id": "content-creator",
+          "summary": "SEO-optimized blog posts."
+        },
+        {
+          "id": "copy-editing",
+          "summary": "Polish your prose."
+        },
+        {
+          "id": "algorithmic-art",
+          "summary": "Code-generated masterpieces."
+        },
+        {
+          "id": "interactive-portfolio",
+          "summary": "Portfolios that land jobs."
+        }
+      ]
+    },
+    {
+      "id": "qa-testing",
+      "name": "QA & Testing",
+      "group": "🐞 Quality Assurance",
+      "emoji": "🐞",
+      "tagline": "The \"QA & Testing\" Pack",
+      "audience": "For breaking things before users do.",
+      "description": "For breaking things before users do.",
+      "skills": [
+        {
+          "id": "test-driven-development",
+          "summary": "Red, Green, Refactor."
+        },
+        {
+          "id": "systematic-debugging",
+          "summary": "Debug like Sherlock Holmes."
+        },
+        {
+          "id": "browser-automation",
+          "summary": "End-to-end testing with Playwright."
+        },
+        {
+          "id": "e2e-testing-patterns",
+          "summary": "Reliable E2E test suites."
+        },
+        {
+          "id": "ab-test-setup",
+          "summary": "Validated experiments."
+        },
+        {
+          "id": "code-review-checklist",
+          "summary": "Catch bugs in PRs."
+        },
+        {
+          "id": "test-fixing",
+          "summary": "Fix failing tests systematically."
+        }
+      ]
+    },
+    {
+      "id": "mobile-developer",
+      "name": "Mobile Developer",
+      "group": "🔧 Specialized Packs",
+      "emoji": "📱",
+      "tagline": "The \"Mobile Developer\" Pack",
+      "audience": "For iOS, Android, and cross-platform apps.",
+      "description": "For iOS, Android, and cross-platform apps.",
+      "skills": [
+        {
+          "id": "mobile-developer",
+          "summary": "Cross-platform mobile development."
+        },
+        {
+          "id": "react-native-architecture",
+          "summary": "React Native with Expo."
+        },
+        {
+          "id": "flutter-expert",
+          "summary": "Flutter multi-platform apps."
+        },
+        {
+          "id": "ios-developer",
+          "summary": "iOS development with Swift."
+        },
+        {
+          "id": "app-store-optimization",
+          "summary": "ASO for App Store and Play Store."
+        }
+      ]
+    },
+    {
+      "id": "integration-apis",
+      "name": "Integration & APIs",
+      "group": "🔧 Specialized Packs",
+      "emoji": "🔗",
+      "tagline": "The \"Integration & APIs\" Pack",
+      "audience": "For connecting services and building integrations.",
+      "description": "For connecting services and building integrations.",
+      "skills": [
+        {
+          "id": "stripe-integration",
+          "summary": "Payments and subscriptions."
+        },
+        {
+          "id": "twilio-communications",
+          "summary": "SMS, voice, WhatsApp."
+        },
+        {
+          "id": "hubspot-integration",
+          "summary": "CRM integration."
+        },
+        {
+          "id": "plaid-fintech",
+          "summary": "Bank account linking and ACH."
+        },
+        {
+          "id": "algolia-search",
+          "summary": "Search implementation."
+        }
+      ]
+    },
+    {
+      "id": "architecture-design",
+      "name": "Architecture & Design",
+      "group": "🔧 Specialized Packs",
+      "emoji": "🎯",
+      "tagline": "The \"Architecture & Design\" Pack",
+      "audience": "For system design and technical decisions.",
+      "description": "For system design and technical decisions.",
+      "skills": [
+        {
+          "id": "senior-architect",
+          "summary": "Comprehensive software architecture."
+        },
+        {
+          "id": "architecture-patterns",
+          "summary": "Clean Architecture, DDD, Hexagonal."
+        },
+        {
+          "id": "microservices-patterns",
+          "summary": "Microservices architecture."
+        },
+        {
+          "id": "event-sourcing-architect",
+          "summary": "Event sourcing and CQRS."
+        },
+        {
+          "id": "architecture-decision-records",
+          "summary": "Document technical decisions."
+        }
+      ]
+    },
+    {
+      "id": "ddd-evented-architecture",
+      "name": "DDD & Evented Architecture",
+      "group": "🔧 Specialized Packs",
+      "emoji": "🧱",
+      "tagline": "The \"DDD & Evented Architecture\" Pack",
+      "audience": "For teams modeling complex domains and evolving toward evented systems.",
+      "description": "For teams modeling complex domains and evolving toward evented systems.",
+      "skills": [
+        {
+          "id": "domain-driven-design",
+          "summary": "Route DDD work from strategic modeling to implementation patterns."
+        },
+        {
+          "id": "ddd-strategic-design",
+          "summary": "Subdomains, bounded contexts, and ubiquitous language."
+        },
+        {
+          "id": "ddd-context-mapping",
+          "summary": "Cross-context integration and anti-corruption boundaries."
+        },
+        {
+          "id": "ddd-tactical-patterns",
+          "summary": "Aggregates, value objects, repositories, and domain events."
+        },
+        {
+          "id": "cqrs-implementation",
+          "summary": "Read/write model separation."
+        },
+        {
+          "id": "event-store-design",
+          "summary": "Event persistence and replay architecture."
+        },
+        {
+          "id": "saga-orchestration",
+          "summary": "Cross-context long-running transaction coordination."
+        },
+        {
+          "id": "projection-patterns",
+          "summary": "Materialized read models from event streams."
+        }
+      ]
+    },
+    {
+      "id": "automation-builder",
+      "name": "Automation Builder",
+      "group": "🔧 Specialized Packs",
+      "emoji": "🤖",
+      "tagline": "The \"Automation Builder\" Pack",
+      "audience": "For connecting tools and building repeatable automated workflows.",
+      "description": "For connecting tools and building repeatable automated workflows.",
+      "skills": [
+        {
+          "id": "workflow-automation",
+          "summary": "Design durable automation flows for AI and business systems."
+        },
+        {
+          "id": "mcp-builder",
+          "summary": "Create tool interfaces agents can use reliably."
+        },
+        {
+          "id": "make-automation",
+          "summary": "Build automations in Make/Integromat."
+        },
+        {
+          "id": "airtable-automation",
+          "summary": "Automate Airtable records, bases, and views."
+        },
+        {
+          "id": "notion-automation",
+          "summary": "Automate Notion pages, databases, and blocks."
+        },
+        {
+          "id": "slack-automation",
+          "summary": "Automate Slack messaging and channel workflows."
+        },
+        {
+          "id": "googlesheets-automation",
+          "summary": "Automate spreadsheet updates and data operations."
+        }
+      ]
+    },
+    {
+      "id": "revops-crm-automation",
+      "name": "RevOps & CRM Automation",
+      "group": "🔧 Specialized Packs",
+      "emoji": "💼",
+      "tagline": "The \"RevOps & CRM Automation\" Pack",
+      "audience": "For revenue operations, support handoffs, and CRM-heavy automation.",
+      "description": "For revenue operations, support handoffs, and CRM-heavy automation.",
+      "skills": [
+        {
+          "id": "hubspot-automation",
+          "summary": "Automate contacts, companies, deals, and tickets."
+        },
+        {
+          "id": "sendgrid-automation",
+          "summary": "Automate email sends, contacts, and templates."
+        },
+        {
+          "id": "zendesk-automation",
+          "summary": "Automate support tickets and reply workflows."
+        },
+        {
+          "id": "google-calendar-automation",
+          "summary": "Schedule events and manage availability."
+        },
+        {
+          "id": "outlook-calendar-automation",
+          "summary": "Automate Outlook meetings and invitations."
+        },
+        {
+          "id": "stripe-automation",
+          "summary": "Automate billing, invoices, and subscriptions."
+        },
+        {
+          "id": "shopify-automation",
+          "summary": "Automate products, orders, customers, and inventory."
+        }
+      ]
+    },
+    {
+      "id": "commerce-payments",
+      "name": "Commerce & Payments",
+      "group": "🔧 Specialized Packs",
+      "emoji": "💳",
+      "tagline": "The \"Commerce & Payments\" Pack",
+      "audience": "For monetization, payments, and commerce workflows.",
+      "description": "For monetization, payments, and commerce workflows.",
+      "skills": [
+        {
+          "id": "stripe-integration",
+          "summary": "Build robust checkout, subscription, and webhook flows."
+        },
+        {
+          "id": "paypal-integration",
+          "summary": "Integrate PayPal payments and related flows."
+        },
+        {
+          "id": "plaid-fintech",
+          "summary": "Link bank accounts and handle ACH-related use cases."
+        },
+        {
+          "id": "hubspot-integration",
+          "summary": "Connect CRM data into product and revenue workflows."
+        },
+        {
+          "id": "algolia-search",
+          "summary": "Add search and discovery to commerce experiences."
+        },
+        {
+          "id": "monetization",
+          "summary": "Design pricing and monetization systems deliberately."
+        }
+      ]
+    },
+    {
+      "id": "odoo-erp",
+      "name": "Odoo ERP",
+      "group": "🔧 Specialized Packs",
+      "emoji": "🏢",
+      "tagline": "The \"Odoo ERP\" Pack",
+      "audience": "For teams building or operating around Odoo-based business systems.",
+      "description": "For teams building or operating around Odoo-based business systems.",
+      "skills": [
+        {
+          "id": "odoo-module-developer",
+          "summary": "Create custom Odoo modules cleanly."
+        },
+        {
+          "id": "odoo-orm-expert",
+          "summary": "Work effectively with Odoo ORM patterns and performance."
+        },
+        {
+          "id": "odoo-sales-crm-expert",
+          "summary": "Optimize sales pipelines, leads, and forecasting."
+        },
+        {
+          "id": "odoo-ecommerce-configurator",
+          "summary": "Configure storefront, catalog, and order flows."
+        },
+        {
+          "id": "odoo-performance-tuner",
+          "summary": "Diagnose and improve slow Odoo instances."
+        },
+        {
+          "id": "odoo-security-rules",
+          "summary": "Apply secure access controls and rule design."
+        },
+        {
+          "id": "odoo-docker-deployment",
+          "summary": "Deploy and run Odoo in Docker-based environments."
+        }
+      ]
+    },
+    {
+      "id": "azure-ai-cloud",
+      "name": "Azure AI & Cloud",
+      "group": "🔧 Specialized Packs",
+      "emoji": "☁️",
+      "tagline": "The \"Azure AI & Cloud\" Pack",
+      "audience": "For building on Azure across cloud, AI, and platform services.",
+      "description": "For building on Azure across cloud, AI, and platform services.",
+      "skills": [
+        {
+          "id": "azd-deployment",
+          "summary": "Ship Azure apps with Azure Developer CLI workflows."
+        },
+        {
+          "id": "azure-functions",
+          "summary": "Build serverless workloads with Azure Functions."
+        },
+        {
+          "id": "azure-ai-openai-dotnet",
+          "summary": "Use Azure OpenAI from .NET applications."
+        },
+        {
+          "id": "azure-search-documents-py",
+          "summary": "Build search, hybrid search, and indexing in Python."
+        },
+        {
+          "id": "azure-identity-py",
+          "summary": "Handle Azure authentication flows in Python services."
+        },
+        {
+          "id": "azure-monitor-opentelemetry-ts",
+          "summary": "Add telemetry and tracing from TypeScript apps."
+        }
+      ]
+    },
+    {
+      "id": "expo-react-native",
+      "name": "Expo & React Native",
+      "group": "🔧 Specialized Packs",
+      "emoji": "📲",
+      "tagline": "The \"Expo & React Native\" Pack",
+      "audience": "For shipping mobile apps with Expo and React Native.",
+      "description": "For shipping mobile apps with Expo and React Native.",
+      "skills": [
+        {
+          "id": "react-native-architecture",
+          "summary": "Structure production React Native apps well."
+        },
+        {
+          "id": "expo-api-routes",
+          "summary": "Build API routes in Expo Router and EAS Hosting."
+        },
+        {
+          "id": "expo-dev-client",
+          "summary": "Build and distribute Expo development clients."
+        },
+        {
+          "id": "expo-tailwind-setup",
+          "summary": "Set up Tailwind and NativeWind in Expo apps."
+        },
+        {
+          "id": "expo-cicd-workflows",
+          "summary": "Automate builds and releases with EAS workflows."
+        },
+        {
+          "id": "expo-deployment",
+          "summary": "Deploy Expo apps and manage release flow."
+        },
+        {
+          "id": "app-store-optimization",
+          "summary": "Improve App Store and Play Store discoverability."
+        }
+      ]
+    },
+    {
+      "id": "apple-platform-design",
+      "name": "Apple Platform Design",
+      "group": "🔧 Specialized Packs",
+      "emoji": "🍎",
+      "tagline": "The \"Apple Platform Design\" Pack",
+      "audience": "For teams designing native-feeling Apple platform experiences.",
+      "description": "For teams designing native-feeling Apple platform experiences.",
+      "skills": [
+        {
+          "id": "hig-foundations",
+          "summary": "Learn the core Apple Human Interface Guidelines."
+        },
+        {
+          "id": "hig-patterns",
+          "summary": "Apply Apple interaction and UX patterns correctly."
+        },
+        {
+          "id": "hig-components-layout",
+          "summary": "Use Apple layout and navigation components well."
+        },
+        {
+          "id": "hig-inputs",
+          "summary": "Design for gestures, keyboards, Pencil, focus, and controllers."
+        },
+        {
+          "id": "hig-components-system",
+          "summary": "Work with widgets, live activities, and system surfaces."
+        },
+        {
+          "id": "hig-platforms",
+          "summary": "Adapt experiences across Apple device families."
+        }
+      ]
+    },
+    {
+      "id": "makepad-builder",
+      "name": "Makepad Builder",
+      "group": "🔧 Specialized Packs",
+      "emoji": "🧩",
+      "tagline": "The \"Makepad Builder\" Pack",
+      "audience": "For building UI-heavy apps with the Makepad ecosystem.",
+      "description": "For building UI-heavy apps with the Makepad ecosystem.",
+      "skills": [
+        {
+          "id": "makepad-basics",
+          "summary": "Start with Makepad fundamentals and mental model."
+        },
+        {
+          "id": "makepad-layout",
+          "summary": "Handle sizing, flow, alignment, and layout composition."
+        },
+        {
+          "id": "makepad-widgets",
+          "summary": "Build interfaces from Makepad widgets."
+        },
+        {
+          "id": "makepad-event-action",
+          "summary": "Wire interaction and event handling correctly."
+        },
+        {
+          "id": "makepad-shaders",
+          "summary": "Create GPU-driven visual effects and custom drawing."
+        },
+        {
+          "id": "makepad-deployment",
+          "summary": "Package and ship Makepad projects."
+        }
+      ]
+    },
+    {
+      "id": "seo-specialist",
+      "name": "SEO Specialist",
+      "group": "🔧 Specialized Packs",
+      "emoji": "🔎",
+      "tagline": "The \"SEO Specialist\" Pack",
+      "audience": "For technical SEO, content structure, and search growth.",
+      "description": "For technical SEO, content structure, and search growth.",
+      "skills": [
+        {
+          "id": "seo-fundamentals",
+          "summary": "Build from sound SEO principles and search constraints."
+        },
+        {
+          "id": "seo-content-planner",
+          "summary": "Plan clusters, calendars, and content gaps."
+        },
+        {
+          "id": "seo-content-writer",
+          "summary": "Produce search-aware content drafts with intent alignment."
+        },
+        {
+          "id": "seo-structure-architect",
+          "summary": "Improve hierarchy, internal links, and structure."
+        },
+        {
+          "id": "seo-cannibalization-detector",
+          "summary": "Find overlapping pages competing for the same intent."
+        },
+        {
+          "id": "seo-content-auditor",
+          "summary": "Audit existing content quality and optimization gaps."
+        },
+        {
+          "id": "schema-markup",
+          "summary": "Add structured data to support richer search results."
+        }
+      ]
+    },
+    {
+      "id": "documents-presentations",
+      "name": "Documents & Presentations",
+      "group": "🔧 Specialized Packs",
+      "emoji": "📄",
+      "tagline": "The \"Documents & Presentations\" Pack",
+      "audience": "For document-heavy workflows, spreadsheets, PDFs, and presentations.",
+      "description": "For document-heavy workflows, spreadsheets, PDFs, and presentations.",
+      "skills": [
+        {
+          "id": "office-productivity",
+          "summary": "Coordinate document, spreadsheet, and presentation workflows."
+        },
+        {
+          "id": "docx-official",
+          "summary": "Create and edit Word-compatible documents."
+        },
+        {
+          "id": "pptx-official",
+          "summary": "Create and edit PowerPoint-compatible presentations."
+        },
+        {
+          "id": "xlsx-official",
+          "summary": "Create and analyze spreadsheet files with formulas and formatting."
+        },
+        {
+          "id": "pdf-official",
+          "summary": "Extract, generate, and manipulate PDFs programmatically."
+        },
+        {
+          "id": "google-slides-automation",
+          "summary": "Automate presentation updates in Google Slides."
+        },
+        {
+          "id": "google-sheets-automation",
+          "summary": "Automate reads and writes in Google Sheets."
+        }
+      ]
+    },
+    {
+      "id": "oss-maintainer",
+      "name": "OSS Maintainer",
+      "group": "🧰 Maintainer & OSS",
+      "emoji": "🛠️",
+      "tagline": "The \"OSS Maintainer\" Pack",
+      "audience": "For shipping clean changes in public repositories.",
+      "description": "For shipping clean changes in public repositories.",
+      "skills": [
+        {
+          "id": "commit",
+          "summary": "High-quality conventional commits."
+        },
+        {
+          "id": "create-pr",
+          "summary": "PR creation with review-ready context."
+        },
+        {
+          "id": "requesting-code-review",
+          "summary": "Ask for targeted, high-signal reviews."
+        },
+        {
+          "id": "receiving-code-review",
+          "summary": "Apply feedback with technical rigor."
+        },
+        {
+          "id": "changelog-automation",
+          "summary": "Keep release notes and changelogs consistent."
+        },
+        {
+          "id": "git-advanced-workflows",
+          "summary": "Rebase, cherry-pick, bisect, recovery."
+        },
+        {
+          "id": "documentation-templates",
+          "summary": "Standardize docs and handoffs."
+        }
+      ]
+    },
+    {
+      "id": "skill-author",
+      "name": "Skill Author",
+      "group": "🧰 Maintainer & OSS",
+      "emoji": "🧱",
+      "tagline": "The \"Skill Author\" Pack",
+      "audience": "For creating and maintaining high-quality SKILL.md assets.",
+      "description": "For creating and maintaining high-quality SKILL.md assets.",
+      "skills": [
+        {
+          "id": "skill-creator",
+          "summary": "Design effective new skills."
+        },
+        {
+          "id": "skill-developer",
+          "summary": "Implement triggers, hooks, and skill lifecycle."
+        },
+        {
+          "id": "writing-skills",
+          "summary": "Improve clarity and structure of skill instructions."
+        },
+        {
+          "id": "documentation-generation-doc-generate",
+          "summary": "Generate maintainable technical docs."
+        },
+        {
+          "id": "lint-and-validate",
+          "summary": "Validate quality after edits."
+        },
+        {
+          "id": "verification-before-completion",
+          "summary": "Confirm changes before claiming done."
+        }
+      ]
+    }
+  ]
+}

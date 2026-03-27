@@ -89,7 +89,8 @@ describe('Home', () => {
       });
 
       expect(screen.getByRole('button', { name: /Copy install command/i })).toBeInTheDocument();
-      expect(screen.getByText(/npx antigravity-awesome-skills/i)).toBeInTheDocument();
+      expect(screen.getAllByText(/npx antigravity-awesome-skills/i).length).toBeGreaterThan(0);
+      expect(screen.getByText(/What is the difference between skills and MCP tools/i)).toBeInTheDocument();
       expect(document.querySelector('meta[property="og:title"]')).toHaveAttribute(
         'content',
         expect.stringContaining('Antigravity Awesome Skills'),

@@ -1,9 +1,31 @@
 import type { SeoJsonLdValue, SeoMeta, TwitterCard, Skill } from '../types';
 
-export const APP_HOME_CATALOG_COUNT = 1273;
+export const APP_HOME_CATALOG_COUNT = 1326;
 export const DEFAULT_TOP_SKILL_COUNT = 40;
 export const DEFAULT_SOCIAL_IMAGE = 'social-card.svg';
 const SITE_NAME = 'Antigravity Awesome Skills';
+const FAQ_ITEMS = [
+  {
+    question: 'What is Antigravity Awesome Skills?',
+    answer:
+      'Antigravity Awesome Skills is an installable GitHub library of reusable SKILL.md playbooks for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.',
+  },
+  {
+    question: 'How do I install Antigravity Awesome Skills?',
+    answer:
+      'Install the library with npx antigravity-awesome-skills, then use tool-specific flags such as --codex, --cursor, --gemini, or --claude when you want the installer to target a specific skills directory.',
+  },
+  {
+    question: 'What is the difference between skills and MCP tools?',
+    answer:
+      'Skills are reusable playbooks that tell an AI assistant how to execute a workflow, while MCP tools expose external systems or actions the assistant can call. Skills guide behavior; MCP tools provide capabilities.',
+  },
+  {
+    question: 'What is the difference between bundles and workflows?',
+    answer:
+      'Bundles are curated sets of recommended skills for a role or domain, while workflows are ordered execution playbooks that show how to combine skills step by step for a concrete outcome.',
+  },
+] as const;
 
 export function toCanonicalPath(pathname: string): string {
   if (!pathname || pathname === '/') {
@@ -68,6 +90,44 @@ function buildWebSiteSchema(canonicalUrl: string): Record<string, unknown> {
     url: getCatalogBaseUrl(canonicalUrl),
     inLanguage: 'en',
   };
+}
+
+function buildSoftwareSourceCodeSchema(canonicalUrl: string, visibleCount: number): Record<string, unknown> {
+  const visibleCountLabel = `${visibleCount.toLocaleString('en-US')}+`;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    name: SITE_NAME,
+    description: `Installable GitHub library of ${visibleCountLabel} agentic skills for AI coding assistants.`,
+    url: canonicalUrl,
+    codeRepository: 'https://github.com/sickn33/antigravity-awesome-skills',
+    programmingLanguage: {
+      '@type': 'ComputerLanguage',
+      name: 'Markdown',
+      url: 'https://en.wikipedia.org/wiki/Markdown',
+    },
+    license: 'https://github.com/sickn33/antigravity-awesome-skills/blob/main/LICENSE',
+  };
+}
+
+function buildHomeFaqSchema(canonicalUrl: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    url: canonicalUrl,
+    mainEntity: FAQ_ITEMS.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
+export function getHomeFaqItems(): Array<{ question: string; answer: string }> {
+  return [...FAQ_ITEMS];
 }
 
 function ensureMetaTag(name: string, content: string, attributeName: 'name' | 'property'): void {
@@ -216,8 +276,9 @@ export function isTopSkill(skillId: string, skills: ReadonlyArray<Skill>, limit 
 
 export function buildHomeMeta(skillCount: number): SeoMeta {
   const visibleCount = Math.max(skillCount, APP_HOME_CATALOG_COUNT);
-  const title = 'Antigravity Awesome Skills | 1,273+ installable AI skills catalog';
-  const description = `Explore ${visibleCount}+ installable agentic skills and prompt templates. Discover what fits your workflow, copy prompts fast, and launch AI-powered actions with confidence.`;
+  const visibleCountLabel = `${visibleCount.toLocaleString('en-US')}+`;
+  const title = `Antigravity Awesome Skills | ${visibleCountLabel} installable AI skills catalog`;
+  const description = `Explore ${visibleCountLabel} installable agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, and Antigravity. Browse bundles, workflows, FAQs, and integration guides in one place.`;
   return {
     title,
     description,
@@ -241,6 +302,8 @@ export function buildHomeMeta(skillCount: number): SeoMeta {
       },
       buildOrganizationSchema(),
       buildWebSiteSchema(canonicalUrl),
+      buildSoftwareSourceCodeSchema(canonicalUrl, visibleCount),
+      buildHomeFaqSchema(canonicalUrl),
     ],
   };
 }

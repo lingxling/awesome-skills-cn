@@ -5,7 +5,49 @@ import { useSkills } from '../context/SkillContext';
 import { SkillCard } from '../components/SkillCard';
 import type { SyncMessage, CategoryStats } from '../types';
 import { usePageMeta } from '../hooks/usePageMeta';
-import { APP_HOME_CATALOG_COUNT, buildHomeMeta } from '../utils/seo';
+import { APP_HOME_CATALOG_COUNT, buildHomeMeta, getHomeFaqItems } from '../utils/seo';
+
+const conceptCards = [
+  {
+    title: 'Skills',
+    body: 'Reusable SKILL.md playbooks that teach an AI assistant how to execute a workflow with better structure and context.',
+  },
+  {
+    title: 'MCP tools',
+    body: 'External capabilities and system integrations the assistant can call. Tools provide actions; skills tell the assistant how to use them well.',
+  },
+  {
+    title: 'Bundles',
+    body: 'Curated starting sets of recommended skills for a role, domain, or team that wants a smaller shortlist first.',
+  },
+  {
+    title: 'Workflows',
+    body: 'Ordered execution playbooks that show how to combine multiple skills step by step for a concrete outcome.',
+  },
+] as const;
+
+const integrationGuides = [
+  {
+    name: 'Claude Code',
+    href: 'https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/claude-code-skills.md',
+    body: 'Install paths, starter prompts, plugin marketplace flow, and first skills to try.',
+  },
+  {
+    name: 'Cursor',
+    href: 'https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/cursor-skills.md',
+    body: 'A practical guide for chat-first UI, frontend, and full-stack workflows in Cursor.',
+  },
+  {
+    name: 'Codex CLI',
+    href: 'https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/codex-cli-skills.md',
+    body: 'How to use Antigravity Awesome Skills with Codex CLI for planning, implementation, testing, and review.',
+  },
+  {
+    name: 'Gemini CLI',
+    href: 'https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/gemini-cli-skills.md',
+    body: 'A broad starting point for engineering, agent systems, integrations, and applied AI workflows.',
+  },
+] as const;
 
 export function Home(): React.ReactElement {
   const { skills, stars, loading, error, refreshSkills } = useSkills();
@@ -19,6 +61,7 @@ export function Home(): React.ReactElement {
   const installCommand = 'npx antigravity-awesome-skills';
   const docsLink = 'https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/usage.md';
   const installLink = 'https://www.npmjs.com/package/antigravity-awesome-skills';
+  const faqItems = getHomeFaqItems();
 
   usePageMeta(buildHomeMeta(skills.length));
 
@@ -261,6 +304,110 @@ export function Home(): React.ReactElement {
             }}
           />
         )}
+      </div>
+
+      <div className="mt-12 space-y-10">
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-7 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-3">
+            Concepts
+          </p>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            Understand the moving pieces before you install everything
+          </h2>
+          <p className="mt-3 max-w-4xl text-sm sm:text-base leading-relaxed text-slate-600 dark:text-slate-300">
+            The catalog is easier to navigate once you separate reusable playbooks from external tool integrations.
+            Skills explain how to execute a workflow well, MCP tools expose external systems, bundles narrow the
+            starting set, and workflows show the order of operations.
+          </p>
+          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {conceptCards.map((card) => (
+              <article
+                key={card.title}
+                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4"
+              >
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{card.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{card.body}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <a
+              href="https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/skills-vs-mcp-tools.md"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              Read skills vs MCP/tools
+            </a>
+            <a
+              href="https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              Browse bundles
+            </a>
+            <a
+              href="https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+            >
+              Explore workflows
+            </a>
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-7 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-3">
+            Integration Guides
+          </p>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            Start from the guide that matches your AI assistant
+          </h2>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {integrationGuides.map((guide) => (
+              <a
+                key={guide.name}
+                href={guide.href}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4 transition-colors hover:border-indigo-300 dark:hover:border-indigo-700"
+              >
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{guide.name}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{guide.body}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-7 shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400 mb-3">
+            Quick FAQ
+          </p>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            Answers to the first questions most users ask
+          </h2>
+          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            {faqItems.map((item) => (
+              <article
+                key={item.question}
+                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 p-4"
+              >
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{item.question}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{item.answer}</p>
+              </article>
+            ))}
+          </div>
+          <a
+            href="https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/faq.md"
+            target="_blank"
+            rel="noreferrer"
+            className="mt-5 inline-flex items-center justify-center rounded-lg border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800"
+          >
+            Read the full FAQ
+          </a>
+        </section>
       </div>
     </div>
   );

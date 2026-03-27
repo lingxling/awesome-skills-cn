@@ -4,10 +4,17 @@ If you are looking for **Claude Code skills** you can install from GitHub, this 
 
 Antigravity Awesome Skills gives Claude Code users an installable library of `SKILL.md` playbooks, role-based bundles, and execution workflows. The goal is not just to collect prompts, but to make repeatable engineering tasks easier to invoke, review, and reuse.
 
+Release `9.0.0` also adds a first-class Claude Code plugin distribution plus bundle plugins. If you want the full explanation of root plugin vs bundle plugin vs full install, read [plugins.md](plugins.md).
+
+## How to use Antigravity Awesome Skills with Claude Code
+
+Install the library into Claude Code, then invoke focused skills directly in the conversation or through the plugin marketplace path. Claude Code benefits most when you keep the prompt specific about the skill, the scope, and the intended output.
+
 ## Why use this repo for Claude Code
 
-- It includes 1,309+ skills instead of a narrow single-domain starter pack.
+- It includes 1,329+ skills instead of a narrow single-domain starter pack.
 - It supports the standard `.claude/skills/` path and the Claude Code plugin marketplace flow.
+- It also ships generated bundle plugins so teams can install focused packs like `Essentials` or `Security Developer` from the marketplace metadata.
 - It includes onboarding docs, bundles, and workflows so new users do not need to guess where to begin.
 - It covers both everyday engineering tasks and specialized work like security reviews, infrastructure, product planning, and documentation.
 
@@ -25,6 +32,10 @@ npx antigravity-awesome-skills --claude
 /plugin marketplace add sickn33/antigravity-awesome-skills
 /plugin install antigravity-awesome-skills
 ```
+
+The Claude marketplace plugin is a plugin-safe filtered distribution of the repo. Skills that still require portability hardening or explicit setup metadata remain available in the repository, but are excluded from the plugin until they are ready.
+
+You can also install a focused bundle plugin instead of the root plugin when you want a narrower starter surface. See [plugins.md](plugins.md) and [bundles.md](bundles.md).
 
 ### Verify the install
 

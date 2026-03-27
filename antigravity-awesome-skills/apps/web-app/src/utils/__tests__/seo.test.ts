@@ -28,8 +28,8 @@ describe('SEO helpers', () => {
   it('builds homepage metadata with the canonical catalog message', () => {
     const meta = buildHomeMeta(10);
 
-    expect(meta.title).toContain('1,273+');
-    expect(meta.description).toContain('1273+ installable agentic skills');
+    expect(meta.title).toContain('1,326+');
+    expect(meta.description).toContain('1,326+ installable agentic skills');
     expect(meta.canonicalPath).toBe('/');
     expect(meta.ogTitle).toBe(meta.title);
     expect(meta.ogImage).toBe(DEFAULT_SOCIAL_IMAGE);

@@ -1,0 +1,45 @@
+node_modules/
+__pycache__/
+.ruff_cache/
+.worktrees/
+.tmp/
+.DS_Store
+
+# npm pack artifacts
+antigravity-awesome-skills-*.tgz
+
+.agent/rules/
+.claude-plugin/
+.codex/
+.gemini/
+.release-clone-*/
+data/node_modules
+
+# Temporary analysis and report files
+*_REPORT.md
+*_ANALYSIS*.md
+*_COUNT.md
+*_SUMMARY.md
+*_analysis.json
+*_validation.json
+*_results.json
+voltagent_*.json
+similar_skills_*.json
+remaining_*.json
+html_*.json
+
+# Temporary analysis scripts (tools/scripts/)
+tools/scripts/*voltagent*.py
+tools/scripts/*html*.py
+tools/scripts/*similar*.py
+tools/scripts/*count*.py
+
+# Optional baseline for legacy JS validator (scripts/validate-skills.js)
+validation-baseline.json
+
+# Web app generated assets (from npm run app:setup)
+apps/web-app/public/skills/
+apps/web-app/public/skills.json
+
+# Local duplicate/download artifacts
+skills/spline-3d-integration/*.zip

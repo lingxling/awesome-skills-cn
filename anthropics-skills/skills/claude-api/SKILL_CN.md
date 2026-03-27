@@ -61,7 +61,7 @@ license: 完整条款见 LICENSE.txt
 | Ruby       | 是（测试版）  | 否        | 测试版中的 `BaseTool` + `tool_runner`    |
 | cURL       | 不适用         | 不适用       | 原始 HTTP，无 SDK 功能             |
 | C#         | 否          | 否        | 官方 SDK                          |
-| PHP        | 否          | 否        | 官方 SDK                          |
+| PHP        | 是（测试版）  | 否        | `BetaRunnableTool` + `toolRunner()`   |
 
 ---
 
@@ -169,6 +169,18 @@ license: 完整条款见 LICENSE.txt
 
 ---
 
+## 提示缓存（快速参考）
+
+**前缀匹配。** 前缀中的任何字节更改都会使其后的所有内容失效。渲染顺序为 `tools` → `system` → `messages`。将稳定内容放在前面（冻结的系统提示、确定性工具列表），将易变内容（时间戳、每个请求的 ID、不同的问题）放在最后一个 `cache_control` 断点之后。
+
+**顶层自动缓存**（在 `messages.create()` 上使用 `cache_control: {type: "ephemeral"}`）是不需要细粒度放置时的最简单选项。每个请求最多 4 个断点。最小可缓存前缀约为 1024 个令牌——较短的前缀不会静默缓存。
+
+**使用 `usage.cache_read_input_tokens` 验证** — 如果在重复请求中它为零，则存在静默无效器（系统提示中的 `datetime.now()`、未排序的 JSON、变化的工具集）。
+
+有关放置模式、架构指导和静默无效器审计清单：请阅读 `shared/prompt-caching.md`。语言特定语法：`{lang}/claude-api/README.md`（提示缓存部分）。
+
+---
+
 ## 阅读指南
 
 检测语言后，根据用户需求阅读相关文件：
@@ -183,6 +195,9 @@ license: 完整条款见 LICENSE.txt
 
 **长时间运行的对话（可能超过上下文窗口）：**
 → 阅读 `{lang}/claude-api/README.md` — 见压缩部分
+
+**提示缓存 / 优化缓存 / "为什么我的缓存命中率低"：**
+→ 阅读 `shared/prompt-caching.md` + `{lang}/claude-api/README.md`（提示缓存部分）
 
 **函数调用 / 工具使用 / agents：**
 → 阅读 `{lang}/claude-api/README.md` + `shared/tool-use-concepts.md` + `{lang}/claude-api/tool-use.md`
@@ -206,8 +221,9 @@ license: 完整条款见 LICENSE.txt
 4. **`{language}/claude-api/streaming.md`** — 构建聊天 UI 或增量显示响应的接口时阅读。
 5. **`{language}/claude-api/batches.md`** — 处理许多离线请求（非延迟敏感）时阅读。以 50% 的成本异步运行。
 6. **`{language}/claude-api/files-api.md`** — 在多个请求中发送相同文件而无需重新上传时阅读。
-7. **`shared/error-codes.md`** — 调试 HTTP 错误或实现错误处理时阅读。
-8. **`shared/live-sources.md`** — 用于获取最新官方文档的 WebFetch URL。
+7. **`shared/prompt-caching.md`** — 添加或优化提示缓存时阅读。涵盖前缀稳定性设计、断点放置和会静默使缓存无效的反模式。
+8. **`shared/error-codes.md`** — 调试 HTTP 错误或实现错误处理时阅读。
+9. **`shared/live-sources.md`** — 用于获取最新官方文档的 WebFetch URL。
 
 > **注意：** 对于 Java、Go、Ruby、C#、PHP 和 cURL——这些各有一个文件涵盖所有基础知识。阅读该文件以及根据需要阅读 `shared/tool-use-concepts.md` 和 `shared/error-codes.md`。
 

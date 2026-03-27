@@ -7,32 +7,34 @@ import subprocess
 import sys
 from pathlib import Path
 
+from plugin_compatibility import compatibility_by_skill_id, load_plugin_compatibility
+from sync_editorial_bundles import load_editorial_bundles, render_bundles_doc
 from update_readme import configure_utf8_output, find_repo_root, load_metadata, update_readme
 
 
 ABOUT_DESCRIPTION_RE = re.compile(r'"description"\s*:\s*"([^"]*)"')
 GITHUB_HOMEPAGE_URL = "https://sickn33.github.io/antigravity-awesome-skills/"
 RECOMMENDED_TOPICS = [
-    "agentic-skills",
-    "agent-skills",
-    "ai-agents",
-    "ai-agent-skills",
-    "awesome-list",
-    "awesome-lists",
     "antigravity",
     "antigravity-skills",
-    "autonomous-coding",
     "claude-code",
     "claude-code-skills",
+    "cursor",
+    "cursor-skills",
     "codex-cli",
     "codex-skills",
-    "cursor-skills",
-    "developer-tools",
     "gemini-cli",
     "gemini-skills",
-    "mcp",
-    "ai-workflows",
+    "kiro",
+    "ai-agents",
+    "ai-agent-skills",
+    "agent-skills",
+    "agentic-skills",
+    "developer-tools",
     "skill-library",
+    "ai-workflows",
+    "ai-coding",
+    "mcp",
 ]
 README_TAGLINE_RE = re.compile(
     r"^> \*\*Installable GitHub library of \d[\d,]*\+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants\.\*\*$",
@@ -181,7 +183,15 @@ def sync_getting_started(content: str, metadata: dict) -> str:
     return content
 
 
-def sync_bundles_doc(content: str, metadata: dict) -> str:
+def sync_bundles_doc(content: str, metadata: dict, base_dir: str | Path | None = None) -> str:
+    root = Path(base_dir) if base_dir is not None else Path(find_repo_root(__file__))
+    manifest_path = root / "data" / "editorial-bundles.json"
+    template_path = root / "tools" / "templates" / "editorial-bundles.md.tmpl"
+    if manifest_path.is_file() and template_path.is_file():
+        bundles = load_editorial_bundles(root)
+        compatibility = compatibility_by_skill_id(load_plugin_compatibility(root))
+        return render_bundles_doc(root, metadata, bundles, compatibility)
+
     bundle_count = count_documented_bundles(content)
     if bundle_count == 0:
         bundle_count = 36
@@ -298,7 +308,14 @@ def sync_curated_docs(base_dir: str, metadata: dict, dry_run: bool) -> int:
     updated_files = 0
     updated_files += int(update_text_file(root / "README.md", sync_readme_copy, metadata, dry_run))
     updated_files += int(update_text_file(root / "docs" / "users" / "getting-started.md", sync_getting_started, metadata, dry_run))
-    updated_files += int(update_text_file(root / "docs" / "users" / "bundles.md", sync_bundles_doc, metadata, dry_run))
+    updated_files += int(
+        update_text_file(
+            root / "docs" / "users" / "bundles.md",
+            lambda content, current_metadata: sync_bundles_doc(content, current_metadata, root),
+            metadata,
+            dry_run,
+        )
+    )
     updated_files += int(update_text_file(root / "docs" / "integrations" / "jetski-cortex.md", sync_jetski_cortex, metadata, dry_run))
 
     for path, replacements in regex_text_replacements:

@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import pathlib
 import sys
 import tempfile
@@ -27,23 +28,31 @@ class BundleActivationSecurityTests(unittest.TestCase):
         formatted = get_bundle_skills.format_skills_for_batch([
             "safe-skill",
             "nested.skill_2",
+            "game-development/game-design",
             "unsafe&calc",
             "another|bad",
         ])
 
-        self.assertEqual(formatted, "safe-skill\nnested.skill_2\n")
+        self.assertEqual(formatted, "safe-skill\nnested.skill_2\ngame-development/game-design\n")
 
-    def test_get_bundle_skills_rejects_unsafe_bundle_entries(self):
+    def test_get_bundle_skills_rejects_unsafe_bundle_entries_from_manifest(self):
         with tempfile.TemporaryDirectory() as temp_dir:
-            bundles_path = pathlib.Path(temp_dir) / "bundles.md"
+            bundles_path = pathlib.Path(temp_dir) / "editorial-bundles.json"
             bundles_path.write_text(
-                "\n".join(
-                    [
-                        "### Essentials",
-                        "- [`safe-skill`](../../skills/safe-skill/)",
-                        "- [`unsafe&calc`](../../skills/unsafe/)",
-                        "- [`safe_two`](../../skills/safe_two/)",
-                    ]
+                json.dumps(
+                    {
+                        "bundles": [
+                            {
+                                "id": "essentials",
+                                "name": "Essentials",
+                                "skills": [
+                                    {"id": "safe-skill"},
+                                    {"id": "unsafe&calc"},
+                                    {"id": "safe_two"},
+                                ],
+                            }
+                        ]
+                    }
                 ),
                 encoding="utf-8",
             )
@@ -54,6 +63,11 @@ class BundleActivationSecurityTests(unittest.TestCase):
             )
 
             self.assertEqual(skills, ["safe-skill", "safe_two"])
+
+    def test_nested_skill_ids_are_allowed_when_safe(self):
+        self.assertTrue(get_bundle_skills.is_safe_skill_id("game-development/game-design"))
+        self.assertFalse(get_bundle_skills.is_safe_skill_id("../escape"))
+        self.assertFalse(get_bundle_skills.is_safe_skill_id("game-development/../escape"))
 
 
 if __name__ == "__main__":

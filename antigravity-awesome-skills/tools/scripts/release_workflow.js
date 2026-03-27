@@ -138,6 +138,22 @@ function stageReleaseFiles(projectRoot, contract) {
     includeMixed: true,
     includeReleaseManaged: true,
   });
+
+  const claudePluginFiles = [
+    ".claude-plugin/plugin.json",
+    ".claude-plugin/marketplace.json",
+  ].filter((filePath) => fs.existsSync(path.join(projectRoot, filePath)));
+
+  const pluginsDir = path.join(projectRoot, "plugins");
+  const codexPluginFiles = fs.existsSync(pluginsDir)
+    ? fs
+        .readdirSync(pluginsDir, { withFileTypes: true })
+        .filter((entry) => entry.isDirectory())
+        .map((entry) => path.join("plugins", entry.name, ".codex-plugin", "plugin.json"))
+        .filter((filePath) => fs.existsSync(path.join(projectRoot, filePath)))
+    : [];
+
+  filesToStage.push(...claudePluginFiles, ...codexPluginFiles);
   runCommand("git", ["add", ...filesToStage], projectRoot);
 }
 

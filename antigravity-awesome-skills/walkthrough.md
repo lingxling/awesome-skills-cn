@@ -1,3 +1,44 @@
+# Maintenance Walkthrough - 2026-03-25
+
+- Imported 14 skills from [Dimillian/Skills](https://github.com/Dimillian/Skills) into `skills/`:
+  - `app-store-changelog`
+  - `github`
+  - `ios-debugger-agent`
+  - `macos-menubar-tuist-app`
+  - `macos-spm-app-packaging`
+  - `orchestrate-batch-refactor`
+  - `project-skill-audit`
+  - `react-component-performance`
+  - `simplify-code`
+  - `swift-concurrency-expert`
+  - `swiftui-liquid-glass`
+  - `swiftui-performance-audit`
+  - `swiftui-ui-patterns`
+  - `swiftui-view-refactor`
+- Normalized the imported skill metadata to match repository validation requirements:
+  - shortened oversized frontmatter descriptions
+  - added `risk`, `source`, and `date_added`
+  - added `## When to Use` sections so the imported batch does not increase the warning budget
+- Added source attribution for `Dimillian/Skills` in:
+  - `README.md` under `Credits & Sources`
+  - `docs/sources/sources.md`
+- Merged PR `#395` via GitHub squash merge after maintainer refresh of forked workflow approvals and PR body normalization; this added the new `snowflake-development` skill.
+- Merged PR `#394` via GitHub squash merge after converting the contributor branch back to source-only, normalizing the PR checklist body, and shortening an oversized `wordpress-penetration-testing` description so CI passed.
+- Patched `skills/snowflake-development/SKILL.md` on `main` with a `## When to Use` section so the repository stayed within the frozen validation warning budget after the PR merge batch.
+- Reworked `/apply-optimize` automation to address GitHub code scanning alert `#36`: the public `issue_comment` trigger now only queues a trusted workflow, while the privileged branch checkout/apply logic runs in a separate `workflow_dispatch` path limited to same-repository branches.
+- Ran the required direct-`main` maintainer sync flow after touching `skills/`:
+  - `npm run chain`
+  - `npm run check:warning-budget`
+  - `npm run catalog`
+- Synced maintainer-owned generated artifacts and metadata to the new `1,325+` skill count:
+  - `README.md`
+  - `package.json`
+  - `skills_index.json`
+  - `CATALOG.md`
+  - `data/catalog.json`
+  - `data/bundles.json`
+  - curated user/maintainer docs updated by `sync_repo_metadata.py`
+
 # Maintenance Walkthrough - 2026-03-21
 
 - Imported and normalized a new batch of external skills into `skills/`, covering Anthropic Claude API/internal comms entries, marketing workflows, SEO orchestration/sub-skills, and Obsidian-focused file-format/CLI skills.

@@ -45,6 +45,8 @@ class GenerateIndexSecurityTests(unittest.TestCase):
             skills = generate_index.generate_index(str(skills_dir), str(output_file))
 
             self.assertEqual([skill["id"] for skill in skills], ["safe-skill"])
+            self.assertIn("plugin", skills[0])
+            self.assertEqual(skills[0]["plugin"]["targets"]["codex"], "supported")
             written = json.loads(output_file.read_text(encoding="utf-8"))
             self.assertEqual([skill["id"] for skill in written], ["safe-skill"])
 

@@ -9,6 +9,176 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.0.0] - 2026-03-27 - "Claude Code and Codex Plugin Release"
+
+> Full release for the installable skill library, now with first-class plugin distributions for Claude Code and Codex plus the normal GitHub Release publication flow.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Plugin explainer: [docs/users/plugins.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/plugins.md)
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release makes the new plugin distribution model a user-facing feature. Claude Code now has a formal root marketplace plugin plus generated bundle plugins, and Codex now ships the equivalent repo-local root plugin plus generated bundle plugins. The release also consolidates plugin documentation into a canonical user guide, aligns onboarding docs around the difference between the full repository and the plugin-safe subset, and packages the latest merge batch on `main`.
+
+## New
+
+- **Claude Code plugin distribution** - formalized the root `.claude-plugin` marketplace entry plus generated bundle plugins as a first-class install path.
+- **Codex plugin distribution** - formalized the root Codex plugin metadata in `.agents/plugins/marketplace.json` and `plugins/antigravity-awesome-skills/.codex-plugin/plugin.json`, alongside generated bundle plugins.
+- **Canonical plugin documentation** - added `docs/users/plugins.md` to explain plugin-safe filtering, root plugin vs bundle plugins, and when to prefer plugins over the full library install.
+- **akf-trust-metadata** - merged PR #406, adding the new `akf-trust-metadata` skill to the repository.
+
+## Improvements
+
+- **Onboarding alignment** - updated `README.md`, `docs/users/getting-started.md`, `docs/users/faq.md`, `docs/users/claude-code-skills.md`, `docs/users/codex-cli-skills.md`, `docs/users/bundles.md`, and `docs/users/usage.md` so the plugin story is explained consistently.
+- **Community discovery** - merged PR #407 to add the CoinPaprika & DexPaprika listing to the community-contributed section of the README.
+- **Maintainer release batch** - merged both open PRs through the documented GitHub squash flow, then packaged the resulting `main` branch as a full release instead of a tag-only cut.
+
+## Who should care
+
+- **Claude Code users** now have a cleaner choice between full-library install, root marketplace plugin, and smaller bundle plugins.
+- **Codex users** now get the same plugin distribution model instead of relying only on direct `.codex/skills/` installs.
+- **Maintainers and team leads** can onboard people with plugin-safe starter surfaces while keeping the full repository as the broader source of truth.
+
+## Credits
+
+- **[@CryptoDoppio](https://github.com/CryptoDoppio)** for the new `akf-trust-metadata` skill in PR #406
+- **[@coinpaprika](https://github.com/coinpaprika)** for adding the CoinPaprika & DexPaprika community listing in PR #407
+
+## [8.10.0] - 2026-03-26 - "Discovery Boost for Social, MCP, and Ops"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, Windsurf, Cline, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release improves discovery and day-to-day usefulness for Claude Code, Cursor, Codex CLI, Windsurf, Cline, and similar agent workflows. It adds two new installable skills for X/Twitter extraction and MCP server evaluation, brings in two more community skill collections for study automation and HubSpot CRM operations, and refreshes the registry/docs surface to `1,328+` skills.
+
+## New Skills
+
+- **adhx** - fetch X/Twitter and ADHX links as clean LLM-friendly JSON with article content, author data, and engagement metrics (PR #396).
+- **clarvia-aeo-check** - score MCP servers, APIs, and CLIs for agent-readiness before installation (PR #402).
+
+## Improvements
+
+- **Community discovery**: added `Tutor Skills` to the Community Contributed Skills list for Obsidian study-vault generation and interactive quiz-based learning from PDFs, docs, and codebases (PR #400).
+- **CRM operations coverage**: added `HubSpot Admin Skills` to the Community Contributed Skills list, surfacing 32 Claude Code skills for auditing, cleaning, enriching, and automating HubSpot CRM workflows (PR #403).
+- **Registry sync**: merged the batch via GitHub squash flow, refreshed generated artifacts, and kept `main` aligned with the current `1,328+` skill catalog.
+
+## Who should care
+
+- **Claude Code, Cursor, Codex CLI, Windsurf, and Cline users** get a new social-reading skill plus a practical pre-install check for MCP and tool selection workflows.
+- **Students, educators, and knowledge-workflow builders** get easier discovery of the Tutor Skills community collection for turning source material into interactive study vaults.
+- **RevOps, marketing ops, and HubSpot-heavy teams** get a clearer path to the HubSpot Admin Skills collection for CRM audits, cleanup, enrichment, and automation playbooks.
+
+## Credits
+
+- **[@conspirafi](https://github.com/conspirafi)** for the new `adhx` skill in PR #396
+- **[@digitamaz](https://github.com/digitamaz)** for the new `clarvia-aeo-check` skill in PR #402
+- **[@RoundTable02](https://github.com/RoundTable02)** for adding `Tutor Skills` to the community listings in PR #400
+- **[@TomGranot](https://github.com/TomGranot)** for adding `HubSpot Admin Skills` to the community listings in PR #403
+
+Upgrade now: `git pull origin main` to fetch the latest skills.
+
+## [8.9.0] - 2026-03-25 - "Apple Workflow Expansion and Data Platform Additions"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release combines a curated import from `Dimillian/Skills` with two merged community pull requests on `main`. It expands Apple-platform workflows, GitHub/refactor guidance, and SwiftUI performance coverage, adds a new Snowflake engineering skill, updates WordPress skills for 7.0, and refreshes the registry/docs surface to `1,326+` indexed skills.
+
+## New Skills
+
+- **app-store-changelog** - turn git history into concise, user-facing App Store release notes.
+- **github** - use the `gh` CLI for pull requests, issues, workflow runs, and GitHub API queries.
+- **ios-debugger-agent** - debug iOS apps on booted simulators with XcodeBuildMCP.
+- **macos-menubar-tuist-app** - build and maintain SwiftUI macOS menubar apps with Tuist-first workflows.
+- **macos-spm-app-packaging** - scaffold and package SwiftPM macOS apps without Xcode projects.
+- **orchestrate-batch-refactor** - plan large refactors with dependency-aware work packets and parallel analysis.
+- **project-skill-audit** - audit a project and recommend the highest-value skills to add or update.
+- **react-component-performance** - diagnose slow React components and apply targeted performance fixes.
+- **simplify-code** - review diffs for clarity and safe simplifications.
+- **snowflake-development** - Snowflake SQL, pipelines, Cortex AI, Snowpark, performance, and security guidance (PR #395).
+- **swift-concurrency-expert** - fix actor isolation, `Sendable`, and Swift concurrency issues.
+- **swiftui-liquid-glass** - implement and review SwiftUI Liquid Glass APIs correctly.
+- **swiftui-performance-audit** - audit SwiftUI runtime performance from code and profiling evidence.
+- **swiftui-ui-patterns** - apply proven SwiftUI patterns for navigation, sheets, and async state.
+- **swiftui-view-refactor** - refactor SwiftUI views into smaller components with explicit data flow.
+
+## Improvements
+
+- **WordPress 7.0 coverage**: merged PR #394 to expand `wordpress`, `wordpress-plugin-development`, `wordpress-theme-development`, `wordpress-woocommerce-development`, and `wordpress-penetration-testing` with WordPress 7.0 collaboration, AI, admin, and security guidance.
+- **Maintainer PR flow**: brought both open PRs into compliance with the source-only policy and PR template requirements before merging them via GitHub squash merge.
+- **Registry sync**: refreshed README/catalog metadata, contributor sync, and count-sensitive docs so `main` now reflects `1,326+` indexed skills.
+- **Warning-budget preservation**: normalized imported and newly merged skills so the repository remains within the frozen validation budget at `135/135`.
+
+## Who should care
+
+- **Claude Code and Codex CLI users** get a larger set of high-signal workflow skills for GitHub, refactoring, project audits, and Swift/SwiftUI maintenance.
+- **Apple-platform developers** get a meaningful jump in coverage across iOS debugging, Swift concurrency, SwiftUI architecture, Liquid Glass, performance, and macOS packaging/menubar patterns.
+- **Data and platform engineers** get a new `snowflake-development` skill plus richer WordPress 7.0 documentation for modern content/admin workflows.
+- **Maintainers** benefit from a clean post-merge registry state, contributor sync, and release-ready validation posture.
+
+## Credits
+
+- **[Dimillian/Skills](https://github.com/Dimillian/Skills)** for the 14 imported Apple-platform, GitHub, refactoring, and SwiftUI workflow skills that anchor this release
+- **[@jamescha-earley](https://github.com/jamescha-earley)** for the new `snowflake-development` skill in PR #395
+- **[@munir-abbasi](https://github.com/munir-abbasi)** for the WordPress 7.0 documentation update in PR #394
+
+Upgrade now: `git pull origin main` to fetch the latest skills.
+
+## [8.8.0] - 2026-03-24 - "Review Automation and Research Expansion"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release packages the post-`v8.7.1` merge batch: two new community skills and a maintainer workflow upgrade that expands pull request review into review-and-optimize flows. It also refreshes generated catalog metadata, contributor sync, and tracked web assets so `main` stays aligned at `1,311+` indexed skills.
+
+## New Skills
+
+- **aegisops-ai** - governance-oriented SDLC audits for Linux kernel memory safety, Terraform cost drift, and Kubernetes policy hardening (PR #390)
+- **xvary-stock-research** - thesis-driven equity analysis using public SEC EDGAR data, market snapshots, scoring, and comparison playbooks (PR #389)
+
+## Improvements
+
+- **Skill review automation**: Upgraded the PR review workflow to `skill-review-and-optimize` and added `/apply-optimize` automation so maintainers can apply accepted optimization suggestions directly from PR comments (PR #393).
+- **Release and registry sync**: Refreshed README/catalog metadata, contributor sync, and tracked web assets after the merge batch so release artifacts and docs stay aligned with the current registry state.
+
+## Who should care
+
+- **Claude Code and Cursor users** get two new high-leverage skills for governance audits and public-market research workflows.
+- **Codex CLI and Gemini CLI users** benefit from the same new skills plus richer PR review automation when contributing `SKILL.md` changes back to the repository.
+- **Maintainers** get a faster path from automated review comments to applied PR optimizations without leaving GitHub.
+
+## Credits
+
+- **[@Champbreed](https://github.com/Champbreed)** for the new `aegisops-ai` skill in PR #390
+- **[@SenSei2121](https://github.com/SenSei2121)** for the new `xvary-stock-research` skill in PR #389
+- **[@fernandezbaptiste](https://github.com/fernandezbaptiste)** for the review workflow upgrade in PR #393
+
+Upgrade now: `git pull origin main` to fetch the latest skills.
+
 ## [8.7.1] - 2026-03-23 - "Release Pipeline Repair"
 
 > Patch release to restore npm publication after the `v8.7.0` GitHub Release failed before reaching the npm registry.

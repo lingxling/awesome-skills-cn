@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**36 个技能**
+**37 skills**
 
 - [adhd-assistant](https://clawskills.sh/skills/thinktankmachine-adhd-assistant) - 为 OpenClaw 设计的 ADHD 友好型生活管理助手。
 - [adhd-ssistant](https://clawskills.sh/skills/thinktankmachine-adhd-ssistant) - 为 OpenClaw 设计的 ADHD 友好型生活管理助手。

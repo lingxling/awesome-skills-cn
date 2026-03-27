@@ -4,6 +4,10 @@ If you searched for **Cursor skills** on GitHub, this repository is built to be 
 
 Antigravity Awesome Skills supports Cursor through the `.cursor/skills/` path and keeps the entry point simple: install once, then invoke the skills you need in chat.
 
+## How to use Antigravity Awesome Skills with Cursor
+
+Install the library into Cursor's skills directory, then call skills directly in chat with `@skill-name`. Cursor works especially well when you combine planning, implementation, and validation skills inside one conversation.
+
 ## Why use this repo for Cursor
 
 - It supports Cursor directly with a dedicated install flag.

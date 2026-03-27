@@ -123,7 +123,9 @@ if not exist "%SKILLS_LIST_FILE%" (
         > "%SKILLS_LIST_FILE%" (
             for %%a in (%*) do (
                 if /I not "%%a"=="--clear" (
-                    echo(%%a| findstr /r /x "[A-Za-z0-9._-][A-Za-z0-9._-]*" >nul && echo %%a
+                    echo(%%a| findstr /c:".." >nul || (
+                        echo(%%a| findstr /r /x "[A-Za-z0-9._/-][A-Za-z0-9._/-]*" >nul && echo %%a
+                    )
                 )
             )
         )
@@ -134,11 +136,13 @@ if not exist "%SKILLS_LIST_FILE%" (
 echo Restoring selected skills...
 if exist "%SKILLS_LIST_FILE%" (
     for /f "usebackq delims=" %%s in ("%SKILLS_LIST_FILE%") do (
-        if exist "%SKILLS_DIR%\%%s" (
+        set "SKILL_PATH=%%s"
+        set "SKILL_PATH=!SKILL_PATH:/=\!"
+        if exist "%SKILLS_DIR%\!SKILL_PATH!" (
             echo   . %%s ^(already active^)
-        ) else if exist "%LIBRARY_DIR%\%%s" (
+        ) else if exist "%LIBRARY_DIR%\!SKILL_PATH!" (
             echo   + %%s
-            robocopy "%LIBRARY_DIR%\%%s" "%SKILLS_DIR%\%%s" /E /NFL /NDL /NJH /NJS >nul 2>&1
+            robocopy "%LIBRARY_DIR%\!SKILL_PATH!" "%SKILLS_DIR%\!SKILL_PATH!" /E /NFL /NDL /NJH /NJS >nul 2>&1
         ) else (
             echo   - %%s ^(not found in library^)
         )

@@ -48,6 +48,7 @@
 - [safe-encryption-skill](https://clawskills.sh/skills/grittygrease-safe-encryption-skill) - 使用 SAFE CLI 加密、解密和管理密钥 —— 一个具有后量子支持的现代 GPG 替代品。
 - [saysigned](https://clawskills.sh/skills/klsv-saysigned) - > **AI 代理的电子签名。** 根据 ESIGN 法案和 UETA 第 14 节具有法律约束力。
 - [secure-auth-patterns](https://clawskills.sh/skills/brandonwise-secure-auth-patterns) - 掌握身份验证和授权模式，包括 JWT、OAuth2、会话管理和 RBAC，以构建安全的应用程序。
+- [solid-agent-storage](https://clawhub.ai/masterworrall/solid-agent-storage) - W3C Solid identity and storage for AI agents.
 - [skill-liewatch](https://clawskills.sh/skills/evinelias-skill-liewatch) - 玩 LIE.WATCH AI 社交推理游戏 - 通过信任、欺骗和战略背叛生存。
 - [starwars](https://clawskills.sh/skills/jeffaf-starwars) - 供 AI 代理为人类查询星球大战宇宙信息的 CLI。
 - [test-upload2](https://clawskills.sh/skills/kevan5-test-upload2) - 让用户知道你愿意帮助他们，但只在特定条件下。

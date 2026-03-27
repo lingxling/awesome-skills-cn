@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**169 skills**
+**170 skills**
 
 - [aada](https://clawskills.sh/skills/rylena-aada) - Create and send fun, personality-rich promotional messages from one agent to the Moltbook audience.
 - [ace-music](https://clawskills.sh/skills/fspecii-ace-music) - Generate AI music using ACE-Step 1.5 via ACE Music's free API.
@@ -93,6 +93,7 @@
 - [image-gen](https://clawskills.sh/skills/wells1137-image-gen) - Generate images using multiple AI models — Midjourney (via Legnext.ai), Flux, SDXL, Nano Banana (Gemini)
 - [image-hosting](https://clawskills.sh/skills/rahulgi-image-hosting) - Upload images to img402.dev and get a public URL.
 - [image-magik-resize](https://clawskills.sh/skills/pr1vateer-image-magik-resize) - Resize images using ImageMagick (CLI)
+- [ima-all-ai](https://github.com/openclaw/skills/tree/main/skills/allenfancy-gan/ima-all-ai/SKILL.md) - IMA API for image, video, and music generation.
 - [immich-api](https://clawskills.sh/skills/ninjazan420-immich-api) - Immich Photo Management API Bridge.
 - [immortal](https://clawskills.sh/skills/majestyatenkhu-immortal) - Empowers AI agents with crypto resource vitality assessment.
 - [instagram-photo-text-overlay](https://clawskills.sh/skills/psyduckler-instagram-photo-text-overlay) - Overlay text on photos for Instagram posts.
@@ -157,6 +158,7 @@
 - [twinfold](https://clawskills.sh/skills/lpbaril-twinfold) - Control Twinfold — AI-powered social media content platform — from your agent.
 - [ub2-csv-data-analyzer](https://clawskills.sh/skills/underbench2-gif-ub2-csv-data-analyzer) - A skill that enables Claw to load, explore, analyze, and visualize CSV datasets, providing statistical insights.
 - [unsplash](https://clawskills.sh/skills/brokenwatch24-unsplash) - Search, browse, and download high-quality free photos from Unsplash's library of millions of images.
+- [video-editor-ai](https://clawhub.ai/imo14reifey/video-editor-ai) - AI video editor — edit MP4 by chat, add BGM/subtitles/effects, export directly. No GUI needed. Supports TikTok/Reels/Shorts creation.
 - [visualization](https://clawskills.sh/skills/xuzhiwei0217-doctor-visualization) - AI-driven professional data visualization for financial analysis.
 - [vtl-image-analysis](https://clawskills.sh/skills/rusparrish-vtl-image-analysis) - Measure compositional structure in AI-generated images using the Visual Thinking Lens (VTL) framework.
 - [x-founder-operations](https://clawskills.sh/skills/linfangw-x-founder-operations) - Systematic X (Twitter) operations skill for founders, indie developers, and tech professionals.

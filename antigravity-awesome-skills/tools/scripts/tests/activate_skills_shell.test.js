@@ -10,6 +10,7 @@ const scriptPath = path.join(repoRoot, "scripts", "activate-skills.sh");
 const root = fs.mkdtempSync(path.join(os.tmpdir(), "activate-skills-shell-"));
 const baseDir = path.join(root, "antigravity");
 const repoSkills = path.join(root, "repo-skills");
+const outsideDir = path.join(root, "outside-skill-root");
 
 function makeSkill(skillId) {
   const skillDir = path.join(repoSkills, skillId);
@@ -25,6 +26,9 @@ try {
   makeSkill("brainstorming");
   makeSkill("systematic-debugging");
   makeSkill("custom-skill");
+  fs.mkdirSync(outsideDir, { recursive: true });
+  fs.writeFileSync(path.join(outsideDir, "secret.txt"), "outside", "utf8");
+  fs.symlinkSync(outsideDir, path.join(repoSkills, "escape-link"), "dir");
 
   const result = spawnSync(
     "bash",
@@ -53,6 +57,14 @@ try {
   assert.ok(
     fs.existsSync(path.join(baseDir, "skills_library", "brainstorming", "SKILL.md")),
     "repo skills should be synced into the backing library",
+  );
+  assert.ok(
+    !fs.existsSync(path.join(baseDir, "skills_library", "escape-link")),
+    "repo sync must not copy symlinked skills that point outside the source root",
+  );
+  assert.ok(
+    !fs.existsSync(path.join(baseDir, "skills", "escape-link")),
+    "unsafe symlinked skills must never become active",
   );
   assert.match(
     result.stdout,

@@ -9,7 +9,7 @@ The Hugging Face Hub CLI tool `hf` is available. IMPORTANT: The `hf` command rep
 
 Use `hf --help` to view available functions. Note that auth commands are now all under `hf auth` e.g. `hf auth whoami`.
 
-Generated with `huggingface_hub v1.7.2`. Run `hf skills add --force` to regenerate.
+Generated with `huggingface_hub v1.8.0`. Run `hf skills add --force` to regenerate.
 
 ## Commands
 
@@ -104,16 +104,16 @@ Generated with `huggingface_hub v1.7.2`. Run `hf skills add --force` to regenera
 - `hf jobs inspect JOB_IDS` — Display detailed information on one or more Jobs `[--namespace TEXT]`
 - `hf jobs logs JOB_ID` — Fetch the logs of a Job. `[--follow --tail INTEGER --namespace TEXT]`
 - `hf jobs ps` — List Jobs. `[--all --namespace TEXT --filter TEXT --format TEXT --quiet]`
-- `hf jobs run IMAGE COMMAND` — Run a Job. `[--env TEXT --secrets TEXT --label TEXT --env-file TEXT --secrets-file TEXT --flavor CHOICE --timeout TEXT --detach --namespace TEXT]`
+- `hf jobs run IMAGE COMMAND` — Run a Job. `[--env TEXT --secrets TEXT --label TEXT --volume TEXT --env-file TEXT --secrets-file TEXT --flavor CHOICE --timeout TEXT --detach --namespace TEXT]`
 - `hf jobs scheduled delete SCHEDULED_JOB_ID` — Delete a scheduled Job. `[--namespace TEXT]`
 - `hf jobs scheduled inspect SCHEDULED_JOB_IDS` — Display detailed information on one or more scheduled Jobs `[--namespace TEXT]`
 - `hf jobs scheduled ps` — List scheduled Jobs `[--all --namespace TEXT --filter TEXT --format TEXT --quiet]`
 - `hf jobs scheduled resume SCHEDULED_JOB_ID` — Resume (unpause) a scheduled Job. `[--namespace TEXT]`
-- `hf jobs scheduled run SCHEDULE IMAGE COMMAND` — Schedule a Job. `[--suspend --concurrency --env TEXT --secrets TEXT --label TEXT --env-file TEXT --secrets-file TEXT --flavor CHOICE --timeout TEXT --namespace TEXT]`
+- `hf jobs scheduled run SCHEDULE IMAGE COMMAND` — Schedule a Job. `[--suspend --concurrency --env TEXT --secrets TEXT --label TEXT --volume TEXT --env-file TEXT --secrets-file TEXT --flavor CHOICE --timeout TEXT --namespace TEXT]`
 - `hf jobs scheduled suspend SCHEDULED_JOB_ID` — Suspend (pause) a scheduled Job. `[--namespace TEXT]`
-- `hf jobs scheduled uv run SCHEDULE SCRIPT` — Run a UV script (local file or URL) on HF infrastructure `[--suspend --concurrency --image TEXT --flavor CHOICE --env TEXT --secrets TEXT --label TEXT --env-file TEXT --secrets-file TEXT --timeout TEXT --namespace TEXT --with TEXT --python TEXT]`
+- `hf jobs scheduled uv run SCHEDULE SCRIPT` — Run a UV script (local file or URL) on HF infrastructure `[--suspend --concurrency --image TEXT --flavor CHOICE --env TEXT --secrets TEXT --label TEXT --volume TEXT --env-file TEXT --secrets-file TEXT --timeout TEXT --namespace TEXT --with TEXT --python TEXT]`
 - `hf jobs stats` — Fetch the resource usage statistics and metrics of Jobs `[--namespace TEXT]`
-- `hf jobs uv run SCRIPT` — Run a UV script (local file or URL) on HF infrastructure `[--image TEXT --flavor CHOICE --env TEXT --secrets TEXT --label TEXT --env-file TEXT --secrets-file TEXT --timeout TEXT --detach --namespace TEXT --with TEXT --python TEXT]`
+- `hf jobs uv run SCRIPT` — Run a UV script (local file or URL) on HF infrastructure `[--image TEXT --flavor CHOICE --env TEXT --secrets TEXT --label TEXT --volume TEXT --env-file TEXT --secrets-file TEXT --timeout TEXT --detach --namespace TEXT --with TEXT --python TEXT]`
 
 ### `hf models` — Interact with models on the Hub.
 
@@ -122,18 +122,21 @@ Generated with `huggingface_hub v1.7.2`. Run `hf skills add --force` to regenera
 
 ### `hf papers` — Interact with papers on the Hub.
 
-- `hf papers list` — List daily papers on the Hub. `[--date TEXT --sort CHOICE --limit INTEGER --format CHOICE --quiet]`
+- `hf papers info PAPER_ID` — Get info about a paper on the Hub. Output is in JSON format.
+- `hf papers list` — List daily papers on the Hub. `[--date TEXT --week TEXT --month TEXT --submitter TEXT --sort CHOICE --limit INTEGER --format CHOICE --quiet]`
+- `hf papers read PAPER_ID` — Read a paper as markdown.
+- `hf papers search QUERY` — Search papers on the Hub. `[--limit INTEGER --format CHOICE --quiet]`
 
 ### `hf repos` — Manage repos on the Hub.
 
 - `hf repos branch create REPO_ID BRANCH` — Create a new branch for a repo on the Hub. `[--revision TEXT --type CHOICE --exist-ok]`
 - `hf repos branch delete REPO_ID BRANCH` — Delete a branch from a repo on the Hub. `[--type CHOICE]`
-- `hf repos create REPO_ID` — Create a new repo on the Hub. `[--type CHOICE --space-sdk TEXT --private --exist-ok --resource-group-id TEXT]`
+- `hf repos create REPO_ID` — Create a new repo on the Hub. `[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --flavor TEXT --storage TEXT --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT]`
 - `hf repos delete REPO_ID` — Delete a repo from the Hub. This is an irreversible operation. `[--type CHOICE --missing-ok]`
 - `hf repos delete-files REPO_ID PATTERNS` — Delete files from a repo on the Hub. `[--type CHOICE --revision TEXT --commit-message TEXT --commit-description TEXT --create-pr]`
-- `hf repos duplicate FROM_ID` — Duplicate a repo on the Hub (model, dataset, or Space). `[--type CHOICE --private --exist-ok]`
+- `hf repos duplicate FROM_ID` — Duplicate a repo on the Hub (model, dataset, or Space). `[--type CHOICE --private --public --protected --exist-ok --flavor TEXT --storage TEXT --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT]`
 - `hf repos move FROM_ID TO_ID` — Move a repository from a namespace to another namespace. `[--type CHOICE]`
-- `hf repos settings REPO_ID` — Update the settings of a repository. `[--gated CHOICE --private --type CHOICE]`
+- `hf repos settings REPO_ID` — Update the settings of a repository. `[--gated CHOICE --private --public --protected --type CHOICE]`
 - `hf repos tag create REPO_ID TAG` — Create a tag for a repo. `[--message TEXT --revision TEXT --type CHOICE]`
 - `hf repos tag delete REPO_ID TAG` — Delete a tag for a repo. `[--yes --type CHOICE]`
 - `hf repos tag list REPO_ID` — List tags for a repo. `[--type CHOICE]`
@@ -167,6 +170,17 @@ Generated with `huggingface_hub v1.7.2`. Run `hf skills add --force` to regenera
 - `--revision` — Git revision id which can be a branch name, a tag, or a commit hash.
 - `--token` — Use a User Access Token. Prefer setting `HF_TOKEN` env var instead of passing `--token`.
 - `--type` — The type of repository (model, dataset, or space).
+
+## Mounting repos as local filesystems
+
+To mount Hub repositories or buckets as local filesystems — no download, no copy, no waiting — use `hf-mount`. Files are fetched on demand. GitHub: https://github.com/huggingface/hf-mount
+
+Install: `curl -fsSL https://raw.githubusercontent.com/huggingface/hf-mount/main/install.sh | sh`
+
+Some command examples:
+- `hf-mount start repo openai-community/gpt2 /tmp/gpt2` — mount a repo (read-only)
+- `hf-mount start --hf-token $HF_TOKEN bucket myuser/my-bucket /tmp/data` — mount a bucket (read-write)
+- `hf-mount status` / `hf-mount stop /tmp/data` — list or unmount
 
 ## Tips
 

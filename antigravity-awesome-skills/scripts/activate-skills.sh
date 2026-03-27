@@ -26,6 +26,10 @@ find_copy_dirs() {
   mkdir -p "$dest_dir"
 
   while IFS= read -r -d '' item; do
+    if [[ -L "$item" ]] && ! is_safe_dir_symlink "$src_dir" "$item"; then
+      echo "  ! Skipping unsafe symlink outside source root: $(basename "$item")"
+      continue
+    fi
     cp -RP "$item" "$dest_dir/"
   done < <(find "$src_dir" -mindepth 1 -maxdepth 1 \( -type d -o -type l \) -print0 2>/dev/null)
 }
@@ -60,8 +64,41 @@ resolve_python() {
   return 1
 }
 
+is_safe_dir_symlink() {
+  local root_dir="$1"
+  local item="$2"
+  local python_path=""
+
+  if ! python_path="$(resolve_python 2>/dev/null)"; then
+    return 1
+  fi
+
+  "$python_path" - "$root_dir" "$item" <<'PY'
+from pathlib import Path
+import sys
+
+root_dir = Path(sys.argv[1]).resolve()
+item = Path(sys.argv[2])
+
+try:
+    target = item.resolve(strict=True)
+except FileNotFoundError:
+    raise SystemExit(1)
+
+if not target.is_dir():
+    raise SystemExit(1)
+
+try:
+    target.relative_to(root_dir)
+except ValueError:
+    raise SystemExit(1)
+
+raise SystemExit(0)
+PY
+}
+
 is_safe_skill_id() {
-  [[ "$1" =~ ^[A-Za-z0-9._-]+$ ]]
+  [[ "$1" =~ ^[A-Za-z0-9._-]+(/[A-Za-z0-9._-]+)*$ ]] && [[ "$1" != *"/."* ]] && [[ "$1" != "." ]] && [[ "$1" != ".." ]]
 }
 
 echo "Activating Antigravity skills..."

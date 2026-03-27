@@ -139,9 +139,17 @@
     "ruleId": "",
     "ruleTitle": "Avoid Barrel File Imports",
     "type": "good",
-    "code": "import Check from 'lucide-react/dist/esm/icons/check'\nimport X from 'lucide-react/dist/esm/icons/x'\nimport Menu from 'lucide-react/dist/esm/icons/menu'\n// Loads only 3 modules (~2KB vs ~1MB)\n\nimport Button from '@mui/material/Button'\nimport TextField from '@mui/material/TextField'\n// Loads only what you use",
+    "code": "// Keep the standard imports - Next.js transforms them to direct imports\nimport { Check, X, Menu } from 'lucide-react'\n// Full TypeScript support, no manual path wrangling",
     "language": "tsx",
-    "description": "imports only what you need"
+    "description": "Correct - Next.js 13.5+ (recommended) example for Avoid Barrel File Imports"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Avoid Barrel File Imports",
+    "type": "good",
+    "code": "import Button from '@mui/material/Button'\nimport TextField from '@mui/material/TextField'\n// Loads only what you use",
+    "language": "tsx",
+    "description": "Correct - Direct imports (non-Next.js projects) example for Avoid Barrel File Imports"
   },
   {
     "ruleId": "",
@@ -430,6 +438,22 @@
     "code": "function getLatestProject(projects: Project[]) {\n  if (projects.length === 0) return null\n  \n  let latest = projects[0]\n  \n  for (let i = 1; i < projects.length; i++) {\n    if (projects[i].updatedAt > latest.updatedAt) {\n      latest = projects[i]\n    }\n  }\n  \n  return latest\n}\n\nfunction getOldestAndNewest(projects: Project[]) {\n  if (projects.length === 0) return { oldest: null, newest: null }\n  \n  let oldest = projects[0]\n  let newest = projects[0]\n  \n  for (let i = 1; i < projects.length; i++) {\n    if (projects[i].updatedAt < oldest.updatedAt) oldest = projects[i]\n    if (projects[i].updatedAt > newest.updatedAt) newest = projects[i]\n  }\n  \n  return { oldest, newest }\n}",
     "language": "typescript",
     "description": "Correct (O(n) - single loop) example for Use Loop for Min/Max Instead of Sort"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Defer Non-Critical Work with requestIdleCallback",
+    "type": "bad",
+    "code": "function handleSearch(query: string) {\n  const results = searchItems(query)\n  setResults(results)\n\n  // These block the main thread immediately\n  analytics.track('search', { query })\n  saveToRecentSearches(query)\n  prefetchTopResults(results.slice(0, 3))\n}",
+    "language": "typescript",
+    "description": "blocks main thread during user interaction"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Defer Non-Critical Work with requestIdleCallback",
+    "type": "good",
+    "code": "function handleSearch(query: string) {\n  const results = searchItems(query)\n  setResults(results)\n\n  // Defer non-critical work to idle periods\n  requestIdleCallback(() => {\n    analytics.track('search', { query })\n  })\n\n  requestIdleCallback(() => {\n    saveToRecentSearches(query)\n  })\n\n  requestIdleCallback(() => {\n    prefetchTopResults(results.slice(0, 3))\n  })\n}",
+    "language": "typescript",
+    "description": "defers non-critical work to idle time"
   },
   {
     "ruleId": "",
@@ -934,6 +958,22 @@
     "code": "async function Header() {\n  const data = await fetchHeader()\n  return <div>{data}</div>\n}\n\nasync function Sidebar() {\n  const items = await fetchSidebarItems()\n  return <nav>{items.map(renderItem)}</nav>\n}\n\nexport default function Page() {\n  return (\n    <div>\n      <Header />\n      <Sidebar />\n    </div>\n  )\n}",
     "language": "tsx",
     "description": "both fetch simultaneously"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Parallel Nested Data Fetching",
+    "type": "bad",
+    "code": "const chats = await Promise.all(\n  chatIds.map(id => getChat(id))\n)\n\nconst chatAuthors = await Promise.all(\n  chats.map(chat => getUser(chat.author))\n)",
+    "language": "tsx",
+    "description": "a single slow item blocks all nested fetches"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Parallel Nested Data Fetching",
+    "type": "good",
+    "code": "const chatAuthors = await Promise.all(\n  chatIds.map(id => getChat(id).then(chat => getUser(chat.author)))\n)",
+    "language": "tsx",
+    "description": "each item chains its own nested fetch"
   },
   {
     "ruleId": "",

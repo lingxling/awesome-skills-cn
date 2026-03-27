@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**145 skills**
+**146 skills**
 
 - [aa](https://clawskills.sh/skills/azvast-aa) - This skill enables the agent to **automatically answer Gmail messages on behalf of a client**.
 - [agent-mail](https://clawskills.sh/skills/rimelucci-agent-mail) - Email inbox for AI agents.
@@ -128,6 +128,7 @@
 - [sixel-email](https://clawskills.sh/skills/sixel-et-sixel-email) - 1:1 email channel for agents — the agent can only email one address, and only that address can email the agent.
 - [skill-cleaner](https://clawskills.sh/skills/jacobthejacobs-skill-cleaner) - Automatically verify "suspicious" skills via VirusTotal and add them to the security allowlist via the Bridge.
 - [skillguard-audit](https://clawskills.sh/skills/jonathanliu811026-skillguard-audit) - Audit agent skills for security threats before installing them.
+- [soul-generator](https://github.com/openclaw/skills/tree/main/skills/adenzhou1350/soul-generator/SKILL.md) - Personalize your Agent with dozens of presets.
 - [subreddit-scout](https://clawskills.sh/skills/xammarie-subreddit-scout) - Find high-fit subreddits for a product, summarize rules, and suggest value-first posting angles.
 - [surf-check](https://clawskills.sh/skills/kevinmcnamee-surf-check) - Surf forecast decision engine.
 - [telnyx-freemium-upgrade](https://clawskills.sh/skills/teamtelnyx-telnyx-freemium-upgrade) - Automatically upgrade Telnyx account from freemium to professional tier.
@@ -144,3 +145,4 @@
 - [voice-email](https://clawskills.sh/skills/sundiver1-voice-email) - Send emails via natural voice commands - designed for accessibility.
 - [youam](https://clawskills.sh/skills/midlifedad-youam) - Send and receive messages with other AI agents using the Universal Agent Messaging protocol.
 - [zepto](https://clawskills.sh/skills/bewithgaurav-zepto) - Order groceries from Zepto in seconds.
+- [lobstermail-agent-email](https://github.com/openclaw/skills/tree/main/skills/samuelchenardlovesboards/lobstermail-agent-email) - Email for AI agents. No API keys, no signup.

@@ -6,7 +6,7 @@ This document keeps the repository's GitHub-facing discovery copy aligned with t
 
 Preferred positioning:
 
-> Installable GitHub library of 1,309+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.
+> Installable GitHub library of 1,329+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.
 
 Key framing:
 
@@ -20,7 +20,7 @@ Key framing:
 
 Preferred description:
 
-> Installable GitHub library of 1,309+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and more. Includes installer CLI, bundles, workflows, and official/community skill collections.
+> Installable GitHub library of 1,329+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and more. Includes installer CLI, bundles, workflows, and official/community skill collections.
 
 Preferred homepage:
 
@@ -28,32 +28,32 @@ Preferred homepage:
 
 Preferred social preview:
 
-- use a clean preview image that says `1,309+ Agentic Skills`;
+- use a clean preview image that says `1,329+ Agentic Skills`;
 - mention Claude Code, Cursor, Codex CLI, and Gemini CLI;
 - avoid dense text and tiny logos that disappear in social cards.
 
 Preferred topics:
 
-- `agentic-skills`
-- `agent-skills`
-- `ai-agents`
-- `ai-agent-skills`
-- `awesome-list`
-- `awesome-lists`
 - `antigravity`
 - `antigravity-skills`
-- `autonomous-coding`
 - `claude-code`
 - `claude-code-skills`
+- `cursor`
+- `cursor-skills`
 - `codex-cli`
 - `codex-skills`
-- `cursor-skills`
-- `developer-tools`
 - `gemini-cli`
 - `gemini-skills`
-- `mcp`
-- `ai-workflows`
+- `kiro`
+- `ai-agents`
+- `ai-agent-skills`
+- `agent-skills`
+- `agentic-skills`
+- `developer-tools`
 - `skill-library`
+- `ai-workflows`
+- `ai-coding`
+- `mcp`
 
 ## Release notes checklist
 

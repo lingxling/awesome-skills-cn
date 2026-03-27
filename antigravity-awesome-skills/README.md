@@ -1,13 +1,13 @@
-<!-- registry-sync: version=8.7.1; skills=1309; stars=26808; updated_at=2026-03-23T18:12:46+00:00 -->
-# 🌌 Antigravity Awesome Skills: 1,309+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
+<!-- registry-sync: version=9.0.0; skills=1329; stars=27723; updated_at=2026-03-27T09:52:22+00:00 -->
+# 🌌 Antigravity Awesome Skills: 1,329+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
 
-> **Installable GitHub library of 1,309+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.**
+> **Installable GitHub library of 1,329+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.**
 
 Antigravity Awesome Skills is a GitHub repository and installer CLI for reusable `SKILL.md` playbooks. Instead of collecting random prompts, you get a searchable, installable skill library for planning, coding, debugging, testing, security review, infrastructure work, product workflows, and growth tasks across the major AI coding assistants.
 
-**Start here:** [Star the repo](https://github.com/sickn33/antigravity-awesome-skills/stargazers) · [Install in 1 minute](#installation) · [Choose your tool](#choose-your-tool) · [Best skills by tool](#best-skills-by-tool) · [Bundles](docs/users/bundles.md) · [Workflows](docs/users/workflows.md)
+**Start here:** [Star the repo](https://github.com/sickn33/antigravity-awesome-skills/stargazers) · [Install in 1 minute](#installation) · [Plugins for Claude Code and Codex](docs/users/plugins.md) · [Choose your tool](#choose-your-tool) · [Best skills by tool](#best-skills-by-tool) · [Bundles](docs/users/bundles.md) · [Workflows](docs/users/workflows.md)
 
-[![GitHub stars](https://img.shields.io/badge/⭐%2027%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
+[![GitHub stars](https://img.shields.io/badge/⭐%2028%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Anthropic-purple)](https://claude.ai)
 [![Cursor](https://img.shields.io/badge/Cursor-AI%20IDE-orange)](https://cursor.sh)
@@ -20,13 +20,13 @@ Antigravity Awesome Skills is a GitHub repository and installer CLI for reusable
 [![OpenCode](https://img.shields.io/badge/OpenCode-CLI-gray?style=for-the-badge)](https://github.com/opencode-ai/opencode)
 [![Antigravity](https://img.shields.io/badge/Antigravity-AI%20IDE-red?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills)
 
-**Current release: V8.7.1.** Trusted by 27k+ GitHub stargazers, this repository combines official and community skill collections with bundles, workflows, installation paths, and docs that help you go from first install to daily use quickly.
+**Current release: V9.0.0.** Trusted by 28k+ GitHub stargazers, this repository combines official and community skill collections with bundles, workflows, installation paths, and docs that help you go from first install to daily use quickly.
 
 ## Why Developers Star This Repo
 
 - **Installable, not just inspirational**: use `npx antigravity-awesome-skills` to put skills where your tool expects them.
 - **Built for major agent workflows**: Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, Kiro, OpenCode, Copilot, and more.
-- **Broad coverage with real utility**: 1,309+ skills across development, testing, security, infrastructure, product, and marketing.
+- **Broad coverage with real utility**: 1,329+ skills across development, testing, security, infrastructure, product, and marketing.
 - **Faster onboarding**: bundles and workflows reduce the time from "I found this repo" to "I used my first skill".
 - **Useful whether you want breadth or curation**: browse the full catalog, start with top bundles, or compare alternatives before installing.
 
@@ -34,16 +34,20 @@ Antigravity Awesome Skills is a GitHub repository and installer CLI for reusable
 
 - [🚀 New Here? Start Here!](#new-here-start-here)
 - [📖 Complete Usage Guide](docs/users/usage.md) - **Start here if confused after installation!**
+- [🧠 Core Concepts](#core-concepts)
 - [🔌 Compatibility &amp; Invocation](#compatibility--invocation)
 - [🛠️ Installation](#installation)
+- [🧩 Plugins For Claude Code And Codex](#plugins-for-claude-code-and-codex)
+- [🧭 Integration Guides](#integration-guides)
 - [🧰 Best Skills By Tool](#best-skills-by-tool)
+- [❓ Quick FAQ](#quick-faq)
 - [🛡️ Security Posture](#security-posture)
 - [🧯 Troubleshooting](#troubleshooting)
 - [🎁 Curated Collections (Bundles)](#curated-collections)
 - [🧭 Antigravity Workflows](#antigravity-workflows)
 - [⚖️ Alternatives &amp; Comparisons](#alternatives--comparisons)
 - [📦 Features & Categories](#features--categories)
-- [📚 Browse 1,309+ Skills](#browse-1309-skills)
+- [📚 Browse 1,329+ Skills](#browse-1329-skills)
 - [🤝 Contributing](#contributing)
 - [💬 Community](#community)
 - [☕ Support the Project](#support-the-project)
@@ -60,7 +64,7 @@ If you searched for **Claude Code skills**, **Cursor skills**, **Codex CLI skill
 
 ### 1. 🐣 Context: What is this?
 
-**Antigravity Awesome Skills** (Release 8.7.1) is a large, installable skill library for AI coding assistants. It includes onboarding docs, bundles, workflows, generated catalogs, and a CLI installer so you can move from discovery to actual usage without manually stitching together dozens of repos.
+**Antigravity Awesome Skills** (Release 9.0.0) is a large, installable skill library for AI coding assistants. It includes onboarding docs, bundles, workflows, generated catalogs, and a CLI installer so you can move from discovery to actual usage without manually stitching together dozens of repos.
 
 AI agents are smart, but they still need **task-specific operating instructions**. Skills are focused markdown playbooks that teach an agent how to perform a workflow repeatedly and with better context, whether that means deployment, API design, testing, product strategy, SEO, or documentation.
 
@@ -99,6 +103,55 @@ Once installed, just ask your agent naturally:
 👉 **NEW:** [**Complete Usage Guide - Read This First!**](docs/users/usage.md) (answers: "What do I do after installation?", "How do I execute skills?", "What should prompts look like?")
 
 👉 **[Full Getting Started Guide](docs/users/getting-started.md)**
+
+---
+
+## Core Concepts
+
+Before you compare bundles or start installing tool-specific paths, it helps to separate four ideas:
+
+- **Skills**: reusable `SKILL.md` playbooks that teach an AI assistant how to execute a workflow well.
+- **MCP tools**: integrations and external capabilities the assistant can call. Tools provide actions; skills provide operating instructions.
+- **Plugins**: installable, marketplace-friendly distributions of the repository for Claude Code and Codex, including root plugins and curated bundle plugins.
+- **Bundles**: curated recommendations for which skills to start with for a role or domain.
+- **Workflows**: ordered execution playbooks that show how to combine multiple skills step by step.
+
+If you want the clearest explanation of **skills vs MCP/tools**, start here:
+
+- [Skills vs MCP Tools](docs/users/skills-vs-mcp-tools.md)
+- [Plugins for Claude Code and Codex](docs/users/plugins.md)
+- [Bundles](docs/users/bundles.md)
+- [Workflows](docs/users/workflows.md)
+
+## Integration Guides
+
+If your real question is "how do I use Antigravity Awesome Skills with my tool?", use the matching guide:
+
+- **[Claude Code](docs/users/claude-code-skills.md)**: install paths, starter prompts, plugin marketplace flow, and first-use guidance.
+- **[Cursor](docs/users/cursor-skills.md)**: chat-first usage, frontend/full-stack starter skills, and practical prompts.
+- **[Codex CLI](docs/users/codex-cli-skills.md)**: planning, implementation, debugging, testing, and review loops for local coding work.
+- **[Gemini CLI](docs/users/gemini-cli-skills.md)**: broad engineering, agent systems, integrations, and AI workflow coverage.
+- **[AI agent skills guide](docs/users/ai-agent-skills.md)**: how to evaluate this repo against broader or narrower alternatives.
+
+## Quick FAQ
+
+### What is Antigravity Awesome Skills?
+
+It is an installable GitHub library of reusable `SKILL.md` playbooks for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+### How do I install it?
+
+Use `npx antigravity-awesome-skills`, or a tool-specific flag like `--codex`, `--cursor`, `--gemini`, or `--claude` when you want the installer to target a specific skills directory.
+
+### What is the difference between skills and MCP tools?
+
+Skills are reusable playbooks that tell an AI assistant how to execute a workflow. MCP tools expose external systems or actions the assistant can call. Skills guide behavior; MCP tools provide capabilities.
+
+### What is the difference between bundles and workflows?
+
+Bundles are curated sets of recommended skills. Workflows are ordered execution playbooks for concrete outcomes.
+
+For the expanded version, read [FAQ](docs/users/faq.md).
 
 ---
 
@@ -161,6 +214,34 @@ If you use Claude Code and prefer the plugin marketplace flow, this repository n
 
 This installs the same repository-backed skill library through Claude Code's plugin marketplace entrypoint.
 
+The Claude plugin is a plugin-safe filtered distribution of the repo. Skills that still contain host-specific paths or undeclared setup remain in the repository, but are excluded from the plugin until they are hardened.
+
+### Option C: Codex plugin marketplace metadata
+
+If you use Codex and prefer a marketplace-style plugin source instead of copying skills into `.codex/skills/`, this repository now ships:
+
+- `.agents/plugins/marketplace.json`
+- `plugins/antigravity-awesome-skills/.codex-plugin/plugin.json`
+
+The Codex plugin points at the same curated `skills/` tree through a repo-local plugin entry, so the library can be exposed as an installable Codex plugin source without duplicating the catalog.
+
+Bundle users can also install focused Claude Code and Codex bundle plugins from the generated marketplace metadata instead of taking the full library at once.
+
+Like the Claude distribution, the Codex plugin only exposes plugin-safe skills. Repo-only skills are still available through clone or installer flows while they are being hardened for marketplace use.
+
+## Plugins for Claude Code and Codex
+
+Release `9.0.0` formalizes plugins as a first-class distribution model for this repository.
+
+- The **full library install** remains the broadest path: use `npx antigravity-awesome-skills --claude` or `--codex` when you want the largest available catalog.
+- The **root plugin** gives Claude Code or Codex a marketplace-friendly installable distribution of the repository.
+- **Bundle plugins** give you narrower role-based installs such as `Essentials`, `Security Engineer`, or `Web Wizard`.
+- Plugin distributions are intentionally **plugin-safe**. Skills that still depend on host-specific paths, undeclared setup, or extra hardening remain in the repository, but stay out of marketplace publication until they are ready.
+
+If you want the full explanation of root plugins, bundle plugins, full-library installs, and the difference between Claude Code and Codex plugin surfaces, read:
+
+- [Plugins for Claude Code and Codex](docs/users/plugins.md)
+
 ## Choose Your Tool
 
 | Tool           | Install                                                                  | First Use                                              |
@@ -179,7 +260,7 @@ This installs the same repository-backed skill library through Claude Code's plu
 
 ## Best Skills By Tool
 
-If you want a faster answer than "browse all 1,309+ skills", start with a tool-specific guide:
+If you want a faster answer than "browse all 1,329+ skills", start with a tool-specific guide:
 
 - **[Claude Code skills](docs/users/claude-code-skills.md)**: install paths, starter skills, prompt examples, and plugin marketplace flow.
 - **[Cursor skills](docs/users/cursor-skills.md)**: best starter skills for `.cursor/skills/`, UI-heavy work, and pair-programming flows.
@@ -243,6 +324,9 @@ These skills are continuously reviewed and hardened, but the collection is not "
 - [DevOps Agent](https://github.com/fullstackcrew-alpha/skill-devops-agent) - One-click deploy, monitoring setup, scheduled backups, fault diagnosis with safety-first design.
 - [CN Content Matrix](https://github.com/fullstackcrew-alpha/skill-cn-content-matrix) - Chinese multi-platform content generator for Xiaohongshu, WeChat, Douyin, Bilibili with true style transfer.
 - [Smart PR Review](https://github.com/fullstackcrew-alpha/skill-smart-pr-review) - Opinionated AI code reviewer with 6-layer deep review, Devil's Advocate mode, MUST FIX/SHOULD FIX/SUGGESTION output.
+- [HubSpot Admin Skills](https://github.com/TomGranot/hubspot-admin-skills) - 32 Claude Code skills for auditing, cleaning, enriching, and automating HubSpot CRM. Includes Python scripts, Breeze AI workflow prompts, and a full audit → plan → execute → maintain flow.
+- [Tutor Skills](https://github.com/RoundTable02/tutor-skills) - Transform PDFs, docs, and codebases into Obsidian study vaults with interactive quiz-based learning and proficiency tracking.
+- [CoinPaprika & DexPaprika Skills](https://github.com/coinpaprika/skills) - Two crypto data skills: CoinPaprika (12K+ coins, 350+ exchanges, OHLCV, tickers) and DexPaprika (34 chains, 30M+ DEX pools, real-time streaming). Free, no API key. Install: `npx skills add github.com/coinpaprika/skills`
 
 ## Three Real Examples
 
@@ -341,7 +425,7 @@ The repository is organized into specialized domains to transform your AI into a
 
 Counts change as new skills are added. For the current full registry, see [CATALOG.md](CATALOG.md).
 
-## Browse 1,309+ Skills
+## Browse 1,329+ Skills
 
 - Open the interactive browser in [`apps/web-app`](apps/web-app).
 - Read the full catalog in [`CATALOG.md`](CATALOG.md).
@@ -357,7 +441,8 @@ Counts change as new skills are added. For the current full registry, see [CATAL
 | [`docs/users/getting-started.md`](docs/users/getting-started.md) | [`CONTRIBUTING.md`](CONTRIBUTING.md)                                       | [`docs/maintainers/release-process.md`](docs/maintainers/release-process.md)                                                              |
 | [`docs/users/usage.md`](docs/users/usage.md)                     | [`docs/contributors/skill-anatomy.md`](docs/contributors/skill-anatomy.md) | [`docs/maintainers/audit.md`](docs/maintainers/audit.md)                                                                                  |
 | [`docs/users/faq.md`](docs/users/faq.md)                         | [`docs/contributors/quality-bar.md`](docs/contributors/quality-bar.md)     | [`docs/maintainers/ci-drift-fix.md`](docs/maintainers/ci-drift-fix.md)                                                                    |
-| [`docs/users/claude-code-skills.md`](docs/users/claude-code-skills.md) · [`docs/users/cursor-skills.md`](docs/users/cursor-skills.md) · [`docs/users/codex-cli-skills.md`](docs/users/codex-cli-skills.md) · [`docs/users/gemini-cli-skills.md`](docs/users/gemini-cli-skills.md) | [`docs/contributors/examples.md`](docs/contributors/examples.md)           | [`docs/maintainers/repo-growth-seo.md`](docs/maintainers/repo-growth-seo.md) · [`docs/maintainers/skills-update-guide.md`](docs/maintainers/skills-update-guide.md) · [`.github/MAINTENANCE.md`](.github/MAINTENANCE.md) |
+| [`docs/users/plugins.md`](docs/users/plugins.md)                 | [`docs/contributors/examples.md`](docs/contributors/examples.md)           | [`docs/maintainers/repo-growth-seo.md`](docs/maintainers/repo-growth-seo.md) · [`docs/maintainers/skills-update-guide.md`](docs/maintainers/skills-update-guide.md) · [`.github/MAINTENANCE.md`](.github/MAINTENANCE.md) |
+| [`docs/users/claude-code-skills.md`](docs/users/claude-code-skills.md) · [`docs/users/cursor-skills.md`](docs/users/cursor-skills.md) · [`docs/users/codex-cli-skills.md`](docs/users/codex-cli-skills.md) · [`docs/users/gemini-cli-skills.md`](docs/users/gemini-cli-skills.md) |  |  |
 | [`docs/users/visual-guide.md`](docs/users/visual-guide.md) · [`docs/users/ai-agent-skills.md`](docs/users/ai-agent-skills.md) · [`docs/users/best-claude-code-skills-github.md`](docs/users/best-claude-code-skills-github.md) · [`docs/users/best-cursor-skills-github.md`](docs/users/best-cursor-skills-github.md) |  |  |
 
 ## Troubleshooting
@@ -502,6 +587,7 @@ This collection would not be possible without the incredible work of the Claude 
 - **[diet103/claude-code-infrastructure-showcase](https://github.com/diet103/claude-code-infrastructure-showcase)**: Infrastructure and Backend/Frontend Guidelines.
 - **[ChrisWiles/claude-code-showcase](https://github.com/ChrisWiles/claude-code-showcase)**: React UI patterns and Design Systems.
 - **[travisvn/awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills)**: Loki Mode and Playwright integration.
+- **[Dimillian/Skills](https://github.com/Dimillian/Skills)**: Curated Codex skills focused on Apple platforms, GitHub workflows, refactoring, and performance. Source for `app-store-changelog`, `github`, `ios-debugger-agent`, `macos-menubar-tuist-app`, `macos-spm-app-packaging`, `orchestrate-batch-refactor`, `project-skill-audit`, `react-component-performance`, `simplify-code`, `swift-concurrency-expert`, `swiftui-liquid-glass`, `swiftui-performance-audit`, `swiftui-ui-patterns`, and `swiftui-view-refactor` (MIT).
 - **[zebbern/claude-code-guide](https://github.com/zebbern/claude-code-guide)**: Comprehensive Security suite & Guide (Source for ~60 new skills).
 - **[alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills)**: Senior Engineering and PM toolkit.
 - **[karanb192/awesome-claude-skills](https://github.com/karanb192/awesome-claude-skills)**: A massive list of verified skills for Claude Code.
@@ -555,34 +641,34 @@ We officially thank the following contributors for their help in making this rep
 - [@sck000](https://github.com/sck000)
 - [@github-actions[bot]](https://github.com/apps/github-actions)
 - [@sickn33](https://github.com/sickn33)
-- [@Mohammad-Faiz-Cloud-Engineer](https://github.com/Mohammad-Faiz-Cloud-Engineer)
 - [@munir-abbasi](https://github.com/munir-abbasi)
+- [@Mohammad-Faiz-Cloud-Engineer](https://github.com/Mohammad-Faiz-Cloud-Engineer)
 - [@zinzied](https://github.com/zinzied)
 - [@ssumanbiswas](https://github.com/ssumanbiswas)
 - [@Dokhacgiakhoa](https://github.com/Dokhacgiakhoa)
 - [@IanJ332](https://github.com/IanJ332)
-- [@maxdml](https://github.com/maxdml)
 - [@sx4im](https://github.com/sx4im)
+- [@maxdml](https://github.com/maxdml)
 - [@skyruh](https://github.com/skyruh)
-- [@itsmeares](https://github.com/itsmeares)
-- [@chauey](https://github.com/chauey)
-- [@ar27111994](https://github.com/ar27111994)
 - [@Champbreed](https://github.com/Champbreed)
+- [@ar27111994](https://github.com/ar27111994)
+- [@chauey](https://github.com/chauey)
+- [@itsmeares](https://github.com/itsmeares)
 - [@suhaibjanjua](https://github.com/suhaibjanjua)
 - [@GuppyTheCat](https://github.com/GuppyTheCat)
 - [@Copilot](https://github.com/apps/copilot-swe-agent)
 - [@8hrsk](https://github.com/8hrsk)
-- [@sstklen](https://github.com/sstklen)
-- [@tejasashinde](https://github.com/tejasashinde)
-- [@0xrohitgarg](https://github.com/0xrohitgarg)
-- [@zebbern](https://github.com/zebbern)
-- [@talesperito](https://github.com/talesperito)
 - [@fernandorych](https://github.com/fernandorych)
-- [@SnakeEye-sudo](https://github.com/SnakeEye-sudo)
 - [@nikolasdehor](https://github.com/nikolasdehor)
-- [@taksrules](https://github.com/taksrules)
-- [@HuynhNhatKhanh](https://github.com/HuynhNhatKhanh)
+- [@SnakeEye-sudo](https://github.com/SnakeEye-sudo)
+- [@talesperito](https://github.com/talesperito)
+- [@zebbern](https://github.com/zebbern)
+- [@sstklen](https://github.com/sstklen)
+- [@0xrohitgarg](https://github.com/0xrohitgarg)
+- [@tejasashinde](https://github.com/tejasashinde)
 - [@jackjin1997](https://github.com/jackjin1997)
+- [@HuynhNhatKhanh](https://github.com/HuynhNhatKhanh)
+- [@taksrules](https://github.com/taksrules)
 - [@liyin2015](https://github.com/liyin2015)
 - [@fullstackcrew-alpha](https://github.com/fullstackcrew-alpha)
 - [@arathiesh](https://github.com/arathiesh)
@@ -590,11 +676,13 @@ We officially thank the following contributors for their help in making this rep
 - [@RamonRiosJr](https://github.com/RamonRiosJr)
 - [@Musayrlsms](https://github.com/Musayrlsms)
 - [@AssassinMaeve](https://github.com/AssassinMaeve)
-- [@JayeHarrill](https://github.com/JayeHarrill)
+- [@fernandezbaptiste](https://github.com/fernandezbaptiste)
 - [@Gizzant](https://github.com/Gizzant)
+- [@JayeHarrill](https://github.com/JayeHarrill)
 - [@truongnmt](https://github.com/truongnmt)
 - [@uriva](https://github.com/uriva)
 - [@babysor](https://github.com/babysor)
+- [@SenSei2121](https://github.com/SenSei2121)
 - [@code-vj](https://github.com/code-vj)
 - [@viktor-ferenczi](https://github.com/viktor-ferenczi)
 - [@vprudnikoff](https://github.com/vprudnikoff)
@@ -603,20 +691,23 @@ We officially thank the following contributors for their help in making this rep
 - [@Wittlesus](https://github.com/Wittlesus)
 - [@Wolfe-Jam](https://github.com/Wolfe-Jam)
 - [@vuth-dogo](https://github.com/vuth-dogo)
+- [@TomGranot](https://github.com/TomGranot)
+- [@terryspitz](https://github.com/terryspitz)
 - [@Onsraa](https://github.com/Onsraa)
 - [@SebConejo](https://github.com/SebConejo)
 - [@SuperJMN](https://github.com/SuperJMN)
 - [@Enreign](https://github.com/Enreign)
 - [@sohamganatra](https://github.com/sohamganatra)
 - [@Silverov](https://github.com/Silverov)
+- [@conspirafi](https://github.com/conspirafi)
 - [@shubhamdevx](https://github.com/shubhamdevx)
 - [@ronanguilloux](https://github.com/ronanguilloux)
 - [@sraphaz](https://github.com/sraphaz)
 - [@ProgramadorBrasil](https://github.com/ProgramadorBrasil)
 - [@PabloASMD](https://github.com/PabloASMD)
-- [@yubing744](https://github.com/yubing744)
 - [@yang1002378395-cmyk](https://github.com/yang1002378395-cmyk)
 - [@viliawang-pm](https://github.com/viliawang-pm)
+- [@uucz](https://github.com/uucz)
 - [@tsilverberg](https://github.com/tsilverberg)
 - [@thuanlm215](https://github.com/thuanlm215)
 - [@shmlkv](https://github.com/shmlkv)
@@ -628,6 +719,7 @@ We officially thank the following contributors for their help in making this rep
 - [@junited31](https://github.com/junited31)
 - [@fbientrigo](https://github.com/fbientrigo)
 - [@dz3ai](https://github.com/dz3ai)
+- [@digitamaz](https://github.com/digitamaz)
 - [@developer-victor](https://github.com/developer-victor)
 - [@ckdwns9121](https://github.com/ckdwns9121)
 - [@christopherlhammer11-ai](https://github.com/christopherlhammer11-ai)
@@ -639,6 +731,7 @@ We officially thank the following contributors for their help in making this rep
 - [@amalsam](https://github.com/amalsam)
 - [@ziuus](https://github.com/ziuus)
 - [@Cerdore](https://github.com/Cerdore)
+- [@qcwssss](https://github.com/qcwssss)
 - [@rcigor](https://github.com/rcigor)
 - [@hvasconcelos](https://github.com/hvasconcelos)
 - [@Guilherme-ruy](https://github.com/Guilherme-ruy)
@@ -649,10 +742,10 @@ We officially thank the following contributors for their help in making this rep
 - [@MAIOStudio](https://github.com/MAIOStudio)
 - [@wd041216-bit](https://github.com/wd041216-bit)
 - [@conorbronsdon](https://github.com/conorbronsdon)
+- [@RoundTable02](https://github.com/RoundTable02)
 - [@ChaosRealmsAI](https://github.com/ChaosRealmsAI)
 - [@kriptoburak](https://github.com/kriptoburak)
 - [@BenedictKing](https://github.com/BenedictKing)
-- [@fernandezbaptiste](https://github.com/fernandezbaptiste)
 - [@acbhatt12](https://github.com/acbhatt12)
 - [@Andruia](https://github.com/Andruia)
 - [@AlmogBaku](https://github.com/AlmogBaku)
@@ -660,9 +753,11 @@ We officially thank the following contributors for their help in making this rep
 - [@alexmvie](https://github.com/alexmvie)
 - [@Sayeem3051](https://github.com/Sayeem3051)
 - [@Abdulrahmansoliman](https://github.com/Abdulrahmansoliman)
+- [@HMAKT99](https://github.com/HMAKT99)
 - [@ALEKGG1](https://github.com/ALEKGG1)
 - [@8144225309](https://github.com/8144225309)
 - [@1bcMax](https://github.com/1bcMax)
+- [@yubing744](https://github.com/yubing744)
 - [@olgasafonova](https://github.com/olgasafonova)
 - [@sharmanilay](https://github.com/sharmanilay)
 - [@KhaiTrang1995](https://github.com/KhaiTrang1995)
@@ -672,6 +767,7 @@ We officially thank the following contributors for their help in making this rep
 - [@halith-smh](https://github.com/halith-smh)
 - [@mertbaskurt](https://github.com/mertbaskurt)
 - [@MatheusCampagnolo](https://github.com/MatheusCampagnolo)
+- [@donbagger](https://github.com/donbagger)
 - [@Marvin19700118](https://github.com/Marvin19700118)
 - [@djmahe4](https://github.com/djmahe4)
 - [@MArbeeGit](https://github.com/MArbeeGit)
@@ -686,7 +782,7 @@ We officially thank the following contributors for their help in making this rep
 - [@whatiskadudoing](https://github.com/whatiskadudoing)
 - [@jonathimer](https://github.com/jonathimer)
 - [@JaskiratAnand](https://github.com/JaskiratAnand)
-- [@qcwssss](https://github.com/qcwssss)
+- [@jamescha-earley](https://github.com/jamescha-earley)
 
 ## License
 

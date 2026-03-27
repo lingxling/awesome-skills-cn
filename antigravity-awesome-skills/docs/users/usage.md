@@ -8,11 +8,13 @@
 
 Great question! Here's what just happened and what to do next:
 
+If you came in through a **Claude Code** or **Codex** plugin instead of a full library install, the mental model is the same: you still invoke individual skills in prompts. The main difference is that plugins ship the plugin-safe subset. See [plugins.md](plugins.md) for the install model.
+
 ### What You Just Did
 
 When you ran `npx antigravity-awesome-skills` or cloned the repository, you:
 
-✅ **Downloaded 1,309+ skill files** to your computer (default: `~/.gemini/antigravity/skills/`; or a custom path like `~/.agent/skills/` if you used `--path`)  
+✅ **Downloaded 1,329+ skill files** to your computer (default: `~/.gemini/antigravity/skills/`; or a custom path like `~/.agent/skills/` if you used `--path`)  
 ✅ **Made them available** to your AI assistant  
 ❌ **Did NOT enable them all automatically** (they're just sitting there, waiting)
 
@@ -20,27 +22,28 @@ Think of it like installing a toolbox. You have all the tools now, but you need 
 
 ---
 
-## Step 1: Understanding "Bundles" (This is NOT Another Install!)
+## Step 1: Understanding "Bundles" (Recommendations or Focused Installs)
 
 **Common confusion:** "Do I need to download each skill separately?"
 
-**Answer: NO!** Here's what bundles actually are:
+**Answer: NO!** You do not need to download each skill separately. Here's what bundles actually are:
 
 ### What Bundles Are
 
-Bundles are **recommended lists** of skills grouped by role. They help you decide which skills to start using.
+Bundles are **curated groups** of skills organized by role. They help you decide which skills to start using, and they can also be exposed as focused marketplace plugins for Claude Code and Codex.
 
 **Analogy:**
 
-- You installed a toolbox with 1,309+ tools (✅ done)
+- You installed a toolbox with 1,329+ tools (✅ done)
 - Bundles are like **labeled organizer trays** saying: "If you're a carpenter, start with these 10 tools"
-- You don't install bundles—you **pick skills from them**
+- You can either **pick skills from the tray** or install that tray as a focused marketplace bundle plugin
 
 ### What Bundles Are NOT
 
-❌ Separate installations  
-❌ Different download commands  
+❌ Separate skill downloads  
+❌ Invokable mega-skills like `@essentials` or `/web-wizard`
 ❌ Something most users need to activate during normal install
+❌ A replacement for invoking the individual skills inside the bundle
 
 ### Example: The "Web Wizard" Bundle
 
@@ -51,7 +54,22 @@ When you see the [Web Wizard bundle](bundles.md#-the-web-wizard-pack), it lists:
 - `tailwind-patterns`
 - etc.
 
-These are **recommendations** for which skills a web developer should try first. They're already installed—you just need to **use them in your prompts**.
+These are **recommendations** for which skills a web developer should try first. If you have the full library installed, you just need to **use them in your prompts**. If you prefer a narrower install surface, you can install the matching bundle plugin in Claude Code or Codex where plugin marketplaces are available.
+
+The key distinction is:
+
+- **full library install** = broadest catalog
+- **root plugin** = broad plugin-safe distribution
+- **bundle plugin** = curated plugin-safe subset
+
+See [plugins.md](plugins.md) for the canonical explanation.
+
+If you want only one bundle active at a time in Antigravity, use the activation scripts instead of trying to invoke the bundle name directly:
+
+```bash
+./scripts/activate-skills.sh --clear Essentials
+./scripts/activate-skills.sh --clear "Web Wizard"
+```
 
 ---
 
@@ -87,6 +105,8 @@ The exact syntax varies by tool, but it's always simple:
 # In your conversation with Gemini:
 Use the brainstorming skill to help me plan my app
 ```
+
+If Gemini CLI starts hanging after a few turns, try a fresh conversation and temporarily reduce the active set to just 2-5 skills to rule out context growth.
 
 #### Codex CLI
 
@@ -192,7 +212,7 @@ Let's actually use a skill right now. Follow these steps:
 
 ## Step 5: Picking Your First Skills (Practical Advice)
 
-Don't try to use all 1,309+ skills at once. Here's a sensible approach:
+Don't try to use all 1,329+ skills at once. Here's a sensible approach:
 
 If you want a tool-specific starting point before choosing skills, use:
 
@@ -323,7 +343,7 @@ Usually no, but if your AI doesn't recognize a skill:
 
 ### "Can I load all skills into the model at once?"
 
-No. Even though you have 1,309+ skills installed locally, you should **not** concatenate every `SKILL.md` into a single system prompt or context block.
+No. Even though you have 1,329+ skills installed locally, you should **not** concatenate every `SKILL.md` into a single system prompt or context block.
 
 The intended pattern is:
 

@@ -1,4 +1,4 @@
-# Getting Started with Antigravity Awesome Skills (V8.7.1)
+# Getting Started with Antigravity Awesome Skills (V9.0.0)
 
 **New here? This guide will help you supercharge your AI Agent in 5 minutes.**
 
@@ -21,6 +21,8 @@ Don't panic about the size of the repository. You don't need everything at once.
 We have curated **Starter Packs** to get you running immediately.
 
 You **install the full repo once** (npx or clone); Starter Packs are curated lists to help you **pick which skills to use** by role (e.g. Web Wizard, Hacker Pack)—they are not a different way to install.
+
+If you prefer a marketplace-style install for **Claude Code** or **Codex**, use the new plugin distributions described in [plugins.md](plugins.md).
 
 ### 1. Install the Repo
 
@@ -99,7 +101,7 @@ Once installed, just talk to your AI naturally.
 | :-------------- | :-------------- | :-------------------------------------------------------------------- |
 | **Claude Code** | ✅ Full Support | `.claude/skills/` or install via `/plugin marketplace add sickn33/antigravity-awesome-skills` |
 | **Gemini CLI**  | ✅ Full Support | `.gemini/skills/`                                                     |
-| **Codex CLI**   | ✅ Full Support | `.codex/skills/`                                                      |
+| **Codex CLI**   | ✅ Full Support | `.codex/skills/` or use the repo-local plugin metadata described in [plugins.md](plugins.md) |
 | **Kiro CLI**    | ✅ Full Support | Global: `~/.kiro/skills/` · Workspace: `.kiro/skills/`                |
 | **Kiro IDE**    | ✅ Full Support | Global: `~/.kiro/skills/` · Workspace: `.kiro/skills/`                |
 | **Antigravity** | ✅ Native       | Global: `~/.gemini/antigravity/skills/` · Workspace: `.agent/skills/` |
@@ -126,12 +128,16 @@ _Check the [Skill Catalog](../../CATALOG.md) for the full list._
 
 ## FAQ
 
-If you prefer Claude Code's plugin marketplace flow instead of copying into `.claude/skills/`, use:
+If you prefer a plugin install instead of copying skills into tool directories, start with [plugins.md](plugins.md).
+
+For Claude Code, use:
 
 ```text
 /plugin marketplace add sickn33/antigravity-awesome-skills
 /plugin install antigravity-awesome-skills
 ```
+
+For Codex, this repository also ships a root plugin plus bundle plugins through the repo-local metadata described in [plugins.md](plugins.md).
 
 **Q: Do I need to install every skill?**
 A: You clone the whole repo once; your AI only _reads_ the skills you invoke (or that are relevant), so it stays lightweight. **Starter Packs** in [bundles.md](bundles.md) are curated lists to help you discover the right skills for your role—they don't change how you install.
@@ -155,6 +161,7 @@ A: Yes. Original code and tooling are MIT-licensed, and original documentation/n
 Need a tool-specific starting point first?
 
 - [Claude Code skills](claude-code-skills.md)
+- [Plugins for Claude Code and Codex](plugins.md)
 - [Cursor skills](cursor-skills.md)
 - [Codex CLI skills](codex-cli-skills.md)
 - [Gemini CLI skills](gemini-cli-skills.md)

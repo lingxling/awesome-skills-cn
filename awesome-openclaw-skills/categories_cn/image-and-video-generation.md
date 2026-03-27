@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**169 个技能**
+**170 skills**
 
 - [aada](https://clawskills.sh/skills/rylena-aada) - 从一个代理向 Moltbook 受众创建和发送有趣、个性化的促销消息。
 - [ace-music](https://clawskills.sh/skills/fspecii-ace-music) - 使用 ACE Music 的免费 API 通过 ACE-Step 1.5 生成 AI 音乐。

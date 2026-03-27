@@ -1,5 +1,6 @@
 import os
 import json
+import pathlib
 import re
 import sys
 from collections.abc import Mapping
@@ -7,6 +8,8 @@ from datetime import date, datetime
 
 import yaml
 from _project_paths import find_repo_root
+from plugin_compatibility import build_report as build_plugin_compatibility_report
+from plugin_compatibility import compatibility_by_path as plugin_compatibility_by_path
 
 # Ensure UTF-8 output for Windows compatibility
 if sys.platform == 'win32':
@@ -846,9 +849,12 @@ def parse_frontmatter(content):
         print(f"⚠️ YAML parsing error: {e}")
         return {}
 
-def generate_index(skills_dir, output_file):
+def generate_index(skills_dir, output_file, compatibility_report=None):
     print(f"🏗️ Generating index from: {skills_dir}")
     skills = []
+    if compatibility_report is None:
+        compatibility_report = build_plugin_compatibility_report(pathlib.Path(skills_dir))
+    compatibility_lookup = plugin_compatibility_by_path(compatibility_report)
 
     for root, dirs, files in os.walk(skills_dir):
         # Skip .disabled or hidden directories
@@ -873,7 +879,19 @@ def generate_index(skills_dir, output_file):
                 "description": "",
                 "risk": "unknown",
                 "source": "unknown",
-                "date_added": None
+                "date_added": None,
+                "plugin": {
+                    "targets": {
+                        "codex": "supported",
+                        "claude": "supported",
+                    },
+                    "setup": {
+                        "type": "none",
+                        "summary": "",
+                        "docs": None,
+                    },
+                    "reasons": [],
+                },
             }
             
             try:
@@ -906,6 +924,14 @@ def generate_index(skills_dir, output_file):
             if skill_info["id"] in CURATED_CATEGORY_OVERRIDES:
                 skill_info["category"] = CURATED_CATEGORY_OVERRIDES[skill_info["id"]]
             skill_info["category"] = normalize_category(skill_info["category"])
+
+            plugin_info = compatibility_lookup.get(skill_info["path"])
+            if plugin_info:
+                skill_info["plugin"] = {
+                    "targets": dict(plugin_info["targets"]),
+                    "setup": dict(plugin_info["setup"]),
+                    "reasons": list(plugin_info["reasons"]),
+                }
             
             # Fallback for description if missing in frontmatter (legacy support)
             if not skill_info["description"]:

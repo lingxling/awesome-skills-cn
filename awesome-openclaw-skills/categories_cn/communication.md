@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**145 个技能**
+**146 skills**
 
 - [aa](https://clawskills.sh/skills/azvast-aa) - 此技能使代理能够**代表客户自动回复 Gmail 消息**。
 - [agent-mail](https://clawskills.sh/skills/rimelucci-agent-mail) - AI 代理的电子邮件收件箱。
