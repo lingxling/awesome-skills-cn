@@ -17,7 +17,9 @@ This document summarizes the repository coherence audit performed after the `app
 ### 1. Conteggi
 
 - `README.md`, `package.json`, and generated artifacts are aligned to the current collection size.
-- `npm run sync:all` and `npm run catalog` are the canonical commands for keeping counts and generated files synchronized.
+- `npm run sync:repo-state` is the canonical maintainer command for keeping counts, generated files, contributors, and tracked web assets synchronized on local `main`.
+- `npm run sync:release-state` is the canonical release-facing variant when you want the same sync without the contributor refresh step.
+- `npm run sync:all` remains a legacy alias for the core chain, not the full maintainer sync surface.
 
 ### 2. Validazione skill
 
@@ -37,6 +39,10 @@ This document summarizes the repository coherence audit performed after the `app
   - missing examples and missing limitations sections,
   - overly long `SKILL.md` files that should probably be split into `references/`,
   - plus the existing structural/safety checks (frontmatter, risk, `When to Use`, offensive disclaimer, dangling links).
+- The report also includes a non-blocking `suggested_risk` for skills that are still marked `unknown` or appear to be misclassified, so maintainers can resolve risk classification during PR review without changing the contributor gate.
+- Added `tools/scripts/sync_risk_labels.py` (also exposed as `npm run sync:risk-labels`) for conservative legacy cleanup: it only rewrites `risk: unknown` when the suggestion is high-confidence enough to be safely automated.
+- The sync now covers explicit high-confidence `safe`, `critical`, `offensive`, and `none` patterns. When a skill is promoted to `offensive`, the sync also inserts the canonical `AUTHORIZED USE ONLY` notice so the label and content guardrail stay aligned.
+- The intended maintainer loop is: `audit:skills` to inspect `suggested_risk`, `sync:risk-labels` for the safe automated subset, then manual review for the ambiguous tail that should not be batch-classified.
 - Use `npm run audit:skills` for the maintainer view and `npm run audit:skills -- --json-out ... --markdown-out ...` when you want artifacts for triage or cleanup tracking.
 
 ### 3. Riferimenti incrociati
@@ -73,6 +79,8 @@ This document summarizes the repository coherence audit performed after the `app
 npm run validate          # validazione skill (soft)
 npm run validate:strict   # hardening / diagnostic pass
 npm run audit:skills      # audit completo per skill con finding codes e status
+npm run sync:risk-labels  # conservative sync for high-confidence legacy risk labels
+npm run sync:risk-labels -- --dry-run  # preview legacy risk rewrites before touching files
 npm run validate:references  # workflow, bundle, and docs/users/bundles.md references
 npm run security:docs       # documentation command-risk scan (required for security-sensitive guidance)
 npm run build             # chain + catalog
@@ -82,4 +90,5 @@ npm test                  # suite test
 ## Issue aperte / follow-up
 
 - Gradual cleanup of legacy skills so `npm run validate:strict` can become a hard CI gate in the future.
+- Continue reducing the remaining `risk: unknown` tail with conservative sync passes plus manual maintainer review for ambiguous cases.
 - Keep translated docs aligned in a separate pass after the canonical English docs are stable.

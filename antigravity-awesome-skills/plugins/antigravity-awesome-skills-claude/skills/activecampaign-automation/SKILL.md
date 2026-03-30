@@ -1,7 +1,7 @@
 ---
 name: activecampaign-automation
 description: "Automate ActiveCampaign tasks via Rube MCP (Composio): manage contacts, tags, list subscriptions, automation enrollment, and tasks. Always search tools first for current schemas."
-risk: unknown
+risk: critical
 source: community
 date_added: "2026-02-27"
 ---

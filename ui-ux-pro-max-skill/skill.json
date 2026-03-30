@@ -1,0 +1,41 @@
+{
+  "name": "ui-ux-pro-max",
+  "displayName": "UI/UX Pro Max",
+  "description": "AI-powered design intelligence with 67 UI styles, 161 color palettes, 57 font pairings, 99 UX guidelines, and 25 chart types across 15+ tech stacks.",
+  "version": "2.5.0",
+  "author": "NextLevelBuilder",
+  "license": "MIT",
+  "homepage": "https://uupm.cc",
+  "repository": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill",
+  "keywords": [
+    "ui",
+    "ux",
+    "design",
+    "design-system",
+    "color-palette",
+    "typography",
+    "accessibility",
+    "ai-skill"
+  ],
+  "platforms": [
+    "claude",
+    "cursor",
+    "windsurf",
+    "copilot",
+    "kiro",
+    "roocode",
+    "kilocode",
+    "codex",
+    "qoder",
+    "gemini",
+    "trae",
+    "opencode",
+    "continue",
+    "codebuddy",
+    "droid",
+    "warp",
+    "augment",
+    "antigravity"
+  ],
+  "install": "npx uipro-cli init --ai {{platform}}"
+}

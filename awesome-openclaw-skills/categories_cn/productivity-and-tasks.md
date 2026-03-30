@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**204 个技能**
+**205 skills**
 
 - [4to1-planner](https://clawskills.sh/skills/qingxuantang-4to1-planner) - 使用 4To1 Method™ 的 AI 规划教练 — 将 4 年愿景转化为日常行动。
 - [4todo](https://clawskills.sh/skills/blackstorm-4todo) - 从聊天中管理 4todo (4to.do)。

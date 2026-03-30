@@ -47,11 +47,14 @@ def check_env_vars() -> tuple[bool, list[str]]:
     return len(missing) == 0, missing
 
 
-def _mask_secret(value: str) -> str:
-    """Return a masked version of a secret for safe logging."""
-    if not value or len(value) < 8:
-        return "***masked***"
-    return f"{value[:6]}...masked"
+def _phone_lookup_failure_message() -> str:
+    """Return a static failure summary for the phone lookup."""
+    return "Graph API rejected the phone-number lookup. Review your token, phone number ID, and app permissions."
+
+
+def _waba_lookup_failure_message() -> str:
+    """Return a static failure summary for the WABA lookup."""
+    return "Graph API rejected the WABA lookup. Review your WABA ID, token, and assigned assets."
 
 
 def test_api_connection() -> tuple[bool, str]:
@@ -68,25 +71,16 @@ def test_api_connection() -> tuple[bool, str]:
         )
 
         if response.status_code == 200:
-            data = response.json()
-            return True, (
-                f"Phone: {data.get('display_phone_number', 'N/A')}\n"
-                f"  Name: {data.get('verified_name', 'N/A')}\n"
-                f"  Status: {data.get('code_verification_status', 'N/A')}\n"
-                f"  Quality: {data.get('quality_rating', 'N/A')}"
-            )
-        else:
-            error = response.json().get("error", {})
-            return False, f"API Error {error.get('code', '?')}: {error.get('message', 'Unknown')}"
+            return True, "Phone-number endpoint reachable."
+
+        return False, _phone_lookup_failure_message()
 
     except httpx.ConnectError:
         return False, "Connection failed. Check your internet connection."
     except httpx.TimeoutException:
         return False, "Request timed out after 10 seconds."
-    except Exception as e:
-        # Mask token in error output to prevent credential leakage
-        safe_err = str(e).replace(token, _mask_secret(token)) if token else str(e)
-        return False, f"Unexpected error: {safe_err}"
+    except Exception as exc:
+        return False, f"Unexpected {exc.__class__.__name__} while contacting the Graph API."
 
 
 def test_waba_access() -> tuple[bool, str]:
@@ -102,17 +96,12 @@ def test_waba_access() -> tuple[bool, str]:
         )
 
         if response.status_code == 200:
-            data = response.json()
-            count = len(data.get("data", []))
-            return True, f"WABA accessible. {count} phone number(s) found."
-        else:
-            error = response.json().get("error", {})
-            return False, f"API Error {error.get('code', '?')}: {error.get('message', 'Unknown')}"
+            return True, "WABA phone-numbers endpoint reachable."
 
-    except Exception as e:
-        # Mask token in error output to prevent credential leakage
-        safe_err = str(e).replace(token, _mask_secret(token)) if token else str(e)
-        return False, f"Error: {safe_err}"
+        return False, _waba_lookup_failure_message()
+
+    except Exception as exc:
+        return False, f"Unexpected {exc.__class__.__name__} while checking WABA access."
 
 
 def main():
@@ -131,6 +120,7 @@ def main():
     print("=" * 50)
     print("WhatsApp Cloud API - Configuration Validator")
     print("=" * 50)
+    print("Detailed API payloads are intentionally omitted to protect sensitive configuration data.")
     print()
 
     all_ok = True
@@ -154,23 +144,22 @@ def main():
 
     # Check 2: API connection
     print("[2/3] Testing API connection (Phone Number)...")
-    api_ok, api_msg = test_api_connection()
+    api_ok, api_message = test_api_connection()
     if api_ok:
-        print(f"  OK - Connected successfully")
-        print(f"  {api_msg}")
+        print(f"  OK - {api_message}")
     else:
-        print(f"  FAIL - {api_msg}")
+        print(f"  FAIL - {api_message}")
         all_ok = False
 
     print()
 
     # Check 3: WABA access
     print("[3/3] Testing WABA access...")
-    waba_ok, waba_msg = test_waba_access()
+    waba_ok, waba_message = test_waba_access()
     if waba_ok:
-        print(f"  OK - {waba_msg}")
+        print(f"  OK - {waba_message}")
     else:
-        print(f"  FAIL - {waba_msg}")
+        print(f"  FAIL - {waba_message}")
         all_ok = False
 
     print()

@@ -1,7 +1,7 @@
 ---
 name: haskell-pro
 description: "Expert Haskell engineer specializing in advanced type systems, pure"
-risk: unknown
+risk: safe
 source: community
 date_added: "2026-02-27"
 ---

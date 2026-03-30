@@ -1,5 +1,6 @@
 import { readFile, mkdir, writeFile, cp, access, readdir } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
+import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -42,6 +43,9 @@ const AI_TO_PLATFORM: Record<string, string> = {
   continue: 'continue',
   codebuddy: 'codebuddy',
   droid: 'droid',
+  kilocode: 'kilocode',
+  warp: 'warp',
+  augment: 'augment',
 };
 
 async function exists(path: string): Promise<boolean> {
@@ -114,8 +118,9 @@ function renderFrontmatter(frontmatter: Record<string, string> | null): string {
 
 /**
  * Render skill file content from template
+ * When isGlobal=true, rewrites script paths to use ~/{root}/ prefix
  */
-export async function renderSkillFile(config: PlatformConfig): Promise<string> {
+export async function renderSkillFile(config: PlatformConfig, isGlobal = false): Promise<string> {
   // Load base template
   let content = await loadTemplate('base/skill-content.md');
 
@@ -138,6 +143,15 @@ export async function renderSkillFile(config: PlatformConfig): Promise<string> {
     .replace(/\{\{SCRIPT_PATH\}\}/g, config.scriptPath)
     .replace(/\{\{SKILL_OR_WORKFLOW\}\}/g, config.skillOrWorkflow)
     .replace(/\{\{QUICK_REFERENCE\}\}/g, quickRefWithNewline);
+
+  // For global install, rewrite relative script paths to absolute ~/root/ paths
+  if (isGlobal) {
+    const globalPrefix = `~/${config.folderStructure.root}/`;
+    content = content.replace(
+      /python3 skills\//g,
+      `python3 ${globalPrefix}skills/`
+    );
+  }
 
   return frontmatter + content;
 }
@@ -168,17 +182,22 @@ async function copyDataAndScripts(targetSkillDir: string): Promise<void> {
 /**
  * Generate platform files for a specific AI type
  * All platforms use self-contained installation with data and scripts
+ * When isGlobal=true, installs to ~/home directory with absolute script paths
  */
 export async function generatePlatformFiles(
   targetDir: string,
-  aiType: string
+  aiType: string,
+  isGlobal = false
 ): Promise<string[]> {
   const config = await loadPlatformConfig(aiType);
   const createdFolders: string[] = [];
 
+  // For global install, target the user's home directory
+  const effectiveDir = isGlobal ? homedir() : targetDir;
+
   // Determine full skill directory path
   const skillDir = join(
-    targetDir,
+    effectiveDir,
     config.folderStructure.root,
     config.folderStructure.skillPath
   );
@@ -186,8 +205,8 @@ export async function generatePlatformFiles(
   // Create directory structure
   await mkdir(skillDir, { recursive: true });
 
-  // Render and write skill file
-  const skillContent = await renderSkillFile(config);
+  // Render and write skill file (pass isGlobal to adjust paths)
+  const skillContent = await renderSkillFile(config, isGlobal);
   const skillFilePath = join(skillDir, config.folderStructure.filename);
   await writeFile(skillFilePath, skillContent, 'utf-8');
   createdFolders.push(config.folderStructure.root);
@@ -201,12 +220,12 @@ export async function generatePlatformFiles(
 /**
  * Generate files for all AI types
  */
-export async function generateAllPlatformFiles(targetDir: string): Promise<string[]> {
+export async function generateAllPlatformFiles(targetDir: string, isGlobal = false): Promise<string[]> {
   const allFolders = new Set<string>();
 
   for (const aiType of Object.keys(AI_TO_PLATFORM)) {
     try {
-      const folders = await generatePlatformFiles(targetDir, aiType);
+      const folders = await generatePlatformFiles(targetDir, aiType, isGlobal);
       folders.forEach(f => allFolders.add(f));
     } catch {
       // Skip if generation fails for a platform

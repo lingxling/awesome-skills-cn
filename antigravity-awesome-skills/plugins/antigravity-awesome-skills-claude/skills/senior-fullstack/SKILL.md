@@ -1,7 +1,7 @@
 ---
 name: senior-fullstack
 description: "Complete toolkit for senior fullstack with modern tools and best practices."
-risk: unknown
+risk: critical
 source: community
 date_added: "2026-02-27"
 ---

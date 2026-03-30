@@ -81,6 +81,13 @@ For a concrete example (including pseudo‑code) see:
 
 The skill files themselves are stored locally on your computer, but your AI assistant needs an internet connection to function.
 
+### Does the hosted web app write anything back to the repository?
+
+No. The public site is a static GitHub Pages deploy.
+
+- The maintainer `Sync Skills` flow is local-development only and is not a public production endpoint.
+- Browser save/star interactions are intentionally local-first for now. Until the project has a real backend contract, treat them as browser-local state rather than shared repository writes.
+
 ---
 
 ## Security & Trust
@@ -123,6 +130,8 @@ If you get a 404 from npm, use: `npx github:sickn33/antigravity-awesome-skills`
 git clone https://github.com/sickn33/antigravity-awesome-skills.git .agent/skills
 ```
 
+The installer CLI is the recommended path for most users because it performs a lighter shallow clone of the current library. Manual `git clone` is still the right option when you want the full repository history or plan to contribute from the same checkout.
+
 **Tool-specific paths:**
 
 - Claude Code: `.claude/skills/`
@@ -147,6 +156,28 @@ This repository also includes repo-local plugin metadata for Codex:
 - `plugins/antigravity-awesome-skills/.codex-plugin/plugin.json`
 
 That path exposes the new plugin-safe Codex root plugin plus generated bundle plugins. For the full explanation, read [plugins.md](plugins.md).
+
+### Why do I not see `Sync Skills` on the hosted website?
+
+Because the public site is a static GitHub Pages catalog, not a maintainer control surface.
+
+`Sync Skills` is only meant for local maintainer/development runs behind the Vite dev server, and it stays hidden unless the local environment explicitly enables it.
+
+### What does `Public catalog mode` mean?
+
+It means you are looking at the published static catalog build.
+
+In that mode:
+
+- catalog browsing and skill detail pages work normally
+- dev-only `/api/refresh-skills` behavior is not available
+- anything that would require a backend or mutable server state is intentionally disabled or reduced to local-only behavior
+
+### Are saves/stars global or just local?
+
+Right now they are local to your browser.
+
+The app may show optional read-only community counts when configured, but clicking save/star does not create a shared server-side vote. Until the project ships a real backend write contract with abuse controls, treat saves as a personal local bookmark signal.
 
 ### What does `plugin-safe` mean?
 

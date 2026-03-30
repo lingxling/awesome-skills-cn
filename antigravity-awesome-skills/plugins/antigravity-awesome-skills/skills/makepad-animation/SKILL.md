@@ -5,7 +5,7 @@ description: |
   makepad animation, makepad animator, makepad hover, makepad state,
   makepad transition, "from: { all: Forward", makepad pressed,
   makepad 动画, makepad 状态, makepad 过渡, makepad 悬停效果
-risk: unknown
+risk: safe
 source: community
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: hubspot-automation
 description: "Automate HubSpot CRM operations (contacts, companies, deals, tickets, properties) via Rube MCP using Composio integration."
-risk: unknown
+risk: critical
 source: community
 date_added: "2026-02-27"
 ---

@@ -16,7 +16,7 @@ Use this only when the PR should auto-close an issue:
 
 ## Quality Bar Checklist ✅
 
-**All items must be checked before merging.**
+**All applicable items must be checked before merging.**
 
 - [ ] **Standards**: I have read `docs/contributors/quality-bar.md` and `docs/contributors/security-guardrails.md`.
 - [ ] **Metadata**: The `SKILL.md` frontmatter is valid (checked with `npm run validate`).
@@ -25,6 +25,7 @@ Use this only when the PR should auto-close an issue:
 - [ ] **Security**: If this is an _offensive_ skill, I included the "Authorized Use Only" disclaimer.
 - [ ] **Safety scan**: If this PR adds or modifies `SKILL.md` command guidance, remote/network examples, or token-like strings, I ran `npm run security:docs` (or equivalent hardening check) and addressed any findings.
 - [ ] **Automated Skill Review**: If this PR changes `SKILL.md`, I checked the `skill-review` GitHub Actions result and addressed any actionable feedback.
+- [ ] **Manual Logic Review**: If this PR changes `SKILL.md` or risky guidance, I manually reviewed the logic, safety, failure modes, and `risk:` label instead of relying on automated checks alone.
 - [ ] **Local Test**: I have verified the skill works locally.
 - [ ] **Repo Checks**: I ran `npm run validate:references` if my change affected docs, workflows, or infrastructure.
 - [ ] **Source-Only PR**: I did not manually include generated registry artifacts (`CATALOG.md`, `skills_index.json`, `data/*.json`) in this PR.

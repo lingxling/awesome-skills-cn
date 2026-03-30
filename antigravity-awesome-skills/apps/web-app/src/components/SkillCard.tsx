@@ -35,7 +35,7 @@ export const SkillCard = React.memo(({ skill, starCount }: SkillCardProps) => {
                     </div>
                     <SkillStarButton
                         skillId={skill.id}
-                        initialCount={starCount}
+                        communityCount={starCount}
                         variant="default"
                     />
                 </div>

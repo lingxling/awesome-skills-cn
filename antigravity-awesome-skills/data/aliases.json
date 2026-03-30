@@ -80,6 +80,7 @@
     "vr-ar": "game-development/vr-ar",
     "web-games": "game-development/web-games",
     "git-pr-workflow": "git-pr-workflows-git-workflow",
+    "hugging-face-evals": "hugging-face-community-evals",
     "hugging-face-publisher": "hugging-face-paper-publisher",
     "incident-response": "incident-response-incident-response",
     "javascript-typescript-scaffold": "javascript-typescript-typescript-scaffold",

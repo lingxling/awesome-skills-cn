@@ -55,6 +55,15 @@ export function detectAIType(cwd: string = process.cwd()): DetectionResult {
   if (existsSync(join(cwd, '.factory'))) {
     detected.push('droid');
   }
+  if (existsSync(join(cwd, '.kilocode'))) {
+    detected.push('kilocode');
+  }
+  if (existsSync(join(cwd, '.warp'))) {
+    detected.push('warp');
+  }
+  if (existsSync(join(cwd, '.augment'))) {
+    detected.push('augment');
+  }
 
   // Suggest based on what's detected
   let suggested: AIType | null = null;
@@ -99,6 +108,12 @@ export function getAITypeDescription(aiType: AIType): string {
       return 'CodeBuddy (.codebuddy/skills/)';
     case 'droid':
       return 'Droid (Factory) (.factory/skills/)';
+    case 'kilocode':
+      return 'KiloCode (.kilocode/skills/)';
+    case 'warp':
+      return 'Warp (.warp/skills/)';
+    case 'augment':
+      return 'Augment (.augment/skills/)';
     case 'all':
       return 'All AI assistants';
   }

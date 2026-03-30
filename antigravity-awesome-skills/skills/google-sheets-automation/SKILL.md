@@ -1,7 +1,7 @@
 ---
 name: google-sheets-automation
 description: "Lightweight Google Sheets integration with standalone OAuth authentication. No MCP server required. Full read/write access."
-risk: unknown
+risk: critical
 source: community
 license: Apache-2.0
 metadata:

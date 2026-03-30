@@ -1,7 +1,7 @@
 ---
 name: hig-technologies
 description: "Check for .claude/apple-design-context.md before asking questions. Use existing context and only ask for information not already covered."
-risk: unknown
+risk: safe
 source: community
 date_added: '2026-02-27'
 ---

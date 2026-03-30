@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1329,
+  "total": 1340,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -16279,7 +16279,7 @@
     {
       "id": "hugging-face-cli",
       "name": "hugging-face-cli",
-      "description": "The hf CLI provides direct terminal access to the Hugging Face Hub for downloading, uploading, and managing repositories, cache, and compute resources.",
+      "description": "Use the Hugging Face Hub CLI (`hf`) to download, upload, and manage models, datasets, and Spaces.",
       "category": "general",
       "tags": [
         "hugging",
@@ -16290,22 +16290,47 @@
         "hugging",
         "face",
         "cli",
-        "hf",
-        "provides",
-        "direct",
-        "terminal",
-        "access",
         "hub",
-        "downloading",
-        "uploading",
-        "managing"
+        "hf",
+        "download",
+        "upload",
+        "models",
+        "datasets",
+        "spaces"
       ],
       "path": "skills/hugging-face-cli/SKILL.md"
     },
     {
+      "id": "hugging-face-community-evals",
+      "name": "hugging-face-community-evals",
+      "description": "Run local evaluations for Hugging Face Hub models with inspect-ai or lighteval.",
+      "category": "data-ai",
+      "tags": [
+        "hugging",
+        "face",
+        "community",
+        "evals"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "community",
+        "evals",
+        "run",
+        "local",
+        "evaluations",
+        "hub",
+        "models",
+        "inspect",
+        "ai",
+        "lighteval"
+      ],
+      "path": "skills/hugging-face-community-evals/SKILL.md"
+    },
+    {
       "id": "hugging-face-dataset-viewer",
       "name": "hugging-face-dataset-viewer",
-      "description": "Use this skill for Hugging Face Dataset Viewer API workflows that fetch subset/split metadata, paginate rows, search text, apply filters, download parquet URLs, and read size or statistics.",
+      "description": "Query Hugging Face datasets through the Dataset Viewer API for splits, rows, search, filters, and parquet links.",
       "category": "development",
       "tags": [
         "hugging",
@@ -16318,14 +16343,14 @@
         "face",
         "dataset",
         "viewer",
-        "skill",
+        "query",
+        "datasets",
+        "through",
         "api",
-        "fetch",
-        "subset",
-        "split",
-        "metadata",
-        "paginate",
-        "rows"
+        "splits",
+        "rows",
+        "search",
+        "filters"
       ],
       "path": "skills/hugging-face-dataset-viewer/SKILL.md"
     },
@@ -16382,10 +16407,34 @@
       "path": "skills/hugging-face-evaluation/SKILL.md"
     },
     {
+      "id": "hugging-face-gradio",
+      "name": "hugging-face-gradio",
+      "description": "Build or edit Gradio apps, layouts, components, and chat interfaces in Python.",
+      "category": "development",
+      "tags": [
+        "hugging",
+        "face",
+        "gradio"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "gradio",
+        "edit",
+        "apps",
+        "layouts",
+        "components",
+        "chat",
+        "interfaces",
+        "python"
+      ],
+      "path": "skills/hugging-face-gradio/SKILL.md"
+    },
+    {
       "id": "hugging-face-jobs",
       "name": "hugging-face-jobs",
-      "description": "Run any workload on fully managed Hugging Face infrastructure. No local setup required—jobs run on cloud CPUs, GPUs, or TPUs and can persist results to the Hugging Face Hub.",
-      "category": "infrastructure",
+      "description": "Run workloads on Hugging Face Jobs with managed CPUs, GPUs, TPUs, secrets, and Hub persistence.",
+      "category": "security",
       "tags": [
         "hugging",
         "face",
@@ -16396,22 +16445,22 @@
         "face",
         "jobs",
         "run",
-        "any",
-        "workload",
-        "fully",
+        "workloads",
         "managed",
-        "infrastructure",
-        "no",
-        "local",
-        "setup"
+        "cpus",
+        "gpus",
+        "tpus",
+        "secrets",
+        "hub",
+        "persistence"
       ],
       "path": "skills/hugging-face-jobs/SKILL.md"
     },
     {
       "id": "hugging-face-model-trainer",
       "name": "hugging-face-model-trainer",
-      "description": "Train language models using TRL (Transformer Reinforcement Learning) on fully managed Hugging Face infrastructure. No local GPU setup required—models train on cloud GPUs and results are automatically saved to the Hugging Face Hub.",
-      "category": "infrastructure",
+      "description": "Train or fine-tune TRL language models on Hugging Face Jobs, including SFT, DPO, GRPO, and GGUF export.",
+      "category": "general",
       "tags": [
         "hugging",
         "face",
@@ -16424,13 +16473,13 @@
         "model",
         "trainer",
         "train",
+        "fine",
+        "tune",
+        "trl",
         "language",
         "models",
-        "trl",
-        "transformer",
-        "reinforcement",
-        "learning",
-        "fully"
+        "jobs",
+        "including"
       ],
       "path": "skills/hugging-face-model-trainer/SKILL.md"
     },
@@ -16462,6 +16511,31 @@
       "path": "skills/hugging-face-paper-publisher/SKILL.md"
     },
     {
+      "id": "hugging-face-papers",
+      "name": "hugging-face-papers",
+      "description": "Read and analyze Hugging Face paper pages or arXiv papers with markdown and papers API metadata.",
+      "category": "development",
+      "tags": [
+        "hugging",
+        "face",
+        "papers"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "papers",
+        "read",
+        "analyze",
+        "paper",
+        "pages",
+        "arxiv",
+        "markdown",
+        "api",
+        "metadata"
+      ],
+      "path": "skills/hugging-face-papers/SKILL.md"
+    },
+    {
       "id": "hugging-face-tool-builder",
       "name": "hugging-face-tool-builder",
       "description": "Your purpose is now is to create reusable command line scripts and utilities for using the Hugging Face API, allowing chaining, piping and intermediate processing where helpful. You can access the API directly, as well as use the hf command line tool.",
@@ -16486,6 +16560,59 @@
         "allowing"
       ],
       "path": "skills/hugging-face-tool-builder/SKILL.md"
+    },
+    {
+      "id": "hugging-face-trackio",
+      "name": "hugging-face-trackio",
+      "description": "Track ML experiments with Trackio using Python logging, alerts, and CLI metric retrieval.",
+      "category": "infrastructure",
+      "tags": [
+        "hugging",
+        "face",
+        "trackio"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "trackio",
+        "track",
+        "ml",
+        "experiments",
+        "python",
+        "logging",
+        "alerts",
+        "cli",
+        "metric",
+        "retrieval"
+      ],
+      "path": "skills/hugging-face-trackio/SKILL.md"
+    },
+    {
+      "id": "hugging-face-vision-trainer",
+      "name": "hugging-face-vision-trainer",
+      "description": "Train or fine-tune vision models on Hugging Face Jobs for detection, classification, and SAM or SAM2 segmentation.",
+      "category": "general",
+      "tags": [
+        "hugging",
+        "face",
+        "vision",
+        "trainer"
+      ],
+      "triggers": [
+        "hugging",
+        "face",
+        "vision",
+        "trainer",
+        "train",
+        "fine",
+        "tune",
+        "models",
+        "jobs",
+        "detection",
+        "classification",
+        "sam"
+      ],
+      "path": "skills/hugging-face-vision-trainer/SKILL.md"
     },
     {
       "id": "hybrid-cloud-architect",
@@ -17338,6 +17465,35 @@
         "intelligence"
       ],
       "path": "skills/jobgpt/SKILL.md"
+    },
+    {
+      "id": "jq",
+      "name": "jq",
+      "description": "Expert jq usage for JSON querying, filtering, transformation, and pipeline integration. Practical patterns for real shell workflows.",
+      "category": "infrastructure",
+      "tags": [
+        "jq",
+        "json",
+        "shell",
+        "cli",
+        "data-transformation",
+        "bash"
+      ],
+      "triggers": [
+        "jq",
+        "json",
+        "shell",
+        "cli",
+        "data-transformation",
+        "bash",
+        "usage",
+        "querying",
+        "filtering",
+        "transformation",
+        "pipeline",
+        "integration"
+      ],
+      "path": "skills/jq/SKILL.md"
     },
     {
       "id": "json-canvas",
@@ -22693,6 +22849,32 @@
       "path": "skills/personal-tool-builder/SKILL.md"
     },
     {
+      "id": "phase-gated-debugging",
+      "name": "phase-gated-debugging",
+      "description": "Use when debugging any bug. Enforces a 5-phase protocol where code edits are blocked until root cause is confirmed. Prevents premature fix attempts.",
+      "category": "general",
+      "tags": [
+        "phase",
+        "gated",
+        "debugging"
+      ],
+      "triggers": [
+        "phase",
+        "gated",
+        "debugging",
+        "any",
+        "bug",
+        "enforces",
+        "protocol",
+        "where",
+        "code",
+        "edits",
+        "blocked",
+        "until"
+      ],
+      "path": "skills/phase-gated-debugging/SKILL.md"
+    },
+    {
       "id": "php-pro",
       "name": "php-pro",
       "description": "Write idiomatic PHP code with generators, iterators, SPL data\nstructures, and modern OOP features. Use PROACTIVELY for high-performance PHP\napplications.",
@@ -25126,6 +25308,34 @@
         "programming"
       ],
       "path": "skills/rust-pro/SKILL.md"
+    },
+    {
+      "id": "saas-multi-tenant",
+      "name": "saas-multi-tenant",
+      "description": "Design and implement multi-tenant SaaS architectures with row-level security, tenant-scoped queries, shared-schema isolation, and safe cross-tenant admin patterns in PostgreSQL and TypeScript.",
+      "category": "security",
+      "tags": [
+        "multi-tenancy",
+        "saas",
+        "row-level-security",
+        "postgresql",
+        "tenant-isolation"
+      ],
+      "triggers": [
+        "multi-tenancy",
+        "saas",
+        "row-level-security",
+        "postgresql",
+        "tenant-isolation",
+        "multi",
+        "tenant",
+        "architectures",
+        "row",
+        "level",
+        "security",
+        "scoped"
+      ],
+      "path": "skills/saas-multi-tenant/SKILL.md"
     },
     {
       "id": "saas-mvp-launcher",
@@ -29930,6 +30140,36 @@
       "path": "skills/tiktok-automation/SKILL.md"
     },
     {
+      "id": "tmux",
+      "name": "tmux",
+      "description": "Expert tmux session, window, and pane management for terminal multiplexing, persistent remote workflows, and shell scripting automation.",
+      "category": "workflow",
+      "tags": [
+        "tmux",
+        "terminal",
+        "multiplexer",
+        "sessions",
+        "shell",
+        "remote",
+        "automation"
+      ],
+      "triggers": [
+        "tmux",
+        "terminal",
+        "multiplexer",
+        "sessions",
+        "shell",
+        "remote",
+        "automation",
+        "session",
+        "window",
+        "pane",
+        "multiplexing",
+        "persistent"
+      ],
+      "path": "skills/tmux/SKILL.md"
+    },
+    {
       "id": "todoist-automation",
       "name": "todoist-automation",
       "description": "Automate Todoist task management, projects, sections, filtering, and bulk operations via Rube MCP (Composio). Always search tools first for current schemas.",
@@ -30053,6 +30293,29 @@
         "bugs"
       ],
       "path": "skills/track-management/SKILL.md"
+    },
+    {
+      "id": "transformers-js",
+      "name": "transformers-js",
+      "description": "Run Hugging Face models in JavaScript or TypeScript with Transformers.js in Node.js or the browser.",
+      "category": "development",
+      "tags": [
+        "transformers",
+        "js"
+      ],
+      "triggers": [
+        "transformers",
+        "js",
+        "run",
+        "hugging",
+        "face",
+        "models",
+        "javascript",
+        "typescript",
+        "node",
+        "browser"
+      ],
+      "path": "skills/transformers-js/SKILL.md"
     },
     {
       "id": "travel-health-analyzer",
@@ -31051,6 +31314,34 @@
         "up"
       ],
       "path": "skills/vibers-code-review/SKILL.md"
+    },
+    {
+      "id": "viboscope",
+      "name": "viboscope",
+      "description": "Psychological compatibility matching — find cofounders, collaborators, and friends through validated psychometrics",
+      "category": "workflow",
+      "tags": [
+        "matching",
+        "psychology",
+        "compatibility",
+        "networking",
+        "collaboration"
+      ],
+      "triggers": [
+        "matching",
+        "psychology",
+        "compatibility",
+        "networking",
+        "collaboration",
+        "viboscope",
+        "psychological",
+        "find",
+        "cofounders",
+        "collaborators",
+        "friends",
+        "through"
+      ],
+      "path": "skills/viboscope/SKILL.md"
     },
     {
       "id": "videodb",

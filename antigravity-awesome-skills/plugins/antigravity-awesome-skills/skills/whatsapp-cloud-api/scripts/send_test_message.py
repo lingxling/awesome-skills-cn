@@ -10,6 +10,7 @@ Usage:
 """
 
 import argparse
+import json
 import os
 import sys
 
@@ -27,11 +28,21 @@ except ImportError:
 GRAPH_API = "https://graph.facebook.com/v21.0"
 
 
-def _mask_secret(value: str) -> str:
-    """Return a masked version of a secret for safe logging."""
-    if not value or len(value) < 8:
-        return "***masked***"
-    return f"{value[:6]}...masked"
+def _redact_json(value):
+    """Recursively redact common secret-bearing keys before logging JSON."""
+    sensitive_keys = {"authorization", "token", "access_token", "app_secret", "secret"}
+
+    if isinstance(value, dict):
+        redacted = {}
+        for key, item in value.items():
+            if key.lower() in sensitive_keys:
+                redacted[key] = "***redacted***"
+            else:
+                redacted[key] = _redact_json(item)
+        return redacted
+    if isinstance(value, list):
+        return [_redact_json(item) for item in value]
+    return value
 
 
 def send_test(to: str, message: str) -> None:
@@ -77,11 +88,13 @@ def send_test(to: str, message: str) -> None:
             error = data.get("error", {})
             print(f"Error sending message:")
             print(f"  Code: {error.get('code', '?')}")
-            print(f"  Status: {response.status_code}")
-            print("  Message: Request rejected by WhatsApp Cloud API.")
+            print(f"  Message: {error.get('message', 'Unknown error')}")
+            if error.get("error_data"):
+                print(f"  Details: {error['error_data'].get('details', '')}")
 
         print()
-        print("Response details omitted to avoid exposing sensitive API data.")
+        print("Full response:")
+        print(json.dumps(_redact_json(data), indent=2))
 
     except httpx.ConnectError:
         print("Error: Connection failed. Check your internet connection.")
@@ -89,8 +102,8 @@ def send_test(to: str, message: str) -> None:
     except httpx.TimeoutException:
         print("Error: Request timed out.")
         sys.exit(1)
-    except Exception:
-        print("Error: Unexpected failure while sending the message.")
+    except Exception as exc:
+        print(f"Error: unexpected {exc.__class__.__name__} while sending the test message.")
         sys.exit(1)
 
 

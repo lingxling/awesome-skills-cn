@@ -5,58 +5,12 @@ import { SkillStarButton } from '../components/SkillStarButton';
 import { useSkills } from '../context/SkillContext';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { buildSkillFallbackMeta, buildSkillMeta, selectTopSkills } from '../utils/seo';
+import { getSkillMarkdownCandidateUrls } from '../utils/publicAssetUrls';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 
 // Lazy load heavy markdown component
 const Markdown = lazy(() => import('react-markdown'));
-
-interface SkillMarkdownUrlInput {
-  baseUrl: string;
-  origin: string;
-  pathname: string;
-  documentBaseUrl?: string;
-  skillPath: string;
-}
-
-function normalizeBasePath(baseUrl: string): string {
-  const normalizedSegments = baseUrl
-    .trim()
-    .split('/')
-    .filter((segment) => segment.length > 0 && segment !== '.');
-
-  const normalizedPath = normalizedSegments.length > 0
-    ? `/${normalizedSegments.join('/')}`
-    : '/';
-
-  return normalizedPath.endsWith('/') ? normalizedPath : `${normalizedPath}/`;
-}
-
-export function getSkillMarkdownCandidateUrls({
-  baseUrl,
-  origin,
-  pathname,
-  documentBaseUrl,
-  skillPath,
-}: SkillMarkdownUrlInput): string[] {
-  const normalizedSkillPath = skillPath
-    .replace(/^\/+/, '')
-    .replace(/\/SKILL\.md$/i, '');
-  const assetPath = `${normalizedSkillPath}/SKILL.md`;
-  const normalizedPathname = pathname.startsWith('/') ? pathname : `/${pathname}`;
-  const pathSegments = normalizedPathname.split('/').filter(Boolean);
-  const pathCandidates = pathSegments.map((_, index) => {
-    const prefix = `/${pathSegments.slice(0, index + 1).join('/')}/`;
-    return `${origin}${prefix}${assetPath}`;
-  });
-
-  return Array.from(new Set([
-    new URL(assetPath, documentBaseUrl || new URL(normalizeBasePath(baseUrl), origin)).href,
-    new URL(assetPath, new URL(normalizeBasePath(baseUrl), origin)).href,
-    `${origin}/${assetPath}`,
-    ...pathCandidates,
-  ]));
-}
 
 function looksLikeHtmlDocument(text: string): boolean {
   const trimmed = text.trim().toLowerCase();
@@ -143,7 +97,7 @@ export function SkillDetail(): React.ReactElement {
     }, [id, skill, isPriority, canonicalPath])
   );
 
-  const starCount = useMemo(() => (id ? stars[id] || 0 : 0), [stars, id]);
+  const communityCount = useMemo(() => (id ? stars[id] || 0 : 0), [stars, id]);
   const { frontmatter, body: markdownBody } = useMemo(() => splitFrontmatter(content), [content]);
   const frontmatterRows = useMemo(() => parseFrontmatterRows(frontmatter), [frontmatter]);
 
@@ -300,7 +254,7 @@ export function SkillDetail(): React.ReactElement {
               <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                 @{skill.name}
               </h1>
-              <SkillStarButton skillId={skill.id} initialCount={starCount} variant="compact" />
+              <SkillStarButton skillId={skill.id} communityCount={communityCount} variant="compact" />
             </div>
             <p className="mt-2 text-lg text-slate-600 dark:text-slate-400">
               {skill.description}

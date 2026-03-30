@@ -1,6 +1,6 @@
 import type { SeoJsonLdValue, SeoMeta, TwitterCard, Skill } from '../types';
+import { getAbsolutePublicAssetUrl } from './publicAssetUrls';
 
-export const APP_HOME_CATALOG_COUNT = 1326;
 export const DEFAULT_TOP_SKILL_COUNT = 40;
 export const DEFAULT_SOCIAL_IMAGE = 'social-card.svg';
 const SITE_NAME = 'Antigravity Awesome Skills';
@@ -46,15 +46,17 @@ export function getCanonicalUrl(canonicalPath: string, siteBaseUrl?: string): st
 }
 
 export function getAssetCanonicalUrl(canonicalPath: string): string {
-  const baseUrl = import.meta.env.BASE_URL || '/';
-  const normalizedBase = toCanonicalPath(baseUrl);
-  const appBase = normalizedBase === '/' ? '' : normalizedBase;
-  return `${window.location.origin}${appBase}${toCanonicalPath(canonicalPath)}`;
+  return getAbsolutePublicAssetUrl(toCanonicalPath(canonicalPath), {
+    baseUrl: import.meta.env.BASE_URL || '/',
+    origin: window.location.origin,
+  });
 }
 
 export function getAbsoluteAssetUrl(assetPath: string): string {
-  const normalizedAsset = toCanonicalPath(assetPath);
-  return getAssetCanonicalUrl(normalizedAsset);
+  return getAbsolutePublicAssetUrl(toCanonicalPath(assetPath), {
+    baseUrl: import.meta.env.BASE_URL || '/',
+    origin: window.location.origin,
+  });
 }
 
 function getCatalogBaseUrl(canonicalUrl: string): string {
@@ -93,12 +95,15 @@ function buildWebSiteSchema(canonicalUrl: string): Record<string, unknown> {
 }
 
 function buildSoftwareSourceCodeSchema(canonicalUrl: string, visibleCount: number): Record<string, unknown> {
-  const visibleCountLabel = `${visibleCount.toLocaleString('en-US')}+`;
+  const visibleCountLabel = visibleCount > 0
+    ? `${visibleCount.toLocaleString('en-US')} agentic skills`
+    : 'agentic skills';
+
   return {
     '@context': 'https://schema.org',
     '@type': 'SoftwareSourceCode',
     name: SITE_NAME,
-    description: `Installable GitHub library of ${visibleCountLabel} agentic skills for AI coding assistants.`,
+    description: `Installable GitHub library of ${visibleCountLabel} for AI coding assistants.`,
     url: canonicalUrl,
     codeRepository: 'https://github.com/sickn33/antigravity-awesome-skills',
     programmingLanguage: {
@@ -275,10 +280,14 @@ export function isTopSkill(skillId: string, skills: ReadonlyArray<Skill>, limit 
 }
 
 export function buildHomeMeta(skillCount: number): SeoMeta {
-  const visibleCount = Math.max(skillCount, APP_HOME_CATALOG_COUNT);
-  const visibleCountLabel = `${visibleCount.toLocaleString('en-US')}+`;
-  const title = `Antigravity Awesome Skills | ${visibleCountLabel} installable AI skills catalog`;
-  const description = `Explore ${visibleCountLabel} installable agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, and Antigravity. Browse bundles, workflows, FAQs, and integration guides in one place.`;
+  const visibleCount = Math.max(skillCount, 0);
+  const visibleCountLabel = visibleCount > 0
+    ? `${visibleCount.toLocaleString('en-US')} installable AI skills`
+    : 'installable AI skills';
+  const title = `Antigravity Awesome Skills | ${visibleCountLabel} catalog`;
+  const description = visibleCount > 0
+    ? `Explore ${visibleCount.toLocaleString('en-US')} installable agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, and Antigravity. Browse bundles, workflows, FAQs, and integration guides in one place.`
+    : 'Explore installable agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, and Antigravity. Browse bundles, workflows, FAQs, and integration guides in one place.';
   return {
     title,
     description,

@@ -8,6 +8,7 @@
 - The PR must show as **Merged**, not Closed. That way the contributor appears in the repo’s contribution graph and the PR is clearly linked to the merge commit.
 - Do **not** integrate a PR by squashing locally, pushing to `main`, and then closing the PR. That would show "Closed" and the contributor would not get proper credit.
 - Before merging, require the normal PR checks from [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) to be green. If the PR touches `SKILL.md`, also require the separate [`skill-review` workflow](../../.github/workflows/skill-review.yml) to pass.
+- For PRs that touch `SKILL.md` or risky guidance, require a real manual logic review in addition to the automated checks. Confirm the instructions, failure modes, and `risk:` label make sense before merging.
 
 ## If the PR has merge conflicts
 
@@ -19,6 +20,7 @@ Resolve conflicts **on the PR branch** so the PR becomes mergeable, then use "Sq
 - `README.md` is mixed ownership: contributor prose edits are allowed, but workflow-managed metadata is canonicalized on `main`.
 - If derived files appear in a PR refresh or merge conflict, prefer **`main`'s side** and remove them from the PR branch instead of hand-maintaining them there.
 - Do not block a PR only because shared generated files would be regenerated differently after other merges. `main` auto-syncs the final state after merge.
+- If a skill PR leaves `risk: unknown`, that is not automatically a blocker. Maintainers can review the suggested classification with `npm run audit:skills`, optionally run `npm run sync:risk-labels` locally after merge, and still keep the contributor PR source-only.
 
 ### Steps (maintainer resolves conflicts on the contributor’s branch)
 

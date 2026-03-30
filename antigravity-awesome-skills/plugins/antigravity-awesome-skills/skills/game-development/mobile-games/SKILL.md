@@ -1,7 +1,7 @@
 ---
 name: mobile-games
 description: "Mobile game development principles. Touch input, battery, performance, app stores."
-risk: unknown
+risk: safe
 source: community
 date_added: "2026-02-27"
 ---

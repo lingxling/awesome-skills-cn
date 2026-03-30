@@ -1,7 +1,7 @@
 ---
 name: incident-runbook-templates
 description: "Production-ready templates for incident response runbooks covering detection, triage, mitigation, resolution, and communication."
-risk: unknown
+risk: critical
 source: community
 date_added: "2026-02-27"
 ---

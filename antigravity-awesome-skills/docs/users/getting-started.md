@@ -1,4 +1,4 @@
-# Getting Started with Antigravity Awesome Skills (V9.0.0)
+# Getting Started with Antigravity Awesome Skills (V9.2.0)
 
 **New here? This guide will help you supercharge your AI Agent in 5 minutes.**
 
@@ -33,6 +33,7 @@ npx antigravity-awesome-skills
 ```
 
 This clones to `~/.gemini/antigravity/skills` by default. Use `--cursor`, `--claude`, `--gemini`, `--codex`, or `--kiro` to install for a specific tool, or `--path <dir>` for a custom location. Run `npx antigravity-awesome-skills --help` for details.
+The installer uses a shallow clone by default so you get the current library without paying for the full git history on first install.
 
 If you see a 404 error, use: `npx github:sickn33/antigravity-awesome-skills`
 
@@ -116,11 +117,13 @@ Once installed, just talk to your AI naturally.
 
 We classify skills so you know what you're running:
 
-- 🟣 **Official**: Maintained by Anthropic/Google/Vendors (High Trust).
-- 🔵 **Safe**: Community skills that are non-destructive (Read-only/Planning).
-- 🔴 **Risk**: Skills that modify systems or perform security tests (Authorized Use Only).
+- ⚪ **unknown**: legacy/unclassified content that still needs maintainer triage.
+- 🟢 **none**: pure text/reasoning guidance.
+- 🔵 **safe**: read-only or low-risk operational guidance.
+- 🟠 **critical**: state-changing or deployment-impacting guidance.
+- 🔴 **offensive**: pentest/red-team guidance with an explicit Authorized Use Only warning.
 
-When adding new skills, high-risk guidance is extra-reviewed with repository-wide `security:docs` scanning before release.
+Community PRs may still submit `risk: unknown`, but maintainers now audit and progressively reconcile those labels using the repo-wide audit/report tooling. High-risk guidance is extra-reviewed with repository-wide `security:docs` scanning before release.
 
 _Check the [Skill Catalog](../../CATALOG.md) for the full list._
 

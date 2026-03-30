@@ -1,7 +1,7 @@
 ---
 name: evolution
 description: "This skill enables makepad-skills to self-improve continuously during development."
-risk: unknown
+risk: critical
 source: community
 ---
 

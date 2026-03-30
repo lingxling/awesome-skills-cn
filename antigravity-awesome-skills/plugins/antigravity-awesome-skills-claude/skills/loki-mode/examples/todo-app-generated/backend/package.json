@@ -24,6 +24,7 @@
   },
   "overrides": {
     "diff": "4.0.4",
+    "path-to-regexp": "0.1.13",
     "qs": "^6.15.0"
   }
 }

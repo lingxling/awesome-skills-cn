@@ -9,12 +9,12 @@
 **UI UX Pro Max** 是一个 AI 技能，为跨多个平台和框架构建专业 UI/UX 提供设计智能。它包含：
 
 - **67 种 UI 样式** - 玻璃拟态、粘土拟态、极简主义、粗野主义、新拟态、便当盒网格、深色模式、AI 原生 UI 等
-- **96 个配色方案** - 针对 SaaS、电子商务、医疗保健、金融科技、美容等行业的专用调色板
+- **161 个配色方案** - 与 161 种产品类型 1:1 匹配的行业特定调色板
 - **57 种字体搭配** - 精选的字体组合，包含 Google Fonts 导入
 - **25 种图表类型** - 仪表板和分析的推荐
-- **13 种技术栈** - React、Next.js、Astro、Vue、Nuxt.js、Nuxt UI、Svelte、SwiftUI、React Native、Flutter、HTML+Tailwind、shadcn/ui、Jetpack Compose
+- **15 种技术栈** - React、Next.js、Astro、Vue、Nuxt.js、Nuxt UI、Svelte、SwiftUI、React Native、Flutter、HTML+Tailwind、shadcn/ui、Jetpack Compose、Angular、Laravel
 - **99 条 UX 指南** - 最佳实践、反模式和可访问性规则
-- **100 条推理规则** - 行业特定的设计系统生成（v2.0 新增）
+- **161 条推理规则** - 行业特定的设计系统生成（v2.0 新增）
 
 ### 翻译说明
 
@@ -39,7 +39,7 @@
 
 <p align="center">
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/releases"><img src="https://img.shields.io/github/v/release/nextlevelbuilder/ui-ux-pro-max-skill?style=for-the-badge&color=blue" alt="GitHub Release"></a>
-  <img src="https://img.shields.io/badge/reasoning_rules-100-green?style=for-the-badge" alt="100 Reasoning Rules">
+  <img src="https://img.shields.io/badge/reasoning_rules-161-green?style=for-the-badge" alt="161 Reasoning Rules">
   <img src="https://img.shields.io/badge/UI_styles-67-purple?style=for-the-badge" alt="67 UI Styles">
   <img src="https://img.shields.io/badge/python-3.x-yellow?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.x">
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nextlevelbuilder/ui-ux-pro-max-skill?style=for-the-badge&color=green" alt="License"></a>
@@ -67,7 +67,7 @@
 
 <p align="center">
   <i>其他项目</i><br>
-  <a href="https://nextlevelbuilder.io">NextLevelBuilder</a> | <a href="https://goclaw.sh">GoClaw</a> | <a href="https://claudekit.cc">ClaudeKit</a>
+  <a href="https://nextlevelbuilder.io">NextLevelBuilder</a> | <a href="https://goclaw.sh">GoClaw</a> | <a href="https://claudekit.cc">ClaudeKit</a> | <a href="https://tose.sh">TOSE</a>
 </p>
 
 ## v2.0 新功能
@@ -138,9 +138,9 @@ v2.0 的旗舰功能是 **设计系统生成器** - 一个 AI 驱动的推理引
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  2. 多域搜索（5 个并行搜索）                                     │
-│     • 产品类型匹配（100 个类别）                                │
+│     • 产品类型匹配（161 个类别）                                │
 │     • 样式推荐（67 种样式）                                      │
-│     • 配色方案选择（96 个调色板）                                │
+│     • 配色方案选择（161 个调色板）                               │
 │     • 着陆页模式（24 种模式）                                    │
 │     • 字体搭配（57 种字体组合）                                  │
 └─────────────────────────────────────────────────────────────────┘
@@ -162,19 +162,20 @@ v2.0 的旗舰功能是 **设计系统生成器** - 一个 AI 驱动的推理引
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 100 个行业特定推理规则
+### 161 个行业特定推理规则
 
 推理引擎包含以下专业规则：
 
 | 类别 | 示例 |
 |----------|----------|
-| **科技与 SaaS** | SaaS、微型 SaaS、B2B 企业、开发者工具、AI/聊天机器人平台 |
-| **金融** | 金融科技、银行、加密货币、保险、交易仪表板 |
-| **医疗保健** | 医疗诊所、药房、牙科、兽医、心理健康 |
-| **电子商务** | 通用、奢侈品、市场、订阅盒 |
-| **服务** | 美容/水疗、餐厅、酒店、法律、咨询 |
-| **创意** | 作品集、代理公司、摄影、游戏、音乐流媒体 |
-| **新兴科技** | Web3/NFT、空间计算、量子计算、自动驾驶系统 |
+| **科技与 SaaS** | SaaS、微型 SaaS、B2B 服务、开发者工具/IDE、AI/聊天机器人平台、网络安全平台 |
+| **金融** | 金融科技/加密货币、银行、保险、个人财务跟踪、发票和账单工具 |
+| **医疗保健** | 医疗诊所、药房、牙科、兽医、心理健康、 medication 提醒 |
+| **电子商务** | 通用、奢侈品、市场（P2P）、订阅盒、食品配送 |
+| **服务** | 美容/水疗、餐厅、酒店、法律、家政服务、预订和预约 |
+| **创意** | 作品集、代理公司、摄影、游戏、音乐流媒体、照片/视频编辑器 |
+| **生活方式** | 习惯跟踪、食谱和烹饪、冥想、天气、日记、情绪跟踪 |
+| **新兴科技** | Web3/NFT、空间计算、量子计算、自动驾驶无人机舰队 |
 
 每条规则包括：
 - **推荐模式** - 着陆页结构
@@ -187,12 +188,12 @@ v2.0 的旗舰功能是 **设计系统生成器** - 一个 AI 驱动的推理引
 ## 功能特性
 
 - **67 种 UI 样式** - 玻璃拟态、粘土拟态、极简主义、粗野主义、新拟态、便当盒网格、深色模式、AI 原生 UI 等
-- **96 个配色方案** - 针对 SaaS、电子商务、医疗保健、金融科技、美容等行业的专用调色板
+- **161 个配色方案** - 与 161 种产品类型 1:1 匹配的行业特定调色板
 - **57 种字体搭配** - 精选的字体组合，包含 Google Fonts 导入
 - **25 种图表类型** - 仪表板和分析的推荐
-- **13 种技术栈** - React、Next.js、Astro、Vue、Nuxt.js、Nuxt UI、Svelte、SwiftUI、React Native、Flutter、HTML+Tailwind、shadcn/ui、Jetpack Compose
+- **15 种技术栈** - React、Next.js、Astro、Vue、Nuxt.js、Nuxt UI、Svelte、SwiftUI、React Native、Flutter、HTML+Tailwind、shadcn/ui、Jetpack Compose、Angular、Laravel
 - **99 条 UX 指南** - 最佳实践、反模式和可访问性规则
-- **100 条推理规则** - 行业特定的设计系统生成（v2.0 新增）
+- **161 条推理规则** - 行业特定的设计系统生成（v2.0 新增）
 
 ### 可用样式（67 种）
 
@@ -323,7 +324,17 @@ uipro init --ai opencode    # OpenCode
 uipro init --ai continue    # Continue
 uipro init --ai codebuddy   # CodeBuddy
 uipro init --ai droid       # Droid (Factory)
+uipro init --ai kilocode    # KiloCode
+uipro init --ai warp        # Warp
+uipro init --ai augment     # Augment
 uipro init --ai all         # 所有助手
+```
+
+### 全局安装（适用于所有项目）
+
+```bash
+uipro init --ai claude --global   # 安装到 ~/.claude/skills/
+uipro init --ai cursor --global   # 安装到 ~/.cursor/skills/
 ```
 
 ### 其他 CLI 命令
@@ -332,6 +343,9 @@ uipro init --ai all         # 所有助手
 uipro versions              # 列出可用版本
 uipro update                # 更新到最新版本
 uipro init --offline        # 跳过 GitHub 下载，使用捆绑资源
+uipro uninstall             # 移除技能（自动检测平台）
+uipro uninstall --ai claude # 移除特定平台
+uipro uninstall --global    # 从全局安装中移除
 ```
 
 ## 前置要求
@@ -356,7 +370,7 @@ winget install Python.Python.3.12
 
 ### 技能模式（自动激活）
 
-**支持：** Claude Code、Cursor、Windsurf、Antigravity、Codex CLI、Continue、Gemini CLI、OpenCode、Qoder、CodeBuddy、Droid (Factory)
+**支持：** Claude Code、Cursor、Windsurf、Antigravity、Codex CLI、Continue、Gemini CLI、OpenCode、Qoder、CodeBuddy、Droid (Factory)、KiloCode、Warp、Augment
 
 当您请求 UI/UX 工作时，技能会自动激活。只需自然对话：
 
@@ -368,7 +382,7 @@ winget install Python.Python.3.12
 
 ### 工作流模式（斜杠命令）
 
-**支持：** Kiro、GitHub Copilot、Roo Code
+**支持：** Kiro、GitHub Copilot、Roo Code、KiloCode
 
 使用斜杠命令调用技能：
 
@@ -407,6 +421,8 @@ winget install Python.Python.3.12
 | **Web (HTML)** | HTML + Tailwind（默认） |
 | **React 生态系统** | React、Next.js、shadcn/ui |
 | **Vue 生态系统** | Vue、Nuxt.js、Nuxt UI |
+| **Angular** | Angular |
+| **PHP** | Laravel（Blade、Livewire、Inertia.js） |
 | **其他 Web** | Svelte、Astro |
 | **iOS** | SwiftUI |
 | **Android** | Jetpack Compose |
@@ -430,7 +446,106 @@ python3 .claude/skills/ui-ux-pro-max/scripts/search.py "fintech banking" --desig
 # 特定域搜索
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "glassmorphism" --domain style
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "elegant serif" --domain typography
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "dashboard" --domain chart
+
+# 特定技术栈指南
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "form validation" --stack react
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "responsive layout" --stack html-tailwind
 ```
+
+### 持久化设计系统（Master + Overrides 模式）
+
+将设计系统保存到文件中，以便**跨会话进行分层检索**：
+
+```bash
+# 生成并持久化到 design-system/MASTER.md
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design-system --persist -p "MyApp"
+
+# 同时创建页面特定的覆盖文件
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS dashboard" --design-system --persist -p "MyApp" --page "dashboard"
+```
+
+这将创建一个 `design-system/` 文件夹结构：
+
+```
+design-system/
+├── MASTER.md           # 全局真实来源（颜色、排版、间距、组件）
+└── pages/
+    └── dashboard.md    # 页面特定覆盖（仅偏离 Master 的部分）
+```
+
+**分层检索工作原理：**
+1. 当构建特定页面（例如 "Checkout"）时，首先检查 `design-system/pages/checkout.md`
+2. 如果页面文件存在，其规则**覆盖** Master 文件
+3. 如果不存在，则仅使用 `design-system/MASTER.md`
+
+**上下文感知检索提示：**
+```
+I am building the [Page Name] page. Please read design-system/MASTER.md.
+Also check if design-system/pages/[page-name].md exists.
+If the page file exists, prioritize its rules.
+If not, use the Master rules exclusively.
+Now, generate the code...
+```
+
+## 架构与贡献
+
+### 对于用户
+
+代码库已重构为使用**基于模板的生成系统**。所有平台特定文件（`.cursor/`、`.windsurf/`、`.kiro/`、`.factory/` 等）现在由 CLI 动态生成。
+
+**始终使用 CLI 进行安装：**
+
+```bash
+npm install -g uipro-cli
+uipro init --ai <platform>
+```
+
+这确保您获得最新的模板和适合您 AI 助手的正确文件结构。
+
+### 对于贡献者
+
+如果您想为这个项目做出贡献：
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git
+cd ui-ux-pro-max-skill
+
+# 2. 了解结构
+src/ui-ux-pro-max/           # 真实来源（数据、脚本、模板）
+cli/                         # CLI 安装程序（从模板生成文件）
+.claude/                     # Claude Code 技能的本地开发/测试
+.factory/                    # Droid (Factory) 技能的本地开发/测试
+
+# 3. 在 src/ui-ux-pro-max/ 中进行更改
+# - data/*.csv              → 数据库文件
+# - scripts/*.py            → 搜索引擎和设计系统
+# - templates/              → 平台特定模板
+
+# 4. 同步到 CLI 并在本地测试
+cp -r src/ui-ux-pro-max/data/* cli/assets/data/
+cp -r src/ui-ux-pro-max/scripts/* cli/assets/scripts/
+cp -r src/ui-ux-pro-max/templates/* cli/assets/templates/
+
+# 5. 构建和测试 CLI
+cd cli && bun run build
+node dist/index.js init --ai claude --offline  # 在临时文件夹中测试
+
+# 6. 创建 PR（永远不要直接推送到 main）
+git checkout -b feat/your-feature
+git commit -m "feat: description"
+git push -u origin feat/your-feature
+gh pr create
+```
+
+有关详细的开发指南，请参阅 [CLAUDE.md](CLAUDE.md)。
+
+## 星标历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=nextlevelbuilder/ui-ux-pro-max-skill&type=Date)](https://star-history.com/#nextlevelbuilder/ui-ux-pro-max-skill&Date)
+
+## 许可证
 
 本项目采用 [MIT 许可证](LICENSE) 授权。
 

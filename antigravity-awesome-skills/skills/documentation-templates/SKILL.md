@@ -1,7 +1,7 @@
 ---
 name: documentation-templates
 description: "Documentation templates and structure guidelines. README, API docs, code comments, and AI-friendly documentation."
-risk: unknown
+risk: safe
 source: community
 date_added: "2026-02-27"
 ---

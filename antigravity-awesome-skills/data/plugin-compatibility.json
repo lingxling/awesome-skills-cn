@@ -12657,6 +12657,25 @@
       "runtime_files": []
     },
     {
+      "id": "hugging-face-community-evals",
+      "path": "skills/hugging-face-community-evals",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "hugging-face-dataset-viewer",
       "path": "skills/hugging-face-dataset-viewer",
       "targets": {
@@ -12697,6 +12716,25 @@
     {
       "id": "hugging-face-evaluation",
       "path": "skills/hugging-face-evaluation",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "hugging-face-gradio",
+      "path": "skills/hugging-face-gradio",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -12771,8 +12809,65 @@
       "runtime_files": []
     },
     {
+      "id": "hugging-face-papers",
+      "path": "skills/hugging-face-papers",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "hugging-face-tool-builder",
       "path": "skills/hugging-face-tool-builder",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "hugging-face-trackio",
+      "path": "skills/hugging-face-trackio",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "hugging-face-vision-trainer",
+      "path": "skills/hugging-face-vision-trainer",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -13457,6 +13552,25 @@
     {
       "id": "jobgpt",
       "path": "skills/jobgpt",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "jq",
+      "path": "skills/jq",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -17648,6 +17762,25 @@
       "runtime_files": []
     },
     {
+      "id": "phase-gated-debugging",
+      "path": "skills/phase-gated-debugging",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "php-pro",
       "path": "skills/php-pro",
       "targets": {
@@ -19541,6 +19674,25 @@
     {
       "id": "rust-pro",
       "path": "skills/rust-pro",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "saas-multi-tenant",
+      "path": "skills/saas-multi-tenant",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -23350,6 +23502,25 @@
       "runtime_files": []
     },
     {
+      "id": "tmux",
+      "path": "skills/tmux",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "todoist-automation",
       "path": "skills/todoist-automation",
       "targets": {
@@ -23428,6 +23599,25 @@
     {
       "id": "track-management",
       "path": "skills/track-management",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "transformers-js",
+      "path": "skills/transformers-js",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -24217,6 +24407,25 @@
     {
       "id": "vibers-code-review",
       "path": "skills/vibers-code-review",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "viboscope",
+      "path": "skills/viboscope",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -25413,10 +25622,10 @@
     }
   ],
   "summary": {
-    "total_skills": 1329,
+    "total_skills": 1340,
     "supported": {
-      "codex": 1300,
-      "claude": 1315
+      "codex": 1311,
+      "claude": 1326
     },
     "blocked": {
       "codex": 29,

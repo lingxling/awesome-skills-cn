@@ -1,7 +1,7 @@
 ---
 name: e2e-testing-patterns
 description: "Build reliable, fast, and maintainable end-to-end test suites that provide confidence to ship code quickly and catch regressions before users do."
-risk: unknown
+risk: safe
 source: community
 date_added: "2026-02-27"
 ---

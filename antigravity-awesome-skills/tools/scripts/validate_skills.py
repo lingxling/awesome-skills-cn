@@ -53,7 +53,7 @@ def parse_frontmatter(content, rel_path=None):
     Parse frontmatter using PyYAML for robustness.
     Returns a dict of key-values and a list of error messages.
     """
-    fm_match = re.search(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+    fm_match = re.search(r'^---\s*\n(.*?)\n?---(?:\s*\n|$)', content, re.DOTALL)
     if not fm_match:
         return None, ["Missing or malformed YAML frontmatter"]
     
@@ -109,7 +109,7 @@ def collect_validation_results(skills_dir, strict_mode=False):
             
             # 1. Frontmatter Check
             metadata, fm_errors = parse_frontmatter(content, rel_path)
-            if not metadata:
+            if metadata is None:
                 errors.append(f"❌ {rel_path}: Missing or malformed YAML frontmatter")
                 continue # Cannot proceed without metadata
             

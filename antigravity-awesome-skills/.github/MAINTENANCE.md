@@ -98,6 +98,14 @@ Before ANY commit that adds/modifies skills, run the chain:
     ```bash
     npm run audit:maintainer
     ```
+    When you are reducing legacy `risk: unknown` debt, use this sequence instead of hand-editing large batches:
+    ```bash
+    npm run audit:skills
+    npm run sync:risk-labels -- --dry-run
+    npm run sync:risk-labels
+    npm run sync:repo-state
+    ```
+    `sync:risk-labels` is intentionally conservative. It should handle only the obvious subset; the ambiguous tail still needs maintainer review.
 
 4.  **COMMIT GENERATED FILES**:
     ```bash
@@ -107,6 +115,7 @@ Before ANY commit that adds/modifies skills, run the chain:
     > 🔴 **CRITICAL for direct `main` work**: If you skip this on maintainer work that lands directly on `main`, CI will fail with "Detected uncommitted changes".
     > For contributor PRs, do **not** include derived registry artifacts. CI blocks direct edits to those files and previews drift separately.
     > See [`docs/maintainers/ci-drift-fix.md`](../docs/maintainers/ci-drift-fix.md) for details.
+    > `main` may still auto-commit canonical artifacts with `[ci skip]`, but only within the generated-files contract. If the sync leaves unmanaged drift, the workflow must fail instead of pushing a partial fix.
 
 ### B. When You Merge a PR (Step-by-Step)
 

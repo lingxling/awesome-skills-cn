@@ -75,7 +75,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install Python dependencies
-        run: pip install pyyaml
+        run: pip install -r tools/requirements.txt
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -103,12 +103,17 @@ jobs:
 
       - name: Audit npm dependencies
         run: npm audit --audit-level=high
-        continue-on-error: true
 
       - name: Run tests
         env:
           ENABLE_NETWORK_TESTS: "1"
         run: npm run test
+
+      - name: Install web-app dependencies
+        run: npm run app:install
+
+      - name: Run web app coverage
+        run: npm run app:test:coverage
 
       - name: Run docs security checks
         run: npm run security:docs
@@ -126,7 +131,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install Python dependencies
-        run: pip install pyyaml
+        run: pip install -r tools/requirements.txt
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -143,8 +148,12 @@ jobs:
 
       - name: Report generated drift
         run: |
-          managed_files=$(node tools/scripts/generated_files.js --shell --include-mixed)
-          drift_files=$(git diff --name-only -- $managed_files)
+          mapfile -t managed_files < <(node tools/scripts/generated_files.js --include-mixed)
+          if [ "${#managed_files[@]}" -eq 0 ]; then
+            echo "::error::No managed files resolved from generated_files contract."
+            exit 1
+          fi
+          drift_files=$(git diff --name-only -- "${managed_files[@]}")
 
           {
             echo "## Artifact Preview"
@@ -172,12 +181,17 @@ jobs:
   main-validation-and-sync:
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    concurrency:
+      group: canonical-main-sync
+      cancel-in-progress: false
     permissions:
       contents: write
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -185,7 +199,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install Python dependencies
-        run: pip install pyyaml
+        run: pip install -r tools/requirements.txt
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -212,12 +226,17 @@ jobs:
 
       - name: Audit npm dependencies
         run: npm audit --audit-level=high
-        continue-on-error: true
 
       - name: Run tests
         env:
           ENABLE_NETWORK_TESTS: "1"
         run: npm run test
+
+      - name: Install web-app dependencies
+        run: npm run app:install
+
+      - name: Run web app coverage
+        run: npm run app:test:coverage
 
       - name: Run docs security checks
         run: npm run security:docs
@@ -225,20 +244,40 @@ jobs:
       - name: Set up GitHub credentials
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git fetch origin main
 
       - name: Auto-commit canonical artifacts
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          managed_files=$(node tools/scripts/generated_files.js --shell --include-mixed)
+          set -euo pipefail
+          mapfile -t managed_files < <(node tools/scripts/generated_files.js --include-mixed)
+          if [ "${#managed_files[@]}" -eq 0 ]; then
+            echo "No managed files resolved from generated_files contract."
+            exit 1
+          fi
 
-          git diff --quiet && exit 0
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
+            echo "No canonical repo-state drift detected."
+            exit 0
+          fi
 
-          git add $managed_files || true
+          git add -- "${managed_files[@]}" || true
 
-          git diff --cached --quiet && exit 0
+          if git diff --cached --quiet; then
+            echo "Repo-state sync produced unmanaged drift only."
+            git status --short
+            exit 1
+          fi
+
+          if [ -n "$(git diff --name-only)" ] || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            echo "Repo-state sync produced unmanaged drift alongside canonical changes."
+            git status --short
+            exit 1
+          fi
 
           git commit -m "chore: sync repo state [ci skip]"
           git pull origin main --rebase
@@ -247,13 +286,14 @@ jobs:
       - name: Check for uncommitted drift
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          if ! git diff --quiet; then
-            echo "❌ Detected uncommitted changes produced by registry/readme/catalog scripts."
+          if ! git diff --quiet || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            echo "❌ Detected leftover drift after the canonical bot sync."
             echo
-            echo "Main must be self-healing after the auto-sync step."
+            echo "The bot may only commit managed canonical files and must leave a clean tree."
             echo "To fix locally, run the canonical maintainer flow:"
             echo "  npm run release:preflight"
             echo "  npm run sync:repo-state"
             echo "  git status"
+            git status --short
             exit 1
           fi

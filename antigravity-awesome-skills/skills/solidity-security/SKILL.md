@@ -1,7 +1,7 @@
 ---
 name: solidity-security
 description: "Master smart contract security best practices, vulnerability prevention, and secure Solidity development patterns."
-risk: unknown
+risk: safe
 source: community
 date_added: "2026-02-27"
 ---

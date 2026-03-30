@@ -5,7 +5,7 @@ import { useSkills } from '../context/SkillContext';
 import { SkillCard } from '../components/SkillCard';
 import type { SyncMessage, CategoryStats } from '../types';
 import { usePageMeta } from '../hooks/usePageMeta';
-import { APP_HOME_CATALOG_COUNT, buildHomeMeta, getHomeFaqItems } from '../utils/seo';
+import { buildHomeMeta, getHomeFaqItems } from '../utils/seo';
 
 const conceptCards = [
   {
@@ -49,6 +49,11 @@ const integrationGuides = [
   },
 ] as const;
 
+const syncFeatureEnabled = (
+  (import.meta as ImportMeta & { env: Record<string, string | undefined> }).env.VITE_ENABLE_SKILLS_SYNC
+  === 'true'
+);
+
 export function Home(): React.ReactElement {
   const { skills, stars, loading, error, refreshSkills } = useSkills();
   const [search, setSearch] = useState('');
@@ -62,6 +67,7 @@ export function Home(): React.ReactElement {
   const docsLink = 'https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/usage.md';
   const installLink = 'https://www.npmjs.com/package/antigravity-awesome-skills';
   const faqItems = getHomeFaqItems();
+  const catalogCountLabel = skills.length > 0 ? skills.length.toLocaleString('en-US') : 'installable';
 
   usePageMeta(buildHomeMeta(skills.length));
 
@@ -197,7 +203,7 @@ export function Home(): React.ReactElement {
           <div>
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-2">Explore Skills</h1>
             <p className="text-slate-500 dark:text-slate-400">
-              Discover {Math.max(skills.length, APP_HOME_CATALOG_COUNT)}+ agentic capabilities for your AI assistant.
+              Discover {catalogCountLabel} agentic capabilities for your AI assistant.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -211,16 +217,27 @@ export function Home(): React.ReactElement {
                 {syncMsg.text}
               </span>
             )}
-            <button
-              onClick={handleSync}
-              disabled={syncing}
-              className="flex items-center space-x-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50 disabled:cursor-wait transition-colors shadow-sm"
-            >
-              <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
-              <span>{syncing ? 'Syncing...' : 'Sync Skills'}</span>
-            </button>
+            {syncFeatureEnabled ? (
+              <button
+                onClick={handleSync}
+                disabled={syncing}
+                className="flex items-center space-x-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50 disabled:cursor-wait transition-colors shadow-sm"
+              >
+                <RefreshCw className={`h-4 w-4 ${syncing ? 'animate-spin' : ''}`} />
+                <span>{syncing ? 'Syncing...' : 'Sync Skills'}</span>
+              </button>
+            ) : (
+              <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-3 py-1.5 text-sm font-medium text-slate-600 dark:text-slate-300">
+                Public catalog mode
+              </span>
+            )}
           </div>
         </div>
+        {!syncFeatureEnabled && (
+          <p className="text-sm text-slate-500 dark:text-slate-400 -mt-4">
+            Catalog sync is a maintainer-only workflow in local builds, so the public Pages site always shows the last published catalog.
+          </p>
+        )}
 
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0 bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm sticky top-0 z-40">
           <div className="relative flex-1">
@@ -259,7 +276,7 @@ export function Home(): React.ReactElement {
               onChange={(e) => setSortBy(e.target.value)}
             >
               <option value="default">Default</option>
-              <option value="stars">⭐ Most Stars</option>
+              <option value="stars">⭐ Community saves</option>
               <option value="newest">🆕 Newest</option>
               <option value="az">🔤 A → Z</option>
             </select>

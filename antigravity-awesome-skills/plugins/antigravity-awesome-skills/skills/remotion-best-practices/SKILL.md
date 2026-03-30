@@ -1,7 +1,7 @@
 ---
 name: remotion-best-practices
 description: "Best practices for Remotion - Video creation in React"
-risk: unknown
+risk: safe
 source: community
 tags: "remotion, video, react, animation, composition"
 date_added: "2026-02-27"

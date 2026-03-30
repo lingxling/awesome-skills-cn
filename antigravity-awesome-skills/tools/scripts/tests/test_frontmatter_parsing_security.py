@@ -38,6 +38,23 @@ class FrontmatterParsingSecurityTests(unittest.TestCase):
         self.assertIsNone(metadata)
         self.assertTrue(any("mapping" in error.lower() for error in errors))
 
+    def test_validate_skills_empty_frontmatter_is_schema_checked(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skills_dir = root / "skills"
+            skill_dir = skills_dir / "demo"
+
+            skill_dir.mkdir(parents=True)
+            (skill_dir / "SKILL.md").write_text("---\n---\n# Demo\n", encoding="utf-8")
+
+            results = validate_skills.collect_validation_results(str(skills_dir))
+
+            self.assertTrue(any("Missing 'name'" in error for error in results["errors"]))
+            self.assertTrue(any("Missing 'description'" in error for error in results["errors"]))
+            self.assertFalse(
+                any("Missing or malformed YAML frontmatter" in error for error in results["errors"])
+            )
+
     def test_validate_skills_normalizes_unquoted_yaml_dates(self):
         content = "---\nname: demo\ndescription: ok\ndate_added: 2026-03-15\n---\nbody\n"
         metadata, errors = validate_skills.parse_frontmatter(content)

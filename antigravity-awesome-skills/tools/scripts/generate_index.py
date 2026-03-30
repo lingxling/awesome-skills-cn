@@ -815,7 +815,7 @@ def parse_frontmatter(content):
     Parses YAML frontmatter, sanitizing unquoted values containing @.
     Handles single values and comma-separated lists by quoting the entire line.
     """
-    fm_match = re.search(r'^---\s*\n(.*?)\n---', content, re.DOTALL)
+    fm_match = re.search(r'^---\s*\n(.*?)\n?---(?:\s*\n|$)', content, re.DOTALL)
     if not fm_match:
         return {}
     

@@ -1,3 +1,34 @@
+# Maintenance Walkthrough - 2026-03-29
+
+- Re-triaged the full 2026-03-15 security finding set against current `main` and wrote a fresh current-head report in `docs/maintainers/security-findings-triage-2026-03-29-refresh.md`.
+- Added a matching machine-readable export at `docs/maintainers/security-findings-triage-2026-03-29-refresh.csv` so the refreshed statuses are available in both markdown and CSV form.
+- Kept the old `2026-03-15` markdown/CSV as historical baseline input, preserved the smaller `2026-03-29` addendum as a transition note, and pointed both docs at the new refresh as the current source of truth.
+- The refreshed triage currently lands at:
+  - `0` findings still present and exploitable
+  - `0` findings still present but low practical risk
+  - `26` obsolete/not reproducible on current HEAD
+  - `7` duplicates
+- The refresh folds in the hardening shipped today and earlier in the session:
+  - symlink/path safety in maintainer/install/web copy flows
+  - frontmatter parser robustness
+  - removal of shared frontend star writes
+  - secure Office unpack behavior
+  - migration away from predictable `/tmp` state files
+
+- Fixed the remaining production/documentation drift introduced by the web-app and CI hardening work:
+  - clarified that the hosted GitHub Pages app runs in static public-catalog mode
+  - documented that `Sync Skills` is development-only unless explicitly enabled in local maintainer runs
+  - documented that web-app save/star interactions are intentionally browser-local today
+- Hardened the maintainer documentation so release and CI expectations now match the live workflows:
+  - release docs now mention the shared `tools/requirements.txt` install path, the web-app coverage gate, and blocking `npm audit --audit-level=high` on publish
+  - maintainer docs now document the narrow canonical-artifact auto-sync contract on `main`
+- Expanded the documented risk-maintenance workflow after the new automation landed:
+  - `audit:skills` exposes `suggested_risk`
+  - `sync:risk-labels` supports conservative high-confidence legacy cleanup
+  - offensive auto-promotions now also insert the canonical `AUTHORIZED USE ONLY` notice
+- Updated user-facing install docs to mention that the npm installer now uses a shallow clone for lighter first-run installs.
+- Updated the onboarding/trust docs to reflect the real `risk` taxonomy (`unknown`, `none`, `safe`, `critical`, `offensive`) instead of the older simplified wording.
+
 # Maintenance Walkthrough - 2026-03-25
 
 - Imported 14 skills from [Dimillian/Skills](https://github.com/Dimillian/Skills) into `skills/`:

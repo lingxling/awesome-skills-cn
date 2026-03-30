@@ -416,7 +416,24 @@ function dispose() {
 }
 ```
 
-### Clock for Animation
+### Timer and Clock for Animation
+
+**Timer (recommended in r183)** - pauses when tab is hidden, cleaner API:
+
+```javascript
+const timer = new THREE.Timer();
+
+renderer.setAnimationLoop(() => {
+  timer.update();
+  const delta = timer.getDelta();
+  const elapsed = timer.getElapsed();
+
+  mesh.rotation.y += delta * 0.5;
+  renderer.render(scene, camera);
+});
+```
+
+**Clock (legacy, still works):**
 
 ```javascript
 const clock = new THREE.Clock();
@@ -430,6 +447,17 @@ function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
 }
+```
+
+### Animation Loop
+
+Prefer `renderer.setAnimationLoop()` over manual `requestAnimationFrame`. It handles WebXR compatibility and is the standard Three.js pattern:
+
+```javascript
+renderer.setAnimationLoop(() => {
+  controls.update();
+  renderer.render(scene, camera);
+});
 ```
 
 ### Responsive Canvas
@@ -482,6 +510,21 @@ lod.addLevel(medDetailMesh, 50);
 lod.addLevel(lowDetailMesh, 100);
 scene.add(lod);
 ```
+
+## WebGPU Renderer (r183)
+
+Three.js includes an experimental WebGPU renderer as an alternative to WebGL:
+
+```javascript
+import { WebGPURenderer } from "three/addons/renderers/webgpu/WebGPURenderer.js";
+
+const renderer = new WebGPURenderer({ antialias: true });
+await renderer.init();
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+```
+
+WebGPU uses TSL (Three.js Shading Language) instead of GLSL. The WebGL renderer remains the default and is fully supported.
 
 ## See Also
 

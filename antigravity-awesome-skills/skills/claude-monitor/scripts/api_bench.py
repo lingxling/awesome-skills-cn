@@ -34,6 +34,17 @@ ENDPOINTS = [
 ]
 
 
+def create_tls_context():
+    """Cria contexto TLS restringindo conexoes a TLS 1.2+."""
+    context = ssl.create_default_context()
+    if hasattr(ssl, "TLSVersion"):
+        context.minimum_version = ssl.TLSVersion.TLSv1_2
+    else:
+        context.options |= getattr(ssl, "OP_NO_TLSv1", 0)
+        context.options |= getattr(ssl, "OP_NO_TLSv1_1", 0)
+    return context
+
+
 def test_tcp_latency(host, port, timeout=5):
     """Testa latência TCP para um host:port."""
     try:
@@ -49,7 +60,7 @@ def test_tcp_latency(host, port, timeout=5):
 def test_tls_handshake(host, port=443, timeout=5):
     """Testa tempo do handshake TLS."""
     try:
-        context = ssl.create_default_context()
+        context = create_tls_context()
         start = time.time()
         with socket.create_connection((host, port), timeout=timeout) as sock:
             with context.wrap_socket(sock, server_hostname=host) as ssock:

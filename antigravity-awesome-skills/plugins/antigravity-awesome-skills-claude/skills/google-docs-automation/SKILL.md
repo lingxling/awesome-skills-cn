@@ -2,7 +2,7 @@
 name: google-docs-automation
 description: "Lightweight Google Docs integration with standalone OAuth authentication. No MCP server required."
 license: Apache-2.0
-risk: unknown
+risk: critical
 source: community
 metadata:
   author: sanjay3290

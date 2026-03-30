@@ -2,7 +2,7 @@
 
 Generated at: 2026-02-08T00:00:00.000Z
 
-Total skills: 1329
+Total skills: 1340
 
 ## architecture (88)
 
@@ -171,7 +171,7 @@ Total skills: 1329
 | `warren-buffett` | Agente que simula Warren Buffett — o maior investidor do seculo XX e XXI, CEO da Berkshire Hathaway, discipulo de Benjamin Graham e socio intelectual de Char... | persona, investing, value-investing, business | persona, investing, value-investing, business, warren, buffett, agente, que, simula, maior, investidor, do |
 | `whatsapp-automation` | Automate WhatsApp Business tasks via Rube MCP (Composio): send messages, manage templates, upload media, and handle contacts. Always search tools first for c... | whatsapp | whatsapp, automation, automate, business, tasks, via, rube, mcp, composio, send, messages, upload |
 
-## data-ai (251)
+## data-ai (252)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -322,6 +322,7 @@ Total skills: 1329
 | `google-analytics-automation` | Automate Google Analytics tasks via Rube MCP (Composio): run reports, list accounts/properties, funnels, pivots, key events. Always search tools first for cu... | google, analytics | google, analytics, automation, automate, tasks, via, rube, mcp, composio, run, reports, list |
 | `googlesheets-automation` | Automate Google Sheets operations (read, write, format, filter, manage spreadsheets) via Rube MCP (Composio). Read/write data, manage tabs, apply formatting,... | googlesheets | googlesheets, automation, automate, google, sheets, operations, read, write, format, filter, spreadsheets, via |
 | `hosted-agents-v2-py` | Build hosted agents using Azure AI Projects SDK with ImageBasedHostedAgentDefinition. Use when creating container-based agents in Azure AI Foundry. | hosted, agents, v2, py | hosted, agents, v2, py, azure, ai, sdk, imagebasedhostedagentdefinition, creating, container, foundry |
+| `hugging-face-community-evals` | Run local evaluations for Hugging Face Hub models with inspect-ai or lighteval. | hugging, face, community, evals | hugging, face, community, evals, run, local, evaluations, hub, models, inspect, ai, lighteval |
 | `hugging-face-datasets` | Create and manage datasets on Hugging Face Hub. Supports initializing repos, defining configs/system prompts, streaming row updates, and SQL-based dataset qu... | hugging, face, datasets | hugging, face, datasets, hub, supports, initializing, repos, defining, configs, prompts, streaming, row |
 | `hybrid-search-implementation` | Combine vector and keyword search for improved retrieval. Use when implementing RAG systems, building search engines, or when neither approach alone provides... | hybrid, search | hybrid, search, combine, vector, keyword, improved, retrieval, implementing, rag, building, engines, neither |
 | `iconsax-library` | Extensive icon library and AI-driven icon generation skill for premium UI/UX design. | iconsax, library | iconsax, library, extensive, icon, ai, driven, generation, skill, premium, ui, ux |
@@ -427,7 +428,7 @@ Total skills: 1329
 | `youtube-automation` | Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools firs... | youtube | youtube, automation, automate, tasks, via, rube, mcp, composio, upload, videos, playlists, search |
 | `zapier-make-patterns` | You are a no-code automation architect who has built thousands of Zaps and Scenarios for businesses of all sizes. You've seen automations that save companies... | zapier, make | zapier, make, no, code, automation, architect, who, built, thousands, zaps, scenarios, businesses |
 
-## development (182)
+## development (185)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -532,8 +533,10 @@ Total skills: 1329
 | `go-rod-master` | Comprehensive guide for browser automation and web scraping with go-rod (Chrome DevTools Protocol) including stealth anti-bot-detection patterns. | go, rod, master | go, rod, master, browser, automation, web, scraping, chrome, devtools, protocol, including, stealth |
 | `golang-pro` | Master Go 1.21+ with modern patterns, advanced concurrency, performance optimization, and production-ready microservices. | golang | golang, pro, go, 21, concurrency, performance, optimization, microservices |
 | `hono` | Build ultra-fast web APIs and full-stack apps with Hono — runs on Cloudflare Workers, Deno, Bun, Node.js, and any WinterCG-compatible runtime. | hono, edge, cloudflare-workers, bun, deno, api, typescript, web-standards | hono, edge, cloudflare-workers, bun, deno, api, typescript, web-standards, ultra, fast, web, apis |
-| `hugging-face-dataset-viewer` | Use this skill for Hugging Face Dataset Viewer API workflows that fetch subset/split metadata, paginate rows, search text, apply filters, download parquet UR... | hugging, face, dataset, viewer | hugging, face, dataset, viewer, skill, api, fetch, subset, split, metadata, paginate, rows |
+| `hugging-face-dataset-viewer` | Query Hugging Face datasets through the Dataset Viewer API for splits, rows, search, filters, and parquet links. | hugging, face, dataset, viewer | hugging, face, dataset, viewer, query, datasets, through, api, splits, rows, search, filters |
 | `hugging-face-evaluation` | Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content, importing scores from Artificial Analysis... | hugging, face, evaluation | hugging, face, evaluation, add, results, model, cards, supports, extracting, eval, tables, readme |
+| `hugging-face-gradio` | Build or edit Gradio apps, layouts, components, and chat interfaces in Python. | hugging, face, gradio | hugging, face, gradio, edit, apps, layouts, components, chat, interfaces, python |
+| `hugging-face-papers` | Read and analyze Hugging Face paper pages or arXiv papers with markdown and papers API metadata. | hugging, face, papers | hugging, face, papers, read, analyze, paper, pages, arxiv, markdown, api, metadata |
 | `hugging-face-tool-builder` | Your purpose is now is to create reusable command line scripts and utilities for using the Hugging Face API, allowing chaining, piping and intermediate proce... | hugging, face, builder | hugging, face, builder, purpose, now, reusable, command, line, scripts, utilities, api, allowing |
 | `ios-debugger-agent` | Debug the current iOS project on a booted simulator with XcodeBuildMCP. | ios, debugger, agent | ios, debugger, agent, debug, current, booted, simulator, xcodebuildmcp |
 | `javascript-mastery` | 33+ essential JavaScript concepts every developer should know, inspired by [33-js-concepts](https://github.com/leonardomso/33-js-concepts). | javascript, mastery | javascript, mastery, 33, essential, concepts, every, developer, should, know, inspired, js, https |
@@ -603,6 +606,7 @@ Total skills: 1329
 | `tavily-web` | Web search, content extraction, crawling, and research capabilities using Tavily API. Use when you need to search the web for current information, extracting... | tavily, web | tavily, web, search, content, extraction, crawling, research, capabilities, api, current, information, extracting |
 | `telegram` | Integracao completa com Telegram Bot API. Setup com BotFather, mensagens, webhooks, inline keyboards, grupos, canais. Boilerplates Node.js e Python. | messaging, telegram, bots, webhooks | messaging, telegram, bots, webhooks, integracao, completa, com, bot, api, setup, botfather, mensagens |
 | `temporal-python-testing` | Comprehensive testing approaches for Temporal workflows using pytest, progressive disclosure resources for specific testing scenarios. | temporal, python | temporal, python, testing, approaches, pytest, progressive, disclosure, resources, specific, scenarios |
+| `transformers-js` | Run Hugging Face models in JavaScript or TypeScript with Transformers.js in Node.js or the browser. | transformers, js | transformers, js, run, hugging, face, models, javascript, typescript, node, browser |
 | `trigger-dev` | You are a Trigger.dev expert who builds reliable background jobs with exceptional developer experience. You understand that Trigger.dev bridges the gap betwe... | trigger, dev | trigger, dev, who, reliable, background, jobs, exceptional, developer, experience, understand, bridges, gap |
 | `trpc-fullstack` | Build end-to-end type-safe APIs with tRPC — routers, procedures, middleware, subscriptions, and Next.js/React integration patterns. | typescript, trpc, api, fullstack, nextjs, react, type-safety | typescript, trpc, api, fullstack, nextjs, react, type-safety, type, safe, apis, routers, procedures |
 | `typescript-advanced-types` | Comprehensive guidance for mastering TypeScript's advanced type system including generics, conditional types, mapped types, template literal types, and utili... | typescript, advanced, types | typescript, advanced, types, guidance, mastering, type, including, generics, conditional, mapped, literal, utility |
@@ -614,7 +618,7 @@ Total skills: 1329
 | `zod-validation-expert` | Expert in Zod — TypeScript-first schema validation. Covers parsing, custom errors, refinements, type inference, and integration with React Hook Form, Next.js... | zod, validation | zod, validation, typescript, first, schema, covers, parsing, custom, errors, refinements, type, inference |
 | `zustand-store-ts` | Create Zustand stores following established patterns with proper TypeScript types and middleware. | zustand, store, ts | zustand, store, ts, stores, following, established, proper, typescript, types, middleware |
 
-## general (325)
+## general (328)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -774,8 +778,10 @@ Total skills: 1329
 | `hig-technologies` | Check for .claude/apple-design-context.md before asking questions. Use existing context and only ask for information not already covered. | hig, technologies | hig, technologies, check, claude, apple, context, md, before, asking, questions, existing, ask |
 | `hosted-agents` | Build background agents in sandboxed environments. Use for hosted coding agents, sandboxed VMs, Modal sandboxes, and remote coding environments. | hosted, agents | hosted, agents, background, sandboxed, environments, coding, vms, modal, sandboxes, remote |
 | `hubspot-integration` | Authentication for single-account integrations | hubspot, integration | hubspot, integration, authentication, single, account, integrations |
-| `hugging-face-cli` | The hf CLI provides direct terminal access to the Hugging Face Hub for downloading, uploading, and managing repositories, cache, and compute resources. | hugging, face, cli | hugging, face, cli, hf, provides, direct, terminal, access, hub, downloading, uploading, managing |
+| `hugging-face-cli` | Use the Hugging Face Hub CLI (`hf`) to download, upload, and manage models, datasets, and Spaces. | hugging, face, cli | hugging, face, cli, hub, hf, download, upload, models, datasets, spaces |
+| `hugging-face-model-trainer` | Train or fine-tune TRL language models on Hugging Face Jobs, including SFT, DPO, GRPO, and GGUF export. | hugging, face, model, trainer | hugging, face, model, trainer, train, fine, tune, trl, language, models, jobs, including |
 | `hugging-face-paper-publisher` | Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating... | hugging, face, paper, publisher | hugging, face, paper, publisher, publish, research, papers, hub, supports, creating, pages, linking |
+| `hugging-face-vision-trainer` | Train or fine-tune vision models on Hugging Face Jobs for detection, classification, and SAM or SAM2 segmentation. | hugging, face, vision, trainer | hugging, face, vision, trainer, train, fine, tune, models, jobs, detection, classification, sam |
 | `ilya-sutskever` | Agente que simula Ilya Sutskever — co-fundador da OpenAI, ex-Chief Scientist, fundador da SSI. Use quando quiser perspectivas sobre: AGI safety-first, consci... | persona, agi, safety, scaling-laws, openai | persona, agi, safety, scaling-laws, openai, ilya, sutskever, agente, que, simula, co, fundador |
 | `infinite-gratitude` | Multi-agent research skill for parallel research execution (10 agents, battle-tested with real case studies). | infinite, gratitude | infinite, gratitude, multi, agent, research, skill, parallel, execution, 10, agents, battle, tested |
 | `inngest` | You are an Inngest expert who builds reliable background processing without managing infrastructure. You understand that serverless doesn't mean you can't ha... | inngest | inngest, who, reliable, background, processing, without, managing, infrastructure, understand, serverless, doesn, mean |
@@ -844,6 +850,7 @@ Total skills: 1329
 | `pentest-checklist` | Provide a comprehensive checklist for planning, executing, and following up on penetration tests. Ensure thorough preparation, proper scoping, and effective ... | pentest, checklist | pentest, checklist, provide, planning, executing, following, up, penetration, tests, thorough, preparation, proper |
 | `performance-optimizer` | Identifies and fixes performance bottlenecks in code, databases, and APIs. Measures before and after to prove improvements. | performance, optimizer | performance, optimizer, identifies, fixes, bottlenecks, code, databases, apis, measures, before, after, prove |
 | `performance-profiling` | Performance profiling principles. Measurement, analysis, and optimization techniques. | performance, profiling | performance, profiling, principles, measurement, analysis, optimization, techniques |
+| `phase-gated-debugging` | Use when debugging any bug. Enforces a 5-phase protocol where code edits are blocked until root cause is confirmed. Prevents premature fix attempts. | phase, gated, debugging | phase, gated, debugging, any, bug, enforces, protocol, where, code, edits, blocked, until |
 | `plaid-fintech` | Create a linktoken for Plaid Link, exchange publictoken for accesstoken. Link tokens are short-lived, one-time use. Access tokens don't expire but may need u... | plaid, fintech | plaid, fintech, linktoken, link, exchange, publictoken, accesstoken, tokens, short, lived, one, time |
 | `plan-writing` | Structured task planning with clear breakdowns, dependencies, and verification criteria. Use when implementing features, refactoring, or any multi-step work. | plan, writing | plan, writing, structured, task, planning, clear, breakdowns, dependencies, verification, criteria, implementing, features |
 | `planning-with-files` | Work like Manus: Use persistent markdown files as your "working memory on disk." | planning, with, files | planning, with, files, work, like, manus, persistent, markdown, working, memory, disk |
@@ -1016,13 +1023,13 @@ Total skills: 1329
 | `gitops-workflow` | Complete guide to implementing GitOps workflows with ArgoCD and Flux for automated Kubernetes deployments. | gitops | gitops, complete, implementing, argocd, flux, automated, kubernetes, deployments |
 | `grafana-dashboards` | Create and manage production-ready Grafana dashboards for comprehensive system observability. | grafana, dashboards | grafana, dashboards, observability |
 | `helm-chart-scaffolding` | Comprehensive guidance for creating, organizing, and managing Helm charts for packaging and deploying Kubernetes applications. | helm, chart | helm, chart, scaffolding, guidance, creating, organizing, managing, charts, packaging, deploying, kubernetes, applications |
-| `hugging-face-jobs` | Run any workload on fully managed Hugging Face infrastructure. No local setup required—jobs run on cloud CPUs, GPUs, or TPUs and can persist results to the H... | hugging, face, jobs | hugging, face, jobs, run, any, workload, fully, managed, infrastructure, no, local, setup |
-| `hugging-face-model-trainer` | Train language models using TRL (Transformer Reinforcement Learning) on fully managed Hugging Face infrastructure. No local GPU setup required—models train o... | hugging, face, model, trainer | hugging, face, model, trainer, train, language, models, trl, transformer, reinforcement, learning, fully |
+| `hugging-face-trackio` | Track ML experiments with Trackio using Python logging, alerts, and CLI metric retrieval. | hugging, face, trackio | hugging, face, trackio, track, ml, experiments, python, logging, alerts, cli, metric, retrieval |
 | `hybrid-cloud-architect` | Expert hybrid cloud architect specializing in complex multi-cloud solutions across AWS/Azure/GCP and private clouds (OpenStack/VMware). | hybrid, cloud | hybrid, cloud, architect, specializing, complex, multi, solutions, aws, azure, gcp, private, clouds |
 | `hybrid-cloud-networking` | Configure secure, high-performance connectivity between on-premises and cloud environments using VPN, Direct Connect, and ExpressRoute. | hybrid, cloud, networking | hybrid, cloud, networking, configure, secure, high, performance, connectivity, between, premises, environments, vpn |
 | `istio-traffic-management` | Comprehensive guide to Istio traffic management for production service mesh deployments. | istio, traffic | istio, traffic, mesh, deployments |
 | `iterate-pr` | Iterate on a PR until CI passes. Use when you need to fix CI failures, address review feedback, or continuously push fixes until all checks are green. Automa... | iterate, pr | iterate, pr, until, ci, passes, fix, failures, address, review, feedback, continuously, push |
 | `java-pro` | Master Java 21+ with modern features like virtual threads, pattern matching, and Spring Boot 3.x. Expert in the latest Java ecosystem including GraalVM, Proj... | java | java, pro, 21, features, like, virtual, threads, matching, spring, boot, latest, ecosystem |
+| `jq` | Expert jq usage for JSON querying, filtering, transformation, and pipeline integration. Practical patterns for real shell workflows. | jq, json, shell, cli, data-transformation, bash | jq, json, shell, cli, data-transformation, bash, usage, querying, filtering, transformation, pipeline, integration |
 | `k6-load-testing` | Comprehensive k6 load testing skill for API, browser, and scalability testing. Write realistic load scenarios, analyze results, and integrate with CI/CD. | k6, load-testing, performance, api-testing, ci-cd | k6, load-testing, performance, api-testing, ci-cd, load, testing, skill, api, browser, scalability, write |
 | `kubernetes-architect` | Expert Kubernetes architect specializing in cloud-native infrastructure, advanced GitOps workflows (ArgoCD/Flux), and enterprise container orchestration. | kubernetes | kubernetes, architect, specializing, cloud, native, infrastructure, gitops, argocd, flux, enterprise, container, orchestration |
 | `kubernetes-deployment` | Kubernetes deployment workflow for container orchestration, Helm charts, service mesh, and production-ready K8s configurations. | kubernetes, deployment | kubernetes, deployment, container, orchestration, helm, charts, mesh, k8s, configurations |
@@ -1068,7 +1075,7 @@ Total skills: 1329
 | `whatsapp-cloud-api` | Integracao com WhatsApp Business Cloud API (Meta). Mensagens, templates, webhooks HMAC-SHA256, automacao de atendimento. Boilerplates Node.js e Python. | messaging, whatsapp, meta, webhooks | messaging, whatsapp, meta, webhooks, cloud, api, integracao, com, business, mensagens, hmac, sha256 |
 | `x-twitter-scraper` | X (Twitter) data platform skill — tweet search, user lookup, follower extraction, engagement metrics, giveaway draws, monitoring, webhooks, 19 extraction too... | [twitter, x-api, scraping, mcp, social-media, data-extraction, giveaway, monitoring, webhooks] | [twitter, x-api, scraping, mcp, social-media, data-extraction, giveaway, monitoring, webhooks], twitter, scraper, data |
 
-## security (165)
+## security (167)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -1138,6 +1145,7 @@ Total skills: 1329
 | `graphql-architect` | Master modern GraphQL with federation, performance optimization, and enterprise security. Build scalable schemas, implement advanced caching, and design real... | graphql | graphql, architect, federation, performance, optimization, enterprise, security, scalable, schemas, caching, real, time |
 | `grpc-golang` | Build production-ready gRPC services in Go with mTLS, streaming, and observability. Use when designing Protobuf contracts with Buf or implementing secure ser... | grpc, golang | grpc, golang, go, mtls, streaming, observability, designing, protobuf, contracts, buf, implementing, secure |
 | `html-injection-testing` | Identify and exploit HTML injection vulnerabilities that allow attackers to inject malicious HTML content into web applications. This vulnerability enables a... | html, injection | html, injection, testing, identify, exploit, vulnerabilities, allow, attackers, inject, malicious, content, web |
+| `hugging-face-jobs` | Run workloads on Hugging Face Jobs with managed CPUs, GPUs, TPUs, secrets, and Hub persistence. | hugging, face, jobs | hugging, face, jobs, run, workloads, managed, cpus, gpus, tpus, secrets, hub, persistence |
 | `incident-responder` | Expert SRE incident responder specializing in rapid problem resolution, modern observability, and comprehensive incident management. | incident, responder | incident, responder, sre, specializing, rapid, problem, resolution, observability |
 | `incident-response-incident-response` | Use when working with incident response incident response | incident, response | incident, response, working |
 | `incident-response-smart-fix` | [Extended thinking: This workflow implements a sophisticated debugging and resolution pipeline that leverages AI-assisted debugging tools and observability p... | incident, response, fix | incident, response, fix, smart, extended, thinking, implements, sophisticated, debugging, resolution, pipeline, leverages |
@@ -1186,6 +1194,7 @@ Total skills: 1329
 | `red-team-tools` | Implement proven methodologies and tool workflows from top security researchers for effective reconnaissance, vulnerability discovery, and bug bounty hunting... | red, team | red, team, proven, methodologies, top, security, researchers, effective, reconnaissance, vulnerability, discovery, bug |
 | `risk-manager` | Monitor portfolio risk, R-multiples, and position limits. Creates hedging strategies, calculates expectancy, and implements stop-losses. | risk, manager | risk, manager, monitor, portfolio, multiples, position, limits, creates, hedging, calculates, expectancy, implements |
 | `risk-metrics-calculation` | Calculate portfolio risk metrics including VaR, CVaR, Sharpe, Sortino, and drawdown analysis. Use when measuring portfolio risk, implementing risk limits, or... | risk, metrics, calculation | risk, metrics, calculation, calculate, portfolio, including, var, cvar, sharpe, sortino, drawdown, analysis |
+| `saas-multi-tenant` | Design and implement multi-tenant SaaS architectures with row-level security, tenant-scoped queries, shared-schema isolation, and safe cross-tenant admin pat... | multi-tenancy, saas, row-level-security, postgresql, tenant-isolation | multi-tenancy, saas, row-level-security, postgresql, tenant-isolation, multi, tenant, architectures, row, level, security, scoped |
 | `saas-mvp-launcher` | Use when planning or building a SaaS MVP from scratch. Provides a structured roadmap covering tech stack, architecture, auth, payments, and launch checklist. | saas, mvp, launcher | saas, mvp, launcher, planning, building, scratch, provides, structured, roadmap, covering, tech, stack |
 | `sast-configuration` | Static Application Security Testing (SAST) tool setup, configuration, and custom rule creation for comprehensive security scanning across multiple programmin... | sast, configuration | sast, configuration, static, application, security, testing, setup, custom, rule, creation, scanning, multiple |
 | `scanning-tools` | Master essential security scanning tools for network discovery, vulnerability assessment, web application testing, wireless security, and compliance validati... | scanning | scanning, essential, security, network, discovery, vulnerability, assessment, web, application, testing, wireless, compliance |
@@ -1274,7 +1283,7 @@ Total skills: 1329
 | `wiki-qa` | Answer repository questions grounded entirely in source code evidence. Use when user asks a question about the codebase, user wants to understand a specific ... | wiki, qa | wiki, qa, answer, repository, questions, grounded, entirely, source, code, evidence, user, asks |
 | `windows-privilege-escalation` | Provide systematic methodologies for discovering and exploiting privilege escalation vulnerabilities on Windows systems during penetration testing engagements. | windows, privilege, escalation | windows, privilege, escalation, provide, systematic, methodologies, discovering, exploiting, vulnerabilities, during, penetration, testing |
 
-## workflow (99)
+## workflow (101)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -1365,11 +1374,13 @@ Total skills: 1329
 | `team-collaboration-issue` | You are a GitHub issue resolution expert specializing in systematic bug investigation, feature implementation, and collaborative development workflows. Your ... | team, collaboration, issue | team, collaboration, issue, github, resolution, specializing, systematic, bug, investigation, feature, collaborative, development |
 | `telegram-automation` | Automate Telegram tasks via Rube MCP (Composio): send messages, manage chats, share photos/documents, and handle bot commands. Always search tools first for ... | telegram | telegram, automation, automate, tasks, via, rube, mcp, composio, send, messages, chats, share |
 | `tiktok-automation` | Automate TikTok tasks via Rube MCP (Composio): upload/publish videos, post photos, manage content, and view user profiles/stats. Always search tools first fo... | tiktok | tiktok, automation, automate, tasks, via, rube, mcp, composio, upload, publish, videos, post |
+| `tmux` | Expert tmux session, window, and pane management for terminal multiplexing, persistent remote workflows, and shell scripting automation. | tmux, terminal, multiplexer, sessions, shell, remote, automation | tmux, terminal, multiplexer, sessions, shell, remote, automation, session, window, pane, multiplexing, persistent |
 | `todoist-automation` | Automate Todoist task management, projects, sections, filtering, and bulk operations via Rube MCP (Composio). Always search tools first for current schemas. | todoist | todoist, automation, automate, task, sections, filtering, bulk, operations, via, rube, mcp, composio |
 | `track-management` | Use this skill when creating, managing, or working with Conductor tracks - the logical work units for features, bugs, and refactors. Applies to spec.md, plan... | track | track, skill, creating, managing, working, conductor, tracks, logical, work, units, features, bugs |
 | `trello-automation` | Automate Trello boards, cards, and workflows via Rube MCP (Composio). Create cards, manage lists, assign members, and search across boards programmatically. | trello | trello, automation, automate, boards, cards, via, rube, mcp, composio, lists, assign, members |
 | `twitter-automation` | Automate Twitter/X tasks via Rube MCP (Composio): posts, search, users, bookmarks, lists, media. Always search tools first for current schemas. | twitter | twitter, automation, automate, tasks, via, rube, mcp, composio, posts, search, users, bookmarks |
 | `vercel-automation` | Automate Vercel tasks via Rube MCP (Composio): manage deployments, domains, DNS, env vars, projects, and teams. Always search tools first for current schemas. | vercel | vercel, automation, automate, tasks, via, rube, mcp, composio, deployments, domains, dns, env |
+| `viboscope` | Psychological compatibility matching — find cofounders, collaborators, and friends through validated psychometrics | matching, psychology, compatibility, networking, collaboration | matching, psychology, compatibility, networking, collaboration, viboscope, psychological, find, cofounders, collaborators, friends, through |
 | `web-scraper` | Web scraping inteligente multi-estrategia. Extrai dados estruturados de paginas web (tabelas, listas, precos). Paginacao, monitoramento e export CSV/JSON. | scraping, data-extraction, automation, csv | scraping, data-extraction, automation, csv, web, scraper, inteligente, multi, estrategia, extrai, dados, estruturados |
 | `webflow-automation` | Automate Webflow CMS collections, site publishing, page management, asset uploads, and ecommerce orders via Rube MCP (Composio). Always search tools first fo... | webflow | webflow, automation, automate, cms, collections, site, publishing, page, asset, uploads, ecommerce, orders |
 | `workflow-automation` | You are a workflow automation architect who has seen both the promise and the pain of these platforms. You've migrated teams from brittle cron jobs to durabl... |  | automation, architect, who, seen, both, promise, pain, these, platforms, ve, migrated, teams |

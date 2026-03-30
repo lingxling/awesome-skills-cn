@@ -1,7 +1,7 @@
 ---
 name: security-requirement-extraction
 description: "Derive security requirements from threat models and business context. Use when translating threats into actionable requirements, creating security user stories, or building security test cases."
-risk: unknown
+risk: safe
 source: community
 date_added: "2026-02-27"
 ---

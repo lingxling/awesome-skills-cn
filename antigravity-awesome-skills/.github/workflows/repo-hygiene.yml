@@ -11,10 +11,15 @@ permissions:
 jobs:
   sync-repo-state:
     runs-on: ubuntu-latest
+    concurrency:
+      group: canonical-main-sync
+      cancel-in-progress: false
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -22,7 +27,7 @@ jobs:
           python-version: "3.10"
 
       - name: Install Python dependencies
-        run: pip install pyyaml
+        run: pip install -r tools/requirements.txt
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -33,6 +38,9 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Audit npm dependencies
+        run: npm audit --audit-level=high
+
       - name: Run repo-state sync
         run: npm run sync:repo-state
 
@@ -40,19 +48,30 @@ jobs:
         run: |
           set -euo pipefail
 
-          managed_files=$(node tools/scripts/generated_files.js --shell --include-mixed)
+          mapfile -t managed_files < <(node tools/scripts/generated_files.js --include-mixed)
+          if [ "${#managed_files[@]}" -eq 0 ]; then
+            echo "No managed files resolved from generated_files contract."
+            exit 1
+          fi
 
-          if git diff --quiet; then
+          if git diff --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
             echo "No repo-state drift detected."
             exit 0
           fi
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add $managed_files || true
+          git fetch origin main
+          git add -- "${managed_files[@]}" || true
 
           if git diff --cached --quiet; then
-            echo "Repo hygiene produced unmanaged drift."
+            echo "Repo hygiene produced unmanaged drift only."
+            git status --short
+            exit 1
+          fi
+
+          if [ -n "$(git diff --name-only)" ] || [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            echo "Repo hygiene produced unmanaged drift alongside canonical changes."
             git status --short
             exit 1
           fi

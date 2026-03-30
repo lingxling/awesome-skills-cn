@@ -1,7 +1,7 @@
 ---
 name: database-design
 description: "Database design principles and decision-making. Schema design, indexing strategy, ORM selection, serverless databases."
-risk: unknown
+risk: safe
 source: community
 date_added: "2026-02-27"
 ---

@@ -1,7 +1,7 @@
 ---
 name: autonomous-agent-patterns
 description: "Design patterns for building autonomous coding agents, inspired by [Cline](https://github.com/cline/cline) and [OpenAI Codex](https://github.com/openai/codex)."
-risk: unknown
+risk: critical
 source: community
 date_added: "2026-02-27"
 ---

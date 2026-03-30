@@ -637,6 +637,49 @@ if (value > 0.5) {
 color = mix(colorB, colorA, step(0.5, value));
 ```
 
+## TSL (Three.js Shading Language) - Future Direction
+
+TSL is the new shader authoring system for Three.js, designed to work with both WebGL and WebGPU renderers. GLSL patterns above are **WebGL-only** and will not work with the WebGPU renderer.
+
+### TSL Quick Start
+
+```javascript
+import { MeshStandardNodeMaterial } from "three/addons/nodes/Nodes.js";
+import {
+  uv, sin, timerLocal, vec4, color, positionLocal, normalLocal,
+  float, mul, add
+} from "three/addons/nodes/Nodes.js";
+
+const material = new MeshStandardNodeMaterial();
+
+// Animated color based on UV and time
+const time = timerLocal();
+material.colorNode = color(sin(add(uv().x, time)), uv().y, 0.5);
+
+// Vertex displacement
+material.positionNode = add(
+  positionLocal,
+  mul(normalLocal, sin(add(positionLocal.x, time)).mul(0.1))
+);
+```
+
+### Key Differences from GLSL
+
+| GLSL (WebGL only)       | TSL (WebGL + WebGPU)         |
+| ----------------------- | ---------------------------- |
+| `ShaderMaterial`        | `MeshStandardNodeMaterial`   |
+| String-based shaders    | JavaScript node graph        |
+| `onBeforeCompile`       | Node composition             |
+| Manual uniforms         | `uniform()` node             |
+| `texture2D()`           | `texture()` node             |
+| `gl_Position`           | `positionNode`               |
+| `gl_FragColor`          | `colorNode` / `outputNode`   |
+
+### When to Use What
+
+- **GLSL ShaderMaterial**: Existing WebGL projects, maximum shader control, porting existing shaders
+- **TSL NodeMaterial**: New projects, WebGPU support needed, cross-renderer compatibility
+
 ## See Also
 
 - `threejs-materials` - Built-in material types

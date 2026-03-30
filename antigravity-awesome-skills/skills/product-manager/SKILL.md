@@ -1,7 +1,7 @@
 ---
 name: product-manager
 description: "Senior PM agent with 6 knowledge domains, 30+ frameworks, 12 templates, and 32 SaaS metrics with formulas. Pure Markdown, zero scripts."
-risk: unknown
+risk: safe
 version: "1.0.0"
 author: "Digidai"
 tags: ["product-management", "saas", "frameworks", "metrics", "strategy"]

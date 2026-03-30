@@ -623,6 +623,14 @@ const isMobile = /iPhone|iPad|Android/i.test(navigator.userAgent);
 const textureSize = isMobile ? 1024 : 2048;
 ```
 
+## KTX2Loader BC3 Alpha Fix (r183)
+
+As of r183, `KTX2Loader` correctly handles BC3 compressed textures with alpha channels, fixing previously incorrect alpha rendering.
+
+## ISO 21496-1 Gainmap Metadata (r183)
+
+Three.js r183 supports ISO 21496-1 gainmap metadata in HDR textures, enabling proper tone mapping of gainmap-based HDR images (such as those produced by recent smartphone cameras).
+
 ## See Also
 
 - `threejs-materials` - Applying textures to materials

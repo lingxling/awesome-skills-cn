@@ -60,6 +60,7 @@
 - [dependency-audit](https://clawskills.sh/skills/fratua-dependency-audit) - 智能依赖健康检查 — 安全审计、过时检测、未使用的依赖项和优先更新计划。
 - [django-creator](https://clawskills.sh/skills/moenassi-django-creator) - 此项目消除了从头创建虚拟机和设置环境所浪费的时间。
 - [django-tool](https://clawskills.sh/skills/moenassi-django-tool) - 此项目消除了从头创建虚拟机和设置环境所浪费的时间。
+- [domain-checker](https://clawhub.ai/blueyi/domain-checker) - Check domain availability via whois + DNS cross-verification. Supports .com, .net, .org, .io, .ai, .so, and other TLDs.
 - [dsiprouter-skill](https://clawskills.sh/skills/mackhendricks-dsiprouter-skill) - 使用 Postman 调用 dSIPRouter REST API。
 - [dwlf](https://clawskills.sh/skills/andywilliams-dwlf) - 与 DWLF (dwlf.co.uk) 交互，一个加密货币的市场分析平台。
 - [ecto](https://clawskills.sh/skills/visionik-ecto) - 通过 Admin API 管理 Ghost.io 博客。

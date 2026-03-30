@@ -1,7 +1,7 @@
 ---
 name: neon-postgres
 description: "Configure Prisma for Neon with connection pooling."
-risk: unknown
+risk: safe
 source: "vibeship-spawner-skills (Apache 2.0)"
 date_added: "2026-02-27"
 ---

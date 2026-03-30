@@ -1,7 +1,7 @@
 ---
 name: conductor-revert
 description: "Git-aware undo by logical work unit (track, phase, or task)"
-risk: unknown
+risk: critical
 source: community
 date_added: "2026-02-27"
 ---

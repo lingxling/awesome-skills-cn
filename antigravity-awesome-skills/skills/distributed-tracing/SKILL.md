@@ -1,7 +1,7 @@
 ---
 name: distributed-tracing
 description: "Implement distributed tracing with Jaeger and Tempo for request flow visibility across microservices."
-risk: unknown
+risk: critical
 source: community
 date_added: "2026-02-27"
 ---

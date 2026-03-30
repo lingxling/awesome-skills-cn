@@ -28,11 +28,21 @@ except ImportError:
 GRAPH_API = "https://graph.facebook.com/v21.0"
 
 
-def _mask_secret(value: str) -> str:
-    """Return a masked version of a secret for safe logging."""
-    if not value or len(value) < 8:
-        return "***masked***"
-    return f"{value[:6]}...masked"
+def _redact_json(value):
+    """Recursively redact common secret-bearing keys before logging JSON."""
+    sensitive_keys = {"authorization", "token", "access_token", "app_secret", "secret"}
+
+    if isinstance(value, dict):
+        redacted = {}
+        for key, item in value.items():
+            if key.lower() in sensitive_keys:
+                redacted[key] = "***redacted***"
+            else:
+                redacted[key] = _redact_json(item)
+        return redacted
+    if isinstance(value, list):
+        return [_redact_json(item) for item in value]
+    return value
 
 
 def send_test(to: str, message: str) -> None:
@@ -84,11 +94,7 @@ def send_test(to: str, message: str) -> None:
 
         print()
         print("Full response:")
-        # Mask token in response output to prevent credential leakage
-        response_str = json.dumps(data, indent=2)
-        if token and token in response_str:
-            response_str = response_str.replace(token, _mask_secret(token))
-        print(response_str)
+        print(json.dumps(_redact_json(data), indent=2))
 
     except httpx.ConnectError:
         print("Error: Connection failed. Check your internet connection.")
@@ -96,10 +102,8 @@ def send_test(to: str, message: str) -> None:
     except httpx.TimeoutException:
         print("Error: Request timed out.")
         sys.exit(1)
-    except Exception as e:
-        # Mask token in error output to prevent credential leakage
-        safe_err = str(e).replace(token, _mask_secret(token)) if token else str(e)
-        print(f"Error: {safe_err}")
+    except Exception as exc:
+        print(f"Error: unexpected {exc.__class__.__name__} while sending the test message.")
         sys.exit(1)
 
 

@@ -26,6 +26,7 @@ interface InitOptions {
   force?: boolean;
   offline?: boolean;
   legacy?: boolean; // Use old ZIP-based install
+  global?: boolean; // Install to home directory (global mode)
 }
 
 /**
@@ -99,15 +100,18 @@ async function tryGitHubInstall(
 async function templateInstall(
   targetDir: string,
   aiType: AIType,
-  spinner: ReturnType<typeof ora>
+  spinner: ReturnType<typeof ora>,
+  isGlobal = false
 ): Promise<string[]> {
-  spinner.text = 'Generating skill files from templates...';
+  spinner.text = isGlobal
+    ? 'Generating skill files globally...'
+    : 'Generating skill files from templates...';
 
   if (aiType === 'all') {
-    return generateAllPlatformFiles(targetDir);
+    return generateAllPlatformFiles(targetDir, isGlobal);
   }
 
-  return generatePlatformFiles(targetDir, aiType);
+  return generatePlatformFiles(targetDir, aiType, isGlobal);
 }
 
 export async function initCommand(options: InitOptions): Promise<void> {
@@ -142,7 +146,9 @@ export async function initCommand(options: InitOptions): Promise<void> {
     aiType = response.aiType as AIType;
   }
 
-  logger.info(`Installing for: ${chalk.cyan(getAITypeDescription(aiType))}`);
+  const isGlobal = !!options.global;
+  const modeLabel = isGlobal ? ' (global)' : '';
+  logger.info(`Installing for: ${chalk.cyan(getAITypeDescription(aiType))}${modeLabel}`);
 
   const spinner = ora('Installing files...').start();
   const cwd = process.cwd();
@@ -152,6 +158,9 @@ export async function initCommand(options: InitOptions): Promise<void> {
   try {
     // Use legacy ZIP-based install if --legacy flag is set
     if (options.legacy) {
+      if (isGlobal) {
+        spinner.warn('--global is not supported with --legacy mode, installing locally instead');
+      }
       // Try GitHub download first (unless offline mode)
       if (!options.offline) {
         const githubResult = await tryGitHubInstall(cwd, aiType, spinner);
@@ -169,7 +178,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       }
     } else {
       // Use new template-based generation (default)
-      copiedFolders = await templateInstall(cwd, aiType, spinner);
+      copiedFolders = await templateInstall(cwd, aiType, spinner, isGlobal);
       installMethod = 'template';
     }
 

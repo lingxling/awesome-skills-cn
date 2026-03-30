@@ -1,7 +1,7 @@
 {
   "name": "antigravity-awesome-skills",
-  "version": "9.0.0",
-  "description": "1,329+ agentic skills for Claude Code, Gemini CLI, Cursor, Antigravity & more. Installer CLI.",
+  "version": "9.2.0",
+  "description": "1,340+ agentic skills for Claude Code, Gemini CLI, Cursor, Antigravity & more. Installer CLI.",
   "license": "MIT",
   "scripts": {
     "validate": "node tools/scripts/run-python.js tools/scripts/validate_skills.py",
@@ -20,6 +20,7 @@
     "bundles:sync": "node tools/scripts/run-python.js tools/scripts/sync_editorial_bundles.py",
     "bundles:check": "node tools/scripts/run-python.js tools/scripts/sync_editorial_bundles.py --check",
     "sync:metadata": "node tools/scripts/run-python.js tools/scripts/sync_repo_metadata.py",
+    "sync:risk-labels": "node tools/scripts/run-python.js tools/scripts/sync_risk_labels.py",
     "sync:github-about": "node tools/scripts/run-python.js tools/scripts/sync_repo_metadata.py --apply-github-about",
     "sync:contributors": "node tools/scripts/run-python.js tools/scripts/sync_contributors.py",
     "sync:web-assets": "npm run app:setup && cd apps/web-app && npm run generate:sitemap",
@@ -48,6 +49,8 @@
     "update:skills": "node tools/scripts/run-python.js tools/scripts/generate_index.py && node tools/scripts/copy-file.js skills_index.json apps/web-app/public/skills.json && node tools/scripts/copy-file.js skills_index.json apps/web-app/public/skills.json.backup",
     "app:setup": "node tools/scripts/setup_web.js",
     "app:install": "cd apps/web-app && npm ci",
+    "app:test": "cd apps/web-app && npm run test -- --run",
+    "app:test:coverage": "cd apps/web-app && npm run test:coverage -- --run",
     "app:dev": "npm run app:setup && cd apps/web-app && npm run dev",
     "app:build": "npm run app:setup && cd apps/web-app && npm run build",
     "app:preview": "cd apps/web-app && npm run preview"

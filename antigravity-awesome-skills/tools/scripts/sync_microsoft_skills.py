@@ -207,6 +207,9 @@ def find_plugin_skills(source_dir: Path, already_synced_names: set):
         skill_dir = skill_file.parent
         skill_name = skill_dir.name
 
+        if not is_safe_regular_file(skill_file, source_dir):
+            continue
+
         if skill_name not in already_synced_names:
             results.append({
                 "relative_path": Path("plugins") / skill_name,

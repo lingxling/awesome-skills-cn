@@ -154,7 +154,7 @@ Each rule includes:
 - **161 Color Palettes** - Industry-specific palettes aligned 1:1 with the 161 product types
 - **57 Font Pairings** - Curated typography combinations with Google Fonts imports
 - **25 Chart Types** - Recommendations for dashboards and analytics
-- **13 Tech Stacks** - React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, HTML+Tailwind, shadcn/ui, Jetpack Compose
+- **15 Tech Stacks** - React, Next.js, Astro, Vue, Nuxt.js, Nuxt UI, Svelte, SwiftUI, React Native, Flutter, HTML+Tailwind, shadcn/ui, Jetpack Compose, Angular, Laravel
 - **99 UX Guidelines** - Best practices, anti-patterns, and accessibility rules
 - **161 Reasoning Rules** - Industry-specific design system generation (NEW in v2.0)
 
@@ -287,7 +287,17 @@ uipro init --ai opencode    # OpenCode
 uipro init --ai continue    # Continue
 uipro init --ai codebuddy   # CodeBuddy
 uipro init --ai droid       # Droid (Factory)
+uipro init --ai kilocode    # KiloCode
+uipro init --ai warp        # Warp
+uipro init --ai augment     # Augment
 uipro init --ai all         # All assistants
+```
+
+### Global Install (Available for All Projects)
+
+```bash
+uipro init --ai claude --global   # Install to ~/.claude/skills/
+uipro init --ai cursor --global   # Install to ~/.cursor/skills/
 ```
 
 ### Other CLI Commands
@@ -296,6 +306,9 @@ uipro init --ai all         # All assistants
 uipro versions              # List available versions
 uipro update                # Update to latest version
 uipro init --offline        # Skip GitHub download, use bundled assets
+uipro uninstall             # Remove skill (auto-detect platform)
+uipro uninstall --ai claude # Remove specific platform
+uipro uninstall --global    # Remove from global install
 ```
 
 ## Prerequisites
@@ -320,7 +333,7 @@ winget install Python.Python.3.12
 
 ### Skill Mode (Auto-activate)
 
-**Supported:** Claude Code, Cursor, Windsurf, Antigravity, Codex CLI, Continue, Gemini CLI, OpenCode, Qoder, CodeBuddy, Droid (Factory)
+**Supported:** Claude Code, Cursor, Windsurf, Antigravity, Codex CLI, Continue, Gemini CLI, OpenCode, Qoder, CodeBuddy, Droid (Factory), KiloCode, Warp, Augment
 
 The skill activates automatically when you request UI/UX work. Just chat naturally:
 
@@ -332,7 +345,7 @@ Build a landing page for my SaaS product
 
 ### Workflow Mode (Slash Command)
 
-**Supported:** Kiro, GitHub Copilot, Roo Code
+**Supported:** Kiro, GitHub Copilot, Roo Code, KiloCode
 
 Use the slash command to invoke the skill:
 
@@ -371,6 +384,8 @@ The skill provides stack-specific guidelines for:
 | **Web (HTML)** | HTML + Tailwind (default) |
 | **React Ecosystem** | React, Next.js, shadcn/ui |
 | **Vue Ecosystem** | Vue, Nuxt.js, Nuxt UI |
+| **Angular** | Angular |
+| **PHP** | Laravel (Blade, Livewire, Inertia.js) |
 | **Other Web** | Svelte, Astro |
 | **iOS** | SwiftUI |
 | **Android** | Jetpack Compose |

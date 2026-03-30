@@ -189,6 +189,18 @@ function animate() {
 }
 ```
 
+#### OrbitControls Programmatic Methods (r183)
+
+```javascript
+// Programmatic camera movement
+controls.dolly(1.5); // Dolly in/out (zoom for perspective cameras)
+controls.pan(deltaX, deltaY); // Pan the camera
+controls.rotate(deltaAzimuth, deltaPolar); // Rotate around target
+
+// Cursor style (r183)
+controls.cursorStyle = { orbit: "grab", pan: "move", dolly: "zoom-in" };
+```
+
 ### FlyControls
 
 ```javascript
