@@ -6,18 +6,17 @@
 
 本翻译项目集成了以下 SKILL 项目：
 
-
-- [**Anthropic Skills**](https://github.com/anthropics/skills) [![GitHub Stars](https://badgen.net/github/stars/anthropics/skills)](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（17个技能，已全部翻译）
-- [**Awesome OpenClaw Skills**](https://github.com/VoltAgent/awesome-openclaw-skills) [![GitHub Stars](https://badgen.net/github/stars/VoltAgent/awesome-openclaw-skills)](https://github.com/VoltAgent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能，已全部翻译）
-- [**Antigravity Awesome Skills**](https://github.com/sickn33/antigravity-awesome-skills) [![GitHub Stars](https://badgen.net/github/stars/sickn33/antigravity-awesome-skills)](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合（968个技能）
-- [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) [![GitHub Stars](https://badgen.net/github/stars/K-Dense-AI/claude-scientific-skills)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（179个技能，已全部翻译）
-- [**Composio Awesome Claude Skills**](https://github.com/ComposioHQ/awesome-claude-skills) [![GitHub Stars](https://badgen.net/github/stars/ComposioHQ/awesome-claude-skills)](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（200+个技能）
-- [**Hugging Face Skills**](https://github.com/huggingface/skills) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（11个技能，已全部翻译）
-- [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能，已全部翻译）
-- [**OpenAI Skills**](https://github.com/openai/skills) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（38个技能，已全部翻译）
-- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（7个技能，已全部翻译）
-- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（7个技能，6个已翻译）
-- [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
+- [**Anthropic Skills**](https://github.com/anthropics/skills) ([中文学习版](anthropics-skills/)) [![GitHub Stars](https://badgen.net/github/stars/anthropics/skills)](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（17个技能，已全部翻译）
+- [**Awesome OpenClaw Skills**](https://github.com/VoltAgent/awesome-openclaw-skills) ([中文学习版](voltagent-awesome-openclaw-skills/)) [![GitHub Stars](https://badgen.net/github/stars/VoltAgent/awesome-openclaw-skills)](https://github.com/VoltAgent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能，已全部翻译）
+- [**Antigravity Awesome Skills**](https://github.com/sickn33/antigravity-awesome-skills) ([中文学习版](antigravity-awesome-skills/)) [![GitHub Stars](https://badgen.net/github/stars/sickn33/antigravity-awesome-skills)](https://github.com/sickn33/antigravity-awesome-skills) - 968+ 通用代理技能集合（968个技能）
+- [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) ([中文学习版](claude-scientific-skills/)) [![GitHub Stars](https://badgen.net/github/stars/K-Dense-AI/claude-scientific-skills)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（179个技能，已全部翻译）
+- [**Composio Awesome Claude Skills**](https://github.com/ComposioHQ/awesome-claude-skills) ([中文学习版](composiohq-awesome-claude-skills/)) [![GitHub Stars](https://badgen.net/github/stars/ComposioHQ/awesome-claude-skills)](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（200+个技能）
+- [**Hugging Face Skills**](https://github.com/huggingface/skills) ([中文学习版](huggingface-skills/)) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（11个技能，已全部翻译）
+- [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) ([中文学习版](obsidian-skills/)) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能，已全部翻译）
+- [**OpenAI Skills**](https://github.com/openai/skills) ([中文学习版](openai-skills/)) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（38个技能，已全部翻译）
+- [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) ([中文学习版](ui-ux-pro-max-skill/)) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（7个技能，已全部翻译）
+- [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) ([中文学习版](vercel-labs-agent-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（7个技能，6个已翻译）
+- [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) ([中文学习版](vercel-labs-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
 
 ## SKILL 是什么
 
