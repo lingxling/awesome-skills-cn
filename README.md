@@ -4,7 +4,7 @@
 
 本项目致力于将优秀的 SKILL 翻译成中文，方便中文用户学习和使用。
 
-本翻译项目集成了以下 SKILL 项目：
+本项目集成了以下 SKILL 项目：
 
 - [**Anthropic Skills**](https://github.com/anthropics/skills) ([中文学习版](anthropics-skills/)) [![GitHub Stars](https://badgen.net/github/stars/anthropics/skills)](https://github.com/anthropics/skills) - Anthropic 官方技能仓库，包含文档处理（DOCX、PDF、PPTX、XLSX）、品牌指南、内部沟通等（17个技能，已全部翻译）
 - [**Awesome OpenClaw Skills**](https://github.com/VoltAgent/awesome-openclaw-skills) ([中文学习版](awesome-openclaw-skills/)) [![GitHub Stars](https://badgen.net/github/stars/VoltAgent/awesome-openclaw-skills)](https://github.com/VoltAgent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域（5816个技能，已全部翻译）
