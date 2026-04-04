@@ -5,6 +5,10 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.27.0] - 2026-03-31
+### 新增
+ - 完成composiohq-awesome-claude-skills项目的SKILL中文翻译，共计 800+ skills.
+
 ## [2.26.0] - 2026-03-27
 ### 变更
  - 更新所有项目+翻译至最新版本
