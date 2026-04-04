@@ -93,7 +93,7 @@ If you want a faster answer than "browse all 1,273+ skills", start with a tool-s
                 encoding="utf-8",
             )
             (root / "docs" / "integrations" / "jetski-cortex.md").write_text(
-                "1.200+ skill\nCon oltre 1.200 skill, questo approccio\n",
+                "1.200+ skill\nOver 1.200 skills, this approach\n",
                 encoding="utf-8",
             )
             (root / "docs" / "integrations" / "jetski-gemini-loader" / "README.md").write_text(

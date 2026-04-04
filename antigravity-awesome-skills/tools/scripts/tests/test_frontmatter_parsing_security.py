@@ -21,6 +21,10 @@ def load_module(relative_path: str, module_name: str):
 
 
 generate_index = load_module("tools/scripts/generate_index.py", "generate_index")
+legacy_generate_index = load_module(
+    "skill_categorization/tools/scripts/generate_index.py",
+    "legacy_generate_index",
+)
 validate_skills = load_module("tools/scripts/validate_skills.py", "validate_skills")
 
 
@@ -79,6 +83,34 @@ class FrontmatterParsingSecurityTests(unittest.TestCase):
 
             self.assertEqual(skills[0]["date_added"], "2026-03-15")
             self.assertIn('"date_added": "2026-03-15"', output_file.read_text(encoding="utf-8"))
+
+    def test_generate_index_normalizes_binary_frontmatter_scalars(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            skills_dir = root / "skills"
+            skill_dir = skills_dir / "demo"
+            output_file = root / "skills_index.json"
+
+            skill_dir.mkdir(parents=True)
+            (skill_dir / "SKILL.md").write_text(
+                "---\nname: !!binary aGVsbG8=\ndescription: !!binary d29ybGQ=\n---\nBody\n",
+                encoding="utf-8",
+            )
+
+            skills = generate_index.generate_index(str(skills_dir), str(output_file))
+
+            self.assertEqual(skills[0]["name"], "hello")
+            self.assertEqual(skills[0]["description"], "world")
+            self.assertIn('"name": "hello"', output_file.read_text(encoding="utf-8"))
+
+    def test_legacy_generate_index_rejects_non_mapping_and_normalizes_binary_scalars(self):
+        self.assertEqual(legacy_generate_index.parse_frontmatter("---\njust-a-string\n---\nbody\n"), {})
+        metadata = legacy_generate_index.parse_frontmatter(
+            "---\nname: !!binary aGVsbG8=\ndescription: !!binary d29ybGQ=\n---\nbody\n"
+        )
+
+        self.assertEqual(metadata["name"], "hello")
+        self.assertEqual(metadata["description"], "world")
 
     def test_generate_index_ignores_symlinked_skill_markdown(self):
         with tempfile.TemporaryDirectory() as temp_dir:

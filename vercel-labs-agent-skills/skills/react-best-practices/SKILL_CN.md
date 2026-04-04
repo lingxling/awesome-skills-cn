@@ -9,7 +9,7 @@ metadata:
 
 # Vercel React 最佳实践
 
-由 Vercel 维护的 React 和 Next.js 应用的综合性能优化指南。包含 8 个类别中的 65 条规则，按影响优先级排序，指导自动重构和代码生成。
+由 Vercel 维护的 React 和 Next.js 应用的综合性能优化指南。包含 8 个类别中的 69 条规则，按影响优先级排序，指导自动重构和代码生成。
 
 ## 何时应用
 
@@ -37,6 +37,7 @@ metadata:
 
 ### 1. 消除瀑布流（关键）
 
+- `async-cheap-condition-before-await` - 在等待标志或远程值之前检查廉价同步条件
 - `async-defer-await` - 将 await 移到实际使用的分支中
 - `async-parallel` - 对独立操作使用 Promise.all()
 - `async-dependencies` - 对部分依赖使用 better-all
@@ -58,6 +59,7 @@ metadata:
 - `server-cache-lru` - 使用 LRU 缓存进行跨请求缓存
 - `server-dedup-props` - 避免 RSC props 中的重复序列化
 - `server-hoist-static-io` - 将静态 I/O（字体、徽标）提升到模块级别
+- `server-no-shared-module-state` - 避免在 RSC/SSR 中使用模块级可变请求状态
 - `server-serialization` - 最小化传递给客户端组件的数据
 - `server-parallel-fetching` - 重构组件以并行化获取
 - `server-parallel-nested-fetching` - 对 Promise.all 中的每个项目链接嵌套获取
@@ -121,6 +123,7 @@ metadata:
 
 ### 8. 高级模式（低）
 
+- `advanced-effect-event-deps` - 不要将 `useEffectEvent` 结果放在 effect 依赖项中
 - `advanced-event-handler-refs` - 在 refs 中存储事件处理程序
 - `advanced-init-once` - 每个应用加载初始化一次应用
 - `advanced-use-latest` - 对稳定回调 refs 使用 useLatest

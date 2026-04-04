@@ -1,4 +1,4 @@
-import matter from 'gray-matter';
+import { parseFrontmatter } from '../frontmatter.ts';
 import type { HostProvider, ProviderMatch, RemoteSkill } from './types.ts';
 
 /**
@@ -274,7 +274,7 @@ export class WellKnownProvider implements HostProvider {
       }
 
       const content = await response.text();
-      const { data } = matter(content);
+      const { data } = parseFrontmatter(content);
 
       // Validate frontmatter has name and description
       if (!data.name || !data.description) {

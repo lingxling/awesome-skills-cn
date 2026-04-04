@@ -225,6 +225,28 @@ If Antigravity becomes unstable only when the full skills library is active, swi
 
 That guide shows how to run `scripts/activate-skills.sh` from a cloned copy of this repository so only the bundles or skill ids you need stay active in `~/.gemini/antigravity/skills`.
 
+### I use OpenCode with `.agents/skills`. Should I install the whole library?
+
+Usually no. For OpenCode and other hosts that read from `.agents/skills`, start with a reduced install instead of copying the full library:
+
+```bash
+npx antigravity-awesome-skills --path .agents/skills --category development,backend --risk safe,none
+```
+
+You can narrow further with `--tags` or exclude values with a trailing `-`:
+
+```bash
+npx antigravity-awesome-skills --path .agents/skills --tags debugging,typescript-
+```
+
+The filter rules are:
+
+- comma-separated values are ORed within one flag
+- exclusions use a trailing `-`, for example `legal-`
+- `--risk`, `--category`, and `--tags` combine with AND
+
+This keeps the installed skill set smaller and reduces the chance of context overload in OpenCode-style runtimes.
+
 ### Gemini CLI hangs after a few turns or says "This is taking a bit longer, we're still on it". What should I do?
 
 Start with a quick isolation check:

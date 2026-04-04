@@ -1,6 +1,6 @@
 ---
 name: hf-cli
-description: "Hugging Face Hub CLI (`hf`) for downloading, uploading, and managing repositories, models, datasets, and Spaces on the Hugging Face Hub. Replaces now deprecated `huggingface-cli` command."
+description: "Hugging Face Hub CLI (`hf`) for downloading, uploading, and managing models, datasets, spaces, buckets, repos, papers, jobs, and more on the Hugging Face Hub. Use when: handling authentication; managing local cache; managing Hugging Face Buckets; running or scheduling jobs on Hugging Face infrastructure; managing Hugging Face repos; discussions and pull requests; browsing models, datasets and spaces; reading, searching, or browsing academic papers; managing collections; querying datasets; configuring spaces; setting up webhooks; or deploying and managing HF Inference Endpoints. Make sure to use this skill whenever the user mentions 'hf', 'huggingface', 'Hugging Face', 'huggingface-cli', or 'hugging face cli', or wants to do anything related to the Hugging Face ecosystem and to AI and ML in general. Also use for cloud storage needs like training checkpoints, data pipelines, or agent traces. Use even if the user doesn't explicitly ask for a CLI command. Replaces the deprecated `huggingface-cli`."
 ---
 
 Install: `curl -LsSf https://hf.co/cli/install.sh | bash -s`.
@@ -9,7 +9,7 @@ The Hugging Face Hub CLI tool `hf` is available. IMPORTANT: The `hf` command rep
 
 Use `hf --help` to view available functions. Note that auth commands are now all under `hf auth` e.g. `hf auth whoami`.
 
-Generated with `huggingface_hub v1.8.0`. Run `hf skills add --force` to regenerate.
+Generated with `huggingface_hub v1.9.0`. Run `hf skills add --force` to regenerate.
 
 ## Commands
 
@@ -59,9 +59,9 @@ Generated with `huggingface_hub v1.8.0`. Run `hf skills add --force` to regenera
 
 ### `hf datasets` — Interact with datasets on the Hub.
 
-- `hf datasets info DATASET_ID` — Get info about a dataset on the Hub. Output is in JSON format. `[--revision TEXT --expand TEXT]`
-- `hf datasets list` — List datasets on the Hub. `[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
-- `hf datasets parquet DATASET_ID` — List parquet file URLs available for a dataset. `[--subset TEXT --split TEXT --format CHOICE --quiet]`
+- `hf datasets info DATASET_ID` — Get info about a dataset on the Hub. `[--revision TEXT --expand TEXT --format CHOICE]`
+- `hf datasets list` — List datasets on the Hub. `[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE]`
+- `hf datasets parquet DATASET_ID` — List parquet file URLs available for a dataset. `[--subset TEXT --split TEXT --format CHOICE]`
 - `hf datasets sql SQL` — Execute a raw SQL query with DuckDB against dataset parquet URLs. `[--format CHOICE]`
 
 ### `hf discussions` — Manage discussions and pull requests on the Hub.
@@ -117,24 +117,24 @@ Generated with `huggingface_hub v1.8.0`. Run `hf skills add --force` to regenera
 
 ### `hf models` — Interact with models on the Hub.
 
-- `hf models info MODEL_ID` — Get info about a model on the Hub. Output is in JSON format. `[--revision TEXT --expand TEXT]`
-- `hf models list` — List models on the Hub. `[--search TEXT --author TEXT --filter TEXT --num-parameters TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
+- `hf models info MODEL_ID` — Get info about a model on the Hub. `[--revision TEXT --expand TEXT --format CHOICE]`
+- `hf models list` — List models on the Hub. `[--search TEXT --author TEXT --filter TEXT --num-parameters TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE]`
 
 ### `hf papers` — Interact with papers on the Hub.
 
-- `hf papers info PAPER_ID` — Get info about a paper on the Hub. Output is in JSON format.
-- `hf papers list` — List daily papers on the Hub. `[--date TEXT --week TEXT --month TEXT --submitter TEXT --sort CHOICE --limit INTEGER --format CHOICE --quiet]`
+- `hf papers info PAPER_ID` — Get info about a paper on the Hub. `[--format CHOICE]`
+- `hf papers list` — List daily papers on the Hub. `[--date TEXT --week TEXT --month TEXT --submitter TEXT --sort CHOICE --limit INTEGER --format CHOICE]`
 - `hf papers read PAPER_ID` — Read a paper as markdown.
-- `hf papers search QUERY` — Search papers on the Hub. `[--limit INTEGER --format CHOICE --quiet]`
+- `hf papers search QUERY` — Search papers on the Hub. `[--limit INTEGER --format CHOICE]`
 
 ### `hf repos` — Manage repos on the Hub.
 
 - `hf repos branch create REPO_ID BRANCH` — Create a new branch for a repo on the Hub. `[--revision TEXT --type CHOICE --exist-ok]`
 - `hf repos branch delete REPO_ID BRANCH` — Delete a branch from a repo on the Hub. `[--type CHOICE]`
-- `hf repos create REPO_ID` — Create a new repo on the Hub. `[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --flavor TEXT --storage TEXT --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT]`
+- `hf repos create REPO_ID` — Create a new repo on the Hub. `[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT]`
 - `hf repos delete REPO_ID` — Delete a repo from the Hub. This is an irreversible operation. `[--type CHOICE --missing-ok]`
 - `hf repos delete-files REPO_ID PATTERNS` — Delete files from a repo on the Hub. `[--type CHOICE --revision TEXT --commit-message TEXT --commit-description TEXT --create-pr]`
-- `hf repos duplicate FROM_ID` — Duplicate a repo on the Hub (model, dataset, or Space). `[--type CHOICE --private --public --protected --exist-ok --flavor TEXT --storage TEXT --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT]`
+- `hf repos duplicate FROM_ID` — Duplicate a repo on the Hub (model, dataset, or Space). `[--type CHOICE --private --public --protected --exist-ok --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT]`
 - `hf repos move FROM_ID TO_ID` — Move a repository from a namespace to another namespace. `[--type CHOICE]`
 - `hf repos settings REPO_ID` — Update the settings of a repository. `[--gated CHOICE --private --public --protected --type CHOICE]`
 - `hf repos tag create REPO_ID TAG` — Create a tag for a repo. `[--message TEXT --revision TEXT --type CHOICE]`
@@ -143,15 +143,16 @@ Generated with `huggingface_hub v1.8.0`. Run `hf skills add --force` to regenera
 
 ### `hf skills` — Manage skills for AI assistants.
 
-- `hf skills add` — Download a skill and install it for an AI assistant. `[--claude --codex --cursor --opencode --global --dest PATH --force]`
-- `hf skills preview` — Print the generated SKILL.md to stdout.
+- `hf skills add` — Download a Hugging Face skill and install it for an AI assistant. `[--claude --global --dest PATH --force]`
+- `hf skills preview` — Print the generated `hf-cli` SKILL.md to stdout.
+- `hf skills upgrade` — Upgrade installed Hugging Face marketplace skills. `[--claude --global --dest PATH]`
 
 ### `hf spaces` — Interact with spaces on the Hub.
 
 - `hf spaces dev-mode SPACE_ID` — Enable or disable dev mode on a Space. `[--stop]`
 - `hf spaces hot-reload SPACE_ID` — Hot-reload any Python file of a Space without a full rebuild + restart. `[--local-file TEXT --skip-checks --skip-summary]`
-- `hf spaces info SPACE_ID` — Get info about a space on the Hub. Output is in JSON format. `[--revision TEXT --expand TEXT]`
-- `hf spaces list` — List spaces on the Hub. `[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
+- `hf spaces info SPACE_ID` — Get info about a space on the Hub. `[--revision TEXT --expand TEXT --format CHOICE]`
+- `hf spaces list` — List spaces on the Hub. `[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE]`
 
 ### `hf webhooks` — Manage webhooks on the Hub.
 

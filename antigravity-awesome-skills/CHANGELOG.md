@@ -9,6 +9,147 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.5.1] - 2026-04-03 - "npm Runtime Dependency Fix"
+
+> **Patch release to restore `npx antigravity-awesome-skills` installs after the published CLI started failing to resolve `yaml` at runtime**
+
+This release fixes a packaging regression in `9.5.0`. The installer entrypoint loads `tools/lib/skill-utils.js`, which depends on `yaml`, but the published npm package declared that module only as a development dependency. In clean `npx` environments this caused the installer to crash immediately with `Error: Cannot find module 'yaml'`, as reported in issue `#445`.
+
+## New Skills
+
+- **None in this release** — `9.5.1` is a focused patch release for the published npm installer.
+
+## Improvements
+
+- **Runtime dependency fix**: moved `yaml` from `devDependencies` to runtime `dependencies` so the published CLI bundle installs everything required by `tools/bin/install.js` and `tools/lib/skill-utils.js`.
+- **Packaging regression coverage**: extended the npm package contents test to assert that `yaml` remains declared as a runtime dependency for the installer contract.
+- **Installer verification**: re-ran the package dry-run and installer-focused tests to confirm the published artifact and filtered install flow no longer reproduce the missing-module failure from issue `#445`.
+
+## Credits
+
+- **Issue #445 reporter** for isolating the `yaml` packaging regression in the published npm CLI artifact.
+
+## [9.5.0] - 2026-04-03 - "Selective Installs and 30K Stars"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, OpenCode, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release expands the library with four practical additions while making installs much more manageable for context-sensitive runtimes. It merges the current open PR batch, adds `humanize-chinese` directly on `main`, introduces first-class installer filtering by `risk`, `category`, and `tags`, and updates the docs so OpenCode-style `.agents/skills` setups start from a reduced install instead of overwhelming the runtime. It also marks a project milestone: the repository crossed **30K GitHub stars** on April 3, 2026. Thank you to every contributor, source project, issue reporter, and user who keeps this library useful.
+
+## New Skills
+
+- **agentflow** - merges PR #438 to add Kanban-style multi-worker orchestration guidance for Claude Code development pipelines.
+- **uxui-principles** - merges PR #441 to add research-backed UX/UI audit guidance sourced from the `uxuiprinciples/agent-skills` collection.
+- **agentphone** - merges PR #442 to add phone-agent workflows for voice calls, SMS operations, number management, and streaming telephony flows.
+- **humanize-chinese** - adds issue-driven coverage for Chinese AI-text detection, rewriting, academic AIGC reduction, and style-conversion workflows based on `voidborne-d/humanize-chinese`.
+
+## Improvements
+
+- **Selective installer filters** - the npm installer now supports `--risk <csv>`, `--category <csv>`, and `--tags <csv>` with comma-separated include values, trailing `-` exclusions, OR semantics within each flag, exclusion precedence, and AND semantics across dimensions.
+- **Tag-aware filtering** - installer filtering now reads skill frontmatter directly so `tags` can participate in install selection even though `skills_index.json` does not store them.
+- **Recursive install sync** - install manifests now track nested skill paths consistently, and filtered updates prune stale managed entries instead of leaving old skills behind.
+- **OpenCode guidance** - `README.md`, `docs/users/getting-started.md`, and `docs/users/faq.md` now explicitly recommend reduced installs for `.agents/skills` hosts and document the new filter grammar.
+- **Source and contributor credits** - post-merge README credit sync now includes the upstream repositories reflected in this release batch, including `UrRhb/agentflow`, `AgentPhone-AI/skills`, `uxuiprinciples/agent-skills`, and `voidborne-d/humanize-chinese`.
+
+## Who should care
+
+- **Claude Code, Cursor, Codex CLI, and Gemini CLI users** get four new skills covering workflow orchestration, UX/UI review, telephony agents, and Chinese text humanization.
+- **OpenCode and other `.agents/skills` users** now have a supported reduced-install path instead of needing the full library in a context-sensitive runtime.
+- **Maintainers and teams curating smaller agent surfaces** can now ship filtered installs by risk, category, and tag without manually pruning skill folders after each update.
+
+## Credits
+
+- **[@UrRhb](https://github.com/UrRhb)** for the new `agentflow` skill in PR #438
+- **[@modi2meet](https://github.com/modi2meet)** and **[AgentPhone-AI](https://github.com/AgentPhone-AI/skills)** for the new `agentphone` skill in PR #442
+- **[@joselhurtado](https://github.com/joselhurtado)** for the new `uxui-principles` skill in PR #441
+- **[voidborne-d](https://github.com/voidborne-d/humanize-chinese)** for the upstream `humanize-chinese` workflow adapted in issue #437
+- **30,262 GitHub stargazers as of 2026-04-03** for pushing the project past the 30K milestone
+
+Upgrade now: `git pull origin main` to fetch the latest skills.
+
+## [9.4.0] - 2026-03-31 - "Release Hardening and Credit Sync"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release focuses on repository reliability rather than adding new skills. It hardens marketplace and plugin validation, adds stronger release-facing CI checks, refreshes the root README and source-credit ledger, and cleans up several maintainer and user docs so the public repo matches the active merge and release workflow on `main`.
+
+## Improvements
+
+- **Marketplace sync reliability** - made editorial bundle and plugin publication sync more atomic so generated marketplace state is staged and refreshed more predictably during maintainer flows.
+- **Validation hardening** - tightened frontmatter parsing, plugin compatibility checks, and bundle/index validation to better defend against malformed or unsafe metadata.
+- **Release CI guardrails** - added dedicated dependency-review and actionlint workflows, plus the corresponding shellcheck-safe workflow fix in CI.
+- **README landing-page cleanup** - reorganized the root `README.md` so discovery, installation, and credits are easier to scan, and removed misplaced SEO wording.
+- **Source credits refresh** - audited the credits ledger against current upstream sources and release history, removed the dead `sstklen/claude-api-cost-optimization` entry, normalized stale descriptions, and added missing official/community repos now reflected in the README.
+- **Maintainer merge policy** - updated `.github/MAINTENANCE.md` so every PR merge now explicitly requires checking and syncing both `### Community Contributors` and `## Repo Contributors`.
+- **English documentation cleanup** - translated remaining mixed Italian phrasing in maintainer audit docs, workflow docs, and the Jetski Cortex integration guide to keep repository-facing documentation consistent.
+
+## Changed
+
+- **Generated repo state** - refreshed the sitemap, star-history asset, and metadata-driven README state as part of the current `main` sync flow.
+- **Vietnamese credits mirror** - aligned the Vietnamese README copy with the current source-credit corrections that landed on the main README.
+- **Release-facing tests** - updated consistency and metadata tests to match the refreshed README/docs wording and current release contract.
+
+## Who should care
+
+- **Maintainers** get a safer release path with stricter validation, clearer post-merge credit rules, and stronger CI checks before tags are cut.
+- **Claude Code, Codex CLI, Cursor, Gemini CLI, and Antigravity users** get a cleaner root README and more accurate source attribution when discovering official and community skill collections.
+- **Contributors and documentation-heavy users** get more consistent English-language docs across workflows, maintainer guidance, and integration references.
+
+## Credits
+
+- **Repository maintainers** for the post-`9.3.0` release hardening, CI additions, documentation cleanup, and source-credit audit on `main`
+
+## [9.3.0] - 2026-03-30 - "Chinese Documentation Expansion and Community Discovery"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release makes the repository much easier to use for Chinese-speaking developers while tightening contributor docs and expanding community-skill discovery. It ships the full `docs_zh-CN` translation batch, folds in a markdown fence fix for contributor documentation, strengthens `github-issue-creator` discoverability metadata, and carries forward the recent `SoulPass` community listing on `main`.
+
+## New
+
+- **Chinese documentation set** - merged PR #423 with a full Simplified Chinese translation pass across user, contributor, maintainer, and integration docs under `docs_zh-CN`, plus glossary and validation assets.
+
+## Improvements
+
+- **Contributor docs formatting** - merged PR #418 to correct nested fenced-code examples in `docs/contributors/skill-anatomy.md`, making the markdown examples render correctly for contributors.
+- **Community discovery** - current `main` includes the `SoulPass` Community Contributed Skills listing requested in issue #421, keeping Solana wallet, trading, and agent-identity workflows easy to discover.
+- **Issue triage cleanup** - improved `github-issue-creator` metadata and usage guidance so external discovery tools can classify and recommend it more accurately.
+
+## Who should care
+
+- **Chinese-speaking Claude Code, Cursor, Codex CLI, and Gemini CLI users** now have much broader first-party repo documentation coverage without relying on machine-translated pages.
+- **Contributors** get clearer markdown examples in the skill anatomy guide when authoring nested code fences and documentation snippets.
+- **Users exploring community additions** get easier discovery of `SoulPass` in the main README and clearer routing metadata for `github-issue-creator`.
+
+## Credits
+
+- **[@dz3ai](https://github.com/dz3ai)** for the complete Chinese documentation translation in PR #423
+- **[@framunoz](https://github.com/framunoz)** for the markdown fence fix in PR #418
+- **[@soulpassai](https://github.com/soulpassai)** for proposing the `SoulPass` community listing in issue #421
+
 ## [9.2.0] - 2026-03-29 - "Hugging Face Ecosystem and Shell Workflow Expansion"
 
 > Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.

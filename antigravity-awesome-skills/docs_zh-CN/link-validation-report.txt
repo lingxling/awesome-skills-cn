@@ -1,0 +1,15 @@
+Link Validation Report
+=======================
+Generated: 2026-03-30 19:53:16
+
+Source Directory: /home/dannyzeng/coder1-workspace/projects/antigravity-awesome-skills/docs
+Translated Directory: /home/dannyzeng/coder1-workspace/projects/antigravity-awesome-skills/docs_zh-CN
+
+----------------------------------------
+
+INTERNAL LINKS VALIDATION
+=========================
+
+Found internal links. Validating...
+
+BROKEN: ../../CATALOG.md

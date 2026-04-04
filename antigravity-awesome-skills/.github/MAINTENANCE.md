@@ -5,7 +5,7 @@
 This guide details the exact procedures for maintaining `antigravity-awesome-skills`.
 It covers the **Quality Bar**, **Documentation Consistency**, and **Release Workflows**.
 
-**Maintainer shortcuts:** [Merge a PR](#b-when-you-merge-a-pr-step-by-step) · [Reopen & merge a closed PR](#if-a-pr-was-closed-after-local-integration-reopen-and-merge) · [Post-merge & contributors](#c-post-merge-routine-must-do-before-a-release) · [Close issues](#when-to-close-an-issue) · [Create a release](#4-release-workflow)
+**Maintainer shortcuts:** [Merge a PR](#b-when-you-merge-a-pr-step-by-step) · [Reopen & merge a closed PR](#if-a-pr-was-closed-after-local-integration-reopen-and-merge) · [Post-merge credits sync](#c-post-merge-credits-sync-mandatory-after-every-pr-merge) · [Close issues](#when-to-close-an-issue) · [Create a release](#4-release-workflow)
 
 ---
 
@@ -13,7 +13,7 @@ It covers the **Quality Bar**, **Documentation Consistency**, and **Release Work
 
 **AGENTS MUST READ AND FOLLOW THIS SECTION BEFORE MARKING ANY TASK AS COMPLETE.**
 
-There are 3 things that usually fail/get forgotten. **DO NOT FORGET THEM:**
+There are 5 things that usually fail/get forgotten. **DO NOT FORGET THEM:**
 
 ### 1. 📤 ALWAYS PUSH (Non-Negotiable)
 
@@ -57,6 +57,21 @@ it means the repository could not auto-sync generated artifacts cleanly and main
 - **ALWAYS use the `main` branch.**
 - NEVER create feature branches (e.g., `feat/new-skill`).
 - We commit directly to `main` to keep history linear and simple.
+
+### 5. 📦 RUNTIME DEPENDENCIES MUST BE RUNTIME DEPENDENCIES
+
+If you change the published npm installer surface:
+
+- `tools/bin/install.js`
+- `tools/lib/**/*.js` used by the installer
+- `package.json` `bin` entry or packaged files
+
+…then every imported package needed by `npx antigravity-awesome-skills` must live in `dependencies`, **not** `devDependencies`.
+
+- `npm pack --dry-run` is **not enough** to prove this.
+- A local repo test can pass while `npx` still fails in a clean environment.
+- If installer/runtime imports change, add or update a package-contents/runtime test in `tools/scripts/tests/`.
+- Treat `Cannot find module 'X'` from a clean `npx` install as a release-blocking packaging failure.
 
 ---
 
@@ -201,22 +216,43 @@ We used this flow for PRs [#220](https://github.com/sickn33/antigravity-awesome-
     ```text
     Fixed in #<PR_NUMBER>. Shipped in release vX.Y.Z.
     ```
-3.  **Single PR or small batch** — Optionally run the full Post-Merge Routine below. For a single, trivial PR you can defer it to the next release prep.
+3.  **Run the Post-Merge Credits Sync below** — this is mandatory after every PR merge, including single-PR merges.
 
-### C. Post-Merge Routine (Must Do Before a Release)
+### C. Post-Merge Credits Sync (Mandatory After Every PR Merge)
 
-After you have merged several PRs or before cutting a release:
+This section is **not optional**. Every time a PR is merged, you must ensure both README credit surfaces are correct on `main`:
 
-1.  **Sync Contributors List**:
+- `### Community Contributors` / `## Credits & Sources` for external repositories referenced by the merged work
+- `## Repo Contributors` for the human contributor list
+
+Do this **immediately after each PR merge**. Do not defer it to release prep.
+
+1.  **Pull the merged `main` state locally**:
+    ```bash
+    git checkout main
+    git pull --ff-only origin main
+    ```
+
+2.  **Sync `Repo Contributors`**:
     - Run: `npm run sync:contributors`
     - This refreshes `## Repo Contributors` in `README.md` from the live GitHub contributor list while preserving custom bot/app links.
-    - If you are already doing a full maintainer sweep, prefer `npm run sync:repo-state`.
+    - If you are already doing a full maintainer sweep, `npm run sync:repo-state` is also acceptable.
 
-2.  **Verify Table of Contents**:
-    - Ensure all new headers have clean anchors.
-    - **NO EMOJIS** in H2 headers.
+3.  **Audit external-source credits for the merged PR**:
+    - Read the merged PR description, changed files, linked issues, and any release-note draft text you plan to ship.
+    - If the PR added skills, references, or content sourced from an external GitHub repo that is not already credited in `README.md`, add it immediately.
+    - If the repo is from an official organization/project source, place it under `### Official Sources`.
+    - If the repo is a non-official ecosystem/community source, place it under `### Community Contributors`.
+    - If the PR reveals that a credited repo is dead, renamed, archived, or overstated, fix the README entry in the same follow-up pass instead of leaving stale metadata behind.
+    - Release notes are not a substitute for README attribution. If a repo appears in the merged work or planned release notes and belongs in credits, add it to the README at merge time.
 
-3.  **Prepare for release** — Draft the release and tag when ready (see [§4 Release Workflow](#4-release-workflow) below).
+4.  **Commit and push README credit updates right away**:
+    - If `npm run sync:contributors` or the credit audit changed `README.md`, commit and push that follow-up immediately on `main`.
+    - Do not leave contributor or community-credit drift sitting locally until the next release.
+
+5.  **Then continue with normal maintenance**:
+    - Verify Table of Contents if you touched headings.
+    - Prepare the release when ready (see [§4 Release Workflow](#4-release-workflow) below).
 
 ---
 
@@ -256,10 +292,15 @@ Locations to check:
 
 ### D. Credits Policy (Who goes where?)
 
-- **Credits & Sources**: Use this for **External Repos**.
-  - _Rule_: "I extracted skills from this link you sent me." -> Add to `## Credits & Sources`.
+- **Official Sources**: Use this for **official org/vendor/project repos**.
+  - _Rule_: "This came from the official repo for the tool/company/project." -> Add to `### Official Sources`.
+- **Community Contributors**: Use this for **non-official external repos** that contributed skills, references, templates, or other source material.
+  - _Rule_: "This merged PR depends on or imports material from a community repo." -> Add to `### Community Contributors`.
+- **Credits & Sources**: This whole area is for **external repos and upstream sources**, split into Official vs Community.
 - **Repo Contributors**: Use this for **Pull Requests**.
   - _Rule_: "This user sent a PR." -> Add to `## Repo Contributors`.
+
+**Merge rule:** after every PR merge, check **both** `### Community Contributors` and `## Repo Contributors`. A merge is not fully done until both sections are either confirmed unchanged or updated and pushed.
 
 ### E. Badges & Links
 
@@ -321,6 +362,7 @@ Preflight verification → Changelog → `npm run release:prepare -- X.Y.Z` → 
     npm run release:preflight
     ```
     This now runs the deterministic `sync:release-state` path, refreshes tracked web assets, executes the local test suite, runs the web-app build, and performs `npm pack --dry-run --json` before a release is considered healthy.
+    If the installer or packaged runtime code changed, you must also verify that new imports are satisfied by `dependencies` rather than `devDependencies`, and ensure the npm-package/runtime tests cover that path. `npm pack --dry-run` alone will not catch missing runtime deps in a clean `npx` environment.
     Optional diagnostic pass:
     ```bash
     npm run validate:strict

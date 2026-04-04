@@ -1,546 +1,398 @@
 ---
 name: torch-geometric
-description: 图神经网络 (PyG)。节点/图分类、链接预测、GCN、GAT、GraphSAGE、异构图、分子属性预测，用于几何深度学习。
-license: MIT license
-metadata:
-    skill-author: K-Dense Inc.
+name_zh: 图神经网络 (PyTorch Geometric)
+description: "使用 PyTorch Geometric (PyG) 构建图神经网络的指南。当用户询问图神经网络、GNN、节点分类、链接预测、图分类、消息传递网络、异构图、邻居采样，或任何涉及 torch_geometric / PyG 的任务时，使用此技能。当看到 torch_geometric 的导入语句，或用户提到图卷积（GCN、GAT、GraphSAGE、GIN）、图数据结构，或处理关系/网络数据时，也触发此技能。即使用户只说'图学习'或'几何深度学习'，也要使用此技能。"
+description_zh: "使用 PyTorch Geometric (PyG) 构建图神经网络的指南。当用户询问图神经网络、GNN、节点分类、链接预测、图分类、消息传递网络、异构图、邻居采样，或任何涉及 torch_geometric / PyG 的任务时，使用此技能。当看到 torch_geometric 的导入语句，或用户提到图卷积（GCN、GAT、GraphSAGE、GIN）、图数据结构，或处理关系/网络数据时，也触发此技能。即使用户只说'图学习'或'几何深度学习'，也要使用此技能。"
 ---
 
 # PyTorch Geometric (PyG)
 
-## 概述
+PyG 是基于 PyTorch 构建的图神经网络标准库。它提供了图的数据结构、60+ 种 GNN 层实现、可扩展的小批量训练，以及对异构图的支持。
 
-PyTorch Geometric 是一个基于 PyTorch 构建的库，用于开发和训练图神经网络 (GNN)。此技能适用于图和不规则结构的深度学习，包括小批量处理、多 GPU 训练和几何深度学习应用。
-
-## 何时使用此技能
-
-当您处理以下任务时，应使用此技能：
-- **基于图的机器学习**：节点分类、图分类、链接预测
-- **分子属性预测**：药物发现、化学属性预测
-- **社交网络分析**：社区检测、影响力预测
-- **引用网络**：论文分类、推荐系统
-- **3D 几何数据**：点云、网格、分子结构
-- **异构图**：多类型节点和边（例如知识图谱）
-- **大规模图学习**：邻居采样、分布式训练
-
-## 快速开始
-
-### 安装
-
-```bash
-uv pip install torch_geometric
-```
-
-对于额外的依赖项（稀疏操作、聚类）：
-```bash
-uv pip install pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-${TORCH}+${CUDA}.html
-```
-
-### 基本图创建
-
-```python
-import torch
-from torch_geometric.data import Data
-
-# 创建一个包含 3 个节点的简单图
-edge_index = torch.tensor([[0, 1, 1, 2],  # 源节点
-                           [1, 0, 2, 1]], dtype=torch.long)  # 目标节点
-x = torch.tensor([[-1], [0], [1]], dtype=torch.float)  # 节点特征
-
-data = Data(x=x, edge_index=edge_index)
-print(f"节点: {data.num_nodes}, 边: {data.num_edges}")
-```
-
-### 加载基准数据集
-
-```python
-from torch_geometric.datasets import Planetoid
-
-# 加载 Cora 引用网络
-dataset = Planetoid(root='/tmp/Cora', name='Cora')
-data = dataset[0]  # 获取第一个（也是唯一的）图
-
-print(f"数据集: {dataset}")
-print(f"节点: {data.num_nodes}, 边: {data.num_edges}")
-print(f"特征: {data.num_node_features}, 类别: {dataset.num_classes}")
-```
+安装：`uv add torch_geometric`（或 `uv pip install torch_geometric`；需要 PyTorch）。可选：`pyg-lib`、`torch-scatter`、`torch-sparse`、`torch-cluster` 用于加速操作。
 
 ## 核心概念
 
-### 数据结构
+### 图数据：`Data` 和 `HeteroData`
 
-PyG 使用 `torch_geometric.data.Data` 类表示图，具有以下关键属性：
-
-- **`data.x`**：节点特征矩阵 `[num_nodes, num_node_features]`
-- **`data.edge_index`**：COO 格式的图连接 `[2, num_edges]`
-- **`data.edge_attr`**：边特征矩阵 `[num_edges, num_edge_features]`（可选）
-- **`data.y`**：节点或图的目标标签
-- **`data.pos`**：节点空间位置 `[num_nodes, num_dimensions]`（可选）
-- **自定义属性**：可以添加任何属性（例如 `data.train_mask`, `data.batch`）
-
-**重要**：这些属性不是强制性的——根据需要扩展 Data 对象的自定义属性。
-
-### 边索引格式
-
-边以 COO（坐标）格式存储为 `[2, num_edges]` 张量：
-- 第一行：源节点索引
-- 第二行：目标节点索引
+图存储在 `Data` 对象中。关键属性：
 
 ```python
-# 边列表：(0→1), (1→0), (1→2), (2→1)
-edge_index = torch.tensor([[0, 1, 1, 2],
-                           [1, 0, 2, 1]], dtype=torch.long)
+from torch_geometric.data import Data
+
+data = Data(
+    x=node_features,          # [num_nodes, num_node_features]
+    edge_index=edge_index,     # [2, num_edges] — COO 格式，dtype=torch.long
+    edge_attr=edge_features,   # [num_edges, num_edge_features]
+    y=labels,                  # 节点级 [num_nodes, *] 或图级 [1, *]
+    pos=positions,             # [num_nodes, num_dimensions]（用于点云/空间数据）
+)
 ```
 
-### 小批量处理
-
-PyG 通过创建块对角邻接矩阵来处理批处理，将多个图连接成一个大的不连通图：
-
-- 邻接矩阵对角堆叠
-- 节点特征沿节点维度连接
-- `batch` 向量将每个节点映射到其源图
-- 无需填充——计算效率高
+**`edge_index` 格式至关重要**：它是一个 `[2, num_edges]` 张量，其中 `edge_index[0]` = 源节点，`edge_index[1]` = 目标节点。它不是元组列表。如果您的边对是行格式，请转置并调用 `.contiguous()`：
 
 ```python
-from torch_geometric.loader import DataLoader
-
-loader = DataLoader(dataset, batch_size=32, shuffle=True)
-for batch in loader:
-    print(f"批量大小: {batch.num_graphs}")
-    print(f"总节点数: {batch.num_nodes}")
-    # batch.batch 将节点映射到图
+# 如果边是 [[src1, dst1], [src2, dst2], ...] — 先转置：
+edge_index = edge_pairs.t().contiguous()
 ```
 
-## 构建图神经网络
+对于无向图，包括两个方向：边 (0,1) 需要在 edge_index 中同时包含 `[0,1]` 和 `[1,0]`。
 
-### 消息传递范式
+对于异构图，使用 `HeteroData` — 见下面的异构图部分。
 
-PyG 中的 GNN 遵循邻域聚合方案：
-1. 转换节点特征
-2. 沿边传播消息
-3. 聚合来自邻居的消息
-4. 更新节点表示
+### 数据集
 
-### 使用预构建层
+PyG 捆绑了许多标准数据集，可自动下载和预处理：
 
-PyG 提供 40+ 个卷积层。常见的包括：
-
-**GCNConv**（图卷积网络）：
 ```python
-from torch_geometric.nn import GCNConv
+from torch_geometric.datasets import Planetoid, TUDataset
+
+# 单图节点分类（Cora、Citeseer、Pubmed）
+dataset = Planetoid(root='./data', name='Cora')
+data = dataset[0]  # 带有训练/验证/测试掩码的单图
+
+# 多图分类（ENZYMES、MUTAG、IMDB-BINARY 等）
+dataset = TUDataset(root='./data', name='ENZYMES')
+# dataset[0], dataset[1], ... 是单个图
+```
+
+按任务划分的常见数据集：
+- **节点分类**：Planetoid（Cora/Citeseer/Pubmed）、OGB（ogbn-arxiv、ogbn-products、ogbn-mag）
+- **图分类**：TUDataset（MUTAG、ENZYMES、PROTEINS、IMDB-BINARY）、OGB（ogbg-molhiv）
+- **链接预测**：OGB（ogbl-collab、ogbl-citation2）
+- **分子**：QM7、QM9、MoleculeNet
+- **点云/网格**：ShapeNet、ModelNet10/40、FAUST
+
+### 变换
+
+变换用于预处理或增强图数据，类似于 torchvision 变换：
+
+```python
+import torch_geometric.transforms as T
+
+# 常见变换
+T.NormalizeFeatures()    # 行归一化节点特征，使其和为 1
+T.ToUndirected()         # 添加反向边使图无向
+T.AddSelfLoops()         # 添加自环边
+T.KNNGraph(k=6)          # 从点云位置构建 k-NN 图
+T.RandomJitter(0.01)     # 对位置进行随机噪声增强
+T.Compose([...])         # 链接多个变换
+
+# 应用为 pre_transform（一次，保存到磁盘）或 transform（每次访问）
+dataset = ShapeNet(root='./data', pre_transform=T.KNNGraph(k=6),
+                   transform=T.RandomJitter(0.01))
+```
+
+## 构建 GNN 模型
+
+### 快速开始：使用内置层
+
+构建 GNN 的最快方法 — 从 `torch_geometric.nn` 堆叠卷积层：
+
+```python
+import torch
 import torch.nn.functional as F
+from torch_geometric.nn import GCNConv
 
 class GCN(torch.nn.Module):
-    def __init__(self, num_features, num_classes):
+    def __init__(self, in_channels, hidden_channels, out_channels):
         super().__init__()
-        self.conv1 = GCNConv(num_features, 16)
-        self.conv2 = GCNConv(16, num_classes)
+        self.conv1 = GCNConv(in_channels, hidden_channels)
+        self.conv2 = GCNConv(hidden_channels, out_channels)
 
-    def forward(self, data):
-        x, edge_index = data.x, data.edge_index
-        x = self.conv1(x, edge_index)
-        x = F.relu(x)
-        x = F.dropout(x, training=self.training)
+    def forward(self, x, edge_index):
+        x = self.conv1(x, edge_index).relu()
+        x = F.dropout(x, p=0.5, training=self.training)
         x = self.conv2(x, edge_index)
-        return F.log_softmax(x, dim=1)
+        return x
 ```
 
-**GATConv**（图注意力网络）：
+**重要**：PyG 卷积层不包含激活函数 — 请在每个层后自行应用。这是为了灵活性而设计的。
+
+### 选择卷积层
+
+根据任务和图结构选择：
+
+| 层 | 最适合 | 核心思想 |
+|-------|----------|----------|
+| `GCNConv` | 同构图，半监督节点分类 | 谱启发，度归一化聚合 |
+| `GATConv` / `GATv2Conv` | 当邻居重要性变化时 | 注意力加权消息 |
+| `SAGEConv` | 大型图，归纳设置 | 采样友好，可学习聚合 |
+| `GINConv` | 图分类，最大化表达能力 | 与 WL 测试一样强大 |
+| `TransformerConv` | 丰富的边特征，复杂交互 | 带有边特征的多头注意力 |
+| `EdgeConv` | 点云，动态图 | 边特征的 MLP (x_i, x_j - x_i) |
+| `RGCNConv` | 具有多种关系类型的异构图 | 关系特定的权重矩阵 |
+| `HGTConv` | 异构图 | 类型特定的注意力 |
+
+所有卷积层至少接受 `(x, edge_index)`。许多还接受 `edge_attr` 作为边特征。
+
+### 延迟初始化
+
+使用 `-1` 作为输入通道，让 PyG 自动推断维度 — 对异构模型特别有用：
+
 ```python
-from torch_geometric.nn import GATConv
-
-class GAT(torch.nn.Module):
-    def __init__(self, num_features, num_classes):
-        super().__init__()
-        self.conv1 = GATConv(num_features, 8, heads=8, dropout=0.6)
-        self.conv2 = GATConv(8 * 8, num_classes, heads=1, concat=False, dropout=0.6)
-
-    def forward(self, data):
-        x, edge_index = data.x, data.edge_index
-        x = F.dropout(x, p=0.6, training=self.training)
-        x = F.elu(self.conv1(x, edge_index))
-        x = F.dropout(x, p=0.6, training=self.training)
-        x = self.conv2(x, edge_index)
-        return F.log_softmax(x, dim=1)
+conv = SAGEConv((-1, -1), 64)  # 输入维度在第一次前向传播时推断
+# 初始化延迟模块：
+with torch.no_grad():
+    out = model(data.x, data.edge_index)
 ```
 
-**GraphSAGE**：
+### 高级模型 API
+
+对于常见架构，PyG 提供现成的模型类：
+
 ```python
-from torch_geometric.nn import SAGEConv
+from torch_geometric.nn import GraphSAGE, GCN, GAT, GIN
 
-class GraphSAGE(torch.nn.Module):
-    def __init__(self, num_features, num_classes):
-        super().__init__()
-        self.conv1 = SAGEConv(num_features, 64)
-        self.conv2 = SAGEConv(64, num_classes)
-
-    def forward(self, data):
-        x, edge_index = data.x, data.edge_index
-        x = self.conv1(x, edge_index)
-        x = F.relu(x)
-        x = F.dropout(x, training=self.training)
-        x = self.conv2(x, edge_index)
-        return F.log_softmax(x, dim=1)
+model = GraphSAGE(
+    in_channels=dataset.num_features,
+    hidden_channels=64,
+    out_channels=dataset.num_classes,
+    num_layers=2,
+)
 ```
 
-### 自定义消息传递层
+### 通过 MessagePassing 自定义层
 
-对于自定义层，继承 `MessagePassing`：
+要实现新颖的 GNN 层，请继承 `MessagePassing`。框架如下：
+
+1. `propagate()` 协调消息传递
+2. `message()` 定义沿每条边流动的信息（phi 函数）
+3. `aggregate()` 组合每个节点的消息（sum/mean/max）
+4. `update()` 转换聚合结果（gamma 函数）
 
 ```python
 from torch_geometric.nn import MessagePassing
 from torch_geometric.utils import add_self_loops, degree
 
-class CustomConv(MessagePassing):
+class MyConv(MessagePassing):
     def __init__(self, in_channels, out_channels):
-        super().__init__(aggr='add')  # "add", "mean", 或 "max"
+        super().__init__(aggr='add')  # "add", "mean", or "max"
         self.lin = torch.nn.Linear(in_channels, out_channels)
 
     def forward(self, x, edge_index):
-        # 向邻接矩阵添加自环
-        edge_index, _ = add_self_loops(edge_index, num_nodes=x.size(0))
-
-        # 转换节点特征
+        # 消息传递前的预处理
         x = self.lin(x)
+        # 开始消息传递
+        return self.propagate(edge_index, x=x)
 
-        # 计算归一化
-        row, col = edge_index
-        deg = degree(col, x.size(0), dtype=x.dtype)
-        deg_inv_sqrt = deg.pow(-0.5)
-        norm = deg_inv_sqrt[row] * deg_inv_sqrt[col]
-
-        # 传播消息
-        return self.propagate(edge_index, x=x, norm=norm)
-
-    def message(self, x_j, norm):
-        # x_j: 源节点的特征
-        return norm.view(-1, 1) * x_j
+    def message(self, x_j):
+        # x_j: 每条边的源节点特征 [num_edges, features]
+        # _j 后缀自动索引源节点，_i 索引目标节点
+        return x_j
 ```
 
-关键方法：
-- **`forward()`**：主入口点
-- **`message()`**：从源节点到目标节点构造消息
-- **`aggregate()`**：聚合消息（通常不重写——设置 `aggr` 参数）
-- **`update()`**：聚合后更新节点嵌入
+**`_i` / `_j` 约定**：传递给 `propagate()` 的任何张量都可以通过在 `message()` 签名中附加 `_i`（目标/中心节点）或 `_j`（源/邻居节点）来自动索引。因此，如果您向 propagate 传递 `x=...`，您可以在 message() 中访问 `x_i` 和 `x_j`。
 
-**变量命名约定**：在张量名称后追加 `_i` 或 `_j` 会自动将它们映射到目标或源节点。
+阅读 `references/message_passing.md` 获取完整的 GCN 和 EdgeConv 实现示例。
 
-## 处理数据集
+## 任务特定模式
 
-### 加载内置数据集
-
-PyG 提供广泛的基准数据集：
+### 节点分类
 
 ```python
-# 引用网络（节点分类）
-from torch_geometric.datasets import Planetoid
-dataset = Planetoid(root='/tmp/Cora', name='Cora')  # 或 'CiteSeer', 'PubMed'
-
-# 图分类
-from torch_geometric.datasets import TUDataset
-dataset = TUDataset(root='/tmp/ENZYMES', name='ENZYMES')
-
-# 分子数据集
-from torch_geometric.datasets import QM9
-dataset = QM9(root='/tmp/QM9')
-
-# 大规模数据集
-from torch_geometric.datasets import Reddit
-dataset = Reddit(root='/tmp/Reddit')
-```
-
-请查看 `references/datasets_reference.md` 获取完整列表。
-
-### 创建自定义数据集
-
-对于适合内存的数据集，继承 `InMemoryDataset`：
-
-```python
-from torch_geometric.data import InMemoryDataset, Data
-import torch
-
-class MyOwnDataset(InMemoryDataset):
-    def __init__(self, root, transform=None, pre_transform=None):
-        super().__init__(root, transform, pre_transform)
-        self.load(self.processed_paths[0])
-
-    @property
-    def raw_file_names(self):
-        return ['my_data.csv']  # raw_dir 中需要的文件
-
-    @property
-    def processed_file_names(self):
-        return ['data.pt']  # processed_dir 中的文件
-
-    def download(self):
-        # 下载原始数据到 self.raw_dir
-        pass
-
-    def process(self):
-        # 读取数据，创建 Data 对象
-        data_list = []
-
-        # 示例：创建一个简单的图
-        edge_index = torch.tensor([[0, 1], [1, 0]], dtype=torch.long)
-        x = torch.randn(2, 16)
-        y = torch.tensor([0], dtype=torch.long)
-
-        data = Data(x=x, edge_index=edge_index, y=y)
-        data_list.append(data)
-
-        # 应用 pre_filter 和 pre_transform
-        if self.pre_filter is not None:
-            data_list = [d for d in data_list if self.pre_filter(d)]
-
-        if self.pre_transform is not None:
-            data_list = [self.pre_transform(d) for d in data_list]
-
-        # 保存处理后的数据
-        self.save(data_list, self.processed_paths[0])
-```
-
-对于不适合内存的大型数据集，继承 `Dataset` 并实现 `len()` 和 `get(idx)`。
-
-### 从 CSV 加载图
-
-```python
-import pandas as pd
-import torch
-from torch_geometric.data import HeteroData
-
-# 加载节点
-nodes_df = pd.read_csv('nodes.csv')
-x = torch.tensor(nodes_df[['feat1', 'feat2']].values, dtype=torch.float)
-
-# 加载边
-edges_df = pd.read_csv('edges.csv')
-edge_index = torch.tensor([edges_df['source'].values,
-                           edges_df['target'].values], dtype=torch.long)
-
-data = Data(x=x, edge_index=edge_index)
-```
-
-## 训练工作流程
-
-### 节点分类（单个图）
-
-```python
-import torch
-import torch.nn.functional as F
-from torch_geometric.datasets import Planetoid
-
-# 加载数据集
-dataset = Planetoid(root='/tmp/Cora', name='Cora')
-data = dataset[0]
-
-# 创建模型
-model = GCN(dataset.num_features, dataset.num_classes)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
-
-# 训练
+# 在单个图上的全批量训练（例如，Cora）
 model.train()
 for epoch in range(200):
     optimizer.zero_grad()
-    out = model(data)
-    loss = F.nll_loss(out[data.train_mask], data.y[data.train_mask])
+    out = model(data.x, data.edge_index)
+    loss = F.cross_entropy(out[data.train_mask], data.y[data.train_mask])
     loss.backward()
     optimizer.step()
 
-    if epoch % 10 == 0:
-        print(f'轮次 {epoch}, 损失: {loss.item():.4f}')
-
 # 评估
 model.eval()
-pred = model(data).argmax(dim=1)
-correct = (pred[data.test_mask] == data.y[data.test_mask]).sum()
-acc = int(correct) / int(data.test_mask.sum())
-print(f'测试准确率: {acc:.4f}')
+pred = model(data.x, data.edge_index).argmax(dim=1)
+acc = (pred[data.test_mask] == data.y[data.test_mask]).float().mean()
 ```
 
-### 图分类（多个图）
+### 图分类
+
+多个图 — 使用 `DataLoader` 进行小批量处理，并使用全局池化获取图级表示：
 
 ```python
-from torch_geometric.datasets import TUDataset
 from torch_geometric.loader import DataLoader
-from torch_geometric.nn import global_mean_pool
+from torch_geometric.nn import GCNConv, global_mean_pool
 
-class GraphClassifier(torch.nn.Module):
-    def __init__(self, num_features, num_classes):
-        super().__init__()
-        self.conv1 = GCNConv(num_features, 64)
-        self.conv2 = GCNConv(64, 64)
-        self.lin = torch.nn.Linear(64, num_classes)
-
-    def forward(self, data):
-        x, edge_index, batch = data.x, data.edge_index, data.batch
-
-        x = self.conv1(x, edge_index)
-        x = F.relu(x)
-        x = self.conv2(x, edge_index)
-        x = F.relu(x)
-
-        # 全局池化（将节点特征聚合到图级别）
-        x = global_mean_pool(x, batch)
-
-        x = self.lin(x)
-        return F.log_softmax(x, dim=1)
-
-# 加载数据集
-dataset = TUDataset(root='/tmp/ENZYMES', name='ENZYMES')
 loader = DataLoader(dataset, batch_size=32, shuffle=True)
 
-model = GraphClassifier(dataset.num_features, dataset.num_classes)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+class GraphClassifier(torch.nn.Module):
+    def __init__(self, in_ch, hidden_ch, out_ch):
+        super().__init__()
+        self.conv1 = GCNConv(in_ch, hidden_ch)
+        self.conv2 = GCNConv(hidden_ch, hidden_ch)
+        self.lin = torch.nn.Linear(hidden_ch, out_ch)
 
-# 训练
-model.train()
-for epoch in range(100):
-    total_loss = 0
-    for batch in loader:
-        optimizer.zero_grad()
-        out = model(batch)
-        loss = F.nll_loss(out, batch.y)
-        loss.backward()
-        optimizer.step()
-        total_loss += loss.item()
+    def forward(self, x, edge_index, batch):
+        x = self.conv1(x, edge_index).relu()
+        x = self.conv2(x, edge_index).relu()
+        x = global_mean_pool(x, batch)  # [num_graphs_in_batch, hidden_ch]
+        return self.lin(x)
 
-    if epoch % 10 == 0:
-        print(f'轮次 {epoch}, 损失: {total_loss / len(loader):.4f}')
+# 训练循环
+for data in loader:
+    out = model(data.x, data.edge_index, data.batch)
+    loss = F.cross_entropy(out, data.y)
 ```
 
-### 带邻居采样的大规模图
+PyG 的 `DataLoader` 通过创建块对角邻接矩阵来批量处理多个图。`batch` 张量将每个节点映射到其图索引。池化操作（`global_mean_pool`、`global_max_pool`、`global_add_pool`）使用此来聚合每个图。
 
-对于大型图，使用 `NeighborLoader` 采样子图：
+### 链接预测
+
+将边分为训练/验证/测试，使用负采样：
+
+```python
+from torch_geometric.transforms import RandomLinkSplit
+
+transform = RandomLinkSplit(
+    num_val=0.1,
+    num_test=0.1,
+    is_undirected=True,
+    add_negative_train_samples=False,
+)
+train_data, val_data, test_data = transform(data)
+
+# 编码节点，然后评分边
+z = model.encode(train_data.x, train_data.edge_index)
+# 正边
+pos_score = (z[train_data.edge_label_index[0]] * z[train_data.edge_label_index[1]]).sum(dim=1)
+```
+
+阅读 `references/link_prediction.md` 获取完整的链接预测指南：GAE/VGAE 自动编码器、完整训练循环、大型图的 LinkNeighborLoader、异构链接预测和评估指标。
+
+## 扩展到大型图
+
+对于不适合 GPU 内存的图，使用 `NeighborLoader` 进行邻居采样：
 
 ```python
 from torch_geometric.loader import NeighborLoader
 
-# 创建邻居采样器
 train_loader = NeighborLoader(
     data,
-    num_neighbors=[25, 10],  # 为第 1 跳采样 25 个邻居，第 2 跳 10 个
-    batch_size=128,
-    input_nodes=data.train_mask,
+    num_neighbors=[15, 10],     # 在第 1 跳采样 15 个邻居，第 2 跳采样 10 个
+    batch_size=128,              # 每批种子节点数
+    input_nodes=data.train_mask, # 从哪些节点采样
+    shuffle=True,
 )
 
-# 训练
-model.train()
 for batch in train_loader:
-    optimizer.zero_grad()
-    out = model(batch)
-    # 仅对种子节点（前 batch_size 个节点）计算损失
-    loss = F.nll_loss(out[:batch.batch_size], batch.y[:batch.batch_size])
-    loss.backward()
-    optimizer.step()
+    batch = batch.to(device)
+    out = model(batch.x, batch.edge_index)
+    # 仅使用前 batch_size 个节点计算损失（这些是种子节点）
+    loss = F.cross_entropy(out[:batch.batch_size], batch.y[:batch.batch_size])
 ```
 
-**重要**：
-- 输出子图是有向的
-- 节点索引被重新标记（0 到 batch.num_nodes - 1）
-- 仅使用种子节点预测计算损失
-- 采样超过 2-3 跳通常不可行
+**关于 NeighborLoader 的关键点**：
+- `num_neighbors` 列表长度应与 GNN 深度（消息传递层数）匹配
+- 种子节点始终是输出中前 `batch.batch_size` 个节点
+- `batch.n_id` 将重新标记的索引映射回原始节点 ID
+- 适用于 `Data` 和 `HeteroData`
+- 对于链接预测，改用 `LinkNeighborLoader`
+- 采样超过 2-3 跳通常不可行（指数爆炸）
 
-## 高级功能
+其他可扩展性选项：`ClusterLoader` (ClusterGCN)、`GraphSAINTSampler`、`ShaDowKHopSampler`。对于多 GPU 训练、DDP、PyTorch Lightning 集成和 `torch.compile` 支持，请阅读 `references/scaling.md`。
 
-### 异构图
+## 异构图
 
-对于具有多种节点和边类型的图，使用 `HeteroData`：
+对于具有多种节点和边类型的图（社交网络、知识图谱、推荐）：
 
 ```python
 from torch_geometric.data import HeteroData
 
 data = HeteroData()
 
-# 添加不同类型的节点特征
-data['paper'].x = torch.randn(100, 128)  # 100 篇论文，128 个特征
-data['author'].x = torch.randn(200, 64)  # 200 位作者，64 个特征
+# 节点特征 — 按节点类型字符串索引
+data['user'].x = torch.randn(1000, 64)
+data['movie'].x = torch.randn(500, 128)
 
-# 添加不同类型的边（source_type, edge_type, target_type）
-data['author', 'writes', 'paper'].edge_index = torch.randint(0, 200, (2, 500))
-data['paper', 'cites', 'paper'].edge_index = torch.randint(0, 100, (2, 300))
+# 边索引 — 按 (src_type, edge_type, dst_type) 三元组索引
+data['user', 'rates', 'movie'].edge_index = torch.randint(0, 500, (2, 3000))
+data['user', 'follows', 'user'].edge_index = torch.randint(0, 1000, (2, 5000))
 
-print(data)
+# 访问便利字典
+data.x_dict        # {'user': tensor, 'movie': tensor}
+data.edge_index_dict  # {('user','rates','movie'): tensor, ...}
+data.metadata()    # ([node_types], [edge_types])
 ```
 
-将同质模型转换为异质：
+### 构建异质 GNN 的三种方法
+
+**1. 使用 `to_hetero()` 自动转换** — 编写同构模型，自动转换：
 
 ```python
-from torch_geometric.nn import to_hetero
+from torch_geometric.nn import SAGEConv, to_hetero
 
-# 定义同质模型
-model = GNN(...)
+class GNN(torch.nn.Module):
+    def __init__(self, hidden_channels, out_channels):
+        super().__init__()
+        self.conv1 = SAGEConv((-1, -1), hidden_channels)
+        self.conv2 = SAGEConv((-1, -1), out_channels)
 
-# 转换为异质
+    def forward(self, x, edge_index):
+        x = self.conv1(x, edge_index).relu()
+        x = self.conv2(x, edge_index)
+        return x
+
+model = GNN(64, dataset.num_classes)
 model = to_hetero(model, data.metadata(), aggr='sum')
 
-# 正常使用
+# 现在接受字典：
 out = model(data.x_dict, data.edge_index_dict)
 ```
 
-或使用 `HeteroConv` 进行自定义边类型特定操作：
+对二分输入通道使用 `(-1, -1)`（源和目标可能不同）。延迟初始化处理其余部分。
+
+**2. `HeteroConv` 包装器** — 每种边类型使用不同的卷积：
 
 ```python
-from torch_geometric.nn import HeteroConv, GCNConv, SAGEConv
+from torch_geometric.nn import HeteroConv, GCNConv, SAGEConv, GATConv
 
-class HeteroGNN(torch.nn.Module):
-    def __init__(self, metadata):
-        super().__init__()
-        self.conv1 = HeteroConv({
-            ('paper', 'cites', 'paper'): GCNConv(-1, 64),
-            ('author', 'writes', 'paper'): SAGEConv((-1, -1), 64),
-        }, aggr='sum')
-
-        self.conv2 = HeteroConv({
-            ('paper', 'cites', 'paper'): GCNConv(64, 32),
-            ('author', 'writes', 'paper'): SAGEConv((64, 64), 32),
-        }, aggr='sum')
-
-    def forward(self, x_dict, edge_index_dict):
-        x_dict = self.conv1(x_dict, edge_index_dict)
-        x_dict = {key: F.relu(x) for key, x in x_dict.items()}
-        x_dict = self.conv2(x_dict, edge_index_dict)
-        return x_dict
+conv = HeteroConv({
+    ('paper', 'cites', 'paper'): GCNConv(-1, 64),
+    ('author', 'writes', 'paper'): SAGEConv((-1, -1), 64),
+    ('paper', 'rev_writes', 'author'): GATConv((-1, -1), 64, add_self_loops=False),
+}, aggr='sum')
 ```
 
-### 变换
-
-应用变换修改图结构或特征：
+**3. 原生异构运算符** 如 `HGTConv`：
 
 ```python
-from torch_geometric.transforms import NormalizeFeatures, AddSelfLoops, Compose
-
-# 单个变换
-transform = NormalizeFeatures()
-dataset = Planetoid(root='/tmp/Cora', name='Cora', transform=transform)
-
-# 组合多个变换
-transform = Compose([
-    AddSelfLoops(),
-    NormalizeFeatures(),
-])
-dataset = Planetoid(root='/tmp/Cora', name='Cora', transform=transform)
+from torch_geometric.nn import HGTConv
+conv = HGTConv(hidden_channels, hidden_channels, data.metadata(), num_heads=4)
 ```
 
-常见变换：
-- **结构**：`ToUndirected`, `AddSelfLoops`, `RemoveSelfLoops`, `KNNGraph`, `RadiusGraph`
-- **特征**：`NormalizeFeatures`, `NormalizeScale`, `Center`
-- **采样**：`RandomNodeSplit`, `RandomLinkSplit`
-- **位置编码**：`AddLaplacianEigenvectorPE`, `AddRandomWalkPE`
+**异构图的重要提示**：
+- 使用 `T.ToUndirected()` 添加反向边类型以实现双向消息流
+- 在二分卷积层中禁用 `add_self_loops`（源和目标类型不同）— 改用跳跃连接：`conv(x, edge_index) + lin(x)`
+- 对于 HeteroData 上的 NeighborLoader，将 `input_nodes` 指定为 `('node_type', mask)` 元组
+- `num_neighbors` 可以是按边类型键控的字典，用于精细控制
 
-请查看 `references/transforms_reference.md` 获取完整列表。
+阅读 `references/heterogeneous.md` 获取完整示例，包括训练循环和异构图的 NeighborLoader 使用。
 
-### 模型可解释性
+## 自定义数据集
 
-PyG 提供可解释性工具来理解模型预测：
+将自己的数据加载到 PyG 中：
+
+- **快速（不需要类）**：直接创建 `Data` 对象并将列表传递给 `DataLoader`
+- **可重用（适合 RAM）**：继承 `InMemoryDataset` — 覆盖 `raw_file_names`、`processed_file_names`、`download()`、`process()`
+- **大型（磁盘备份）**：继承 `Dataset` — 还需覆盖 `len()` 和 `get()`
+- **从 CSV**：使用 pandas 加载节点/边表，构建连续索引映射，组装成 `Data` 或 `HeteroData`
+- **从 NetworkX**：`from_networkx(G)` 直接转换 NetworkX 图
+- **从 scipy 稀疏**：`from_scipy_sparse_matrix(adj)` 提取 edge_index
+
+阅读 `references/custom_datasets.md` 获取所有模式的完整示例、带编码器的 CSV 加载，以及 MovieLens 演练。
+
+## 可解释性
+
+PyG 提供 `torch_geometric.explain` 用于解释 GNN 预测：
 
 ```python
 from torch_geometric.explain import Explainer, GNNExplainer
 
-# 创建解释器
 explainer = Explainer(
     model=model,
     algorithm=GNNExplainer(epochs=200),
-    explanation_type='model',  # 或 'phenomenon'
+    explanation_type='model',
     node_mask_type='attributes',
     edge_mask_type='object',
     model_config=dict(
@@ -550,124 +402,22 @@ explainer = Explainer(
     ),
 )
 
-# 为特定节点生成解释
-node_idx = 10
-explanation = explainer(data.x, data.edge_index, index=node_idx)
-
-# 可视化
-print(f'节点 {node_idx} 解释:')
-print(f'重要边: {explanation.edge_mask.topk(5).indices}')
-print(f'重要特征: {explanation.node_mask[node_idx].topk(5).indices}')
+explanation = explainer(data.x, data.edge_index, index=10)
+explanation.visualize_graph()           # 重要子图
+explanation.visualize_feature_importance(top_k=10)  # 特征重要性
 ```
 
-### 池化操作
+可用算法：`GNNExplainer`（基于优化）、`PGExplainer`（参数化，训练）、`CaptumExplainer`（基于梯度，通过 Captum）、`AttentionExplainer`（注意力权重）。适用于同构图和异构图。
 
-对于层次图表示：
+阅读 `references/explainability.md` 获取所有算法、异构解释、评估指标和 PGExplainer 训练。
 
-```python
-from torch_geometric.nn import TopKPooling, global_mean_pool
+## 常见陷阱
 
-class HierarchicalGNN(torch.nn.Module):
-    def __init__(self, num_features, num_classes):
-        super().__init__()
-        self.conv1 = GCNConv(num_features, 64)
-        self.pool1 = TopKPooling(64, ratio=0.8)
-        self.conv2 = GCNConv(64, 64)
-        self.pool2 = TopKPooling(64, ratio=0.8)
-        self.lin = torch.nn.Linear(64, num_classes)
-
-    def forward(self, data):
-        x, edge_index, batch = data.x, data.edge_index, data.batch
-
-        x = F.relu(self.conv1(x, edge_index))
-        x, edge_index, _, batch, _, _ = self.pool1(x, edge_index, None, batch)
-
-        x = F.relu(self.conv2(x, edge_index))
-        x, edge_index, _, batch, _, _ = self.pool2(x, edge_index, None, batch)
-
-        x = global_mean_pool(x, batch)
-        x = self.lin(x)
-        return F.log_softmax(x, dim=1)
-```
-
-## 常见模式和最佳实践
-
-### 检查图属性
-
-```python
-# 无向检查
-from torch_geometric.utils import is_undirected
-print(f"是否无向: {is_undirected(data.edge_index)}")
-
-# 连通组件
-from torch_geometric.utils import connected_components
-print(f"连通组件: {connected_components(data.edge_index)}")
-
-# 包含自环
-from torch_geometric.utils import contains_self_loops
-print(f"有自环: {contains_self_loops(data.edge_index)}")
-```
-
-### GPU 训练
-
-```python
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = model.to(device)
-data = data.to(device)
-
-# 对于 DataLoader
-for batch in loader:
-    batch = batch.to(device)
-    # 训练...
-```
-
-### 保存和加载模型
-
-```python
-# 保存
-torch.save(model.state_dict(), 'model.pth')
-
-# 加载
-model = GCN(num_features, num_classes)
-model.load_state_dict(torch.load('model.pth'))
-model.eval()
-```
-
-### 层能力
-
-选择层时，考虑这些能力：
-- **SparseTensor**：支持高效的稀疏矩阵操作
-- **edge_weight**：处理一维边权重
-- **edge_attr**：处理多维边特征
-- **Bipartite**：适用于二分图（不同的源/目标维度）
-- **Lazy**：无需指定输入维度即可初始化
-
-请查看 GNN 速查表 `references/layer_capabilities.md`。
-
-## 资源
-
-### 捆绑参考
-
-此技能包含详细的参考文档：
-
-- **`references/layers_reference.md`**：所有 40+ GNN 层的完整列表，带有描述和能力
-- **`references/datasets_reference.md`**：按类别组织的综合数据集目录
-- **`references/transforms_reference.md`**：所有可用的变换及其用例
-- **`references/api_patterns.md`**：常见的 API 模式和编码示例
-
-### 脚本
-
-`scripts/` 中提供了实用脚本：
-
-- **`scripts/visualize_graph.py`**：使用 networkx 和 matplotlib 可视化图结构
-- **`scripts/create_gnn_template.py`**：为常见 GNN 架构生成样板代码
-- **`scripts/benchmark_model.py`**：在标准数据集上基准测试模型性能
-
-直接执行脚本或阅读它们以了解实现模式。
-
-### 官方资源
-
-- **文档**：https://pytorch-geometric.readthedocs.io/
-- **GitHub**：https://github.com/pyg-team/pytorch_geometric
-- **教程**：https://pytorch-geometric.readthedocs.io/en/latest/get_started/introduction.html
-- **示例**：https://github.com/pyg-team/pytorch_geometric/tree/master/examples
+1. **edge_index 形状**：必须是 `[2, num_edges]`，不是 `[num_edges, 2]`。必要时转置。
+2. **忘记激活函数**：卷积层不包含 ReLU 等 — 手动添加。
+3. **异质二分图中的自环**：当源和目标节点类型不同时，不要使用 `add_self_loops=True`。改用跳跃连接。
+4. **NeighborLoader 切片**：只有前 `batch.batch_size` 个节点是种子节点。相应地切片预测和标签。
+5. **无向图**：如果图是无向的，在 `edge_index` 中包含两个方向的边，或使用 `T.ToUndirected()`。
+6. **延迟初始化**：具有 `-1` 输入通道的模型在训练前需要一次 `torch.no_grad()` 的前向传播来初始化参数。
+7. **图任务的全局池化**：使用 `global_mean_pool(x, batch)`（不是手动重塑）将节点特征聚合到图级。
+8. **num_neighbors 对齐**：保持 `len(num_neighbors)` 等于 GNN 层数。跳数多于层数会浪费计算；少于层数会浪费模型容量。

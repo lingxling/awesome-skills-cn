@@ -145,19 +145,19 @@ More instructions...
 **This is the heart of your skill** - clear, actionable steps
 
 #### 5. Examples
-```markdown
+````markdown
 ## Examples
 
 ### Example 1: [Use Case]
-\`\`\`javascript
+```javascript
 // Example code
-\`\`\`
+```
 
 ### Example 2: [Another Use Case]
-\`\`\`javascript
+```javascript
 // More code
-\`\`\`
 ```
+````
 
 **Why examples matter:** They show the AI exactly what good output looks like
 
@@ -264,12 +264,12 @@ scripts/
 ```
 
 **Reference them in SKILL.md:**
-```markdown
+````markdown
 Run the setup script:
-\`\`\`bash
+```bash
 bash scripts/setup.sh
-\`\`\`
 ```
+````
 
 ### Examples Directory
 
@@ -296,12 +296,12 @@ templates/
 ```
 
 **Reference in SKILL.md:**
-```markdown
+````markdown
 Use this template as a starting point:
-\`\`\`typescript
+```typescript
 {{#include templates/component.tsx}}
-\`\`\`
 ```
+````
 
 ### References Directory
 
@@ -344,11 +344,11 @@ references/
 
 #### Code Blocks
 Always specify the language:
-```markdown
-\`\`\`javascript
+````markdown
+```javascript
 const example = "code";
-\`\`\`
 ```
+````
 
 #### Lists
 Use consistent formatting:

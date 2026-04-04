@@ -1,3 +1,12 @@
+# Maintenance Walkthrough - 2026-03-30
+
+- Merged PR #418 on GitHub with squash after approving the pending fork workflow run and waiting for `pr-policy`, `source-validation`, and `artifact-preview` to finish green.
+- Repaired PR #423's stale metadata state by updating the PR body to include the required Quality Bar Checklist, then closed and reopened it to force fresh `pull_request` runs before squash merging it on GitHub.
+- Synced local `main` after the PR merge batch so release preparation starts from the canonical remote state.
+- Resolved issue #421 by ensuring the `README.md` Community Contributed Skills section includes `SoulPass` on `main`.
+- Resolved issue #419 by tightening the `github-issue-creator` frontmatter description and "When to Use" guidance for better discoverability.
+- Prepared the `v9.3.0` release notes in `CHANGELOG.md` and recorded the maintainer actions here before running the release flow.
+
 # Maintenance Walkthrough - 2026-03-29
 
 - Re-triaged the full 2026-03-15 security finding set against current `main` and wrote a fresh current-head report in `docs/maintainers/security-findings-triage-2026-03-29-refresh.md`.

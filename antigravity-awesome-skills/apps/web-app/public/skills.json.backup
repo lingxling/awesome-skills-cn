@@ -618,6 +618,30 @@
     }
   },
   {
+    "id": "agentflow",
+    "path": "skills/agentflow",
+    "category": "uncategorized",
+    "name": "agentflow",
+    "description": "Orchestrate autonomous AI development pipelines through your Kanban board (Asana, GitHub Projects, Linear). Manages multi-worker Claude Code dispatch, deterministic quality gates, adversarial review, per-task cost tracking, and crash-proof pipeline execution.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-02",
+    "plugin": {
+      "targets": {
+        "codex": "blocked",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [
+        "target_specific_home_path"
+      ]
+    }
+  },
+  {
     "id": "agentfolio",
     "path": "skills/agentfolio",
     "category": "ai-ml",
@@ -668,6 +692,28 @@
     "name": "agentmail",
     "description": "Email infrastructure for AI agents. Create accounts, send/receive emails, manage webhooks, and check karma balance via the AgentMail API.",
     "risk": "safe",
+    "source": "community",
+    "date_added": null,
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "agentphone",
+    "path": "skills/agentphone",
+    "category": "ai-ml",
+    "name": "agentphone",
+    "description": "Build AI phone agents with AgentPhone API. Use when the user wants to make phone calls, send/receive SMS, manage phone numbers, create voice agents, set up webhooks, or check usage \u2014 anything related to telephony, phone numbers, or voice AI.",
+    "risk": "critical",
     "source": "community",
     "date_added": null,
     "plugin": {
@@ -13474,7 +13520,7 @@
     "path": "skills/github-issue-creator",
     "category": "project-management",
     "name": "github-issue-creator",
-    "description": "Transform messy input (error logs, voice notes, screenshots) into clean, actionable GitHub issues.",
+    "description": "Turn error logs, screenshots, voice notes, and rough bug reports into crisp, developer-ready GitHub issues with repro steps, impact, and evidence.",
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27",
@@ -14866,6 +14912,28 @@
     "risk": "unknown",
     "source": "https://github.com/huggingface/skills/tree/main/skills/huggingface-vision-trainer",
     "date_added": null,
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "humanize-chinese",
+    "path": "skills/humanize-chinese",
+    "category": "content",
+    "name": "humanize-chinese",
+    "description": "Detect and rewrite AI-like Chinese text with a practical workflow for scoring, humanization, academic AIGC reduction, and style conversion. Use when the user asks to \u53bbAI\u5473, \u964dAIGC, \u53bb\u9664AI\u75d5\u8ff9, \u8bba\u6587\u964d\u91cd, \u77e5\u7f51\u68c0\u6d4b, \u7ef4\u666e\u68c0\u6d4b, humanize chinese, detect AI text, or make Chinese text sound more natural.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-03",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -27788,6 +27856,28 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "uxui-principles",
+    "path": "skills/uxui-principles",
+    "category": "design",
+    "name": "uxui-principles",
+    "description": "Evaluate interfaces against 168 research-backed UX/UI principles, detect antipatterns, and inject UX context into AI coding sessions.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-03",
     "plugin": {
       "targets": {
         "codex": "supported",

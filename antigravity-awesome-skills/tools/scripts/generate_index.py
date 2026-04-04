@@ -808,7 +808,17 @@ def normalize_yaml_value(value):
         return [normalize_yaml_value(item) for item in value]
     if isinstance(value, (date, datetime)):
         return value.isoformat()
+    if isinstance(value, (bytes, bytearray)):
+        return bytes(value).decode("utf-8", errors="replace")
     return value
+
+
+def coerce_metadata_text(value):
+    if value is None or isinstance(value, (Mapping, list, tuple, set)):
+        return None
+    if isinstance(value, str):
+        return value
+    return str(value)
 
 def parse_frontmatter(content):
     """
@@ -905,15 +915,27 @@ def generate_index(skills_dir, output_file, compatibility_report=None):
             metadata = parse_frontmatter(content)
             
             # Merge Metadata (frontmatter takes priority)
-            if "name" in metadata: skill_info["name"] = metadata["name"]
-            if "description" in metadata: skill_info["description"] = metadata["description"]
-            if "risk" in metadata: skill_info["risk"] = metadata["risk"]
-            if "source" in metadata: skill_info["source"] = metadata["source"]
-            if "date_added" in metadata: skill_info["date_added"] = metadata["date_added"]
+            name = coerce_metadata_text(metadata.get("name"))
+            description = coerce_metadata_text(metadata.get("description"))
+            risk = coerce_metadata_text(metadata.get("risk"))
+            source = coerce_metadata_text(metadata.get("source"))
+            date_added = coerce_metadata_text(metadata.get("date_added"))
+            category = coerce_metadata_text(metadata.get("category"))
+
+            if name is not None:
+                skill_info["name"] = name
+            if description is not None:
+                skill_info["description"] = description
+            if risk is not None:
+                skill_info["risk"] = risk
+            if source is not None:
+                skill_info["source"] = source
+            if date_added is not None:
+                skill_info["date_added"] = date_added
             
             # Category: prefer frontmatter, then folder structure, then conservative inference
-            if "category" in metadata:
-                skill_info["category"] = metadata["category"]
+            if category is not None:
+                skill_info["category"] = category
             elif skill_info["category"] is None:
                 inferred_category = infer_category(
                     skill_info["id"],

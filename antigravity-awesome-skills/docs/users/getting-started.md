@@ -1,4 +1,4 @@
-# Getting Started with Antigravity Awesome Skills (V9.2.0)
+# Getting Started with Antigravity Awesome Skills (V9.5.1)
 
 **New here? This guide will help you supercharge your AI Agent in 5 minutes.**
 
@@ -107,7 +107,7 @@ Once installed, just talk to your AI naturally.
 | **Kiro IDE**    | ✅ Full Support | Global: `~/.kiro/skills/` · Workspace: `.kiro/skills/`                |
 | **Antigravity** | ✅ Native       | Global: `~/.gemini/antigravity/skills/` · Workspace: `.agent/skills/` |
 | **Cursor**      | ✅ Native       | `.cursor/skills/`                                                     |
-| **OpenCode**    | ✅ Full Support | `.agents/skills/`                                                     |
+| **OpenCode**    | ✅ Full Support | `.agents/skills/` (prefer reduced installs with `--risk`, `--category`, or `--tags`) |
 | **AdaL CLI**    | ✅ Full Support | `.adal/skills/`                                                       |
 | **Copilot**     | ⚠️ Text Only    | Manual copy-paste                                                     |
 
@@ -153,6 +153,9 @@ A: Follow the recovery steps in [windows-truncation-recovery.md](windows-truncat
 
 **Q: What if Antigravity overloads on Linux or macOS when too many skills are active?**
 A: Use the activation flow in [agent-overload-recovery.md](agent-overload-recovery.md). It shows how to run `scripts/activate-skills.sh` from a cloned repo so you can keep the full library archived and activate only the bundles or skills you need in the live Antigravity directory.
+
+**Q: What if OpenCode or another `.agents/skills` host becomes unstable with a full install?**
+A: Start with a reduced install instead of copying the whole library. For example: `npx antigravity-awesome-skills --path .agents/skills --category development,backend --risk safe,none`. You can narrow further with `--tags` and use a trailing `-` to exclude values such as `typescript-`.
 
 **Q: Is this free?**
 A: Yes. Original code and tooling are MIT-licensed, and original documentation/non-code written content is CC BY 4.0. See [../../LICENSE](../../LICENSE) and [../../LICENSE-CONTENT](../../LICENSE-CONTENT).

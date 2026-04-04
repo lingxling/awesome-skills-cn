@@ -132,13 +132,12 @@ Bộ sưu tập này sẽ không thể hình thành nếu không có công việ
 - **[zebbern/claude-code-guide](https://github.com/zebbern/claude-code-guide)**: Bộ công cụ bảo mật toàn diện & Hướng dẫn (Nguồn cho khoảng 60 kỹ năng mới).
 - **[alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills)**: Bộ công cụ Kỹ sư cao cấp và PM.
 - **[karanb192/awesome-claude-skills](https://github.com/karanb192/awesome-claude-skills)**: Một danh sách khổng lồ các kỹ năng đã được xác thực cho Claude Code.
-- **[zircote/.claude](https://github.com/zircote/.claude)**: Tham chiếu kỹ năng phát triển cho Shopify.
-- **[vibeforge1111/vibeship-spawner-skills](https://github.com/vibeforge1111/vibeship-spawner-skills)**: Trợ lý AI, Tích hợp, Công cụ của nhà sáng tạo (57 kỹ năng, Apache 2.0).
+- **[zircote/.claude](https://github.com/zircote/.claude)**: Kho cấu hình/dotfiles Claude Code đã được lưu trữ, có tham chiếu kỹ năng phát triển Shopify.
+- **[vibeforge1111/vibeship-spawner-skills](https://github.com/vibeforge1111/vibeship-spawner-skills)**: Bộ kỹ năng quy mô lớn cho AI agent, tích hợp, maker tools và nhiều lĩnh vực khác.
 - **[coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills)**: Các kỹ năng Marketing cho CRO, copywriting, SEO, quảng cáo trả phí và tăng trưởng (23 kỹ năng, MIT).
 - **[vudovn/antigravity-kit](https://github.com/vudovn/antigravity-kit)**: Các mẫu AI Agent với Kỹ năng, Agents và Quy trình làm việc (33 kỹ năng, MIT).
-- **[affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)**: Bộ sưu tập cấu hình Claude Code đầy đủ từ người chiến thắng cuộc thi hackathon của Anthropic - chỉ phần kỹ năng (8 kỹ năng, MIT).
+- **[affaan-m/everything-claude-code](https://github.com/affaan-m/everything-claude-code)**: Bộ sưu tập lớn về cấu hình và quy trình làm việc cho Claude Code từ người chiến thắng hackathon của Anthropic (MIT).
 - **[webzler/agentMemory](https://github.com/webzler/agentMemory)**: Nguồn cho kỹ năng agent-memory-mcp.
-- **[sstklen/claude-api-cost-optimization](https://github.com/sstklen/claude-api-cost-optimization)**: Tiết kiệm 50-90% chi phí Claude API với các chiến lược tối ưu hóa thông minh (MIT).
 
 ### Nguồn cảm hứng
 

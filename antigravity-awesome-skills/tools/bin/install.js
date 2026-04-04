@@ -5,6 +5,7 @@ const path = require("path");
 const fs = require("fs");
 const os = require("os");
 const { resolveSafeRealPath } = require("../lib/symlink-safety");
+const { listSkillIdsRecursive, readSkill } = require("../lib/skill-utils");
 
 const REPO = "https://github.com/sickn33/antigravity-awesome-skills.git";
 const HOME = process.env.HOME || process.env.USERPROFILE || "";
@@ -21,6 +22,9 @@ function parseArgs() {
   let pathArg = null;
   let versionArg = null;
   let tagArg = null;
+  let riskArg = null;
+  let categoryArg = null;
+  let tagsArg = null;
   let cursor = false,
     claude = false,
     gemini = false,
@@ -40,6 +44,18 @@ function parseArgs() {
     }
     if (a[i] === "--tag" && a[i + 1]) {
       tagArg = a[++i];
+      continue;
+    }
+    if (a[i] === "--risk" && a[i + 1]) {
+      riskArg = a[++i];
+      continue;
+    }
+    if (a[i] === "--category" && a[i + 1]) {
+      categoryArg = a[++i];
+      continue;
+    }
+    if (a[i] === "--tags" && a[i + 1]) {
+      tagsArg = a[++i];
       continue;
     }
     if (a[i] === "--cursor") {
@@ -73,6 +89,9 @@ function parseArgs() {
     pathArg,
     versionArg,
     tagArg,
+    riskArg,
+    categoryArg,
+    tagsArg,
     cursor,
     claude,
     gemini,
@@ -131,6 +150,9 @@ Options:
   --kiro         Install to ~/.kiro/skills (Kiro CLI)
   --antigravity  Install to ~/.gemini/antigravity/skills (Antigravity)
   --path <dir>   Install to <dir> (default: ~/.gemini/antigravity/skills)
+  --risk <csv>     Install only skills matching these risk labels
+  --category <csv> Install only skills matching these categories
+  --tags <csv>     Install only skills matching these tags
   --version <ver>  Clone tag v<ver> (e.g. 4.6.0 -> v4.6.0)
   --tag <tag>      Clone this tag or branch (e.g. v4.6.0)
 
@@ -139,10 +161,97 @@ Examples:
   npx antigravity-awesome-skills --cursor
   npx antigravity-awesome-skills --kiro
   npx antigravity-awesome-skills --antigravity
+  npx antigravity-awesome-skills --path .agents/skills --category development,backend --risk safe,none
+  npx antigravity-awesome-skills --path .agents/skills --tags debugging,typescript-legacy-
   npx antigravity-awesome-skills --version 4.6.0
   npx antigravity-awesome-skills --path ./my-skills
   npx antigravity-awesome-skills --claude --codex    Install to multiple targets
 `);
+}
+
+function normalizeFilterValue(value) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
+
+function uniqueValues(values) {
+  return [...new Set(values.filter(Boolean))];
+}
+
+function parseSelectorArg(raw) {
+  const include = [];
+  const exclude = [];
+
+  if (typeof raw !== "string" || !raw.trim()) {
+    return { include, exclude };
+  }
+
+  for (const token of raw.split(",")) {
+    const normalized = normalizeFilterValue(token);
+    if (!normalized) continue;
+    if (normalized.endsWith("-") && normalized.length > 1) {
+      exclude.push(normalized.slice(0, -1));
+      continue;
+    }
+    include.push(normalized);
+  }
+
+  const excludeValues = uniqueValues(exclude);
+  return {
+    include: uniqueValues(include).filter((value) => !excludeValues.includes(value)),
+    exclude: excludeValues,
+  };
+}
+
+function hasActiveSelector(selector) {
+  return selector.include.length > 0 || selector.exclude.length > 0;
+}
+
+function buildInstallSelectors(opts) {
+  return {
+    risk: parseSelectorArg(opts.riskArg),
+    category: parseSelectorArg(opts.categoryArg),
+    tags: parseSelectorArg(opts.tagsArg),
+  };
+}
+
+function hasInstallSelectors(selectors) {
+  return Object.values(selectors).some(hasActiveSelector);
+}
+
+function matchesScalarSelector(value, selector) {
+  const normalized = normalizeFilterValue(value);
+  if (normalized && selector.exclude.includes(normalized)) {
+    return false;
+  }
+  if (selector.include.length === 0) {
+    return true;
+  }
+  if (!normalized) {
+    return false;
+  }
+  return selector.include.includes(normalized);
+}
+
+function matchesArraySelector(values, selector) {
+  const normalizedValues = uniqueValues(
+    (Array.isArray(values) ? values : []).map((value) => normalizeFilterValue(value)),
+  );
+
+  if (normalizedValues.some((value) => selector.exclude.includes(value))) {
+    return false;
+  }
+  if (selector.include.length === 0) {
+    return true;
+  }
+  return normalizedValues.some((value) => selector.include.includes(value));
+}
+
+function matchesInstallSelectors(skill, selectors) {
+  return (
+    matchesScalarSelector(skill.risk, selectors.risk) &&
+    matchesScalarSelector(skill.category, selectors.category) &&
+    matchesArraySelector(skill.tags, selectors.tags)
+  );
 }
 
 function copyRecursiveSync(src, dest, rootDir = src, skipGit = true) {
@@ -171,13 +280,24 @@ function copyRecursiveSync(src, dest, rootDir = src, skipGit = true) {
 }
 
 /** Copy contents of repo's skills/ into target so each skill is target/skill-name/ (for Claude Code etc.). */
-function getInstallEntries(tempDir) {
+function getInstallEntries(tempDir, selectors = buildInstallSelectors({})) {
   const repoSkills = path.join(tempDir, "skills");
   if (!fs.existsSync(repoSkills)) {
     console.error("Cloned repo has no skills/ directory.");
     process.exit(1);
   }
-  const entries = fs.readdirSync(repoSkills);
+
+  const skillEntries = listSkillIdsRecursive(repoSkills);
+  const filteredEntries = hasInstallSelectors(selectors)
+    ? skillEntries.filter((skillId) => matchesInstallSelectors(readSkill(repoSkills, skillId), selectors))
+    : skillEntries;
+
+  if (hasInstallSelectors(selectors) && filteredEntries.length === 0) {
+    console.error("No skills matched the requested --risk/--category/--tags filters.");
+    process.exit(1);
+  }
+
+  const entries = [...filteredEntries];
   if (fs.existsSync(path.join(tempDir, "docs"))) {
     entries.push("docs");
   }
@@ -295,7 +415,7 @@ function buildCloneArgs(repo, tempDir, ref = null) {
   return args;
 }
 
-function installForTarget(tempDir, target) {
+function installForTarget(tempDir, target, selectors = buildInstallSelectors({})) {
   if (fs.existsSync(target.path)) {
     ensureTargetIsDirectory(target.path);
     const gitDir = path.join(target.path, ".git");
@@ -334,7 +454,7 @@ function installForTarget(tempDir, target) {
     fs.mkdirSync(target.path, { recursive: true });
   }
 
-  const installEntries = getInstallEntries(tempDir);
+  const installEntries = getInstallEntries(tempDir, selectors);
   const previousEntries = readInstallManifest(target.path);
   pruneRemovedEntries(target.path, previousEntries, installEntries);
   installSkillsIntoTarget(tempDir, target.path, installEntries);
@@ -342,7 +462,12 @@ function installForTarget(tempDir, target) {
   console.log(`  ✓ Installed to ${target.path}`);
 }
 
-function getPostInstallMessages(targets) {
+function isOpenCodeStylePath(targetPath) {
+  const normalizedPath = path.normalize(targetPath);
+  return normalizedPath.endsWith(path.join(".agents", "skills"));
+}
+
+function getPostInstallMessages(targets, selectors = buildInstallSelectors({})) {
   const messages = [
     "Pick a bundle in docs/users/bundles.md and use @skill-name in your AI assistant.",
   ];
@@ -356,12 +481,24 @@ function getPostInstallMessages(targets) {
     );
   }
 
+  if (targets.some((target) => isOpenCodeStylePath(target.path))) {
+    const baseMessage =
+      "For OpenCode or other .agents/skills installs, prefer a reduced install with --risk, --category, or --tags to avoid context overload.";
+    messages.push(baseMessage);
+    if (!hasInstallSelectors(selectors)) {
+      messages.push(
+        "Example: npx antigravity-awesome-skills --path .agents/skills --category development,backend --risk safe,none",
+      );
+    }
+  }
+
   return messages;
 }
 
 function main() {
   const opts = parseArgs();
   const { tagArg, versionArg } = opts;
+  const selectors = buildInstallSelectors(opts);
   const ref =
     tagArg ||
     (versionArg
@@ -396,10 +533,10 @@ function main() {
     console.log(`\nInstalling for ${targets.length} target(s):`);
     for (const target of targets) {
       console.log(`\n${target.name}:`);
-      installForTarget(tempDir, target);
+      installForTarget(tempDir, target, selectors);
     }
 
-    for (const message of getPostInstallMessages(targets)) {
+    for (const message of getPostInstallMessages(targets, selectors)) {
       console.log(`\n${message}`);
     }
   } finally {
@@ -425,10 +562,14 @@ module.exports = {
   copyRecursiveSync,
   getPostInstallMessages,
   buildCloneArgs,
+  buildInstallSelectors,
   getInstallEntries,
   installSkillsIntoTarget,
   installForTarget,
+  isOpenCodeStylePath,
   main,
+  matchesInstallSelectors,
+  parseSelectorArg,
   pruneRemovedEntries,
   readInstallManifest,
   writeInstallManifest,

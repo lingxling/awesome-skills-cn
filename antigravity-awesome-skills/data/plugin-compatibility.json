@@ -499,6 +499,29 @@
       "runtime_files": []
     },
     {
+      "id": "agentflow",
+      "path": "skills/agentflow",
+      "targets": {
+        "codex": "blocked",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [
+        "target_specific_home_path"
+      ],
+      "blocked_reasons": {
+        "codex": [
+          "target_specific_home_path"
+        ],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "agentfolio",
       "path": "skills/agentfolio",
       "targets": {
@@ -539,6 +562,25 @@
     {
       "id": "agentmail",
       "path": "skills/agentmail",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "agentphone",
+      "path": "skills/agentphone",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -12885,6 +12927,25 @@
       "runtime_files": []
     },
     {
+      "id": "humanize-chinese",
+      "path": "skills/humanize-chinese",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "hybrid-cloud-architect",
       "path": "skills/hybrid-cloud-architect",
       "targets": {
@@ -24173,6 +24234,25 @@
       "runtime_files": []
     },
     {
+      "id": "uxui-principles",
+      "path": "skills/uxui-principles",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "variant-analysis",
       "path": "skills/variant-analysis",
       "targets": {
@@ -25622,13 +25702,13 @@
     }
   ],
   "summary": {
-    "total_skills": 1340,
+    "total_skills": 1344,
     "supported": {
-      "codex": 1311,
-      "claude": 1326
+      "codex": 1314,
+      "claude": 1330
     },
     "blocked": {
-      "codex": 29,
+      "codex": 30,
       "claude": 14
     },
     "manual_setup": 1

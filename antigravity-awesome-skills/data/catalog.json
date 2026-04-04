@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1340,
+  "total": 1344,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -667,6 +667,30 @@
       "path": "skills/agent-tool-builder/SKILL.md"
     },
     {
+      "id": "agentflow",
+      "name": "agentflow",
+      "description": "Orchestrate autonomous AI development pipelines through your Kanban board (Asana, GitHub Projects, Linear). Manages multi-worker Claude Code dispatch, deterministic quality gates, adversarial review, per-task cost tracking, and crash-proof pipeline execution.",
+      "category": "infrastructure",
+      "tags": [
+        "agentflow"
+      ],
+      "triggers": [
+        "agentflow",
+        "orchestrate",
+        "autonomous",
+        "ai",
+        "development",
+        "pipelines",
+        "through",
+        "kanban",
+        "board",
+        "asana",
+        "github",
+        "linear"
+      ],
+      "path": "skills/agentflow/SKILL.md"
+    },
+    {
       "id": "agentfolio",
       "name": "agentfolio",
       "description": "Skill for discovering and researching autonomous AI agents, tools, and ecosystems using the AgentFolio directory.",
@@ -736,6 +760,30 @@
         "karma"
       ],
       "path": "skills/agentmail/SKILL.md"
+    },
+    {
+      "id": "agentphone",
+      "name": "agentphone",
+      "description": "Build AI phone agents with AgentPhone API. Use when the user wants to make phone calls, send/receive SMS, manage phone numbers, create voice agents, set up webhooks, or check usage — anything related to telephony, phone numbers, or voice AI.",
+      "category": "data-ai",
+      "tags": [
+        "agentphone"
+      ],
+      "triggers": [
+        "agentphone",
+        "ai",
+        "phone",
+        "agents",
+        "api",
+        "user",
+        "wants",
+        "calls",
+        "send",
+        "receive",
+        "sms",
+        "numbers"
+      ],
+      "path": "skills/agentphone/SKILL.md"
     },
     {
       "id": "agents-md",
@@ -1640,18 +1688,18 @@
       "id": "antigravity-skill-orchestrator",
       "name": "antigravity-skill-orchestrator",
       "description": "A meta-skill that understands task requirements, dynamically selects appropriate skills, tracks successful skill combinations using agent-memory-mcp, and prevents skill overuse for simple tasks.",
-      "category": "general",
+      "category": "workflow",
       "tags": [
-        "[orchestration",
+        "orchestration",
         "meta-skill",
         "agent-memory",
-        "task-evaluation]"
+        "task-evaluation"
       ],
       "triggers": [
-        "[orchestration",
+        "orchestration",
         "meta-skill",
         "agent-memory",
-        "task-evaluation]",
+        "task-evaluation",
         "antigravity",
         "skill",
         "orchestrator",
@@ -2668,25 +2716,25 @@
       "description": "Transform audio recordings into professional Markdown documentation with intelligent summaries using LLM integration",
       "category": "data-ai",
       "tags": [
-        "[audio",
+        "audio",
         "transcription",
         "whisper",
         "meeting-minutes",
-        "speech-to-text]"
+        "speech-to-text"
       ],
       "triggers": [
-        "[audio",
+        "audio",
         "transcription",
         "whisper",
         "meeting-minutes",
-        "speech-to-text]",
-        "audio",
+        "speech-to-text",
         "transcriber",
         "transform",
         "recordings",
         "professional",
         "markdown",
-        "documentation"
+        "documentation",
+        "intelligent"
       ],
       "path": "skills/audio-transcriber/SKILL.md"
     },
@@ -10761,24 +10809,24 @@
       "description": "Map relationships between bounded contexts and define integration contracts using DDD context mapping patterns.",
       "category": "architecture",
       "tags": [
-        "[ddd",
+        "ddd",
         "context-map",
         "anti-corruption-layer",
-        "integration]"
+        "integration"
       ],
       "triggers": [
-        "[ddd",
+        "ddd",
         "context-map",
         "anti-corruption-layer",
-        "integration]",
-        "ddd",
+        "integration",
         "context",
         "mapping",
         "map",
         "relationships",
         "between",
         "bounded",
-        "contexts"
+        "contexts",
+        "define"
       ],
       "path": "skills/ddd-context-mapping/SKILL.md"
     },
@@ -10788,24 +10836,24 @@
       "description": "Design DDD strategic artifacts including subdomains, bounded contexts, and ubiquitous language for complex business domains.",
       "category": "architecture",
       "tags": [
-        "[ddd",
+        "ddd",
         "strategic-design",
         "bounded-context",
-        "ubiquitous-language]"
+        "ubiquitous-language"
       ],
       "triggers": [
-        "[ddd",
+        "ddd",
         "strategic-design",
         "bounded-context",
-        "ubiquitous-language]",
-        "ddd",
+        "ubiquitous-language",
         "strategic",
         "artifacts",
         "including",
         "subdomains",
         "bounded",
         "contexts",
-        "ubiquitous"
+        "ubiquitous",
+        "language"
       ],
       "path": "skills/ddd-strategic-design/SKILL.md"
     },
@@ -10815,25 +10863,25 @@
       "description": "Apply DDD tactical patterns in code using entities, value objects, aggregates, repositories, and domain events with explicit invariants.",
       "category": "architecture",
       "tags": [
-        "[ddd",
+        "ddd",
         "tactical",
         "aggregates",
         "value-objects",
-        "domain-events]"
+        "domain-events"
       ],
       "triggers": [
-        "[ddd",
+        "ddd",
         "tactical",
         "aggregates",
         "value-objects",
-        "domain-events]",
-        "ddd",
+        "domain-events",
         "apply",
         "code",
         "entities",
         "value",
         "objects",
-        "repositories"
+        "repositories",
+        "domain"
       ],
       "path": "skills/ddd-tactical-patterns/SKILL.md"
     },
@@ -11730,16 +11778,16 @@
       "description": "Plan and route Domain-Driven Design work from strategic modeling to tactical implementation and evented architecture patterns.",
       "category": "architecture",
       "tags": [
-        "[ddd",
+        "ddd",
         "domain",
         "bounded-context",
-        "architecture]"
+        "architecture"
       ],
       "triggers": [
-        "[ddd",
+        "ddd",
         "domain",
         "bounded-context",
-        "architecture]",
+        "architecture",
         "driven",
         "plan",
         "route",
@@ -15078,7 +15126,7 @@
     {
       "id": "github-issue-creator",
       "name": "github-issue-creator",
-      "description": "Transform messy input (error logs, voice notes, screenshots) into clean, actionable GitHub issues.",
+      "description": "Turn error logs, screenshots, voice notes, and rough bug reports into crisp, developer-ready GitHub issues with repro steps, impact, and evidence.",
       "category": "general",
       "tags": [
         "github",
@@ -15089,15 +15137,15 @@
         "github",
         "issue",
         "creator",
-        "transform",
-        "messy",
-        "input",
+        "turn",
         "error",
         "logs",
+        "screenshots",
         "voice",
         "notes",
-        "screenshots",
-        "clean"
+        "rough",
+        "bug",
+        "reports"
       ],
       "path": "skills/github-issue-creator/SKILL.md"
     },
@@ -16613,6 +16661,35 @@
         "sam"
       ],
       "path": "skills/hugging-face-vision-trainer/SKILL.md"
+    },
+    {
+      "id": "humanize-chinese",
+      "name": "humanize-chinese",
+      "description": "Detect and rewrite AI-like Chinese text with a practical workflow for scoring, humanization, academic AIGC reduction, and style conversion. Use when the user asks to 去AI味, 降AIGC, 去除AI痕迹, 论文降重, 知网检测, 维普检测, humanize chinese, detect AI text, or make Chinese text sound more natural.",
+      "category": "data-ai",
+      "tags": [
+        "chinese",
+        "writing",
+        "editing",
+        "aigc",
+        "academic",
+        "style-transfer"
+      ],
+      "triggers": [
+        "chinese",
+        "writing",
+        "editing",
+        "aigc",
+        "academic",
+        "style-transfer",
+        "humanize",
+        "detect",
+        "rewrite",
+        "ai",
+        "like",
+        "text"
+      ],
+      "path": "skills/humanize-chinese/SKILL.md"
     },
     {
       "id": "hybrid-cloud-architect",
@@ -23909,16 +23986,16 @@
       "description": "Transforms user prompts into optimized prompts using frameworks (RTF, RISEN, Chain of Thought, RODES, Chain of Density, RACE, RISE, STAR, SOAP, CLEAR, GROW)",
       "category": "general",
       "tags": [
-        "[prompt-engineering",
+        "prompt-engineering",
         "optimization",
         "frameworks",
-        "ai-enhancement]"
+        "ai-enhancement"
       ],
       "triggers": [
-        "[prompt-engineering",
+        "prompt-engineering",
         "optimization",
         "frameworks",
-        "ai-enhancement]",
+        "ai-enhancement",
         "prompt",
         "engineer",
         "transforms",
@@ -26048,27 +26125,27 @@
       "description": "Automated compliance checking against CIS, PCI-DSS, HIPAA, and SOC 2 benchmarks",
       "category": "security",
       "tags": [
-        "[aws",
+        "aws",
         "compliance",
         "audit",
         "cis",
         "pci-dss",
         "hipaa",
-        "kiro-cli]"
+        "kiro-cli"
       ],
       "triggers": [
-        "[aws",
+        "aws",
         "compliance",
         "audit",
         "cis",
         "pci-dss",
         "hipaa",
-        "kiro-cli]",
-        "aws",
+        "kiro-cli",
         "checker",
         "automated",
         "checking",
-        "against"
+        "against",
+        "pci"
       ],
       "path": "skills/security/aws-compliance-checker/SKILL.md"
     },
@@ -26078,21 +26155,20 @@
       "description": "IAM policy review, hardening, and least privilege implementation",
       "category": "security",
       "tags": [
-        "[aws",
+        "aws",
         "iam",
         "security",
         "access-control",
         "kiro-cli",
-        "least-privilege]"
+        "least-privilege"
       ],
       "triggers": [
-        "[aws",
+        "aws",
         "iam",
         "security",
         "access-control",
         "kiro-cli",
-        "least-privilege]",
-        "aws",
+        "least-privilege",
         "policy",
         "review",
         "hardening",
@@ -26107,26 +26183,26 @@
       "description": "Automate AWS secrets rotation for RDS, API keys, and credentials",
       "category": "security",
       "tags": [
-        "[aws",
+        "aws",
         "secrets-manager",
         "security",
         "automation",
         "kiro-cli",
-        "credentials]"
+        "credentials"
       ],
       "triggers": [
-        "[aws",
+        "aws",
         "secrets-manager",
         "security",
         "automation",
         "kiro-cli",
-        "credentials]",
-        "aws",
+        "credentials",
         "secrets",
         "rotation",
         "automate",
         "rds",
-        "api"
+        "api",
+        "keys"
       ],
       "path": "skills/security/aws-secrets-rotation/SKILL.md"
     },
@@ -26136,21 +26212,20 @@
       "description": "Comprehensive AWS security posture assessment using AWS CLI and security best practices",
       "category": "security",
       "tags": [
-        "[aws",
+        "aws",
         "security",
         "audit",
         "compliance",
         "kiro-cli",
-        "security-assessment]"
+        "security-assessment"
       ],
       "triggers": [
-        "[aws",
+        "aws",
         "security",
         "audit",
         "compliance",
         "kiro-cli",
-        "security-assessment]",
-        "aws",
+        "security-assessment",
         "posture",
         "assessment",
         "cli"
@@ -27477,16 +27552,16 @@
       "description": "To create new CLI skills following Anthropic's official best practices with zero manual configuration. This skill automates brainstorming, template application, validation, and installation processes while maintaining progressive disclosure patterns and writing style standards.",
       "category": "security",
       "tags": [
-        "[automation",
+        "automation",
         "scaffolding",
         "skill-creation",
-        "meta-skill]"
+        "meta-skill"
       ],
       "triggers": [
-        "[automation",
+        "automation",
         "scaffolding",
         "skill-creation",
-        "meta-skill]",
+        "meta-skill",
         "skill",
         "creator",
         "new",
@@ -31000,6 +31075,36 @@
       "path": "skills/uv-package-manager/SKILL.md"
     },
     {
+      "id": "uxui-principles",
+      "name": "uxui-principles",
+      "description": "Evaluate interfaces against 168 research-backed UX/UI principles, detect antipatterns, and inject UX context into AI coding sessions.",
+      "category": "data-ai",
+      "tags": [
+        "ux",
+        "ui",
+        "design",
+        "evaluation",
+        "principles",
+        "antipatterns",
+        "accessibility"
+      ],
+      "triggers": [
+        "ux",
+        "ui",
+        "design",
+        "evaluation",
+        "principles",
+        "antipatterns",
+        "accessibility",
+        "uxui",
+        "evaluate",
+        "interfaces",
+        "against",
+        "168"
+      ],
+      "path": "skills/uxui-principles/SKILL.md"
+    },
+    {
       "id": "variant-analysis",
       "name": "variant-analysis",
       "description": "Find similar vulnerabilities and bugs across codebases using pattern-based analysis. Use when hunting bug variants, building CodeQL/Semgrep queries, analyzing security vulnerabilities, or performing systematic code audits after finding an initial issue.",
@@ -31349,7 +31454,7 @@
       "description": "Video and audio perception, indexing, and editing. Ingest files/URLs/live streams, build visual/spoken indexes, search with timestamps, edit timelines, add overlays/subtitles, generate media, and create real-time alerts.",
       "category": "general",
       "tags": [
-        "[video",
+        "video",
         "editing",
         "transcription",
         "subtitles",
@@ -31358,10 +31463,10 @@
         "ai-generation",
         "media",
         "live-streams",
-        "desktop-capture]"
+        "desktop-capture"
       ],
       "triggers": [
-        "[video",
+        "video",
         "editing",
         "transcription",
         "subtitles",
@@ -31370,9 +31475,9 @@
         "ai-generation",
         "media",
         "live-streams",
-        "desktop-capture]",
+        "desktop-capture",
         "videodb",
-        "video"
+        "audio"
       ],
       "path": "skills/videodb/SKILL.md"
     },
@@ -31382,24 +31487,24 @@
       "description": "Upload, stream, search, edit, transcribe, and generate AI video and audio using the VideoDB SDK.",
       "category": "data-ai",
       "tags": [
-        "[video",
+        "video",
         "editing",
         "transcription",
         "subtitles",
         "search",
         "streaming",
         "ai-generation",
-        "media]"
+        "media"
       ],
       "triggers": [
-        "[video",
+        "video",
         "editing",
         "transcription",
         "subtitles",
         "search",
         "streaming",
         "ai-generation",
-        "media]",
+        "media",
         "videodb",
         "skills",
         "upload",
@@ -32407,7 +32512,7 @@
       "description": "X (Twitter) data platform skill — tweet search, user lookup, follower extraction, engagement metrics, giveaway draws, monitoring, webhooks, 19 extraction tools, MCP server.",
       "category": "infrastructure",
       "tags": [
-        "[twitter",
+        "twitter",
         "x-api",
         "scraping",
         "mcp",
@@ -32415,10 +32520,10 @@
         "data-extraction",
         "giveaway",
         "monitoring",
-        "webhooks]"
+        "webhooks"
       ],
       "triggers": [
-        "[twitter",
+        "twitter",
         "x-api",
         "scraping",
         "mcp",
@@ -32426,10 +32531,10 @@
         "data-extraction",
         "giveaway",
         "monitoring",
-        "webhooks]",
-        "twitter",
+        "webhooks",
         "scraper",
-        "data"
+        "data",
+        "platform"
       ],
       "path": "skills/x-twitter-scraper/SKILL.md"
     },
@@ -32670,18 +32775,18 @@
       "description": "Extract transcripts from YouTube videos and generate comprehensive, detailed summaries using intelligent analysis frameworks",
       "category": "general",
       "tags": [
-        "[video",
+        "video",
         "summarization",
         "transcription",
         "youtube",
-        "content-analysis]"
+        "content-analysis"
       ],
       "triggers": [
-        "[video",
+        "video",
         "summarization",
         "transcription",
         "youtube",
-        "content-analysis]",
+        "content-analysis",
         "summarizer",
         "extract",
         "transcripts",

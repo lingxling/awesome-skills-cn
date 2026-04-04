@@ -78,6 +78,30 @@ class PluginCompatibilityTests(unittest.TestCase):
             self.assertEqual(entry["targets"]["claude"], "blocked")
             self.assertIn("undeclared_runtime_dependency", entry["reasons"])
 
+    def test_relative_links_cannot_escape_skill_directory(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            skills_dir = pathlib.Path(temp_dir) / "skills"
+            self._write_skill(
+                skills_dir,
+                "escaping-link-skill",
+                (
+                    "---\n"
+                    "name: escaping-link-skill\n"
+                    "description: Example\n"
+                    "---\n"
+                    "Read [secret](../../outside/secret.txt)\n"
+                ),
+            )
+            outside_dir = pathlib.Path(temp_dir) / "outside"
+            outside_dir.mkdir(parents=True, exist_ok=True)
+            (outside_dir / "secret.txt").write_text("secret", encoding="utf-8")
+
+            report = plugin_compatibility.build_report(skills_dir)
+            entry = report["skills"][0]
+            self.assertEqual(entry["targets"]["codex"], "blocked")
+            self.assertEqual(entry["targets"]["claude"], "blocked")
+            self.assertIn("escaped_local_reference", entry["reasons"])
+
     def test_manual_setup_metadata_can_make_runtime_skill_supported(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             skills_dir = pathlib.Path(temp_dir) / "skills"

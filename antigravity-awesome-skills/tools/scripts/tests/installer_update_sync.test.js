@@ -14,6 +14,8 @@ function writeSkill(repoRoot, skillName, content = "# Skill\n") {
 
 function createFakeRepo(rootDir, skills) {
   fs.mkdirSync(path.join(rootDir, "skills"), { recursive: true });
+  fs.mkdirSync(path.join(rootDir, "docs"), { recursive: true });
+  fs.writeFileSync(path.join(rootDir, "docs", "README.md"), "# Docs\n", "utf8");
   for (const skillName of skills) {
     writeSkill(rootDir, skillName, `# ${skillName}\n`);
   }
@@ -35,22 +37,47 @@ try {
 
   createFakeRepo(repoV1, ["skill-a", "skill-b"]);
   createFakeRepo(repoV2, ["skill-a"]);
+  writeSkill(
+    repoV1,
+    path.join("nested", "skill-c"),
+    "---\nname: nested-skill-c\ncategory: backend\nrisk: safe\ntags: [api]\n---\n",
+  );
+  writeSkill(
+    repoV2,
+    "skill-a",
+    "---\nname: skill-a\ncategory: development\nrisk: safe\ntags: [debugging]\n---\n",
+  );
+  writeSkill(
+    repoV2,
+    path.join("nested", "skill-c"),
+    "---\nname: nested-skill-c\ncategory: backend\nrisk: safe\ntags: [api]\n---\n",
+  );
 
   installer.installForTarget(repoV1, { name: "Test", path: targetDir });
   assert.ok(fs.existsSync(path.join(targetDir, "skill-a", "SKILL.md")));
   assert.ok(fs.existsSync(path.join(targetDir, "skill-b", "SKILL.md")));
+  assert.ok(fs.existsSync(path.join(targetDir, "nested", "skill-c", "SKILL.md")));
 
-  installer.installForTarget(repoV2, { name: "Test", path: targetDir });
-  assert.ok(fs.existsSync(path.join(targetDir, "skill-a", "SKILL.md")));
+  installer.installForTarget(
+    repoV2,
+    { name: "Test", path: targetDir },
+    installer.buildInstallSelectors({ categoryArg: "backend" }),
+  );
+  assert.strictEqual(
+    fs.existsSync(path.join(targetDir, "skill-a")),
+    false,
+    "non-matching top-level skills should be pruned during filtered updates",
+  );
   assert.strictEqual(
     fs.existsSync(path.join(targetDir, "skill-b")),
     false,
-    "stale managed skill should be pruned during updates",
+    "stale managed top-level skills should be pruned during updates",
   );
+  assert.ok(fs.existsSync(path.join(targetDir, "nested", "skill-c", "SKILL.md")));
   assert.deepStrictEqual(
     readManifestEntries(targetDir),
-    ["skill-a"],
-    "install manifest should mirror the latest installed entries",
+    ["docs", "nested/skill-c"],
+    "install manifest should mirror the latest filtered install entries",
   );
 
   const badTargetPath = path.join(tmpRoot, "bad-target");

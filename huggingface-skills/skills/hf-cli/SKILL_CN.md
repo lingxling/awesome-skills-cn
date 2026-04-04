@@ -1,6 +1,6 @@
 ---
 name: hf-cli
-description: "Hugging Face Hub CLI (`hf`) 用于在 Hugging Face Hub 上下载、上传和管理仓库、模型、数据集和 Spaces。替代现已弃用的 `huggingface-cli` 命令。"
+description: "Hugging Face Hub CLI (`hf`) 用于在 Hugging Face Hub 上下载、上传和管理模型、数据集、spaces、存储桶、仓库、论文、作业等。当需要：处理认证；管理本地缓存；管理 Hugging Face 存储桶；在 Hugging Face 基础设施上运行或调度作业；管理 Hugging Face 仓库；讨论和拉取请求；浏览模型、数据集和 spaces；阅读、搜索或浏览学术论文；管理集合；查询数据集；配置 spaces；设置 webhook；或部署和管理 HF 推理端点时使用。当用户提到 'hf'、'huggingface'、'Hugging Face'、'huggingface-cli' 或 'hugging face cli'，或想要做任何与 Hugging Face 生态系统以及一般 AI 和 ML 相关的事情时，确保使用此技能。也用于云存储需求，如训练检查点、数据管道或代理跟踪。即使用户没有明确要求 CLI 命令，也要使用。替代现已弃用的 `huggingface-cli`。"
 ---
 
 安装：`curl -LsSf https://hf.co/cli/install.sh | bash -s`。
@@ -9,7 +9,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 使用 `hf --help` 查看可用功能。注意，认证命令现在都在 `hf auth` 下，例如 `hf auth whoami`。
 
-由 `huggingface_hub v1.8.0` 生成。运行 `hf skills add --force` 重新生成。
+由 `huggingface_hub v1.9.0` 生成。运行 `hf skills add --force` 重新生成。
 
 ## 命令
 
@@ -59,7 +59,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 ### `hf datasets` — 与 Hub 上的数据集交互。
 
-- `hf datasets info DATASET_ID` — 获取 Hub 上数据集的信息。输出为 JSON 格式。`[--revision TEXT --expand TEXT]`
+- `hf datasets info DATASET_ID` — 获取 Hub 上数据集的信息。`[--revision TEXT --expand TEXT --format CHOICE]`
 - `hf datasets list` — 列出 Hub 上的数据集。`[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
 - `hf datasets parquet DATASET_ID` — 列出数据集可用的 parquet 文件 URL。`[--subset TEXT --split TEXT --format CHOICE --quiet]`
 - `hf datasets sql SQL` — 使用 DuckDB 对数据集 parquet URL 执行原始 SQL 查询。`[--format CHOICE]`
@@ -117,12 +117,12 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 ### `hf models` — 与 Hub 上的模型交互。
 
-- `hf models info MODEL_ID` — 获取 Hub 上模型的信息。输出为 JSON 格式。`[--revision TEXT --expand TEXT]`
+- `hf models info MODEL_ID` — 获取 Hub 上模型的信息。`[--revision TEXT --expand TEXT --format CHOICE]`
 - `hf models list` — 列出 Hub 上的模型。`[--search TEXT --author TEXT --filter TEXT --num-parameters TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
 
 ### `hf papers` — 与 Hub 上的论文交互。
 
-- `hf papers info PAPER_ID` — 获取 Hub 上论文的信息。输出为 JSON 格式。
+- `hf papers info PAPER_ID` — 获取 Hub 上论文的信息。`[--format CHOICE]`
 - `hf papers list` — 列出 Hub 上的每日论文。`[--date TEXT --week TEXT --month TEXT --submitter TEXT --sort CHOICE --limit INTEGER --format CHOICE --quiet]`
 - `hf papers read PAPER_ID` — 以 markdown 格式阅读论文。
 - `hf papers search QUERY` — 在 Hub 上搜索论文。`[--limit INTEGER --format CHOICE --quiet]`
@@ -131,10 +131,10 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 - `hf repos branch create REPO_ID BRANCH` — 为 Hub 上的仓库创建新分支。`[--revision TEXT --type CHOICE --exist-ok]`
 - `hf repos branch delete REPO_ID BRANCH` — 从 Hub 上的仓库删除分支。`[--type CHOICE]`
-- `hf repos create REPO_ID` — 在 Hub 上创建新仓库。`[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --flavor TEXT --storage TEXT --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT]`
+- `hf repos create REPO_ID` — 在 Hub 上创建新仓库。`[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT]`
 - `hf repos delete REPO_ID` — 从 Hub 中删除仓库。这是不可逆操作。`[--type CHOICE --missing-ok]`
 - `hf repos delete-files REPO_ID PATTERNS` — 从 Hub 上的仓库删除文件。`[--type CHOICE --revision TEXT --commit-message TEXT --commit-description TEXT --create-pr]`
-- `hf repos duplicate FROM_ID` — 在 Hub 上复制仓库（模型、数据集或 Space）。`[--type CHOICE --private --public --protected --exist-ok --flavor TEXT --storage TEXT --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT]`
+- `hf repos duplicate FROM_ID` — 在 Hub 上复制仓库（模型、数据集或 Space）。`[--type CHOICE --private --public --protected --exist-ok --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT]`
 - `hf repos move FROM_ID TO_ID` — 将仓库从一个命名空间移动到另一个命名空间。`[--type CHOICE]`
 - `hf repos settings REPO_ID` — 更新仓库的设置。`[--gated CHOICE --private --public --protected --type CHOICE]`
 - `hf repos tag create REPO_ID TAG` — 为仓库创建标签。`[--message TEXT --revision TEXT --type CHOICE]`
@@ -143,14 +143,15 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 ### `hf skills` — 管理 AI 助手的技能。
 
-- `hf skills add` — 下载技能并为 AI 助手安装。`[--claude --codex --cursor --opencode --global --dest PATH --force]`
-- `hf skills preview` — 将生成的 SKILL.md 打印到 stdout。
+- `hf skills add` — 下载 Hugging Face 技能并为 AI 助手安装。`[--claude --global --dest PATH --force]`
+- `hf skills preview` — 将生成的 `hf-cli` SKILL.md 打印到 stdout。
+- `hf skills upgrade` — 升级已安装的 Hugging Face 市场技能。`[--claude --global --dest PATH]`
 
 ### `hf spaces` — 与 Hub 上的 spaces 交互。
 
 - `hf spaces dev-mode SPACE_ID` — 在 Space 上启用或禁用开发模式。`[--stop]`
 - `hf spaces hot-reload SPACE_ID` — 热重载 Space 的任何 Python 文件，无需完全重建 + 重启。`[--local-file TEXT --skip-checks --skip-summary]`
-- `hf spaces info SPACE_ID` — 获取 Hub 上 space 的信息。输出为 JSON 格式。`[--revision TEXT --expand TEXT]`
+- `hf spaces info SPACE_ID` — 获取 Hub 上 space 的信息。`[--revision TEXT --expand TEXT --format CHOICE]`
 - `hf spaces list` — 列出 Hub 上的 spaces。`[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
 
 ### `hf webhooks` — 管理 Hub 上的 webhook。

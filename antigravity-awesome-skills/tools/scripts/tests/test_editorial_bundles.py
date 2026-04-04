@@ -1,6 +1,9 @@
 import importlib.util
+import errno
 import pathlib
 import sys
+import tempfile
+from unittest import mock
 import unittest
 
 
@@ -103,6 +106,30 @@ class EditorialBundlesTests(unittest.TestCase):
         )
         self.assertEqual(generated_plugins, expected_plugins)
 
+    def test_manifest_rejects_bundle_ids_with_path_traversal(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = pathlib.Path(temp_dir)
+            skill_dir = temp_root / "skills" / "safe-skill"
+            skill_dir.mkdir(parents=True, exist_ok=True)
+
+            payload = {
+                "bundles": [
+                    {
+                        "id": "../../outside",
+                        "name": "Safe Bundle",
+                        "group": "Security",
+                        "emoji": "🛡️",
+                        "tagline": "Test bundle",
+                        "audience": "Testers",
+                        "description": "Testers",
+                        "skills": [{"id": "safe-skill", "summary": "ok"}],
+                    }
+                ]
+            }
+
+            with self.assertRaisesRegex(ValueError, "Invalid editorial bundle id"):
+                editorial_bundles._validate_editorial_bundles(temp_root, payload)
+
     def test_sample_bundle_copy_matches_source_file_inventory(self):
         sample_bundle = next(bundle for bundle in self.manifest_bundles if bundle["id"] == "documents-presentations")
         plugin_skills_root = REPO_ROOT / "plugins" / "antigravity-bundle-documents-presentations" / "skills"
@@ -141,6 +168,47 @@ class EditorialBundlesTests(unittest.TestCase):
                 compatibility["targets"]["claude"] == "supported",
                 f"Claude root plugin inclusion mismatch for {skill_id}",
             )
+
+    def test_remove_tree_retries_on_enotempty(self):
+        target = REPO_ROOT / "plugins" / "antigravity-awesome-skills" / "skills"
+        calls = {"count": 0}
+
+        def flaky_rmtree(path):
+            calls["count"] += 1
+            if calls["count"] == 1:
+                raise OSError(errno.ENOTEMPTY, "Directory not empty")
+
+        with mock.patch.object(editorial_bundles.shutil, "rmtree", side_effect=flaky_rmtree):
+            with mock.patch.object(editorial_bundles.time, "sleep") as sleep_mock:
+                editorial_bundles._remove_tree(target)
+
+        self.assertEqual(calls["count"], 2)
+        sleep_mock.assert_called_once()
+
+    def test_replace_directory_atomically_swaps_only_after_staging_is_ready(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = pathlib.Path(temp_dir)
+            destination = temp_root / "plugin"
+            old_file = destination / "skills" / "old.txt"
+            old_file.parent.mkdir(parents=True, exist_ok=True)
+            old_file.write_text("old", encoding="utf-8")
+
+            observed = {}
+
+            def populate(staging_root):
+                new_file = staging_root / "skills" / "new.txt"
+                new_file.parent.mkdir(parents=True, exist_ok=True)
+                new_file.write_text("new", encoding="utf-8")
+
+                observed["old_visible_during_populate"] = old_file.is_file()
+                observed["new_hidden_during_populate"] = not (destination / "skills" / "new.txt").exists()
+
+            editorial_bundles._replace_directory_atomically(destination, populate)
+
+            self.assertTrue(observed["old_visible_during_populate"])
+            self.assertTrue(observed["new_hidden_during_populate"])
+            self.assertFalse(old_file.exists())
+            self.assertTrue((destination / "skills" / "new.txt").is_file())
 
 
 if __name__ == "__main__":

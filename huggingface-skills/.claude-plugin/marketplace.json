@@ -57,6 +57,12 @@
       "description": "Explore, query, and extract data from any Hugging Face dataset using the Dataset Viewer REST API and npx tooling. Zero Python dependencies — covers split/config discovery, row pagination, text search, filtering, SQL via parquetlens, and dataset upload via CLI."
     },
     {
+      "name": "huggingface-tool-builder",
+      "source": "./skills/huggingface-tool-builder",
+      "skills": "./",
+      "description": "Build reusable scripts for Hugging Face Hub and API workflows. Useful for chaining API calls, enriching Hub metadata, or automating repeated tasks."
+    },
+    {
       "name": "huggingface-gradio",
       "source": "./skills/huggingface-gradio",
       "skills": "./",

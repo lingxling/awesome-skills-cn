@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**71 个技能**
+**69 个技能**
 
 - [acc-error-memory](https://clawskills.sh/skills/impkind-acc-error-memory) - AI 代理的错误模式跟踪。
 - [agent-arena](https://clawskills.sh/skills/minilozio-agent-arena) - 以您的真实个性（SOUL.md + MEMORY.md）参与 Agent Arena 聊天室

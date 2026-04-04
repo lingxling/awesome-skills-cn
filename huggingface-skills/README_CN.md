@@ -125,6 +125,7 @@ gemini extensions install https://github.com/huggingface/skills.git --consent
 | `huggingface-llm-trainer` | 使用 TRL 在 Hugging Face Jobs 基础设施上训练或微调语言模型。涵盖 SFT、DPO、GRPO 和奖励建模训练方法,以及用于本地部署的 GGUF 转换。包括硬件选择、成本估算、Trackio 监控和 Hub 持久化。 | [SKILL.md](skills/huggingface-llm-trainer/SKILL.md) |
 | `huggingface-paper-publisher` | 在 Hugging Face Hub 上发布和管理研究论文。支持创建论文页面、将论文链接到模型/数据集、声明作者身份以及生成专业的基于 markdown 的研究文章。 | [SKILL.md](skills/huggingface-paper-publisher/SKILL.md) |
 | `huggingface-papers` | 以 markdown 格式查找和阅读 Hugging Face 论文页面,并在需要时使用论文 API 获取结构化元数据,如作者、链接的模型、数据集、Spaces 和媒体 URL。 | [SKILL.md](skills/huggingface-papers/SKILL.md) |
+| `huggingface-tool-builder` | 为 Hugging Face Hub 和 API 工作流构建可重用脚本。适用于链接 API 调用、丰富 Hub 元数据或自动化重复任务。 | [SKILL.md](skills/huggingface-tool-builder/SKILL.md) |
 | `huggingface-trackio` | 使用 Trackio 跟踪和可视化 ML 训练实验。通过 Python API 记录指标并通过 CLI 检索它们。支持与 HF Spaces 同步的实时仪表板。 | [SKILL.md](skills/huggingface-trackio/SKILL.md) |
 | `huggingface-vision-trainer` | 使用 Transformers Trainer API 在 Hugging Face Jobs 基础设施或本地训练和微调目标检测模型(RTDETRv2、YOLOS、DETR 等)和图像分类模型(timm 和 transformers 模型 — MobileNetV3、MobileViT、ResNet、ViT/DINOv3)。包括 COCO 数据集格式支持、Albumentations 增强、mAP/mAR 指标、trackio 跟踪、硬件选择和 Hub 持久化。 | [SKILL.md](skills/huggingface-vision-trainer/SKILL.md) |
 | `transformers-js` | 直接在 JavaScript/TypeScript 中运行最先进的机器学习模型,用于 NLP、计算机视觉、音频处理和多模态任务。使用 Hugging Face 模型在 Node.js 和带有 WebGPU/WASM 的浏览器中工作。 | [SKILL.md](skills/transformers-js/SKILL.md) |

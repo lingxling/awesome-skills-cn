@@ -175,7 +175,7 @@ jobs:
             echo "- Generated drift: detected"
             echo
             echo "Predicted file updates:"
-            printf '%s\n' "$drift_files" | sed 's/^/- `/; s/$/`/'
+            printf '%s\n' "$drift_files" | sed "s/^/- \`/; s/\$/\`/"
           } >> "$GITHUB_STEP_SUMMARY"
 
   main-validation-and-sync:

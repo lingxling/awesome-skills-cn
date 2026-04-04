@@ -211,15 +211,25 @@ class DesignSystemGenerator:
                 "keywords": best_style.get("Keywords", ""),
                 "best_for": best_style.get("Best For", ""),
                 "performance": best_style.get("Performance", ""),
-                "accessibility": best_style.get("Accessibility", "")
+                "accessibility": best_style.get("Accessibility", ""),
+                "light_mode": best_style.get("Light Mode ✓", ""),
+                "dark_mode": best_style.get("Dark Mode ✓", ""),
             },
             "colors": {
-                "primary": best_color.get("Primary (Hex)", "#2563EB"),
-                "secondary": best_color.get("Secondary (Hex)", "#3B82F6"),
-                "cta": best_color.get("CTA (Hex)", "#F97316"),
-                "background": best_color.get("Background (Hex)", "#F8FAFC"),
-                "text": best_color.get("Text (Hex)", "#1E293B"),
-                "notes": best_color.get("Notes", "")
+                "primary": best_color.get("Primary", "#2563EB"),
+                "on_primary": best_color.get("On Primary", ""),
+                "secondary": best_color.get("Secondary", "#3B82F6"),
+                "accent": best_color.get("Accent", "#F97316"),
+                "background": best_color.get("Background", "#F8FAFC"),
+                "foreground": best_color.get("Foreground", "#1E293B"),
+                "muted": best_color.get("Muted", ""),
+                "border": best_color.get("Border", ""),
+                "destructive": best_color.get("Destructive", ""),
+                "ring": best_color.get("Ring", ""),
+                "notes": best_color.get("Notes", ""),
+                # Keep legacy keys for backward compat in MASTER.md
+                "cta": best_color.get("Accent", "#F97316"),
+                "text": best_color.get("Foreground", "#1E293B"),
             },
             "typography": {
                 "heading": best_typography.get("Heading Font", "Inter"),
@@ -239,8 +249,38 @@ class DesignSystemGenerator:
 # ============ OUTPUT FORMATTERS ============
 BOX_WIDTH = 90  # Wider box for more content
 
+
+def hex_to_ansi(hex_color: str) -> str:
+    """Convert hex color to ANSI True Color swatch (██) with fallback."""
+    if not hex_color or not hex_color.startswith('#'):
+        return ""
+    colorterm = os.environ.get('COLORTERM', '')
+    if colorterm not in ('truecolor', '24bit'):
+        return ""
+    hex_color = hex_color.lstrip('#')
+    if len(hex_color) != 6:
+        return ""
+    r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
+    return f"\033[38;2;{r};{g};{b}m██\033[0m "
+
+
+def ansi_ljust(s: str, width: int) -> str:
+    """Like str.ljust but accounts for zero-width ANSI escape sequences."""
+    import re
+    visible_len = len(re.sub(r'\033\[[0-9;]*m', '', s))
+    pad = width - visible_len
+    return s + (" " * max(0, pad))
+
+
+def section_header(name: str, width: int) -> str:
+    """Create a Unicode section separator: ├─── NAME ───...┤"""
+    label = f"─── {name} "
+    fill = "─" * (width - len(label) - 1)
+    return f"├{label}{fill}┤"
+
+
 def format_ascii_box(design_system: dict) -> str:
-    """Format design system as ASCII box with emojis (MCP-style)."""
+    """Format design system as Unicode box with ANSI color swatches."""
     project = design_system.get("project_name", "PROJECT")
     pattern = design_system.get("pattern", {})
     style = design_system.get("style", {})
@@ -275,77 +315,93 @@ def format_ascii_box(design_system: dict) -> str:
     lines = []
     w = BOX_WIDTH - 1
 
-    lines.append("+" + "-" * w + "+")
-    lines.append(f"|  TARGET: {project} - RECOMMENDED DESIGN SYSTEM".ljust(BOX_WIDTH) + "|")
-    lines.append("+" + "-" * w + "+")
-    lines.append("|" + " " * BOX_WIDTH + "|")
+    # Header with double-line box
+    lines.append("╔" + "═" * w + "╗")
+    lines.append(ansi_ljust(f"║  TARGET: {project} - RECOMMENDED DESIGN SYSTEM", BOX_WIDTH) + "║")
+    lines.append("╚" + "═" * w + "╝")
+    lines.append("┌" + "─" * w + "┐")
 
     # Pattern section
-    lines.append(f"|  PATTERN: {pattern.get('name', '')}".ljust(BOX_WIDTH) + "|")
+    lines.append(section_header("PATTERN", BOX_WIDTH + 1))
+    lines.append(f"│  Name: {pattern.get('name', '')}".ljust(BOX_WIDTH) + "│")
     if pattern.get('conversion'):
-        lines.append(f"|     Conversion: {pattern.get('conversion', '')}".ljust(BOX_WIDTH) + "|")
+        lines.append(f"│     Conversion: {pattern.get('conversion', '')}".ljust(BOX_WIDTH) + "│")
     if pattern.get('cta_placement'):
-        lines.append(f"|     CTA: {pattern.get('cta_placement', '')}".ljust(BOX_WIDTH) + "|")
-    lines.append("|     Sections:".ljust(BOX_WIDTH) + "|")
+        lines.append(f"│     CTA: {pattern.get('cta_placement', '')}".ljust(BOX_WIDTH) + "│")
+    lines.append("│     Sections:".ljust(BOX_WIDTH) + "│")
     for i, section in enumerate(sections, 1):
-        lines.append(f"|       {i}. {section}".ljust(BOX_WIDTH) + "|")
-    lines.append("|" + " " * BOX_WIDTH + "|")
+        lines.append(f"│       {i}. {section}".ljust(BOX_WIDTH) + "│")
 
     # Style section
-    lines.append(f"|  STYLE: {style.get('name', '')}".ljust(BOX_WIDTH) + "|")
+    lines.append(section_header("STYLE", BOX_WIDTH + 1))
+    lines.append(f"│  Name: {style.get('name', '')}".ljust(BOX_WIDTH) + "│")
+    light = style.get("light_mode", "")
+    dark = style.get("dark_mode", "")
+    if light or dark:
+        lines.append(f"│     Mode Support: Light {light}  Dark {dark}".ljust(BOX_WIDTH) + "│")
     if style.get("keywords"):
-        for line in wrap_text(f"Keywords: {style.get('keywords', '')}", "|     ", BOX_WIDTH):
-            lines.append(line.ljust(BOX_WIDTH) + "|")
+        for line in wrap_text(f"Keywords: {style.get('keywords', '')}", "│     ", BOX_WIDTH):
+            lines.append(line.ljust(BOX_WIDTH) + "│")
     if style.get("best_for"):
-        for line in wrap_text(f"Best For: {style.get('best_for', '')}", "|     ", BOX_WIDTH):
-            lines.append(line.ljust(BOX_WIDTH) + "|")
+        for line in wrap_text(f"Best For: {style.get('best_for', '')}", "│     ", BOX_WIDTH):
+            lines.append(line.ljust(BOX_WIDTH) + "│")
     if style.get("performance") or style.get("accessibility"):
         perf_a11y = f"Performance: {style.get('performance', '')} | Accessibility: {style.get('accessibility', '')}"
-        lines.append(f"|     {perf_a11y}".ljust(BOX_WIDTH) + "|")
-    lines.append("|" + " " * BOX_WIDTH + "|")
+        lines.append(f"│     {perf_a11y}".ljust(BOX_WIDTH) + "│")
 
-    # Colors section
-    lines.append("|  COLORS:".ljust(BOX_WIDTH) + "|")
-    lines.append(f"|     Primary:    {colors.get('primary', '')}".ljust(BOX_WIDTH) + "|")
-    lines.append(f"|     Secondary:  {colors.get('secondary', '')}".ljust(BOX_WIDTH) + "|")
-    lines.append(f"|     CTA:        {colors.get('cta', '')}".ljust(BOX_WIDTH) + "|")
-    lines.append(f"|     Background: {colors.get('background', '')}".ljust(BOX_WIDTH) + "|")
-    lines.append(f"|     Text:       {colors.get('text', '')}".ljust(BOX_WIDTH) + "|")
+    # Colors section (extended palette with ANSI swatches)
+    lines.append(section_header("COLORS", BOX_WIDTH + 1))
+    color_entries = [
+        ("Primary",      "primary",      "--color-primary"),
+        ("On Primary",   "on_primary",   "--color-on-primary"),
+        ("Secondary",    "secondary",    "--color-secondary"),
+        ("Accent/CTA",   "accent",       "--color-accent"),
+        ("Background",   "background",   "--color-background"),
+        ("Foreground",   "foreground",   "--color-foreground"),
+        ("Muted",        "muted",        "--color-muted"),
+        ("Border",       "border",       "--color-border"),
+        ("Destructive",  "destructive",  "--color-destructive"),
+        ("Ring",         "ring",         "--color-ring"),
+    ]
+    for label, key, css_var in color_entries:
+        hex_val = colors.get(key, "")
+        if not hex_val:
+            continue
+        swatch = hex_to_ansi(hex_val)
+        content = f"│     {swatch}{label + ':':14s} {hex_val:10s} ({css_var})"
+        lines.append(ansi_ljust(content, BOX_WIDTH) + "│")
     if colors.get("notes"):
-        for line in wrap_text(f"Notes: {colors.get('notes', '')}", "|     ", BOX_WIDTH):
-            lines.append(line.ljust(BOX_WIDTH) + "|")
-    lines.append("|" + " " * BOX_WIDTH + "|")
+        for line in wrap_text(f"Notes: {colors.get('notes', '')}", "│     ", BOX_WIDTH):
+            lines.append(line.ljust(BOX_WIDTH) + "│")
 
     # Typography section
-    lines.append(f"|  TYPOGRAPHY: {typography.get('heading', '')} / {typography.get('body', '')}".ljust(BOX_WIDTH) + "|")
+    lines.append(section_header("TYPOGRAPHY", BOX_WIDTH + 1))
+    lines.append(f"│  {typography.get('heading', '')} / {typography.get('body', '')}".ljust(BOX_WIDTH) + "│")
     if typography.get("mood"):
-        for line in wrap_text(f"Mood: {typography.get('mood', '')}", "|     ", BOX_WIDTH):
-            lines.append(line.ljust(BOX_WIDTH) + "|")
+        for line in wrap_text(f"Mood: {typography.get('mood', '')}", "│     ", BOX_WIDTH):
+            lines.append(line.ljust(BOX_WIDTH) + "│")
     if typography.get("best_for"):
-        for line in wrap_text(f"Best For: {typography.get('best_for', '')}", "|     ", BOX_WIDTH):
-            lines.append(line.ljust(BOX_WIDTH) + "|")
+        for line in wrap_text(f"Best For: {typography.get('best_for', '')}", "│     ", BOX_WIDTH):
+            lines.append(line.ljust(BOX_WIDTH) + "│")
     if typography.get("google_fonts_url"):
-        lines.append(f"|     Google Fonts: {typography.get('google_fonts_url', '')}".ljust(BOX_WIDTH) + "|")
+        lines.append(f"│     Google Fonts: {typography.get('google_fonts_url', '')}".ljust(BOX_WIDTH) + "│")
     if typography.get("css_import"):
-        lines.append(f"|     CSS Import: {typography.get('css_import', '')[:70]}...".ljust(BOX_WIDTH) + "|")
-    lines.append("|" + " " * BOX_WIDTH + "|")
+        lines.append(f"│     CSS Import: {typography.get('css_import', '')[:70]}...".ljust(BOX_WIDTH) + "│")
 
     # Key Effects section
     if effects:
-        lines.append("|  KEY EFFECTS:".ljust(BOX_WIDTH) + "|")
-        for line in wrap_text(effects, "|     ", BOX_WIDTH):
-            lines.append(line.ljust(BOX_WIDTH) + "|")
-        lines.append("|" + " " * BOX_WIDTH + "|")
+        lines.append(section_header("KEY EFFECTS", BOX_WIDTH + 1))
+        for line in wrap_text(effects, "│     ", BOX_WIDTH):
+            lines.append(line.ljust(BOX_WIDTH) + "│")
 
     # Anti-patterns section
     if anti_patterns:
-        lines.append("|  AVOID (Anti-patterns):".ljust(BOX_WIDTH) + "|")
-        for line in wrap_text(anti_patterns, "|     ", BOX_WIDTH):
-            lines.append(line.ljust(BOX_WIDTH) + "|")
-        lines.append("|" + " " * BOX_WIDTH + "|")
+        lines.append(section_header("AVOID", BOX_WIDTH + 1))
+        for line in wrap_text(anti_patterns, "│     ", BOX_WIDTH):
+            lines.append(line.ljust(BOX_WIDTH) + "│")
 
     # Pre-Delivery Checklist section
-    lines.append("|  PRE-DELIVERY CHECKLIST:".ljust(BOX_WIDTH) + "|")
+    lines.append(section_header("PRE-DELIVERY CHECKLIST", BOX_WIDTH + 1))
     checklist_items = [
         "[ ] No emojis as icons (use SVG: Heroicons/Lucide)",
         "[ ] cursor-pointer on all clickable elements",
@@ -356,10 +412,9 @@ def format_ascii_box(design_system: dict) -> str:
         "[ ] Responsive: 375px, 768px, 1024px, 1440px"
     ]
     for item in checklist_items:
-        lines.append(f"|     {item}".ljust(BOX_WIDTH) + "|")
-    lines.append("|" + " " * BOX_WIDTH + "|")
+        lines.append(f"│     {item}".ljust(BOX_WIDTH) + "│")
 
-    lines.append("+" + "-" * w + "+")
+    lines.append("└" + "─" * w + "┘")
 
     return "\n".join(lines)
 
@@ -393,6 +448,10 @@ def format_markdown(design_system: dict) -> str:
     # Style section
     lines.append("### Style")
     lines.append(f"- **Name:** {style.get('name', '')}")
+    light = style.get("light_mode", "")
+    dark = style.get("dark_mode", "")
+    if light or dark:
+        lines.append(f"- **Mode Support:** Light {light} | Dark {dark}")
     if style.get('keywords'):
         lines.append(f"- **Keywords:** {style.get('keywords', '')}")
     if style.get('best_for'):
@@ -401,15 +460,26 @@ def format_markdown(design_system: dict) -> str:
         lines.append(f"- **Performance:** {style.get('performance', '')} | **Accessibility:** {style.get('accessibility', '')}")
     lines.append("")
 
-    # Colors section
+    # Colors section (extended palette)
     lines.append("### Colors")
-    lines.append(f"| Role | Hex |")
-    lines.append(f"|------|-----|")
-    lines.append(f"| Primary | {colors.get('primary', '')} |")
-    lines.append(f"| Secondary | {colors.get('secondary', '')} |")
-    lines.append(f"| CTA | {colors.get('cta', '')} |")
-    lines.append(f"| Background | {colors.get('background', '')} |")
-    lines.append(f"| Text | {colors.get('text', '')} |")
+    lines.append("| Role | Hex | CSS Variable |")
+    lines.append("|------|-----|--------------|")
+    md_color_entries = [
+        ("Primary",      "primary",      "--color-primary"),
+        ("On Primary",   "on_primary",   "--color-on-primary"),
+        ("Secondary",    "secondary",    "--color-secondary"),
+        ("Accent/CTA",   "accent",       "--color-accent"),
+        ("Background",   "background",   "--color-background"),
+        ("Foreground",   "foreground",   "--color-foreground"),
+        ("Muted",        "muted",        "--color-muted"),
+        ("Border",       "border",       "--color-border"),
+        ("Destructive",  "destructive",  "--color-destructive"),
+        ("Ring",         "ring",         "--color-ring"),
+    ]
+    for label, key, css_var in md_color_entries:
+        hex_val = colors.get(key, "")
+        if hex_val:
+            lines.append(f"| {label} | `{hex_val}` | `{css_var}` |")
     if colors.get("notes"):
         lines.append(f"\n*Notes: {colors.get('notes', '')}*")
     lines.append("")
@@ -578,11 +648,22 @@ def format_master_md(design_system: dict) -> str:
     lines.append("")
     lines.append("| Role | Hex | CSS Variable |")
     lines.append("|------|-----|--------------|")
-    lines.append(f"| Primary | `{colors.get('primary', '#2563EB')}` | `--color-primary` |")
-    lines.append(f"| Secondary | `{colors.get('secondary', '#3B82F6')}` | `--color-secondary` |")
-    lines.append(f"| CTA/Accent | `{colors.get('cta', '#F97316')}` | `--color-cta` |")
-    lines.append(f"| Background | `{colors.get('background', '#F8FAFC')}` | `--color-background` |")
-    lines.append(f"| Text | `{colors.get('text', '#1E293B')}` | `--color-text` |")
+    master_color_entries = [
+        ("Primary",      "primary",      "--color-primary"),
+        ("On Primary",   "on_primary",   "--color-on-primary"),
+        ("Secondary",    "secondary",    "--color-secondary"),
+        ("Accent/CTA",   "accent",       "--color-accent"),
+        ("Background",   "background",   "--color-background"),
+        ("Foreground",   "foreground",   "--color-foreground"),
+        ("Muted",        "muted",        "--color-muted"),
+        ("Border",       "border",       "--color-border"),
+        ("Destructive",  "destructive",  "--color-destructive"),
+        ("Ring",         "ring",         "--color-ring"),
+    ]
+    for label, key, css_var in master_color_entries:
+        hex_val = colors.get(key, "")
+        if hex_val:
+            lines.append(f"| {label} | `{hex_val}` | `{css_var}` |")
     lines.append("")
     if colors.get("notes"):
         lines.append(f"**Color Notes:** {colors.get('notes', '')}")
