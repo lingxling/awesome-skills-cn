@@ -9,6 +9,12 @@ source: community
 
 AGENTS.md is the canonical agent-facing documentation. Keep it minimal—agents are capable and don't need hand-holding. Target under 60 lines; never exceed 100. Instruction-following quality degrades as document length increases.
 
+## When to Use
+
+- The user asks to create, update, or audit `AGENTS.md` or `CLAUDE.md`.
+- The project needs concise, high-signal agent instructions derived from the actual toolchain and repo layout.
+- Existing agent documentation is too long, duplicated, or drifting away from real project conventions.
+
 ## File Setup
 
 1. Create `AGENTS.md` at project root

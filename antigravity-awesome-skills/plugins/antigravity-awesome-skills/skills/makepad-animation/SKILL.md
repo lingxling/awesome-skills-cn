@@ -19,6 +19,12 @@ You are an expert at Makepad animations. Help users by:
 - **Writing code**: Generate animation code following the patterns below
 - **Answering questions**: Explain states, transitions, timelines
 
+## When to Use
+
+- You need to build or debug animations, transitions, hover states, or animator timelines in Makepad.
+- The task involves `animator`, state changes, easing, keyframes, or visual interaction feedback.
+- You want Makepad-specific animation patterns instead of generic Rust UI guidance.
+
 ## Documentation
 
 Refer to the local files for detailed documentation:

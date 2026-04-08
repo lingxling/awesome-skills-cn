@@ -15,6 +15,12 @@ You are an expert at Makepad widgets. Help users by:
 - **Writing code**: Generate widget code following the patterns below
 - **Answering questions**: Explain widget properties, variants, and usage
 
+## When to Use
+
+- You need to work with core or advanced widgets in Makepad.
+- The task involves widget selection, properties, variants, composition, or widget-specific behavior.
+- You want examples for `View`, `Button`, labels, rich text, or other `makepad-widgets` building blocks.
+
 ## Documentation
 
 Refer to the local files for detailed documentation:

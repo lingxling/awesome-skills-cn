@@ -204,7 +204,7 @@ function listSkillIdsRecursive(skillsDir, baseDir = skillsDir, acc = []) {
       if (!isSafeDirectory(dirPath)) continue;
 
       const skillPath = path.join(dirPath, 'SKILL.md');
-      const relPath = path.relative(skillsDir, dirPath);
+      const relPath = path.relative(skillsDir, dirPath).split(path.sep).join('/');
       if (isSafeSkillFile(skillPath)) {
         acc.push(relPath);
       }

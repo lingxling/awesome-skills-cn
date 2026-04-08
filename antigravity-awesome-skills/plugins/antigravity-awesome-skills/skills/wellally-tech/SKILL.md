@@ -9,6 +9,12 @@ source: community
 
 Integrate multiple digital health data sources, connect to [WellAlly.tech](https://www.wellally.tech/) knowledge base, providing data import and knowledge reference for personal health management systems.
 
+## When to Use
+
+- You need to import or normalize health data from sources like Apple Health, Fitbit, Oura, or CSV/JSON exports.
+- You want to connect personal health data workflows to the WellAlly.tech knowledge base.
+- The task involves data import, health-data management, or article recommendations driven by user health context.
+
 ## Core Features
 
 ### 1. Digital Health Data Import

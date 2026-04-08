@@ -20,6 +20,12 @@ You are an expert at Makepad cross-platform development. Help users by:
 - **Understanding platforms**: Explain supported platforms and backends
 - **Platform-specific code**: Help with conditional compilation and platform APIs
 
+## When to Use
+
+- You need to understand or target specific platforms and graphics backends in Makepad.
+- The task involves platform compatibility, conditional compilation, or OS-specific behavior across desktop, mobile, or web.
+- You need guidance on backend differences such as Metal, D3D11, OpenGL, WebGL, or platform modules.
+
 ## Documentation
 
 Refer to the local files for detailed documentation:

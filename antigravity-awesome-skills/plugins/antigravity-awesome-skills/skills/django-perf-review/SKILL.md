@@ -11,6 +11,12 @@ source: community
 
 Review Django code for **validated** performance issues. Research the codebase to confirm issues before reporting. Report only what you can prove.
 
+## When to Use
+
+- You need a Django performance review focused on verified ORM and query issues.
+- The code likely has N+1 queries, unbounded querysets, missing indexes, or other database-driven bottlenecks.
+- You want only provable performance findings, not speculative optimization advice.
+
 ## Review Approach
 
 1. **Research first** - Trace data flow, check for existing optimizations, verify data volume

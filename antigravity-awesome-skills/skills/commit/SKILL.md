@@ -9,6 +9,12 @@ source: community
 
 Follow these conventions when creating commits for Sentry projects.
 
+## When to Use
+
+- The user asks to commit code, prepare a commit message, or save changes in git.
+- You need Sentry-style commit formatting with conventional commit structure and issue references.
+- The task requires enforcing branch safety before committing, especially avoiding direct commits on `main` or `master`.
+
 ## Prerequisites
 
 Before committing, always check the current branch:

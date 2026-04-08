@@ -17,7 +17,7 @@ Best practices for state management and persistence in Makepad applications base
 - **Robrix**: Matrix chat client - AppState, SelectedRoom, persistence via serde
 - **Moly**: AI chat application - Central Store pattern, async initialization, Preferences
 
-## Triggers
+## When to Use
 
 Use this skill when:
 - Designing application state structure

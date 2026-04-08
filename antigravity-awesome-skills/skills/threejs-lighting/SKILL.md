@@ -7,6 +7,12 @@ source: community
 
 # Three.js Lighting
 
+## When to Use
+
+- You need to add or tune lighting in a Three.js scene.
+- The task involves light types, shadows, environment lighting, or lighting performance tradeoffs.
+- You want to improve scene readability, realism, or mood through Three.js lighting setup.
+
 ## Quick Start
 
 ```javascript

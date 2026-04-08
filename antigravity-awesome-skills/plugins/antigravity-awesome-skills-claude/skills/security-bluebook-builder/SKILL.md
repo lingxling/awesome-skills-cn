@@ -7,6 +7,12 @@ source: community
 
 # Security Bluebook Builder
 
+## When to Use
+
+- You need a concise but enforceable security policy for an app handling sensitive data.
+- You want a single Blue Book document with explicit assumptions, controls, and go/no-go gates.
+- The user needs policy guidance grounded in scope, threat model, and operational security defaults rather than generic advice.
+
 ## Overview
 Build a minimal but real security policy for sensitive apps. The output is a single, coherent Blue Book document using MUST/SHOULD/CAN language, with explicit assumptions, scope, and security gates.
 

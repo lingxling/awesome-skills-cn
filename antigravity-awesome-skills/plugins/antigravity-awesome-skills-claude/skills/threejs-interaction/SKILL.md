@@ -7,6 +7,12 @@ source: community
 
 # Three.js Interaction
 
+## When to Use
+
+- You need user interaction inside a Three.js scene.
+- The task involves raycasting, object picking, pointer handling, touch input, or camera controls.
+- You are building an interactive 3D experience rather than a passive render.
+
 ## Quick Start
 
 ```javascript

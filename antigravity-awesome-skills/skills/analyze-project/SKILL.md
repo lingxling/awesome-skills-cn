@@ -26,6 +26,12 @@ For each session, determine:
 4. Which files/subsystems repeatedly correlate with struggle
 5. What changes would most improve future sessions
 
+## When to Use
+
+- You need a postmortem on AI-assisted coding sessions, especially when scope drift or repeated rework occurred.
+- You want root-cause analysis that separates user/spec issues from agent mistakes, repo friction, or validation gaps.
+- You need evidence-backed recommendations for improving future prompts, repo health, or delivery workflows.
+
 ## Global Rules
 
 - Treat `.resolved.N` counts as **iteration signals**, not proof of failure

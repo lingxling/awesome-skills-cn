@@ -35,6 +35,8 @@ WHEN_TO_USE_PATTERNS = [
     re.compile(r"^##\s+Use\s+this\s+skill\s+when", re.MULTILINE | re.IGNORECASE),
     re.compile(r"^##\s+When\s+to\s+Use\s+This\s+Skill", re.MULTILINE | re.IGNORECASE),
 ]
+SOURCE_REPO_PATTERN = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
+VALID_SOURCE_TYPES = {"official", "community", "self"}
 
 def has_when_to_use_section(content):
     return any(pattern.search(content) for pattern in WHEN_TO_USE_PATTERNS)
@@ -146,6 +148,20 @@ def collect_validation_results(skills_dir, strict_mode=False):
                 msg = f"⚠️  {rel_path}: Missing 'source' attribution"
                 if strict_mode: errors.append(msg.replace("⚠️", "❌"))
                 else: warnings.append(msg)
+
+            source_repo = metadata.get("source_repo")
+            if source_repo is not None:
+                if not isinstance(source_repo, str) or not SOURCE_REPO_PATTERN.fullmatch(source_repo.strip()):
+                    errors.append(
+                        f"❌ {rel_path}: Invalid 'source_repo' format. Must be OWNER/REPO, got '{source_repo}'"
+                    )
+
+            source_type = metadata.get("source_type")
+            if source_type is not None:
+                if not isinstance(source_type, str) or source_type not in VALID_SOURCE_TYPES:
+                    errors.append(
+                        f"❌ {rel_path}: Invalid 'source_type' value. Must be one of {sorted(VALID_SOURCE_TYPES)}"
+                    )
 
             # Date Added Validation (optional field)
             if "date_added" in metadata:

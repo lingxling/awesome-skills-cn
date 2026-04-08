@@ -7,6 +7,12 @@ source: community
 
 # Three.js Shaders
 
+## When to Use
+
+- You need custom shader logic in Three.js.
+- The task involves `ShaderMaterial`, uniforms, GLSL, vertex deformation, or fragment-based effects.
+- You are extending material behavior beyond what built-in materials provide.
+
 ## Quick Start
 
 ```javascript

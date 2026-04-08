@@ -116,7 +116,7 @@ def sync_github_about(
     runner(topic_command, dry_run=dry_run)
 
     if not dry_run:
-        print(f"✅ Synced GitHub About settings for {repo}")
+        print(f"[ok] Synced GitHub About settings for {repo}")
 
 
 def replace_if_present(content: str, pattern: re.Pattern[str], replacement: str) -> tuple[str, bool]:
@@ -241,7 +241,7 @@ def update_text_file(path: Path, transform, metadata: dict, dry_run: bool) -> bo
         return True
 
     path.write_text(updated, encoding="utf-8", newline="\n")
-    print(f"✅ Updated {path}")
+    print(f"[ok] Updated {path}")
     return True
 
 
@@ -353,7 +353,7 @@ def update_package_description(base_dir: str, metadata: dict, dry_run: bool) -> 
 
     with open(package_path, "w", encoding="utf-8", newline="\n") as file:
         file.write(updated_content)
-    print(f"✅ Updated package description in {package_path}")
+    print(f"[ok] Updated package description in {package_path}")
     return True
 
 

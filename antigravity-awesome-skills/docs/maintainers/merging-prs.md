@@ -9,6 +9,7 @@
 - Do **not** integrate a PR by squashing locally, pushing to `main`, and then closing the PR. That would show "Closed" and the contributor would not get proper credit.
 - Before merging, require the normal PR checks from [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) to be green. If the PR touches `SKILL.md`, also require the separate [`skill-review` workflow](../../.github/workflows/skill-review.yml) to pass.
 - For PRs that touch `SKILL.md` or risky guidance, require a real manual logic review in addition to the automated checks. Confirm the instructions, failure modes, and `risk:` label make sense before merging.
+- For ordered multi-PR maintainer batches, use [Merge Batch](merge-batch.md) as the operational shortcut and keep this document as the policy reference.
 
 ## If the PR has merge conflicts
 
@@ -77,5 +78,6 @@ Only if merging via GitHub is not possible (e.g. contributor unreachable and you
 
 ## References
 
+- [Merge Batch](merge-batch.md)
 - [GitHub: Creating a commit with multiple authors](https://docs.github.com/en/pull-requests/committing-changes-to-your-project/creating-and-editing-commits/creating-a-commit-with-multiple-authors)
 - [GitHub: Merging a PR](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/merging-a-pull-request)

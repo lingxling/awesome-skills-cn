@@ -1,11 +1,6 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
+const fs = require('fs');
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const require = createRequire(import.meta.url);
 const { findProjectRoot } = require('../lib/project-root');
 const { resolveSafeRealPath } = require('../lib/symlink-safety');
 
@@ -73,8 +68,8 @@ function main() {
     console.log('✅ Web app assets setup complete!');
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (require.main === module) {
     main();
 }
 
-export { copyFolderSync, copyIndexFiles, main };
+module.exports = { copyFolderSync, copyIndexFiles, main };

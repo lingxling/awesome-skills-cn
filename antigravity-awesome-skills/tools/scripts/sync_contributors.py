@@ -31,6 +31,22 @@ def parse_existing_contributor_links(content: str) -> dict[str, str]:
     return links
 
 
+def parse_existing_contributor_order(content: str) -> list[str]:
+    order: list[str] = []
+    seen: set[str] = set()
+    pattern = re.compile(r"^- \[@(?P<label>.+?)\]\((?P<url>https://github\.com/.+?)\)$")
+    for line in content.splitlines():
+        match = pattern.match(line.strip())
+        if not match:
+            continue
+        label = match.group("label")
+        if label in seen:
+            continue
+        seen.add(label)
+        order.append(label)
+    return order
+
+
 def parse_contributors_response(payload: list[dict]) -> list[str]:
     contributors: list[str] = []
     seen: set[str] = set()
@@ -41,6 +57,16 @@ def parse_contributors_response(payload: list[dict]) -> list[str]:
         seen.add(login)
         contributors.append(login)
     return contributors
+
+
+def order_contributors_for_render(contributors: list[str], existing_order: list[str]) -> list[str]:
+    contributor_set = set(contributors)
+    ordered_existing = [login for login in existing_order if login in contributor_set]
+    new_contributors = sorted(
+        (login for login in contributors if login not in existing_order),
+        key=lambda login: login.casefold(),
+    )
+    return ordered_existing + new_contributors
 
 
 def infer_contributor_url(login: str, existing_links: dict[str, str]) -> str:
@@ -64,7 +90,11 @@ def render_contributor_lines(contributors: list[str], existing_links: dict[str, 
 
 def update_repo_contributors_section(content: str, contributors: list[str]) -> str:
     existing_links = parse_existing_contributor_links(content)
-    rendered_list = render_contributor_lines(contributors, existing_links)
+    ordered_contributors = order_contributors_for_render(
+        contributors,
+        parse_existing_contributor_order(content),
+    )
+    rendered_list = render_contributor_lines(ordered_contributors, existing_links)
 
     if CONTRIBUTOR_SECTION_START not in content or "\n## " not in content:
         raise ValueError("README.md does not contain the expected Repo Contributors section structure.")

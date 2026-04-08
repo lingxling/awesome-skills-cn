@@ -1,3 +1,22 @@
+# Maintenance Walkthrough - 2026-04-05
+
+- Closed issues `#455` and `#456` with maintainer comments explaining what a follow-up submission must include before reopening:
+  - concrete repo diff or implementation PR
+  - source-only contributor branch
+  - Quality Bar checklist and maintainer validations from `.github/MAINTENANCE.md`
+- Reviewed open issues `#455` and `#456` during the maintainer sweep; neither had a matching accepted PR and both remain open pending a source-quality contributor submission.
+- Triaged PR `#454` as superseded by `#457` because `#457` rebuilds the Windows validation/test fixes on top of current `main` and includes the follow-up batch activation fix requested in review.
+- Verified PR `#457` locally on the contributor head with:
+  - `npm run validate`
+  - `npm run validate:references`
+  - `npm run check:warning-budget`
+  - `npm run check:readme-credits -- --base origin/main --head HEAD`
+  - `npm run test`
+  - `npm run app:test:coverage`
+  - `npm run app:build`
+- Cleaned PR `#457` back to the repository's source-only PR contract by dropping maintainer-owned generated registry artifacts before merge review.
+- Normalized the PR metadata so the required Quality Bar Checklist is present before re-triggering the fork-based GitHub Actions checks.
+
 # Maintenance Walkthrough - 2026-03-30
 
 - Merged PR #418 on GitHub with squash after approving the pending fork workflow run and waiting for `pr-policy`, `source-validation`, and `artifact-preview` to finish green.

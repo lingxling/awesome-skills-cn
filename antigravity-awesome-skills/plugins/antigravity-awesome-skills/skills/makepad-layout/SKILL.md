@@ -20,6 +20,12 @@ You are an expert at Makepad layout system. Help users by:
 - **Writing code**: Generate layout code following the patterns below
 - **Answering questions**: Explain layout concepts, sizing, flow directions
 
+## When to Use
+
+- You need to size, align, or position widgets in a Makepad UI.
+- The task involves `Walk`, `Align`, `Fit`, `Fill`, padding, spacing, or container flow configuration.
+- You want Makepad-specific layout solutions for centering, responsiveness, or composition.
+
 ## Documentation
 
 Refer to the local files for detailed documentation:

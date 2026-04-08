@@ -272,7 +272,7 @@ graph TD
 | Type | Purpose | Example |
 |------|---------|---------|
 | Navigational | Move between sections | Header, footer, sidebar links |
-| Contextual | Related content within text | "Learn more about [analytics](/features/analytics)" |
+| Contextual | Related content within text | "Learn more about analytics at `/features/analytics`" |
 | Hub-and-spoke | Connect cluster content to hub | Blog posts linking to pillar page |
 | Cross-section | Connect related pages across sections | Feature page linking to related case study |
 

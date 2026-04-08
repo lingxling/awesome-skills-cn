@@ -33,6 +33,10 @@ get_bundle_skills = load_module(
 )
 
 
+def relative_posix(path: pathlib.Path, root: pathlib.Path) -> str:
+    return path.relative_to(root).as_posix()
+
+
 class EditorialBundlesTests(unittest.TestCase):
     def setUp(self):
         self.manifest_bundles = editorial_bundles.load_editorial_bundles(REPO_ROOT)
@@ -79,7 +83,7 @@ class EditorialBundlesTests(unittest.TestCase):
             for skill in next(bundle for bundle in self.manifest_bundles if bundle["id"] == "essentials")["skills"]
         }
         actual_ids = {
-            str(path.relative_to(essentials_plugin))
+            relative_posix(path, essentials_plugin)
             for path in essentials_plugin.rglob("SKILL.md")
         }
         self.assertEqual(actual_ids, {f"{skill_id}/SKILL.md" for skill_id in expected_ids})
@@ -140,12 +144,12 @@ class EditorialBundlesTests(unittest.TestCase):
             self.assertTrue(copied_dir.is_dir(), f'copied skill dir missing for {skill["id"]}')
 
             source_files = sorted(
-                str(path.relative_to(source_dir))
+                relative_posix(path, source_dir)
                 for path in source_dir.rglob("*")
                 if path.is_file()
             )
             copied_files = sorted(
-                str(path.relative_to(copied_dir))
+                relative_posix(path, copied_dir)
                 for path in copied_dir.rglob("*")
                 if path.is_file()
             )

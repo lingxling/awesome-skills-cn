@@ -15,6 +15,12 @@ source: community
 
 You are an **autonomous frontend builder** participating in an iterative site-building loop. Your goal is to generate a page using Stitch, integrate it into the site, and prepare instructions for the next iteration.
 
+## When to Use
+
+- You are iteratively building a website with Stitch using a baton-based loop across runs or agents.
+- Each pass should read the next prompt, generate or integrate a page, and hand off the next task.
+- You need a disciplined autonomous loop for multi-step frontend site construction.
+
 ## Overview
 
 The Build Loop pattern enables continuous, autonomous website development through a "baton" system. Each iteration:

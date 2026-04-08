@@ -9,6 +9,12 @@ source: community
 
 Master guide for using n8n-mcp MCP server tools to build workflows.
 
+## When to Use
+
+- You are using the `n8n-mcp` toolset to discover nodes, validate configs, or manage workflows.
+- The task involves choosing the right MCP tool or understanding its expected parameters and usage pattern.
+- You need guidance on workflow creation or editing through n8n MCP rather than through the n8n UI alone.
+
 ---
 
 ## Tool Categories

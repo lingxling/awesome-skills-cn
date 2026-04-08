@@ -17,7 +17,7 @@ Best practices for designing reusable Makepad widgets based on Robrix and Moly c
 - **Robrix**: Matrix chat client - Avatar, RoomsList, RoomScreen widgets
 - **Moly**: AI chat application - Slot, ChatLine, PromptInput, AdaptiveView widgets
 
-## Triggers
+## When to Use
 
 Use this skill when:
 - Creating reusable Makepad widgets

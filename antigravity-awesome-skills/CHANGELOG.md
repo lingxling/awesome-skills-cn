@@ -9,6 +9,162 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.9.0] - 2026-04-07 - "Vibeship Restore and Community Merge Batch"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release restores the full imported content for the affected `vibeship-spawner-skills` set after the truncation reported in issue `#473`, then folds in the current approved community PR batch. It also refreshes contributor syncing and README source credits so the repository state, plugin mirrors, and public credit surfaces stay aligned on `main`.
+
+## New Skills
+
+- **Satori skill pack** - merges PR #466 with the contributor-provided skills sourced from `MetcalfSolutions/Satori`.
+- **idea-darwin** - merges PR #469 to add the Darwin-style ideation workflow sourced from `warmskull/idea-darwin`.
+- **faf-skills contribution** - merges PR #477 as the maintained FAF contribution path sourced from `Wolfe-Jam/faf-skills`.
+
+## Improvements
+
+- **Issue #473 content restoration** - fully re-syncs the affected `vibeship-spawner-skills` imports on `main`, restoring the upstream body content instead of patching only a single truncated file.
+- **Canonical artifact refresh** - rebuilds the generated catalog, skill index, plugin mirrors, and compatibility data from the restored canonical `skills/` state.
+- **Post-merge maintainer sync** - refreshes contributor listings and README external-source credits as part of the mandatory after-merge maintainer flow for this batch.
+- **PR supersession cleanup** - closes PR #470 as superseded by PR #477 so the FAF change lands once, through the corrected contribution.
+
+## Who should care
+
+- **Users of restored vibeship-derived skills** get the full guidance back across the affected imported skill set instead of the previously truncated bodies.
+- **Contributors and maintainers** get a clean GitHub-only squash merge batch with the required contributor and source-credit follow-up recorded in the release.
+- **Anyone installing bundle or plugin variants** gets regenerated mirrors and catalog artifacts that match the restored canonical skills.
+
+## Credits
+
+- **Issue #473 reporter** for isolating the truncated `vibeship-spawner-skills` import problem.
+- **[@alecmetcalf](https://github.com/alecmetcalf)** for the Satori contribution merged in PR #466.
+- **[@warmskull](https://github.com/warmskull)** for `idea-darwin` merged in PR #469.
+- **[@Wolfe-Jam](https://github.com/Wolfe-Jam)** for the FAF skill contribution merged in PR #477.
+
+## [9.8.0] - 2026-04-06 - "Governance, Tracking, and Discovery Skills"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release merges five community contributions that expand the library across MCP governance, change tracking, multi-agent orchestration, agent discovery, and scripted slide generation. It also ships the corresponding README source-credit updates and maintainer follow-up syncs required by the current PR quality bar.
+
+## New Skills
+
+- **protect-mcp-governance** - merges PR #458 to add MCP governance guidance with Cedar policies, shadow-to-enforce rollout, and signed receipt verification.
+- **technical-change-tracker** - merges PR #459 to add structured JSON change tracking, session handoff, and accessible dashboard guidance for coding continuity.
+- **multi-agent-task-orchestrator** - merges PR #462 to add production-tested multi-agent delegation, anti-duplication, and verification-gate patterns.
+- **global-chat-agent-discovery** - merges PR #463 to add cross-protocol discovery guidance for MCP servers and AI agents across multiple registries.
+- **python-pptx-generator** - merges PR #465 to add a compliant skill for generating runnable `python-pptx` slide-deck scripts from a topic brief.
+
+## Improvements
+
+- **README source-credit coverage** - adds the upstream community and official repo credits required for the merged skills so `check:readme-credits` now passes on these contributions.
+- **Maintainer merge hygiene** - resolves contributor-branch README conflicts on the PR branches and keeps the GitHub-only squash merge flow intact so each contribution lands as a proper merged PR.
+
+## Who should care
+
+- **Teams governing AI tool use** get a concrete skill for MCP policy authoring and receipt verification.
+- **Developers handing work across sessions or agents** get dedicated skills for change tracking and orchestrated multi-agent execution.
+- **Builders comparing agent ecosystems** get a new discovery skill covering MCP, A2A, and agents.txt registries.
+- **Users generating presentations from code** get a focused `python-pptx` skill for slide-deck scripting.
+
+## Credits
+
+- **[@tomjwxf](https://github.com/tomjwxf)** for `protect-mcp-governance` in PR #458
+- **[@Elkidogz](https://github.com/Elkidogz)** for `technical-change-tracker` in PR #459
+- **[@milkomida77](https://github.com/milkomida77)** for `multi-agent-task-orchestrator` in PR #462
+- **[@globalchatapp](https://github.com/globalchatapp)** for `global-chat-agent-discovery` in PR #463
+- **[@spideyashith](https://github.com/spideyashith)** for `python-pptx-generator` in PR #465
+
+## [9.7.0] - 2026-04-05 - "Windows Reliability and Guidance Cleanup"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release focuses on repository reliability rather than new skill volume. It merges the Windows validation and activation hardening from PR #457, adds stronger smoke coverage for the batch activation path, and finishes a broad `## When to Use` cleanup so the repository stays within the current quality bar without carrying contributor-side generated drift.
+
+## New Skills
+
+- **None in this release** - `9.7.0` is a reliability and documentation-hardening release.
+
+## Improvements
+
+- **Windows activation reliability** - makes `scripts/activate-skills.bat` safer around helper discovery, Python probing, archive-prefix overrides, and fallback activation behavior.
+- **Cross-platform validation consistency** - normalizes path handling in registry and validation utilities so Windows path separators no longer create false negatives in tooling and tests.
+- **Windows smoke coverage** - adds dedicated batch-script smoke coverage, including the missing-helper fallback path, and refreshes supporting installer and plugin tests.
+- **Skill guidance cleanup** - adds explicit `## When to Use` sections across a large set of `SKILL.md` files so trigger intent is clearer and warning-budget checks stay green.
+- **Release hygiene** - keeps contributor PRs source-only while letting `main` own the generated catalog sync after merge.
+
+## Who should care
+
+- **Windows users** get a more reliable activation path and fewer path-related validation surprises.
+- **Maintainers** get cleaner contributor PR handling, better smoke coverage, and a release path aligned with the current generated-artifact contract.
+- **Anyone browsing skills directly** gets clearer `When to Use` guidance across a much larger portion of the library.
+
+## Credits
+
+- **[@Al-Garadi](https://github.com/Al-Garadi)** for the Windows validation and skill-guidance cleanup merged in PR #457.
+
+## [9.6.0] - 2026-04-04 - "Psychology and SEO Growth Packs"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release folds the full open PR batch into `main` and centers on two major content expansions for growth teams. It adds an SEO/AEO content engine and a large psychology-driven marketing pack, while also tightening the web-app skill card hover state and pulling in the latest `yaml` patch release so the repository and installer surface stay current.
+
+## New Skills
+
+- **SEO-AEO Engine bundle** - merges PR #446 with 8 skills for keyword research, content clustering, landing pages, long-form blog structure, internal linking, metadata, schema, and SEO/AEO auditing.
+- **Psychology skills pack** - merges PR #451 with 20 research-backed skills for profiling, persuasion, pricing psychology, onboarding, pitch strategy, UX persuasion, copywriting, and visual-emotion design.
+
+## Improvements
+
+- **Web app hover stability** - merges PR #449 to keep the home-page `SkillCard` readable on hover with a lighter lift/shadow treatment instead of palette inversion.
+- **Dependency refresh** - merges PR #450 to bump `yaml` from `2.8.2` to `2.8.3`.
+- **README credit sync** - refreshes contributor and community-source credits on `main` immediately after the merged PR batch, including the upstream `mrprewsh/seo-aeo-engine` source.
+
+## Who should care
+
+- **Growth, SEO, and content teams** get a full pipeline for keyword discovery, cluster planning, structured landing pages, schema, internal linking, and publish-time audits.
+- **Marketing and UX teams** get a larger psychology-oriented pack for messaging, pricing, onboarding, social proof, objections, and conversion design.
+- **Web-app users** get a cleaner hover treatment on the skill cards in the homepage UI.
+
+## Credits
+
+- **[@prewsh](https://github.com/prewsh)** and **[mrprewsh/seo-aeo-engine](https://github.com/mrprewsh/seo-aeo-engine)** for the SEO/AEO skill bundle merged in PR #446
+- **[@MMEHDI0606](https://github.com/MMEHDI0606)** for the psychology skills pack merged in PR #451
+- **[@hazemezz123](https://github.com/hazemezz123)** for the skill card hover-state fix merged in PR #449
+- **[@dependabot[bot]](https://github.com/apps/dependabot)** for the `yaml` dependency update merged in PR #450
+
 ## [9.5.1] - 2026-04-03 - "npm Runtime Dependency Fix"
 
 > **Patch release to restore `npx antigravity-awesome-skills` installs after the published CLI started failing to resolve `yaml` at runtime**

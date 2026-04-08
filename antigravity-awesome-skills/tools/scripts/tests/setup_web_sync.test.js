@@ -4,7 +4,7 @@ const os = require("os");
 const path = require("path");
 
 async function main() {
-  const { copyIndexFiles } = await import("../../scripts/setup_web.js");
+  const { copyIndexFiles } = require("../../scripts/setup_web.js");
 
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "setup-web-sync-"));
   try {
@@ -30,7 +30,4 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+main();

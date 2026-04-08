@@ -2300,6 +2300,25 @@
       "runtime_files": []
     },
     {
+      "id": "awareness-stage-mapper",
+      "path": "skills/awareness-stage-mapper",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "aws-cost-cleanup",
       "path": "skills/aws-cost-cleanup",
       "targets": {
@@ -5293,6 +5312,25 @@
       "runtime_files": []
     },
     {
+      "id": "brand-perception-psychologist",
+      "path": "skills/brand-perception-psychologist",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "brevo-automation",
       "path": "skills/brevo-automation",
       "targets": {
@@ -7614,6 +7652,25 @@
       "runtime_files": []
     },
     {
+      "id": "copywriting-psychologist",
+      "path": "skills/copywriting-psychologist",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "core-components",
       "path": "skills/core-components",
       "targets": {
@@ -7806,6 +7863,25 @@
     {
       "id": "csharp-pro",
       "path": "skills/csharp-pro",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "customer-psychographic-profiler",
+      "path": "skills/customer-psychographic-profiler",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -9446,6 +9522,25 @@
       "runtime_files": []
     },
     {
+      "id": "emotional-arc-designer",
+      "path": "skills/emotional-arc-designer",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "employment-contract-templates",
       "path": "skills/employment-contract-templates",
       "targets": {
@@ -9942,6 +10037,44 @@
     {
       "id": "expo-ui-swift-ui",
       "path": "skills/expo-ui-swift-ui",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "faf-expert",
+      "path": "skills/faf-expert",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "faf-wizard",
+      "path": "skills/faf-wizard",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -11802,6 +11935,25 @@
       "runtime_files": []
     },
     {
+      "id": "global-chat-agent-discovery",
+      "path": "skills/global-chat-agent-discovery",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "gmail-automation",
       "path": "skills/gmail-automation",
       "targets": {
@@ -12184,6 +12336,25 @@
     {
       "id": "haskell-pro",
       "path": "skills/haskell-pro",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "headline-psychologist",
+      "path": "skills/headline-psychologist",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -13041,6 +13212,44 @@
       "runtime_files": []
     },
     {
+      "id": "idea-darwin",
+      "path": "skills/idea-darwin",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "identity-mirror",
+      "path": "skills/identity-mirror",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "idor-testing",
       "path": "skills/idor-testing",
       "targets": {
@@ -13613,6 +13822,25 @@
     {
       "id": "jobgpt",
       "path": "skills/jobgpt",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "jobs-to-be-done-analyst",
+      "path": "skills/jobs-to-be-done-analyst",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -14815,6 +15043,25 @@
         "codex": [
           "target_specific_home_path"
         ],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "loss-aversion-designer",
+      "path": "skills/loss-aversion-designer",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
         "claude": []
       },
       "runtime_files": []
@@ -16046,6 +16293,25 @@
       "runtime_files": []
     },
     {
+      "id": "multi-agent-task-orchestrator",
+      "path": "skills/multi-agent-task-orchestrator",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "multi-cloud-architecture",
       "path": "skills/multi-cloud-architecture",
       "targets": {
@@ -16628,6 +16894,25 @@
     {
       "id": "nx-workspace-patterns",
       "path": "skills/nx-workspace-patterns",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "objection-preemptor",
+      "path": "skills/objection-preemptor",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -17310,6 +17595,25 @@
       "runtime_files": []
     },
     {
+      "id": "onboarding-psychologist",
+      "path": "skills/onboarding-psychologist",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "one-drive-automation",
       "path": "skills/one-drive-automation",
       "targets": {
@@ -17899,6 +18203,25 @@
       "runtime_files": []
     },
     {
+      "id": "pitch-psychologist",
+      "path": "skills/pitch-psychologist",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "plaid-fintech",
       "path": "skills/plaid-fintech",
       "targets": {
@@ -18262,6 +18585,25 @@
       "runtime_files": []
     },
     {
+      "id": "price-psychology-strategist",
+      "path": "skills/price-psychology-strategist",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "pricing-strategy",
       "path": "skills/pricing-strategy",
       "targets": {
@@ -18569,7 +18911,7 @@
       "id": "project-skill-audit",
       "path": "skills/project-skill-audit",
       "targets": {
-        "codex": "blocked",
+        "codex": "supported",
         "claude": "blocked"
       },
       "setup": {
@@ -18578,15 +18920,11 @@
         "docs": null
       },
       "reasons": [
-        "absolute_host_path",
         "target_specific_home_path"
       ],
       "blocked_reasons": {
-        "codex": [
-          "absolute_host_path"
-        ],
+        "codex": [],
         "claude": [
-          "absolute_host_path",
           "target_specific_home_path"
         ]
       },
@@ -18709,6 +19047,25 @@
     {
       "id": "prompt-library",
       "path": "skills/prompt-library",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "protect-mcp-governance",
+      "path": "skills/protect-mcp-governance",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -18899,6 +19256,25 @@
     {
       "id": "python-performance-optimization",
       "path": "skills/python-performance-optimization",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "python-pptx-generator",
+      "path": "skills/python-pptx-generator",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -19942,6 +20318,25 @@
       "runtime_files": []
     },
     {
+      "id": "satori",
+      "path": "skills/satori",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "scala-pro",
       "path": "skills/scala-pro",
       "targets": {
@@ -19982,6 +20377,25 @@
     {
       "id": "scanpy",
       "path": "skills/scanpy",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "scarcity-urgency-psychologist",
+      "path": "skills/scarcity-urgency-psychologist",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -20607,6 +21021,158 @@
       "runtime_files": []
     },
     {
+      "id": "seo-aeo-blog-writer",
+      "path": "skills/seo-aeo-blog-writer",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "seo-aeo-content-cluster",
+      "path": "skills/seo-aeo-content-cluster",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "seo-aeo-content-quality-auditor",
+      "path": "skills/seo-aeo-content-quality-auditor",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "seo-aeo-internal-linking",
+      "path": "skills/seo-aeo-internal-linking",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "seo-aeo-keyword-research",
+      "path": "skills/seo-aeo-keyword-research",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "seo-aeo-landing-page-writer",
+      "path": "skills/seo-aeo-landing-page-writer",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "seo-aeo-meta-description-generator",
+      "path": "skills/seo-aeo-meta-description-generator",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "seo-aeo-schema-generator",
+      "path": "skills/seo-aeo-schema-generator",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "seo-audit",
       "path": "skills/seo-audit",
       "targets": {
@@ -21088,6 +21654,25 @@
     {
       "id": "seo-technical",
       "path": "skills/seo-technical",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "sequence-psychologist",
+      "path": "skills/sequence-psychologist",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -21849,6 +22434,25 @@
       "runtime_files": []
     },
     {
+      "id": "social-proof-architect",
+      "path": "skills/social-proof-architect",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "software-architecture",
       "path": "skills/software-architecture",
       "targets": {
@@ -22423,6 +23027,25 @@
       "runtime_files": []
     },
     {
+      "id": "subject-line-psychologist",
+      "path": "skills/subject-line-psychologist",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "supabase-automation",
       "path": "skills/supabase-automation",
       "targets": {
@@ -22938,6 +23561,25 @@
     {
       "id": "team-composition-analysis",
       "path": "skills/team-composition-analysis",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "technical-change-tracker",
+      "path": "skills/technical-change-tracker",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -23772,6 +24414,25 @@
       "runtime_files": []
     },
     {
+      "id": "trust-calibrator",
+      "path": "skills/trust-calibrator",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "turborepo-caching",
       "path": "skills/turborepo-caching",
       "targets": {
@@ -24234,6 +24895,25 @@
       "runtime_files": []
     },
     {
+      "id": "ux-persuasion-engineer",
+      "path": "skills/ux-persuasion-engineer",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "uxui-principles",
       "path": "skills/uxui-principles",
       "targets": {
@@ -24563,6 +25243,25 @@
     {
       "id": "viral-generator-builder",
       "path": "skills/viral-generator-builder",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "visual-emotion-engineer",
+      "path": "skills/visual-emotion-engineer",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -25702,13 +26401,13 @@
     }
   ],
   "summary": {
-    "total_skills": 1344,
+    "total_skills": 1381,
     "supported": {
-      "codex": 1314,
-      "claude": 1330
+      "codex": 1352,
+      "claude": 1367
     },
     "blocked": {
-      "codex": 30,
+      "codex": 29,
       "claude": 14
     },
     "manual_setup": 1

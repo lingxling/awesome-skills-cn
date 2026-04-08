@@ -24,6 +24,14 @@ assert.ok(
   "package.json should expose a warning-budget guardrail command",
 );
 assert.ok(
+  packageJson.scripts["check:readme-credits"],
+  "package.json should expose a README credit validation command",
+);
+assert.ok(
+  packageJson.scripts["merge:batch"],
+  "package.json should expose a maintainer merge-batch command",
+);
+assert.ok(
   packageJson.scripts["audit:maintainer"],
   "package.json should expose a maintainer audit command",
 );
@@ -124,6 +132,26 @@ assert.match(
   ciWorkflow,
   /- name: Audit npm dependencies[\s\S]*?run: npm audit --audit-level=high/,
   "CI should run npm audit at high severity",
+);
+assert.match(
+  ciWorkflow,
+  /source-validation:[\s\S]*?- uses: actions\/checkout@v4[\s\S]*?with:[\s\S]*?fetch-depth: 0/,
+  "source-validation should use an unshallowed checkout so base-branch diffs have a merge base",
+);
+assert.match(
+  ciWorkflow,
+  /source-validation:[\s\S]*?- name: Fetch base branch[\s\S]*?run: git fetch origin "\$\{\{ github\.base_ref \}\}"/,
+  "source-validation should fetch the PR base branch before changed-skill README credit checks",
+);
+assert.match(
+  ciWorkflow,
+  /- name: Verify README source credits for changed skills[\s\S]*?run: npm run check:readme-credits -- --base "origin\/\$\{\{ github\.base_ref \}\}" --head HEAD/,
+  "PR CI should verify README source credits for changed skills",
+);
+assert.match(
+  ciWorkflow,
+  /source-validation:[\s\S]*?- name: Fetch base branch[\s\S]*?- name: Install npm dependencies[\s\S]*?- name: Verify README source credits for changed skills/,
+  "source-validation should fetch the base branch before running the changed-skill README credit check",
 );
 assert.match(
   ciWorkflow,

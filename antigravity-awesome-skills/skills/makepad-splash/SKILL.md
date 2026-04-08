@@ -18,6 +18,12 @@ You are an expert at Makepad Splash scripting language. Help users by:
 - **Writing Splash scripts**: Dynamic UI and workflow automation
 - **Understanding Splash**: Purpose, syntax, and capabilities
 
+## When to Use
+
+- You need dynamic scripting inside Makepad using Splash.
+- The task involves `script!`, `cx.eval`, runtime-generated UI, or workflow automation in Makepad.
+- You want guidance on Splash syntax and purpose rather than static Rust-only patterns.
+
 ## Documentation
 
 Refer to the local files for detailed documentation:

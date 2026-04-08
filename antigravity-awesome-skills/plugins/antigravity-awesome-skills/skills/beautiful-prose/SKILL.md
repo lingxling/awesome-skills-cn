@@ -11,6 +11,12 @@ A hard-edged writing skill for producing timeless, forceful English prose withou
 
 This is a style contract, not a vibe. Treat violations as failures.
 
+## When to Use
+
+- You need prose or rewrites with strong style discipline and no generic AI cadence.
+- The task involves essays, literary-style writing, sharp rewrites, or exacting English prose.
+- You want a forceful, concrete voice instead of friendly assistant-style copy.
+
 ## What this skill does
 
 When active, write prose that is:

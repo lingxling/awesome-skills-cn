@@ -10,6 +10,12 @@ source: community
 
 # Seaborn Statistical Visualization
 
+## When to Use
+
+- You need publication-quality statistical graphics directly from tabular datasets.
+- You are exploring multivariate relationships, distributions, or grouped comparisons with minimal plotting code.
+- You want seaborn's dataset-oriented API and statistical defaults on top of matplotlib.
+
 ## Overview
 
 Seaborn is a Python visualization library for creating publication-quality statistical graphics. Use this skill for dataset-oriented plotting, multivariate analysis, automatic statistical estimation, and complex multi-panel figures with minimal code.

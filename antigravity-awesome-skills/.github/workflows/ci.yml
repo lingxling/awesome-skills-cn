@@ -68,6 +68,8 @@ jobs:
     needs: pr-policy
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -81,6 +83,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
+
+      - name: Fetch base branch
+        run: git fetch origin "${{ github.base_ref }}"
 
       - name: Install npm dependencies
         run: npm ci
@@ -96,6 +101,12 @@ jobs:
 
       - name: Validate source changes
         run: npm run validate
+
+      - name: Enforce validation warning budget
+        run: npm run check:warning-budget
+
+      - name: Verify README source credits for changed skills
+        run: npm run check:readme-credits -- --base "origin/${{ github.base_ref }}" --head HEAD
 
       - name: Validate references
         if: needs.pr-policy.outputs.requires_references == 'true'

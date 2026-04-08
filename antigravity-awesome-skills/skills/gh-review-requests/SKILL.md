@@ -12,6 +12,12 @@ Fetch unread `review_requested` notifications for open (unmerged) PRs, filtered 
 
 **Requires**: GitHub CLI (`gh`) authenticated.
 
+## When to Use
+
+- You need to find unread GitHub PR review requests for a specific team.
+- You want to check which open PRs currently need your review or a teammate's review.
+- You need a filtered review queue instead of manually browsing GitHub notifications.
+
 ## Step 1: Identify the Team
 
 If the user has not specified a team, ask:

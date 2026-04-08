@@ -10,6 +10,7 @@ function runNpmPackDryRunJson() {
   const result = spawnSync(npmCommand, ["pack", "--dry-run", "--json"], {
     cwd: repoRoot,
     encoding: "utf8",
+    shell: process.platform === "win32",
   });
 
   if (result.error) {

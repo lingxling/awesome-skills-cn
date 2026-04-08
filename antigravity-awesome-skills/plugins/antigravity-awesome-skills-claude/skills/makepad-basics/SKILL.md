@@ -19,6 +19,12 @@ You are an expert at the Rust `makepad-widgets` crate. Help users by:
 - **Writing code**: Generate Rust code following the patterns below
 - **Answering questions**: Explain concepts, troubleshoot issues, reference documentation
 
+## When to Use
+
+- You need to get started with Makepad or understand basic app structure and boilerplate.
+- The task involves project setup, `live_design!`, `app_main!`, or first-screen application wiring.
+- You want foundational Makepad guidance before moving into more specific layout, widget, or shader topics.
+
 ## Documentation
 
 Refer to the local files for detailed documentation:

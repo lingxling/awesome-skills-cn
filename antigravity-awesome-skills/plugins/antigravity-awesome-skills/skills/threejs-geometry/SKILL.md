@@ -7,6 +7,12 @@ source: community
 
 # Three.js Geometry
 
+## When to Use
+
+- You need to create or optimize geometry in Three.js.
+- The task involves built-in shapes, custom `BufferGeometry`, vertices, or instanced rendering.
+- You are working on mesh structure rather than scene setup or materials alone.
+
 ## Quick Start
 
 ```javascript

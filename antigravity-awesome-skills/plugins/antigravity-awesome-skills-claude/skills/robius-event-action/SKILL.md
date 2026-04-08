@@ -17,7 +17,7 @@ Best practices for event handling and action patterns in Makepad applications ba
 - **Robrix**: Matrix chat client - MessageAction, RoomsListAction, AppStateAction
 - **Moly**: AI chat application - StoreAction, ChatAction, NavigationAction, Timer patterns
 
-## Triggers
+## When to Use
 
 Use this skill when:
 - Implementing custom actions in Makepad

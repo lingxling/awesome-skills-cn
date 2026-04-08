@@ -10,6 +10,12 @@ source: community
 
 Create a git branch with the correct type prefix and a descriptive name following Sentry conventions.
 
+## When to Use
+
+- You need to create a new git branch that follows the repository's naming convention.
+- You are starting a new piece of work from the default branch and need help classifying it as `feat`, `fix`, `docs`, or another branch type.
+- You want the branch name proposed from either the task description or the current local diff.
+
 ## Step 1: Get the Username Prefix
 
 Run `gh api user --jq .login` to get the GitHub username.

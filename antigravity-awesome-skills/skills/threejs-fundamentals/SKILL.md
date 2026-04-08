@@ -7,6 +7,12 @@ source: community
 
 # Three.js Fundamentals
 
+## When to Use
+
+- You need to set up the core structure of a Three.js scene.
+- The task involves scenes, cameras, renderers, transforms, resize handling, or object hierarchy basics.
+- You want foundational Three.js guidance before working on specialized topics like shaders or post-processing.
+
 ## Quick Start
 
 ```javascript

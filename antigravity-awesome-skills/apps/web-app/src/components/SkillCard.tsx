@@ -22,7 +22,7 @@ export const SkillCard = React.memo(({ skill, starCount }: SkillCardProps) => {
         >
             <Link
                 to={`/skill/${skill.id}`}
-                className="group flex flex-col h-full rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition-all hover:bg-slate-50 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-indigo-500/50"
+                className="group flex flex-col h-full rounded-lg border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:border-indigo-200 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-indigo-500/50"
             >
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center space-x-2">
@@ -40,7 +40,7 @@ export const SkillCard = React.memo(({ skill, starCount }: SkillCardProps) => {
                     />
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-2 line-clamp-1">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-50 mb-2 line-clamp-1">
                     @{skill.name}
                 </h3>
 

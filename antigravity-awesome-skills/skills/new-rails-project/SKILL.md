@@ -13,6 +13,12 @@ metadata:
 
 Generate a new Rails project named $1 in the current directory. You may reference @CLAUDE.md for general guidance, though the guidance here takes precedence.
 
+## When to Use
+
+- You need to bootstrap a new Rails project with the opinionated stack defined in this skill.
+- The project should start with Rails, PostgreSQL, Inertia.js, React, Vite, Tailwind, Sidekiq, and Redis already planned together.
+- You want setup guidance that covers project creation, conventions, testing, and verification for a fresh Rails app.
+
 # Tech Stack
 Set up the following tech stack:
 - **Rails ~8** with PostgreSQL - Server-side framework and database

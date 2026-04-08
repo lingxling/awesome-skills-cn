@@ -9,6 +9,12 @@ source: community
 
 Proven architectural patterns for building n8n workflows.
 
+## When to Use
+
+- You need to choose an architectural pattern for an n8n workflow before building it.
+- The task involves webhook processing, API integration, scheduled jobs, database sync, or AI-agent workflow design.
+- You want a high-level workflow structure rather than node-by-node troubleshooting.
+
 ---
 
 ## The 5 Core Patterns

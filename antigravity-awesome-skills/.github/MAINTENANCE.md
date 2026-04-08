@@ -89,13 +89,30 @@ Before ANY commit that adds/modifies skills, run the chain:
 
     _Must return 0 errors for new skills._
 
-2.  **Build catalog**:
+2.  **Enforce the frozen warning budget**:
+
+    ```bash
+    npm run check:warning-budget
+    ```
+
+    This is required before merging or releasing skill changes. It catches new repository-wide warnings, including missing `## When to Use` sections, at PR time instead of letting them surface only during `release:preflight`.
+
+3.  **Check README source credits for changed skills**:
+
+    ```bash
+    npm run check:readme-credits -- --base origin/main --head HEAD
+    ```
+
+    This verifies that changed skills with declared external upstream repos already have the required README credit under `### Official Sources` or `### Community Contributors`.
+    The first rollout is warning-first for missing structured metadata: if a changed skill clearly looks externally sourced but still lacks `source_repo`, the check warns instead of failing. Once `source_repo` is declared, README coverage is mandatory.
+
+4.  **Build catalog**:
 
     ```bash
     npm run catalog
     ```
 
-3.  **Optional maintainer sweep shortcut**:
+5.  **Optional maintainer sweep shortcut**:
     ```bash
     npm run sync:repo-state
     ```
@@ -122,7 +139,7 @@ Before ANY commit that adds/modifies skills, run the chain:
     ```
     `sync:risk-labels` is intentionally conservative. It should handle only the obvious subset; the ambiguous tail still needs maintainer review.
 
-4.  **COMMIT GENERATED FILES**:
+6.  **COMMIT GENERATED FILES**:
     ```bash
     git add README.md skills_index.json data/skills_index.json data/catalog.json data/bundles.json data/aliases.json CATALOG.md
     git commit -m "chore: sync generated files"
@@ -138,7 +155,7 @@ Before ANY commit that adds/modifies skills, run the chain:
 
 **Before merging:**
 
-1.  **CI is green** — Validation, reference checks, tests, and generated artifact steps passed (see [`.github/workflows/ci.yml`](workflows/ci.yml)). If the PR changes any `SKILL.md`, the separate [`skill-review` workflow](workflows/skill-review.yml) must also be green.
+1.  **CI is green** — Validation, warning-budget enforcement, README source-credit checks, reference checks, tests, and generated artifact steps passed (see [`.github/workflows/ci.yml`](workflows/ci.yml)). If the PR changes any `SKILL.md`, the separate [`skill-review` workflow](workflows/skill-review.yml) must also be green.
 2.  **Generated drift understood** — On pull requests, generator drift is informational only. Do not block a good PR solely because canonical artifacts would be regenerated. Also do not accept PRs that directly edit `CATALOG.md`, `skills_index.json`, or `data/*.json`; those files are `main`-owned.
 3.  **Quality Bar** — PR description confirms the [Quality Bar Checklist](.github/PULL_REQUEST_TEMPLATE.md) (metadata, risk label, credits if applicable).
 4.  **Issue link** — If the PR fixes an issue, the PR description should contain `Closes #N` or `Fixes #N` so GitHub auto-closes the issue on merge.
@@ -174,7 +191,7 @@ Use this playbook:
     gh pr reopen <PR_NUMBER>
     ```
 5.  **Approve the newly created fork runs** after reopen. They will usually appear as a fresh pair of `action_required` runs for `Skills Registry CI` and `Skill Review`.
-6.  **Wait for the new checks only.** You may see older failed `pr-policy` runs in the rollup alongside newer green runs. Merge only after the fresh run set for the current PR state is fully green: `pr-policy`, `source-validation`, `artifact-preview`, and `review` when `SKILL.md` changed.
+6.  **Wait for the new checks only.** You may see older failed `pr-policy` runs in the rollup alongside newer green runs. Merge only after the fresh run set for the current PR state is fully green: `pr-policy`, `source-validation`, `artifact-preview`, and `review` when `SKILL.md` changed. `source-validation` now enforces the frozen warning budget and README source-credit coverage for changed skills, so missing `## When to Use` sections, missing README repo credits, or other new warning drift must be fixed before merge.
 7.  **If `gh pr merge` says `Base branch was modified`**, refresh the PR state and retry. This is normal when you are merging a batch and `main` moved between attempts.
 
 **If a PR was closed after local integration (reopen and merge):**
@@ -218,6 +235,12 @@ We used this flow for PRs [#220](https://github.com/sickn33/antigravity-awesome-
     ```
 3.  **Run the Post-Merge Credits Sync below** — this is mandatory after every PR merge, including single-PR merges.
 
+**Maintainer shortcut for batched PRs:**
+
+- Use `npm run merge:batch -- --prs 450,449,446,451` to automate the ordered maintainer flow for multiple PRs. See [docs/maintainers/merge-batch.md](../docs/maintainers/merge-batch.md) for the short usage guide.
+- The script keeps the GitHub-only squash merge rule, handles fork-run approvals and stale PR metadata refresh, waits only on fresh required checks, retries `Base branch was modified`, and runs the mandatory post-merge `sync:contributors` follow-up on `main`.
+- It is intentionally not a conflict resolver. If a PR is conflicting, stop and follow the manual conflict playbook.
+
 ### C. Post-Merge Credits Sync (Mandatory After Every PR Merge)
 
 This section is **not optional**. Every time a PR is merged, you must ensure both README credit surfaces are correct on `main`:
@@ -241,6 +264,7 @@ Do this **immediately after each PR merge**. Do not defer it to release prep.
 3.  **Audit external-source credits for the merged PR**:
     - Read the merged PR description, changed files, linked issues, and any release-note draft text you plan to ship.
     - If the PR added skills, references, or content sourced from an external GitHub repo that is not already credited in `README.md`, add it immediately.
+    - Treat skill frontmatter `source_repo` + `source_type` as the primary source of truth when present.
     - If the repo is from an official organization/project source, place it under `### Official Sources`.
     - If the repo is a non-official ecosystem/community source, place it under `### Community Contributors`.
     - If the PR reveals that a credited repo is dead, renamed, archived, or overstated, fix the README entry in the same follow-up pass instead of leaving stale metadata behind.
@@ -362,6 +386,7 @@ Preflight verification → Changelog → `npm run release:prepare -- X.Y.Z` → 
     npm run release:preflight
     ```
     This now runs the deterministic `sync:release-state` path, refreshes tracked web assets, executes the local test suite, runs the web-app build, and performs `npm pack --dry-run --json` before a release is considered healthy.
+    If `release:preflight` fails on `check:warning-budget`, treat it as a PR-quality failure and fix the new warnings in source rather than bypassing the gate at release time.
     If the installer or packaged runtime code changed, you must also verify that new imports are satisfied by `dependencies` rather than `devDependencies`, and ensure the npm-package/runtime tests cover that path. `npm pack --dry-run` alone will not catch missing runtime deps in a clean `npx` environment.
     Optional diagnostic pass:
     ```bash

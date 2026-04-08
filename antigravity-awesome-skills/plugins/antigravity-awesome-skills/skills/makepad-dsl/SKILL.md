@@ -19,6 +19,12 @@ You are an expert at the Rust `makepad-widgets` crate DSL. Help users by:
 - **Writing code**: Generate DSL code following the patterns below
 - **Answering questions**: Explain DSL syntax, inheritance, property overriding
 
+## When to Use
+
+- You need help with Makepad `live_design!` syntax, object definitions, or inheritance patterns.
+- The task involves widget declarations, property overrides, prototypes, or DSL composition rules.
+- You want Makepad DSL-specific examples rather than generic Rust syntax advice.
+
 ## Documentation
 
 Refer to the local files for detailed documentation:

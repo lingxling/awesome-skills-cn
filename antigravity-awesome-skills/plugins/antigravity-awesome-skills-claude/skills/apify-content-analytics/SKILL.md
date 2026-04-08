@@ -9,6 +9,12 @@ source: community
 
 Track and analyze content performance using Apify Actors to extract engagement metrics from multiple platforms.
 
+## When to Use
+
+- You need engagement, growth, or ROI metrics for posts, reels, videos, ads, or hashtags.
+- The task is to use Apify Actors to collect cross-platform content performance data.
+- You need exported analytics results and a concise interpretation of what content is performing best.
+
 ## Prerequisites
 (No need to check it upfront)
 
