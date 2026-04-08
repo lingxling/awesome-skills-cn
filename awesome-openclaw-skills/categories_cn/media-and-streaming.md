@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**83 个技能**
+**84 个技能**
 
 - [alexa-control](https://clawskills.sh/skills/ignito-pg-alexa-control) - 通过 CLI 控制 Alexa 设备 - 设置闹钟、播放音乐、闪速简报、智能家居命令。
 - [amateur-radio-dx](https://clawskills.sh/skills/capt-marbles-amateur-radio-dx) - 监控 DX 集群以获取稀有电台点、跟踪活跃的 DX 远征队，并获取每日频段活动摘要。
@@ -42,6 +42,7 @@
 - [ham-radio-dx](https://clawskills.sh/skills/capt-marbles-ham-radio-dx) - 监控 DX 集群以获取稀有电台点、跟踪活跃的 DX 远征队，并获取每日频段活动摘要。
 - [insta-cog](https://clawskills.sh/skills/nitishgargiitd-insta-cog) - 从单个提示进行完整视频制作。
 - [instagram-api](https://clawskills.sh/skills/lifeissea-instagram-api) - 使用官方 Meta Graph API 发布到 Instagram（Feed、Story、Reels、Carousel）和 Threads。
+- [jubjub](https://clawskills.sh/skills/aquaflans-jubjub) - Publish to all major media platforms, track cross-platform analytics, and automate on-chain royalty and revenue splits via MCP.
 - [kalshi-agent](https://clawskills.sh/skills/jthomasdevs-kalshi-agent) - Kalshi 预测市场代理 - 通过 Kalshi v2 API 分析市场并执行交易。
 - [lastfm](https://clawskills.sh/skills/gumadeiras-lastfm) - 访问 Last.fm 收听历史、音乐统计。
 - [lb-pocket-tts-skill](https://clawskills.sh/skills/leonaaardob-lb-pocket-tts-skill) - 使用 Kyutai Pocket TTS 从文本生成语音 - 轻量级、CPU 友好、带有语音克隆的流式 TTS。

@@ -9,7 +9,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 使用 `hf --help` 查看可用功能。注意，认证命令现在都在 `hf auth` 下，例如 `hf auth whoami`。
 
-由 `huggingface_hub v1.9.0` 生成。运行 `hf skills add --force` 重新生成。
+由 `huggingface_hub v1.9.1` 生成。运行 `hf skills add --force` 重新生成。
 
 ## 命令
 
