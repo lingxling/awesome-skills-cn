@@ -9,6 +9,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.10.0] - 2026-04-08 - "StyleSeed UI and UX Pack"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release merges PR #479 to add an 11-skill StyleSeed-derived UI and UX pack sourced from `bitjaru/styleseed`. It expands the library with design-aware setup, component and page scaffolding, token management, accessibility review, UX audit flows, and feedback-state guidance, then carries the required README source-credit and maintainer follow-up state on `main`.
+
+## New Skills
+
+- **ui-setup** - interactive design-setup guidance for color, typography, and concept selection before generating the first page.
+- **ui-component** - component generation patterns aligned with shared design rules and visual consistency constraints.
+- **ui-page** - mobile-first page scaffolding guidance for layout structure, content hierarchy, and section composition.
+- **ui-pattern** - reusable UI pattern composition for grids, tables, cards, and similar building blocks.
+- **ui-review** - design-system review guidance for catching inconsistent spacing, typography, and component usage.
+- **ui-tokens** - design-token management guidance for evolving colors, type, spacing, and semantic system values.
+- **ui-a11y** - WCAG 2.2 AA-oriented accessibility review patterns for UI implementation.
+- **ux-flow** - user-flow design guidance for progressive disclosure and information architecture decisions.
+- **ux-audit** - heuristic UX audit workflow based on Nielsen-style evaluation criteria.
+- **ux-copy** - UX microcopy guidance for controls, errors, empty states, and concise interface text.
+- **ux-feedback** - loading, empty, error, and success-state guidance for resilient UI behavior.
+
+## Improvements
+
+- **README source-credit coverage** - keeps `bitjaru/styleseed` credited under community contributors so the merged source metadata and public acknowledgements stay aligned.
+- **Maintainer post-merge hygiene** - records the GitHub-only squash merge path for issue #478 / PR #479 and keeps `main` ready for the release cut immediately after merge.
+
+## Who should care
+
+- **Design-aware frontend builders** get a focused pack for turning UI prompts into more coherent setup, page, component, and pattern guidance.
+- **Teams improving UX quality** get new skills for accessibility review, heuristic audits, flows, microcopy, and feedback states.
+- **Maintainers and source curators** get the merged upstream attribution reflected cleanly in both the README and release trail.
+
+## Credits
+
+- **[@bitjaru](https://github.com/bitjaru)** for opening issue #478 and surfacing the StyleSeed skill pack request.
+- **[bitjaru/styleseed](https://github.com/bitjaru/styleseed)** for the upstream StyleSeed source material reflected in this release.
+
 ## [9.9.0] - 2026-04-07 - "Vibeship Restore and Community Merge Batch"
 
 > Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.

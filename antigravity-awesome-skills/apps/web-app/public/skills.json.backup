@@ -28263,6 +28263,138 @@
     }
   },
   {
+    "id": "ui-a11y",
+    "path": "skills/ui-a11y",
+    "category": "design",
+    "name": "ui-a11y",
+    "description": "Audit a StyleSeed-based component or page for WCAG 2.2 AA issues and apply practical accessibility fixes where the code makes them safe.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ui-component",
+    "path": "skills/ui-component",
+    "category": "design",
+    "name": "ui-component",
+    "description": "Generate a new UI component that follows StyleSeed Toss conventions for structure, tokens, accessibility, and component ergonomics.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ui-page",
+    "path": "skills/ui-page",
+    "category": "design",
+    "name": "ui-page",
+    "description": "Scaffold a new mobile-first page using StyleSeed Toss layout patterns, section rhythm, and existing shell components.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ui-pattern",
+    "path": "skills/ui-pattern",
+    "category": "design",
+    "name": "ui-pattern",
+    "description": "Generate reusable UI patterns such as card sections, grids, lists, forms, and chart wrappers using StyleSeed Toss primitives.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ui-review",
+    "path": "skills/ui-review",
+    "category": "design",
+    "name": "ui-review",
+    "description": "Review UI code for StyleSeed design-system compliance, accessibility, mobile ergonomics, spacing discipline, and implementation quality.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ui-setup",
+    "path": "skills/ui-setup",
+    "category": "design",
+    "name": "ui-setup",
+    "description": "Interactive StyleSeed setup wizard for choosing app type, brand color, visual style, typography, and the first screen scaffold.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "ui-skills",
     "path": "skills/ui-skills",
     "category": "ai-ml",
@@ -28271,6 +28403,28 @@
     "risk": "safe",
     "source": "https://github.com/ibelick/ui-skills",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ui-tokens",
+    "path": "skills/ui-tokens",
+    "category": "design",
+    "name": "ui-tokens",
+    "description": "List, add, and update StyleSeed design tokens while keeping JSON sources, CSS variables, and dark-mode values in sync.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -28625,6 +28779,94 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ux-audit",
+    "path": "skills/ux-audit",
+    "category": "design",
+    "name": "ux-audit",
+    "description": "Audit screens against Nielsen's heuristics and mobile UX best practices using the StyleSeed Toss design language as the implementation context.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ux-copy",
+    "path": "skills/ux-copy",
+    "category": "design",
+    "name": "ux-copy",
+    "description": "Generate UX microcopy in StyleSeed's Toss-inspired voice for buttons, empty states, errors, toasts, confirmations, and form guidance.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ux-feedback",
+    "path": "skills/ux-feedback",
+    "category": "design",
+    "name": "ux-feedback",
+    "description": "Add loading, empty, error, and success feedback states to StyleSeed components and pages with practical mobile-first rules.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "ux-flow",
+    "path": "skills/ux-flow",
+    "category": "design",
+    "name": "ux-flow",
+    "description": "Design user flows and screen structure using StyleSeed UX patterns such as progressive disclosure, hub-and-spoke navigation, and information pyramids.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-08",
     "plugin": {
       "targets": {
         "codex": "supported",

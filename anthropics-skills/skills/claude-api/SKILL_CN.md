@@ -8,6 +8,21 @@ license: 完整条款见 LICENSE.txt
 
 此技能帮助您使用 Claude 构建 LLM 驱动的应用。根据您的需求选择合适的接口，检测项目语言，然后阅读相关的语言特定文档。
 
+## 开始之前
+
+扫描目标文件（或如果没有目标文件，则扫描提示和项目）以查找非 Anthropic 提供商标记 — `import openai`、`from openai`、`langchain_openai`、`OpenAI(`、`gpt-4`、`gpt-5`、文件名如 `agent-openai.py` 或 `*-generic.py`，或任何明确指示保持代码提供商中立的指令。如果找到任何这些，请停止并告诉用户此技能生成 Claude/Anthropic SDK 代码；询问他们是否要将文件切换到 Claude 或想要非 Claude 实现。不要使用 Anthropic SDK 调用编辑非 Anthropic 文件。
+
+## 输出要求
+
+当用户要求您添加、修改或实现 Claude 功能时，您的代码必须通过以下方式之一调用 Claude：
+
+1. **项目语言的官方 Anthropic SDK**（`anthropic`、`@anthropic-ai/sdk`、`com.anthropic.*` 等）。这是项目存在支持的 SDK 时的默认选项。
+2. **原始 HTTP**（`curl`、`requests`、`fetch`、`httpx` 等）—— 仅当用户明确要求 cURL/REST/原始 HTTP、项目是 shell/cURL 项目或语言没有官方 SDK 时使用。
+
+永远不要混合使用两者 — 不要在 Python 或 TypeScript 项目中使用 `requests`/`fetch`，仅仅因为它感觉更轻量。永远不要回退到 OpenAI 兼容的 shim。
+
+**永远不要猜测 SDK 使用方式。** 函数名、类名、命名空间、方法签名和导入路径必须来自明确的文档 — 要么是此技能中的 `{lang}/` 文件，要么是 `shared/live-sources.md` 中列出的官方 SDK 存储库或文档链接。如果技能文件中未明确记录您需要的绑定，请在编写代码之前从 `shared/live-sources.md` WebFetch 相关的 SDK 存储库。不要从 cURL 形状或另一种语言的 SDK 推断 Ruby/Java/Go/PHP/C# API。
+
 ## 默认设置
 
 除非用户另有要求：
@@ -52,16 +67,18 @@ license: 完整条款见 LICENSE.txt
 
 ### 语言特定功能支持
 
-| 语言   | 工具运行器 | Agent SDK | 备注                                 |
-| ---------- | ----------- | --------- | ------------------------------------- |
-| Python     | 是（测试版）  | 是       | 完全支持 — `@beta_tool` 装饰器 |
-| TypeScript | 是（测试版）  | 是       | 完全支持 — `betaZodTool` + Zod    |
-| Java       | 是（测试版）  | 否        | 使用带注释类的测试版工具使用  |
-| Go         | 是（测试版）  | 否        | `toolrunner` 包中的 `BetaToolRunner`  |
-| Ruby       | 是（测试版）  | 否        | 测试版中的 `BaseTool` + `tool_runner`    |
-| cURL       | 不适用         | 不适用       | 原始 HTTP，无 SDK 功能             |
-| C#         | 否          | 否        | 官方 SDK                          |
-| PHP        | 是（测试版）  | 否        | `BetaRunnableTool` + `toolRunner()`   |
+| 语言   | 工具运行器 | 托管 Agents | 备注                                 |
+| ---------- | ----------- | -------------- | ------------------------------------- |
+| Python     | 是（测试版）  | 是（测试版）     | 完全支持 — `@beta_tool` 装饰器 |
+| TypeScript | 是（测试版）  | 是（测试版）     | 完全支持 — `betaZodTool` + Zod    |
+| Java       | 是（测试版）  | 是（测试版）     | 测试版工具使用带注释类  |
+| Go         | 是（测试版）  | 是（测试版）     | `toolrunner` 包中的 `BetaToolRunner`  |
+| Ruby       | 是（测试版）  | 是（测试版）     | 测试版中的 `BaseTool` + `tool_runner`    |
+| C#         | 否          | 否             | 官方 SDK                          |
+| PHP        | 是（测试版）  | 是（测试版）     | `BetaRunnableTool` + `toolRunner()`   |
+| cURL       | 不适用         | 是（测试版）     | 原始 HTTP，无 SDK 功能             |
+
+> **托管 Agents 代码示例**：为 Python、TypeScript、Go、Ruby、PHP、Java 和 cURL 提供了专门的语言特定 README（`{lang}/managed-agents/README.md`、`curl/managed-agents.md`）。阅读您语言的 README 以及语言无关的 `shared/managed-agents-*.md` 概念文件。**Agents 是持久的 — 创建一次，通过 ID 引用。** 存储 `agents.create` 返回的 agent ID 并将其传递给每个后续的 `sessions.create`；不要在请求路径中调用 `agents.create`。Anthropic CLI 是一种从版本控制的 YAML 创建 agents 和环境的便捷方式 — 其 URL 在 `shared/live-sources.md` 中。如果您需要的绑定未在 README 中显示，请从 `shared/live-sources.md` WebFetch 相关条目，而不是猜测。C# 目前没有托管 Agents 支持；使用针对 API 的 cURL 风格原始 HTTP 请求。
 
 ---
 
@@ -75,30 +92,38 @@ license: 完整条款见 LICENSE.txt
 | 批处理或嵌入                  | 单个 LLM 调用 | **Claude API**            | 专用端点                   |
 | 带代码控制逻辑的多步骤管道 | 工作流        | **Claude API + 工具使用** | 您编排循环                |
 | 使用自己的工具的自定义 agent                | Agent           | **Claude API + 工具使用** | 最大灵活性                     |
-| 具有文件/网络/终端访问权限的 AI agent          | Agent           | **Agent SDK**             | 内置工具、安全性和 MCP 支持 |
-| Agentic 编程助手                        | Agent           | **Agent SDK**             | 专为此用例设计              |
-| 需要内置权限和护栏        | Agent           | **Agent SDK**             | 包含安全功能                |
+| 服务器管理的带工作区的有状态 agent          | Agent           | **托管 Agents**        | Anthropic 运行循环并托管工具执行沙箱 |
+| 持久化、版本化的 agent 配置              | Agent           | **托管 Agents**        | Agents 是存储对象；会话固定到版本         |
+| 带文件挂载的长时间运行多轮 agent         | Agent           | **托管 Agents**        | 每会话容器、SSE 事件流、Skills + MCP       |
 
-> **注意：** Agent SDK 适用于您需要内置文件/网络/终端工具、权限和 MCP 的情况。如果您想使用自己的工具构建 agent，Claude API 是正确的选择——使用工具运行器进行自动循环处理，或手动循环进行细粒度控制（审批门、自定义日志、条件执行）。
+> **注意：** 托管 Agents 是当您希望 Anthropic 运行 agent 循环 *并且* 托管工具执行的容器时的正确选择 — 文件操作、bash、代码执行都在每会话工作区中运行。如果您想自己托管计算或运行自己的自定义工具运行时，Claude API + 工具使用是正确的选择 — 使用工具运行器进行自动循环处理，或手动循环进行细粒度控制（审批门、自定义日志、条件执行）。
+
+> **第三方提供商（Amazon Bedrock、Google Vertex AI、Microsoft Foundry）：** 托管 Agents **不可用**于 Bedrock、Vertex 或 Foundry。如果您通过任何第三方提供商部署，请对所有用例使用 **Claude API + 工具使用** — 包括托管 Agents 否则会是推荐表面的情况。
 
 ### 决策树
 
 ```
 您的应用需要什么？
 
+0. 您是否通过 Amazon Bedrock、Google Vertex AI 或 Microsoft Foundry 部署？
+   └── 是 → Claude API（+ 工具使用用于 agents）— 托管 Agents 仅适用于第一方。
+   否 → 继续。
+
 1. 单个 LLM 调用（分类、摘要、提取、问答）
    └── Claude API — 一个请求，一个响应
 
-2. Claude 是否需要读取/写入文件、浏览网页或运行 shell 命令
-   作为其工作的一部分？（不是：您的应用读取文件并将其交给 Claude——
-   Claude 本身是否需要发现和访问文件/网络/shell？）
-   └── 是 → Agent SDK — 内置工具，不要重新实现它们
-       示例："扫描代码库查找 bug"、"总结目录中的每个文件"、"使用子 agent 查找 bug"、"通过网络搜索研究主题"
+2. 您是否希望 Anthropic 运行 agent 循环并托管每会话
+   容器，Claude 在其中执行工具（bash、文件操作、代码）？
+   └── 是 → 托管 Agents — 服务器管理的会话，持久化 agent 配置，
+       SSE 事件流，Skills + MCP，文件挂载。
+       示例："每个任务带工作区的有状态编码 agent"、
+             "向 UI 流式传输事件的长时间运行研究 agent"、
+             "跨多个会话使用的持久化、版本化配置的 agent"
 
 3. 工作流（多步骤、代码编排、使用自己的工具）
    └── Claude API + 工具使用 — 您控制循环
 
-4. 开放式 agent（模型决定自己的轨迹、自己的工具）
+4. 开放式 agent（模型决定自己的轨迹、使用自己的工具、自己托管计算）
    └── Claude API agentic 循环（最大灵活性）
 ```
 
@@ -181,6 +206,30 @@ license: 完整条款见 LICENSE.txt
 
 ---
 
+## 托管 Agents（测试版）
+
+**托管 Agents** 是第三个表面：服务器管理的有状态 agents，带有 Anthropic 托管的工具执行。您创建一个持久化、版本化的 Agent 配置（`POST /v1/agents`），然后启动引用它的会话。每个会话都为 agent 的工作区提供一个容器 — bash、文件操作和代码执行在那里运行；agent 循环本身在 Anthropic 的编排层上运行，并通过工具在容器上操作。会话流式传输事件；您发送消息和工具结果回去。
+
+**托管 Agents 仅适用于第一方。** 它不适用于 Amazon Bedrock、Google Vertex AI 或 Microsoft Foundry。对于第三方提供商上的 agents，请使用 Claude API + 工具使用。
+
+**强制流程：** Agent（一次）→ 会话（每次运行）。`model`/`system`/`tools` 存在于 agent 上，永远不存在于会话上。有关完整阅读指南、测试版标头和陷阱，请参阅 `shared/managed-agents-overview.md`。
+
+**测试版标头：** `managed-agents-2026-04-01` — SDK 会自动为所有 `client.beta.{agents,environments,sessions,vaults}.*` 调用设置此标头。Skills API 使用 `skills-2025-10-02`，Files API 使用 `files-api-2025-04-14`，但除了 `/v1/skills` 和 `/v1/files` 之外的端点，您不需要明确传递这些。
+
+**子命令** — 使用 `/claude-api <subcommand>` 直接调用：
+
+| 子命令 | 操作 |
+|---|---|
+| `managed-agents-onboard` | 引导用户从头设置托管 Agent。**立即阅读 `shared/managed-agents-onboarding.md`** 并按照其访谈脚本执行：心理模型 → 了解或探索分支 → 模板配置 → 会话设置 → 生成代码。不要总结 — 运行访谈。 |
+
+**阅读指南：** 从 `shared/managed-agents-overview.md` 开始，然后阅读主题 `shared/managed-agents-*.md` 文件（核心、环境、工具、事件、客户端模式、入门、API 参考）。对于 Python、TypeScript、Go、Ruby、PHP 和 Java，请阅读 `{lang}/managed-agents/README.md` 获取代码示例。对于 cURL，请阅读 `curl/managed-agents.md`。**Agents 是持久的 — 创建一次，通过 ID 引用。** 存储 `agents.create` 返回的 agent ID 并将其传递给每个后续的 `sessions.create`；不要在请求路径中调用 `agents.create`。Anthropic CLI 是一种从版本控制的 YAML 创建 agents 和环境的便捷方式（URL 在 `shared/live-sources.md` 中）。如果您需要的绑定未在语言 README 中显示，请从 `shared/live-sources.md` WebFetch 相关条目，而不是猜测。C# 目前不支持托管 Agents；使用 `curl/managed-agents.md` 中的原始 HTTP 作为参考。
+
+**当用户想要从头设置托管 Agent 时**（例如 "如何开始"、"引导我创建一个"、"设置新 agent"）：阅读 `shared/managed-agents-onboarding.md` 并运行其访谈 — 与 `managed-agents-onboard` 子命令相同的流程。
+
+**当用户询问 "如何为 X 编写客户端代码" 时：** 参考 `shared/managed-agents-client-patterns.md` — 涵盖无损流重新连接、`processed_at` 排队/处理门、中断、`tool_confirmation` 往返、正确的空闲/终止中断门、空闲后状态竞争、流优先排序、文件挂载陷阱、通过自定义工具保持凭据在主机端等。
+
+---
+
 ## 阅读指南
 
 检测语言后，根据用户需求阅读相关文件：
@@ -202,14 +251,17 @@ license: 完整条款见 LICENSE.txt
 **函数调用 / 工具使用 / agents：**
 → 阅读 `{lang}/claude-api/README.md` + `shared/tool-use-concepts.md` + `{lang}/claude-api/tool-use.md`
 
+**Agent 设计（工具表面、上下文管理、缓存策略）：**
+→ 阅读 `shared/agent-design.md`
+
 **批处理（非延迟敏感）：**
 → 阅读 `{lang}/claude-api/README.md` + `{lang}/claude-api/batches.md`
 
 **跨多个请求的文件上传：**
 → 阅读 `{lang}/claude-api/README.md` + `{lang}/claude-api/files-api.md`
 
-**具有内置工具的 agent（文件/网络/终端）：**
-→ 阅读 `{lang}/agent-sdk/README.md` + `{lang}/agent-sdk/patterns.md`
+**托管 Agents（服务器管理的带工作区的有状态 agents）：**
+→ 阅读 `shared/managed-agents-overview.md` + 其余 `shared/managed-agents-*.md` 文件。对于 Python、TypeScript、Go、Ruby、PHP 和 Java，请阅读 `{lang}/managed-agents/README.md` 获取代码示例。对于 cURL，请阅读 `curl/managed-agents.md`。**Agents 是持久的 — 创建一次，通过 ID 引用。** 存储 `agents.create` 返回的 agent ID 并将其传递给每个后续的 `sessions.create`；不要在请求路径中调用 `agents.create`。Anthropic CLI 是一种从版本控制的 YAML 创建 agents 和环境的便捷方式（URL 在 `shared/live-sources.md` 中）。如果您需要的绑定未在语言 README 中显示，请从 `shared/live-sources.md` WebFetch 相关条目，而不是猜测。C# 目前不支持托管 Agents；使用 `curl/managed-agents.md` 中的原始 HTTP 作为参考。
 
 ### Claude API（完整文件参考）
 
@@ -217,23 +269,18 @@ license: 完整条款见 LICENSE.txt
 
 1. **`{language}/claude-api/README.md`** — **首先阅读此文件。** 安装、快速入门、常见模式、错误处理。
 2. **`shared/tool-use-concepts.md`** — 当用户需要函数调用、代码执行、内存或结构化输出时阅读。涵盖概念基础。
-3. **`{language}/claude-api/tool-use.md`** — 阅读以获取语言特定的工具使用代码示例（工具运行器、手动循环、代码执行、内存、结构化输出）。
-4. **`{language}/claude-api/streaming.md`** — 构建聊天 UI 或增量显示响应的接口时阅读。
-5. **`{language}/claude-api/batches.md`** — 处理许多离线请求（非延迟敏感）时阅读。以 50% 的成本异步运行。
-6. **`{language}/claude-api/files-api.md`** — 在多个请求中发送相同文件而无需重新上传时阅读。
-7. **`shared/prompt-caching.md`** — 添加或优化提示缓存时阅读。涵盖前缀稳定性设计、断点放置和会静默使缓存无效的反模式。
-8. **`shared/error-codes.md`** — 调试 HTTP 错误或实现错误处理时阅读。
-9. **`shared/live-sources.md`** — 用于获取最新官方文档的 WebFetch URL。
+3. **`shared/agent-design.md`** — 设计 agent 时阅读：bash vs. 专用工具、编程工具调用、工具搜索/技能、上下文编辑 vs. 压缩 vs. 内存、缓存原则。
+4. **`{language}/claude-api/tool-use.md`** — 阅读以获取语言特定的工具使用代码示例（工具运行器、手动循环、代码执行、内存、结构化输出）。
+5. **`{language}/claude-api/streaming.md`** — 构建聊天 UI 或增量显示响应的接口时阅读。
+6. **`{language}/claude-api/batches.md`** — 处理许多离线请求（非延迟敏感）时阅读。以 50% 的成本异步运行。
+7. **`{language}/claude-api/files-api.md`** — 在多个请求中发送相同文件而无需重新上传时阅读。
+8. **`shared/prompt-caching.md`** — 添加或优化提示缓存时阅读。涵盖前缀稳定性设计、断点放置和会静默使缓存无效的反模式。
+9. **`shared/error-codes.md`** — 调试 HTTP 错误或实现错误处理时阅读。
+10. **`shared/live-sources.md`** — 用于获取最新官方文档的 WebFetch URL。
 
 > **注意：** 对于 Java、Go、Ruby、C#、PHP 和 cURL——这些各有一个文件涵盖所有基础知识。阅读该文件以及根据需要阅读 `shared/tool-use-concepts.md` 和 `shared/error-codes.md`。
 
-### Agent SDK
-
-阅读**语言特定的 Agent SDK 文件夹**（`{language}/agent-sdk/`）。Agent SDK 仅适用于 **Python 和 TypeScript**。
-
-1. **`{language}/agent-sdk/README.md`** — 安装、快速入门、内置工具、权限、MCP、钩子。
-2. **`{language}/agent-sdk/patterns.md`** — 自定义工具、钩子、子 agent、MCP 集成、会话恢复。
-3. **`shared/live-sources.md`** — 用于当前 Agent SDK 文档的 WebFetch URL。
+> **注意：** 对于托管 Agents 文件参考，请参阅上面的 `## 托管 Agents（测试版）` 部分 — 它列出了所有 `shared/managed-agents-*.md` 文件和语言特定的 README。
 
 ---
 

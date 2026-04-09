@@ -9,7 +9,7 @@ The Hugging Face Hub CLI tool `hf` is available. IMPORTANT: The `hf` command rep
 
 Use `hf --help` to view available functions. Note that auth commands are now all under `hf auth` e.g. `hf auth whoami`.
 
-Generated with `huggingface_hub v1.9.1`. Run `hf skills add --force` to regenerate.
+Generated with `huggingface_hub v1.10.0`. Run `hf skills add --force` to regenerate.
 
 ## Commands
 
@@ -30,7 +30,7 @@ Generated with `huggingface_hub v1.9.1`. Run `hf skills add --force` to regenera
 
 ### `hf buckets` — Commands to interact with buckets.
 
-- `hf buckets cp SRC` — Copy a single file to or from a bucket. `[--quiet]`
+- `hf buckets cp SRC` — Copy files to or from buckets. `[--quiet]`
 - `hf buckets create BUCKET_ID` — Create a new bucket. `[--private --exist-ok --quiet]`
 - `hf buckets delete BUCKET_ID` — Delete a bucket. `[--yes --missing-ok --quiet]`
 - `hf buckets info BUCKET_ID` — Get info about a bucket. `[--quiet]`

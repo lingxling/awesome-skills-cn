@@ -9,7 +9,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 使用 `hf --help` 查看可用功能。注意，认证命令现在都在 `hf auth` 下，例如 `hf auth whoami`。
 
-由 `huggingface_hub v1.9.1` 生成。运行 `hf skills add --force` 重新生成。
+由 `huggingface_hub v1.10.0` 生成。运行 `hf skills add --force` 重新生成。
 
 ## 命令
 
@@ -60,8 +60,8 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 ### `hf datasets` — 与 Hub 上的数据集交互。
 
 - `hf datasets info DATASET_ID` — 获取 Hub 上数据集的信息。`[--revision TEXT --expand TEXT --format CHOICE]`
-- `hf datasets list` — 列出 Hub 上的数据集。`[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
-- `hf datasets parquet DATASET_ID` — 列出数据集可用的 parquet 文件 URL。`[--subset TEXT --split TEXT --format CHOICE --quiet]`
+- `hf datasets list` — 列出 Hub 上的数据集。`[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE]`
+- `hf datasets parquet DATASET_ID` — 列出数据集可用的 parquet 文件 URL。`[--subset TEXT --split TEXT --format CHOICE]`
 - `hf datasets sql SQL` — 使用 DuckDB 对数据集 parquet URL 执行原始 SQL 查询。`[--format CHOICE]`
 
 ### `hf discussions` — 管理 Hub 上的讨论和拉取请求。
@@ -118,14 +118,14 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 ### `hf models` — 与 Hub 上的模型交互。
 
 - `hf models info MODEL_ID` — 获取 Hub 上模型的信息。`[--revision TEXT --expand TEXT --format CHOICE]`
-- `hf models list` — 列出 Hub 上的模型。`[--search TEXT --author TEXT --filter TEXT --num-parameters TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
+- `hf models list` — 列出 Hub 上的模型。`[--search TEXT --author TEXT --filter TEXT --num-parameters TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE]`
 
 ### `hf papers` — 与 Hub 上的论文交互。
 
 - `hf papers info PAPER_ID` — 获取 Hub 上论文的信息。`[--format CHOICE]`
-- `hf papers list` — 列出 Hub 上的每日论文。`[--date TEXT --week TEXT --month TEXT --submitter TEXT --sort CHOICE --limit INTEGER --format CHOICE --quiet]`
+- `hf papers list` — 列出 Hub 上的每日论文。`[--date TEXT --week TEXT --month TEXT --submitter TEXT --sort CHOICE --limit INTEGER --format CHOICE]`
 - `hf papers read PAPER_ID` — 以 markdown 格式阅读论文。
-- `hf papers search QUERY` — 在 Hub 上搜索论文。`[--limit INTEGER --format CHOICE --quiet]`
+- `hf papers search QUERY` — 在 Hub 上搜索论文。`[--limit INTEGER --format CHOICE]`
 
 ### `hf repos` — 管理 Hub 上的仓库。
 
@@ -152,7 +152,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 - `hf spaces dev-mode SPACE_ID` — 在 Space 上启用或禁用开发模式。`[--stop]`
 - `hf spaces hot-reload SPACE_ID` — 热重载 Space 的任何 Python 文件，无需完全重建 + 重启。`[--local-file TEXT --skip-checks --skip-summary]`
 - `hf spaces info SPACE_ID` — 获取 Hub 上 space 的信息。`[--revision TEXT --expand TEXT --format CHOICE]`
-- `hf spaces list` — 列出 Hub 上的 spaces。`[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE --quiet]`
+- `hf spaces list` — 列出 Hub 上的 spaces。`[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE]`
 
 ### `hf webhooks` — 管理 Hub 上的 webhook。
 

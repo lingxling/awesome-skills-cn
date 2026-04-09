@@ -420,6 +420,26 @@ SFTConfig(
 
 **超时后：** 作业立即终止，所有未保存的进度丢失，必须从头开始重新启动
 
+## 选择基础模型（模型选择）
+
+**根据任务类型或基准测试结果识别要训练的模型。**
+
+使用 `scripts/hf_benchmarks.py` 识别特定任务的顶级模型。这有助于用户选择模型作为训练的基础，同时考虑大小和硬件约束。
+
+```bash
+# 获取 benchmarks 命令的帮助：
+uv run scripts/hf_benchmarks.py --help
+```
+
+### 示例 - 选择 OCR 基础模型
+```bash
+# 搜索名称包含文本 `ocr` 的基准测试
+uv run scripts/hf_benchmarks.py search --query ocr
+
+# 获取 allenai/olmOCR-bench 基准测试的排名排行榜
+uv run scripts/hf_benchmarks.py leaderboard allenai/olmOCR-bench
+```
+
 ## 成本估算
 
 **当使用已知参数规划作业时，提供成本估算。** 使用 `scripts/estimate_cost.py`：
@@ -689,6 +709,7 @@ hf_jobs("uv", {
 - `scripts/unsloth_sft_example.py` - Unsloth 文本 LLM 训练模板（更快，更少 VRAM）
 - `scripts/estimate_cost.py` - 估计时间和成本（在适当情况下提供）
 - `scripts/convert_to_gguf.py` - 完整的 GGUF 转换脚本
+- `scripts/hf_benchmarks.py` - 通过任务、别名或自由文本搜索基准测试结果和排行榜。
 
 ### 外部脚本
 - [数据集检查器](https://huggingface.co/datasets/mcp-tools/skills/raw/main/dataset_inspector.py) - 在训练前验证数据集格式（通过 `uv run` 或 `hf_jobs` 使用）

@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1381,
+  "total": 1392,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -31548,6 +31548,174 @@
       "path": "skills/typescript-pro/SKILL.md"
     },
     {
+      "id": "ui-a11y",
+      "name": "ui-a11y",
+      "description": "Audit a StyleSeed-based component or page for WCAG 2.2 AA issues and apply practical accessibility fixes where the code makes them safe.",
+      "category": "general",
+      "tags": [
+        "ui",
+        "accessibility",
+        "wcag",
+        "audit",
+        "styleseed"
+      ],
+      "triggers": [
+        "ui",
+        "accessibility",
+        "wcag",
+        "audit",
+        "styleseed",
+        "a11y",
+        "component",
+        "page",
+        "aa",
+        "issues",
+        "apply",
+        "practical"
+      ],
+      "path": "skills/ui-a11y/SKILL.md"
+    },
+    {
+      "id": "ui-component",
+      "name": "ui-component",
+      "description": "Generate a new UI component that follows StyleSeed Toss conventions for structure, tokens, accessibility, and component ergonomics.",
+      "category": "development",
+      "tags": [
+        "ui",
+        "components",
+        "design-system",
+        "frontend",
+        "styleseed"
+      ],
+      "triggers": [
+        "ui",
+        "components",
+        "design-system",
+        "frontend",
+        "styleseed",
+        "component",
+        "generate",
+        "new",
+        "follows",
+        "toss",
+        "conventions",
+        "structure"
+      ],
+      "path": "skills/ui-component/SKILL.md"
+    },
+    {
+      "id": "ui-page",
+      "name": "ui-page",
+      "description": "Scaffold a new mobile-first page using StyleSeed Toss layout patterns, section rhythm, and existing shell components.",
+      "category": "development",
+      "tags": [
+        "ui",
+        "page-design",
+        "mobile",
+        "layout",
+        "styleseed"
+      ],
+      "triggers": [
+        "ui",
+        "page-design",
+        "mobile",
+        "layout",
+        "styleseed",
+        "page",
+        "scaffold",
+        "new",
+        "first",
+        "toss",
+        "section",
+        "rhythm"
+      ],
+      "path": "skills/ui-page/SKILL.md"
+    },
+    {
+      "id": "ui-pattern",
+      "name": "ui-pattern",
+      "description": "Generate reusable UI patterns such as card sections, grids, lists, forms, and chart wrappers using StyleSeed Toss primitives.",
+      "category": "architecture",
+      "tags": [
+        "ui",
+        "patterns",
+        "design-system",
+        "reuse",
+        "styleseed"
+      ],
+      "triggers": [
+        "ui",
+        "patterns",
+        "design-system",
+        "reuse",
+        "styleseed",
+        "generate",
+        "reusable",
+        "such",
+        "card",
+        "sections",
+        "grids",
+        "lists"
+      ],
+      "path": "skills/ui-pattern/SKILL.md"
+    },
+    {
+      "id": "ui-review",
+      "name": "ui-review",
+      "description": "Review UI code for StyleSeed design-system compliance, accessibility, mobile ergonomics, spacing discipline, and implementation quality.",
+      "category": "security",
+      "tags": [
+        "ui",
+        "review",
+        "design-system",
+        "accessibility",
+        "styleseed"
+      ],
+      "triggers": [
+        "ui",
+        "review",
+        "design-system",
+        "accessibility",
+        "styleseed",
+        "code",
+        "compliance",
+        "mobile",
+        "ergonomics",
+        "spacing",
+        "discipline",
+        "quality"
+      ],
+      "path": "skills/ui-review/SKILL.md"
+    },
+    {
+      "id": "ui-setup",
+      "name": "ui-setup",
+      "description": "Interactive StyleSeed setup wizard for choosing app type, brand color, visual style, typography, and the first screen scaffold.",
+      "category": "development",
+      "tags": [
+        "ui",
+        "design-system",
+        "setup",
+        "frontend",
+        "styleseed"
+      ],
+      "triggers": [
+        "ui",
+        "design-system",
+        "setup",
+        "frontend",
+        "styleseed",
+        "interactive",
+        "wizard",
+        "choosing",
+        "app",
+        "type",
+        "brand",
+        "color"
+      ],
+      "path": "skills/ui-setup/SKILL.md"
+    },
+    {
       "id": "ui-skills",
       "name": "ui-skills",
       "description": "Opinionated, evolving constraints to guide agents when building interfaces",
@@ -31567,6 +31735,34 @@
         "interfaces"
       ],
       "path": "skills/ui-skills/SKILL.md"
+    },
+    {
+      "id": "ui-tokens",
+      "name": "ui-tokens",
+      "description": "List, add, and update StyleSeed design tokens while keeping JSON sources, CSS variables, and dark-mode values in sync.",
+      "category": "general",
+      "tags": [
+        "ui",
+        "tokens",
+        "design-system",
+        "theming",
+        "styleseed"
+      ],
+      "triggers": [
+        "ui",
+        "tokens",
+        "design-system",
+        "theming",
+        "styleseed",
+        "list",
+        "add",
+        "update",
+        "while",
+        "keeping",
+        "json",
+        "sources"
+      ],
+      "path": "skills/ui-tokens/SKILL.md"
     },
     {
       "id": "ui-ux-designer",
@@ -31959,6 +32155,118 @@
         "dependency"
       ],
       "path": "skills/uv-package-manager/SKILL.md"
+    },
+    {
+      "id": "ux-audit",
+      "name": "ux-audit",
+      "description": "Audit screens against Nielsen's heuristics and mobile UX best practices using the StyleSeed Toss design language as the implementation context.",
+      "category": "development",
+      "tags": [
+        "ux",
+        "audit",
+        "usability",
+        "mobile",
+        "styleseed"
+      ],
+      "triggers": [
+        "ux",
+        "audit",
+        "usability",
+        "mobile",
+        "styleseed",
+        "screens",
+        "against",
+        "nielsen",
+        "heuristics",
+        "toss",
+        "language",
+        "context"
+      ],
+      "path": "skills/ux-audit/SKILL.md"
+    },
+    {
+      "id": "ux-copy",
+      "name": "ux-copy",
+      "description": "Generate UX microcopy in StyleSeed's Toss-inspired voice for buttons, empty states, errors, toasts, confirmations, and form guidance.",
+      "category": "development",
+      "tags": [
+        "ux",
+        "copywriting",
+        "microcopy",
+        "frontend",
+        "styleseed"
+      ],
+      "triggers": [
+        "ux",
+        "copywriting",
+        "microcopy",
+        "frontend",
+        "styleseed",
+        "copy",
+        "generate",
+        "toss",
+        "inspired",
+        "voice",
+        "buttons",
+        "empty"
+      ],
+      "path": "skills/ux-copy/SKILL.md"
+    },
+    {
+      "id": "ux-feedback",
+      "name": "ux-feedback",
+      "description": "Add loading, empty, error, and success feedback states to StyleSeed components and pages with practical mobile-first rules.",
+      "category": "development",
+      "tags": [
+        "ux",
+        "states",
+        "loading",
+        "error-handling",
+        "styleseed"
+      ],
+      "triggers": [
+        "ux",
+        "states",
+        "loading",
+        "error-handling",
+        "styleseed",
+        "feedback",
+        "add",
+        "empty",
+        "error",
+        "success",
+        "components",
+        "pages"
+      ],
+      "path": "skills/ux-feedback/SKILL.md"
+    },
+    {
+      "id": "ux-flow",
+      "name": "ux-flow",
+      "description": "Design user flows and screen structure using StyleSeed UX patterns such as progressive disclosure, hub-and-spoke navigation, and information pyramids.",
+      "category": "architecture",
+      "tags": [
+        "ux",
+        "flows",
+        "navigation",
+        "product-design",
+        "styleseed"
+      ],
+      "triggers": [
+        "ux",
+        "flows",
+        "navigation",
+        "product-design",
+        "styleseed",
+        "flow",
+        "user",
+        "screen",
+        "structure",
+        "such",
+        "progressive",
+        "disclosure"
+      ],
+      "path": "skills/ux-flow/SKILL.md"
     },
     {
       "id": "ux-persuasion-engineer",

@@ -2,9 +2,9 @@
 
 Generated at: 2026-02-08T00:00:00.000Z
 
-Total skills: 1381
+Total skills: 1392
 
-## architecture (91)
+## architecture (93)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -91,8 +91,10 @@ Total skills: 1381
 | `testing-patterns` | Jest testing patterns, factory functions, mocking strategies, and TDD workflow. Use when writing unit tests, creating test factories, or following TDD red-gr... |  | testing, jest, factory, functions, mocking, tdd, writing, unit, tests, creating, test, factories |
 | `threejs-loaders` | Three.js asset loading - GLTF, textures, images, models, async patterns. Use when loading 3D models, textures, HDR environments, or managing loading progress. | threejs, loaders | threejs, loaders, three, js, asset, loading, gltf, textures, images, models, async, 3d |
 | `tool-design` | Build tools that agents can use effectively, including architectural reduction patterns. Use when creating new tools for agent systems, debugging tool-relate... |  | agents, effectively, including, architectural, reduction, creating, new, agent, debugging, related, failures, misuse |
+| `ui-pattern` | Generate reusable UI patterns such as card sections, grids, lists, forms, and chart wrappers using StyleSeed Toss primitives. | ui, patterns, design-system, reuse, styleseed | ui, patterns, design-system, reuse, styleseed, generate, reusable, such, card, sections, grids, lists |
 | `uncle-bob-craft` | Use when performing code review, writing or refactoring code, or discussing architecture; complements clean-code and does not replace project linter/formatter. | clean-code, clean-architecture, solid, code-review, craftsmanship, uncle-bob | clean-code, clean-architecture, solid, code-review, craftsmanship, uncle-bob, uncle, bob, craft, performing, code, review |
 | `unreal-engine-cpp-pro` | Expert guide for Unreal Engine 5.x C++ development, covering UObject hygiene, performance patterns, and best practices. | unreal, engine, cpp | unreal, engine, cpp, pro, development, covering, uobject, hygiene, performance |
+| `ux-flow` | Design user flows and screen structure using StyleSeed UX patterns such as progressive disclosure, hub-and-spoke navigation, and information pyramids. | ux, flows, navigation, product-design, styleseed | ux, flows, navigation, product-design, styleseed, flow, user, screen, structure, such, progressive, disclosure |
 | `wcag-audit-patterns` | Comprehensive guide to auditing web content against WCAG 2.2 guidelines with actionable remediation strategies. | wcag, audit | wcag, audit, auditing, web, content, against, guidelines, actionable, remediation |
 | `web3-testing` | Master comprehensive testing strategies for smart contracts using Hardhat, Foundry, and advanced testing patterns. | web3 | web3, testing, smart, contracts, hardhat, foundry |
 | `wordpress-theme-development` | WordPress theme development workflow covering theme architecture, template hierarchy, custom post types, block editor support, responsive design, and WordPre... | wordpress, theme | wordpress, theme, development, covering, architecture, hierarchy, custom, post, types, block, editor, responsive |
@@ -448,7 +450,7 @@ Total skills: 1381
 | `yes-md` | 6-layer AI governance: safety gates, evidence-based debugging, anti-slack detection, and machine-enforced hooks. Makes AI safe, thorough, and honest. | yes, md | yes, md, layer, ai, governance, safety, gates, evidence, debugging, anti, slack, detection |
 | `youtube-automation` | Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools firs... | youtube | youtube, automation, automate, tasks, via, rube, mcp, composio, upload, videos, playlists, search |
 
-## development (190)
+## development (196)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -636,14 +638,20 @@ Total skills: 1381
 | `typescript-advanced-types` | Comprehensive guidance for mastering TypeScript's advanced type system including generics, conditional types, mapped types, template literal types, and utili... | typescript, advanced, types | typescript, advanced, types, guidance, mastering, type, including, generics, conditional, mapped, literal, utility |
 | `typescript-expert` | TypeScript and JavaScript expert with deep knowledge of type-level programming, performance optimization, monorepo management, migration strategies, and mode... | typescript | typescript, javascript, deep, knowledge, type, level, programming, performance, optimization, monorepo, migration, tooling |
 | `typescript-pro` | Master TypeScript with advanced types, generics, and strict type safety. Handles complex type systems, decorators, and enterprise-grade patterns. | typescript | typescript, pro, types, generics, strict, type, safety, complex, decorators, enterprise, grade |
+| `ui-component` | Generate a new UI component that follows StyleSeed Toss conventions for structure, tokens, accessibility, and component ergonomics. | ui, components, design-system, frontend, styleseed | ui, components, design-system, frontend, styleseed, component, generate, new, follows, toss, conventions, structure |
+| `ui-page` | Scaffold a new mobile-first page using StyleSeed Toss layout patterns, section rhythm, and existing shell components. | ui, page-design, mobile, layout, styleseed | ui, page-design, mobile, layout, styleseed, page, scaffold, new, first, toss, section, rhythm |
+| `ui-setup` | Interactive StyleSeed setup wizard for choosing app type, brand color, visual style, typography, and the first screen scaffold. | ui, design-system, setup, frontend, styleseed | ui, design-system, setup, frontend, styleseed, interactive, wizard, choosing, app, type, brand, color |
 | `ui-ux-pro-max` | Comprehensive design guide for web and mobile applications. Use when designing new UI components or pages, choosing color palettes and typography, or reviewi... | ui, ux, max | ui, ux, max, pro, web, mobile, applications, designing, new, components, pages, choosing |
 | `uv-package-manager` | Comprehensive guide to using uv, an extremely fast Python package installer and resolver written in Rust, for modern Python project management and dependency... | uv, package, manager | uv, package, manager, extremely, fast, python, installer, resolver, written, rust, dependency |
+| `ux-audit` | Audit screens against Nielsen's heuristics and mobile UX best practices using the StyleSeed Toss design language as the implementation context. | ux, audit, usability, mobile, styleseed | ux, audit, usability, mobile, styleseed, screens, against, nielsen, heuristics, toss, language, context |
+| `ux-copy` | Generate UX microcopy in StyleSeed's Toss-inspired voice for buttons, empty states, errors, toasts, confirmations, and form guidance. | ux, copywriting, microcopy, frontend, styleseed | ux, copywriting, microcopy, frontend, styleseed, copy, generate, toss, inspired, voice, buttons, empty |
+| `ux-feedback` | Add loading, empty, error, and success feedback states to StyleSeed components and pages with practical mobile-first rules. | ux, states, loading, error-handling, styleseed | ux, states, loading, error-handling, styleseed, feedback, add, empty, error, success, components, pages |
 | `viral-generator-builder` | Expert in building shareable generator tools that go viral - name generators, quiz makers, avatar creators, personality tests, and calculator tools. Covers t... | viral, generator, builder | viral, generator, builder, building, shareable, go, name, generators, quiz, makers, avatar, creators |
 | `webapp-testing` | To test local web applications, write native Python Playwright scripts. | webapp | webapp, testing, test, local, web, applications, write, native, python, playwright, scripts |
 | `zod-validation-expert` | Expert in Zod — TypeScript-first schema validation. Covers parsing, custom errors, refinements, type inference, and integration with React Hook Form, Next.js... | zod, validation | zod, validation, typescript, first, schema, covers, parsing, custom, errors, refinements, type, inference |
 | `zustand-store-ts` | Create Zustand stores following established patterns with proper TypeScript types and middleware. | zustand, store, ts | zustand, store, ts, stores, following, established, proper, typescript, types, middleware |
 
-## general (338)
+## general (340)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -955,7 +963,9 @@ Total skills: 1381
 | `tool-use-guardian` | FREE — Intelligent tool-call reliability wrapper. Monitors, retries, fixes, and learns from tool failures. Auto-recovers from truncated JSON, timeouts, rate ... | reliability, tool-use, error-handling, retries, recovery, agent-infrastructure | reliability, tool-use, error-handling, retries, recovery, agent-infrastructure, guardian, free, intelligent, call, wrapper, monitors |
 | `turborepo-caching` | Configure Turborepo for efficient monorepo builds with local and remote caching. Use when setting up Turborepo, optimizing build pipelines, or implementing d... | turborepo, caching | turborepo, caching, configure, efficient, monorepo, local, remote, setting, up, optimizing, pipelines, implementing |
 | `tutorial-engineer` | Creates step-by-step tutorials and educational content from code. Transforms complex concepts into progressive learning experiences with hands-on examples. | tutorial | tutorial, engineer, creates, step, tutorials, educational, content, code, transforms, complex, concepts, progressive |
+| `ui-a11y` | Audit a StyleSeed-based component or page for WCAG 2.2 AA issues and apply practical accessibility fixes where the code makes them safe. | ui, accessibility, wcag, audit, styleseed | ui, accessibility, wcag, audit, styleseed, a11y, component, page, aa, issues, apply, practical |
 | `ui-skills` | Opinionated, evolving constraints to guide agents when building interfaces | ui, skills | ui, skills, opinionated, evolving, constraints, agents, building, interfaces |
+| `ui-tokens` | List, add, and update StyleSeed design tokens while keeping JSON sources, CSS variables, and dark-mode values in sync. | ui, tokens, design-system, theming, styleseed | ui, tokens, design-system, theming, styleseed, list, add, update, while, keeping, json, sources |
 | `ui-ux-designer` | Create interface designs, wireframes, and design systems. Masters user research, accessibility standards, and modern design tools. | ui, ux, designer | ui, ux, designer, interface, designs, wireframes, masters, user, research, accessibility, standards |
 | `unsplash-integration` | Integration skill for searching and fetching high-quality, free-to-use professional photography from Unsplash. | unsplash, integration | unsplash, integration, skill, searching, fetching, high, quality, free, professional, photography |
 | `upgrading-expo` | Upgrade Expo SDK versions | upgrading, expo | upgrading, expo, upgrade, sdk, versions |
@@ -1115,7 +1125,7 @@ Total skills: 1381
 | `workflow-automation` | Workflow automation is the infrastructure that makes AI agents reliable. Without durable execution, a network hiccup during a 10-step payment flow means lost... |  | automation, infrastructure, makes, ai, agents, reliable, without, durable, execution, network, hiccup, during |
 | `x-twitter-scraper` | X (Twitter) data platform skill — tweet search, user lookup, follower extraction, engagement metrics, giveaway draws, monitoring, webhooks, 19 extraction too... | twitter, x-api, scraping, mcp, social-media, data-extraction, giveaway, monitoring, webhooks | twitter, x-api, scraping, mcp, social-media, data-extraction, giveaway, monitoring, webhooks, scraper, data, platform |
 
-## security (170)
+## security (171)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -1275,6 +1285,7 @@ Total skills: 1381
 | `threat-modeling-expert` | Expert in threat modeling methodologies, security architecture review, and risk assessment. Masters STRIDE, PASTA, attack trees, and security requirement ext... | threat, modeling | threat, modeling, methodologies, security, architecture, review, risk, assessment, masters, stride, pasta, attack |
 | `top-web-vulnerabilities` | Provide a comprehensive, structured reference for the 100 most critical web application vulnerabilities organized by category. This skill enables systematic ... | top, web, vulnerabilities | top, web, vulnerabilities, provide, structured, reference, 100, most, critical, application, organized, category |
 | `trust-calibrator` | One sentence - what this skill does and when to invoke it | trust, calibrator | trust, calibrator, one, sentence, what, skill, does, invoke |
+| `ui-review` | Review UI code for StyleSeed design-system compliance, accessibility, mobile ergonomics, spacing discipline, and implementation quality. | ui, review, design-system, accessibility, styleseed | ui, review, design-system, accessibility, styleseed, code, compliance, mobile, ergonomics, spacing, discipline, quality |
 | `ui-visual-validator` | Rigorous visual validation expert specializing in UI testing, design system compliance, and accessibility verification. | ui, visual, validator | ui, visual, validator, rigorous, validation, specializing, testing, compliance, accessibility, verification |
 | `using-neon` | Neon is a serverless Postgres platform that separates compute and storage to offer autoscaling, branching, instant restore, and scale-to-zero. It's fully com... | using, neon | using, neon, serverless, postgres, platform, separates, compute, storage, offer, autoscaling, branching, instant |
 | `variant-analysis` | Find similar vulnerabilities and bugs across codebases using pattern-based analysis. Use when hunting bug variants, building CodeQL/Semgrep queries, analyzin... | variant | variant, analysis, find, similar, vulnerabilities, bugs, codebases, hunting, bug, variants, building, codeql |

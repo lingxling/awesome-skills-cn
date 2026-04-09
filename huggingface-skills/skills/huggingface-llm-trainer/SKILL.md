@@ -1,6 +1,6 @@
 ---
 name: huggingface-llm-trainer
-description: This skill should be used when users want to train or fine-tune language models using TRL (Transformer Reinforcement Learning) on Hugging Face Jobs infrastructure. Covers SFT, DPO, GRPO and reward modeling training methods, plus GGUF conversion for local deployment. Includes guidance on the TRL Jobs package, UV scripts with PEP 723 format, dataset preparation and validation, hardware selection, cost estimation, Trackio monitoring, Hub authentication, and model persistence. Should be invoked for tasks involving cloud GPU training, GGUF conversion, or when users mention training on Hugging Face Jobs without local GPU setup.
+description: Train or fine-tune language and vision models using TRL (Transformer Reinforcement Learning) or Unsloth with Hugging Face Jobs infrastructure. Covers SFT, DPO, GRPO and reward modeling training methods, plus GGUF conversion for local deployment. Includes guidance on the TRL Jobs package, UV scripts with PEP 723 format, dataset preparation and validation, hardware selection, cost estimation, Trackio monitoring, Hub authentication, model selection/leaderboards and model persistence. Use for tasks involving cloud GPU training, GGUF conversion, or when users mention training on Hugging Face Jobs without local GPU setup.
 license: Complete terms in LICENSE.txt
 ---
 
@@ -420,6 +420,26 @@ Before submitting:
 
 **On timeout:** Job killed immediately, all unsaved progress lost, must restart from beginning
 
+## Choose a Base Model (Model Selection)
+
+**Identify models to train based on task type or benchmark results.**
+
+Use `scripts/hf_benchmarks.py` to identify top-performing models for specific tasks. This helps the user select a model as the base for training, whilst keeping size and hardware constraints in mind.
+
+```bash
+# Get help on the benchmarks command:
+uv run scripts/hf_benchmarks.py --help
+```
+
+### Example -- choosing an OCR base model
+```bash
+# Search for benchmarks containing whose name contains the text `ocr`
+uv run scripts/hf_benchmarks.py search --query ocr
+
+# Get the ranked leaderboard for the allenai/olmOCR-bench benchmark 
+uv run scripts/hf_benchmarks.py leaderboard allenai/olmOCR-bench
+```
+
 ## Cost Estimation
 
 **Offer to estimate cost when planning jobs with known parameters.** Use `scripts/estimate_cost.py`:
@@ -690,6 +710,7 @@ Add to PEP 723 header:
 - `scripts/unsloth_sft_example.py` - Unsloth text LLM training template (faster, less VRAM)
 - `scripts/estimate_cost.py` - Estimate time and cost (offer when appropriate)
 - `scripts/convert_to_gguf.py` - Complete GGUF conversion script
+- `scripts/hf_benchmarks.py` - Search for benchmark results and leaderboards by task, alias or free text.
 
 ### External Scripts
 - [Dataset Inspector](https://huggingface.co/datasets/mcp-tools/skills/raw/main/dataset_inspector.py) - Validate dataset format before training (use via `uv run` or `hf_jobs`)

@@ -308,9 +308,16 @@
         "typescript-advanced-types",
         "typescript-expert",
         "typescript-pro",
+        "ui-component",
+        "ui-page",
+        "ui-review",
+        "ui-setup",
         "ui-ux-pro-max",
         "uniprot-database",
         "uv-package-manager",
+        "ux-audit",
+        "ux-copy",
+        "ux-feedback",
         "vercel-ai-sdk-expert",
         "viral-generator-builder",
         "voice-ai-development",
@@ -457,6 +464,7 @@
         "threat-mitigation-mapping",
         "threat-modeling-expert",
         "top-web-vulnerabilities",
+        "ui-review",
         "ui-visual-validator",
         "variant-analysis",
         "varlock-claude-skill",
@@ -1191,8 +1199,12 @@
         "swiftui-performance-audit",
         "swiftui-ui-patterns",
         "swiftui-view-refactor",
+        "ui-page",
+        "ui-review",
         "ui-ux-pro-max",
-        "upgrading-expo"
+        "upgrading-expo",
+        "ux-audit",
+        "ux-feedback"
       ]
     },
     "seo-core": {
