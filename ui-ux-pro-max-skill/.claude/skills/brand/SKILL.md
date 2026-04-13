@@ -1,10 +1,6 @@
 ---
-name: ckm:brand
-description: Brand voice, visual identity, messaging frameworks, asset management, brand consistency. Activate for branded content, tone of voice, marketing assets, brand compliance, style guides.
-argument-hint: "[update|review|create] [args]"
-metadata:
-  author: claudekit
-  version: "1.0.0"
+name: brand
+description: "Manage brand voice, visual identity, messaging frameworks, asset organization, and brand consistency. Use when defining brand voice and tone, creating visual identity standards, building messaging frameworks, auditing brand consistency, organizing and validating assets, or managing color palettes and typography specifications."
 ---
 
 # Brand

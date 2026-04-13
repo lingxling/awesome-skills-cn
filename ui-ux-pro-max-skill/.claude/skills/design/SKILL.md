@@ -1,11 +1,7 @@
 ---
-name: ckm:design
-description: "Comprehensive design skill: brand identity, design tokens, UI styling, logo generation (55 styles, Gemini AI), corporate identity program (50 deliverables, CIP mockups), HTML presentations (Chart.js), banner design (22 styles, social/ads/web/print), icon design (15 styles, SVG, Gemini 3.1 Pro), social photos (HTML→screenshot, multi-platform). Actions: design logo, create CIP, generate mockups, build slides, design banner, generate icon, create social photos, social media images, brand identity, design system. Platforms: Facebook, Twitter, LinkedIn, YouTube, Instagram, Pinterest, TikTok, Threads, Google Ads."
-argument-hint: "[design-type] [context]"
+name: design
+description: "Unified design skill for brand identity, design tokens, UI styling, logo generation, corporate identity programs, HTML presentations, banner design, icon design, and social photos. Use when designing logos (55+ styles via Gemini AI), creating CIP deliverables and mockups, building pitch decks with Chart.js, designing banners for social media and ads, generating SVG icons, or creating social media images for Instagram, Facebook, LinkedIn, Twitter, YouTube, Pinterest, and TikTok."
 license: MIT
-metadata:
-  author: claudekit
-  version: "2.1.0"
 ---
 
 # Design
@@ -245,14 +241,17 @@ Load `references/social-photos-design.md` for sizes, templates, best practices.
 ### Complete Brand Package
 
 1. **Logo** → `scripts/logo/generate.py` → Generate logo variants
-2. **CIP** → `scripts/cip/generate.py --logo ...` → Create deliverable mockups
-3. **Presentation** → Load `references/slides-create.md` → Build pitch deck
+2. **Verify** → Confirm logo renders on white background, check generated file exists
+3. **CIP** → `scripts/cip/generate.py --logo ...` → Create deliverable mockups
+4. **Verify** → Check mockup images exist and match expected deliverable types
+5. **Presentation** → Load `references/slides-create.md` → Build pitch deck
 
 ### New Design System
 
 1. **Brand** (brand skill) → Define colors, typography, voice
 2. **Tokens** (design-system skill) → Create semantic token layers
-3. **Implement** (ui-styling skill) → Configure Tailwind, shadcn/ui
+3. **Validate** → Run `node scripts/validate-tokens.cjs --dir src/` to check for hardcoded values
+4. **Implement** (ui-styling skill) → Configure Tailwind, shadcn/ui
 
 ## References
 

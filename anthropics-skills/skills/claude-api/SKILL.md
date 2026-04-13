@@ -1,6 +1,12 @@
+---
+name: llm-api-builder
+description: "Build LLM-powered applications with the Claude API and Anthropic SDKs. Use when integrating Claude into applications, implementing tool use or agentic loops, setting up streaming, prompt caching, batch processing, structured outputs, or Managed Agents. Supports Python, TypeScript, Java, Go, Ruby, C#, PHP, and cURL."
+license: Complete terms in LICENSE.txt
+---
+
 # Building LLM-Powered Applications with Claude
 
-This skill helps you build LLM-powered applications with Claude. Choose the right surface based on your needs, detect the project language, then read the relevant language-specific documentation.
+Build LLM-powered applications with Claude. Choose the right surface based on your needs, detect the project language, then read the relevant language-specific documentation.
 
 ## Before You Start
 
