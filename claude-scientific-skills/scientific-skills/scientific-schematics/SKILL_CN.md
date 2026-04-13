@@ -517,7 +517,6 @@ python scripts/generate_schematic.py "图表" -o out.png -v
 
 加载这些文件以获取特定主题的综合信息：
 
-- **`references/diagram_types.md`** - 科学图表类型目录，带有示例
 - **`references/best_practices.md`** - 发表标准和可访问性指南
 
 ### 外部资源

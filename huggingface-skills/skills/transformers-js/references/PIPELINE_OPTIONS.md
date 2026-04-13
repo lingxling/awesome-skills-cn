@@ -61,13 +61,20 @@ interface PretrainedModelOptions {
 
 ### Progress Callback
 
-Track model download and loading progress. **Note:** Models consist of multiple files (model weights, config, tokenizer, etc.), and each file reports its own progress:
+Track model download and loading progress. **Recommended:** use `progress_total` for end-to-end progress, and optionally use `progress` for per-file details.
 
 ```javascript
 const fileProgress = {};
 
 const pipe = await pipeline('sentiment-analysis', null, {
   progress_callback: (info) => {
+    // Recommended: end-to-end loading progress
+    if (info.status === 'progress_total') {
+      console.log(`Total: ${info.progress.toFixed(1)}%`);
+      return;
+    }
+
+    // Optional: per-file progress
     if (info.status === 'progress') {
       fileProgress[info.file] = info.progress;
       console.log(`${info.file}: ${info.progress.toFixed(1)}%`);
@@ -84,10 +91,10 @@ const pipe = await pipeline('sentiment-analysis', null, {
 
 ```typescript
 type ProgressInfo = {
-  status: 'initiate' | 'download' | 'progress' | 'done' | 'ready';
+  status: 'initiate' | 'download' | 'progress' | 'progress_total' | 'done' | 'ready';
   name: string;       // Model id or path
-  file: string;       // File being processed
-  progress?: number;  // Percentage (0-100, only for 'progress' status)
+  file?: string;      // File being processed (per-file events)
+  progress?: number;  // Percentage (0-100, for 'progress' and 'progress_total')
   loaded?: number;    // Bytes downloaded (only for 'progress' status)
   total?: number;     // Total bytes (only for 'progress' status)
 };
@@ -102,6 +109,11 @@ const fileProgressBars = {};
 
 const pipe = await pipeline('image-classification', null, {
   progress_callback: (info) => {
+    if (info.status === 'progress_total') {
+      statusDiv.textContent = `Total: ${info.progress.toFixed(1)}%`;
+      return;
+    }
+
     if (info.status === 'progress') {
       // Create progress bar for each file if not exists
       if (!fileProgressBars[info.file]) {
@@ -289,7 +301,7 @@ const pipe = await pipeline('sentiment-analysis', 'model-id', {
 
 **Common devices:**
 - `'wasm'` - WebAssembly (CPU, most compatible)
-- `'webgpu'` - WebGPU (GPU, faster in browsers)
+- `'webgpu'` - WebGPU (GPU acceleration in supported runtimes)
 - `'cpu'` - CPU
 - `'gpu'` - Auto-detect GPU
 - `'cuda'` - NVIDIA CUDA (Node.js with GPU)
@@ -310,8 +322,8 @@ const pipe = await pipeline('automatic-speech-recognition', 'model-id', {
 ```
 
 **WebGPU Requirements:**
-- Chrome/Edge 113+
-- Enable chrome://flags/#enable-unsafe-webgpu (if needed)
+- Runtime with WebGPU support (browser, Node.js, Bun, or Deno)
+- Compatible hardware/driver stack
 - Adequate GPU memory
 
 
@@ -464,8 +476,8 @@ import { pipeline } from '@huggingface/transformers';
 
 const pipe = await pipeline('sentiment-analysis', null, {
   progress_callback: (info) => {
-    if (info.status === 'progress') {
-      console.log(`${info.file}: ${info.progress.toFixed(1)}%`);
+    if (info.status === 'progress_total') {
+      console.log(`Total: ${info.progress.toFixed(1)}%`);
     }
   }
 });

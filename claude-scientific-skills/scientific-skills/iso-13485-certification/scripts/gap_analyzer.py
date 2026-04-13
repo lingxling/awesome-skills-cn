@@ -9,7 +9,6 @@ Usage:
     python gap_analyzer.py --docs-dir <path> [--output <path>]
 """
 
-import os
 import sys
 import argparse
 import json

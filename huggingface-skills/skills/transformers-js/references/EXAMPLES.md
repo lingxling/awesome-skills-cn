@@ -30,7 +30,7 @@ All examples use the same task and model for consistency:
   <div id="loading" style="display:none;">Loading model...</div>
 
   <script type="module">
-    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1';
+    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4';
     
     let extractor;
     
@@ -104,7 +104,7 @@ All examples use the same task and model for consistency:
   </div>
 
   <script type="module">
-    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1';
+    import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4';
     
     let extractor;
     const fileProgressBars = {};
@@ -115,7 +115,12 @@ All examples use the same task and model for consistency:
       'onnx-community/all-MiniLM-L6-v2-ONNX',
       {
         progress_callback: (info) => {
-          document.getElementById('status').textContent = `${info.status}: ${info.file}`;
+          if (info.status === 'progress_total') {
+            document.getElementById('status').textContent = `Total: ${info.progress.toFixed(1)}%`;
+            return;
+          }
+
+          document.getElementById('status').textContent = `${info.status}: ${info.file ?? ''}`;
           
           if (info.status === 'progress') {
             // Create progress bar for each file
@@ -256,6 +261,11 @@ async function main() {
     'onnx-community/all-MiniLM-L6-v2-ONNX',
     {
       progress_callback: (info) => {
+        if (info.status === 'progress_total') {
+          process.stdout.write(`\r\x1b[KTotal: ${info.progress.toFixed(1)}%`);
+          return;
+        }
+
         if (info.status === 'progress') {
           fileProgress[info.file] = info.progress;
           
@@ -392,7 +402,12 @@ export function EmbeddingGeneratorWithProgress() {
         'onnx-community/all-MiniLM-L6-v2-ONNX',
         {
           progress_callback: (info) => {
-            setStatus(`${info.status}: ${info.file}`);
+            if (info.status === 'progress_total') {
+              setStatus(`Total: ${info.progress.toFixed(1)}%`);
+              return;
+            }
+
+            setStatus(`${info.status}: ${info.file ?? ''}`);
             
             if (info.status === 'progress') {
               setFileProgress(prev => ({

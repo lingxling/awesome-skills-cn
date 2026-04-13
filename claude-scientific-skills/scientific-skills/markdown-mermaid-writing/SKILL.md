@@ -318,7 +318,7 @@ All style guides, diagram type guides, and document templates in this skill are 
 - **Author**: Clayton Young / Superior Byte Works, LLC (@borealBytes)
 - **License**: Apache-2.0
 
-This skill (as part of claude-scientific-skills) is distributed under the MIT License. The included Apache-2.0 content is compatible for downstream use with attribution retained, as preserved in the file headers throughout this skill.
+This skill (as part of scientific-agent-skills) is distributed under the MIT License. The included Apache-2.0 content is compatible for downstream use with attribution retained, as preserved in the file headers throughout this skill.
 
 ---
 

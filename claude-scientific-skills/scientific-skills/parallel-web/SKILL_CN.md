@@ -1,314 +1,103 @@
 ---
 name: parallel-web
-description: 使用 Parallel Chat API 和 Extract API 搜索网络、提取 URL 内容并运行深度研究。用于所有网络搜索、研究查询和一般信息收集。提供带有引用的综合摘要。
-allowed-tools: Read Write Edit Bash
-license: MIT license
-compatibility: PARALLEL_API_KEY required
+description: "一体化网络工具包，由 parallel-cli 提供支持，特别强调学术和科学来源。当用户需要搜索网络、获取/提取 URL 内容、使用网络源字段丰富数据或运行深度研究报告时使用此技能。涵盖：网络搜索（快速查找、研究、当前信息 — 优先考虑同行评审论文、预印本和学术数据库）、URL 提取（获取页面、文章、学术 PDF）、批量数据丰富（从网络为 CSV/列表添加字段）和深度研究（基于学术文献的详尽多源报告）。还处理设置、状态检查和结果检索。将此技能用于任何与网络相关的任务 — 即使用户没有明确提及 'parallel' 或 'web'。如果他们想查找内容、获取页面、丰富数据集、研究主题、查找学术论文、检查引用或回顾科学文献，这是要使用的技能。"
+compatibility: Requires parallel-cli and internet access.
 metadata:
-    skill-author: K-Dense Inc.
+  author: K-Dense, Inc.
 ---
 
-# Parallel Web Systems API
+# Parallel Web Toolkit
 
-## 概述
+一个用于所有网络驱动任务的统一技能：搜索、提取、丰富和研究 — 默认优先考虑学术和科学来源。
 
-此技能提供对 **Parallel Web Systems** API 的访问，用于网络搜索、深度研究和内容提取。它是科学作家工作流程中**所有网络相关操作的主要工具**。
+## 路由 — 选择正确的功能
 
-**主要接口**：Parallel Chat API（与 OpenAI 兼容）用于搜索和研究。
-**次要接口**：Extract API 仅用于 URL 验证和特殊情况。
+读取用户的请求并将其匹配到下面的功能之一。对于网络搜索、提取、丰富和深度研究，请阅读相应的参考文件以获取详细说明。
 
-**API 文档**：https://docs.parallel.ai
-**API 密钥**：https://platform.parallel.ai
-**环境变量**：`PARALLEL_API_KEY`
+| 用户想要... | 功能 | 位置 |
+|---|---|---|
+| 查找内容、研究主题、获取当前信息 | **网络搜索** | `references/web-search.md` |
+| 从特定 URL 获取内容（网页、文章、PDF） | **Web Extract** | `references/web-extract.md` |
+| 为公司/人员/产品列表添加网络源字段 | **数据丰富** | `references/data-enrichment.md` |
+| 获取详尽的多源报告（用户说“深度研究”、“详尽”、“综合”） | **深度研究** | `references/deep-research.md` |
+| 安装或认证 parallel-cli | **设置** | 下面 |
+| 检查正在运行的研究/丰富任务的状态 | **状态** | 下面 |
+| 通过运行 ID 检索已完成的研究结果 | **结果** | 下面 |
 
-## 何时使用此技能
+### 决策指南
 
-将此技能用于**所有**以下情况：
+- **默认为网络搜索**用于单个查找、研究问题或“X 是什么？”查询。它快速且成本效益高。当查询涉及科学或技术主题时，包括学术域名（参见 `references/web-search.md`）以在一般结果旁边显示同行评审和预印本来源。
+- **使用 Web Extract** 当用户提供 URL 或要求您阅读/获取特定页面时。优先使用此方法而不是内置的 WebFetch 工具。特别适用于从学术 PDF、预印本服务器和期刊文章中提取全文。
+- **使用数据丰富** 当用户有**多个实体**（CSV、公司/人员/产品列表，甚至简短的内联列表）并希望为每个实体查找或添加相同类型的信息时。关键信号是对一组项目的重复查找 — 例如，“为这些公司中的每一个找到 CEO”或“获取 Apple、Stripe 和 Anthropic 的成立年份”。即使用户没有说“丰富”，只要任务是对多个实体应用相同的查询，就使用 `parallel-cli enrich`。不要为此在循环中使用 Web Search — 丰富管道自动处理批处理、并行性和结构化输出。
+- **仅在用户明确要求深度、详尽或综合研究时使用深度研究**。它比 Web Search 慢 10-100 倍且更昂贵 — 永远不要默认使用它。深度研究对文献综述和多论文综合特别有价值。
+- 如果运行任何命令时未找到 `parallel-cli`，请遵循下面的设置部分。
 
-- **网络搜索**：任何需要在互联网上搜索信息的查询
-- **深度研究**：关于任何主题的综合研究报告
-- **市场研究**：行业分析、竞争情报、市场数据
-- **时事**：新闻、最新发展、公告
-- **技术信息**：文档、规格、产品详情
-- **统计数据**：市场规模、增长率、行业数据
-- **一般信息**：公司简介、事实、比较
+### 学术来源优先级
 
-**仅将 Extract API 用于**：
-- 引用验证（确认特定 URL 的内容）
-- 需要从已知 URL 获取原始内容的特殊情况
+在所有功能中，当查询具有技术或科学性质时，优先考虑学术和科学来源。这意味着：
+- 同行评审期刊文章和会议论文优先于博客文章或新闻文章
+- 当同行评审版本不可用时，使用预印本（arXiv、bioRxiv、medRxiv）
+- 机构和政府来源（NIH、WHO、NASA、NIST）优先于商业网站
+- 主要研究优先于次要摘要
 
-**不要将此技能用于**：
-- 学术特定论文搜索（使用 `research-lookup`，它将纯学术查询路由到 Perplexity）
-- Google Scholar / PubMed 数据库搜索（使用 `citation-management` 技能）
+引用学术来源时，除了标准引用格式外，还应包括可用的作者姓名和出版年份（例如，[Smith et al., 2025](url)）。如果存在 DOI，优先使用 DOI 链接。
+
+## 上下文链接
+
+多个功能通过 `interaction_id` 支持多轮上下文。当研究或丰富任务完成时，它会返回一个 `interaction_id`。如果用户询问与该任务相关的后续问题，传递 `--previous-interaction-id` 以自动携带上下文。这避免了重复已经找到的内容。
 
 ---
 
-## 两种功能
+## 设置
 
-### 1. 网络搜索（`search` 命令）
-
-通过 Parallel Chat API（`base` 模型）搜索网络，获取带有引用来源的**综合摘要**。
-
-**最适合**：一般网络搜索、时事、事实查找、技术查询、新闻、市场数据。
+如果未安装 `parallel-cli`，请安装并认证：
 
 ```bash
-# 基本搜索
-python scripts/parallel_web.py search "latest advances in quantum computing 2025"
-
-# 使用核心模型进行更复杂的查询
-python scripts/parallel_web.py search "compare EV battery chemistries NMC vs LFP" --model core
-
-# 将结果保存到文件
-python scripts/parallel_web.py search "renewable energy policy updates" -o results.txt
-
-# 用于编程使用的 JSON 输出
-python scripts/parallel_web.py search "AI regulation landscape" --json -o results.json
+curl -fsSL https://parallel.ai/install.sh | bash
 ```
 
-**关键参数**：
-- `objective`：您想要找到的内容的自然语言描述
-- `--model`：要使用的聊天模型（默认 `base`，或 `core` 用于更深层次的研究）
-- `-o`：输出文件路径
-- `--json`：以 JSON 格式输出
-
-**响应包括**：按主题组织的综合摘要，带有内联引用和来源列表。
-
-### 2. 深度研究（`research` 命令）
-
-通过 Parallel Chat API（`core` 模型）运行综合多源研究，生成带有引用的详细情报报告。
-
-**最适合**：市场研究、综合分析、竞争情报、技术调查、行业报告、任何需要综合多个来源的研究问题。
+如果无法以这种方式安装，请使用 uv：
 
 ```bash
-# 默认深度研究（核心模型）
-python scripts/parallel_web.py research "comprehensive analysis of the global EV battery market"
-
-# 将研究报告保存到文件
-python scripts/parallel_web.py research "AI adoption in healthcare 2025" -o report.md
-
-# 使用基础模型进行更快、更轻量的研究
-python scripts/parallel_web.py research "latest funding rounds in AI startups" --model base
-
-# JSON 输出
-python scripts/parallel_web.py research "renewable energy storage market in Europe" --json -o data.json
+uv tool install "parallel-web-tools[cli]"
 ```
 
-**关键参数**：
-- `query`：研究问题或主题
-- `--model`：要使用的聊天模型（默认 `core` 用于深度研究，或 `base` 用于更快的结果）
-- `-o`：输出文件路径
-- `--json`：以 JSON 格式输出
-
-### 3. URL 提取（`extract` 命令）— 仅用于验证
-
-从特定 URL 提取内容。**仅用于引用验证和特殊情况**。
-
-对于一般研究，请使用 `search` 或 `research` 代替。
+然后认证。首先，检查项目根目录中是否存在 `.env` 文件并包含 `PARALLEL_API_KEY`。如果是，使用 `dotenv` 加载它：
 
 ```bash
-# 验证引用的内容
-python scripts/parallel_web.py extract "https://example.com/article" --objective "key findings"
-
-# 获取完整页面内容进行验证
-python scripts/parallel_web.py extract "https://docs.example.com/api" --full-content
-
-# 将提取内容保存到文件
-python scripts/parallel_web.py extract "https://paper-url.com" --objective "methodology" -o extracted.md
+dotenv -f .env run parallel-cli auth
 ```
 
----
+如果 `dotenv` 不可用，使用 `pip install python-dotenv[cli]` 或 `uv pip install python-dotenv[cli]` 安装它。
 
-## 模型选择指南
-
-Chat API 支持两种研究模型。使用 `base` 进行大多数搜索，使用 `core` 进行深度研究。
-
-| 模型   | 延迟      | 优势                              | 使用时机                    |
-|--------|-----------|----------------------------------|-----------------------------|
-| `base` | 15s-100s  | 标准研究，事实查询               | 网络搜索，快速查询          |
-| `core` | 60s-5min  | 复杂研究，多源综合               | 深度研究，综合报告          |
-
-**建议**：
-- `search` 命令默认为 `base` — 快速，适合大多数查询
-- `research` 命令默认为 `core` — 彻底，适合综合报告
-- 当需要不同的深度/速度权衡时，使用 `--model` 覆盖
-
----
-
-## Python API 使用
-
-### 搜索
-
-```python
-from parallel_web import ParallelSearch
-
-searcher = ParallelSearch()
-result = searcher.search(
-    objective="Find latest information about transformer architectures in NLP",
-    model="base",
-)
-
-if result["success"]:
-    print(result["response"])  # 综合摘要
-    for src in result["sources"]:
-        print(f"  {src['title']}: {src['url']}")
-```
-
-### 深度研究
-
-```python
-from parallel_web import ParallelDeepResearch
-
-researcher = ParallelDeepResearch()
-result = researcher.research(
-    query="Comprehensive analysis of AI regulation in the EU and US",
-    model="core",
-)
-
-if result["success"]:
-    print(result["response"])  # 完整研究报告
-    print(f"Citations: {result['citation_count']}")
-```
-
-### 提取（仅用于验证）
-
-```python
-from parallel_web import ParallelExtract
-
-extractor = ParallelExtract()
-result = extractor.extract(
-    urls=["https://docs.example.com/api-reference"],
-    objective="API authentication methods and rate limits",
-)
-
-if result["success"]:
-    for r in result["results"]:
-        print(r["excerpts"])
-```
-
----
-
-## 强制要求：将所有结果保存到 Sources 文件夹
-
-**每个网络搜索和深度研究结果必须保存到项目的 `sources/` 文件夹中。**
-
-这确保所有研究都被保存，以确保可重现性、可审计性和上下文窗口恢复。
-
-### 保存规则
-
-| 操作 | `-o` 标志目标 | 文件名模式 |
-|-----------|-----------------|------------------|
-| 网络搜索 | `sources/search_<topic>.md` | `search_YYYYMMDD_HHMMSS_<brief_topic>.md` |
-| 深度研究 | `sources/research_<topic>.md` | `research_YYYYMMDD_HHMMSS_<brief_topic>.md` |
-| URL 提取 | `sources/extract_<source>.md` | `extract_YYYYMMDD_HHMMSS_<brief_source>.md` |
-
-### 如何保存（始终使用 `-o` 标志）
-
-**关键：每个对 `parallel_web.py` 的调用必须包含指向 `sources/` 文件夹的 `-o` 标志。**
+如果没有 `.env` 文件或它不包含密钥，回退到交互式登录：
 
 ```bash
-# 网络搜索 — 始终保存到 sources/
-python scripts/parallel_web.py search "latest advances in quantum computing 2025" \
-  -o sources/search_20250217_143000_quantum_computing.md
-
-# 深度研究 — 始终保存到 sources/
-python scripts/parallel_web.py research "comprehensive analysis of the global EV battery market" \
-  -o sources/research_20250217_144000_ev_battery_market.md
-
-# URL 提取（仅用于验证）— 保存到 sources/
-python scripts/parallel_web.py extract "https://example.com/article" --objective "key findings" \
-  -o sources/extract_20250217_143500_example_article.md
+parallel-cli login
 ```
 
-### 为什么保存所有内容
+或手动设置密钥：`export PARALLEL_API_KEY="your-key"`
 
-1. **可重现性**：最终文档中的每个声明都可以追溯到其原始源材料
-2. **上下文窗口恢复**：如果任务中期上下文被压缩，可以从 `sources/` 重新读取保存的结果
-3. **审计跟踪**：`sources/` 文件夹提供了信息收集方式的完全透明度
-4. **跨部分重用**：保存的研究可以被多个部分引用，而无需重复 API 调用
-5. **成本效率**：通过检查 `sources/` 中的现有结果避免冗余 API 调用
-6. **同行评审支持**：评审人员可以验证支持每个声明的研究
-
-### 日志记录
-
-保存研究结果时，始终记录：
-
-```
-[HH:MM:SS] SAVED: Search results to sources/search_20250217_143000_quantum_computing.md
-[HH:MM:SS] SAVED: Deep research report to sources/research_20250217_144000_ev_battery_market.md
-```
-
-### 在进行新查询之前，先检查 Sources
-
-在调用 `parallel_web.py` 之前，检查 `sources/` 中是否已存在相关结果：
+验证：
 
 ```bash
-ls sources/  # 检查现有的保存结果
+parallel-cli auth
 ```
 
----
+如果安装后未找到 `parallel-cli`，将 `~/.local/bin` 添加到 PATH。
 
-## 与科学作家的集成
-
-### 路由表
-
-| 任务 | 工具 | 命令 |
-|------|------|---------|
-| 网络搜索（任何） | `parallel_web.py search` | `python scripts/parallel_web.py search "query" -o sources/search_<topic>.md` |
-| 深度研究 | `parallel_web.py research` | `python scripts/parallel_web.py research "query" -o sources/research_<topic>.md` |
-| 引用验证 | `parallel_web.py extract` | `python scripts/parallel_web.py extract "url" -o sources/extract_<source>.md` |
-| 学术论文搜索 | `research_lookup.py` | 路由到 Perplexity sonar-pro-search |
-| DOI/元数据查询 | `parallel_web.py extract` | 从 DOI URL 提取（验证） |
-
-### 编写科学文档时
-
-1. **在编写任何部分之前**，使用 `search` 或 `research` 收集背景信息 — **将结果保存到 `sources/`**
-2. **对于学术引用**，使用 `research-lookup`（将学术查询路由到 Perplexity）— **将结果保存到 `sources/`**
-3. **对于引用验证**（确认特定 URL），使用 `parallel_web.py extract` — **将结果保存到 `sources/`**
-4. **对于当前市场/行业数据**，使用 `parallel_web.py research --model core` — **将结果保存到 `sources/`**
-5. **在任何新查询之前**，检查 `sources/` 中的现有结果以避免重复 API 调用
-
----
-
-## 环境设置
+## 检查任务状态
 
 ```bash
-# 必需：设置您的 Parallel API 密钥
-export PARALLEL_API_KEY="your_api_key_here"
-
-# 必需的 Python 包
-pip install openai        # 用于 Chat API（搜索/研究）
-pip install parallel-web  # 用于 Extract API（仅验证）
+parallel-cli research status "$RUN_ID" --json
 ```
 
-在 https://platform.parallel.ai 获取您的 API 密钥
+向用户报告当前状态（运行中、已完成、失败等）。
 
----
+## 获取已完成的结果
 
-## 错误处理
-
-脚本优雅地处理错误并返回结构化的错误响应：
-
-```json
-{
-  "success": false,
-  "error": "Error description",
-  "timestamp": "2025-02-14 12:00:00"
-}
+```bash
+parallel-cli research poll "$RUN_ID" --json
 ```
 
-**常见问题**：
-- `PARALLEL_API_KEY not set`：设置环境变量
-- `openai not installed`：运行 `pip install openai`
-- `parallel-web not installed`：运行 `pip install parallel-web`（仅提取需要）
-- `Rate limit exceeded`：等待并重试（默认：Chat API 为 300 次请求/分钟）
-
----
-
-## 互补技能
-
-| 技能 | 用途 |
-|-------|---------|
-| `research-lookup` | 学术论文搜索（将学术查询路由到 Perplexity） |
-| `citation-management` | Google Scholar、PubMed、CrossRef 数据库搜索 |
-| `literature-review` | 跨学术数据库的系统文献综述 |
-| `scientific-schematics` | 从研究结果生成图表 |
+以清晰、有组织的格式呈现结果。

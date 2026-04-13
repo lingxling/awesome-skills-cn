@@ -101,5 +101,5 @@ K-Dense Inc.
 
 ## Contributing
 
-This skill is part of the K-Dense-AI/claude-scientific-skills repository.
+This skill is part of the K-Dense-AI/scientific-agent-skills repository.
 For contributions, see the main repository guidelines.

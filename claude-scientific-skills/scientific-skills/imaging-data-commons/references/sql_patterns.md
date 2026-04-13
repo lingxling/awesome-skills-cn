@@ -1,6 +1,6 @@
 # SQL Query Patterns for IDC
 
-**Tested with:** idc-index 0.11.9 (IDC data version v23)
+**Tested with:** idc-index 0.11.14 (IDC data version v23)
 
 Quick reference for common SQL query patterns when working with IDC data. For detailed examples with context, see the "Core Capabilities" section in the main SKILL.md.
 
@@ -12,6 +12,8 @@ Load this guide when you need quick-reference SQL patterns for:
 - Querying slide microscopy and annotation data
 - Estimating download sizes before download
 - Linking imaging data to clinical data
+- Filtering by 3D volume geometry validity (volume_geometry_index)
+- Finding RT Structure Set series and ROI metadata (rtstruct_index)
 
 For table schemas, DataFrame access, and join column references, see `references/index_tables_guide.md`.
 
@@ -199,9 +201,86 @@ See `references/clinical_data_guide.md` for complete patterns including value ma
 - **Cause:** NULL values in join columns or no matching records
 - **Solution:** Use `LEFT JOIN` to include rows without matches, check for NULLs with `IS NOT NULL`
 
+## Volume Geometry Validation
+
+`volume_geometry_index` covers single-frame CT, MR, and PT series. Fetch it before querying.
+
+```python
+client.fetch_index("volume_geometry_index")
+
+# Series that form a regularly-spaced 3D volume (no resampling needed)
+client.sql_query("""
+    SELECT i.collection_id, i.SeriesInstanceUID, i.BodyPartExamined,
+           v.obliquity_degrees
+    FROM index i
+    JOIN volume_geometry_index v ON i.SeriesInstanceUID = v.SeriesInstanceUID
+    WHERE i.Modality = 'CT'
+      AND v.regularly_spaced_3d_volume = TRUE
+    LIMIT 10
+""")
+
+# Fraction of 3D-valid CT per collection
+client.sql_query("""
+    SELECT i.collection_id,
+           COUNT(*) as total_ct,
+           SUM(CASE WHEN v.regularly_spaced_3d_volume THEN 1 ELSE 0 END) as valid_3d,
+           ROUND(100.0 * SUM(CASE WHEN v.regularly_spaced_3d_volume THEN 1 ELSE 0 END) / COUNT(*), 1) as pct_valid
+    FROM index i
+    JOIN volume_geometry_index v ON i.SeriesInstanceUID = v.SeriesInstanceUID
+    WHERE i.Modality = 'CT'
+    GROUP BY i.collection_id
+    ORDER BY total_ct DESC
+    LIMIT 10
+""")
+```
+
+Key columns: `regularly_spaced_3d_volume` (composite flag), `obliquity_degrees` (0 = pure axial/sagittal/coronal), plus individual boolean checks: `single_orientation`, `orthogonal_orientation`, `unique_slice_positions`, `consistent_pixel_spacing`, `consistent_image_dimensions`, `uniform_slice_spacing`.
+
+## RT Structure Sets
+
+`rtstruct_index` has one row per RTSTRUCT series. Array columns (`ROINames`, `ROIGenerationAlgorithms`, `RTROIInterpretedTypes`) are stored as strings.
+
+```python
+client.fetch_index("rtstruct_index")
+
+# RTSTRUCT series with ROI counts and names
+client.sql_query("""
+    SELECT i.collection_id, i.SeriesInstanceUID,
+           r.total_rois, r.ROINames, r.RTROIInterpretedTypes,
+           r.referenced_SeriesInstanceUID
+    FROM index i
+    JOIN rtstruct_index r ON i.SeriesInstanceUID = r.SeriesInstanceUID
+    LIMIT 10
+""")
+
+# Collections with the most RTSTRUCT series
+client.sql_query("""
+    SELECT i.collection_id,
+           COUNT(*) as rtstruct_series,
+           ROUND(AVG(r.total_rois), 1) as avg_rois
+    FROM index i
+    JOIN rtstruct_index r ON i.SeriesInstanceUID = r.SeriesInstanceUID
+    GROUP BY i.collection_id
+    ORDER BY rtstruct_series DESC
+    LIMIT 10
+""")
+
+# Find source CT series for a given RTSTRUCT
+client.sql_query("""
+    SELECT r.SeriesInstanceUID as rtstruct_uid,
+           r.total_rois, r.ROINames,
+           src.SeriesInstanceUID as source_ct_uid,
+           src.collection_id, src.BodyPartExamined
+    FROM rtstruct_index r
+    JOIN index src ON r.referenced_SeriesInstanceUID = src.SeriesInstanceUID
+    LIMIT 10
+""")
+```
+
 ## Resources
 
 - `references/index_tables_guide.md` for table schemas, DataFrame access, and join column references
 - `references/clinical_data_guide.md` for clinical data patterns and value mapping
 - `references/digital_pathology_guide.md` for pathology-specific queries
 - `references/bigquery_guide.md` for advanced queries requiring full DICOM metadata
+- `references/parquet_access_guide.md` for direct Parquet queries without installing idc-index

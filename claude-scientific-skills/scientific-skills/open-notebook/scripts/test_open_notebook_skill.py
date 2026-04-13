@@ -2,7 +2,7 @@
 Test-Driven Development tests for the Open-Notebook skill.
 
 These tests validate the structure, content completeness, and correctness
-of the open-notebook skill implementation for the claude-scientific-skills repository.
+of the open-notebook skill implementation for the scientific-agent-skills repository.
 
 Run with: python -m pytest test_open_notebook_skill.py -v
 Or:       python -m unittest test_open_notebook_skill.py -v
@@ -20,7 +20,7 @@ REPO_ROOT = os.path.dirname(os.path.dirname(SKILL_DIR))
 REFERENCES_DIR = os.path.join(SKILL_DIR, "references")
 SCRIPTS_DIR = SCRIPT_DIR
 SKILL_MD = os.path.join(SKILL_DIR, "SKILL.md")
-MARKETPLACE_JSON = os.path.join(REPO_ROOT, ".claude-plugin", "marketplace.json")
+PYPROJECT_TOML = os.path.join(REPO_ROOT, "pyproject.toml")
 
 
 class TestSkillDirectoryStructure(unittest.TestCase):
@@ -344,30 +344,21 @@ class TestExampleScripts(unittest.TestCase):
         self.assertIn("chat", content.lower())
 
 
-class TestMarketplaceJson(unittest.TestCase):
-    """Tests that marketplace.json includes the open-notebook skill."""
+class TestPyprojectToml(unittest.TestCase):
+    """Tests that pyproject.toml exists and has valid project metadata."""
 
     @classmethod
     def setUpClass(cls):
-        with open(MARKETPLACE_JSON, "r") as f:
-            cls.marketplace = json.load(f)
+        with open(PYPROJECT_TOML, "r") as f:
+            cls.content = f.read()
 
-    def test_marketplace_has_open_notebook_skill(self):
-        """marketplace.json must list the open-notebook skill."""
-        skills = self.marketplace["plugins"][0]["skills"]
-        skill_path = "./scientific-skills/open-notebook"
-        self.assertIn(
-            skill_path,
-            skills,
-            f"marketplace.json must include '{skill_path}' in the skills list",
-        )
+    def test_pyproject_has_version(self):
+        """pyproject.toml must contain a version field."""
+        self.assertIn("version", self.content)
 
-    def test_marketplace_valid_json(self):
-        """marketplace.json must be valid JSON with expected structure."""
-        self.assertIn("plugins", self.marketplace)
-        self.assertIsInstance(self.marketplace["plugins"], list)
-        self.assertGreater(len(self.marketplace["plugins"]), 0)
-        self.assertIn("skills", self.marketplace["plugins"][0])
+    def test_pyproject_has_project_name(self):
+        """pyproject.toml must contain the project name."""
+        self.assertIn('name = "scientific-agent-skills"', self.content)
 
 
 class TestSkillMdApiEndpointCoverage(unittest.TestCase):

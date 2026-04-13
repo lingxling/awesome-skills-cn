@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.claude-plugin/marketplace.json'
+      - 'pyproject.toml'
   workflow_dispatch:
 
 permissions:
@@ -21,10 +21,10 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history for release notes
       
-      - name: Extract version from marketplace.json
+      - name: Extract version from pyproject.toml
         id: get_version
         run: |
-          VERSION=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+          VERSION=$(grep '^version' pyproject.toml | head -1 | sed 's/.*"\(.*\)".*/\1/')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
           echo "Extracted version: $VERSION"

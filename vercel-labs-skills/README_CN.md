@@ -6,7 +6,7 @@
 
 ### 原项目介绍
 
-**Skills CLI** 是开放代理技能生态系统的命令行工具，用于管理 AI 编程助手的技能包。它支持 40+ 种 AI 编程助手，包括：
+**Skills CLI** 是开放代理技能生态系统的命令行工具，用于管理 AI 编程助手的技能包。它支持 41+ 种 AI 编程助手，包括：
 
 - Claude Code
 - Cursor
@@ -142,8 +142,7 @@ npx skills add vercel-labs/agent-skills --agent '*' --skill frontend-design
 | `npx skills list`            | 列出已安装的技能（别名：`ls`）            |
 | `npx skills find [query]`    | 交互式或按关键词搜索技能  |
 | `npx skills remove [skills]` | 从代理中移除已安装的技能            |
-| `npx skills check`           | 检查可用的技能更新              |
-| `npx skills update`          | 将所有已安装的技能更新到最新版本 |
+| `npx skills update [skills]` | 将已安装的技能更新到最新版本 |
 | `npx skills init [name]`     | 创建新的 SKILL.md 模板                 |
 
 ### `skills list`
@@ -173,15 +172,32 @@ npx skills find
 npx skills find typescript
 ```
 
-### `skills check` / `skills update`
+### `skills update`
 
 ```bash
-# 检查是否有任何已安装的技能有更新
-npx skills check
-
-# 将所有技能更新到最新版本
+# 更新所有技能（交互式范围提示）
 npx skills update
+
+# 按名称更新单个技能
+npx skills update my-skill
+
+# 更新多个特定技能
+npx skills update frontend-design web-design-guidelines
+
+# 仅更新全局或项目技能
+npx skills update -g
+npx skills update -p
+
+# 非交互式（自动检测范围：如果在项目中则为项目，否则为全局）
+npx skills update -y
 ```
+
+| 选项          | 描述                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| `-g, --global`  | 仅更新全局技能                                                 |
+| `-p, --project` | 仅更新项目技能                                                |
+| `-y, --yes`     | 跳过范围提示（自动检测：如果在项目目录中则为项目，否则为全局） |
+| `[skills...]`   | 按名称更新特定技能而不是所有技能                             |
 
 ### `skills init`
 
@@ -256,6 +272,7 @@ npx skills rm my-skill
 | Amp, Kimi Code CLI, Replit, Universal | `amp`, `kimi-cli`, `replit`, `universal` | `.agents/skills/` | `~/.config/agents/skills/` |
 | Antigravity | `antigravity` | `.agents/skills/` | `~/.gemini/antigravity/skills/` |
 | Augment | `augment` | `.augment/skills/` | `~/.augment/skills/` |
+| IBM Bob | `bob` | `.bob/skills/` | `~/.bob/skills/` |
 | Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
 | OpenClaw | `openclaw` | `skills/` | `~/.openclaw/skills/` |
 | Cline, Warp | `cline`, `warp` | `.agents/skills/` | `~/.agents/skills/` |
@@ -268,6 +285,7 @@ npx skills rm my-skill
 | Cursor | `cursor` | `.agents/skills/` | `~/.cursor/skills/` |
 | Deep Agents | `deepagents` | `.agents/skills/` | `~/.deepagents/agent/skills/` |
 | Droid | `droid` | `.factory/skills/` | `~/.factory/skills/` |
+| Firebender | `firebender` | `.agents/skills/` | `~/.firebender/skills/` |
 | Gemini CLI | `gemini-cli` | `.agents/skills/` | `~/.gemini/skills/` |
 | GitHub Copilot | `github-copilot` | `.agents/skills/` | `~/.copilot/skills/` |
 | Goose | `goose` | `.goose/skills/` | `~/.config/goose/skills/` |
@@ -359,6 +377,7 @@ CLI 在仓库中的以下位置搜索技能：
 - `skills/.system/`
 - `.agents/skills/`
 - `.augment/skills/`
+- `.bob/skills/`
 - `.claude/skills/`
 - `./skills/`
 - `.codebuddy/skills/`
@@ -472,6 +491,7 @@ INSTALL_INTERNAL_SKILLS=1 npx skills add vercel-labs/agent-skills --list
 - [Command Code 技能文档](https://commandcode.ai/docs/skills)
 - [Crush 技能文档](https://github.com/charmbracelet/crush?tab=readme-ov-file#agent-skills)
 - [Cursor 技能文档](https://cursor.com/docs/context/skills)
+- [Firebender 技能文档](https://docs.firebender.com/multi-agent/skills)
 - [Gemini CLI 技能文档](https://geminicli.com/docs/cli/skills/)
 - [GitHub Copilot 代理技能](https://docs.github.com/en/copilot/concepts/agents/about-agent-skills)
 - [iFlow CLI 技能文档](https://platform.iflow.cn/en/cli/examples/skill)

@@ -640,10 +640,10 @@ sns.set_context('paper', font_scale=1.2)  # 如需增加
 #### 其他资源
 
 有关seaborn的更多详细信息，请参阅：
-- `scientific-packages/seaborn/SKILL.md` - 全面的seaborn文档
-- `scientific-packages/seaborn/references/examples.md` - 实用用例
-- `scientific-packages/seaborn/references/function_reference.md` - 完整API参考
-- `scientific-packages/seaborn/references/objects_interface.md` - 现代声明式API
+- `scientific-skills/seaborn/SKILL.md` - 全面的seaborn文档
+- `scientific-skills/seaborn/references/examples.md` - 实用用例
+- `scientific-skills/seaborn/references/function_reference.md` - 完整API参考
+- `scientific-skills/seaborn/references/objects_interface.md` - 现代声明式API
 
 ### Plotly
 - 用于探索的交互式图表

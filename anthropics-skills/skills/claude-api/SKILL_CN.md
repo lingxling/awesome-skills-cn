@@ -1,6 +1,6 @@
 ---
 name: claude-api
-description: "使用 Claude API 或 Anthropic SDK 构建应用。触发条件：代码导入 `anthropic`/`@anthropic-ai/sdk`/`claude_agent_sdk`，或用户要求使用 Claude API、Anthropic SDK 或 Agent SDK。不要触发：代码导入 `openai`/其他 AI SDK、通用编程或 ML/数据科学任务。"
+description: "构建、调试和优化 Claude API / Anthropic SDK 应用。使用此技能构建的应用应包括提示缓存。触发条件：代码导入 `anthropic`/`@anthropic-ai/sdk`；用户要求使用 Claude API、Anthropic SDK 或托管 Agents（`/v1/agents`、`/v1/sessions`、`/v1/environments`）。不要触发：代码导入 `openai`/其他 AI SDK、通用编程或 ML/数据科学任务。"
 license: 完整条款见 LICENSE.txt
 ---
 
@@ -28,6 +28,14 @@ license: 完整条款见 LICENSE.txt
 除非用户另有要求：
 
 对于 Claude 模型版本，请使用 Claude Opus 4.6，您可以通过精确的模型字符串 `claude-opus-4-6` 访问。对于任何稍微复杂的任务，请默认使用自适应思考（`thinking: {type: "adaptive"}`）。最后，对于任何可能涉及长输入、长输出或高 `max_tokens` 的请求，请默认使用流式传输——这样可以避免请求超时。如果您不需要处理单个流事件，请使用 SDK 的 `.get_final_message()` / `.finalMessage()` 辅助方法获取完整响应
+
+---
+
+## 子命令
+
+如果此提示底部的用户请求是一个纯子命令字符串（无散文），请搜索本文档中的所有**子命令**表——包括下面附加部分中的任何表——并直接遵循匹配的操作列。这允许用户通过 `/claude-api <子命令>` 调用特定流程。如果文档中没有表匹配，则将请求视为普通散文。
+
+<!-- 子命令表在下面按部分定义；此标题块仅包含调度规则，以便功能门控部分可以添加自己的表而不会将字符串泄漏到非门控构建中。 -->
 
 ---
 
@@ -176,7 +184,7 @@ license: 完整条款见 LICENSE.txt
 
 **Opus 4.6 — 自适应思考（推荐）：** 使用 `thinking: {type: "adaptive"}`。Claude 动态决定何时以及思考多少。不需要 `budget_tokens` — `budget_tokens` 在 Opus 4.6 和 Sonnet 4.6 上已弃用，绝不能使用。自适应思考还会自动启用交错思考（不需要测试版标头）。**当用户要求"扩展思考"、"思考预算"或 `budget_tokens` 时：始终使用 Opus 4.6 配合 `thinking: {type: "adaptive"}`。固定令牌预算进行思考的概念已弃用——自适应思考取代了它。不要使用 `budget_tokens` 并且不要切换到较旧的模型。**
 
-**努力参数（正式版，无需测试版标头）：** 通过 `output_config: {effort: "low"|"medium"|"high"|"max"}`（在 `output_config` 内，不在顶层）控制思考深度和整体令牌开销。默认为 `high`（相当于省略它）。`max` 仅适用于 Opus 4.6。适用于 Opus 4.5、Opus 4.6 和 Sonnet 4.6。在 Sonnet 4.5 / Haiku 4.5 上会出错。与自适应思考结合使用以获得最佳成本-质量权衡。对子 agent 或简单任务使用 `low`；对最深推理使用 `max`。
+**努力参数（正式版，无需测试版标头）：** 通过 `output_config: {effort: "low"|"medium"|"high"|"max"}`（在 `output_config` 内，不在顶层）控制思考深度和整体令牌开销。默认为 `high`（相当于省略它）。`max` 仅适用于 Opus 4.6。适用于 Opus 4.5、Opus 4.6 和 Sonnet 4.6。在 Sonnet 4.5 / Haiku 4.5 上会出错。与自适应思考结合使用以获得最佳成本-质量权衡。较低的努力意味着更少和更集中的工具调用、更少的前言和更简洁的确认 — `medium` 通常是一个有利的平衡；当正确性比成本更重要时使用 `max`；对子 agent 或简单任务使用 `low`。
 
 **Sonnet 4.6：** 支持自适应思考（`thinking: {type: "adaptive"}`）。`budget_tokens` 在 Sonnet 4.6 上已弃用——改用自适应思考。
 

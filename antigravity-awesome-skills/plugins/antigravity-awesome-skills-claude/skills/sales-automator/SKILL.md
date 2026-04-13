@@ -1,12 +1,6 @@
 ---
 name: sales-automator
-description: 'Draft cold emails, follow-ups, and proposal templates. Creates
-
-  pricing pages, case studies, and sales scripts. Use PROACTIVELY for sales
-
-  outreach or lead nurturing.
-
-  '
+description: 'Draft cold emails, follow-ups, and proposal templates. Creates pricing pages, case studies, and sales scripts. Use PROACTIVELY for sales outreach or lead nurturing. '
 risk: unknown
 source: community
 date_added: '2026-02-27'

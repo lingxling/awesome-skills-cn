@@ -227,7 +227,9 @@ prompt_templates:
 
 ## 文献处理（HypoRefine/Union方法）
 
-要使用基于文献的假设生成，必须预处理PDF论文：
+要使用基于文献的假设生成，必须预处理PDF论文。
+
+> **注意：** 以下命令在克隆的 [HypoGenic 仓库](https://github.com/ChicagoHAI/hypothesis-generation) 中运行，而不是在此技能目录中。
 
 **步骤1：设置GROBID**（仅首次）
 ```bash

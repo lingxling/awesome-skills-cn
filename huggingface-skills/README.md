@@ -8,11 +8,12 @@ The skills in this repository follow the standardized [Agent Skills](https://age
 
 In practice, skills are self-contained folders that package instructions, scripts, and resources together for an AI agent to use on a specific use case. Each folder includes a `SKILL.md` file with YAML frontmatter (name and description) followed by the guidance your coding agent follows while the skill is active. 
 
-> [!NOTE]
-> 'Skills' is actually an Anthropic term used within Claude AI and Claude Code and not adopted by other agent tools, but we love it! OpenAI Codex uses the open [Agent Skills](https://agentskills.io/specification) format, where each skill is a directory with a `SKILL.md` file that Codex discovers from standard `.agents/skills` locations documented in the [Codex Skills guide](https://developers.openai.com/codex/skills/). Codex can also work with an `AGENTS.md` file. Google Gemini uses 'extensions' to define the instructions for your coding agent in a `gemini-extension.json` file. **This repo is compatible with all of them, and more!**
-
 > [!TIP]
 > If your agent doesn't support skills, you can use [`agents/AGENTS.md`](agents/AGENTS.md) directly as a fallback.
+
+The skills in this repository are also available through:
+ - Cursor Marketplace (https://cursor.com/marketplace/huggingface)
+ - Codex Plugins Directory (https://developers.openai.com/codex/plugins)
 
 ## Installation
 
@@ -93,7 +94,6 @@ This repository contains a few skills to get you started. You can also contribut
 | `huggingface-community-evals` | Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content, importing scores from Artificial Analysis API, and running custom evaluations with vLLM/lighteval. | [SKILL.md](skills/huggingface-community-evals/SKILL.md) |
 | `huggingface-datasets` | Explore, query, and extract data from any Hugging Face dataset using the Dataset Viewer REST API and npx tooling. Zero Python dependencies — covers split/config discovery, row pagination, text search, filtering, SQL via parquetlens, and dataset upload via CLI. | [SKILL.md](skills/huggingface-datasets/SKILL.md) |
 | `huggingface-gradio` | Build Gradio web UIs and demos in Python. Use when creating or editing Gradio apps, components, event listeners, layouts, or chatbots. | [SKILL.md](skills/huggingface-gradio/SKILL.md) |
-| `huggingface-jobs` | Run compute jobs on Hugging Face infrastructure. Execute Python scripts, manage scheduled jobs, and monitor job status. | [SKILL.md](skills/huggingface-jobs/SKILL.md) |
 | `huggingface-llm-trainer` | Train or fine-tune language models using TRL on Hugging Face Jobs infrastructure. Covers SFT, DPO, GRPO and reward modeling training methods, plus GGUF conversion for local deployment. Includes hardware selection, cost estimation, Trackio monitoring, and Hub persistence. | [SKILL.md](skills/huggingface-llm-trainer/SKILL.md) |
 | `huggingface-paper-publisher` | Publish and manage research papers on Hugging Face Hub. Supports creating paper pages, linking papers to models/datasets, claiming authorship, and generating professional markdown-based research articles. | [SKILL.md](skills/huggingface-paper-publisher/SKILL.md) |
 | `huggingface-papers` | Look up and read Hugging Face paper pages in markdown, and use the papers API for structured metadata like authors, linked models, datasets, Spaces, and media URLs when needed. | [SKILL.md](skills/huggingface-papers/SKILL.md) |

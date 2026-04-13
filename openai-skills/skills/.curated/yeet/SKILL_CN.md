@@ -10,13 +10,13 @@ description: "仅当用户明确要求在一个流程中使用 GitHub CLI（`gh`
 
 ## 命名约定
 
-- 分支：从 main/master/default 开始时使用 `codex/{description}`。
+- 分支：从 main/master/default 开始时使用 `{description}`。
 - 提交：`{description}`（简洁）。
-- PR 标题：`[codex] {description}` 总结完整差异。
+- PR 标题：`{description}` 总结完整差异。
 
 ## 工作流程
 
-- 如果在 main/master/default 上，创建一个分支：`git checkout -b "codex/{description}"`
+- 如果在 main/master/default 上，创建一个分支：`git checkout -b "{description}"`
 - 否则停留在当前分支上。
 - 确认状态，然后暂存所有内容：`git status -sb` 然后 `git add -A`。
 - 使用描述简洁地提交：`git commit -m "{description}"`

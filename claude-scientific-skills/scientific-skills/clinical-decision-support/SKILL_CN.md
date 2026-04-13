@@ -469,7 +469,6 @@ AI 将自动:
 - `treatment_recommendation_template.tex` - 带有 GRADE 分级的基于证据的临床实践指南
 - `clinical_pathway_template.tex` - 用于治疗排序的 TikZ 决策算法流程图
 - `biomarker_report_template.tex` - 分子亚型分类和基因组概况报告
-- `evidence_synthesis_template.tex` - 系统证据审查和荟萃分析摘要
 
 **模板功能:**
 - 0.5in 页边距,用于紧凑呈现

@@ -8,7 +8,7 @@ license: 专有。LICENSE.txt包含完整条款
 
 ## 概述
 
-本指南涵盖使用Python库和命令行工具进行的基本PDF处理操作。有关高级功能、JavaScript库和详细示例，请参阅REFERENCE.md。如果需要填写PDF表单，请阅读FORMS.md并按照其说明操作。
+本指南涵盖使用Python库和命令行工具进行的基本PDF处理操作。有关高级功能、JavaScript库和详细示例，请参阅reference.md。如果需要填写PDF表单，请阅读forms.md并按照其说明操作。
 
 ## 快速开始
 
@@ -304,11 +304,11 @@ with open("encrypted.pdf", "wb") as output:
 | 创建PDF | reportlab | Canvas或Platypus |
 | 命令行合并 | qpdf | `qpdf --empty --pages ...` |
 | OCR扫描PDF | pytesseract | 先转换为图像 |
-| 填写PDF表单 | pdf-lib或pypdf（见FORMS.md） | 见FORMS.md |
+| 填写PDF表单 | pdf-lib或pypdf（见forms.md） | 见forms.md |
 
 ## 后续步骤
 
-- 有关高级pypdfium2用法，请参阅REFERENCE.md
-- 有关JavaScript库（pdf-lib），请参阅REFERENCE.md
-- 如果需要填写PDF表单，请按照FORMS.md中的说明操作
-- 有关故障排除指南，请参阅REFERENCE.md
+- 有关高级pypdfium2用法，请参阅reference.md
+- 有关JavaScript库（pdf-lib），请参阅reference.md
+- 如果需要填写PDF表单，请按照forms.md中的说明操作
+- 有关故障排除指南，请参阅reference.md

@@ -1,9 +1,11 @@
-# Claude Scientific Skills
+# Scientific Agent Skills
 
-> **New: [K-Dense BYOK](https://github.com/K-Dense-AI/k-dense-byok)** — A free, open-source AI co-scientist that runs on your desktop, powered by Claude Scientific Skills. Bring your own API keys, pick from 40+ models, and get a full research workspace with web search, file handling, 100+ scientific databases, and access to all 134 skills in this repo. Your data stays on your computer, and you can optionally scale to cloud compute via [Modal](https://modal.com/) for heavy workloads. [Get started here.](https://github.com/K-Dense-AI/k-dense-byok)
+> **🔔 Claude Scientific Skills is now Scientific Agent Skills.** Same skills, broader compatibility — now works with any AI agent that supports the open [Agent Skills](https://agentskills.io/) standard, not just Claude.
+
+> **New: [K-Dense BYOK](https://github.com/K-Dense-AI/k-dense-byok)** — A free, open-source AI co-scientist that runs on your desktop, powered by Scientific Agent Skills. Bring your own API keys, pick from 40+ models, and get a full research workspace with web search, file handling, 100+ scientific databases, and access to all 133 skills in this repo. Your data stays on your computer, and you can optionally scale to cloud compute via [Modal](https://modal.com/) for heavy workloads. [Get started here.](https://github.com/K-Dense-AI/k-dense-byok)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
-[![Skills](https://img.shields.io/badge/Skills-134-brightgreen.svg)](#whats-included)
+[![Skills](https://img.shields.io/badge/Skills-133-brightgreen.svg)](#whats-included)
 [![Databases](https://img.shields.io/badge/Databases-100%2B-orange.svg)](#whats-included)
 [![Agent Skills](https://img.shields.io/badge/Standard-Agent_Skills-blueviolet.svg)](https://agentskills.io/)
 [![Works with](https://img.shields.io/badge/Works_with-Cursor_|_Claude_Code_|_Codex-blue.svg)](#getting-started)
@@ -11,15 +13,7 @@
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-K--Dense_Inc.-0A66C2?logo=linkedin)](https://www.linkedin.com/company/k-dense-inc)
 [![YouTube](https://img.shields.io/badge/YouTube-K--Dense_Inc.-FF0000?logo=youtube)](https://www.youtube.com/@K-Dense-Inc)
 
-A comprehensive collection of **134 ready-to-use scientific and research skills** (covering cancer genomics, drug-target binding, molecular dynamics, RNA velocity, geospatial science, time series forecasting, 78+ scientific databases, and more) for any AI agent that supports the open [Agent Skills](https://agentskills.io/) standard, created by [K-Dense](https://k-dense.ai). Works with **Cursor, Claude Code, Codex, and more**. Transform your AI agent into a research assistant capable of executing complex multi-step scientific workflows across biology, chemistry, medicine, and beyond.
-
-<p align="center">
-  <a href="https://k-dense.ai">
-    <img src="docs/k-dense-web.gif" alt="K-Dense Web Demo" width="800"/>
-  </a>
-  <br/>
-  <em>The demo above shows <a href="https://k-dense.ai">K-Dense Web</a> — the hosted platform built on top of these skills. Claude Scientific Skills is the open-source skill collection; K-Dense Web is the full AI co-scientist platform with more power and zero setup.</em>
-</p>
+A comprehensive collection of **133 ready-to-use scientific and research skills** (covering cancer genomics, drug-target binding, molecular dynamics, RNA velocity, geospatial science, time series forecasting, 78+ scientific databases, and more) for any AI agent that supports the open [Agent Skills](https://agentskills.io/) standard, created by [K-Dense](https://k-dense.ai). Works with **Cursor, Claude Code, Codex, and more**. Transform your AI agent into a research assistant capable of executing complex multi-step scientific workflows across biology, chemistry, medicine, and beyond.
 
 ---
 
@@ -46,13 +40,13 @@ These skills enable your AI agent to seamlessly work with specialized scientific
 
 > ⭐ **If you find this repository useful**, please consider giving it a star! It helps others discover these tools and encourages us to continue maintaining and expanding this collection.
 
-> 🎬 **New to Claude Scientific Skills?** Watch our [Getting Started with Claude Scientific Skills](https://youtu.be/ZxbnDaD_FVg) video for a quick walkthrough.
+> 🎬 **New to Scientific Agent Skills?** Watch our [Getting Started with Scientific Agent Skills](https://youtu.be/ZxbnDaD_FVg) video for a quick walkthrough.
 
 ---
 
 ## 📦 What's Included
 
-This repository provides **134 scientific and research skills** organized into the following categories:
+This repository provides **133 scientific and research skills** organized into the following categories:
 
 - **100+ Scientific & Financial Databases** - A unified database-lookup skill provides direct access to 78 public databases (PubChem, ChEMBL, UniProt, COSMIC, ClinicalTrials.gov, FRED, USPTO, and more), plus dedicated skills for DepMap, Imaging Data Commons, PrimeKG, and U.S. Treasury Fiscal Data. Multi-database packages like BioServices (~40 bioinformatics services), BioPython (38 NCBI sub-databases via Entrez), and gget (20+ genomics databases) add further coverage
 - **70+ Optimized Python Package Skills** - Explicitly defined skills for RDKit, Scanpy, PyTorch Lightning, scikit-learn, BioPython, pyzotero, BioServices, PennyLane, Qiskit, OpenMM, MDAnalysis, scVelo, TimesFM, and others — with curated documentation, examples, and best practices. Note: the agent can write code using *any* Python package, not just these; these skills simply provide stronger, more reliable performance for the packages listed
@@ -98,7 +92,7 @@ Each skill includes:
 - **Multi-Step Workflows** - Execute complex pipelines with a single prompt
 
 ### 🎯 **Comprehensive Coverage**
-- **134 Skills** - Extensive coverage across all major scientific domains
+- **133 Skills** - Extensive coverage across all major scientific domains
 - **100+ Databases** - Unified access to 78+ databases via database-lookup, plus dedicated data access skills and multi-database packages like BioServices, BioPython, and gget
 - **70+ Optimized Python Package Skills** - RDKit, Scanpy, PyTorch Lightning, scikit-learn, BioServices, PennyLane, Qiskit, OpenMM, scVelo, TimesFM, and others (the agent can use any Python package; these are the pre-documented, higher-performing paths)
 
@@ -116,10 +110,10 @@ Each skill includes:
 
 ## 🎯 Getting Started
 
-Install Claude Scientific Skills with a single command:
+Install Scientific Agent Skills with a single command:
 
 ```bash
-npx skills add K-Dense-AI/claude-scientific-skills
+npx skills add K-Dense-AI/scientific-agent-skills
 ```
 
 This is the official standard approach for installing Agent Skills across **all platforms**, including **Claude Code**, **Claude Cowork**, **Codex**, **Gemini CLI**, **Cursor**, and any other agent that supports the open [Agent Skills](https://agentskills.io/) standard.
@@ -148,13 +142,15 @@ We recommend the following:
   uv pip install cisco-ai-skill-scanner
   skill-scanner scan /path/to/skill --use-behavioral
   ```
-- **Report anything suspicious.** If you find a skill that looks malicious or behaves unexpectedly, please [open an issue](https://github.com/K-Dense-AI/claude-scientific-skills/issues) immediately so we can investigate.
+- **Report anything suspicious.** If you find a skill that looks malicious or behaves unexpectedly, please [open an issue](https://github.com/K-Dense-AI/scientific-agent-skills/issues) immediately so we can investigate.
+
+All skills are scanned on an approximately weekly basis, and [SECURITY.md](SECURITY.md) is updated with the latest results. We try to address security gaps as they arise.
 
 ---
 
 ## ❤️ Support the Open Source Community
 
-Claude Scientific Skills is powered by **50+ incredible open source projects** maintained by dedicated developers and research communities worldwide. Projects like Biopython, Scanpy, RDKit, scikit-learn, PyTorch Lightning, and many others form the foundation of these skills.
+Scientific Agent Skills is powered by **50+ incredible open source projects** maintained by dedicated developers and research communities worldwide. Projects like Biopython, Scanpy, RDKit, scikit-learn, PyTorch Lightning, and many others form the foundation of these skills.
 
 **If you find value in this repository, please consider supporting the projects that make it possible:**
 
@@ -324,7 +320,7 @@ If so, **[K-Dense Web](https://k-dense.ai)** was built for you. It is the full A
 
 | Feature | This Repo | K-Dense Web |
 |---------|-----------|-------------|
-| Scientific Skills | 134 skills | **200+ skills** (exclusive access) |
+| Scientific Skills | 133 skills | **200+ skills** (exclusive access) |
 | Setup | Manual installation | **Zero setup, works instantly** |
 | Compute | Your machine | **Cloud GPUs and HPC included** |
 | Workflows | Prompt and code | **End-to-end research pipelines** |
@@ -339,7 +335,7 @@ If so, **[K-Dense Web](https://k-dense.ai)** was built for you. It is the full A
 >
 > **[Try K-Dense Web free](https://k-dense.ai)**
 
-*[k-dense.ai](https://k-dense.ai) | [Read the full comparison](https://k-dense.ai/blog/k-dense-web-vs-claude-scientific-skills)*
+*[k-dense.ai](https://k-dense.ai) | [Read the full comparison](https://k-dense.ai/blog/k-dense-web-vs-scientific-agent-skills)*
 
 ---
 
@@ -387,7 +383,7 @@ If so, **[K-Dense Web](https://k-dense.ai)** was built for you. It is the full A
 
 ## 📚 Available Skills
 
-This repository contains **134 scientific and research skills** organized across multiple domains. Each skill provides comprehensive documentation, code examples, and best practices for working with scientific libraries, databases, and tools.
+This repository contains **133 scientific and research skills** organized across multiple domains. Each skill provides comprehensive documentation, code examples, and best practices for working with scientific libraries, databases, and tools.
 
 ### Skill Categories
 
@@ -478,7 +474,7 @@ This repository contains **134 scientific and research skills** organized across
 #### 📚 **Scientific Communication** (20+ skills)
 - Literature: Paper Lookup (PubMed, PMC, bioRxiv, medRxiv, arXiv, OpenAlex, Crossref, Semantic Scholar, CORE, Unpaywall), Literature Review
 - Advanced paper search: BGPT Paper Search (25+ structured fields per paper — methods, results, sample sizes, quality scores — from full text, not just abstracts)
-- Web search: Perplexity Search (AI-powered search with real-time information), Parallel Web (synthesized summaries with citations)
+- Web search: Parallel Web (synthesized summaries with citations)
 - Research notebooks: Open Notebook (self-hosted NotebookLM alternative — PDFs, videos, audio, web pages; 16+ AI providers; multi-speaker podcast generation)
 - Writing: Scientific Writing, Peer Review
 - Document processing: XLSX, MarkItDown, Document Skills
@@ -669,8 +665,8 @@ A: Open an issue on GitHub with a clear description. For bugs, include reproduct
 Need help? Here's how to get support:
 
 - 📖 **Documentation**: Check the relevant `SKILL.md` and `references/` folders
-- 🐛 **Bug Reports**: [Open an issue](https://github.com/K-Dense-AI/claude-scientific-skills/issues)
-- 💡 **Feature Requests**: [Submit a feature request](https://github.com/K-Dense-AI/claude-scientific-skills/issues/new)
+- 🐛 **Bug Reports**: [Open an issue](https://github.com/K-Dense-AI/scientific-agent-skills/issues)
+- 💡 **Feature Requests**: [Submit a feature request](https://github.com/K-Dense-AI/scientific-agent-skills/issues/new)
 - 💼 **Enterprise Support**: Contact [K-Dense](https://k-dense.ai/) for commercial support
 - 🌐 **Community**: [Join our Slack](https://join.slack.com/t/k-densecommunity/shared_invite/zt-3iajtyls1-EwmkwIZk0g_o74311Tkf5g)
 
@@ -692,33 +688,33 @@ Whether you're just getting started or you're a power user, our community is her
 
 ## 📖 Citation
 
-If you use Claude Scientific Skills in your research or project, please cite it as:
+If you use Scientific Agent Skills in your research or project, please cite it as:
 
 ### BibTeX
 ```bibtex
-@software{claude_scientific_skills_2026,
+@software{scientific_agent_skills_2026,
   author = {{K-Dense Inc.}},
-  title = {Claude Scientific Skills: A Comprehensive Collection of Scientific Tools for Claude AI},
+  title = {Scientific Agent Skills: A Comprehensive Collection of Scientific Tools for AI Agents},
   year = {2026},
-  url = {https://github.com/K-Dense-AI/claude-scientific-skills},
-  note = {134 skills covering databases, packages, integrations, and analysis tools}
+  url = {https://github.com/K-Dense-AI/scientific-agent-skills},
+  note = {133 skills covering databases, packages, integrations, and analysis tools}
 }
 ```
 
 ### APA
 ```
-K-Dense Inc. (2026). Claude Scientific Skills: A comprehensive collection of scientific tools for Claude AI [Computer software]. https://github.com/K-Dense-AI/claude-scientific-skills
+K-Dense Inc. (2026). Scientific Agent Skills: A comprehensive collection of scientific tools for AI agents [Computer software]. https://github.com/K-Dense-AI/scientific-agent-skills
 ```
 
 ### MLA
 ```
-K-Dense Inc. Claude Scientific Skills: A Comprehensive Collection of Scientific Tools for Claude AI. 2026, github.com/K-Dense-AI/claude-scientific-skills.
+K-Dense Inc. Scientific Agent Skills: A Comprehensive Collection of Scientific Tools for AI Agents. 2026, github.com/K-Dense-AI/scientific-agent-skills.
 ```
 
 ### Plain Text
 ```
-Claude Scientific Skills by K-Dense Inc. (2026)
-Available at: https://github.com/K-Dense-AI/claude-scientific-skills
+Scientific Agent Skills by K-Dense Inc. (2026)
+Available at: https://github.com/K-Dense-AI/scientific-agent-skills
 ```
 
 We appreciate acknowledgment in publications, presentations, or projects that benefit from these skills!
@@ -745,4 +741,4 @@ See [LICENSE.md](LICENSE.md) for full terms.
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=K-Dense-AI/claude-scientific-skills&type=date&legend=top-left)](https://www.star-history.com/#K-Dense-AI/claude-scientific-skills&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/svg?repos=K-Dense-AI/scientific-agent-skills&type=date&legend=top-left)](https://www.star-history.com/#K-Dense-AI/scientific-agent-skills&type=date&legend=top-left)

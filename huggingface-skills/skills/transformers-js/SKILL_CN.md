@@ -1,13 +1,13 @@
 ---
 name: transformers-js
-description: 使用 Transformers.js 直接在 JavaScript/TypeScript 中运行最先进的机器学习模型。支持 NLP（文本分类、翻译、摘要）、计算机视觉（图像分类、目标检测）、音频（语音识别、音频分类）和多模态任务。使用来自 Hugging Face Hub 的预训练模型，在 Node.js 和浏览器（使用 WebGPU/WASM）中工作。
+description: 使用 Transformers.js 直接在 JavaScript/TypeScript 中运行最先进的机器学习模型。支持 NLP（文本分类、翻译、摘要）、计算机视觉（图像分类、目标检测）、音频（语音识别、音频分类）和多模态任务。使用来自 Hugging Face Hub 的预训练模型，在浏览器和服务器端运行时（Node.js、Bun、Deno）中使用 WebGPU/WASM 工作。
 license: Apache-2.0
 metadata:
   author: huggingface
-  version: "3.8.1"
+  version: "4.x"
   category: machine-learning
   repository: https://github.com/huggingface/transformers.js
-compatibility: 需要 Node.js 18+ 或支持 ES 模块的现代浏览器。WebGPU 支持需要兼容的浏览器/环境。从 Hugging Face Hub 下载模型需要互联网访问（如果使用本地模型则为可选）。
+compatibility: 需要 Node.js 18+（或兼容的 Bun/Deno 运行时）或支持 ES 模块的现代浏览器。WebGPU 需要运行时和硬件支持；WASM 是广泛的回退方案。从 Hugging Face Hub 下载模型需要互联网访问（如果使用本地模型则为可选）。
 ---
 
 # Transformers.js - JavaScript 机器学习
@@ -53,7 +53,7 @@ const result = await pipe('I love transformers!');
 // 输出：[{ label: 'POSITIVE', score: 0.999817686 }]
 
 // 重要：完成后始终释放以释放内存
-await classifier.dispose();
+await pipe.dispose();
 ```
 
 **⚠️ 内存管理：** 所有管道完成后必须使用 `pipe.dispose()` 释放，以防止内存泄漏。有关不同环境中的清理模式，请参阅 [代码示例](./references/EXAMPLES.md) 中的示例。
@@ -359,7 +359,7 @@ await generator.dispose();
 2. **检查 ONNX 支持**：确保模型具有 ONNX 文件（在模型仓库中查找 `onnx` 文件夹）
 3. **阅读模型卡片**：模型卡片包含使用示例、限制和基准测试
 4. **本地测试**：在您的环境中测试推理速度和内存使用
-5. **社区模型**：查找 `Xenova`（Transformers.js 维护者）或 `onnx-community` 的模型
+5. **按库筛选**：使用 `library=transformers.js` 查找兼容模型：https://huggingface.co/models?library=transformers.js
 6. **版本固定**：在生产中使用特定的 git 提交以确保稳定性：
    ```javascript
    const pipe = await pipeline('task', 'model-id', { revision: 'abc123' });
@@ -374,10 +374,10 @@ await generator.dispose();
 **快速概览：**
 
 ```javascript
-import { env } from '@huggingface/transformers';
+import { env, LogLevel } from '@huggingface/transformers';
 
 // 查看版本
-console.log(env.version); // 例如，'3.8.1'
+console.log(env.version); // 例如，'4.x'
 
 // 常见设置
 env.allowRemoteModels = true;  // 从 Hugging Face Hub 加载
@@ -386,6 +386,18 @@ env.localModelPath = '/models/'; // 本地模型目录
 env.useFSCache = true;         // 在磁盘上缓存模型（Node.js）
 env.useBrowserCache = true;    // 在浏览器中缓存模型
 env.cacheDir = './.cache';     // 缓存目录位置
+// 可选：覆盖日志级别（默认为 LogLevel.WARNING）
+env.logLevel = LogLevel.INFO;
+
+// 可选：自定义 fetch 用于授权头、重试、中止信号等
+env.fetch = (url, options) =>
+  fetch(url, {
+    ...options,
+    headers: {
+      ...options?.headers,
+      Authorization: `Bearer ${HF_TOKEN}`,
+    },
+  });
 ```
 
 **配置模式：**
@@ -411,6 +423,43 @@ env.useBrowserCache = false;
 有关所有配置选项、缓存策略、缓存管理、预下载模型等的完整文档，请参阅：
 
 **→ [配置参考](./references/CONFIGURATION.md)**
+
+### ModelRegistry (v4)
+
+`ModelRegistry` 让您在加载管道之前了解和控制模型资产。使用它来估计下载大小、检查缓存状态、检查可用的 dtypes，并为特定的任务/模型/选项元组清除缓存的工件。
+
+```javascript
+import { ModelRegistry } from '@huggingface/transformers';
+
+const task = 'feature-extraction';
+const modelId = 'onnx-community/all-MiniLM-L6-v2-ONNX';
+const modelOptions = { dtype: 'fp32' };
+
+// 列出此管道所需的文件
+const files = await ModelRegistry.get_pipeline_files(task, modelId, modelOptions);
+
+// 检查资产是否已经缓存
+const cached = await ModelRegistry.is_pipeline_cached(task, modelId, modelOptions);
+
+// 检查此模型可用的精度格式
+const dtypes = await ModelRegistry.get_available_dtypes(modelId);
+
+console.log({ files: files.length, cached, dtypes });
+```
+
+有关生产模式和完整 API 覆盖，请参阅 **[ModelRegistry 参考](./references/MODEL_REGISTRY.md)**。
+
+### 独立分词（`@huggingface/tokenizers`）
+
+对于仅分词工作流，请使用 `@huggingface/tokenizers`。这是一个单独的轻量级包，当您需要快速分词/编码而不需要加载完整的模型推理管道时很有用。
+
+```bash
+npm install @huggingface/tokenizers
+```
+
+```javascript
+import { Tokenizer } from '@huggingface/tokenizers';
+```
 
 ### 使用张量
 
@@ -441,10 +490,10 @@ const results = await classifier([
 ]);
 ```
 
-## 浏览器特定注意事项
+## 运行时特定考虑
 
 ### WebGPU 使用
-WebGPU 在浏览器中提供 GPU 加速：
+WebGPU 在浏览器和服务器端运行时（当支持时）提供 GPU 加速：
 
 ```javascript
 const pipe = await pipeline('text-generation', 'onnx-community/gemma-3-270m-it-ONNX', {
@@ -453,13 +502,13 @@ const pipe = await pipeline('text-generation', 'onnx-community/gemma-3-270m-it-O
 });
 ```
 
-**注意**：WebGPU 是实验性的。如果出现问题，请检查浏览器兼容性并提交问题。
+**注意**：当可用时使用 `webgpu`，当当前运行时不支持时回退到 WASM/CPU。
 
 ### WASM 性能
-默认浏览器执行使用 WASM：
+WASM 是跨运行时最兼容的执行后端：
 
 ```javascript
-// 使用量化针对浏览器优化
+// 针对浏览器使用量化优化
 const pipe = await pipeline('sentiment-analysis', 'model-id', {
   dtype: 'q8'  // 或 'q4' 以获得更小的尺寸
 });
@@ -476,7 +525,12 @@ import { pipeline } from '@huggingface/transformers';
 const fileProgress = {};
 
 function onProgress(info) {
-  console.log(`${info.status}: ${info.file}`);
+  if (info.status === 'progress_total') {
+    console.log(`总计: ${info.progress.toFixed(1)}%`);
+    return;
+  }
+
+  console.log(`${info.status}: ${info.file ?? ''}`);
   
   if (info.status === 'progress') {
     fileProgress[info.file] = info.progress;
@@ -498,10 +552,10 @@ const classifier = await pipeline('sentiment-analysis', null, {
 
 ```typescript
 interface ProgressInfo {
-  status: 'initiate' | 'download' | 'progress' | 'done' | 'ready';
+  status: 'initiate' | 'download' | 'progress' | 'progress_total' | 'done' | 'ready';
   name: string;      // 模型 id 或路径
-  file: string;      // 正在处理的文件
-  progress?: number; // 百分比（0-100，仅用于 'progress' 状态）
+  file?: string;     // 正在处理的文件（每个文件事件）
+  progress?: number; // 百分比（0-100，用于 'progress' 和 'progress_total'）
   loaded?: number;   // 已下载的字节（仅用于 'progress' 状态）
   total?: number;    // 总字节数（仅用于 'progress' 状态）
 }
@@ -574,11 +628,53 @@ await pipe.dispose();  // ✓ 释放内存（每个模型 100MB - 几 GB）
 - 如果 `fp32` 失败，尝试 `dtype: 'fp16'`
 - 如果 WebGPU 不可用，回退到 WASM
 
+## 最佳实践
+
+1. **始终释放管道**：完成后调用 `pipe.dispose()` - 防止内存泄漏的关键
+2. **从管道开始**：除非需要细粒度控制，否则使用管道 API
+3. **先在本地测试**：在部署前使用小输入测试模型
+4. **监控模型大小**：注意 Web 应用程序的模型下载大小
+5. **处理加载状态**：显示进度指示器以获得更好的用户体验
+6. **版本固定**：为生产稳定性固定特定的模型版本
+7. **错误边界**：始终将管道调用包装在 try-catch 块中
+8. **渐进增强**：为不支持的浏览器提供回退方案
+9. **重用模型**：加载一次，多次使用 - 不要不必要地重新创建管道
+10. **优雅关闭**：在服务器中在 SIGTERM/SIGINT 上释放模型
+
+## 快速参考：任务 ID
+
+| 任务 | 任务 ID |
+|------|---------|
+| 文本分类 | `text-classification` 或 `sentiment-analysis` |
+| 令牌分类 | `token-classification` 或 `ner` |
+| 问答 | `question-answering` |
+| 填充掩码 | `fill-mask` |
+| 摘要 | `summarization` |
+| 翻译 | `translation` |
+| 文本生成 | `text-generation` |
+| 文本到文本生成 | `text2text-generation` |
+| 零样本分类 | `zero-shot-classification` |
+| 图像分类 | `image-classification` |
+| 图像分割 | `image-segmentation` |
+| 目标检测 | `object-detection` |
+| 深度估计 | `depth-estimation` |
+| 图像到图像 | `image-to-image` |
+| 零样本图像分类 | `zero-shot-image-classification` |
+| 零样本目标检测 | `zero-shot-object-detection` |
+| 自动语音识别 | `automatic-speech-recognition` |
+| 音频分类 | `audio-classification` |
+| 文本转语音 | `text-to-speech` 或 `text-to-audio` |
+| 图像到文本 | `image-to-text` |
+| 文档问答 | `document-question-answering` |
+| 特征提取 | `feature-extraction` |
+| 句子相似度 | `sentence-similarity` |
+
 ## 参考文档
 
 ### 本技能
 - **[Pipeline 选项](./references/PIPELINE_OPTIONS.md)** - 使用 `progress_callback`、`device`、`dtype` 等配置 `pipeline()`
 - **[配置参考](./references/CONFIGURATION.md)** - 用于缓存和模型加载的全局 `env` 配置
+- **[ModelRegistry 参考](./references/MODEL_REGISTRY.md)** - 在加载管道之前检查文件、缓存状态、dtypes 和清除缓存
 - **[缓存参考](./references/CACHE.md)** - 浏览器 Cache API、Node.js 文件系统缓存和自定义缓存实现
 - **[文本生成指南](./references/TEXT_GENERATION.md)** - 流式传输、聊天格式和生成参数
 - **[模型架构](./references/MODEL_ARCHITECTURES.md)** - 支持的模型和选择技巧
@@ -589,4 +685,4 @@ await pipe.dispose();  // ✓ 释放内存（每个模型 100MB - 几 GB）
 - API 参考：https://huggingface.co/docs/transformers.js/api/pipelines
 - 模型中心：https://huggingface.co/models?library=transformers.js
 - GitHub：https://github.com/huggingface/transformers.js
-- 示例：https://github.com/huggingface/transformers.js/tree/main/examples
+- 示例：https://github.com/huggingface/transformers.js-examples

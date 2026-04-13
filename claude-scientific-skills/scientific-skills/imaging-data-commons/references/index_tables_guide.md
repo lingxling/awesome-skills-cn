@@ -1,6 +1,6 @@
 # Index Tables Guide for IDC
 
-**Tested with:** idc-index 0.11.9 (IDC data version v23)
+**Tested with:** idc-index 0.11.14 (IDC data version v23)
 
 This guide covers the structure and access patterns for IDC index tables: programmatic schema discovery, DataFrame access, and join column references. For the overview of available tables and their purposes, see the "Index Tables" section in the main SKILL.md.
 
@@ -109,6 +109,8 @@ Most common columns in the primary `index` table (use `indices_overview` for com
 | `license_short_name` | STRING | No | License type (CC BY 4.0, CC BY-NC 4.0, etc.) |
 | `series_size_MB` | FLOAT | No | Size of series in megabytes |
 | `instanceCount` | INTEGER | No | Number of DICOM instances in series |
+| `SOPClassUID` | STRING | Yes | DICOM SOP Class UID (identifies the object/service class, e.g., CT Image Storage) |
+| `TransferSyntaxUID` | STRING | Yes | DICOM Transfer Syntax UID (encoding/compression method) |
 
 **DICOM = Yes**: Column value extracted from the DICOM attribute with the same name. Refer to the [DICOM standard](https://dicom.nema.org/medical/dicom/current/output/chtml/part06/chapter_6.html) for numeric tag mappings. Use standard DICOM knowledge for expected values and formats.
 
@@ -125,6 +127,9 @@ Use this table to identify join columns between index tables. Always call `clien
 | `ann_index` | `ann_group_index` | `ann_index.SeriesInstanceUID = ann_group_index.SeriesInstanceUID` |
 | `index` | `clinical_index` | `index.collection_id = clinical_index.collection_id` (then filter by patient) |
 | `index` | `contrast_index` | `index.SeriesInstanceUID = contrast_index.SeriesInstanceUID` |
+| `index` | `volume_geometry_index` | `index.SeriesInstanceUID = volume_geometry_index.SeriesInstanceUID` |
+| `index` | `rtstruct_index` | `index.SeriesInstanceUID = rtstruct_index.SeriesInstanceUID` |
+| `rtstruct_index` | `index` (source images) | `rtstruct_index.referenced_SeriesInstanceUID = index.SeriesInstanceUID` |
 
 For complete query examples using these joins, see `references/sql_patterns.md`.
 

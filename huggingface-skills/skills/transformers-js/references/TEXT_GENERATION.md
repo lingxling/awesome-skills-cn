@@ -74,7 +74,7 @@ await generator('Tell me a story', {
   <div id="output"></div>
 
   <script type="module">
-    import { pipeline, TextStreamer } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1';
+    import { pipeline, TextStreamer } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4';
     
     const generator = await pipeline(
       'text-generation',

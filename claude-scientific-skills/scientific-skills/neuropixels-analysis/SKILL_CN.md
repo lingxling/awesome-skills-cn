@@ -270,29 +270,29 @@ cp assets/analysis_template.py my_analysis.py
 python my_analysis.py
 ```
 
-### reference/standard_workflow.md
+### references/standard_workflow.md
 详细的逐步工作流程,每个阶段都有解释。
 
-### reference/api_reference.md
+### references/api_reference.md
 按模块组织的快速函数参考。
 
-### reference/plotting_guide.md
+### references/plotting_guide.md
 用于出版质量图表的综合可视化指南。
 
 ## 详细参考指南
 
 | 主题 | 参考 |
 |-------|-----------|
-| 完整工作流程 | [references/standard_workflow.md](reference/standard_workflow.md) |
-| API参考 | [references/api_reference.md](reference/api_reference.md) |
-| 绘图指南 | [references/plotting_guide.md](reference/plotting_guide.md) |
-| 预处理 | [references/PREPROCESSING.md](reference/PREPROCESSING.md) |
-| Spike sorting | [references/SPIKE_SORTING.md](reference/SPIKE_SORTING.md) |
-| 运动校正 | [references/MOTION_CORRECTION.md](reference/MOTION_CORRECTION.md) |
-| 质量指标 | [references/QUALITY_METRICS.md](reference/QUALITY_METRICS.md) |
-| 自动筛选 | [references/AUTOMATED_CURATION.md](reference/AUTOMATED_CURATION.md) |
-| AI辅助筛选 | [references/AI_CURATION.md](reference/AI_CURATION.md) |
-| 波形分析 | [references/ANALYSIS.md](reference/ANALYSIS.md) |
+| 完整工作流程 | [references/standard_workflow.md](references/standard_workflow.md) |
+| API参考 | [references/api_reference.md](references/api_reference.md) |
+| 绘图指南 | [references/plotting_guide.md](references/plotting_guide.md) |
+| 预处理 | [references/PREPROCESSING.md](references/PREPROCESSING.md) |
+| Spike sorting | [references/SPIKE_SORTING.md](references/SPIKE_SORTING.md) |
+| 运动校正 | [references/MOTION_CORRECTION.md](references/MOTION_CORRECTION.md) |
+| 质量指标 | [references/QUALITY_METRICS.md](references/QUALITY_METRICS.md) |
+| 自动筛选 | [references/AUTOMATED_CURATION.md](references/AUTOMATED_CURATION.md) |
+| AI辅助筛选 | [references/AI_CURATION.md](references/AI_CURATION.md) |
+| 波形分析 | [references/ANALYSIS.md](references/ANALYSIS.md) |
 
 ## 安装
 

@@ -162,6 +162,11 @@ merged = pd.merge(
 
 ```python
 # SQL join approach
+# Clinical tables loaded via get_clinical_table() are not automatically
+# registered in DuckDB. Register the DataFrame manually before joining.
+nlst_canc_df = client.get_clinical_table("nlst_canc")
+client._duckdb_conn.register("nlst_canc", nlst_canc_df)
+
 query = """
 SELECT
   index.PatientID,

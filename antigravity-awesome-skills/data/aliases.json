@@ -42,6 +42,7 @@
     "code-refactoring-restore": "code-refactoring-context-restore",
     "code-refactoring-clean": "code-refactoring-refactor-clean",
     "codebase-cleanup-clean": "codebase-cleanup-refactor-clean",
+    "codebase-to-converter": "codebase-to-wordpress-converter",
     "comprehensive-review-full": "comprehensive-review-full-review",
     "comprehensive-review-enhance": "comprehensive-review-pr-enhance",
     "context-management-restore": "context-management-context-restore",
@@ -94,6 +95,8 @@
     "llm-application-optimize": "llm-application-dev-prompt-optimize",
     "machine-learning-pipeline": "machine-learning-ops-ml-pipeline",
     "microsoft-azure-dotnet": "microsoft-azure-webjobs-extensions-authentication-events-dotnet",
+    "monte-carlo-creation": "monte-carlo-monitor-creation",
+    "monte-carlo-notebook": "monte-carlo-validation-notebook",
     "moodle-external-development": "moodle-external-api-development",
     "multi-agent-orchestrator": "multi-agent-task-orchestrator",
     "multi-platform-apps": "multi-platform-apps-multi-platform",
@@ -122,6 +125,7 @@
     "startup-business-opportunity": "startup-business-analyst-market-opportunity",
     "systems-programming-project": "systems-programming-rust-project",
     "team-collaboration-notes": "team-collaboration-standup-notes",
+    "wordpress-centric-skill": "wordpress-centric-high-seo-optimized-blogwriting-skill",
     "shopify—development": "shopify-development"
   }
 }

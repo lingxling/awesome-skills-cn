@@ -1073,15 +1073,15 @@ python scripts/pdf_to_images.py presentation.pdf output/slide --dpi 150
 - **`assets/powerpoint_design_guide.md`**：完整的PowerPoint设计和实施指南
 - **`assets/timing_guidelines.md`**：综合时间、节奏和练习策略
 
-## 快速入门指南
+## 快速开始指南
 
 ### 15分钟会议演讲（PDF工作流程 - 推荐）
 
 1. **研究与规划**（45分钟）：
-   - **使用research-lookup**找到8-12篇相关论文用于引用
-   - 建立参考列表（背景，比较研究）
+   - **使用research-lookup**查找8-12篇相关论文作为引用
+   - 构建参考列表（背景、比较研究）
    - 概述内容（介绍 → 方法 → 2-3个关键结果 → 结论）
-   - **为每张幻灯片创建详细计划**（标题，要点，视觉元素）
+   - **为每张幻灯片创建详细计划**（标题、要点、视觉元素）
    - 目标15-18张幻灯片
 
 2. **使用Nano Banana Pro生成幻灯片**（1-2小时）：
@@ -1090,13 +1090,13 @@ python scripts/pdf_to_images.py presentation.pdf output/slide --dpi 150
    
    ```bash
    # 标题幻灯片（建立风格 - 默认作者：K-Dense）
-   python scripts/generate_slide_image.py "标题幻灯片：'您的研究标题'。会议名称，K-Dense。格式目标：[您的配色方案]，简约专业设计，无装饰元素，干净和企业风格。" -o slides/01_title.png
+   python scripts/generate_slide_image.py "Title slide: 'Your Research Title'. Conference name, K-Dense. FORMATTING GOAL: [your color scheme], minimal professional design, no decorative elements, clean and corporate." -o slides/01_title.png
    
    # 带引用的介绍幻灯片（附加前一张以保持一致性）
-   python scripts/generate_slide_image.py "标题为'为什么这很重要'的幻灯片。三个要点，带简单图标。引用：在底部包含：(Smith等，2023；Jones等，2024)。格式目标：完全匹配附加幻灯片风格。" -o slides/02_intro.png --attach slides/01_title.png
+   python scripts/generate_slide_image.py "Slide titled 'Why This Matters'. Three key points with simple icons. CITATIONS: Include at bottom: (Smith et al., 2023; Jones et al., 2024). FORMATTING GOAL: Match attached slide style exactly." -o slides/02_intro.png --attach slides/01_title.png
    
-   # 为每张幻灯片继续（始终附加前一张，在相关处包含引用）
-   python scripts/generate_slide_image.py "标题为'方法'的幻灯片。关键方法要点。引用：(基于Chen等，2022)。格式目标：完全匹配附加幻灯片风格。" -o slides/03_methods.png --attach slides/02_intro.png
+   # 继续为每张幻灯片生成（始终附加前一张，在相关处包含引用）
+   python scripts/generate_slide_image.py "Slide titled 'Methods'. Key methodology points. CITATIONS: (Based on Chen et al., 2022). FORMATTING GOAL: Match attached slide style exactly." -o slides/03_methods.png --attach slides/02_intro.png
    
    # 合并为PDF
    python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
@@ -1104,50 +1104,50 @@ python scripts/pdf_to_images.py presentation.pdf output/slide --dpi 150
 
 3. **审查与迭代**（30分钟）：
    - 打开PDF并审查每张幻灯片
-   - 重新生成任何需要改进的幻灯片
+   - 重新生成需要改进的幻灯片
    - 重新合并为PDF
 
 4. **练习**（2-3小时）：
-   - 练习3-5次，带计时器
-   - 目标13-14分钟（留出缓冲）
-   - 录制自己，观看回放
+   - 用计时器练习3-5次
+   - 目标13-14分钟（留出缓冲时间）
+   - 记录自己，观看回放
    - **准备问题**（使用research-lookup预测）
 
 5. **最终确定**（30分钟）：
-   - 如有需要，生成备份/附录幻灯片
+   - 如需要，生成备份/附录幻灯片
    - 保存多个副本
    - 在演示计算机上测试
 
-总时间：高质量AI生成演示约5-6小时
+总时间：~5-6小时用于高质量AI生成演示
 
 ### 替代方案：PowerPoint工作流程
 
-如果您需要可编辑幻灯片（例如，用于公司模板）：
+如果您需要可编辑的幻灯片（例如，用于公司模板）：
 
-1. **规划幻灯片**如上
-2. **生成视觉效果**，使用`--visual-only`标志：
+1. **如上规划幻灯片**
+2. **使用`--visual-only`标志生成视觉效果**：
    ```bash
-   python scripts/generate_slide_image.py "图表描述" -o figures/fig1.png --visual-only
+   python scripts/generate_slide_image.py "diagram description" -o figures/fig1.png --visual-only
    ```
-3. **使用PPTX技能**和生成的图像构建PPTX
-4. **使用PPTX工作流程**单独添加文本
+3. **使用PPTX技能构建PPTX**，使用生成的图像
+4. **单独添加文本**使用PPTX工作流程
 
-请参阅`document-skills/pptx/SKILL.md`获取完整的PowerPoint工作流程。
+请参阅`scientific-skills/pptx/SKILL.md`获取完整的PowerPoint工作流程。
 
 ## 总结：关键原则
 
-1. **视觉优先设计**：每张幻灯片需要强烈的视觉元素（图表、图像、图表）- 避免纯文本幻灯片
+1. **视觉优先设计**：每张幻灯片需要强大的视觉元素（图表、图像、图表）- 避免纯文本幻灯片
 2. **研究支持**：使用research-lookup找到8-15篇论文，在介绍中引用3-5篇，在讨论中引用3-5篇
-3. **现代美学**：选择与主题匹配的当代配色方案，不是默认主题
+3. **现代美学**：选择与主题匹配的现代配色方案，而非默认主题
 4. **最少文本**：3-4个项目符号，每个4-6个字（24-28pt字体），让视觉效果讲述故事
 5. **结构**：遵循故事弧，40-50%的时间用于结果
-6. **高对比度**：优选7:1以获得专业外观
-7. **多样布局**：混合全屏图表、双列、视觉覆盖（不是所有项目符号）
-8. **时间**：练习3-5次，~每分钟1张幻灯片，永远不要跳过结论
-9. **验证**：视觉审查工作流程以捕获溢出和重叠
-10. **空白**：幻灯片40-50%为空，以提供视觉呼吸空间
+6. **高对比度**：专业外观首选7:1的对比度
+7. **多样化布局**：混合全屏图表、双列、视觉覆盖（不是所有项目符号）
+8. **时间控制**：练习3-5次，~每分钟1张幻灯片，永远不要跳过结论
+9. **验证**：视觉审查工作流程以捕捉溢出和重叠
+10. **空白**：40-50%的幻灯片留白以获得视觉呼吸空间
 
 **记住**：
-- **枯燥=被遗忘**：枯燥、文本密集的幻灯片无法传达您的科学
-- **视觉+研究=影响**：结合引人入胜的视觉效果与研究支持的背景
-- **您是演示，幻灯片是视觉支持**：它们应该增强，而不是替代您的演讲
+- **枯燥=被遗忘**：干燥、文本密集的幻灯片无法传达您的科学
+- **视觉+研究=影响**：结合引人注目的视觉效果和研究支持的上下文
+- **您是演示的核心，幻灯片是视觉支持**：它们应该增强，而不是替代您的演讲

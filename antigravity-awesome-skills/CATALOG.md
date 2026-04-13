@@ -2,9 +2,9 @@
 
 Generated at: 2026-02-08T00:00:00.000Z
 
-Total skills: 1392
+Total skills: 1404
 
-## architecture (93)
+## architecture (94)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -75,6 +75,7 @@ Total skills: 1392
 | `production-code-audit` | Autonomously deep-scan entire codebase line-by-line, understand architecture and patterns, then systematically transform it to production-grade, corporate-le... | production, code, audit | production, code, audit, autonomously, deep, scan, entire, codebase, line, understand, architecture, then |
 | `projection-patterns` | Build read models and projections from event streams. Use when implementing CQRS read sides, building materialized views, or optimizing query performance in ... | projection | projection, read, models, projections, event, streams, implementing, cqrs, sides, building, materialized, views |
 | `prompt-engineering` | Expert guide on prompt engineering patterns, best practices, and optimization techniques. Use when user wants to improve prompts, learn prompting strategies,... | prompt, engineering | prompt, engineering, optimization, techniques, user, wants, improve, prompts, learn, prompting, debug, agent |
+| `puzzle-activity-planner` | Plan puzzle-based activities for classrooms, parties, and events with pre-configured generator links | education, puzzle, classroom, activity-planning, event | education, puzzle, classroom, activity-planning, event, activity, planner, plan, activities, classrooms, parties, events |
 | `radix-ui-design-system` | Build accessible design systems with Radix UI primitives. Headless component customization, theming strategies, and compound component patterns for productio... | radix, ui | radix, ui, accessible, primitives, headless, component, customization, theming, compound, grade, libraries |
 | `robius-app-architecture` | CRITICAL: Use for Robius app architecture patterns. Triggers on: Tokio, async, submit_async_request, 异步, 架构, SignalToUI, Cx::post_action, worker task, app st... | robius, app, architecture | robius, app, architecture, critical, triggers, tokio, async, submit, request, signaltoui, cx, post |
 | `robius-event-action` | CRITICAL: Use for Robius event and action patterns. Triggers on: custom action, MatchEvent, post_action, cx.widget_action, handle_actions, DefaultNone, widge... | robius, event, action | robius, event, action, critical, triggers, custom, matchevent, post, cx, widget, handle, actions |
@@ -102,7 +103,7 @@ Total skills: 1392
 | `workflow-patterns` | Use this skill when implementing tasks according to Conductor's TDD workflow, handling phase checkpoints, managing git commits for tasks, or understanding th... |  | skill, implementing, tasks, according, conductor, tdd, handling, phase, checkpoints, managing, git, commits |
 | `zapier-make-patterns` | No-code automation democratizes workflow building. Zapier and Make (formerly Integromat) let non-developers automate business processes without writing code.... | zapier, make | zapier, make, no, code, automation, democratizes, building, formerly, integromat, let, non, developers |
 
-## business (76)
+## business (77)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -182,8 +183,9 @@ Total skills: 1392
 | `steve-jobs` | Agente que simula Steve Jobs — cofundador da Apple, CEO da Pixar, fundador da NeXT, o maior designer de produtos tecnologicos da historia e o mais influente ... | persona, design-thinking, product, presentations | persona, design-thinking, product, presentations, steve, jobs, agente, que, simula, cofundador, da, apple |
 | `warren-buffett` | Agente que simula Warren Buffett — o maior investidor do seculo XX e XXI, CEO da Berkshire Hathaway, discipulo de Benjamin Graham e socio intelectual de Char... | persona, investing, value-investing, business | persona, investing, value-investing, business, warren, buffett, agente, que, simula, maior, investidor, do |
 | `whatsapp-automation` | Automate WhatsApp Business tasks via Rube MCP (Composio): send messages, manage templates, upload media, and handle contacts. Always search tools first for c... | whatsapp | whatsapp, automation, automate, business, tasks, via, rube, mcp, composio, send, messages, upload |
+| `wordpress-centric-high-seo-optimized-blogwriting-skill` | Use this skill when the user asks to write a blog post, article, or SEO content. This applies a professional structure, truth boxes, click-bait-free accurate... | writing, blog, seo, content, wordpress | writing, blog, seo, content, wordpress, centric, high, optimized, blogwriting, skill, user, asks |
 
-## data-ai (262)
+## data-ai (266)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -364,9 +366,12 @@ Total skills: 1392
 | `magic-animator` | AI-powered animation tool for creating motion in logos, UI, icons, and social media assets. | magic, animator | magic, animator, ai, powered, animation, creating, motion, logos, ui, icons, social, media |
 | `mailchimp-automation` | Automate Mailchimp email marketing including campaigns, audiences, subscribers, segments, and analytics via Rube MCP (Composio). Always search tools first fo... | mailchimp | mailchimp, automation, automate, email, marketing, including, campaigns, audiences, subscribers, segments, analytics, via |
 | `makepad-splash` | CRITICAL: Use for Makepad Splash scripting language. Triggers on: splash language, makepad script, makepad scripting, script!, cx.eval, makepad dynamic, make... | makepad, splash | makepad, splash, critical, scripting, language, triggers, script, cx, eval, dynamic, ai |
+| `manage-skills` | Discover, list, create, edit, toggle, copy, move, and delete AI agent skills across 11 tools (Cursor, Claude, Agents, Windsurf, Copilot, Codex, Cline, Aider,... | manage, skills | manage, skills, discover, list, edit, toggle, copy, move, delete, ai, agent, 11 |
 | `maxia` | Connect to MAXIA AI-to-AI marketplace on Solana. Discover, buy, sell AI services. Earn USDC. 13 MCP tools, A2A protocol, DeFi yields, sentiment analysis, rug... | solana, crypto, marketplace, ai-agents, mcp, defi, usdc, web3, a2a | solana, crypto, marketplace, ai-agents, mcp, defi, usdc, web3, a2a, maxia, connect, ai |
 | `mlops-engineer` | Build comprehensive ML pipelines, experiment tracking, and model registries with MLflow, Kubeflow, and modern MLOps tools. | mlops | mlops, engineer, ml, pipelines, experiment, tracking, model, registries, mlflow, kubeflow |
 | `molykit` | CRITICAL: Use for MolyKit AI chat toolkit. Triggers on: BotClient, OpenAI, SSE streaming, AI chat, molykit, PlatformSend, spawn(), ThreadToken, cross-platfor... | molykit | molykit, critical, ai, chat, toolkit, triggers, botclient, openai, sse, streaming, platformsend, spawn |
+| `monte-carlo-push-ingestion` | Expert guide for pushing metadata, lineage, and query logs to Monte Carlo from any data warehouse. | data-observability, ingestion, monte-carlo, pycarlo, metadata | data-observability, ingestion, monte-carlo, pycarlo, metadata, monte, carlo, push, pushing, lineage, query, logs |
+| `monte-carlo-validation-notebook` | Generates SQL validation notebooks for dbt PR changes with before/after comparison queries. | data-observability, validation, dbt, monte-carlo, sql-notebook | data-observability, validation, dbt, monte-carlo, sql-notebook, monte, carlo, notebook, generates, sql, notebooks, pr |
 | `moyu` | Anti-over-engineering guardrail that activates when an AI coding agent expands scope, adds abstractions, or changes files the user did not request. | moyu | moyu, anti, engineering, guardrail, activates, ai, coding, agent, expands, scope, adds, abstractions |
 | `n8n-expression-syntax` | Validate n8n expression syntax and fix common errors. Use when writing n8n expressions, using {{}} syntax, accessing $json/$node variables, troubleshooting e... | n8n, expression, syntax | n8n, expression, syntax, validate, fix, common, errors, writing, expressions, accessing, json, node |
 | `nanobanana-ppt-skills` | AI-powered PPT generation with document analysis and styled images | nanobanana, ppt, skills | nanobanana, ppt, skills, ai, powered, generation, document, analysis, styled, images |
@@ -413,6 +418,7 @@ Total skills: 1392
 | `seo-schema` | Detect, validate, and generate Schema.org structured data. JSON-LD format preferred. Use when user says "schema", "structured data", "rich results", "JSON-LD... | seo, schema | seo, schema, detect, validate, generate, org, structured, data, json, ld, format, preferred |
 | `similarity-search-patterns` | Implement efficient similarity search with vector databases. Use when building semantic search, implementing nearest neighbor queries, or optimizing retrieva... | similarity, search | similarity, search, efficient, vector, databases, building, semantic, implementing, nearest, neighbor, queries, optimizing |
 | `skill-creator-ms` | Guide for creating effective skills for AI coding agents working with Azure SDKs and Microsoft Foundry services. Use when creating new skills or updating exi... | skill, creator, ms | skill, creator, ms, creating, effective, skills, ai, coding, agents, working, azure, sdks |
+| `skill-optimizer` | Diagnose and optimize Agent Skills (SKILL.md) with real session data and research-backed static analysis. Works with Claude Code, Codex, and any Agent Skills... | skill, optimizer | skill, optimizer, diagnose, optimize, agent, skills, md, real, session, data, research, backed |
 | `skill-seekers` | -Automatically convert documentation websites, GitHub repositories, and PDFs into Claude AI skills in minutes. | skill, seekers | skill, seekers, automatically, convert, documentation, websites, github, repositories, pdfs, claude, ai, skills |
 | `skin-health-analyzer` | Analyze skin health data, identify skin problem patterns, assess skin health status. Supports correlation analysis with nutrition, chronic diseases, and medi... | skin, health, analyzer | skin, health, analyzer, analyze, data, identify, problem, assess, status, supports, correlation, analysis |
 | `spark-optimization` | Optimize Apache Spark jobs with partitioning, caching, shuffle optimization, and memory tuning. Use when improving Spark performance, debugging slow jobs, or... | spark, optimization | spark, optimization, optimize, apache, jobs, partitioning, caching, shuffle, memory, tuning, improving, performance |
@@ -450,7 +456,7 @@ Total skills: 1392
 | `yes-md` | 6-layer AI governance: safety gates, evidence-based debugging, anti-slack detection, and machine-enforced hooks. Makes AI safe, thorough, and honest. | yes, md | yes, md, layer, ai, governance, safety, gates, evidence, debugging, anti, slack, detection |
 | `youtube-automation` | Automate YouTube tasks via Rube MCP (Composio): upload videos, manage playlists, search content, get analytics, and handle comments. Always search tools firs... | youtube | youtube, automation, automate, tasks, via, rube, mcp, composio, upload, videos, playlists, search |
 
-## development (196)
+## development (199)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -515,6 +521,7 @@ Total skills: 1392
 | `cc-skill-coding-standards` | Universal coding standards, best practices, and patterns for TypeScript, JavaScript, React, and Node.js development. | cc, skill, coding, standards | cc, skill, coding, standards, universal, typescript, javascript, react, node, js, development |
 | `cc-skill-frontend-patterns` | Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices. | cc, skill, frontend | cc, skill, frontend, development, react, next, js, state, performance, optimization, ui |
 | `clarvia-aeo-check` | Score any MCP server, API, or CLI for agent-readiness using Clarvia AEO (Agent Experience Optimization). Search 15,400+ indexed tools before adding them to y... | mcp, aeo, tool-quality, agent-readiness, api-scoring, clarvia | mcp, aeo, tool-quality, agent-readiness, api-scoring, clarvia, check, score, any, server, api, cli |
+| `codebase-to-wordpress-converter` | Expert skill for converting any codebase (React/HTML/Next.js) into a pixel-perfect, SEO-optimized, and dynamic WordPress theme. | codebase, to, wordpress, converter | codebase, to, wordpress, converter, skill, converting, any, react, html, next, js, pixel |
 | `context7-auto-research` | Automatically fetch latest library/framework documentation for Claude Code via Context7 API. Use when you need up-to-date documentation for libraries and fra... | context7, auto, research | context7, auto, research, automatically, fetch, latest, library, framework, documentation, claude, code, via |
 | `copilot-sdk` | Build applications that programmatically interact with GitHub Copilot. The SDK wraps the Copilot CLI via JSON-RPC, providing session management, custom tools... | copilot, sdk | copilot, sdk, applications, programmatically, interact, github, wraps, cli, via, json, rpc, providing |
 | `csharp-pro` | Write modern C# code with advanced features like records, pattern matching, and async/await. Optimizes .NET applications, implements enterprise patterns, and... | csharp | csharp, pro, write, code, features, like, records, matching, async, await, optimizes, net |
@@ -604,6 +611,7 @@ Total skills: 1392
 | `python-pptx-generator` | Generate complete Python scripts that build polished PowerPoint decks with python-pptx and real slide content. | python, powerpoint, python-pptx, presentations, slide-decks | python, powerpoint, python-pptx, presentations, slide-decks, pptx, generator, generate, complete, scripts, polished, decks |
 | `python-pro` | Master Python 3.12+ with modern features, async programming, performance optimization, and production-ready practices. Expert in the latest Python ecosystem ... | python | python, pro, 12, features, async, programming, performance, optimization, latest, ecosystem, including, uv |
 | `python-testing-patterns` | Implement comprehensive testing strategies with pytest, fixtures, mocking, and test-driven development. Use when writing Python tests, setting up test suites... | python | python, testing, pytest, fixtures, mocking, test, driven, development, writing, tests, setting, up |
+| `rayden-code` | Generate React code with Rayden UI components using correct props, tokens, and premium layout patterns | react, tailwind, design-system, ui, components, vibe-coding, rayden, rayna-ui, code-generation | react, tailwind, design-system, ui, components, vibe-coding, rayden, rayna-ui, code-generation, code, generate, correct |
 | `react-component-performance` | Diagnose slow React components and suggest targeted performance fixes. | react, component, performance | react, component, performance, diagnose, slow, components, suggest, targeted, fixes |
 | `react-flow-architect` | Build production-ready ReactFlow applications with hierarchical navigation, performance optimization, and advanced state management. | react, flow | react, flow, architect, reactflow, applications, hierarchical, navigation, performance, optimization, state |
 | `react-flow-node-ts` | Create React Flow node components following established patterns with proper TypeScript types and store integration. | react, flow, node, ts | react, flow, node, ts, components, following, established, proper, typescript, types, store, integration |
@@ -647,11 +655,12 @@ Total skills: 1392
 | `ux-copy` | Generate UX microcopy in StyleSeed's Toss-inspired voice for buttons, empty states, errors, toasts, confirmations, and form guidance. | ux, copywriting, microcopy, frontend, styleseed | ux, copywriting, microcopy, frontend, styleseed, copy, generate, toss, inspired, voice, buttons, empty |
 | `ux-feedback` | Add loading, empty, error, and success feedback states to StyleSeed components and pages with practical mobile-first rules. | ux, states, loading, error-handling, styleseed | ux, states, loading, error-handling, styleseed, feedback, add, empty, error, success, components, pages |
 | `viral-generator-builder` | Expert in building shareable generator tools that go viral - name generators, quiz makers, avatar creators, personality tests, and calculator tools. Covers t... | viral, generator, builder | viral, generator, builder, building, shareable, go, name, generators, quiz, makers, avatar, creators |
+| `vscode-extension-guide-en` | Guide for VS Code extension development from scaffolding to Marketplace publication | vscode, extension, ide, typescript, marketplace | vscode, extension, ide, typescript, marketplace, en, vs, code, development, scaffolding, publication |
 | `webapp-testing` | To test local web applications, write native Python Playwright scripts. | webapp | webapp, testing, test, local, web, applications, write, native, python, playwright, scripts |
 | `zod-validation-expert` | Expert in Zod — TypeScript-first schema validation. Covers parsing, custom errors, refinements, type inference, and integration with React Hook Form, Next.js... | zod, validation | zod, validation, typescript, first, schema, covers, parsing, custom, errors, refinements, type, inference |
 | `zustand-store-ts` | Create Zustand stores following established patterns with proper TypeScript types and middleware. | zustand, store, ts | zustand, store, ts, stores, following, established, proper, typescript, types, middleware |
 
-## general (340)
+## general (341)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -906,6 +915,7 @@ Total skills: 1392
 | `protect-mcp-governance` | Agent governance skill for MCP tool calls — Cedar policy authoring, shadow-to-enforce rollout, and Ed25519 receipt verification. | protect, mcp, governance | protect, mcp, governance, agent, skill, calls, cedar, policy, authoring, shadow, enforce, rollout |
 | `qiskit` | Qiskit is the world's most popular open-source quantum computing framework with 13M+ downloads. Build quantum circuits, optimize for hardware, execute on sim... | qiskit | qiskit, world, most, popular, open, source, quantum, computing, framework, 13m, downloads, circuits |
 | `quality-nonconformance` | Codified expertise for quality control, non-conformance investigation, root cause analysis, corrective action, and supplier quality management in regulated m... | quality, nonconformance | quality, nonconformance, codified, expertise, control, non, conformance, investigation, root, cause, analysis, corrective |
+| `rayden-use` | Build and maintain Rayden UI components and screens in Figma via Figma MCP with full design token enforcement | figma, design-system, ui, components, mcp, rayden, rayna-ui | figma, design-system, ui, components, mcp, rayden, rayna-ui, maintain, screens, via, full, token |
 | `readme` | You are an expert technical writer creating comprehensive project documentation. Your goal is to write a README.md that is absurdly thorough—the kind of docu... | readme | readme, technical, writer, creating, documentation, goal, write, md, absurdly, thorough, kind, wish |
 | `receiving-code-review` | Code review requires technical evaluation, not emotional performance. | receiving, code | receiving, code, review, requires, technical, evaluation, emotional, performance |
 | `rehabilitation-analyzer` | 分析康复训练数据、识别康复模式、评估康复进展，并提供个性化康复建议 | rehabilitation, analyzer | rehabilitation, analyzer |
@@ -996,7 +1006,7 @@ Total skills: 1392
 | `yann-lecun-tecnico` | Sub-skill técnica de Yann LeCun. Cobre CNNs, LeNet, backpropagation, JEPA (I-JEPA, V-JEPA, MC-JEPA), AMI (Advanced Machinery of Intelligence), Self-Supervise... | persona, cnn, jepa, self-supervised, pytorch | persona, cnn, jepa, self-supervised, pytorch, yann, lecun, tecnico, sub, skill, cnica, de |
 | `youtube-summarizer` | Extract transcripts from YouTube videos and generate comprehensive, detailed summaries using intelligent analysis frameworks | video, summarization, transcription, youtube, content-analysis | video, summarization, transcription, youtube, content-analysis, summarizer, extract, transcripts, videos, generate, detailed, summaries |
 
-## infrastructure (124)
+## infrastructure (126)
 
 | Skill | Description | Tags | Triggers |
 | --- | --- | --- | --- |
@@ -1090,6 +1100,8 @@ Total skills: 1392
 | `microservices-patterns` | Master microservices architecture patterns including service boundaries, inter-service communication, data management, and resilience patterns for building d... | microservices | microservices, architecture, including, boundaries, inter, communication, data, resilience, building, distributed |
 | `ml-engineer` | Build production ML systems with PyTorch 2.x, TensorFlow, and modern ML frameworks. Implements model serving, feature engineering, A/B testing, and monitoring. | ml | ml, engineer, pytorch, tensorflow, frameworks, implements, model, serving, feature, engineering, testing, monitoring |
 | `ml-pipeline-workflow` | Complete end-to-end MLOps pipeline orchestration from data preparation through model deployment. | ml, pipeline | ml, pipeline, complete, mlops, orchestration, data, preparation, through, model, deployment |
+| `monte-carlo-monitor-creation` | Guides creation of Monte Carlo monitors via MCP tools, producing monitors-as-code YAML for CI/CD deployment. | data-observability, monitoring, monte-carlo, monitors-as-code | data-observability, monitoring, monte-carlo, monitors-as-code, monte, carlo, monitor, creation, guides, monitors, via, mcp |
+| `monte-carlo-prevent` | Surfaces Monte Carlo data observability context (table health, alerts, lineage, blast radius) before SQL/dbt edits. | data-observability, dbt, schema, monte-carlo, lineage | data-observability, dbt, schema, monte-carlo, lineage, monte, carlo, prevent, surfaces, data, observability, context |
 | `moodle-external-api-development` | This skill guides you through creating custom external web service APIs for Moodle LMS, following Moodle's external API framework and coding standards. | moodle, external, api | moodle, external, api, development, skill, guides, through, creating, custom, web, apis, lms |
 | `multi-agent-task-orchestrator` | Route tasks to specialized AI agents with anti-duplication, quality gates, and 30-minute heartbeat monitoring | multi-agent, orchestration, task-routing, quality-gates, anti-duplication | multi-agent, orchestration, task-routing, quality-gates, anti-duplication, multi, agent, task, orchestrator, route, tasks, specialized |
 | `multi-cloud-architecture` | Decision framework and patterns for architecting applications across AWS, Azure, and GCP. | multi, cloud, architecture | multi, cloud, architecture, decision, framework, architecting, applications, aws, azure, gcp |

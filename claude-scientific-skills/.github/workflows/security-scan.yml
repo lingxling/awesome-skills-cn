@@ -1,0 +1,44 @@
+name: Weekly Security Scan
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Every Monday at 09:00 UTC
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v8.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --python 3.13
+
+      - name: Run security scan
+        env:
+          SKILL_SCANNER_LLM_API_KEY: ${{ secrets.SKILL_SCANNER_LLM_API_KEY }}
+          SKILL_SCANNER_LLM_MODEL: ${{ vars.SKILL_SCANNER_LLM_MODEL || 'claude-sonnet-4-6' }}
+        run: uv run python scan_skills.py
+
+      - name: Commit updated SECURITY.md
+        run: |
+          git diff --quiet SECURITY.md && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git stash --include-untracked
+          git pull --rebase
+          git stash pop || true
+          git add SECURITY.md
+          git commit -m "chore: update security scan report [skip ci]"
+          git push

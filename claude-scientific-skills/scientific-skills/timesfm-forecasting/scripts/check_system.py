@@ -16,6 +16,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import importlib
 import json
 import os
 import platform
@@ -358,7 +359,7 @@ def check_package(pkg_name: str, import_name: str | None = None) -> CheckResult:
     """Check if a Python package is installed."""
     import_name = import_name or pkg_name
     try:
-        mod = __import__(import_name)
+        mod = importlib.import_module(import_name)
         version = getattr(mod, "__version__", "unknown")
         return CheckResult(
             name=pkg_name,

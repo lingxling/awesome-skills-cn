@@ -39,12 +39,6 @@
       "description": "Execute Hugging Face Hub operations using the hf CLI. Download models/datasets, upload files, manage repos, and run cloud compute jobs."
     },
     {
-      "name": "huggingface-jobs",
-      "source": "./skills/huggingface-jobs",
-      "skills": "./",
-      "description": "Run compute jobs on Hugging Face infrastructure. Execute Python scripts, manage scheduled jobs, and monitor job status."
-    },
-    {
       "name": "huggingface-trackio",
       "source": "./skills/huggingface-trackio",
       "skills": "./",
