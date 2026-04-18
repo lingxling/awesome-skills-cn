@@ -10,7 +10,6 @@ source: community
 Expert guide for interpreting and fixing n8n validation errors.
 
 ## When to Use
-
 - You need to interpret or fix validation errors in an n8n workflow.
 - The task involves `missing_required`, `invalid_value`, expression failures, or iterative validate-fix loops.
 - You want concrete remediation guidance for workflow validation output.
@@ -695,3 +694,8 @@ For comprehensive error catalogs and false positive examples:
 - n8n MCP Tools Expert - Use validation tools correctly
 - n8n Expression Syntax - Fix expression errors
 - n8n Node Configuration - Understand required fields
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

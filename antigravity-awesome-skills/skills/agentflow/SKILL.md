@@ -197,3 +197,8 @@ Or install as a Claude Code plugin:
 - [Architecture Documentation](https://github.com/UrRhb/agentflow/blob/main/docs/architecture.md)
 - [Gap Registry (45 failure modes)](https://github.com/UrRhb/agentflow/blob/main/docs/gap-registry.md)
 - [Getting Started Guide](https://github.com/UrRhb/agentflow/blob/main/docs/getting-started.md)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

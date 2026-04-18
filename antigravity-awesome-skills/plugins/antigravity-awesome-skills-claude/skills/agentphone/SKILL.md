@@ -14,7 +14,6 @@ metadata: {"api_base": "https://api.agentphone.to/v1"}
 AgentPhone is an API-first telephony platform for AI agents. Give your agents phone numbers, voice calls, and SMS — all managed through a simple API.
 
 ## When to Use
-
 - Use when the user wants to create or manage AI phone agents, voice agents, or telephony automations
 - Use when the user needs to buy, assign, release, or inspect phone numbers tied to an agent workflow
 - Use when the user wants to place outbound calls, inspect transcripts, or send and receive SMS through AgentPhone
@@ -1382,3 +1381,8 @@ These are starting points. Having your own phone number means your agent can do 
 - [API Reference](https://docs.agentphone.to/api-reference)
 - [Official Docs](https://docs.agentphone.to)
 - [Console](https://agentphone.to)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

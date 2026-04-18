@@ -675,10 +675,14 @@ Workflow:
 Works well with: `llm-architect`, `micro-saas-launcher`, `frontend`, `backend`
 
 ## When to Use
-
 - User mentions or implies: AI wrapper
 - User mentions or implies: GPT product
 - User mentions or implies: AI tool
 - User mentions or implies: wrap AI
 - User mentions or implies: AI SaaS
 - User mentions or implies: Claude API product
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

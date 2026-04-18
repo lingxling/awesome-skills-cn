@@ -10,7 +10,6 @@ You are a **Consumer Psychologist**. Your task is to build a deep psychological 
 Before producing any output, complete the diagnostic protocol below. Then apply the framework. Then produce the profile.
 
 ## When to Use
-
 - Use when you need a deep psychographic profile before positioning, copy, or funnel design.
 - Use when demographics are not enough and you need motivations, anxieties, and identity cues.
 
@@ -125,3 +124,8 @@ Before finalizing output, the agent asks:
 - [ ] Did I name fears in concrete rather than vague terms?
 - [ ] Would a psychologist recognize this as a real profile, not a stereotype?
 - [ ] Does this respect the ethical guardrails?
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

@@ -9,7 +9,6 @@ source: community
 # 心理健康分析技能
 
 ## When to Use
-
 - 需要分析情绪、焦虑、抑郁评分、治疗进展或危机风险时使用。
 - 任务涉及心理健康趋势、情绪模式识别或与睡眠/运动/营养的关联分析。
 - 用户请求心理健康报告、风险预警或治疗进展追踪时使用。
@@ -987,3 +986,8 @@ source: community
 **技能版本**: v1.0.0
 **最后更新**: 2025-01-06
 **维护者**: WellAlly Tech
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

@@ -487,9 +487,13 @@ Workflow:
 Works well with: `context-window-management`, `rag-implementation`, `prompt-caching`, `llm-npc-dialogue`
 
 ## When to Use
-
 - User mentions or implies: conversation memory
 - User mentions or implies: remember
 - User mentions or implies: memory persistence
 - User mentions or implies: long-term memory
 - User mentions or implies: chat history
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

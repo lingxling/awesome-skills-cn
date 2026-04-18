@@ -19,7 +19,6 @@ tools: [claude, cursor, codex, gemini]
 Part of [StyleSeed](https://github.com/bitjaru/styleseed), this setup wizard turns a raw project into a design-system-guided workspace. It collects the minimum brand and product context needed to configure tokens, pick a visual direction, and generate an initial page without drifting into generic UI.
 
 ## When to Use
-
 - Use when you are starting a new app with the StyleSeed Toss seed
 - Use when you copied the seed into an existing project and need to personalize it
 - Use when you want the AI to ask one design decision at a time instead of guessing
@@ -98,3 +97,8 @@ Return:
 - [StyleSeed repository](https://github.com/bitjaru/styleseed)
 - [StyleSeed Toss seed](https://github.com/bitjaru/styleseed/tree/main/seeds/toss)
 - [Source skill](https://github.com/bitjaru/styleseed/blob/main/seeds/toss/.claude/skills/ui-setup/SKILL.md)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

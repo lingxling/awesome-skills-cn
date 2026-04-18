@@ -302,10 +302,14 @@ Workflow:
 Works well with: `rag-implementation`, `conversation-memory`, `prompt-caching`, `llm-npc-dialogue`
 
 ## When to Use
-
 - User mentions or implies: context window
 - User mentions or implies: token limit
 - User mentions or implies: context management
 - User mentions or implies: context engineering
 - User mentions or implies: long context
 - User mentions or implies: context overflow
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

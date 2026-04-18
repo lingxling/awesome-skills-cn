@@ -102,3 +102,8 @@ Generate production-quality React + Tailwind CSS code using the Rayden UI compon
 ## Related Skills
 
 - `rayden-use` — Build Rayden UI components and screens in Figma via MCP (included in the same package)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

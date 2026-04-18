@@ -161,6 +161,38 @@
   },
   {
     "ruleId": "",
+    "ruleTitle": "Prefer Statically Analyzable Paths",
+    "type": "bad",
+    "code": "const PAGE_MODULES = {\n  home: './pages/home',\n  settings: './pages/settings',\n} as const\n\nconst Page = await import(PAGE_MODULES[pageName])",
+    "language": "ts",
+    "description": "the bundler cannot tell what may be imported"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Prefer Statically Analyzable Paths",
+    "type": "good",
+    "code": "const PAGE_MODULES = {\n  home: () => import('./pages/home'),\n  settings: () => import('./pages/settings'),\n} as const\n\nconst Page = await PAGE_MODULES[pageName]()",
+    "language": "ts",
+    "description": "use an explicit map of allowed modules"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Prefer Statically Analyzable Paths",
+    "type": "bad",
+    "code": "const baseDir = path.join(process.cwd(), 'content/' + contentKind)",
+    "language": "ts",
+    "description": "a 2-value enum still hides the final path from static analysis"
+  },
+  {
+    "ruleId": "",
+    "ruleTitle": "Prefer Statically Analyzable Paths",
+    "type": "good",
+    "code": "const baseDir =\n  kind === ContentKind.Blog\n    ? path.join(process.cwd(), 'content/blog')\n    : path.join(process.cwd(), 'content/docs')",
+    "language": "ts",
+    "description": "make each final path literal at the callsite"
+  },
+  {
+    "ruleId": "",
     "ruleTitle": "Avoid Barrel File Imports",
     "type": "bad",
     "code": "import { Check, X, Menu } from 'lucide-react'\n// Loads 1,583 modules, takes ~2.8s extra in dev\n// Runtime cost: 200-800ms on every cold start\n\nimport { Button, TextField } from '@mui/material'\n// Loads 2,225 modules, takes ~4.2s extra in dev",

@@ -406,3 +406,8 @@ Welcome to this comprehensive tutorial on machine learning fundamentals. In toda
 **Version:** 1.2.0
 **Last Updated:** 2026-02-02
 **Maintained By:** Eric Andrade
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

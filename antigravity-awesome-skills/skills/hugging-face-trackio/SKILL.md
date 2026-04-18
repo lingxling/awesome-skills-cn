@@ -115,3 +115,8 @@ Then poll from a separate terminal/process:
 ```bash
 trackio list alerts --project my-project --json --since "2025-01-01T00:00:00"
 ```
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

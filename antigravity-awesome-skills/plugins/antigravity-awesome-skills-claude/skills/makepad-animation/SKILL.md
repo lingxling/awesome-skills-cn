@@ -20,7 +20,6 @@ You are an expert at Makepad animations. Help users by:
 - **Answering questions**: Explain states, transitions, timelines
 
 ## When to Use
-
 - You need to build or debug animations, transitions, hover states, or animator timelines in Makepad.
 - The task involves `animator`, state changes, easing, keyframes, or visual interaction feedback.
 - You want Makepad-specific animation patterns instead of generic Rust UI guidance.
@@ -310,3 +309,8 @@ fn handle_event(&mut self, cx: &mut Cx, event: &Event, scope: &mut Scope) {
 3. `from` defines HOW to animate, `apply` defines WHAT to animate
 4. Makepad tweens between old and new values automatically
 5. Use `id!(state.value)` macro to reference animation states in Rust
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

@@ -840,6 +840,28 @@
     }
   },
   {
+    "id": "ai-dev-jobs-mcp",
+    "path": "skills/ai-dev-jobs-mcp",
+    "category": "mcp",
+    "name": "ai-dev-jobs-mcp",
+    "description": "Search 8,400+ AI and ML jobs across 489 companies, inspect listings and employers, match roles, and view salary and market stats via AI Dev Jobs MCP",
+    "risk": "safe",
+    "source": "https://aidevboard.com",
+    "date_added": "2026-04-16",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "ai-engineer",
     "path": "skills/ai-engineer",
     "category": "ai-ml",
@@ -2884,6 +2906,28 @@
     "risk": "unknown",
     "source": "https://github.com/ksgisang/awt-skill",
     "date_added": null,
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "axiom",
+    "path": "skills/axiom",
+    "category": "uncategorized",
+    "name": "axiom",
+    "description": "First-principles assumption auditor. Classifies each hidden assumption (fact / convention / belief / interest-driven), ranks by fragility \u00d7 impact, and rebuilds conclusions from verified premises. Bilingual: auto-detects Chinese or English.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-13",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -9334,6 +9378,28 @@
     }
   },
   {
+    "id": "daily-gift",
+    "path": "skills/daily-gift",
+    "category": "productivity",
+    "name": "daily-gift",
+    "description": "Relationship-aware daily gift engine with five-stage creative pipeline \u2014 editorial judgment, synthesis, concept generation, visual strategy, and rendering in H5, image, or video",
+    "risk": "unknown",
+    "source": "community",
+    "date_added": "2026-04-15",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "daily-news-report",
     "path": "skills/daily-news-report",
     "category": "content",
@@ -10222,6 +10288,28 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-03-07",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "design-taste-frontend",
+    "path": "skills/design-taste-frontend",
+    "category": "frontend",
+    "name": "design-taste-frontend",
+    "description": "Use when building high-agency frontend interfaces with strict design taste, calibrated color, responsive layout, and motion rules.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-17",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -13186,6 +13274,28 @@
     }
   },
   {
+    "id": "full-output-enforcement",
+    "path": "skills/full-output-enforcement",
+    "category": "frontend",
+    "name": "full-output-enforcement",
+    "description": "Use when a task requires exhaustive unabridged output, complete files, or strict prevention of placeholders and skipped code.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-17",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "full-stack-orchestration-full-stack-feature",
     "path": "skills/full-stack-orchestration-full-stack-feature",
     "category": "workflow",
@@ -14154,6 +14264,28 @@
     }
   },
   {
+    "id": "gpt-taste",
+    "path": "skills/gpt-taste",
+    "category": "frontend",
+    "name": "gpt-taste",
+    "description": "Use when generating elite GSAP-heavy frontend pages with strict AIDA structure, wide hero typography, and gapless bento grids.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-17",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "grafana-dashboards",
     "path": "skills/grafana-dashboards",
     "category": "devops",
@@ -14316,6 +14448,28 @@
     "risk": "unknown",
     "source": "community",
     "date_added": null,
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "helium-mcp",
+    "path": "skills/helium-mcp",
+    "category": "uncategorized",
+    "name": "helium-mcp",
+    "description": "Connect to Helium's MCP server for news research, media bias analysis, balanced perspectives, stock/options data, and semantic meme search across 3.2M+ articles and 5,000+ sources",
+    "risk": "safe",
+    "source": "https://heliumtrades.com/mcp-page/",
+    "date_added": "2026-04-13",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -14692,6 +14846,28 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "high-end-visual-design",
+    "path": "skills/high-end-visual-design",
+    "category": "frontend",
+    "name": "high-end-visual-design",
+    "description": "Use when designing expensive agency-grade interfaces with premium fonts, spatial rhythm, soft depth, and fluid microinteractions.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-17",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -15506,6 +15682,50 @@
     "risk": "critical",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "indexing-issue-auditor",
+    "path": "skills/indexing-issue-auditor",
+    "category": "growth",
+    "name": "indexing-issue-auditor",
+    "description": "High-level technical SEO and site architecture auditor. Invoke to scan local or live environments for indexing, crawl budget, and structural errors.",
+    "risk": "safe",
+    "source": "self",
+    "date_added": "2026-04-13",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "industrial-brutalist-ui",
+    "path": "skills/industrial-brutalist-ui",
+    "category": "frontend",
+    "name": "industrial-brutalist-ui",
+    "description": "Use when creating raw industrial or tactical telemetry UIs with rigid grids, stark typography, CRT effects, and high-density data.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-17",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -16356,6 +16576,28 @@
     }
   },
   {
+    "id": "lambdatest-agent-skills",
+    "path": "skills/lambdatest-agent-skills",
+    "category": "testing",
+    "name": "lambdatest-agent-skills",
+    "description": "Production-grade test automation skills for 46 frameworks across E2E, unit, mobile, BDD, visual, and cloud testing in 15+ languages.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-16",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "landing-page-generator",
     "path": "skills/landing-page-generator",
     "category": "front-end",
@@ -16918,6 +17160,28 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "linkedin-profile-optimizer",
+    "path": "skills/linkedin-profile-optimizer",
+    "category": "growth",
+    "name": "linkedin-profile-optimizer",
+    "description": "High-intent expert for LinkedIn profile checks, authority building, and SEO optimization. Invoke to audit, rewrite, and enhance profiles for top 1% positioning.",
+    "risk": "safe",
+    "source": "self",
+    "date_added": "2026-04-13",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -18324,6 +18588,28 @@
     }
   },
   {
+    "id": "minimalist-ui",
+    "path": "skills/minimalist-ui",
+    "category": "frontend",
+    "name": "minimalist-ui",
+    "description": "Use when creating clean editorial interfaces with warm monochrome palettes, crisp borders, restrained motion, and flat bento layouts.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-17",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "miro-automation",
     "path": "skills/miro-automation",
     "category": "project-management",
@@ -18332,6 +18618,28 @@
     "risk": "critical",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "mise-configurator",
+    "path": "skills/mise-configurator",
+    "category": "devops",
+    "name": "mise-configurator",
+    "description": "Generate production-ready mise.toml setups for local development, CI/CD pipelines, and toolchain standardization.",
+    "risk": "safe",
+    "source": "self",
+    "date_added": "2026-04-16",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -18420,6 +18728,28 @@
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "mmx-cli",
+    "path": "skills/mmx-cli",
+    "category": "uncategorized",
+    "name": "mmx-cli",
+    "description": "Use mmx to generate text, images, video, speech, and music via the MiniMax AI platform. Use when the user wants to create media content, chat with MiniMax models, perform web search, or manage MiniMax API resources from the terminal.",
+    "risk": "safe",
+    "source": "https://github.com/MiniMax-AI/cli",
+    "date_added": "2026-04-14",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -19478,6 +19808,28 @@
     "risk": "unknown",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "not-human-search-mcp",
+    "path": "skills/not-human-search-mcp",
+    "category": "mcp",
+    "name": "not-human-search-mcp",
+    "description": "Search AI-ready websites, inspect indexed site details, verify MCP endpoints, and discover tools and APIs using the Not Human Search MCP server",
+    "risk": "safe",
+    "source": "https://nothumansearch.ai",
+    "date_added": "2026-04-16",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -22959,6 +23311,28 @@
     "risk": "critical",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "redesign-existing-projects",
+    "path": "skills/redesign-existing-projects",
+    "category": "frontend",
+    "name": "redesign-existing-projects",
+    "description": "Use when upgrading existing websites or apps by auditing generic UI patterns and applying premium design fixes without rewrites.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-17",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -26537,6 +26911,28 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-03-06",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "stitch-design-taste",
+    "path": "skills/stitch-design-taste",
+    "category": "frontend",
+    "name": "stitch-design-taste",
+    "description": "Use when generating Google Stitch DESIGN.md systems for premium typography, color, layout, motion intent, and anti-generic UI rules.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-17",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -30852,6 +31248,28 @@
     "description": "Detects missing zeroization of sensitive data in source code and identifies zeroization removed by compiler optimizations, with assembly-level analysis, and control-flow verification. Use for auditing C/C++/Rust code handling secrets, keys, passwords, or other sensitive data.",
     "risk": "unknown",
     "source": "community",
+    "date_added": null,
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "zipai-optimizer",
+    "path": "skills/zipai-optimizer",
+    "category": "agent-behavior",
+    "name": "zipai-optimizer",
+    "description": "Adaptive token optimizer: intelligent filtering, surgical output, ambiguity-first, context-window-aware, VCS-aware.",
+    "risk": "safe",
+    "source": "unknown",
     "date_added": null,
     "plugin": {
       "targets": {

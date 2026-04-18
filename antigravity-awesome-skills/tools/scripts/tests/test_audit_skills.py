@@ -30,6 +30,16 @@ generate_skills_report = load_module(
 
 
 class AuditSkillsTests(unittest.TestCase):
+    def test_repo_has_no_missing_limitations_warnings(self):
+        report = audit_skills.audit_skills(REPO_ROOT / "skills")
+        missing_limitations = [
+            skill["id"]
+            for skill in report["skills"]
+            if any(finding["code"] == "missing_limitations" for finding in skill["findings"])
+        ]
+
+        self.assertEqual(missing_limitations, [], f"Skills still missing limitations sections: {missing_limitations[:10]}")
+
     def test_suggest_risk_covers_common_objective_signals(self):
         cases = [
             ("Brainstorm a launch strategy.", "none"),

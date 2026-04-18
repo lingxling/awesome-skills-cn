@@ -117,3 +117,8 @@ Agent (via Global Chat MCP): 4 registries carry Kubernetes-related agents (23 to
 - `@mcp-client` - For general MCP client setup and configuration
 - `@agent-orchestration-multi-agent-optimize` - For orchestrating multiple discovered agents
 - `@agent-memory-mcp` - For persisting discovered agent information across sessions
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

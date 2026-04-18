@@ -1011,7 +1011,6 @@ Message: Retry configured without backoff. Add backoffCoefficient and initialInt
 Works well with: `multi-agent-orchestration`, `agent-tool-builder`, `backend`, `devops`
 
 ## When to Use
-
 - User mentions or implies: workflow
 - User mentions or implies: automation
 - User mentions or implies: n8n
@@ -1025,3 +1024,8 @@ Works well with: `multi-agent-orchestration`, `agent-tool-builder`, `backend`, `
 - User mentions or implies: job queue
 - User mentions or implies: cron
 - User mentions or implies: trigger
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

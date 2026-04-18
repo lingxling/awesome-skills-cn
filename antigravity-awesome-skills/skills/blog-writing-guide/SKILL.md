@@ -14,7 +14,6 @@ This skill enforces Sentry's blog writing standards across every post — whethe
 What follows are the core principles to internalize and apply to every piece of content.
 
 ## When to Use
-
 - You need to draft or edit a Sentry blog post.
 - The task involves technical storytelling, product announcements, or engineering deep-dives in Sentry's blog voice.
 - You want blog content that is opinionated, specific, and technically credible rather than generic marketing copy.
@@ -161,3 +160,8 @@ Run through both checklists:
 - Post doesn't duplicate what's in the changelog
 
 When providing feedback, be specific and constructive. Quote the weak passage, explain why it's weak, and rewrite it to show the standard.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

@@ -118,3 +118,8 @@ Append new ideas to `ideas.md`, add environmental variables to `stimuli.md`.
 - [GitHub Repository](https://github.com/warmskull/idea-darwin)
 - Available in 3 languages: English, Chinese, Japanese
 - ClawHub: `clawhub install idea-darwin`
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

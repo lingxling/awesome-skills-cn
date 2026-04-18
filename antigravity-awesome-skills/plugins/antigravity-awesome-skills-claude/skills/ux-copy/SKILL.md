@@ -19,7 +19,6 @@ tools: [claude, cursor, codex, gemini]
 Part of [StyleSeed](https://github.com/bitjaru/styleseed), this skill generates concise product copy for common UI states. It follows the Toss-inspired tone: casual but polite, direct, active, and specific enough to help the user recover or proceed.
 
 ## When to Use
-
 - Use when you need button labels, helper text, toasts, empty states, or error messages
 - Use when a feature has functional UI but weak or robotic wording
 - Use when you want consistent product voice across a flow
@@ -77,3 +76,8 @@ Return:
 
 - [StyleSeed repository](https://github.com/bitjaru/styleseed)
 - [Source skill](https://github.com/bitjaru/styleseed/blob/main/seeds/toss/.claude/skills/ux-copy/SKILL.md)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

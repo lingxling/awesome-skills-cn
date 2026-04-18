@@ -19,7 +19,6 @@ tools: [claude, cursor, codex, gemini]
 Part of [StyleSeed](https://github.com/bitjaru/styleseed), this skill scaffolds a complete page or screen using the Toss seed's mobile-first composition rules. It keeps page structure consistent by building on the existing shell, top bar, bottom navigation, and card rhythm instead of producing disconnected sections.
 
 ## When to Use
-
 - Use when you need a new page in a Toss-seed app
 - Use when you want a consistent page shell, spacing, and navigation structure
 - Use when you are adding a new product flow and need a solid starting layout
@@ -94,3 +93,8 @@ Return:
 
 - [StyleSeed repository](https://github.com/bitjaru/styleseed)
 - [Source skill](https://github.com/bitjaru/styleseed/blob/main/seeds/toss/.claude/skills/ui-page/SKILL.md)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

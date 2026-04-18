@@ -220,3 +220,8 @@ Tell the user:
 - ALWAYS use ISO 8601 format for datetime values.
 - NEVER reformat YAML values returned by creation tools.
 - Do not call creation tools before the validation phase is complete.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

@@ -90,6 +90,15 @@ The following skills were added from [Dimillian/Skills](https://github.com/Dimil
 | `ios-debugger-agent`, `macos-menubar-tuist-app`, `macos-spm-app-packaging`, `swift-concurrency-expert` | [Dimillian/Skills](https://github.com/Dimillian/Skills) | MIT | Apple-platform debugging, packaging, and Swift concurrency guidance. |
 | `swiftui-liquid-glass`, `swiftui-performance-audit`, `swiftui-ui-patterns`, `swiftui-view-refactor` | [Dimillian/Skills](https://github.com/Dimillian/Skills) | MIT | SwiftUI-specific implementation, performance, and refactoring patterns. |
 
+## Skills from Leonxlnx/taste-skill
+
+The following skills were added from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill), a frontend design taste collection focused on premium UI generation, redesign audits, motion, and anti-generic output rules.
+
+| Skill / Group | Original Source | License | Notes |
+| :------------ | :-------------- | :------ | :---- |
+| `design-taste-frontend`, `gpt-taste`, `high-end-visual-design`, `minimalist-ui`, `industrial-brutalist-ui` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | Not declared upstream | Frontend visual design protocols for high-agency, motion-rich, minimalist, and brutalist UI generation. |
+| `redesign-existing-projects`, `stitch-design-taste`, `full-output-enforcement` | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) | Not declared upstream | Redesign audit workflow, Google Stitch design-system export, and full-output enforcement protocol. |
+
 ---
 
 ## Recently Added Skills (March 2026)

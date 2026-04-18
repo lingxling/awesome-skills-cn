@@ -246,3 +246,8 @@ This skill is **platform-agnostic** and works in any terminal context where GitH
 - External files or templates
 
 The skill is entirely self-contained, operating purely on user input and framework knowledge.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

@@ -11,7 +11,6 @@ source: community
 Create a git branch with the correct type prefix and a descriptive name following Sentry conventions.
 
 ## When to Use
-
 - You need to create a new git branch that follows the repository's naming convention.
 - You are starting a new piece of work from the default branch and need help classifying it as `feat`, `fix`, `docs`, or another branch type.
 - You want the branch name proposed from either the task description or the current local diff.
@@ -113,3 +112,8 @@ Restore any stashed changes after the branch is created.
 ## References
 
 - [Sentry Branch Naming](https://develop.sentry.dev/sdk/getting-started/standards/code-submission/#branch-naming)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

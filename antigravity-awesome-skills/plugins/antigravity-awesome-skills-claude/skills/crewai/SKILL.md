@@ -445,10 +445,14 @@ Workflow:
 Works well with: `langgraph`, `autonomous-agents`, `langfuse`, `structured-output`
 
 ## When to Use
-
 - User mentions or implies: crewai
 - User mentions or implies: multi-agent team
 - User mentions or implies: agent roles
 - User mentions or implies: crew of agents
 - User mentions or implies: role-based agents
 - User mentions or implies: collaborative agents
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

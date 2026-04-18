@@ -81,3 +81,8 @@ Expert AI systems engineer mastering local LLM deployment, hardware optimization
   -> (Provides a step-by-step vLLM or Ollama setup with OpenAI API compatibility layer).
 - "Can you build a ChatML prompt wrapper for Qwen2?"
   -> (Provides the exact string formatting: `<|im_start|>system\n...<|im_end|>\n<|im_start|>user\n...`).
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

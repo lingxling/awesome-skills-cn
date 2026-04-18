@@ -110,6 +110,8 @@ Each skill includes:
 
 ## 🎯 Getting Started
 
+### Option 1: npx (all platforms)
+
 Install Scientific Agent Skills with a single command:
 
 ```bash
@@ -117,6 +119,48 @@ npx skills add K-Dense-AI/scientific-agent-skills
 ```
 
 This is the official standard approach for installing Agent Skills across **all platforms**, including **Claude Code**, **Claude Cowork**, **Codex**, **Gemini CLI**, **Cursor**, and any other agent that supports the open [Agent Skills](https://agentskills.io/) standard.
+
+### Option 2: GitHub CLI (`gh skill`)
+
+If you use the [GitHub CLI](https://cli.github.com/) (v2.90.0+), you can install skills with [`gh skill`](https://github.blog/changelog/2026-04-16-manage-agent-skills-with-github-cli/):
+
+```bash
+# Browse and install interactively
+gh skill install K-Dense-AI/scientific-agent-skills
+
+# Install a specific skill directly
+gh skill install K-Dense-AI/scientific-agent-skills scanpy
+
+# Target a specific agent host
+gh skill install K-Dense-AI/scientific-agent-skills --agent cursor
+gh skill install K-Dense-AI/scientific-agent-skills --agent claude-code
+gh skill install K-Dense-AI/scientific-agent-skills --agent codex
+gh skill install K-Dense-AI/scientific-agent-skills --agent gemini
+```
+
+`gh skill` automatically installs to the correct directory for your agent host and records provenance metadata for supply chain integrity.
+
+#### Version pinning
+
+Pin to a specific release tag or commit SHA for reproducible installs:
+
+```bash
+# Pin to a release tag
+gh skill install K-Dense-AI/scientific-agent-skills --pin v1.0.0
+
+# Pin to a commit SHA
+gh skill install K-Dense-AI/scientific-agent-skills --pin abc123def
+```
+
+#### Keeping skills up to date
+
+```bash
+# Check for updates interactively
+gh skill update
+
+# Update all installed skills
+gh skill update --all
+```
 
 **That's it!** Your AI agent will automatically discover the skills and use them when relevant to your scientific tasks. You can also invoke any skill manually by mentioning the skill name in your prompt.
 
@@ -329,11 +373,8 @@ If so, **[K-Dense Web](https://k-dense.ai)** was built for you. It is the full A
 
 > *"K-Dense Web took me from raw sequencing data to a draft figure in one afternoon. What used to take three days of environment setup and scripting now just works."*
 > **Computational biologist, drug discovery**
-
-> ### 💰 $50 in free credits, no credit card required
-> Start running real scientific workflows in minutes.
 >
-> **[Try K-Dense Web free](https://k-dense.ai)**
+> **[Try K-Dense Web](https://k-dense.ai)**
 
 *[k-dense.ai](https://k-dense.ai) | [Read the full comparison](https://k-dense.ai/blog/k-dense-web-vs-scientific-agent-skills)*
 

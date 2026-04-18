@@ -480,3 +480,8 @@ echo "✅ Setup complete! Run 'npm run dev' to start"
 ---
 
 **Pro Tip:** Create a `setup.sh` or `setup.ps1` script to automate the entire setup process. Test it on a clean system to ensure it works!
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

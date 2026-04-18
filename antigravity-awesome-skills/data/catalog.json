@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1404,
+  "total": 1423,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -905,6 +905,36 @@
         "analyzer"
       ],
       "path": "skills/ai-analyzer/SKILL.md"
+    },
+    {
+      "id": "ai-dev-jobs-mcp",
+      "name": "ai-dev-jobs-mcp",
+      "description": "Search 8,400+ AI and ML jobs across 489 companies, inspect listings and employers, match roles, and view salary and market stats via AI Dev Jobs MCP",
+      "category": "data-ai",
+      "tags": [
+        "mcp",
+        "jobs",
+        "ai-jobs",
+        "ml-jobs",
+        "recruiting",
+        "job-search",
+        "career"
+      ],
+      "triggers": [
+        "mcp",
+        "jobs",
+        "ai-jobs",
+        "ml-jobs",
+        "recruiting",
+        "job-search",
+        "career",
+        "ai",
+        "dev",
+        "search",
+        "400",
+        "ml"
+      ],
+      "path": "skills/ai-dev-jobs-mcp/SKILL.md"
     },
     {
       "id": "ai-engineer",
@@ -3148,6 +3178,30 @@
         "scenarios"
       ],
       "path": "skills/awt-e2e-testing/SKILL.md"
+    },
+    {
+      "id": "axiom",
+      "name": "axiom",
+      "description": "First-principles assumption auditor. Classifies each hidden assumption (fact / convention / belief / interest-driven), ranks by fragility × impact, and rebuilds conclusions from verified premises. Bilingual: auto-detects Chinese or English.",
+      "category": "general",
+      "tags": [
+        "axiom"
+      ],
+      "triggers": [
+        "axiom",
+        "first",
+        "principles",
+        "assumption",
+        "auditor",
+        "classifies",
+        "each",
+        "hidden",
+        "fact",
+        "convention",
+        "belief",
+        "interest"
+      ],
+      "path": "skills/axiom/SKILL.md"
     },
     {
       "id": "azd-deployment",
@@ -10381,6 +10435,36 @@
       "path": "skills/daily/SKILL.md"
     },
     {
+      "id": "daily-gift",
+      "name": "daily-gift",
+      "description": "Relationship-aware daily gift engine with five-stage creative pipeline — editorial judgment, synthesis, concept generation, visual strategy, and rendering in H5, image, or video",
+      "category": "infrastructure",
+      "tags": [
+        "creative",
+        "gift",
+        "personalization",
+        "h5",
+        "image-generation",
+        "video-generation",
+        "relationship"
+      ],
+      "triggers": [
+        "creative",
+        "gift",
+        "personalization",
+        "h5",
+        "image-generation",
+        "video-generation",
+        "relationship",
+        "daily",
+        "aware",
+        "engine",
+        "five",
+        "stage"
+      ],
+      "path": "skills/daily-gift/SKILL.md"
+    },
+    {
       "id": "daily-news-report",
       "name": "daily-news-report",
       "description": "Scrapes content based on a preset URL list, filters high-quality technical information, and generates daily Markdown reports.",
@@ -11374,6 +11458,33 @@
         "apps"
       ],
       "path": "skills/design-spells/SKILL.md"
+    },
+    {
+      "id": "design-taste-frontend",
+      "name": "design-taste-frontend",
+      "description": "Use when building high-agency frontend interfaces with strict design taste, calibrated color, responsive layout, and motion rules.",
+      "category": "development",
+      "tags": [
+        "frontend",
+        "design",
+        "ui",
+        "react"
+      ],
+      "triggers": [
+        "frontend",
+        "design",
+        "ui",
+        "react",
+        "taste",
+        "building",
+        "high",
+        "agency",
+        "interfaces",
+        "strict",
+        "calibrated",
+        "color"
+      ],
+      "path": "skills/design-taste-frontend/SKILL.md"
     },
     {
       "id": "devcontainer-setup",
@@ -14600,6 +14711,32 @@
       "path": "skills/frontend-ui-dark-ts/SKILL.md"
     },
     {
+      "id": "full-output-enforcement",
+      "name": "full-output-enforcement",
+      "description": "Use when a task requires exhaustive unabridged output, complete files, or strict prevention of placeholders and skipped code.",
+      "category": "general",
+      "tags": [
+        "output",
+        "code-generation",
+        "quality"
+      ],
+      "triggers": [
+        "output",
+        "code-generation",
+        "quality",
+        "full",
+        "enforcement",
+        "task",
+        "requires",
+        "exhaustive",
+        "unabridged",
+        "complete",
+        "files",
+        "strict"
+      ],
+      "path": "skills/full-output-enforcement/SKILL.md"
+    },
+    {
       "id": "full-stack-orchestration-full-stack-feature",
       "name": "full-stack-orchestration-full-stack-feature",
       "description": "Use when working with full stack orchestration full stack feature",
@@ -15822,6 +15959,33 @@
       "path": "skills/googlesheets-automation/SKILL.md"
     },
     {
+      "id": "gpt-taste",
+      "name": "gpt-taste",
+      "description": "Use when generating elite GSAP-heavy frontend pages with strict AIDA structure, wide hero typography, and gapless bento grids.",
+      "category": "development",
+      "tags": [
+        "frontend",
+        "design",
+        "gsap",
+        "motion"
+      ],
+      "triggers": [
+        "frontend",
+        "design",
+        "gsap",
+        "motion",
+        "gpt",
+        "taste",
+        "generating",
+        "elite",
+        "heavy",
+        "pages",
+        "strict",
+        "aida"
+      ],
+      "path": "skills/gpt-taste/SKILL.md"
+    },
+    {
       "id": "grafana-dashboards",
       "name": "grafana-dashboards",
       "description": "Create and manage production-ready Grafana dashboards for comprehensive system observability.",
@@ -15996,6 +16160,36 @@
         "echarts"
       ],
       "path": "skills/health-trend-analyzer/SKILL.md"
+    },
+    {
+      "id": "helium-mcp",
+      "name": "helium-mcp",
+      "description": "Connect to Helium's MCP server for news research, media bias analysis, balanced perspectives, stock/options data, and semantic meme search across 3.2M+ articles and 5,000+ sources",
+      "category": "data-ai",
+      "tags": [
+        "mcp",
+        "news",
+        "media-bias",
+        "stocks",
+        "options",
+        "finance",
+        "research"
+      ],
+      "triggers": [
+        "mcp",
+        "news",
+        "media-bias",
+        "stocks",
+        "options",
+        "finance",
+        "research",
+        "helium",
+        "connect",
+        "server",
+        "media",
+        "bias"
+      ],
+      "path": "skills/helium-mcp/SKILL.md"
     },
     {
       "id": "helm-chart-scaffolding",
@@ -16401,6 +16595,33 @@
         "ask"
       ],
       "path": "skills/hig-technologies/SKILL.md"
+    },
+    {
+      "id": "high-end-visual-design",
+      "name": "high-end-visual-design",
+      "description": "Use when designing expensive agency-grade interfaces with premium fonts, spatial rhythm, soft depth, and fluid microinteractions.",
+      "category": "development",
+      "tags": [
+        "frontend",
+        "visual-design",
+        "motion",
+        "ui"
+      ],
+      "triggers": [
+        "frontend",
+        "visual-design",
+        "motion",
+        "ui",
+        "high",
+        "visual",
+        "designing",
+        "expensive",
+        "agency",
+        "grade",
+        "interfaces",
+        "premium"
+      ],
+      "path": "skills/high-end-visual-design/SKILL.md"
     },
     {
       "id": "hono",
@@ -17305,6 +17526,61 @@
         "communication"
       ],
       "path": "skills/incident-runbook-templates/SKILL.md"
+    },
+    {
+      "id": "indexing-issue-auditor",
+      "name": "indexing-issue-auditor",
+      "description": "High-level technical SEO and site architecture auditor. Invoke to scan local or live environments for indexing, crawl budget, and structural errors.",
+      "category": "architecture",
+      "tags": [
+        "seo",
+        "architecture",
+        "indexing",
+        "crawler",
+        "sitemap"
+      ],
+      "triggers": [
+        "seo",
+        "architecture",
+        "indexing",
+        "crawler",
+        "sitemap",
+        "issue",
+        "auditor",
+        "high",
+        "level",
+        "technical",
+        "site",
+        "invoke"
+      ],
+      "path": "skills/indexing-issue-auditor/SKILL.md"
+    },
+    {
+      "id": "industrial-brutalist-ui",
+      "name": "industrial-brutalist-ui",
+      "description": "Use when creating raw industrial or tactical telemetry UIs with rigid grids, stark typography, CRT effects, and high-density data.",
+      "category": "data-ai",
+      "tags": [
+        "frontend",
+        "design",
+        "brutalism",
+        "ui"
+      ],
+      "triggers": [
+        "frontend",
+        "design",
+        "brutalism",
+        "ui",
+        "industrial",
+        "brutalist",
+        "creating",
+        "raw",
+        "tactical",
+        "telemetry",
+        "uis",
+        "rigid"
+      ],
+      "path": "skills/industrial-brutalist-ui/SKILL.md"
     },
     {
       "id": "infinite-gratitude",
@@ -18217,6 +18493,42 @@
       "path": "skills/kubernetes-deployment/SKILL.md"
     },
     {
+      "id": "lambdatest-agent-skills",
+      "name": "lambdatest-agent-skills",
+      "description": "Production-grade test automation skills for 46 frameworks across E2E, unit, mobile, BDD, visual, and cloud testing in 15+ languages.",
+      "category": "infrastructure",
+      "tags": [
+        "testing",
+        "test-automation",
+        "e2e",
+        "unit-testing",
+        "mobile-testing",
+        "bdd",
+        "selenium",
+        "playwright",
+        "cypress",
+        "jest",
+        "pytest",
+        "appium",
+        "lambdatest"
+      ],
+      "triggers": [
+        "testing",
+        "test-automation",
+        "e2e",
+        "unit-testing",
+        "mobile-testing",
+        "bdd",
+        "selenium",
+        "playwright",
+        "cypress",
+        "jest",
+        "pytest",
+        "appium"
+      ],
+      "path": "skills/lambdatest-agent-skills/SKILL.md"
+    },
+    {
       "id": "landing-page-generator",
       "name": "landing-page-generator",
       "description": "Generates high-converting Next.js/React landing pages with Tailwind CSS. Uses PAS, AIDA, and BAB frameworks for optimized copy/components (Heroes, Features, Pricing). Focuses on Core Web Vitals/SEO.",
@@ -18991,6 +19303,34 @@
         "connections"
       ],
       "path": "skills/linkedin-cli/SKILL.md"
+    },
+    {
+      "id": "linkedin-profile-optimizer",
+      "name": "linkedin-profile-optimizer",
+      "description": "High-intent expert for LinkedIn profile checks, authority building, and SEO optimization. Invoke to audit, rewrite, and enhance profiles for top 1% positioning.",
+      "category": "business",
+      "tags": [
+        "linkedin",
+        "branding",
+        "career",
+        "growth",
+        "personal-brand"
+      ],
+      "triggers": [
+        "linkedin",
+        "branding",
+        "career",
+        "growth",
+        "personal-brand",
+        "profile",
+        "optimizer",
+        "high",
+        "intent",
+        "checks",
+        "authority",
+        "building"
+      ],
+      "path": "skills/linkedin-profile-optimizer/SKILL.md"
     },
     {
       "id": "linkerd-patterns",
@@ -20550,6 +20890,33 @@
       "path": "skills/minecraft-bukkit-pro/SKILL.md"
     },
     {
+      "id": "minimalist-ui",
+      "name": "minimalist-ui",
+      "description": "Use when creating clean editorial interfaces with warm monochrome palettes, crisp borders, restrained motion, and flat bento layouts.",
+      "category": "development",
+      "tags": [
+        "frontend",
+        "design",
+        "minimalism",
+        "ui"
+      ],
+      "triggers": [
+        "frontend",
+        "design",
+        "minimalism",
+        "ui",
+        "minimalist",
+        "creating",
+        "clean",
+        "editorial",
+        "interfaces",
+        "warm",
+        "monochrome",
+        "palettes"
+      ],
+      "path": "skills/minimalist-ui/SKILL.md"
+    },
+    {
       "id": "miro-automation",
       "name": "miro-automation",
       "description": "Automate Miro tasks via Rube MCP (Composio): boards, items, sticky notes, frames, sharing, connectors. Always search tools first for current schemas.",
@@ -20572,6 +20939,35 @@
         "notes"
       ],
       "path": "skills/miro-automation/SKILL.md"
+    },
+    {
+      "id": "mise-configurator",
+      "name": "mise-configurator",
+      "description": "Generate production-ready mise.toml setups for local development, CI/CD pipelines, and toolchain standardization.",
+      "category": "infrastructure",
+      "tags": [
+        "mise",
+        "devops",
+        "ci-cd",
+        "toolchain",
+        "runtimes",
+        "automation"
+      ],
+      "triggers": [
+        "mise",
+        "devops",
+        "ci-cd",
+        "toolchain",
+        "runtimes",
+        "automation",
+        "configurator",
+        "generate",
+        "toml",
+        "setups",
+        "local",
+        "development"
+      ],
+      "path": "skills/mise-configurator/SKILL.md"
     },
     {
       "id": "mixpanel-automation",
@@ -20665,6 +21061,31 @@
         "kubeflow"
       ],
       "path": "skills/mlops-engineer/SKILL.md"
+    },
+    {
+      "id": "mmx-cli",
+      "name": "mmx-cli",
+      "description": "Use mmx to generate text, images, video, speech, and music via the MiniMax AI platform. Use when the user wants to create media content, chat with MiniMax models, perform web search, or manage MiniMax API resources from the terminal.",
+      "category": "data-ai",
+      "tags": [
+        "mmx",
+        "cli"
+      ],
+      "triggers": [
+        "mmx",
+        "cli",
+        "generate",
+        "text",
+        "images",
+        "video",
+        "speech",
+        "music",
+        "via",
+        "minimax",
+        "ai",
+        "platform"
+      ],
+      "path": "skills/mmx-cli/SKILL.md"
     },
     {
       "id": "mobile-design",
@@ -21782,6 +22203,35 @@
         "single"
       ],
       "path": "skills/nosql-expert/SKILL.md"
+    },
+    {
+      "id": "not-human-search-mcp",
+      "name": "not-human-search-mcp",
+      "description": "Search AI-ready websites, inspect indexed site details, verify MCP endpoints, and discover tools and APIs using the Not Human Search MCP server",
+      "category": "data-ai",
+      "tags": [
+        "mcp",
+        "search",
+        "ai-discovery",
+        "api-discovery",
+        "mcp-verification",
+        "agent-tools"
+      ],
+      "triggers": [
+        "mcp",
+        "search",
+        "ai-discovery",
+        "api-discovery",
+        "mcp-verification",
+        "agent-tools",
+        "human",
+        "ai",
+        "websites",
+        "inspect",
+        "indexed",
+        "site"
+      ],
+      "path": "skills/not-human-search-mcp/SKILL.md"
     },
     {
       "id": "notebooklm",
@@ -25650,6 +26100,33 @@
         "comments"
       ],
       "path": "skills/reddit-automation/SKILL.md"
+    },
+    {
+      "id": "redesign-existing-projects",
+      "name": "redesign-existing-projects",
+      "description": "Use when upgrading existing websites or apps by auditing generic UI patterns and applying premium design fixes without rewrites.",
+      "category": "development",
+      "tags": [
+        "frontend",
+        "redesign",
+        "design-audit",
+        "ui"
+      ],
+      "triggers": [
+        "frontend",
+        "redesign",
+        "design-audit",
+        "ui",
+        "existing",
+        "upgrading",
+        "websites",
+        "apps",
+        "auditing",
+        "generic",
+        "applying",
+        "premium"
+      ],
+      "path": "skills/redesign-existing-projects/SKILL.md"
     },
     {
       "id": "reference-builder",
@@ -29742,6 +30219,33 @@
         "apple"
       ],
       "path": "skills/steve-jobs/SKILL.md"
+    },
+    {
+      "id": "stitch-design-taste",
+      "name": "stitch-design-taste",
+      "description": "Use when generating Google Stitch DESIGN.md systems for premium typography, color, layout, motion intent, and anti-generic UI rules.",
+      "category": "development",
+      "tags": [
+        "stitch",
+        "design-system",
+        "frontend",
+        "ui"
+      ],
+      "triggers": [
+        "stitch",
+        "design-system",
+        "frontend",
+        "ui",
+        "taste",
+        "generating",
+        "google",
+        "md",
+        "premium",
+        "typography",
+        "color",
+        "layout"
+      ],
+      "path": "skills/stitch-design-taste/SKILL.md"
     },
     {
       "id": "stitch-loop",
@@ -34436,6 +34940,31 @@
         "compiler"
       ],
       "path": "skills/zeroize-audit/SKILL.md"
+    },
+    {
+      "id": "zipai-optimizer",
+      "name": "zipai-optimizer",
+      "description": "Adaptive token optimizer: intelligent filtering, surgical output, ambiguity-first, context-window-aware, VCS-aware.",
+      "category": "general",
+      "tags": [
+        "zipai",
+        "optimizer"
+      ],
+      "triggers": [
+        "zipai",
+        "optimizer",
+        "adaptive",
+        "token",
+        "intelligent",
+        "filtering",
+        "surgical",
+        "output",
+        "ambiguity",
+        "first",
+        "context",
+        "window"
+      ],
+      "path": "skills/zipai-optimizer/SKILL.md"
     },
     {
       "id": "zod-validation-expert",

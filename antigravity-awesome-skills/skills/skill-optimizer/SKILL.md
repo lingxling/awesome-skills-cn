@@ -264,3 +264,8 @@ The analysis dimensions in this report are grounded in the following research:
 - **Information position**: Lost in the Middle (Liu et al., TACL 2024) — U-shaped LLM attention curve
 - **Format impact**: He et al. (arXiv:2411.10541) — format changes alone can cause 9-40% performance variance
 - **Instruction compliance**: IFEval (arXiv:2311.07911) — LLMs struggle with multi-constraint prompts
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

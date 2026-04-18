@@ -19,7 +19,6 @@ tools: [claude, cursor, codex, gemini]
 Part of [StyleSeed](https://github.com/bitjaru/styleseed), this skill ensures data-dependent UI does not stop at the happy path. It adds the four core feedback states every serious product needs: loading, empty, error, and success.
 
 ## When to Use
-
 - Use when a component or page fetches, mutates, or depends on async data
 - Use when a flow currently renders only the success path
 - Use when a card, list, or page needs better state communication
@@ -62,3 +61,8 @@ Return:
 
 - [StyleSeed repository](https://github.com/bitjaru/styleseed)
 - [Source skill](https://github.com/bitjaru/styleseed/blob/main/seeds/toss/.claude/skills/ux-feedback/SKILL.md)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

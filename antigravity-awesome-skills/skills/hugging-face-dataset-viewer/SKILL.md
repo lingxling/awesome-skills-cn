@@ -8,7 +8,6 @@ risk: unknown
 # Hugging Face Dataset Viewer
 
 ## When to Use
-
 Use this skill when you need read-only exploration of a Hugging Face dataset through the Dataset Viewer API.
 
 Use this skill to execute read-only Dataset Viewer API calls for dataset exploration and extraction.
@@ -125,3 +124,8 @@ npx -y @huggingface/hub upload datasets/<namespace>/<repo> ./local/parquet-folde
 ```
 
 After upload, call `/parquet` to discover `<config>/<split>/<shard>` values for querying with `@~parquet`.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

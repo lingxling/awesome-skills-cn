@@ -488,7 +488,6 @@ Workflow:
 Works well with: `langgraph`, `crewai`, `structured-output`, `autonomous-agents`
 
 ## When to Use
-
 - User mentions or implies: langfuse
 - User mentions or implies: llm observability
 - User mentions or implies: llm tracing
@@ -496,3 +495,8 @@ Works well with: `langgraph`, `crewai`, `structured-output`, `autonomous-agents`
 - User mentions or implies: llm evaluation
 - User mentions or implies: monitor llm
 - User mentions or implies: debug llm
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

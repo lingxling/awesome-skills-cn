@@ -62,3 +62,8 @@ When someone opens it with their AI agent, both see a compatibility breakdown.
 - Website: https://viboscope.com
 - GitHub: https://github.com/ivankoriako/viboscope
 - API: https://viboscope.com/api/v1
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

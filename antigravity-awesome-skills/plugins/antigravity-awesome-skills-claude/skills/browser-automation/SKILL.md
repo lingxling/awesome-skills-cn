@@ -1097,7 +1097,6 @@ Message: Scraping loop without try/catch. One page failure will crash the entire
 Works well with: `agent-tool-builder`, `workflow-automation`, `computer-use-agents`, `test-architect`
 
 ## When to Use
-
 - User mentions or implies: playwright
 - User mentions or implies: puppeteer
 - User mentions or implies: browser automation
@@ -1110,3 +1109,8 @@ Works well with: `agent-tool-builder`, `workflow-automation`, `computer-use-agen
 - User mentions or implies: browser test
 - User mentions or implies: page.click
 - User mentions or implies: locator
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

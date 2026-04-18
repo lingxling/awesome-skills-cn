@@ -21,7 +21,6 @@ tags:
 Functional programming patterns for building type-safe, testable backend services using fp-ts.
 
 ## When to Use
-
 - You are building or refactoring a Node.js or Deno backend with fp-ts.
 - The task involves dependency injection, service composition, or typed backend errors with `ReaderTaskEither`.
 - You need functional backend architecture patterns rather than isolated utility snippets.
@@ -1338,3 +1337,8 @@ export const myOperation = (
     )
   )
 ```
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

@@ -907,7 +907,6 @@ Message: No customRanking configured. Add business metrics (popularity, rating).
 - user needs serverless deployment -> aws-serverless (Lambda for indexing jobs)
 
 ## When to Use
-
 - User mentions or implies: adding search to
 - User mentions or implies: algolia
 - User mentions or implies: instantsearch
@@ -918,3 +917,8 @@ Message: No customRanking configured. Add business metrics (popularity, rating).
 - User mentions or implies: faceted search
 - User mentions or implies: search index
 - User mentions or implies: search as you type
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

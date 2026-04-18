@@ -9,15 +9,15 @@ The Hugging Face Hub CLI tool `hf` is available. IMPORTANT: The `hf` command rep
 
 Use `hf --help` to view available functions. Note that auth commands are now all under `hf auth` e.g. `hf auth whoami`.
 
-Generated with `huggingface_hub v1.10.1`. Run `hf skills add --force` to regenerate.
+Generated with `huggingface_hub v1.11.0`. Run `hf skills add --force` to regenerate.
 
 ## Commands
 
-- `hf download REPO_ID` — Download files from the Hub. `[--type CHOICE --revision TEXT --include TEXT --exclude TEXT --cache-dir TEXT --local-dir TEXT --force-download --dry-run --quiet --max-workers INTEGER]`
+- `hf download REPO_ID` — Download files from the Hub. `[--type CHOICE --revision TEXT --include TEXT --exclude TEXT --cache-dir TEXT --local-dir TEXT --force-download --dry-run --max-workers INTEGER --format CHOICE]`
 - `hf env` — Print information about the environment.
 - `hf sync` — Sync files between local directory and a bucket. `[--delete --ignore-times --ignore-sizes --plan TEXT --apply TEXT --dry-run --include TEXT --exclude TEXT --filter-from TEXT --existing --ignore-existing --verbose --quiet]`
-- `hf upload REPO_ID` — Upload a file or a folder to the Hub. Recommended for single-commit uploads. `[--type CHOICE --revision TEXT --private --include TEXT --exclude TEXT --delete TEXT --commit-message TEXT --commit-description TEXT --create-pr --every FLOAT --quiet]`
-- `hf upload-large-folder REPO_ID LOCAL_PATH` — Upload a large folder to the Hub. Recommended for resumable uploads. `[--type CHOICE --revision TEXT --private --include TEXT --exclude TEXT --num-workers INTEGER --no-report --no-bars]`
+- `hf upload REPO_ID` — Upload a file or a folder to the Hub. Recommended for single-commit uploads. `[--type CHOICE --revision TEXT --private --include TEXT --exclude TEXT --delete TEXT --commit-message TEXT --commit-description TEXT --create-pr --every FLOAT --format CHOICE]`
+- `hf upload-large-folder REPO_ID LOCAL_PATH` — Upload a large folder to the Hub. Recommended for resumable uploads. `[--type CHOICE --revision TEXT --private --include TEXT --exclude TEXT --num-workers INTEGER --no-report --no-bars --format CHOICE]`
 - `hf version` — Print information about the hf version.
 
 ### `hf auth` — Manage authentication (login, logout, etc.).
@@ -26,6 +26,7 @@ Generated with `huggingface_hub v1.10.1`. Run `hf skills add --force` to regener
 - `hf auth login` — Login using a token from huggingface.co/settings/tokens. `[--add-to-git-credential --force]`
 - `hf auth logout` — Logout from a specific token. `[--token-name TEXT]`
 - `hf auth switch` — Switch between access tokens. `[--token-name TEXT --add-to-git-credential]`
+- `hf auth token` — Print the current access token to stdout.
 - `hf auth whoami` — Find out which huggingface.co account you are logged in as. `[--format CHOICE]`
 
 ### `hf buckets` — Commands to interact with buckets.
@@ -41,21 +42,21 @@ Generated with `huggingface_hub v1.10.1`. Run `hf skills add --force` to regener
 
 ### `hf cache` — Manage local cache directory.
 
-- `hf cache list` — List cached repositories or revisions. `[--cache-dir TEXT --revisions --filter TEXT --format CHOICE --quiet --sort CHOICE --limit INTEGER]`
-- `hf cache prune` — Remove detached revisions from the cache. `[--cache-dir TEXT --yes --dry-run]`
-- `hf cache rm TARGETS` — Remove cached repositories or revisions. `[--cache-dir TEXT --yes --dry-run]`
-- `hf cache verify REPO_ID` — Verify checksums for a single repo revision from cache or a local directory. `[--type CHOICE --revision TEXT --cache-dir TEXT --local-dir TEXT --fail-on-missing-files --fail-on-extra-files]`
+- `hf cache list` — List cached repositories or revisions. `[--cache-dir TEXT --revisions --filter TEXT --format CHOICE --sort CHOICE --limit INTEGER]`
+- `hf cache prune` — Remove detached revisions from the cache. `[--cache-dir TEXT --yes --dry-run --format CHOICE]`
+- `hf cache rm TARGETS` — Remove cached repositories or revisions. `[--cache-dir TEXT --yes --dry-run --format CHOICE]`
+- `hf cache verify REPO_ID` — Verify checksums for a single repo revision from cache or a local directory. `[--type CHOICE --revision TEXT --cache-dir TEXT --local-dir TEXT --fail-on-missing-files --fail-on-extra-files --format CHOICE]`
 
 ### `hf collections` — Interact with collections on the Hub.
 
-- `hf collections add-item COLLECTION_SLUG ITEM_ID ITEM_TYPE` — Add an item to a collection. `[--note TEXT --exists-ok]`
-- `hf collections create TITLE` — Create a new collection on the Hub. `[--namespace TEXT --description TEXT --private --exists-ok]`
-- `hf collections delete COLLECTION_SLUG` — Delete a collection from the Hub. `[--missing-ok]`
-- `hf collections delete-item COLLECTION_SLUG ITEM_OBJECT_ID` — Delete an item from a collection. `[--missing-ok]`
-- `hf collections info COLLECTION_SLUG` — Get info about a collection on the Hub. Output is in JSON format.
-- `hf collections list` — List collections on the Hub. `[--owner TEXT --item TEXT --sort CHOICE --limit INTEGER --format CHOICE --quiet]`
-- `hf collections update COLLECTION_SLUG` — Update a collection's metadata on the Hub. `[--title TEXT --description TEXT --position INTEGER --private --theme TEXT]`
-- `hf collections update-item COLLECTION_SLUG ITEM_OBJECT_ID` — Update an item in a collection. `[--note TEXT --position INTEGER]`
+- `hf collections add-item COLLECTION_SLUG ITEM_ID ITEM_TYPE` — Add an item to a collection. `[--note TEXT --exists-ok --format CHOICE]`
+- `hf collections create TITLE` — Create a new collection on the Hub. `[--namespace TEXT --description TEXT --private --exists-ok --format CHOICE]`
+- `hf collections delete COLLECTION_SLUG` — Delete a collection from the Hub. `[--missing-ok --format CHOICE]`
+- `hf collections delete-item COLLECTION_SLUG ITEM_OBJECT_ID` — Delete an item from a collection. `[--missing-ok --format CHOICE]`
+- `hf collections info COLLECTION_SLUG` — Get info about a collection on the Hub. `[--format CHOICE]`
+- `hf collections list` — List collections on the Hub. `[--owner TEXT --item TEXT --sort CHOICE --limit INTEGER --format CHOICE]`
+- `hf collections update COLLECTION_SLUG` — Update a collection's metadata on the Hub. `[--title TEXT --description TEXT --position INTEGER --private --theme TEXT --format CHOICE]`
+- `hf collections update-item COLLECTION_SLUG ITEM_OBJECT_ID` — Update an item in a collection. `[--note TEXT --position INTEGER --format CHOICE]`
 
 ### `hf datasets` — Interact with datasets on the Hub.
 
@@ -66,36 +67,36 @@ Generated with `huggingface_hub v1.10.1`. Run `hf skills add --force` to regener
 
 ### `hf discussions` — Manage discussions and pull requests on the Hub.
 
-- `hf discussions close REPO_ID NUM` — Close a discussion or pull request. `[--comment TEXT --yes --type CHOICE]`
-- `hf discussions comment REPO_ID NUM` — Comment on a discussion or pull request. `[--body TEXT --body-file PATH --type CHOICE]`
-- `hf discussions create REPO_ID --title TEXT` — Create a new discussion or pull request on a repo. `[--body TEXT --body-file PATH --pull-request --type CHOICE]`
-- `hf discussions diff REPO_ID NUM` — Show the diff of a pull request. `[--type CHOICE]`
-- `hf discussions info REPO_ID NUM` — Get info about a discussion or pull request. `[--comments --diff --no-color --type CHOICE --format CHOICE]`
-- `hf discussions list REPO_ID` — List discussions and pull requests on a repo. `[--status CHOICE --kind CHOICE --author TEXT --limit INTEGER --type CHOICE --format CHOICE --quiet]`
-- `hf discussions merge REPO_ID NUM` — Merge a pull request. `[--comment TEXT --yes --type CHOICE]`
-- `hf discussions rename REPO_ID NUM NEW_TITLE` — Rename a discussion or pull request. `[--type CHOICE]`
-- `hf discussions reopen REPO_ID NUM` — Reopen a closed discussion or pull request. `[--comment TEXT --yes --type CHOICE]`
+- `hf discussions close REPO_ID NUM` — Close a discussion or pull request. `[--comment TEXT --yes --type CHOICE --format CHOICE]`
+- `hf discussions comment REPO_ID NUM` — Comment on a discussion or pull request. `[--body TEXT --body-file PATH --type CHOICE --format CHOICE]`
+- `hf discussions create REPO_ID --title TEXT` — Create a new discussion or pull request on a repo. `[--body TEXT --body-file PATH --pull-request --type CHOICE --format CHOICE]`
+- `hf discussions diff REPO_ID NUM` — Show the diff of a pull request. `[--type CHOICE --format CHOICE]`
+- `hf discussions info REPO_ID NUM` — Get info about a discussion or pull request. `[--type CHOICE --format CHOICE]`
+- `hf discussions list REPO_ID` — List discussions and pull requests on a repo. `[--status CHOICE --kind CHOICE --author TEXT --limit INTEGER --type CHOICE --format CHOICE]`
+- `hf discussions merge REPO_ID NUM` — Merge a pull request. `[--comment TEXT --yes --type CHOICE --format CHOICE]`
+- `hf discussions rename REPO_ID NUM NEW_TITLE` — Rename a discussion or pull request. `[--type CHOICE --format CHOICE]`
+- `hf discussions reopen REPO_ID NUM` — Reopen a closed discussion or pull request. `[--comment TEXT --yes --type CHOICE --format CHOICE]`
 
 ### `hf endpoints` — Manage Hugging Face Inference Endpoints.
 
-- `hf endpoints catalog deploy --repo TEXT` — Deploy an Inference Endpoint from the Model Catalog. `[--name TEXT --accelerator TEXT --namespace TEXT]`
-- `hf endpoints catalog list` — List available Catalog models.
-- `hf endpoints delete NAME` — Delete an Inference Endpoint permanently. `[--namespace TEXT --yes]`
-- `hf endpoints deploy NAME --repo TEXT --framework TEXT --accelerator TEXT --instance-size TEXT --instance-type TEXT --region TEXT --vendor TEXT` — Deploy an Inference Endpoint from a Hub repository. `[--namespace TEXT --task TEXT --min-replica INTEGER --max-replica INTEGER --scale-to-zero-timeout INTEGER --scaling-metric CHOICE --scaling-threshold FLOAT]`
-- `hf endpoints describe NAME` — Get information about an existing endpoint. `[--namespace TEXT]`
-- `hf endpoints list` — Lists all Inference Endpoints for the given namespace. `[--namespace TEXT --format CHOICE --quiet]`
-- `hf endpoints pause NAME` — Pause an Inference Endpoint. `[--namespace TEXT]`
-- `hf endpoints resume NAME` — Resume an Inference Endpoint. `[--namespace TEXT --fail-if-already-running]`
-- `hf endpoints scale-to-zero NAME` — Scale an Inference Endpoint to zero. `[--namespace TEXT]`
-- `hf endpoints update NAME` — Update an existing endpoint. `[--namespace TEXT --repo TEXT --accelerator TEXT --instance-size TEXT --instance-type TEXT --framework TEXT --revision TEXT --task TEXT --min-replica INTEGER --max-replica INTEGER --scale-to-zero-timeout INTEGER --scaling-metric CHOICE --scaling-threshold FLOAT]`
+- `hf endpoints catalog deploy --repo TEXT` — Deploy an Inference Endpoint from the Model Catalog. `[--name TEXT --accelerator TEXT --namespace TEXT --format CHOICE]`
+- `hf endpoints catalog list` — List available Catalog models. `[--format CHOICE]`
+- `hf endpoints delete NAME` — Delete an Inference Endpoint permanently. `[--namespace TEXT --yes --format CHOICE]`
+- `hf endpoints deploy NAME --repo TEXT --framework TEXT --accelerator TEXT --instance-size TEXT --instance-type TEXT --region TEXT --vendor TEXT` — Deploy an Inference Endpoint from a Hub repository. `[--namespace TEXT --task TEXT --format CHOICE --min-replica INTEGER --max-replica INTEGER --scale-to-zero-timeout INTEGER --scaling-metric CHOICE --scaling-threshold FLOAT]`
+- `hf endpoints describe NAME` — Get information about an existing endpoint. `[--namespace TEXT --format CHOICE]`
+- `hf endpoints list` — Lists all Inference Endpoints for the given namespace. `[--namespace TEXT --format CHOICE]`
+- `hf endpoints pause NAME` — Pause an Inference Endpoint. `[--namespace TEXT --format CHOICE]`
+- `hf endpoints resume NAME` — Resume an Inference Endpoint. `[--namespace TEXT --fail-if-already-running --format CHOICE]`
+- `hf endpoints scale-to-zero NAME` — Scale an Inference Endpoint to zero. `[--namespace TEXT --format CHOICE]`
+- `hf endpoints update NAME` — Update an existing endpoint. `[--namespace TEXT --repo TEXT --accelerator TEXT --instance-size TEXT --instance-type TEXT --framework TEXT --revision TEXT --task TEXT --min-replica INTEGER --max-replica INTEGER --scale-to-zero-timeout INTEGER --scaling-metric CHOICE --scaling-threshold FLOAT --format CHOICE]`
 
 ### `hf extensions` — Manage hf CLI extensions.
 
 - `hf extensions exec NAME` — Execute an installed extension.
 - `hf extensions install REPO_ID` — Install an extension from a public GitHub repository. `[--force]`
-- `hf extensions list` — List installed extension commands. `[--format CHOICE --quiet]`
+- `hf extensions list` — List installed extension commands. `[--format CHOICE]`
 - `hf extensions remove NAME` — Remove an installed extension.
-- `hf extensions search` — Search extensions available on GitHub (tagged with 'hf-extension' topic). `[--format CHOICE --quiet]`
+- `hf extensions search` — Search extensions available on GitHub (tagged with 'hf-extension' topic). `[--format CHOICE]`
 
 ### `hf jobs` — Run and manage Jobs on the Hub.
 
@@ -129,17 +130,17 @@ Generated with `huggingface_hub v1.10.1`. Run `hf skills add --force` to regener
 
 ### `hf repos` — Manage repos on the Hub.
 
-- `hf repos branch create REPO_ID BRANCH` — Create a new branch for a repo on the Hub. `[--revision TEXT --type CHOICE --exist-ok]`
-- `hf repos branch delete REPO_ID BRANCH` — Delete a branch from a repo on the Hub. `[--type CHOICE]`
-- `hf repos create REPO_ID` — Create a new repo on the Hub. `[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT]`
-- `hf repos delete REPO_ID` — Delete a repo from the Hub. This is an irreversible operation. `[--type CHOICE --missing-ok]`
-- `hf repos delete-files REPO_ID PATTERNS` — Delete files from a repo on the Hub. `[--type CHOICE --revision TEXT --commit-message TEXT --commit-description TEXT --create-pr]`
-- `hf repos duplicate FROM_ID` — Duplicate a repo on the Hub (model, dataset, or Space). `[--type CHOICE --private --public --protected --exist-ok --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT]`
-- `hf repos move FROM_ID TO_ID` — Move a repository from a namespace to another namespace. `[--type CHOICE]`
-- `hf repos settings REPO_ID` — Update the settings of a repository. `[--gated CHOICE --private --public --protected --type CHOICE]`
-- `hf repos tag create REPO_ID TAG` — Create a tag for a repo. `[--message TEXT --revision TEXT --type CHOICE]`
-- `hf repos tag delete REPO_ID TAG` — Delete a tag for a repo. `[--yes --type CHOICE]`
-- `hf repos tag list REPO_ID` — List tags for a repo. `[--type CHOICE]`
+- `hf repos branch create REPO_ID BRANCH` — Create a new branch for a repo on the Hub. `[--revision TEXT --type CHOICE --exist-ok --format CHOICE]`
+- `hf repos branch delete REPO_ID BRANCH` — Delete a branch from a repo on the Hub. `[--type CHOICE --format CHOICE]`
+- `hf repos create REPO_ID` — Create a new repo on the Hub. `[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT --format CHOICE]`
+- `hf repos delete REPO_ID` — Delete a repo from the Hub. This is an irreversible operation. `[--type CHOICE --missing-ok --yes --format CHOICE]`
+- `hf repos delete-files REPO_ID PATTERNS` — Delete files from a repo on the Hub. `[--type CHOICE --revision TEXT --commit-message TEXT --commit-description TEXT --create-pr --format CHOICE]`
+- `hf repos duplicate FROM_ID` — Duplicate a repo on the Hub (model, dataset, or Space). `[--type CHOICE --private --public --protected --exist-ok --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT --format CHOICE]`
+- `hf repos move FROM_ID TO_ID` — Move a repository from a namespace to another namespace. `[--type CHOICE --format CHOICE]`
+- `hf repos settings REPO_ID` — Update the settings of a repository. `[--gated CHOICE --private --public --protected --type CHOICE --format CHOICE]`
+- `hf repos tag create REPO_ID TAG` — Create a tag for a repo. `[--message TEXT --revision TEXT --type CHOICE --format CHOICE]`
+- `hf repos tag delete REPO_ID TAG` — Delete a tag for a repo. `[--yes --type CHOICE --format CHOICE]`
+- `hf repos tag list REPO_ID` — List tags for a repo. `[--type CHOICE --format CHOICE]`
 
 ### `hf skills` — Manage skills for AI assistants.
 
@@ -153,16 +154,21 @@ Generated with `huggingface_hub v1.10.1`. Run `hf skills add --force` to regener
 - `hf spaces hot-reload SPACE_ID` — Hot-reload any Python file of a Space without a full rebuild + restart. `[--local-file TEXT --skip-checks --skip-summary]`
 - `hf spaces info SPACE_ID` — Get info about a space on the Hub. `[--revision TEXT --expand TEXT --format CHOICE]`
 - `hf spaces list` — List spaces on the Hub. `[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --format CHOICE]`
+- `hf spaces logs SPACE_ID` — Fetch the run or build logs of a Space. `[--build --follow --tail INTEGER]`
+- `hf spaces search QUERY` — Search spaces on the Hub using semantic search. `[--filter TEXT --sdk TEXT --include-non-running --description --limit INTEGER --format CHOICE]`
+- `hf spaces volumes delete SPACE_ID` — Remove all volumes from a Space. `[--yes --format CHOICE]`
+- `hf spaces volumes list SPACE_ID` — List volumes mounted in a Space. `[--format CHOICE]`
+- `hf spaces volumes set SPACE_ID` — Set (replace) volumes for a Space. `[--volume TEXT --format CHOICE]`
 
 ### `hf webhooks` — Manage webhooks on the Hub.
 
-- `hf webhooks create --watch TEXT` — Create a new webhook. `[--url TEXT --job-id TEXT --domain CHOICE --secret TEXT]`
-- `hf webhooks delete WEBHOOK_ID` — Delete a webhook permanently. `[--yes]`
-- `hf webhooks disable WEBHOOK_ID` — Disable an active webhook.
-- `hf webhooks enable WEBHOOK_ID` — Enable a disabled webhook.
-- `hf webhooks info WEBHOOK_ID` — Show full details for a single webhook as JSON.
-- `hf webhooks list` — List all webhooks for the current user. `[--format CHOICE --quiet]`
-- `hf webhooks update WEBHOOK_ID` — Update an existing webhook. Only provided options are changed. `[--url TEXT --watch TEXT --domain CHOICE --secret TEXT]`
+- `hf webhooks create --watch TEXT` — Create a new webhook. `[--url TEXT --job-id TEXT --domain CHOICE --secret TEXT --format CHOICE]`
+- `hf webhooks delete WEBHOOK_ID` — Delete a webhook permanently. `[--yes --format CHOICE]`
+- `hf webhooks disable WEBHOOK_ID` — Disable an active webhook. `[--format CHOICE]`
+- `hf webhooks enable WEBHOOK_ID` — Enable a disabled webhook. `[--format CHOICE]`
+- `hf webhooks info WEBHOOK_ID` — Show full details for a single webhook. `[--format CHOICE]`
+- `hf webhooks list` — List all webhooks for the current user. `[--format CHOICE]`
+- `hf webhooks update WEBHOOK_ID` — Update an existing webhook. Only provided options are changed. `[--url TEXT --watch TEXT --domain CHOICE --secret TEXT --format CHOICE]`
 
 ## Common options
 

@@ -59,3 +59,8 @@ Activa este skill **después de que el nicho de mercado esté claro** y ya exist
 - Cuando quieras profundizar en regulaciones, estándares y patrones UX específicos de un sector concreto (Fintech, HealthTech, logística, etc.).
 - Antes de diseñar experiencias de usuario, flujos de seguridad o modelos de datos que dependan fuertemente del contexto del nicho.
 - Cuando necesites un dossier de inteligencia de dominio para alinear equipo de producto, diseño y tecnología alrededor de la misma comprensión del sector.
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

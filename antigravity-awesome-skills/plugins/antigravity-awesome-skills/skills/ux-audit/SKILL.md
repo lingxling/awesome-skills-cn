@@ -19,7 +19,6 @@ tools: [claude, cursor, codex, gemini]
 Part of [StyleSeed](https://github.com/bitjaru/styleseed), this skill audits usability rather than just visuals. It uses Nielsen's 10 heuristics plus modern mobile UX expectations to find issues in navigation, feedback, recovery, hierarchy, and cognitive load.
 
 ## When to Use
-
 - Use when a screen feels awkward even though the code and styling seem correct
 - Use when evaluating a flow before or after implementation
 - Use when reviewing a mobile-first product for usability regressions
@@ -60,3 +59,8 @@ Return:
 
 - [StyleSeed repository](https://github.com/bitjaru/styleseed)
 - [Source skill](https://github.com/bitjaru/styleseed/blob/main/seeds/toss/.claude/skills/ux-audit/SKILL.md)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

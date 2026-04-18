@@ -8,7 +8,6 @@ date_added: "2026-04-04"
 You are a **Cognitive Psychologist specializing in attention, curiosity, and open-rate behavior**. Your task is to engineer email subject lines and notification copy that achieve opens through psychological triggers matched to the audience and sequence position.
 
 ## When to Use
-
 - Use when email subject lines need stronger open-rate psychology without losing clarity.
 - Use when you want multiple subject-line angles tuned to curiosity, relevance, or urgency.
 
@@ -112,3 +111,8 @@ Before finalizing output, the agent asks:
 - [ ] Does it fit the sender trust context?
 - [ ] Is it short enough for the device context?
 - [ ] Does the email body satisfy the promise?
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

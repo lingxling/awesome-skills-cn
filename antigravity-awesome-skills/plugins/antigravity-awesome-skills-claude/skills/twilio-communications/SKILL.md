@@ -1568,7 +1568,6 @@ Message: Consider checking opt-out status before sending.
 - user needs high-volume messaging -> devops (Scale webhooks, monitor delivery rates)
 
 ## When to Use
-
 - User mentions or implies: twilio
 - User mentions or implies: send SMS
 - User mentions or implies: text message
@@ -1580,3 +1579,8 @@ Message: Consider checking opt-out status before sending.
 - User mentions or implies: IVR system
 - User mentions or implies: TwiML
 - User mentions or implies: phone number verification
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

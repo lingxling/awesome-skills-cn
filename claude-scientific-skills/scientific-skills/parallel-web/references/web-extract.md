@@ -7,7 +7,7 @@ Extract content from: $ARGUMENTS
 Choose a short, descriptive filename based on the URL or content (e.g., `vespa-docs`, `react-hooks-api`). Use lowercase with hyphens, no spaces.
 
 ```bash
-parallel-cli extract "$ARGUMENTS" --json -o "/tmp/$FILENAME.md"
+parallel-cli extract "$ARGUMENTS" --json -o "$FILENAME.json"
 ```
 
 Options if needed:
@@ -18,7 +18,7 @@ Options if needed:
 When extracting from academic sources (arXiv, PubMed, journal sites, conference proceedings), use `--objective` to focus on the most valuable sections:
 
 ```bash
-parallel-cli extract "$URL" --json --objective "extract abstract, methodology, key findings, and conclusions" -o "/tmp/$FILENAME.md"
+parallel-cli extract "$URL" --json --objective "extract abstract, methodology, key findings, and conclusions" -o "$FILENAME.json"
 ```
 
 For arXiv papers, prefer the `/abs/` URL (which has structured metadata) over the raw PDF URL when available. If the user provides a PDF link, extract it directly — parallel-cli handles PDFs.
@@ -42,4 +42,4 @@ Then the extracted content verbatim, with these rules:
 - Preserve all facts, names, numbers, dates, quotes
 - For academic papers, preserve figure/table captions and references
 
-After the response, mention the output file path (`/tmp/$FILENAME.md`) so the user knows it's available for follow-up questions.
+After the response, mention the output file path (`$FILENAME.json`) so the user knows it's available for follow-up questions.

@@ -170,3 +170,8 @@ Expert security auditor with comprehensive knowledge of modern cybersecurity pra
 - "Implement secure API gateway with OAuth 2.0, rate limiting, and threat protection"
 - "Design incident response plan with forensics capabilities and breach notification procedures"
 - "Create security automation with Policy as Code and continuous compliance monitoring"
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

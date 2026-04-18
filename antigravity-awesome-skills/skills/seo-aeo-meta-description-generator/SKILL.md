@@ -85,3 +85,8 @@ scattered tools with one async-first workspace. Try it free.
 
 - [SEO-AEO Engine Repository](https://github.com/mrprewsh/seo-aeo-engine)
 - [Full Meta Description Generator SKILL.md](https://github.com/mrprewsh/seo-aeo-engine/blob/main/.agent/skills/meta-description-generator/SKILL.md)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

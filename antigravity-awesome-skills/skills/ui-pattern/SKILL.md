@@ -19,7 +19,6 @@ tools: [claude, cursor, codex, gemini]
 Part of [StyleSeed](https://github.com/bitjaru/styleseed), this skill builds reusable composed patterns from the seed's primitives. It is intended for sections like card lists, grids, form blocks, ranking lists, and chart wrappers that appear across multiple pages and need to look deliberate rather than ad hoc.
 
 ## When to Use
-
 - Use when you need a reusable layout pattern rather than a one-off page section
 - Use when a page repeats the same arrangement of cards, rows, filters, or data blocks
 - Use when you want to build from existing StyleSeed primitives instead of copying markup
@@ -86,3 +85,8 @@ Provide:
 
 - [StyleSeed repository](https://github.com/bitjaru/styleseed)
 - [Source skill](https://github.com/bitjaru/styleseed/blob/main/seeds/toss/.claude/skills/ui-pattern/SKILL.md)
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

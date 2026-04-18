@@ -517,10 +517,14 @@ Workflow:
 Works well with: `scroll-experience`, `3d-web-experience`, `landing-page-design`, `personal-branding`
 
 ## When to Use
-
 - User mentions or implies: portfolio
 - User mentions or implies: personal website
 - User mentions or implies: showcase work
 - User mentions or implies: developer portfolio
 - User mentions or implies: designer portfolio
 - User mentions or implies: creative portfolio
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

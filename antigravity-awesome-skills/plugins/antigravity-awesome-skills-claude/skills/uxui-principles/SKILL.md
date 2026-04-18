@@ -27,7 +27,6 @@ A collection of 5 agent skills for evaluating interfaces against 168 research-ba
 | `vibe-coding-advisor` | Inject UX context into vibe coding sessions before implementation |
 
 ## When to Use
-
 - Auditing an existing interface for UX issues
 - Checking if a UI follows research-backed best practices
 - Detecting antipatterns and UX smells in designs
@@ -46,3 +45,8 @@ A collection of 5 agent skills for evaluating interfaces against 168 research-ba
 ```
 npx skills add uxuiprinciples/agent-skills
 ```
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

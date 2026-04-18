@@ -8,7 +8,6 @@ risk: unknown
 # Gradio
 
 ## When to Use
-
 Use this skill when a user wants a Gradio demo, UI prototype, or Python-based ML interface.
 
 Gradio is a Python library for building interactive web UIs and ML demos. This skill covers the core API, patterns, and examples.
@@ -302,3 +301,8 @@ Both commands accept `--token` for accessing private Spaces.
 ## Additional Reference
 
 - [End-to-End Examples](examples.md) — complete working apps
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

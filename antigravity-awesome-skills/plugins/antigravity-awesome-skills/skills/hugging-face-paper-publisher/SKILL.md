@@ -8,7 +8,6 @@ risk: unknown
 # Overview
 
 ## When to Use
-
 Use this skill when a user wants to publish, link, index, or manage research papers on the Hugging Face Hub.
 This skill provides comprehensive tools for AI engineers and researchers to publish, manage, and link research papers on the Hugging Face Hub. It streamlines the workflow from paper creation to publication, including integration with arXiv, model/dataset linking, and authorship management.
 
@@ -628,3 +627,8 @@ Planned features for future versions:
 - Integration with LaTeX workflows
 - Automated figure and table extraction
 - Paper metrics and impact tracking
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.

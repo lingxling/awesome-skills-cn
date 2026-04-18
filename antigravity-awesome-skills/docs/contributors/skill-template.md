@@ -10,6 +10,9 @@ date_added: "YYYY-MM-DD"
 author: your-name-or-handle
 tags: [tag-one, tag-two]
 tools: [claude, cursor, gemini]
+# Optional: declare the upstream license if source_repo is set
+# license: "MIT"
+# license_source: "https://github.com/owner/repo/blob/main/LICENSE"
 ---
 
 # Skill Title
@@ -62,6 +65,11 @@ More instructions...
 - ✅ Also do this
 - ❌ Don't do this
 - ❌ Avoid this
+
+## Limitations
+
+- This skill does not replace environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, or safety boundaries are missing.
 
 ## Security & Safety Notes
 

@@ -361,3 +361,8 @@ Call `_check_available_memory()` before connecting to the warehouse.
 Additionally, when fetching query history:
 - Use `cursor.fetchmany(batch_size)` in a loop instead of `cursor.fetchall()` when possible
 - For very large result sets, consider adding a LIMIT clause and processing in windows
+
+## Limitations
+- Use this skill only when the task clearly matches the scope described above.
+- Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
+- Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
