@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**110 个技能**
+**111 个技能**
 
 - [abixus-core-v1](https://clawskills.sh/skills/taofisio-abixus-core-v1) - 用于 Polygon PoS 上自主代理一致性的高性能验证层。
 - [add-watermark-to-pdf](https://clawskills.sh/skills/crossservicesolutions-add-watermark-to-pdf) - 通过上传到 Solutions API 为一个或多个 PDF 添加文本水印，轮询直到完成。

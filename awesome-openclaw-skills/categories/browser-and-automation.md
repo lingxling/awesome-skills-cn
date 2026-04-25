@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**322 skills**
+**323 skills**
 
 - [1p-shortlink](https://clawskills.sh/skills/tuanpmt-1p-shortlink) - Create short URLs and submit feature requests using 1p.io.
 - [2captcha](https://clawskills.sh/skills/adinvadim-2captcha) - Solve CAPTCHAs using 2Captcha service.
@@ -12,6 +12,7 @@
 - [activecampaign](https://clawskills.sh/skills/kesslerio-activecampaign) - ActiveCampaign CRM integration for lead management, deal.
 - [adcp-advertising](https://clawskills.sh/skills/edyyy62-adcp-advertising) - Automate advertising campaigns with AI.
 - [admet-prediction](https://clawskills.sh/skills/huifer-admet-prediction) - ADMET (Absorption, Distribution, Metabolism, Excretion, Toxicity) prediction for drug candidates.
+- [adspower-browser](https://github.com/openclaw/skills/tree/main/skills/adspower/adspower-browser) - Use when the user asks to create or manage AdsPower browsers, groups, tags, proxies, or check status via AdsPower Local API.
 - [Agent Browser](https://clawskills.sh/skills/thesethrose-agent-browser) - A fast Rust-based headless browser automation CLI.
 - [agent-browser](https://clawskills.sh/skills/murphykobe-agent-browser-2) - Automates browser interactions for web testing, form.
 - [agent-daily-planner](https://clawskills.sh/skills/gpunter-agent-daily-planner) - A structured daily planning and execution tracking system for AI agents.
@@ -92,6 +93,7 @@
 - [db-readonly](https://clawskills.sh/skills/ryanhong666-db-readonly) - Run safe read-only queries against MySQL or PostgreSQL for data inspection, reporting, and troubleshooting.
 - [desearch-x-search](https://clawskills.sh/skills/okradze-desearch-x-search) - Search X (Twitter) in real time.
 - [doro-command-creator](https://clawskills.sh/skills/a2mus-doro-command-creator) - WHAT: Create Claude Code slash commands - reusable markdown workflows invoked with /command-name.
+- [duoplus-agent](https://github.com/openclaw/skills/tree/main/skills/duoplusofficial/duoplus-agent/SKILL.md) - Control DuoPlus cloud phones via ADB.
 - [dune-analytics-api](https://clawskills.sh/skills/lz-web3-dune-analytics-api) - Dune Analytics API for blockchain data queries.
 - [echo-repeater](https://clawskills.sh/skills/theeightt-echo-repeater) - Echo the user's input back to them with optional formatting like "Echo:" or "You said:" as a prefix.
 - [edstem](https://clawskills.sh/skills/axel5o5-edstem) - Fetch, sync, and organize EdStem discussion threads for any course or institution.
@@ -179,6 +181,7 @@
 - [mh-notion](https://clawskills.sh/skills/mohdalhashemi98-hue-mh-notion) - Notion API for creating and managing pages, databases, and blocks.
 - [minimal-memory](https://clawskills.sh/skills/zencrust-ai-minimal-memory) - Maintain clean, efficient memory files with GOOD/BAD/NEUTRAL categorization and semantic search.
 - [minimax-speech](https://clawskills.sh/skills/wingchiu-minimax-speech) - Manage MiniMax Speech 2.8 T2A (text-to-audio) and voice catalog lookups.
+- [mobilerun](https://github.com/openclaw/skills/tree/main/skills/johnmalek312/mobilerun/SKILL.md) - Control Android devices: tap, swipe, type, screenshot (iOS coming soon).
 - [mukt](https://clawskills.sh/skills/hgosansn-mukt) - Zero-cost OpenRouter responder that auto-discovers the best currently free model, retries on failures, and returns.
 - [multilogin](https://clawskills.sh/skills/glebkazachinskiy-multilogin) - Use when you need to manage Multilogin X browser profiles — launch quick disposable profiles, list/start/stop saved.
 - [multiloginx](https://clawskills.sh/skills/multilogincom-multiloginx) - Use when you need to manage Multilogin X browser profiles — launch quick disposable profiles, list/start/stop saved.

@@ -15,6 +15,12 @@
       "description": "Train or fine-tune language models using TRL on Hugging Face Jobs infrastructure. Covers SFT, DPO, GRPO and reward modeling training methods, plus GGUF conversion for local deployment. Includes hardware selection, cost estimation, Trackio monitoring, and Hub persistence."
     },
     {
+      "name": "huggingface-local-models",
+      "source": "./skills/huggingface-local-models",
+      "skills": "./",
+      "description": "Use to select models to run locally with llama.cpp and GGUF on CPU, Mac Metal, CUDA, or ROCm. Covers finding GGUFs, quant selection, running servers, exact GGUF file lookup, conversion, and OpenAI-compatible local serving."
+    },
+    {
       "name": "huggingface-paper-publisher",
       "source": "./skills/huggingface-paper-publisher",
       "skills": "./",
@@ -31,6 +37,12 @@
       "source": "./skills/huggingface-community-evals",
       "skills": "./",
       "description": "Add and manage evaluation results in Hugging Face model cards. Supports extracting eval tables from README content, importing scores from Artificial Analysis API, and running custom evaluations with vLLM/lighteval."
+    },
+    {
+      "name": "huggingface-best",
+      "source": "./skills/huggingface-best",
+      "skills": "./",
+      "description": "Find the best AI model for any task by querying Hugging Face leaderboards and benchmarks. Recommends top models based on task type, hardware constraints, and benchmark scores."
     },
     {
       "name": "hf-cli",

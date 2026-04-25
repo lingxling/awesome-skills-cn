@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**39 个技能**
+**40 个技能**
 
 - [add-analytics](https://clawskills.sh/skills/jeftekhari-add-analytics) - 向任何项目添加 Google Analytics 4 跟踪。
 - [amplitude-automation](https://clawskills.sh/skills/sohamganatra-amplitude-automation) - 通过 Rube MCP 自动化 Amplitude 任务。

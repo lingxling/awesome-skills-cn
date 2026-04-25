@@ -11,6 +11,7 @@
  */
 
 import { parseFrontmatter } from './frontmatter.ts';
+import { sanitizeMetadata } from './sanitize.ts';
 import type { Skill } from './types.ts';
 
 // ─── Types ───
@@ -368,12 +369,15 @@ export async function tryBlobInstall(
     const isInternal = (data.metadata as Record<string, unknown>)?.internal === true;
     if (isInternal && !options.includeInternal) continue;
 
+    const safeName = sanitizeMetadata(data.name);
+    const safeDescription = sanitizeMetadata(data.description);
+
     parsedSkills.push({
       mdPath,
-      name: data.name,
-      description: data.description,
+      name: safeName,
+      description: safeDescription,
       content,
-      slug: toSkillSlug(data.name),
+      slug: toSkillSlug(safeName),
       metadata: data.metadata as Record<string, unknown> | undefined,
     });
   }

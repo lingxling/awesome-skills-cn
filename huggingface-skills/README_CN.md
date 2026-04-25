@@ -118,11 +118,12 @@ gemini extensions install https://github.com/huggingface/skills.git --consent
 | 名称 | 描述 | 文档 |
 |------|-------------|---------------|
 | `hf-cli` | 使用 hf CLI 执行 Hugging Face Hub 操作。下载模型/数据集、上传文件、管理存储库以及运行云计算作业。 | [SKILL.md](skills/hf-cli/SKILL.md) |
+| `huggingface-best` | 通过查询 Hugging Face 排行榜和基准为任何任务找到最佳 AI 模型。根据任务类型、硬件限制和基准分数推荐顶级模型。 | [SKILL.md](skills/huggingface-best/SKILL.md) |
 | `huggingface-community-evals` | 在 Hugging Face 模型卡片中添加和管理评估结果。支持从 README 内容中提取评估表、从 Artificial Analysis API 导入分数,以及使用 vLLM/lighteval 运行自定义评估。 | [SKILL.md](skills/huggingface-community-evals/SKILL.md) |
 | `huggingface-datasets` | 使用 Dataset Viewer REST API 和 npx 工具探索、查询和提取任何 Hugging Face 数据集。零 Python 依赖项 — 涵盖拆分/配置发现、行分页、文本搜索、过滤、通过 parquetlens 进行 SQL 操作,以及通过 CLI 进行数据集上传。 | [SKILL.md](skills/huggingface-datasets/SKILL.md) |
 | `huggingface-gradio` | 使用 Python 构建 Gradio Web UI 和演示。在创建或编辑 Gradio 应用、组件、事件监听器、布局或聊天机器人时使用。 | [SKILL.md](skills/huggingface-gradio/SKILL.md) |
-| `huggingface-jobs` | 在 Hugging Face 基础设施上运行计算作业。执行 Python 脚本、管理计划作业以及监控作业状态。 | [SKILL.md](skills/huggingface-jobs/SKILL.md) |
-| `huggingface-llm-trainer` | 使用 TRL 在 Hugging Face Jobs 基础设施上训练或微调语言模型。涵盖 SFT、DPO、GRPO 和奖励建模训练方法,以及用于本地部署的 GGUF 转换。包括硬件选择、成本估算、Trackio 监控和 Hub 持久化。 | [SKILL.md](skills/huggingface-llm-trainer/SKILL.md) |
+| `huggingface-llm-trainer` | 使用 TRL 在 Hugging Face Jobs 基础设施上训练或微调语言模型。涵盖 SFT、DPO、GRPO 和奖励建模训练方法,以及用于本地部署的 GGUF 转换。包括硬件选择，成本估算、Trackio 监控和 Hub 持久化。 | [SKILL.md](skills/huggingface-llm-trainer/SKILL.md) |
+| `huggingface-local-models` | 用于选择使用 llama.cpp 和 GGUF 在 CPU、Mac Metal、CUDA 或 ROCm 上本地运行的模型。涵盖查找 GGUFs、量化选择、运行服务器、精确 GGUF 文件查找、转换和 OpenAI 兼容的本地服务。 | [SKILL.md](skills/huggingface-local-models/SKILL.md) |
 | `huggingface-paper-publisher` | 在 Hugging Face Hub 上发布和管理研究论文。支持创建论文页面、将论文链接到模型/数据集、声明作者身份以及生成专业的基于 markdown 的研究文章。 | [SKILL.md](skills/huggingface-paper-publisher/SKILL.md) |
 | `huggingface-papers` | 以 markdown 格式查找和阅读 Hugging Face 论文页面,并在需要时使用论文 API 获取结构化元数据,如作者、链接的模型、数据集、Spaces 和媒体 URL。 | [SKILL.md](skills/huggingface-papers/SKILL.md) |
 | `huggingface-tool-builder` | 为 Hugging Face Hub 和 API 工作流构建可重用脚本。适用于链接 API 调用、丰富 Hub 元数据或自动化重复任务。 | [SKILL.md](skills/huggingface-tool-builder/SKILL.md) |

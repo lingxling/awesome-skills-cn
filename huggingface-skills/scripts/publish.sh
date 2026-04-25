@@ -26,17 +26,18 @@ run_generate() {
 }
 
 run_check() {
-  declare -A before
+  local before=()
   local changed=()
 
   for path in "${GENERATED_FILES[@]}"; do
-    before["$path"]="$(file_sig "$path")"
+    before+=("$(file_sig "$path")")
   done
 
   run_generate
 
-  for path in "${GENERATED_FILES[@]}"; do
-    if [[ "${before[$path]}" != "$(file_sig "$path")" ]]; then
+  for i in "${!GENERATED_FILES[@]}"; do
+    local path="${GENERATED_FILES[$i]}"
+    if [[ "${before[$i]}" != "$(file_sig "$path")" ]]; then
       changed+=("$path")
     fi
   done

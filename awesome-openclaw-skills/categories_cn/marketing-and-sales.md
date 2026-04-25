@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**103 个技能**
+**104 个技能**
 
 - [4chan-reader](https://clawskills.sh/skills/aiasisbot61-4chan-reader) - 浏览 4chan 板块并提取线程讨论。
 - [ad-ready](https://clawskills.sh/skills/pauldelavallaz-ad-ready) - 从产品 URL 生成专业广告图片。

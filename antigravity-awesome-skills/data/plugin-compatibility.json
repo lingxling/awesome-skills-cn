@@ -5502,6 +5502,25 @@
       "runtime_files": []
     },
     {
+      "id": "bulletmind",
+      "path": "skills/bulletmind",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "bullmq-specialist",
       "path": "skills/bullmq-specialist",
       "targets": {
@@ -11213,6 +11232,25 @@
       "runtime_files": []
     },
     {
+      "id": "frontend-api-integration-patterns",
+      "path": "skills/frontend-api-integration-patterns",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "frontend-design",
       "path": "skills/frontend-design",
       "targets": {
@@ -13402,6 +13440,25 @@
       "runtime_files": []
     },
     {
+      "id": "idea-os",
+      "path": "skills/idea-os",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "identity-mirror",
       "path": "skills/identity-mirror",
       "targets": {
@@ -13896,8 +13953,65 @@
       "runtime_files": []
     },
     {
+      "id": "it-manager-hospital",
+      "path": "skills/it-manager-hospital",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "it-manager-pro",
+      "path": "skills/it-manager-pro",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "iterate-pr",
       "path": "skills/iterate-pr",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "itil-expert",
+      "path": "skills/itil-expert",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -14257,6 +14371,25 @@
       "runtime_files": []
     },
     {
+      "id": "kotler-macro-analyzer",
+      "path": "skills/kotler-macro-analyzer",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "kotlin-coroutines-expert",
       "path": "skills/kotlin-coroutines-expert",
       "targets": {
@@ -14316,6 +14449,25 @@
     {
       "id": "kubernetes-deployment",
       "path": "skills/kubernetes-deployment",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "lambda-lang",
+      "path": "skills/lambda-lang",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -18154,6 +18306,25 @@
     {
       "id": "oss-hunter",
       "path": "skills/oss-hunter",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "osterwalder-canvas-architect",
+      "path": "skills/osterwalder-canvas-architect",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -22761,8 +22932,46 @@
       "runtime_files": []
     },
     {
+      "id": "skills/x402-express-wrapper",
+      "path": "skills/skills/x402-express-wrapper",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "skin-health-analyzer",
       "path": "skills/skin-health-analyzer",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "skyvern-browser-automation",
+      "path": "skills/skyvern-browser-automation",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -22942,6 +23151,25 @@
     {
       "id": "social-orchestrator",
       "path": "skills/social-orchestrator",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "social-post-writer-seo",
+      "path": "skills/social-post-writer-seo",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -27211,10 +27439,10 @@
     }
   ],
   "summary": {
-    "total_skills": 1423,
+    "total_skills": 1435,
     "supported": {
-      "codex": 1392,
-      "claude": 1407
+      "codex": 1404,
+      "claude": 1419
     },
     "blocked": {
       "codex": 31,

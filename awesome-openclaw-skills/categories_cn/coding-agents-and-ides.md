@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**1200 个技能**
+**1202 个技能**
 
 - [0g-compute](https://clawskills.sh/skills/in-liberty420-0g-compute) - 使用来自 0G 计算网络的廉价、TEE 验证的 AI 模型作为 OpenClaw 提供商。
 - [0protocol](https://clawskills.sh/skills/0isone-0protocol) - 代理可以签名插件，在不丢失身份的情况下轮换凭据，并公开证明行为。

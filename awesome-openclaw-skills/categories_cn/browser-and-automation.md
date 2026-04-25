@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#目录)
 
-**322 skills**
+**323 skills**
 
 - [1p-shortlink](https://clawskills.sh/skills/tuanpmt-1p-shortlink) - 使用 1p.io 创建短 URL 并提交功能请求。
 - [2captcha](https://clawskills.sh/skills/adinvadim-2captcha) - 使用 2Captcha 服务解决验证码。

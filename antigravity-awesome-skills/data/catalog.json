@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1423,
+  "total": 1435,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -7275,6 +7275,34 @@
       "path": "skills/building-native-ui/SKILL.md"
     },
     {
+      "id": "bulletmind",
+      "name": "bulletmind",
+      "description": "Convert input into clean, structured, hierarchical bullet points for summarization, note-taking, and structured thinking.",
+      "category": "general",
+      "tags": [
+        "writing",
+        "summarization",
+        "note-taking",
+        "formatting",
+        "structured-output"
+      ],
+      "triggers": [
+        "writing",
+        "summarization",
+        "note-taking",
+        "formatting",
+        "structured-output",
+        "bulletmind",
+        "convert",
+        "input",
+        "clean",
+        "structured",
+        "hierarchical",
+        "bullet"
+      ],
+      "path": "skills/bulletmind/SKILL.md"
+    },
+    {
       "id": "bullmq-specialist",
       "name": "bullmq-specialist",
       "description": "BullMQ expert for Redis-backed job queues, background processing, and reliable async execution in Node.js/TypeScript applications.",
@@ -14513,6 +14541,34 @@
       "path": "skills/freshservice-automation/SKILL.md"
     },
     {
+      "id": "frontend-api-integration-patterns",
+      "name": "frontend-api-integration-patterns",
+      "description": "Production-ready patterns for integrating frontend applications with backend APIs, including race condition handling, request cancellation, retry strategies, error normalization, and UI state management.",
+      "category": "development",
+      "tags": [
+        "frontend",
+        "api-integration",
+        "javascript",
+        "react",
+        "async"
+      ],
+      "triggers": [
+        "frontend",
+        "api-integration",
+        "javascript",
+        "react",
+        "async",
+        "api",
+        "integration",
+        "integrating",
+        "applications",
+        "backend",
+        "apis",
+        "including"
+      ],
+      "path": "skills/frontend-api-integration-patterns/SKILL.md"
+    },
+    {
       "id": "frontend-design",
       "name": "frontend-design",
       "description": "You are a frontend designer-engineer, not a layout generator.",
@@ -17318,6 +17374,39 @@
       "path": "skills/idea-darwin/SKILL.md"
     },
     {
+      "id": "idea-os",
+      "name": "idea-os",
+      "description": "Five-phase pipeline (triage → clarify → research → PRD → plan) that turns a raw idea into four linked files: clarifying questions, deep research, a PRD with non-goals and metrics, and a phased execution plan with mermaid user journey and kill criteria.",
+      "category": "infrastructure",
+      "tags": [
+        "product-management",
+        "prd",
+        "market-research",
+        "mvp",
+        "idea-validation",
+        "jtbd",
+        "swot",
+        "competitor-analysis",
+        "founder",
+        "non-technical"
+      ],
+      "triggers": [
+        "product-management",
+        "prd",
+        "market-research",
+        "mvp",
+        "idea-validation",
+        "jtbd",
+        "swot",
+        "competitor-analysis",
+        "founder",
+        "non-technical",
+        "idea",
+        "os"
+      ],
+      "path": "skills/idea-os/SKILL.md"
+    },
+    {
       "id": "identity-mirror",
       "name": "identity-mirror",
       "description": "One sentence - what this skill does and when to invoke it",
@@ -17932,6 +18021,57 @@
       "path": "skills/istio-traffic-management/SKILL.md"
     },
     {
+      "id": "it-manager-hospital",
+      "name": "it-manager-hospital",
+      "description": "World-class Hospital IT Management Advisor specializing in clinical safety, digital maturity (HIMSS/ONA/JCI), and HIS/PEP ecosystems.",
+      "category": "general",
+      "tags": [
+        "it",
+        "manager",
+        "hospital"
+      ],
+      "triggers": [
+        "it",
+        "manager",
+        "hospital",
+        "world",
+        "class",
+        "advisor",
+        "specializing",
+        "clinical",
+        "safety",
+        "digital",
+        "maturity",
+        "himss"
+      ],
+      "path": "skills/it-manager-hospital/SKILL.md"
+    },
+    {
+      "id": "it-manager-pro",
+      "name": "it-manager-pro",
+      "description": "Elite IT Management Advisor specializing in data-driven strategy, executive communication, and human-centric leadership for the 2026 digital era.",
+      "category": "data-ai",
+      "tags": [
+        "it",
+        "manager"
+      ],
+      "triggers": [
+        "it",
+        "manager",
+        "pro",
+        "elite",
+        "advisor",
+        "specializing",
+        "data",
+        "driven",
+        "executive",
+        "communication",
+        "human",
+        "centric"
+      ],
+      "path": "skills/it-manager-pro/SKILL.md"
+    },
+    {
       "id": "iterate-pr",
       "name": "iterate-pr",
       "description": "Iterate on a PR until CI passes. Use when you need to fix CI failures, address review feedback, or continuously push fixes until all checks are green. Automates the feedback-fix-push-wait cycle.",
@@ -17955,6 +18095,30 @@
         "push"
       ],
       "path": "skills/iterate-pr/SKILL.md"
+    },
+    {
+      "id": "itil-expert",
+      "name": "itil-expert",
+      "description": "Expert advisor for ITIL 4 and ITIL 5 (2026 digital product paradigm), specialized in AI-native governance, sustainability, and value co-creation.",
+      "category": "data-ai",
+      "tags": [
+        "itil"
+      ],
+      "triggers": [
+        "itil",
+        "advisor",
+        "2026",
+        "digital",
+        "product",
+        "paradigm",
+        "specialized",
+        "ai",
+        "native",
+        "governance",
+        "sustainability",
+        "value"
+      ],
+      "path": "skills/itil-expert/SKILL.md"
     },
     {
       "id": "java-pro",
@@ -18401,6 +18565,34 @@
       "path": "skills/klaviyo-automation/SKILL.md"
     },
     {
+      "id": "kotler-macro-analyzer",
+      "name": "kotler-macro-analyzer",
+      "description": "Professional PESTEL/SWOT analysis agent based on Kotler's methodology for strategic market audits.",
+      "category": "business",
+      "tags": [
+        "marketing",
+        "economics",
+        "strategy",
+        "kotler",
+        "pestel"
+      ],
+      "triggers": [
+        "marketing",
+        "economics",
+        "strategy",
+        "kotler",
+        "pestel",
+        "macro",
+        "analyzer",
+        "professional",
+        "swot",
+        "analysis",
+        "agent",
+        "methodology"
+      ],
+      "path": "skills/kotler-macro-analyzer/SKILL.md"
+    },
+    {
       "id": "kotlin-coroutines-expert",
       "name": "kotlin-coroutines-expert",
       "description": "Expert patterns for Kotlin Coroutines and Flow, covering structured concurrency, error handling, and testing.",
@@ -18491,6 +18683,34 @@
         "configurations"
       ],
       "path": "skills/kubernetes-deployment/SKILL.md"
+    },
+    {
+      "id": "lambda-lang",
+      "name": "lambda-lang",
+      "description": "Native agent-to-agent language for compact multi-agent messaging. A shared tongue agents speak directly, not a translation layer. 340+ atoms across 7 domains; 3x smaller than natural language.",
+      "category": "general",
+      "tags": [
+        "agent-to-agent",
+        "communication",
+        "protocol",
+        "compression",
+        "multi-agent"
+      ],
+      "triggers": [
+        "agent-to-agent",
+        "communication",
+        "protocol",
+        "compression",
+        "multi-agent",
+        "lambda",
+        "lang",
+        "native",
+        "agent",
+        "language",
+        "compact",
+        "multi"
+      ],
+      "path": "skills/lambda-lang/SKILL.md"
     },
     {
       "id": "lambdatest-agent-skills",
@@ -23451,6 +23671,33 @@
         "repositories"
       ],
       "path": "skills/oss-hunter/SKILL.md"
+    },
+    {
+      "id": "osterwalder-canvas-architect",
+      "name": "osterwalder-canvas-architect",
+      "description": "Iterative consultant agent for building and validating logically consistent 9-block Business Model Canvases.",
+      "category": "business",
+      "tags": [
+        "business-model",
+        "osterwalder",
+        "strategy",
+        "bmc"
+      ],
+      "triggers": [
+        "business-model",
+        "osterwalder",
+        "strategy",
+        "bmc",
+        "canvas",
+        "architect",
+        "iterative",
+        "consultant",
+        "agent",
+        "building",
+        "validating",
+        "logically"
+      ],
+      "path": "skills/osterwalder-canvas-architect/SKILL.md"
     },
     {
       "id": "outlook-automation",
@@ -29369,6 +29616,34 @@
       "path": "skills/skill-writer/SKILL.md"
     },
     {
+      "id": "skills/x402-express-wrapper",
+      "name": "x402-express-wrapper",
+      "description": "Wrapper oficial de M2MCent (Node.js) para inyectar muros de pago x402 en APIs o servidores Model Context Protocol (MCP). Usar al construir nuevos servicios que requieran monetización máquina a máquina.",
+      "category": "development",
+      "tags": [
+        "x402",
+        "defi",
+        "monetization",
+        "express",
+        "mcp"
+      ],
+      "triggers": [
+        "x402",
+        "defi",
+        "monetization",
+        "express",
+        "mcp",
+        "wrapper",
+        "oficial",
+        "de",
+        "m2mcent",
+        "node",
+        "js",
+        "para"
+      ],
+      "path": "skills/skills/x402-express-wrapper/SKILL.md"
+    },
+    {
       "id": "skin-health-analyzer",
       "name": "skin-health-analyzer",
       "description": "Analyze skin health data, identify skin problem patterns, assess skin health status. Supports correlation analysis with nutrition, chronic diseases, and medication data.",
@@ -29393,6 +29668,35 @@
         "analysis"
       ],
       "path": "skills/skin-health-analyzer/SKILL.md"
+    },
+    {
+      "id": "skyvern-browser-automation",
+      "name": "skyvern-browser-automation",
+      "description": "AI-powered browser automation — navigate sites, fill forms, extract structured data, log in with stored credentials, and build reusable workflows.",
+      "category": "data-ai",
+      "tags": [
+        "browser-automation",
+        "mcp",
+        "web-scraping",
+        "form-filling",
+        "ai-agents",
+        "workflow-automation"
+      ],
+      "triggers": [
+        "browser-automation",
+        "mcp",
+        "web-scraping",
+        "form-filling",
+        "ai-agents",
+        "workflow-automation",
+        "skyvern",
+        "browser",
+        "automation",
+        "ai",
+        "powered",
+        "navigate"
+      ],
+      "path": "skills/skyvern-browser-automation/SKILL.md"
     },
     {
       "id": "slack-automation",
@@ -29607,6 +29911,33 @@
         "coordena"
       ],
       "path": "skills/social-orchestrator/SKILL.md"
+    },
+    {
+      "id": "social-post-writer-seo",
+      "name": "social-post-writer-seo",
+      "description": "Social Media Strategist and Content Writer. Creates clear, engaging social media posts for Instagram, LinkedIn, and Facebook.",
+      "category": "business",
+      "tags": [
+        "social",
+        "post",
+        "writer",
+        "seo"
+      ],
+      "triggers": [
+        "social",
+        "post",
+        "writer",
+        "seo",
+        "media",
+        "strategist",
+        "content",
+        "creates",
+        "clear",
+        "engaging",
+        "posts",
+        "instagram"
+      ],
+      "path": "skills/social-post-writer-seo/SKILL.md"
     },
     {
       "id": "social-proof-architect",

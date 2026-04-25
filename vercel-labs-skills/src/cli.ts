@@ -11,6 +11,7 @@ import { runFind } from './find.ts';
 import { runInstallFromLock } from './install.ts';
 import { runList } from './list.ts';
 import { removeCommand, parseRemoveOptions } from './remove.ts';
+import { sanitizeMetadata } from './sanitize.ts';
 import { runSync, parseSyncOptions } from './sync.ts';
 import { track } from './telemetry.ts';
 import { fetchSkillFolderHash, getGitHubToken } from './skill-lock.ts';
@@ -550,10 +551,12 @@ function printSkippedSkills(skipped: SkippedSkill[]): void {
   for (const [source, skills] of grouped) {
     if (skills.length === 1) {
       const skill = skills[0]!;
-      console.log(`  ${TEXT}•${RESET} ${skill.name} ${DIM}(${skill.reason})${RESET}`);
+      console.log(
+        `  ${TEXT}•${RESET} ${sanitizeMetadata(skill.name)} ${DIM}(${skill.reason})${RESET}`
+      );
     } else {
       const reason = skills[0]!.reason;
-      const names = skills.map((s) => s.name).join(', ');
+      const names = skills.map((s) => sanitizeMetadata(s.name)).join(', ');
       console.log(`  ${TEXT}•${RESET} ${names} ${DIM}(${reason})${RESET}`);
     }
     console.log(`    ${DIM}To update: ${TEXT}npx skills add ${source} -g -y${RESET}`);
@@ -630,7 +633,7 @@ async function updateGlobalSkills(
   for (let i = 0; i < checkable.length; i++) {
     const { name: skillName, entry } = checkable[i]!;
     process.stdout.write(
-      `\r${DIM}Checking global skill ${i + 1}/${checkable.length}: ${skillName}${RESET}\x1b[K`
+      `\r${DIM}Checking global skill ${i + 1}/${checkable.length}: ${sanitizeMetadata(skillName)}${RESET}\x1b[K`
     );
 
     try {
@@ -675,14 +678,15 @@ async function updateGlobalSkills(
   console.log();
 
   for (const update of updates) {
-    console.log(`${TEXT}Updating ${update.name}...${RESET}`);
+    const safeName = sanitizeMetadata(update.name);
+    console.log(`${TEXT}Updating ${safeName}...${RESET}`);
     const installUrl = buildUpdateInstallSource(update.entry);
 
     const cliEntry = join(__dirname, '..', 'bin', 'cli.mjs');
     if (!existsSync(cliEntry)) {
       failCount++;
       console.log(
-        `  ${DIM}✗ Failed to update ${update.name}: CLI entrypoint not found at ${cliEntry}${RESET}`
+        `  ${DIM}✗ Failed to update ${safeName}: CLI entrypoint not found at ${cliEntry}${RESET}`
       );
       continue;
     }
@@ -694,10 +698,10 @@ async function updateGlobalSkills(
 
     if (result.status === 0) {
       successCount++;
-      console.log(`  ${TEXT}✓${RESET} Updated ${update.name}`);
+      console.log(`  ${TEXT}✓${RESET} Updated ${safeName}`);
     } else {
       failCount++;
-      console.log(`  ${DIM}✗ Failed to update ${update.name}${RESET}`);
+      console.log(`  ${DIM}✗ Failed to update ${safeName}${RESET}`);
     }
   }
 
@@ -730,14 +734,15 @@ async function updateProjectSkills(
   console.log();
 
   for (const skill of projectSkills) {
-    console.log(`${TEXT}Updating ${skill.name}...${RESET}`);
+    const safeName = sanitizeMetadata(skill.name);
+    console.log(`${TEXT}Updating ${safeName}...${RESET}`);
     const installUrl = buildLocalUpdateSource(skill.entry);
 
     const cliEntry = join(__dirname, '..', 'bin', 'cli.mjs');
     if (!existsSync(cliEntry)) {
       failCount++;
       console.log(
-        `  ${DIM}✗ Failed to update ${skill.name}: CLI entrypoint not found at ${cliEntry}${RESET}`
+        `  ${DIM}✗ Failed to update ${safeName}: CLI entrypoint not found at ${cliEntry}${RESET}`
       );
       continue;
     }
@@ -751,10 +756,10 @@ async function updateProjectSkills(
 
     if (result.status === 0) {
       successCount++;
-      console.log(`  ${TEXT}✓${RESET} Updated ${skill.name}`);
+      console.log(`  ${TEXT}✓${RESET} Updated ${safeName}`);
     } else {
       failCount++;
-      console.log(`  ${DIM}✗ Failed to update ${skill.name}${RESET}`);
+      console.log(`  ${DIM}✗ Failed to update ${safeName}${RESET}`);
     }
   }
 

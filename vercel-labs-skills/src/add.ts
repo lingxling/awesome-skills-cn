@@ -4,6 +4,7 @@ import { existsSync } from 'fs';
 import { homedir } from 'os';
 import { sep } from 'path';
 import { parseSource, getOwnerRepo, parseOwnerRepo, isRepoPrivate } from './source-parser.ts';
+import { stripTerminalEscapes } from './sanitize.ts';
 import { searchMultiselect } from './prompts/search-multiselect.ts';
 
 // Helper to check if a value is a cancel symbol (works with both clack and our custom prompts)
@@ -96,7 +97,7 @@ function socketLabel(audit: PartnerAudit | undefined): string {
 /** Pad a string to a given visible width (ignoring ANSI escape codes). */
 function padEnd(str: string, width: number): string {
   // Strip ANSI codes to measure visible length
-  const visible = str.replace(/\x1b\[[0-9;]*m/g, '');
+  const visible = stripTerminalEscapes(str);
   const pad = Math.max(0, width - visible.length);
   return str + ' '.repeat(pad);
 }
@@ -1002,7 +1003,7 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
     } else if (parsed.type === 'github' && !options.fullDepth) {
       // Try blob-based fast install for GitHub sources
       // Only enabled for allowlisted orgs; skip for --full-depth
-      const BLOB_ALLOWED_OWNERS = ['vercel', 'vercel-labs'];
+      const BLOB_ALLOWED_OWNERS = ['vercel', 'vercel-labs', 'heygen-com'];
       const ownerRepo = getOwnerRepo(parsed);
       const owner = ownerRepo?.split('/')[0]?.toLowerCase();
       if (ownerRepo && owner && BLOB_ALLOWED_OWNERS.includes(owner)) {

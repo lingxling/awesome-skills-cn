@@ -247,6 +247,25 @@ The filter rules are:
 
 This keeps the installed skill set smaller and reduces the chance of context overload in OpenCode-style runtimes.
 
+### OpenCode on Windows crashes with Bun or enters repeated compaction loops after adding many skills. What should I do?
+
+Treat this as two separate problems:
+
+- **Binary crash on startup (`bun.exe` segfault):** this is usually an OpenCode runtime issue, not a skill-content issue. Verify OpenCode can run without this repository loaded first.
+- **Compaction/summary loops after loading many skills:** this is usually context overload from too many active skills at once.
+
+Practical mitigation:
+
+1. Start with a reduced install in `.agents/skills`:
+
+```bash
+npx antigravity-awesome-skills --path .agents/skills --category development,backend --risk safe,none
+```
+
+2. Avoid loading large autonomy/conductor-style skills until the base flow is stable.
+3. Add skills incrementally and retest after each addition.
+4. If loops continue, follow the overload recovery guide: [agent-overload-recovery.md](agent-overload-recovery.md)
+
 ### Gemini CLI hangs after a few turns or says "This is taking a bit longer, we're still on it". What should I do?
 
 Start with a quick isolation check:

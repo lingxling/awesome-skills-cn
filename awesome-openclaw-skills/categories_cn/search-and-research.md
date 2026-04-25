@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**352 个技能**
+**353 个技能**
 
 - [1](https://clawskills.sh/skills/nastrology-1) - 由 Ensue 提供支持的个人知识库，用于捕获和检索信息。
 - [academic-deep-research](https://clawskills.sh/skills/kesslerio-academic-deep-research) - 透明、严谨的研究，具有完整的引用和方法。

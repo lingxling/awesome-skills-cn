@@ -6141,7 +6141,7 @@
     "description": "This skill enforces Sentry's blog writing standards across every post \u2014 whether you're helping an engineer write their first blog post or a marketer draft a product announcement.",
     "risk": "unknown",
     "source": "community",
-    "date_added": null,
+    "date_added": "2026-03-06",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -6452,6 +6452,28 @@
     "risk": "unknown",
     "source": "community",
     "date_added": null,
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "bulletmind",
+    "path": "skills/bulletmind",
+    "category": "writing",
+    "name": "bulletmind",
+    "description": "Convert input into clean, structured, hierarchical bullet points for summarization, note-taking, and structured thinking.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-21",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -11541,7 +11563,7 @@
     "category": "security",
     "name": "ethical-hacking-methodology",
     "description": "Master the complete penetration testing lifecycle from reconnaissance through reporting. This skill covers the five stages of ethical hacking methodology, essential tools, attack techniques, and professional reporting for authorized security assessments.",
-    "risk": "unknown",
+    "risk": "offensive",
     "source": "community",
     "date_added": "2026-02-27",
     "plugin": {
@@ -13084,6 +13106,28 @@
     "risk": "critical",
     "source": "community",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "frontend-api-integration-patterns",
+    "path": "skills/frontend-api-integration-patterns",
+    "category": "frontend",
+    "name": "frontend-api-integration-patterns",
+    "description": "Production-ready patterns for integrating frontend applications with backend APIs, including race condition handling, request cancellation, retry strategies, error normalization, and UI state management.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-23",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -15476,6 +15520,28 @@
     }
   },
   {
+    "id": "idea-os",
+    "path": "skills/idea-os",
+    "category": "product-management",
+    "name": "idea-os",
+    "description": "Five-phase pipeline (triage \u2192 clarify \u2192 research \u2192 PRD \u2192 plan) that turns a raw idea into four linked files: clarifying questions, deep research, a PRD with non-goals and metrics, and a phased execution plan with mermaid user journey and kill criteria.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-18",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "identity-mirror",
     "path": "skills/identity-mirror",
     "category": "uncategorized",
@@ -16070,6 +16136,50 @@
     }
   },
   {
+    "id": "it-manager-hospital",
+    "path": "skills/it-manager-hospital",
+    "category": "uncategorized",
+    "name": "it-manager-hospital",
+    "description": "World-class Hospital IT Management Advisor specializing in clinical safety, digital maturity (HIMSS/ONA/JCI), and HIS/PEP ecosystems.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-18",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "it-manager-pro",
+    "path": "skills/it-manager-pro",
+    "category": "uncategorized",
+    "name": "it-manager-pro",
+    "description": "Elite IT Management Advisor specializing in data-driven strategy, executive communication, and human-centric leadership for the 2026 digital era.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-18",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "iterate-pr",
     "path": "skills/iterate-pr",
     "category": "workflow",
@@ -16078,6 +16188,28 @@
     "risk": "critical",
     "source": "community",
     "date_added": null,
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "itil-expert",
+    "path": "skills/itil-expert",
+    "category": "uncategorized",
+    "name": "itil-expert",
+    "description": "Expert advisor for ITIL 4 and ITIL 5 (2026 digital product paradigm), specialized in AI-native governance, sustainability, and value co-creation.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-18",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -16488,6 +16620,28 @@
     }
   },
   {
+    "id": "kotler-macro-analyzer",
+    "path": "skills/kotler-macro-analyzer",
+    "category": "business-strategy",
+    "name": "kotler-macro-analyzer",
+    "description": "Professional PESTEL/SWOT analysis agent based on Kotler's methodology for strategic market audits.",
+    "risk": "safe",
+    "source": "self",
+    "date_added": "2026-04-17",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "kotlin-coroutines-expert",
     "path": "skills/kotlin-coroutines-expert",
     "category": "development",
@@ -16562,6 +16716,28 @@
     "risk": "safe",
     "source": "personal",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "lambda-lang",
+    "path": "skills/lambda-lang",
+    "category": "ai-agents",
+    "name": "lambda-lang",
+    "description": "Native agent-to-agent language for compact multi-agent messaging. A shared tongue agents speak directly, not a translation layer. 340+ atoms across 7 domains; 3x smaller than natural language.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-24",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -20911,6 +21087,28 @@
     "risk": "safe",
     "source": "https://github.com/jackjin1997/ClawForge",
     "date_added": "2026-02-27",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "osterwalder-canvas-architect",
+    "path": "skills/osterwalder-canvas-architect",
+    "category": "business-strategy",
+    "name": "osterwalder-canvas-architect",
+    "description": "Iterative consultant agent for building and validating logically consistent 9-block Business Model Canvases.",
+    "risk": "safe",
+    "source": "self",
+    "date_added": "2026-04-17",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -26173,6 +26371,28 @@
     }
   },
   {
+    "id": "skyvern-browser-automation",
+    "path": "skills/skyvern-browser-automation",
+    "category": "browser-automation",
+    "name": "skyvern-browser-automation",
+    "description": "AI-powered browser automation \u2014 navigate sites, fill forms, extract structured data, log in with stored credentials, and build reusable workflows.",
+    "risk": "safe",
+    "source": "community",
+    "date_added": "2026-04-23",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
     "id": "slack-automation",
     "path": "skills/slack-automation",
     "category": "automation",
@@ -26359,6 +26579,28 @@
     "risk": "critical",
     "source": "community",
     "date_added": "2026-03-06",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "social-post-writer-seo",
+    "path": "skills/social-post-writer-seo",
+    "category": "growth",
+    "name": "social-post-writer-seo",
+    "description": "Social Media Strategist and Content Writer. Creates clear, engaging social media posts for Instagram, LinkedIn, and Facebook.",
+    "risk": "safe",
+    "source": "self",
+    "date_added": "2026-04-17",
     "plugin": {
       "targets": {
         "codex": "supported",
@@ -30963,6 +31205,28 @@
     "risk": "safe",
     "source": "community",
     "date_added": "2026-02-28",
+    "plugin": {
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": []
+    }
+  },
+  {
+    "id": "x402-express-wrapper",
+    "path": "skills/skills/x402-express-wrapper",
+    "category": "backend",
+    "name": "x402-express-wrapper",
+    "description": "Wrapper oficial de M2MCent (Node.js) para inyectar muros de pago x402 en APIs o servidores Model Context Protocol (MCP). Usar al construir nuevos servicios que requieran monetizaci\u00f3n m\u00e1quina a m\u00e1quina.",
+    "risk": "unknown",
+    "source": "unknown",
+    "date_added": null,
     "plugin": {
       "targets": {
         "codex": "supported",

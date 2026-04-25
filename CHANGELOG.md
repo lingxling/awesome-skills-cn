@@ -4,6 +4,22 @@
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
+
+## [2.31.0] - 2026-04-25
+### 变更
+ - 所有项目+翻译更新至最新版本
+   - anthropics-skills/
+   - antigravity-awesome-skills/
+   - awesome-openclaw-skills/
+   - claude-scientific-skills/
+   - composiohq-awesome-claude-skills/
+   - huggingface-skills/
+   - obsidian-skills/
+   - openai-skills/
+   - ui-ux-pro-max-skills/
+   - vercel-labs-agent-skills/
+   - vercel-labs-skills/
+
 ## [2.30.0] - 2026-04-18
 ### 变更
  - 所有项目+翻译更新至最新版本

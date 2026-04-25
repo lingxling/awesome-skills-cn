@@ -1,7 +1,7 @@
 {
   "name": "antigravity-awesome-skills",
-  "version": "10.3.0",
-  "description": "1,423+ agentic skills for Claude Code, Gemini CLI, Cursor, Antigravity & more. Installer CLI.",
+  "version": "10.6.0",
+  "description": "1,435+ agentic skills for Claude Code, Gemini CLI, Cursor, Antigravity & more. Installer CLI.",
   "license": "MIT",
   "scripts": {
     "validate": "node tools/scripts/run-python.js tools/scripts/validate_skills.py",
@@ -48,6 +48,7 @@
     "test:network": "node tools/scripts/tests/run-test-suite.js --network",
     "sync:microsoft": "node tools/scripts/run-python.js tools/scripts/sync_microsoft_skills.py",
     "sync:all-official": "npm run sync:microsoft && npm run chain",
+    "sync-readme": "node tools/scripts/sync-readme-stats.js",
     "update:skills": "node tools/scripts/run-python.js tools/scripts/generate_index.py && node tools/scripts/copy-file.js skills_index.json apps/web-app/public/skills.json && node tools/scripts/copy-file.js skills_index.json apps/web-app/public/skills.json.backup",
     "app:setup": "node tools/scripts/setup_web.js",
     "app:install": "cd apps/web-app && npm ci",

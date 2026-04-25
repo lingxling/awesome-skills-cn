@@ -1,4 +1,5 @@
 import { parseFrontmatter } from '../frontmatter.ts';
+import { sanitizeMetadata } from '../sanitize.ts';
 import type { HostProvider, ProviderMatch, RemoteSkill } from './types.ts';
 
 /**
@@ -309,8 +310,8 @@ export class WellKnownProvider implements HostProvider {
       }
 
       return {
-        name: data.name,
-        description: data.description,
+        name: sanitizeMetadata(data.name as string),
+        description: sanitizeMetadata(data.description as string),
         content,
         installName: entry.name,
         sourceUrl: skillMdUrl,

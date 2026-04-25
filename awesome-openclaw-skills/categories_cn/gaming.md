@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**35 个技能**
+**36 个技能**
 
 - [abby-watch](https://clawskills.sh/skills/earnabitmore365-abby-watch) - 为 Abby 提供简单的时间显示。
 - [agent-confessions](https://clawskills.sh/skills/ultimatebos-agent-confessions) - AI 兄弟姐妹的匿名忏悔。

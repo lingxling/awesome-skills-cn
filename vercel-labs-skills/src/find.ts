@@ -1,5 +1,6 @@
 import * as readline from 'readline';
 import { runAdd, parseAddOptions } from './add.ts';
+import { sanitizeMetadata } from './sanitize.ts';
 import { track } from './telemetry.ts';
 import { isRepoPrivate } from './source-parser.ts';
 
@@ -47,9 +48,9 @@ export async function searchSkillsAPI(query: string): Promise<SearchSkill[]> {
 
     return data.skills
       .map((skill) => ({
-        name: skill.name,
-        slug: skill.id,
-        source: skill.source || '',
+        name: sanitizeMetadata(skill.name),
+        slug: sanitizeMetadata(skill.id),
+        source: sanitizeMetadata(skill.source || ''),
         installs: skill.installs,
       }))
       .sort((a, b) => (b.installs || 0) - (a.installs || 0));
