@@ -6,7 +6,7 @@
 
 ### 原项目介绍
 
-**Skills CLI** 是开放代理技能生态系统的命令行工具，用于管理 AI 编程助手的技能包。它支持 41+ 种 AI 编程助手，包括：
+**Skills CLI** 是开放代理技能生态系统的命令行工具，用于管理 AI 编程助手的技能包。它支持 50+ 种 AI 编程助手，包括：
 
 - Claude Code
 - Cursor
@@ -269,14 +269,18 @@ npx skills rm my-skill
 <!-- supported-agents:start -->
 | 代理 | `--agent` | 项目路径 | 全局路径 |
 |-------|-----------|--------------|-------------|
+| AiderDesk | `aider-desk` | `.aider-desk/skills/` | `~/.aider-desk/skills/` |
 | Amp, Kimi Code CLI, Replit, Universal | `amp`, `kimi-cli`, `replit`, `universal` | `.agents/skills/` | `~/.config/agents/skills/` |
 | Antigravity | `antigravity` | `.agents/skills/` | `~/.gemini/antigravity/skills/` |
 | Augment | `augment` | `.augment/skills/` | `~/.augment/skills/` |
 | IBM Bob | `bob` | `.bob/skills/` | `~/.bob/skills/` |
 | Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
 | OpenClaw | `openclaw` | `skills/` | `~/.openclaw/skills/` |
-| Cline, Warp | `cline`, `warp` | `.agents/skills/` | `~/.agents/skills/` |
+| Cline, Dexto, Warp | `cline`, `dexto`, `warp` | `.agents/skills/` | `~/.agents/skills/` |
+| CodeArts Agent | `codearts-agent` | `.codeartsdoer/skills/` | `~/.codeartsdoer/skills/` |
 | CodeBuddy | `codebuddy` | `.codebuddy/skills/` | `~/.codebuddy/skills/` |
+| Codemaker | `codemaker` | `.codemaker/skills/` | `~/.codemaker/skills/` |
+| Code Studio | `codestudio` | `.codestudio/skills/` | `~/.codestudio/skills/` |
 | Codex | `codex` | `.agents/skills/` | `~/.codex/skills/` |
 | Command Code | `command-code` | `.commandcode/skills/` | `~/.commandcode/skills/` |
 | Continue | `continue` | `.continue/skills/` | `~/.continue/skills/` |
@@ -284,8 +288,10 @@ npx skills rm my-skill
 | Crush | `crush` | `.crush/skills/` | `~/.config/crush/skills/` |
 | Cursor | `cursor` | `.agents/skills/` | `~/.cursor/skills/` |
 | Deep Agents | `deepagents` | `.agents/skills/` | `~/.deepagents/agent/skills/` |
+| Devin for Terminal | `devin` | `.devin/skills/` | `~/.config/devin/skills/` |
 | Droid | `droid` | `.factory/skills/` | `~/.factory/skills/` |
 | Firebender | `firebender` | `.agents/skills/` | `~/.firebender/skills/` |
+| ForgeCode | `forgecode` | `.forge/skills/` | `~/.forge/skills/` |
 | Gemini CLI | `gemini-cli` | `.agents/skills/` | `~/.gemini/skills/` |
 | GitHub Copilot | `github-copilot` | `.agents/skills/` | `~/.copilot/skills/` |
 | Goose | `goose` | `.goose/skills/` | `~/.config/goose/skills/` |
@@ -302,7 +308,9 @@ npx skills rm my-skill
 | Pi | `pi` | `.pi/skills/` | `~/.pi/agent/skills/` |
 | Qoder | `qoder` | `.qoder/skills/` | `~/.qoder/skills/` |
 | Qwen Code | `qwen-code` | `.qwen/skills/` | `~/.qwen/skills/` |
+| Rovo Dev | `rovodev` | `.rovodev/skills/` | `~/.rovodev/skills/` |
 | Roo Code | `roo` | `.roo/skills/` | `~/.roo/skills/` |
+| Tabnine CLI | `tabnine-cli` | `.tabnine/agent/skills/` | `~/.tabnine/agent/skills/` |
 | Trae | `trae` | `.trae/skills/` | `~/.trae/skills/` |
 | Trae CN | `trae-cn` | `.trae/skills/` | `~/.trae-cn/skills/` |
 | Windsurf | `windsurf` | `.windsurf/skills/` | `~/.codeium/windsurf/skills/` |
@@ -313,7 +321,7 @@ npx skills rm my-skill
 <!-- supported-agents:end -->
 
 > [!NOTE]
-> **Kiro CLI 用户：** 安装技能后，需要在 `.kiro/agents/<agent>.json` 中手动将它们添加到自定义代理的 `resources` 中：
+> **Kiro CLI 用户：** 默认代理会自动从 `.kiro/skills/` 和 `~/.kiro/skills/` 加载技能——无需配置。如果使用**自定义代理**，请将技能添加到 `.kiro/agents/<agent>.json` 的 `resources` 中：
 >
 > ```json
 > {

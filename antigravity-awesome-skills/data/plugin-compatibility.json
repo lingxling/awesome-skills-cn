@@ -5407,6 +5407,25 @@
       "runtime_files": []
     },
     {
+      "id": "brooks-lint",
+      "path": "skills/brooks-lint",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "browser-automation",
       "path": "skills/browser-automation",
       "targets": {
@@ -5618,6 +5637,25 @@
     {
       "id": "busybox-on-windows",
       "path": "skills/busybox-on-windows",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "buywhere-product-catalog",
+      "path": "skills/buywhere-product-catalog",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -14466,6 +14504,25 @@
       "runtime_files": []
     },
     {
+      "id": "kubestellar-console",
+      "path": "skills/kubestellar-console",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "manual",
+        "summary": "Requires kc-agent binary (brew tap kubestellar/tap && brew install kc-agent)",
+        "docs": "https://github.com/kubestellar/console#quick-start"
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "lambda-lang",
       "path": "skills/lambda-lang",
       "targets": {
@@ -15388,6 +15445,25 @@
     {
       "id": "local-llm-expert",
       "path": "skills/local-llm-expert",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "logic-lens",
+      "path": "skills/logic-lens",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -22932,25 +23008,6 @@
       "runtime_files": []
     },
     {
-      "id": "skills/x402-express-wrapper",
-      "path": "skills/skills/x402-express-wrapper",
-      "targets": {
-        "codex": "supported",
-        "claude": "supported"
-      },
-      "setup": {
-        "type": "none",
-        "summary": "",
-        "docs": null
-      },
-      "reasons": [],
-      "blocked_reasons": {
-        "codex": [],
-        "claude": []
-      },
-      "runtime_files": []
-    },
-    {
       "id": "skin-health-analyzer",
       "path": "skills/skin-health-analyzer",
       "targets": {
@@ -23421,6 +23478,25 @@
     {
       "id": "square-automation",
       "path": "skills/square-automation",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "squirrel",
+      "path": "skills/squirrel",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -25661,6 +25737,25 @@
       "runtime_files": []
     },
     {
+      "id": "unslop",
+      "path": "skills/unslop",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "unsplash-integration",
       "path": "skills/unsplash-integration",
       "targets": {
@@ -27096,6 +27191,25 @@
       "runtime_files": []
     },
     {
+      "id": "x402-express-wrapper",
+      "path": "skills/x402-express-wrapper",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "xlsx-official",
       "path": "skills/xlsx-official",
       "targets": {
@@ -27439,15 +27553,15 @@
     }
   ],
   "summary": {
-    "total_skills": 1435,
+    "total_skills": 1441,
     "supported": {
-      "codex": 1404,
-      "claude": 1419
+      "codex": 1410,
+      "claude": 1425
     },
     "blocked": {
       "codex": 31,
       "claude": 16
     },
-    "manual_setup": 1
+    "manual_setup": 2
   }
 }

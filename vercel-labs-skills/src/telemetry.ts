@@ -122,6 +122,10 @@ export async function fetchAuditData(
   }
 }
 
+// Pending telemetry promises — awaited before CLI exit so we don't lose data,
+// but never block the main workflow.
+const pendingTelemetry: Promise<void>[] = [];
+
 export function track(data: TelemetryData): void {
   if (!isEnabled()) return;
 
@@ -145,9 +149,24 @@ export function track(data: TelemetryData): void {
       }
     }
 
-    // Fire and forget - don't await, silently ignore errors
-    fetch(`${TELEMETRY_URL}?${params.toString()}`).catch(() => {});
+    // Fire and forget during the workflow, but track the promise so
+    // flushTelemetry() can await it before the process exits.
+    const p = fetch(`${TELEMETRY_URL}?${params.toString()}`)
+      .catch(() => {})
+      .then(() => {});
+    pendingTelemetry.push(p);
   } catch {
     // Silently fail - telemetry should never break the CLI
   }
+}
+
+/**
+ * Wait for all in-flight telemetry requests to settle.
+ * Called once at CLI exit so the process doesn't hang on open sockets
+ * but also doesn't drop data by exiting too early.
+ */
+export async function flushTelemetry(timeoutMs = 5000): Promise<void> {
+  if (pendingTelemetry.length === 0) return;
+  const timeout = new Promise<void>((resolve) => setTimeout(resolve, timeoutMs));
+  await Promise.race([Promise.all(pendingTelemetry), timeout]);
 }

@@ -8,6 +8,7 @@ export interface UpdateSourceEntry {
 export interface LocalUpdateSourceEntry {
   source: string;
   ref?: string;
+  skillPath?: string;
 }
 
 export function formatSourceInput(sourceUrl: string, ref?: string): string {
@@ -18,6 +19,29 @@ export function formatSourceInput(sourceUrl: string, ref?: string): string {
 }
 
 /**
+ * Derive the skill's folder path from a SKILL.md-terminated skillPath.
+ * Returns '' when the skill lives at the repo root.
+ */
+function deriveSkillFolder(skillPath: string): string {
+  let folder = skillPath;
+  if (folder.endsWith('/SKILL.md')) {
+    folder = folder.slice(0, -9);
+  } else if (folder.endsWith('SKILL.md')) {
+    folder = folder.slice(0, -8);
+  }
+  if (folder.endsWith('/')) {
+    folder = folder.slice(0, -1);
+  }
+  return folder;
+}
+
+function appendFolderAndRef(source: string, skillPath: string, ref?: string): string {
+  const folder = deriveSkillFolder(skillPath);
+  const withFolder = folder ? `${source}/${folder}` : source;
+  return ref ? `${withFolder}#${ref}` : withFolder;
+}
+
+/**
  * Build the source argument for `skills add` during update.
  * Uses shorthand form for path-targeted updates to avoid branch/path ambiguity.
  */
@@ -25,30 +49,17 @@ export function buildUpdateInstallSource(entry: UpdateSourceEntry): string {
   if (!entry.skillPath) {
     return formatSourceInput(entry.sourceUrl, entry.ref);
   }
-
-  // Extract skill folder from skillPath (remove /SKILL.md suffix).
-  let skillFolder = entry.skillPath;
-  if (skillFolder.endsWith('/SKILL.md')) {
-    skillFolder = skillFolder.slice(0, -9);
-  } else if (skillFolder.endsWith('SKILL.md')) {
-    skillFolder = skillFolder.slice(0, -8);
-  }
-  if (skillFolder.endsWith('/')) {
-    skillFolder = skillFolder.slice(0, -1);
-  }
-
-  let installSource = skillFolder ? `${entry.source}/${skillFolder}` : entry.source;
-  if (entry.ref) {
-    installSource = `${installSource}#${entry.ref}`;
-  }
-  return installSource;
+  return appendFolderAndRef(entry.source, entry.skillPath, entry.ref);
 }
 
 /**
  * Build the source argument for `skills add` during project-level update.
- * Local lock entries only have `source` and `ref` (no skillPath or sourceUrl),
- * so we use the source directly (e.g., "vercel-labs/agent-skills").
+ * Local lock entries don't carry `sourceUrl`, so we fall back to the bare
+ * `source` identifier when no `skillPath` is available.
  */
 export function buildLocalUpdateSource(entry: LocalUpdateSourceEntry): string {
-  return formatSourceInput(entry.source, entry.ref);
+  if (!entry.skillPath) {
+    return formatSourceInput(entry.source, entry.ref);
+  }
+  return appendFolderAndRef(entry.source, entry.skillPath, entry.ref);
 }

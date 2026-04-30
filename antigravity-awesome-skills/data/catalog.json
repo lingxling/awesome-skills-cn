@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-02-08T00:00:00.000Z",
-  "total": 1435,
+  "total": 1441,
   "skills": [
     {
       "id": "00-andruia-consultant",
@@ -7161,6 +7161,34 @@
       "path": "skills/broken-authentication/SKILL.md"
     },
     {
+      "id": "brooks-lint",
+      "name": "brooks-lint",
+      "description": "AI code reviewer grounded in classic software engineering books for catching design smells, coupling issues, and architectural risks.",
+      "category": "data-ai",
+      "tags": [
+        "code-review",
+        "architecture",
+        "software-design",
+        "refactoring",
+        "claude-code"
+      ],
+      "triggers": [
+        "code-review",
+        "architecture",
+        "software-design",
+        "refactoring",
+        "claude-code",
+        "brooks",
+        "lint",
+        "ai",
+        "code",
+        "reviewer",
+        "grounded",
+        "classic"
+      ],
+      "path": "skills/brooks-lint/SKILL.md"
+    },
+    {
       "id": "browser-automation",
       "name": "browser-automation",
       "description": "Browser automation powers web testing, scraping, and AI agent interactions. The difference between a flaky script and a reliable system comes down to understanding selectors, waiting strategies, and anti-detection patterns.",
@@ -7449,6 +7477,35 @@
         "line"
       ],
       "path": "skills/busybox-on-windows/SKILL.md"
+    },
+    {
+      "id": "buywhere-product-catalog",
+      "name": "buywhere-product-catalog",
+      "description": "Use BuyWhere's MCP and API surfaces to add product search, price comparison, and deal discovery to AI shopping agents.",
+      "category": "data-ai",
+      "tags": [
+        "buywhere",
+        "ecommerce",
+        "shopping",
+        "mcp",
+        "api",
+        "product-catalog"
+      ],
+      "triggers": [
+        "buywhere",
+        "ecommerce",
+        "shopping",
+        "mcp",
+        "api",
+        "product-catalog",
+        "product",
+        "catalog",
+        "surfaces",
+        "add",
+        "search",
+        "price"
+      ],
+      "path": "skills/buywhere-product-catalog/SKILL.md"
     },
     {
       "id": "c-pro",
@@ -18685,6 +18742,36 @@
       "path": "skills/kubernetes-deployment/SKILL.md"
     },
     {
+      "id": "kubestellar-console",
+      "name": "kubestellar-console",
+      "description": "Multi-cluster Kubernetes dashboard with AI-powered operations via MCP server and 10+ built-in agent skills",
+      "category": "infrastructure",
+      "tags": [
+        "kubernetes",
+        "multi-cluster",
+        "mcp",
+        "dashboard",
+        "cncf",
+        "devops",
+        "observability"
+      ],
+      "triggers": [
+        "kubernetes",
+        "multi-cluster",
+        "mcp",
+        "dashboard",
+        "cncf",
+        "devops",
+        "observability",
+        "kubestellar",
+        "console",
+        "multi",
+        "cluster",
+        "ai"
+      ],
+      "path": "skills/kubestellar-console/SKILL.md"
+    },
+    {
       "id": "lambda-lang",
       "name": "lambda-lang",
       "description": "Native agent-to-agent language for compact multi-agent messaging. A shared tongue agents speak directly, not a translation layer. 340+ atoms across 7 domains; 3x smaller than natural language.",
@@ -19925,6 +20012,34 @@
         "vllm"
       ],
       "path": "skills/local-llm-expert/SKILL.md"
+    },
+    {
+      "id": "logic-lens",
+      "name": "logic-lens",
+      "description": "AI-powered Claude Code skill that performs deep code review using formal logic and reasoning frameworks to detect bugs, anti-patterns, and security risks beyond what linters catch.",
+      "category": "security",
+      "tags": [
+        "code-review",
+        "logic-analysis",
+        "debugging",
+        "security-review",
+        "claude-code"
+      ],
+      "triggers": [
+        "code-review",
+        "logic-analysis",
+        "debugging",
+        "security-review",
+        "claude-code",
+        "logic",
+        "lens",
+        "ai",
+        "powered",
+        "claude",
+        "code",
+        "skill"
+      ],
+      "path": "skills/logic-lens/SKILL.md"
     },
     {
       "id": "logistics-exception-management",
@@ -29616,34 +29731,6 @@
       "path": "skills/skill-writer/SKILL.md"
     },
     {
-      "id": "skills/x402-express-wrapper",
-      "name": "x402-express-wrapper",
-      "description": "Wrapper oficial de M2MCent (Node.js) para inyectar muros de pago x402 en APIs o servidores Model Context Protocol (MCP). Usar al construir nuevos servicios que requieran monetización máquina a máquina.",
-      "category": "development",
-      "tags": [
-        "x402",
-        "defi",
-        "monetization",
-        "express",
-        "mcp"
-      ],
-      "triggers": [
-        "x402",
-        "defi",
-        "monetization",
-        "express",
-        "mcp",
-        "wrapper",
-        "oficial",
-        "de",
-        "m2mcent",
-        "node",
-        "js",
-        "para"
-      ],
-      "path": "skills/skills/x402-express-wrapper/SKILL.md"
-    },
-    {
       "id": "skin-health-analyzer",
       "name": "skin-health-analyzer",
       "description": "Analyze skin health data, identify skin problem patterns, assess skin health status. Supports correlation analysis with nutrition, chronic diseases, and medication data.",
@@ -29918,24 +30005,25 @@
       "description": "Social Media Strategist and Content Writer. Creates clear, engaging social media posts for Instagram, LinkedIn, and Facebook.",
       "category": "business",
       "tags": [
-        "social",
-        "post",
-        "writer",
-        "seo"
+        "social-media",
+        "marketing",
+        "content-writing",
+        "seo",
+        "growth"
       ],
       "triggers": [
+        "social-media",
+        "marketing",
+        "content-writing",
+        "seo",
+        "growth",
         "social",
         "post",
         "writer",
-        "seo",
         "media",
         "strategist",
         "content",
-        "creates",
-        "clear",
-        "engaging",
-        "posts",
-        "instagram"
+        "creates"
       ],
       "path": "skills/social-post-writer-seo/SKILL.md"
     },
@@ -30241,6 +30329,35 @@
         "locations"
       ],
       "path": "skills/square-automation/SKILL.md"
+    },
+    {
+      "id": "squirrel",
+      "name": "squirrel",
+      "description": "Full-cycle AI coding skill: plans, builds, tests, lints, fixes bugs, and writes production-grade docs. Auto-detects project state and adapts its 8-phase pipeline.",
+      "category": "infrastructure",
+      "tags": [
+        "development",
+        "testing",
+        "planning",
+        "code-review",
+        "documentation",
+        "ci-cd"
+      ],
+      "triggers": [
+        "development",
+        "testing",
+        "planning",
+        "code-review",
+        "documentation",
+        "ci-cd",
+        "squirrel",
+        "full",
+        "cycle",
+        "ai",
+        "coding",
+        "skill"
+      ],
+      "path": "skills/squirrel/SKILL.md"
     },
     {
       "id": "sred-project-organizer",
@@ -33103,6 +33220,35 @@
       "path": "skills/unreal-engine-cpp-pro/SKILL.md"
     },
     {
+      "id": "unslop",
+      "name": "unslop",
+      "description": "Post-process AI-generated text through the unslop CLI to strip AI writing patterns before publishing",
+      "category": "data-ai",
+      "tags": [
+        "writing",
+        "content-quality",
+        "ai-writing",
+        "text-processing",
+        "cli",
+        "publishing"
+      ],
+      "triggers": [
+        "writing",
+        "content-quality",
+        "ai-writing",
+        "text-processing",
+        "cli",
+        "publishing",
+        "unslop",
+        "post",
+        "process",
+        "ai",
+        "generated",
+        "text"
+      ],
+      "path": "skills/unslop/SKILL.md"
+    },
+    {
       "id": "unsplash-integration",
       "name": "unsplash-integration",
       "description": "Integration skill for searching and fetching high-quality, free-to-use professional photography from Unsplash.",
@@ -34633,7 +34779,7 @@
     {
       "id": "wordpress-centric-high-seo-optimized-blogwriting-skill",
       "name": "wordpress-centric-high-seo-optimized-blogwriting-skill",
-      "description": "Use this skill when the user asks to write a blog post, article, or SEO content. This applies a professional structure, truth boxes, click-bait-free accurate information, and outputs direct WordPress-ready content.",
+      "description": "Create long-form, high-quality, SEO-optimized blog posts ready for WordPress with truth boxes and FAQ schema.",
       "category": "business",
       "tags": [
         "writing",
@@ -34653,8 +34799,8 @@
         "optimized",
         "blogwriting",
         "skill",
-        "user",
-        "asks"
+        "long",
+        "form"
       ],
       "path": "skills/wordpress-centric-high-seo-optimized-blogwriting-skill/SKILL.md"
     },
@@ -34938,6 +35084,34 @@
         "platform"
       ],
       "path": "skills/x-twitter-scraper/SKILL.md"
+    },
+    {
+      "id": "x402-express-wrapper",
+      "name": "x402-express-wrapper",
+      "description": "Wrapper oficial de M2MCent (Node.js) para inyectar muros de pago x402 en APIs o servidores Model Context Protocol (MCP). Usar al construir nuevos servicios que requieran monetización máquina a máquina.",
+      "category": "development",
+      "tags": [
+        "x402",
+        "defi",
+        "monetization",
+        "express",
+        "mcp"
+      ],
+      "triggers": [
+        "x402",
+        "defi",
+        "monetization",
+        "express",
+        "mcp",
+        "wrapper",
+        "oficial",
+        "de",
+        "m2mcent",
+        "node",
+        "js",
+        "para"
+      ],
+      "path": "skills/x402-express-wrapper/SKILL.md"
     },
     {
       "id": "xlsx-official",
@@ -35275,7 +35449,7 @@
     {
       "id": "zipai-optimizer",
       "name": "zipai-optimizer",
-      "description": "Adaptive token optimizer: intelligent filtering, surgical output, ambiguity-first, context-window-aware, VCS-aware.",
+      "description": "Adaptive token optimizer: intelligent filtering, surgical output, ambiguity-first, context-window-aware, VCS-aware, MCP-aware.",
       "category": "general",
       "tags": [
         "zipai",

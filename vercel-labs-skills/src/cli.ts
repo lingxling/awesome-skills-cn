@@ -13,7 +13,7 @@ import { runList } from './list.ts';
 import { removeCommand, parseRemoveOptions } from './remove.ts';
 import { sanitizeMetadata } from './sanitize.ts';
 import { runSync, parseSyncOptions } from './sync.ts';
-import { track } from './telemetry.ts';
+import { track, flushTelemetry } from './telemetry.ts';
 import { fetchSkillFolderHash, getGitHubToken } from './skill-lock.ts';
 import { readLocalLock, type LocalSkillLockEntry } from './local-lock.ts';
 import {
@@ -730,10 +730,22 @@ async function updateProjectSkills(
     return { successCount, failCount, foundCount: 0 };
   }
 
-  console.log(`${TEXT}Refreshing ${projectSkills.length} project skill(s)...${RESET}`);
+  // Legacy lock entries (written before skillPath was tracked) can't be updated
+  // in place — without skillPath, a reinstall would fetch every skill in the
+  // source repo. Skip them and tell the user how to refresh the lock entry.
+  const updatable = projectSkills.filter((s) => s.entry.skillPath);
+  const legacy = projectSkills.filter((s) => !s.entry.skillPath);
+
+  if (updatable.length === 0) {
+    console.log(`${DIM}No project skills can be updated in place.${RESET}`);
+    printLegacyProjectSkills(legacy);
+    return { successCount, failCount, foundCount: projectSkills.length };
+  }
+
+  console.log(`${TEXT}Refreshing ${updatable.length} project skill(s)...${RESET}`);
   console.log();
 
-  for (const skill of projectSkills) {
+  for (const skill of updatable) {
     const safeName = sanitizeMetadata(skill.name);
     console.log(`${TEXT}Updating ${safeName}...${RESET}`);
     const installUrl = buildLocalUpdateSource(skill.entry);
@@ -748,11 +760,16 @@ async function updateProjectSkills(
     }
 
     // Re-clone without -g to install at project scope
-    const result = spawnSync(process.execPath, [cliEntry, 'add', installUrl, '-y'], {
-      stdio: ['inherit', 'pipe', 'pipe'],
-      encoding: 'utf-8',
-      shell: process.platform === 'win32',
-    });
+    // Pass --skill to scope the install to just the requested skill (not the whole source repo)
+    const result = spawnSync(
+      process.execPath,
+      [cliEntry, 'add', installUrl, '--skill', skill.name, '-y'],
+      {
+        stdio: ['inherit', 'pipe', 'pipe'],
+        encoding: 'utf-8',
+        shell: process.platform === 'win32',
+      }
+    );
 
     if (result.status === 0) {
       successCount++;
@@ -763,7 +780,28 @@ async function updateProjectSkills(
     }
   }
 
+  printLegacyProjectSkills(legacy);
   return { successCount, failCount, foundCount: projectSkills.length };
+}
+
+/**
+ * Print a hint for each legacy project skill entry that predates skillPath
+ * tracking. Lists the manual reinstall command so the user can refresh the
+ * lock entry and future updates stay scoped to a single skill.
+ */
+function printLegacyProjectSkills(
+  legacy: Array<{ name: string; source: string; entry: LocalSkillLockEntry }>
+): void {
+  if (legacy.length === 0) return;
+  console.log();
+  console.log(
+    `${DIM}${legacy.length} project skill(s) cannot be updated automatically (installed before skillPath tracking):${RESET}`
+  );
+  for (const skill of legacy) {
+    const reinstall = formatSourceInput(skill.entry.source, skill.entry.ref);
+    console.log(`  ${TEXT}•${RESET} ${sanitizeMetadata(skill.name)}`);
+    console.log(`    ${DIM}To refresh: ${TEXT}npx skills add ${reinstall} -y${RESET}`);
+  }
 }
 
 // ============================================
@@ -922,4 +960,4 @@ async function main(): Promise<void> {
   }
 }
 
-main();
+main().finally(() => flushTelemetry().then(() => process.exit(0)));

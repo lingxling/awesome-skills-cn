@@ -1,15 +1,15 @@
-<!-- registry-sync: version=10.6.0; skills=1435; stars=34791; updated_at=2026-04-24T00:26:24+00:00 -->
-# 🌌 Antigravity Awesome Skills: 1,435+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
+<!-- registry-sync: version=10.8.0; skills=1441; stars=35690; updated_at=2026-04-29T16:59:33+00:00 -->
+# 🌌 Antigravity Awesome Skills: 1,441+ Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
 
-> **Installable GitHub library of 1,435+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.**
+> **Installable GitHub library of 1,441+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.**
 
 Antigravity Awesome Skills is an installable GitHub library and npm installer for reusable `SKILL.md` playbooks. It is designed for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, Kiro, OpenCode, GitHub Copilot, and other AI coding assistants that benefit from structured operating instructions. Instead of collecting one-off prompt snippets, this repository gives you a searchable, installable catalog of skills, bundles, workflows, plugin-safe distributions, and practical docs that help agents perform recurring tasks with better context, stronger constraints, and clearer outputs.
 
 You can use this repo to install a broad multi-tool skill library, start from role-based bundles, or jump into workflow-driven execution for planning, coding, debugging, testing, security review, infrastructure, product work, and growth tasks. The root README is intentionally a high-signal landing page: understand what the project is, install it quickly, choose the right tool path, and then follow deeper docs only when you need them.
 
-**Start here:** [Star the repo](https://github.com/sickn33/antigravity-awesome-skills/stargazers) · [Install in 1 minute](#installation) · [Choose your tool](#choose-your-tool) · [Best skills by tool](#best-skills-by-tool) · [📚 Browse 1,435+ Skills](#browse-1435-skills) · [Bundles](docs/users/bundles.md) · [Workflows](docs/users/workflows.md) · [Plugins for Claude Code and Codex](docs/users/plugins.md)
+**Start here:** [Star the repo](https://github.com/sickn33/antigravity-awesome-skills/stargazers) · [Install in 1 minute](#installation) · [Choose your tool](#choose-your-tool) · [Best skills by tool](#best-skills-by-tool) · [📚 Browse 1,441+ Skills](#browse-1441-skills) · [Bundles](docs/users/bundles.md) · [Workflows](docs/users/workflows.md) · [Plugins for Claude Code and Codex](docs/users/plugins.md)
 
-[![GitHub stars](https://img.shields.io/badge/⭐%2035%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
+[![GitHub stars](https://img.shields.io/badge/⭐%2036%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Anthropic-purple)](https://claude.ai)
 [![Cursor](https://img.shields.io/badge/Cursor-AI%20IDE-orange)](https://cursor.sh)
@@ -22,13 +22,13 @@ You can use this repo to install a broad multi-tool skill library, start from ro
 [![OpenCode](https://img.shields.io/badge/OpenCode-CLI-gray?style=for-the-badge)](https://github.com/opencode-ai/opencode)
 [![Antigravity](https://img.shields.io/badge/Antigravity-AI%20IDE-red?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills)
 
-**Current release: V10.6.0.** Trusted by 35k+ GitHub stargazers, this repository combines official and community skill collections with bundles, workflows, installation paths, and docs that help you go from first install to daily use quickly.
+**Current release: V10.8.0.** Trusted by 36k+ GitHub stargazers, this repository combines official and community skill collections with bundles, workflows, installation paths, and docs that help you go from first install to daily use quickly.
 
 ## Why This Repo
 
 - **Installable, not just inspirational**: use `npx antigravity-awesome-skills` to put skills where your tool expects them.
 - **Built for major agent workflows**: Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, Kiro, OpenCode, Copilot, and more.
-- **Broad coverage with real utility**: 1,435+ skills across development, testing, security, infrastructure, product, and marketing.
+- **Broad coverage with real utility**: 1,441+ skills across development, testing, security, infrastructure, product, and marketing.
 - **Faster onboarding**: bundles and workflows reduce the time from "I found this repo" to "I used my first skill".
 - **Useful whether you want breadth or curation**: browse the full catalog, start with top bundles, or compare alternatives before installing.
 
@@ -40,7 +40,7 @@ You can use this repo to install a broad multi-tool skill library, start from ro
 - [Quick FAQ](#quick-faq)
 - [Best Skills By Tool](#best-skills-by-tool)
 - [Bundles & Workflows](#bundles--workflows)
-- [Browse 1,409+ Skills](#browse-1409-skills)
+- [Browse 1,441+ Skills](#browse-1441-skills)
 - [Troubleshooting](#troubleshooting)
 - [Support the Project](#support-the-project)
 - [Contributing](#contributing)
@@ -127,7 +127,7 @@ Start with [Bundles](docs/users/bundles.md) for role-based recommendations, [Wor
 
 ## Best Skills By Tool
 
-If you want a faster answer than "browse all 1,435+ skills", start with a tool-specific guide:
+If you want a faster answer than "browse all 1,441+ skills", start with a tool-specific guide:
 
 - **[Claude Code skills](docs/users/claude-code-skills.md)**: install paths, starter skills, prompt examples, and plugin marketplace flow.
 - **[Cursor skills](docs/users/cursor-skills.md)**: best starter skills for `.cursor/skills/`, UI-heavy work, and pair-programming flows.
@@ -183,7 +183,7 @@ If Antigravity starts hitting context limits with too many active skills, the ac
 
 If you use OpenCode or another `.agents/skills` host, prefer a reduced install up front instead of copying the full library into a context-sensitive runtime. The installer now supports `--risk`, `--category`, and `--tags` so you can keep the installed set narrow.
 
-## Browse 1,435+ Skills
+## Browse 1,441+ Skills
 
 Use the root repo as a landing page, then jump into the deeper surface that matches your intent.
 
@@ -278,6 +278,7 @@ This collection would not be possible without the incredible work of the Claude 
 - **[MiniMax-AI/cli](https://github.com/MiniMax-AI/cli)**: Official MiniMax CLI - text, image, video, speech, music, vision, and web-search workflows for MiniMax models and APIs.
 - **[google-gemini/gemini-skills](https://github.com/google-gemini/gemini-skills)**: Official Gemini skills - Gemini API, SDK and model interactions.
 - **[apify/agent-skills](https://github.com/apify/agent-skills)**: Official Apify skills - Web scraping, data extraction and automation.
+- **[BuyWhere/buywhere-cursor-plugin](https://github.com/BuyWhere/buywhere-cursor-plugin)**: Official BuyWhere Cursor plugin and MCP onboarding surface for product catalog, shopping-agent, and commerce API workflows.
 - **[expo/skills](https://github.com/expo/skills)**: Official Expo skills - Expo project workflows and Expo Application Services guidance.
 - **[huggingface/skills](https://github.com/huggingface/skills)**: Official Hugging Face skills - Models, Spaces, datasets, inference, and broader Hugging Face ecosystem workflows.
 - **[neondatabase/agent-skills](https://github.com/neondatabase/agent-skills)**: Official Neon skills - Serverless Postgres workflows and Neon platform guidance.
@@ -286,6 +287,7 @@ This collection would not be possible without the incredible work of the Claude 
 
 ### Community Contributors
 
+- **[MohamedAbdallah-14/unslop](https://github.com/MohamedAbdallah-14/unslop)**: Source for the `unslop` skill - deterministic and LLM-assisted cleanup for AI-generated prose across CLI and agent tool workflows.
 - **[monte-carlo-data/mc-agent-toolkit](https://github.com/monte-carlo-data/mc-agent-toolkit)**: Monte Carlo data observability skills — table health checks, change impact assessment, monitor creation, push ingestion, and SQL validation notebooks for dbt changes.
 - **[openclaw/skills](https://github.com/openclaw/skills)**: Source for the `daily-gift` skill - relationship-aware creative gift generation with editorial judgment, concept selection, and multi-format rendering.
 - **[umutbozdag/agent-skills-manager](https://github.com/umutbozdag/agent-skills-manager)**: Source for the `manage-skills` skill - cross-tool skill discovery, creation, editing, toggling, copying, moving, and deletion workflows across major agent coding tools.
@@ -350,9 +352,12 @@ This collection would not be possible without the incredible work of the Claude 
 - **[fruitwyatt/puzzle-activity-planner](https://github.com/fruitwyatt/puzzle-activity-planner)**: Puzzle activity-planning skill for classrooms, parties, and events with generator-link workflows.
 - **[gokapso/agent-skills](https://github.com/gokapso/agent-skills)**: Kapso/WhatsApp-oriented agent skills.
 - **[huifer/WellAlly-health](https://github.com/huifer/WellAlly-health)**: Healthcare assistant project cited in release history as a source for health-focused agent capabilities (MIT).
+- **[hyhmrright/brooks-lint](https://github.com/hyhmrright/brooks-lint)**: AI code-review skill grounded in classic software engineering books for design-smell, coupling, and architecture review.
+- **[hyhmrright/logic-lens](https://github.com/hyhmrright/logic-lens)**: AI code-review skill for formal logic inspection across bugs, race conditions, security risks, and API contract issues.
 - **[ibelick/ui-skills](https://github.com/ibelick/ui-skills)**: UI-polish skills for improving interfaces built by agents (MIT).
 - **[jackjin1997/ClawForge](https://github.com/jackjin1997/ClawForge)**: Resource hub of skills, MCP servers, and agent tooling for OpenClaw.
 - **[jthack/ffuf_claude_skill](https://github.com/jthack/ffuf_claude_skill)**: FFUF skill for web fuzzing workflows in Claude.
+- **[kubestellar/console](https://github.com/kubestellar/console)**: KubeStellar Console multi-cluster Kubernetes dashboard with `kc-agent` MCP integration, AI-assisted operations, and built-in agent skills.
 - **[MetcalfSolutions/Satori](https://github.com/MetcalfSolutions/Satori)**: Clinically informed wisdom companion blending psychology frameworks and wisdom traditions into a structured reflective partner.
 - **[muratcankoylan/Agent-Skills-for-Context-Engineering](https://github.com/muratcankoylan/Agent-Skills-for-Context-Engineering)**: Context-engineering, multi-agent, and production agent-system skill collection (MIT).
 - **[robzolkos/skill-rails-upgrade](https://github.com/robzolkos/skill-rails-upgrade)**: Rails upgrade skill for agent-assisted migrations.
@@ -369,6 +374,7 @@ This collection would not be possible without the incredible work of the Claude 
 - **[voidborne-d/humanize-chinese](https://github.com/voidborne-d/humanize-chinese)**: Chinese AI-text detection and humanization toolkit for scoring, rewriting, academic AIGC reduction, and style conversion workflows.
 - **[voidborne-d/lambda-lang](https://github.com/voidborne-d/lambda-lang)**: Agent-to-agent coordination language with compact atoms for multi-agent messaging, orchestration, and structured coordination logs.
 - **[LambdaTest/agent-skills](https://github.com/LambdaTest/agent-skills)**: Production-grade agent skills for test automation — 46 skills covering E2E, unit, mobile, BDD, visual, and cloud testing across 15+ languages (MIT).
+- **[flyingsquirrel0419/squirrel-skill](https://github.com/flyingsquirrel0419/squirrel-skill)**: Full-cycle software development skill — plans, builds, tests, lints, fixes bugs, and writes production-grade docs. Auto-detects project state and adapts its 8-phase pipeline. Works on 9 AI coding agent platforms (Apache 2.0).
 
 ### Inspirations
 
@@ -572,11 +578,15 @@ We officially thank the following contributors for their help in making this rep
 - [@Evozim](https://github.com/Evozim)
 - [@Imasaikiran](https://github.com/Imasaikiran)
 - [@justmiroslav](https://github.com/justmiroslav)
-- [@1bcMax](https://github.com/1bcMax)
 - [@xiaolai](https://github.com/xiaolai)
 - [@avij1109](https://github.com/avij1109)
 - [@mark1ian](https://github.com/mark1ian)
 - [@voidborne-d](https://github.com/voidborne-d)
+- [@MohamedAbdallah-14](https://github.com/MohamedAbdallah-14)
+- [@BuyWhere](https://github.com/BuyWhere)
+- [@clubanderson](https://github.com/clubanderson)
+- [@flyingsquirrel0419](https://github.com/flyingsquirrel0419)
+- [@hyhmrright](https://github.com/hyhmrright)
 
 ## Star History
 

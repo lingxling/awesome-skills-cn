@@ -2,7 +2,7 @@ import * as p from '@clack/prompts';
 import pc from 'picocolors';
 import { existsSync } from 'fs';
 import { homedir } from 'os';
-import { sep } from 'path';
+import { sep, join, dirname } from 'path';
 import { parseSource, getOwnerRepo, parseOwnerRepo, isRepoPrivate } from './source-parser.ts';
 import { stripTerminalEscapes } from './sanitize.ts';
 import { searchMultiselect } from './prompts/search-multiselect.ts';
@@ -61,6 +61,7 @@ import type { Skill, AgentType } from './types.ts';
 import {
   tryBlobInstall,
   getSkillFolderHashFromTree,
+  fetchRepoTree,
   type BlobSkill,
   type BlobInstallResult,
 } from './blob.ts';
@@ -722,6 +723,10 @@ async function handleWellKnownSkills(
     }
   }
 
+  // Kick off privacy check early so it runs in parallel with installation
+  const sourceIdentifier = wellKnownProvider.getSourceIdentifier(url);
+  const wellKnownPrivacyPromise = isSourcePrivate(sourceIdentifier).catch(() => null);
+
   spinner.start('Installing skills...');
 
   const results: {
@@ -755,19 +760,15 @@ async function handleWellKnownSkills(
   const successful = results.filter((r) => r.success);
   const failed = results.filter((r) => !r.success);
 
-  // Track installation
-  const sourceIdentifier = wellKnownProvider.getSourceIdentifier(url);
-
   // Build skillFiles map: { skillName: sourceUrl }
   const skillFiles: Record<string, string> = {};
   for (const skill of selectedSkills) {
     skillFiles[skill.installName] = skill.sourceUrl;
   }
 
-  // Skip telemetry for private GitHub repos
-  const isPrivate = await isSourcePrivate(sourceIdentifier);
+  // Privacy promise was started before installation — should be resolved by now
+  const isPrivate = await wellKnownPrivacyPromise;
   if (isPrivate !== true) {
-    // Only send telemetry if repo is public (isPrivate === false) or we can't determine (null for non-GitHub sources)
     track({
       event: 'install',
       source: sourceIdentifier,
@@ -943,8 +944,18 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
       `Source: ${parsed.type === 'local' ? parsed.localPath! : parsed.url}${parsed.ref ? ` @ ${pc.yellow(parsed.ref)}` : ''}${parsed.subpath ? ` (${parsed.subpath})` : ''}${parsed.skillFilter ? ` ${pc.dim('@')}${pc.cyan(parsed.skillFilter)}` : ''}`
     );
 
-    // Block openclaw sources unless explicitly opted in
+    // Kick off the repo privacy check early so it runs in parallel with
+    // cloning/discovering/installing. The result is only needed later for
+    // telemetry gating — it should never block user-visible output.
     const ownerRepoRaw = getOwnerRepo(parsed);
+    const repoPrivacyPromise: Promise<boolean | null> = (() => {
+      if (!ownerRepoRaw) return Promise.resolve(null);
+      const ownerRepo = parseOwnerRepo(ownerRepoRaw);
+      if (!ownerRepo) return Promise.resolve(null);
+      return isRepoPrivate(ownerRepo.owner, ownerRepo.repo).catch(() => null);
+    })();
+
+    // Block openclaw sources unless explicitly opted in
     const sourceOwner = ownerRepoRaw?.split('/')[0]?.toLowerCase();
     if (sourceOwner === 'openclaw' && !options.dangerouslyAcceptOpenclawRisks) {
       console.log();
@@ -1513,7 +1524,6 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
     console.log();
     const successful = results.filter((r) => r.success);
     const failed = results.filter((r) => !r.success);
-
     // Track installation result
     // Build skillFiles map: { skillName: relative path to SKILL.md from repo root }
     const skillFiles: Record<string, string> = {};
@@ -1547,12 +1557,13 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
     const isSSH = parsed.url.startsWith('git@');
     const lockSource = isSSH ? parsed.url : normalizedSource;
 
-    // Only track if we have a valid remote source and it's not a private repo
+    // Only track if we have a valid remote source and it's not a private repo.
+    // repoPrivacyPromise was started early (right after parsing) so it has
+    // already been running in parallel with the entire install — no stall here.
     if (normalizedSource) {
       const ownerRepo = parseOwnerRepo(normalizedSource);
       if (ownerRepo) {
-        // Check if repo is private - skip telemetry for private repos
-        const isPrivate = await isRepoPrivate(ownerRepo.owner, ownerRepo.repo);
+        const isPrivate = await repoPrivacyPromise;
         // Only send telemetry if repo is public (isPrivate === false)
         // If we can't determine (null), err on the side of caution and skip telemetry
         if (isPrivate === false) {
@@ -1581,6 +1592,15 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
     // Add to skill lock file for update tracking (only for global installs)
     if (successful.length > 0 && installGlobally && normalizedSource) {
       const successfulSkillNames = new Set(successful.map((r) => r.skill));
+
+      // For GitHub clone installs, fetch the repo tree once and reuse it
+      // for all skills — avoids N sequential API calls that take ~400ms each.
+      let cachedTree: Awaited<ReturnType<typeof fetchRepoTree>> | undefined;
+      if (parsed.type === 'github' && !blobResult) {
+        const token = getGitHubToken();
+        cachedTree = await fetchRepoTree(normalizedSource, parsed.ref, token);
+      }
+
       for (const skill of selectedSkills) {
         const skillDisplayName = getSkillDisplayName(skill);
         if (successfulSkillNames.has(skillDisplayName)) {
@@ -1589,18 +1609,14 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
             const skillPathValue = skillFiles[skill.name];
 
             if (blobResult && skillPathValue) {
-              // Blob path: extract hash from the tree we already fetched (no extra API call)
               const hash = getSkillFolderHashFromTree(blobResult.tree, skillPathValue);
               if (hash) skillFolderHash = hash;
-            } else if (parsed.type === 'github' && skillPathValue) {
-              // Clone path: fetch folder hash from GitHub Trees API
-              const token = getGitHubToken();
-              const hash = await fetchSkillFolderHash(
-                normalizedSource,
-                skillPathValue,
-                token,
-                parsed.ref
-              );
+            } else if (parsed.type === 'github' && skillPathValue && cachedTree) {
+              const hash = getSkillFolderHashFromTree(cachedTree, skillPathValue);
+              if (hash) skillFolderHash = hash;
+            } else if (skillPathValue && tempDir) {
+              const skillDir = join(tempDir, dirname(skillPathValue));
+              const hash = await computeSkillFolderHash(skillDir);
               if (hash) skillFolderHash = hash;
             }
 
@@ -1632,12 +1648,14 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
               blobResult && 'snapshotHash' in skill
                 ? (skill as BlobSkill).snapshotHash
                 : await computeSkillFolderHash(skill.path);
+            const skillPathValue = skillFiles[skill.name];
             await addSkillToLocalLock(
               skill.name,
               {
                 source: lockSource || parsed.url,
                 ref: parsed.ref,
                 sourceType: parsed.type,
+                ...(skillPathValue && { skillPath: skillPathValue }),
                 computedHash,
               },
               cwd
