@@ -1,4 +1,4 @@
-# Awesome Skills 中文翻译项目
+# Awesome Skills 中文翻译
 
 ## 项目简介
 
