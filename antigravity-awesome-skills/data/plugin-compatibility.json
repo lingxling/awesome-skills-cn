@@ -1353,6 +1353,25 @@
       "runtime_files": []
     },
     {
+      "id": "aomi-transact",
+      "path": "skills/aomi-transact",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "api-design-principles",
       "path": "skills/api-design-principles",
       "targets": {
@@ -11897,6 +11916,25 @@
       "runtime_files": []
     },
     {
+      "id": "git-pr-review",
+      "path": "skills/git-pr-review",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "git-pr-workflows-git-workflow",
       "path": "skills/git-pr-workflows-git-workflow",
       "targets": {
@@ -16616,6 +16654,25 @@
       "runtime_files": []
     },
     {
+      "id": "mock-hunter",
+      "path": "skills/mock-hunter",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "modern-javascript-patterns",
       "path": "skills/modern-javascript-patterns",
       "targets": {
@@ -16871,6 +16928,25 @@
     {
       "id": "multi-advisor",
       "path": "skills/multi-advisor",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "multi-agent-architect",
+      "path": "skills/multi-agent-architect",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -19446,6 +19522,25 @@
       "runtime_files": []
     },
     {
+      "id": "production-audit",
+      "path": "skills/production-audit",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "production-code-audit",
       "path": "skills/production-code-audit",
       "targets": {
@@ -20419,6 +20514,25 @@
       "runtime_files": []
     },
     {
+      "id": "recursive-context-pruning-token-budgeting",
+      "path": "skills/recursive-context-pruning-token-budgeting",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "red-team-tactics",
       "path": "skills/red-team-tactics",
       "targets": {
@@ -20668,6 +20782,25 @@
     {
       "id": "revops",
       "path": "skills/revops",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "rich-elicitation",
+      "path": "skills/rich-elicitation",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -22724,6 +22857,25 @@
     {
       "id": "site-architecture",
       "path": "skills/site-architecture",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
+      "id": "skill-audit",
+      "path": "skills/skill-audit",
       "targets": {
         "codex": "supported",
         "claude": "supported"
@@ -25680,6 +25832,25 @@
       "runtime_files": []
     },
     {
+      "id": "unity-ai-game-creator",
+      "path": "skills/unity-ai-game-creator",
+      "targets": {
+        "codex": "supported",
+        "claude": "supported"
+      },
+      "setup": {
+        "type": "none",
+        "summary": "",
+        "docs": null
+      },
+      "reasons": [],
+      "blocked_reasons": {
+        "codex": [],
+        "claude": []
+      },
+      "runtime_files": []
+    },
+    {
       "id": "unity-developer",
       "path": "skills/unity-developer",
       "targets": {
@@ -27553,10 +27724,10 @@
     }
   ],
   "summary": {
-    "total_skills": 1441,
+    "total_skills": 1450,
     "supported": {
-      "codex": 1410,
-      "claude": 1425
+      "codex": 1419,
+      "claude": 1434
     },
     "blocked": {
       "codex": 31,

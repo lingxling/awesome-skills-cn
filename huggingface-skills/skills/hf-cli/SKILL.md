@@ -9,7 +9,7 @@ The Hugging Face Hub CLI tool `hf` is available. IMPORTANT: The `hf` command rep
 
 Use `hf --help` to view available functions. Note that auth commands are now all under `hf auth` e.g. `hf auth whoami`.
 
-Generated with `huggingface_hub v1.13.0`. Run `hf skills add --force` to regenerate.
+Generated with `huggingface_hub v1.14.0`. Run `hf skills add --force` to regenerate.
 
 ## Commands
 
@@ -63,7 +63,7 @@ Generated with `huggingface_hub v1.13.0`. Run `hf skills add --force` to regener
 
 - `hf datasets card DATASET_ID` — Get the dataset card (README) for a dataset on the Hub. `[--metadata --text --format CHOICE]`
 - `hf datasets info DATASET_ID` — Get info about a dataset on the Hub. `[--revision TEXT --expand TEXT --format CHOICE]`
-- `hf datasets leaderboard DATASET_ID` — List model scores from a dataset leaderboard. This command helps find the best models for a task or compare models by benchmark scores. `[--limit INTEGER --format CHOICE]`
+- `hf datasets leaderboard DATASET_ID` — List model scores from a dataset leaderboard. This command helps find the best models for a task or compare models by benchmark scores. Use 'hf datasets ls --filter benchmark:official' to list available leaderboards. `[--limit INTEGER --format CHOICE]`
 - `hf datasets list` — List datasets on the Hub, or files in a dataset repo. `[--search TEXT --author TEXT --filter TEXT --sort CHOICE --limit INTEGER --expand TEXT --human-readable --tree --recursive --revision TEXT --format CHOICE]`
 - `hf datasets parquet DATASET_ID` — List parquet file URLs available for a dataset. `[--subset TEXT --split TEXT --format CHOICE]`
 - `hf datasets sql SQL` — Execute a raw SQL query with DuckDB against dataset parquet URLs. `[--format CHOICE]`
@@ -150,7 +150,7 @@ Generated with `huggingface_hub v1.13.0`. Run `hf skills add --force` to regener
 
 - `hf skills add` — Download a Hugging Face skill and install it for an AI assistant. `[--claude --global --dest PATH --force --format CHOICE]`
 - `hf skills preview` — Print the generated `hf-cli` SKILL.md to stdout. `[--format CHOICE]`
-- `hf skills upgrade` — Upgrade installed Hugging Face marketplace skills. `[--claude --global --dest PATH --format CHOICE]`
+- `hf skills update` — Update installed Hugging Face marketplace skills. `[--claude --global --dest PATH --format CHOICE]`
 
 ### `hf spaces` — Interact with spaces on the Hub.
 
@@ -164,7 +164,13 @@ Generated with `huggingface_hub v1.13.0`. Run `hf skills add --force` to regener
 - `hf spaces pause SPACE_ID` — Pause a Space. `[--format CHOICE]`
 - `hf spaces restart SPACE_ID` — Restart a Space. `[--factory-reboot --format CHOICE]`
 - `hf spaces search QUERY` — Search spaces on the Hub using semantic search. `[--filter TEXT --sdk TEXT --include-non-running --description --limit INTEGER --format CHOICE]`
+- `hf spaces secrets add SPACE_ID` — Add or update secrets for a Space. `[--secrets TEXT --secrets-file TEXT --format CHOICE]`
+- `hf spaces secrets delete SPACE_ID KEY` — Remove a secret from a Space. `[--yes --format CHOICE]`
+- `hf spaces secrets list SPACE_ID` — List secrets for a Space. Secret values are write-only and not returned. `[--format CHOICE]`
 - `hf spaces settings SPACE_ID` — Update the settings of a Space. `[--sleep-time INTEGER --hardware CHOICE --format CHOICE]`
+- `hf spaces variables add SPACE_ID` — Add or update environment variables for a Space. `[--env TEXT --env-file TEXT --format CHOICE]`
+- `hf spaces variables delete SPACE_ID KEY` — Remove an environment variable from a Space. `[--yes --format CHOICE]`
+- `hf spaces variables list SPACE_ID` — List environment variables for a Space. `[--format CHOICE]`
 - `hf spaces volumes delete SPACE_ID` — Remove all volumes from a Space. `[--yes --format CHOICE]`
 - `hf spaces volumes list SPACE_ID` — List volumes mounted in a Space. `[--format CHOICE]`
 - `hf spaces volumes set SPACE_ID` — Set (replace) volumes for a Space. `[--volume TEXT --format CHOICE]`

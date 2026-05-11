@@ -5,6 +5,7 @@
   <img width="1280" height="640" alt="Composio banner" src="https://github.com/user-attachments/assets/e91255af-e4ba-4d71-b1a8-bd081e8a234a">
 </a>
 
+
 </p>
 
 <p align="center">
@@ -32,7 +33,7 @@
   </p>
 </div>
 
-精心整理的实用 Claude Skills 列表，用于提升 Claude.ai、Claude Code 和 Claude API 的生产力。
+一份全面且精心整理的 1000+ 生产就绪且实用的 Claude Skills 和插件列表，用于提升各种场景下的生产力，不仅适用于 Claude.ai、Claude Code，还适用于 Codex、Cursor、Gemini CLI、Antigravity 等编码代理。
 
 > **想要能够执行更多操作的技能吗？** Claude 可以发送邮件、创建 issue、发布 Slack 消息，并在 1000+ 个应用中执行操作。[查看方法 →](./connect/)
 
@@ -73,11 +74,6 @@ claude
 
 ## 目录
 
-- [快速开始：连接 Claude 到 500+ 应用](#快速开始连接-claude-到-500-应用)
-  - [1. 安装插件](#1-安装插件)
-  - [2. 运行设置](#2-运行设置)
-  - [3. 重启并试用](#3-重启并试用)
-- [目录](#目录)
 - [什么是 Claude Skills？](#什么是-claude-skills)
 - [技能列表](#技能列表)
   - [文档处理](#文档处理)
@@ -89,27 +85,21 @@ claude
   - [生产力与组织](#生产力与组织)
   - [协作与项目管理](#协作与项目管理)
   - [安全与系统](#安全与系统)
+  - [辅助技术](#辅助技术)
   - [通过 Composio 实现应用自动化](#通过-composio-实现应用自动化)
 - [开始使用](#开始使用)
-  - [在 Claude.ai 中使用技能](#在-claudeai-中使用技能)
-  - [在 Claude Code 中使用技能](#在-claude-code-中使用技能)
-  - [通过 API 使用技能](#通过-api-使用技能)
 - [创建技能](#创建技能)
-  - [技能结构](#技能结构)
-  - [基础技能模板](#基础技能模板)
-  - [技能最佳实践](#技能最佳实践)
 - [贡献指南](#贡献指南)
-  - [快速贡献步骤](#快速贡献步骤)
 - [资源](#资源)
-  - [官方文档](#官方文档)
-  - [社区资源](#社区资源)
-  - [灵感与用例](#灵感与用例)
-- [加入社区](#加入社区)
 - [许可证](#许可证)
 
 ## 什么是 Claude Skills？
 
-Claude Skills 是可自定义的工作流程，用于教授 Claude 如何根据您的独特需求执行特定任务。技能使 Claude 能够以可重复、标准化的方式在所有 Claude 平台上执行任务。
+Claude Skills 是可复用的指令包，用于教 AI 代理如何处理特定类别的任务。每个技能都是一个包含 `SKILL.md` 文件的文件夹，该文件带有 YAML 前置元数据（名称、描述）和 Markdown 说明，可选地捆绑脚本、参考文件和资源。Anthropic 于 2025 年 10 月推出了该格式，并于 2025 年 12 月将其作为[开放标准](https://github.com/anthropics/skills)发布；目前 Claude Code、Claude.ai、Claude API、OpenAI Codex、Cursor、Gemini CLI、Antigravity 和 Windsurf 均已支持。
+
+技能是渐进式加载的。在会话开始时，代理只能看到每个技能的名称和描述——每个技能大约 100 个 token。完整的 SKILL.md 正文（通常少于 5,000 个 token）仅在代理判断该技能与当前任务相关时才会加载。`scripts/` 和 `references/` 中的辅助文件按需加载。这使得单个代理能够承载数百个技能而不会膨胀其上下文窗口。
+
+技能不是 MCP 服务器，也不是工具。MCP 定义了代理如何连接外部系统——认证、传输、工具发现。工具是代理调用的单个函数。技能定义了工作流——在代理获得所需的连接和工具后，该做什么、按什么顺序做、有什么防护措施。在生产环境中，这三层协同运行：MCP 用于访问，工具用于操作，技能用于行为。
 
 ## 技能列表
 
@@ -129,25 +119,30 @@ Claude Skills 是可自定义的工作流程，用于教授 Claude 如何根据�
 - [Changelog Generator](./changelog-generator/) - 通过分析 git 提交历史并将技术提交转换为面向客户的发布说明，自动创建面向用户的变更日志。
 - [Chrome Relay](https://chrome-relay.kushalsm.com/) - 通过本地 CLI 桥接驱动用户已打开的 Chrome 会话——Cookie、SSO、扩展、localhost。Playwright 浏览器自动化的真实 Chrome 对应版本；通过 `npx skills add chrome-relay` + [Chrome Web Store 扩展](https://chromewebstore.google.com/detail/chrome-relay/cpdiapbifblhlcpnmlmfpgfjlacebokb) 安装。无需远程中继、无需 Playwright 夹具、无需 MCP 服务器。
 - [Claude Code Terminal Title](https://github.com/bluzername/claude-code-terminal-title) - 为每个 Claude Code 终端窗口提供动态标题，描述正在执行的工作，这样您就不会丢失对窗口正在执行任务的跟踪。
+- [Connect](./connect/) - 将 Claude 连接到任何应用。发送邮件、创建 issue、发布消息、更新数据库——在 Gmail、Slack、GitHub、Notion 和 1000+ 服务上执行实际操作。
 - [D3.js Visualization](https://github.com/chrisvoncsefalvay/claude-d3js-skill) - 教 Claude 生成 D3 图表和交互式数据可视化。*作者 [@chrisvoncsefalvay](https://github.com/chrisvoncsefalvay)*
 - [FFUF Web Fuzzing](https://github.com/jthack/ffuf_claude_skill) - 集成 ffuf Web 模糊测试工具，使 Claude 能够运行模糊测试任务并分析漏洞结果。*作者 [@jthack](https://github.com/jthack)*
 - [finishing-a-development-branch](https://github.com/obra/superpowers/tree/main/skills/finishing-a-development-branch) - 通过呈现清晰的选项并处理选定的工作流程来指导开发工作的完成。
+- [Full-Page Screenshot](https://github.com/LewisLiu007/full-page-screenshot) - 通过 Chrome DevTools 协议捕获网页完整页面截图，零依赖。*作者 [@LewisLiu007](https://github.com/LewisLiu007)*
+- [great_cto](https://github.com/avelikiy/great_cto) - Claude Code 插件：7 个专业子代理（技术负责人、高级开发、QA 工程师、安全官、DevOps、L3 支持、项目审计员）编排完整的 SDLC 流水线——架构、TDD、12 角度代码审查、QA、安全审计、部署。11 种项目原型自动检测，13 种合规框架（GDPR/PCI-DSS/HIPAA/SOC2/ISO 27001），从每次事件中学习的自我改进知识层。*作者 [@avelikiy](https://github.com/avelikiy)*
 - [iOS Simulator](https://github.com/conorluddy/ios-simulator-skill) - 使 Claude 能够与 iOS 模拟器交互，用于测试和调试 iOS 应用程序。*作者 [@conorluddy](https://github.com/conorluddy)*
 - [jules](https://github.com/sanjay3290/ai-skills/tree/main/skills/jules) - 将编码任务委托给 Google Jules AI 代理，用于 GitHub 仓库上的异步错误修复、文档编写、测试和功能实现。*作者 [@sanjay3290](https://github.com/sanjay3290)*
 - [LangSmith Fetch](./langsmith-fetch/) - 通过自动从 LangSmith Studio 获取和分析执行跟踪来调试 LangChain 和 LangGraph 代理。Claude Code 首个 AI 可观测性技能。*作者 [@OthmanAdi](https://github.com/OthmanAdi)*
+- [lean-ctx](https://github.com/yvgude/lean-ctx) - 面向 AI 编码代理的 MCP 服务器和上下文运行时：会话缓存、AST 感知压缩和 90+ 种 shell 模式以减少 token 使用。支持 Claude Code、Cursor、Copilot 和其他集成。使用 `lean-ctx init --agent claude-code` 安装 Claude Code 技能；文档见 [leanctx.com](https://leanctx.com)。*作者 [@yvgude](https://github.com/yvgude)*
 - [MCP Builder](./mcp-builder/) - 指导创建高质量的 MCP（Model Context Protocol）服务器，用于使用 Python 或 TypeScript 将外部 API 和服务与 LLM 集成。
 - [move-code-quality-skill](https://github.com/1NickPappas/move-code-quality-skill) - 根据官方 Move Book 代码质量检查清单分析 Move 语言包，以符合 Move 2024 Edition 合规性和最佳实践。
+- [OpenWeb](https://github.com/openweb-org/openweb) - 以代理原生方式访问任何网站。调用网站调用的相同 API（JSON 入，JSON 出），每次请求自动解析认证（Cookie、JWT、CSRF、签名）。内置 90+ 站点。*作者 [@openweb-org](https://github.com/openweb-org)*
 - [Playwright Browser Automation](https://github.com/lackeyjb/playwright-skill) - 模型调用的 Playwright 自动化，用于测试和验证 Web 应用程序。*作者 [@lackeyjb](https://github.com/lackeyjb)*
 - [prompt-engineering](https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/customaize-agent/skills/prompt-engineering) - 教授著名的提示工程技术和模式，包括 Anthropic 最佳实践和代理说服原则。
 - [pypict-claude-skill](https://github.com/omkamal/pypict-claude-skill) - 使用 PICT（成对独立组合测试）为需求或代码设计全面的测试用例，生成具有成对覆盖率的优化测试套件。
 - [reddit-fetch](https://github.com/ykdojo/claude-code-tips/tree/main/skills/reddit-fetch) - 当 WebFetch 被阻止或返回 403 错误时，通过 Gemini CLI 获取 Reddit 内容。
+- [Septim Agents Pack](https://septimlabs.com/tools/agents?utm_source=awesome-claude-skills&utm_medium=awesome-list&utm_campaign=oss-backlink) - 10 个命名 Claude Code 子代理（Atlas、Luca、Canon、Ember、Tally、Nova、Ward、Mira、Juno、Pip），涵盖规划、架构、品牌、营销、财务、设计、法律、客户、研究和协调。放入 `.claude/agents/`。*作者 [@septimlabs-code](https://github.com/septimlabs-code)*
 - [Skill Creator](./skill-creator/) - 提供创建有效 Claude Skills 的指导，通过专门知识、工作流程和工具集成扩展能力。
 - [Skill Seekers](https://github.com/yusufkaraaslan/Skill_Seekers) - 在几分钟内自动将任何文档网站转换为 Claude AI 技能。*作者 [@yusufkaraaslan](https://github.com/yusufkaraaslan)*
 - [software-architecture](https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/ddd/skills/software-architecture) - 实现设计模式，包括 Clean Architecture、SOLID 原则和全面的软件设计最佳实践。
 - [subagent-driven-development](https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/sadd/skills/subagent-driven-development) - 为单独任务分派独立子代理，迭代之间进行代码审查检查点，实现快速、受控的开发。
 - [test-driven-development](https://github.com/obra/superpowers/tree/main/skills/test-driven-development) - 在实现任何功能或错误修复时使用，在编写实现代码之前。
 - [using-git-worktrees](https://github.com/obra/superpowers/blob/main/skills/using-git-worktrees/) - 使用智能目录选择和安全验证创建隔离的 git worktree。
-- [Connect](./connect/) - 将 Claude 连接到任何应用。发送邮件、创建 issue、发布消息、更新数据库——在 Gmail、Slack、GitHub、Notion 和 1000+ 服务上执行实际操作。
 - [Webapp Testing](./webapp-testing/) - 使用 Playwright 测试本地 Web 应用程序，用于验证前端功能、调试 UI 行为和捕获屏幕截图。
 
 ### 数据分析
@@ -155,10 +150,12 @@ Claude Skills 是可自定义的工作流程，用于教授 Claude 如何根据�
 - [CSV Data Summarizer](https://github.com/coffeefuelbump/csv-data-summarizer-claude-skill) - 自动分析 CSV 文件并生成包含可视化的全面洞察，无需用户提示。*作者 [@coffeefuelbump](https://github.com/coffeefuelbump)*
 - [deep-research](https://github.com/sanjay3290/ai-skills/tree/main/skills/deep-research) - 使用 Gemini Deep Research Agent 执行自主多步研究，用于市场分析、竞争格局和文献综述。*作者 [@sanjay3290](https://github.com/sanjay3290)*
 - [postgres](https://github.com/sanjay3290/ai-skills/tree/main/skills/postgres) - 对 PostgreSQL 数据库执行安全的只读 SQL 查询，支持多连接和纵深防御安全。*作者 [@sanjay3290](https://github.com/sanjay3290)*
+- [recursive-research](https://github.com/Anjos2/recursive-research) - 在任何领域（科学、技术、商业、艺术、人文）进行递归研究直至博士水平，包含来源分级、WDM + Munger 反演用于自主决策，以及磁盘检查点以在上下文压缩中存活。*作者 [@Anjos2](https://github.com/Anjos2)*
 - [root-cause-tracing](https://github.com/obra/superpowers/tree/main/skills/root-cause-tracing) - 当错误发生在执行深处且需要追溯找到原始触发器时使用。
 
 ### 商业与营销
 
+- [Brand Build Skills](https://github.com/rampstackco/claude-skills) - 59 个技能库，涵盖网站全生命周期：品牌、设计、内容、SEO、开发、运维、增长和研究。堆栈无关，包含由 Ahrefs MCP 驱动的 SEO 审计套件。包含一个用于编写自己技能的元技能。*作者 [@rampstackco](https://github.com/rampstackco)*
 - [Brand Guidelines](./brand-guidelines/) - 应用 Anthropic 官方品牌颜色和排版到产物上，以保持一致的品牌形象和专业设计标准。
 - [Competitive Ads Extractor](./competitive-ads-extractor/) - 从广告库中提取和分析竞争对手的广告，了解能引起共鸣的信息和创意方法。
 - [Domain Name Brainstormer](./domain-name-brainstormer/) - 生成创意的域名想法，并在多种 TLD（包括 .com、.io、.dev 和 .ai 扩展名）中检查可用性。
@@ -184,6 +181,8 @@ Claude Skills 是可自定义的工作流程，用于教授 Claude 如何根据�
 - [Theme Factory](./theme-factory/) - 为幻灯片、文档、报告和 HTML 登录页面等产物应用专业字体和颜色主题，包含 10 个预设主题。
 - [Video Downloader](./video-downloader/) - 从 YouTube 和其他平台下载视频以供离线观看、编辑或归档，支持多种格式和质量选项。
 - [youtube-transcript](https://github.com/michalparkola/tapestry-skills-for-claude-code/tree/main/youtube-transcript) - 获取 YouTube 视频的字幕并准备摘要。
+- [swiftui-design-skill](https://github.com/wholiver/swiftui-design-skill) - SwiftUI 前端设计 skill — 反 AI Slop 六条铁律、设计方向顾问、品牌资产协议、五维评审。支持 Claude Code / Cursor / Codex / OpenCode 等全部 AI agent 平台。*作者 [@wholiver](https://github.com/wholiver)*
+- [Pixelbin-Media-Generation](https://github.com/anandpareek-hub/pixelbin-claude-skill) - 使用 85+ API 产品组合生成和编辑图像与视频，并构建视觉吸引力强的网站页面。
 
 ### 生产力与组织
 
@@ -192,6 +191,7 @@ Claude Skills 是可自定义的工作流程，用于教授 Claude 如何根据�
 - [kaizen](https://github.com/NeoLabHQ/context-engineering-kit/tree/master/plugins/kaizen/skills/kaizen) - 应用基于日本 Kaizen 理念和精益方法的持续改进方法论，包含多种分析方法。
 - [n8n-skills](https://github.com/haunchen/n8n-skills) - 使 AI 助手能够直接理解和操作 n8n 工作流程。
 - [Raffle Winner Picker](./raffle-winner-picker/) - 从列表、电子表格或 Google 表格中随机选择获奖者，用于赠品和竞赛，具有加密安全的随机性。
+- [solo-skills](https://github.com/rockscy/solo-skills) - 7 个双语（EN+中文）技能，面向独立创始人和独立开发者：发布推文、客户邮件、决策框架、事后分析。每个技能都包含明确的"何时不使用"部分。
 - [Tailored Resume Generator](./tailored-resume-generator/) - 分析职位描述并生成针对性简历，突出相关经验、技能和成就，以最大化面试机会。
 - [ship-learn-next](https://github.com/michalparkola/tapestry-skills-for-claude-code/tree/main/ship-learn-next) - 基于反馈循环帮助迭代接下来要构建或学习的内容。
 - [tapestry](https://github.com/michalparkola/tapestry-skills-for-claude-code/tree/main/tapestry) - 将相关文档相互链接并总结为知识网络。
@@ -210,6 +210,10 @@ Claude Skills 是可自定义的工作流程，用于教授 Claude 如何根据�
 - [file-deletion](https://github.com/mhattingpete/claude-skills-marketplace/tree/main/computer-forensics-skills/skills/file-deletion) - 安全文件删除和数据清理方法。
 - [metadata-extraction](https://github.com/mhattingpete/claude-skills-marketplace/tree/main/computer-forensics-skills/skills/metadata-extraction) - 提取和分析取证目的的文件元数据。
 - [threat-hunting-with-sigma-rules](https://github.com/jthack/threat-hunting-with-sigma-rules-skill) - 使用 Sigma 检测规则来搜寻威胁和分析安全事件。
+
+### 辅助技术
+
+- [ASD-AuDHD-PAI-Skills](https://github.com/emory/ASD-AuDHD-PAI-Skills) - 新合集，第一个技能 [pda-reframing](https://github.com/emory/ASD-AuDHD-PAI-Skills/blob/main/Skills/pda-reframing/SKILL.md) 可以重新构建请求或决策，以克服持续性需求回避（Persistent Demand Avoidance）类型的自闭症谱系障碍，或帮助难以开始任务的 ADHD 患者对齐任务。
 
 ### 通过 Composio 实现应用自动化
 
@@ -460,6 +464,7 @@ description: 清晰描述此技能的用途和使用时机。
 
 - [Lenny's Newsletter](https://www.lennysnewsletter.com/p/everyone-should-be-using-claude-code) - 人们使用 Claude Code 的 50 种方式
 - [Notion Skills](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0) - Notion 集成技能
+- [Top Claude Skills](https://composio.dev/content/top-claude-skills)
 
 ## 加入社区
 

@@ -1,483 +1,315 @@
 ---
 name: geniml
-description: 使用基因组区间数据训练机器学习模型，包括基因组区间标记化、数据增强、模型训练和推理。用于预测基因组特征、分析染色质可及性、预测基因表达、识别调控元件或任何涉及基因组区间和序列的机器学习任务。
-license: MIT license
+description: 当处理基因组区间数据（BED 文件）用于机器学习任务时使用此技能。适用于训练区域嵌入（Region2Vec、BEDspace）、单细胞 ATAC-seq 分析（scEmbed）、构建一致性峰（universes），或任何基于机器学习的基因组区域分析。适用于 BED 文件集合、scATAC-seq 数据、染色质可及性数据集以及基于区域的基因组特征学习。
+license: BSD-2-Clause 许可证
 metadata:
     skill-author: K-Dense Inc.
 ---
 
-# GeniML
+# Geniml: 基因组区间机器学习
 
-GeniML是一个用于基因组区间机器学习的Python库，提供标记化、数据增强、模型训练和推理功能。它专门设计用于处理基因组区间数据，如ChIP-seq峰、ATAC-seq峰和增强子区域。
+## 概述
+
+Geniml 是一个用于在 BED 文件的基因组区间数据上构建机器学习模型的 Python 包。它提供了无监督方法来学习基因组区域、单细胞和元数据标签的嵌入，支持相似性搜索、聚类和下游机器学习任务。
 
 ## 安装
+
+使用 uv 安装 geniml：
 
 ```bash
 uv pip install geniml
 ```
 
-### 可选依赖项
+安装机器学习依赖（PyTorch 等）：
 
 ```bash
-# 用于GPU加速
-uv pip install torch torchvision
-
-# 用于可视化
-uv pip install matplotlib seaborn
-
-# 用于数据处理
-uv pip install pandas numpy
+uv pip install 'geniml[ml]'
 ```
 
-## 快速开始
+从 GitHub 安装开发版本：
 
-```python
-from geniml import GeniML
-
-# 初始化GeniML
-geniml = GeniML()
-
-# 加载基因组区间数据
-intervals = geniml.load_intervals("peaks.bed")
-
-# 标记化区间
-tokens = geniml.tokenize(intervals)
-
-# 训练模型
-model = geniml.train(tokens, labels)
-
-# 预测
-predictions = geniml.predict(model, new_intervals)
+```bash
+uv pip install git+https://github.com/databio/geniml.git
 ```
 
 ## 核心功能
 
-### 1. 基因组区间标记化
+Geniml 提供五大核心功能，每个功能在专门的参考文件中有详细说明：
 
-```python
-from geniml import GeniML
+### 1. Region2Vec：基因组区域嵌入
 
-geniml = GeniML()
+使用 word2vec 风格的学习方法训练基因组区域的无监督嵌入。
 
-# 加载区间数据
-intervals = geniml.load_intervals("peaks.bed")
+**适用场景：** BED 文件的降维、区域相似性分析、下游机器学习的特征向量。
 
-# 标记化区间
-tokens = geniml.tokenize(
-    intervals,
-    window_size=1000,  # 窗口大小
-    stride=500,        # 步长
-    include_sequence=True,  # 包含序列信息
-    include_chromatin=True  # 包含染色质信息
-)
-```
+**工作流程：**
+1. 使用 universe 参考对 BED 文件进行分词
+2. 在分词结果上训练 Region2Vec 模型
+3. 生成区域的嵌入
 
-### 2. 数据增强
+**参考：** 详细工作流程、参数和示例请参见 `references/region2vec.md`。
 
-```python
-# 随机平移
-augmented = geniml.augment_shift(intervals, shift_range=100)
+### 2. BEDspace：联合区域与元数据嵌入
 
-# 随机缩放
-augmented = geniml.augment_scale(intervals, scale_range=(0.8, 1.2))
+使用 StarSpace 训练区域集合和元数据标签的共享嵌入。
 
-# 随机翻转
-augmented = geniml.augment_flip(intervals)
+**适用场景：** 元数据感知搜索、跨模态查询（区域→标签或标签→区域）、基因组内容与实验条件的联合分析。
 
-# 组合增强
-augmented = geniml.augment(intervals, methods=['shift', 'scale', 'flip'])
-```
+**工作流程：**
+1. 预处理区域和元数据
+2. 训练 BEDspace 模型
+3. 计算距离
+4. 跨区域和标签进行查询
 
-### 3. 模型训练
+**参考：** 详细工作流程、搜索类型和示例请参见 `references/bedspace.md`。
 
-```python
-# 准备数据
-tokens = geniml.tokenize(intervals)
-labels = geniml.load_labels("labels.txt")
+### 3. scEmbed：单细胞染色质可及性嵌入
 
-# 分割数据
-train_tokens, test_tokens, train_labels, test_labels = geniml.split_data(
-    tokens, labels, test_size=0.2
-)
+在单细胞 ATAC-seq 数据上训练 Region2Vec 模型以生成细胞级别的嵌入。
 
-# 训练模型
-model = geniml.train(
-    train_tokens,
-    train_labels,
-    model_type="cnn",  # 可选: cnn, rnn, transformer
-    epochs=100,
-    batch_size=32,
-    learning_rate=0.001
-)
-```
+**适用场景：** scATAC-seq 聚类、细胞类型注释、单细胞降维、与 scanpy 工作流集成。
 
-### 4. 模型推理
+**工作流程：**
+1. 准备包含峰坐标信息的 AnnData
+2. 对细胞进行预分词
+3. 训练 scEmbed 模型
+4. 生成细胞嵌入
+5. 使用 scanpy 进行聚类和可视化
 
-```python
-# 加载训练好的模型
-model = geniml.load_model("model.pth")
+**参考：** 详细工作流程、参数和示例请参见 `references/scembed.md`。
 
-# 预测新数据
-new_intervals = geniml.load_intervals("new_peaks.bed")
-new_tokens = geniml.tokenize(new_intervals)
-predictions = geniml.predict(model, new_tokens)
+### 4. 一致性峰：Universe 构建
 
-# 获取概率
-probabilities = geniml.predict_proba(model, new_tokens)
-```
+使用多种统计方法从 BED 文件集合中构建参考峰集合（universes）。
 
-### 5. 模型评估
+**适用场景：** 创建分词参考、跨数据集标准化区域、以统计严谨性定义一致性特征。
 
-```python
-# 评估模型
-metrics = geniml.evaluate(model, test_tokens, test_labels)
+**工作流程：**
+1. 合并 BED 文件
+2. 生成覆盖度轨迹
+3. 使用 CC、CCF、ML 或 HMM 方法构建 universe
 
-# 计算准确率
-accuracy = metrics['accuracy']
+**方法：**
+- **CC（Coverage Cutoff）**：基于简单阈值
+- **CCF（Coverage Cutoff Flexible）**：边界置信区间
+- **ML（Maximum Likelihood）**：位置的概率建模
+- **HMM（Hidden Markov Model）**：复杂状态建模
 
-# 计算精确率和召回率
-precision = metrics['precision']
-recall = metrics['recall']
+**参考：** 方法比较、参数和示例请参见 `references/consensus_peaks.md`。
 
-# 计算F1分数
-f1_score = metrics['f1_score']
+### 5. 工具：辅助工具
 
-# 生成混淆矩阵
-confusion_matrix = geniml.confusion_matrix(model, test_tokens, test_labels)
-```
+用于缓存、随机化、评估和搜索的附加工具。
 
-### 6. 可视化
+**可用工具：**
+- **BBClient**：BED 文件缓存，支持重复访问
+- **BEDshift**：保留基因组上下文的随机化
+- **Evaluation**：嵌入质量评估指标（轮廓系数、Davies-Bouldin 等）
+- **Tokenization**：区域分词工具（硬分词、软分词、基于 universe）
+- **Text2BedNN**：基因组查询的神经搜索后端
 
-```python
-# 绘制训练曲线
-geniml.plot_training_history(model)
-
-# 绘制ROC曲线
-geniml.plot_roc_curve(model, test_tokens, test_labels)
-
-# 绘制混淆矩阵
-geniml.plot_confusion_matrix(model, test_tokens, test_labels)
-
-# 绘制特征重要性
-geniml.plot_feature_importance(model)
-```
-
-## 高级功能
-
-### 1. 自定义标记化器
-
-```python
-from geniml.tokenizers import CustomTokenizer
-
-# 创建自定义标记化器
-tokenizer = CustomTokenizer(
-    window_size=2000,
-    stride=1000,
-    include_sequence=True,
-    include_chromatin=True,
-    sequence_encoding='onehot',  # 可选: onehot, embedding
-    chromatin_features=['ATAC', 'H3K27ac', 'H3K4me3']
-)
-
-# 使用自定义标记化器
-tokens = tokenizer.tokenize(intervals)
-```
-
-### 2. 自定义模型
-
-```python
-from geniml.models import CustomModel
-
-# 创建自定义模型
-model = CustomModel(
-    input_size=1000,
-    hidden_sizes=[512, 256, 128],
-    output_size=2,
-    dropout_rate=0.5
-)
-
-# 训练自定义模型
-geniml.train_model(
-    model,
-    train_tokens,
-    train_labels,
-    epochs=100,
-    batch_size=32
-)
-```
-
-### 3. 迁移学习
-
-```python
-# 加载预训练模型
-pretrained_model = geniml.load_pretrained_model("pretrained_model.pth")
-
-# 微调模型
-finetuned_model = geniml.finetune(
-    pretrained_model,
-    new_tokens,
-    new_labels,
-    epochs=50,
-    learning_rate=0.0001
-)
-```
-
-### 4. 集成学习
-
-```python
-# 训练多个模型
-model1 = geniml.train(train_tokens, train_labels, model_type="cnn")
-model2 = geniml.train(train_tokens, train_labels, model_type="rnn")
-model3 = geniml.train(train_tokens, train_labels, model_type="transformer")
-
-# 集成预测
-predictions = geniml.ensemble_predict(
-    [model1, model2, model3],
-    test_tokens,
-    method='voting'  # 可选: voting, averaging, stacking
-)
-```
-
-### 5. 超参数调优
-
-```python
-# 定义超参数网格
-param_grid = {
-    'learning_rate': [0.001, 0.0001, 0.00001],
-    'batch_size': [16, 32, 64],
-    'hidden_size': [128, 256, 512],
-    'dropout_rate': [0.3, 0.5, 0.7]
-}
-
-# 执行网格搜索
-best_model, best_params = geniml.grid_search(
-    train_tokens,
-    train_labels,
-    param_grid,
-    cv=5
-)
-
-# 执行随机搜索
-best_model, best_params = geniml.random_search(
-    train_tokens,
-    train_labels,
-    param_grid,
-    n_iter=50,
-    cv=5
-)
-```
+**参考：** 各工具的详细用法请参见 `references/utilities.md`。
 
 ## 常见工作流
 
-### 工作流1：ChIP-seq峰分类
+### 基础区域嵌入流程
 
 ```python
-from geniml import GeniML
+from geniml.tokenization import hard_tokenization
+from geniml.region2vec import region2vec
+from geniml.evaluation import evaluate_embeddings
 
-# 初始化
-geniml = GeniML()
-
-# 加载数据
-peaks = geniml.load_intervals("chip_peaks.bed")
-labels = geniml.load_labels("chip_labels.txt")
-
-# 标记化
-tokens = geniml.tokenize(peaks)
-
-# 分割数据
-train_tokens, test_tokens, train_labels, test_labels = geniml.split_data(
-    tokens, labels, test_size=0.2
+# 步骤 1：对 BED 文件进行分词
+hard_tokenization(
+    src_folder='bed_files/',
+    dst_folder='tokens/',
+    universe_file='universe.bed',
+    p_value_threshold=1e-9
 )
 
-# 训练模型
-model = geniml.train(
-    train_tokens,
-    train_labels,
-    model_type="cnn",
-    epochs=100
+# 步骤 2：训练 Region2Vec
+region2vec(
+    token_folder='tokens/',
+    save_dir='model/',
+    num_shufflings=1000,
+    embedding_dim=100
 )
 
-# 评估
-metrics = geniml.evaluate(model, test_tokens, test_labels)
-print(f"Accuracy: {metrics['accuracy']}")
+# 步骤 3：评估
+metrics = evaluate_embeddings(
+    embeddings_file='model/embeddings.npy',
+    labels_file='metadata.csv'
+)
 ```
 
-### 工作流2：ATAC-seq可及性预测
+### scATAC-seq 分析流程
 
 ```python
-from geniml import GeniML
+import scanpy as sc
+from geniml.scembed import ScEmbed
+from geniml.io import tokenize_cells
 
-# 初始化
-geniml = GeniML()
+# 步骤 1：加载数据
+adata = sc.read_h5ad('scatac_data.h5ad')
 
-# 加载ATAC-seq数据
-atac_peaks = geniml.load_intervals("atac_peaks.bed")
-atac_signal = geniml.load_signal("atac_signal.bw")
-
-# 标记化
-tokens = geniml.tokenize(
-    atac_peaks,
-    include_signal=True,
-    signal_file=atac_signal
+# 步骤 2：对细胞进行分词
+tokenize_cells(
+    adata='scatac_data.h5ad',
+    universe_file='universe.bed',
+    output='tokens.parquet'
 )
 
-# 训练回归模型
-model = geniml.train_regression(
-    tokens,
-    atac_signal,
-    model_type="cnn",
-    epochs=100
-)
+# 步骤 3：训练 scEmbed
+model = ScEmbed(embedding_dim=100)
+model.train(dataset='tokens.parquet', epochs=100)
 
-# 预测
-new_peaks = geniml.load_intervals("new_peaks.bed")
-new_tokens = geniml.tokenize(new_peaks)
-predictions = geniml.predict(model, new_tokens)
+# 步骤 4：生成嵌入
+embeddings = model.encode(adata)
+adata.obsm['scembed_X'] = embeddings
+
+# 步骤 5：使用 scanpy 进行聚类
+sc.pp.neighbors(adata, use_rep='scembed_X')
+sc.tl.leiden(adata)
+sc.tl.umap(adata)
 ```
 
-### 工作流3：增强子识别
+### Universe 构建与评估
 
-```python
-from geniml import GeniML
+```bash
+# 生成覆盖度
+cat bed_files/*.bed > combined.bed
+uniwig -m 25 combined.bed chrom.sizes coverage/
 
-# 初始化
-geniml = GeniML()
+# 使用覆盖度阈值构建 universe
+geniml universe build cc \
+  --coverage-folder coverage/ \
+  --output-file universe.bed \
+  --cutoff 5 \
+  --merge 100 \
+  --filter-size 50
 
-# 加载增强子数据
-enhancers = geniml.load_intervals("enhancers.bed")
-non_enhancers = geniml.load_intervals("non_enhancers.bed")
-
-# 合并数据
-all_intervals = geniml.merge_intervals(enhancers, non_enhancers)
-labels = geniml.create_labels(enhancers, non_enhancers)
-
-# 标记化
-tokens = geniml.tokenize(all_intervals)
-
-# 数据增强
-augmented_tokens = geniml.augment(tokens, methods=['shift', 'scale'])
-
-# 训练模型
-model = geniml.train(
-    augmented_tokens,
-    labels,
-    model_type="transformer",
-    epochs=100
-)
-
-# 预测新区域
-new_regions = geniml.load_intervals("new_regions.bed")
-new_tokens = geniml.tokenize(new_regions)
-predictions = geniml.predict(model, new_tokens)
+# 评估 universe 质量
+geniml universe evaluate \
+  --universe universe.bed \
+  --coverage-folder coverage/ \
+  --bed-folder bed_files/
 ```
+
+## CLI 参考
+
+Geniml 为主要操作提供命令行接口：
+
+```bash
+# Region2Vec 训练
+geniml region2vec --token-folder tokens/ --save-dir model/ --num-shuffle 1000
+
+# BEDspace 预处理
+geniml bedspace preprocess --input regions/ --metadata labels.csv --universe universe.bed
+
+# BEDspace 训练
+geniml bedspace train --input preprocessed.txt --output model/ --dim 100
+
+# BEDspace 搜索
+geniml bedspace search -t r2l -d distances.pkl -q query.bed -n 10
+
+# Universe 构建
+geniml universe build cc --coverage-folder coverage/ --output universe.bed --cutoff 5
+
+# BEDshift 随机化
+geniml bedshift --input peaks.bed --genome hg38 --preserve-chrom --iterations 100
+```
+
+## 工具选择指南
+
+**使用 Region2Vec 的场景：**
+- 处理批量基因组数据（ChIP-seq、ATAC-seq 等）
+- 需要无监督嵌入且无需元数据
+- 跨实验比较区域集合
+- 为下游监督学习构建特征
+
+**使用 BEDspace 的场景：**
+- 有可用的元数据标签（细胞类型、组织、条件）
+- 需要按元数据查询区域或反向查询
+- 希望为区域和标签构建联合嵌入空间
+- 构建可搜索的基因组数据库
+
+**使用 scEmbed 的场景：**
+- 分析单细胞 ATAC-seq 数据
+- 按染色质可及性对细胞进行聚类
+- 从 scATAC-seq 中注释细胞类型
+- 希望与 scanpy 集成
+
+**使用 Universe 构建的场景：**
+- 需要用于分词的参考峰集合
+- 将多个实验合并为一致性集合
+- 希望以统计严谨性定义区域
+- 为项目构建标准参考
+
+**使用工具的场景：**
+- 需要缓存远程 BED 文件（BBClient）
+- 生成统计用的零模型（BEDshift）
+- 评估嵌入质量（Evaluation）
+- 构建搜索接口（Text2BedNN）
 
 ## 最佳实践
 
-1. **数据预处理**：在标记化之前清理和标准化区间数据
-2. **数据增强**：使用数据增强提高模型泛化能力
-3. **交叉验证**：使用交叉验证评估模型性能
-4. **超参数调优**：使用网格搜索或随机搜索优化超参数
-5. **模型保存**：保存训练好的模型以供将来使用
-6. **可视化**：使用可视化工具理解模型行为
-7. **文档记录**：记录所有实验和结果以实现可重现性
+### 通用指南
 
-## 与其他工具集成
+- **Universe 质量至关重要**：投入时间构建全面、构造良好的 universe
+- **分词验证**：训练前检查覆盖度（理想情况下 >80%）
+- **参数调优**：尝试不同的嵌入维度、学习率和训练轮数
+- **评估**：始终使用多种指标和可视化方法验证嵌入
+- **文档记录**：记录参数和随机种子以确保可复现性
 
-### 与gtars集成
+### 性能考虑
 
-```python
-import gtars
-from geniml import GeniML
+- **预分词**：对于 scEmbed，始终预先对细胞进行分词以加快训练速度
+- **内存管理**：大型数据集可能需要分批处理或降采样
+- **计算资源**：ML/HMM universe 方法计算密集
+- **模型缓存**：使用 BBClient 避免重复下载
 
-# 使用gtars处理区间
-igd = gtars.igd.build_index("regions.bed")
-overlaps = igd.query("chr1", 1000, 2000)
+### 集成模式
 
-# 使用geniml训练模型
-geniml = GeniML()
-tokens = geniml.tokenize(overlaps)
-model = geniml.train(tokens, labels)
-```
+- **与 scanpy 集成**：scEmbed 嵌入可作为 `adata.obsm` 条目无缝集成
+- **与 BEDbase 集成**：使用 BBClient 访问远程 BED 仓库
+- **与 Hugging Face 集成**：导出训练好的模型以便共享和复现
+- **与 R 集成**：使用 reticulate 进行 R 集成（参见工具参考）
 
-### 与scikit-learn集成
+## 相关项目
 
-```python
-from geniml import GeniML
-from sklearn.ensemble import RandomForestClassifier
+Geniml 是 BEDbase 生态系统的一部分：
 
-# 标记化数据
-geniml = GeniML()
-tokens = geniml.tokenize(intervals)
-
-# 使用scikit-learn模型
-model = RandomForestClassifier(n_estimators=100)
-model.fit(tokens, labels)
-
-# 预测
-predictions = model.predict(new_tokens)
-```
-
-### 与PyTorch集成
-
-```python
-import torch
-from geniml import GeniML
-
-# 标记化数据
-geniml = GeniML()
-tokens = geniml.tokenize(intervals)
-
-# 转换为PyTorch张量
-tokens_tensor = torch.tensor(tokens, dtype=torch.float32)
-labels_tensor = torch.tensor(labels, dtype=torch.long)
-
-# 定义PyTorch模型
-class Net(torch.nn.Module):
-    def __init__(self):
-        super(Net, self).__init__()
-        self.fc1 = torch.nn.Linear(1000, 512)
-        self.fc2 = torch.nn.Linear(512, 256)
-        self.fc3 = torch.nn.Linear(256, 2)
-
-    def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = self.fc3(x)
-        return x
-
-# 训练模型
-model = Net()
-criterion = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
-
-for epoch in range(100):
-    optimizer.zero_grad()
-    outputs = model(tokens_tensor)
-    loss = criterion(outputs, labels_tensor)
-    loss.backward()
-    optimizer.step()
-```
-
-## 故障排除
-
-**问题：标记化失败**
-- 解决方案：检查区间格式，确保使用BED格式
-
-**问题：模型训练很慢**
-- 解决方案：使用GPU加速，减少batch size，或使用更简单的模型
-
-**问题：过拟合**
-- 解决方案：使用数据增强，增加dropout，或使用正则化
-
-**问题：内存不足**
-- 解决方案：减少batch size，使用更小的窗口大小，或使用数据流
-
-**问题：预测不准确**
-- 解决方案：增加训练数据，调整超参数，或尝试不同的模型架构
+- **BEDbase**：基因组区域统一平台
+- **BEDboss**：BED 文件处理流程
+- **Gtars**：基因组工具与实用程序
+- **BBClient**：BEDbase 仓库客户端
 
 ## 其他资源
 
-- **GeniML文档**: https://geniml.readthedocs.io/
-- **GeniML GitHub**: https://github.com/geniml/geniml
-- **基因组机器学习教程**: https://www.genomeml.org/tutorials/
-- **深度学习与基因组学**: https://www.deepgenomics.com/
+- **文档**：https://docs.bedbase.org/geniml/
+- **GitHub**：https://github.com/databio/geniml
+- **预训练模型**：可在 Hugging Face 上获取（databio 组织）
+- **出版物**：方法细节见文档引用
+
+## 故障排除
+
+**"Tokenization coverage too low"（分词覆盖度过低）：**
+- 检查 universe 质量和完整性
+- 调整 p 值阈值（尝试 1e-6 代替 1e-9）
+- 确保 universe 与基因组组装版本匹配
+
+**"Training not converging"（训练不收敛）：**
+- 调整学习率（尝试 0.01-0.05 范围）
+- 增加训练轮数
+- 检查数据质量和预处理
+
+**"Out of memory errors"（内存不足错误）：**
+- 减小 scEmbed 的批次大小
+- 分块处理数据
+- 对单细胞数据使用预分词
+
+**"StarSpace not found"（BEDspace）：**
+- 单独安装 StarSpace：https://github.com/facebookresearch/StarSpace
+- 正确设置 `--path-to-starspace` 参数
+
+详细的故障排除和方法特定问题，请参阅相应的参考文件。

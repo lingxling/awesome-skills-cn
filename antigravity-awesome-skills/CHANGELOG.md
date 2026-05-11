@@ -9,7 +9,127 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- _No unreleased changes yet._
+_No unreleased changes yet._
+
+## [11.0.0] - 2026-05-08 - "Agent Execution, Game Planning, and Skill Writer References"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release merges PRs #575, #577, #578, #579, and #581 through the maintainer squash-merge workflow, including fork-run approval, PR body refreshes, source-credit fixes, contributor sync, and generated-state refreshes on `main`. It adds on-chain transaction orchestration, richer clarification, mock-data auditing, multi-agent architecture guidance, Unity game-planning workflows, and restores the missing `skill-writer` reference files reported in issue #576.
+
+## New Skills
+
+- **aomi-transact** - natural-language Aomi CLI workflow for simulate-then-sign EVM transactions across DeFi and wallet-agent use cases.
+- **rich-elicitation** - multi-round clarification workflow for deeply ambiguous tasks that need staged context gathering.
+- **mock-hunter** - Playwright-based live-page audit workflow that classifies visible values as real, mock, LLM-generated, hardcoded, broken, or unknown.
+- **multi-agent-architect** - LangGraph, LangChain, and DeepAgents guidance for designing, debugging, and scaling production multi-agent systems.
+- **unity-ai-game-creator** - idea-to-Unity workflow for game concepts, blueprints, asset prompts, assembly plans, and deployment guidance.
+
+## Improvements
+
+- **skill-writer references restored** - adds the missing `references/` workflow files and example profile so `skills/skill-writer/SKILL.md` can be followed end to end.
+- **security hardening** - pins `production-audit` to `commitshow@0.3.23`, marks it critical because it executes external npm code, adds prompt-injection guardrails to `git-pr-review`, tightens KubeStellar `kc-agent` RBAC guidance, normalizes installer manifest cleanup for flattened `skills/` paths, and updates Loki example backend dependencies to clear the open `ip-address` Dependabot alerts.
+- **source provenance and credits** - adds README source coverage for Aomi, Rich Elicitation, and MockHunter, and normalizes the `multi-agent-architect` risk/source metadata before release.
+- **generated artifact sync** - refreshes catalog, skill index, plugin mirrors, web assets, package metadata, and visible skill counts to `1,450+`.
+
+## Who should care
+
+- **Agent builders** get new workflows for on-chain execution, multi-agent architecture, and structured clarification.
+- **Frontend and product reviewers** get a mock-data audit skill for validating whether live UI values have real backing sources.
+- **Game creators** get a Unity-oriented planning skill for turning raw concepts into actionable production and asset-generation plans.
+- **Skill authors and maintainers** get the completed `skill-writer` reference workflow and cleaner release metadata.
+
+## Credits
+
+- **[@CeciliaZ030](https://github.com/CeciliaZ030)** for PR #575 (`aomi-transact`).
+- **[@CyberZenithX](https://github.com/CyberZenithX)** for PR #577 (`rich-elicitation`).
+- **[@memurcie](https://github.com/memurcie)** for PR #578 (`mock-hunter`).
+- **[@pravin-python](https://github.com/pravin-python)** for PR #579 (`multi-agent-architect`).
+- **[@Mann-Makhecha](https://github.com/Mann-Makhecha)** for PR #581 (`unity-ai-game-creator`).
+
+## [10.10.0] - 2026-05-04 - "Production Audit, Context Pruning, and BuyWhere MCP"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release merges PRs #571, #573, and #574 through the maintainer squash-merge workflow, including fork-run approval, PR body normalization, source validation fixes, contributor credit sync, and generated-state refreshes on `main`. It adds production-readiness auditing, context/token budgeting guidance, and updates the BuyWhere source link to the general MCP server.
+
+## New Skills
+
+- **production-audit** - shipped-app readiness auditing across deployment health, RLS, webhooks, secrets exposure, grants, Stripe idempotency, mobile UX, and production signals.
+- **recursive-context-pruning-token-budgeting** - context-pruning and token-budgeting workflow for long-running AI agent sessions, concise outputs, and compression handoffs.
+
+## Improvements
+
+- **BuyWhere MCP source update** - points the `buywhere-product-catalog` skill and README source credit to `BuyWhere/buywhere-mcp`, the broader MCP server entrypoint, instead of the Cursor-specific plugin.
+- **source provenance and credits** - adds `commitshow/production-audit` README source coverage and refreshes contributor credits after the batch merge.
+- **generated artifact sync** - refreshes catalog, skill index, plugin mirrors, web assets, package metadata, and visible skill counts to `1,445+`.
+
+## Who should care
+
+- **Security and launch reviewers** get a new production-readiness lens for deployed apps after normal in-session checks.
+- **Agent workflow authors** get a compact context-management skill for keeping long sessions focused and token-efficient.
+- **Commerce-agent builders** get the more general BuyWhere MCP source and onboarding path.
+- **Maintainers** get another source-only PR batch with fresh checks, source credits, and generated artifacts aligned before release.
+
+## Credits
+
+- **[@kench001](https://github.com/kench001)** for PR #571 (`recursive-context-pruning-token-budgeting`).
+- **[@commitshow](https://github.com/commitshow)** for PR #573 (`production-audit`).
+- **[@BuyWhere](https://github.com/BuyWhere)** for PR #574 (`buywhere-product-catalog` source update).
+
+## [10.9.0] - 2026-05-03 - "Skill Audit, PR Writing, and Heading Cleanup"
+
+> Installable skill library update for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and related AI coding assistants.
+
+Start here:
+
+- Install: `npx antigravity-awesome-skills`
+- Choose your tool: [README -> Choose Your Tool](https://github.com/sickn33/antigravity-awesome-skills#choose-your-tool)
+- Best skills by tool: [README -> Best Skills By Tool](https://github.com/sickn33/antigravity-awesome-skills#best-skills-by-tool)
+- Bundles: [docs/users/bundles.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/bundles.md)
+- Workflows: [docs/users/workflows.md](https://github.com/sickn33/antigravity-awesome-skills/blob/main/docs/users/workflows.md)
+
+This release merges PRs #565, #569, and #570 through the maintainer squash-merge workflow, closes issue #568 with a repo-wide heading cleanup, and closes issue #566 as out of scope for this skill-library repository.
+
+## New Skills
+
+- **skill-audit** - defensive pre-install review workflow for auditing third-party agent skills before installation.
+- **git-pr-review** - token-efficient pull-request description workflow based on commit history.
+- **mise-configurator** - production-ready `mise.toml` setup guidance for local development and CI/CD toolchains.
+
+## Improvements
+
+- **React file structure guidance** - adds a reference section for organizing React files and component/module boundaries.
+- **heading quality cleanup** - fixes duplicate and skipped `##` heading defects reported in issue #568 across skill and plugin skill documentation.
+- **source provenance and metadata** - credits the `aptratcn/skill-audit` source, adds release-ready metadata for new skills, and syncs generated catalog, index, plugin mirrors, contributor credits, and visible skill counts to `1,443+`.
+
+## Who should care
+
+- **Claude Code, Cursor, Codex CLI, Gemini CLI, and Antigravity users** get three new installable skills across security review, PR writing, and toolchain setup.
+- **React users** get clearer file-structure guidance inside the React patterns skill.
+- **Maintainers** get cleaner heading structure, warning-budget headroom, and refreshed generated artifacts before the release.
+
+## Credits
+
+- **[@aptratcn](https://github.com/aptratcn)** for PR #565 (`skill-audit`).
+- **[@hardeepcoder](https://github.com/hardeepcoder)** for PR #569 (`react-patterns` file structure guidance).
+- **[@thejasreddyc](https://github.com/thejasreddyc)** for PR #570 (`git-pr-review`, `mise-configurator`).
 
 ## [10.8.0] - 2026-04-29 - "Kubernetes, Commerce, Code Review, and Full-Cycle Development"
 

@@ -1,0 +1,30 @@
+name: Sync skills to bucket
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "skills/**"
+      - ".claude-plugin/marketplace.json"
+      - ".github/workflows/sync-skills-to-bucket.yml"
+
+concurrency:
+  group: sync-skills-to-bucket
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78  # v7.6.0
+
+      - name: Sync skills to bucket
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          uvx hf buckets sync ./skills hf://buckets/huggingface/skills/skills --delete
+          uvx hf buckets cp ./.claude-plugin/marketplace.json hf://buckets/huggingface/skills/marketplace.json

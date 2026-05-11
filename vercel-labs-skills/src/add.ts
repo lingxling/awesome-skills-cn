@@ -46,6 +46,7 @@ import {
   type AuditResponse,
   type PartnerAudit,
 } from './telemetry.ts';
+import { detectAgent, getAgentType } from './detect-agent.ts';
 import { wellKnownProvider, type WellKnownSkill } from './providers/index.ts';
 import {
   addSkillToLock,
@@ -252,6 +253,7 @@ function buildResultLines(
   results: Array<{
     agent: string;
     symlinkFailed?: boolean;
+    skipped?: boolean;
   }>,
   targetAgents: AgentType[]
 ): string[] {
@@ -261,10 +263,11 @@ function buildResultLines(
   const { universal, symlinked: symlinkAgents } = splitAgentsByType(targetAgents);
 
   // For symlink results, also track which ones actually succeeded vs failed
+  // Exclude skipped agents (those whose config dir doesn't exist in the project)
   const successfulSymlinks = results
-    .filter((r) => !r.symlinkFailed && !universal.includes(r.agent))
+    .filter((r) => !r.symlinkFailed && !r.skipped && !universal.includes(r.agent))
     .map((r) => r.agent);
-  const failedSymlinks = results.filter((r) => r.symlinkFailed).map((r) => r.agent);
+  const failedSymlinks = results.filter((r) => r.symlinkFailed && !r.skipped).map((r) => r.agent);
 
   if (universal.length > 0) {
     lines.push(`  ${pc.green('universal:')} ${formatList(universal)}`);
@@ -926,10 +929,31 @@ export async function runAdd(args: string[], options: AddOptions = {}): Promise<
     options.yes = true;
   }
 
-  console.log();
-  p.intro(pc.bgCyan(pc.black(' skills ')));
+  // Auto-enable non-interactive mode when running inside an AI agent
+  const agentResult = await detectAgent();
+  if (agentResult.isAgent) {
+    options.yes = true;
+    // Auto-select the detected agent + universal agents (unless user explicitly specified agents)
+    if (!options.agent || options.agent.length === 0) {
+      const mappedAgent = getAgentType(agentResult.agent.name);
+      if (mappedAgent) {
+        options.agent = ensureUniversalAgents([mappedAgent]);
+      }
+    }
+  }
 
-  if (!process.stdin.isTTY) {
+  console.log();
+  if (!agentResult.isAgent) {
+    p.intro(pc.bgCyan(pc.black(' skills ')));
+  }
+
+  if (agentResult.isAgent) {
+    p.log.info(
+      pc.bgCyan(pc.black(pc.bold(` ${agentResult.agent.name} `))) +
+        ' ' +
+        'Agent detected — installing non-interactively'
+    );
+  } else if (!process.stdin.isTTY) {
     showInstallTip();
   }
 

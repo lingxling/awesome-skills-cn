@@ -10,6 +10,8 @@
 
 技能遵循 [Agent Skills](https://agentskills.io/) 格式。
 
+[![skills.sh](https://skills.sh/b/vercel-labs/agent-skills)](https://skills.sh/vercel-labs/agent-skills)
+
 ### 翻译说明
 
 本翻译将原项目的英文文档翻译成中文，包括：
@@ -36,12 +38,14 @@
 来自 Vercel 工程团队的 React 和 Next.js 性能优化指南。包含 8 个类别的 40+ 条规则，按影响程度优先排序。
 
 **使用场景：**
+
 - 编写新的 React 组件或 Next.js 页面
 - 实现数据获取（客户端或服务端）
 - 审查代码的性能问题
 - 优化包大小或加载时间
 
 **涵盖的类别：**
+
 - 消除瀑布流（关键）
 - 包大小优化（关键）
 - 服务端性能（高）
@@ -55,6 +59,7 @@
 审查 UI 代码是否符合 Web 界面最佳实践。审计您的代码是否符合 100+ 条规则，涵盖可访问性、性能和 UX。
 
 **使用场景：**
+
 - "审查我的 UI"
 - "检查可访问性"
 - "审计设计"
@@ -62,6 +67,7 @@
 - "根据最佳实践检查我的站点"
 
 **涵盖的类别：**
+
 - 可访问性（aria-labels、语义化 HTML、键盘处理程序）
 - 焦点状态（可见焦点、focus-visible 模式）
 - 表单（自动完成、验证、错误处理）
@@ -79,12 +85,14 @@
 为 AI 智能体优化的 React Native 最佳实践。包含 7 个部分的 16 条规则，涵盖性能、架构和平台特定模式。
 
 **使用场景：**
+
 - 构建 React Native 或 Expo 应用
 - 优化移动性能
 - 实现动画或手势
 - 使用原生模块或平台 API
 
 **涵盖的类别：**
+
 - 性能（关键）- FlashList、记忆化、繁重计算
 - 布局（高）- flex 模式、安全区域、键盘处理
 - 动画（高）- Reanimated、手势处理
@@ -93,17 +101,43 @@
 - 架构（中）- monorepo 结构、导入
 - 平台（中）- iOS/Android 特定模式
 
+### react-view-transitions
+
+使用 React 的 View Transition API 实现流畅、原生风格的动画。涵盖 `<ViewTransition>` 组件、`addTransitionType`、过渡类型，以及 Next.js 集成（包括 `next/link` 上的 `transitionTypes` 属性）。
+
+**使用场景：**
+
+- 添加页面过渡或路由动画
+- 为组件的进入/退出添加动画
+- 创建共享元素过渡（列表到详情变形）
+- 实现方向性（前进/后退）导航动画
+- 在 Next.js App Router 中集成视图过渡
+- 为列表重排或 Suspense 回退显示添加动画
+
+**涵盖的主题：**
+
+- `<ViewTransition>` 组件（enter、exit、update、share 触发器）
+- `addTransitionType` 用于方向性/上下文特定动画
+- View Transition Classes 和 CSS 伪元素
+- 使用 `name` 属性的共享元素过渡
+- 通过 Web Animations API 实现 JavaScript 动画
+- Next.js `next/link` 上的 `transitionTypes` 属性
+- 即用的 CSS 动画配方（淡入淡出、滑动、缩放、翻转）
+- 可访问性（`prefers-reduced-motion`）
+
 ### composition-patterns
 
 可扩展的 React 组合模式。通过复合组件、状态提升和内部组合帮助避免布尔属性泛滥。
 
 **使用场景：**
+
 - 重构具有许多布尔属性的组件
 - 构建可重用的组件库
 - 设计灵活的 API
 - 审查组件架构
 
 **涵盖的模式：**
+
 - 提取复合组件
 - 提升状态以减少 props
 - 组合内部以获得灵活性
@@ -114,24 +148,28 @@
 立即将应用程序和网站部署到 Vercel。专为与 claude.ai 和 Claude Desktop 一起使用而设计，可直接从对话中启用部署。部署是"可认领的" - 用户可以将所有权转移到自己的 Vercel 账户。
 
 **使用场景：**
+
 - "部署我的应用"
 - "将其部署到生产环境"
 - "上线"
 - "部署并提供链接"
 
 **功能：**
+
 - 从 `package.json` 自动检测 40+ 个框架
 - 返回预览 URL（实时站点）和认领 URL（转移所有权）
 - 自动处理静态 HTML 项目
 - 上传时排除 `node_modules` 和 `.git`
 
 **工作原理：**
+
 1. 将项目打包成 tarball
 2. 检测框架（Next.js、Vite、Astro 等）
 3. 上传到部署服务
 4. 返回预览 URL 和认领 URL
 
 **输出：**
+
 ```
 部署成功！
 
@@ -150,12 +188,15 @@ npx skills add vercel-labs/agent-skills
 安装后技能自动可用。当检测到相关任务时，智能体将使用它们。
 
 **示例：**
+
 ```
 部署我的应用
 ```
+
 ```
 审查此 React 组件的性能问题
 ```
+
 ```
 帮我优化这个 Next.js 页面
 ```
@@ -163,6 +204,7 @@ npx skills add vercel-labs/agent-skills
 ## 技能结构
 
 每个技能包含：
+
 - `SKILL.md` - 智能体指令
 - `scripts/` - 自动化辅助脚本（可选）
 - `references/` - 支持文档（可选）

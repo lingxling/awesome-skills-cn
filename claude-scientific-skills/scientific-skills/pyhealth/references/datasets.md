@@ -1,178 +1,126 @@
-# PyHealth Datasets and Data Structures
+# Datasets
 
-## Core Data Structures
+PyHealth datasets are **queryable patient registries**, not PyTorch `Dataset`s. The PyTorch-compatible object is the `SampleDataset` returned by `base.set_task(task)`. Don't try to index `BaseDataset` like a list — it won't work.
 
-### Event
-Individual medical occurrences with attributes including:
-- **code**: Medical code (diagnosis, medication, procedure, lab test)
-- **vocabulary**: Coding system (ICD-9-CM, NDC, LOINC, etc.)
-- **timestamp**: Event occurrence time
-- **value**: Numeric value (for labs, vital signs)
-- **unit**: Measurement unit
+## Two-tier object model
 
-### Patient
-Collection of events organized chronologically across visits. Each patient contains:
-- **patient_id**: Unique identifier
-- **birth_datetime**: Date of birth
-- **gender**: Patient gender
-- **ethnicity**: Patient ethnicity
-- **visits**: List of visit objects
-
-### Visit
-Healthcare encounter containing:
-- **visit_id**: Unique identifier
-- **encounter_time**: Visit timestamp
-- **discharge_time**: Discharge timestamp
-- **visit_type**: Type of encounter (inpatient, outpatient, emergency)
-- **events**: List of events during this visit
-
-## BaseDataset Class
-
-**Key Methods:**
-- `get_patient(patient_id)`: Retrieve single patient record
-- `iter_patients()`: Iterate through all patients
-- `stats()`: Get dataset statistics (patients, visits, events)
-- `set_task(task_fn)`: Define prediction task
-
-## Available Datasets
-
-### Electronic Health Record (EHR) Datasets
-
-**MIMIC-III Dataset** (`MIMIC3Dataset`)
-- Intensive care unit data from Beth Israel Deaconess Medical Center
-- 40,000+ critical care patients
-- Diagnoses, procedures, medications, lab results
-- Usage: `from pyhealth.datasets import MIMIC3Dataset`
-
-**MIMIC-IV Dataset** (`MIMIC4Dataset`)
-- Updated version with 70,000+ patients
-- Improved data quality and coverage
-- Enhanced demographic and clinical detail
-- Usage: `from pyhealth.datasets import MIMIC4Dataset`
-
-**eICU Dataset** (`eICUDataset`)
-- Multi-center critical care database
-- 200,000+ admissions from 200+ hospitals
-- Standardized ICU data across facilities
-- Usage: `from pyhealth.datasets import eICUDataset`
-
-**OMOP Dataset** (`OMOPDataset`)
-- Observational Medical Outcomes Partnership format
-- Standardized common data model
-- Interoperability across healthcare systems
-- Usage: `from pyhealth.datasets import OMOPDataset`
-
-**EHRShot Dataset** (`EHRShotDataset`)
-- Benchmark dataset for few-shot learning
-- Specialized for testing model generalization
-- Usage: `from pyhealth.datasets import EHRShotDataset`
-
-### Physiological Signal Datasets
-
-**Sleep EEG Datasets:**
-- `SleepEDFDataset`: Sleep-EDF database for sleep staging
-- `SHHSDataset`: Sleep Heart Health Study data
-- `ISRUCDataset`: ISRUC-Sleep database
-
-**Temple University EEG Datasets:**
-- `TUEVDataset`: Abnormal EEG events detection
-- `TUABDataset`: Abnormal/normal EEG classification
-- `TUSZDataset`: Seizure detection
-
-**All signal datasets support:**
-- Multi-channel EEG signals
-- Standardized sampling rates
-- Expert annotations
-- Sleep stage or abnormality labels
-
-### Medical Imaging Datasets
-
-**COVID-19 CXR Dataset** (`COVID19CXRDataset`)
-- Chest X-ray images for COVID-19 classification
-- Multi-class labels (COVID-19, pneumonia, normal)
-- Usage: `from pyhealth.datasets import COVID19CXRDataset`
-
-### Text-Based Datasets
-
-**Medical Transcriptions Dataset** (`MedicalTranscriptionsDataset`)
-- Clinical notes and transcriptions
-- Medical specialty classification
-- Text-based prediction tasks
-- Usage: `from pyhealth.datasets import MedicalTranscriptionsDataset`
-
-**Cardiology Dataset** (`CardiologyDataset`)
-- Cardiac patient records
-- Cardiovascular disease prediction
-- Usage: `from pyhealth.datasets import CardiologyDataset`
-
-### Preprocessed Datasets
-
-**MIMIC Extract Dataset** (`MIMICExtractDataset`)
-- Pre-extracted MIMIC features
-- Ready-to-use benchmarking data
-- Reduced preprocessing requirements
-- Usage: `from pyhealth.datasets import MIMICExtractDataset`
-
-## SampleDataset Class
-
-Converts raw datasets into task-specific formatted samples.
-
-**Purpose:** Transform patient-level data into model-ready input/output pairs
-
-**Key Attributes:**
-- `input_schema`: Defines input data structure
-- `output_schema`: Defines target labels/predictions
-- `samples`: List of processed samples
-
-**Usage Pattern:**
-```python
-# After setting task on BaseDataset
-sample_dataset = dataset.set_task(task_fn)
+```
+BaseDataset                         SampleDataset
+├── parses raw CSVs                 ├── one row per supervised sample
+├── one row per patient             ├── indexable, length-ed
+├── .set_task(task) → SampleDataset ├── feeds into get_dataloader(...)
+├── .get_patient(id) → Patient      └── feeds into Model(dataset=...)
+└── .iter_patients() → iterator
 ```
 
-## Data Splitting Functions
+Always go `BaseDataset → set_task → SampleDataset` before doing anything else.
 
-**Patient-Level Split** (`split_by_patient`)
-- Ensures no patient appears in multiple splits
-- Prevents data leakage
-- Recommended for clinical prediction tasks
+## EHR / clinical datasets
 
-**Visit-Level Split** (`split_by_visit`)
-- Splits by individual visits
-- Allows same patient across splits (use cautiously)
+| Class | Import | Constructor signature highlights |
+|---|---|---|
+| `MIMIC3Dataset` | `from pyhealth.datasets import MIMIC3Dataset` | `root, tables, cache_dir=None, dev=False, num_workers=...` |
+| `MIMIC4Dataset` | `from pyhealth.datasets import MIMIC4Dataset` | `ehr_root, tables, ...` *(note: `ehr_root`, not `root`)* |
+| `eICUDataset` | `from pyhealth.datasets import eICUDataset` | `root, tables, ...` |
+| `OMOPDataset` | `from pyhealth.datasets import OMOPDataset` | `root, tables, ...` |
+| `EHRShotDataset` | `from pyhealth.datasets import EHRShotDataset` | few-shot benchmark |
+| `Support2Dataset` | `from pyhealth.datasets import Support2Dataset` | palliative care outcomes |
+| `MIMICExtractDataset` | `from pyhealth.datasets import MIMICExtractDataset` | pre-processed MIMIC |
 
-**Sample-Level Split** (`split_by_sample`)
-- Random sample splitting
-- Most flexible but may cause leakage
+### Common MIMIC tables
 
-**Parameters:**
-- `dataset`: SampleDataset to split
-- `ratios`: Tuple of split ratios (e.g., [0.7, 0.1, 0.2])
-- `seed`: Random seed for reproducibility
+- **MIMIC-III** (uppercase): `DIAGNOSES_ICD`, `PROCEDURES_ICD`, `PRESCRIPTIONS`, `LABEVENTS`, `NOTEEVENTS`
+- **MIMIC-IV** (lowercase): `diagnoses_icd`, `procedures_icd`, `prescriptions`, `labevents`
 
-## Common Workflow
+### MIMIC-III example
+
+```python
+from pyhealth.datasets import MIMIC3Dataset
+
+base = MIMIC3Dataset(
+    root="https://storage.googleapis.com/pyhealth/Synthetic_MIMIC-III/",
+    tables=["DIAGNOSES_ICD", "PROCEDURES_ICD", "PRESCRIPTIONS"],
+    cache_dir="./cache/mimic3",
+    dev=False,
+)
+```
+
+### MIMIC-IV example
 
 ```python
 from pyhealth.datasets import MIMIC4Dataset
-from pyhealth.tasks import mortality_prediction_mimic4_fn
-from pyhealth.datasets import split_by_patient
 
-# 1. Load dataset
-dataset = MIMIC4Dataset(root="/path/to/data")
-
-# 2. Set prediction task
-sample_dataset = dataset.set_task(mortality_prediction_mimic4_fn)
-
-# 3. Split data
-train, val, test = split_by_patient(sample_dataset, [0.7, 0.1, 0.2])
-
-# 4. Get statistics
-print(dataset.stats())
+base = MIMIC4Dataset(
+    ehr_root="/path/to/mimic-iv-2.2/hosp",      # NOT root=
+    tables=["diagnoses_icd", "procedures_icd", "prescriptions"],
+    cache_dir="./cache/mimic4",
+)
 ```
 
-## Performance Notes
+## Signal / sleep datasets
 
-- PyHealth is **3x faster than pandas** for healthcare data processing
-- Optimized for large-scale EHR datasets
-- Memory-efficient patient iteration
-- Vectorized operations for feature extraction
+| Class | Use |
+|---|---|
+| `SleepEDFDataset` | Sleep-EDF polysomnography → sleep stage classification |
+| `SHHSDataset` | Sleep Heart Health Study EEG |
+| `ISRUCDataset` | ISRUC sleep dataset |
+| `TUABDataset` | Temple University abnormal EEG |
+| `TUEVDataset` | Temple University EEG events |
+| `CardiologyDataset` | ECG / cardiology recordings |
+| `DREAMTDataset`, `BMDHSDataset` | Sleep / respiratory recordings |
+
+## Imaging datasets
+
+| Class | Use |
+|---|---|
+| `COVID19CXRDataset` | COVID-19 chest X-ray classification |
+| `ChestXray14Dataset` | NIH ChestX-ray14, multi-label |
+| `PhysioNetDeIDDataset` | De-identified clinical notes |
+
+## Genomics datasets
+
+| Class | Use |
+|---|---|
+| `ClinVarDataset` | Variant pathogenicity classification |
+| `COSMICDataset` | Mutation pathogenicity |
+| `TCGAPRADDataset` | Cancer survival, mutation burden |
+
+## Text dataset
+
+| Class | Use |
+|---|---|
+| `MedicalTranscriptionsDataset` | Clinical transcription category classification |
+
+## Splitting and DataLoaders
+
+After `set_task`, split and wrap in DataLoaders. **Always split by patient** (not by sample) for clinical prediction — random sample splits leak the same patient into train and test.
+
+```python
+from pyhealth.datasets import split_by_patient, split_by_visit, get_dataloader
+
+train, val, test = split_by_patient(samples, [0.8, 0.1, 0.1])
+
+train_loader = get_dataloader(train, batch_size=32, shuffle=True)
+val_loader   = get_dataloader(val,   batch_size=32, shuffle=False)
+test_loader  = get_dataloader(test,  batch_size=32, shuffle=False)
+```
+
+Use `split_by_visit` only when visits are independent (rare — most clinical tasks need patient-level splits). For time-aware evaluation, use `split_by_patient` with chronological cutoffs from a custom task.
+
+## Inspecting a dataset
+
+```python
+base.stats()                          # summary printout
+patient = base.get_patient("p001")    # Patient object
+events = patient.get_events()         # all events for that patient
+
+for p in base.iter_patients():        # iterate without loading all into memory
+    ...
+
+len(samples)                          # only valid AFTER set_task
+samples[0]                            # dict of features + label for one sample
+```
+
+## Custom datasets
+
+Subclass `BaseDataset` if the user has a non-standard EHR source. They must implement parsing of patients/events; `set_task` then works as usual. This is more involved than picking a built-in dataset — only suggest it when nothing else fits.

@@ -35,8 +35,6 @@ license: 完整条款见 LICENSE.txt
 
 如果此提示底部的用户请求是一个纯子命令字符串（无散文），请搜索本文档中的所有**子命令**表——包括下面附加部分中的任何表——并直接遵循匹配的操作列。这允许用户通过 `/claude-api <子命令>` 调用特定流程。如果文档中没有表匹配，则将请求视为普通散文。
 
-<!-- 子命令表在下面按部分定义；此标题块仅包含调度规则，以便功能门控部分可以添加自己的表而不会将字符串泄漏到非门控构建中。 -->
-
 ---
 
 ## 语言检测
@@ -203,7 +201,7 @@ license: 完整条款见 LICENSE.txt
 
 **测试版，适用于 Opus 4.6、Opus 4.7 和 Sonnet 4.6。** 对于可能超过 1M 上下文窗口的长时间运行的对话，启用服务器端压缩。当接近触发阈值（默认：150K 令牌）时，API 会自动汇总较早的上下文。需要测试版标头 `compact-2026-01-12`。
 
-关键：在每一轮中将 `response.content`（不仅仅是文本）追加回您的消息。响应中的压缩块必须保留——API 使用它们在下一个请求中替换压缩的历史记录。仅提取文本字符串并追加该字符串将静默丢失压缩状态。
+**关键：** 在每一轮中将 `response.content`（不仅仅是文本）追加回您的消息。响应中的压缩块必须保留——API 使用它们在下一个请求中替换压缩的历史记录。仅提取文本字符串并追加该字符串将静默丢失压缩状态。
 
 有关代码示例，请参阅 `{lang}/claude-api/README.md`（压缩部分）。通过 `shared/live-sources.md` 中的 WebFetch 获取完整文档。
 
@@ -237,7 +235,7 @@ license: 完整条款见 LICENSE.txt
 |---|---|
 | `managed-agents-onboard` | 引导用户从头设置托管 Agent。**立即阅读 `shared/managed-agents-onboarding.md`** 并按照其访谈脚本执行：心理模型 → 了解或探索分支 → 模板配置 → 会话设置 → 生成代码。不要总结 — 运行访谈。 |
 
-**阅读指南：** 从 `shared/managed-agents-overview.md` 开始，然后阅读主题 `shared/managed-agents-*.md` 文件（核心、环境、工具、事件、客户端模式、入门、API 参考）。对于 Python、TypeScript、Go、Ruby、PHP 和 Java，请阅读 `{lang}/managed-agents/README.md` 获取代码示例。对于 cURL，请阅读 `curl/managed-agents.md`。**Agents 是持久的 — 创建一次，通过 ID 引用。** 存储 `agents.create` 返回的 agent ID 并将其传递给每个后续的 `sessions.create`；不要在请求路径中调用 `agents.create`。Anthropic CLI 是一种从版本控制的 YAML 创建 agents 和环境的便捷方式（URL 在 `shared/live-sources.md` 中）。如果您需要的绑定未在语言 README 中显示，请从 `shared/live-sources.md` WebFetch 相关条目，而不是猜测。C# 目前不支持托管 Agents；使用 `curl/managed-agents.md` 中的原始 HTTP 作为参考。
+**阅读指南：** 从 `shared/managed-agents-overview.md` 开始，然后阅读主题 `shared/managed-agents-*.md` 文件（核心、环境、工具、事件、结果、多agent、网络钩子、记忆、客户端模式、入门、API 参考）。对于 Python、TypeScript、Go、Ruby、PHP 和 Java，请阅读 `{lang}/managed-agents/README.md` 获取代码示例。对于 cURL，请阅读 `curl/managed-agents.md`。**Agents 是持久的 — 创建一次，通过 ID 引用。** 存储 `agents.create` 返回的 agent ID 并将其传递给每个后续的 `sessions.create`；不要在请求路径中调用 `agents.create`。Anthropic CLI 是一种从版本控制的 YAML 创建 agents 和环境的便捷方式（URL 在 `shared/live-sources.md` 中）。如果您需要的绑定未在语言 README 中显示，请从 `shared/live-sources.md` WebFetch 相关条目，而不是猜测。C# 目前不支持托管 Agents；使用 `curl/managed-agents.md` 中的原始 HTTP 作为参考。
 
 **当用户想要从头设置托管 Agent 时**（例如 "如何开始"、"引导我创建一个"、"设置新 agent"）：阅读 `shared/managed-agents-onboarding.md` 并运行其访谈 — 与 `managed-agents-onboard` 子命令相同的流程。
 
@@ -315,7 +313,7 @@ license: 完整条款见 LICENSE.txt
 ## 常见陷阱
 
 - 将文件或内容传递给 API 时不要截断输入。如果内容太长而无法放入上下文窗口，请通知用户并讨论选项（分块、摘要等），而不是静默截断。
-- **Opus 4.7 思考：** 自适应思考仅支持。`thinking: {type: "enabled", budget_tokens: N}` 在 Opus 4.7 上返回 400 — `budget_tokens` 在该版本已完全移除（以及 `temperature`、`top_p`、`top_k`）。使用 `thinking: {type: "adaptive"}`。
+- **Opus 4.7 思考：** 仅支持自适应思考。`thinking: {type: "enabled", budget_tokens: N}` 在 Opus 4.7 上返回 400 — `budget_tokens` 在该版本已完全移除（以及 `temperature`、`top_p`、`top_k`）。使用 `thinking: {type: "adaptive"}`。
 - **Opus 4.6 / Sonnet 4.6 思考：** 使用 `thinking: {type: "adaptive"}` — 新代码不要使用 `budget_tokens`（在 Opus 4.6 和 Sonnet 4.6 上已弃用；有关现有代码的渐进迁移，请参阅 `shared/model-migration.md` 中的过渡性逃生舱 — 注意此豁免不适用于 Opus 4.7）。对于较旧的模型，`budget_tokens` 必须小于 `max_tokens`（最少 1024）。如果弄错了，这将抛出错误。
 - **4.6/4.7 系列预填充已移除：** 助手消息预填充（最后一轮助手预填充）在 Opus 4.6、Opus 4.7 和 Sonnet 4.6 上返回 400 错误。改用结构化输出（`output_config.format`）或系统提示指令来控制响应格式。
 - **编辑前确认迁移范围：** 当用户要求将代码迁移到较新的 Claude 模型但未指定文件、目录或文件列表时，**请先询问要应用的范围** — 整个工作目录、特定的子目录或特定的文件集。在用户确认之前不要开始编辑。像"迁移我的代码库"、"将我的项目移到 X"、"升级到 Sonnet 4.6"或简单的"迁移到 Opus 4.7"这样的祈使语气仍然**是模糊的** — 它们告诉您要做什么但不告诉在哪里，所以请询问。只有当提示命名了确切的文件、特定的目录或明确的文件列表时，才可以不询问就继续（"迁移 `app.py`"、"迁移 `services/` 下的所有内容"、"更新 `a.py` 和 `b.py`）。请参阅 `shared/model-migration.md` 步骤 0。

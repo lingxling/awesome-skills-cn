@@ -127,10 +127,10 @@ export async function fetchRepoTree(
 export function getSkillFolderHashFromTree(tree: RepoTree, skillPath: string): string | null {
   let folderPath = skillPath.replace(/\\/g, '/');
 
-  // Remove SKILL.md suffix to get folder path
-  if (folderPath.endsWith('/SKILL.md')) {
+  // Remove SKILL.md suffix to get folder path (case-insensitive)
+  if (folderPath.toLowerCase().endsWith('/skill.md')) {
     folderPath = folderPath.slice(0, -9);
-  } else if (folderPath.endsWith('SKILL.md')) {
+  } else if (folderPath.toLowerCase().endsWith('skill.md')) {
     folderPath = folderPath.slice(0, -8);
   }
   if (folderPath.endsWith('/')) {
@@ -186,9 +186,9 @@ const PRIORITY_PREFIXES = [
  * If subpath is set, only searches within that subtree.
  */
 export function findSkillMdPaths(tree: RepoTree, subpath?: string): string[] {
-  // Find all blob entries that are SKILL.md files
+  // Find all blob entries that are SKILL.md files (case-insensitive)
   const allSkillMds = tree.tree
-    .filter((e) => e.type === 'blob' && e.path.endsWith('SKILL.md'))
+    .filter((e) => e.type === 'blob' && e.path.toLowerCase().endsWith('skill.md'))
     .map((e) => e.path);
 
   // Apply subpath filter
@@ -211,7 +211,7 @@ export function findSkillMdPaths(tree: RepoTree, subpath?: string): string[] {
       const rest = skillMd.slice(fullPrefix.length);
 
       // Direct SKILL.md in the priority dir (e.g., "skills/SKILL.md")
-      if (rest === 'SKILL.md') {
+      if (rest.toLowerCase() === 'skill.md') {
         if (!seen.has(skillMd)) {
           priorityResults.push(skillMd);
           seen.add(skillMd);
@@ -221,7 +221,7 @@ export function findSkillMdPaths(tree: RepoTree, subpath?: string): string[] {
 
       // SKILL.md one level deep (e.g., "skills/react-best-practices/SKILL.md")
       const parts = rest.split('/');
-      if (parts.length === 2 && parts[1] === 'SKILL.md') {
+      if (parts.length === 2 && parts[1]!.toLowerCase() === 'skill.md') {
         if (!seen.has(skillMd)) {
           priorityResults.push(skillMd);
           seen.add(skillMd);
@@ -413,9 +413,10 @@ export async function tryBlobInstall(
   // 6. Convert to BlobSkill objects
   const blobSkills: BlobSkill[] = downloads.map(({ skill, download }) => {
     // Compute the folder path from the SKILL.md path (e.g., "skills/react-best-practices")
-    const folderPath = skill.mdPath.endsWith('/SKILL.md')
+    const mdPathLower = skill.mdPath.toLowerCase();
+    const folderPath = mdPathLower.endsWith('/skill.md')
       ? skill.mdPath.slice(0, -9)
-      : skill.mdPath === 'SKILL.md'
+      : mdPathLower === 'skill.md'
         ? ''
         : skill.mdPath.slice(0, -(1 + 'SKILL.md'.length));
 

@@ -6,15 +6,15 @@
 
 ### 原项目介绍
 
-**Scientific Agent Skills** 是由 [K-Dense](https://k-dense.ai) 创建的综合性科学技能集合，包含 **133 即用型科学和研究技能**（现已涵盖癌症基因组学、药物-靶点结合、分子动力学、RNA 速度、地理空间科学、时间序列预测、78+ 科学数据库等），适用于任何支持开放的 [Agent Skills](https://agentskills.io/) 标准的 AI 代理。可与 **Cursor、Claude Code、Codex 等工具**配合使用。将您的 AI 代理转变为能够跨生物学、化学、医学等领域执行复杂多步骤科学工作流的研究助手。
+**Scientific Agent Skills** 是由 [K-Dense](https://k-dense.ai) 创建的综合性科学技能集合，包含 **135 即用型科学和研究技能**（现已涵盖癌症基因组学、药物-靶点结合、分子动力学、RNA 速度、地理空间科学、时间序列预测、科学 ML 资源发现（通过 Hugging Science）、78+ 科学数据库等），适用于任何支持开放的 [Agent Skills](https://agentskills.io/) 标准的 AI 代理。可与 **Cursor、Claude Code、Codex 等工具**配合使用。将您的 AI 代理转变为能够跨生物学、化学、医学等领域执行复杂多步骤科学工作流的研究助手。
 
-每个技能都是自包含的，在自己的文件夹中包含 `SKILL.md` 文件，其中包含 Claude 使用的指令和元数据。
+每个技能都是自包含的，在自己的文件夹中包含 `SKILL.md` 文件，其中包含 AI 代理使用的指令和元数据。
 
 ### 翻译说明
 
 本翻译包含以下技能的中文翻译：
 
-- [scientific-skills/](scientific-skills/) - 133 科学和研究技能，涵盖生物信息学、化学信息学、临床研究、机器学习、数据可视化等多个领域
+- [scientific-skills/](scientific-skills/) - 135 科学和研究技能，涵盖生物信息学、化学信息学、临床研究、机器学习、数据可视化等多个领域
 
 ### 原项目链接
 
@@ -30,10 +30,12 @@
 
 # Scientific Agent Skills
 
-> **New: [K-Dense BYOK](https://github.com/K-Dense-AI/k-dense-byok)** — A free, open-source AI co-scientist that runs on your desktop, powered by Scientific Agent Skills. Bring your own API keys, pick from 40+ models, and get a full research workspace with web search, file handling, 100+ scientific databases, and access to all 133 skills in this repo. Your data stays on your computer, and you can optionally scale to cloud compute via [Modal](https://modal.com/) for heavy workloads. [Get started here.](https://github.com/K-Dense-AI/k-dense-byok)
+> **🔔 Claude Scientific Skills is now Scientific Agent Skills.** Same skills, broader compatibility — now works with any AI agent that supports the open [Agent Skills](https://agentskills.io/) standard, not just Claude.
+
+> **New: [K-Dense BYOK](https://github.com/K-Dense-AI/k-dense-byok)** — A free, open-source AI co-scientist that runs on your desktop, powered by Scientific Agent Skills. Bring your own API keys, pick from 40+ models, and get a full research workspace with web search, file handling, 100+ scientific databases, and access to all 135 skills in this repo. Your data stays on your computer, and you can optionally scale to cloud compute via [Modal](https://modal.com/) for heavy workloads. [Get started here.](https://github.com/K-Dense-AI/k-dense-byok)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
-[![Skills](https://img.shields.io/badge/Skills-133-brightgreen.svg)](#whats-included)
+[![Skills](https://img.shields.io/badge/Skills-135-brightgreen.svg)](#whats-included)
 [![Databases](https://img.shields.io/badge/Databases-100%2B-orange.svg)](#whats-included)
 [![Agent Skills](https://img.shields.io/badge/Standard-Agent_Skills-blueviolet.svg)](https://agentskills.io/)
 [![Works with](https://img.shields.io/badge/Works_with-Cursor_|_Claude_Code_|_Codex-blue.svg)](#getting-started)
@@ -41,15 +43,7 @@
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-K--Dense_Inc.-0A66C2?logo=linkedin)](https://www.linkedin.com/company/k-dense-inc)
 [![YouTube](https://img.shields.io/badge/YouTube-K--Dense_Inc.-FF0000?logo=youtube)](https://www.youtube.com/@K-Dense-Inc)
 
-一个综合性集合，包含 **133 即用型科学和研究技能**（现已涵盖癌症基因组学、药物-靶点结合、分子动力学、RNA 速度、地理空间科学、时间序列预测、78+ 科学数据库等），适用于任何支持开放的 [Agent Skills](https://agentskills.io/) 标准的 AI 代理，由 [K-Dense](https://k-dense.ai) 创建。可与 **Cursor、Claude Code、Codex 等工具**配合使用。将您的 AI 代理转变为能够跨生物学、化学、医学等领域执行复杂多步骤科学工作流的研究助手。
-
-<p align="center">
-  <a href="https://k-dense.ai">
-    <img src="docs/k-dense-web.gif" alt="K-Dense Web Demo" width="800"/>
-  </a>
-  <br/>
-  <em>上面的演示展示了 <a href="https://k-dense.ai">K-Dense Web</a> —— 建立在这些技能之上的托管平台。Scientific Agent Skills 是开源技能集合；K-Dense Web 是功能更强大、零设置的完整 AI 共同科学家平台。</em>
-</p>
+一个综合性集合，包含 **135 即用型科学和研究技能**（现已涵盖癌症基因组学、药物-靶点结合、分子动力学、RNA 速度、地理空间科学、时间序列预测、科学 ML 资源发现（通过 Hugging Science）、78+ 科学数据库等），适用于任何支持开放的 [Agent Skills](https://agentskills.io/) 标准的 AI 代理，由 [K-Dense](https://k-dense.ai) 创建。可与 **Cursor、Claude Code、Codex 等工具**配合使用。将您的 AI 代理转变为能够跨生物学、化学、医学等领域执行复杂多步骤科学工作流的研究助手。
 
 ---
 
@@ -65,6 +59,7 @@
 - 🌌 物理学与天文学 - 天文数据分析、坐标变换、宇宙学计算、符号数学、物理计算
 - ⚙️ 工程与仿真 - 离散事件仿真、多目标优化、代谢工程、系统建模、过程优化
 - 📊 数据分析与可视化 - 统计分析、网络分析、时间序列、出版级图形、大规模数据处理、EDA
+- 🌍 地理空间科学与遥感 - 卫星影像处理、GIS 分析、空间统计、地形分析、面向地球观测的机器学习
 - 🧪 实验室自动化 - 液体处理协议、实验室设备控制、工作流自动化、LIMS 集成
 - 📚 科学交流 - 文献综述、同行评审、科学写作、文档处理、海报、幻灯片、示意图、引用管理
 - 🔬 多组学与系统生物学 - 多模态数据整合、通路分析、网络生物学、系统级洞察
@@ -75,15 +70,15 @@
 
 > ⭐ **如果您发现此仓库有用**，请考虑给它一个星标！这有助于其他人发现这些工具，并鼓励我们继续维护和扩展这个集合。
 
-> 🎬 **Scientific Agent Skills 新手？** 观看我们的 [Scientific Agent Skills 入门](https://youtu.be/ZxbnDaD_FVg) 视频以快速了解。
+> 🎬 **Scientific Agent Skills 新手？** 观看我们的 [Getting Started with Scientific Agent Skills](https://youtu.be/ZxbnDaD_FVg) 视频以快速了解。
 
 ---
 
 ## 📦 包含内容
 
-本仓库提供 **133 个科学和研究技能**，组织成以下类别：
+本仓库提供 **135 个科学和研究技能**，组织成以下类别：
 
-- **100+ 科学与金融数据库** - 统一的数据库查找技能提供对 78 个公共数据库的直接访问（PubChem、ChEMBL、UniProt、COSMIC、ClinicalTrials.gov、FRED、USPTO 等），以及 DepMap、Imaging Data Commons、PrimeKG 和美国财政部财政数据的专用技能。像 BioServices（约 40 个生物信息学服务）、BioPython（通过 Entrez 访问 38 个 NCBI 子数据库）和 gget（20+ 基因组学数据库）等多数据库包进一步增加了覆盖范围
+- **100+ 科学与金融数据库** - 统一的数据库查找技能提供对 78 个公共数据库的直接访问（PubChem、ChEMBL、UniProt、COSMIC、ClinicalTrials.gov、FRED、USPTO 等），以及 DepMap、Imaging Data Commons、PrimeKG、U.S. Treasury Fiscal Data 和 Hugging Science（Hugging Face 上 17 个科学领域的科学数据集、模型和交互式 Spaces 的精选目录）的专用技能。像 BioServices（约 40 个生物信息学服务）、BioPython（通过 Entrez 访问 38 个 NCBI 子数据库）和 gget（20+ 基因组学数据库）等多数据库包进一步增加了覆盖范围
 - **70+ 优化的 Python 包技能** - 为 RDKit、Scanpy、PyTorch Lightning、scikit-learn、BioPython、pyzotero、BioServices、PennyLane、Qiskit、OpenMM、MDAnalysis、scVelo、TimesFM 等明确定义的技能 —— 包含精心策划的文档、示例和最佳实践。注意：代理可以使用 *任何* Python 包编写代码，不仅仅是这些；这些技能只是为列出的包提供更强、更可靠的性能
 - **9 科学集成技能** - 为 Benchling、DNAnexus、LatchBio、OMERO、Protocols.io、Open Notebook 等明确定义的技能。同样，代理不限于这些 —— Python 可以访问的任何 API 或平台都可以使用；这些技能是优化的、预先记录的路径
 - **30+ 分析与交流工具** - 文献综述、科学写作、同行评审、文档处理、海报、幻灯片、示意图、信息图表、Mermaid 图表等
@@ -113,7 +108,6 @@
 - [故障排除](#troubleshooting)
 - [常见问题](#faq)
 - [支持](#support)
-- [加入我们的社区](#join-our-community)
 - [引用](#citation)
 - [许可证](#license)
 
@@ -127,7 +121,7 @@
 - **多步骤工作流** - 通过单个提示执行复杂的流水线
 
 ### 🎯 **全面覆盖**
-- **133 个技能** - 覆盖所有主要科学领域
+- **135 个技能** - 覆盖所有主要科学领域
 - **100+ 数据库** - 统一访问 78+ 数据库，通过数据库查找，以及专用数据访问技能和多数据库包如 BioServices、BioPython 和 gget
 - **70+ 优化的 Python 包技能** - RDKit、Scanpy、PyTorch Lightning、scikit-learn、BioServices、PennyLane、Qiskit、OpenMM、scVelo、TimesFM 等（代理可以使用任何 Python 包；这些是预先记录的、更高性能的路径）
 
@@ -157,7 +151,7 @@ npx skills add K-Dense-AI/scientific-agent-skills
 
 ### 选项2: GitHub CLI (`gh skill`)
 
-如果您使用 [GitHub CLI](https://cli.github.com/)（v2.90.0+），可以使用 [`gh skill`](https://github.com/blog/changelog/2026-04-16-manage-agent-skills-with-github-cli/) 安装技能：
+如果您使用 [GitHub CLI](https://cli.github.com/)（v2.90.0+），可以使用 [`gh skill`](https://github.blog/changelog/2026-04-16-manage-agent-skills-with-github-cli/) 安装技能：
 
 ```bash
 # 交互式浏览和安装
@@ -207,7 +201,7 @@ gh skill update --all
 
 Agent Skills 非常强大 —— 它们可以指示您的 AI 代理运行任意代码、安装包、发出网络请求，并修改您系统上的文件。恶意或编写不良的技能有可能引导您的编码代理进行有害行为。
 
-我们重视安全性。所有贡献都经过审查过程，我们对仓库中的每个技能运行基于 LLM 的安全扫描（通过 [Cisco AI Defense Skill Scanner](https://github.com/cisco-ai-defense/skill-scanner)）。然而，作为一个小团队，随着社区贡献的增加，我们无法保证每个技能都已针对所有可能的风险进行了详尽审查。
+我们重视安全性。所有贡献都经过审查过程，我们对仓库中的每个技能运行基于 LLM 的安全扫描（通过 [Cisco AI Defense Skill Scanner](https://github.com/cisco-ai-defense/skill-scanner)）。然而，作为一个小团队，随着越来越多的社区贡献，我们无法保证每个技能都已针对所有可能的风险进行了详尽审查。
 
 **最终，审查您安装的技能并决定信任哪些技能是您的责任。**
 
@@ -287,12 +281,13 @@ uv --version
 
 **提示**：
 ```
-尽可能使用您可用的技能。查询 ChEMBL 获取 EGFR 抑制剂（IC50 < 50nM），使用 RDKit 分析结构-活性关系，
-使用 datamol 生成改进的类似物，使用 DiffDock 对 AlphaFold EGFR 结构进行虚拟筛选，
-搜索 PubMed 了解耐药机制，检查 COSMIC 获取突变，创建可视化和综合报告。
+Use available skills you have access to whenever possible. Query ChEMBL for EGFR inhibitors (IC50 < 50nM), analyze structure-activity relationships 
+with RDKit, generate improved analogs with datamol, perform virtual screening with DiffDock 
+against AlphaFold EGFR structure, search PubMed for resistance mechanisms, check COSMIC for 
+mutations, and create visualizations and a comprehensive report.
 ```
 
-**使用的技能**：ChEMBL、RDKit、datamol、DiffDock、AlphaFold DB、PubMed、COSMIC、科学可视化
+**使用的技能**：ChEMBL、RDKit、datamol、DiffDock、AlphaFold DB、PubMed、COSMIC、scientific visualization
 
 *需要云 GPU 和最终可发表的报告吗？[在 K-Dense Web 上免费运行。](https://k-dense.ai)*
 
@@ -303,10 +298,10 @@ uv --version
 
 **提示**：
 ```
-尽可能使用您可用的技能。使用 Scanpy 加载 10X 数据集，执行 QC 和双细胞去除，
-与 Cellxgene Census 数据整合，使用 NCBI Gene 标记识别细胞类型，
-使用 PyDESeq2 运行差异表达，使用 Arboreto 推断基因调控网络，
-通过 Reactome/KEGG 富集通路，使用 Open Targets 识别治疗靶点。
+Use available skills you have access to whenever possible. Load 10X dataset with Scanpy, perform QC and doublet removal, integrate with Cellxgene 
+Census data, identify cell types using NCBI Gene markers, run differential expression with 
+PyDESeq2, infer gene regulatory networks with Arboreto, enrich pathways via Reactome/KEGG, 
+and identify therapeutic targets with Open Targets.
 ```
 
 **使用的技能**：Scanpy、Cellxgene Census、NCBI Gene、PyDESeq2、Arboreto、Reactome、KEGG、Open Targets
@@ -320,10 +315,10 @@ uv --version
 
 **提示**：
 ```
-尽可能使用您可用的技能。使用 PyDESeq2 分析 RNA-seq，使用 pyOpenMS 处理质谱，
-从 HMDB/Metabolomics Workbench 整合代谢物，将蛋白质映射到通路（UniProt/KEGG），
-通过 STRING 查找交互，使用 statsmodels 关联组学层，使用 scikit-learn 构建预测模型，
-并搜索 ClinicalTrials.gov 获取相关试验。
+Use available skills you have access to whenever possible. Analyze RNA-seq with PyDESeq2, process mass spec with pyOpenMS, integrate metabolites from 
+HMDB/Metabolomics Workbench, map proteins to pathways (UniProt/KEGG), find interactions via 
+STRING, correlate omics layers with statsmodels, build predictive model with scikit-learn, 
+and search ClinicalTrials.gov for relevant trials.
 ```
 
 **使用的技能**：PyDESeq2、pyOpenMS、HMDB、Metabolomics Workbench、UniProt、KEGG、STRING、statsmodels、scikit-learn、ClinicalTrials.gov
@@ -337,10 +332,10 @@ uv --version
 
 **提示**：
 ```
-尽可能使用您可用的技能。检索 AlphaFold 结构，使用 BioPython 识别相互作用界面，
-搜索 ZINC 获取变构候选物（MW 300-500，logP 2-4），使用 RDKit 过滤，
-使用 DiffDock 对接，使用 DeepChem 排序，检查 PubChem 供应商，
-搜索 USPTO 专利，使用 MedChem/molfeat 优化先导化合物。
+Use available skills you have access to whenever possible. Retrieve AlphaFold structures, identify interaction interface with BioPython, search ZINC 
+for allosteric candidates (MW 300-500, logP 2-4), filter with RDKit, dock with DiffDock, 
+rank with DeepChem, check PubChem suppliers, search USPTO patents, and optimize leads with 
+MedChem/molfeat.
 ```
 
 **使用的技能**：AlphaFold DB、BioPython、ZINC、RDKit、DiffDock、DeepChem、PubChem、USPTO、MedChem、molfeat
@@ -354,14 +349,13 @@ uv --version
 
 **提示**：
 ```
-尽可能使用您可用的技能。使用 pysam 解析 VCF，使用 Ensembl VEP 注释变异，
-查询 ClinVar 获取致病性，检查 COSMIC 获取癌症突变，
-从 NCBI Gene 检索基因信息，使用 UniProt 分析蛋白质影响，
-搜索 PubMed 获取病例报告，检查 ClinPGx 获取药物基因组学，
-使用文档处理工具生成临床报告，并在 ClinicalTrials.gov 上查找匹配试验。
+Use available skills you have access to whenever possible. Parse VCF with pysam, annotate variants with Ensembl VEP, query ClinVar for pathogenicity, 
+check COSMIC for cancer mutations, retrieve gene info from NCBI Gene, analyze protein impact 
+with UniProt, search PubMed for case reports, check ClinPGx for pharmacogenomics, generate 
+clinical report with document processing tools, and find matching trials on ClinicalTrials.gov.
 ```
 
-**使用的技能**：pysam、Ensembl、ClinVar、COSMIC、NCBI Gene、UniProt、PubMed、ClinPGx、文档技能、ClinicalTrials.gov
+**使用的技能**：pysam、Ensembl、ClinVar、COSMIC、NCBI Gene、UniProt、PubMed、ClinPGx、Document Skills、ClinicalTrials.gov
 
 *需要最终精美的临床报告，而不仅仅是代码吗？[K-Dense Web 提供可发表的输出。免费试用。](https://k-dense.ai)*
 
@@ -372,10 +366,10 @@ uv --version
 
 **提示**：
 ```
-尽可能使用您可用的技能。查询 NCBI Gene 获取注释，从 UniProt 检索序列，
-通过 STRING 识别交互，映射到 Reactome/KEGG 通路，使用 Torch Geometric 分析拓扑，
-使用 Arboreto 重建 GRN，使用 Open Targets 评估可药性，使用 PyMC 建模，
-可视化网络，并搜索 GEO 获取类似模式。
+Use available skills you have access to whenever possible. Query NCBI Gene for annotations, retrieve sequences from UniProt, identify interactions via 
+STRING, map to Reactome/KEGG pathways, analyze topology with Torch Geometric, reconstruct 
+GRNs with Arboreto, assess druggability with Open Targets, model with PyMC, visualize 
+networks, and search GEO for similar patterns.
 ```
 
 **使用的技能**：NCBI Gene、UniProt、STRING、Reactome、KEGG、Torch Geometric、Arboreto、Open Targets、PyMC、GEO
@@ -399,7 +393,7 @@ uv --version
 
 | 功能 | 此仓库 | K-Dense Web |
 |---------|-----------|-------------|
-| 科学技能 | 134 个技能 | **200+ 技能**（独家访问） |
+| 科学技能 | 135 个技能 | **200+ 技能**（独家访问） |
 | 设置 | 手动安装 | **零设置，即时工作** |
 | 计算 | 您的机器 | **包含云 GPU 和 HPC** |
 | 工作流 | 提示和代码 | **端到端研究流水线** |
@@ -408,9 +402,6 @@ uv --version
 
 > *"K-Dense Web 让我在一个下午内从原始测序数据到草稿图形。以前需要三天环境设置和脚本编写的工作现在就可以工作。"*
 > **计算生物学家，药物发现**
-
-> ### 💰 50 美元免费积分，无需信用卡
-> 在几分钟内开始运行真实的科学工作流。
 >
 > **[免费试用 K-Dense Web](https://k-dense.ai)**
 
@@ -462,7 +453,7 @@ uv --version
 
 ## 📚 可用技能
 
-本仓库包含 **133 个科学和研究技能**，组织在多个领域。每个技能为使用科学库、数据库和工具提供综合文档、代码示例和最佳实践。
+本仓库包含 **135 个科学和研究技能**，组织在多个领域。每个技能为使用科学库、数据库和工具提供综合文档、代码示例和最佳实践。
 
 ### 技能类别
 
@@ -553,7 +544,7 @@ uv --version
 #### 📚 **科学交流**（20+ 个技能）
 - 文献：论文查找（PubMed、PMC、bioRxiv、medRxiv、arXiv、OpenAlex、Crossref、Semantic Scholar、CORE、Unpaywall）、文献综述
 - 高级论文搜索：BGPT 论文搜索（每篇论文 25+ 结构化字段 —— 方法、结果、样本大小、质量评分 —— 来自全文，不仅仅是摘要）
-- 网络搜索：Perplexity 搜索（AI 驱动的搜索，具有实时信息）、Parallel Web（综合摘要与引用）
+- 网络搜索：Parallel Web（综合摘要与引用）
 - 研究笔记本：Open Notebook（自托管的 NotebookLM 替代方案 —— PDF、视频、音频、网页；16+ AI 提供商；多播客生成）
 - 写作：科学写作、同行评审
 - 文档处理：XLSX、MarkItDown、文档技能
@@ -564,13 +555,14 @@ uv --version
 - 引用：引用管理
 - 插图：生成图像（AI 图像生成，使用 FLUX.2 Pro 和 Gemini 3 Pro（Nano Banana Pro））
 
-#### 🔬 **科学数据库与数据访问**（5 个技能 → 100+ 数据库总计）
+#### 🔬 **科学数据库与数据访问**（6 个技能 → 100+ 数据库总计）
 > 统一的数据库查找技能提供对 78 个公共数据库的直接 REST API 访问，涵盖所有领域。专用技能覆盖专门的数据平台。像 BioServices（约 40 个生物信息学服务）、BioPython（通过 Entrez 访问 38 个 NCBI 子数据库）和 gget（20+ 基因组学数据库）等多数据库包进一步增加了覆盖范围。
 - 统一访问：数据库查找（78 个数据库，涵盖化学、基因组学、临床、通路、专利、经济学等 —— PubChem、ChEMBL、UniProt、PDB、AlphaFold、KEGG、Reactome、STRING、ClinVar、COSMIC、ClinicalTrials.gov、FDA、FRED、USPTO、SEC EDGAR 等）
 - 癌症基因组学：DepMap（癌细胞系依赖性、药物敏感性、基因效应谱）
 - 癌症影像：Imaging Data Commons（NCI 放射学和病理学数据集，通过 idc-index）
 - 知识图谱：PrimeKG（精准医学知识图谱 —— 基因、药物、疾病、表型）
 - 财政数据：美国财政部财政数据（国家债务、财政部报表、拍卖、汇率）
+- 科学 ML 资源目录：Hugging Science（Hugging Face 上 17 个科学领域的数据集、模型、博客文章和交互式 Spaces 的精选索引 —— 天文学、生物学、化学、气候、基因组学、材料科学、医学、物理学、科学推理等 —— 包含 `datasets`、`transformers` 和 `gradio_client` 的使用模式）
 
 #### 🔧 **基础设施与平台**（7+ 个技能）
 - 云计算：Modal
@@ -583,9 +575,9 @@ uv --version
 #### 🎓 **研究方法论与规划**（12+ 个技能）
 - 构思：科学头脑风暴、假设生成
 - 批判性分析：科学批判性思维、学者评估
-- 场景分析：假设预言家（多分支可能性探索、风险分析、战略选项）
-- 多视角审议：意识委员会（多样化的专家观点、魔鬼代言人分析）
-- 认知分析：DHDNA 分析器（从任何文本中提取思维模式和认知签名）
+- 场景分析：What-If Oracle（多分支可能性探索、风险分析、战略选项）
+- 多视角审议：Consciousness Council（多样化的专家观点、魔鬼代言人分析）
+- 认知分析：DHDNA Profiler（从任何文本中提取思维模式和认知签名）
 - 资助：研究资助
 - 发现：研究查找、论文查找（10 个学术数据库）
 - 市场分析：市场研究报告
@@ -747,21 +739,6 @@ skill-scanner scan /path/to/your/skill --use-behavioral
 - 🐛 **错误报告**：[打开问题](https://github.com/K-Dense-AI/scientific-agent-skills/issues)
 - 💡 **功能请求**：[提交功能请求](https://github.com/K-Dense-AI/scientific-agent-skills/issues/new)
 - 💼 **企业支持**：联系 [K-Dense](https://k-dense.ai/) 获取商业支持
-- 🌐 **社区**：[加入我们的 Slack](https://join.slack.com/t/k-densecommunity/shared_invite/zt-3iajtyls1-EwmkwIZk0g_o74311Tkf5g)
-
----
-
-## 🎉 加入我们的社区！
-
-**我们很乐意您的加入！** 🚀
-
-与其他使用 AI 代理进行科学计算的科学家、研究人员和 AI 爱好者联系。分享您的发现，提出问题，获得项目帮助，并与社区合作！
-
-🌟 **[加入我们的 Slack 社区](https://join.slack.com/t/k-densecommunity/shared_invite/zt-3iajtyls1-EwmkwIZk0g_o74311Tkf5g)** 🌟
-
-无论您是刚刚开始还是高级用户，我们的社区都在这里支持您。我们分享技巧，一起排除故障，展示很酷的项目，并讨论 AI 驱动科学研究的最新发展。
-
-**在那里见！** 💬
 
 ---
 
@@ -776,7 +753,7 @@ skill-scanner scan /path/to/your/skill --use-behavioral
   title = {Scientific Agent Skills: A Comprehensive Collection of Scientific Tools for AI Agents},
   year = {2026},
   url = {https://github.com/K-Dense-AI/scientific-agent-skills},
-  note = {133 skills covering databases, packages, integrations, and analysis tools}
+  note = {135 skills covering databases, packages, integrations, and analysis tools}
 }
 ```
 

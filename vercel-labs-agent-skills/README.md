@@ -4,6 +4,8 @@ A collection of skills for AI coding agents. Skills are packaged instructions an
 
 Skills follow the [Agent Skills](https://agentskills.io/) format.
 
+[![skills.sh](https://skills.sh/b/vercel-labs/agent-skills)](https://skills.sh/vercel-labs/agent-skills)
+
 ## Available Skills
 
 ### react-best-practices
@@ -11,12 +13,14 @@ Skills follow the [Agent Skills](https://agentskills.io/) format.
 React and Next.js performance optimization guidelines from Vercel Engineering. Contains 40+ rules across 8 categories, prioritized by impact.
 
 **Use when:**
+
 - Writing new React components or Next.js pages
 - Implementing data fetching (client or server-side)
 - Reviewing code for performance issues
 - Optimizing bundle size or load times
 
 **Categories covered:**
+
 - Eliminating waterfalls (Critical)
 - Bundle size optimization (Critical)
 - Server-side performance (High)
@@ -30,6 +34,7 @@ React and Next.js performance optimization guidelines from Vercel Engineering. C
 Review UI code for compliance with web interface best practices. Audits your code for 100+ rules covering accessibility, performance, and UX.
 
 **Use when:**
+
 - "Review my UI"
 - "Check accessibility"
 - "Audit design"
@@ -37,6 +42,7 @@ Review UI code for compliance with web interface best practices. Audits your cod
 - "Check my site against best practices"
 
 **Categories covered:**
+
 - Accessibility (aria-labels, semantic HTML, keyboard handlers)
 - Focus States (visible focus, focus-visible patterns)
 - Forms (autocomplete, validation, error handling)
@@ -54,12 +60,14 @@ Review UI code for compliance with web interface best practices. Audits your cod
 React Native best practices optimized for AI agents. Contains 16 rules across 7 sections covering performance, architecture, and platform-specific patterns.
 
 **Use when:**
+
 - Building React Native or Expo apps
 - Optimizing mobile performance
 - Implementing animations or gestures
 - Working with native modules or platform APIs
 
 **Categories covered:**
+
 - Performance (Critical) - FlashList, memoization, heavy computation
 - Layout (High) - flex patterns, safe areas, keyboard handling
 - Animation (High) - Reanimated, gesture handling
@@ -73,6 +81,7 @@ React Native best practices optimized for AI agents. Contains 16 rules across 7 
 Implement smooth, native-feeling animations using React's View Transition API. Covers the `<ViewTransition>` component, `addTransitionType`, transition types, and Next.js integration including the `transitionTypes` prop on `next/link`.
 
 **Use when:**
+
 - Adding page transitions or route animations
 - Animating enter/exit of components
 - Creating shared element transitions (list-to-detail morphing)
@@ -81,6 +90,7 @@ Implement smooth, native-feeling animations using React's View Transition API. C
 - Animating list reorder or Suspense fallback reveals
 
 **Topics covered:**
+
 - `<ViewTransition>` component (enter, exit, update, share triggers)
 - `addTransitionType` for directional/context-specific animations
 - View Transition Classes and CSS pseudo-elements
@@ -95,12 +105,14 @@ Implement smooth, native-feeling animations using React's View Transition API. C
 React composition patterns that scale. Helps avoid boolean prop proliferation through compound components, state lifting, and internal composition.
 
 **Use when:**
+
 - Refactoring components with many boolean props
 - Building reusable component libraries
 - Designing flexible APIs
 - Reviewing component architecture
 
 **Patterns covered:**
+
 - Extracting compound components
 - Lifting state to reduce props
 - Composing internals for flexibility
@@ -111,24 +123,28 @@ React composition patterns that scale. Helps avoid boolean prop proliferation th
 Deploy applications and websites to Vercel instantly. Designed for use with claude.ai and Claude Desktop to enable deployments directly from conversations. Deployments are "claimable" - users can transfer ownership to their own Vercel account.
 
 **Use when:**
+
 - "Deploy my app"
 - "Deploy this to production"
 - "Push this live"
 - "Deploy and give me the link"
 
 **Features:**
+
 - Auto-detects 40+ frameworks from `package.json`
 - Returns preview URL (live site) and claim URL (transfer ownership)
 - Handles static HTML projects automatically
 - Excludes `node_modules` and `.git` from uploads
 
 **How it works:**
+
 1. Packages your project into a tarball
 2. Detects framework (Next.js, Vite, Astro, etc.)
 3. Uploads to deployment service
 4. Returns preview URL and claim URL
 
 **Output:**
+
 ```
 Deployment successful!
 
@@ -147,12 +163,15 @@ npx skills add vercel-labs/agent-skills
 Skills are automatically available once installed. The agent will use them when relevant tasks are detected.
 
 **Examples:**
+
 ```
 Deploy my app
 ```
+
 ```
 Review this React component for performance issues
 ```
+
 ```
 Help me optimize this Next.js page
 ```
@@ -160,6 +179,7 @@ Help me optimize this Next.js page
 ## Skill Structure
 
 Each skill contains:
+
 - `SKILL.md` - Instructions for the agent
 - `scripts/` - Helper scripts for automation (optional)
 - `references/` - Supporting documentation (optional)

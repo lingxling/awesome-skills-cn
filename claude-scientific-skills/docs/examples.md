@@ -1,6 +1,6 @@
 # Real-World Scientific Examples
 
-This document provides comprehensive, practical examples demonstrating how to combine Claude Scientific Skills to solve real scientific problems across multiple domains.
+This document provides comprehensive, practical examples demonstrating how to combine Scientific Agent Skills to solve real scientific problems across multiple domains.
 
 ---
 

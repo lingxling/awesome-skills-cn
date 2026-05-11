@@ -14,6 +14,9 @@ import { removeCommand, parseRemoveOptions } from './remove.ts';
 import { sanitizeMetadata } from './sanitize.ts';
 import { runSync, parseSyncOptions } from './sync.ts';
 import { track, flushTelemetry } from './telemetry.ts';
+import { isRunningInAgent } from './detect-agent.ts';
+import { agents, isUniversalAgent } from './agents.ts';
+import type { AgentType } from './types.ts';
 import { fetchSkillFolderHash, getGitHubToken } from './skill-lock.ts';
 import { readLocalLock, type LocalSkillLockEntry } from './local-lock.ts';
 import {
@@ -742,7 +745,34 @@ async function updateProjectSkills(
     return { successCount, failCount, foundCount: projectSkills.length };
   }
 
-  console.log(`${TEXT}Refreshing ${updatable.length} project skill(s)...${RESET}`);
+  // Detect which agent directories exist in the project to show target info
+  const cwd = process.cwd();
+  const targetAgentNames: string[] = [];
+  let hasUniversal = false;
+
+  for (const [type, config] of Object.entries(agents)) {
+    if (isUniversalAgent(type as AgentType)) {
+      // Check if .agents/ exists
+      if (!hasUniversal && existsSync(join(cwd, '.agents'))) {
+        hasUniversal = true;
+      }
+    } else {
+      const agentRoot = config.skillsDir.split('/')[0]!;
+      if (existsSync(join(cwd, agentRoot))) {
+        targetAgentNames.push(config.displayName);
+      }
+    }
+  }
+
+  const targetParts: string[] = [];
+  if (hasUniversal) targetParts.push('Universal');
+  targetParts.push(...targetAgentNames);
+
+  if (targetParts.length > 0) {
+    console.log(`${TEXT}Updating for: ${targetParts.join(', ')}${RESET}`);
+  }
+
+  console.log(`${TEXT}Refreshing ${updatable.length} skill(s)...${RESET}`);
   console.log();
 
   for (const skill of updatable) {
@@ -882,9 +912,12 @@ async function runUpdate(args: string[] = []): Promise<void> {
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
+  const inAgent = await isRunningInAgent();
 
   if (args.length === 0) {
-    showBanner();
+    if (!inAgent) {
+      showBanner();
+    }
     return;
   }
 
@@ -896,17 +929,17 @@ async function main(): Promise<void> {
     case 'search':
     case 'f':
     case 's':
-      showLogo();
+      if (!inAgent) showLogo();
       console.log();
       await runFind(restArgs);
       break;
     case 'init':
-      showLogo();
+      if (!inAgent) showLogo();
       console.log();
       runInit(restArgs);
       break;
     case 'experimental_install': {
-      showLogo();
+      if (!inAgent) showLogo();
       await runInstallFromLock(restArgs);
       break;
     }
@@ -914,7 +947,7 @@ async function main(): Promise<void> {
     case 'install':
     case 'a':
     case 'add': {
-      showLogo();
+      if (!inAgent) showLogo();
       const { source: addSource, options: addOpts } = parseAddOptions(restArgs);
       await runAdd(addSource, addOpts);
       break;
@@ -931,7 +964,7 @@ async function main(): Promise<void> {
       await removeCommand(skills, removeOptions);
       break;
     case 'experimental_sync': {
-      showLogo();
+      if (!inAgent) showLogo();
       const { options: syncOptions } = parseSyncOptions(restArgs);
       await runSync(restArgs, syncOptions);
       break;

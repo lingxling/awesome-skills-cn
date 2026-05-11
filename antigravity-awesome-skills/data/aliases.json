@@ -108,6 +108,7 @@
     "performance-testing-ai": "performance-testing-review-ai-review",
     "performance-testing-agent": "performance-testing-review-multi-agent-review",
     "python-development-scaffold": "python-development-python-scaffold",
+    "recursive-context-budgeting": "recursive-context-pruning-token-budgeting",
     "sankhya-dashboard-pratices": "sankhya-dashboard-html-jsp-custom-best-pratices",
     "security-compliance-check": "security-compliance-compliance-check",
     "security-scanning-dependencies": "security-scanning-security-dependencies",

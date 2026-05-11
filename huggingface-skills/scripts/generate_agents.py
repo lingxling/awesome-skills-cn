@@ -58,7 +58,7 @@ def collect_skills() -> list[dict[str, str]]:
             {
                 "name": name,
                 "description": description,
-                "path": str(skill_md.parent.relative_to(ROOT)),
+                "path": skill_md.parent.relative_to(ROOT).as_posix(),
             }
         )
     # Keep deterministic order for consistent output

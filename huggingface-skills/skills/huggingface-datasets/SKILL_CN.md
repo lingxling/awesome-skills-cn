@@ -1,6 +1,6 @@
 ---
 name: huggingface-datasets
-description: 使用此技能进行 Hugging Face 数据集查看器 API 工作流程，包括获取子集/分割元数据、分页行、搜索文本、应用过滤器、下载 parquet URL 以及读取大小或统计信息。
+description: Use this skill for Hugging Face Dataset Viewer API workflows that fetch subset/split metadata, paginate rows, search text, apply filters, download parquet URLs, and read size or statistics.
 ---
 
 # Hugging Face 数据集查看器
@@ -53,36 +53,7 @@ curl "https://datasets-server.huggingface.co/rows?dataset=stanfordnlp/imdb&confi
 - `/filter` 需要 `where` 中的谓词语法和 `orderby` 中的可选排序。
 - 保持过滤和搜索为只读且无副作用。
 
-## 查询数据集
-
-使用带有 Hub parquet 别名路径的 `npx parquetlens` 进行 SQL 查询。
-
-Parquet 别名形状：
-
-```text
-hf://datasets/<namespace>/<repo>@~parquet/<config>/<split>/<shard>.parquet
-```
-
-从数据集查看器 `/parquet` 派生 `<config>`、`<split>` 和 `<shard>`：
-
-```bash
-curl -s "https://datasets-server.huggingface.co/parquet?dataset=cfahlgren1/hub-stats" \
-  | jq -r '.parquet_files[] | "hf://datasets/\(.dataset)@~parquet/\(.config)/\(.split)/\(.filename)"'
-```
-
-运行 SQL 查询：
-
-```bash
-npx -y -p parquetlens -p @parquetlens/sql parquetlens \
-  "hf://datasets/<namespace>/<repo>@~parquet/<config>/<split>/<shard>.parquet" \
-  --sql "SELECT * FROM data LIMIT 20"
-```
-
-### SQL 导出
-
-- CSV：`--sql "COPY (SELECT * FROM data LIMIT 1000) TO 'export.csv' (FORMAT CSV, HEADER, DELIMITER ',')"`
-- JSON：`--sql "COPY (SELECT * FROM data LIMIT 1000) TO 'export.json' (FORMAT JSON)"`
-- Parquet：`--sql "COPY (SELECT * FROM data LIMIT 1000) TO 'export.parquet' (FORMAT PARQUET)"`
+对于基于 CLI 的 parquet URL 发现或 SQL，请使用 `hf-cli` 技能配合 `hf datasets parquet` 和 `hf datasets sql`。
 
 ## 创建和上传数据集
 
@@ -119,3 +90,18 @@ npx -y @huggingface/hub upload datasets/<namespace>/<repo> ./local/parquet-folde
 ```
 
 上传后，调用 `/parquet` 发现用于使用 `@~parquet` 查询的 `<config>/<split>/<shard>` 值。
+
+## Agent Traces
+
+Hub 支持来自 Claude Code、Codex 和 Pi Agent 的原始代理会话跟踪。将它们作为原始 JSONL 文件上传到 Hugging Face Datasets，Hub 可以自动检测跟踪格式，将数据集标记为 `Traces`，并启用跟踪查看器以浏览会话、轮次、工具调用和模型响应。常见的本地会话目录：
+
+- Claude Code：`~/.claude/projects`
+- Codex：`~/.codex/sessions`
+- Pi：`~/.pi/agent/sessions`
+
+默认使用私有数据集仓库，因为跟踪可能包含提示、文件路径、工具输出、密钥或 PII。保留原始 `.jsonl` 文件，并按项目/工作目录嵌套，而不是将每个会话上传到数据集根目录。
+
+```bash
+hf repos create <namespace>/<repo> --type dataset --private --exist-ok
+hf upload <namespace>/<repo> ~/.codex/sessions codex/<project-or-cwd> --type dataset
+```

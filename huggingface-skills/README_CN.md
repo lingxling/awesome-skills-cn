@@ -39,11 +39,12 @@ Hugging Face Skills 是 AI/ML 任务(如数据集创建、模型训练和评估)
 
 在实践中,技能是自包含的文件夹,将指令、脚本和资源打包在一起,供 AI 代理在特定用例中使用。每个文件夹包含一个 `SKILL.md` 文件,其中包含 YAML 前置数据(名称和描述),后跟随着技能激活时您的编码代理遵循的指导。
 
-> [!NOTE]
-> 'Skills' 实际上是 Anthropic 在 Claude AI 和 Claude Code 中使用的术语,并未被其他代理工具采用,但我们很喜欢它! OpenAI Codex 使用开放的 [Agent Skills](https://agentskills.io/specification) 格式,其中每个技能是一个包含 `SKILL.md` 文件的目录,Codex 从 [Codex Skills 指南](https://developers.openai.com/codex/skills/) 中记录的标准 `.agents/skills` 位置发现该文件。Codex 也可以使用 `AGENTS.md` 文件。Google Gemini 使用 'extensions' 在 `gemini-extension.json` 文件中为您的编码代理定义指令。**此仓库与所有这些都兼容,甚至更多!**
-
 > [!TIP]
 > 如果您的代理不支持技能,您可以直接使用 [`agents/AGENTS.md`](agents/AGENTS.md) 作为备用。
+
+此仓库中的技能还可通过以下方式获取:
+ - Cursor Marketplace (https://cursor.com/marketplace/huggingface)
+ - Codex Plugins Directory (https://developers.openai.com/codex/plugins)
 
 ## 安装
 
@@ -52,13 +53,13 @@ Hugging Face 技能与 Claude Code、Codex、Gemini CLI 和 Cursor 兼容。
 ### Claude Code
 
 1. 将仓库注册为插件市场:  
-
+   
 ```
 /plugin marketplace add huggingface/skills
 ```
 
 2. 要安装技能,请运行:  
-
+   
 ```
 /plugin install <skill-name>@huggingface/skills
 ```
@@ -88,6 +89,7 @@ gemini extensions install . --consent
 ```
 
 或使用 GitHub URL:
+
 ```
 gemini extensions install https://github.com/huggingface/skills.git --consent
 ```
@@ -97,12 +99,14 @@ gemini extensions install https://github.com/huggingface/skills.git --consent
 ### Cursor
 
 此仓库包含 Cursor 插件清单:
+
 - `.cursor-plugin/plugin.json`
 - `.mcp.json`(配置了 Hugging Face MCP 服务器 URL)
 
 通过 Cursor 插件流程从仓库 URL(或本地签出)安装。
 
 对于贡献者,使用以下命令重新生成清单:
+
 ```bash
 ./scripts/publish.sh
 ```
@@ -129,12 +133,14 @@ gemini extensions install https://github.com/huggingface/skills.git --consent
 | `huggingface-tool-builder` | 为 Hugging Face Hub 和 API 工作流构建可重用脚本。适用于链接 API 调用、丰富 Hub 元数据或自动化重复任务。 | [SKILL.md](skills/huggingface-tool-builder/SKILL.md) |
 | `huggingface-trackio` | 使用 Trackio 跟踪和可视化 ML 训练实验。通过 Python API 记录指标并通过 CLI 检索它们。支持与 HF Spaces 同步的实时仪表板。 | [SKILL.md](skills/huggingface-trackio/SKILL.md) |
 | `huggingface-vision-trainer` | 使用 Transformers Trainer API 在 Hugging Face Jobs 基础设施或本地训练和微调目标检测模型(RTDETRv2、YOLOS、DETR 等)和图像分类模型(timm 和 transformers 模型 — MobileNetV3、MobileViT、ResNet、ViT/DINOv3)。包括 COCO 数据集格式支持、Albumentations 增强、mAP/mAR 指标、trackio 跟踪、硬件选择和 Hub 持久化。 | [SKILL.md](skills/huggingface-vision-trainer/SKILL.md) |
+| `train-sentence-transformers` | 训练或微调所有三种架构的 sentence-transformers 模型:SentenceTransformer(双编码器嵌入)、CrossEncoder(重排序器)和 SparseEncoder(SPLADE)。涵盖损失选择、硬负样本挖掘、评估器、蒸馏、LoRA、Matryoshka 和 Hugging Face Hub 发布。 | [SKILL.md](skills/train-sentence-transformers/SKILL.md) |
 | `transformers-js` | 直接在 JavaScript/TypeScript 中运行最先进的机器学习模型,用于 NLP、计算机视觉、音频处理和多模态任务。使用 Hugging Face 模型在 Node.js 和带有 WebGPU/WASM 的浏览器中工作。 | [SKILL.md](skills/transformers-js/SKILL.md) |
 <!-- END_SKILLS_TABLE -->
 
 ### 在编码代理中使用技能
 
 安装技能后,在给编码代理指令时直接提及它:
+
 - "使用 HF LLM trainer 技能来估计 70B 模型运行所需的 GPU 内存。"
 - "使用 HF model evaluation 技能在最新检查点上启动 `run_eval_job.py`。"
 - "使用 HF dataset creator 技能来起草新的少样本分类模板。"
@@ -169,7 +175,6 @@ gemini extensions install https://github.com/huggingface/skills.git --consent
 `.claude-plugin/marketplace.json` 文件列出了技能,并带有插件市场的人类可读描述。CI 验证技能名称和路径在 `SKILL.md` 文件和 `marketplace.json` 之间是否匹配,但描述是单独维护的:`SKILL.md` 描述指导 Claude 何时激活技能,而市场描述是为浏览可用技能的人类编写的。
 
 ### 其他参考
-
 - 直接在 [huggingface/skills](https://github.com/huggingface/skills) 浏览最新的指令、脚本和模板。
 - 查看您在每个技能中引用的特定库或工作流程的 Hugging Face 文档。
 

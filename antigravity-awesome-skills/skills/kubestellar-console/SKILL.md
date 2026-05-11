@@ -46,7 +46,7 @@ brew tap kubestellar/tap && brew install kc-agent
 kc-agent
 ```
 
-This bridges your kubeconfig to any MCP-compatible coding agent.
+This bridges the active kubeconfig context to any MCP-compatible coding agent. Do not start it from a cluster-admin or write-capable context unless the user explicitly accepts that risk.
 
 ### Step 3: Use built-in agent skills
 
@@ -73,12 +73,21 @@ The project ships with agent skills accessible via `CLAUDE.md` and `AGENTS.md`:
 
 ## Security & Safety Notes
 
-- **Critical risk:** `kc-agent` bridges your kubeconfig to MCP-compatible agents. If your kubeconfig carries cluster-admin or write permissions, agents will inherit those capabilities. Always use a least-privilege RBAC context.
-- **Recommended:** Bind `kc-agent` to least-privilege read-only RBAC before using it with an agent:
+- **Critical risk:** `kc-agent` bridges your active kubeconfig context to MCP-compatible agents. If that context carries cluster-admin, write permissions, or secret read access, agents inherit those capabilities.
+- **Do not rely on RBAC objects alone:** creating a ServiceAccount or ClusterRoleBinding does not change the credentials `kc-agent` uses. Start `kc-agent` only after switching `KUBECONFIG`/context to dedicated least-privilege credentials and verifying them.
+- **Recommended read-only scope:** avoid `resources='*'`, because it includes sensitive objects such as Secrets. Prefer an explicit non-secret resource list and verify access before starting the MCP server:
   ```bash
-  kubectl create clusterrole kc-agent-readonly --verb=get,list,watch --resource='*'
-  kubectl create clusterrolebinding kc-agent-readonly --clusterrole=kc-agent-readonly --serviceaccount=default:kc-agent
+  kubectl create serviceaccount kc-agent -n default
+  kubectl create clusterrole kc-agent-readonly \
+    --verb=get,list,watch \
+    --resource=pods,services,deployments.apps,replicasets.apps,statefulsets.apps,daemonsets.apps,namespaces,nodes,events,configmaps
+  kubectl create clusterrolebinding kc-agent-readonly \
+    --clusterrole=kc-agent-readonly \
+    --serviceaccount=default:kc-agent
+  kubectl auth can-i get secrets --as=system:serviceaccount:default:kc-agent
+  kubectl auth can-i list pods --as=system:serviceaccount:default:kc-agent
   ```
+- The first `can-i` command must return `no`; the second should return `yes`. Then create or select a kubeconfig that actually authenticates as that ServiceAccount before running `kc-agent`.
 - Do not expose `kc-agent` on a public network without authentication.
 - Review [SECURITY-AI.md](https://github.com/kubestellar/console/blob/main/docs/security/SECURITY-AI.md) for prompt injection and agent drift mitigations.
 
