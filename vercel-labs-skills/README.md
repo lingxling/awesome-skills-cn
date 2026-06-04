@@ -342,7 +342,13 @@ metadata:
 
 ### Skill Discovery
 
-The CLI searches for skills in these locations within a repository:
+The CLI searches for skills in these locations within a repository. Each
+skill container directory is walked one level deep for the common flat
+layout (`skills/<name>/SKILL.md`) and one extra level deep for catalog
+layouts (`skills/<category>/<name>/SKILL.md`). A `SKILL.md` discovered at
+the shallower level shadows anything nested below it. Use `--full-depth`
+to also discover `SKILL.md` files outside these container directories
+(e.g. under `examples/` or `tests/`).
 
 <!-- skill-discovery:start -->
 
@@ -410,7 +416,7 @@ If `.claude-plugin/marketplace.json` or `.claude-plugin/plugin.json` exists, ski
 }
 ```
 
-This enables compatibility with the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem.
+This enables compatibility with the [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) ecosystem. Skill paths declared in a manifest are searched at their declared depth and are not subject to the depth-2 catalog walk described above.
 
 If no skills are found in standard locations, a recursive search is performed.
 

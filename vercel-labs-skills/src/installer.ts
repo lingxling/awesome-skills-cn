@@ -667,7 +667,7 @@ export async function installWellKnownSkillForAgent(
         await mkdir(parentDir, { recursive: true });
       }
 
-      await writeFile(fullPath, content, 'utf-8');
+      await writeFile(fullPath, content);
     }
   }
 

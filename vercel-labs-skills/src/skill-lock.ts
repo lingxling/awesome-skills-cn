@@ -3,6 +3,7 @@ import { join, dirname } from 'path';
 import { homedir } from 'os';
 import { createHash } from 'crypto';
 import { execSync } from 'child_process';
+import pc from 'picocolors';
 
 const AGENTS_DIR = '.agents';
 const LOCK_FILE = '.skill-lock.json';
@@ -123,17 +124,29 @@ export function computeContentHash(content: string): string {
   return createHash('sha256').update(content, 'utf-8').digest('hex');
 }
 
+let _ghWarningShown = false;
+
+/** For tests only. Resets the one-shot warning flag. */
+export function resetGhAuthWarning(): void {
+  _ghWarningShown = false;
+}
+
 /**
  * Get GitHub token from user's environment.
  * Tries in order:
- * 1. GITHUB_TOKEN environment variable
- * 2. GH_TOKEN environment variable
- * 3. gh CLI auth token (if gh is installed)
+ * 1. GITHUB_TOKEN environment variable (silent)
+ * 2. GH_TOKEN environment variable (silent)
+ * 3. gh CLI auth token, if gh is installed. Prints a one-time warning to
+ *    stderr before invoking `gh auth token`, because that subprocess call
+ *    is flagged by some corporate endpoint security tooling (Defender, etc.)
+ *    as credential extraction. Callers should invoke this function lazily
+ *    (e.g. only after an unauthenticated request hits a rate limit) so the
+ *    fallback rarely runs in practice.
  *
  * @returns The token string or null if not available
  */
 export function getGitHubToken(): string | null {
-  // Check environment variables first
+  // Check environment variables first (silent: user has explicitly opted in)
   if (process.env.GITHUB_TOKEN) {
     return process.env.GITHUB_TOKEN;
   }
@@ -141,7 +154,14 @@ export function getGitHubToken(): string | null {
     return process.env.GH_TOKEN;
   }
 
-  // Try gh CLI
+  // Last resort: spawn gh CLI. Warn the user once per process before doing so.
+  if (!_ghWarningShown) {
+    process.stderr.write(
+      `${pc.yellow('│')}  ${pc.yellow('GitHub rate limit reached')} — using your ${pc.cyan('gh')} login to continue.\n` +
+        `${pc.yellow('│')}  ${pc.dim(`Tip: set ${pc.cyan('GITHUB_TOKEN')} to avoid this prompt, or use ${pc.cyan('--full-depth')} to clone instead.\n`)}`
+    );
+    _ghWarningShown = true;
+  }
   try {
     const token = execSync('gh auth token', {
       encoding: 'utf-8',
@@ -164,18 +184,19 @@ export function getGitHubToken(): string | null {
  *
  * @param ownerRepo - GitHub owner/repo (e.g., "vercel-labs/agent-skills")
  * @param skillPath - Path to skill folder or SKILL.md (e.g., "skills/react-best-practices/SKILL.md")
- * @param token - Optional GitHub token for authenticated requests (higher rate limits)
+ * @param getToken - Optional lazy token resolver. Invoked only if the
+ *                   unauthenticated request hits a rate limit.
  * @param ref - Optional branch/tag ref. Defaults to trying main then master.
  * @returns The tree SHA for the skill folder, or null if not found
  */
 export async function fetchSkillFolderHash(
   ownerRepo: string,
   skillPath: string,
-  token?: string | null,
+  getToken?: (() => string | null) | null,
   ref?: string
 ): Promise<string | null> {
   const { fetchRepoTree, getSkillFolderHashFromTree } = await import('./blob.ts');
-  const tree = await fetchRepoTree(ownerRepo, ref, token);
+  const tree = await fetchRepoTree(ownerRepo, ref, getToken ?? undefined);
   if (!tree) return null;
   return getSkillFolderHashFromTree(tree, skillPath);
 }

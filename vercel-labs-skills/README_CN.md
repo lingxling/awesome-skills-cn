@@ -359,14 +359,14 @@ description: What this skill does and when to use it
 
 Instructions for the agent to follow when this skill is activated.
 
-## When to Use
+## 何时使用
 
-Describe the scenarios where this skill should be used.
+描述应使用此技能的场景。
 
-## Steps
+## 步骤
 
-1. First, do this
-2. Then, do that
+1. 首先，做这个
+2. 然后，做那个
 ```
 
 ### 必填字段

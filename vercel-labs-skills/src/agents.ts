@@ -10,6 +10,8 @@ const configHome = xdgConfig ?? join(home, '.config');
 const codexHome = process.env.CODEX_HOME?.trim() || join(home, '.codex');
 const claudeHome = process.env.CLAUDE_CONFIG_DIR?.trim() || join(home, '.claude');
 const vibeHome = process.env.VIBE_HOME?.trim() || join(home, '.vibe');
+const zedAppDataHome = process.env.APPDATA?.trim();
+const zedFlatpakConfigHome = process.env.FLATPAK_XDG_CONFIG_HOME?.trim();
 
 export function getOpenClawGlobalSkillsDir(
   homeDir = home,
@@ -481,6 +483,20 @@ export const agents: Record<AgentType, AgentConfig> = {
     globalSkillsDir: join(home, '.codeium/windsurf/skills'),
     detectInstalled: async () => {
       return existsSync(join(home, '.codeium/windsurf'));
+    },
+  },
+  zed: {
+    name: 'zed',
+    displayName: 'Zed',
+    skillsDir: '.agents/skills',
+    globalSkillsDir: join(home, '.agents/skills'),
+    detectInstalled: async () => {
+      // Per Zed's config_dir() in crates/paths/src/paths.rs.
+      return (
+        existsSync(join(configHome, 'zed')) ||
+        (!!zedAppDataHome && existsSync(join(zedAppDataHome, 'Zed'))) ||
+        (!!zedFlatpakConfigHome && existsSync(join(zedFlatpakConfigHome, 'zed')))
+      );
     },
   },
   zencoder: {

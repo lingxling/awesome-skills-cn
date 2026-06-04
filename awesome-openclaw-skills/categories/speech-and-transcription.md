@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**45 skills**
+**46 skills**
 
 - [addis-assistant-stt](https://clawskills.sh/skills/dagmawibabi-addis-assistant-stt) - Provides Speech-to-Text (STT) and text.
 - [agent-voice](https://clawskills.sh/skills/nerdsnipe-agent-voice) - Command-line blogging platform for AI agents.
@@ -38,6 +38,7 @@
 - [her-voice](https://clawskills.sh/skills/matusvojtek-her-voice) - Give your agent a voice.
 - [inworld-tts](https://clawskills.sh/skills/gugic-inworld-tts) - Text-to-speech via Inworld.ai API.
 - [jarvis-voice](https://clawskills.sh/skills/globalcaos-jarvis-voice) - Metallic AI voice persona with TTS and visual transcript styling.
+- [kesha-voice-kit](https://github.com/openclaw/skills/tree/main/skills/drakulavich/kesha-voice-kit/SKILL.md) - Local STT + TTS with Russian, offline on Apple Silicon.
 - [kokoro-tts](https://clawskills.sh/skills/edkief-kokoro-tts) - Generate spoken audio from text using the local Kokoro TTS engine.
 - [lnbits](https://clawskills.sh/skills/talvasconcelos-lnbits) - Manage LNbits Lightning Wallet (Balance, Pay, Invoice)
 - [lnbits-with-qrcode](https://clawskills.sh/skills/jamestsetsekas-lnbits-with-qrcode) - Manage LNbits Lightning Wallet (Balance, Pay, Invoice)

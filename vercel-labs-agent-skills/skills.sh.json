@@ -1,0 +1,32 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "React",
+      "description": "Skills for building production-quality React and React Native interfaces with Vercel engineering patterns.",
+      "skills": [
+        "vercel-react-best-practices",
+        "vercel-composition-patterns",
+        "vercel-react-view-transitions",
+        "vercel-react-native-skills"
+      ]
+    },
+    {
+      "title": "Vercel",
+      "description": "Skills for deploying, managing, and optimizing applications on Vercel.",
+      "skills": [
+        "deploy-to-vercel",
+        "vercel-cli-with-tokens",
+        "vercel-optimize"
+      ]
+    },
+    {
+      "title": "Design",
+      "description": "Skills for reviewing and improving web interfaces, accessibility, and UX quality.",
+      "skills": [
+        "web-design-guidelines"
+      ]
+    }
+  ]
+}

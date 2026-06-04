@@ -36,14 +36,14 @@
 <br/>
 
 <div align="center">
-    <strong>Discover 5490+ community-built OpenClaw skills, organized by category.
+    <strong>Discover 5300+ community-built OpenClaw skills, organized by category.
     </strong>
     <br />
     <br />
 </div>
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
-[![Skills Count](https://img.shields.io/badge/skills-5352-blue?style=flat-square)](#table-of-contents)
+[![Skills Count](https://img.shields.io/badge/skills-5198-blue?style=flat-square)](#table-of-contents)
 [![Last Update](https://img.shields.io/github/last-commit/VoltAgent/awesome-clawdbot-skills?label=Last%20update&style=flat-square)](https://github.com/VoltAgent/awesome-clawdbot-skills/pulls?q=is%3Apr+is%3Amerged+sort%3Aupdated-desc)
 <a href="https://github.com/VoltAgent/voltagent">
   <img alt="VoltAgent" src="https://cdn.voltagent.dev/website/logo/logo-2-svg.svg" height="20" />
@@ -103,28 +103,33 @@ clawhub install <skill-slug>
 
 ## 为什么这个列表存在？
 
-截至 2026 年 2 月 28 日，OpenClaw 的公共注册表（ClawHub）托管了 **13,729 个社区构建的技能**。这个精选列表包含 **5,366 个技能**。以下是我们过滤掉的内容：
+截至 2026 年 2 月 28 日，OpenClaw 的公共注册表（ClawHub）托管了 **13,729 个社区构建的技能**。这个精选列表包含 **5,211 个技能**。以下是我们过滤掉的内容：
 
 | 过滤器 | 排除 |
 |--------|----------|
 | 可能的垃圾内容 — 批量账户、机器人账户、测试/垃圾 | 4,065 |
 | 重复/相似名称 | 1,040 |
 | 低质量或非英语描述 | 851 |
-| 加密货币/区块链/金融/交易 | 731 |
+| 加密货币/区块链/金融/交易 | 886 |
 | 恶意 — 由研究人员发布的安全审计识别（不包括 VirusTotal） | 373 |
-| **未从 OpenClaw 官方技能注册表获取的总数** | **7,060** |
+| **未从 OpenClaw 官方技能注册表获取的总数** | **7,215** |
 
 ### 想要添加技能？
 
 此列表仅包括 **已发布** 在 `github.com/openclaw/skills` 存储库中的技能。我们不接受指向个人存储库、要点或任何其他外部来源的链接。如果您的技能尚未在 OpenClaw 技能存储库中，请先在那里发布。
 
-在您的 PR 描述中包含 ClawHub 链接（例如 `https://clawhub.ai/steipete/slack`）和 GitHub 链接（例如 `https://github.com/openclaw/skills/tree/main/skills/steipete/slack`）。有关详细信息，请参阅 [CONTRIBUTING.md](CONTRIBUTING.md)。
+请仅提交 GitHub 源链接（而非 `clawskills.sh` URL）— clawskills.sh 列表由我们单独管理。在您的 PR 描述中包含 ClawHub 链接（例如 `https://clawhub.ai/steipete/slack`）和 GitHub 链接（例如 `https://github.com/openclaw/skills/tree/main/skills/steipete/slack`）。有关详细信息，请参阅 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## OpenClaw 生态系统工具
 
 ### 🔌 连接到外部服务
 
 OpenClaw 代理可以与 GitHub、Slack、Gmail 等外部服务交互。您可以通过技能或插件自己构建集成，或使用托管服务来处理所有连接的身份验证、令牌刷新和权限。
+
+<a href="https://composio.dev/claw?utm_source=github&utm_campaign=volt-agent">
+<img src="https://cdn.voltagent.dev/awesome-repo/composio-img.png" alt="Composio"  />
+托管 OAuth、范围权限和跨 1000+ 应用的原生工具调用日志。
+</a>
 
 ### 🤖 模型提供商
 
@@ -142,9 +147,39 @@ openclaw onboard --auth-choice openai-codex
 ```
 </details>
 
+<div align="center">
+
+<table>
+<tr>
+<td align="center" width="100%">
+
+<h3>🦞 您可以在上面的部分展示您的 OpenClaw 生态系统工具。</h3>
+
+<p></p>
+
+<sub>仅次于官方 OpenClaw 资源的访问量最高的社区资源</sub>
+
+
+<a href="https://sponsors.voltagent.dev/#awesome-openclaw-skills"><img src="https://img.shields.io/badge/📩_成为赞助商-联系我们-blue?style=for-the-badge&logoColor=white" alt="成为赞助商" /></a>
+
+</td>
+</tr>
+</table>
+
+</div>
+
 ### ☁️ 托管和部署
 
 您可以在任何 VPS 或云平台上部署 OpenClaw，在自己的基础设施或托管主机上安全运行您的技能。Docker、Podman、Nix 和 Ansible 都作为安装方法受支持。
+
+<a href="https://myclaw.ai/?utm_source=github&utm_campaign=awesome-openclaw-skills">
+<img src="https://cdn.voltagent.dev/awesome-repo/myclaw-banner.svg" alt="MyClaw"  /><br/>
+您无需管理服务器即可运行这些技能 — 一键设置的全云托管 OpenClaw 实例，24/7 运行时间，完全数据所有权。
+</a>
+
+
+<br/>
+<br/>
 
 > **提示：** 如果您正在寻找快速的云设置，请使用您首选的提供商启动 VPS，通过 Docker 安装 OpenClaw，然后就可以开始了。
 
@@ -167,23 +202,23 @@ openclaw onboard --auth-choice openai-codex
 
 | | | |
 |---|---|---|
-| [Git & GitHub](#git--github) (170) | [Marketing & Sales](#marketing--sales) (105) | [Communication](#communication) (149) |
-| [Coding Agents & IDEs](#coding-agents--ides) (1222) | [Productivity & Tasks](#productivity--tasks) (206) | [Speech & Transcription](#speech--transcription) (45) |
-| [Browser & Automation](#browser--automation) (335) | [AI & LLMs](#ai--llms) (197) | [Smart Home & IoT](#smart-home--iot) (43) |
-| [Web & Frontend Development](#web--frontend-development) (938) | [Data & Analytics](#data--analytics) (28) | [Shopping & E-commerce](#shopping--e-commerce) (55) |
-| [DevOps & Cloud](#devops--cloud) (409) | [Finance](#finance) (21) | [Calendar & Scheduling](#calendar--scheduling) (65) |
-| [Image & Video Generation](#image--video-generation) (169) | [Media & Streaming](#media--streaming) (85) | [PDF & Documents](#pdf--documents) (111) |
-| [Apple Apps & Services](#apple-apps--services) (44) | [Notes & PKM](#notes--pkm) (71) | [Self-Hosted & Automation](#self-hosted--automation) (33) |
-| [Search & Research](#search--research) (352) | [iOS & macOS Development](#ios--macos-development) (29) | [Security & Passwords](#security--passwords) (54) |
+| [Git & GitHub](#git--github) (167) | [Marketing & Sales](#marketing--sales) (103) | [Communication](#communication) (146) |
+| [Coding Agents & IDEs](#coding-agents--ides) (1184) | [Productivity & Tasks](#productivity--tasks) (206) | [Speech & Transcription](#speech--transcription) (46) |
+| [Browser & Automation](#browser--automation) (323) | [AI & LLMs](#ai--llms) (176) | [Smart Home & IoT](#smart-home--iot) (41) |
+| [Web & Frontend Development](#web--frontend-development) (919) | [Data & Analytics](#data--analytics) (28) | [Shopping & E-commerce](#shopping--e-commerce) (51) |
+| [DevOps & Cloud](#devops--cloud) (393) | [Calendar & Scheduling](#calendar--scheduling) (66) | |
+| [Image & Video Generation](#image--video-generation) (170) | [Media & Streaming](#media--streaming) (86) | [PDF & Documents](#pdf--documents) (105) |
+| [Apple Apps & Services](#apple-apps--services) (44) | [Notes & PKM](#notes--pkm) (69) | [Self-Hosted & Automation](#self-hosted--automation) (33) |
+| [Search & Research](#search--research) (345) | [iOS & macOS Development](#ios--macos-development) (29) | [Security & Passwords](#security--passwords) (54) |
 | [Clawdbot Tools](#clawdbot-tools) (37) | [Transportation](#transportation) (110) | [Moltbook](#moltbook) (29) |
-| [CLI Utilities](#cli-utilities) (186) | [Personal Development](#personal-development) (51) | [Gaming](#gaming) (36) |
-| [Health & Fitness](#health--fitness) (88) | [Agent-to-Agent Protocols](#agent-to-agent-protocols) (17) | |
+| [CLI Utilities](#cli-utilities) (180) | [Personal Development](#personal-development) (50) | [Gaming](#gaming) (35) |
+| [Health & Fitness](#health--fitness) (87) | | |
 
 ## 技能分类
 
 ### Git & GitHub
 
-> **[查看 Git & GitHub 中的所有 166 个技能 →](categories/git-and-github.md)**
+> **[查看 Git & GitHub 中的所有 159 个技能 →](categories/git-and-github.md)**
 
 ### Coding Agents & IDEs
 
@@ -191,19 +226,19 @@ openclaw onboard --auth-choice openai-codex
 
 ### Browser & Automation
 
-> **[查看 Browser & Automation 中的所有 320 个技能 →](categories/browser-and-automation.md)**
+> **[查看 Browser & Automation 中的所有技能 →](categories/browser-and-automation.md)**
 
 ### Web & Frontend Development
 
-> **[查看 Web & Frontend Development 中的所有 925 个技能 →](categories/web-and-frontend-development.md)**
+> **[查看 Web & Frontend Development 中的所有技能 →](categories/web-and-frontend-development.md)**
 
 ### DevOps & Cloud
 
-> **[查看 DevOps & Cloud 中的所有 392 个技能 →](categories/devops-and-cloud.md)**
+> **[查看 DevOps & Cloud 中的所有技能 →](categories/devops-and-cloud.md)**
 
 ### Image & Video Generation
 
-> **[查看 Image & Video Generation 中的所有 169 个技能 →](categories/image-and-video-generation.md)**
+> **[查看 Image & Video Generation 中的所有 170 个技能 →](categories/image-and-video-generation.md)**
 
 ### Apple Apps & Services
 
@@ -215,30 +250,28 @@ openclaw onboard --auth-choice openai-codex
 
 ### 其他分类
 
-- [Marketing & Sales](categories/marketing-and-sales.md) (105)
-- [Communication](categories/communication.md) (149)
+- [Marketing & Sales](categories/marketing-and-sales.md) (103)
+- [Communication](categories/communication.md) (146)
 - [Productivity & Tasks](categories/productivity-and-tasks.md) (206)
-- [Speech & Transcription](categories/speech-and-transcription.md) (45)
-- [AI & LLMs](categories/ai-and-llms.md) (197)
-- [Smart Home & IoT](categories/smart-home-and-iot.md) (43)
+- [Speech & Transcription](categories/speech-and-transcription.md) (46)
+- [AI & LLMs](categories/ai-and-llms.md) (176)
+- [Smart Home & IoT](categories/smart-home-and-iot.md) (41)
 - [Data & Analytics](categories/data-and-analytics.md) (28)
-- [Shopping & E-commerce](categories/shopping-and-e-commerce.md) (55)
-- [Finance](categories/finance.md) (21)
-- [Calendar & Scheduling](categories/calendar-and-scheduling.md) (65)
-- [Media & Streaming](categories/media-and-streaming.md) (85)
-- [PDF & Documents](categories/pdf-and-documents.md) (111)
-- [Notes & PKM](categories/notes-and-pkm.md) (71)
+- [Shopping & E-commerce](categories/shopping-and-e-commerce.md) (51)
+- [Calendar & Scheduling](categories/calendar-and-scheduling.md) (66)
+- [Media & Streaming](categories/media-and-streaming.md) (86)
+- [PDF & Documents](categories/pdf-and-documents.md) (105)
+- [Notes & PKM](categories/notes-and-pkm.md) (69)
 - [Self-Hosted & Automation](categories/self-hosted-and-automation.md) (33)
 - [iOS & macOS Development](categories/ios-and-macos-development.md) (29)
 - [Security & Passwords](categories/security-and-passwords.md) (54)
 - [Clawdbot Tools](categories/clawdbot-tools.md) (37)
 - [Transportation](categories/transportation.md) (110)
 - [Moltbook](categories/moltbook.md) (29)
-- [CLI Utilities](categories/cli-utilities.md) (186)
-- [Personal Development](categories/personal-development.md) (51)
-- [Gaming](categories/gaming.md) (36)
-- [Health & Fitness](categories/health-and-fitness.md) (88)
-- [Agent-to-Agent Protocols](categories/agent-to-agent-protocols.md) (17)
+- [CLI Utilities](categories/cli-utilities.md) (180)
+- [Personal Development](categories/personal-development.md) (50)
+- [Gaming](categories/gaming.md) (35)
+- [Health & Fitness](categories/health-and-fitness.md) (87)
 
 ---
 

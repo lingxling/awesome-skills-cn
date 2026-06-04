@@ -5,6 +5,7 @@
 **65 个技能**
 
 - [accli](https://clawskills.sh/skills/joargp-accli) - 此技能应在与 macOS 上的 Apple 日历交互时使用。
+- [accli-plus](https://clawhub.ai/gopaljigaur/accli-plus) - 适用于macOS的增强版苹果日历命令行工具——在accli基础上新增搜索、导出、试运行、重复日程、提醒功能以及完整错误代码显示能力。
 - [advanced-calendar](https://clawskills.sh/skills/toughworm-advanced-calendar) - 具有自然语言功能的高级日历技能。
 - [agency-guardian](https://clawskills.sh/skills/aranej-agency-guardian) - 温和提醒在使用 AI 时保持人性。
 - [agent-tinman](https://clawskills.sh/skills/oliveskin-agent-tinman) - 具有主动预防功能的 AI 安全扫描器 - 168 项检测。

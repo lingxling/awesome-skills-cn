@@ -49,3 +49,4 @@
 - [tradekix](https://clawskills.sh/skills/jamesjohnfox-tradekix) - 通过 Tradekix API 查询金融市场数据 —— 股票价格、加密货币、外汇、指数、市场新闻、收益。
 - [turnip-prophet](https://clawskills.sh/skills/nicholasjackson-turnip-prophet) - 使用游戏的确切算法预测《动物森友会：新 horizons》的大头菜价格。
 - [whop-cli](https://clawskills.sh/skills/g9pedro-whop-cli) - 管理 Whop 数字产品商店 —— 创建产品、计划，跟踪付款，管理会员资格。
+- [vistoya](https://clawhub.ai/vistoya/vistoya-fashion) - 基于语义或结构化筛选的时尚/服装发现引擎。

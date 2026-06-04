@@ -1,11 +1,46 @@
 import { readdir, readFile, stat } from 'fs/promises';
-import { join, basename, dirname, resolve, normalize, sep } from 'path';
+import { join, basename, dirname, resolve, normalize, sep, relative } from 'path';
 import { parseFrontmatter } from './frontmatter.ts';
 import { sanitizeMetadata } from './sanitize.ts';
 import type { Skill } from './types.ts';
 import { getPluginSkillPaths, getPluginGroupings } from './plugin-manifest.ts';
+import { readLocalLock } from './local-lock.ts';
 
 const SKIP_DIRS = ['node_modules', '.git', 'dist', 'build', '__pycache__'];
+
+const AGENT_PROJECT_SKILL_DIRS = [
+  '.agents/skills',
+  '.claude/skills',
+  '.cline/skills',
+  '.codebuddy/skills',
+  '.codex/skills',
+  '.commandcode/skills',
+  '.continue/skills',
+  '.github/skills',
+  '.goose/skills',
+  '.iflow/skills',
+  '.junie/skills',
+  '.kilocode/skills',
+  '.kiro/skills',
+  '.mux/skills',
+  '.neovate/skills',
+  '.opencode/skills',
+  '.openhands/skills',
+  '.pi/skills',
+  '.qoder/skills',
+  '.roo/skills',
+  '.trae/skills',
+  '.windsurf/skills',
+  '.zencoder/skills',
+];
+
+function normalizeSkillName(name: string): string {
+  return name.toLowerCase().replace(/[\s_]+/g, '-');
+}
+
+function normalizeRelativePath(path: string): string {
+  return path.split(sep).join('/').replace(/\/+/g, '/');
+}
 
 /**
  * Check if internal skills should be installed.
@@ -113,6 +148,8 @@ export async function discoverSkills(
 ): Promise<Skill[]> {
   const skills: Skill[] = [];
   const seenNames = new Set<string>();
+  const localLock = await readLocalLock(basePath);
+  const lockedSkillNames = new Set(Object.keys(localLock.skills).map(normalizeSkillName));
 
   // Validate subpath doesn't escape basePath (prevent path traversal)
   if (subpath && !isSubpathSafe(basePath, subpath)) {
@@ -136,16 +173,34 @@ export async function discoverSkills(
     return skill;
   };
 
-  // If pointing directly at a skill, add it (and return early unless fullDepth is set)
+  const isInstalledProjectSkill = (skill: Skill): boolean => {
+    if (lockedSkillNames.size === 0) return false;
+
+    const relativeDir = normalizeRelativePath(relative(basePath, skill.path));
+    const isAgentSkillPath = AGENT_PROJECT_SKILL_DIRS.some(
+      (dir) => relativeDir === dir || relativeDir.startsWith(`${dir}/`)
+    );
+    if (!isAgentSkillPath) return false;
+
+    const skillName = normalizeSkillName(skill.name);
+    const directoryName = normalizeSkillName(basename(skill.path));
+    return lockedSkillNames.has(skillName) || lockedSkillNames.has(directoryName);
+  };
+
+  // If pointing directly at a skill, add it (and return early unless fullDepth is set).
+  // If the root SKILL.md is an installed project skill tracked by skills-lock.json,
+  // ignore it and continue scanning in case the repo also contains source skills.
   if (await hasSkillMd(searchPath)) {
     let skill = await parseSkillMd(join(searchPath, 'SKILL.md'), options);
     if (skill) {
-      skill = enhanceSkill(skill);
-      skills.push(skill);
-      seenNames.add(skill.name);
-      // Only return early if fullDepth is not set
-      if (!options?.fullDepth) {
-        return skills;
+      if (!isInstalledProjectSkill(skill)) {
+        skill = enhanceSkill(skill);
+        skills.push(skill);
+        seenNames.add(skill.name);
+        // Only return early if fullDepth is not set
+        if (!options?.fullDepth) {
+          return skills;
+        }
       }
     }
   }
@@ -157,50 +212,58 @@ export async function discoverSkills(
     join(searchPath, 'skills/.curated'),
     join(searchPath, 'skills/.experimental'),
     join(searchPath, 'skills/.system'),
-    join(searchPath, '.agents/skills'),
-    join(searchPath, '.claude/skills'),
-    join(searchPath, '.cline/skills'),
-    join(searchPath, '.codebuddy/skills'),
-    join(searchPath, '.codex/skills'),
-    join(searchPath, '.commandcode/skills'),
-    join(searchPath, '.continue/skills'),
-
-    join(searchPath, '.github/skills'),
-    join(searchPath, '.goose/skills'),
-    join(searchPath, '.iflow/skills'),
-    join(searchPath, '.junie/skills'),
-    join(searchPath, '.kilocode/skills'),
-    join(searchPath, '.kiro/skills'),
-    join(searchPath, '.mux/skills'),
-    join(searchPath, '.neovate/skills'),
-    join(searchPath, '.opencode/skills'),
-    join(searchPath, '.openhands/skills'),
-    join(searchPath, '.pi/skills'),
-    join(searchPath, '.qoder/skills'),
-    join(searchPath, '.roo/skills'),
-    join(searchPath, '.trae/skills'),
-    join(searchPath, '.windsurf/skills'),
-    join(searchPath, '.zencoder/skills'),
+    ...AGENT_PROJECT_SKILL_DIRS.map((dir) => join(searchPath, dir)),
   ];
+
+  // Known skill container dirs are walked one extra level deep so layouts
+  // like `skills/<category>/<skill>/SKILL.md` are discovered without
+  // requiring `--full-depth`. The repo root (first entry) keeps its
+  // existing depth-1 behavior to avoid surfacing unrelated `SKILL.md`
+  // files (e.g. `examples/foo/SKILL.md`), and plugin-manifest-declared
+  // dirs (appended below) stay at depth-1 to honor the manifest spec.
+  const deepContainerDirs = new Set(prioritySearchDirs.slice(1));
 
   // Add skill paths declared in plugin manifests
   prioritySearchDirs.push(...(await getPluginSkillPaths(searchPath)));
 
+  const tryAddSkillAt = async (skillDir: string): Promise<boolean> => {
+    if (!(await hasSkillMd(skillDir))) return false;
+    let skill = await parseSkillMd(join(skillDir, 'SKILL.md'), options);
+    if (!skill || seenNames.has(skill.name)) return true;
+    if (isInstalledProjectSkill(skill)) return true;
+    skill = enhanceSkill(skill);
+    skills.push(skill);
+    seenNames.add(skill.name);
+    return true;
+  };
+
   for (const dir of prioritySearchDirs) {
+    const walkDeep = deepContainerDirs.has(dir);
+
     try {
       const entries = await readdir(dir, { withFileTypes: true });
 
       for (const entry of entries) {
-        if (entry.isDirectory()) {
-          const skillDir = join(dir, entry.name);
-          if (await hasSkillMd(skillDir)) {
-            let skill = await parseSkillMd(join(skillDir, 'SKILL.md'), options);
-            if (skill && !seenNames.has(skill.name)) {
-              skill = enhanceSkill(skill);
-              skills.push(skill);
-              seenNames.add(skill.name);
-            }
+        if (!entry.isDirectory()) continue;
+
+        const childDir = join(dir, entry.name);
+        const foundAtChild = await tryAddSkillAt(childDir);
+
+        // Don't descend past a discovered SKILL.md (matches the existing
+        // flat-layout semantics) and don't go deeper inside non-container
+        // priority dirs.
+        if (foundAtChild || !walkDeep) continue;
+        if (SKIP_DIRS.includes(entry.name)) continue;
+
+        // Walk one extra level for catalog layouts.
+        try {
+          const grandEntries = await readdir(childDir, { withFileTypes: true });
+          for (const grand of grandEntries) {
+            if (!grand.isDirectory() || SKIP_DIRS.includes(grand.name)) continue;
+            await tryAddSkillAt(join(childDir, grand.name));
           }
+        } catch {
+          // Child dir unreadable; skip silently.
         }
       }
     } catch {
@@ -214,7 +277,7 @@ export async function discoverSkills(
 
     for (const skillDir of allSkillDirs) {
       let skill = await parseSkillMd(join(skillDir, 'SKILL.md'), options);
-      if (skill && !seenNames.has(skill.name)) {
+      if (skill && !seenNames.has(skill.name) && !isInstalledProjectSkill(skill)) {
         skill = enhanceSkill(skill);
         skills.push(skill);
         seenNames.add(skill.name);

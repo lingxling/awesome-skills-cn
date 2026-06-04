@@ -20,7 +20,9 @@ tags:
 
 # Aomi Transact
 
-> **Authorized use only.** This skill signs and broadcasts on-chain transactions on the user's behalf. The user must explicitly request each signing step. The skill will not stage `aomi tx sign` without an explicit user request and a corresponding `tx-N` queued by `aomi tx list`.
+> **Authorized use only.** This skill signs and broadcasts on-chain transactions on the user's behalf. The user must explicitly request each signing step. The skill will not run `aomi tx sign` without an explicit user request and a corresponding `tx-N` queued by `aomi tx list`.
+>
+> **Signing gate.** Do not include `aomi tx sign` in a copied or runnable multi-command block. Stop after listing or simulating queued transactions, summarize the tx ids, chain, value, recipient, calldata purpose, and simulation result, then ask the user for an explicit signing instruction such as `sign tx-1`. Only run the exact signing command after that separate approval.
 
 ## Overview
 
@@ -56,10 +58,9 @@ Returns a quote with no wallet request queued. Use `aomi tx list` to confirm the
 aomi chat "Stake 0.01 ETH with Lido to get stETH" \
   --public-key 0xUserAddress --chain 1 --new-session
 aomi tx list
-aomi tx sign tx-1
 ```
 
-`submit(address(0))` on Lido stETH `0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84`, `value = 0.01 ETH`. No approve, single tx.
+`submit(address(0))` on Lido stETH `0xae7ab96520DE3A18E5e111B5EaAb095312D7fE84`, `value = 0.01 ETH`. No approve, single tx. Stop here, show the queued transaction details, and wait for the user's explicit instruction before signing.
 
 ### Multi-step batch — Uniswap V3 swap
 
@@ -68,10 +69,9 @@ aomi chat "swap 1 USDC for WETH on Uniswap V3, send to my wallet" \
   --public-key 0xUserAddress --chain 1 --new-session
 aomi tx list                        # tx-1 = approve, tx-2 = swap
 aomi tx simulate tx-1 tx-2          # mandatory for multi-step
-aomi tx sign tx-1 tx-2              # one hash on the AA 7702 atomic-batch path
 ```
 
-The simulator runs each tx sequentially on a forked chain so the swap step sees the approve's state changes. Don't sign step 2 independently — it would revert.
+The simulator runs each tx sequentially on a forked chain so the swap step sees the approve's state changes. Don't sign step 2 independently — it would revert. Stop after simulation, summarize the batch, and wait for an explicit user instruction naming both tx ids before signing.
 
 ### Cross-chain — CCTP Ethereum → Base
 
@@ -80,10 +80,9 @@ aomi chat "Bridge 50 USDC from Ethereum to Base via CCTP. Recipient is my wallet
   --public-key 0xUserAddress --chain 1 --new-session
 aomi tx list
 aomi tx simulate tx-1 tx-2
-aomi tx sign tx-1 tx-2
-# Source-chain burn confirms in 1-2 blocks; destination mint requires
-# Circle's off-chain attestation (~13-19 minutes).
 ```
+
+Stop after simulation and wait for the user to explicitly approve signing the named tx ids. After signing, source-chain burn confirms in 1-2 blocks; destination mint requires Circle's off-chain attestation (~13-19 minutes).
 
 ## Limitations
 
@@ -100,6 +99,7 @@ aomi tx sign tx-1 tx-2
 - **Default `--new-session` on the first command of a new task.** Reusing it mid-task starts a fresh conversation and the agent loses the quote it just gave you.
 - **Always `aomi tx list` before `aomi tx sign`.** Never assume a chat response queued a transaction.
 - **Always `aomi tx simulate tx-1 tx-2 ...` before signing a multi-step batch.** Single-tx flows are simulation-optional but never wrong to simulate.
+- **Keep signing commands out of runnable examples.** Show or run `aomi tx sign` only after the user gives a separate, explicit approval naming the exact queued `tx-N` ids.
 - **Sign only `Batch [...] passed` txs.** Skip orphans from earlier failed attempts (`failed at step N: 0x...`).
 - **Match `--rpc-url` to the queued tx's chain**, not the session chain (`--chain`) — they are independent controls.
 - **Never echo credential values.** The skill confirms credential setup with handle name or derived address only.

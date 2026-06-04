@@ -5,7 +5,7 @@
   },
   "metadata": {
     "description": "Agent Skills for AI/ML tasks including dataset creation, model training, evaluation, and research paper publishing on Hugging Face Hub",
-    "version": "1.0.1"
+    "version": "1.0.4"
   },
   "plugins": [
     {
@@ -91,6 +91,12 @@
       "source": "./skills/train-sentence-transformers",
       "skills": "./",
       "description": "Train or fine-tune sentence-transformers models across all three architectures: SentenceTransformer (bi-encoder embeddings), CrossEncoder (rerankers), and SparseEncoder (SPLADE). Covers loss selection, hard-negative mining, evaluators, distillation, LoRA, Matryoshka, and Hugging Face Hub publishing."
+    },
+    {
+      "name": "huggingface-zerogpu",
+      "source": "./skills/huggingface-zerogpu",
+      "skills": "./",
+      "description": "Coding rules for Gradio Spaces using Hugging Face Spaces ZeroGPU hardware. Covers `@spaces.GPU`, duration and quota tuning, pickle-based process isolation, `gr.State` semantics across the worker boundary, the CUDA availability model, concurrency safety, and CUDA wheel-only build constraints."
     }
   ]
 }

@@ -96,7 +96,7 @@ Key fields returned by the API:
 const agent = await client.beta.agents.create(
   {
     name: "Coding Assistant",
-    model: "claude-opus-4-7",
+    model: "claude-opus-4-8",
     system: "You are a helpful coding agent.",
     tools: [{ type: "agent_toolset_20260401"}],
   },
@@ -215,6 +215,24 @@ session = client.beta.sessions.create(
 session = client.beta.sessions.create(
     agent={"type": "agent", "id": agent.id, "version": agent.version},
     environment_id=environment_id,
+)
+```
+
+### Updating the agent configuration mid-session
+
+`sessions.update()` can change `agent.tools`, `agent.mcp_servers` (including permission policies), and `vault_ids` on an **existing** session. This is a **session-local override** — it does not create a new agent version and does not propagate back to the agent object. The provided arrays are **full replacements**; to append one tool, `GET` the session, modify, and `POST` back. The session must be `idle` — interrupt first if running.
+
+```python
+client.beta.sessions.update(
+    session.id,
+    agent={
+        "tools": [
+            {"type": "agent_toolset_20260401"},
+            {"type": "mcp_toolset", "mcp_server_name": "linear"},
+        ],
+        "mcp_servers": [{"type": "url", "name": "linear", "url": "https://mcp.linear.app/sse"}],
+    },
+    vault_ids=["vlt_..."],
 )
 ```
 

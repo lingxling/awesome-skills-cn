@@ -133,6 +133,7 @@ gemini extensions install https://github.com/huggingface/skills.git --consent
 | `huggingface-tool-builder` | 为 Hugging Face Hub 和 API 工作流构建可重用脚本。适用于链接 API 调用、丰富 Hub 元数据或自动化重复任务。 | [SKILL.md](skills/huggingface-tool-builder/SKILL.md) |
 | `huggingface-trackio` | 使用 Trackio 跟踪和可视化 ML 训练实验。通过 Python API 记录指标并通过 CLI 检索它们。支持与 HF Spaces 同步的实时仪表板。 | [SKILL.md](skills/huggingface-trackio/SKILL.md) |
 | `huggingface-vision-trainer` | 使用 Transformers Trainer API 在 Hugging Face Jobs 基础设施或本地训练和微调目标检测模型(RTDETRv2、YOLOS、DETR 等)和图像分类模型(timm 和 transformers 模型 — MobileNetV3、MobileViT、ResNet、ViT/DINOv3)。包括 COCO 数据集格式支持、Albumentations 增强、mAP/mAR 指标、trackio 跟踪、硬件选择和 Hub 持久化。 | [SKILL.md](skills/huggingface-vision-trainer/SKILL.md) |
+| `huggingface-zerogpu` | 使用 Hugging Face Spaces ZeroGPU 硬件的 Gradio Spaces 编码规则。涵盖 `@spaces.GPU`、持续时间和配额调整、基于 pickle 的进程隔离、`gr.State` 在 worker 边界处的语义、CUDA 可用性模型、并发安全性和 CUDA 纯 wheel 构建约束。 | [SKILL.md](skills/huggingface-zerogpu/SKILL.md) |
 | `train-sentence-transformers` | 训练或微调所有三种架构的 sentence-transformers 模型:SentenceTransformer(双编码器嵌入)、CrossEncoder(重排序器)和 SparseEncoder(SPLADE)。涵盖损失选择、硬负样本挖掘、评估器、蒸馏、LoRA、Matryoshka 和 Hugging Face Hub 发布。 | [SKILL.md](skills/train-sentence-transformers/SKILL.md) |
 | `transformers-js` | 直接在 JavaScript/TypeScript 中运行最先进的机器学习模型,用于 NLP、计算机视觉、音频处理和多模态任务。使用 Hugging Face 模型在 Node.js 和带有 WebGPU/WASM 的浏览器中工作。 | [SKILL.md](skills/transformers-js/SKILL.md) |
 <!-- END_SKILLS_TABLE -->

@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#目录)
 
-**184 个技能**
+**185 个技能**
 
 - [4claw](https://clawskills.sh/skills/mfergpt-4claw) - 4claw — 一个为 AI 代理设计的审核图像板。
 - [aap-passport](https://clawskills.sh/skills/ira-hash-aap-passport) - 代理认证协议 - 反向图灵测试。

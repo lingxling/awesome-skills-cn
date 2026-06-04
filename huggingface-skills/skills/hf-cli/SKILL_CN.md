@@ -9,7 +9,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 使用 `hf --help` 查看可用功能。注意，认证命令现在都在 `hf auth` 下，例如 `hf auth whoami`。
 
-由 `huggingface_hub v1.14.0` 生成。运行 `hf skills add --force` 重新生成。
+由 `huggingface_hub v1.17.0` 生成。运行 `hf skills add --force` 重新生成。
 
 ## 命令
 
@@ -33,7 +33,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 ### `hf buckets` — 与存储桶交互的命令。
 
 - `hf buckets cp SRC` — 将文件复制到存储桶或从存储桶复制。`[--format CHOICE]`
-- `hf buckets create BUCKET_ID` — 创建新存储桶。`[--private --exist-ok --format CHOICE]`
+- `hf buckets create BUCKET_ID` — 创建新存储桶。`[--private --region CHOICE --exist-ok --format CHOICE]`
 - `hf buckets delete BUCKET_ID` — 删除存储桶。`[--yes --missing-ok --format CHOICE]`
 - `hf buckets info BUCKET_ID` — 获取存储桶信息。`[--format CHOICE]`
 - `hf buckets list` — 列出存储桶或存储桶中的文件。`[--human-readable --tree --recursive --search TEXT --format CHOICE]`
@@ -107,10 +107,12 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 - `hf jobs hardware` — 列出作业可用的硬件选项 `[--format CHOICE]`
 - `hf jobs inspect JOB_IDS` — 显示一个或多个作业的详细信息 `[--namespace TEXT --format CHOICE]`
 - `hf jobs logs JOB_ID` — 获取作业的日志。`[--follow --tail INTEGER --namespace TEXT --format CHOICE]`
+- `hf jobs labels JOB_ID` — 更新作业的标签。替换所有现有标签。`[--label TEXT --clear --namespace TEXT --format CHOICE]`
 - `hf jobs ps` — 列出作业。`[--all --namespace TEXT --filter TEXT --format TEXT --quiet]`
 - `hf jobs run IMAGE COMMAND` — 运行作业。`[--env TEXT --secrets TEXT --label TEXT --volume TEXT --env-file TEXT --secrets-file TEXT --flavor CHOICE --timeout TEXT --detach --namespace TEXT]`
 - `hf jobs scheduled delete SCHEDULED_JOB_ID` — 删除计划作业。`[--namespace TEXT --format CHOICE]`
 - `hf jobs scheduled inspect SCHEDULED_JOB_IDS` — 显示一个或多个计划作业的详细信息 `[--namespace TEXT --format CHOICE]`
+- `hf jobs scheduled labels SCHEDULED_JOB_ID` — 更新计划作业的标签。替换所有现有标签。`[--label TEXT --clear --namespace TEXT --format CHOICE]`
 - `hf jobs scheduled ps` — 列出计划作业 `[--all --namespace TEXT --filter TEXT --format TEXT --quiet]`
 - `hf jobs scheduled resume SCHEDULED_JOB_ID` — 恢复（取消暂停）计划作业。`[--namespace TEXT --format CHOICE]`
 - `hf jobs scheduled run SCHEDULE IMAGE COMMAND` — 计划作业。`[--suspend --concurrency --env TEXT --secrets TEXT --label TEXT --volume TEXT --env-file TEXT --secrets-file TEXT --flavor CHOICE --timeout TEXT --namespace TEXT]`
@@ -136,10 +138,11 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 
 - `hf repos branch create REPO_ID BRANCH` — 为 Hub 上的仓库创建新分支。`[--revision TEXT --type CHOICE --exist-ok --format CHOICE]`
 - `hf repos branch delete REPO_ID BRANCH` — 从 Hub 上的仓库删除分支。`[--type CHOICE --format CHOICE]`
-- `hf repos create REPO_ID` — 在 Hub 上创建新仓库。`[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT --format CHOICE]`
+- `hf repos create REPO_ID` — 在 Hub 上创建新仓库。`[--type CHOICE --space-sdk TEXT --private --public --protected --exist-ok --resource-group-id TEXT --region CHOICE --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT --format CHOICE]`
 - `hf repos delete REPO_ID` — 从 Hub 中删除仓库。这是不可逆操作。`[--type CHOICE --missing-ok --yes --format CHOICE]`
 - `hf repos delete-files REPO_ID PATTERNS` — 从 Hub 上的仓库删除文件。`[--type CHOICE --revision TEXT --commit-message TEXT --commit-description TEXT --create-pr --format CHOICE]`
 - `hf repos duplicate FROM_ID` — 在 Hub 上复制仓库（模型、数据集或 Space）。`[--type CHOICE --private --public --protected --exist-ok --flavor CHOICE --storage CHOICE --sleep-time INTEGER --secrets TEXT --secrets-file TEXT --env TEXT --env-file TEXT --volume TEXT --format CHOICE]`
+- `hf repos list` — 列出所有仓库（模型、数据集、spaces、存储桶）及存储信息。`[--namespace TEXT --type CHOICE --search TEXT --limit INTEGER --format CHOICE]`
 - `hf repos move FROM_ID TO_ID` — 将仓库从一个命名空间移动到另一个命名空间。`[--type CHOICE --format CHOICE]`
 - `hf repos settings REPO_ID` — 更新仓库的设置。`[--gated CHOICE --private --public --protected --type CHOICE --format CHOICE]`
 - `hf repos tag create REPO_ID TAG` — 为仓库创建标签。`[--message TEXT --revision TEXT --type CHOICE --format CHOICE]`
@@ -168,6 +171,7 @@ Hugging Face Hub CLI 工具 `hf` 可用。重要：`hf` 命令替代了已弃用
 - `hf spaces secrets delete SPACE_ID KEY` — 从 Space 中移除 secret。`[--yes --format CHOICE]`
 - `hf spaces secrets list SPACE_ID` — 列出 Space 的 secrets。Secret 值是只写的，不会返回。`[--format CHOICE]`
 - `hf spaces settings SPACE_ID` — 更新 Space 的设置。`[--sleep-time INTEGER --hardware CHOICE --format CHOICE]`
+- `hf spaces ssh SPACE_ID` — SSH 到 Space 的 Dev Mode 容器。`[--identity-file PATH --dry-run --auto --format CHOICE]`
 - `hf spaces variables add SPACE_ID` — 为 Space 添加或更新环境变量。`[--env TEXT --env-file TEXT --format CHOICE]`
 - `hf spaces variables delete SPACE_ID KEY` — 从 Space 中移除环境变量。`[--yes --format CHOICE]`
 - `hf spaces variables list SPACE_ID` — 列出 Space 的环境变量。`[--format CHOICE]`

@@ -57,6 +57,7 @@ If you believe a skill currently in this list has a security concern or should b
 ## Important
 
 - This repository curates links only. Each skill lives in the official OpenClaw skills repo.
+- **Do not submit links pointing to `https://clawskills.sh/` URLs.** All skill entries must link to the GitHub source at `https://github.com/openclaw/skills/tree/main/skills/author/skill-name/SKILL.md`. The clawskills.sh listings are managed and deployed by us separately — you do not need to add anything there.
 - Verify your links work before submitting.
 - We review all submissions and may decline skills that don't meet the quality bar.
 - Do not submit duplicate skills that serve the same purpose as an existing entry.

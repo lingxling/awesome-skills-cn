@@ -77,46 +77,118 @@ export interface RepoTree {
 }
 
 /**
- * Fetch the full recursive tree for a GitHub repo.
- * Returns the tree data including all entries, or null on failure.
- * Tries branches in order: ref (if specified), then main, then master.
+ * Within-process memo: once we've discovered that the GitHub API has
+ * rate-limited this IP, subsequent calls skip straight to the auth fallback
+ * instead of burning round trips on requests guaranteed to 403.
  */
-export async function fetchRepoTree(
+let _rateLimitedThisSession = false;
+
+/** For tests only. */
+export function resetRepoTreeAuthState(): void {
+  _rateLimitedThisSession = false;
+}
+
+interface BranchFetchResult {
+  tree: RepoTree | null;
+  rateLimited: boolean;
+}
+
+async function fetchTreeBranch(
   ownerRepo: string,
-  ref?: string,
-  token?: string | null
-): Promise<RepoTree | null> {
-  const branches = ref ? [ref] : ['HEAD', 'main', 'master'];
+  branch: string,
+  token: string | null
+): Promise<BranchFetchResult> {
+  try {
+    const url = `https://api.github.com/repos/${ownerRepo}/git/trees/${encodeURIComponent(branch)}?recursive=1`;
+    const headers: Record<string, string> = {
+      Accept: 'application/vnd.github.v3+json',
+      'User-Agent': 'skills-cli',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
 
-  for (const branch of branches) {
-    try {
-      const url = `https://api.github.com/repos/${ownerRepo}/git/trees/${encodeURIComponent(branch)}?recursive=1`;
-      const headers: Record<string, string> = {
-        Accept: 'application/vnd.github.v3+json',
-        'User-Agent': 'skills-cli',
-      };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
+    const response = await fetch(url, {
+      headers,
+      signal: AbortSignal.timeout(FETCH_TIMEOUT),
+    });
 
-      const response = await fetch(url, {
-        headers,
-        signal: AbortSignal.timeout(FETCH_TIMEOUT),
-      });
-
-      if (!response.ok) continue;
-
+    if (response.ok) {
       const data = (await response.json()) as {
         sha: string;
         tree: TreeEntry[];
       };
+      return {
+        tree: { sha: data.sha, branch, tree: data.tree },
+        rateLimited: false,
+      };
+    }
 
-      return { sha: data.sha, branch, tree: data.tree };
-    } catch {
-      continue;
+    // GitHub signals rate-limit with 403 + X-RateLimit-Remaining: 0.
+    // (A bare 403 means permission denied, which is not retryable here.)
+    const rateLimited =
+      response.status === 403 && response.headers.get('x-ratelimit-remaining') === '0';
+    return { tree: null, rateLimited };
+  } catch {
+    return { tree: null, rateLimited: false };
+  }
+}
+
+/**
+ * Fetch the full recursive tree for a GitHub repo.
+ * Returns the tree data including all entries, or null on failure.
+ * Tries branches in order: ref (if specified), then main, then master.
+ *
+ * Authentication is lazy: by default the call goes out unauthenticated,
+ * which is enough for the vast majority of users (60 req/hr per IP).
+ * Only if GitHub responds with a rate-limit 403 do we ask the optional
+ * `getToken` callback for a token and retry. This avoids invoking
+ * `gh auth token` on every install, which corporate endpoint security
+ * tools flag as suspicious credential extraction. See issue #523.
+ */
+export async function fetchRepoTree(
+  ownerRepo: string,
+  ref?: string,
+  getToken?: () => string | null
+): Promise<RepoTree | null> {
+  const branches = ref ? [ref] : ['HEAD', 'main', 'master'];
+
+  // Fast path: once we've seen a rate limit in this process, don't bother
+  // retrying unauth on subsequent calls. Go straight to auth.
+  if (_rateLimitedThisSession && getToken) {
+    const token = getToken();
+    if (!token) return null;
+    for (const branch of branches) {
+      const result = await fetchTreeBranch(ownerRepo, branch, token);
+      if (result.tree) return result.tree;
+    }
+    return null;
+  }
+
+  // First pass: unauthenticated.
+  let rateLimited = false;
+  for (const branch of branches) {
+    const result = await fetchTreeBranch(ownerRepo, branch, null);
+    if (result.tree) return result.tree;
+    if (result.rateLimited) {
+      // All branches share the same rate-limit bucket on this IP, so it's
+      // pointless to keep trying other branches in this pass.
+      rateLimited = true;
+      break;
     }
   }
 
+  if (!rateLimited || !getToken) return null;
+
+  // Lazy fallback: rate limit hit and a token resolver was provided.
+  _rateLimitedThisSession = true;
+  const token = getToken();
+  if (!token) return null;
+
+  for (const branch of branches) {
+    const result = await fetchTreeBranch(ownerRepo, branch, token);
+    if (result.tree) return result.tree;
+  }
   return null;
 }
 
@@ -199,12 +271,20 @@ export function findSkillMdPaths(tree: RepoTree, subpath?: string): string[] {
 
   if (filtered.length === 0) return [];
 
-  // Check priority directories first (same order as discoverSkills)
+  // Check priority directories first (same order as discoverSkills).
+  // Non-root prefixes also accept depth-2 paths so the blob fast path stays
+  // in sync with the on-disk walk's catalog-layout discovery.
   const priorityResults: string[] = [];
   const seen = new Set<string>();
+  // Mirror of SKIP_DIRS at the top of src/skills.ts. Kept local to avoid
+  // a cross-file import; if these ever drift, update both.
+  const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'build', '__pycache__']);
+  const lowerSkillMdSet = new Set(filtered.map((p) => p.toLowerCase()));
 
   for (const priorityPrefix of PRIORITY_PREFIXES) {
     const fullPrefix = prefix + priorityPrefix;
+    const isContainer = priorityPrefix !== '';
+
     for (const skillMd of filtered) {
       // Check if this SKILL.md is directly inside the priority dir (one level deep)
       if (!skillMd.startsWith(fullPrefix)) continue;
@@ -223,6 +303,25 @@ export function findSkillMdPaths(tree: RepoTree, subpath?: string): string[] {
       const parts = rest.split('/');
       if (parts.length === 2 && parts[1]!.toLowerCase() === 'skill.md') {
         if (!seen.has(skillMd)) {
+          priorityResults.push(skillMd);
+          seen.add(skillMd);
+        }
+        continue;
+      }
+
+      // SKILL.md two levels deep under a known container prefix
+      // (e.g., "skills/<category>/<skill>/SKILL.md"). Skip if the parent
+      // child dir already has its own SKILL.md (no descent past), or if
+      // any path segment is an ignored directory.
+      if (
+        isContainer &&
+        parts.length === 3 &&
+        parts[2]!.toLowerCase() === 'skill.md' &&
+        !SKIP_DIRS.has(parts[0]!) &&
+        !SKIP_DIRS.has(parts[1]!)
+      ) {
+        const parentSkillMd = `${fullPrefix}${parts[0]}/SKILL.md`.toLowerCase();
+        if (!lowerSkillMdSet.has(parentSkillMd) && !seen.has(skillMd)) {
           priorityResults.push(skillMd);
           seen.add(skillMd);
         }
@@ -312,12 +411,12 @@ export async function tryBlobInstall(
     subpath?: string;
     skillFilter?: string;
     ref?: string;
-    token?: string | null;
+    getToken?: () => string | null;
     includeInternal?: boolean;
   } = {}
 ): Promise<BlobInstallResult | null> {
   // 1. Fetch the full repo tree
-  const tree = await fetchRepoTree(ownerRepo, options.ref, options.token);
+  const tree = await fetchRepoTree(ownerRepo, options.ref, options.getToken);
   if (!tree) return null;
 
   // 2. Discover SKILL.md paths in the tree
