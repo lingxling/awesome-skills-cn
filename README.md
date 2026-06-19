@@ -17,6 +17,7 @@
 - [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) ([中文学习版](ui-ux-pro-max-skill/)) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（7个技能，已全部翻译）
 - [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) ([中文学习版](vercel-labs-agent-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（7个技能，6个已翻译）
 - [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) ([中文学习版](vercel-labs-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
+- [**NotFair**](https://github.com/nowork-studio/NotFair) [![GitHub Stars](https://badgen.net/github/stars/nowork-studio/NotFair)](https://github.com/nowork-studio/NotFair) - 面向营销的 Claude Code 技能集，涵盖 SEO、GEO、Google Ads 和 Meta Ads，通过 Google Ads MCP、Meta Ads MCP、Google Search Console MCP 和 Google Analytics (GA4) MCP 接入实时数据（18个技能，待翻译）
 
 ## SKILL 是什么
 
@@ -367,7 +368,8 @@ awesome-skills-cn/
 | ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-agent-skills | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| **总计** | **7930** | **75** | **6271/7930** | **已完成** |
+| nowork-studio/NotFair | 18 | - | 0/18 | 未开始 |
+| **总计** | **7948** | **75** | **6271/7948** | **进行中** |
 
 
 ### anthropics-skills (17个)
@@ -533,6 +535,27 @@ awesome-skills-cn/
 
 - [x] [find-skills](vercel-labs-skills/skills/find-skills/SKILL_CN.md) - SKILL 发现工具
 
+### nowork-studio/NotFair (18个)
+
+- [ ] [gemini](https://github.com/nowork-studio/NotFair/blob/main/gemini/SKILL.md) - Gemini 集成
+- [ ] [google-ads/audit](https://github.com/nowork-studio/NotFair/blob/main/google-ads/audit/SKILL.md) - Google Ads 账户审计
+- [ ] [google-ads/copy](https://github.com/nowork-studio/NotFair/blob/main/google-ads/copy/SKILL.md) - Google Ads 文案撰写
+- [ ] [google-ads/landing](https://github.com/nowork-studio/NotFair/blob/main/google-ads/landing/SKILL.md) - Google Ads 落地页优化
+- [ ] [google-ads/manage](https://github.com/nowork-studio/NotFair/blob/main/google-ads/manage/SKILL.md) - Google Ads 广告管理
+- [ ] [meta-ads/audit](https://github.com/nowork-studio/NotFair/blob/main/meta-ads/audit/SKILL.md) - Meta Ads 账户审计
+- [ ] [meta-ads/manage](https://github.com/nowork-studio/NotFair/blob/main/meta-ads/manage/SKILL.md) - Meta Ads 广告管理
+- [ ] [notfair-upgrade-skill](https://github.com/nowork-studio/NotFair/blob/main/notfair-upgrade-skill/SKILL.md) - NotFair 升级工具
+- [ ] [seo/broken-link-checker](https://github.com/nowork-studio/NotFair/blob/main/seo/broken-link-checker/SKILL.md) - 断链检测
+- [ ] [seo/content-planner](https://github.com/nowork-studio/NotFair/blob/main/seo/content-planner/SKILL.md) - 内容规划
+- [ ] [seo/content-writer](https://github.com/nowork-studio/NotFair/blob/main/seo/content-writer/SKILL.md) - 内容写作
+- [ ] [seo/geo-optimizer](https://github.com/nowork-studio/NotFair/blob/main/seo/geo-optimizer/SKILL.md) - GEO 生成式引擎优化
+- [ ] [seo/keyword-research](https://github.com/nowork-studio/NotFair/blob/main/seo/keyword-research/SKILL.md) - 关键词研究
+- [ ] [seo/meta-tags-optimizer](https://github.com/nowork-studio/NotFair/blob/main/seo/meta-tags-optimizer/SKILL.md) - Meta 标签优化
+- [ ] [seo/schema-markup-generator](https://github.com/nowork-studio/NotFair/blob/main/seo/schema-markup-generator/SKILL.md) - 结构化数据标记生成
+- [ ] [seo/seo-analysis](https://github.com/nowork-studio/NotFair/blob/main/seo/seo-analysis/SKILL.md) - SEO 站点分析
+- [ ] [seo/seo-page](https://github.com/nowork-studio/NotFair/blob/main/seo/seo-page/SKILL.md) - SEO 页面优化
+- [ ] [seo/setup-cms](https://github.com/nowork-studio/NotFair/blob/main/seo/setup-cms/SKILL.md) - CMS 配置
+
 ## 许可证
 
 本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
@@ -552,6 +575,7 @@ awesome-skills-cn/
 - [UI/UX Pro Max Skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能
 - [Vercel Labs Agent Skills](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等
 - [Vercel Labs Skills](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具
+- [NotFair](https://github.com/nowork-studio/NotFair) - 面向营销的 Claude Code 技能集，涵盖 SEO、GEO、Google Ads 和 Meta Ads
 
 ## 联系方式
 
