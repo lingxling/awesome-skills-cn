@@ -556,3 +556,5 @@ awesome-skills-cn/
 ## 联系方式
 
 如有问题或建议，欢迎提交 Issue 或 Pull Request。
+
+- **[Context Kit](https://github.com/JDDavenport/context-kit)** — 个人上下文工件：4 个 Markdown 模板（wiki、心智模型、语音风格、协议）+ 5 个 Claude Code 技能，解决 AI Agent 的上下文失忆问题，每次会话都能全量载入个人背景。MIT 许可，一键安装。
