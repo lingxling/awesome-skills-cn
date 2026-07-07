@@ -14,6 +14,7 @@
 - [**Hugging Face Skills**](https://github.com/huggingface/skills) ([中文学习版](huggingface-skills/)) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（11个技能，已全部翻译）
 - [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) ([中文学习版](obsidian-skills/)) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能，已全部翻译）
 - [**OpenAI Skills**](https://github.com/openai/skills) ([中文学习版](openai-skills/)) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（38个技能，已全部翻译）
+- [**RouterBase Agent Skills**](https://github.com/zenlee123/routerbase-agent-skills) ([中文学习版](routerbase-agent-skills/)) - [routerbase](https://routerbase.com/) 模型网关技能，包含 API 集成、模型路由和媒体生成（3个技能，已全部翻译）
 - [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) ([中文学习版](ui-ux-pro-max-skill/)) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（7个技能，已全部翻译）
 - [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) ([中文学习版](vercel-labs-agent-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（7个技能，6个已翻译）
 - [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) ([中文学习版](vercel-labs-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
@@ -310,6 +311,15 @@ awesome-skills-cn/
 │           │   └── SKILL_CN.md    # 技能创建器
 │           └── skill-installer/
 │               └── SKILL_CN.md    # 技能安装器
+├── routerbase-agent-skills/     # zenlee123/routerbase-agent-skills 项目
+│   ├── README_CN.md             # 项目说明文档中文翻译
+│   └── skills/
+│       ├── routerbase-api-integration/
+│       │   └── SKILL_CN.md      # RouterBase API 集成
+│       ├── routerbase-model-routing/
+│       │   └── SKILL_CN.md      # RouterBase 模型路由
+│       └── routerbase-media-generation/
+│           └── SKILL_CN.md      # RouterBase 媒体生成
 ├── ui-ux-pro-max-skill/        # ui-ux-pro-max-skill 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── .claude/skills/
@@ -364,10 +374,11 @@ awesome-skills-cn/
 | huggingface-skills | 11 | ✓ | 11/11 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | openai-skills | 38 | ✓ | 38/38 | 已完成 |
+| routerbase-agent-skills | 3 | ✓ | 3/3 | 已完成 |
 | ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-agent-skills | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| **总计** | **7930** | **75** | **6271/7930** | **已完成** |
+| **总计** | **7933** | **76** | **6274/7933** | **已完成** |
 
 
 ### anthropics-skills (17个)
@@ -510,6 +521,12 @@ awesome-skills-cn/
 - [x] [winui-app](openai-skills/skills/.curated/winui-app/SKILL_CN.md) - WinUI 3 应用开发
 - [x] [yeet](openai-skills/skills/.curated/yeet/SKILL_CN.md) - Git 提交流程
 
+### routerbase-agent-skills (3个)
+
+- [x] [routerbase-api-integration](routerbase-agent-skills/skills/routerbase-api-integration/SKILL_CN.md) - RouterBase API 集成
+- [x] [routerbase-model-routing](routerbase-agent-skills/skills/routerbase-model-routing/SKILL_CN.md) - RouterBase 模型路由
+- [x] [routerbase-media-generation](routerbase-agent-skills/skills/routerbase-media-generation/SKILL_CN.md) - RouterBase 媒体生成
+
 ### ui-ux-pro-max-skill (7个)
 
 - [x] [ui-ux-pro-max](ui-ux-pro-max-skill/.claude/skills/ui-ux-pro-max/SKILL_CN.md) - UI/UX 专业技能
@@ -549,6 +566,7 @@ awesome-skills-cn/
 - [Hugging Face Skills](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能
 - [Obsidian Skills](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等
 - [OpenAI Skills](https://github.com/openai/skills) - OpenAI Codex 技能目录
+- [RouterBase Agent Skills](https://github.com/zenlee123/routerbase-agent-skills) - [routerbase](https://routerbase.com/) 模型网关技能
 - [UI/UX Pro Max Skill](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能
 - [Vercel Labs Agent Skills](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等
 - [Vercel Labs Skills](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具
