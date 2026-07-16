@@ -2,9 +2,7 @@
 name: hypogenic
 description: 表格数据集上的自动LLM驱动假设生成和检验。当您想系统地探索关于经验数据中模式的假设时使用（例如，欺骗检测、内容分析）。结合文献洞察与数据驱动的假设检验。手动假设制定请使用hypothesis-generation；创造性构思请使用scientific-brainstorming。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

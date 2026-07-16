@@ -67,6 +67,33 @@ Review UI code for compliance with web interface best practices. Audits your cod
 - Touch & Interaction (touch-action, tap-highlight)
 - Locale & i18n (Intl.DateTimeFormat, Intl.NumberFormat)
 
+### writing-guidelines
+
+Review docs and prose for compliance with the Vercel writing handbook. Audits your pages for 80+ rules covering voice, structure, content types, code samples, typography, and AI workflow.
+
+**Use when:**
+
+- "Review my docs"
+- "Check writing style"
+- "Audit prose"
+- "Review docs voice and tone"
+- "Check this page against the writing handbook"
+
+**Categories covered:**
+
+- Planning (content plan, content type, user-shaped titles)
+- Voice & tone (active voice, direct address, banned words like `easy`/`simple`/`quick`)
+- Tone by content type (tutorial, how-to, reference, conceptual, troubleshooting)
+- Headings & structure (sentence case, descriptive subheadings, TL;DR opens)
+- Lists (when to use, bold/description format)
+- Code (language tags, TypeScript first, `<Steps/>`, 80-col / 25-line limits)
+- Placeholders, units, & numbers (`snake_case` text, count-up numbers, `64 KB`/`200 ms`)
+- Typography (no em dashes as punctuation, curly quotes, ellipsis character, non-breaking spaces)
+- Source formatting (no hard-wrap, no `---` rules, blank line discipline)
+- Pricing & money pages (tables, uncompromising detail)
+- AI workflow (accountability, enterprise models, plan first, disclose AI use)
+- Review (PR description discipline, author accountability)
+
 ### react-native-guidelines
 
 React Native best practices optimized for AI agents. Contains 16 rules across 7 sections covering performance, architecture, and platform-specific patterns.

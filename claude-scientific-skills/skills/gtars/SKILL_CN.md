@@ -2,9 +2,7 @@
 name: gtars
 description: 用于Rust中基因组区间分析的高性能工具包，带Python绑定。当处理基因组区域、BED文件、覆盖度轨道、重叠检测、ML模型的标记化或计算基因组学和机器学习应用中的片段分析时使用。
 license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

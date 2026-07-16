@@ -2,9 +2,7 @@
 name: pylabrobot
 description: 供应商无关的实验室自动化框架。当控制多种设备类型（Hamilton、Tecan、Opentrons、酶标仪、泵）或需要在不同供应商之间进行统一编程时使用。最适合复杂工作流、多供应商设置、模拟。对于仅使用Opentrons的协议，使用官方API，opentrons-integration可能更简单。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

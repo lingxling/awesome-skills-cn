@@ -31,7 +31,7 @@
 - [best-image-generation](https://clawskills.sh/skills/evolinkai-best-image-generation) - Best quality AI image generation (~$0.12-0.20/image)
 - [bex-nano-banana-pro](https://clawskills.sh/skills/bextuychiev-bex-nano-banana-pro) - Generate or edit images via Gemini 3 Pro Image on Replicate.
 - [breeze](https://clawskills.sh/skills/keeganthomp-breeze) - Interact with the Breeze yield aggregator through the x402 payment-gated HTTP API.
-- [cad-agent](https://github.com/clawdbot/skills/tree/main/skills/clawd-maf/cad-agent/SKILL.md) - Rendering server for AI agents doing CAD work.
+- [cad-agent](https://clawskills.sh/skills/clawd-maf-cad-agent) - Rendering server for AI agents doing CAD work.
 - [calorie-visualizer](https://clawskills.sh/skills/vintlin-calorie-visualizer) - Local calorie logging and visual reporting (auto-refreshes and returns report image after each log)
 - [canva-connect](https://clawskills.sh/skills/coolmanns-canva-connect) - Manage Canva designs, assets, and folders via the Connect API.
 - [canvs](https://clawskills.sh/skills/voronkovm-canvs) - Create and manipulate collaborative whiteboards and diagrams using Canvs.io tools.
@@ -93,8 +93,8 @@
 - [image-gen](https://clawskills.sh/skills/wells1137-image-gen) - Generate images using multiple AI models — Midjourney (via Legnext.ai), Flux, SDXL, Nano Banana (Gemini)
 - [image-hosting](https://clawskills.sh/skills/rahulgi-image-hosting) - Upload images to img402.dev and get a public URL.
 - [image-magik-resize](https://clawskills.sh/skills/pr1vateer-image-magik-resize) - Resize images using ImageMagick (CLI)
-- [ima-all-ai](https://github.com/openclaw/skills/tree/main/skills/allenfancy-gan/ima-all-ai/SKILL.md) - IMA API for image, video, and music generation.
-- [ima-knowledge-ai](https://github.com/openclaw/skills/tree/main/skills/dai-shuo/ima-knowledge-ai/SKILL.md) - AI content brief and production guide for video, image, and audio.
+- [ima-all-ai](https://clawskills.sh/skills/allenfancy-gan-ima-all-ai) - IMA API for image, video, and music generation.
+- [ima-knowledge-ai](https://clawskills.sh/skills/dai-shuo-ima-knowledge-ai) - AI content brief and production guide for video, image, and audio.
 - [immich-api](https://clawskills.sh/skills/ninjazan420-immich-api) - Immich Photo Management API Bridge.
 - [immortal](https://clawskills.sh/skills/majestyatenkhu-immortal) - Empowers AI agents with crypto resource vitality assessment.
 - [instagram-photo-text-overlay](https://clawskills.sh/skills/psyduckler-instagram-photo-text-overlay) - Overlay text on photos for Instagram posts.
@@ -143,7 +143,8 @@
 - [saa-agent](https://clawskills.sh/skills/mirabarukaso-saa-agent) - Enables AI agents to generate images using the Character Select Stand Alone App (SAA) image generation backend.
 - [shopify-bulk-upload](https://clawskills.sh/skills/zhaoteng-qd-shopify-bulk-upload) - Bulk upload products to Shopify stores.
 - [skill-1](https://clawskills.sh/skills/claudiodrusus-skill-1) - Generate QR codes from text, URLs, WiFi credentials, vCards, or any data.
-- [skywork-design](https://github.com/openclaw/skills/blob/main/skills/gxcun17/skywork-design/SKILL.md) - Generate and edit images via Skywork Image for posters, logos and more.
+- [runapi-mcp](https://clawhub.ai/runapi-ai/runapi-mcp) - 130+ AI models for image, video, music, audio, and LLM generation from 18 providers. 8 MCP tools with free catalog browsing. `npx @runapi.ai/mcp`
+- [skywork-design](https://clawskills.sh/skills/gxcun17-skywork-design) - Generate and edit images via Skywork Image for posters, logos and more.
 - [snapog](https://clawskills.sh/skills/beameasy-snapog) - Generate social images and OG cards from professional templates via the SnapOG API.
 - [solo-humanize](https://clawskills.sh/skills/fortunto2-solo-humanize) - Strip AI writing patterns from text — em dashes, stock phrases, promotional inflation, performed authenticity.
 - [sprite-animator](https://clawskills.sh/skills/awlevin-sprite-animator) - Generate animated pixel art sprites from any image using AI.
@@ -171,3 +172,4 @@
 - [zerox](https://clawskills.sh/skills/otacu-zerox) - Convert documents (PDF, DOCX, PPTX, images, etc.) to Markdown using the zerox library.
 - [zhipu-cogview-image](https://clawskills.sh/skills/honestqiao-zhipu-cogview-image) - Generate images using Zhipu AI's CogView model.
 - [creaa-ai](https://clawskills.sh/skills/yys2024-creaa-ai) - Generate and edit images + generate videos via Creaa API (Nano Banana 2, Sora 2, Seedance 2.0, Veo 3.1).
+- [image-gen-guide](https://clawhub.ai/amrree/image-gen-guide) - Complete guide to local AI image generation with Ollama — no API keys, 100% private.

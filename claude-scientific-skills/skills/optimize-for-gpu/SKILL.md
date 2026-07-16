@@ -1,9 +1,7 @@
 ---
 name: optimize-for-gpu
 description: "GPU-accelerate Python code using CuPy, Numba CUDA, Warp, cuDF, cuML, cuGraph, KvikIO, cuCIM, cuxfilter, cuVS, cuSpatial, and RAFT. Use whenever the user mentions GPU/CUDA/NVIDIA acceleration, or wants to speed up NumPy, pandas, scikit-learn, scikit-image, NetworkX, GeoPandas, or Faiss workloads. Covers physics simulation, differentiable rendering, mesh ray casting, particle systems (DEM/SPH/fluids), vector/similarity search, GPUDirect Storage file IO, interactive dashboards, geospatial analysis, medical imaging, and sparse eigensolvers. Also use when you see CPU-bound Python code (loops, large arrays, ML pipelines, graph analytics, image processing) that would benefit from GPU acceleration, even if not explicitly requested."
-metadata:
-  version: "1.0"
-  author: K-Dense, Inc.
+metadata: {"version": "1.1", "author": "K-Dense, Inc."}
 ---
 
 # GPU Optimization for Python with NVIDIA
@@ -78,7 +76,7 @@ Use Warp when the user's code is primarily:
 - Any Python simulation loop that needs to be JIT-compiled to GPU
 - Spatial computing with meshes, volumes (NanoVDB), hash grids, or BVH queries
 
-Warp JIT-compiles `@wp.kernel` Python functions to CUDA, with built-in types for spatial computing (vec3, mat33, quat, transform) and primitives for geometry queries (Mesh, Volume, HashGrid, BVH). All kernels are automatically differentiable.
+Warp JIT-compiles `@wp.kernel` Python functions to CUDA, with built-in types for spatial computing (vec3, mat33, quat, transform) and primitives for geometry queries (Mesh, Volume, HashGrid, BVH). All kernels are automatically differentiable. Note: the higher-level `warp.sim` module was removed in Warp 1.10 — its functionality moved to the separate Newton physics engine. Warp itself remains the right tool for writing custom simulation kernels.
 
 **Best for:** Physics simulation, mesh ray casting, particle systems, differentiable rendering, robotics kinematics, SDF operations, any workload combining spatial data structures with GPU compute.
 
@@ -143,6 +141,8 @@ KvikIO provides Python bindings to NVIDIA cuFile, enabling GPUDirect Storage (GD
 ### cuxfilter — for GPU-accelerated interactive dashboards
 **Read:** `references/cuxfilter.md`
 
+**Project status: sunset.** RAPIDS 26.06 was cuxfilter's final release (RSN 60) — the packages still work but receive no further updates. For new dashboards, prefer cuDF for GPU data prep combined with HoloViews/hvPlot/Datashader linked selections, served with Panel, Plotly Dash, Streamlit, or Bokeh. Reach for cuxfilter only when the user already uses it or explicitly asks for it.
+
 Use cuxfilter when the user needs:
 - Interactive cross-filtering dashboards on large datasets (millions of rows)
 - Exploratory data analysis with linked charts that filter each other
@@ -183,6 +183,8 @@ cuVS provides GPU-accelerated ANN index types (CAGRA, IVF-Flat, IVF-PQ, brute fo
 
 ### cuSpatial — for geospatial analytics (GeoPandas replacement)
 **Read:** `references/cuspatial.md`
+
+**Project status: archived.** The cuSpatial repository has been read-only since July 2025; the final release is 25.04, which pins `cudf-cu12==25.4.*` and therefore conflicts with current RAPIDS releases in the same environment. No official successor exists. Recommend it only in a dedicated legacy environment; otherwise keep geometry operations on GeoPandas/Shapely (CPU) and accelerate the tabular parts of the workflow with cuDF.
 
 Use cuSpatial when the user's code is primarily:
 - GeoPandas spatial operations (point-in-polygon, spatial joins, distance calculations)
@@ -246,52 +248,56 @@ Common combinations:
 
 IMPORTANT: Always use `uv add` for package installation — never `pip install` or `conda install`. This applies to install instructions in code comments, docstrings, error messages, and any other output you generate. If the user's project uses a different package manager, follow their lead, but default to `uv add`.
 
-```bash
-# CuPy (choose the right CUDA version)
-uv add cupy-cuda12x          # For CUDA 12.x (most common)
+RAPIDS packages below track RAPIDS 26.06 (June 2026): they require Python >= 3.11 and CUDA 12.x or 13.x. Every RAPIDS package ships `-cu12` and `-cu13` wheel variants (except the archived cuSpatial) — the examples use `-cu12`; substitute `-cu13` for CUDA 13 systems. Most RAPIDS wheels are now published directly on PyPI; only cuGraph, nx-cugraph, and cuSpatial still require the NVIDIA index.
 
-# Numba with CUDA support
-uv add numba numba-cuda      # numba-cuda is the actively maintained NVIDIA package
+```bash
+# CuPy (choose the right CUDA version; CuPy 14+ supports CUDA 12/13 only)
+uv add cupy-cuda12x          # For CUDA 12.x
+uv add cupy-cuda13x          # For CUDA 13.x
+
+# Numba with CUDA support (installs numba automatically)
+uv add "numba-cuda[cu12]"    # or [cu13] — the NVIDIA package providing the numba.cuda target
 
 # Warp (simulation, spatial computing, differentiable programming)
-uv add warp-lang              # CUDA 12 runtime included
+uv add warp-lang              # CUDA 12 runtime included; CUDA 13 builds are on GitHub Releases only
 
 # cuDF (RAPIDS)
-uv add --extra-index-url=https://pypi.nvidia.com cudf-cu12  # For CUDA 12.x
+uv add cudf-cu12
 # For cudf.pandas accelerator mode, that's all you need
 # Load it with: python -m cudf.pandas your_script.py
 
 # cuML (RAPIDS machine learning)
-uv add --extra-index-url=https://pypi.nvidia.com cuml-cu12   # For CUDA 12.x
+uv add cuml-cu12
 # For cuml.accel accelerator mode (zero-change sklearn acceleration):
 # Load it with: python -m cuml.accel your_script.py
 
-# cuGraph (RAPIDS graph analytics)
+# cuGraph (RAPIDS graph analytics) — NVIDIA index still required (PyPI has only stub packages)
 uv add --extra-index-url=https://pypi.nvidia.com cugraph-cu12    # Core cuGraph
 uv add --extra-index-url=https://pypi.nvidia.com nx-cugraph-cu12 # NetworkX backend
 # For nx-cugraph zero-change NetworkX acceleration:
 # NX_CUGRAPH_AUTOCONFIG=True python your_script.py
 
 # KvikIO (high-performance GPU file IO)
-uv add kvikio-cu12               # For CUDA 12.x
+uv add kvikio-cu12
 # Optional: uv add zarr          # For Zarr GPU backend support
 
-# cuxfilter (GPU-accelerated interactive dashboards)
-uv add --extra-index-url=https://pypi.nvidia.com cuxfilter-cu12   # For CUDA 12.x
+# cuxfilter (interactive dashboards) — SUNSET: 26.06 is the final release
+uv add cuxfilter-cu12
 # Depends on cuDF — installs it automatically
 
 # cuCIM (RAPIDS image processing — scikit-image on GPU)
-uv add --extra-index-url=https://pypi.nvidia.com cucim-cu12    # For CUDA 12.x
+uv add cucim-cu12
 
 # cuVS (RAPIDS vector search)
-uv add --extra-index-url=https://pypi.nvidia.com cuvs-cu12   # For CUDA 12.x
+uv add cuvs-cu12
 
-# cuSpatial (RAPIDS geospatial)
-uv add --extra-index-url=https://pypi.nvidia.com cuspatial-cu12   # For CUDA 12.x
+# cuSpatial (geospatial) — ARCHIVED: frozen at 25.04, pins cudf-cu12==25.4.*
+# Install only in a dedicated environment; NVIDIA index required
+uv add --extra-index-url=https://pypi.nvidia.com cuspatial-cu12
 
 # RAFT (low-level GPU primitives)
-uv add --extra-index-url=https://pypi.nvidia.com pylibraft-cu12   # Core primitives
-uv add --extra-index-url=https://pypi.nvidia.com raft-dask-cu12   # Multi-GPU support (optional)
+uv add pylibraft-cu12   # Core primitives
+uv add raft-dask-cu12   # Multi-GPU support (optional)
 ```
 
 To check CUDA availability after installation:
@@ -692,10 +698,10 @@ Before writing any GPU optimization code, read the relevant reference file(s):
 | `references/cugraph.md` | User has NetworkX code, or needs graph analytics on GPU |
 | `references/warp.md` | User needs GPU simulation, spatial computing, mesh/volume queries, differentiable programming, or robotics |
 | `references/kvikio.md` | User needs high-performance file IO to/from GPU, GPUDirect Storage, reading S3/HTTP to GPU, or Zarr on GPU |
-| `references/cuxfilter.md` | User wants GPU-accelerated interactive dashboards, cross-filtering, or EDA visualization |
+| `references/cuxfilter.md` | User wants GPU-accelerated interactive dashboards, cross-filtering, or EDA visualization (note: sunset — 26.06 is the final release) |
 | `references/cucim.md` | User has scikit-image code, or needs image processing, digital pathology, or WSI reading on GPU |
 | `references/cuvs.md` | User needs vector search, nearest neighbors, similarity search, or RAG retrieval on GPU |
-| `references/cuspatial.md` | User has GeoPandas/shapely code, or needs spatial joins, distance calculations, or trajectory analysis on GPU |
+| `references/cuspatial.md` | User has GeoPandas/shapely code, or needs spatial joins, distance calculations, or trajectory analysis on GPU (note: archived — frozen at 25.04) |
 | `references/raft.md` | User needs sparse eigensolvers, device memory management, or multi-GPU primitives |
 
 Read the specific reference before writing code — they contain detailed API patterns, optimization techniques, and pitfalls specific to each library.

@@ -34,6 +34,11 @@ import asyncio
 from datetime import datetime, timezone
 from pathlib import Path
 
+
+def normalize_output_dir(path_value):
+    """Normalize the user-selected state directory without resolving symlinks."""
+    return Path(os.path.abspath(os.path.expanduser(str(path_value))))
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -64,7 +69,7 @@ def parse_args():
         state_root = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local" / "state"))
         output_dir = str(state_root / "videodb-events")
     
-    return clear, Path(output_dir)
+    return clear, normalize_output_dir(output_dir)
 
 CLEAR_EVENTS, OUTPUT_DIR = parse_args()
 EVENTS_FILE = OUTPUT_DIR / "videodb_events.jsonl"
@@ -93,6 +98,28 @@ def ensure_output_dir():
     OUTPUT_DIR.mkdir(parents=True, mode=DIR_MODE, exist_ok=True)
 
 
+def safe_output_path(path_value):
+    """Resolve a generated output file under the configured output directory."""
+    candidate = Path(path_value)
+    if not candidate.is_absolute():
+        candidate = OUTPUT_DIR / candidate
+    candidate = Path(os.path.abspath(candidate))
+    try:
+        candidate.relative_to(OUTPUT_DIR)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes output directory: {path_value}") from exc
+    if candidate.is_symlink():
+        raise OSError(f"Refusing to use symlinked output file: {candidate}")
+
+    output_root = OUTPUT_DIR.resolve()
+    resolved_path = candidate.resolve(strict=False)
+    try:
+        resolved_path.relative_to(output_root)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes output directory: {path_value}") from exc
+    return resolved_path
+
+
 def secure_open(path: Path, *, append: bool):
     """Open a regular file without following symlinks."""
     ensure_output_dir()
@@ -100,7 +127,7 @@ def secure_open(path: Path, *, append: bool):
     flags |= os.O_APPEND if append else os.O_TRUNC
     flags |= getattr(os, "O_NOFOLLOW", 0)
 
-    fd = os.open(path, flags, FILE_MODE)
+    fd = os.open(safe_output_path(path), flags, FILE_MODE)
     try:
         file_stat = os.fstat(fd)
         if not stat.S_ISREG(file_stat.st_mode):

@@ -2,7 +2,7 @@
 
 Numba compiles Python directly into CUDA kernels, giving you full control over GPU threads, blocks, shared memory, and synchronization. Use Numba when your algorithm needs custom GPU logic that can't be expressed as standard array operations.
 
-> **Full documentation:** https://numba.readthedocs.io/en/stable/cuda/index.html
+> **Full documentation:** https://nvidia.github.io/numba-cuda/
 
 ## Table of Contents
 
@@ -32,12 +32,13 @@ Numba compiles Python directly into CUDA kernels, giving you full control over G
 Always use `uv add` (never `pip install` or `conda install`) in all install instructions, docstrings, comments, and error messages.
 
 ```bash
-uv add numba numba-cuda
+uv add "numba-cuda[cu12]"    # For CUDA 12.x (pulls in numba and CUDA components)
+uv add "numba-cuda[cu13]"    # For CUDA 13.x
 ```
 
-The `numba-cuda` package is the actively maintained NVIDIA implementation. It implements functionality under the `numba.cuda` namespace — no code changes needed vs the old built-in target.
+The NVIDIA `numba-cuda` package is the current implementation of the CUDA target (Numba's built-in target is deprecated). It implements functionality under the `numba.cuda` namespace — no code changes needed vs the old built-in target — and depends on `numba`, so a single install command suffices. Note: `numba-cuda` is now in maintenance mode (security and critical fixes through the CUDA 13 lifetime); NVIDIA's new feature development targets the separate `numba-cuda-mlir` package.
 
-**Requirements:** CUDA Toolkit >= 11.2, GPU with Compute Capability >= 5.0 (Maxwell or newer).
+**Requirements:** CUDA Toolkit 12 or 13. GPU with Compute Capability >= 5.0 (Maxwell or newer) on CUDA 12, or >= 7.5 (Turing or newer) on CUDA 13.
 
 ```python
 from numba import cuda

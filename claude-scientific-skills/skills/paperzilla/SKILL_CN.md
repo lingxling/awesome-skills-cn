@@ -2,9 +2,7 @@
 name: paperzilla
 description: 在Paperzilla中与您的agent讨论项目、推荐和经典论文。当用户询问最近的项目推荐、经典论文详情、基于markdown的摘要、推荐反馈、feed导出或Atom feed URL时使用。
 license: MIT
-metadata:
-  version: "1.0"
-  skill-author: "Paperzilla Inc"
+metadata: {"version": "1.0", "skill-author": "Paperzilla Inc"}
 ---
 
 

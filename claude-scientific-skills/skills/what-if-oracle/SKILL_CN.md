@@ -2,11 +2,7 @@
 name: what-if-oracle
 description: 运行结构化的"假设"情景分析，包含4-6个分支可能性探索（最佳、最可能、最差、wild card、反向思维、二阶）。当用户提出关于不确定未来的推测性假设问题、战略分叉、应急规划或在决策前进行压力测试时使用。
 license: CC BY-NC-SA 4.0
-metadata:
-  version: "1.1"
-  skill-author: AHK Strategies (ashrafkahoush-ux)
-  upstream: https://github.com/ashrafkahoush-ux/claude-consciousness-skills
-  research-doi: "10.5281/zenodo.18736841, 10.5281/zenodo.18807387"
+metadata: {"version": "1.1", "skill-author": "AHK Strategies (ashrafkahoush-ux)", "upstream": "https://github.com/ashrafkahoush-ux/claude-consciousness-skills", "research-doi": "10.5281/zenodo.18736841, 10.5281/zenodo.18807387"}
 ---
 
 
@@ -176,10 +172,12 @@ metadata:
 - 不是水晶球 — 概率是基于可用证据的估计，不是确定性。
 - 不是行动的替代品 — 世界上最好的情景分析如果没有后续的决策和执行就是毫无价值的。
 
-## 构建者
+## 参考文件
 
-[AHK Strategies](https://ahkstrategies.net) — AI Horizon Knowledge
-完整平台：[themindbook.app](https://themindbook.app)
-研究：[The What-If Statement (DOI: 10.5281/zenodo.18736841)](https://doi.org/10.5281/zenodo.18736841)
+| 文件 | 用途 |
+| ---- | ------- |
+| [references/scenario-templates.md](references/scenario-templates.md) | 特定领域模板（创业、科技、金融、危机等）及概率校准 |
 
-_"未来不是空的。它包含对现在施加拉力的已完成状态。"_
+## 许可证
+
+© 2026 Ashraf Hussein Kahoush / AHK Strategies。基于 CC BY-NC-SA 4.0 许可。可免费用于个人、教育和研究用途。商业使用需获得作者授权。

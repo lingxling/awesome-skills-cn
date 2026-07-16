@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { mkdir, writeFile, rm, symlink } from 'fs/promises';
 import { join } from 'path';
-import { tmpdir } from 'os';
+import { homedir, tmpdir } from 'os';
 import { listInstalledSkills } from '../src/installer.ts';
 import * as agentsModule from '../src/agents.ts';
 
@@ -125,6 +125,37 @@ ${skillData.description}
     expect(Array.isArray(skills)).toBe(true);
   });
 
+  it('attributes global canonical skills to universal agents with native global dirs', async () => {
+    vi.spyOn(agentsModule, 'detectInstalledAgents').mockResolvedValue(['opencode']);
+
+    const skillDir = join(homedir(), '.agents', 'skills', 'opencode-global-attribution-test');
+    await mkdir(skillDir, { recursive: true });
+    await writeFile(
+      join(skillDir, 'SKILL.md'),
+      `---
+name: opencode-global-attribution-test
+description: Test OpenCode global attribution
+---
+
+# opencode-global-attribution-test
+`
+    );
+
+    try {
+      const skills = await listInstalledSkills({
+        global: true,
+        agentFilter: ['opencode'],
+      });
+
+      const skill = skills.find((s) => s.name === 'opencode-global-attribution-test');
+      expect(skill).toBeDefined();
+      expect(skill!.agents).toContain('opencode');
+    } finally {
+      vi.restoreAllMocks();
+      await rm(skillDir, { recursive: true, force: true });
+    }
+  });
+
   it('should apply agent filter', async () => {
     await createSkillDir(testDir, 'test-skill', {
       name: 'test-skill',
@@ -154,9 +185,9 @@ ${skillData.description}
     const skills = await listInstalledSkills({ global: false, cwd: testDir });
 
     expect(skills).toHaveLength(1);
-    // Should only show amp, not kimi-cli
+    // Should only show amp, not kimi-code-cli
     expect(skills[0]!.agents).toContain('amp');
-    expect(skills[0]!.agents).not.toContain('kimi-cli');
+    expect(skills[0]!.agents).not.toContain('kimi-code-cli');
 
     vi.restoreAllMocks();
   });

@@ -1,6 +1,6 @@
-# 🌌 Antigravity Awesome Skills: 560+ Kỹ năng (Skills) cho Claude Code, Gemini CLI, Cursor, Copilot và nhiều hơn nữa
+# 🌌 Agentic Awesome Skills: 1,936+ Kỹ năng (Skills) cho Claude Code, Gemini CLI, Cursor, Copilot và nhiều hơn nữa
 
-> **Bộ sưu tập tối ưu gồm hơn 560 Kỹ năng Phổ quát cho các Trợ lý Lập trình AI — Claude Code, Gemini CLI, Codex CLI, Antigravity IDE, GitHub Copilot, Cursor, OpenCode**
+> **Thư viện GitHub có thể cài đặt gồm hơn 1,936 kỹ năng agentic cho Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity và các trợ lý lập trình AI khác.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Anthropic-purple)](https://claude.ai)
@@ -9,29 +9,28 @@
 [![Cursor](https://img.shields.io/badge/Cursor-AI%20IDE-orange)](https://cursor.sh)
 [![Copilot](https://img.shields.io/badge/GitHub%20Copilot-VSCode-lightblue)](https://github.com/features/copilot)
 [![OpenCode](https://img.shields.io/badge/OpenCode-CLI-gray)](https://github.com/opencode-ai/opencode)
-[![Antigravity](https://img.shields.io/badge/Antigravity-DeepMind-red)](https://github.com/sickn33/antigravity-awesome-skills)
+[![Antigravity](https://img.shields.io/badge/Antigravity-DeepMind-red)](https://github.com/sickn33/agentic-awesome-skills)
 
-**Antigravity Awesome Skills** là một thư viện được tuyển chọn và kiểm chứng kỹ lưỡng với **560 kỹ năng hiệu suất cao** được thiết kế để hoạt động mượt mà trên tất cả các trợ lý lập trình AI lớn:
+**Agentic Awesome Skills** là một thư viện kỹ năng có thể cài đặt với **1,936+ kỹ năng `SKILL.md`** được thiết kế để hoạt động mượt mà trên các trợ lý lập trình AI lớn:
 
 - 🟣 **Claude Code** (Anthropic CLI)
 - 🔵 **Gemini CLI** (Google DeepMind)
 - 🟢 **Codex CLI** (OpenAI)
-- 🔴 **Antigravity IDE** (Google DeepMind)
+- 🔴 **Antigravity IDE** và **Antigravity CLI (`agy`)**
 - 🩵 **GitHub Copilot** (VSCode Extension)
 - 🟠 **Cursor** (AI-native IDE)
 - ⚪ **OpenCode** (Mã nguồn mở CLI)
+- 🟡 **Kiro CLI / IDE** và **AdaL CLI**
 
-**Chào mừng bạn đến với Phiên bản V4.0.0 Enterprise.** Đây không chỉ là một danh sách các tập lệnh (scripts); nó là một hệ điều hành hoàn chỉnh cho Trợ lý AI của bạn.
+**Phiên bản hiện tại: V14.0.0.** Đây không chỉ là một danh sách prompt; repository này cung cấp kỹ năng, bundles, workflows, catalog sinh tự động và installer CLI để dùng lại các playbook đã được kiểm chứng.
 
 ### 1. 🐣 Bối cảnh: Đây là gì?
 
-**Antigravity Awesome Skills** (Phiên bản 4.0.0) là một bản nâng cấp khổng lồ cho khả năng của AI.
+**Agentic Awesome Skills** (Phiên bản 14.0.0) là một thư viện kỹ năng lớn cho AI coding assistants.
 
 Các trợ lý AI (như Claude Code, Cursor, hoặc Gemini) rất thông minh, nhưng chúng thiếu các **công cụ chuyên biệt**. Chúng không biết "Quy trình Triển khai" của công ty bạn hoặc cú pháp cụ thể cho "AWS CloudFormation".  
 **Skills** là các tệp markdown nhỏ dạy cho chúng cách thực hiện những tác vụ cụ thể này một cách chính xác trong mọi lần thực thi.
-...
 Repository này cung cấp các kỹ năng thiết yếu để biến trợ lý AI của bạn thành một **đội ngũ chuyên gia số toàn năng**, bao gồm các khả năng chính thức từ **Anthropic**, **OpenAI**, **Google**, **Supabase**, **Apify**, và **Vercel Labs**.
-...
 Cho dù bạn đang sử dụng **Gemini CLI**, **Claude Code**, **Codex CLI**, **Cursor**, **GitHub Copilot**, **Antigravity**, hay **OpenCode**, những kỹ năng này được thiết kế để có thể sử dụng ngay lập tức và tăng cường sức mạnh cho trợ lý AI của bạn.
 
 Repository này tập hợp những khả năng tốt nhất từ khắp cộng đồng mã nguồn mở, biến trợ lý AI của bạn thành một đội ngũ chuyên gia số toàn năng có khả năng Kỹ thuật, Thiết kế, Bảo mật, Marketing và Vận hành Tự động.
@@ -42,21 +41,21 @@ Repository được tổ chức thành các lĩnh vực chuyên biệt để bi�
 
 | Danh mục          | Trọng tâm                                                      | Ví dụ kỹ năng                                                                   |
 | :---------------- | :------------------------------------------------------------- | :------------------------------------------------------------------------------ |
-| Kiến trúc (52)    | Thiết kế hệ thống, ADRs, C4 và các mẫu có thể mở rộng          | `architecture`, `c4-context`, `senior-architect`                                |
-| Kinh doanh (35)   | Tăng trưởng, định giá, CRO, SEO và thâm nhập thị trường        | `copywriting`, `pricing-strategy`, `seo-audit`                                  |
-| Dữ liệu & AI (81) | Ứng dụng LLM, RAG, agents, khả năng quan sát, phân tích        | `rag-engineer`, `prompt-engineer`, `langgraph`                                  |
-| Phát triển (72)   | Làm chủ ngôn ngữ, mẫu thiết kế framework, chất lượng code      | `typescript-expert`, `python-patterns`, `react-patterns`                        |
-| Tổng quát (95)    | Lập kế hoạch, tài liệu, vận hành sản phẩm, viết bài, hướng dẫn | `brainstorming`, `doc-coauthoring`, `writing-plans`                             |
-| Hạ tầng (72)      | DevOps, cloud, serverless, triển khai, CI/CD                   | `docker-expert`, `aws-serverless`, `vercel-deployment`                          |
-| Bảo mật (107)     | AppSec, pentesting, phân tích lỗ hổng, tuân thủ                | `api-security-best-practices`, `sql-injection-testing`, `vulnerability-scanner` |
-| Kiểm thử (21)     | TDD, thiết kế kiểm thử, sửa lỗi, quy trình QA                  | `test-driven-development`, `testing-patterns`, `test-fixing`                    |
-| Quy trình (17)    | Tự động hóa, điều phối, công việc, agents                      | `workflow-automation`, `inngest`, `trigger-dev`                                 |
+| Kiến trúc         | Thiết kế hệ thống, ADRs, C4 và các mẫu có thể mở rộng          | `architecture`, `c4-context`, `senior-architect`                                |
+| Kinh doanh        | Tăng trưởng, định giá, CRO, SEO và thâm nhập thị trường        | `copywriting`, `pricing-strategy`, `seo-audit`                                  |
+| Dữ liệu & AI      | Ứng dụng LLM, RAG, agents, khả năng quan sát, phân tích        | `rag-engineer`, `prompt-engineer`, `langgraph`                                  |
+| Phát triển        | Làm chủ ngôn ngữ, mẫu thiết kế framework, chất lượng code      | `typescript-expert`, `python-patterns`, `react-patterns`                        |
+| Tổng quát         | Lập kế hoạch, tài liệu, vận hành sản phẩm, viết bài, hướng dẫn | `brainstorming`, `doc-coauthoring`, `writing-plans`                             |
+| Hạ tầng           | DevOps, cloud, serverless, triển khai, CI/CD                   | `docker-expert`, `aws-serverless`, `vercel-deployment`                          |
+| Bảo mật           | AppSec, pentesting, phân tích lỗ hổng, tuân thủ                | `api-security-best-practices`, `sql-injection-testing`, `vulnerability-scanner` |
+| Kiểm thử          | TDD, thiết kế kiểm thử, sửa lỗi, quy trình QA                  | `test-driven-development`, `testing-patterns`, `test-fixing`                    |
+| Quy trình         | Tự động hóa, điều phối, công việc, agents                      | `workflow-automation`, `inngest`, `trigger-dev`                                 |
 
 ## Bộ sưu tập Tuyển chọn
 
 [Xem các Gói khởi đầu tại docs/vietnamese/BUNDLES.md](BUNDLES.vi.md) để tìm bộ công cụ hoàn hảo cho vai trò của bạn.
 
-## Duyệt hơn 560 Kỹ năng
+## Duyệt hơn 1,936 Kỹ năng
 
 Chúng tôi đã chuyển danh sách đầy đủ các kỹ năng sang một danh mục riêng biệt để giữ cho file README này gọn gàng.
 
@@ -64,20 +63,18 @@ Chúng tôi đã chuyển danh sách đầy đủ các kỹ năng sang một dan
 
 ## Cài đặt
 
-Để sử dụng các kỹ năng này với **Claude Code**, **Gemini CLI**, **Codex CLI**, **Cursor**, **Antigravity**, hoặc **OpenCode**, hãy clone repository này vào thư mục kỹ năng của assistant của bạn:
+Để sử dụng các kỹ năng này với **Claude Code**, **Gemini CLI**, **Codex CLI**, **Cursor**, **Antigravity**, **Kiro**, **OpenCode** hoặc **AdaL**, hãy dùng installer CLI:
 
 ```bash
-# Cài đặt phổ thông (hoạt động với hầu hết các công cụ)
-git clone https://github.com/sickn33/antigravity-awesome-skills.git .agent/skills
+npx agentic-awesome-skills
 
-# Dành riêng cho Claude Code
-git clone https://github.com/sickn33/antigravity-awesome-skills.git .claude/skills
-
-# Dành riêng cho Gemini CLI
-git clone https://github.com/sickn33/antigravity-awesome-skills.git .gemini/skills
-
-# Dành riêng cho Cursor
-git clone https://github.com/sickn33/antigravity-awesome-skills.git .cursor/skills
+# Ví dụ theo công cụ:
+npx agentic-awesome-skills --claude
+npx agentic-awesome-skills --gemini
+npx agentic-awesome-skills --codex
+npx agentic-awesome-skills --cursor
+npx agentic-awesome-skills --kiro
+npx agentic-awesome-skills --agy
 ```
 
 ---
@@ -88,8 +85,8 @@ Chúng tôi chào đón mọi sự đóng góp từ cộng đồng! Để thêm 
 
 1. **Fork** repository.
 2. **Tạo một thư mục mới** bên trong `skills/` cho kỹ năng của bạn.
-3. **Thêm file `SKILL.md`** với phần frontmatter bắt buộc (tên và mô tả).
-4. **Chạy kiểm tra xác thực**: `python3 scripts/validate_skills.py`.
+3. **Thêm file `SKILL.md`** theo mẫu `docs/contributors/skill-template.md`.
+4. **Chạy kiểm tra xác thực**: `npm run validate`.
 5. **Gửi một Pull Request**.
 
 Vui lòng đảm bảo kỹ năng của bạn tuân thủ các thực hành tốt nhất của Antigravity/Claude Code.
@@ -187,4 +184,10 @@ Chúng tôi chính thức cảm ơn những người đóng góp sau đây đã 
 
 ## Lịch sử Star
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sickn33/antigravity-awesome-skills&type=date&legend=top-left)](https://www.star-history.com/#sickn33/antigravity-awesome-skills&type=date&legend=top-left)
+<a href="https://www.star-history.com/?repos=sickn33%2Fagentic-awesome-skills&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=sickn33/agentic-awesome-skills&type=date&theme=dark&legend=top-left&sealed_token=5UEckOplDlF6KsKi881R_B44YTNBEFj0fRwovC_U0W2Um19HD9wLMQXclNblk6wFKgeGn0RzW0rGZkVCqzoKxaGB3IMaiN8tP8yqLRbhs6lf-kO3KeJWjftxgtV1zdrTVHjfEYfnevKZuYFww2_H2vC8IlXgfaTdNinFb3MD9CcMlu44hpLYu2iABkYy" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=sickn33/agentic-awesome-skills&type=date&legend=top-left&sealed_token=5UEckOplDlF6KsKi881R_B44YTNBEFj0fRwovC_U0W2Um19HD9wLMQXclNblk6wFKgeGn0RzW0rGZkVCqzoKxaGB3IMaiN8tP8yqLRbhs6lf-kO3KeJWjftxgtV1zdrTVHjfEYfnevKZuYFww2_H2vC8IlXgfaTdNinFb3MD9CcMlu44hpLYu2iABkYy" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=sickn33/agentic-awesome-skills&type=date&legend=top-left&sealed_token=5UEckOplDlF6KsKi881R_B44YTNBEFj0fRwovC_U0W2Um19HD9wLMQXclNblk6wFKgeGn0RzW0rGZkVCqzoKxaGB3IMaiN8tP8yqLRbhs6lf-kO3KeJWjftxgtV1zdrTVHjfEYfnevKZuYFww2_H2vC8IlXgfaTdNinFb3MD9CcMlu44hpLYu2iABkYy" />
+ </picture>
+</a>

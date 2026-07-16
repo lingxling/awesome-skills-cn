@@ -57,6 +57,7 @@
 - [medium-writer](https://clawskills.sh/skills/devhoangkien-medium-writer) - 为 Medium 合作伙伴计划撰写和发布文章。
 - [meeting-notes](https://clawskills.sh/skills/user520512-meeting-notes) - 从转录生成结构化会议记录。
 - [meeting-to-action](https://clawskills.sh/skills/codedao12-meeting-to-action) - 将会议笔记或转录转换为清晰的摘要、决策和行动项目，包括所有者和截止日期。
+- [morrow-agent-memory](https://www.clawhub.ai/timesandplaces/morrow-agent-memory) - 用于跨会话保持代理持久连续性的记忆架构。
 - [neo-py-memory-optimizer](https://clawskills.sh/skills/martinforsulu-neo-py-memory-optimizer) - 自动分析 Python 代码并建议内存使用优化以提高性能。
 - [neuroboost-elixir](https://clawskills.sh/skills/weidadong2359-neuroboost-elixir) - 觉醒协议 v4.1 — 代理认知升级 + 自我进化系统 + 永久记忆。
 - [nosi](https://clawskills.sh/skills/billhao-nosi) - 发布内容到 Nosi 并获取可共享的 URL。

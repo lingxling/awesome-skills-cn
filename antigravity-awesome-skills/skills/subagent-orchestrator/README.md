@@ -87,7 +87,7 @@ subagent-orchestrator/
 This skill was built to fill a real gap — the community's existing subagent skills had no quota management, no parallel coordination, and no error recovery.
 
 PRs welcome. Follow the SKILL.md format from the Antigravity docs.
-Submit to: https://github.com/sickn33/antigravity-awesome-skills
+Submit to: https://github.com/sickn33/agentic-awesome-skills
 
 ---
 

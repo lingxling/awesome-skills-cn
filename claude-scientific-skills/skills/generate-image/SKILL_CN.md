@@ -3,9 +3,7 @@ name: generate-image
 description: 使用AI模型（FLUX、Nano Banana 2）生成或编辑图像。用于通用图像生成，包括照片、插图、艺术品、视觉资产、概念艺术和任何非技术图表或原理图。对于流程图、电路、通路和技术图表，请改用scientific-schematics技能。
 license: MIT license
 compatibility: Requires an OpenRouter API key
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

@@ -3,9 +3,8 @@ name: treatment-plans
 description: 生成简洁（3-4页）、聚焦的医学治疗计划，采用LaTeX/PDF格式，适用于所有临床专科。支持一般医学治疗、康复治疗、心理健康护理、慢性病管理、围手术期护理和疼痛管理。包含SMART目标框架、基于循证医学的干预措施（最少文本引用）、法规合规性（HIPAA）和专业格式。优先考虑简洁性和临床可操作性。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 
@@ -1540,4 +1539,46 @@ sudo tlmgr install tcolorbox tikz pgf
 
 **临床实践：**
 - 患者就诊期间更快的信息扫描
+- 关键信息与常规信息之间清晰的视觉层次
+- 适合面向患者文档的专业外观
+- 颜色编码的分区降低认知负荷
+
+**教学用途：**
+- 提升教学材料的可读性
+- 不同概念类型（目标、警告、流程）的视觉区分
+- 用于病例讨论的专业展示
+- 支持印刷和数字化就绪格式
+
+**文档质量：**
+- 现代、精致的外观
+- 在提升美观度的同时保持临床准确性
+- 各治疗计划间格式标准化
+- 便于按机构品牌进行自定义
+
+**患者参与：**
+- 比密集文字文档更平易近人
+- 颜色编码帮助患者识别关键部分
+- 专业外观建立信任
+- 清晰的组织结构有助于理解
+
+## 伦理考量
+
+### 知情同意
+所有治疗计划都应包含患者对拟议干预措施的理解和自愿同意。
+
+### 文化敏感性
+治疗计划必须尊重多元化的文化信仰、健康实践和沟通方式。
+
+### 健康公平
+在制定计划时，应考虑健康的社会决定因素、获取障碍和健康差异。
+
+### 隐私保护
+严格遵守HIPAA合规要求；对共享文档中的所有受保护健康信息进行去标识化处理。
+
+### 自主与仁爱
+在促进患者福祉的同时，平衡医疗建议与患者自主权和价值观。
+
+## 许可证
+
+Claude Scientific Writer 项目的一部分。请参阅主 LICENSE 文件。
 - 关键与常规信息的清晰视觉层次

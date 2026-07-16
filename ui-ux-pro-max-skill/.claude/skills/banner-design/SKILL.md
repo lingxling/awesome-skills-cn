@@ -1,5 +1,5 @@
 ---
-name: ckm:banner-design
+name: banner-design
 description: "Design banners for social media, ads, website heroes, creative assets, and print. Multiple art direction options with AI-generated visuals. Actions: design, create, generate banner. Platforms: Facebook, Twitter/X, LinkedIn, YouTube, Instagram, Google Display, website hero, print. Styles: minimalist, gradient, bold typography, photo-based, illustrated, geometric, retro, glassmorphism, 3D, neon, duotone, editorial, collage. Uses ui-ux-pro-max, frontend-design, ai-artist, ai-multimodal skills."
 argument-hint: "[platform] [style] [dimensions]"
 license: MIT
@@ -20,6 +20,10 @@ Design banners across social, ads, web, and print formats. Generates multiple ar
 - Website hero section visual design
 - Event/print banner design
 - Creative asset generation for campaigns
+
+## Prerequisites
+
+**Python:** This skill uses Python scripts. On Windows, use `python` instead of `python3` (e.g., `python scripts/search.py` instead of `python3 scripts/search.py`).
 
 ## Workflow
 

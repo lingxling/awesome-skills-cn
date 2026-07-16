@@ -3,9 +3,8 @@ name: scientific-slides
 description: 为研究演讲构建幻灯片和演示文稿。用于制作PowerPoint幻灯片、会议演示、研讨会演讲、研究报告、论文答辩幻灯片或任何科学演讲。提供幻灯片结构、设计模板、时间指导和视觉验证。支持PowerPoint和LaTeX Beamer。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

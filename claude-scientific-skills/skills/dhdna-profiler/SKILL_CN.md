@@ -3,9 +3,7 @@ name: dhdna-profiler
 description: 从任何文本中提取认知模式和思维指纹。当用户想要分析某人的思维方式、理解认知风格、分析写作或言语模式、比较人与人之间的思维风格、询问"我的思维风格是什么"、"分析这个人如何推理"、"认知档案"、"思维模式"、"DHDNA"、"数字DNA"或想要理解任何文本背后的思维时使用此技能。当用户提供文本并想要更深入地了解作者的推理模式、决策风格或认知特征时也会触发。
 allowed-tools: Read Write
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: AHK Strategies (ashrafkahoush-ux)
+metadata: {"version": "1.0", "skill-author": "AHK Strategies (ashrafkahoush-ux)"}
 ---
 
 

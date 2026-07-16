@@ -17,6 +17,19 @@ import json
 import re
 from pathlib import Path
 
+
+def safe_user_path(path_value, base_dir="."):
+    """Resolve a CLI path under the current workspace."""
+    if base_dir != ".":
+        raise ValueError("Custom base directories are not supported for CLI paths")
+    base_path = Path.cwd().resolve()
+    resolved_path = Path(path_value).expanduser().resolve()
+    try:
+        resolved_path.relative_to(base_path)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes allowed directory: {path_value}") from exc
+    return resolved_path
+
 # ── Constants ──────────────────────────────────────────────────────────────
 
 FORBIDDEN_PATTERNS = [
@@ -39,6 +52,14 @@ MIN_DESCRIPTION_LENGTH = 50
 
 SKILLS_ROOT = Path(r"C:\Users\renat\skills")
 REGISTRY_PATH = SKILLS_ROOT / "agent-orchestrator" / "data" / "registry.json"
+
+
+def resolve_existing_dir(path) -> Path:
+    """Resolve a user-provided directory and require it to exist."""
+    resolved = safe_user_path(path).expanduser().resolve()
+    if not resolved.is_dir():
+        raise ValueError(f"Directory does not exist: {resolved}")
+    return resolved
 
 
 # ── YAML Frontmatter Parser ───────────────────────────────────────────────
@@ -214,19 +235,20 @@ def check_forbidden_files(skill_dir: Path) -> dict:
     """Check 7: No forbidden files (.env, credentials, keys, etc.)."""
     found_forbidden = []
 
-    for root, _dirs, files in os.walk(skill_dir):
-        for f in files:
-            f_lower = f.lower()
-            for pattern in FORBIDDEN_PATTERNS:
-                if pattern.startswith("*."):
-                    ext = pattern[1:]  # e.g., ".key"
-                    if f_lower.endswith(ext):
-                        found_forbidden.append(os.path.join(root, f))
-                        break
-                else:
-                    if f_lower == pattern.lower():
-                        found_forbidden.append(os.path.join(root, f))
-                        break
+    for path in safe_user_path(skill_dir).rglob("*"):
+        if not path.is_file():
+            continue
+        f_lower = path.name.lower()
+        for pattern in FORBIDDEN_PATTERNS:
+            if pattern.startswith("*."):
+                ext = pattern[1:]  # e.g., ".key"
+                if f_lower.endswith(ext):
+                    found_forbidden.append(str(path))
+                    break
+            else:
+                if f_lower == pattern.lower():
+                    found_forbidden.append(str(path))
+                    break
 
     if found_forbidden:
         return {
@@ -247,12 +269,13 @@ def check_forbidden_files(skill_dir: Path) -> dict:
 def check_total_size(skill_dir: Path) -> dict:
     """Check 8: Total size is reasonable (warn if > 50MB)."""
     total = 0
-    for root, _dirs, files in os.walk(skill_dir):
-        for f in files:
-            try:
-                total += os.path.getsize(os.path.join(root, f))
-            except OSError:
-                pass
+    for path in safe_user_path(skill_dir).rglob("*"):
+        if not path.is_file():
+            continue
+        try:
+            total += path.stat().st_size
+        except OSError:
+            pass
 
     size_mb = total / (1024 * 1024)
     ok = size_mb <= MAX_SIZE_MB
@@ -347,15 +370,15 @@ def validate(skill_dir: Path, strict: bool = False, registry_path: Path = None) 
     if registry_path is None:
         registry_path = REGISTRY_PATH
 
-    skill_dir = Path(skill_dir).resolve()
-
-    if not skill_dir.exists():
+    try:
+        skill_dir = resolve_existing_dir(skill_dir)
+    except ValueError as e:
         return {
             "valid": False,
-            "skill_dir": str(skill_dir),
+            "skill_dir": str(safe_user_path(skill_dir).expanduser()),
             "checks": [],
             "warnings": [],
-            "errors": [f"Directory does not exist: {skill_dir}"],
+            "errors": [str(e)],
         }
 
     # Parse frontmatter once
@@ -411,14 +434,21 @@ def main():
         }, indent=2))
         sys.exit(1)
 
-    skill_dir = Path(sys.argv[1]).resolve()
+    try:
+        skill_dir = resolve_existing_dir(sys.argv[1])
+    except ValueError as e:
+        print(json.dumps({
+            "valid": False,
+            "error": str(e),
+        }, indent=2))
+        sys.exit(1)
     strict = "--strict" in sys.argv
     registry_path = None
 
     if "--registry" in sys.argv:
         idx = sys.argv.index("--registry")
         if idx + 1 < len(sys.argv):
-            registry_path = Path(sys.argv[idx + 1])
+            registry_path = safe_user_path(sys.argv[idx + 1]).expanduser().resolve()
 
     result = validate(skill_dir, strict=strict, registry_path=registry_path)
     print(json.dumps(result, indent=2, ensure_ascii=False))

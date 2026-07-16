@@ -2,18 +2,98 @@
 
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
+import { existsSync, readFileSync } from 'node:fs';
 import { readFile, access } from 'node:fs/promises';
-import { join } from 'node:path';
+import { join, win32 } from 'node:path';
 import { getMetricThrottle, isDailyQuotaExceeded, retryOnRateLimit } from './throttle.mjs';
 
 const exec = promisify(execFile);
+
+// On Windows, execFile cannot run the `vercel.cmd` shim directly: PATHEXT is not
+// applied by execFile, and .cmd/.bat require `shell: true` since Node 20 — but a
+// shell would mangle args containing spaces or URL query strings (e.g.
+// `vercel api '/v9/projects/:id?teamId=:org'`, `-f 'http_status ge 500'`). So we
+// resolve the Vercel package's JS entry from PATH and run it via `node` directly:
+// no shell, every arg passed verbatim. POSIX is unchanged (`vercel` on PATH).
+export function resolveVercelCommand({
+  platform = process.platform,
+  env = process.env,
+  execPath = process.execPath,
+  exists = existsSync,
+  readText = (file) => readFileSync(file, 'utf-8'),
+} = {}) {
+  if (platform !== 'win32') return { file: 'vercel', prefix: [] };
+
+  const pathValue = env.PATH || env.Path || env.path || '';
+  for (const dir of pathValue.split(win32.delimiter).filter(Boolean)) {
+    const entry = resolveVercelPackageEntry(dir, exists);
+    if (entry) return { file: execPath, prefix: [entry] };
+
+    const shimEntry = resolveVercelShimEntry(dir, exists, readText);
+    if (shimEntry) return { file: execPath, prefix: [shimEntry] };
+  }
+
+  return { file: execPath, prefix: [], missing: true };
+}
+
+function resolveVercelPackageEntry(dir, exists) {
+  const packageRoots = [
+    win32.join(dir, 'node_modules', 'vercel'),
+    win32.join(win32.dirname(dir), 'vercel'),
+  ];
+  for (const root of packageRoots) {
+    for (const rel of ['dist/vc.js', 'dist/index.js']) {
+      const entry = win32.join(root, rel);
+      if (exists(entry)) return entry;
+    }
+  }
+  return null;
+}
+
+function resolveVercelShimEntry(dir, exists, readText) {
+  for (const bin of ['vercel.cmd', 'vc.cmd']) {
+    const shim = win32.join(dir, bin);
+    if (!exists(shim)) continue;
+    let raw;
+    try {
+      raw = readText(shim);
+    } catch {
+      continue;
+    }
+    const match = raw.match(/["']([^"'\r\n]*vercel[\\/]+dist[\\/]+(?:vc|index)\.js)["']/i);
+    if (!match) continue;
+    const entry = normalizeWindowsShimTarget(match[1], dir);
+    if (exists(entry)) return entry;
+  }
+  return null;
+}
+
+function normalizeWindowsShimTarget(target, dir) {
+  const baseDir = `${dir}${win32.sep}`;
+  const expanded = target
+    .replace(/%~dp0/gi, baseDir)
+    .replace(/%dp0%/gi, baseDir)
+    .replace(/\$basedir/g, dir);
+  return win32.normalize(win32.isAbsolute(expanded) ? expanded : win32.resolve(dir, expanded));
+}
+
+async function runVercel(args, opts = {}) {
+  const command = resolveVercelCommand({ env: opts.env });
+  if (command.missing) {
+    const err = new Error('VERCEL_NOT_INSTALLED: `vercel` CLI not found in PATH. Install with `npm i -g vercel@latest`.');
+    err.code = 'ENOENT';
+    throw err;
+  }
+  return await exec(command.file, [...command.prefix, ...args], { windowsHide: true, ...opts });
+}
+
 const MIN_CLI_VERSION = [53, 0, 0];
 
 // Pre-v53 lacks `vercel metrics` and `vercel contract`.
 export async function checkCliVersion() {
   let raw;
   try {
-    const { stdout } = await exec('vercel', ['--version']);
+    const { stdout } = await runVercel(['--version']);
     raw = stdout.trim();
   } catch (err) {
     throw new Error('VERCEL_NOT_INSTALLED: `vercel` CLI not found in PATH. Install with `npm i -g vercel@latest`.');
@@ -34,7 +114,7 @@ export async function checkCliVersion() {
 
 export async function checkAuth() {
   try {
-    await exec('vercel', ['whoami']);
+    await runVercel(['whoami']);
   } catch {
     throw new Error('NOT_AUTH: run `vercel login`.');
   }
@@ -232,7 +312,7 @@ export async function runVercelJson(args, opts = {}) {
   let stderr = '';
   let exitCode = 0;
   try {
-    const r = await exec('vercel', args, { maxBuffer: 32 * 1024 * 1024, ...opts });
+    const r = await runVercel(args, { maxBuffer: 32 * 1024 * 1024, ...opts });
     stdout = r.stdout;
     stderr = r.stderr;
   } catch (err) {

@@ -2,9 +2,7 @@
 name: pysam
 description: 基因组文件工具包。读/写SAM/BAM/CRAM比对、VCF/BCF变异、FASTA/FASTQ序列、提取区域、计算覆盖度，用于NGS数据处理管道。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

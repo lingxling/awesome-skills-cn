@@ -1,10 +1,11 @@
 ---
 name: biopython
 description: 综合分子生物学工具包。用于序列操作、文件解析（FASTA/GenBank/PDB）、系统发育学和程序化NCBI/PubMed访问（Bio.Entrez）。最适合批量处理、自定义生物信息学管道、BLAST自动化。快速查找请使用gget；多服务集成请使用bioservices。
-license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+allowed-tools: Read Write Edit Bash
+compatibility: Requires Python 3.10+, NumPy, and Biopython. Entrez and web BLAST examples require network access; local BLAST/MUSCLE examples require those command-line tools installed separately.
+license: Biopython License Agreement
+required_environment_variables: [{"name": "NCBI_EMAIL", "prompt": "Email for NCBI Entrez identification (required by NCBI policy for Entrez calls).", "required_for": "optional features"}, {"name": "NCBI_API_KEY", "prompt": "NCBI API key to raise Entrez rate limits.", "required_for": "optional features"}]
+metadata: {"version": "1.2", "skill-author": "K-Dense Inc.", "openclaw": {"envVars": [{"name": "NCBI_EMAIL", "required": false, "description": "Email for NCBI Entrez identification (required by NCBI policy for Entrez calls)."}, {"name": "NCBI_API_KEY", "required": false, "description": "NCBI API key to raise Entrez rate limits."}]}}
 ---
 
 
@@ -16,7 +17,7 @@ metadata:
 
 ## 概述
 
-Biopython 是一套免费的 Python 生物计算工具。它为序列操作、文件 I/O、数据库访问、结构生物信息学、系统发育学以及许多其他生物信息学任务提供功能。当前版本是 **Biopython 1.87**（2026 年 3 月发布）。它需要 **Python 3.10+** 和 NumPy。
+Biopython 是一套免费的 Python 生物计算工具。它为序列操作、文件 I/O、数据库访问、结构生物信息学、系统发育学以及许多其他生物信息学任务提供功能。当前版本是 **Biopython 1.87**（2026 年 3 月 30 日发布）。它支持 **Python 3.10-3.14** 和 PyPy3.10，需要 NumPy。Biopython 1.87 还修复了 `Bio.Entrez.Parser` 在解析不可信文件时的 **CVE-2025-68463** 漏洞，因此解析外部提供的 Entrez XML 时推荐使用 1.87 及以上版本。
 
 ## 何时使用此技能
 
@@ -49,19 +50,20 @@ Biopython 组织成模块化的子包，每个子包针对特定的生物信息�
 
 ## 安装和设置
 
-安装 Biopython（需要 Python 3.10+ 和 NumPy）：
+安装当前稳定版 Biopython，并显式锁定版本号以保证可复现性：
 
 ```bash
-uv pip install biopython
+uv pip install "biopython==1.87"
 ```
 
-对于 NCBI 数据库访问，始终设置您的电子邮件地址（NCBI 要求）。要获得更高的速率限制（10 req/s 而不是 3 req/s），从环境变量读取 `NCBI_API_KEY`——不要硬编码密钥：
+对于 NCBI 数据库访问，始终设置您的电子邮件地址（NCBI 要求）。对于可复用的软件，还应设置一个稳定的 `Entrez.tool` 值，并向 NCBI 注册该工具/邮箱。要获得更高的速率限制（10 req/s 而不是 3 req/s），只从环境变量读取 `NCBI_API_KEY`——不要硬编码密钥，也不要加载无关的环境变量：
 
 ```python
 import os
 from Bio import Entrez
 
 Entrez.email = "your.email@example.com"  # 必需的 — 使用您的真实邮箱
+Entrez.tool = "your_tool_name"  # 可选但推荐用于可复用软件
 
 # 可选：在 https://www.ncbi.nlm.nih.gov/account/settings/ 注册
 if api_key := os.environ.get("NCBI_API_KEY"):
@@ -252,13 +254,13 @@ print(f"Molecular weight: {molecular_weight(seq, seq_type='DNA'):.2f} g/mol")
 参考文件的搜索模式示例：
 ```bash
 # 查找特定函数的信息
-grep -n "SeqIO.parse" references/sequence_io.md
+rg -n "SeqIO.parse" references/sequence_io.md
 
 # 查找特定任务的示例
-grep -n "BLAST" references/blast.md
+rg -n "BLAST" references/blast.md
 
 # 查找特定概念的信息
-grep -n "alignment" references/alignment.md
+rg -n "alignment" references/alignment.md
 ```
 
 ### 编写 Biopython 代码
@@ -271,10 +273,13 @@ grep -n "alignment" references/alignment.md
    from Bio.Seq import Seq
    ```
 
-2. **使用 NCBI 数据库时设置 Entrez 邮箱；如果存在，从环境变量加载 `NCBI_API_KEY`**
+2. **使用 NCBI 数据库时设置 Entrez 邮箱；如果存在，只从环境变量加载 `NCBI_API_KEY`**
    ```python
    import os
+   from Bio import Entrez
+
    Entrez.email = "your.email@example.com"
+   Entrez.tool = "your_tool_name"
    if api_key := os.environ.get("NCBI_API_KEY"):
        Entrez.api_key = api_key
    ```
@@ -298,6 +303,8 @@ grep -n "alignment" references/alignment.md
 
 6. **优雅地处理错误** - 网络操作和文件解析可能会失败
    ```python
+   from urllib.error import HTTPError
+
    try:
        handle = Entrez.efetch(db="nucleotide", id=accession)
    except HTTPError as e:
@@ -370,13 +377,16 @@ Phylo.draw(tree)
 
 ## 最佳实践
 
-1. **始终处理异常**：NCBI 服务可能不稳定，使用 try-except 处理网络错误
-2. **批量请求**：需要多个序列时，使用 Entrez.efetch 批量获取
-3. **遵守使用条款**：设置合理的请求间隔，不要超过 NCBI 限制
-4. **缓存结果**：对于重复查询，保存本地副本
-5. **验证输入**：在处理前验证序列格式和 ID 有效性
-6. **使用适当的解析器**：根据文件格式选择正确的解析器
-7. **保持更新**：定期更新 Biopython 以获得最新功能和修复
+1. **在编写代码前先阅读相关参考文档**
+2. **使用 grep 在参考文件中搜索特定函数或示例**
+3. **解析前验证文件格式**
+4. **优雅地处理缺失数据** - 并非所有记录都包含所有字段
+5. **缓存已下载的数据** - 避免重复下载相同序列
+6. **遵守 NCBI 速率限制** - 对于可复用软件，使用 API 密钥、注册过的工具/邮箱值，并对大批量任务使用 Entrez history/批处理
+7. **在处理大文件前先用小数据集测试**
+8. **保持 Biopython 更新** 以获得最新功能和修复
+9. **翻译时使用合适的遗传密码表**
+10. **记录分析参数** 以确保可复现性
 
 ## 常见问题排查
 
@@ -428,3 +438,28 @@ Phylo.draw(tree)
 ### 问题：升级到 1.86+ 后 PairwiseAligner 返回的比对数量减少
 - **原因**：Biopython 1.86 修复了比对算法中的 bug
 - **解决**：验证结果是否符合预期，必要时调整参数
+
+## 附加资源
+
+- **官方文档**：https://biopython.org/docs/latest/
+- **教程**：https://biopython.org/docs/latest/Tutorial/
+- **Cookbook**：https://biopython.org/docs/latest/Tutorial/（高级示例）
+- **GitHub**：https://github.com/biopython/biopython
+- **发布说明**：https://github.com/biopython/biopython/blob/master/NEWS.rst
+- **已弃用 API**：https://github.com/biopython/biopython/blob/master/DEPRECATED.rst
+- **邮件列表**：biopython@biopython.org
+
+## 快速参考
+
+要在参考文件中定位信息，请使用以下搜索模式：
+
+```bash
+# 搜索特定函数
+rg -n "function_name" references/*.md
+
+# 查找特定任务的示例
+rg -n "example" references/sequence_io.md
+
+# 查找模块的所有出现位置
+rg -n "Bio.Seq" references/*.md
+```

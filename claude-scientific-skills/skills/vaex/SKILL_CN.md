@@ -4,9 +4,7 @@ description: 使用此技能处理和分析超出可用RAM的大型表格数据�
 allowed-tools: Read Write Edit Bash Grep Glob
 license: MIT license
 compatibility: Requires Python 3.10+ (3.12+ recommended with vaex 4.19.0). Install with uv pip install vaex. Optional s3fs/gcsfs/adlfs for cloud I/O.
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

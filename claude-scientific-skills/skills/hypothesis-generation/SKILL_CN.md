@@ -3,9 +3,8 @@ name: hypothesis-generation
 description: 从观察中形成结构化假设。当您有实验观察或数据并需要制定可检验的假设（包含预测）、提出机制和设计实验来检验它们时使用。遵循科学方法框架。开放式构思请使用scientific-brainstorming；在数据集上进行自动LLM驱动的假设检验请使用hypogenic。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

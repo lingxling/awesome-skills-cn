@@ -1,6 +1,6 @@
 # Skills Update Guide
 
-This guide explains how to update the skills in the Antigravity Awesome Skills web application.
+This guide explains how to update the skills in the Agentic Awesome Skills web application.
 
 ## Automatic Updates (Recommended)
 
@@ -72,7 +72,7 @@ The update process refreshes:
 - Canonical skills index (`skills_index.json`)
 - Compatibility mirror (`data/skills_index.json`)
 - Web app skills data (`apps\web-app\public\skills.json`)
-- All 1,484+ skills from the skills directory
+- All 1,958+ skills from the skills directory
 
 ## When to Update
 

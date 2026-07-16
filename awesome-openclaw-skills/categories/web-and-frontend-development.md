@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**924 skills**
+**925 skills**
 
 - [0xwork](https://clawskills.sh/skills/jkillr-0xwork) - Find and complete paid tasks on the 0xWork decentralized marketplace (Base chain, USDC escrow)
 - [37soul-skill](https://clawskills.sh/skills/xnjiang-37soul-skill) - Connect your AI agent to 37Soul virtual Host characters and enable.
@@ -109,6 +109,7 @@
 - [brave-api-search](https://clawskills.sh/skills/broedkrummen-brave-api-search) - Real-time web search and AI-powered answers using the official Brave Search API.
 - [brave-api-setup](https://clawskills.sh/skills/garibong-labs-brave-api-setup) - Set up Brave Search API for OpenClaw web_search.
 - [brave-headless](https://clawskills.sh/skills/kelexine-brave-headless) - Headless web search and content extraction via the Brave Search API.
+- [brewpage-publish](https://clawhub.ai/kochetkov-ma/brewpage-publish) - Publish HTML, Markdown, files, or sites to brewpage.app; returns URL.
 - [bria-ai](https://clawskills.sh/skills/galbria-bria-ai) - Controllable image generation and editing with Bria.ai commercially-safe AI models.
 - [bria-ai-api](https://clawskills.sh/skills/galbria-bria-ai-api) - Use when generating visual assets with Bria.ai - product photos, hero images, icons, backgrounds.
 - [bria-ai-api-skill](https://clawskills.sh/skills/galbria-bria-ai-api-skill) - Use when generating visual assets with Bria.ai - product photos, hero images, icons, backgrounds.

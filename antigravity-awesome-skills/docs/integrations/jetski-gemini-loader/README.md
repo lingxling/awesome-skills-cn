@@ -1,6 +1,6 @@
 # Jetski + Gemini Lazy Skill Loader (Example)
 
-This example shows one way to integrate **antigravity-awesome-skills** with a Jetski/Cortex‑style agent using **lazy loading** based on `@skill-id` mentions, instead of concatenating every `SKILL.md` into the prompt.
+This example shows one way to integrate **agentic-awesome-skills** with a Jetski/Cortex‑style agent using **lazy loading** based on `@skill-id` mentions, instead of concatenating every `SKILL.md` into the prompt.
 
 > This is **not** a production‑ready library – it is a minimal reference you can adapt to your own host/agent implementation.
 
@@ -21,7 +21,7 @@ This example shows one way to integrate **antigravity-awesome-skills** with a Je
 - How to enforce a **maximum number of skills per turn** via `maxSkillsPerTurn`.
 - How to choose whether to **truncate or error** when too many skills are requested via `overflowBehavior`.
 
-This pattern avoids context overflow when you have 1,484+ skills installed.
+This pattern avoids context overflow when you have 1,958+ skills installed.
 
 Manifest contract references:
 
@@ -53,7 +53,7 @@ import {
   Message,
 } from "./loader.mjs";
 
-const REPO_ROOT = "/path/to/antigravity-awesome-skills";
+const REPO_ROOT = "/path/to/agentic-awesome-skills";
 const SKILLS_ROOT = REPO_ROOT;
 const INDEX_PATH = path.join(REPO_ROOT, "skills_index.json");
 

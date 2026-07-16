@@ -2,9 +2,7 @@
 name: bids
 description: >
 license: https://creativecommons.org/licenses/by/4.0/
-metadata:
-  version: "1.0"
-  skill-author: Yaroslav Halchenko
+metadata: {"version": "1.0", "skill-author": "Yaroslav Halchenko"}
 ---
 
 

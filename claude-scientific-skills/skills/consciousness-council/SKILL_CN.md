@@ -3,9 +3,7 @@ name: consciousness-council
 description: 对任何问题、决定或创造性挑战运行多视角的心灵委员会审议。当用户想要多样化观点、需要帮助做出艰难决定、请求委员会/小组/董事会讨论、想从多个角度探索问题、请求唱反调分析或说类似"不同专家会怎么看这个"、"帮我从各方面思考这个问题"、"委员会模式"、"心灵委员会"或"审议这个"时使用此技能。当用户面临没有明显答案的困境、权衡或复杂选择时也会触发。
 allowed-tools: Read Write
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: AHK Strategies (ashrafkahoush-ux)
+metadata: {"version": "1.0", "skill-author": "AHK Strategies (ashrafkahoush-ux)"}
 ---
 
 

@@ -37,6 +37,8 @@ from pathlib import Path
 
 from dateutil.parser import isoparse
 
+from _safe_paths import safe_existing_directory, write_json_file
+
 # NOTE: the normalizer requires "hive-s3" — do not change to "hive" or "data-lake"
 LOG_TYPE = "hive-s3"
 
@@ -133,7 +135,7 @@ def _load_returned_rows(op_logs_dir: str) -> dict[str, int]:
     each file, which reflects the final number of rows delivered to the client.
     """
     rows_by_id: dict[str, int] = {}
-    for log_file in Path(op_logs_dir).glob("*.log"):
+    for log_file in safe_existing_directory(op_logs_dir).glob("*.log"):
         query_id = log_file.stem
         last_count: int | None = None
         try:
@@ -274,8 +276,7 @@ def main() -> None:
 
     manifest = collect(log_file=args.log_file, op_logs_dir=args.op_logs_dir)
 
-    with open(args.output_file, "w") as fh:
-        json.dump(manifest, fh, indent=2)
+    write_json_file(args.output_file, manifest)
     print(f"Query log manifest written to {args.output_file}")
     print("Done.")
 

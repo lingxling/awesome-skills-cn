@@ -1,17 +1,83 @@
-name: Skill Review & Optimize
+name: Skill Review
 on:
   pull_request:
     paths: ['**/SKILL.md']
 
+permissions:
+  contents: read
+
 jobs:
-  review:
+  review-state:
     runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.state.outputs.configured }}
+    env:
+      TESSL_TOKEN_CONFIGURED: ${{ (secrets.TESSL_TOKEN != '' || secrets.TESSL_API_TOKEN != '') && 'true' || 'false' }}
+    steps:
+      - name: Resolve semantic review availability
+        id: state
+        run: echo "configured=${TESSL_TOKEN_CONFIGURED}" >> "$GITHUB_OUTPUT"
+
+  review:
+    needs: review-state
+    if: ${{ needs.review-state.outputs.configured == 'true' }}
+    runs-on: ubuntu-latest
+    env:
+      TESSL_REVIEW_THRESHOLD: '80'
+      TESSL_WORKSPACE: agentic-awesome-skills
     permissions:
-      pull-requests: write
       contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: tesslio/skill-review-and-optimize@d81583861aaf29d1da7f10e6539efef4e27b0dd5
+      - name: Checkout pull request content
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
-          optimize: 'true'
-          tessl-token: ${{ secrets.TESSL_API_TOKEN }}
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - name: Checkout trusted base scripts
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted-base
+          persist-credentials: false
+      - uses: tesslio/setup-tessl@25ec223fc0da33b41b8044ff5ab2b85235f4f91e
+        with:
+          token: ${{ secrets.TESSL_TOKEN || secrets.TESSL_API_TOKEN }}
+      - name: Review changed skills
+        run: node trusted-base/tools/scripts/review_changed_skills.cjs
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+
+  manual-review-required:
+    needs: review-state
+    if: ${{ needs.review-state.outputs.configured != 'true' && github.event.pull_request.head.repo.full_name != github.repository }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Record exact head requiring maintainer review
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo "::warning title=Manual skill review required::Semantic review is unavailable for this fork. A maintainer must attest to the exact head SHA before merge: ${HEAD_SHA}."
+          {
+            echo "## Manual skill review required"
+            echo
+            echo "- Head SHA: \`${HEAD_SHA}\`"
+            echo "- Reason: repository secrets are unavailable to this fork pull request."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  missing-review-credentials:
+    needs: review-state
+    if: ${{ needs.review-state.outputs.configured != 'true' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Require Tessl token for repository branches
+        run: |
+          echo "::error title=Missing Tessl token::Configure TESSL_TOKEN, or keep the legacy TESSL_API_TOKEN secret until the migration is complete."
+          exit 1

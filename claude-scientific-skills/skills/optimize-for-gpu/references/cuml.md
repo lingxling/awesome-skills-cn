@@ -31,11 +31,14 @@ cuML is NVIDIA's GPU-accelerated machine learning library within the RAPIDS ecos
 Always use `uv add` (never `pip install` or `conda install`) in all install instructions, docstrings, comments, and error messages.
 
 ```bash
-uv add --extra-index-url=https://pypi.nvidia.com cuml-cu12    # For CUDA 12.x
+uv add cuml-cu12    # For CUDA 12.x
+uv add cuml-cu13    # For CUDA 13.x
 ```
 
+cuML wheels are published directly to PyPI (since RAPIDS 25.10) — the `--extra-index-url=https://pypi.nvidia.com` extra index is no longer required.
+
 **Platform:** Linux and WSL2 only (no native macOS or Windows).
-**Requires:** scikit-learn >= 1.4, NVIDIA GPU with CUDA 12.x support.
+**Requires:** Python >= 3.11, scikit-learn >= 1.5, NVIDIA GPU with CUDA 12.x or 13.x support.
 
 Verify:
 ```python
@@ -99,8 +102,8 @@ CUML_ACCEL_ENABLED=1 python script.py
 - If an operation isn't supported on GPU, it silently falls back to CPU sklearn.
 - Uses managed memory by default — host RAM augments GPU VRAM.
 - Models pickled under cuml.accel load as standard sklearn objects in non-GPU environments.
-- Accelerates 30+ algorithms across sklearn, umap-learn, and hdbscan.
-- Compatible with scikit-learn versions 1.4-1.7.
+- Accelerates 30+ algorithms across sklearn, umap-learn, and hdbscan. Recent releases (26.04-26.06) expanded coverage to preprocessing estimators (StandardScaler, MinMaxScaler, MaxAbsScaler, PolynomialFeatures, LabelEncoder) and SpectralClustering.
+- Compatible with scikit-learn versions 1.5-1.8 (some estimators require >= 1.8, which enables GPU acceleration via scikit-learn's experimental array-api support).
 
 ### Known Fallback Triggers (Runs on CPU Instead)
 
@@ -612,7 +615,7 @@ All of this runs entirely on GPU — from Parquet read to model evaluation — w
 
 1. **Platform:** Linux and WSL2 only. No native macOS or Windows.
 
-2. **Sparse data:** Most cuML algorithms do not support sparse matrices. Under cuml.accel, sparse inputs fall back to CPU.
+2. **Sparse data:** Most cuML algorithms do not support sparse matrices (Lasso and ElasticNet gained sparse input support in 26.06). Under cuml.accel, sparse inputs fall back to CPU.
 
 3. **String data:** Must be pre-encoded to numeric. No native string column support in estimators.
 

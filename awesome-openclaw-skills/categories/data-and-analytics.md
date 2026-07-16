@@ -32,7 +32,7 @@
 - [remove-analytics](https://clawskills.sh/skills/jeftekhari-remove-analytics) - Safely remove Google Analytics from a project.
 - [senior-data-engineer](https://clawskills.sh/skills/alirezarezvani-senior-data-engineer) - Data engineering skill for building scalable.
 - [senior-data-scientist](https://clawskills.sh/skills/alirezarezvani-senior-data-scientist) - World-class data science skill.
-- [skywork-excel](https://github.com/openclaw/skills/blob/main/skills/gxcun17/skywork-excel/SKILL.md) - AI-powered spreadsheet operations for creating, analyzing and generating reports.
+- [skywork-excel](https://clawskills.sh/skills/gxcun17-skywork-excel) - AI-powered spreadsheet operations for creating, analyzing and generating reports.
 - [supabase](https://clawskills.sh/skills/stopmoclay-supabase) - Connect to Supabase for database operations, vector search, and storage.
 - [sure](https://clawskills.sh/skills/bt0r-sure) - Get report from Sure personal financial board.
 - [tabstack-extractor](https://clawskills.sh/skills/noblepayne-tabstack-extractor) - Extract structured data from websites using Tabstack.

@@ -2,9 +2,7 @@
 name: pathway-enrichment
 description: 对基因列表或排序基因数据进行通路和基因集富集分析，然后解释结果。当用户有一组基因（来自PyDESeq2/Scanpy的差异表达基因、CRISPR筛选命中、聚类标记基因、蛋白质组学命中）并想知道哪些生物通路、GO术语或基因集被过度代表或富集时使用。涵盖超几何检验（ORA/Enrichr/Fisher）、排序基因集富集分析（GSEA/preranked）、单样本评分（ssGSEA/GSVA）以及通过gseapy、g:Profiler、Enrichr库、MSigDB、GO、KEGG、Reactome和WikiPathways进行功能分析——加上基因ID映射、选择正确的背景 Universe、多重检验校正、冗余减少、点图/富集图和出版级表格。将此用于"通路分析"、"富集分析"、"GO富集"、"KEGG/Reactome通路"、"GSEA"、"超几何检验"、"功能注释"或"我的基因在哪些通路中"。
 license: MIT
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

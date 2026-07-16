@@ -33,6 +33,7 @@
 - [gcal-pro](https://clawskills.sh/skills/bilalmohamed187-cpu-gcal-pro) - Google Calendar integration for viewing, creating, and managing.
 - [gog](https://clawskills.sh/skills/steipete-gog) - Google Workspace CLI for Gmail, Calendar, Drive, Contacts, Sheets, and Docs.
 - [google-calendar](https://clawskills.sh/skills/adrianmiller99-google-calendar) - Interact with Google Calendar via the Google Calendar.
+- [google-service-accounts](https://clawhub.ai/amiller/google-service-accounts) - Headless Google Sheets, Docs, Drive, Calendar via service-account sharing.
 - [grazy](https://clawskills.sh/skills/thomyg-grazy) - grazy - Your Grazer Command Line Companion.
 - [greek-financial-statements](https://clawskills.sh/skills/satoshistackalotto-greek-financial-statements) - Greek financial statement generation — P&L, balance sheets, VAT summaries with EGLS integration.
 - [habib-pdf-to-json](https://clawskills.sh/skills/dbmoradi60-habib-pdf-to-json) - Extract structured data from construction PDFs.

@@ -2,9 +2,7 @@
 name: fluidsim
 description: 使用Python进行计算流体动力学模拟的框架。用于运行流体动力学模拟，包括纳维-斯托克斯方程（2D/3D）、浅水方程、分层流动，或分析湍流、涡旋动力学或地球物理流动。提供伪谱方法（FFT）、HPC支持和全面的输出分析。
 license: CeCILL FREE SOFTWARE LICENSE AGREEMENT
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

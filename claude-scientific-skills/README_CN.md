@@ -32,13 +32,13 @@
 
 > **🔔 Claude Scientific Skills is now Scientific Agent Skills.** Same skills, broader compatibility — now works with any AI agent that supports the open [Agent Skills](https://agentskills.io/) standard, not just Claude.
 
-> **New: [K-Dense BYOK](https://github.com/K-Dense-AI/k-dense-byok)** — A free, open-source AI co-scientist that runs on your desktop, powered by Scientific Agent Skills. Bring your own API keys, pick from 40+ models, and get a full research workspace with web search, file handling, 100+ scientific databases, and access to all 142 skills in this repo. Your data stays on your computer, and you can optionally scale to cloud compute via [Modal](https://modal.com/) for heavy workloads. [Get started here.](https://github.com/K-Dense-AI/k-dense-byok)
+> **New: [K-Dense BYOK](https://github.com/K-Dense-AI/k-dense-byok)** — A free, open-source AI co-scientist that runs on your desktop, powered by Scientific Agent Skills. Bring your own API keys, pick from 40+ models, and get a full research workspace with web search, file handling, 100+ scientific databases, and access to all 148 skills in this repo. Your data stays on your computer, and you can optionally scale to cloud compute via [Modal](https://modal.com/) for heavy workloads. [Get started here.](https://github.com/K-Dense-AI/k-dense-byok)
 
 > **Stay up to date:** Follow K-Dense on [X](https://x.com/k_dense_ai), [LinkedIn](https://www.linkedin.com/company/k-dense-inc), and [YouTube](https://www.youtube.com/@K-Dense-Inc) for new skills, release announcements, walkthroughs, research workflow demos, and examples you can use with your own AI agent.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
-[![Version](https://img.shields.io/badge/Version-2.43.0-blue.svg)](pyproject.toml)
-[![Skills](https://img.shields.io/badge/Skills-142-brightgreen.svg)](#-whats-included)
+[![Version](https://img.shields.io/badge/Version-2.53.0-blue.svg)](pyproject.toml)
+[![Skills](https://img.shields.io/badge/Skills-148-brightgreen.svg)](#-whats-included)
 [![Databases](https://img.shields.io/badge/Databases-100%2B-orange.svg)](#-whats-included)
 [![Agent Skills](https://img.shields.io/badge/Standard-Agent_Skills-blueviolet.svg)](https://agentskills.io/)
 [![Security Scan](https://github.com/K-Dense-AI/scientific-agent-skills/actions/workflows/security-scan.yml/badge.svg)](https://github.com/K-Dense-AI/scientific-agent-skills/actions/workflows/security-scan.yml)
@@ -51,7 +51,7 @@
 
 [![Star History Chart](https://api.star-history.com/svg?repos=K-Dense-AI/scientific-agent-skills&type=date&legend=top-left)](https://www.star-history.com/#K-Dense-AI/scientific-agent-skills&type=date&legend=top-left)
 
-一个综合性集合，包含 **141 即用型科学和研究技能**（现已涵盖癌症基因组学、药物-靶点结合、分子动力学、RNA 速度、地理空间科学、时间序列预测、科学 ML 资源发现（通过 Hugging Science）、78+ 科学数据库等），适用于任何支持开放的 [Agent Skills](https://agentskills.io/) 标准的 AI 代理，由 [K-Dense](https://k-dense.ai) 创建。可与 **Cursor、Claude Code、Codex、Google Antigravity 等工具**配合使用。将您的 AI 代理转变为能够跨生物学、化学、医学等领域执行复杂多步骤科学工作流的研究助手。
+一个综合性集合，包含 **148 即用型科学和研究技能**（现已涵盖癌症基因组学、药物-靶点结合、分子动力学、RNA 速度、地理空间科学、时间序列预测、科学 ML 资源发现（通过 Hugging Science）、78+ 科学数据库等），适用于任何支持开放的 [Agent Skills](https://agentskills.io/) 标准的 AI 代理，由 [K-Dense](https://k-dense.ai) 创建。可与 **Cursor、Claude Code、Codex、Google Antigravity 等工具**配合使用。将您的 AI 代理转变为能够跨生物学、化学、医学等领域执行复杂多步骤科学工作流的研究助手。
 
 > ⭐ **帮助让 AI 用于科学更易被发现：** 如果 Scientific Agent Skills 为您节省了时间，教您的代理工作流程，或帮助您的实验室更快进展，请 [为此仓库加星标](https://github.com/K-Dense-AI/scientific-agent-skills)。星标是一个公开信号，表明这些开放、可重用的研究技能值得维护：它帮助科学家、工程师和开源贡献者找到项目，显示哪些代理技能标准正在获得真正的采用，并给我们一个明确的理由为社区继续扩展这个集合。
 
@@ -74,6 +74,7 @@
 - 📚 科学交流 - 文献综述、同行评审、科学写作、文档处理、海报、幻灯片、示意图、引用管理
 - 🔬 多组学与系统生物学 - 多模态数据整合、通路分析、网络生物学、系统级洞察
 - 🧬 蛋白质工程与设计 - 蛋白质语言模型、结构预测、序列设计、功能注释
+- 🧰 代理平台与基础设施 - 基于 Pi 构建，涵盖 SDK、RPC、扩展、自定义 provider/模型、包、TUI 组件和会话工具
 - 🎓 研究方法论 - 假设生成、科学头脑风暴、批判性思维、资助写作、学者评估
 
 **将您的 AI 编码代理转变为桌面上的"AI 科学家"！**
@@ -86,12 +87,12 @@
 
 ## 📦 包含内容
 
-本仓库提供 **142 个科学和研究技能**，组织成以下类别：
+本仓库提供 **148 个科学和研究技能**，组织成以下类别：
 
-- **100+ 科学与金融数据库** - 统一的数据库查找技能提供对 78 个公共数据库的直接访问（PubChem、ChEMBL、UniProt、COSMIC、ClinicalTrials.gov、FRED、USPTO 等），以及 DepMap、Imaging Data Commons、PrimeKG、U.S. Treasury Fiscal Data 和 Hugging Science（Hugging Face 上 17 个科学领域的科学数据集、模型和交互式 Spaces 的精选目录）的专用技能。像 BioServices（约 40 个生物信息学服务）、BioPython（通过 Entrez 访问 38 个 NCBI 子数据库）和 gget（20+ 基因组学数据库）等多数据库包进一步增加了覆盖范围
+- **100+ 科学与金融数据库** - 统一的数据库查找技能提供对 78 个公共数据库的确定性、可溯源访问（PubChem、ChEMBL、UniProt、COSMIC、ClinicalTrials.gov、FRED、USPTO 等），以及 DepMap、Imaging Data Commons、PrimeKG、U.S. Treasury Fiscal Data 和 Hugging Science（Hugging Face 上 17 个科学领域的科学数据集、模型和交互式 Spaces 的精选目录）的专用技能。像 BioServices（约 40 个生物信息学服务）、BioPython（通过 Entrez 访问 38 个 NCBI 子数据库）和 gget（20+ 基因组学数据库）等多数据库包进一步增加了覆盖范围
 - **70+ 优化的 Python 包技能** - 为 RDKit、Scanpy、PyTorch Lightning、scikit-learn、BioPython、pyzotero、BioServices、PennyLane、Qiskit、分子动力学（OpenMM/MDAnalysis）、scVelo、TimesFM 等明确定义的技能 —— 包含精心策划的文档、示例和最佳实践。注意：代理可以使用 *任何* Python 包编写代码，不仅仅是这些；这些技能只是为列出的包提供更强、更可靠的性能
 - **9 科学集成技能** - 为 Benchling、DNAnexus、LatchBio、OMERO、Protocols.io、Open Notebook、Ginkgo Cloud Lab、LabArchives、Opentrons 等明确定义的技能。同样，代理不限于这些 —— Python 可以访问的任何 API 或平台都可以使用；这些技能是优化的、预先记录的路径
-- **30+ 分析与交流工具** - 文献综述、科学写作、同行评审、文档处理、Paperzilla、PACSOMATIC、Exa Search、海报、幻灯片、示意图、信息图表、Mermaid 图表等
+- **30+ 分析与交流工具** - 文献综述、科学写作、同行评审、文档处理、Paperzilla、Exa Search、海报、幻灯片、示意图、信息图表、Mermaid 图表等
 - **10+ 研究与临床工具** - 假设生成、资助写作、临床决策支持、治疗计划、BIDS、监管合规、情景分析，以及通过 Autoskill 进行的工作流派生技能编写
 
 每个技能包括：
@@ -131,7 +132,7 @@
 - **多步骤工作流** - 通过单个提示执行复杂的流水线
 
 ### 🎯 **全面覆盖**
-- **142 个技能** - 覆盖所有主要科学领域
+- **148 个技能** - 覆盖所有主要科学领域
 - **100+ 数据库** - 统一访问 78+ 数据库，通过数据库查找，以及专用数据访问技能和多数据库包如 BioServices、BioPython 和 gget
 - **70+ 优化的 Python 包技能** - RDKit、Scanpy、PyTorch Lightning、scikit-learn、BioServices、PennyLane、Qiskit、分子动力学（OpenMM/MDAnalysis）、scVelo、TimesFM 等（代理可以使用任何 Python 包；这些是预先记录的、更高性能的路径）
 
@@ -157,7 +158,7 @@
 npx skills add K-Dense-AI/scientific-agent-skills
 ```
 
-这是在 **所有平台** 上安装 Agent Skills 的官方标准方法，包括 **Claude Code**、**Claude Cowork**、**Codex**、**Gemini CLI**、**Google Antigravity**、**Cursor** 和任何其他支持开放 [Agent Skills](https://agentskills.io/) 标准的代理。
+这是在 **所有平台** 上安装 Agent Skills 的官方标准方法，包括 **Claude Code**、**Claude Cowork**、**Codex**、**Gemini CLI**、**Google Antigravity**、**Cursor**、**OpenClaw**、**NVIDIA NemoClaw**、**Hermes**、**Pi** 和任何其他支持开放 [Agent Skills](https://agentskills.io/) 标准的代理。
 
 ### 选项2: GitHub CLI (`gh skill`)
 
@@ -200,6 +201,25 @@ gh skill update
 # 更新所有已安装的技能
 gh skill update --all
 ```
+
+### 其他 Agent Skills 宿主平台（OpenClaw、NemoClaw、Pi、Hermes 等）
+
+通常您不需要任何针对特定宿主平台的操作。`npx skills add`（选项1）会安装到共享的 `~/.agents/skills/` 约定目录，任何扫描该目录的兼容客户端——包括 **OpenClaw**、**NVIDIA NemoClaw**（基于 OpenClaw 的安全运行时）和 **Pi**——都会自动发现这些技能。项目范围的安装会落在 `.agents/skills/` 中，工作方式相同。如果不想使用 CLI，可以直接克隆到这两个位置中的任意一个：
+
+```bash
+git clone https://github.com/K-Dense-AI/scientific-agent-skills.git ~/.agents/skills/scientific-agent-skills   # 用户级别
+git clone https://github.com/K-Dense-AI/scientific-agent-skills.git .agents/skills/scientific-agent-skills      # 项目级别
+```
+
+**Hermes** 是唯一使用自己独立注册表而非共享目录的宿主平台，因此需要将本仓库添加为 tap：
+
+```bash
+hermes skills tap add K-Dense-AI/scientific-agent-skills
+```
+
+这些技能在所有这些平台上都保持可移植性：`metadata` 采用单行 JSON 格式（以便 OpenClaw 基于行的读取器能够解析），需要凭据的技能在顶层声明 `required_environment_variables` 字段（以便 Hermes 提示输入密钥），其他地方会忽略未知字段。由于 148 个技能会累积大量常驻上下文，建议只安装主题相关的子集，而不是整个集合。
+
+> **NemoClaw 说明：** NemoClaw 在 NVIDIA OpenShell 内运行代理，默认拒绝出站网络访问。技能会正常被发现和加载，但任何需要网络的技能——通过 `uv` 安装包，或调用 API（Exa、Parallel、Benchling、NCBI、Materials Project 等）——只有在操作员在 OpenShell TUI 中预先批准相关域名后才能工作。
 
 **就这样！** 您的 AI 代理将自动发现技能，并在与您的科学任务相关时使用它们。您还可以通过在提示中提及技能名称来手动调用任何技能。
 
@@ -425,7 +445,7 @@ networks, and search GEO for similar patterns.
 - **虚拟筛选**：从 PubChem/ZINC 筛选数百万化合物针对蛋白质靶点
 - **先导化合物优化**：使用 RDKit 分析结构-活性关系，使用 datamol 生成类似物
 - **ADMET 预测**：使用 DeepChem 预测吸收、分布、代谢、排泄和毒性
-- **分子对接**：使用 DiffDock 预测结合姿势和亲和力
+- **分子对接**：使用 DiffDock 预测结合姿势，并使用面向亲和力的工具对姿势重新打分
 - **生物活性挖掘**：查询 ChEMBL 获取已知抑制剂并分析 SAR 模式
 
 ### 🧬 生物信息学与基因组学
@@ -463,7 +483,7 @@ networks, and search GEO for similar patterns.
 
 ## 📚 可用技能
 
-本仓库包含 **135 个科学和研究技能**，组织在多个领域。每个技能为使用科学库、数据库和工具提供综合文档、代码示例和最佳实践。
+本仓库包含 **148 个科学和研究技能**，组织在多个领域。每个技能为使用科学库、数据库和工具提供综合文档、代码示例和最佳实践。
 
 ### 技能类别
 
@@ -524,7 +544,7 @@ networks, and search GEO for similar patterns.
 - 离散事件仿真：SimPy
 - 符号数学：SymPy
 
-#### 📊 **数据分析与可视化**（16+ 个技能）
+#### 📊 **数据分析与可视化**（21 个技能）
 - 可视化：Matplotlib、Seaborn、科学可视化
 - 地理空间分析：GeoPandas、GeoMaster（遥感、GIS、卫星影像、空间机器学习、500+ 示例）
 - 数据处理：Dask、Polars、Vaex
@@ -534,10 +554,12 @@ networks, and search GEO for similar patterns.
 - 图表：Markdown 和 Mermaid 写作（基于文本的图表作为默认文档标准）
 - 探索性数据分析：EDA 工作流
 - 统计分析：统计分析工作流
+- 实验设计：实验设计（随机化、区组化、析因/部分析因 DOE、交叉设计、整群设计、序贯设计；pyDOE3）
+- 统计功效：统计功效（t 检验、方差分析、比例、相关性、回归的样本量与功效计算 —— 封闭式解法，以及针对 GLM、混合模型和整群设计的基于模拟的方法）
 
 #### 🧪 **实验室自动化**（4 个技能）
 - 液体处理：PyLabRobot
-- 云实验室：Ginkgo Cloud Lab（无细胞蛋白质表达、通过自主 RAC 基础设施的荧光像素艺术）
+- 云实验室：Ginkgo Cloud Lab（跨无细胞/大肠杆菌/毕赤酵母的蛋白质表达与纯化、IVT RNA 合成、热迁移和 Echo-MS 检测、SPR 入门、通过自主 RAC 基础设施的荧光像素艺术）
 - 协议管理：Protocols.io
 - LIMS 集成：Benchling、LabArchives
 
@@ -546,15 +568,16 @@ networks, and search GEO for similar patterns.
 - 多组学：HypoGeniC
 - 数据管理：LaminDB
 
-#### 🧬 **蛋白质工程与设计**（3 个技能）
+#### 🧬 **蛋白质工程与设计**（4 个技能）
 - 蛋白质语言模型：ESM
 - 糖工程：糖工程（N/O-糖基化预测、治疗性抗体优化）
 - 云实验室平台：Adaptyv（自动化蛋白质测试和验证）
+- 云结构与设计平台：Tamarind（通过 REST API 或 MCP 提供对 AlphaFold、Boltz、Chai、ESMFold、RFdiffusion、ProteinMPNN、BoltzGen 的托管 GPU 访问，涵盖抗体/纳米抗体设计、DiffDock/Vina 对接、结合亲和力和 MSA 生成）
 
-#### 📚 **科学交流**（20+ 个技能）
+#### 📚 **科学交流**（26 个技能）
 - 文献：论文查找（PubMed、PMC、bioRxiv、medRxiv、arXiv、OpenAlex、Crossref、Semantic Scholar、CORE、Unpaywall）、文献综述
 - 高级论文搜索：BGPT 论文搜索（每篇论文 25+ 结构化字段 —— 方法、结果、样本大小、质量评分 —— 来自全文，不仅仅是摘要）
-- 网络搜索：Parallel Web（综合摘要与引用）
+- 网络智能：Parallel Web（网络搜索、URL/PDF 提取、深度研究、结构化信息补全、实体发现和周期性监控）、Exa Search 和 Research Lookup
 - 研究笔记本：Open Notebook（自托管的 NotebookLM 替代方案 —— PDF、视频、音频、网页；16+ AI 提供商；多播客生成）
 - 写作：科学写作、同行评审
 - 文档处理：XLSX、MarkItDown、文档技能
@@ -566,24 +589,28 @@ networks, and search GEO for similar patterns.
 - 插图：生成图像（AI 图像生成，使用 FLUX.2 Pro 和 Gemini 3 Pro（Nano Banana Pro））
 
 #### 🔬 **科学数据库与数据访问**（6 个技能 → 100+ 数据库总计）
-> 统一的数据库查找技能提供对 78 个公共数据库的直接 REST API 访问，涵盖所有领域。专用技能覆盖专门的数据平台。像 BioServices（约 40 个生物信息学服务）、BioPython（通过 Entrez 访问 38 个 NCBI 子数据库）和 gget（20+ 基因组学数据库）等多数据库包进一步增加了覆盖范围。
-- 统一访问：数据库查找（78 个数据库，涵盖化学、基因组学、临床、通路、专利、经济学等 —— PubChem、ChEMBL、UniProt、PDB、AlphaFold、KEGG、Reactome、STRING、ClinVar、COSMIC、ClinicalTrials.gov、FDA、FRED、USPTO、SEC EDGAR 等）
+> 统一的数据库查找技能提供对 78 个公共数据库的确定性 REST API 访问，具备检索契约、分页/计数对账和端点溯源。专用技能覆盖专门的数据平台。像 BioServices（约 40 个生物信息学服务）、BioPython（通过 Entrez 访问 38 个 NCBI 子数据库）和 gget（20+ 基因组学数据库）等多数据库包进一步增加了覆盖范围。
+- 统一访问：数据库查找（78 个数据库，涵盖化学、基因组学、临床、通路、专利、经济学等 —— PubChem、ChEMBL、UniProt、PDB、AlphaFold、KEGG、Reactome、STRING、ClinVar、COSMIC、ClinicalTrials.gov、FDA、FRED、USPTO、SEC EDGAR 等 —— 带有可审计的筛选器和溯源信息）
 - 癌症基因组学：DepMap（癌细胞系依赖性、药物敏感性、基因效应谱）
 - 癌症影像：Imaging Data Commons（NCI 放射学和病理学数据集，通过 idc-index）
 - 知识图谱：PrimeKG（精准医学知识图谱 —— 基因、药物、疾病、表型）
 - 财政数据：美国财政部财政数据（国家债务、财政部报表、拍卖、汇率）
 - 科学 ML 资源目录：Hugging Science（Hugging Face 上 17 个科学领域的数据集、模型、博客文章和交互式 Spaces 的精选索引 —— 天文学、生物学、化学、气候、基因组学、材料科学、医学、物理学、科学推理等 —— 包含 `datasets`、`transformers` 和 `gradio_client` 的使用模式）
 
-#### 🔧 **基础设施与平台**（7+ 个技能）
+#### 🔧 **基础设施与平台**（11 个技能）
 - 云计算：Modal
 - GPU 加速：优化 GPU（CuPy、Numba CUDA、Warp、cuDF、cuML、cuGraph、KvikIO、cuCIM、cuxfilter、cuVS、cuSpatial、RAFT）
 - 基因组学平台：DNAnexus、LatchBio
+- 工作流引擎：Nextflow（构建/运行/调试 Nextflow 和 nf-core 流水线 —— DSL2 模块、执行器/容器、HPC/云扩展）和 pacsomatic（面向 nf-core/pacsomatic 肿瘤-正常体细胞变异检测工作流的操作工具集）
 - 显微镜：OMERO
 - 自动化：Opentrons
 - 资源检测：获取可用资源
+- 工作流挖掘：Autoskill（基于本地 screenpipe 的重复工作流检测和技能起草）
+- 代理平台开发：Pi Agent（将 Pi 用作终端编码工具，并基于 SDK、RPC/JSONL、扩展、自定义 provider/模型、包、TUI 组件和会话工具进行构建）
 
-#### 🎓 **研究方法论与规划**（12+ 个技能）
+#### 🎓 **研究方法论与规划**（12 个技能）
 - 构思：科学头脑风暴、假设生成
+- 自主优化：Arbor（假设树精化 —— 在开发评估器上迭代改进代码/模型/代理工具链/数据产物，同时用留出测试门防止过拟合）
 - 批判性分析：科学批判性思维、学者评估
 - 场景分析：What-If Oracle（多分支可能性探索、风险分析、战略选项）
 - 多视角审议：Consciousness Council（多样化的专家观点、魔鬼代言人分析）
@@ -718,7 +745,7 @@ skill-scanner scan /path/to/your/skill --use-behavioral
 答：我们定期更新技能以反映包和 API 的最新版本。主要更新在发布说明中宣布。
 
 **问：我可以将其与其他 AI 模型一起使用吗？**
-答：这些技能遵循开放的 [Agent Skills](https://agentskills.io/) 标准，可与任何兼容的代理一起使用，包括 Cursor、Claude Code 和 Codex。
+答：这些技能遵循开放的 [Agent Skills](https://agentskills.io/) 标准，可与任何兼容的代理一起使用，包括 Cursor、Claude Code、Codex、Google Antigravity、OpenClaw、NVIDIA NemoClaw、Hermes 和 Pi。
 
 ### 安装与设置
 
@@ -763,7 +790,7 @@ skill-scanner scan /path/to/your/skill --use-behavioral
   title = {Scientific Agent Skills: A Comprehensive Collection of Scientific Tools for AI Agents},
   year = {2026},
   url = {https://github.com/K-Dense-AI/scientific-agent-skills},
-  note = {135 skills covering databases, packages, integrations, and analysis tools}
+  note = {148 skills covering databases, packages, integrations, and analysis tools}
 }
 ```
 

@@ -1,9 +1,7 @@
 ---
 name: optimize-for-gpu
 description: "使用CuPy、Numba CUDA、Warp、cuDF、cuML、cuGraph、KvikIO、cuCIM、cuxfilter、cuVS、cuSpatial和RAFT加速Python代码。只要用户提到GPU/CUDA/NVIDIA加速，或想要加速NumPy、pandas、scikit-learn、scikit-image、NetworkX、GeoPandas或Faiss工作负载，就使用此技能。涵盖物理模拟、可微分渲染、网格射线投射、粒子系统（DEM/SPH/fluids）、向量/相似性搜索、GPUDirect Storage文件IO、交互式仪表板、地理空间分析、医学影像和稀疏特征值求解器。当您看到受限CPU的Python代码（循环、大型数组、ML管道、图分析、图像处理）可以从GPU加速中受益时，即使没有明确要求，也应使用。"
-metadata:
-  version: "1.0"
-  author: K-Dense, Inc.
+metadata: {"version": "1.1", "author": "K-Dense, Inc."}
 ---
 
 
@@ -83,7 +81,7 @@ Numba 将 Python 直接编译为 CUDA 内核。它提供对 GPU 线程层次结�
 - 任何需要被 JIT 编译到 GPU 的 Python 模拟循环
 - 使用网格、体积（NanoVDB）、哈希网格或 BVH 查询的空间计算
 
-Warp 将 `@wp.kernel` Python 函数 JIT 编译为 CUDA，具有用于空间计算的内置类型（vec3、mat33、quat、transform）和用于几何查询的原语（Mesh、Volume、HashGrid、BVH）。所有内核都自动可微分。
+Warp 将 `@wp.kernel` Python 函数 JIT 编译为 CUDA，具有用于空间计算的内置类型（vec3、mat33、quat、transform）和用于几何查询的原语（Mesh、Volume、HashGrid、BVH）。所有内核都自动可微分。注意：更高层的 `warp.sim` 模块已在 Warp 1.10 中移除——其功能已迁移到独立的 Newton 物理引擎。Warp 本身仍然是编写自定义模拟内核的正确工具。
 
 **最适合：** 物理模拟、网格光线投射、粒子系统、可微分渲染、机器人运动学、SDF 操作、任何结合空间数据结构和 GPU 计算的工作负载。
 
@@ -148,6 +146,8 @@ KvikIO 提供 NVIDIA cuFile 的 Python 绑定，启用 GPUDirect Storage (GDS) �
 ### cuxfilter — 用于 GPU 加速的交互式仪表板
 **阅读：** `references/cuxfilter.md`
 
+**项目状态：已停止维护。** RAPIDS 26.06 是 cuxfilter 的最后一个版本（RSN 60）——现有软件包仍可使用，但不会再有更新。对于新的仪表板项目，推荐使用 cuDF 进行 GPU 数据准备，配合 HoloViews/hvPlot/Datashader 的联动选择功能，并通过 Panel、Plotly Dash、Streamlit 或 Bokeh 提供服务。只有当用户已经在使用 cuxfilter 或明确要求使用它时，才推荐 cuxfilter。
+
 当用户需要：
 - 大型数据集（数百万行）上的交互式交叉过滤仪表板
 - 带有相互过滤的链接图表的探索性数据分析
@@ -188,6 +188,8 @@ cuVS 提供 GPU 加速的 ANN 索引类型（CAGRA、IVF-Flat、IVF-PQ、暴力�
 
 ### cuSpatial — 用于地理空间分析（GeoPandas 替代品）
 **阅读：** `references/cuspatial.md`
+
+**项目状态：已归档。** cuSpatial 仓库自 2025 年 7 月起已设为只读；最终版本是 25.04，它绑定了 `cudf-cu12==25.4.*`，因此会与同一环境中的当前 RAPIDS 版本产生冲突。目前没有官方的后继方案。建议仅在专用的旧版环境中使用它；否则，几何运算继续使用 GeoPandas/Shapely（CPU），并用 cuDF 加速工作流中的表格部分。
 
 当用户的代码主要是：
 - GeoPandas 空间操作（点-in-多边形、空间连接、距离计算）
@@ -251,52 +253,56 @@ RAFT 提供 cuML 和 cuGraph 构建的基础原语。大多数用户应该首先
 
 重要：始终使用 `uv add` 进行包安装 — 永远不要使用 `pip install` 或 `conda install`。这适用于代码注释、文档字符串、错误消息和您生成的任何其他输出中的安装说明。如果用户的项目使用不同的包管理器，请遵循他们的指导，但默认使用 `uv add`。
 
-```bash
-# CuPy（选择正确的 CUDA 版本）
-uv add cupy-cuda12x          # 对于 CUDA 12.x（最常见）
+以下 RAPIDS 软件包跟随 RAPIDS 26.06（2026 年 6 月）：需要 Python >= 3.11 以及 CUDA 12.x 或 13.x。每个 RAPIDS 软件包都提供 `-cu12` 和 `-cu13` 两种 wheel 变体（已归档的 cuSpatial 除外）——示例使用 `-cu12`，如为 CUDA 13 系统请替换为 `-cu13`。大多数 RAPIDS wheel 现已直接发布在 PyPI 上；只有 cuGraph、nx-cugraph 和 cuSpatial 仍需要 NVIDIA 索引源。
 
-# 带有 CUDA 支持的 Numba
-uv add numba numba-cuda      # numba-cuda 是 NVIDIA 积极维护的包
+```bash
+# CuPy（选择正确的 CUDA 版本；CuPy 14+ 仅支持 CUDA 12/13）
+uv add cupy-cuda12x          # 对于 CUDA 12.x
+uv add cupy-cuda13x          # 对于 CUDA 13.x
+
+# 带有 CUDA 支持的 Numba（会自动安装 numba）
+uv add "numba-cuda[cu12]"    # 或 [cu13] — 提供 numba.cuda target 的 NVIDIA 包
 
 # Warp（模拟、空间计算、可微分编程）
-uv add warp-lang              # 包含 CUDA 12 运行时
+uv add warp-lang              # 包含 CUDA 12 运行时；CUDA 13 构建版本仅在 GitHub Releases 提供
 
 # cuDF (RAPIDS)
-uv add --extra-index-url=https://pypi.nvidia.com cudf-cu12  # 对于 CUDA 12.x
+uv add cudf-cu12
 # 对于 cudf.pandas 加速模式，这就是您需要的全部
 # 通过以下方式加载：python -m cudf.pandas your_script.py
 
 # cuML (RAPIDS 机器学习)
-uv add --extra-index-url=https://pypi.nvidia.com cuml-cu12   # 对于 CUDA 12.x
+uv add cuml-cu12
 # 对于 cuml.accel 加速模式（零代码更改 sklearn 加速）：
 # 通过以下方式加载：python -m cuml.accel your_script.py
 
-# cuGraph (RAPIDS 图分析)
+# cuGraph (RAPIDS 图分析) — 仍需要 NVIDIA 索引源（PyPI 上只有占位包）
 uv add --extra-index-url=https://pypi.nvidia.com cugraph-cu12    # 核心 cuGraph
 uv add --extra-index-url=https://pypi.nvidia.com nx-cugraph-cu12 # NetworkX 后端
 # 对于 nx-cugraph 零代码更改 NetworkX 加速：
 # NX_CUGRAPH_AUTOCONFIG=True python your_script.py
 
 # KvikIO（高性能 GPU 文件 IO）
-uv add kvikio-cu12               # 对于 CUDA 12.x
+uv add kvikio-cu12
 # 可选：uv add zarr          # 对于 Zarr GPU 后端支持
 
-# cuxfilter（GPU 加速的交互式仪表板）
-uv add --extra-index-url=https://pypi.nvidia.com cuxfilter-cu12   # 对于 CUDA 12.x
+# cuxfilter（交互式仪表板）— 已停止维护：26.06 是最后一个版本
+uv add cuxfilter-cu12
 # 依赖于 cuDF — 自动安装它
 
 # cuCIM（RAPIDS 图像处理 — GPU 上的 scikit-image）
-uv add --extra-index-url=https://pypi.nvidia.com cucim-cu12    # 对于 CUDA 12.x
+uv add cucim-cu12
 
 # cuVS (RAPIDS 向量搜索)
-uv add --extra-index-url=https://pypi.nvidia.com cuvs-cu12   # 对于 CUDA 12.x
+uv add cuvs-cu12
 
-# cuSpatial (RAPIDS 地理空间)
-uv add --extra-index-url=https://pypi.nvidia.com cuspatial-cu12   # 对于 CUDA 12.x
+# cuSpatial（地理空间）— 已归档：冻结在 25.04，绑定 cudf-cu12==25.4.*
+# 仅在专用环境中安装；需要 NVIDIA 索引源
+uv add --extra-index-url=https://pypi.nvidia.com cuspatial-cu12
 
 # RAFT（低级 GPU 原语）
-uv add --extra-index-url=https://pypi.nvidia.com pylibraft-cu12   # 核心原语
-uv add --extra-index-url=https://pypi.nvidia.com raft-dask-cu12   # 多 GPU 支持（可选）
+uv add pylibraft-cu12   # 核心原语
+uv add raft-dask-cu12   # 多 GPU 支持（可选）
 ```
 
 安装后检查 CUDA 可用性：

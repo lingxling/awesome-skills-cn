@@ -5,8 +5,9 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 GENERATED_FILES=(
-  "agents/AGENTS.md"
+  "agentsmd/AGENTS.md"
   "README.md"
+  ".claude-plugin/marketplace-internal.json"
   ".cursor-plugin/plugin.json"
   ".mcp.json"
 )
@@ -94,8 +95,9 @@ Usage:
 Set PUBLISH_BASE_REF to override the base used for automatic version bumps.
 
 This script regenerates:
-  - agents/AGENTS.md
+  - agentsmd/AGENTS.md
   - README.md (skills table section)
+  - .claude-plugin/marketplace-internal.json
   - .cursor-plugin/plugin.json
   - .mcp.json
 

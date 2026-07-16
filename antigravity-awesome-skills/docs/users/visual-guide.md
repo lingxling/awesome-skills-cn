@@ -28,13 +28,13 @@
 ## Repository Structure (Visual)
 
 ```
-antigravity-awesome-skills/
+agentic-awesome-skills/
 │
 ├── 📄 README.md                         ← Overview and quick start
 ├── 📄 CONTRIBUTING.md                  ← Contributor workflow
 ├── 📄 CATALOG.md                       ← Full generated catalog
 │
-├── 📁 skills/                          ← 1,484+ skills live here
+├── 📁 skills/                          ← 1,958+ skills live here
 │   │
 │   ├── 📁 brainstorming/
 │   │   └── 📄 SKILL.md                 ← Skill definition
@@ -47,7 +47,7 @@ antigravity-awesome-skills/
 │   │   └── 📁 2d-games/
 │   │       └── 📄 SKILL.md             ← Nested skills also supported
 │   │
-│   └── ... (1,484+ total)
+│   └── ... (1,958+ total)
 │
 ├── 📁 apps/
 │   └── 📁 web-app/                     ← Interactive browser
@@ -100,7 +100,7 @@ antigravity-awesome-skills/
 
 ```
                     ┌─────────────────────────┐
-                    │  1,484+ SKILLS          │
+                    │  1,958+ SKILLS          │
                     └────────────┬────────────┘
                                  │
         ┌────────────────────────┼────────────────────────┐
@@ -183,7 +183,7 @@ antigravity-awesome-skills/
 ┌─────────────────────────────────────────┐
 │ Terminal                                │
 ├─────────────────────────────────────────┤
-│ $ npx antigravity-awesome-skills        │
+│ $ npx agentic-awesome-skills        │
 │                                         │
 │ ✓ Installing to                         │
 │   ~/.agents/skills/                     │
@@ -201,7 +201,7 @@ If you want a workspace-style manual install instead, cloning into `.agent/skill
 │   ├── 📁 brainstorming/                 │
 │   ├── 📁 stripe-integration/            │
 │   ├── 📁 react-best-practices/          │
-│   └── ... (1,484+ total)                │
+│   └── ... (1,958+ total)                │
 └─────────────────────────────────────────┘
 ```
 
@@ -434,7 +434,7 @@ START HERE
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  📥 INSTALL                                                 │
-│  npx antigravity-awesome-skills                             │
+│  npx agentic-awesome-skills                             │
 │                                                             │
 │  🎯 USE                                                     │
 │  @skill-name [your request]                                 │
@@ -470,19 +470,19 @@ START HERE
 Day 1: Install skills
   │
   └─→ "Wow, @brainstorming helped me design my app!"
-  
+
 Day 3: Use 5 different skills
   │
   └─→ "These skills save me so much time!"
-  
+
 Week 1: Create first skill
   │
   └─→ "I shared my expertise as a skill!"
-  
+
 Week 2: Skill gets merged
   │
   └─→ "My skill is helping others! 🎉"
-  
+
 Month 1: Regular contributor
   │
   └─→ "I've contributed 5 skills and improved docs!"

@@ -37,10 +37,13 @@ Always use `uv add` (never `pip install` or `conda install`) in all install inst
 
 ```bash
 uv add --extra-index-url=https://pypi.nvidia.com cucim-cu12    # For CUDA 12.x
+uv add --extra-index-url=https://pypi.nvidia.com cucim-cu13    # For CUDA 13.x
 ```
 
+cuCIM wheels are also published directly to PyPI, so the extra index is optional.
+
 **Platform:** Linux only (x86-64 and aarch64) — no Windows or macOS GPU support.
-**Requires:** NVIDIA GPU with CUDA 12.x, Python 3.9+, CuPy, NumPy, SciPy, scikit-image.
+**Requires:** NVIDIA GPU with CUDA 12.x or 13.x, Python 3.11+, CuPy, NumPy, SciPy, scikit-image.
 
 Verify:
 ```python
@@ -277,6 +280,8 @@ tophat = white_tophat(gray_image_gpu, footprint=disk(10))
 
 **Isotropic operations:** `isotropic_erosion`, `isotropic_dilation`, `isotropic_opening`, `isotropic_closing`
 
+**Extrema (added in 26.06):** `h_maxima`, `h_minima`, `local_maxima`, `local_minima`
+
 ---
 
 ## Segmentation
@@ -332,7 +337,8 @@ flow = optical_flow_tvl1(frame1_gpu, frame2_gpu)
 from cucim.skimage.restoration import (
     denoise_tv_chambolle,
     richardson_lucy,
-    wiener, unsupervised_wiener
+    wiener, unsupervised_wiener,
+    rolling_ball
 )
 
 # Total variation denoising
@@ -340,6 +346,9 @@ denoised = denoise_tv_chambolle(noisy_image_gpu, weight=0.1)
 
 # Richardson-Lucy deconvolution
 restored = richardson_lucy(blurred_image_gpu, psf_gpu, num_iter=30)
+
+# Rolling-ball background subtraction (added in 26.04)
+background = rolling_ball(image_gpu, radius=100)
 ```
 
 ---

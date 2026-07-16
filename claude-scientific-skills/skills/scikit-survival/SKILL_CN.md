@@ -2,9 +2,7 @@
 name: scikit-survival
 description: 使用scikit-survival进行Python生存分析和时间-事件建模的综合工具包。当处理审查生存数据、执行时间-事件分析、拟合Cox模型、随机生存森林、梯度提升模型或生存SVM、使用一致性指数或Brier评分评估生存预测、处理竞争风险或使用scikit-survival库实现任何生存分析工作流时使用此技能。
 license: GPL-3.0 license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

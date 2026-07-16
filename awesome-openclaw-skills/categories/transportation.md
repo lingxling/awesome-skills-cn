@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**110 skills**
+**111 skills**
 
 - [accountsos](https://clawskills.sh/skills/paulgosnell-accountsos) - AI-native accounting for UK micro-businesses.
 - [aetherlang-strategy](https://clawskills.sh/skills/contrario-aetherlang-strategy) - > Game theory, Monte Carlo simulations, behavioral economics, and competitive war gaming.
@@ -102,6 +102,7 @@
 - [tfl](https://clawskills.sh/skills/brianleach-tfl) - London TfL transit — real-time Tube arrivals, bus predictions, line status, service disruptions, journey planning.
 - [tixflow](https://clawskills.sh/skills/seenfinity-tixflow) - AI-powered event assistant for discovering, booking, and coordinating event tickets.
 - [tixflow-v2](https://clawskills.sh/skills/seenfinity-tixflow-v2) - AI-powered event assistant for discovering, booking, and coordinating event tickets.
+- [tongtu-china-travel](https://clawhub.ai/jesse-tzx/skills/tongtu-china-travel) - Multilingual travel guide for foreign tourists visiting China — flights, hotels, trains, attractions, visa, payment, and transport via FlyAI.
 - [track-flight](https://clawskills.sh/skills/rafaforesightai-track-flight) - Track flights in real-time with detailed status, gate info, delays, and live position.
 - [translink-cli](https://clawskills.sh/skills/alanburchill-translink-cli) - Query, troubleshoot, and explain Translink SEQ GTFS static + realtime data using local translink_* commands.
 - [travel-agent](https://clawskills.sh/skills/aszelem-travel-agent) - Find, book, and change flights for your human via email.

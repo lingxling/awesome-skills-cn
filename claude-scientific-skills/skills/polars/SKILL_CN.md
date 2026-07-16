@@ -1,10 +1,10 @@
 ---
 name: polars
-description: 适用于适合RAM的数据集的快速内存DataFrame库。当pandas太慢但数据仍适合内存时使用。惰性求值、并行执行、Apache Arrow后端。最适合1-100GB数据集、ETL管道、更快的pandas替代品。对于大于RAM的数据，请使用dask或vaex。
+description: 面向Python ETL、数据分析和pandas迁移的高性能DataFrame库。用于基于表达式的数据操作，具有惰性查询优化、并行执行、流式核外处理、Arrow互操作性以及可选的GPU执行。
 license: https://github.com/pola-rs/polars/blob/main/LICENSE
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+allowed-tools: Read
+compatibility: Requires Python 3.10+ for polars 1.41.x. Install with uv pip install; optional extras enable Excel, database, cloud, pandas/NumPy, and GPU integrations.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -22,9 +22,14 @@ Polars是一个基于Apache Arrow构建的Python和Rust的闪电快速DataFrame�
 
 ### 安装和基本使用
 
-安装Polars：
-```python
-uv pip install polars
+安装本次更新时验证过的当前稳定版 Polars：
+```bash
+uv pip install "polars==1.41.2"
+```
+
+只在需要时安装可选集成：
+```bash
+uv pip install "polars[excel,database,fsspec,pandas,numpy]==1.41.2"
 ```
 
 基本DataFrame创建和操作：
@@ -272,7 +277,7 @@ pl.concat([df1, df2], how="diagonal")
 重塑数据：
 ```python
 # Pivot（宽格式）
-df.pivot(values="sales", index="date", columns="product")
+df.pivot(on="product", values="sales", index="date")
 
 # Unpivot（长格式）
 df.unpivot(index="id", on=["col1", "col2"])
@@ -337,7 +342,7 @@ df.with_columns(
 
 3. **对非常大的数据使用流式处理：**
    ```python
-   lf.collect(streaming=True)
+   lf.collect(engine="streaming")
    ```
 
 4. **尽早选择所需列：**

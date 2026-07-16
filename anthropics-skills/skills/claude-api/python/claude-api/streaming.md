@@ -24,19 +24,35 @@ async with async_client.messages.stream(
         print(text, end="", flush=True)
 ```
 
+### Low-level: `stream=True`
+
+`messages.stream()` (above) is the recommended helper — it accumulates state and exposes `text_stream` / `get_final_message()`. If you only need the raw event iterator and want lower memory use, pass `stream=True` to `messages.create()` instead:
+
+```python
+for event in client.messages.create(
+    model="claude-opus-4-8",
+    max_tokens=64000,
+    messages=[{"role": "user", "content": "Write a story"}],
+    stream=True,
+):
+    print(event.type)
+```
+
+No final-message accumulation is done for you in this form.
+
 ---
 
 ## Handling Different Content Types
 
 Claude may return text, thinking blocks, or tool use. Handle each appropriately:
 
-> **Opus 4.8 / Opus 4.7 / Opus 4.6:** Use `thinking: {type: "adaptive"}`. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
+> **Fable 5 / Opus 4.8 / Opus 4.7 / Opus 4.6:** Use `thinking: {type: "adaptive"}`. On older models, use `thinking: {type: "enabled", budget_tokens: N}` instead.
 
 ```python
 with client.messages.stream(
     model="claude-opus-4-8",
     max_tokens=64000,
-    thinking={"type": "adaptive"},
+    thinking={"type": "adaptive", "display": "summarized"},  # display opt-in: default is omitted (empty thinking text) on Fable 5 / Mythos 5 / Opus 4.8 / 4.7
     messages=[{"role": "user", "content": "Analyze this problem"}]
 ) as stream:
     for event in stream:
@@ -160,3 +176,4 @@ except anthropic.APIStatusError as e:
 3. **Track token usage** — The `message_delta` event contains usage information
 4. **Use timeouts** — Set appropriate timeouts for your application
 5. **Default to streaming** — Use `.get_final_message()` to get the complete response even when streaming, giving you timeout protection without needing to handle individual events
+6. **Large `max_tokens` without streaming raises `ValueError`** — The SDK refuses non-streaming requests it estimates will exceed ~10 minutes (idle connections drop). Pass `stream=True` / use `messages.stream()`, or explicitly override `timeout`, to suppress the guard.

@@ -43,6 +43,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 
 import snowflake.connector
+from _safe_paths import safe_existing_directory, safe_input_json_path, safe_output_json_path, write_json_file
 
 # ← SUBSTITUTE: set RESOURCE_TYPE to match your Monte Carlo connection type
 RESOURCE_TYPE = "snowflake"
@@ -69,6 +70,13 @@ def _check_available_memory(min_gb: float = 2.0) -> None:
 # Hours to look back in ACCOUNT_USAGE.QUERY_HISTORY
 # ← SUBSTITUTE: adjust the lookback window to match your collection cadence
 _LOOKBACK_HOURS = 24
+
+
+def _bounded_int(value: int, field: str, *, minimum: int, maximum: int) -> int:
+    value = int(value)
+    if value < minimum or value > maximum:
+        raise ValueError(f"{field} must be between {minimum} and {maximum}")
+    return value
 
 # Regex for CTAS: CREATE [OR REPLACE] [TRANSIENT] TABLE [IF NOT EXISTS] [db.][schema.]table AS SELECT
 _CTAS_RE = re.compile(
@@ -181,17 +189,19 @@ def _parse_edges(rows: list[dict]) -> list[_LineageEdge]:
 
 
 def _fetch_query_history(conn, lookback_hours: int) -> list[dict]:
+    lookback_hours = _bounded_int(lookback_hours, "lookback_hours", minimum=1, maximum=24 * 31)
     cursor = conn.cursor()
     cursor.execute(
-        f"""
+        """
         SELECT QUERY_ID, QUERY_TEXT, START_TIME, END_TIME, USER_NAME, DATABASE_NAME, EXECUTION_STATUS
         FROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY
-        WHERE START_TIME >= DATEADD(hour, -{lookback_hours}, CURRENT_TIMESTAMP())
+        WHERE START_TIME >= DATEADD(hour, -%s, CURRENT_TIMESTAMP())
           AND EXECUTION_STATUS = 'SUCCESS'
           AND QUERY_TYPE IN ('CREATE_TABLE_AS_SELECT', 'INSERT', 'MERGE', 'CREATE_VIEW')
         ORDER BY START_TIME
         LIMIT 50000
-        """
+        """,
+        (lookback_hours,),
         # ← SUBSTITUTE: adjust QUERY_TYPE list, LIMIT, or add a WHERE clause to scope to specific databases
     )
     columns = [col[0] for col in cursor.description]
@@ -220,6 +230,7 @@ def collect(
     Returns the manifest dict.
     """
     _check_available_memory()
+    lookback_hours = _bounded_int(lookback_hours, "lookback_hours", minimum=1, maximum=24 * 31)
     print(f"Connecting to Snowflake account: {account} ...")
     conn = snowflake.connector.connect(
         account=account,
@@ -241,8 +252,7 @@ def collect(
             "column_lineage": column_lineage,
             "edges": [],
         }
-        with open(output_file, "w") as fh:
-            json.dump(manifest, fh, indent=2)
+        write_json_file(output_file, manifest)
         return manifest
 
     edges = _parse_edges(rows)
@@ -271,8 +281,7 @@ def collect(
             for e in edges
         ],
     }
-    with open(output_file, "w") as fh:
-        json.dump(manifest, fh, indent=2)
+    write_json_file(output_file, manifest)
     print(f"Lineage manifest written to {output_file}")
 
     return manifest

@@ -4,6 +4,8 @@ cuSpatial is a GPU-accelerated GIS library that provides spatial indexing, spati
 
 > **Full documentation:** https://docs.rapids.ai/api/cuspatial/stable/
 
+> **⚠️ Project status: archived.** cuSpatial development is paused and the GitHub repository was archived (read-only) on July 28, 2025. The **final release is v25.04** — no packages are published for RAPIDS v25.06 or later (see [RSN 45](https://docs.rapids.ai/notices/rsn0045/)). The package still installs and works, but it pins RAPIDS 25.04-era dependencies (e.g., `cudf-cu12==25.4.*`), so it cannot be combined with current RAPIDS releases in the same environment. RAPIDS names no official successor; for actively maintained geospatial work use GeoPandas/Shapely (CPU), and reserve cuSpatial for existing pipelines that can stay on the 25.04 dependency stack.
+
 ## Table of Contents
 
 1. [Installation and Setup](#installation-and-setup)
@@ -28,8 +30,10 @@ cuSpatial is a GPU-accelerated GIS library that provides spatial indexing, spati
 Always use `uv add` (never `pip install` or `conda install`) in all install instructions, docstrings, comments, and error messages.
 
 ```bash
-uv add --extra-index-url=https://pypi.nvidia.com cuspatial-cu12   # For CUDA 12.x
+uv add --extra-index-url=https://pypi.nvidia.com cuspatial-cu12   # For CUDA 12.x — installs the final 25.04 release
 ```
+
+The `--extra-index-url=https://pypi.nvidia.com` index is **required** here — the `cuspatial-cu12` entry on PyPI itself is only a stub sdist; the real wheels live on pypi.nvidia.com. There are no CUDA 13 (`-cu13`) packages — the project was archived before CUDA 13 wheels were introduced. Installing cuSpatial pulls in `cudf-cu12==25.4.*` and related 25.04 pins.
 
 Verify:
 ```python

@@ -2,9 +2,7 @@
 name: geniml
 description: 此技能应在使用基因组区间数据（BED文件）进行机器学习任务时使用。用于训练区域嵌入（Region2Vec、BEDspace）、单细胞ATAC-seq分析（scEmbed）、构建共识峰（universes）或任何基于ML的基因组区域分析。适用于BED文件集合、scATAC-seq数据、染色质可及性数据集和基于区域的基因组特征学习。
 license: BSD-2-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

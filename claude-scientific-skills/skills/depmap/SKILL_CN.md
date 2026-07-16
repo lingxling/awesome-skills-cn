@@ -2,9 +2,7 @@
 name: depmap
 description: 查询癌症依赖图谱（DepMap）获取癌细胞系基因依赖性评分（CRISPR Chronos）、药物敏感性数据和基因效应谱。用于识别癌症特异性脆弱性、合成致死相互作用和验证肿瘤药物靶点。
 license: CC-BY-4.0
-metadata:
-  version: "1.0"
-  skill-author: Kuan-lin Huang
+metadata: {"version": "1.0", "skill-author": "Kuan-lin Huang"}
 ---
 
 

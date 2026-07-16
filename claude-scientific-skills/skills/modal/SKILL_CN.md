@@ -2,9 +2,8 @@
 name: modal
 description: Modal是一个无服务器云平台，用于按需运行Python，包括按需GPU。用于部署或服务AI/ML模型、运行GPU加速工作负载（训练、微调、推理）、服务web端点、调度批量作业或使用Modal SDK将Python代码扩展到云容器。
 license: Apache-2.0
-metadata:
-  version: "1.1"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "MODAL_TOKEN_ID", "prompt": "Modal token id.", "required_for": "full functionality"}, {"name": "MODAL_TOKEN_SECRET", "prompt": "Modal token secret.", "required_for": "full functionality"}, {"name": "DATABASE_URL", "prompt": "Optional database URL for examples.", "required_for": "optional features"}]
+metadata: {"version": "1.2", "skill-author": "K-Dense Inc.", "openclaw": {"envVars": [{"name": "MODAL_TOKEN_ID", "required": true, "description": "Modal token id."}, {"name": "MODAL_TOKEN_SECRET", "required": true, "description": "Modal token secret."}, {"name": "DATABASE_URL", "required": false, "description": "Optional database URL for examples."}]}}
 ---
 
 

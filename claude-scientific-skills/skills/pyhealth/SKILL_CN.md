@@ -1,9 +1,7 @@
 ---
 name: pyhealth
 description: 使用PyHealth构建临床/医疗深度学习管道——加载EHR/信号/成像数据集（MIMIC-III/IV、eICU、OMOP、SleepEDF、ChestXray14、EHRShot），定义任务（死亡率、再入院、住院时长、药物推荐、睡眠分期、ICD编码、EEG事件），实例化模型（Transformer、RETAIN、GAMENet、SafeDrug、MICRON、StageNet、AdaCare、CNN/RNN/MLP），使用PyHealth Trainer训练，计算临床指标，使用医学代码工具（ICD/ATC/NDC/RxNorm查找和交叉映射）。只要用户提到PyHealth、MIMIC、eICU、OMOP、EHR建模、临床预测、药物推荐、睡眠分期、医学代码映射、ICD/ATC代码或任何符合数据集→任务→模型→训练器→指标模式的医疗ML管道，即使没有明确提及"PyHealth"，也可以使用此技能。
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

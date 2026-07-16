@@ -49,12 +49,12 @@ function ensureOnMain(projectRoot) {
 }
 
 function ensureCleanWorkingTree(projectRoot, message) {
-  const status = runCommand("git", ["status", "--porcelain", "--untracked-files=no"], projectRoot, {
+  const status = runCommand("git", ["status", "--porcelain"], projectRoot, {
     capture: true,
   });
 
   if (status) {
-    throw new Error(message || "Working tree has tracked changes. Commit or stash them first.");
+    throw new Error(message || "Working tree has changes. Commit, stash, or remove them first.");
   }
 }
 
@@ -69,26 +69,100 @@ function ensureTagMissing(projectRoot, tagName) {
   }
 }
 
-function ensureTagExists(projectRoot, tagName) {
-  const result = spawnSync("git", ["rev-parse", "--verify", tagName], {
-    cwd: projectRoot,
-    stdio: "ignore",
-  });
-
-  if (result.status !== 0) {
-    throw new Error(`Tag ${tagName} does not exist. Run release:prepare first.`);
-  }
-}
-
-function ensureGithubReleaseMissing(projectRoot, tagName) {
+function githubReleaseExists(projectRoot, tagName) {
   const result = spawnSync("gh", ["release", "view", tagName], {
     cwd: projectRoot,
     stdio: "ignore",
   });
+  return result.status === 0;
+}
 
-  if (result.status === 0) {
-    throw new Error(`GitHub release ${tagName} already exists.`);
+function localTagTarget(projectRoot, tagName) {
+  const result = spawnSync("git", ["rev-list", "-n", "1", tagName], {
+    cwd: projectRoot,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "ignore"],
+  });
+  return result.status === 0 ? result.stdout.trim() : null;
+}
+
+function remoteTagTarget(projectRoot, tagName) {
+  const output = runCommand(
+    "git",
+    ["ls-remote", "--tags", "origin", `refs/tags/${tagName}`],
+    projectRoot,
+    { capture: true },
+  );
+  return output ? output.split(/\s+/u)[0] : null;
+}
+
+function selectMergedReleaseCandidate(pullRequests, version) {
+  const branch = `release/v${version}`;
+  const matches = pullRequests.filter((pr) => (
+    pr.headRefName === branch && pr.baseRefName === "main" && /^[0-9a-f]{40}$/u.test(String(pr.mergeCommit?.oid || ""))
+  ));
+  if (matches.length !== 1) {
+    throw new Error(`Expected exactly one merged protected release PR for ${branch}.`);
   }
+  return matches[0];
+}
+
+function mergedReleaseCandidate(projectRoot, version) {
+  const branch = `release/v${version}`;
+  const payload = runCommand(
+    "gh",
+    [
+      "pr",
+      "list",
+      "--state",
+      "merged",
+      "--head",
+      branch,
+      "--limit",
+      "10",
+      "--json",
+      "number,headRefName,baseRefName,mergeCommit",
+    ],
+    projectRoot,
+    { capture: true },
+  );
+  return selectMergedReleaseCandidate(JSON.parse(payload || "[]"), version);
+}
+
+function validateReleaseSuccessors(projectRoot, releaseCommit, headCommit, dependencies = {}) {
+  const ancestor = spawnSync("git", ["merge-base", "--is-ancestor", releaseCommit, headCommit], {
+    cwd: projectRoot,
+    stdio: "ignore",
+  });
+  if (ancestor.status !== 0) {
+    throw new Error("The merged release candidate is not an ancestor of protected main.");
+  }
+  if (releaseCommit === headCommit) return true;
+
+  const commits = runCommand("git", ["rev-list", "--reverse", `${releaseCommit}..${headCommit}`], projectRoot, {
+    capture: true,
+  }).split(/\r?\n/u).filter(Boolean);
+  for (const commit of commits) {
+    const subject = runCommand("git", ["show", "-s", "--format=%s", commit], projectRoot, { capture: true });
+    if (subject !== "chore: synchronize canonical repository state") {
+      throw new Error(`Unexpected commit ${commit} landed after the release candidate: ${subject}`);
+    }
+  }
+  const validateManagedRange = dependencies.validateManagedRange || (() => {
+    runCommand(
+      process.execPath,
+      [
+        path.join(projectRoot, "tools", "scripts", "validate_canonical_sync_pr.cjs"),
+        "--base",
+        releaseCommit,
+        "--head",
+        headCommit,
+      ],
+      projectRoot,
+    );
+  });
+  validateManagedRange();
+  return true;
 }
 
 function readPackageVersion(projectRoot) {
@@ -166,6 +240,8 @@ function prepareRelease(projectRoot, version) {
   ensureCleanWorkingTree(projectRoot, "release:prepare requires a clean tracked working tree.");
   ensureTagMissing(projectRoot, `v${version}`);
   ensureChangelogSection(projectRoot, version);
+  const releaseBranch = `release/v${version}`;
+  runCommand("git", ["switch", "-c", releaseBranch], projectRoot);
 
   const currentVersion = readPackageVersion(projectRoot);
   if (currentVersion !== version) {
@@ -174,12 +250,15 @@ function prepareRelease(projectRoot, version) {
     console.log(`[release] package.json already set to ${version}; keeping current version.`);
   }
 
-  runReleaseSuite(projectRoot);
   runCommand(
     "npm",
     ["run", "sync:metadata", "--", "--refresh-volatile"],
     projectRoot,
   );
+  // Volatile metadata is an input to catalog timestamps. Refresh it before the
+  // canonical release sync so the tagged tree is exactly what publish CI will
+  // regenerate and verify.
+  runReleaseSuite(projectRoot);
 
   const refreshedReleaseNotes = ensureChangelogSection(projectRoot, version);
   const notesPath = writeReleaseNotes(projectRoot, version, refreshedReleaseNotes);
@@ -194,11 +273,35 @@ function prepareRelease(projectRoot, version) {
   }
 
   runCommand("git", ["commit", "-m", `chore: release v${version}`], projectRoot);
-  runCommand("git", ["tag", `v${version}`], projectRoot);
+  runCommand("git", ["push", "-u", "origin", releaseBranch], projectRoot);
+  runCommand(
+    "gh",
+    [
+      "pr",
+      "create",
+      "--base",
+      "main",
+      "--head",
+      releaseBranch,
+      "--title",
+      `chore: release v${version}`,
+      "--body",
+      [
+        `Prepare protected release v${version}.`,
+        "",
+        "## Quality Bar Checklist",
+        "",
+        "- [x] Release suite and package dry run passed locally.",
+        "- [x] Canonical release artifacts are included intentionally.",
+        "- [x] Publishing remains separate until this PR is merged.",
+      ].join("\n"),
+    ],
+    projectRoot,
+  );
 
   console.log(`[release] Prepared v${version}.`);
   console.log(`[release] Notes file: ${notesPath}`);
-  console.log(`[release] Next step: npm run release:publish -- ${version}`);
+  console.log(`[release] Next step: merge ${releaseBranch}, update local main, then run npm run release:publish -- ${version}`);
 }
 
 function publishRelease(projectRoot, version) {
@@ -215,23 +318,55 @@ function publishRelease(projectRoot, version) {
   }
 
   const tagName = `v${version}`;
-  ensureTagExists(projectRoot, tagName);
-  ensureGithubReleaseMissing(projectRoot, tagName);
+  const candidate = mergedReleaseCandidate(projectRoot, version);
 
-  const tagCommit = runCommand("git", ["rev-list", "-n", "1", tagName], projectRoot, {
+  runCommand("git", ["fetch", "origin", "main"], projectRoot);
+  const remoteMain = runCommand("git", ["rev-parse", "origin/main"], projectRoot, {
     capture: true,
   });
   const headCommit = runCommand("git", ["rev-parse", "HEAD"], projectRoot, {
     capture: true,
   });
-  if (tagCommit !== headCommit) {
-    throw new Error(`${tagName} does not point at HEAD. Refusing to publish.`);
+  if (remoteMain !== headCommit) {
+    throw new Error("release:publish requires local main to equal protected origin/main.");
   }
+  validateReleaseSuccessors(projectRoot, candidate.mergeCommit.oid, headCommit);
+
+  const pendingCanonical = JSON.parse(runCommand(
+    "gh",
+    ["pr", "list", "--state", "open", "--head", "automation/canonical-repo-state", "--json", "number"],
+    projectRoot,
+    { capture: true },
+  ) || "[]");
+  if (pendingCanonical.length > 0) {
+    throw new Error("A canonical-sync PR is still open; merge it before tagging the release.");
+  }
+
+  runCommand("npm", ["run", "sync:release-state"], projectRoot);
+  ensureCleanWorkingTree(projectRoot, "release:publish detected canonical release drift.");
 
   const notesPath = writeReleaseNotes(projectRoot, version, ensureChangelogSection(projectRoot, version));
 
-  runCommand("git", ["push", "origin", "main"], projectRoot);
-  runCommand("git", ["push", "origin", tagName], projectRoot);
+  const existingLocalTarget = localTagTarget(projectRoot, tagName);
+  if (existingLocalTarget && existingLocalTarget !== headCommit) {
+    throw new Error(`Local ${tagName} points at ${existingLocalTarget}, not protected main ${headCommit}.`);
+  }
+  if (!existingLocalTarget) {
+    runCommand("git", ["tag", tagName], projectRoot);
+  }
+
+  const existingRemoteTarget = remoteTagTarget(projectRoot, tagName);
+  if (existingRemoteTarget && existingRemoteTarget !== headCommit) {
+    throw new Error(`Remote ${tagName} points at ${existingRemoteTarget}, not protected main ${headCommit}.`);
+  }
+  if (!existingRemoteTarget) {
+    runCommand("git", ["push", "origin", tagName], projectRoot);
+  }
+
+  if (githubReleaseExists(projectRoot, tagName)) {
+    console.log(`[release] ${tagName} is already published.`);
+    return;
+  }
   runCommand("gh", ["release", "create", tagName, "--title", tagName, "--notes-file", notesPath], projectRoot);
 
   console.log(`[release] Published ${tagName}.`);
@@ -261,9 +396,18 @@ function main() {
   );
 }
 
-try {
-  main();
-} catch (error) {
-  console.error(`[release] ${error.message}`);
-  process.exit(1);
+if (require.main === module) {
+  try {
+    main();
+  } catch (error) {
+    console.error(`[release] ${error.message}`);
+    process.exit(1);
+  }
 }
+
+module.exports = {
+  localTagTarget,
+  remoteTagTarget,
+  selectMergedReleaseCandidate,
+  validateReleaseSuccessors,
+};

@@ -406,6 +406,119 @@ def detect_outliers(
     }
 
 
+def check_regression_diagnostics(
+    model,
+    alpha: float = 0.05,
+    plot: bool = True
+) -> Dict:
+    """
+    Run standard diagnostics on a fitted statsmodels OLS model.
+
+    Produces the classic 4-panel diagnostic plot (residuals vs fitted,
+    Q-Q, scale-location, residual histogram) plus formal tests:
+    normality of residuals (Shapiro-Wilk), heteroscedasticity
+    (Breusch-Pagan), autocorrelation (Durbin-Watson), and
+    multicollinearity (VIF per predictor).
+
+    Parameters
+    ----------
+    model : statsmodels regression results
+        A fitted model from ``sm.OLS(y, X).fit()`` where X includes
+        a constant (``sm.add_constant``).
+    alpha : float
+        Significance level for the formal tests.
+    plot : bool
+        Whether to create the 4-panel diagnostic figure.
+
+    Returns
+    -------
+    dict
+        Test results, VIF table, and per-assumption interpretations.
+    """
+    from statsmodels.stats.diagnostic import het_breuschpagan
+    from statsmodels.stats.stattools import durbin_watson
+    from statsmodels.stats.outliers_influence import variance_inflation_factor
+
+    residuals = np.asarray(model.resid)
+    fitted = np.asarray(model.fittedvalues)
+    exog = model.model.exog
+    exog_names = list(model.model.exog_names)
+
+    # Normality of residuals
+    sw_stat, sw_p = stats.shapiro(residuals)
+
+    # Heteroscedasticity (Breusch-Pagan)
+    bp_lm, bp_p, _, _ = het_breuschpagan(residuals, exog)
+
+    # Autocorrelation (Durbin-Watson: ~2 = none, <1.5 or >2.5 = concern)
+    dw = durbin_watson(residuals)
+
+    # Multicollinearity (VIF, skipping the constant)
+    vif_rows = []
+    for i, name in enumerate(exog_names):
+        if name.lower() in ("const", "intercept"):
+            continue
+        vif_rows.append({'Variable': name,
+                         'VIF': variance_inflation_factor(exog, i)})
+    vif_table = pd.DataFrame(vif_rows)
+    max_vif = vif_table['VIF'].max() if not vif_table.empty else np.nan
+
+    if plot:
+        fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+
+        axes[0, 0].scatter(fitted, residuals, alpha=0.6, edgecolors='black', linewidths=0.5)
+        axes[0, 0].axhline(y=0, color='r', linestyle='--')
+        axes[0, 0].set_xlabel('Fitted values')
+        axes[0, 0].set_ylabel('Residuals')
+        axes[0, 0].set_title('Residuals vs Fitted')
+        axes[0, 0].grid(alpha=0.3)
+
+        stats.probplot(residuals, dist="norm", plot=axes[0, 1])
+        axes[0, 1].set_title('Normal Q-Q')
+        axes[0, 1].grid(alpha=0.3)
+
+        std_resid = residuals / residuals.std()
+        axes[1, 0].scatter(fitted, np.sqrt(np.abs(std_resid)), alpha=0.6,
+                           edgecolors='black', linewidths=0.5)
+        axes[1, 0].set_xlabel('Fitted values')
+        axes[1, 0].set_ylabel('√|Standardized residuals|')
+        axes[1, 0].set_title('Scale-Location')
+        axes[1, 0].grid(alpha=0.3)
+
+        axes[1, 1].hist(residuals, bins='auto', edgecolor='black', alpha=0.7)
+        axes[1, 1].set_xlabel('Residuals')
+        axes[1, 1].set_ylabel('Frequency')
+        axes[1, 1].set_title('Histogram of Residuals')
+        axes[1, 1].grid(alpha=0.3, axis='y')
+
+        plt.tight_layout()
+        plt.show()
+
+    issues = []
+    if sw_p <= alpha:
+        issues.append("non-normal residuals (consider transformation or robust/bootstrap inference)")
+    if bp_p <= alpha:
+        issues.append("heteroscedasticity (consider robust SEs, e.g. model.get_robustcov_results('HC3'), or WLS)")
+    if dw < 1.5 or dw > 2.5:
+        issues.append("possible autocorrelation (if data are ordered/temporal, use time-series methods or cluster-robust SEs)")
+    if not np.isnan(max_vif) and max_vif > 5:
+        issues.append("multicollinearity (VIF > 5; consider dropping/combining predictors)")
+
+    return {
+        'residual_normality': {'test': 'Shapiro-Wilk', 'statistic': sw_stat,
+                               'p_value': sw_p, 'ok': sw_p > alpha},
+        'heteroscedasticity': {'test': 'Breusch-Pagan', 'statistic': bp_lm,
+                               'p_value': bp_p, 'ok': bp_p > alpha},
+        'autocorrelation': {'test': 'Durbin-Watson', 'statistic': dw,
+                            'ok': 1.5 <= dw <= 2.5},
+        'vif': vif_table,
+        'max_vif': max_vif,
+        'issues': issues,
+        'interpretation': ("No assumption concerns detected." if not issues
+                           else "Concerns: " + "; ".join(issues))
+    }
+
+
 def comprehensive_assumption_check(
     data: pd.DataFrame,
     value_col: str,

@@ -1,5 +1,5 @@
 ---
-name: ckm:brand
+name: brand
 description: 品牌声音、视觉识别、信息框架、资产管理、品牌一致性。用于品牌内容、语调、营销资产、品牌合规性、风格指南。
 argument-hint: "[update|review|create] [args]"
 metadata:

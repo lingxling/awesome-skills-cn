@@ -5,7 +5,33 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
-## [2.33.0] - 2026-05-11
+## [2.34.0] - 2026-07-16
+### 修复
+ - 修复 test_run.py 在 Windows 终端下打印 ✓/✗ 符号时因 GBK 编码崩溃的问题，改为强制 UTF-8 输出
+ - 修复 antigravity-awesome-skills 源仓库存在大量未提交本地改动导致 git pull 失败的问题
+ - 修复 ui-ux-pro-max-skill 中 data/scripts 目录与历史遗留符号链接占位文件冲突导致复制失败的问题
+
+### 变更
+ - 所有项目+翻译更新至最新版本
+   - anthropics-skills/
+   - antigravity-awesome-skills/
+   - awesome-openclaw-skills/
+   - claude-scientific-skills/
+   - composiohq-awesome-claude-skills/
+   - huggingface-skills/
+   - obsidian-skills/
+   - openai-skills/
+   - ui-ux-pro-max-skills/
+   - vercel-labs-agent-skills/
+   - vercel-labs-skills/
+ - 校对并同步 159 个 SKILL_CN.md 文件，使其与本次更新后的英文 SKILL.md 保持一致
+ - 校对并同步 9 个 README_CN.md / AGENTS_CN.md 文件（claude-scientific-skills、huggingface-skills、ui-ux-pro-max-skill、vercel-labs-skills、vercel-labs-agent-skills、obsidian-skills、openai-skills、awesome-openclaw-skills）
+ - 全面对齐 awesome-openclaw-skills 项目的 categories_cn/*.md 与 categories/*.md：
+   - 修复此前遗留的翻译缺口，共补齐 859 条技能记录，其中 815 条集中在 coding-agents-and-ides.md（该分类此前仅翻译了 347/1162 条）
+   - 修正 awesome-openclaw-skills 真实技能总数为 5180（此前 README 记录的 5816 与实际条目数不符）
+   - 更新主 README.md 中 awesome-openclaw-skills 各分类的技能计数及项目总计（7245，已完成 6277）
+
+
 ### 变更
  - 所有项目+翻译更新至最新版本
    - anthropics-skills/

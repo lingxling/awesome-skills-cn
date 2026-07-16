@@ -57,6 +57,43 @@ describe('installer symlink regression', () => {
     }
   });
 
+  it('skips agent installs that would overwrite the source directory', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'add-skill-'));
+    const projectDir = join(root, 'project');
+    await mkdir(projectDir, { recursive: true });
+
+    const skillName = 'source-overlap-skill';
+    const skillDir = join(projectDir, 'skills', skillName);
+    await mkdir(skillDir, { recursive: true });
+    await writeFile(
+      join(skillDir, 'SKILL.md'),
+      `---\nname: ${skillName}\ndescription: test\n---\n`,
+      'utf-8'
+    );
+    await writeFile(join(skillDir, 'extra.txt'), 'preserve me\n', 'utf-8');
+
+    try {
+      const result = await installSkillForAgent(
+        { name: skillName, description: 'test', path: skillDir },
+        'openclaw',
+        { cwd: projectDir, mode: 'symlink', global: false }
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.skipped).toBe(true);
+
+      const stats = await lstat(skillDir);
+      expect(stats.isDirectory()).toBe(true);
+      expect(stats.isSymbolicLink()).toBe(false);
+      await expect(readFile(join(skillDir, 'SKILL.md'), 'utf-8')).resolves.toContain(
+        `name: ${skillName}`
+      );
+      await expect(readFile(join(skillDir, 'extra.txt'), 'utf-8')).resolves.toBe('preserve me\n');
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
   it('cleans pre-existing self-loop symlink in canonical dir', async () => {
     const root = await mkdtemp(join(tmpdir(), 'add-skill-'));
     const projectDir = join(root, 'project');
@@ -142,6 +179,38 @@ describe('installer symlink regression', () => {
           expect(entryStats.isDirectory()).toBe(true);
         }
       }
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('creates project-local Claude Code symlinks when .claude does not exist', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'add-skill-'));
+    const projectDir = join(root, 'project');
+    await mkdir(projectDir, { recursive: true });
+
+    const skillName = 'fresh-claude-project-skill';
+    const skillDir = await makeSkillSource(root, skillName);
+
+    try {
+      const result = await installSkillForAgent(
+        { name: skillName, description: 'test', path: skillDir },
+        'claude-code',
+        { cwd: projectDir, mode: 'symlink', global: false }
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.skipped).toBeUndefined();
+      expect(result.symlinkFailed).toBeUndefined();
+
+      const canonicalSkillDir = join(projectDir, '.agents/skills', skillName);
+      const claudeSkillDir = join(projectDir, '.claude/skills', skillName);
+
+      expect((await lstat(canonicalSkillDir)).isDirectory()).toBe(true);
+      expect((await lstat(claudeSkillDir)).isSymbolicLink()).toBe(true);
+
+      const contents = await readFile(join(claudeSkillDir, 'SKILL.md'), 'utf-8');
+      expect(contents).toContain(`name: ${skillName}`);
     } finally {
       await rm(root, { recursive: true, force: true });
     }

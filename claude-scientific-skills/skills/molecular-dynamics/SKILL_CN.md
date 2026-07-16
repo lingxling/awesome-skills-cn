@@ -2,9 +2,7 @@
 name: molecular-dynamics
 description: 使用OpenMM和MDAnalysis运行和分析分子动力学模拟。设置蛋白质/小分子系统、定义力场、运行能量最小化和生产MD、分析轨迹（RMSD、RMSF、接触图、自由能表面）。用于结构生物学、药物结合和生物物理学。
 license: MIT
-metadata:
-  version: "1.0"
-  skill-author: Kuan-lin Huang
+metadata: {"version": "1.0", "skill-author": "Kuan-lin Huang"}
 ---
 
 

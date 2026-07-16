@@ -86,7 +86,7 @@ Provide verification steps to ensure everything works:
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
 curl -fsSLo "$tmpdir/homebrew-install.sh" https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-sed -n '1,160p' "$tmpdir/homebrew-install.sh"
+cat "$tmpdir/homebrew-install.sh"  # review the full installer before executing
 /bin/bash "$tmpdir/homebrew-install.sh"
 
 # Install Node.js
@@ -102,18 +102,15 @@ sudo apt update
 tmpdir="$(mktemp -d)"
 trap 'rm -rf "$tmpdir"' EXIT
 curl -fsSLo "$tmpdir/nodesource-setup.sh" https://deb.nodesource.com/setup_20.x
-sed -n '1,160p' "$tmpdir/nodesource-setup.sh"
+cat "$tmpdir/nodesource-setup.sh"  # review the full installer before sudo
 sudo -E bash "$tmpdir/nodesource-setup.sh"
 sudo apt install -y nodejs
 \`\`\`
 
-**Windows (using Chocolatey):**
+**Windows (using winget):**
 \`\`\`powershell
-# Install Chocolatey if not installed
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
 # Install Node.js
-choco install nodejs
+winget install OpenJS.NodeJS.LTS
 \`\`\`
 
 ### Step 2: Verify Installation

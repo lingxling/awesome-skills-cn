@@ -15,18 +15,14 @@ jobs:
             const body = context.payload.pull_request.body || '';
 
             const hasClawhubLink = /https:\/\/clawhub\.ai\/[\w-]+\/[\w-]+/.test(body);
-            const hasGithubLink = /https:\/\/github\.com\/openclaw\/skills\/tree\/main\/skills\/[\w-]+\/[\w-]+/.test(body);
 
             const errors = [];
             if (!hasClawhubLink) {
               errors.push('Missing ClawHub link (e.g. https://clawhub.ai/steipete/slack)');
             }
-            if (!hasGithubLink) {
-              errors.push('Missing GitHub link (e.g. https://github.com/openclaw/skills/tree/main/skills/steipete/slack)');
-            }
 
             if (errors.length > 0) {
-              const message = `## ❌ PR Description Check Failed\n\nYour PR description must include both links:\n\n${errors.map(e => '- ' + e).join('\n')}\n\nSee [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md#pr-description) for details.`;
+              const message = `## ❌ PR Description Check Failed\n\nYour PR description must include the required link:\n\n${errors.map(e => '- ' + e).join('\n')}\n\nThe skill must also be published on ClawHub with passing tests and a clean (non-suspicious) security status.\n\nSee [CONTRIBUTING.md](../blob/main/CONTRIBUTING.md#pr-description) for details.`;
 
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
@@ -35,5 +31,5 @@ jobs:
                 body: message
               });
 
-              core.setFailed('PR description is missing required links.');
+              core.setFailed('PR description is missing the required ClawHub link.');
             }

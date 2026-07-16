@@ -42,6 +42,7 @@
 - [blackpix](https://clawskills.sh/skills/blackpixcom-blackpix) - 连接到 BlackPix 分布式 AI 知识网络。
 - [blossom-hire](https://clawskills.sh/skills/robbiwu-blossom-hire) - 在 Blossom 中发布工作、任务或有偿轮班以雇佣当地帮助。
 - [botcoin-miner](https://clawskills.sh/skills/happybigmtn-botcoin-miner) - 使用信任优先工作流程挖掘 Botcoin：明确的价值主张、可验证的二进制文件和明确的操作。
+- [boss-ai-agent](https://clawskills.sh/skills/tonypk-boss-ai-agent) - 拥有 14 位导师和 9 个文化包的 AI 管理中间件。
 - [bounty-hunter](https://clawskills.sh/skills/satoshi891102-bounty-hunter) - 寻找、评估和提交在线赏金和黑客马拉松以获取奖金。
 - [brainz-tasks](https://clawskills.sh/skills/xejrax-brainz-tasks) - 使用 `todoist` CLI 管理 Todoist 任务。
 - [briefing](https://clawskills.sh/skills/lstpsche-briefing) - 每日简报：收集日历（gcalcli-calendar）、活动待办事项（todo-management）和天气。
@@ -136,6 +137,7 @@
 - [openburn](https://clawskills.sh/skills/logesh2496-openburn) - 自动收集 Pump.fun 创建者费用，使用收集的 SOL 购买代币，并燃烧这些代币（回购）。
 - [ops-hygiene](https://clawskills.sh/skills/staybased-ops-hygiene) - 代理维护、安全卫生和系统健康的标准操作程序。
 - [paypilot-agms](https://clawskills.sh/skills/agmsyumet-paypilot-agms) - 通过安全支付网关代理处理支付、发送发票、处理退款和管理交易。
+- [parley](https://clawhub.ai/plugins/@nkuhanas/parley) - 为多代理 OpenClaw 工作提供持久的协调状态与恢复能力。
 - [personal-plans](https://clawskills.sh/skills/gekacross-personal-plans) - 在计划主题中作为用户的个人规划助手。
 - [pinchwork](https://clawskills.sh/skills/anneschuth-pinchwork) - 将任务委派给其他代理。
 - [pipx-desktop-agent](https://clawskills.sh/skills/chillybean-pipx-desktop-agent) - 控制鼠标、键盘和屏幕，用于桌面自动化任务。
@@ -144,6 +146,7 @@
 - [postfast](https://clawskills.sh/skills/peturgeorgievv-postfast) - 跨 TikTok、Instagram、Facebook、X（Twitter）、YouTube、LinkedIn、Threads 安排和管理社交媒体帖子。
 - [postqued-api](https://clawskills.sh/skills/syeddhasnainn-postqued-api) - PostQued 社交媒体调度 API 集成。
 - [ppt-ooxml-tool](https://clawskills.sh/skills/jason2be-ppt-ooxml-tool) - 用于 PPTX OOXML 本地化工作流的 AI 代理技能。
+- [proactive-soul]([https://clawskills.sh/skills/jason2be-ppt-ooxml-tool) - 赋予你的代理一种内在生活 — 主动的每日推送、跨会话持续存在的好奇心线索，以及在它不同意时真实的反驳。
 - [publora](https://clawskills.sh/skills/sergebulaev-publora) - Publora API — 跨 10 个平台（X/Twitter、LinkedIn、Instagram、Threads）安排和发布社交媒体帖子。
 - [publora-mastodon](https://clawskills.sh/skills/sergebulaev-publora-mastodon) - 使用 Publora API 发布或安排内容到 Mastodon。
 - [qa-testing-bots](https://clawskills.sh/skills/g4dr-qa-testing-bots) - 此技能使 Claude 能够构建和运行 **自动化 QA 测试机器人**，模拟用户交互。
@@ -205,3 +208,6 @@
 - [zero-rules](https://clawskills.sh/skills/deeqyaqub1-cmd-zero-rules) - 在它们到达 LLM 之前拦截确定性任务（数学、时间、货币、文件、调度）。
 - [zonein](https://clawskills.sh/skills/phutt-bwai-zonein) - 通过 Zonein API 跟踪和分析 Hyperliquid 和 Polymarket 上胜率 >75% 的顶级交易者。
 - [zulip](https://clawskills.sh/skills/suky57-zulip) - 通过 REST API 和 Python 客户端与 Zulip 聊天平台交互。
+- [blog-composer](https://clawhub.ai/amrree/blog-composer) - Jekyll 博客创作 UI — 管理文章、草稿、标签和发布工作流。
+- [blog-studio](https://clawhub.ai/amrree/blog-studio) - 面向 GitHub Pages Jekyll 博客的独立 CMS — 浏览、编辑、创建，一键部署。
+- [sol-scribe](https://clawhub.ai/amrree/sol-scribe) - 面向长篇创意项目的写作伙伴 — 章节规划、叙事一致性和 AI 辅助起草。

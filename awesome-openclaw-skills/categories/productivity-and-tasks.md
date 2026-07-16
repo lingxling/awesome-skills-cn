@@ -41,7 +41,7 @@
 - [bioskills](https://clawskills.sh/skills/djemec-bioskills) - Installs 425 bioinformatics skills covering sequence analysis, RNA-seq, single-cell, variant calling, metagenomics.
 - [blackpix](https://clawskills.sh/skills/blackpixcom-blackpix) - Connect to the BlackPix distributed AI knowledge network.
 - [blossom-hire](https://clawskills.sh/skills/robbiwu-blossom-hire) - Post a job, task, or paid shift to hire local help in Blossom.
-- [boss-ai-agent](https://github.com/openclaw/skills/tree/main/skills/tonypk/boss-ai-agent/SKILL.md) - AI management middleware with 14 mentors and 9 culture packs.
+- [boss-ai-agent](https://clawskills.sh/skills/tonypk-boss-ai-agent) - AI management middleware with 14 mentors and 9 culture packs.
 - [botcoin-miner](https://clawskills.sh/skills/happybigmtn-botcoin-miner) - Mine Botcoin with a trust-first workflow: clear value proposition, verifiable binaries, and explicit operational.
 - [bounty-hunter](https://clawskills.sh/skills/satoshi891102-bounty-hunter) - Find, evaluate, and submit online bounties and hackathons for prize money.
 - [brainz-tasks](https://clawskills.sh/skills/xejrax-brainz-tasks) - Manage Todoist tasks using the `todoist` CLI.
@@ -146,6 +146,7 @@
 - [postfast](https://clawskills.sh/skills/peturgeorgievv-postfast) - Schedule and manage social media posts across TikTok, Instagram, Facebook, X (Twitter), YouTube, LinkedIn, Threads.
 - [postqued-api](https://clawskills.sh/skills/syeddhasnainn-postqued-api) - PostQued social media scheduling API integration.
 - [ppt-ooxml-tool](https://clawskills.sh/skills/jason2be-ppt-ooxml-tool) - AI-agent Skill for PPTX OOXML localization workflows.
+- [proactive-soul]([https://clawskills.sh/skills/jason2be-ppt-ooxml-tool) - Gives your agent an inner life — proactive daily dispatches, persistent curiosity threads across sessions, and genuine pushback when it disagrees.
 - [publora](https://clawskills.sh/skills/sergebulaev-publora) - Publora API — schedule and publish social media posts across 10 platforms (X/Twitter, LinkedIn, Instagram, Threads.
 - [publora-mastodon](https://clawskills.sh/skills/sergebulaev-publora-mastodon) - Post or schedule content to Mastodon using the Publora API.
 - [qa-testing-bots](https://clawskills.sh/skills/g4dr-qa-testing-bots) - This skill enables Claude to build and run **automated QA testing bots** that simulate.
@@ -207,3 +208,6 @@
 - [zero-rules](https://clawskills.sh/skills/deeqyaqub1-cmd-zero-rules) - Intercept deterministic tasks (math, time, currency, files, scheduling) BEFORE they hit the LLM.
 - [zonein](https://clawskills.sh/skills/phutt-bwai-zonein) - Track and analyze top traders with >75% win-rate on Hyperliquid and Polymarket via Zonein API.
 - [zulip](https://clawskills.sh/skills/suky57-zulip) - Interact with Zulip chat platform via REST API and Python client.
+- [blog-composer](https://clawhub.ai/amrree/blog-composer) - Jekyll blog authoring UI — manage posts, drafts, tags, and publishing workflow.
+- [blog-studio](https://clawhub.ai/amrree/blog-studio) - Standalone CMS for GitHub Pages Jekyll blogs — browse, edit, create, and deploy with one click.
+- [sol-scribe](https://clawhub.ai/amrree/sol-scribe) - Book writing companion for long-form creative projects — chapter planning, narrative consistency, and AI-assisted drafting.

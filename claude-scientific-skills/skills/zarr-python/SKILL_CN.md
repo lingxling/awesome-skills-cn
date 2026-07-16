@@ -3,16 +3,9 @@ name: zarr-python
 description: 用于云存储的分块N维数组（Zarr-Python 3）。压缩数组、并行I/O、通过fsspec的S3/GCS、兼容NumPy/Dask/Xarray，用于大规模科学计算管道。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-compatibility: Requires Python 3.12+ and zarr 3.x. Cloud I/O needs zarr[remote] plus s3fs or gcsfs. Legacy Zarr v2 workflows use zarr==2.* on older Python.
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+compatibility: Requires Python 3.12+ and zarr 3.x. Cloud I/O needs zarr[remote] plus pinned s3fs or gcsfs. Legacy Zarr v2 workflows need exact 2.x pins on older Python.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
-
-
-
-
-
 
 # Zarr Python
 
@@ -20,19 +13,23 @@ metadata:
 
 Zarr是一个Python库，用于存储带有分块和压缩的大型N维数组。应用此技能可实现高效并行I/O、云原生工作流，以及与NumPy、Dask和Xarray的无缝集成。
 
+**当前上游版本：** zarr **3.2.1**（发布于2026-05-05）。文档：[zarr.readthedocs.io](https://zarr.readthedocs.io/en/stable/)。新数组默认使用**Zarr format 3**；如需兼容旧版可设置`zarr_format=2`。Zarr 3.2 增加了矩形分块（rectilinear chunks），并持续完善v3编解码器流水线。此技能是由 K-Dense Inc. 维护的**社区指南**，并非 zarr-developers 官方软件包。
+
 ## 快速开始
 
 ### 安装
 
 ```bash
-uv pip install zarr
+uv pip install "zarr==3.2.1"
 ```
 
-需要Python 3.11+。对于云存储支持，安装额外的包：
-```python
-uv pip install s3fs  # 用于S3
-uv pip install gcsfs  # 用于Google Cloud Storage
+当前稳定版 Zarr-Python 需要 **Python 3.12+** 和 NumPy 2.0+。对于远程存储（S3、GCS、HTTP），请在项目锁定文件中固定可选的扩展/后端版本：
+
+```bash
+uv pip install "zarr[remote]==3.2.1" "s3fs==2026.4.0" "gcsfs==2026.5.0"
 ```
+
+仅当项目已有提交的锁定文件和兼容性测试时，才使用如 `zarr>=3,<4` 这样的版本范围。对于 Zarr-Python 2 / Python 3.10–3.11 的工作流，请从 support-v2 发行说明中选择一个精确的 `zarr==2.x.y` 补丁版本，并提交生成的锁定文件。
 
 ### 基本数组创建
 
@@ -116,8 +113,8 @@ z.blocks[0, 0]                     # 块/分块索引
 ### 调整大小和追加
 
 ```python
-# 调整数组大小
-z.resize(15000, 15000)  # 扩展或缩小维度
+# 调整数组大小（v3：以元组形式传入形状）
+z.resize((15000, 15000))
 
 # 沿轴追加数据
 z.append(np.random.random((1000, 10000)), axis=0)  # 添加行
@@ -162,14 +159,22 @@ z = zarr.zeros((10000, 10000), chunks=(1000, 1000))  # 方形分块
 - 使用分块(1, 200, 200)：~107ms
 - 使用分块(200, 200, 1)：~1.65ms（快65倍！）
 
-### 大规模存储的分片
+### 矩形分块与分片
 
-当数组有数百万个小分块时，使用分片将分块分组为更大的存储对象：
+Zarr 3.2 支持**矩形分块（rectilinear chunks）**，用于处理不均匀的网格。当某个维度存在大小不一的分片时，可以传入嵌套的分块长度：
 
 ```python
-from zarr.codecs import ShardingCodec, BytesCodec
-from zarr.codecs.blosc import BloscCodec
+z = zarr.create_array(
+    store="rectilinear.zarr",
+    shape=(60, 100),
+    chunks=([10, 20, 30], [50, 50]),
+    dtype="f4",
+)
+```
 
+当数组有数百万个小分块时，使用**分片（sharding）**将分块分组为更大的存储对象：
+
+```python
 # 创建带分片的数组
 z = zarr.create_array(
     store='data.zarr',
@@ -194,19 +199,18 @@ Zarr按分块应用压缩以减少存储同时保持快速访问。
 ### 配置压缩
 
 ```python
-from zarr.codecs.blosc import BloscCodec
-from zarr.codecs import GzipCodec, ZstdCodec
+from zarr.codecs import BloscCodec, BloscShuffle, GzipCodec
 
 # 默认：Blosc与Zstandard
 z = zarr.zeros((1000, 1000), chunks=(100, 100))  # 使用默认压缩
 
-# 配置Blosc编解码器
+# 配置Blosc压缩
 z = zarr.create_array(
     store='data.zarr',
     shape=(1000, 1000),
     chunks=(100, 100),
     dtype='f4',
-    codecs=[BloscCodec(cname='zstd', clevel=5, shuffle='shuffle')]
+    compressors=BloscCodec(cname='zstd', clevel=5, shuffle=BloscShuffle.bitshuffle)
 )
 
 # 可用的Blosc压缩器：'blosclz', 'lz4', 'lz4hc', 'snappy', 'zlib', 'zstd'
@@ -217,7 +221,7 @@ z = zarr.create_array(
     shape=(1000, 1000),
     chunks=(100, 100),
     dtype='f4',
-    codecs=[GzipCodec(level=6)]
+    compressors=GzipCodec(level=6)
 )
 
 # 禁用压缩
@@ -226,7 +230,7 @@ z = zarr.create_array(
     shape=(1000, 1000),
     chunks=(100, 100),
     dtype='f4',
-    codecs=[BytesCodec()]  # 无压缩
+    compressors=None
 )
 ```
 
@@ -240,18 +244,18 @@ z = zarr.create_array(
 
 ```python
 # 对数值科学数据最佳
-codecs=[BloscCodec(cname='zstd', clevel=5, shuffle='shuffle')]
+compressors=BloscCodec(cname='zstd', clevel=5, shuffle=BloscShuffle.bitshuffle)
 
 # 对速度最佳
-codecs=[BloscCodec(cname='lz4', clevel=1)]
+compressors=BloscCodec(cname='lz4', clevel=1)
 
 # 对压缩率最佳
-codecs=[GzipCodec(level=9)]
+compressors=GzipCodec(level=9)
 ```
 
 ## 存储后端
 
-Zarr通过灵活的存储接口支持多种存储后端。
+Zarr支持多种存储后端通过灵活的存储接口。
 
 ### 本地文件系统（默认）
 
@@ -299,22 +303,36 @@ store.close()
 
 ### 云存储（S3, GCS）
 
+Zarr 3 通过URI字符串或`FsspecStore`使用**fsspec**后端（优先于旧版的`S3Map`/`GCSMap`）。
+
 ```python
-import s3fs
 import zarr
 
-# S3存储
-s3 = s3fs.S3FileSystem(anon=False)  # 使用凭证
-store = s3fs.S3Map(root='my-bucket/path/to/array.zarr', s3=s3)
-z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
+# S3 — 优先使用IAM角色/配置文件；fsspec会自动处理提供商凭据发现。
+# 切勿将凭据值打印、记录或复制到提示词或笔记本中。
+z = zarr.create_array(
+    store="s3://my-bucket/path/to/array.zarr",
+    shape=(1000, 1000),
+    chunks=(100, 100),
+    dtype="f4",
+    storage_options={"anon": False},
+)
 z[:] = data
 
-# Google Cloud Storage
-import gcsfs
-gcs = gcsfs.GCSFileSystem(project='my-project')
-store = gcsfs.GCSMap(root='my-bucket/path/to/array.zarr', gcs=gcs)
-z = zarr.open_array(store=store, mode='w', shape=(1000, 1000), chunks=(100, 100))
+# GCS — 优先使用工作负载身份或gcloud应用默认凭据。
+z = zarr.open_array(
+    "gs://my-bucket/path/to/array.zarr",
+    mode="r",
+    storage_options={"project": "my-project"},
+)
+
+# 显式存储（任意fsspec文件系统）
+from zarr.storage import FsspecStore
+store = FsspecStore.from_url("s3://my-bucket/data.zarr", storage_options={"anon": False})
+root = zarr.open_group(store=store, mode="r+")
 ```
+
+云端后端通过提供商 SDK/fsspec 后端读取凭据。不要检查大范围的`.env`文件；如果用户明确需要帮助调试认证问题，应要求提供脱敏后的配置，并只读取他们明确批准的具名提供商变量。将所有`import zarr`、`import dask`、`import h5py`、`import xarray`示例都当作第三方包导入，而不是随附的脚本文件。
 
 **云存储最佳实践**：
 - 使用合并元数据减少延迟：`zarr.consolidate_metadata(store)`
@@ -364,19 +382,16 @@ print(root.tree())
 #      └── prcp (365, 720, 1440) f4
 ```
 
-### 兼容H5py的API
+### 组API（v3）
 
-Zarr为熟悉HDF5的用户提供h5py兼容接口：
+使用`create_array` / `require_array`（h5py风格的`create_dataset` / `require_dataset`在v3中已移除）：
 
 ```python
-# 使用h5py风格方法创建组
 root = zarr.group('data.zarr')
-dataset = root.create_dataset('my_data', shape=(1000, 1000), chunks=(100, 100),
-                              dtype='f4')
+arr = root.create_array('my_data', shape=(1000, 1000), chunks=(100, 100), dtype='f4')
 
-# 像h5py一样访问
 grp = root.require_group('subgroup')
-arr = grp.require_dataset('array', shape=(500, 500), chunks=(50, 50), dtype='i4')
+arr2 = grp.require_array('array', shape=(500, 500), chunks=(50, 50), dtype='i4')
 ```
 
 ## 属性和元数据
@@ -498,41 +513,28 @@ ds.to_zarr('climate_data.zarr')
 - 与pandas集成用于时间序列
 - 气候/地理空间科学家熟悉的NetCDF类接口
 
-## 并行计算和同步
+## 并行计算与线程安全
 
-### 线程安全操作
-
-```python
-from zarr import ThreadSynchronizer
-import zarr
-
-# 用于多线程写入
-synchronizer = ThreadSynchronizer()
-z = zarr.open_array('data.zarr', mode='r+', shape=(10000, 10000),
-                    chunks=(1000, 1000), synchronizer=synchronizer)
-
-# 可安全地从多个线程并发写入
-# （当写入不跨越分块边界时）
-```
-
-### 进程安全操作
+Zarr在内部使用异步I/O。针对远程存储或Dask密集型工作负载调整并发度：
 
 ```python
-from zarr import ProcessSynchronizer
 import zarr
 
-# 用于多进程写入
-synchronizer = ProcessSynchronizer('sync_data.sync')
-z = zarr.open_array('data.zarr', mode='r+', shape=(10000, 10000),
-                    chunks=(1000, 1000), synchronizer=synchronizer)
-
-# 可安全地从多个进程并发写入
+# 更高的值可以提升远程吞吐量；当Dask已经提供了大量工作线程时，
+# 较低的值可以减少压力。
+zarr.config.set({
+    "async.concurrency": 8,
+    "threading.max_workers": 8,
+})
 ```
 
-**注意**：
-- 并发读取不需要同步
-- 仅当写入可能跨越分块边界时才需要同步
-- 每个进程/线程写入单独的分块时不需要同步
+旧的`synchronizer`参数（`ThreadSynchronizer`、`ProcessSynchronizer`）**在Zarr-Python 3中尚不可用**。请改用以下模式：
+
+- **读取：** 跨线程/进程始终安全。
+- **写入：** 当每个worker写入**互不重叠的分块**时是安全的；大多数存储都支持原子分块写入。
+- **重叠写入：** 在同步器功能恢复前，需通过外部方式协调（文件锁、工作流设计等）。
+
+对于Dask密集型工作负载，可将总并发I/O大致估算为`dask_threads × async.concurrency`，若存储或内存出现饱和，则调低Zarr的并发设置。
 
 ## 合并元数据
 
@@ -589,7 +591,7 @@ root = zarr.open_consolidated('data.zarr')
 4. **存储后端**：与环境匹配
    ```python
    # 本地：LocalStore（默认）
-   # 云：S3Map/GCSMap带合并元数据
+   # 云：fsspec URI 或 FsspecStore + 合并元数据
    # 临时：MemoryStore
    ```
 
@@ -614,14 +616,14 @@ print(z.info)
 
 # 输出包括：
 # - 类型、形状、分块、数据类型
-# - 压缩编解码器和级别
+# - 序列化器和压缩器
 # - 存储大小（压缩与未压缩）
 # - 存储位置
 
 # 检查存储大小
-print(f"压缩大小: {z.nbytes_stored / 1e6:.2f} MB")
-print(f"未压缩大小: {z.nbytes / 1e6:.2f} MB")
-print(f"压缩比: {z.nbytes / z.nbytes_stored:.2f}x")
+print(f"Compressed size: {z.nbytes_stored / 1e6:.2f} MB")
+print(f"Uncompressed size: {z.nbytes / 1e6:.2f} MB")
+print(f"Compression ratio: {z.nbytes / z.nbytes_stored:.2f}x")
 ```
 
 ## 常见模式和最佳实践
@@ -660,26 +662,20 @@ result = (dask_z @ dask_z.T).compute()  # 并行矩阵乘法
 ### 模式：云原生工作流
 
 ```python
-import s3fs
 import zarr
 
-# 写入S3
-s3 = s3fs.S3FileSystem()
-store = s3fs.S3Map(root='s3://my-bucket/data.zarr', s3=s3)
-
-# 创建具有适合云的分块的数组
-z = zarr.open_array(store=store, mode='w',
-                    shape=(10000, 10000),
-                    chunks=(500, 500),  # ~1MB分块
-                    dtype='f4')
+path = "s3://my-bucket/data.zarr"
+z = zarr.create_array(
+    store=path,
+    shape=(10000, 10000),
+    chunks=(500, 500),
+    dtype="f4",
+    storage_options={"anon": False},
+)
 z[:] = data
 
-# 合并元数据以加快读取
-zarr.consolidate_metadata(store)
-
-# 从S3读取（任何地方，任何时间）
-store_read = s3fs.S3Map(root='s3://my-bucket/data.zarr', s3=s3)
-z_read = zarr.open_consolidated(store_read)
+zarr.consolidate_metadata(path)
+z_read = zarr.open_consolidated(path, storage_options={"anon": False})
 subset = z_read[0:100, 0:100]
 ```
 
@@ -759,26 +755,24 @@ shards = (10000, 10000)  # 组许多分块
 
 ### 问题：并发写入冲突
 
-**解决方案**：使用同步器或确保非重叠写入
-```python
-from zarr import ProcessSynchronizer
-
-sync = ProcessSynchronizer('sync.sync')
-z = zarr.open_array('data.zarr', mode='r+', synchronizer=sync)
-
-# 或设计工作流，使每个进程写入单独的分块
-```
+**解决方案**：设计工作流，让每个进程/线程只写入各自独立的分块。Zarr-Python 3 尚不支持`ThreadSynchronizer` / `ProcessSynchronizer`；参见`references/v3_migration.md`。
 
 ## 其他资源
 
-有关详细的API文档、高级用法和最新更新：
+### 内置参考资料
 
-- **官方文档**：https://zarr.readthedocs.io/
-- **Zarr规范**：https://zarr-specs.readthedocs.io/
-- **GitHub存储库**：https://github.com/zarr-developers/zarr-python
-- **社区聊天**：https://gitter.im/zarr-developers/community
+| 文件 | 内容 |
+|------|------|
+| `references/api_reference.md` | 函数签名、存储、编解码器、索引 |
+| `references/v3_migration.md` | Zarr-Python 2→3 的破坏性变更及进行中的功能 |
 
-**相关库**：
-- **Xarray**：https://docs.xarray.dev/（标记数组）
-- **Dask**：https://docs.dask.org/（并行计算）
-- **NumCodecs**：https://numcodecs.readthedocs.io/（压缩编解码器）
+### 官方上游资源
+
+- **文档**：https://zarr.readthedocs.io/en/stable/
+- **3.0 迁移指南**：https://zarr.readthedocs.io/en/stable/user-guide/v3_migration/
+- **存储后端**：https://zarr.readthedocs.io/en/stable/user-guide/storage/
+- **Zarr 规范**：https://zarr-specs.readthedocs.io/
+- **GitHub**：https://github.com/zarr-developers/zarr-python
+- **开发者聊天室**：https://ossci.zulipchat.com/#narrow/channel/423692-Zarr-Python
+
+**相关库：** [Xarray](https://docs.xarray.dev/)、[Dask](https://docs.dask.org/)、[NumCodecs](https://numcodecs.readthedocs.io/)

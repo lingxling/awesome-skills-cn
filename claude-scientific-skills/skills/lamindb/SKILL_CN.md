@@ -1,42 +1,36 @@
 ---
 name: lamindb
-description: 此技能应在使用LaminDB时使用，LaminDB是一个用于生物学的开源数据框架，使数据可查询、可追溯、可重现和FAIR。当管理生物数据集（scRNA-seq、空间、流式细胞术等）、跟踪计算工作流、使用生物本体论整理和验证数据、构建数据湖屋或确保生物研究中的数据沿袭和可重现性时使用。涵盖数据管理、注释、本体论（基因、细胞类型、疾病、组织）、模式验证、与工作流管理器（Nextflow、Snakemake）和MLOps平台（W&B、MLflow）的集成以及部署策略。
+description: 在使用LaminDB时使用此技能，LaminDB是面向生物学数据集和模型的开源、谱系原生的湖仓（lakehouse）。涵盖设置、制品注册、查询/搜索、谱系跟踪、验证、通过Bionty进行的本体驱动注解、集合、分支、存储以及工作流集成。
 license: Apache-2.0 license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
-
-
-
-
-
 
 # LaminDB
 
 ## 概述
 
-LaminDB是一个专为生物学设计的开源数据框架，旨在使数据可查询、可追溯、可重复和FAIR（可发现、可访问、可互操作、可重用）。它通过单个Python API提供了统一平台，结合了湖仓架构、谱系跟踪、特征存储、生物本体、LIMS（实验室信息管理系统）和ELN（电子实验记录本）功能。
+LaminDB是一个开源的、谱系原生的生物学湖仓。它使数据集和模型可查询、可追溯、经过验证、可重复，并符合FAIR（可发现、可访问、可互操作、可重用）标准，同时将数据以开放格式存储在本地文件系统、S3、GCS、Hugging Face、SQLite和Postgres中。
 
 **核心价值主张：**
-- **可查询性**：通过元数据、特征和本体术语搜索和筛选数据集
-- **可追溯性**：从原始数据通过分析到结果的自动谱系跟踪
-- **可重复性**：数据、代码和环境的版本控制
-- **FAIR合规性**：使用生物本体进行标准化注解
+- **可查询性**：搜索和筛选制品、记录、运行、特征、模式和集合
+- **可追溯性**：跟踪笔记本、脚本、函数和管道的输入、输出、参数、源代码和环境
+- **验证**：使用模式管理DataFrame、AnnData、SpatialData、TileDB-SOMA、Parquet、Zarr及其他生物学格式
+- **FAIR合规性**：使用Bionty支持的本体和自定义注册表标准化注解
+- **变更管理**：使用项目、分支、空间、集合以及保存的笔记或计划来组织工作
 
 ## 何时使用此技能
 
 在以下情况下使用此技能：
 
 - **管理生物数据集**：scRNA-seq、批量RNA-seq、空间转录组学、流式细胞术、多模态数据、EHR数据
-- **跟踪计算工作流程**：笔记本、脚本、管道执行（Nextflow、Snakemake、Redun）
+- **跟踪计算工作流程**：笔记本、脚本、函数、shell脚本、管道执行（Nextflow、Snakemake、Redun）
 - **管理和验证数据**：模式验证、标准化、基于本体的注解
 - **使用生物本体**：基因、蛋白质、细胞类型、组织、疾病、通路（通过Bionty）
 - **构建数据湖仓**：跨多个数据集的统一查询接口
 - **确保可重复性**：自动版本控制、谱系跟踪、环境捕获
-- **集成ML管道**：连接Weights & Biases、MLflow、HuggingFace、scVI-tools
+- **集成ML管道**：连接Weights & Biases、MLflow、Hugging Face、Lightning、scVI-tools
 - **部署数据基础设施**：设置本地或基于云的数据管理系统
-- **在数据集上协作**：共享管理的、带标准化元数据的注解数据
+- **在数据集上协作**：共享经过整理、带标准化元数据的注解数据
 
 ## 核心能力
 
@@ -46,14 +40,17 @@ LaminDB提供六个相互连接的能力领域，每个都在references文件夹
 
 **核心实体：**
 - **Artifacts（制品）**：版本化数据集（DataFrame、AnnData、Parquet、Zarr等）
-- **Records（记录）**：实验实体（样本、扰动、仪器）
+- **Records & ULabels（记录和ULabel）**：实验实体、类型化记录和简单标签
+- **Collections（集合）**：版本化的、不可变的制品集
 - **Runs & Transforms（运行和转换）**：计算谱系跟踪（什么代码产生了什么数据）
 - **Features（特征）**：用于注解和查询的类型化元数据字段
+- **Projects, Branches & Spaces（项目、分支和空间）**：项目分组、变更管理和访问边界
 
 **关键工作流程：**
 - 从文件或Python对象创建和版本化制品
 - 使用`ln.track()`和`ln.finish()`跟踪笔记本/脚本执行
-- 使用类型化特征注解制品
+- 使用`@ln.flow()`和`@ln.step()`跟踪函数工作流
+- 使用记录、ulabel、项目和类型化特征注解制品
 - 使用`artifact.view_lineage()`可视化数据谱系图
 - 按谱系查询（查找来自特定代码/输入的所有输出）
 
@@ -65,10 +62,10 @@ LaminDB提供六个相互连接的能力领域，每个都在references文件夹
 - 使用自动完成浏览注册表和查找
 - 使用`get()`、`one()`、`one_or_none()`检索单个记录
 - 使用比较运算符（`__gt`、`__lte`、`__contains`、`__startswith`）进行筛选
-- 基于特征的查询（按注解的元数据查询）
+- 基于特征的查询，包括使用`Feature`对象的表达式风格查询
 - 使用双下划线语法跨注册表遍历
 - 跨注册表全文搜索
-- 使用Q对象进行高级逻辑查询（AND、OR、NOT）
+- 使用`ln.Q`对象进行高级逻辑查询（AND、OR、NOT）
 - 流式传输大数据集而不加载到内存中
 
 **关键工作流程：**
@@ -101,7 +98,7 @@ LaminDB提供六个相互连接的能力领域，每个都在references文件夹
 
 **关键工作流程：**
 - 定义特征和模式以进行数据验证
-- 使用`DataFrameCurator`或`AnnDataCurator`进行验证
+- 使用`DataFrameCurator`、`AnnDataCurator`、`SpatialDataCurator`或`TiledbsomaExperimentCurator`进行验证
 - 使用`.cat.standardize()`标准化值
 - 使用`.cat.add_ontology()`映射到本体
 - 保存具有模式链接的注解制品
@@ -137,11 +134,12 @@ LaminDB提供六个相互连接的能力领域，每个都在references文件夹
 - Nextflow：跟踪管道过程和输出
 - Snakemake：集成到Snakemake规则
 - Redun：结合Redun任务跟踪
+- Lightning：持久化检查点和训练元数据
 
 **MLOps平台：**
 - Weights & Biases：将实验与数据制品链接
 - MLflow：跟踪模型和实验
-- HuggingFace：跟踪模型微调
+- Hugging Face：跟踪模型微调
 - scVI-tools：单细胞分析工作流程
 
 **存储系统：**
@@ -165,9 +163,12 @@ LaminDB提供六个相互连接的能力领域，每个都在references文件夹
 ### 6. 设置和部署
 
 **安装：**
-- 基本：`uv pip install lamindb`
-- 带附加组件：`uv pip install 'lamindb[gcp,zarr,fcs]'`
-- 模块：bionty、wetlab、clinical
+- 当前稳定基线版本：`lamindb==2.5.1`（发布于2026-06-01；需要Python >=3.10, <=3.14）
+- 基本：`uv pip install 'lamindb==2.5.1'`
+- 带附加组件：`uv pip install 'lamindb[gcp,zarr-v2,fcs]==2.5.1'`
+- 仅最小命名空间：`uv pip install 'lamindb-core==2.5.1'`
+- Bionty模块：已包含在LaminDB文档中，也可通过`uv pip install 'bionty==2.4.0'`单独安装
+- 可选模块：对于wetlab或clinical模式模块，请固定已审核的发行版本，而不是安装浮动的最新版本
 
 **实例类型：**
 - 本地SQLite（开发）
@@ -184,7 +185,7 @@ LaminDB提供六个相互连接的能力领域，每个都在references文件夹
 - 云文件的缓存管理
 - 多用户系统配置
 - Git存储库同步
-- 环境变量
+- 用于凭证和连接URL的命名环境变量
 
 **部署模式：**
 - 本地开发 → 云生产迁移
@@ -192,6 +193,15 @@ LaminDB提供六个相互连接的能力领域，每个都在references文件夹
 - 带有个人实例的共享存储
 
 **参考：** `references/setup-deployment.md` - 阅读此内容以了解详细安装、配置、存储设置、数据库管理、安全最佳实践和故障排除。
+
+## 安全默认设置
+
+在协助进行LaminDB设置或集成时：
+
+- 切勿显示、记录或传输实际的API密钥、云凭证、数据库密码或包含密钥的完整连接字符串。
+- 优先使用IAM角色、工作负载身份、密钥管理器或诸如`LAMIN_DB_URL`、`AWS_ACCESS_KEY_ID`、`AWS_SECRET_ACCESS_KEY`和`GOOGLE_APPLICATION_CREDENTIALS`之类的命名环境变量；只检查某个命名变量是否存在，而不检查其值。
+- 在保存来自REST API、外部数据库或用户提供文件的内容之前，使用明确的模式或管理器对其进行验证和清理。
+- 为了实现可重复的安装，请固定软件包版本或使用锁定文件。仅当用户明确希望获取最新的上游版本时，才使用不固定版本的安装方式。
 
 ## 常见用例工作流程
 
@@ -202,8 +212,8 @@ import lamindb as ln
 import bionty as bt
 import anndata as ad
 
-# 开始跟踪
-ln.track(params={"analysis": "scRNA-seq QC和注解"})
+# 开始跟踪笔记本/脚本运行
+ln.track(params={"analysis": "scRNA-seq QC and annotation"})
 
 # 导入细胞类型本体
 bt.CellType.import_source()
@@ -219,9 +229,9 @@ curator = ln.curators.AnnDataCurator(adata, schema)
 curator.validate()
 artifact = curator.save_artifact(key="scrna/validated.h5ad")
 
-# 链接本体注解
-cell_types = bt.CellType.from_values(adata.obs.cell_type)
-artifact.feature_sets.add_ontology(cell_types)
+# 链接本体驱动的注解以实现可查询性
+cell_types = bt.CellType.from_values(adata.obs["cell_type"])
+artifact.cell_types.add(*cell_types)
 
 ln.finish()
 ```
@@ -240,13 +250,13 @@ for i, file in enumerate(data_files):
     ).save()
 
     # 使用特征注解
-    artifact.features.add_values({
+    artifact.features.set_values({
         "batch": i,
         "tissue": tissues[i],
         "condition": conditions[i]
     })
 
-# 跨所有实验查询
+# 按注解特征跨所有实验查询
 immune_datasets = ln.Artifact.filter(
     key__startswith="scrna/",
     tissue="PBMC",
@@ -283,7 +293,7 @@ wandb.log({"accuracy": 0.95})
 import joblib
 joblib.dump(model, "model.pkl")
 model_artifact = ln.Artifact("model.pkl", key="models/exp-42.pkl").save()
-model_artifact.features.add_values({"wandb_run_id": wandb.run.id})
+model_artifact.features.set_values({"wandb_run_id": wandb.run.id})
 
 ln.finish()
 wandb.finish()
@@ -313,25 +323,26 @@ output_artifact = ln.Artifact(
 ln.finish()
 ```
 
+对于原生Nextflow项目，如果可用，优先使用`nf-lamin`插件和当前的`nextflow.config`模式；对于小型或自定义管道步骤，使用内联Python跟踪。
+
 ## 入门检查清单
 
 要开始有效使用LaminDB：
 
 1. **安装和设置**（`references/setup-deployment.md`）
-   - 安装LaminDB和所需的附加组件
+   - 安装固定版本的LaminDB和所需的附加组件
    - 使用`lamin login`进行身份验证
    - 使用`lamin init --storage ...`初始化实例
 
 2. **学习核心概念**（`references/core-concepts.md`）
    - 了解Artifacts、Records、Runs、Transforms
    - 练习创建和检索制品
-   - 在工作流程中实现`ln.track()`和`ln.finish()`
+   - 在工作流程中实现`ln.track()`/`ln.finish()`或`@ln.flow()`/`@ln.step()`
 
 3. **掌握查询**（`references/data-management.md`）
    - 练习使用过滤器和排序浏览注册表
-   - 学习基于特征的查询
+   - 学习基于特征的查询和表达式风格的筛选
    - 尝试流式传输大文件
-   - 实验不同的搜索模式
 
 4. **设置验证**（`references/annotation-validation.md`）
    - 定义与研究领域相关的特征
@@ -367,7 +378,7 @@ ln.finish()
 
 6. **版本化，不要重复**：使用内置版本控制而不是为修改创建新键
 
-7. **使用特征注解**：定义类型化特征以实现可查询的元数据
+7. **使用特征注解**：定义类型化特征，并使用`artifact.features.set_values()`实现可查询的元数据
 
 8. **彻底记录**：为制品、模式和转换添加描述
 

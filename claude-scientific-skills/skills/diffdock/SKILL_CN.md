@@ -1,10 +1,16 @@
 ---
 name: diffdock
-description: 基于扩散的分子对接。从PDB/SMILES预测蛋白质-配体结合姿态、置信度分数、虚拟筛选，用于基于结构的药物设计。不用于亲和力预测。
+description: DiffDock 和 DiffDock-L 分子对接。用于从 PDB 或序列加 SMILES/SDF/MOL2 预测蛋白质-小分子结合姿态、批量对接、虚拟筛选以及位姿置信度解读。不用于结合亲和力预测。
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+  - Glob
+  - Grep
+compatibility: 需要 DiffDock 仓库、来自上游 environment.yml 的 Python 3.9 环境或官方 Docker 镜像、RDKit、PyTorch/PyG,以及可选的 CUDA GPU 加速。当前指导针对 DiffDock v1.1.3 / DiffDock-L。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -73,6 +79,7 @@ micromamba activate diffdock
 - 强烈推荐 GPU（与 CPU 相比，速度提升 10-100 倍）
 - 首次运行预计算 SO(2)/SO(3) 查找表（约 2-5 分钟）
 - 模型检查点（约 500MB）如果不存在会自动下载
+- 当前上游版本是 DiffDock v1.1.3;DiffDock-L 是 `default_inference_args.yaml` 中的默认模型系列
 
 ## 核心工作流
 
@@ -89,7 +96,7 @@ micromamba activate diffdock
 python -m inference \
   --config default_inference_args.yaml \
   --protein_path protein.pdb \
-  --ligand "CC(=O)Oc1ccccc1C(=O)O" \
+  --ligand_description "CC(=O)Oc1ccccc1C(=O)O" \
   --out_dir results/single_docking/
 ```
 
@@ -98,19 +105,22 @@ python -m inference \
 python -m inference \
   --config default_inference_args.yaml \
   --protein_sequence "MSKGEELFTGVVPILVELDGDVNGHKF..." \
-  --ligand ligand.sdf \
+  --ligand_description ligand.sdf \
   --out_dir results/sequence_docking/
 ```
 
 **输出结构：**
 ```
 results/single_docking/
-├── rank_1.sdf          # 排名第一的位姿
-├── rank_2.sdf          # 排名第二的位姿
-├── ...
-├── rank_10.sdf         # 第 10 个位姿（默认：10 个样本）
-└── confidence_scores.txt
+└── complex_0/
+    ├── rank1.sdf                    # 排名第一位姿的便捷副本
+    ├── rank1_confidence0.87.sdf     # 排名第一位姿,文件名中包含置信度
+    ├── rank2_confidence0.42.sdf     # 排名第二的位姿
+    ├── ...
+    └── rank10_confidence-1.23.sdf   # 第 10 个位姿（默认：10 个样本）
 ```
+
+当前的 `inference.py` 为单复合物运行注册了 `--ligand_description` 参数。一些上游 README 文本仍写作 `--ligand`;除非您本地检出的版本明确支持 `--ligand` 别名,否则请使用 `--ligand_description`。
 
 ### 工作流 2：批处理多个复合物
 
@@ -298,7 +308,7 @@ DiffDock 生成位姿；结合其他工具进行亲和力：
 
 **GNINA（快速神经网络评分）：**
 ```bash
-for pose in results/*.sdf; do
+for pose in results/single_docking/complex_0/*confidence*.sdf; do
     gnina -r protein.pdb -l "$pose" --score_only
 done
 ```
@@ -470,8 +480,8 @@ python app/main.py
 
 **DiffDock-L（当前默认模型）：**
 ```
-Stärk et al. (2024) "DiffDock-L: Improving Molecular Docking with Diffusion Models"
-arXiv:2402.18396
+Corso et al. (2024) "Deep Confident Steps to New Pockets: Strategies for Docking Generalization"
+ICLR 2024, arXiv:2402.18396
 ```
 
 **原始 DiffDock：**

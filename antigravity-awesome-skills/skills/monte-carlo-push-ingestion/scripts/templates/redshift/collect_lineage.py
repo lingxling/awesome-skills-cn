@@ -18,6 +18,7 @@ Prerequisites:
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
 import logging
 import os
@@ -26,12 +27,62 @@ from datetime import datetime, timezone
 from typing import Any
 
 import psycopg2
+from _safe_paths import safe_existing_directory, safe_input_json_path, safe_output_json_path, write_json_file
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
 RESOURCE_TYPE = "redshift"
 LOOKBACK_HOURS: int = int(os.getenv("LOOKBACK_HOURS", "24"))  # ← SUBSTITUTE
+
+_ALLOWED_REDSHIFT_HOST_RE = re.compile(
+    r"^[a-z0-9][a-z0-9.-]*\.(?:redshift|redshift-serverless)\.[a-z0-9-]+\.amazonaws\.com(?:\.cn)?$",
+    re.IGNORECASE,
+)
+
+
+def _explicitly_allowed_redshift_hosts() -> set[str]:
+    raw_hosts = os.getenv("REDSHIFT_ALLOWED_HOSTS", "")
+    return {host.strip().lower().rstrip(".") for host in raw_hosts.split(",") if host.strip()}
+
+
+def validate_redshift_host(host: str, *, allow_private: bool = False) -> str:
+    value = str(host).strip()
+    if not value or any(part in value for part in ("/", "\\", "@", ":")):
+        raise ValueError(f"Invalid Redshift host: {host!r}")
+    hostname = value.lower().rstrip(".")
+    allowed_hosts = _explicitly_allowed_redshift_hosts()
+    try:
+        address = ipaddress.ip_address(value)
+    except ValueError:
+        if hostname in allowed_hosts:
+            return hostname
+        match = _ALLOWED_REDSHIFT_HOST_RE.fullmatch(hostname)
+        if match:
+            return match.group(0)
+        raise ValueError(
+            "Redshift host must be an AWS Redshift endpoint or be listed in REDSHIFT_ALLOWED_HOSTS"
+        )
+    if hostname not in allowed_hosts:
+        raise ValueError("Redshift IP hosts must be listed in REDSHIFT_ALLOWED_HOSTS")
+    blocked = (
+        address.is_loopback
+        or address.is_link_local
+        or address.is_multicast
+        or address.is_unspecified
+        or address.is_reserved
+        or (address.is_private and not allow_private)
+    )
+    if blocked:
+        raise ValueError(f"Redshift host address is not allowed: {host!r}")
+    return str(address)
+
+
+def _bounded_int(value: int, field: str, *, minimum: int, maximum: int) -> int:
+    value = int(value)
+    if value < minimum or value > maximum:
+        raise ValueError(f"{field} must be between {minimum} and {maximum}")
+    return value
 
 
 def _check_available_memory(min_gb: float = 2.0) -> None:
@@ -96,9 +147,10 @@ def _dictfetch(cursor: Any, sql: str, params: tuple | None = None) -> list[dict[
 
 def fetch_query_texts(cursor: Any, lookback_hours: int) -> list[str]:
     """Assemble full query texts from sys_query_history + sys_querytext."""
+    lookback_hours = _bounded_int(lookback_hours, "lookback_hours", minimum=1, maximum=24 * 31)
     rows = _dictfetch(
         cursor,
-        f"""
+        """
         SELECT
             sq.query_id,
             LISTAGG(
@@ -107,11 +159,12 @@ def fetch_query_texts(cursor: Any, lookback_hours: int) -> list[str]:
             ) WITHIN GROUP (ORDER BY st.sequence) AS full_text
         FROM sys_query_history sq
         JOIN sys_querytext st ON sq.query_id = st.query_id
-        WHERE sq.start_time >= DATEADD(hour, -{lookback_hours}, GETDATE())
+        WHERE sq.start_time >= DATEADD(hour, -%s, GETDATE())
           AND sq.status = 'success'
         GROUP BY sq.query_id
         LIMIT 50000
         """,  # ← SUBSTITUTE: adjust lookback_hours, LIMIT, or add user/database filters
+        (lookback_hours,),
     )
     return [r["full_text"] for r in rows if r.get("full_text")]
 
@@ -171,6 +224,10 @@ def collect(
 ) -> list[dict[str, Any]]:
     """Connect to Redshift, collect lineage, write a JSON manifest, and return events."""
     _check_available_memory()
+    allow_private_host = os.getenv("REDSHIFT_ALLOW_PRIVATE_HOST", "").lower() in {"1", "true", "yes"}
+    host = validate_redshift_host(host, allow_private=allow_private_host)
+    port = _bounded_int(port, "port", minimum=1, maximum=65535)
+    lookback_hours = _bounded_int(lookback_hours, "lookback_hours", minimum=1, maximum=24 * 31)
     collected_at = datetime.now(timezone.utc).isoformat()
 
     conn = psycopg2.connect(
@@ -197,8 +254,7 @@ def collect(
         "lineage_event_count": len(all_events),
         "events": all_events,
     }
-    with open(manifest_path, "w") as fh:
-        json.dump(manifest, fh, indent=2)
+    write_json_file(manifest_path, manifest)
     log.info("Manifest written to %s (%d events)", manifest_path, len(all_events))
 
     return all_events
@@ -206,7 +262,6 @@ def collect(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Collect Redshift lineage to a manifest file")
-    parser.add_argument("--host", default=os.getenv("REDSHIFT_HOST"))         # ← SUBSTITUTE
     parser.add_argument("--db", default=os.getenv("REDSHIFT_DB"))             # ← SUBSTITUTE
     parser.add_argument("--user", default=os.getenv("REDSHIFT_USER"))         # ← SUBSTITUTE
     parser.add_argument("--password", default=os.getenv("REDSHIFT_PASSWORD")) # ← SUBSTITUTE
@@ -215,13 +270,21 @@ def main() -> None:
     parser.add_argument("--manifest", default="manifest_lineage.json")
     args = parser.parse_args()
 
-    required = ["host", "db", "user", "password"]
+    required = ["db", "user", "password"]
     missing = [k for k in required if getattr(args, k) is None]
     if missing:
         parser.error(f"Missing required arguments/env vars: {missing}")
 
+    redshift_host = os.getenv("REDSHIFT_HOST")
+    if not redshift_host:
+        parser.error("Missing required env var: REDSHIFT_HOST")
+    redshift_host = validate_redshift_host(
+        redshift_host,
+        allow_private=os.getenv("REDSHIFT_ALLOW_PRIVATE_HOST", "").lower() in {"1", "true", "yes"},
+    )
+
     collect(
-        host=args.host,
+        host=redshift_host,
         db=args.db,
         user=args.user,
         password=args.password,

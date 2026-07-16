@@ -3,9 +3,8 @@ name: literature-review
 description: 使用多个学术数据库（PubMed、arXiv、bioRxiv、Semantic Scholar等）进行全面的系统性文献综述。此技能应在进行系统性文献综述、荟萃分析、研究综合或跨生物医学、科学和技术领域的全面文献搜索时使用。创建专业格式的markdown文档和PDF，包含多种引用样式（APA、Nature、Vancouver等）的已验证引用。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.2", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 
@@ -568,6 +567,17 @@ python scripts/generate_pdf.py crispr_sickle_cell_review.md \
 ### 写作技能
 - **brand-guidelines**：将机构品牌应用于PDF
 - **internal-comms**：为不同受众调整综述
+- **venue-templates**：在为发表准备综述时获取特定期刊/会议场所的写作风格指南
+
+### 特定场所的写作风格
+
+在为特定期刊准备文献综述时，请参阅**venue-templates**技能获取写作风格指导：
+- `venue_writing_styles.md`：跨场所的主样式对比
+- `nature_science_style.md`：Nature/Science流畅摘要风格、故事驱动的结构
+- `cell_press_style.md`：Cell Press图形摘要、Highlights格式
+- `medical_journal_styles.md`：NEJM/Lancet/JAMA结构化摘要、PRISMA合规性
+
+这些指南有助于将您综述的语气、摘要格式和结构调整为符合目标场所的期望。
 
 ## 资源
 

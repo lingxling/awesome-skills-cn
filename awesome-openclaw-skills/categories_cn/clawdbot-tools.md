@@ -30,6 +30,7 @@
 - [clawdirect](https://clawskills.sh/skills/napoleond-clawdirect) - 与 ClawDirect 交互，社交网络体验目录。
 - [clawdirect-dev](https://clawskills.sh/skills/napoleond-clawdirect-dev) - 使用基于 ATXP 的技术构建面向代理的网络体验。
 - [gamification-xp](https://clawskills.sh/skills/chipagosfinest-gamification-xp) - 通过 ClawdBot 实现生产力游戏化的 XP 系统 - 跟踪等级、徽章、连续天数和成就。
+- [honcho-setup](https://clawskills.sh/skills/ajspig-honcho-setup) - 通过 Honcho 实现跨会话的持久记忆。
 - [maton-agent-tools](https://clawskills.sh/skills/maverick-software-maton-agent-tools) - 通过 Maton AI 连接到 SaaS 工具。
 - [mcp-client](https://clawskills.sh/skills/nantes-mcp-client) - 模型上下文协议 (MCP) 客户端 - 连接到工具、数据源和服务。
 - [mcp-hass](https://clawskills.sh/skills/al-one-mcp-hass) - 使用 MCP 协议控制 Home Assistant 智能家居设备和查询状态的技能。

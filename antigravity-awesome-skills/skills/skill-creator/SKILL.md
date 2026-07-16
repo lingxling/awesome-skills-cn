@@ -6,6 +6,10 @@ risk: safe
 source: community
 tags: "[automation, scaffolding, skill-creation, meta-skill]"
 date_added: "2026-02-27"
+plugin:
+  targets:
+    codex: supported
+    claude: supported
 ---
 
 # skill-creator
@@ -122,7 +126,7 @@ Display progress:
 
 1. **What should this skill do?** (Free-form description)
    - Example: "Help users debug Python code by analyzing stack traces"
-   
+
 2. **When should it trigger?** (Provide 3-5 trigger phrases)
    - Example: "debug Python error", "analyze stack trace", "fix Python exception"
 
@@ -258,7 +262,7 @@ if [[ "$PLATFORM" =~ "codex" ]]; then
          s/{{DATE}}/$(date +%Y-%m-%d)/g" \
         resources/templates/skill-template-codex.md \
         > ".codex/skills/$SKILL_NAME/SKILL.md"
-    
+
     sed "s/{{SKILL_NAME}}/$SKILL_NAME/g" \
         resources/templates/readme-template.md \
         > ".codex/skills/$SKILL_NAME/README.md"
@@ -462,7 +466,7 @@ Update progress:
 If platforms cannot be detected:
 ```
 ⚠️  Unable to detect GitHub Copilot CLI or Claude Code
-    
+
 Would you like to:
 1. Install for repository only (works when in repo)
 2. Specify platform manually
@@ -492,7 +496,7 @@ If content doesn't meet standards:
 1. YAML: Description not in third-person format
    Expected: "This skill should be used when..."
    Found: "Use this skill when..."
-   
+
 2. Content: Word count too high (5,342 words, max 5,000)
    Suggestion: Move detailed sections to references/
 

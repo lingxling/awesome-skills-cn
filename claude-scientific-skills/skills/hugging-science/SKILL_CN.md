@@ -1,9 +1,7 @@
 ---
 name: hugging-science
 description: 当用户在生物学、化学、物理、天文学、气候学、基因组学、材料科学、医学、生态学、能源、工程、数学、药物发现、蛋白质设计、天气建模、定理证明、单细胞或偏微分方程求解等科学领域进行AI/ML工作时使用。Hugging Science是一个精选的科学数据集、模型、博客文章和交互式Spaces目录。此技能帮助通过`datasets`、`transformers`、HF Inference API、`gradio_client`和方方法引用发现和使用资源。
-metadata:
-  version: "1.1"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 

@@ -1,5 +1,5 @@
 ---
-name: ckm:design-system
+name: design-system
 description: 令牌架构、组件规范和幻灯片生成。三层令牌（原始→语义→组件）、CSS变量、间距/排版比例、组件规范、战略性幻灯片创建。用于设计令牌、系统设计、品牌合规演示文稿。
 argument-hint: "[组件或令牌]"
 license: MIT

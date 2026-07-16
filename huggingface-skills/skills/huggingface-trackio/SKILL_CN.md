@@ -25,7 +25,7 @@ Trackio 是一个实验跟踪库，用于记录和可视化 ML 训练指标。�
 - 使用 `trackio.log()` 记录指标或使用 TRL 的 `report_to="trackio"`
 - 使用 `trackio.finish()` 完成
 
-**关键概念**：对于远程/云训练，传递 `space_id` — 指标同步到 Space 仪表板，以便在实例终止后保持持久性。
+**关键概念**：对于远程/云训练，传递 `space_id` — 指标同步到 Space 仪表板，以便在实例终止后保持持久性。自动创建的 Space **默认是公开的** — 如果指标不应公开，请传递 `private=True`。
 
 → 有关设置、TRL 集成和配置选项，请参见 [references/logging_metrics.md](references/logging_metrics.md)。
 
@@ -60,7 +60,9 @@ Trackio 是一个实验跟踪库，用于记录和可视化 ML 训练指标。�
 ```python
 import trackio
 
-trackio.init(project="my-project", space_id="username/trackio")
+# Space 默认是公开的（便于共享仪表板）；
+# 如果指标不应公开，请传递 private=True
+trackio.init(project="my-project", space_id="username/trackio", private=True)
 trackio.log({"loss": 0.1, "accuracy": 0.9})
 trackio.log({"loss": 0.09, "accuracy": 0.91})
 trackio.finish()

@@ -1,14 +1,14 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import type { AIType } from '../types/index.js';
+import type { AIType, ConcreteAIType } from '../types/index.js';
 
 interface DetectionResult {
-  detected: AIType[];
+  detected: ConcreteAIType[];
   suggested: AIType | null;
 }
 
 export function detectAIType(cwd: string = process.cwd()): DetectionResult {
-  const detected: AIType[] = [];
+  const detected: ConcreteAIType[] = [];
 
   if (existsSync(join(cwd, '.claude'))) {
     detected.push('claude');
@@ -64,6 +64,9 @@ export function detectAIType(cwd: string = process.cwd()): DetectionResult {
   if (existsSync(join(cwd, '.augment'))) {
     detected.push('augment');
   }
+  if (existsSync(join(cwd, '.codewhale'))) {
+    detected.push('codewhale');
+  }
 
   // Suggest based on what's detected
   let suggested: AIType | null = null;
@@ -114,6 +117,8 @@ export function getAITypeDescription(aiType: AIType): string {
       return 'Warp (.warp/skills/)';
     case 'augment':
       return 'Augment (.augment/skills/)';
+    case 'codewhale':
+      return 'CodeWhale (.codewhale/skills/)';
     case 'all':
       return 'All AI assistants';
   }

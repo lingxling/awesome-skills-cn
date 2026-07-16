@@ -33,6 +33,7 @@
 - [gcal-pro](https://clawskills.sh/skills/bilalmohamed187-cpu-gcal-pro) - Google 日历集成，用于查看、创建和管理。
 - [gog](https://clawskills.sh/skills/steipete-gog) - 用于 Gmail、日历、云端硬盘、联系人、表格和文档的 Google Workspace CLI。
 - [google-calendar](https://clawskills.sh/skills/adrianmiller99-google-calendar) - 通过 Google 日历与 Google 日历交互。
+- [google-service-accounts](https://clawhub.ai/amiller/google-service-accounts) - 通过服务账号共享方式无头访问 Google Sheets、Docs、Drive、Calendar。
 - [grazy](https://clawskills.sh/skills/thomyg-grazy) - grazy - 你的 Grazer 命令行 companion。
 - [greek-financial-statements](https://clawskills.sh/skills/satoshistackalotto-greek-financial-statements) - 希腊财务报表生成 — 损益表、资产负债表、增值税摘要，带有 EGLS 集成。
 - [habib-pdf-to-json](https://clawskills.sh/skills/dbmoradi60-habib-pdf-to-json) - 从建筑 PDF 中提取结构化数据。

@@ -8,8 +8,25 @@ NO hardcoded colors, fonts, or spacing allowed
 
 import argparse
 import json
+from html import escape
 from pathlib import Path
 from datetime import datetime
+
+
+def _e(value, default=''):
+    """HTML-escape a user-supplied value for safe embedding in HTML content."""
+    return escape(str(value if value is not None else default))
+
+
+def _safe_url(url, default='#'):
+    """Validate and escape a URL for use in href attributes.
+
+    Only allows http://, https://, #, and / schemes to prevent
+    javascript: URI injection (CWE-79).
+    """
+    if url and str(url).strip().lower().startswith(('http://', 'https://', '#', '/')):
+        return escape(str(url), quote=True)
+    return default
 
 # Paths
 SCRIPT_DIR = Path(__file__).parent
@@ -412,16 +429,16 @@ def generate_title_slide(data):
     """Title slide with gradient headline"""
     return f'''
     <section class="slide slide--glow flex flex-col items-center justify-center text-center">
-        <div class="badge mb-6">{data.get('badge', 'Pitch Deck')}</div>
-        <h1 class="slide-title mb-6">{data.get('title', 'Your Title Here')}</h1>
-        <p class="slide-subheading mb-8">{data.get('subtitle', 'Your compelling subtitle')}</p>
+        <div class="badge mb-6">{_e(data.get('badge', 'Pitch Deck'))}</div>
+        <h1 class="slide-title mb-6">{_e(data.get('title', 'Your Title Here'))}</h1>
+        <p class="slide-subheading mb-8">{_e(data.get('subtitle', 'Your compelling subtitle'))}</p>
         <div class="flex gap-4">
-            <a href="#" class="btn btn-primary">{data.get('cta', 'Get Started')}</a>
-            <a href="#" class="btn btn-secondary">{data.get('secondary_cta', 'Learn More')}</a>
+            <a href="#" class="btn btn-primary">{_e(data.get('cta', 'Get Started'))}</a>
+            <a href="#" class="btn btn-secondary">{_e(data.get('secondary_cta', 'Learn More'))}</a>
         </div>
         <div class="slide-footer">
-            <span>{data.get('company', 'Company Name')}</span>
-            <span>{data.get('date', datetime.now().strftime('%B %Y'))}</span>
+            <span>{_e(data.get('company', 'Company Name'))}</span>
+            <span>{_e(data.get('date', datetime.now().strftime('%B %Y')))}</span>
         </div>
     </section>
     '''
@@ -432,27 +449,27 @@ def generate_problem_slide(data):
     return f'''
     <section class="slide slide--surface">
         <div class="badge mb-6">The Problem</div>
-        <h2 class="slide-heading mb-8">{data.get('headline', 'The problem your audience faces')}</h2>
+        <h2 class="slide-heading mb-8">{_e(data.get('headline', 'The problem your audience faces'))}</h2>
         <div class="grid grid-3 gap-8">
             <div class="card">
                 <div class="text-primary" style="font-size: var(--primitive-fontSize-4xl); margin-bottom: var(--primitive-spacing-4);">01</div>
-                <h4 style="margin-bottom: var(--primitive-spacing-2); font-size: var(--primitive-fontSize-xl);">{data.get('pain_1_title', 'Pain Point 1')}</h4>
-                <p class="text-muted">{data.get('pain_1_desc', 'Description of the first pain point')}</p>
+                <h4 style="margin-bottom: var(--primitive-spacing-2); font-size: var(--primitive-fontSize-xl);">{_e(data.get('pain_1_title', 'Pain Point 1'))}</h4>
+                <p class="text-muted">{_e(data.get('pain_1_desc', 'Description of the first pain point'))}</p>
             </div>
             <div class="card">
                 <div class="text-secondary" style="font-size: var(--primitive-fontSize-4xl); margin-bottom: var(--primitive-spacing-4);">02</div>
-                <h4 style="margin-bottom: var(--primitive-spacing-2); font-size: var(--primitive-fontSize-xl);">{data.get('pain_2_title', 'Pain Point 2')}</h4>
-                <p class="text-muted">{data.get('pain_2_desc', 'Description of the second pain point')}</p>
+                <h4 style="margin-bottom: var(--primitive-spacing-2); font-size: var(--primitive-fontSize-xl);">{_e(data.get('pain_2_title', 'Pain Point 2'))}</h4>
+                <p class="text-muted">{_e(data.get('pain_2_desc', 'Description of the second pain point'))}</p>
             </div>
             <div class="card">
                 <div class="text-accent" style="font-size: var(--primitive-fontSize-4xl); margin-bottom: var(--primitive-spacing-4);">03</div>
-                <h4 style="margin-bottom: var(--primitive-spacing-2); font-size: var(--primitive-fontSize-xl);">{data.get('pain_3_title', 'Pain Point 3')}</h4>
-                <p class="text-muted">{data.get('pain_3_desc', 'Description of the third pain point')}</p>
+                <h4 style="margin-bottom: var(--primitive-spacing-2); font-size: var(--primitive-fontSize-xl);">{_e(data.get('pain_3_title', 'Pain Point 3'))}</h4>
+                <p class="text-muted">{_e(data.get('pain_3_desc', 'Description of the third pain point'))}</p>
             </div>
         </div>
         <div class="slide-footer">
-            <span>{data.get('company', 'Company Name')}</span>
-            <span>{data.get('page', '2')}</span>
+            <span>{_e(data.get('company', 'Company Name'))}</span>
+            <span>{_e(data.get('page', '2'))}</span>
         </div>
     </section>
     '''
@@ -463,28 +480,28 @@ def generate_solution_slide(data):
     return f'''
     <section class="slide">
         <div class="badge mb-6">The Solution</div>
-        <h2 class="slide-heading mb-8">{data.get('headline', 'How we solve this')}</h2>
+        <h2 class="slide-heading mb-8">{_e(data.get('headline', 'How we solve this'))}</h2>
         <div class="flex gap-8" style="flex: 1;">
             <div style="flex: 1;">
                 <div class="feature-item">
                     <div class="feature-icon">&#10003;</div>
                     <div class="feature-content">
-                        <h4>{data.get('feature_1_title', 'Feature 1')}</h4>
-                        <p>{data.get('feature_1_desc', 'Description of feature 1')}</p>
+                        <h4>{_e(data.get('feature_1_title', 'Feature 1'))}</h4>
+                        <p>{_e(data.get('feature_1_desc', 'Description of feature 1'))}</p>
                     </div>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">&#10003;</div>
                     <div class="feature-content">
-                        <h4>{data.get('feature_2_title', 'Feature 2')}</h4>
-                        <p>{data.get('feature_2_desc', 'Description of feature 2')}</p>
+                        <h4>{_e(data.get('feature_2_title', 'Feature 2'))}</h4>
+                        <p>{_e(data.get('feature_2_desc', 'Description of feature 2'))}</p>
                     </div>
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon">&#10003;</div>
                     <div class="feature-content">
-                        <h4>{data.get('feature_3_title', 'Feature 3')}</h4>
-                        <p>{data.get('feature_3_desc', 'Description of feature 3')}</p>
+                        <h4>{_e(data.get('feature_3_title', 'Feature 3'))}</h4>
+                        <p>{_e(data.get('feature_3_desc', 'Description of feature 3'))}</p>
                     </div>
                 </div>
             </div>
@@ -496,8 +513,8 @@ def generate_solution_slide(data):
             </div>
         </div>
         <div class="slide-footer">
-            <span>{data.get('company', 'Company Name')}</span>
-            <span>{data.get('page', '3')}</span>
+            <span>{_e(data.get('company', 'Company Name'))}</span>
+            <span>{_e(data.get('page', '3'))}</span>
         </div>
     </section>
     '''
@@ -514,21 +531,21 @@ def generate_metrics_slide(data):
 
     metrics_html = ''.join([f'''
         <div class="card metric">
-            <div class="metric-value">{m['value']}</div>
-            <div class="metric-label">{m['label']}</div>
+            <div class="metric-value">{_e(m.get('value', ''))}</div>
+            <div class="metric-label">{_e(m.get('label', ''))}</div>
         </div>
     ''' for m in metrics[:4]])
 
     return f'''
     <section class="slide slide--surface slide--glow">
         <div class="badge mb-6">Traction</div>
-        <h2 class="slide-heading mb-8 text-center">{data.get('headline', 'Our Growth')}</h2>
+        <h2 class="slide-heading mb-8 text-center">{_e(data.get('headline', 'Our Growth'))}</h2>
         <div class="grid grid-4 gap-6" style="flex: 1; align-items: center;">
             {metrics_html}
         </div>
         <div class="slide-footer">
-            <span>{data.get('company', 'Company Name')}</span>
-            <span>{data.get('page', '4')}</span>
+            <span>{_e(data.get('company', 'Company Name'))}</span>
+            <span>{_e(data.get('page', '4'))}</span>
         </div>
     </section>
     '''
@@ -544,25 +561,25 @@ def generate_chart_slide(data):
     ])
 
     bars_html = ''.join([f'''
-        <div class="bar" style="height: {b['value']}%;">
-            <span class="bar-value">{b.get('display', str(b['value']) + '%')}</span>
-            <span class="bar-label">{b['label']}</span>
+        <div class="bar" style="height: {int(b.get('value', 0))}%;">
+            <span class="bar-value">{_e(b.get('display', str(b.get('value', 0)) + '%'))}</span>
+            <span class="bar-label">{_e(b.get('label', ''))}</span>
         </div>
     ''' for b in bars])
 
     return f'''
     <section class="slide">
-        <div class="badge mb-6">{data.get('badge', 'Growth')}</div>
-        <h2 class="slide-heading mb-8">{data.get('headline', 'Revenue Growth')}</h2>
+        <div class="badge mb-6">{_e(data.get('badge', 'Growth'))}</div>
+        <h2 class="slide-heading mb-8">{_e(data.get('headline', 'Revenue Growth'))}</h2>
         <div class="chart-container" style="flex: 1;">
-            <div class="chart-title">{data.get('chart_title', 'Quarterly Revenue')}</div>
+            <div class="chart-title">{_e(data.get('chart_title', 'Quarterly Revenue'))}</div>
             <div class="bar-chart" style="flex: 1; padding-bottom: 40px;">
                 {bars_html}
             </div>
         </div>
         <div class="slide-footer">
-            <span>{data.get('company', 'Company Name')}</span>
-            <span>{data.get('page', '5')}</span>
+            <span>{_e(data.get('company', 'Company Name'))}</span>
+            <span>{_e(data.get('page', '5'))}</span>
         </div>
     </section>
     '''
@@ -574,13 +591,13 @@ def generate_testimonial_slide(data):
     <section class="slide slide--surface flex flex-col justify-center">
         <div class="badge mb-6">What They Say</div>
         <div class="testimonial" style="max-width: 900px;">
-            <p class="testimonial-quote">"{data.get('quote', 'This product changed how we work. Incredible results.')}"</p>
-            <p class="testimonial-author">{data.get('author', 'Jane Doe')}</p>
-            <p class="testimonial-role">{data.get('role', 'CEO, Example Company')}</p>
+            <p class="testimonial-quote">"{_e(data.get('quote', 'This product changed how we work. Incredible results.'))}"</p>
+            <p class="testimonial-author">{_e(data.get('author', 'Jane Doe'))}</p>
+            <p class="testimonial-role">{_e(data.get('role', 'CEO, Example Company'))}</p>
         </div>
         <div class="slide-footer">
-            <span>{data.get('company', 'Company Name')}</span>
-            <span>{data.get('page', '6')}</span>
+            <span>{_e(data.get('company', 'Company Name'))}</span>
+            <span>{_e(data.get('page', '6'))}</span>
         </div>
     </section>
     '''
@@ -590,14 +607,14 @@ def generate_cta_slide(data):
     """Closing CTA slide"""
     return f'''
     <section class="slide slide--gradient flex flex-col items-center justify-center text-center">
-        <h2 class="slide-heading mb-6" style="color: var(--color-foreground);">{data.get('headline', 'Ready to get started?')}</h2>
-        <p class="slide-body mb-8" style="color: rgba(255,255,255,0.8);">{data.get('subheadline', 'Join thousands of teams already using our solution.')}</p>
+        <h2 class="slide-heading mb-6" style="color: var(--color-foreground);">{_e(data.get('headline', 'Ready to get started?'))}</h2>
+        <p class="slide-body mb-8" style="color: rgba(255,255,255,0.8);">{_e(data.get('subheadline', 'Join thousands of teams already using our solution.'))}</p>
         <div class="flex gap-4">
-            <a href="{data.get('cta_url', '#')}" class="btn" style="background: var(--color-foreground); color: var(--color-primary);">{data.get('cta', 'Start Free Trial')}</a>
+            <a href="{_safe_url(data.get('cta_url', '#'))}" class="btn" style="background: var(--color-foreground); color: var(--color-primary);">{_e(data.get('cta', 'Start Free Trial'))}</a>
         </div>
         <div class="slide-footer" style="border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.6);">
-            <span>{data.get('contact', 'contact@example.com')}</span>
-            <span>{data.get('website', 'www.example.com')}</span>
+            <span>{_e(data.get('contact', 'contact@example.com'))}</span>
+            <span>{_e(data.get('website', 'www.example.com'))}</span>
         </div>
     </section>
     '''
@@ -632,7 +649,7 @@ def generate_deck(slides_data, title="Pitch Deck"):
     tokens_rel_path = "../../../assets/design-tokens.css"
 
     return SLIDE_TEMPLATE.format(
-        title=title,
+        title=escape(str(title)),
         tokens_css_path=tokens_rel_path,
         slides_content=slides_html
     )

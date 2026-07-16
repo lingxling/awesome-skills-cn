@@ -54,7 +54,7 @@ class AuditConsistencyTests(unittest.TestCase):
         (root / "package.json").write_text(
             json.dumps(
                 {
-                    "name": "antigravity-awesome-skills",
+                    "name": "agentic-awesome-skills",
                     "version": "8.4.0",
                     "description": f"{count_label} agentic skills for Claude Code, Gemini CLI, Cursor, Antigravity & more. Installer CLI.",
                 }
@@ -68,22 +68,22 @@ class AuditConsistencyTests(unittest.TestCase):
         (root / "apps" / "web-app" / "public" / "skills.json").write_text(manifest, encoding="utf-8")
         (root / "README.md").write_text(
             f"""<!-- registry-sync: version=8.4.0; skills={total_skills}; stars=26132; updated_at=2026-03-21T00:00:00+00:00 -->
-# 🌌 Antigravity Awesome Skills: {count_label} Agentic Skills for Claude Code, Gemini CLI, Cursor, Copilot & More
+# 🌌 Agentic Awesome Skills: {count_label} Agentic Skills for Claude Code, Gemini CLI, Cursor, Autohand Code, Copilot & More
 
-> **Installable GitHub library of {count_label} agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.**
+> **Installable GitHub library of {count_label} agentic skills for Claude Code, Cursor, Codex CLI, Autohand Code, Gemini CLI, Antigravity, and other AI coding assistants.**
 
-[![GitHub stars](https://img.shields.io/badge/⭐%2026%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/antigravity-awesome-skills/stargazers)
+[![GitHub stars](https://img.shields.io/badge/⭐%2026%2C000%2B%20Stars-gold?style=for-the-badge)](https://github.com/sickn33/agentic-awesome-skills/stargazers)
 
 **Current release: V8.4.0.** Trusted by 26k+ GitHub stargazers, this repository combines official and community skill collections with bundles, workflows, installation paths, and docs that help you go from first install to daily use quickly.
 
 - **Broad coverage with real utility**: {count_label} skills across development, testing, security, infrastructure, product, and marketing.
 
-If you want a faster answer than "browse all {count_label} skills", start with a tool-specific guide:
+**Start here:** [Install in 1 minute](#installation) · [Recommended plugins](#recommended-specialized-plugins) · [Choose your tool](#choose-your-tool) · [📚 Browse {count_label} Skills](#browse-{total_skills}-skills) · [Bundles & workflows](#bundles--workflows) · [Support the project](#support-the-project)
 """,
             encoding="utf-8",
         )
         (root / "docs" / "users" / "getting-started.md").write_text(
-            "# Getting Started with Antigravity Awesome Skills (V8.4.0)\n",
+            "# Getting Started with Agentic Awesome Skills (V8.4.0)\n",
             encoding="utf-8",
         )
         (root / "docs" / "users" / "claude-code-skills.md").write_text(
@@ -103,7 +103,7 @@ If you want a faster answer than "browse all {count_label} skills", start with a
             encoding="utf-8",
         )
         (root / "docs" / "users" / "bundles.md").write_text(
-            f'### 🚀 The "Essentials" Pack\n_Last updated: March 2026 | Total Skills: {count_label} | Total Bundles: 1_\n',
+            f'### 🚀 The "Essentials" Pack\n_Last updated: June 2026 | Total Skills: {count_label} | Total Bundles: 1_\n',
             encoding="utf-8",
         )
         (root / "docs" / "users" / "kiro-integration.md").write_text(
@@ -111,7 +111,7 @@ If you want a faster answer than "browse all {count_label} skills", start with a
             encoding="utf-8",
         )
         (root / "docs" / "maintainers" / "repo-growth-seo.md").write_text(
-            f"> Installable GitHub library of {count_label} agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.\n> Installable GitHub library of {count_label} agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and more. Includes installer CLI, bundles, workflows, and official/community skill collections.\n- use a clean preview image that says `{count_label} Agentic Skills`;\n",
+            f"> Installable GitHub library of {count_label} agentic skills for Claude Code, Cursor, Codex CLI, Autohand Code, Gemini CLI, Antigravity, and other AI coding assistants.\n> Installable GitHub library of {count_label} agentic skills for Claude Code, Cursor, Codex CLI, Autohand Code, Gemini CLI, Antigravity, and more. Includes installer CLI, bundles, workflows, and official/community skill collections.\n- use a clean preview image that says `{count_label} Agentic Skills`;\n",
             encoding="utf-8",
         )
         (root / "docs" / "maintainers" / "skills-update-guide.md").write_text(

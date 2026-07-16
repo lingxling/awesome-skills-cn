@@ -36,7 +36,7 @@ Before invoking any skills, evaluate the task:
 When a task is deemed complex, identify the necessary domains (e.g., frontend, database, deployment). Search available skills in the current environment to find the most relevant ones. If the required skills are not found locally, consult the master skill catalog.
 
 ### Master Skill Catalog
-The Antigravity ecosystem maintains a master catalog of highly curated skills at `https://raw.githubusercontent.com/sickn33/antigravity-awesome-skills/main/CATALOG.md`. When local skills are insufficient, fetch this catalog to discover appropriate skills across the 9 primary categories:
+The Antigravity ecosystem maintains a master catalog of highly curated skills at `https://raw.githubusercontent.com/sickn33/agentic-awesome-skills/main/CATALOG.md`. When local skills are insufficient, fetch this catalog to discover appropriate skills across the 9 primary categories:
 - `architecture`
 - `business`
 - `data-ai`
@@ -70,7 +70,7 @@ To build institutional knowledge, the orchestrator relies on the `agent-memory-m
 [Triggered if no past knowledge covers this task]
 1. Analyze the core requirements (e.g., "needs a React UI, a Node.js backend, and a PostgreSQL database").
 2. Query the locally available skills using the current environment's skill list or equivalent discovery mechanism to find the best match for each requirement.
-3. **If local skills are insufficient**, fetch the master catalog with the web or command-line retrieval tools available in the current environment: `https://raw.githubusercontent.com/sickn33/antigravity-awesome-skills/main/CATALOG.md`.
+3. **If local skills are insufficient**, fetch the master catalog with the web or command-line retrieval tools available in the current environment: `https://raw.githubusercontent.com/sickn33/agentic-awesome-skills/main/CATALOG.md`.
 4. Scan the catalog's 9 main categories to identify the appropriate skills to bring into the current context.
 5. Select the minimal set of skills needed. **Do not over-select.**
 

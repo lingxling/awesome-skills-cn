@@ -1,386 +1,196 @@
 ---
 name: ui-ux-pro-max
-description: "UI/UX 设计智能。50 种样式、21 个调色板、50 种字体搭配、20 种图表、9 个技术栈（React、Next.js、Vue、Svelte、SwiftUI、React Native、Flutter、Tailwind、shadcn/ui）。操作：规划、构建、创建、设计、实现、审查、修复、改进、优化、增强、重构、检查 UI/UX 代码。项目：网站、着陆页、仪表板、管理面板、电子商务、SaaS、作品集、博客、移动应用、.html、.tsx、.vue、.svelte。元素：按钮、模态框、导航栏、侧边栏、卡片、表格、表单、图表。样式：玻璃拟态、粘土拟态、极简主义、粗野主义、新拟态、便当盒网格、深色模式、响应式、拟物化、扁平设计。主题：配色方案、可访问性、动画、布局、排版、字体搭配、间距、悬停、阴影、渐变。集成：shadcn/ui MCP 用于组件搜索和示例。"
+description: "面向 Web 和移动端的 UI/UX 设计智能库。可搜索的本地数据库，包含 84 种风格、192 个配色方案、74 组字体搭配、192 种产品类型、98 条 UX 准则、104 条图标条目、16 个 GSAP 动效预设，以及覆盖 22 种技术栈（React、Next.js、Vue、Nuxt、Svelte、Astro、SwiftUI、React Native、Flutter、Tailwind、shadcn/ui、Jetpack Compose、Angular、Laravel、JavaFX、WPF、WinUI、Avalonia、Uno Platform、UWP、Three.js 以及 HTML/CSS）的 25 种图表类型。在设计、构建或审查 UI 时使用：页面、组件、配色方案、排版、布局、无障碍、动效或数据可视化。"
 ---
 
-# UI/UX Pro Max - 设计智能
+# UI/UX Pro Max - 设计智能库
 
-Web 和移动应用程序的综合设计指南。包含 50 多种样式、97 个配色方案、57 种字体搭配、99 条 UX 指南和 25 种图表类型，涵盖 9 种技术栈。具有基于优先级推荐的可搜索数据库。
+可搜索的 UI/UX 设计规则数据库，提供基于优先级的推荐：84 种风格、192 个配色方案、74 组字体搭配、192 种带推理规则的产品类型、98 条 UX 准则、104 条图标条目、16 个 GSAP 动效预设，以及覆盖 22 种技术栈的 25 种图表类型。
 
 ## 何时应用
 
-在以下情况下参考这些指南：
-- 设计新的 UI 组件或页面
-- 选择配色方案和排版
-- 审查代码的 UX 问题
-- 构建着陆页或仪表板
-- 实现可访问性要求
+当任务涉及 **UI 结构、视觉设计决策、交互模式或用户体验质量把控** 时使用此技能：设计新页面、创建/重构 UI 组件、选择配色/排版/间距/布局系统、审查 UI 的 UX/无障碍/一致性、实现导航/动效/响应式行为，或提升感知质量与可用性。
 
-## 按优先级分类的规则
+对于纯后端逻辑、API/数据库设计、与视觉无关的性能工作、基础设施/DevOps，或非视觉类脚本，可跳过此技能——除非该任务会改变某个东西**看起来、感觉起来、动起来或交互起来**的方式。
 
-| 优先级 | 类别 | 影响 | 域 |
-|----------|----------|--------|--------|
-| 1 | 可访问性 | 关键 | `ux` |
-| 2 | 触摸与交互 | 关键 | `ux` |
-| 3 | 性能 | 高 | `ux` |
-| 4 | 布局与响应式 | 高 | `ux` |
-| 5 | 排版与颜色 | 中 | `typography`、`color` |
-| 6 | 动画 | 中 | `ux` |
-| 7 | 样式选择 | 中 | `style`、`product` |
-| 8 | 图表与数据 | 低 | `chart` |
+## 按优先级划分的规则类别
 
-## 快速参考
+*按优先级 1→10 决定优先关注哪个类别；使用 `--domain <Domain>` 查询完整细节。每个类别的完整规则文本都在 `references/quick-reference.md` 中——按需读取，而不是每次都加载。*
 
-### 1. 可访问性（关键）
+| 优先级 | 类别 | 影响 | 领域 | 关键检查项（必须具备） | 反模式（应避免） |
+|----------|----------|--------|--------|------------------------|------------------------|
+| 1 | 无障碍 | 严重 | `ux` | 对比度 4.5:1、Alt 文本、键盘导航、Aria 标签 | 移除焦点环、无标签的纯图标按钮 |
+| 2 | 触控与交互 | 严重 | `ux` | 最小尺寸 44×44px、间距 8px 以上、加载反馈 | 仅依赖悬停、瞬时状态变化（0ms） |
+| 3 | 性能 | 高 | `ux` | WebP/AVIF、懒加载、预留空间（CLS &lt; 0.1） | 布局抖动、累积布局偏移 |
+| 4 | 风格选择 | 高 | `style`、`product` | 匹配产品类型、一致性、SVG 图标（非emoji） | 随意混用扁平与拟物风格、用emoji作图标 |
+| 5 | 布局与响应式 | 高 | `ux` | 移动优先断点、Viewport meta、无横向滚动 | 横向滚动、固定像素容器宽度、禁用缩放 |
+| 6 | 排版与色彩 | 中 | `typography`、`color` | 基础字号16px、行高1.5、语义化色彩令牌 | 正文文字&lt;12px、灰底灰字、组件中硬编码十六进制色值 |
+| 7 | 动效 | 中 | `ux`、`gsap` | 时长150–300ms、动效传达含义、空间连续性 | 纯装饰性动画、对width/height做动画、未支持减少动效 |
+| 8 | 表单与反馈 | 中 | `ux` | 可见标签、错误信息紧邻字段、辅助文本、渐进式披露 | 仅用placeholder作标签、错误信息只在顶部、一开始信息过载 |
+| 9 | 导航模式 | 高 | `ux` | 可预测的返回、底部导航≤5项、深度链接 | 导航项过多、返回行为损坏、无深度链接 |
+| 10 | 图表与数据 | 低 | `chart` | 图例、提示框、无障碍配色 | 仅依赖颜色传达信息 |
 
-- `color-contrast` - 普通文本最小对比度 4.5:1
-- `focus-states` - 交互元素上可见的焦点环
-- `alt-text` - 有意义图像的描述性 alt 文本
-- `aria-labels` - 仅图标按钮的 aria-label
-- `keyboard-nav` - Tab 顺序与视觉顺序匹配
-- `form-labels` - 使用带有 for 属性的 label
-
-### 2. 触摸与交互（关键）
-
-- `touch-target-size` - 最小 44x44px 触摸目标
-- `hover-vs-tap` - 使用点击/轻触进行主要交互
-- `loading-buttons` - 异步操作期间禁用按钮
-- `error-feedback` - 在问题附近提供清晰的错误消息
-- `cursor-pointer` - 为可点击元素添加 cursor-pointer
-
-### 3. 性能（高）
-
-- `image-optimization` - 使用 WebP、srcset、懒加载
-- `reduced-motion` - 检查 prefers-reduced-motion
-- `content-jumping` - 为异步内容预留空间
-
-### 4. 布局与响应式（高）
-
-- `viewport-meta` - width=device-width initial-scale=1
-- `readable-font-size` - 移动端最小 16px 正文文本
-- `horizontal-scroll` - 确保内容适合视口宽度
-- `z-index-management` - 定义 z-index 比例（10、20、30、50）
-
-### 5. 排版与颜色（中）
-
-- `line-height` - 正文文本使用 1.5-1.75
-- `line-length` - 限制每行 65-75 个字符
-- `font-pairing` - 匹配标题/正文字体个性
-
-### 6. 动画（中）
-
-- `duration-timing` - 微交互使用 150-300ms
-- `transform-performance` - 使用 transform/opacity，不用 width/height
-- `loading-states` - 骨架屏或加载指示器
-
-### 7. 样式选择（中）
-
-- `style-match` - 匹配样式与产品类型
-- `consistency` - 在所有页面使用相同样式
-- `no-emoji-icons` - 使用 SVG 图标，不用表情符号
-
-### 8. 图表与数据（低）
-
-- `chart-type` - 匹配图表类型与数据类型
-- `color-guidance` - 使用可访问的配色方案
-- `data-table` - 为可访问性提供表格替代方案
-
-## 如何使用
-
-使用下面的 CLI 工具搜索特定域。
+要查看每个类别的完整规则列表（全部约98条带原理说明的UX准则），请阅读 `references/quick-reference.md`。要查看特定于应用的打磨规则（图标、触控反馈、深色模式对比度、安全区域）以及标准的交付前检查清单，请阅读 `references/pro-rules.md`。
 
 ---
 
-## 前置要求
+## 运行搜索工具
 
-检查是否安装了 Python：
-
-```bash
-python3 --version || python --version
-```
-
-如果未安装 Python，根据用户的操作系统进行安装：
-
-**macOS:**
-```bash
-brew install python3
-```
-
-**Ubuntu/Debian:**
-```bash
-sudo apt update && sudo apt install python3
-```
-
-**Windows:**
-```powershell
-winget install Python.Python.3.12
-```
-
----
-
-## 如何使用此技能
-
-当用户请求 UI/UX 工作时（设计、构建、创建、实现、审查、修复、改进），请遵循此工作流程：
-
-### 步骤 1：分析用户需求
-
-从用户请求中提取关键信息：
-- **产品类型**：SaaS、电子商务、作品集、仪表板、着陆页等
-- **样式关键词**：极简、俏皮、专业、优雅、深色模式等
-- **行业**：医疗保健、金融科技、游戏、教育等
-- **技术栈**：React、Vue、Next.js 或默认为 `html-tailwind`
-
-### 步骤 2：生成设计系统（必需）
-
-**始终从 `--design-system` 开始** 以获取带有推理的综合推荐：
+搜索脚本位于此技能自己的目录内，而不是项目目录。始终通过完整路径调用它——不要假设某个特定的工作目录：
 
 ```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<product_type> <industry> <keywords>" --design-system [-p "Project Name"]
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "<query>" --domain <domain>
 ```
 
-此命令：
-1. 并行搜索 5 个域（产品、样式、颜色、着陆页、排版）
-2. 应用 `ui-reasoning.csv` 中的推理规则选择最佳匹配
-3. 返回完整的设计系统：模式、样式、颜色、排版、效果
-4. 包括需要避免的反模式
+如果找不到 `python`，依次尝试 `python3`，然后 `py -3`。需要 Python 3.x，无外部依赖（如果缺少 Python，请参见 README 中的安装说明）。
+
+## 工作流程
+
+### 步骤1：分析用户需求
+
+从用户请求中提取：
+- **产品类型**：SaaS、电商、作品集、仪表盘、娱乐、工具类、生产力工具，或混合类型
+- **目标受众与使用场景**：年龄段、使用场景（通勤、休闲、工作）
+- **风格关键词**：俏皮、活泼、极简、深色模式、内容优先、沉浸式等
+- **技术栈**：从项目中检测——检查 `package.json` 依赖（react/next/vue/svelte/nuxt/@angular）、`pubspec.yaml`（Flutter）、`*.xcodeproj`/`Package.swift`（SwiftUI）、`composer.json`（Laravel），或 React Native 标志（`app.json` + `react-native` 依赖）。如果无法检测，询问用户或默认使用 `html-tailwind`。**永远不要假设技术栈**——硬编码的默认值会悄悄误导每一条推荐。
+
+### 步骤2：生成设计系统（新页面/新项目必需）
+
+始终从 `--design-system` 开始，获取带推理说明的全面推荐：
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "<product_type> <industry> <keywords>" --design-system [-p "Project Name"]
+```
+
+这会并行搜索产品/风格/色彩/落地页/排版这几个领域，应用 `ui-reasoning.csv` 中的推理规则，并返回模式、风格、色彩、排版、效果，以及应避免的反模式。
 
 **示例：**
 ```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "beauty spa wellness service" --design-system -p "Serenity Spa"
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "beauty spa wellness service" --design-system -p "Serenity Spa"
 ```
 
-### 步骤 2b：持久化设计系统（主文件 + 覆盖模式）
+### 步骤2b：持久化设计系统（主文件+覆盖层模式）
 
-为了保存设计系统以便**跨会话分层检索**，添加 `--persist`：
+要将设计系统保存下来以便跨会话检索，添加 `--persist`，**并始终传入指向项目根目录的 `--output-dir`**——如果不传，文件会相对于工具实际运行的目录写入：
 
 ```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<query>" --design-system --persist -p "Project Name"
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "<query>" --design-system --persist -p "Project Name" --output-dir "<project-root>"
 ```
 
-这将创建：
-- `design-system/MASTER.md` — 包含所有设计规则的全局单一事实来源
-- `design-system/pages/` — 页面特定覆盖的文件夹
+这会创建：
+- `design-system/<project-slug>/MASTER.md` — 全局唯一真源
+- `design-system/<project-slug>/pages/` — 用于存放页面级覆盖规则的文件夹
 
-**使用页面特定覆盖：**
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<query>" --design-system --persist -p "Project Name" --page "dashboard"
-```
+如果有页面级覆盖需求，添加 `--page "dashboard"`，也会创建 `design-system/<project-slug>/pages/dashboard.md`。
 
-这还会创建：
-- `design-system/pages/dashboard.md` — 与主文件的页面特定偏差
+如果 `design-system/<project-slug>/MASTER.md` 已存在，`--persist` **会跳过写入并保持原文件不变**，除非同时传入 `--force`——在重新生成之前，先检查该文件是否存在（并阅读它），这样才不会悄悄丢弃用户或团队成员之前做出的决策。
 
-**分层检索如何工作：**
-1. 构建特定页面（例如"Checkout"）时，首先检查 `design-system/pages/checkout.md`
-2. 如果页面文件存在，其规则**覆盖**主文件
-3. 如果不存在，则仅使用 `design-system/MASTER.md`
+**构建特定页面时的检索方式：**
+1. 阅读 `design-system/<project-slug>/MASTER.md`
+2. 检查 `design-system/<project-slug>/pages/<page-name>.md` 是否存在——如果存在，其规则会覆盖主文件（Master）
+3. 否则只使用主文件（Master）的规则
 
-**上下文感知检索提示：**
-```
-我正在构建 [Page Name] 页面。请阅读 design-system/MASTER.md。
-同时检查 design-system/pages/[page-name].md 是否存在。
-如果页面文件存在，优先使用其规则。
-如果不存在，则仅使用主文件规则。
-现在，生成代码...
-```
+### 步骤2c：设计旋钮（可选）
 
-### 步骤 3：补充详细搜索（根据需要）
-
-获得设计系统后，使用域搜索获取更多详细信息：
+三个可选的 1-10 滑动值，用于在不改变查询内容的情况下微调 `--design-system` 的输出。可以任意组合添加到同一条命令中：
 
 ```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<keyword>" --domain <domain> [-n <max_results>]
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "<query>" --design-system --variance <1-10> --motion <1-10> --density <1-10>
 ```
 
-**何时使用详细搜索：**
+| 旋钮 | 低（1-3） | 中（4-7） | 高（8-10） |
+|------|-----------|-----------|-------------|
+| `--variance` | 居中/极简（偏向极简主义类别） | 均衡/现代 | 大胆/不对称（偏向粗野主义、Bento网格） |
+| `--motion` | 微妙的微交互 | 标准的滚动/交错动效 | 复杂的编排效果（pin、Flip、SplitText） |
+| `--density` | 疏朗（24-96px间距刻度） | 标准（16-64px，当前默认值） | 紧凑/仪表盘风格（8-32px间距刻度） |
 
-| 需求 | 域 | 示例 |
+- `--motion` 会附带一段现成可用的GSAP代码片段（含框架说明、注意事项和性能说明），这段代码从 `--domain gsap` 中提取，与解析出的档位（微妙/标准/复杂）相匹配。
+- `--density` 会覆盖ASCII/markdown/MASTER.md输出中的 `--space-*` CSS变量表——可用于仪表盘（高密度）与营销页面（低密度），而无需手动编辑令牌。
+- 不设置某个旋钮时，输出中对应的部分会与之前完全一致（行为不变）。
+
+**示例：**
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "internal analytics dashboard" --design-system --variance 8 --motion 7 --density 8 -p "Ops Console"
+```
+
+### 步骤3：按需用详细搜索补充信息
+
+```bash
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "<keyword>" --domain <domain> [-n <max_results>]
+```
+
+| 需求 | 领域 | 示例 |
 |------|--------|---------|
-| 更多样式选项 | `style` | `--domain style "glassmorphism dark"` |
+| 产品类型模式 | `product` | `--domain product "entertainment social"` |
+| 更多风格选项 | `style` | `--domain style "glassmorphism dark"` |
+| 配色方案 | `color` | `--domain color "entertainment vibrant"` |
+| 字体搭配 | `typography` | `--domain typography "playful modern"` |
+| 单个Google字体 | `google-fonts` | `--domain google-fonts "sans serif popular variable"` |
 | 图表推荐 | `chart` | `--domain chart "real-time dashboard"` |
-| UX 最佳实践 | `ux` | `--domain ux "animation accessibility"` |
-| 替代字体 | `typography` | `--domain typography "elegant luxury"` |
-| 着陆页结构 | `landing` | `--domain landing "hero social-proof"` |
+| UX最佳实践 | `ux` | `--domain ux "animation accessibility"` |
+| 落地页结构 | `landing` | `--domain landing "hero social-proof"` |
+| 图标推荐 | `icons` | `--domain icons "navigation outline"` |
+| GSAP动效预设 | `gsap` | `--domain gsap "scroll reveal stagger"` |
+| React/Next.js性能 | `react` | `--domain react "rerender memo list"` |
+| 应用/原生界面准则 | `web` | `--domain web "accessibilityLabel touch safe-areas"` |
 
-### 步骤 4：技术栈指南（默认：html-tailwind）
+如果省略 `--domain`，会根据查询自动检测领域——但自动检测在术语存在重叠时可能会误判（例如"font"同时匹配 `typography` 和 `google-fonts`）。如果结果看起来文不对题，请显式传入 `--domain`。
 
-获取实现特定的最佳实践。如果用户未指定技术栈，**默认为 `html-tailwind`**。
+### 步骤4：技术栈准则
 
 ```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "<keyword>" --stack html-tailwind
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "<keyword>" --stack <stack>
 ```
 
-可用技术栈：`html-tailwind`、`react`、`nextjs`、`vue`、`svelte`、`swiftui`、`react-native`、`flutter`、`shadcn`、`jetpack-compose`
+**可用技术栈：** `react`、`nextjs`、`vue`、`svelte`、`astro`、`nuxtjs`、`nuxt-ui`、`angular`、`laravel`、`swiftui`、`react-native`、`flutter`、`jetpack-compose`、`html-tailwind`、`shadcn`、`threejs`、`javafx`、`wpf`、`winui`、`avalonia`、`uno`、`uwp`。使用步骤1中检测到的技术栈。
 
 ---
 
-## 搜索参考
+## 如果搜索结果为0
 
-### 可用域
-
-| 域 | 用途 | 示例关键词 |
-|--------|---------|------------------|
-| `product` | 产品类型推荐 | SaaS、电子商务、作品集、医疗保健、美容、服务 |
-| `style` | UI 样式、颜色、效果 | 玻璃拟态、极简主义、深色模式、粗野主义 |
-| `typography` | 字体搭配、Google Fonts | 优雅、俏皮、专业、现代 |
-| `color` | 按产品类型的配色方案 | saas、ecommerce、healthcare、beauty、fintech、service |
-| `landing` | 页面结构、CTA 策略 | hero、hero-centric、testimonial、pricing、social-proof |
-| `chart` | 图表类型、库推荐 | trend、comparison、timeline、funnel、pie |
-| `ux` | 最佳实践、反模式 | animation、accessibility、z-index、loading |
-| `react` | React/Next.js 性能 | waterfall、bundle、suspense、memo、rerender、cache |
-| `web` | Web 界面指南 | aria、focus、keyboard、semantic、virtualize |
-| `prompt` | AI 提示、CSS 关键词 | (样式名称) |
-
-### 可用技术栈
-
-| 技术栈 | 重点 |
-|-------|-------|
-| `html-tailwind` | Tailwind 工具类、响应式、可访问性（默认） |
-| `react` | 状态、hooks、性能、模式 |
-| `nextjs` | SSR、路由、图像、API 路由 |
-| `vue` | Composition API、Pinia、Vue Router |
-| `svelte` | Runes、stores、SvelteKit |
-| `swiftui` | 视图、状态、导航、动画 |
-| `react-native` | 组件、导航、列表 |
-| `flutter` | 小部件、状态、布局、主题 |
-| `shadcn` | shadcn/ui 组件、主题、表单、模式 |
-| `jetpack-compose` | Composables、Modifiers、State Hoisting、Recomposition |
-
----
+不要凭空编造输出。而应该：
+1. 用更宽泛或换一种表述的关键词重试一次（尝试将产品类型和风格分开搜索，而不是合在一起）。
+2. 如果仍为空，回退到上方的优先级表格，并明确告知用户此推荐来自内置默认值，而非数据库匹配结果（例如"未找到与X匹配的配色方案，使用通用SaaS默认值"）。
+3. 永远不要把0结果的搜索伪装成返回了数据的样子。
 
 ## 示例工作流程
 
-**用户请求：** "Làm landing page cho dịch vụ chăm sóc da chuyên nghiệp"
-
-### 步骤 1：分析需求
-- 产品类型：美容/水疗服务
-- 样式关键词：优雅、专业、柔和
-- 行业：美容/养生
-- 技术栈：html-tailwind（默认）
-
-### 步骤 2：生成设计系统（必需）
+**用户请求：** "做一个AI搜索首页。"（从 `package.json` 检测到技术栈为Next.js）
 
 ```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "beauty spa wellness service elegant" --design-system -p "Serenity Spa"
+# 步骤2：设计系统
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "AI search tool modern minimal" --design-system -p "AI Search"
+
+# 步骤3：补充信息
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "search loading animation" --domain ux
+
+# 步骤4：技术栈准则
+python "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/scripts/search.py" "suspense streaming bundle" --stack nextjs
 ```
 
-**输出：** 完整的设计系统，包括模式、样式、颜色、排版、效果和反模式。
-
-### 步骤 3：补充详细搜索（根据需要）
-
-```bash
-# 获取动画和可访问性的 UX 指南
-python3 skills/ui-ux-pro-max/scripts/search.py "animation accessibility" --domain ux
-
-# 如果需要，获取替代排版选项
-python3 skills/ui-ux-pro-max/scripts/search.py "elegant luxury serif" --domain typography
-```
-
-### 步骤 4：技术栈指南
-
-```bash
-python3 skills/ui-ux-pro-max/scripts/search.py "layout responsive form" --stack html-tailwind
-```
-
-**然后：** 综合设计系统 + 详细搜索并实现设计。
-
----
+然后综合设计系统与详细搜索的结果并进行实现。
 
 ## 输出格式
 
-`--design-system` 标志支持两种输出格式：
-
-```bash
-# ASCII 框（默认）- 最适合终端显示
-python3 skills/ui-ux-pro-max/scripts/search.py "fintech crypto" --design-system
-
-# Markdown - 最适合文档
-python3 skills/ui-ux-pro-max/scripts/search.py "fintech crypto" --design-system -f markdown
-```
-
----
+`--design-system` 支持 `-f ascii`（默认，终端显示）、`-f markdown`（文档用）和 `--json`（机器可读，包含原始设计系统字典以及持久化状态）。
 
 ## 获得更好结果的技巧
 
-1. **关键词要具体** - "healthcare SaaS dashboard" > "app"
-2. **多次搜索** - 不同的关键词会揭示不同的见解
-3. **组合域** - 样式 + 排版 + 颜色 = 完整的设计系统
-4. **始终检查 UX** - 搜索 "animation"、"z-index"、"accessibility" 以发现常见问题
-5. **使用技术栈标志** - 获取实现特定的最佳实践
-6. **迭代** - 如果第一次搜索不匹配，尝试不同的关键词
+- 使用**多维度关键词**——组合产品类型+行业+调性+密度：`"entertainment social vibrant content-dense"`，而不是只写`"app"`
+- 为同一需求尝试不同的表述方式：`"playful neon"` → `"vibrant dark"` → `"content-first minimal"`
+- 先用 `--design-system` 获取全面推荐，再用 `--domain` 深入研究你不确定的具体维度
+- 显式传入检测到的技术栈以获取具体实现层面的指导
 
----
+| 问题 | 应对方法 |
+|---------|------------|
+| 无法确定风格/色彩 | 用不同关键词重新运行 `--design-system` |
+| 深色模式对比度问题 | `references/quick-reference.md` §6：`color-dark-mode` + `color-accessible-pairs` |
+| 动画感觉不自然 | `references/quick-reference.md` §7：`spring-physics` + `easing` + `exit-faster-than-enter` |
+| 表单UX不佳 | `references/quick-reference.md` §8：`inline-validation` + `error-clarity` + `focus-management` |
+| 导航感觉混乱 | `references/quick-reference.md` §9：`nav-hierarchy` + `bottom-nav-limit` + `back-behavior` |
+| 小屏幕上布局错乱 | `references/quick-reference.md` §5：`mobile-first` + `breakpoint-consistency` |
+| 性能/卡顿 | `references/quick-reference.md` §3：`virtualize-lists` + `main-thread-budget` + `debounce-throttle` |
 
-## 专业 UI 的通用规则
+## 交付App UI前
 
-这些是经常被忽视的问题，会使 UI 看起来不专业：
-
-### 图标与视觉元素
-
-| 规则 | 应该做 | 不应该做 |
-|------|----|-----|
-| **不使用表情符号图标** | 使用 SVG 图标（Heroicons、Lucide、Simple Icons） | 使用表情符号如 🎨 🚀 ⚙️ 作为 UI 图标 |
-| **稳定的悬停状态** | 在悬停时使用颜色/不透明度过渡 | 使用会移动布局的缩放变换 |
-| **正确的品牌标志** | 从 Simple Icons 研究官方 SVG | 猜测或使用错误的标志路径 |
-| **一致的图标大小** | 使用固定的 viewBox（24x24）配合 w-6 h-6 | 随机混合不同的图标大小 |
-
-### 交互与光标
-
-| 规则 | 应该做 | 不应该做 |
-|------|----|-----|
-| **光标指针** | 为所有可点击/可悬停的卡片添加 `cursor-pointer` | 在交互元素上保留默认光标 |
-| **悬停反馈** | 提供视觉反馈（颜色、阴影、边框） | 没有指示元素是可交互的 |
-| **平滑过渡** | 使用 `transition-colors duration-200` | 瞬间状态变化或太慢（>500ms） |
-
-### 浅色/深色模式对比度
-
-| 规则 | 应该做 | 不应该做 |
-|------|----|-----|
-| **玻璃卡片浅色模式** | 使用 `bg-white/80` 或更高不透明度 | 使用 `bg-white/10`（太透明） |
-| **浅色模式文本对比度** | 使用 `#0F172A`（slate-900）作为文本 | 使用 `#94A3B8`（slate-400）作为正文文本 |
-| **浅色模式静音文本** | 最小使用 `#475569`（slate-600） | 使用 gray-400 或更浅的颜色 |
-| **边框可见性** | 在浅色模式使用 `border-gray-200` | 使用 `border-white/10`（不可见） |
-
-### 布局与间距
-
-| 规则 | 应该做 | 不应该做 |
-|------|----|-----|
-| **浮动导航栏** | 添加 `top-4 left-4 right-4` 间距 | 将导航栏固定到 `top-0 left-0 right-0` |
-| **内容内边距** | 考虑固定导航栏高度 | 让内容隐藏在固定元素后面 |
-| **一致的最大宽度** | 使用相同的 `max-w-6xl` 或 `max-w-7xl` | 混合不同的容器宽度 |
-
----
-
-## 交付前检查清单
-
-在交付 UI 代码之前，验证这些项目：
-
-### 视觉质量
-- [ ] 没有使用表情符号作为图标（使用 SVG 代替）
-- [ ] 所有图标来自一致的图标集（Heroicons/Lucide）
-- [ ] 品牌标志正确（从 Simple Icons 验证）
-- [ ] 悬停状态不会导致布局偏移
-- [ ] 直接使用主题颜色（bg-primary），不用 var() 包装器
-
-### 交互
-- [ ] 所有可点击元素都有 `cursor-pointer`
-- [ ] 悬停状态提供清晰的视觉反馈
-- [ ] 过渡平滑（150-300ms）
-- [ ] 键盘导航时焦点状态可见
-
-### 浅色/深色模式
-- [ ] 浅色模式文本具有足够的对比度（最小 4.5:1）
-- [ ] 玻璃/透明元素在浅色模式可见
-- [ ] 边框在两种模式下都可见
-- [ ] 交付前测试两种模式
-
-### 布局
-- [ ] 浮动元素与边缘有适当的间距
-- [ ] 没有内容隐藏在固定导航栏后面
-- [ ] 在 375px、768px、1024px、1440px 响应式
-- [ ] 移动端没有水平滚动
-
-### 可访问性
-- [ ] 所有图像都有 alt 文本
-- [ ] 表单输入有标签
-- [ ] 颜色不是唯一的指示器
-- [ ] 遵循 `prefers-reduced-motion`
+阅读 `references/pro-rules.md` 并执行其中的标准交付前检查清单。它涵盖图标/视觉元素规范、交互反馈、明暗模式对比度、安全区域布局，以及无障碍——适用范围限定于原生/移动端App UI（iOS/Android/React Native/Flutter）。

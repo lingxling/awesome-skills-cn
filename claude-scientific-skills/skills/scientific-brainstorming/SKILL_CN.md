@@ -2,9 +2,7 @@
 name: scientific-brainstorming
 description: 创造性研究构思和探索。用于开放式的头脑风暴会议、探索跨学科联系、挑战假设或识别研究空白。最适合早期研究规划，当您还没有具体观察时。对于从数据中形成可检验的假设，请使用hypothesis-generation。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

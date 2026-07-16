@@ -2,9 +2,9 @@
 name: anndata
 description: 单细胞分析中注释矩阵的数据结构。当处理.h5ad文件或与scverse生态系统集成时使用。这是数据格式技能——分析工作流请使用scanpy；概率模型请使用scvi-tools；群体规模查询请使用cellxgene-census。
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+allowed-tools: Read Write Edit Bash
+compatibility: Requires Python 3.11+ and uv. Examples target AnnData 0.12.16, with experimental APIs clearly marked where used.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -31,17 +31,24 @@ AnnData 是一个用于处理注释数据矩阵的 Python 包，存储实验测�
 
 ## 安装
 
-需要 Python 3.11+（anndata 0.11+ 放弃了对 3.9 的支持）。当前稳定版本：0.12.x。
+需要 Python 3.11+。当前稳定版本：0.12.16（发布于 2026-05-18）。
 
 ```bash
-uv pip install anndata
+uv pip install "anndata==0.12.16"
 
 # 惰性 I/O 和 dask 支持的操作
-uv pip install "anndata[dask,lazy]"
+uv pip install "anndata[dask,lazy]==0.12.16"
 
 # 开发/文档（贡献者）
-uv pip install "anndata[dev,test,doc]"
+uv pip install "anndata[dev,test,doc]==0.12.16"
 ```
+
+仅在有意跟踪最新兼容版本时才使用不带版本号的安装方式。
+
+当前 API 说明：
+- 非原生的 `read_*` 和 `write_*`辅助函数请使用 `anndata.io`。顶层的 `anndata.read_h5ad` 和 `anndata.read_zarr` 仍受支持。
+- 避免使用已弃用的 API：`ad.read`、`AnnData.concatenate()`、`AnnData.*_keys()` 和 `anndata.__version__`。请改用 `ad.read_h5ad`、`ad.concat`、映射的 `.keys()` 和 `importlib.metadata.version("anndata")`。
+- 将 `anndata.experimental` API 视为有用但不稳定的功能。仅在其当前限制可以接受的情况下，才将其用于大数据工作流。
 
 ## 快速开始
 
@@ -182,11 +189,17 @@ adata = ad.concat(
 # 串联变量（合并模态）
 adata = ad.concat([adata_rna, adata_protein], axis=1)
 
-# 惰性串联
+# 对已加载的后端 AnnData 对象进行惰性收集（实验性功能）
 from anndata.experimental import AnnCollection
+
+backed_adatas = [
+    ad.read_h5ad(path, backed='r')
+    for path in ['data1.h5ad', 'data2.h5ad']
+]
 collection = AnnCollection(
-    ['data1.h5ad', 'data2.h5ad'],
+    backed_adatas,
     join_obs='outer',
+    join_vars='inner',
     label='dataset'
 )
 ```

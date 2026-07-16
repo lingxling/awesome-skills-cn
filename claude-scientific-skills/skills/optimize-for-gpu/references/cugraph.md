@@ -3,7 +3,7 @@
 cuGraph is NVIDIA's GPU-accelerated graph analytics library within the RAPIDS ecosystem. It provides NetworkX-compatible APIs for graph algorithms, delivering 10-500x+ speedup over CPU-based NetworkX on medium to large graphs. It supports both a direct Python API and a **zero-code-change NetworkX backend** (nx-cugraph) that accelerates existing NetworkX code with no modifications.
 
 > **Full documentation:** https://docs.rapids.ai/api/cugraph/stable/
-> **Version (stable):** 26.02.00
+> **Version (stable):** 26.06.00
 > **Repository:** https://github.com/rapidsai/cugraph
 
 ## Table of Contents
@@ -32,10 +32,13 @@ Always use `uv add` (never `pip install` or `conda install`) in all install inst
 ```bash
 uv add --extra-index-url=https://pypi.nvidia.com cugraph-cu12    # Core cuGraph for CUDA 12.x
 uv add --extra-index-url=https://pypi.nvidia.com nx-cugraph-cu12 # NetworkX backend
+# For CUDA 13.x, use the -cu13 packages: cugraph-cu13, nx-cugraph-cu13
 ```
 
+Unlike cuDF/cuML (whose wheels are now on PyPI directly), the cugraph and nx-cugraph packages on PyPI are stub sdists — keep the `pypi.nvidia.com` extra index for these.
+
 **Platform:** Linux and WSL2 only (no native macOS or Windows).
-**Requires:** NVIDIA GPU with CUDA 12.x support, NetworkX >= 3.2 (>= 3.4 recommended for optimal nx-cugraph).
+**Requires:** Python >= 3.11, NVIDIA GPU with CUDA 12.x or 13.x support, NetworkX >= 3.2 (>= 3.5 recommended for optimal nx-cugraph).
 
 Verify:
 ```python
@@ -116,6 +119,8 @@ G_nx = nx.karate_club_graph()
 G_gpu = nxcg.from_networkx(G_nx)  # Convert once, reuse for multiple algorithms
 result = nx.pagerank(G_gpu)       # Automatically dispatched to GPU
 ```
+
+Since 26.04, GPU-backed graphs can also be constructed directly, e.g. `nx.Graph(backend="cugraph")`.
 
 ### Supported Algorithms in nx-cugraph
 
@@ -667,7 +672,7 @@ G.from_pandas_edgelist(df, source="src", destination="dst")
 8. **Spectral Clustering:** Single-GPU only.
 9. **Minimum/Maximum Spanning Tree:** Single-GPU only.
 10. **Force Atlas 2 layout:** Single-GPU only.
-11. **Compatibility doc:** The official cuGraph compatibility document with NetworkX is listed as "coming soon" in the 26.02 release.
+11. **Compatibility doc:** The official list of NetworkX APIs accelerated by nx-cugraph is maintained at https://docs.rapids.ai/api/cugraph/stable/nx_cugraph/supported-algorithms/ (~80 algorithms plus generators and utilities).
 
 ---
 

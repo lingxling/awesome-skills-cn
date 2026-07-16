@@ -2,9 +2,7 @@
 name: scientific-visualization
 description: 出版级图表的元技能。当创建需要多面板布局、显著性注释、误差条、盲人友好调色板和特定期刊格式（Nature、Science、Cell）的期刊投稿图表时使用。用出版样式协调matplotlib/seaborn/plotly。快速探索可直接使用seaborn或plotly。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

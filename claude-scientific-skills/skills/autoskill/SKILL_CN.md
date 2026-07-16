@@ -3,10 +3,8 @@ name: autoskill
 description: 通过screenpipe观察用户屏幕，检测重复的研究工作流，将其与现有的科学代理技能进行匹配，并为尚未涵盖的模式起草新技能（或组合现有技能的配方）。当用户要求分析其最近的工作并根据实际行为提出技能时使用。需要screenpipe守护进程（https://github.com/screenpipe/screenpipe）在本地端口3030上运行——该技能没有其他数据源，如果screenpipe不可达将拒绝运行。所有检测在本地运行；只有编辑过的聚类摘要会发送到LLM。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
-  requires: screenpipe
+required_environment_variables: [{"name": "SCREENPIPE_TOKEN", "prompt": "Auth token for the local screenpipe daemon.", "required_for": "full functionality"}, {"name": "ANTHROPIC_API_KEY", "prompt": "For Claude API calls during skill drafting.", "required_for": "optional features"}, {"name": "FOUNDRY_API_KEY", "prompt": "Optional Foundry access for drafting.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"requires": {"bins": ["screenpipe"]}, "primaryEnv": "SCREENPIPE_TOKEN", "envVars": [{"name": "SCREENPIPE_TOKEN", "required": true, "description": "Auth token for the local screenpipe daemon."}, {"name": "ANTHROPIC_API_KEY", "required": false, "description": "For Claude API calls during skill drafting."}, {"name": "FOUNDRY_API_KEY", "required": false, "description": "Optional Foundry access for drafting."}]}}
 ---
 
 

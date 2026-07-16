@@ -2,8 +2,7 @@
 name: docx
 description: "当用户想要创建、读取、编辑或操作Word文档（.docx文件）时使用此技能。触发条件包括：任何提及'Word doc'、'word document'、'.docx'，或请求生成带有目录、标题、页码或信头格式的专业文档。还在从.docx文件提取或重组内容、在文档中插入或替换图像、在Word文件中执行查找和替换、处理修订或注释或将内容转换为精美的Word文档时使用。如果用户要求将'report'、'memo'、'letter'、'template'或类似交付物作为Word或.docx文件，请使用此技能。不要用于PDF、电子表格、Google Docs或与文档生成无关的一般编码任务。"
 license: Proprietary. LICENSE.txt has complete terms
-metadata:
-  version: "1.0"
+metadata: {"version": "1.0"}
 ---
 
 

@@ -1,5 +1,5 @@
 ---
-name: ckm:slides
+name: slides
 description: 使用Chart.js、设计令牌、响应式布局、文案公式和上下文幻灯片策略创建战略性HTML演示文稿。
 argument-hint: "[主题] [幻灯片数量]"
 metadata:
@@ -10,8 +10,6 @@ metadata:
 # 幻灯片
 
 带有数据可视化的战略性HTML演示文稿设计。
-
-<args>$ARGUMENTS</args>
 
 ## 何时使用
 

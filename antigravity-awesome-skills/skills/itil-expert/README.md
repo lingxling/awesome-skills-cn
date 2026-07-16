@@ -36,4 +36,4 @@ Trigger the skill using phrases like:
 - Compliance & Sustainability Officers
 
 ---
-*Created as part of the Antigravity Skills Ecosystem.*
+*Created as part of the Agentic Skills Ecosystem.*

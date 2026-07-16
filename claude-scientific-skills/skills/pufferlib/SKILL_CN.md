@@ -2,9 +2,7 @@
 name: pufferlib
 description: 针对速度和规模优化的高性能强化学习框架。当您需要快速并行训练、向量化环境、多智能体系统或与游戏环境（Atari、Procgen、NetHack）集成时使用。相比标准实现可实现2-10倍加速。快速原型设计或使用详细文档的标准算法实现，请改用stable-baselines3。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

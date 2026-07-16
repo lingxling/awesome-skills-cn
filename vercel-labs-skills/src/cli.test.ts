@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { runCliOutput, stripLogo, hasLogo } from './test-utils.ts';
+import { runCli, runCliOutput, stripLogo, hasLogo } from './test-utils.ts';
 
 describe('skills CLI', () => {
   describe('--help', () => {
@@ -11,8 +11,10 @@ describe('skills CLI', () => {
       expect(output).toContain('Manage Skills:');
       expect(output).toContain('init [name]');
       expect(output).toContain('add <package>');
+      expect(output).toContain('use <package>@<skill>');
       expect(output).toContain('update');
       expect(output).toContain('Add Options:');
+      expect(output).toContain('Use Options:');
       expect(output).toContain('-g, --global');
       expect(output).toContain('-a, --agent');
       expect(output).toContain('-s, --skill');
@@ -45,9 +47,30 @@ describe('skills CLI', () => {
 
   describe('no arguments', () => {
     it('should display banner', () => {
-      const output = stripLogo(runCliOutput([]));
+      const result = runCli([], undefined, {
+        AI_AGENT: '',
+        ANTIGRAVITY_AGENT: '',
+        AUGMENT_AGENT: '',
+        CLAUDE_CODE: '',
+        CLAUDE_CODE_IS_COWORK: '',
+        CLAUDECODE: '',
+        CODEX_CI: '',
+        CODEX_SANDBOX: '',
+        CODEX_THREAD_ID: '',
+        COPILOT_ALLOW_ALL: '',
+        COPILOT_GITHUB_TOKEN: '',
+        COPILOT_MODEL: '',
+        CURSOR_AGENT: '',
+        CURSOR_EXTENSION_HOST_ROLE: '',
+        CURSOR_TRACE_ID: '',
+        GEMINI_CLI: '',
+        OPENCODE_CLIENT: '',
+        REPL_ID: '',
+      });
+      const output = stripLogo(result.stdout);
       expect(output).toContain('The open agent skills ecosystem');
       expect(output).toContain('npx skills add');
+      expect(output).toContain('npx skills use');
       expect(output).toContain('npx skills update');
       expect(output).toContain('npx skills init');
       expect(output).toContain('skills.sh');

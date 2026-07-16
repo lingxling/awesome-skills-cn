@@ -12,6 +12,7 @@
 - [agent-evolver](https://clawskills.sh/skills/lilei0311-agent-evolver) - AI 代理自我进化引擎，使代理能够从经验中学习，检测问题，提取见解。
 - [agent-reflect](https://clawskills.sh/skills/stevengonsalvez-agent-reflect) - 通过对话分析进行自我改进。
 - [ai-persona-os](https://clawskills.sh/skills/jeffjhunter-ai-persona-os) - OpenClaw 代理的完整操作系统。
+- [ai-shifu-course-creator](https://clawhub.ai/heshaofu2/ai-shifu-course-creator) - 构建交互式 AI-Shifu 课程。
 - [anxiety-relief](https://clawskills.sh/skills/jhillin8-anxiety-relief) - 使用接地练习、呼吸技巧管理焦虑。
 - [apikiss](https://clawskills.sh/skills/theill-apikiss) - 访问天气、IP 地理位置、SMS、加密货币价格、丹麦 CVR、Whois、电话查询、UUID、股票数据。
 - [beaverhabits](https://clawskills.sh/skills/daya0576-beaverhabits) - 使用 Beaver Habit Tracker API 跟踪和管理你的习惯。

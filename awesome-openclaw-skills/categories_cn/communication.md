@@ -128,6 +128,7 @@
 - [sixel-email](https://clawskills.sh/skills/sixel-et-sixel-email) - 代理的 1:1 电子邮件频道 — 代理只能向一个地址发送电子邮件，只有该地址可以向代理发送电子邮件。
 - [skill-cleaner](https://clawskills.sh/skills/jacobthejacobs-skill-cleaner) - 通过 VirusTotal 自动验证"可疑"技能，并通过 Bridge 将它们添加到安全允许列表。
 - [skillguard-audit](https://clawskills.sh/skills/jonathanliu811026-skillguard-audit) - 在安装之前审计代理技能的安全威胁。
+- [soul-generator](https://clawskills.sh/skills/adenzhou1350-soul-generator) - 使用数十种预设个性化你的代理。
 - [subreddit-scout](https://clawskills.sh/skills/xammarie-subreddit-scout) - 为产品找到高匹配度的 subreddits，总结规则，并建议价值优先的发布角度。
 - [surf-check](https://clawskills.sh/skills/kevinmcnamee-surf-check) - 冲浪预报决策引擎。
 - [telnyx-freemium-upgrade](https://clawskills.sh/skills/teamtelnyx-telnyx-freemium-upgrade) - 自动将 Telnyx 账户从免费升级到专业级别。
@@ -144,3 +145,5 @@
 - [voice-email](https://clawskills.sh/skills/sundiver1-voice-email) - 通过自然语音命令发送电子邮件 - 为无障碍设计。
 - [youam](https://clawskills.sh/skills/midlifedad-youam) - 使用通用代理消息协议与其他 AI 代理发送和接收消息。
 - [zepto](https://clawskills.sh/skills/bewithgaurav-zepto) - 在几秒钟内从 Zepto 订购杂货。
+- [lobstermail-agent-email](https://clawskills.sh/skills/samuelchenardlovesboards-lobstermail-agent-email) - 面向 AI 代理的电子邮件服务。无需 API 密钥，无需注册。
+- [sol-email](https://clawhub.ai/amrree/sol-email) - 通过 himalaya（Maildir）和 SMTP 收发邮件。真实收件箱，真实回复。

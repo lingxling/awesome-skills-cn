@@ -30,6 +30,35 @@ generate_skills_report = load_module(
 
 
 class AuditSkillsTests(unittest.TestCase):
+    def test_dangling_link_check_rejects_snapshot_escape_even_when_host_target_exists(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            snapshot = root / "snapshot"
+            skill_root = snapshot / "skills" / "example"
+            skill_root.mkdir(parents=True)
+            (root / "host-target.md").write_text("host file\n", encoding="utf-8")
+
+            broken = audit_skills.find_dangling_links(
+                (
+                    "[escape](../../../host-target.md)\n"
+                    "[angle escape](<../../../host-target.md>)\n"
+                    "[absolute](/etc/passwd)\n"
+                    "[angle absolute](</etc/passwd>)\n"
+                ),
+                skill_root,
+                snapshot,
+            )
+
+            self.assertEqual(
+                broken,
+                [
+                    "../../../host-target.md",
+                    "<../../../host-target.md>",
+                    "/etc/passwd",
+                    "</etc/passwd>",
+                ],
+            )
+
     def test_repo_has_no_missing_limitations_warnings(self):
         report = audit_skills.audit_skills(REPO_ROOT / "skills")
         missing_limitations = [

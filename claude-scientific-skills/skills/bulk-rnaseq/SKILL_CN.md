@@ -2,9 +2,7 @@
 name: bulk-rnaseq
 description: 端到端bulk RNA-seq编排器——将原始FASTQ读段通过QC和修剪（FastQC、fastp/Trim Galore）、比对和定量（STAR、Salmon、featureCounts）组装基因水平计数矩阵，然后移交到差异表达（pydeseq2）、通路/GSEA富集（pathway-enrichment）和出版图（scientific-visualization）。当用户有bulk RNA-seq读段或定量输出并想要完整、可重复的差异表达工作流时使用——例如"分析我的RNA-seq"、"FASTQ到DESeq2"、"运行nf-core/rnaseq"、"STAR/Salmon定量"、"为DESeq2构建计数矩阵"或"从读段到差异表达基因和富集通路"。在nf-core/rnaseq（Nextflow）路径和独立STAR/Salmon路径之间路由，涵盖实验设计、链特异性和QC门控。单细胞RNA-seq请改用scanpy技能。
 license: MIT
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

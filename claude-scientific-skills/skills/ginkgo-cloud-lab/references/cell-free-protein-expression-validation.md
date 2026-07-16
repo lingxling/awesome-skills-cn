@@ -2,8 +2,8 @@
 
 **URL:** https://cloud.ginkgo.bio/protocols/cell-free-protein-expression-validation
 **Status:** Ginkgo Certified
-**Price:** $39/sample (default: $936 for 8 proteins x 3 replicates = 24 samples)
-**Turnaround:** 5-10 days
+**Price:** $39/sample
+**Turnaround:** up to 10 days
 
 ## Overview
 

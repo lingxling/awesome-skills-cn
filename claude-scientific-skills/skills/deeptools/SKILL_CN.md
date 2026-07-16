@@ -2,9 +2,13 @@
 name: deeptools
 description: NGS分析工具包。BAM到bigWig转换、QC（相关性、PCA、指纹）、热图/图谱（TSS、峰），用于ChIP-seq、RNA-seq、ATAC-seq可视化。
 license: BSD license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+compatibility: 需要 Python >3.8 及与 deepTools 3.5.6 兼容的依赖项。上游项目建议使用 conda/bioconda 以获得完整的依赖解析;仓库示例使用带有固定 PyPI 安装版本的 uv,以实现可复现的命令行工作流。
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -75,8 +79,16 @@ chmod +x qc_workflow.sh
 ## 安装
 
 ```bash
-uv pip install deeptools
+uv pip install deepTools==3.5.6
 ```
+
+上游建议使用 conda/bioconda 以获得完整的依赖解析,尤其是在共享的 HPC 系统上:
+
+```bash
+conda install -c conda-forge -c bioconda deeptools
+```
+
+在 Apple Silicon 上,当原生 conda 软件包不可用时,上游文档记录了上面的 PyPI 路径或 `osx-64` conda 环境两种方案。
 
 ## 核心工作流
 
@@ -122,6 +134,8 @@ deepTools 工作流通常遵循此模式：**QC → 归一化 → 比较/可视�
 使用带有 `--filterRNAstrand` 的 bamCoverage 分离前向和反向链。
 
 **重要**：对于 RNA-seq 永远不要使用 `--extendReads`（会跨越剪接位点）。
+
+**链说明：** `--filterRNAstrand` 假定常见的 dUTP/NSR/NNSR 反向链文库构建方式。对于 read 1 与 RNA 链方向一致的文库,前向/反向输出会颠倒;当文库化学方法不同时,请使用 SAM 标志过滤。
 
 使用归一化：CPM 用于固定箱，RPKM 用于基因级分析。
 
@@ -220,8 +234,8 @@ plotProfile -m matrix.gz -o profile.png \
 **归一化方法：**
 - **RPGC**：1× 基因组覆盖度（需要 --effectiveGenomeSize）
 - **CPM**：每百万映射读取的计数
-- **RPKM**：每千碱基每百万读取（考虑区域长度）
-- **BPM**：每百万箱
+- **RPKM**：每千碱基每百万读取（按每箱长度和文库大小缩放）
+- **BPM**：每百万箱,类似于在分箱信号上进行 TPM 式缩放
 - **None**：原始计数（不推荐用于比较）
 
 完整说明：`references/normalization_methods.md`
@@ -233,6 +247,8 @@ RPGC 归一化需要有效基因组大小。常见值：
 | 生物 | 组装 | 大小 | 用法 |
 |----------|----------|------|-------|
 | 人类 | GRCh38/hg38 | 2,913,022,398 | `--effectiveGenomeSize 2913022398` |
+| 人类 | T2T/CHM13CAT_v2 | 3,117,292,070 | `--effectiveGenomeSize 3117292070` |
+| 小鼠 | GRCm39/mm39 | 2,654,621,783 | `--effectiveGenomeSize 2654621783` |
 | 小鼠 | GRCm38/mm10 | 2,652,783,500 | `--effectiveGenomeSize 2652783500` |
 | 斑马鱼 | GRCz11 | 1,368,780,147 | `--effectiveGenomeSize 1368780147` |
 | *果蝇* | dm6 | 142,573,017 | `--effectiveGenomeSize 142573017` |
@@ -246,6 +262,7 @@ RPGC 归一化需要有效基因组大小。常见值：
 
 **性能：**
 - `--numberOfProcessors, -p`：启用并行处理（始终使用可用核心）
+- `max` / `max/2`：`--numberOfProcessors` 支持的值;在使用调度器时很有用,因为较新版本的 deepTools 对 CPU 亲和性的检测更加细致
 - `--region`：处理特定区域以进行测试（例如，`chr1:1-1000000`）
 
 **读取过滤：**
@@ -285,12 +302,13 @@ RPGC 归一化需要有效基因组大小。常见值：
 ### RNA-seq 特定
 
 - **永远不要延伸读取**用于 RNA-seq（会跨越剪接位点）
-- **链特异性**：对于链特异性库使用 `--filterRNAstrand forward/reverse`
+- **链特异性**：对于常见的 dUTP 式链特异性库使用 `--filterRNAstrand forward/reverse`;在解读链标签之前,先确认文库方向
 - **归一化**：箱使用 CPM，基因使用 RPKM
 
 ### ATAC-seq 特定
 
 - **应用 Tn5 校正**：使用带有 `--ATACshift` 的 alignmentSieve
+- **仅使用正确配对的读取进行移位**：`--ATACshift` 等价于 `--shift 4 -5 5 -4`,并过滤为正确配对的片段
 - **片段过滤**：设置适当的最小/最大片段长度
 - **检查核小体模式**：片段大小图应显示梯形模式
 
@@ -341,7 +359,7 @@ python scripts/validate_files.py --bam *.bam --bed regions.bed
 - BAM 和 bigWig 处理工具（9 个工具）
 - 质量控制工具（6 个工具）
 - 可视化工具（3 个工具）
-- 其他工具（2 个工具）
+- 其他工具（3 个工具,包括 `bigwigAverage`）
 
 每个工具包括：
 - 用途和概述
@@ -480,18 +498,6 @@ chmod +x qc.sh
 - **工作流**：使用 `references/workflows.md` 进行完整分析管道
 - **归一化**：查阅 `references/normalization_methods.md` 进行方法选择
 - **基因组大小**：参考 `references/effective_genome_sizes.md`
-
-使用 grep 模式搜索参考：
-```bash
-# 查找工具文档
-grep -A 20 "^### toolname" references/tools_reference.md
-
-# 查找工作流
-grep -A 50 "^## Workflow Name" references/workflows.md
-
-# 查找归一化方法
-grep -A 15 "^### Method Name" references/normalization_methods.md
-```
 
 ## 示例交互
 

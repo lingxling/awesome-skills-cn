@@ -28,8 +28,11 @@ CuPy is a NumPy/SciPy-compatible array library for GPU-accelerated computing. It
 Always use `uv add` (never `pip install` or `conda install`) in all install instructions, docstrings, comments, and error messages.
 
 ```bash
-uv add cupy-cuda12x    # For CUDA 12.x (most common)
+uv add cupy-cuda12x    # For CUDA 12.x
+uv add cupy-cuda13x    # For CUDA 13.x
 ```
+
+CuPy v14 (current) requires CUDA >= 12.0, Python >= 3.10, and NumPy >= 2.0 (it follows NumPy 2 type-promotion rules, NEP 50), and supports free-threaded Python. The `[ctk]` extra (e.g. `cupy-cuda13x[ctk]`) pulls the required CUDA runtime components from PyPI, so only the NVIDIA driver needs to be pre-installed.
 
 Verify:
 ```python
@@ -134,7 +137,7 @@ CuPy implements most of NumPy and large parts of SciPy. All are GPU-accelerated.
 `reshape`, `ravel`, `flatten`, `transpose`, `swapaxes`, `concatenate`, `stack`, `vstack`, `hstack`, `dstack`, `split`, `hsplit`, `vsplit`, `tile`, `repeat`, `pad`, `flip`, `fliplr`, `flipud`, `roll`, `rot90`, `broadcast_to`, `expand_dims`, `squeeze`
 
 ### Sparse Matrices (`cupyx.scipy.sparse`)
-CSR, CSC, COO formats. Matrix-vector multiply, matrix-matrix multiply, conversions between formats. Powered by cuSPARSE.
+CSR, CSC, COO formats. Matrix-vector multiply, matrix-matrix multiply, conversions between formats. Powered by cuSPARSE. CuPy v14 adds support for large sparse matrices with 64-bit dimensions and nonzero counts.
 
 ### Signal Processing (`cupyx.scipy.signal`)
 Convolution, correlation, filtering, window functions.

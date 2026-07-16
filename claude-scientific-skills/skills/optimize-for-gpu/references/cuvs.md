@@ -29,10 +29,13 @@ Always use `uv add` (never `pip install` or `conda install`) in all install inst
 
 ```bash
 uv add --extra-index-url=https://pypi.nvidia.com cuvs-cu12   # For CUDA 12.x
+uv add --extra-index-url=https://pypi.nvidia.com cuvs-cu13   # For CUDA 13.x
 ```
 
+cuVS wheels (including the companion `libcuvs` wheel) are also published directly to PyPI, so the extra index is optional — but the official cuVS docs still show it and it does no harm.
+
 **Platform:** Linux and WSL2 only (no native macOS or Windows).
-**Requires:** NVIDIA GPU with CUDA 12.x support, CuPy recommended for GPU arrays.
+**Requires:** NVIDIA GPU with CUDA 12.x or 13.x support, Python 3.11+, CuPy recommended for GPU arrays.
 
 Verify:
 ```python
@@ -95,7 +98,7 @@ index_params = cagra.IndexParams(
     metric="sqeuclidean",             # "sqeuclidean", "inner_product", "cosine"
     intermediate_graph_degree=128,     # Higher = better quality, slower build
     graph_degree=64,                   # Final graph degree (lower = less memory)
-    build_algo="ivf_pq",              # "ivf_pq", "nn_descent", or "ace"
+    build_algo="ivf_pq",              # "ivf_pq", "nn_descent", "iterative_cagra_search", or "ace"
 )
 
 index = cagra.build(index_params, dataset)
@@ -619,6 +622,24 @@ params = pq.QuantizerParams(pq_bits=8, pq_dim=16)
 quantizer = pq.build(params, dataset)
 transformed, _ = pq.transform(quantizer, dataset)        # uint8
 reconstructed = pq.inverse_transform(quantizer, transformed)
+```
+
+### PCA (Preprocessing)
+
+GPU-accelerated PCA for dimensionality reduction before indexing (added in 26.06):
+
+```python
+import cupy as cp
+from cuvs.preprocessing import pca
+
+X = cp.random.random_sample((500, 32), dtype=cp.float32)
+params = pca.Params(n_components=8, copy=True)
+result = pca.fit(params, X)
+transformed = pca.transform(params, X, result.components,
+                            result.singular_vals, result.mu)
+reconstructed = pca.inverse_transform(
+    params, transformed, result.components,
+    result.singular_vals, result.mu)
 ```
 
 ### NN-Descent (k-NN Graph Construction)

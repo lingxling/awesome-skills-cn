@@ -2,7 +2,7 @@
 
 > 本项目是 [Obsidian Skills](https://github.com/kepano/obsidian-skills) 的中文翻译版本，隶属于 [awesome-skills-cn](https://github.com/lxl666666/awesome-skills-cn) 项目。
 >
-> 原项目介绍：Obsidian Skills 是一组遵循 [Agent Skills 规范](https://agentskills.io/specification) 的技能集合，可与 Obsidian 配合使用，支持任何兼容 Agent Skills 的代理，包括 Claude Code 和 Codex CLI。
+> 原项目介绍：Obsidian Skills 是一组遵循 [Agent Skills 规范](https://agentskills.io/specification) 的技能集合，可与 Obsidian 配合使用，支持任何兼容 Agent Skills 的代理，包括 Claude Code、Codex 和 Open Code。
 >
 > 翻译说明：本翻译力求准确传达原项目内容，技能名称、命令、代码块、URL 和文件路径均保持英文原文，以确保技术准确性。
 >
@@ -13,7 +13,7 @@
 
 供 Obsidian 使用的 Agent Skills。
 
-这些技能遵循 [Agent Skills 规范](https://agentskills.io/specification)，因此可以被任何兼容技能的代理使用，包括 Claude Code 和 Codex CLI。
+这些技能遵循 [Agent Skills 规范](https://agentskills.io/specification)，因此可以被任何兼容技能的代理使用，包括 Claude Code、Codex 和 Open Code。
 
 ## 安装
 
@@ -42,7 +42,7 @@ npx skills add https://github.com/kepano/obsidian-skills
 
 将此仓库的内容添加到你的 Obsidian 仓库根目录下的 `/.claude` 文件夹中（或你正在与 Claude Code 配合使用的任何文件夹）。更多信息请参阅 [Claude Skills 官方文档](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)。
 
-#### Codex CLI
+#### Codex
 
 将 `skills/` 目录复制到你的 Codex skills 路径中（通常是 `~/.codex/skills`）。标准技能格式请参阅 [Agent Skills 规范](https://agentskills.io/specification)。
 

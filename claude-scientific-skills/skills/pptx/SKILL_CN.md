@@ -2,8 +2,7 @@
 name: pptx
 description: "只要涉及.pptx文件就使用此技能——无论是作为输入、输出还是两者兼有。包括：创建幻灯片、推介演示文稿或演示文稿；读取、解析或从任何.pptx文件中提取文本（即使提取的内容将在其他地方使用，如电子邮件或摘要）；编辑、修改或更新现有演示文稿；合并或拆分幻灯片文件；使用模板、布局、演讲者笔记或评论工作。只要用户提到\"deck\"、\"slides\"、\"presentation\"或引用.pptx文件名时就触发，无论他们之后计划对内容做什么。如果需要打开、创建或处理.pptx文件，请使用此技能。"
 license: Proprietary. LICENSE.txt has complete terms
-metadata:
-  version: "1.0"
+metadata: {"version": "1.0"}
 ---
 
 

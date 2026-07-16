@@ -7,18 +7,29 @@ to generate comprehensive design system recommendations.
 Usage:
     from design_system import generate_design_system
     result = generate_design_system("SaaS dashboard", "My Project")
-    
+    print(result["text"])
+
     # With persistence (Master + Overrides pattern)
-    result = generate_design_system("SaaS dashboard", "My Project", persist=True)
-    result = generate_design_system("SaaS dashboard", "My Project", persist=True, page="dashboard")
+    result = generate_design_system("SaaS dashboard", "My Project", persist=True, output_dir="/path/to/project")
+    result["persistence"]  # {"status": "success"|"skipped_exists", "created_files": [...], ...}
+    result = generate_design_system("SaaS dashboard", "My Project", persist=True, page="dashboard", output_dir="/path/to/project")
 """
 
 import csv
 import json
 import os
+import re
+import sys
+import io
 from datetime import datetime
 from pathlib import Path
 from core import search, DATA_DIR
+
+# Force UTF-8 for stdout/stderr to handle emojis/box-drawing chars on Windows (cp1252 default)
+if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+if sys.stderr.encoding and sys.stderr.encoding.lower() != 'utf-8':
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 
 # ============ CONFIGURATION ============
@@ -31,6 +42,39 @@ SEARCH_CONFIG = {
     "landing": {"max_results": 2},
     "typography": {"max_results": 2}
 }
+
+# ============ DESIGN DIALS (1-10) ============
+# Inspired by taste-skill's DESIGN_VARIANCE / MOTION_INTENSITY / VISUAL_DENSITY
+# knobs: three optional 1-10 sliders that bias the existing query-based search
+# instead of replacing it. Each dial buckets into a low/mid/high tier.
+DIAL_TIERS = {
+    "variance": [
+        (1, 3, {"label": "Centered / Minimal", "style_keywords": ["Minimalism", "Exaggerated Minimalism", "centered", "symmetric", "grid-based"]}),
+        (4, 7, {"label": "Balanced / Modern", "style_keywords": ["modern", "structured", "balanced"]}),
+        (8, 10, {"label": "Bold / Asymmetric", "style_keywords": ["Brutalism", "Bento Grids", "asymmetric", "experimental"]}),
+    ],
+    "motion": [
+        (1, 3, {"label": "Subtle", "tier": "Subtle"}),
+        (4, 7, {"label": "Standard", "tier": "Standard"}),
+        (8, 10, {"label": "Complex", "tier": "Complex"}),
+    ],
+    "density": [
+        (1, 3, {"label": "Spacious", "spacing": {"xs": "4px", "sm": "8px", "md": "24px", "lg": "32px", "xl": "48px", "2xl": "64px", "3xl": "96px"}}),
+        (4, 7, {"label": "Standard", "spacing": {"xs": "4px", "sm": "8px", "md": "16px", "lg": "24px", "xl": "32px", "2xl": "48px", "3xl": "64px"}}),
+        (8, 10, {"label": "Dense / Dashboard", "spacing": {"xs": "2px", "sm": "4px", "md": "8px", "lg": "12px", "xl": "16px", "2xl": "24px", "3xl": "32px"}}),
+    ],
+}
+
+
+def _resolve_dial(dial_name: str, value) -> dict:
+    """Bucket a 1-10 dial value into its tier config. Returns None if value is None."""
+    if value is None:
+        return None
+    value = max(1, min(10, int(value)))
+    for lo, hi, info in DIAL_TIERS[dial_name]:
+        if lo <= value <= hi:
+            return {**info, "value": value}
+    return None
 
 
 # ============ DESIGN SYSTEM GENERATOR ============
@@ -160,8 +204,18 @@ class DesignSystemGenerator:
         """Extract results list from search result dict."""
         return search_result.get("results", [])
 
-    def generate(self, query: str, project_name: str = None) -> dict:
-        """Generate complete design system recommendation."""
+    def generate(self, query: str, project_name: str = None,
+                 variance: int = None, motion: int = None, density: int = None) -> dict:
+        """Generate complete design system recommendation.
+
+        variance/motion/density are optional 1-10 dials (see DIAL_TIERS) that bias
+        style selection, pull in a matching motion.csv snippet, and override the
+        spacing scale, without changing behavior when left unset.
+        """
+        variance_info = _resolve_dial("variance", variance)
+        motion_info = _resolve_dial("motion", motion)
+        density_info = _resolve_dial("density", density)
+
         # Step 1: First search product to get category
         product_result = search(query, "product", 1)
         product_results = product_result.get("results", [])
@@ -173,8 +227,14 @@ class DesignSystemGenerator:
         reasoning = self._apply_reasoning(category, {})
         style_priority = reasoning.get("style_priority", [])
 
+        # DESIGN_VARIANCE dial: bias style retrieval/selection toward
+        # centered-minimal (low) or bold-asymmetric (high) keywords.
+        effective_style_priority = style_priority
+        if variance_info:
+            effective_style_priority = variance_info["style_keywords"] + style_priority
+
         # Step 3: Multi-domain search with style priority hints
-        search_results = self._multi_domain_search(query, style_priority)
+        search_results = self._multi_domain_search(query, effective_style_priority)
         search_results["product"] = product_result  # Reuse product search
 
         # Step 4: Select best matches from each domain using priority
@@ -183,10 +243,23 @@ class DesignSystemGenerator:
         typography_results = self._extract_results(search_results.get("typography", {}))
         landing_results = self._extract_results(search_results.get("landing", {}))
 
-        best_style = self._select_best_match(style_results, reasoning.get("style_priority", []))
+        best_style = self._select_best_match(style_results, effective_style_priority)
         best_color = color_results[0] if color_results else {}
         best_typography = typography_results[0] if typography_results else {}
         best_landing = landing_results[0] if landing_results else {}
+
+        # MOTION_INTENSITY dial: pull a matching GSAP skeleton from motion.csv
+        # (domain key is "gsap", not "motion" - PR #296 already owns the "motion"
+        # domain for Emil Kowalski's motion-design principles, motion-principles.csv).
+        motion_snippet = {}
+        if motion_info:
+            motion_result = search(f"{query} {motion_info['tier']}", "gsap", 5)
+            motion_matches = motion_result.get("results", [])
+            tiered = [m for m in motion_matches if m.get("Intensity Tier") == motion_info["tier"]]
+            if tiered:
+                motion_snippet = tiered[0]
+            elif motion_matches:
+                motion_snippet = motion_matches[0]
 
         # Step 5: Build final recommendation
         # Combine effects from both reasoning and style search
@@ -242,7 +315,17 @@ class DesignSystemGenerator:
             "key_effects": combined_effects,
             "anti_patterns": reasoning.get("anti_patterns", ""),
             "decision_rules": reasoning.get("decision_rules", {}),
-            "severity": reasoning.get("severity", "MEDIUM")
+            "severity": reasoning.get("severity", "MEDIUM"),
+            "dials": {
+                "variance": variance_info["value"] if variance_info else None,
+                "variance_label": variance_info["label"] if variance_info else None,
+                "motion": motion_info["value"] if motion_info else None,
+                "motion_label": motion_info["label"] if motion_info else None,
+                "density": density_info["value"] if density_info else None,
+                "density_label": density_info["label"] if density_info else None,
+            },
+            "motion_snippet": motion_snippet,
+            "spacing_scale": density_info["spacing"] if density_info else None,
         }
 
 
@@ -288,6 +371,8 @@ def format_ascii_box(design_system: dict) -> str:
     typography = design_system.get("typography", {})
     effects = design_system.get("key_effects", "")
     anti_patterns = design_system.get("anti_patterns", "")
+    dials = design_system.get("dials", {})
+    motion_snippet = design_system.get("motion_snippet", {})
 
     def wrap_text(text: str, prefix: str, width: int) -> list:
         """Wrap long text into multiple lines."""
@@ -320,6 +405,16 @@ def format_ascii_box(design_system: dict) -> str:
     lines.append(ansi_ljust(f"║  TARGET: {project} - RECOMMENDED DESIGN SYSTEM", BOX_WIDTH) + "║")
     lines.append("╚" + "═" * w + "╝")
     lines.append("┌" + "─" * w + "┐")
+
+    # Design Dials section (only if at least one dial was set)
+    if any(dials.get(k) is not None for k in ("variance", "motion", "density")):
+        lines.append(section_header("DESIGN DIALS", BOX_WIDTH + 1))
+        if dials.get("variance") is not None:
+            lines.append(f"│  Variance: {dials['variance']}/10 — {dials['variance_label']}".ljust(BOX_WIDTH) + "│")
+        if dials.get("motion") is not None:
+            lines.append(f"│  Motion:   {dials['motion']}/10 — {dials['motion_label']}".ljust(BOX_WIDTH) + "│")
+        if dials.get("density") is not None:
+            lines.append(f"│  Density:  {dials['density']}/10 — {dials['density_label']}".ljust(BOX_WIDTH) + "│")
 
     # Pattern section
     lines.append(section_header("PATTERN", BOX_WIDTH + 1))
@@ -394,6 +489,17 @@ def format_ascii_box(design_system: dict) -> str:
         for line in wrap_text(effects, "│     ", BOX_WIDTH):
             lines.append(line.ljust(BOX_WIDTH) + "│")
 
+    # Motion section (GSAP skeleton, only if --motion dial was set)
+    if motion_snippet:
+        lines.append(section_header("MOTION", BOX_WIDTH + 1))
+        lines.append(f"│  {motion_snippet.get('Category', '')} ({motion_snippet.get('Intensity Tier', '')})".ljust(BOX_WIDTH) + "│")
+        lines.append(f"│     Trigger: {motion_snippet.get('Trigger', '')} | Duration: {motion_snippet.get('Duration', '')} | Easing: {motion_snippet.get('Easing', '')}".ljust(BOX_WIDTH) + "│")
+        for line in wrap_text(f"GSAP: {motion_snippet.get('GSAP Snippet', '')}", "│     ", BOX_WIDTH):
+            lines.append(line.ljust(BOX_WIDTH) + "│")
+        if motion_snippet.get("Framework Notes"):
+            for line in wrap_text(f"Framework: {motion_snippet.get('Framework Notes', '')}", "│     ", BOX_WIDTH):
+                lines.append(line.ljust(BOX_WIDTH) + "│")
+
     # Anti-patterns section
     if anti_patterns:
         lines.append(section_header("AVOID", BOX_WIDTH + 1))
@@ -428,10 +534,23 @@ def format_markdown(design_system: dict) -> str:
     typography = design_system.get("typography", {})
     effects = design_system.get("key_effects", "")
     anti_patterns = design_system.get("anti_patterns", "")
+    dials = design_system.get("dials", {})
+    motion_snippet = design_system.get("motion_snippet", {})
 
     lines = []
     lines.append(f"## Design System: {project}")
     lines.append("")
+
+    # Design Dials section (only if at least one dial was set)
+    if any(dials.get(k) is not None for k in ("variance", "motion", "density")):
+        lines.append("### Design Dials")
+        if dials.get("variance") is not None:
+            lines.append(f"- **Variance:** {dials['variance']}/10 — {dials['variance_label']}")
+        if dials.get("motion") is not None:
+            lines.append(f"- **Motion:** {dials['motion']}/10 — {dials['motion_label']}")
+        if dials.get("density") is not None:
+            lines.append(f"- **Density:** {dials['density']}/10 — {dials['density_label']}")
+        lines.append("")
 
     # Pattern section
     lines.append("### Pattern")
@@ -507,6 +626,23 @@ def format_markdown(design_system: dict) -> str:
         lines.append(f"{effects}")
         lines.append("")
 
+    # Motion section (GSAP skeleton, only if --motion dial was set)
+    if motion_snippet:
+        lines.append("### Motion")
+        lines.append(f"**{motion_snippet.get('Category', '')}** ({motion_snippet.get('Intensity Tier', '')}) — Trigger: {motion_snippet.get('Trigger', '')} | Duration: {motion_snippet.get('Duration', '')} | Easing: `{motion_snippet.get('Easing', '')}`")
+        lines.append("```js")
+        lines.append(motion_snippet.get("GSAP Snippet", ""))
+        lines.append("```")
+        if motion_snippet.get("Framework Notes"):
+            lines.append(f"*Framework notes: {motion_snippet.get('Framework Notes', '')}*")
+        motion_do = motion_snippet.get("Do", "")
+        motion_dont = motion_snippet.get("Don't", "")
+        if motion_do:
+            lines.append(f"- ✅ {motion_do}")
+        if motion_dont:
+            lines.append(f"- ❌ {motion_dont}")
+        lines.append("")
+
     # Anti-patterns section
     if anti_patterns:
         lines.append("### Avoid (Anti-patterns)")
@@ -529,8 +665,10 @@ def format_markdown(design_system: dict) -> str:
 
 
 # ============ MAIN ENTRY POINT ============
-def generate_design_system(query: str, project_name: str = None, output_format: str = "ascii", 
-                           persist: bool = False, page: str = None, output_dir: str = None) -> str:
+def generate_design_system(query: str, project_name: str = None, output_format: str = "ascii",
+                           persist: bool = False, page: str = None, output_dir: str = None,
+                           variance: int = None, motion: int = None, density: int = None,
+                           force: bool = False) -> dict:
     """
     Main entry point for design system generation.
 
@@ -541,70 +679,112 @@ def generate_design_system(query: str, project_name: str = None, output_format: 
         persist: If True, save design system to design-system/ folder
         page: Optional page name for page-specific override file
         output_dir: Optional output directory (defaults to current working directory)
+        variance: Optional 1-10 DESIGN_VARIANCE dial (1=centered/minimal, 10=bold/asymmetric)
+        motion: Optional 1-10 MOTION_INTENSITY dial, pulls a matching GSAP snippet from motion.csv
+        density: Optional 1-10 VISUAL_DENSITY dial, overrides the spacing scale (1=spacious, 10=dense)
+        force: If True, overwrite an existing MASTER.md; otherwise persistence
+               is skipped (with a status message) when one already exists
 
     Returns:
-        Formatted design system string
+        dict with keys: "text" (formatted design system string), "design_system"
+        (raw dict, useful for --json callers), and "persistence" (result of
+        persist_design_system(), or None if persist=False)
     """
     generator = DesignSystemGenerator()
-    design_system = generator.generate(query, project_name)
-    
-    # Persist to files if requested
-    if persist:
-        persist_design_system(design_system, page, output_dir, query)
+    design_system = generator.generate(query, project_name, variance=variance, motion=motion, density=density)
 
-    if output_format == "markdown":
-        return format_markdown(design_system)
-    return format_ascii_box(design_system)
+    persistence_result = None
+    if persist:
+        persistence_result = persist_design_system(design_system, page, output_dir, query, force=force)
+
+    text = format_markdown(design_system) if output_format == "markdown" else format_ascii_box(design_system)
+
+    return {
+        "text": text,
+        "design_system": design_system,
+        "persistence": persistence_result,
+    }
 
 
 # ============ PERSISTENCE FUNCTIONS ============
-def persist_design_system(design_system: dict, page: str = None, output_dir: str = None, page_query: str = None) -> dict:
+def safe_slug(name, fallback: str = "default") -> str:
+    """Slugify a name into a single safe path segment.
+
+    Only [a-z0-9_-] survives; every other character (including '/', '\\' and
+    '.') collapses into '-'. This makes path traversal via project/page names
+    (e.g. "../../etc") impossible — the slug can never leave its parent dir.
+    """
+    slug = re.sub(r'[^a-z0-9_-]+', '-', str(name).lower()).strip('-')
+    return slug or fallback
+
+
+def persist_design_system(design_system: dict, page: str = None, output_dir: str = None,
+                           page_query: str = None, force: bool = False) -> dict:
     """
     Persist design system to design-system/<project>/ folder using Master + Overrides pattern.
-    
+
     Args:
         design_system: The generated design system dictionary
         page: Optional page name for page-specific override file
         output_dir: Optional output directory (defaults to current working directory)
         page_query: Optional query string for intelligent page override generation
-    
+        force: If True, overwrite an existing MASTER.md. If False (default) and
+               MASTER.md already exists, persistence is skipped so prior design
+               decisions aren't silently discarded.
+
     Returns:
-        dict with created file paths and status
+        dict with created file paths and status. status is "skipped_exists" if
+        MASTER.md already existed and force was not set.
     """
     base_dir = Path(output_dir) if output_dir else Path.cwd()
-    
-    # Use project name for project-specific folder
-    project_name = design_system.get("project_name", "default")
-    project_slug = project_name.lower().replace(' ', '-')
-    
+
+    # Use project name for project-specific folder. Coalesce falsy values
+    # (missing key, explicit None, or "") so the .lower() below can't crash.
+    project_name = design_system.get("project_name") or "default"
+    project_slug = safe_slug(project_name)
+
     design_system_dir = base_dir / "design-system" / project_slug
     pages_dir = design_system_dir / "pages"
-    
+
+    master_file = design_system_dir / "MASTER.md"
+
+    if master_file.exists() and not force:
+        return {
+            "status": "skipped_exists",
+            "design_system_dir": str(design_system_dir),
+            "master_file": str(master_file),
+            "created_files": [],
+            "message": (
+                f"{master_file} already exists and was not modified. "
+                "Read it first to check for prior design decisions, then "
+                "re-run with force=True / --force to overwrite."
+            ),
+        }
+
     created_files = []
-    
+
     # Create directories
     design_system_dir.mkdir(parents=True, exist_ok=True)
     pages_dir.mkdir(parents=True, exist_ok=True)
-    
-    master_file = design_system_dir / "MASTER.md"
-    
+
     # Generate and write MASTER.md
     master_content = format_master_md(design_system)
     with open(master_file, 'w', encoding='utf-8') as f:
         f.write(master_content)
     created_files.append(str(master_file))
-    
+
     # If page is specified, create page override file with intelligent content
     if page:
-        page_file = pages_dir / f"{page.lower().replace(' ', '-')}.md"
+        page_file = pages_dir / f"{safe_slug(page, 'page')}.md"
         page_content = format_page_override_md(design_system, page, page_query)
         with open(page_file, 'w', encoding='utf-8') as f:
             f.write(page_content)
         created_files.append(str(page_file))
-    
+
     return {
         "status": "success",
         "design_system_dir": str(design_system_dir),
+        "master_file": str(master_file),
         "created_files": created_files
     }
 
@@ -618,11 +798,14 @@ def format_master_md(design_system: dict) -> str:
     typography = design_system.get("typography", {})
     effects = design_system.get("key_effects", "")
     anti_patterns = design_system.get("anti_patterns", "")
-    
+    dials = design_system.get("dials", {})
+    motion_snippet = design_system.get("motion_snippet", {})
+    spacing_scale = design_system.get("spacing_scale")
+
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
+
     lines = []
-    
+
     # Logic header
     lines.append("# Design System Master File")
     lines.append("")
@@ -635,6 +818,15 @@ def format_master_md(design_system: dict) -> str:
     lines.append(f"**Project:** {project}")
     lines.append(f"**Generated:** {timestamp}")
     lines.append(f"**Category:** {design_system.get('category', 'General')}")
+    if any(dials.get(k) is not None for k in ("variance", "motion", "density")):
+        dial_parts = []
+        if dials.get("variance") is not None:
+            dial_parts.append(f"Variance {dials['variance']}/10 ({dials['variance_label']})")
+        if dials.get("motion") is not None:
+            dial_parts.append(f"Motion {dials['motion']}/10 ({dials['motion_label']})")
+        if dials.get("density") is not None:
+            dial_parts.append(f"Density {dials['density']}/10 ({dials['density_label']})")
+        lines.append(f"**Design Dials:** {' | '.join(dial_parts)}")
     lines.append("")
     lines.append("---")
     lines.append("")
@@ -686,18 +878,24 @@ def format_master_md(design_system: dict) -> str:
         lines.append("```")
         lines.append("")
     
-    # Spacing Variables
+    # Spacing Variables (overridden by the VISUAL_DENSITY dial when set)
+    default_spacing = DIAL_TIERS["density"][1][2]["spacing"]  # mid-tier = the historical defaults
+    scale = spacing_scale or default_spacing
+    spacing_usage = {
+        "xs": "Tight gaps", "sm": "Icon gaps, inline spacing", "md": "Standard padding",
+        "lg": "Section padding", "xl": "Large gaps", "2xl": "Section margins", "3xl": "Hero padding",
+    }
     lines.append("### Spacing Variables")
     lines.append("")
+    if spacing_scale:
+        lines.append(f"*Density: {dials.get('density')}/10 — {dials.get('density_label')}*")
+        lines.append("")
     lines.append("| Token | Value | Usage |")
     lines.append("|-------|-------|-------|")
-    lines.append("| `--space-xs` | `4px` / `0.25rem` | Tight gaps |")
-    lines.append("| `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |")
-    lines.append("| `--space-md` | `16px` / `1rem` | Standard padding |")
-    lines.append("| `--space-lg` | `24px` / `1.5rem` | Section padding |")
-    lines.append("| `--space-xl` | `32px` / `2rem` | Large gaps |")
-    lines.append("| `--space-2xl` | `48px` / `3rem` | Section margins |")
-    lines.append("| `--space-3xl` | `64px` / `4rem` | Hero padding |")
+    for token in ("xs", "sm", "md", "lg", "xl", "2xl", "3xl"):
+        px_value = scale[token]
+        rem_value = f"{int(px_value.rstrip('px')) / 16:g}rem"
+        lines.append(f"| `--space-{token}` | `{px_value}` / `{rem_value}` | {spacing_usage[token]} |")
     lines.append("")
     
     # Shadow Depths
@@ -839,7 +1037,32 @@ def format_master_md(design_system: dict) -> str:
         lines.append(f"- **CTA Placement:** {pattern.get('cta_placement', '')}")
     lines.append(f"- **Section Order:** {pattern.get('sections', '')}")
     lines.append("")
-    
+
+    # Motion section (GSAP skeleton, only if --motion dial was set)
+    if motion_snippet:
+        lines.append("---")
+        lines.append("")
+        lines.append("## Motion")
+        lines.append("")
+        lines.append(f"**{motion_snippet.get('Category', '')}** ({motion_snippet.get('Intensity Tier', '')}) — Trigger: {motion_snippet.get('Trigger', '')} | Duration: {motion_snippet.get('Duration', '')} | Easing: `{motion_snippet.get('Easing', '')}`")
+        lines.append("")
+        lines.append("```js")
+        lines.append(motion_snippet.get("GSAP Snippet", ""))
+        lines.append("```")
+        lines.append("")
+        if motion_snippet.get("Framework Notes"):
+            lines.append(f"**Framework notes:** {motion_snippet.get('Framework Notes', '')}")
+            lines.append("")
+        motion_do = motion_snippet.get("Do", "")
+        motion_dont = motion_snippet.get("Don't", "")
+        if motion_do:
+            lines.append(f"- ✅ {motion_do}")
+        if motion_dont:
+            lines.append(f"- ❌ {motion_dont}")
+        if motion_snippet.get("Performance Notes"):
+            lines.append(f"- ⚡ {motion_snippet.get('Performance Notes', '')}")
+        lines.append("")
+
     # Anti-Patterns section
     lines.append("---")
     lines.append("")
@@ -1145,4 +1368,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     result = generate_design_system(args.query, args.project_name, args.format)
-    print(result)
+    print(result["text"])

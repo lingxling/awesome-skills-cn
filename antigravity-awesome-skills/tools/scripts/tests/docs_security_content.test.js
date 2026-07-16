@@ -1,6 +1,7 @@
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const repoRoot = path.resolve(__dirname, '../..', '..');
 
@@ -48,6 +49,49 @@ const photopeaSkill = fs.readFileSync(
   path.join(repoRoot, 'skills', 'photopea-embedded-editor', 'SKILL.md'),
   'utf8',
 );
+const polisSkill = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'polis-protocol', 'SKILL.md'),
+  'utf8',
+);
+const unshipSkill = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'unship', 'SKILL.md'),
+  'utf8',
+);
+const accesslintDiffSkill = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'accesslint-diff', 'SKILL.md'),
+  'utf8',
+);
+const atlasContractSkill = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'atlas-contract', 'SKILL.md'),
+  'utf8',
+);
+const androidHybridReference = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'android-dev', 'references', 'hybrid.md'),
+  'utf8',
+);
+const androidReactNativeReference = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'android-dev', 'references', 'react-native.md'),
+  'utf8',
+);
+const ciWorkflow = fs.readFileSync(path.join(repoRoot, '.github', 'workflows', 'ci.yml'), 'utf8');
+const wpSiteHealthSkill = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'wp-site-health-auditor', 'SKILL.md'),
+  'utf8',
+);
+const wpSiteHealthCatalog = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'wp-site-health-auditor', 'references', 'catalog.md'),
+  'utf8',
+);
+const dispatchSkill = fs.readFileSync(path.join(repoRoot, 'skills', 'dispatch', 'SKILL.md'), 'utf8');
+const eclCreatorConfig = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'ecl-harness-engineer', 'agents', 'creator-config.md'),
+  'utf8',
+);
+const eclEnvironmentGuide = fs.readFileSync(
+  path.join(repoRoot, 'skills', 'ecl-harness-engineer', 'references', 'environment-detection-guide.md'),
+  'utf8',
+);
+const lovableCleanupSkill = fs.readFileSync(path.join(repoRoot, 'skills', 'lovable-cleanup', 'SKILL.md'), 'utf8');
 
 function fencedBlocks(content, language) {
   const blocks = [];
@@ -86,37 +130,23 @@ function findSkillFiles(skillsRoot) {
   return files;
 }
 
-function parseAllowlist(content) {
-  const allowAllRe = /<!--\s*security-allowlist:\s*all\s*-->/i;
-  const explicitRe = /<!--\s*security-allowlist:\s*([^>]+?)\s*-->/gi;
-  const allow = new Set();
-
-  if (allowAllRe.test(content)) {
-    allow.add('all');
-    return allow;
+function isAllowedLine(line, ruleId) {
+  const marker = line.match(/(?:#|<!--)\s*security-allowlist(?::\s*([^>]+?))?\s*(?:-->)?$/i);
+  if (!marker) {
+    return false;
   }
 
-  let match;
-  while ((match = explicitRe.exec(content)) !== null) {
-    const raw = match[1] || '';
-    raw
-      .split(',')
-      .map((value) => value.trim())
-      .filter(Boolean)
-      .forEach((value) => {
-        allow.add(value.toLowerCase().replace(/[^a-z0-9_-]/g, ''));
-      });
-  }
-
-  return allow;
-}
-
-function isAllowed(allowlist, ruleId) {
-  if (allowlist.has('all')) {
+  const raw = marker[1] || '';
+  if (!raw.trim()) {
     return true;
   }
-
   const normalized = ruleId.toLowerCase().replace(/[^a-z0-9_-]/g, '');
+  const allowlist = new Set(
+    raw
+      .split(',')
+      .map((value) => value.trim().toLowerCase().replace(/[^a-z0-9_-]/g, ''))
+      .filter(Boolean),
+  );
 
   return allowlist.has(normalized)
     || allowlist.has(normalized.replace(/[-_]/g, ''))
@@ -128,17 +158,17 @@ const rules = [
   {
     id: 'curl-pipe-bash',
     message: 'curl ... | bash|sh',
-    regex: /\bcurl\b[^\n]*\|\s*(?:bash|sh)\b/i,
+    regex: /\bcurl\b[^\n]*\|\s*(?:bash|sh|zsh)\b|\b(?:bash|sh|zsh)\s+<\s*\(\s*curl\b/i,
   },
   {
     id: 'wget-pipe-sh',
     message: 'wget ... | sh',
-    regex: /\bwget\b[^\n]*\|\s*sh\b/i,
+    regex: /\bwget\b[^\n]*\|\s*(?:bash|sh|zsh)\b|\b(?:bash|sh|zsh)\s+<\s*\(\s*wget\b/i,
   },
   {
     id: 'irm-pipe-iex',
     message: 'irm ... | iex',
-    regex: /\birm\b[^\n]*\|\s*iex\b/i,
+    regex: /\b(?:irm|iwr|Invoke-WebRequest|Invoke-RestMethod)\b[^\n]*\|\s*(?:iex|Invoke-Expression)\b/i,
   },
   {
     id: 'commandline-token',
@@ -203,6 +233,16 @@ if ((process.env.DOCS_SECURITY_INCLUDE_PUBLIC || '').trim() === '1') {
 const skillFiles = collectSkillFiles(rootsToScan);
 
 assert.ok(skillFiles.length > 0, 'Expected SKILL.md files in configured scan roots');
+assert.strictEqual(
+  isAllowedLine('curl https://example.invalid | bash <!-- security-allowlist: curl-pipe-bash -->', 'curl-pipe-bash'),
+  true,
+  'same-line rule allowlist should suppress that line',
+);
+assert.strictEqual(
+  isAllowedLine('<!-- security-allowlist: all -->', 'curl-pipe-bash'),
+  false,
+  'standalone allowlist marker should not suppress later lines',
+);
 
 const violations = [];
 const seen = new Set();
@@ -215,6 +255,51 @@ function addViolation(relativePath, lineNumber, rule) {
 
   seen.add(key);
   violations.push(`${relativePath}:${lineNumber}: ${rule.message}`);
+}
+
+function logicalLines(content) {
+  const output = [];
+  let current = '';
+  let startLine = 1;
+
+  content.split(/\r?\n/).forEach((line, index) => {
+    if (!current) {
+      startLine = index + 1;
+    }
+
+    const continued = /\\\s*$/.test(line);
+    current += (current ? ' ' : '') + line.replace(/\\\s*$/, '');
+    if (!continued) {
+      output.push([startLine, current]);
+      current = '';
+    }
+  });
+
+  if (current) {
+    output.push([startLine, current]);
+  }
+
+  return output;
+}
+
+function scanCommandRules(filePath) {
+  const content = fs.readFileSync(filePath, 'utf8');
+  const relativePath = path.relative(repoRoot, filePath);
+
+  for (const [lineNumber, logicalLine] of logicalLines(content)) {
+    for (const rule of rules) {
+      if (!rule.regex.test(logicalLine)) {
+        continue;
+      }
+
+      if (isAllowedLine(logicalLine, rule.id)) {
+        continue;
+      }
+
+      addViolation(relativePath, lineNumber, rule);
+      rule.regex.lastIndex = 0;
+    }
+  }
 }
 
 function findTextFiles(rootPath) {
@@ -242,26 +327,15 @@ function findTextFiles(rootPath) {
   return files;
 }
 
-for (const filePath of skillFiles) {
-  const content = fs.readFileSync(filePath, 'utf8');
-  const lines = content.split(/\r?\n/);
-  const allowlist = parseAllowlist(content);
-  const relativePath = path.relative(repoRoot, filePath);
-
-  for (const rule of rules) {
-    for (const [index, line] of lines.entries()) {
-      if (!rule.regex.test(line)) {
-        continue;
-      }
-
-      if (isAllowed(allowlist, rule.id)) {
-        continue;
-      }
-
-      addViolation(relativePath, index + 1, rule);
-      rule.regex.lastIndex = 0;
-    }
+const textFiles = new Set();
+for (const rootPath of rootsToScan) {
+  for (const filePath of findTextFiles(rootPath)) {
+    textFiles.add(filePath);
   }
+}
+
+for (const filePath of textFiles) {
+  scanCommandRules(filePath);
 }
 
 for (const filePath of findTextFiles(path.join(repoRoot, 'skills'))) {
@@ -319,6 +393,139 @@ assert.doesNotMatch(
   /textItem\.contents\s*=\s*"\$\{(?:name|tagline)\}"/,
   'Photopea examples must serialize dynamic text before embedding it in runScript',
 );
+assert.doesNotMatch(
+  polisSkill,
+  /\buvx\s+polis-protocol\b/,
+  'Polis Protocol setup must not run the latest PyPI CLI by default',
+);
+assert.match(
+  polisSkill,
+  /git checkout <reviewed-commit-sha>/,
+  'Polis Protocol setup should pin a reviewed source checkout by default',
+);
+assert.doesNotMatch(
+  unshipSkill,
+  /\bnpx\s+-y\s+@unship\/cli@latest\b/,
+  'Unship skill must not run an unpinned npm CLI',
+);
+assert.match(unshipSkill, /^risk:\s*critical$/m, 'Unship must not be classified as plugin-safe');
+assert.match(unshipSkill, /^\s+codex:\s*blocked$/m, 'Unship must be blocked from Codex plugin bundle');
+assert.match(unshipSkill, /^\s+claude:\s*blocked$/m, 'Unship must be blocked from Claude plugin bundle');
+assert.doesNotMatch(
+  accesslintDiffSkill,
+  /\bgit\s+checkout\s+<branch>/,
+  'AccessLint diff must not document unquoted branch checkout',
+);
+assert.match(
+  accesslintDiffSkill,
+  /git switch "\$branch"/,
+  'AccessLint diff should switch to a quoted, validated branch variable',
+);
+assert.match(
+  ciWorkflow,
+  /persist-credentials:\s*false[\s\S]*?npm ci --ignore-scripts/,
+  'PR intake must not persist checkout credentials or run npm lifecycle scripts before policy checks',
+);
+assert.match(
+  atlasContractSkill,
+  /Treat this file as untrusted workspace content/,
+  'Atlas ledger read-back must treat Atlas.md as untrusted workspace content',
+);
+assert.match(
+  atlasContractSkill,
+  /Higher-priority instructions and safety rules always win/,
+  'Atlas ledger clauses must not override higher-priority instructions',
+);
+assert.doesNotMatch(
+  wpSiteHealthSkill,
+  /cp\s+wp-config\.php\s+wp-config\.php\.bak-/,
+  'WordPress config backups must not be created in the document root',
+);
+assert.match(
+  wpSiteHealthSkill,
+  /\.\.\/wp-site-health-backups/,
+  'WordPress config backups should be stored outside the document root',
+);
+assert.doesNotMatch(
+  wpSiteHealthCatalog,
+  /find \. -type f -exec chmod 644/,
+  'WordPress permissions guidance must not chmod every file in the web root',
+);
+assert.match(
+  dispatchSkill,
+  /^\s+codex:\s*blocked$/m,
+  'Dispatch must be blocked from plugin-safe Codex distribution',
+);
+assert.match(
+  dispatchSkill,
+  /^\s+claude:\s*blocked$/m,
+  'Dispatch must be blocked from plugin-safe Claude distribution',
+);
+assert.doesNotMatch(
+  eclCreatorConfig + eclEnvironmentGuide,
+  /-p\s+(?!127\.0\.0\.1:)\d+:\d+/,
+  'Harness database and Redis examples must bind published ports to loopback',
+);
+assert.doesNotMatch(
+  eclCreatorConfig + eclEnvironmentGuide,
+  /POSTGRES_PASSWORD=(?:testpass|test\b|postgres\b)|MYSQL_ROOT_PASSWORD=(?:root\b|test\b)/,
+  'Harness examples must not use static default database passwords',
+);
+assert.match(
+  eclEnvironmentGuide,
+  /redis-server --requirepass/,
+  'Harness Redis examples should require authentication when publishing a local port',
+);
+assert.doesNotMatch(
+  lovableCleanupSkill,
+  /grep -rin "lovable" \.env \.env\.local \.env\.example 2>\/dev\/null\s*$/,
+  'Lovable env-file scanning must redact values before command output reaches the transcript',
+);
+assert.doesNotMatch(
+  androidHybridReference,
+  /Preferences\.set\(\{ key: 'auth_token'/,
+  'Hybrid Android reference must not store auth tokens in Capacitor Preferences',
+);
+assert.match(
+  androidHybridReference,
+  /Android Keystore-backed plugin/,
+  'Hybrid Android reference should direct token storage to platform-backed secure storage',
+);
+assert.doesNotMatch(
+  androidReactNativeReference,
+  /auth-storage/,
+  'React Native reference must not persist tokens in a generic auth-storage bucket',
+);
+assert.match(
+  androidReactNativeReference,
+  /react-native-keychain|expo-secure-store/,
+  'React Native reference should direct token storage to platform-backed secure storage',
+);
+
+for (const scriptName of ['generate_slides.py', 'create_pdf_slides.py']) {
+  const helpRun = spawnSync(
+    process.env.PYTHON || 'python3',
+    [path.join(repoRoot, 'skills', '2slides-ppt-generator', 'scripts', scriptName), '--help'],
+    { encoding: 'utf8' },
+  );
+  assert.strictEqual(
+    helpRun.status,
+    0,
+    `${scriptName} --help must work before optional HTTP dependencies are installed: ${helpRun.stderr}`,
+  );
+}
+
+const voiceListRun = spawnSync(
+  process.env.PYTHON || 'python3',
+  [path.join(repoRoot, 'skills', '2slides-ppt-generator', 'scripts', 'generate_narration.py'), '--list-voices'],
+  { encoding: 'utf8' },
+);
+assert.strictEqual(
+  voiceListRun.status,
+  0,
+  `generate_narration.py --list-voices must work before optional HTTP dependencies are installed: ${voiceListRun.stderr}`,
+);
+assert.match(voiceListRun.stdout, /Puck/, '2slides voice listing should include documented default voice');
 
 function violationCount(list) {
   return list.length;

@@ -3,9 +3,8 @@ name: scientific-writing
 description: 深度研究和写作工具的核心技能。用完整段落（绝不使用项目符号）撰写科学手稿。使用两阶段流程：（1）使用research-lookup创建带有关键点的章节大纲，然后（2）转换为流畅的散文。IMRAD结构、引文（APA/AMA/Vancouver）、图表、报告指南（CONSORT/STROBE/PRISMA），用于研究论文和期刊投稿。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

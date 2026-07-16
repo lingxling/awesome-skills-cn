@@ -11,7 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
+const { execFileSync } = require('child_process');
 
 // Paths
 const BRAND_GUIDELINES = 'docs/brand-guidelines.md';
@@ -29,61 +29,47 @@ function extractColorsFromMarkdown(content) {
     accent: { name: 'accent', shades: {} }
   };
 
-  // Extract primary color name and hex from Quick Reference table
-  const quickRefMatch = content.match(/Primary Color\s*\|\s*#([A-Fa-f0-9]{6})\s*\(([^)]+)\)/);
-  if (quickRefMatch) {
-    colors.primary.name = quickRefMatch[2].toLowerCase().replace(/\s+/g, '-');
-    colors.primary.base = `#${quickRefMatch[1]}`;
+  // Match a "| Label | #hex |" markdown table row. Bold around the label
+  // (**Label**) is optional, so this handles both the bundled starter template
+  // ("| Primary Blue | #2563EB |") and bolded variants.
+  const rowRe = /\|\s*\*{0,2}([^*|]+?)\*{0,2}\s*\|\s*#([A-Fa-f0-9]{6})\b/g;
+
+  // 1) Quick Reference table — hex only, no parenthesized name required.
+  const quickRef = {
+    primary: /Primary Color\s*\|\s*#([A-Fa-f0-9]{6})/i,
+    secondary: /Secondary Color\s*\|\s*#([A-Fa-f0-9]{6})/i,
+    accent: /Accent Color\s*\|\s*#([A-Fa-f0-9]{6})/i
+  };
+  for (const key of Object.keys(quickRef)) {
+    const m = content.match(quickRef[key]);
+    if (m) colors[key].base = `#${m[1]}`;
   }
 
-  const secondaryMatch = content.match(/Secondary Color\s*\|\s*#([A-Fa-f0-9]{6})\s*\(([^)]+)\)/);
-  if (secondaryMatch) {
-    colors.secondary.name = secondaryMatch[2].toLowerCase().replace(/\s+/g, '-');
-    colors.secondary.base = `#${secondaryMatch[1]}`;
-  }
-
-  const accentMatch = content.match(/Accent Color\s*\|\s*#([A-Fa-f0-9]{6})\s*\(([^)]+)\)/);
-  if (accentMatch) {
-    colors.accent.name = accentMatch[2].toLowerCase().replace(/\s+/g, '-');
-    colors.accent.base = `#${accentMatch[1]}`;
-  }
-
-  // Extract all shades from Primary Colors table
-  const primarySection = content.match(/### Primary Colors[\s\S]*?\|[\s\S]*?(?=###|$)/i);
-  if (primarySection) {
-    const hexMatches = primarySection[0].matchAll(/\*\*([^*]+)\*\*\s*\|\s*#([A-Fa-f0-9]{6})/g);
-    for (const match of hexMatches) {
-      const name = match[1].trim().toLowerCase();
-      const hex = `#${match[2]}`;
-      if (name.includes('dark')) colors.primary.dark = hex;
-      else if (name.includes('light')) colors.primary.light = hex;
-      else colors.primary.base = hex;
+  // 2) Dedicated "### <Role> Colors" tables — assign base/dark/light by the
+  //    row label keyword.
+  const assignFromSection = (heading, target) => {
+    const section = content.match(new RegExp(`### ${heading}[\\s\\S]*?(?=\\n###|$)`, 'i'));
+    if (!section) return;
+    for (const m of section[0].matchAll(rowRe)) {
+      const label = m[1].trim().toLowerCase();
+      const hex = `#${m[2]}`;
+      if (label.includes('dark')) target.dark = hex;
+      else if (label.includes('light')) target.light = hex;
+      else if (!target.base) target.base = hex;
     }
-  }
+  };
+  assignFromSection('Primary Colors', colors.primary);
+  assignFromSection('Secondary Colors', colors.secondary);
+  assignFromSection('Accent Colors', colors.accent);
 
-  // Extract secondary shades
-  const secondarySection = content.match(/### Secondary Colors[\s\S]*?\|[\s\S]*?(?=###|$)/i);
-  if (secondarySection) {
-    const hexMatches = secondarySection[0].matchAll(/\*\*([^*]+)\*\*\s*\|\s*#([A-Fa-f0-9]{6})/g);
-    for (const match of hexMatches) {
-      const name = match[1].trim().toLowerCase();
-      const hex = `#${match[2]}`;
-      if (name.includes('dark')) colors.secondary.dark = hex;
-      else if (name.includes('light')) colors.secondary.light = hex;
-      else colors.secondary.base = hex;
-    }
-  }
-
-  // Extract accent shades
-  const accentSection = content.match(/### Accent Colors[\s\S]*?\|[\s\S]*?(?=###|$)/i);
-  if (accentSection) {
-    const hexMatches = accentSection[0].matchAll(/\*\*([^*]+)\*\*\s*\|\s*#([A-Fa-f0-9]{6})/g);
-    for (const match of hexMatches) {
-      const name = match[1].trim().toLowerCase();
-      const hex = `#${match[2]}`;
-      if (name.includes('dark')) colors.accent.dark = hex;
-      else if (name.includes('light')) colors.accent.light = hex;
-      else colors.accent.base = hex;
+  // 3) Fallback: an accent swatch may live in another table (the starter
+  //    lists "Accent Green" under Secondary Colors).
+  if (!colors.accent.base) {
+    for (const m of content.matchAll(rowRe)) {
+      if (m[1].trim().toLowerCase().includes('accent')) {
+        colors.accent.base = `#${m[2]}`;
+        break;
+      }
     }
   }
 
@@ -113,6 +99,7 @@ function generateColorScale(baseHex, darkHex, lightHex) {
  * Adjust hex color brightness
  */
 function adjustBrightness(hex, percent) {
+  if (typeof hex !== 'string') return '#000000';
   const num = parseInt(hex.replace('#', ''), 16);
   const r = Math.min(255, Math.max(0, (num >> 16) + Math.round(255 * percent)));
   const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + Math.round(255 * percent)));
@@ -129,29 +116,24 @@ function updateDesignTokens(tokens, colors) {
   tokens.brand = brandName;
 
   // Update primitive colors with new names
-  const primitiveColors = tokens.primitive?.color || {};
+  tokens.primitive = tokens.primitive || {};
+  const primitiveColors = tokens.primitive.color || {};
 
   // Remove old color keys, add new ones
   delete primitiveColors.coral;
   delete primitiveColors.purple;
   delete primitiveColors.mint;
 
-  // Add new named colors
-  primitiveColors[colors.primary.name] = generateColorScale(
-    colors.primary.base,
-    colors.primary.dark,
-    colors.primary.light
-  );
-  primitiveColors[colors.secondary.name] = generateColorScale(
-    colors.secondary.base,
-    colors.secondary.dark,
-    colors.secondary.light
-  );
-  primitiveColors[colors.accent.name] = generateColorScale(
-    colors.accent.base,
-    colors.accent.dark,
-    colors.accent.light
-  );
+  // Add new named colors. Skip any role with no base hex rather than crashing
+  // on an unexpected guidelines format.
+  for (const role of ['primary', 'secondary', 'accent']) {
+    const c = colors[role];
+    if (!c.base) {
+      console.warn(`⚠️  No base hex found for ${role} color — skipping its token scale.`);
+      continue;
+    }
+    primitiveColors[c.name] = generateColorScale(c.base, c.dark, c.light);
+  }
 
   tokens.primitive.color = primitiveColors;
 
@@ -191,7 +173,7 @@ function updateDesignTokens(tokens, colors) {
   }
 
   // Update component references (button uses primary color with opacity)
-  if (tokens.component?.button?.secondary) {
+  if (tokens.component?.button?.secondary && colors.primary.base) {
     const primaryBase = colors.primary.base;
     tokens.component.button.secondary['bg-hover'] = {
       "$value": `${primaryBase}1A`,
@@ -250,7 +232,7 @@ function main() {
   const generateScript = path.resolve(process.cwd(), GENERATE_TOKENS_SCRIPT);
   if (fs.existsSync(generateScript)) {
     try {
-      execSync(`node ${generateScript} --config ${DESIGN_TOKENS_JSON} -o ${DESIGN_TOKENS_CSS}`, {
+      execFileSync('node', [generateScript, '--config', DESIGN_TOKENS_JSON, '-o', DESIGN_TOKENS_CSS], {
         cwd: process.cwd(),
         stdio: 'inherit'
       });

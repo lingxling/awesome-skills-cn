@@ -2,9 +2,7 @@
 name: tiledbvcf
 description: 使用TileDB高效存储和检索基因组变异数据。可扩展的VCF/BCF摄取、增量样本添加、压缩存储、并行查询和群体基因组学导出功能。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: Jeremy Leipzig
+metadata: {"version": "1.0", "skill-author": "Jeremy Leipzig"}
 ---
 
 

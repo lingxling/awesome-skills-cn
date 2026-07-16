@@ -65,7 +65,13 @@ class EditorialBundlesTests(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_get_bundle_skills_reads_json_manifest_by_name_and_id(self):
-        expected = ["concise-planning", "git-pushing", "kaizen", "lint-and-validate", "systematic-debugging"]
+        expected = [
+            "concise-planning",
+            "git-pushing",
+            "lint-and-validate",
+            "systematic-debugging",
+            "test-driven-development",
+        ]
         self.assertEqual(get_bundle_skills.get_bundle_skills(["Essentials"]), expected)
         self.assertEqual(get_bundle_skills.get_bundle_skills(["essentials"]), expected)
         web_wizard_skills = get_bundle_skills.get_bundle_skills(["web-wizard"])
@@ -77,7 +83,7 @@ class EditorialBundlesTests(unittest.TestCase):
         )
 
     def test_generated_bundle_plugin_contains_expected_skills(self):
-        essentials_plugin = REPO_ROOT / "plugins" / "antigravity-bundle-essentials" / "skills"
+        essentials_plugin = REPO_ROOT / "plugins" / "agentic-bundle-essentials" / "skills"
         expected_ids = {
             skill["id"]
             for skill in next(bundle for bundle in self.manifest_bundles if bundle["id"] == "essentials")["skills"]
@@ -91,14 +97,14 @@ class EditorialBundlesTests(unittest.TestCase):
         sample_skill_dir = essentials_plugin / "concise-planning"
         self.assertTrue((sample_skill_dir / "SKILL.md").is_file())
 
-    def test_generated_plugin_count_matches_manifest(self):
-        generated_plugins = sorted(
+    def test_generated_plugins_cover_manifest_during_source_only_prs(self):
+        generated_plugins = {
             path.name
             for path in (REPO_ROOT / "plugins").iterdir()
-            if path.is_dir() and path.name.startswith("antigravity-bundle-")
-        )
-        expected_plugins = sorted(
-            f'antigravity-bundle-{bundle["id"]}'
+            if path.is_dir() and path.name.startswith("agentic-bundle-")
+        }
+        expected_plugins = {
+            f'agentic-bundle-{bundle["id"]}'
             for bundle in self.manifest_bundles
             if any(
                 all(
@@ -107,8 +113,22 @@ class EditorialBundlesTests(unittest.TestCase):
                 )
                 for target in ("codex", "claude")
             )
+        }
+        self.assertFalse(
+            expected_plugins - generated_plugins,
+            f"generated bundle plugins are missing: {sorted(expected_plugins - generated_plugins)}",
         )
-        self.assertEqual(generated_plugins, expected_plugins)
+
+    def test_plugin_sync_prunes_stale_bundle_directories(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = pathlib.Path(temp_dir)
+            stale_plugin = root / "plugins" / "agentic-bundle-retired"
+            stale_plugin.mkdir(parents=True)
+            (stale_plugin / "marker.txt").write_text("stale", encoding="utf-8")
+
+            editorial_bundles.sync_editorial_bundle_plugins(root, {}, [], {})
+
+            self.assertFalse(stale_plugin.exists())
 
     def test_codex_bundle_plugin_names_keep_qualified_skill_names_valid(self):
         max_name_length = 64
@@ -127,6 +147,10 @@ class EditorialBundlesTests(unittest.TestCase):
                 bundle,
             )
             self.assertEqual(manifest["name"], plugin_name)
+            if bundle.get("defaultPrompts"):
+                self.assertEqual(manifest["interface"]["defaultPrompt"], bundle["defaultPrompts"])
+            if bundle.get("positioning"):
+                self.assertEqual(manifest["interface"]["shortDescription"], bundle["positioning"])
             self.assertLessEqual(
                 len(plugin_name),
                 max_name_length,
@@ -166,7 +190,7 @@ class EditorialBundlesTests(unittest.TestCase):
 
     def test_sample_bundle_copy_matches_source_file_inventory(self):
         sample_bundle = next(bundle for bundle in self.manifest_bundles if bundle["id"] == "documents-presentations")
-        plugin_skills_root = REPO_ROOT / "plugins" / "antigravity-bundle-documents-presentations" / "skills"
+        plugin_skills_root = REPO_ROOT / "plugins" / "agentic-bundle-documents-presentations" / "skills"
 
         for skill in sample_bundle["skills"]:
             source_dir = REPO_ROOT / "skills" / skill["id"]
@@ -186,8 +210,8 @@ class EditorialBundlesTests(unittest.TestCase):
             self.assertEqual(copied_files, source_files, f'copied bundle skill should match source inventory for {skill["id"]}')
 
     def test_root_plugins_only_include_supported_skills_for_target(self):
-        codex_root = REPO_ROOT / "plugins" / "antigravity-awesome-skills" / "skills"
-        claude_root = REPO_ROOT / "plugins" / "antigravity-awesome-skills-claude" / "skills"
+        codex_root = REPO_ROOT / "plugins" / "agentic-awesome-skills" / "skills"
+        claude_root = REPO_ROOT / "plugins" / "agentic-awesome-skills-claude" / "skills"
 
         for skill_id, compatibility in self.compatibility_by_id.items():
             codex_path = codex_root / skill_id
@@ -203,8 +227,115 @@ class EditorialBundlesTests(unittest.TestCase):
                 f"Claude root plugin inclusion mismatch for {skill_id}",
             )
 
+    def test_skill_mirror_check_rejects_stale_and_unexpected_files(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = pathlib.Path(temp_dir)
+            canonical = root / "skills" / "sample"
+            mirror = root / "plugin" / "skills" / "sample"
+            canonical.mkdir(parents=True)
+            mirror.mkdir(parents=True)
+            (canonical / "SKILL.md").write_text("canonical\n", encoding="utf-8")
+            (mirror / "SKILL.md").write_text("stale\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "stale mirrored file: sample/SKILL.md"):
+                editorial_bundles._assert_skill_mirror_matches(
+                    root,
+                    root / "plugin" / "skills",
+                    ["sample"],
+                    "sample plugin",
+                )
+
+            (mirror / "SKILL.md").write_text("canonical\n", encoding="utf-8")
+            (mirror / "unexpected.txt").write_text("extra\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "unexpected mirrored file: sample/unexpected.txt"):
+                editorial_bundles._assert_skill_mirror_matches(
+                    root,
+                    root / "plugin" / "skills",
+                    ["sample"],
+                    "sample plugin",
+                )
+
+    def test_skill_mirror_check_rejects_symlinks(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = pathlib.Path(temp_dir)
+            canonical = root / "skills" / "sample"
+            mirror = root / "plugin" / "skills" / "sample"
+            canonical.mkdir(parents=True)
+            mirror.mkdir(parents=True)
+            (canonical / "SKILL.md").write_text("canonical\n", encoding="utf-8")
+            (mirror / "SKILL.md").symlink_to(canonical / "SKILL.md")
+
+            with self.assertRaisesRegex(ValueError, "unexpected symlink: sample/SKILL.md"):
+                editorial_bundles._assert_skill_mirror_matches(
+                    root,
+                    root / "plugin" / "skills",
+                    ["sample"],
+                    "sample plugin",
+                )
+
+            mirror_root_link = root / "linked-skills"
+            mirror_root_link.symlink_to(root / "plugin" / "skills", target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, "skills directory must not be a symlink"):
+                editorial_bundles._assert_skill_mirror_matches(
+                    root,
+                    mirror_root_link,
+                    ["sample"],
+                    "sample plugin",
+                )
+
+    def test_plugin_metadata_layout_rejects_unexpected_files(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            plugin_root = pathlib.Path(temp_dir) / "plugin"
+            manifest = plugin_root / ".codex-plugin" / "plugin.json"
+            manifest.parent.mkdir(parents=True)
+            manifest.write_text("{}\n", encoding="utf-8")
+            (plugin_root / "README.md").write_text("stale\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "metadata layout is out of sync: unexpected README.md"):
+                editorial_bundles._assert_plugin_metadata_layout(
+                    plugin_root,
+                    {".codex-plugin/plugin.json"},
+                    "sample plugin",
+                )
+
+    def test_json_check_requires_canonical_serialization_and_regular_file(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = pathlib.Path(temp_dir)
+            manifest = root / "plugin.json"
+            manifest.write_text('{"name":"sample"}\n', encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "is out of sync"):
+                editorial_bundles._assert_json_matches(
+                    manifest,
+                    {"name": "sample"},
+                    "sample manifest",
+                    root,
+                )
+
+            manifest.write_bytes(b'{\r\n  "name": "sample"\r\n}\r\n')
+            with self.assertRaisesRegex(ValueError, "is out of sync"):
+                editorial_bundles._assert_json_matches(
+                    manifest,
+                    {"name": "sample"},
+                    "sample manifest",
+                    root,
+                )
+
+            external = root / "external"
+            external.mkdir()
+            (external / "plugin.json").write_text('{\n  "name": "sample"\n}\n', encoding="utf-8")
+            linked_parent = root / "linked"
+            linked_parent.symlink_to(external, target_is_directory=True)
+            with self.assertRaisesRegex(ValueError, "path must not contain a symlink"):
+                editorial_bundles._assert_json_matches(
+                    linked_parent / "plugin.json",
+                    {"name": "sample"},
+                    "sample manifest",
+                    root,
+                )
+
     def test_remove_tree_retries_on_enotempty(self):
-        target = REPO_ROOT / "plugins" / "antigravity-awesome-skills" / "skills"
+        target = REPO_ROOT / "plugins" / "agentic-awesome-skills" / "skills"
         calls = {"count": 0}
 
         def flaky_rmtree(path):

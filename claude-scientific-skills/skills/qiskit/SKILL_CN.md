@@ -2,9 +2,7 @@
 name: qiskit
 description: IBM量子计算框架。当针对IBM Quantum硬件、使用Qiskit Runtime处理生产工作负载或需要IBM优化工具时使用。最适合IBM硬件执行、量子错误缓解和企业量子计算。Google硬件使用cirq；基于梯度的量子ML使用pennylane；开放量子系统模拟使用qutip。
 license: Apache-2.0 license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

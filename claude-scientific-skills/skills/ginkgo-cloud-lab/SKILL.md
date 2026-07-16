@@ -1,8 +1,10 @@
 ---
 name: ginkgo-cloud-lab
-description: Submit and manage protocols on Ginkgo Bioworks Cloud Lab (cloud.ginkgo.bio), a web-based interface for autonomous lab execution on Reconfigurable Automation Carts (RACs). Use when the user wants to run cell-free protein expression (validation or optimization), generate fluorescent pixel art, or interact with Ginkgo Cloud Lab services. Covers protocol selection, input preparation, pricing, and ordering workflows.
+description: Submit and manage protocols on Ginkgo Bioworks Cloud Lab (cloud.ginkgo.bio), a web-based interface for autonomous lab execution on Reconfigurable Automation Carts (RACs). Use when the user wants to run protein expression and purification (cell-free, E. coli, or Pichia), HiBiT or A280 or LabChip quantification, IVT mRNA/circRNA synthesis, thermal shift / developability assays, Echo-MS enzyme or analyte methods, SPR target onboarding, fluorescent pixel art, or otherwise interact with Ginkgo Cloud Lab services. Covers protocol selection, input preparation, pricing, and ordering workflows.
+license: MIT license
+allowed-tools: Read
 metadata:
-  version: "1.0"
+  version: "2.0"
 ---
 
 # Ginkgo Cloud Lab
@@ -13,38 +15,84 @@ Ginkgo Cloud Lab (https://cloud.ginkgo.bio) provides remote access to Ginkgo Bio
 
 The platform also includes **EstiMate**, an AI agent that accepts human-language protocol descriptions and returns feasibility assessments and pricing for custom workflows beyond the listed protocols.
 
+The catalog is organized into **Expression & Purification** (in vitro / cell-free / E. coli / Pichia), **Characterization & Assay**, **Method & Target Onboarding**, and **Specialty**. Pick a protocol below, then read its reference file for inputs, outputs, the automated workflow, and ordering details.
+
 ## Available Protocols
 
-### 1. Cell Free Protein Expression Validation
+### Expression & Purification - In vitro
 
-Rapid go/no-go expression screening using reconstituted E. coli CFPS. Submit a FASTA sequence (up to 1800 bp) and receive expression confirmation, baseline titer (mg/L), and initial purity with virtual gel images.
+| Protocol | Readout | Price | Turnaround | Status |
+|---|---|---|---|---|
+| [IVT mRNA/circRNA Synthesis](references/ivt-rna-synthesis-qpcr.md) | qPCR (mRNA or circRNA, 384-well) | $99/sample | up to 12 business days | Certified |
 
-- **Price:** $39/sample | **Turnaround:** 5-10 days | **Status:** Certified
-- **Details:** See [references/cell-free-protein-expression-validation.md](references/cell-free-protein-expression-validation.md)
+### Expression & Purification - Cell-free (E. coli CFPS)
 
-### 2. Cell Free Protein Expression Optimization
+| Protocol | Readout | Price | Turnaround | Status |
+|---|---|---|---|---|
+| [Validate sequence expression](references/cell-free-protein-expression-validation.md) | Go/no-go titer + purity (up to 1800 bp) | $39/sample | up to 10 days | Certified |
+| [Optimize expression conditions](references/cell-free-protein-expression-optimization.md) | DoE across 24 conditions | $199/sample | up to 11 days | Certified |
+| [Express + quantify (HiBiT)](references/cell-free-protein-expression-hibit.md) | Luminescence, no purification | $39/sample | up to 11 days | Certified |
+| [Express + purify (A280)](references/cfps-strep-tag-purification-a280.md) | Strep-tag, A280 yield | $149/sample | up to 11 days | Certified |
+| [Express + purify minibinder](references/minibinder-strep-tag-a280.md) | Strep-tag, A280, LabChip | $149/sample | up to 11 days | Certified |
+| [Express + purify (A280 + LabChip)](references/cfps-expression-purification-quantification.md) | Strep-tag, A280 + purity/size | $159/sample | up to 12 days | Certified |
 
-DoE-based optimization across up to 24 conditions per protein (lysates, temperatures, chaperones, disulfide enhancers, cofactors). Designed for difficult-to-express and membrane proteins.
+### Expression & Purification - E. coli
 
-- **Price:** $199/sample | **Turnaround:** 6-11 days | **Status:** Certified
-- **Details:** See [references/cell-free-protein-expression-optimization.md](references/cell-free-protein-expression-optimization.md)
+| Protocol | Readout | Price | Turnaround | Status |
+|---|---|---|---|---|
+| [Express + quantify (HiBiT)](references/ecoli-protein-expression-hibit.md) | Luminescence (up to 384 constructs) | $79/sample | up to 3 weeks | Certified |
+| [Express + purify (A280)](references/ecoli-protein-expression-histag-a280.md) | His-tag, A280 yield | $199/sample | up to 3 weeks | Certified |
+| [Express + purify minibinder](references/ecoli-minibinder-expression-histag-a280.md) | His-tag, A280 yield | $199/sample | up to 3 weeks | Certified |
+| [Express + purify (A280 + LabChip)](references/ecoli-expression-purification-quantification.md) | His-tag, A280 + purity/size | $209/sample | up to 3 weeks | Certified |
 
-### 3. Fluorescent Pixel Art Generation
+### Expression & Purification - Pichia
 
-Transform a pixel art image (48x48 to 96x96 px, PNG/SVG) into fluorescent bacterial artwork using up to 11 E. coli strains via acoustic dispensing. Delivered as high-res UV photographs.
+| Protocol | Readout | Price | Turnaround | Status |
+|---|---|---|---|---|
+| [Express + quantify (LabChip)](references/pichia-protein-expression-labchip.md) | Secreted protein, size/purity (up to 96) | $89/sample | up to 4 weeks | Certified (New) |
 
-- **Price:** $25/plate | **Turnaround:** 5-7 days | **Status:** Beta
-- **Details:** See [references/fluorescent-pixel-art-generation.md](references/fluorescent-pixel-art-generation.md)
+### Characterization & Assay
+
+| Protocol | Readout | Price | Turnaround | Status |
+|---|---|---|---|---|
+| [Express + thermal shift](references/cfps-strep-purification-thermal-shift.md) | SYPRO Orange Tm (Tonset, TM1-3) | $159/sample | up to 12 days | Certified |
+| [Detect enzymatic products (Echo-MS)](references/echo-ms-cfps-detection.md) | Substrate/product by Echo-MS | $44/sample | up to 13 days | Beta |
+
+### Method & Target Onboarding
+
+| Protocol | Readout | Price | Turnaround | Status |
+|---|---|---|---|---|
+| [Onboard Echo-MS method](references/echo-ms-method-onboarding.md) | Calibration curve, LOD/LOQ | $799/molecule | up to 3 weeks | Certified |
+| [Onboard SPR target](references/spr-target-onboarding.md) | Validated SPR capture method | $1,399/target | up to 4 weeks | Beta |
+
+### Specialty
+
+| Protocol | Readout | Price | Turnaround | Status |
+|---|---|---|---|---|
+| [Generate fluorescent pixel art](references/fluorescent-pixel-art-generation.md) | UV photo, 7-color E. coli palette | $25/plate | up to 7 days | Beta |
+
+**Coming soon:** Protein Expression and Binding Affinity Characterization (express + purify, then screen binding affinity against a target).
+
+## Choosing a Protocol
+
+- **Quick expressibility screen?** Cell-free HiBiT ($39) or Validate sequence expression ($39).
+- **Need purified protein + yield?** A280 tiers (cell-free or E. coli); add LabChip for purity/size.
+- **Difficult / membrane / disulfide / cofactor targets?** Cell-free Optimize (24-condition DoE).
+- **Secreted or eukaryotic targets?** Pichia expression.
+- **Screening de novo binders/minibinders?** Cell-free or E. coli minibinder tiers, then SPR onboarding for kinetics.
+- **Enzyme activity / biocatalysis?** Echo-MS enzymatic detection (onboard the analyte method first).
+- **Stability / developability ranking?** Thermal shift assay.
+- **RNA (mRNA/circRNA)?** IVT synthesis + qPCR.
 
 ## General Ordering Workflow
 
 1. Select a protocol at https://cloud.ginkgo.bio/protocols
-2. Configure parameters (number of samples/proteins, replicates, plates)
-3. Upload input files (FASTA for protein protocols, PNG/SVG for pixel art)
+2. Configure parameters (number of proteins/samples/molecules/targets, replicates, plates)
+3. Download the protocol's input template and upload inputs (FASTA/CSV/XLSX for sequence protocols; Design Tool for pixel art; vendor catalog numbers for onboarding)
 4. Add any special requirements in the Additional Details field
-5. Submit and receive a feasibility report and price quote
+5. Provide an email, agree to the protocol terms, and add to cart / submit to receive a feasibility report and price quote
 
-For protocols not listed above, use the **EstiMate** chat to describe a custom protocol in plain language and receive compatibility assessment and pricing.
+For protocols not listed above, use the **EstiMate** chat (https://cloud.ginkgo.bio/estimate) to describe a custom protocol in plain language and receive a compatibility assessment and pricing.
 
 ## Authentication
 
@@ -54,5 +102,5 @@ Access Ginkgo Cloud Lab at https://cloud.ginkgo.bio. Account creation or institu
 
 - **RACs (Reconfigurable Automation Carts):** Modular robotic units with high-precision arms and maglev transport
 - **Catalyst Software:** Protocol orchestration, scheduling, parameterization, and real-time monitoring
-- **70+ integrated instruments:** Sample prep, liquid handling, analytical readouts, storage, incubation
+- **70+ integrated instruments:** Agilent Bravo liquid handlers, Beckman/Labcyte Echo acoustic dispensers, BMG PHERAstar / Tecan Spark readers, Revvity LabChip, Bio-Rad CFX Opus, Nicoya Alto SPR, SciEx Echo-MS, Inheco/Cytomat incubators, and more
 - **Nebula:** Ginkgo's autonomous lab facility in Boston, MA

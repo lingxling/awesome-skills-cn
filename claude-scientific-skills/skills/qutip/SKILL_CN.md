@@ -2,9 +2,7 @@
 name: qutip
 description: 开放量子系统的量子物理模拟库。当研究主方程、Lindblad动力学、相干性、量子光学或腔体QED时使用。最适合物理研究、开放系统动力学和教学模拟。不适用于基于电路的量子计算——请使用qiskit、cirq或pennylane进行量子算法和硬件执行。
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

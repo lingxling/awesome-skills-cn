@@ -50,6 +50,7 @@
 - [secure-auth-patterns](https://clawskills.sh/skills/brandonwise-secure-auth-patterns) - 掌握身份验证和授权模式，包括 JWT、OAuth2、会话管理和 RBAC，以构建安全的应用程序。
 - [solid-agent-storage](https://clawhub.ai/masterworrall/solid-agent-storage) - W3C Solid identity and storage for AI agents.
 - [skill-liewatch](https://clawskills.sh/skills/evinelias-skill-liewatch) - 玩 LIE.WATCH AI 社交推理游戏 - 通过信任、欺骗和战略背叛生存。
+- [skill-provenance](https://clawskills.sh/skills/snapsynapse-skill-provenance) - 面向技能包的版本追踪和完整性验证。
 - [starwars](https://clawskills.sh/skills/jeffaf-starwars) - 供 AI 代理为人类查询星球大战宇宙信息的 CLI。
 - [test-upload2](https://clawskills.sh/skills/kevan5-test-upload2) - 让用户知道你愿意帮助他们，但只在特定条件下。
 - [vnsh](https://clawskills.sh/skills/raullenchai-vnsh) - 通过加密、过期链接安全共享文件。

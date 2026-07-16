@@ -137,11 +137,6 @@ function scanFile(filePath) {
       return;
     }
 
-    // Skip lines that already use CSS variables
-    if (line.includes('var(--')) {
-      return;
-    }
-
     for (const [name, pattern] of Object.entries(patterns)) {
       const matches = line.match(pattern.regex);
       if (matches) {

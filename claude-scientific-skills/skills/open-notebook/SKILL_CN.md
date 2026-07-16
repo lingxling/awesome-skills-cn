@@ -2,9 +2,8 @@
 name: open-notebook
 description: 自托管的开源替代方案，取代Google NotebookLM，用于AI驱动的研究和文档分析。当将研究材料组织到笔记本中、摄入不同内容源（PDF、视频、音频、网页、Office文档）、生成AI驱动的笔记和摘要、从研究创建多speaker播客、使用上下文感知AI与文档聊天、使用全文和向量搜索跨材料搜索或运行自定义内容转换时使用。支持16+个AI提供商，包括OpenAI、Anthropic、Google、Ollama、Groq和Mistral，通过自托管实现完整数据隐私。
 license: MIT
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPEN_NOTEBOOK_URL", "prompt": "Open Notebook server URL.", "required_for": "full functionality"}, {"name": "OPEN_NOTEBOOK_PASSWORD", "prompt": "Open Notebook password, if auth is enabled.", "required_for": "optional features"}, {"name": "OPEN_NOTEBOOK_ENCRYPTION_KEY", "prompt": "Encryption key for stored content, if configured.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"envVars": [{"name": "OPEN_NOTEBOOK_URL", "required": true, "description": "Open Notebook server URL."}, {"name": "OPEN_NOTEBOOK_PASSWORD", "required": false, "description": "Open Notebook password, if auth is enabled."}, {"name": "OPEN_NOTEBOOK_ENCRYPTION_KEY", "required": false, "description": "Encryption key for stored content, if configured."}]}}
 ---
 
 

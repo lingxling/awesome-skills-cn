@@ -86,3 +86,5 @@
 - [vynn-backtester](https://clawskills.sh/skills/beee003-vynn-backtester) - 使用自然语言运行交易策略回测 — 由 Vynn 提供支持。
 - [xrpl-tx-builder](https://clawskills.sh/skills/harleyscodes-xrpl-tx-builder) - 构建和签名 XRP Ledger 交易。
 - [yumstock](https://clawskills.sh/skills/yumyumtum-yumstock) - 宏观门控美国股票分析，结合技术指标、基本面和宏观环境，使用加权评分。
+- [signet-guide](https://clawhub.ai/amrree/signet-guide) - Signet Mind 入门指南 — 本地心理健康助手，提供接地练习和情绪追踪。
+- [solcal-recovery](https://clawhub.ai/amrree/solcal-recovery) - OpenClaw 修复工具包 — 自动化诊断、备份/恢复，以及 AI 辅助引导式恢复。

@@ -3,12 +3,7 @@ name: markdown-mermaid-writing
 description: 全面的markdown和Mermaid图表写作技能。用于创建任何科学文档、报告、分析或可视化。以文本图表为默认文档标准，包含完整样式指南（markdown + mermaid）、24种图表类型参考和9个文档模板。
 allowed-tools: Read Write Edit Bash
 license: Apache-2.0
-metadata:
-  version: "1.1"
-  skill-author: Clayton Young / Superior Byte Works, LLC (@borealBytes)
-  skill-source: https://github.com/SuperiorByteWorks-LLC/agent-project
-  skill-version: "1.0.0"
-  skill-contributors: "Clayton Young (Superior Byte Works, LLC / @borealBytes; Author and originator); K-Dense Team (K-Dense Inc.; Integration target and community feedback)"
+metadata: {"version": "1.1", "skill-author": "Clayton Young / Superior Byte Works, LLC (@borealBytes)", "skill-source": "https://github.com/SuperiorByteWorks-LLC/agent-project", "skill-version": "1.0.0", "skill-contributors": "Clayton Young (Superior Byte Works, LLC / @borealBytes; Author and originator); K-Dense Team (K-Dense Inc.; Integration target and community feedback)"}
 ---
 
 

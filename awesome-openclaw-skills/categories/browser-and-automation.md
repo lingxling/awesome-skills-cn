@@ -12,7 +12,7 @@
 - [activecampaign](https://clawskills.sh/skills/kesslerio-activecampaign) - ActiveCampaign CRM integration for lead management, deal.
 - [adcp-advertising](https://clawskills.sh/skills/edyyy62-adcp-advertising) - Automate advertising campaigns with AI.
 - [admet-prediction](https://clawskills.sh/skills/huifer-admet-prediction) - ADMET (Absorption, Distribution, Metabolism, Excretion, Toxicity) prediction for drug candidates.
-- [adspower-browser](https://github.com/openclaw/skills/tree/main/skills/adspower/adspower-browser) - Use when the user asks to create or manage AdsPower browsers, groups, tags, proxies, or check status via AdsPower Local API.
+- [adspower-browser](https://clawskills.sh/skills/adspower-adspower-browser) - Use when the user asks to create or manage AdsPower browsers, groups, tags, proxies, or check status via AdsPower Local API.
 - [Agent Browser](https://clawskills.sh/skills/thesethrose-agent-browser) - A fast Rust-based headless browser automation CLI.
 - [agent-browser](https://clawskills.sh/skills/murphykobe-agent-browser-2) - Automates browser interactions for web testing, form.
 - [agent-daily-planner](https://clawskills.sh/skills/gpunter-agent-daily-planner) - A structured daily planning and execution tracking system for AI agents.
@@ -62,6 +62,7 @@
 - [bookmark-intelligence](https://clawskills.sh/skills/bkrigmo1-bookmark-intelligence) - Turns X bookmarks into actionable insights.
 - [box-automation](https://clawskills.sh/skills/sohamganatra-box-automation) - Automate Box cloud storage operations including file.
 - [brain-search](https://clawskills.sh/skills/ryandeangraves-brain-search) - **You MUST actually execute every curl command using your shell/exec tool.** Read the real HTTP response.
+- [browser-act](https://clawhub.ai/browseract-cli/browser-act-skills) - Browser automation CLI for AI agents.
 - [browser-ladder](https://clawskills.sh/skills/ktpriyatham-browser-ladder) - Climb the browser ladder — start free, escalate.
 - [browser-use](https://clawskills.sh/skills/shawnpana-browser-use) - Use Browser Use cloud API to spin up cloud browsers for Clawdbot.
 - [browsh](https://clawskills.sh/skills/gumadeiras-browsh) - A modern text-based browser.
@@ -93,7 +94,7 @@
 - [db-readonly](https://clawskills.sh/skills/ryanhong666-db-readonly) - Run safe read-only queries against MySQL or PostgreSQL for data inspection, reporting, and troubleshooting.
 - [desearch-x-search](https://clawskills.sh/skills/okradze-desearch-x-search) - Search X (Twitter) in real time.
 - [doro-command-creator](https://clawskills.sh/skills/a2mus-doro-command-creator) - WHAT: Create Claude Code slash commands - reusable markdown workflows invoked with /command-name.
-- [duoplus-agent](https://github.com/openclaw/skills/tree/main/skills/duoplusofficial/duoplus-agent/SKILL.md) - Control DuoPlus cloud phones via ADB.
+- [duoplus-agent](https://clawskills.sh/skills/duoplusofficial-duoplus-agent) - Control DuoPlus cloud phones via ADB.
 - [dune-analytics-api](https://clawskills.sh/skills/lz-web3-dune-analytics-api) - Dune Analytics API for blockchain data queries.
 - [echo-repeater](https://clawskills.sh/skills/theeightt-echo-repeater) - Echo the user's input back to them with optional formatting like "Echo:" or "You said:" as a prefix.
 - [edstem](https://clawskills.sh/skills/axel5o5-edstem) - Fetch, sync, and organize EdStem discussion threads for any course or institution.
@@ -174,14 +175,14 @@
 - [mcp-chrome](https://clawskills.sh/skills/femto-mcp-chrome) - Control Chrome browser with AI using MCP protocol.
 - [mealie](https://clawskills.sh/skills/g1mb01d-mealie) - Interact with a self‑hosted Mealie instance (recipe manager & meal planner) via its REST API.
 - [meeting-notes-pro](https://clawskills.sh/skills/olivermonneke-meeting-notes-pro) - You are a meeting productivity expert.
-- [menews](https://github.com/openclaw/skills/tree/main/skills/jamesmenews/menews) - AI-powered crypto and AI market intelligence hub.
+- [menews](https://clawskills.sh/skills/jamesmenews-menews) - AI-powered crypto and AI market intelligence hub.
 - [memberstack-cli](https://clawskills.sh/skills/bensabic-memberstack-cli) - Use the Memberstack CLI to manage Memberstack accounts from the terminal.
 - [meta-fb-inbox](https://clawskills.sh/skills/picseeinc-meta-fb-inbox) - Check Facebook page inbox messages via Meta Business Suite browser automation.
 - [metengine-data-agent](https://clawskills.sh/skills/saviour1001-metengine-data-agent) - Real-time smart money analytics API for Polymarket prediction markets, Hyperliquid perpetual futures, and Meteora.
 - [mh-notion](https://clawskills.sh/skills/mohdalhashemi98-hue-mh-notion) - Notion API for creating and managing pages, databases, and blocks.
 - [minimal-memory](https://clawskills.sh/skills/zencrust-ai-minimal-memory) - Maintain clean, efficient memory files with GOOD/BAD/NEUTRAL categorization and semantic search.
 - [minimax-speech](https://clawskills.sh/skills/wingchiu-minimax-speech) - Manage MiniMax Speech 2.8 T2A (text-to-audio) and voice catalog lookups.
-- [mobilerun](https://github.com/openclaw/skills/tree/main/skills/johnmalek312/mobilerun/SKILL.md) - Control Android devices: tap, swipe, type, screenshot (iOS coming soon).
+- [mobilerun](https://clawskills.sh/skills/johnmalek312-mobilerun) - Control Android devices: tap, swipe, type, screenshot (iOS coming soon).
 - [mukt](https://clawskills.sh/skills/hgosansn-mukt) - Zero-cost OpenRouter responder that auto-discovers the best currently free model, retries on failures, and returns.
 - [multilogin](https://clawskills.sh/skills/glebkazachinskiy-multilogin) - Use when you need to manage Multilogin X browser profiles — launch quick disposable profiles, list/start/stop saved.
 - [multiloginx](https://clawskills.sh/skills/multilogincom-multiloginx) - Use when you need to manage Multilogin X browser profiles — launch quick disposable profiles, list/start/stop saved.

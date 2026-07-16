@@ -3,11 +3,8 @@ name: exa-search
 description: "由Exa提供支持的Web工具包，专为科学和技术内容而设计。当用户需要搜索网络或获取/提取URL内容时使用此技能。涵盖：网络搜索（语义查找、研究、当前信息——可选的研究论文类别和学术领域过滤）和URL提取（批量获取页面、文章、学术PDF）。当用户希望通过category=research paper进行高质量搜索或学术过滤时，将此技能用于与Web相关的任务。在搜索、查找、获取页面或提取文章的请求时触发。"
 compatibility: Requires exa-py Python SDK, an EXA_API_KEY, and internet access.
 license: MIT
-metadata:
-  version: "1.0"
-  skill-author: Exa
-  website: https://exa.ai
-  docs: https://exa.ai/docs
+required_environment_variables: [{"name": "EXA_API_KEY", "prompt": "Exa search API key.", "required_for": "full functionality"}]
+metadata: {"version": "1.1", "skill-author": "Exa", "website": "https://exa.ai", "docs": "https://exa.ai/docs", "openclaw": {"primaryEnv": "EXA_API_KEY", "envVars": [{"name": "EXA_API_KEY", "required": true, "description": "Exa search API key."}]}}
 ---
 
 

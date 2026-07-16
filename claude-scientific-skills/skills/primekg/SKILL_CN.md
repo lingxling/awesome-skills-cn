@@ -2,9 +2,7 @@
 name: primekg
 description: 查询精准医学知识图谱（PrimeKG）以获取多尺度生物数据，包括基因、药物、疾病、表型等。
 license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc. (PrimeKG original from Harvard MIMS)
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc. (PrimeKG original from Harvard MIMS)"}
 ---
 
 

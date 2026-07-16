@@ -2,9 +2,7 @@
 name: flowio
 description: 解析FCS（流式细胞术标准）文件v2.0-3.1。将事件提取为NumPy数组，读取元数据/通道，转换为CSV/DataFrame，用于流式细胞术数据预处理。
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

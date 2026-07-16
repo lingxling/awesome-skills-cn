@@ -2,13 +2,7 @@
 name: imaging-data-commons
 description: 使用idc-index从NCI成像数据Commons查询和下载公共癌症成像数据。用于访问大规模放射学（CT、MR、PET）和病理学数据集，以进行AI训练或研究。无需身份验证。按元数据查询、在浏览器中可视化、检查许可证。
 license: This skill is provided under the MIT License. IDC data itself has individual licensing (mostly CC-BY, some CC-NC) that must be respected when using the data.
-metadata:
-  version: "1.1"
-  source-skill-version: "1.4.0"
-  skill-author: Andrey Fedorov, @fedorov
-  idc-index: "0.11.14"
-  idc-data-version: "v23"
-  repository: https://github.com/ImagingDataCommons/idc-claude-skill
+metadata: {"version": "1.1", "source-skill-version": "1.4.0", "skill-author": "Andrey Fedorov, @fedorov", "idc-index": "0.11.14", "idc-data-version": "v23", "repository": "https://github.com/ImagingDataCommons/idc-claude-skill"}
 ---
 
 

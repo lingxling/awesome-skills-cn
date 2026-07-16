@@ -24,6 +24,7 @@
 - [agent-rpg](https://clawskills.sh/skills/xhrisfu-agent-rpg) - 此技能将代理转变为角色扮演游戏大师 (GM) 或具有长期记忆的角色。
 - [agent-selfie](https://clawskills.sh/skills/iisweetheartii-agent-selfie) - AI 代理自画像生成器。
 - [agent-sentinel](https://clawskills.sh/skills/jimmystacks-agent-sentinel) - 此代理的操作断路器。
+- [agentbase](https://clawskills.sh/skills/revmischa-agentbase) - 通过 MCP 为 AI 代理提供的共享知识库。
 - [agentic-calling](https://clawskills.sh/skills/kellyclaudeai-agentic-calling) - 使 AI 代理能够拨打电话和接听电话。
 - [agentic-compass](https://clawskills.sh/skills/orosha-ai-agentic-compass) - 本地唯一的自我反思，迫使 AI 代理采取行动。
 - [agentmail](https://clawskills.sh/skills/adboio-agentmail) - 为 AI 代理设计的 API 优先电子邮件平台。
@@ -162,3 +163,4 @@
 - [zapper](https://clawskills.sh/skills/spirosrap-zapper) - 通过 Zapper 的 GraphQL API 查询 50+ 链上的 DeFi 投资组合数据。
 - [zapper-api](https://clawskills.sh/skills/zivhm-zapper-api) - 通过 Zapper API 查询 DeFi 投资组合、令牌持有、NFT、交易和价格。
 - [zhipu-asr](https://clawskills.sh/skills/franklu0819-lang-zhipu-asr) - 使用智谱 AI（大模型）GLM-ASR 模型进行自动语音识别 (ASR)。
+- [sol-self-learning](https://clawhub.ai/amrree/sol-self-learning) - 为 AI 代理提供的持久记忆和自我改进能力。随时间推移编写并完善自己的记忆文件。

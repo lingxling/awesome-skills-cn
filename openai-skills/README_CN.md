@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> **此仓库已弃用。** 如需当前的 Codex 技能和插件示例，请使用 [OpenAI Plugins 仓库](https://github.com/openai/plugins)。如果你想为 Codex 添加自己的技能，请遵循[构建插件](https://developers.openai.com/codex/plugins/build)指南，其中包含创建纯技能插件的说明。
+
 # Agent Skills
 
 > 本文档是 [OpenAI Skills](https://github.com/openai/skills) 项目的中文翻译版本。

@@ -32,6 +32,7 @@
 - [remove-analytics](https://clawskills.sh/skills/jeftekhari-remove-analytics) - 安全地从项目中移除 Google Analytics。
 - [senior-data-engineer](https://clawskills.sh/skills/alirezarezvani-senior-data-engineer) - 用于构建可扩展的数据工程技能。
 - [senior-data-scientist](https://clawskills.sh/skills/alirezarezvani-senior-data-scientist) - 世界级数据科学技能。
+- [skywork-excel](https://clawskills.sh/skills/gxcun17-skywork-excel) - AI 驱动的电子表格操作，用于创建、分析和生成报告。
 - [supabase](https://clawskills.sh/skills/stopmoclay-supabase) - 连接到 Supabase 进行数据库操作、向量搜索和存储。
 - [sure](https://clawskills.sh/skills/bt0r-sure) - 从 Sure 个人财务委员会获取报告。
 - [tabstack-extractor](https://clawskills.sh/skills/noblepayne-tabstack-extractor) - 使用 Tabstack 从网站提取结构化数据。

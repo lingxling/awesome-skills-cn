@@ -2,9 +2,8 @@
 name: astropy
 description: 用于需要Astropy API的天文学和天体物理学工作流的核心Python库，包括单位/量、坐标、FITS I/O、表格、时间系统、WCS和宇宙学。当使用Astropy实现或调试天文数据分析代码时使用。
 license: BSD-3-Clause license
-metadata:
-  version: "1.1"
-  skill-author: K-Dense Inc.
+compatibility: Requires Python 3.11+ with astropy installed (uv for package installation). Some features (object name resolution, site lookups, remote FITS reads, IERS updates) need network access.
+metadata: {"version": "1.2", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -204,6 +203,8 @@ uv pip install "astropy[all]==7.2.0"
 ```
 
 Astropy 7.2.0 需要 Python 3.11+ 并依赖 NumPy、PyERFA、PyYAML 和 packaging。使用隔离的虚拟环境；不要使用提升的权限安装 Astropy。
+
+请注意，`[recommended]` 和 `[all]` extras 会引入未固定版本的传递依赖（matplotlib、scipy 等）。对于需要可复现性的生产环境，请使用锁文件固定完整依赖树（项目中用 `uv lock`，或对 requirements 文件使用 `uv pip compile`），并在部署前审查已解析的版本。
 
 ## 常见工作流程
 

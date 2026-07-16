@@ -152,7 +152,7 @@ This document provides guidelines for reporting statistical analyses according t
 **What to report**:
 - Test statistic (t)
 - Degrees of freedom
-- p-value (exact if p > .001, otherwise p < .001)
+- p-value (exact if p ≥ .001, otherwise p < .001)
 - Effect size (Cohen's d or Hedges' g) with CI
 - Direction of effect
 - Whether test was one- or two-tailed
@@ -192,7 +192,9 @@ This document provides guidelines for reporting statistical analyses according t
 > "A 2 (feedback: positive vs. negative) × 2 (timing: immediate vs. delayed) between-subjects ANOVA revealed a significant main effect of feedback, F(1, 146) = 12.34, p < .001, η²_p = .08, but no significant main effect of timing, F(1, 146) = 2.10, p = .15, η²_p = .01. Critically, the interaction was significant, F(1, 146) = 6.78, p = .01, η²_p = .04. Simple effects analysis showed that positive feedback improved performance for immediate timing (M_diff = 8.2, p < .001) but not for delayed timing (M_diff = 1.3, p = .42)."
 
 **Example (repeated measures ANOVA)**:
-> "A one-way repeated measures ANOVA revealed a significant effect of time point on anxiety scores, F(2, 98) = 15.67, p < .001, η²_p = .24. Mauchly's test indicated that the assumption of sphericity was violated, χ²(2) = 8.45, p = .01, therefore Greenhouse-Geisser corrected values are reported (ε = 0.87). Pairwise comparisons with Bonferroni correction showed..."
+> "Mauchly's test indicated that the assumption of sphericity was violated, χ²(2) = 8.45, p = .01, therefore Greenhouse-Geisser corrected degrees of freedom are reported (ε = 0.87). A one-way repeated measures ANOVA revealed a significant effect of time point on anxiety scores, F(1.74, 85.26) = 15.67, p < .001, η²_p = .24. Pairwise comparisons with Bonferroni correction showed..."
+
+(Note: the corrected df are the uncorrected df multiplied by ε: 2 × 0.87 = 1.74 and 98 × 0.87 = 85.26.)
 
 ---
 
@@ -272,7 +274,7 @@ This document provides guidelines for reporting statistical analyses according t
 > "A Wilcoxon signed-rank test showed that scores increased significantly from pretest (Mdn = 65, IQR = 15) to posttest (Mdn = 72, IQR = 14), z = 3.89, p < .001, r = .39."
 
 **Kruskal-Wallis**:
-> "A Kruskal-Wallis test revealed significant differences among the three conditions, H(2) = 15.7, p < .001, η² = .09. Follow-up pairwise comparisons with Bonferroni correction showed..."
+> "A Kruskal-Wallis test revealed significant differences among the three conditions, H(2) = 15.7, p < .001, ε² = .09 (epsilon-squared). Follow-up pairwise comparisons with Bonferroni correction showed..."
 
 ---
 
@@ -289,7 +291,9 @@ This document provides guidelines for reporting statistical analyses according t
 > "A Bayesian independent samples t-test was conducted using weakly informative priors (Normal(0, 1) for mean difference). The posterior distribution of the mean difference had a mean of 6.8 (95% credible interval [3.2, 10.4]), indicating that Group A scored higher than Group B. The Bayes Factor BF₁₀ = 45.3 provided very strong evidence for a difference between groups. There was a 99.8% posterior probability that Group A's mean exceeded Group B's mean."
 
 **Example (Bayesian regression)**:
-> "A Bayesian linear regression was fitted with weakly informative priors (Normal(0, 10) for coefficients, Half-Cauchy(0, 5) for residual SD). The model showed that study hours credibly predicted exam scores (β = 0.52, 95% CI [0.38, 0.66]; 0 not included in interval). All convergence diagnostics were satisfactory (R-hat < 1.01, ESS > 1000 for all parameters). Posterior predictive checks indicated adequate model fit."
+> "A Bayesian linear regression was fitted with weakly informative priors (Normal(0, 10) for coefficients, Half-Cauchy(0, 5) for residual SD). The model showed that study hours credibly predicted exam scores (β = 0.52, 95% CrI [0.38, 0.66]; 0 not included in the credible interval). All convergence diagnostics were satisfactory (R-hat < 1.01, ESS > 1000 for all parameters). Posterior predictive checks indicated adequate model fit."
+
+(Write "95% CrI" or "95% credible interval" for Bayesian intervals to distinguish them from frequentist confidence intervals.)
 
 ---
 
@@ -388,7 +392,7 @@ This document provides guidelines for reporting statistical analyses according t
 5. **Only reporting significant results**: Report all planned analyses
 6. **Using "prove" or "confirm"**: Use "support" or "consistent with"
 7. **Saying "marginally significant" for .05 < p < .10**: Either significant or not
-8. **Reporting only one decimal for p-values**: Use two (p = .03, not p = .0)
+8. **Reporting only one decimal for p-values**: APA style uses two or three decimals (p = .03 or p = .034, not p = .0)
 9. **Not specifying one- vs. two-tailed**: Always clarify
 10. **Inconsistent rounding**: Be consistent throughout
 
@@ -413,6 +417,15 @@ This document provides guidelines for reporting statistical analyses according t
 - Effect size (shows magnitude even if not significant)
 - Confidence interval (may include meaningful values)
 - Power analysis (was study adequately powered?)
+
+**To claim equivalence**: p > .05 is not evidence of equivalence. Run an equivalence test (TOST) against a pre-specified smallest effect size of interest, or a Bayesian ROPE analysis (see bayesian_statistics.md):
+
+```python
+import pingouin as pg
+
+# TOST: is the group difference within +/- 0.5 raw units?
+print(pg.tost(group_a, group_b, bound=0.5))  # significant pval -> equivalence
+```
 
 **Example**:
 > "Contrary to our hypothesis, there was no significant difference in creativity scores between the music (M = 72.1, SD = 8.3) and silence (M = 70.5, SD = 8.9) conditions, t(98) = 0.91, p = .36, d = 0.18, 95% CI [-0.21, 0.57]. A post hoc sensitivity analysis revealed that the study had 80% power to detect an effect of d = 0.57 or larger, suggesting the null finding may reflect insufficient power to detect small effects."

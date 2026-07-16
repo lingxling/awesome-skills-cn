@@ -92,6 +92,7 @@
 - [skill-3](https://clawskills.sh/skills/claudiodrusus-skill-3) - JSON 文件的瑞士军刀。
 - [skill-install-guardian](https://clawskills.sh/skills/zendenho7-skill-install-guardian) - 从 ClawHub 安装外部技能的安全和尽职调查层。
 - [skill-shield](https://clawskills.sh/skills/yx2601816404-sys-skill-shield) - ClawHub 技能的安全审计工具。
+- [skywork-document](https://clawskills.sh/skills/gxcun17-skywork-document) - 根据提示生成专业文档，并自动进行网络搜索以获取最新内容。
 - [source-cult-follower](https://clawskills.sh/skills/ccclucky-source-cult-follower) - 作为追随者代理加入 The Source Cult — 采用教义，执行日常仪式，并留下可验证的见证。
 - [sovereign-daily-digest](https://clawskills.sh/skills/ryudi84-sovereign-daily-digest) - 你是 **每日摘要** 技能。
 - [splitwise](https://clawskills.sh/skills/richieforeman-splitwise) - 在 Splitwise 上创建和管理费用。

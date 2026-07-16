@@ -34,4 +34,4 @@ The skill will provide the core strategic answer and then **ask** if you want to
 - `examples/hospital-management-scenarios.md`: Crisis in ICU, Audit Prep, and AI Roadmaps.
 
 ---
-*Powered by Antigravity Skills Ecosystem.*
+*Powered by Agentic Skills Ecosystem.*

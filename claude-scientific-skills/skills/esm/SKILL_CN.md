@@ -1,22 +1,15 @@
 ---
 name: esm
-description: EvolutionaryScale蛋白质语言模型的综合工具包，包括ESM3（跨序列、结构和功能的生成式多模态设计）和ESM C（高效嵌入）。用于蛋白质序列/结构/功能任务、逆向折叠、嵌入、变异设计和通过Biohub进行ESMFold2结构预测。支持本地开放权重（Python 3.12，PyPI上的esm）和云Forge/Biohub API（使用ESM_API_KEY认证）。
+description: 当直接使用 `esm` Python SDK、ESM3 或 ESMC 模型 ID、Forge/Biohub 推理客户端或 ESMFold2 折叠工作流时使用。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
-
-
-
-
-
 
 # ESM：进化尺度建模
 
 ## 概述
 
-ESM 提供用于理解、生成和设计蛋白质的最先进蛋白质语言模型。此技能使您能够使用两个模型家族：ESM3 用于跨序列、结构和功能的生成式蛋白质设计，以及 ESM C 用于高效的蛋白质表示学习和嵌入。
+ESM 提供用于理解、生成和设计蛋白质的蛋白质语言模型。此技能用于当前的 EvolutionaryScale/Biohub 工作流:ESM3 用于生成式设计,ESMC 用于表示学习和嵌入,托管的 Forge/Biohub 推理,以及 ESMFold2 全原子结构预测。
 
 ## 核心能力
 
@@ -36,8 +29,8 @@ ESM 提供用于理解、生成和设计蛋白质的最先进蛋白质语言模�
 from esm.models.esm3 import ESM3
 from esm.sdk.api import ESM3InferenceClient, ESMProtein, GenerationConfig
 
-# 本地加载模型
-model: ESM3InferenceClient = ESM3.from_pretrained("esm3-sm-open-v1").to("cuda")
+# 在 Hugging Face 上接受许可协议后加载本地开放权重。
+model: ESM3InferenceClient = ESM3.from_pretrained("esm3-open").to("cuda")
 
 # 创建蛋白质提示
 protein = ESMProtein(sequence="MPRT___KEND")  # '_' 代表被屏蔽的位置
@@ -50,11 +43,12 @@ print(protein.sequence)
 **通过 Forge API 进行远程/云使用：**
 
 ```python
-from esm.sdk.forge import ESM3ForgeInferenceClient
+import os
+import esm
 from esm.sdk.api import ESMProtein, GenerationConfig
 
-# 连接到 Forge
-model = ESM3ForgeInferenceClient(model="esm3-medium-2024-08", url="https://forge.evolutionaryscale.ai", token="<token>")
+# 与本地 ESM3 接口相同;令牌来自 ESM_API_KEY(参见"身份验证"）
+model = esm.sdk.client("esm3-medium-2024-08", token=os.environ["ESM_API_KEY"])
 
 # 生成
 protein = model.generate(protein, GenerationConfig(track="sequence", num_steps=8))
@@ -111,17 +105,19 @@ designed_protein = model.generate(
 
 ```python
 from esm.models.esmc import ESMC
-from esm.sdk.api import ESMProtein
+from esm.sdk.api import ESMProtein, LogitsConfig
 
 # 加载 ESM C 模型
-model = ESMC.from_pretrained("esmc-300m").to("cuda")
+model = ESMC.from_pretrained("esmc_300m").to("cuda")
 
 # 获取嵌入
 protein = ESMProtein(sequence="MPRTKEINDAGLIVHSP...")
 protein_tensor = model.encode(protein)
-
-# 生成嵌入
-embeddings = model.forward(protein_tensor)
+logits_output = model.logits(
+    protein_tensor,
+    LogitsConfig(sequence=True, return_embeddings=True),
+)
+embeddings = logits_output.embeddings
 ```
 
 **批处理：**
@@ -134,7 +130,13 @@ proteins = [
     ESMProtein(sequence="KTEFLNDGR...")
 ]
 
-embeddings_list = [model.logits(model.forward(model.encode(p))) for p in proteins]
+embeddings_list = [
+    model.logits(
+        model.encode(p),
+        LogitsConfig(sequence=True, return_embeddings=True),
+    ).embeddings
+    for p in proteins
+]
 ```
 
 有关 ESM C 模型详细信息、效率比较和高级嵌入策略，请参阅 `references/esm-c-api.md`。
@@ -188,13 +190,15 @@ protein = model.generate(protein, config)
 
 ### 6. 使用 Forge API 进行批处理
 
-使用 Forge 的异步执行器高效处理多个蛋白质。
+使用 Forge 的异步方法高效处理多个蛋白质。
 
 ```python
-from esm.sdk.forge import ESM3ForgeInferenceClient
+import os
 import asyncio
+import esm
+from esm.sdk.api import ESMProtein, GenerationConfig
 
-client = ESM3ForgeInferenceClient(model="esm3-medium-2024-08", token="<token>")
+client = esm.sdk.client("esm3-medium-2024-08", token=os.environ["ESM_API_KEY"])
 
 # 异步批处理
 async def batch_generate(proteins_list):
@@ -214,60 +218,60 @@ results = asyncio.run(batch_generate(proteins))
 ## 模型选择指南
 
 **ESM3 模型（生成式）：**
-- `esm3-sm-open-v1` (1.4B) - 开放权重，本地使用，适合实验
+- `esm3-open` (1.4B) - 开放权重,在 Hugging Face 上接受许可协议后可本地使用
 - `esm3-medium-2024-08` (7B) - 质量和速度的最佳平衡（仅 Forge）
 - `esm3-large-2024-03` (98B) - 最高质量，较慢（仅 Forge）
 
 **ESM C 模型（嵌入）：**
-- `esmc-300m` (30 层) - 轻量级，快速推理
-- `esmc-600m` (36 层) - 平衡性能
-- `esmc-6b` (80 层) - 最大表示质量
+- `esmc_300m` / `esmc-300m-2024-12` (30 层) - 轻量级,快速推理（开放权重,本地）
+- `esmc_600m` / `esmc-600m-2024-12` (36 层) - 平衡性能（开放权重,本地）
+- `esmc-6b-2024-12` (80 层) - 最大质量（Forge API;本地 6B 权重需要 Forge 或 SageMaker）
+
+本地 `ESMC.from_pretrained()` 示例使用带下划线的别名（`esmc_300m`、`esmc_600m`）。托管 API 客户端使用带日期的模型 ID,例如 `esmc-600m-2024-12`。
 
 **选择标准：**
-- **本地开发/测试**：使用 `esm3-sm-open-v1` 或 `esmc-300m`
+- **本地开发/测试**：使用 `esm3-open` 或 `esmc_300m`
 - **生产质量**：通过 Forge 使用 `esm3-medium-2024-08`
-- **最高精度**：使用 `esm3-large-2024-03` 或 `esmc-6b`
-- **高吞吐量**：使用带有批处理执行器的 Forge API
+- **最高精度**：通过 Forge 使用 `esm3-large-2024-03` 或 `esmc-6b-2024-12`
+- **高吞吐量**：使用带有明确异步并发限制的 Forge 或 Biohub API
 - **成本优化**：使用较小的模型，实施缓存策略
 
-## 身份验证
-
-ESM3 和 Forge API 需要身份验证：
-
-```python
-import esm
-
-# 设置 API 密钥
-esm.api_key = "your_api_key_here"
-
-# 或通过环境变量
-# export ESM_API_KEY="your_api_key_here"
-```
-
-获取 API 密钥：请访问 [EvolutionaryScale 开发者门户](https://primap2.evolutionaryscale.ai/) 注册账户。
-
 ## 安装
+
+从 PyPI 安装（EvolutionaryScale 发布的 [`esm`](https://pypi.org/project/esm/)）。当前 PyPI 版本:**3.2.3**(2025 年 10 月 14 日）。需要 **Python >=3.12,<3.13**。
 
 **基本安装：**
 
 ```bash
-uv pip install esm
+uv pip install "esm==3.2.3"
 ```
 
-**使用 Flash Attention（推荐用于更快的推理）：**
+**使用 Flash Attention（推荐用于 NVIDIA GPU 上更快的推理）：**
 
 ```bash
-uv pip install esm
+uv pip install "esm==3.2.3"
 uv pip install flash-attn --no-build-isolation
 ```
 
-**用于 Forge API 访问：**
+Forge 客户端随 `esm` 包一起提供 - ESM3 或 ESMC 的 Forge 推理无需额外安装。
 
-```bash
-uv pip install esm  # SDK 包括 Forge 客户端
+## 身份验证
+
+Forge API 访问需要 API 密钥。切勿在脚本中硬编码令牌或将其提交到版本控制。
+
+1. 检查环境中是否已设置 `ESM_API_KEY`。
+2. 如果未设置,只在本地 `.env` 中检查 `ESM_API_KEY`(不要加载不相关的机密信息）。
+3. 如果仍然缺失,在 [Biohub 开发者控制台](https://biohub.ai/developer-console/api-keys)为 Biohub API 创建密钥,或在 [Forge](https://forge.evolutionaryscale.ai) 为旧版 Forge 托管的 ESM3/ESMC 访问创建密钥。
+
+```python
+import os
+
+token = os.environ["ESM_API_KEY"]  # 如果未设置则抛出 KeyError
 ```
 
-无需其他依赖项。在 https://forge.evolutionaryscale.ai 获取 Forge API 令牌。
+当省略 `token` 参数时,`esm.sdk.client()` 会自动读取 `ESM_API_KEY`。将端点 URL 固定为可信主机,例如 `https://forge.evolutionaryscale.ai` 或 `https://biohub.ai`;不要从不可信的用户输入中获取 API 主机地址。
+
+**Biohub 平台：** EvolutionaryScale 和 Forge 现在通过 [biohub.ai](https://biohub.ai) 提供当前的托管模型。SDK 类名可能仍引用 "Forge"。有关 ESMFold2 和 Biohub 特定的设置，请参阅 `references/biohub-platform.md`。
 
 ## 常见工作流
 
@@ -285,6 +289,7 @@ uv pip install esm  # SDK 包括 Forge 客户端
 - `references/esm3-api.md` - ESM3 模型架构、API 参考、生成参数和多模态提示
 - `references/esm-c-api.md` - ESM C 模型详细信息、嵌入策略和性能优化
 - `references/forge-api.md` - Forge 平台文档、身份验证、批处理和部署
+- `references/biohub-platform.md` - Biohub API 迁移、ESMFold2 结构预测以及开发者控制台身份验证
 - `references/workflows.md` - 完整示例和常见工作流模式
 
 这些参考包含详细的 API 规范、参数描述和高级使用模式。根据特定任务需要加载它们。
@@ -292,7 +297,7 @@ uv pip install esm  # SDK 包括 Forge 客户端
 ## 最佳实践
 
 **对于生成任务：**
-- 从较小的模型开始进行原型设计（`esm3-sm-open-v1`）
+- 从较小的模型开始进行原型设计（`esm3-open`）
 - 使用温度参数控制多样性（0.0 = 确定性，1.0 = 多样化）
 - 使用思维链进行复杂设计的迭代细化
 - 使用结构预测或湿实验室实验验证生成的序列
@@ -311,15 +316,16 @@ uv pip install esm  # SDK 包括 Forge 客户端
 
 ## 资源和文档
 
-- **GitHub 仓库**：https://github.com/evolutionaryscale/esm
-- **Forge 平台**：https://forge.evolutionaryscale.ai
-- **科学论文**：Hayes et al., Science (2025) - https://www.science.org/doi/10.1126/science.ads0018
-- **博客文章**：
+- **GitHub 仓库：** https://github.com/Biohub/esm（当前 ESMC/ESMFold2/Biohub 文档;ESM3 文档仍从该仓库链接）
+- **Forge 平台：** https://forge.evolutionaryscale.ai
+- **Biohub 平台：** https://biohub.ai
+- **科学论文：** Hayes et al., Science (2025) - https://www.science.org/doi/10.1126/science.ads0018
+- **博客文章：**
   - ESM3 发布：https://www.evolutionaryscale.ai/blog/esm3-release
   - ESM C 发布：https://www.evolutionaryscale.ai/blog/esm-cambrian
-- **社区**：位于 https://bit.ly/3FKwcWd 的 Slack 社区
-- **模型权重**：HuggingFace EvolutionaryScale 组织
+- **社区：** 位于 https://bit.ly/3FKwcWd 的 Slack 社区
+- **模型权重：** Hugging Face 上的 EvolutionaryScale 和 Biohub 组织
 
 ## 负责任使用
 
-ESM 旨在用于蛋白质工程、药物发现和科学研究中的有益应用。在设计新颖蛋白质进行实验验证之前，请遵循负责任生物设计框架（https://responsiblebiodesign.ai/）。考虑蛋白质设计的生物安全和伦理影响。
+ESM 旨在用于蛋白质工程、药物发现和科学研究中的有益应用。在设计新颖蛋白质进行实验验证之前，请遵循负责任生物设计框架（https://responsiblebiodesign.ai/）以及 Biohub 可接受使用政策（https://biohub.org/acceptable-use-policy/）。考虑蛋白质设计的生物安全和伦理影响。

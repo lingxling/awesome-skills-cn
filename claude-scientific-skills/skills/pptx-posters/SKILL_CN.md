@@ -3,9 +3,8 @@ name: pptx-posters
 description: 使用可导出为PDF或PPTX的HTML/CSS创建研究海报。仅当用户明确要求PowerPoint/PPTX海报格式时使用此技能。对于标准研究海报，请改用latex-posters。此技能提供现代基于网页的海报设计，具有响应式布局和轻松的视觉集成。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

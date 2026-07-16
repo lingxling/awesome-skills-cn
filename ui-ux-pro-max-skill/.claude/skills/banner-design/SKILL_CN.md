@@ -1,5 +1,5 @@
 ---
-name: ckm:banner-design
+name: banner-design
 description: "为社交媒体、广告、网站标题、创意资产和印刷品设计横幅。提供多种艺术指导选项和AI生成的视觉效果。操作：设计、创建、生成横幅。平台：Facebook、Twitter/X、LinkedIn、YouTube、Instagram、Google Display、网站标题、印刷品。风格：极简主义、渐变、大胆排版、基于照片、插图、几何、复古、玻璃态、3D、霓虹、双色调、社论、拼贴。使用ui-ux-pro-max、frontend-design、ai-artist、ai-multimodal技能。"
 argument-hint: "[平台] [风格] [尺寸]"
 license: MIT
@@ -20,6 +20,10 @@ metadata:
 - 网站标题部分视觉设计
 - 活动/印刷横幅设计
 - 为活动生成创意资产
+
+## 前置条件
+
+**Python：** 此技能使用Python脚本。在Windows上，使用`python`而不是`python3`（例如，使用`python scripts/search.py`而不是`python3 scripts/search.py`）。
 
 ## 工作流程
 

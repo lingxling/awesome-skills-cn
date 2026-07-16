@@ -1,22 +1,17 @@
 ---
 name: pydeseq2
-description: Differential gene expression analysis (Python DESeq2). Identify DE genes from bulk RNA-seq counts, Wald tests, FDR c或rection, volcano/MA plots, 用于 RNA-seq analysis.
+description: 使用 PyDESeq2 对批量 RNA-seq 数据进行差异基因表达分析，包括基于公式的设计、Wald 检验、FDR 校正、LFC 收缩以及结果可视化。
+allowed-tools: Read Write Edit Bash
+compatibility: Requires Python >=3.11 and PyDESeq2 0.5.4-compatible dependencies. Examples target PyDESeq2 0.5.x, formulaic design strings, explicit contrasts, and uv-based installs.
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
-
-
-
-
-
 
 # PyDESeq2
 
 ## 概述
 
-PyDESeq2是DESeq2的Python实现，用于批量RNA-seq数据的差异表达分析。设计并执行从数据加载到结果解释的完整工作流程，包括单因素和多因素设计、带多重测试校正的Wald检验、可选的apeGLM收缩，以及与pandas和AnnData的集成。
+PyDESeq2是DESeq2的Python实现，用于批量RNA-seq数据的差异表达分析。设计并执行从数据加载到结果解释的完整工作流程，包括基于公式的单因素和多因素设计、带多重测试校正的Wald检验、可选的apeGLM收缩，以及与pandas和AnnData的集成。
 
 ## 使用场景
 
@@ -35,6 +30,7 @@ PyDESeq2是DESeq2的Python实现，用于批量RNA-seq数据的差异表达分�
 ```python
 import pandas as pd
 from pydeseq2.dds import DeseqDataSet
+from pydeseq2.default_inference import DefaultInference
 from pydeseq2.ds import DeseqStats
 
 # 1. 加载数据
@@ -45,17 +41,26 @@ metadata = pd.read_csv("metadata.csv", index_col=0)
 genes_to_keep = counts_df.columns[counts_df.sum(axis=0) >= 10]
 counts_df = counts_df[genes_to_keep]
 
-# 3. 初始化并拟合DESeq2
+# 3. 明确指定参考水平并拟合DESeq2
+metadata["condition"] = pd.Categorical(
+    metadata["condition"], categories=["control", "treated"]
+)
+inference = DefaultInference(n_cpus=4)
 dds = DeseqDataSet(
     counts=counts_df,
     metadata=metadata,
     design="~condition",
-    refit_cooks=True
+    refit_cooks=True,
+    inference=inference,
 )
 dds.deseq2()
 
 # 4. 执行统计测试
-ds = DeseqStats(dds, contrast=["condition", "treated", "control"])
+ds = DeseqStats(
+    dds,
+    contrast=["condition", "treated", "control"],
+    inference=inference,
+)
 ds.summary()
 
 # 5. 访问结果
@@ -119,10 +124,11 @@ design = "~group + condition + group:condition"  # 交互效应
 ```
 
 **设计公式指南：**
-- 使用Wilkinson公式表示法（R风格）
+- 使用 formulaic/Wilkinson 公式表示法（R 风格）
 - 将调整变量（如批次）放在主要感兴趣变量之前
 - 确保变量作为元数据DataFrame中的列存在
-- 使用适当的数据类型（离散变量使用分类类型）
+- 使用适当的数据类型；连续变量会从公式中自动识别，也可以用 `C(variable)` 或 pandas 的分类（categorical）dtype 强制指定为分类变量
+- 在新的工作流程中不要使用已弃用的 `design_factors`、`continuous_factors` 或 `ref_level` 参数
 
 ### 步骤3：DESeq2拟合
 
@@ -130,13 +136,16 @@ design = "~group + condition + group:condition"  # 交互效应
 
 ```python
 from pydeseq2.dds import DeseqDataSet
+from pydeseq2.default_inference import DefaultInference
 
+inference = DefaultInference(n_cpus=4)
 dds = DeseqDataSet(
     counts=counts_df,
     metadata=metadata,
     design="~condition",
     refit_cooks=True,  # 移除异常值后重新拟合
-    n_cpus=1           # 并行处理（根据需要调整）
+    inference=inference,
+    low_memory=False,
 )
 
 # 运行完整的DESeq2管道
@@ -174,7 +183,8 @@ ds.summary()
 **对比规范：**
 - 格式：`[variable, test_level, reference_level]`
 - 示例：`["condition", "treated", "control"]` 测试treated vs control
-- 如果为`None`，使用设计中的最后一个系数
+- 对于连续变量或复杂系数，使用数值型对比向量
+- PyDESeq2 0.5.x 已不再支持默认对比；必须始终提供 `contrast`
 
 **结果DataFrame列：**
 - `baseMean`：跨样本的平均标准化计数
@@ -189,7 +199,7 @@ ds.summary()
 应用收缩以减少倍数变化估计中的噪声：
 
 ```python
-ds.lfc_shrink()  # 应用apeGLM收缩
+ds.lfc_shrink(coeff="condition[T.treated]")  # 应用apeGLM收缩
 ```
 
 **何时使用LFC收缩：**
@@ -204,8 +214,6 @@ ds.lfc_shrink()  # 应用apeGLM收缩
 保存结果和中间对象：
 
 ```python
-import pickle
-
 # 导出结果为CSV
 ds.results_df.to_csv("deseq2_results.csv")
 
@@ -213,10 +221,11 @@ ds.results_df.to_csv("deseq2_results.csv")
 significant = ds.results_df[ds.results_df.padj < 0.05]
 significant.to_csv("significant_genes.csv")
 
-# 保存DeseqDataSet供以后使用
-with open("dds_result.pkl", "wb") as f:
-    pickle.dump(dds.to_picklable_anndata(), f)
+# 保存便于移植的AnnData对象，供后续检查
+dds.to_picklable_anndata().write_h5ad("dds_result.h5ad")
 ```
+
+避免加载来自不可信来源的pickle文件。对于在代理、管道或协作者之间交换数据的场景，优先使用CSV结果和`.h5ad`格式的AnnData文件。
 
 ## 常见分析模式
 
@@ -307,6 +316,7 @@ python scripts/run_deseq2_analysis.py \
   --min-counts 10 \
   --alpha 0.05 \
   --n-cpus 4 \
+  --shrink-coeff "condition[T.treated]" \
   --plots
 ```
 
@@ -315,7 +325,8 @@ python scripts/run_deseq2_analysis.py \
 - 基因和样本过滤
 - 完整的DESeq2管道执行
 - 具有可自定义参数的统计测试
-- 结果导出（CSV，pickle）
+- 结果导出（CSV 及便于移植的 AnnData/H5AD）
+- 面向 PyDESeq2 0.5.x 的显式 LFC 收缩系数支持
 - 可选的可视化（火山图和MA图）
 
 当用户需要独立分析工具或想要批量处理多个数据集时，请参考`scripts/run_deseq2_analysis.py`。
@@ -349,7 +360,7 @@ print(f"Downregulated: {len(downregulated)}")
 top_by_padj = ds.results_df.sort_values("padj").head(20)
 
 # 按绝对倍数变化排序（使用收缩值）
-ds.lfc_shrink()
+ds.lfc_shrink(coeff="condition[T.treated]")
 ds.results_df["abs_lfc"] = abs(ds.results_df.log2FoldChange)
 top_by_lfc = ds.results_df.sort_values("abs_lfc", ascending=False).head(20)
 
@@ -362,11 +373,11 @@ top_combined = ds.results_df.sort_values("score", ascending=False).head(20)
 
 ```python
 # 检查标准化（大小因子应接近1）
-print("Size factors:", dds.obsm["size_factors"])
+print("Size factors:", dds.obs["size_factors"])
 
 # 检查分散度估计
 import matplotlib.pyplot as plt
-plt.hist(dds.varm["dispersions"], bins=50)
+plt.hist(dds.var["dispersions"], bins=50)
 plt.xlabel("Dispersion")
 plt.ylabel("Frequency")
 plt.title("Dispersion Distribution")
@@ -491,11 +502,11 @@ design = "~condition + batch + condition:batch"
 **诊断：**
 ```python
 # 检查分散度分布
-plt.hist(dds.varm["dispersions"], bins=50)
+plt.hist(dds.var["dispersions"], bins=50)
 plt.show()
 
 # 检查大小因子
-print(dds.obsm["size_factors"])
+print(dds.obs["size_factors"])
 
 # 查看按原始p值排序的前基因
 print(ds.results_df.nsmallest(20, "pvalue"))
@@ -536,21 +547,23 @@ print(ds.results_df.nsmallest(20, "pvalue"))
 
 7. **对比规范：** 格式为`[variable, test_level, reference_level]`，其中test_level与reference_level进行比较。
 
-8. **保存中间对象：** 使用pickle保存DeseqDataSet对象，以便以后使用或进行额外分析，而无需重新运行昂贵的拟合步骤。
+8. **保存中间对象：** 优先使用 `dds.to_picklable_anndata().write_h5ad("dds_result.h5ad")` 生成可移植的输出文件。只加载您自己创建且信任的pickle文件。
 
 ## 安装和要求
 
 ```bash
-uv pip install pydeseq2
+uv pip install pydeseq2==0.5.4
 ```
 
 **系统要求：**
-- Python 3.10-3.11
-- pandas 1.4.3+
-- numpy 1.23.0+
-- scipy 1.11.0+
-- scikit-learn 1.1.1+
-- anndata 0.8.0+
+- Python 3.11+
+- PyDESeq2 0.5.4
+- pandas 2.2.0+
+- numpy 2.0.0+
+- scipy 1.12.0+
+- scikit-learn 1.4.0+
+- anndata 0.11.0+
+- formulaic 1.0.2+ 和 formulaic-contrasts 0.2.0+
 
 **可视化可选依赖：**
 - matplotlib
@@ -559,6 +572,6 @@ uv pip install pydeseq2
 ## 其他资源
 
 - **官方文档：** https://pydeseq2.readthedocs.io
-- **GitHub存储库：** https://github.com/owkin/PyDESeq2
+- **GitHub存储库：** https://github.com/scverse/PyDESeq2
 - **出版物：** Muzellec et al. (2023) Bioinformatics, DOI: 10.1093/bioinformatics/btad547
 - **原始DESeq2 (R)：** Love et al. (2014) Genome Biology, DOI: 10.1186/s13059-014-0550-8

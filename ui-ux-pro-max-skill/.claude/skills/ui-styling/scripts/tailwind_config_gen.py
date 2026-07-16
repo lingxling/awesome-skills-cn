@@ -8,9 +8,15 @@ Supports colors, fonts, spacing, breakpoints, and plugin recommendations.
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# Valid npm package name pattern: optional @scope/, then package name with
+# optional subpath. Only allows alphanumeric, hyphens, dots, underscores,
+# and forward slashes — no quotes, parens, or semicolons.
+_VALID_PLUGIN_NAME = re.compile(r'^(@[a-zA-Z0-9_-]+/)?[a-zA-Z0-9_-]+(/[a-zA-Z0-9_.-]+)*$')
 
 
 class TailwindConfigGenerator:
@@ -207,7 +213,7 @@ class TailwindConfigGenerator:
         return f"""import type {{ Config }} from 'tailwindcss'
 
 const config: Config = {{
-{self._indent_json(config_json, 1)}
+{self._indent_json(config_json, 1)},
   plugins: [{plugins_str}],
 }}
 
@@ -224,19 +230,30 @@ export default config
 
         return f"""/** @type {{import('tailwindcss').Config}} */
 module.exports = {{
-{self._indent_json(config_json, 1)}
+{self._indent_json(config_json, 1)},
   plugins: [{plugins_str}],
 }}
 """
 
     def _format_plugins(self) -> str:
-        """Format plugins array for config."""
+        """Format plugins array for config.
+
+        Validates each plugin name against a strict allowlist pattern
+        to prevent code injection via crafted require() statements
+        (see: CWE-94).
+        """
         if not self.config["plugins"]:
             return ""
 
-        plugin_requires = [
-            f"require('{plugin}')" for plugin in self.config["plugins"]
-        ]
+        plugin_requires = []
+        for plugin in self.config["plugins"]:
+            if not _VALID_PLUGIN_NAME.match(plugin):
+                raise ValueError(
+                    f"Invalid plugin name: {plugin!r}. "
+                    "Plugin names must be valid npm package names "
+                    "(e.g. '@tailwindcss/typography')."
+                )
+            plugin_requires.append(f"require('{plugin}')")
         return ", ".join(plugin_requires)
 
     def _indent_json(self, json_str: str, level: int) -> str:

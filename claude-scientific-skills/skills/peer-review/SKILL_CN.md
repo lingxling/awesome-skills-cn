@@ -3,9 +3,8 @@ name: peer-review
 description: 基于检查表的结构化手稿/基金评审。使用特定标准方法论评估、统计有效性、报告标准合规性（CONSORT/STROBE）和建设性反馈撰写正式同行评审时使用。最适合实际评审写作、手稿修改。评估claim/证据质量请使用scientific-critical-thinking；定量评分框架请使用scholar-evaluation。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.2", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 
@@ -29,6 +28,8 @@ metadata:
 - 评估可重复性和数据可用性
 - 检查是否符合报告指南（CONSORT、STROBE、PRISMA）
 - 为科学写作提供建设性反馈
+
+**相关资源：** **venue-templates** 技能提供 `reviewer_expectations.md`，其中详细介绍了不同发表场合（Nature/Science、Cell Press、医学期刊、机器学习会议）的评审人关注点。可用它来校准你的评审标准以匹配目标发表场合。
 
 ## 使用科学示意图增强视觉效果
 

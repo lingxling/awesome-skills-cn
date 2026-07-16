@@ -24,9 +24,8 @@ Skills CLI（`npx skills`）是开放 agent skills 生态系统的包管理器�
 
 **核心命令：**
 
-- `npx skills find [query]` - 交互式或按关键词搜索skills
+- `npx skills find [query] [--owner <owner>]` - 交互式或按关键词搜索skills，可选地限定在某个 GitHub owner 范围内
 - `npx skills add <package>` - 从GitHub或其他来源安装skill
-- `npx skills check` - 检查skill更新
 - `npx skills update` - 更新所有已安装的skills
 
 **浏览skills地址：** https://skills.sh/
@@ -41,12 +40,20 @@ Skills CLI（`npx skills`）是开放 agent skills 生态系统的包管理器�
 2. 具体任务（例如：编写测试、创建动画、审查PR）
 3. 这是否是常见到很可能存在skill的任务
 
-### 步骤2：搜索 Skills
+### 步骤2：先查看排行榜
 
-使用相关查询运行find命令：
+在运行 CLI 搜索之前，先查看 [skills.sh 排行榜](https://skills.sh/)，看该领域是否已有知名的skill。排行榜按总安装量对skills排名，能直接呈现最受欢迎、最经过实战检验的选项。
+
+例如，Web 开发领域的热门skills包括：
+- `vercel-labs/agent-skills` — React、Next.js、Web 设计（各自安装量超过 10 万）
+- `anthropics/skills` — 前端设计、文档处理（安装量超过 10 万）
+
+### 步骤3：搜索 Skills
+
+如果排行榜没有覆盖用户的需求，运行find命令：
 
 ```bash
-npx skills find [query]
+npx skills find [query] [--owner <owner>]
 ```
 
 例如：
@@ -55,36 +62,37 @@ npx skills find [query]
 - 用户问"你能帮我审查PR吗？" → `npx skills find pr review`
 - 用户问"我需要创建一个变更日志" → `npx skills find changelog`
 
-命令将返回如下结果：
+### 步骤4：推荐前先核实质量
 
-```
-使用 npx skills add <owner/repo@skill> 安装
+**不要仅凭搜索结果就推荐某个skill。** 始终核实以下几点：
 
-vercel-labs/agent-skills@vercel-react-best-practices
-└ https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices
-```
+1. **安装量** — 优先选择安装量超过 1000 的skills，安装量低于 100 的要保持谨慎。
+2. **来源信誉** — 官方来源（`vercel-labs`、`anthropics`、`microsoft`）比未知作者更值得信赖。
+3. **GitHub star 数** — 检查源代码仓库。来自 star 数少于 100 的仓库的skill应保持怀疑态度。
 
-### 步骤3：向用户展示选项
+### 步骤5：向用户展示选项
 
 当找到相关skills时，向用户展示：
 
 1. skill名称及其功能
-2. 他们可以运行的安装命令
-3. 了解更多信息的链接到skills.sh
+2. 安装量和来源
+3. 他们可以运行的安装命令
+4. 了解更多信息的链接到skills.sh
 
 示例响应：
 
 ```
-我找到了一个可能有帮助的skill！"vercel-react-best-practices" skill
+我找到了一个可能有帮助的skill！"react-best-practices" skill
 提供来自Vercel工程的React和Next.js性能优化指南。
+（185K 次安装）
 
 安装方法：
-npx skills add vercel-labs/agent-skills@vercel-react-best-practices
+npx skills add vercel-labs/agent-skills@react-best-practices
 
-了解更多：https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices
+了解更多：https://skills.sh/vercel-labs/agent-skills/react-best-practices
 ```
 
-### 步骤4：提供安装
+### 步骤6：提供安装
 
 如果用户想要继续，你可以为他们安装skill：
 

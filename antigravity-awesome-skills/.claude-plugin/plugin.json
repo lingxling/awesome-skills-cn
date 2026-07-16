@@ -1,13 +1,13 @@
 {
-  "name": "antigravity-awesome-skills",
-  "version": "11.9.0",
-  "description": "Plugin-safe Claude Code distribution of Antigravity Awesome Skills with 1,455 supported skills.",
+  "name": "agentic-awesome-skills",
+  "version": "14.4.0",
+  "description": "Plugin-safe Claude Code distribution of Agentic Awesome Skills with 1,906 supported skills.",
   "author": {
     "name": "sickn33 and contributors",
-    "url": "https://github.com/sickn33/antigravity-awesome-skills"
+    "url": "https://github.com/sickn33/agentic-awesome-skills"
   },
-  "homepage": "https://github.com/sickn33/antigravity-awesome-skills",
-  "repository": "https://github.com/sickn33/antigravity-awesome-skills",
+  "homepage": "https://github.com/sickn33/agentic-awesome-skills",
+  "repository": "https://github.com/sickn33/agentic-awesome-skills",
   "license": "MIT",
   "keywords": [
     "claude-code",

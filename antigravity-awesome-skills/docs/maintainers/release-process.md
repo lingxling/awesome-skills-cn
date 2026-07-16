@@ -49,7 +49,7 @@ Use this as a diagnostic signal. It is useful for spotting legacy quality debt, 
 - If PR or CI workflow behavior changed during the cycle, confirm maintainer and contributor docs mention the active checks (for example the `skill-review` workflow for `SKILL.md` pull requests).
 - If maintainers used `npm run sync:risk-labels` or a comparable cleanup flow during the cycle, make sure the maintainer docs still describe the current audit -> sync -> repo-state loop.
 
-5. Prepare the release commit and tag locally:
+5. Prepare the protected release PR:
 
 ```bash
 npm run release:prepare -- X.Y.Z
@@ -62,16 +62,16 @@ This command:
 - runs the full release suite
 - refreshes release metadata in `README.md`
 - stages canonical release files
-- creates `chore: release vX.Y.Z`
-- creates the local tag `vX.Y.Z`
+- creates and pushes `release/vX.Y.Z`
+- opens a release PR containing the scripted canonical release state
 
-6. Publish the GitHub release:
+6. Merge the release PR through required checks, update local `main`, then publish the GitHub release:
 
 ```bash
 npm run release:publish -- X.Y.Z
 ```
 
-This command pushes `main`, pushes `vX.Y.Z`, and creates the GitHub release object from the matching `CHANGELOG.md` section.
+This command proves local `main` equals protected `origin/main` and the exact squash commit of the merged `release/vX.Y.Z` PR, checks that no canonical-sync PR or release-state drift remains, creates or reuses the matching local/remote tag safely, and creates the GitHub release object from the matching `CHANGELOG.md` section. It never pushes `main` directly and can be retried after a partial tag/release failure.
 
 7. Publish to npm if needed:
 
@@ -84,12 +84,12 @@ That workflow now reruns `sync:release-state`, installs Python dependencies from
 
 ## Canonical Sync Bot
 
-`main` still uses the repository's auto-sync model for canonical generated artifacts, but with a narrow contract:
+`main` still uses the repository's auto-sync model for canonical generated artifacts, but through a protected pull-request contract:
 
 - PRs stay source-only.
-- After merge, the `main` workflow may commit generated canonical files directly to `main` with `[ci skip]`.
-- Those bot commits still skip CI, so the sync contract must stay narrow and predictable: only canonical/generated files may be staged, and any unmanaged drift must fail the workflow instead of being silently pushed.
-- The bot commit is only allowed to stage files resolved from `tools/scripts/generated_files.js --include-mixed`.
+- After merge, the `main` workflow may open or update `automation/canonical-repo-state`; it never pushes generated files directly to `main`.
+- The bot PR is only allowed to stage files resolved from `tools/scripts/generated_files.js --include-mixed`.
+- Its explicitly dispatched required checks require both managed-only paths and an exact converged Git tree before an immediate protected merge.
 - If repo-state sync leaves any unmanaged tracked or untracked drift, the workflow fails instead of pushing a partial fix.
 - The scheduled hygiene workflow follows the same contract and shares the same concurrency group so only one canonical sync writer runs at a time.
 

@@ -3,9 +3,7 @@ name: usfiscaldata
 description: 查询美国财政部财政数据REST API以获取联邦财务数据。无需API密钥。用于国债（精确到分的债务）、每日财政声明、每月财政声明、国债拍卖、利率、汇率、储蓄债券或美国政府收入和支出统计。
 license: MIT
 allowed-tools: Read Write Edit Bash
-metadata:
-  version: "1.1"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 

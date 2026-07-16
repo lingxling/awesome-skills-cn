@@ -29,12 +29,28 @@ import re
 from datetime import datetime, timedelta, timezone
 
 from google.cloud import bigquery
+from _safe_paths import safe_existing_directory, safe_input_json_path, safe_output_json_path, write_json_file
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
 RESOURCE_TYPE = "bigquery"
 LOOKBACK_HOURS = int(os.getenv("LOOKBACK_HOURS", "24"))  # ← SUBSTITUTE: adjust lookback window
+_BQ_IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+
+
+def _require_bq_identifier(value: str, field: str) -> str:
+    value = str(value).strip()
+    if not value or not _BQ_IDENTIFIER_RE.fullmatch(value):
+        raise ValueError(f"Invalid BigQuery {field}: {value!r}")
+    return value
+
+
+def _bounded_int(value: int, field: str, *, minimum: int, maximum: int) -> int:
+    value = int(value)
+    if value < minimum or value > maximum:
+        raise ValueError(f"{field} must be between {minimum} and {maximum}")
+    return value
 
 # Regex patterns to detect CTAS and INSERT INTO SELECT in BigQuery SQL
 _CTAS_PATTERN = re.compile(
@@ -65,6 +81,8 @@ def _collect_schema_link_lineage(
     region: str,
 ) -> list[dict]:
     """Collect cross-project lineage from INFORMATION_SCHEMA.SCHEMATA_LINKS."""
+    project_id = _require_bq_identifier(project_id, "project_id")
+    region = _require_bq_identifier(region, "region")
     query = f"""
         SELECT
             CATALOG_NAME            AS source_project,
@@ -103,6 +121,8 @@ def _collect_query_lineage(
     lookback_hours: int,
 ) -> list[dict]:
     """Derive lineage by parsing CTAS/INSERT patterns in job query history."""
+    project_id = _require_bq_identifier(project_id, "project_id")
+    lookback_hours = _bounded_int(lookback_hours, "lookback_hours", minimum=1, maximum=24 * 31)
     end_dt = datetime.now(timezone.utc)
     start_dt = end_dt - timedelta(hours=lookback_hours)
 
@@ -161,6 +181,9 @@ def collect(
 
     Returns the manifest dict.
     """
+    project_id = _require_bq_identifier(project_id, "project_id")
+    region = _require_bq_identifier(region, "region")
+    lookback_hours = _bounded_int(lookback_hours, "lookback_hours", minimum=1, maximum=24 * 31)
     bq_client = bigquery.Client(project=project_id)
 
     log.info("Collecting lineage from project %s ...", project_id)
@@ -180,8 +203,7 @@ def collect(
         "query_derived_edges": len(query_edges),
         "edges": all_edges,
     }
-    with open(output_file, "w") as fh:
-        json.dump(manifest, fh, indent=2)
+    write_json_file(output_file, manifest)
     log.info("Lineage manifest written to %s", output_file)
 
     return manifest

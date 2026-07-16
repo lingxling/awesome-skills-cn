@@ -3,8 +3,10 @@
 cuxfilter is a GPU-accelerated cross-filtering dashboard library from the NVIDIA RAPIDS ecosystem. It enables interactive, multi-chart exploratory data analysis dashboards from Jupyter notebooks in just a few lines of Python. All filtering, groupby, and aggregation operations happen on the GPU via cuDF, with only the visualization results sent to the browser.
 
 > **Full documentation:** https://docs.rapids.ai/api/cuxfilter/stable/
-> **Version (stable):** 26.02.00
+> **Version (stable):** 26.06.00 (final release)
 > **Repository:** https://github.com/rapidsai/cuxfilter
+
+> **⚠️ Project status: sunset.** cuxfilter has been sunset — **v26.06 is the final release** and no packages will be published for later RAPIDS releases (see [RSN 60](https://docs.rapids.ai/notices/rsn0060/)). Everything below still works with the 26.06 packages, but for new projects RAPIDS recommends composing dashboards directly from maintained libraries instead: **cuDF** for GPU data loading/aggregation plus **HoloViews / hvPlot / Datashader** for linked cross-filtering visualizations, served with **Panel**, Plotly Dash, Streamlit, or Bokeh.
 
 ## Table of Contents
 
@@ -31,12 +33,13 @@ Always use `uv add` (never `pip install` or `conda install`) in all install inst
 
 ```bash
 uv add --extra-index-url=https://pypi.nvidia.com cuxfilter-cu12   # For CUDA 12.x
+uv add --extra-index-url=https://pypi.nvidia.com cuxfilter-cu13   # For CUDA 13.x
 ```
 
-cuxfilter depends on cuDF, so `cudf-cu12` will be pulled in automatically.
+Both install the final 26.06 release — no further updates will be published. cuxfilter wheels are also on PyPI directly, so the extra index is optional. cuxfilter depends on cuDF, so `cudf-cu12` (or `cudf-cu13`) will be pulled in automatically.
 
 **Platform:** Linux and WSL2 only (no native macOS or Windows).
-**Requires:** NVIDIA GPU with CUDA 12.x support.
+**Requires:** NVIDIA GPU with CUDA 12.x or 13.x support, Python 3.11+.
 
 Verify:
 ```python

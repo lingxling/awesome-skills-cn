@@ -2,8 +2,8 @@
 name: latex-posters
 description: "使用beamerposter、tikzposter或baposter在LaTeX中创建专业研究海报。支持会议演示、学术海报和科学传播。包括布局设计、配色方案、多列格式、图表集成和视觉传达的海报特定最佳实践。"
 allowed-tools: Read Write Edit Bash
-metadata:
-  version: "1.0"
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

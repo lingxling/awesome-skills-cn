@@ -2,9 +2,7 @@
 name: pydicom
 description: 用于处理DICOM（医学数字影像和通信）文件的Python库。当读取、写入或修改DICOM格式的医学影像数据、从医学图像（CT、MRI、X射线、超声）提取像素数据、匿名化DICOM文件、处理DICOM元数据和标签、将DICOM图像转换为其他格式、处理压缩DICOM数据或处理医学影像数据集时使用此技能。适用于涉及医学图像分析、PACS系统、放射学工作流和医疗影像应用的任务。
 license: https://github.com/pydicom/pydicom/blob/main/LICENSE
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

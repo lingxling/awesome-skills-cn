@@ -42,7 +42,9 @@ curl -X POST https://api.anthropic.com/v1/environments \
     "config": {
       "type": "cloud",
       "networking": {
-        "type": "package_managers_and_custom",
+        "type": "limited",
+        "allow_package_managers": true,
+        "allow_mcp_servers": true,
         "allowed_hosts": ["api.example.com"]
       }
     }
@@ -75,6 +77,8 @@ curl -X POST https://api.anthropic.com/v1/sessions \
     "agent": { "type": "agent", "id": "agent_abc123", "version": "1772585501101368014" },
     "environment_id": "env_abc123"
   }'
+# → { "id": "sesn_abc123", ... }
+# Trace: https://platform.claude.com/workspaces/default/sessions/sesn_abc123
 ```
 
 ### With system prompt, custom tools, and GitHub repo

@@ -91,7 +91,7 @@ Compare my skill repo with the top 5 similar repos on GitHub
 
 ## Source Attribution
 
-Originally contributed by [@wd041216-bit](https://github.com/wd041216-bit) in [PR #340](https://github.com/sickn33/antigravity-awesome-skills/pull/340). No standalone upstream repository is currently available for this skill.
+Originally contributed by [@wd041216-bit](https://github.com/wd041216-bit) in [PR #340](https://github.com/sickn33/agentic-awesome-skills/pull/340). No standalone upstream repository is currently available for this skill.
 
 **License**: MIT | **Version**: 4.0.0
 

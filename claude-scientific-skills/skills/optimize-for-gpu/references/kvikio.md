@@ -456,9 +456,14 @@ import kvikio
 pages_cached, total_pages = kvikio.get_page_cache_info("data.bin")
 print(f"{pages_cached}/{total_pages} pages in cache")
 
-# Clear page cache (requires root or appropriate permissions)
-kvikio.clear_page_cache()
+# Drop the page cache for a single file (no elevated privileges needed; added in 26.04)
+kvikio.drop_file_page_cache("data.bin")
+
+# Drop the system-wide page cache (requires elevated permissions)
+kvikio.drop_system_page_cache()
 ```
+
+`kvikio.clear_page_cache()` is deprecated since 26.04 — use `drop_system_page_cache()` (or the per-file `drop_file_page_cache()`) instead.
 
 ---
 

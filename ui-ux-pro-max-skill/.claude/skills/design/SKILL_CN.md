@@ -1,5 +1,5 @@
 ---
-name: ckm:design
+name: design
 description: "全面的设计技能：品牌标识、设计令牌、UI样式、标志生成（55种风格，Gemini AI）、企业标识计划（50个交付物，CIP模型）、HTML演示文稿（Chart.js）、横幅设计（22种风格，社交/广告/网络/印刷）、图标设计（15种风格，SVG，Gemini 3.1 Pro）、社交照片（HTML→截图，多平台）。操作：设计标志、创建CIP、生成模型、构建幻灯片、设计横幅、生成图标、创建社交照片、社交媒体图像、品牌标识、设计系统。平台：Facebook、Twitter、LinkedIn、YouTube、Instagram、Pinterest、TikTok、Threads、Google Ads。"
 argument-hint: "[设计类型] [上下文]"
 license: MIT
@@ -289,12 +289,23 @@ python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "user profile"
 | `scripts/cip/core.py` | CIP数据的BM25搜索引擎 |
 | `scripts/icon/generate.py` | 用Gemini 3.1 Pro生成SVG图标 |
 
+## 前置条件
+
+**Python：** 此技能使用Python脚本。在Windows上，使用`python`而不是`python3`（例如，使用`python scripts/logo/search.py`而不是`python3 scripts/logo/search.py`）。
+
+检查Python是否已安装：
+```bash
+python3 --version || python --version
+```
+
 ## 设置
 
 ```bash
 export GEMINI_API_KEY="your-key"  # https://aistudio.google.com/apikey
 pip install google-genai pillow
 ```
+
+> **Windows注意事项：** 在需要的地方使用`python`而不是`pip`（例如，使用`python -m pip install ...`）。
 
 ## 集成
 

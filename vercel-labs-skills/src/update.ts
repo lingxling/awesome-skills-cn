@@ -5,13 +5,8 @@ import { fileURLToPath } from 'url';
 import * as p from '@clack/prompts';
 import pc from 'picocolors';
 
-import {
-  readSkillLock,
-  fetchSkillFolderHash,
-  getGitHubToken,
-  type SkillLockEntry,
-} from './skill-lock.ts';
-import { readLocalLock, type LocalSkillLockEntry } from './local-lock.ts';
+import { readSkillLock, getGitHubToken, type SkillLockEntry } from './skill-lock.ts';
+import { computeSkillFolderHash, readLocalLock, type LocalSkillLockEntry } from './local-lock.ts';
 import {
   formatSourceInput,
   buildUpdateInstallSource,
@@ -237,7 +232,7 @@ export async function getProjectSkillsForUpdate(
     if (entry.sourceType === 'node_modules' || entry.sourceType === 'local') {
       continue;
     }
-    skills.push({ name, source: entry.source, entry });
+    skills.push({ name, source: entry.sourceUrl || entry.source, entry });
   }
 
   return skills;
@@ -277,7 +272,7 @@ export async function checkAndPromptForDeletions(
 
       if (confirmed && !p.isCancel(confirmed)) {
         for (const s of deletedSkills) {
-          console.log(`${DIM}Removing${RESET} ${s}...`);
+          console.log(`${DIM}Removing${RESET} ${s}…`);
           await removeCommand([s], { yes: true, global: isGlobal });
         }
       }
@@ -336,13 +331,22 @@ export async function updateGlobalSkills(
 
   for (const [source, itemsForSource] of bySource) {
     const firstEntry = itemsForSource[0]!.entry;
+    const sourceUrl = firstEntry.sourceUrl || firstEntry.source;
+    let tempDir: string | null = null;
 
     process.stdout.write(`\r${DIM}Checking skills from source: ${source}${RESET}\x1b[K\n`);
 
     try {
-      const tree = await fetchRepoTree(source, firstEntry.ref, getGitHubToken);
+      const isGitHubSource = firstEntry.sourceType === 'github';
 
-      if (tree) {
+      if (isGitHubSource) {
+        const tree = await fetchRepoTree(source, firstEntry.ref, getGitHubToken);
+
+        if (!tree) {
+          console.log(`  ${DIM}✗ Failed to fetch tree for ${source}${RESET}`);
+          continue;
+        }
+
         const discoveredPaths = findSkillMdPaths(tree);
 
         const allLockedForSource = Object.entries(lock.skills)
@@ -358,17 +362,55 @@ export async function updateGlobalSkills(
           discoveredPaths
         );
 
+        const deletedSkillSet = new Set(deletedSkills);
+
         for (const { name: skillName, entry } of itemsForSource) {
+          if (deletedSkillSet.has(skillName)) continue;
+
           const latestHash = getSkillFolderHashFromTree(tree, entry.skillPath!);
           if (latestHash && latestHash !== entry.skillFolderHash) {
             updates.push({ name: skillName, source, entry });
           }
         }
-      } else {
-        console.log(`  ${DIM}✗ Failed to fetch tree for ${source}${RESET}`);
+
+        continue;
+      }
+
+      tempDir = await cloneRepo(sourceUrl, firstEntry.ref);
+      const discoveredPaths = (await discoverSkills(tempDir)).map((skill) => {
+        return join(relative(tempDir!, skill.path), 'SKILL.md').split(sep).join('/');
+      });
+
+      const allLockedForSource = Object.entries(lock.skills)
+        .filter(([_, entry]) => entry.source === source)
+        .map(([name, _]) => name);
+
+      const deletedSkills = await checkAndPromptForDeletions(
+        source,
+        allLockedForSource,
+        lock.skills,
+        true,
+        options,
+        discoveredPaths
+      );
+
+      const deletedSkillSet = new Set(deletedSkills);
+
+      for (const { name: skillName, entry } of itemsForSource) {
+        if (deletedSkillSet.has(skillName)) continue;
+
+        const skillPath = entry.skillPath!;
+        if (!discoveredPaths.includes(skillPath)) continue;
+
+        const latestHash = await computeSkillFolderHash(join(tempDir, dirname(skillPath)));
+        if (latestHash && latestHash !== entry.skillFolderHash) {
+          updates.push({ name: skillName, source, entry });
+        }
       }
     } catch (error) {
-      console.log(`  ${DIM}✗ Error checking skills from ${source}${RESET}`);
+      console.log(`  ${DIM}✗ Failed to check skills from ${source}${RESET}`);
+    } finally {
+      if (tempDir) await cleanupTempDir(tempDir);
     }
   }
 
@@ -400,8 +442,15 @@ export async function updateGlobalSkills(
 
   for (const update of updates) {
     const safeName = sanitizeMetadata(update.name);
-    console.log(`${TEXT}Updating ${safeName}...${RESET}`);
+    console.log(`${TEXT}Updating ${safeName}…${RESET}`);
     const installUrl = buildUpdateInstallSource(update.entry);
+    if (!installUrl) {
+      failCount++;
+      console.log(
+        `  ${DIM}✗ Cannot update ${safeName}: lock file is missing sourceUrl for this generic Git source${RESET}`
+      );
+      continue;
+    }
 
     const cliEntry = join(__dirname, '..', 'bin', 'cli.mjs');
     if (!existsSync(cliEntry)) {
@@ -414,7 +463,12 @@ export async function updateGlobalSkills(
     const result = spawnSync(process.execPath, [cliEntry, 'add', installUrl, '-g', '-y'], {
       stdio: ['inherit', 'pipe', 'pipe'],
       encoding: 'utf-8',
-      shell: process.platform === 'win32',
+      // Never spawn through a shell. process.execPath is an absolute path to the
+      // node binary, so no shell is needed to resolve it. installUrl is derived
+      // from the lock file (and ref is URL-decoded, so influenceable by whoever
+      // publishes a skill); a shell on Windows would let metacharacters in that
+      // value inject commands. Passing argv directly keeps it inert.
+      shell: false,
     });
 
     if (result.status === 0) {
@@ -481,12 +535,12 @@ export async function updateProjectSkills(
     console.log(`${TEXT}Updating for: ${targetParts.join(', ')}${RESET}`);
   }
 
-  console.log(`${TEXT}Refreshing ${updatable.length} skill(s)...${RESET}`);
+  console.log(`${TEXT}Refreshing ${updatable.length} skill(s)…${RESET}`);
   console.log();
 
   const bySource = new Map<string, typeof updatable>();
   for (const skill of updatable) {
-    const source = skill.entry.source;
+    const source = skill.entry.sourceUrl || skill.entry.source;
     const existing = bySource.get(source) || [];
     existing.push(skill);
     bySource.set(source, existing);
@@ -502,15 +556,23 @@ export async function updateProjectSkills(
 
   for (const [source, skillsForSource] of bySource) {
     const firstEntry = skillsForSource[0]!.entry;
-    const sourceUrl = firstEntry.source;
+    const sourceUrl = firstEntry.sourceUrl || firstEntry.source;
     const ref = firstEntry.ref;
 
     const allLockedForSource = Object.entries(localLock.skills)
-      .filter(([_, entry]) => entry.source === source)
+      .filter(([_, entry]) => (entry.sourceUrl || entry.source) === source)
       .map(([name, _]) => name);
 
     let tempDir: string | null = null;
     let deletedSkills: string[] = [];
+
+    if (buildLocalUpdateSource(firstEntry) === null) {
+      failCount += skillsForSource.length;
+      console.log(
+        `${DIM}✗ Cannot update ${source}: skills-lock.json is missing sourceUrl for this generic Git source${RESET}`
+      );
+      continue;
+    }
 
     try {
       tempDir = await cloneRepo(sourceUrl, ref);
@@ -541,16 +603,33 @@ export async function updateProjectSkills(
 
     for (const skill of remainingSkills) {
       const safeName = sanitizeMetadata(skill.name);
-      console.log(`${TEXT}Updating ${safeName}...${RESET}`);
-      const installUrl = formatSourceInput(skill.entry.source, skill.entry.ref);
+      console.log(`${TEXT}Updating ${safeName}…${RESET}`);
+      const installUrl = buildLocalUpdateSource(skill.entry);
+      if (!installUrl) {
+        failCount++;
+        console.log(
+          `  ${DIM}✗ Cannot update ${safeName}: skills-lock.json is missing sourceUrl for this generic Git source${RESET}`
+        );
+        continue;
+      }
+
+      // Preserve Eve subagent placement recorded at install time. The lock stores
+      // '' for the root agent, which maps to the `root` keyword for `add --subagent`.
+      const subagentArgs = skill.entry.subagents?.length
+        ? ['--subagent', ...skill.entry.subagents.map((s) => (s === '' ? 'root' : s))]
+        : [];
 
       const result = spawnSync(
         process.execPath,
-        [cliEntry, 'add', installUrl, '--skill', skill.name, '-y'],
+        [cliEntry, 'add', installUrl, '--skill', skill.name, ...subagentArgs, '-y'],
         {
           stdio: ['inherit', 'pipe', 'pipe'],
           encoding: 'utf-8',
-          shell: process.platform === 'win32',
+          // Never spawn through a shell — same reasoning as updateGlobalSkills:
+          // execPath is absolute (no shell resolution needed) and installUrl/ref
+          // come from the lock file, so a shell would allow command injection on
+          // Windows. Pass argv directly instead.
+          shell: false,
         }
       );
 
@@ -577,9 +656,15 @@ export function printLegacyProjectSkills(
     `${DIM}${legacy.length} project skill(s) cannot be updated automatically (installed before skillPath tracking):${RESET}`
   );
   for (const skill of legacy) {
-    const reinstall = formatSourceInput(skill.entry.source, skill.entry.ref);
+    const reinstall = buildLocalUpdateSource(skill.entry);
     console.log(`  ${TEXT}•${RESET} ${sanitizeMetadata(skill.name)}`);
-    console.log(`    ${DIM}To refresh: ${TEXT}npx skills add ${reinstall} -y${RESET}`);
+    if (reinstall) {
+      console.log(`    ${DIM}To refresh: ${TEXT}npx skills add ${reinstall} -y${RESET}`);
+    } else {
+      console.log(
+        `    ${DIM}To refresh: reinstall using the original full Git URL; this lock entry only has an ambiguous shorthand.${RESET}`
+      );
+    }
   }
 }
 
@@ -588,9 +673,9 @@ export async function runUpdate(args: string[] = []): Promise<void> {
   const scope = await resolveUpdateScope(options);
 
   if (options.skills) {
-    console.log(`${TEXT}Updating ${options.skills.join(', ')}...${RESET}`);
+    console.log(`${TEXT}Updating ${options.skills.join(', ')}…${RESET}`);
   } else {
-    console.log(`${TEXT}Checking for skill updates...${RESET}`);
+    console.log(`${TEXT}Checking for skill updates…${RESET}`);
   }
   console.log();
 
@@ -631,6 +716,7 @@ export async function runUpdate(args: string[] = []): Promise<void> {
   }
   if (totalFail > 0) {
     console.log(`${DIM}Failed to update ${totalFail} skill(s)${RESET}`);
+    process.exitCode = 1;
   }
 
   track({

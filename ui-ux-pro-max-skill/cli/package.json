@@ -1,19 +1,25 @@
 {
-  "name": "uipro-cli",
+  "name": "ui-ux-pro-max-cli",
   "version": "2.5.0",
   "description": "CLI to install UI/UX Pro Max skill for AI coding assistants",
   "type": "module",
   "bin": {
-    "uipro": "./dist/index.js"
+    "uipro": "dist/index.js"
   },
   "files": [
     "dist",
     "assets"
   ],
   "scripts": {
-    "build": "bun build src/index.ts --outdir dist --target node",
+    "build": "node scripts/build.mjs",
     "dev": "bun run src/index.ts",
-    "prepublishOnly": "bun run build"
+    "sync:assets": "node scripts/sync-assets.mjs",
+    "check:assets": "node scripts/sync-assets.mjs --check",
+    "validate:csv": "cd .. && python3 scripts/validate-csv.py",
+    "smoke:domains": "cd .. && bash scripts/smoke-domains.sh",
+    "smoke:stacks": "cd .. && bash scripts/smoke-stacks.sh",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run sync:assets && npm run validate:csv && npm run smoke:domains && npm run smoke:stacks && npm run typecheck && npm run build"
   },
   "keywords": [
     "ui",
@@ -34,12 +40,13 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "commander": "^12.1.0",
     "chalk": "^5.3.0",
+    "commander": "^12.1.0",
     "ora": "^8.1.1",
     "prompts": "^2.4.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "@types/bun": "^1.1.14",
     "@types/node": "^22.10.1",
     "@types/prompts": "^2.4.9",

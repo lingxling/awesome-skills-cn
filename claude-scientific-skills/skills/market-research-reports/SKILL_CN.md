@@ -3,9 +3,7 @@ name: market-research-reports
 description: 以顶级咨询公司（麦肯锡、BCG、Gartner）的风格生成全面的市场研究报告（50+页）。具有专业的LaTeX格式、使用scientific-schematics和generate-image进行广泛的可视化生成、与research-lookup深度集成以收集数据，以及多框架战略分析，包括波特五力模型、PESTLE、SWOT、TAM/SAM/SOM和BCG矩阵。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

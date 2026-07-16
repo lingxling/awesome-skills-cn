@@ -26,14 +26,24 @@ import argparse
 import json
 import logging
 import os
+import re
 from datetime import datetime, timezone
 
 from google.cloud import bigquery
+from _safe_paths import safe_existing_directory, safe_input_json_path, safe_output_json_path, write_json_file
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
 RESOURCE_TYPE = "bigquery"
+_BQ_IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9_-]+$")
+
+
+def _require_bq_identifier(value: str, field: str) -> str:
+    value = str(value).strip()
+    if not value or not _BQ_IDENTIFIER_RE.fullmatch(value):
+        raise ValueError(f"Invalid BigQuery {field}: {value!r}")
+    return value
 
 # BigQuery type → Monte Carlo canonical type
 BQ_TYPE_MAP: dict[str, str] = {
@@ -71,16 +81,20 @@ def _fetch_iceberg_tables(
     tables: list[str] | None = None,
 ) -> list[dict]:
     """Query TABLE_STORAGE for BigLake (Iceberg) tables."""
+    project_id = _require_bq_identifier(project_id, "project_id")
+    datasets = [_require_bq_identifier(d, "dataset") for d in datasets or []] or None
+    tables = [_require_bq_identifier(t, "table") for t in tables or []] or None
     conditions = [
         "managed_table_type = 'BIGLAKE'",
         "deleted = FALSE",
     ]
+    query_parameters = []
     if datasets:
-        ds_list = ", ".join(f"'{d}'" for d in datasets)
-        conditions.append(f"table_schema IN ({ds_list})")
+        conditions.append("table_schema IN UNNEST(@datasets)")
+        query_parameters.append(bigquery.ArrayQueryParameter("datasets", "STRING", datasets))
     if tables:
-        tbl_list = ", ".join(f"'{t}'" for t in tables)
-        conditions.append(f"table_name IN ({tbl_list})")
+        conditions.append("table_name IN UNNEST(@tables)")
+        query_parameters.append(bigquery.ArrayQueryParameter("tables", "STRING", tables))
 
     where = " AND ".join(conditions)
     query = f"""
@@ -96,7 +110,8 @@ def _fetch_iceberg_tables(
         ORDER BY table_schema, table_name
     """
     log.info("Querying TABLE_STORAGE for Iceberg tables ...")
-    rows = list(client.query(query).result())
+    job_config = bigquery.QueryJobConfig(query_parameters=query_parameters)
+    rows = list(client.query(query, job_config=job_config).result())
     log.info("Found %d Iceberg table(s).", len(rows))
     return [dict(row) for row in rows]
 
@@ -108,18 +123,24 @@ def _fetch_columns(
     table_name: str,
 ) -> list[dict]:
     """Fetch column metadata for a specific table."""
+    project_id = _require_bq_identifier(project_id, "project_id")
+    dataset = _require_bq_identifier(dataset, "dataset")
+    table_name = _require_bq_identifier(table_name, "table")
     query = f"""
         SELECT column_name, data_type, ordinal_position, is_nullable, column_default
         FROM `{project_id}.{dataset}.INFORMATION_SCHEMA.COLUMNS`
-        WHERE table_name = '{table_name}'
+        WHERE table_name = @table_name
         ORDER BY ordinal_position
     """
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[bigquery.ScalarQueryParameter("table_name", "STRING", table_name)]
+    )
     return [
         {
             "name": row["column_name"],
             "type": map_bq_type(row["data_type"]),
         }
-        for row in client.query(query).result()
+        for row in client.query(query, job_config=job_config).result()
     ]
 
 
@@ -155,6 +176,9 @@ def collect(
     omits fields from the manifest. Use this for periodic hourly pushes
     after the initial full metadata push.
     """
+    project_id = _require_bq_identifier(project_id, "project_id")
+    datasets = [_require_bq_identifier(d, "dataset") for d in datasets or []] or None
+    tables = [_require_bq_identifier(t, "table") for t in tables or []] or None
     client = bigquery.Client(project=project_id)  # ← SUBSTITUTE: adjust auth if needed
 
     if only_freshness_and_volume:
@@ -200,8 +224,7 @@ def collect(
         "collected_at": datetime.now(timezone.utc).isoformat(),
         "assets": assets,
     }
-    with open(output_file, "w") as fh:
-        json.dump(manifest, fh, indent=2)
+    write_json_file(output_file, manifest)
     log.info("Manifest written to %s (%d assets)", output_file, len(assets))
 
     return manifest

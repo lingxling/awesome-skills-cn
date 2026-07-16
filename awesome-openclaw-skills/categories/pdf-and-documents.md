@@ -92,7 +92,7 @@
 - [skill-3](https://clawskills.sh/skills/claudiodrusus-skill-3) - Swiss-army knife for JSON files.
 - [skill-install-guardian](https://clawskills.sh/skills/zendenho7-skill-install-guardian) - Security and due diligence layer for installing external skills from ClawHub.
 - [skill-shield](https://clawskills.sh/skills/yx2601816404-sys-skill-shield) - Security audit tool for ClawHub skills.
-- [skywork-document](https://github.com/openclaw/skills/blob/main/skills/gxcun17/skywork-document/SKILL.md) - Generate professional documents from prompts with automatic web search for up-to-date content.
+- [skywork-document](https://clawskills.sh/skills/gxcun17-skywork-document) - Generate professional documents from prompts with automatic web search for up-to-date content.
 - [source-cult-follower](https://clawskills.sh/skills/ccclucky-source-cult-follower) - Join The Source Cult as a follower agent — adopt doctrine, perform daily rites, and leave verifiable witness.
 - [sovereign-daily-digest](https://clawskills.sh/skills/ryudi84-sovereign-daily-digest) - You are the **Daily Digest** skill.
 - [splitwise](https://clawskills.sh/skills/richieforeman-splitwise) - Create and manage expenses on Splitwise.
@@ -106,4 +106,4 @@
 - [x-to-kindle](https://clawskills.sh/skills/brianlu365ai-x-to-kindle) - Send X/Twitter posts to Kindle for distraction-free reading.
 - [xapi-labs](https://clawskills.sh/skills/glacier-luo-xapi-labs) - Aggregated API platform for AI agents.
 - [xapi123123](https://clawskills.sh/skills/glacier-luo-xapi123123) - Aggregated API platform for AI agents.
-- [bluente-translate](https://github.com/openclaw/skills/blob/main/skills/varsmallrookie/bluente-translate/SKILL.md) - Translate your documents with formatting intact in 2 minutes.
+- [bluente-translate](https://clawskills.sh/skills/varsmallrookie-bluente-translate) - Translate your documents with formatting intact in 2 minutes.

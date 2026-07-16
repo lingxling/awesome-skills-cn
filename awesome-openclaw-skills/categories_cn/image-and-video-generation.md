@@ -93,6 +93,8 @@
 - [image-gen](https://clawskills.sh/skills/wells1137-image-gen) - 使用多个 AI 模型生成图像 — Midjourney（通过 Legnext.ai）、Flux、SDXL、Nano Banana（Gemini）
 - [image-hosting](https://clawskills.sh/skills/rahulgi-image-hosting) - 将图像上传到 img402.dev 并获取公共 URL。
 - [image-magik-resize](https://clawskills.sh/skills/pr1vateer-image-magik-resize) - 使用 ImageMagick（CLI）调整图像大小
+- [ima-all-ai](https://clawskills.sh/skills/allenfancy-gan-ima-all-ai) - 用于图像、视频和音乐生成的 IMA API。
+- [ima-knowledge-ai](https://clawskills.sh/skills/dai-shuo-ima-knowledge-ai) - 面向视频、图像和音频的 AI 内容简报与制作指南。
 - [immich-api](https://clawskills.sh/skills/ninjazan420-immich-api) - Immich 照片管理 API 桥接。
 - [immortal](https://clawskills.sh/skills/majestyatenkhu-immortal) - 为 AI 代理提供加密资源活力评估。
 - [instagram-photo-text-overlay](https://clawskills.sh/skills/psyduckler-instagram-photo-text-overlay) - 在 Instagram 帖子的照片上叠加文本。
@@ -140,8 +142,11 @@
 - [rollhub-analyst](https://clawskills.sh/skills/rollhub-dev-rollhub-analyst) - 在可证明公平的加密赌场研究和回测赌博策略。
 - [saa-agent](https://clawskills.sh/skills/mirabarukaso-saa-agent) - 使 AI 代理能够使用 Character Select Stand Alone App (SAA) 图像生成后端生成图像。
 - [shopify-bulk-upload](https://clawskills.sh/skills/zhaoteng-qd-shopify-bulk-upload) - 批量上传产品到 Shopify 商店。
+- [runapi-mcp](https://clawhub.ai/runapi-ai/runapi-mcp) - 来自 18 家提供商的 130+ 种图像、视频、音乐、音频和 LLM 生成 AI 模型。8 个 MCP 工具，可免费浏览目录。`npx @runapi.ai/mcp`
+- [skywork-design](https://clawskills.sh/skills/gxcun17-skywork-design) - 通过 Skywork Image 生成和编辑海报、Logo 等图像。
 - [skill-1](https://clawskills.sh/skills/claudiodrusus-skill-1) - 从文本、URL、WiFi 凭据、vCards 或任何数据生成 QR 码。
 - [snapog](https://clawskills.sh/skills/beameasy-snapog) - 通过 SnapOG API 从专业模板生成社交图像和 OG 卡片。
+- [video-editor-ai](https://clawhub.ai/imo14reifey/video-editor-ai) - AI 视频编辑器 — 通过聊天编辑 MP4，添加背景音乐/字幕/特效，直接导出。无需 GUI。支持制作 TikTok/Reels/Shorts 短视频。
 - [solo-humanize](https://clawskills.sh/skills/fortunto2-solo-humanize) - 从文本中去除 AI 写作模式 — 破折号、陈词滥调、促销膨胀、表演真实性。
 - [sprite-animator](https://clawskills.sh/skills/awlevin-sprite-animator) - 使用 AI 从任何图像生成动画像素艺术精灵。
 - [subtitle-translate-skill](https://clawskills.sh/skills/thetail001-subtitle-translate-skill) - 使用具有 OpenAI 兼容格式的 LLM API 翻译 SRT 字幕文件。
@@ -167,3 +172,4 @@
 - [zerox](https://clawskills.sh/skills/otacu-zerox) - 使用 zerox 库将文档（PDF、DOCX、PPTX、图像等）转换为 Markdown。
 - [zhipu-cogview-image](https://clawskills.sh/skills/honestqiao-zhipu-cogview-image) - 使用智谱 AI 的 CogView 模型生成图像。
 - [creaa-ai](https://clawskills.sh/skills/yys2024-creaa-ai) - 通过 Creaa API 生成和编辑图像 + 生成视频（Nano Banana 2、Sora 2、Seedance 2.0、Veo 3.1）。
+- [image-gen-guide](https://clawhub.ai/amrree/image-gen-guide) - 使用 Ollama 进行本地 AI 图像生成的完整指南 — 无需 API 密钥，100% 私密。

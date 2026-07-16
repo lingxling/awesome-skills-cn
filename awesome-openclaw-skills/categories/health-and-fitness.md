@@ -86,3 +86,5 @@
 - [vynn-backtester](https://clawskills.sh/skills/beee003-vynn-backtester) - Run trading strategy backtests with natural language — powered by Vynn.
 - [xrpl-tx-builder](https://clawskills.sh/skills/harleyscodes-xrpl-tx-builder) - Build and sign XRP Ledger transactions.
 - [yumstock](https://clawskills.sh/skills/yumyumtum-yumstock) - Macro-gated US stock analysis combining technical indicators, fundamentals, and macro environment with weighted.
+- [signet-guide](https://clawhub.ai/amrree/signet-guide) - Getting started with Signet Mind — local mental health companion with grounding exercises and mood tracking.
+- [solcal-recovery](https://clawhub.ai/amrree/solcal-recovery) - OpenClaw repair toolkit — automated diagnostics, backup/restore, and guided AI-assisted recovery.

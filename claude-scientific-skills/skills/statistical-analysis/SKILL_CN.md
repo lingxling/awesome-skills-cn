@@ -1,27 +1,20 @@
 ---
 name: statistical-analysis
-description: 引导式统计分析，包含检验选择和报告。当您需要帮助为数据选择适当的检验、假设检验、功效分析和APA格式结果时使用。最适合学术研究报告、检验选择指导。若要以编程方式实现特定模型，请使用statsmodels。
+description: 面向研究数据的引导式统计分析——检验选择、假设检查、效应量、功效分析、贝叶斯替代方法和APA格式报告。当用户想要比较组别、检验假设、分析实验或调查数据、检查统计假设、计算所需样本量或撰写结果报告时使用——即使用户没有指明具体的检验方法。涵盖t检验、方差分析、卡方检验、相关性、回归、非参数方法和贝叶斯方法。对于底层模型API，请参见statsmodels和pymc技能。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
-
-
-
-
-
 
 # 统计分析
 
 ## 概述
 
-统计分析是一个系统化的过程，用于检验假设和量化关系。进行假设检验（t检验、方差分析、卡方检验）、回归、相关性和贝叶斯分析，包括假设检查和APA报告。将此技能应用于学术研究。
+进行假设检验（t检验、方差分析、卡方检验）、回归、相关性和贝叶斯分析，并系统地检查假设、计算效应量并撰写APA风格的报告。目标是产出一份评审者挑不出毛病的分析：正确的检验方法、经过验证的假设、如实报告的效应量，以及完整的撰写。
 
 ## 何时使用此技能
 
-当以下情况时应使用此技能：
-- 进行统计假设检验（t检验、方差分析、卡方检验）
+在以下情况下使用此技能：
+- 进行统计假设检验（t检验、方差分析、卡方检验、非参数检验）
 - 执行回归或相关性分析
 - 运行贝叶斯统计分析
 - 检查统计假设和诊断
@@ -31,66 +24,49 @@ metadata:
 
 ---
 
-## 核心能力
+## 安装
 
-### 1. 测试选择和规划
-- 根据研究问题和数据特征选择适当的统计测试
-- 进行先验功效分析以确定所需的样本量
-- 规划分析策略，包括多重比较校正
+使用 **uv** 安装本技能所用的库。生产环境中请固定版本号；探索阶段不固定版本也可以。
 
-### 2. 假设检查
-- 在运行测试前自动验证所有相关假设
-- 提供诊断可视化（Q-Q图、残差图、箱线图）
-- 当假设被违反时推荐补救措施
+```bash
+# 核心频率派工具栈（Python 3.10+；推荐3.12+以使用最新的SciPy/ArviZ）
+uv pip install "pingouin>=0.6" "scipy>=1.11" "statsmodels>=0.14.6" pandas matplotlib seaborn
 
-### 3. 统计测试
-- 假设检验：t检验、方差分析、卡方检验、非参数替代方法
-- 回归：线性、多元、逻辑回归，带诊断
-- 相关性：皮尔逊、斯皮尔曼，带置信区间
-- 贝叶斯替代方法：贝叶斯t检验、方差分析、带贝叶斯因子的回归
+# 贝叶斯建模（PyMC 5 + ArviZ）
+uv pip install "pymc>=5.0" "arviz>=1.0"
+```
 
-### 4. 效应量和解释
-- 为所有分析计算和解释适当的效应量
-- 为效应估计提供置信区间
-- 区分统计显著性和实际显著性
+**兼容性说明（已针对 pingouin 0.6.1、statsmodels 0.14.6、arviz 1.2 验证，2026年）：**
 
-### 5. 专业报告
-- 生成APA风格的统计报告
-- 创建可发布的图表和表格
-- 提供完整的解释，包括所有必需的统计数据
+- **Pingouin 0.6.0** 重命名了输出列名以去除特殊字符：`p_val`、`cohen_d`、`CI95`、`p_unc`（在0.5.x中此前分别为`p-val`、`cohen-d`、`CI95%`、`p-unc`）。下文示例使用当前列名；如果仍在使用0.5.x，请改用带连字符的旧写法。
+- **statsmodels + SciPy**：使用 `statsmodels>=0.14.6` 搭配 `scipy>=1.11`，以避免在SciPy 1.16+上出现`_lazywhere`导入错误。
+- **ArviZ 1.x**：`az.summary()` 现在默认输出**89%区间**（`eti89`列），且区间宽度参数改为 `ci_prob`（而不是`hdi_prob`）。要报告常规的95%可信区间，需显式传入 `az.summary(trace, ci_prob=0.95)`。
+- **单侧贝叶斯因子已从Pingouin中移除**：`pg.ttest(..., alternative='greater')` 会静默丢弃 `BF10` 列，`pg.bayesfactor_ttest` 在单侧备择假设下会报错。对于单侧贝叶斯检验，请直接使用PyMC（计算方向性假设的后验概率）或JASP/R的BayesFactor包。
+
+有关特定模型的API（OLS、GLM、ARIMA），请参见 **statsmodels** 技能。有关PyMC工作流，请参见 **pymc** 技能。
 
 ---
 
-## 工作流决策树
+## 分析工作流
 
-使用此决策树确定您的分析路径：
+每一次严谨的分析都遵循相同的路径。跳过步骤正是分析最终被撤稿的原因，因此请按顺序逐一完成，并说明在每一步做了什么。
 
-```
-开始
-│
-├─ 需要选择统计测试？
-│  └─ 是 → 参见"测试选择指南"
-│  └─ 否 → 继续
-│
-├─ 准备检查假设？
-│  └─ 是 → 参见"假设检查"
-│  └─ 否 → 继续
-│
-├─ 准备运行分析？
-│  └─ 是 → 参见"运行统计测试"
-│  └─ 否 → 继续
-│
-└─ 需要报告结果？
-   └─ 是 → 参见"报告结果"
-```
+1. **先明确问题，再动数据。** 说明假设、结局变量和预测变量，以及设计类型（独立还是配对、组数）。现在就确定计划采用的检验方法——在看过结果之后再选择检验方法，即使是无意为之，也是p值操纵（p-hacking）。
+2. **检查数据。** 按组统计：n、均值、标准差、中位数、缺失值。在进行任何检验之前先绘制原始数据（直方图或箱线图）。组间样本量不均、缺失数据、地板/天花板效应和异常值都会改变适用的检验方法——应向用户明确指出这些问题，而不是悄悄地绕过它们。
+3. **选择检验方法**，可使用下面的快速参考，或参考`references/test_selection_guide.md`了解基础方法之外的设计（计数、时间-事件、信度、析因设计）。
+4. **用`scripts/assumption_checks.py`检查假设。** 如果某个假设不成立，改用补救性检验方法（见下表），并同时报告原计划和所做的更改。
+5. **运行检验**，并始终同时计算效应量——p值只能说明效应是否存在；效应量才能说明是否值得关注。
+6. **撰写报告**，使用下面的APA模板，包括描述性统计、精确的统计量、带置信区间的效应量，以及所执行的假设检查。
+
+如果用户只需要其中一个步骤（例如"我需要多少参与者？"），可以直接跳到相应部分——但仍需确认该计算所依赖的设计假设。
 
 ---
 
-## 测试选择指南
+## 检验选择指南
 
-### 快速参考：选择正确的测试
+### 快速参考：选择正确的检验
 
-使用`references/test_selection_guide.md`获取全面指导。快速参考：
+有关计数数据、生存分析、信度、析因设计等全面指导，请使用`references/test_selection_guide.md`。快速参考：
 
 **比较两组：**
 - 独立、连续、正态 → 独立t检验
@@ -111,26 +87,20 @@ metadata:
 - 二分类结果与预测变量 → 逻辑回归
 
 **贝叶斯替代方法：**
-所有测试都有贝叶斯版本，提供：
-- 关于假设的直接概率陈述
-- 量化证据的贝叶斯因子
-- 支持零假设的能力
-- 参见`references/bayesian_statistics.md`
+所有检验都有贝叶斯版本，可提供关于假设的直接概率陈述、量化证据的贝叶斯因子，以及支持零假设的能力。参见`references/bayesian_statistics.md`。
 
 ---
 
 ## 假设检查
 
-### 系统性假设验证
+**始终在解释检验结果之前检查假设**，并报告检查过程——评审者会关注这些内容。
 
-**在解释测试结果之前，始终检查假设。**
-
-使用提供的`scripts/assumption_checks.py`模块进行自动检查：
+使用内置的`scripts/assumption_checks.py`模块。从技能目录（`skills/statistical-analysis/`）运行Python，或将`scripts/`添加到`sys.path`：
 
 ```python
-from scripts.assumption_checks import comprehensive_assumption_check
+from assumption_checks import comprehensive_assumption_check
 
-# 带可视化的全面检查
+# 异常值 + 正态性（按组）+ 方差齐性检验，附带图表
 results = comprehensive_assumption_check(
     data=df,
     value_col='score',
@@ -139,32 +109,19 @@ results = comprehensive_assumption_check(
 )
 ```
 
-这执行：
-1. **异常值检测**（IQR和z分数方法）
-2. **正态性测试**（夏皮罗-威尔克检验 + Q-Q图）
-3. **方差齐性**（列文检验 + 箱线图）
-4. **解释和建议**
-
-### 单独的假设检查
-
-对于有针对性的检查，使用单独的函数：
+对于有针对性的检查，可导入单独的函数：
 
 ```python
-from scripts.assumption_checks import (
-    check_normality,
+from assumption_checks import (
+    check_normality,                # 夏皮罗-威尔克检验 + Q-Q图 + 直方图
     check_normality_per_group,
-    check_homogeneity_of_variance,
-    check_linearity,
-    detect_outliers
+    check_homogeneity_of_variance,  # 列文检验 + 箱线图
+    check_linearity,                # 简单回归的散点图 + 残差图
+    check_regression_diagnostics,   # 完整的OLS诊断（见下文回归部分）
+    detect_outliers                 # IQR或z分数方法
 )
 
-# 示例：带可视化的正态性检查
-result = check_normality(
-    data=df['score'],
-    name='Test Score',
-    alpha=0.05,
-    plot=True
-)
+result = check_normality(data=df['score'], name='Test Score', alpha=0.05, plot=True)
 print(result['interpretation'])
 print(result['recommendation'])
 ```
@@ -177,129 +134,80 @@ print(result['recommendation'])
 - 严重违反 → 转换数据或使用非参数检验
 
 **方差齐性被违反：**
-- 对于t检验 → 使用Welch t检验
-- 对于方差分析 → 使用Welch方差分析或Brown-Forsythe方差分析
+- 对于t检验 → 使用Welch t检验（`pg.ttest`在`correction='auto'`下会自动应用）
+- 对于方差分析 → 使用Welch方差分析（`pg.welch_anova`）或Brown-Forsythe检验
 - 对于回归 → 使用稳健标准误或加权最小二乘法
 
 **线性被违反（回归）：**
-- 添加多项式项
-- 转换变量
-- 使用非线性模型或GAM
+- 添加多项式项、转换变量，或使用非线性模型/GAM
 
-有关全面指导，请参见`references/assumptions_and_diagnostics.md`。
+正式检验会随着n的增大而变得过于敏感：当n ≥ 100时，应更重视Q-Q图而不是夏皮罗-威尔克检验的p值。有关全面指导，请参见`references/assumptions_and_diagnostics.md`。
 
 ---
 
-## 运行统计测试
+## 运行统计检验
 
-### Python库
+主要使用的库：
+- **pingouin**：用户友好的检验方法，默认返回效应量——标准检验优先使用它
+- **scipy.stats**：核心统计检验
+- **statsmodels**：回归、诊断、功效分析
+- **pymc** + **arviz**：贝叶斯建模和诊断
 
-统计分析的主要库：
-- **scipy.stats**：核心统计测试
-- **statsmodels**：高级回归和诊断
-- **pingouin**：用户友好的统计测试，带效应量
-- **pymc**：贝叶斯统计建模
-- **arviz**：贝叶斯可视化和诊断
-
-### 示例分析
-
-#### 带完整报告的T检验
+### 带完整报告的T检验
 
 ```python
 import pingouin as pg
-import numpy as np
 
-# 运行独立t检验
+# correction='auto' 在方差不齐时会自动应用Welch校正
 result = pg.ttest(group_a, group_b, correction='auto')
 
-# 提取结果
+# Pingouin >= 0.6 的列名
 t_stat = result['T'].values[0]
 df = result['dof'].values[0]
-p_value = result['p-val'].values[0]
-cohens_d = result['cohen-d'].values[0]
-ci_lower = result['CI95%'].values[0][0]
-ci_upper = result['CI95%'].values[0][1]
+p_value = result['p_val'].values[0]
+cohens_d = result['cohen_d'].values[0]
+ci_lower, ci_upper = result['CI95'].values[0]  # 均值差的置信区间
 
-# 报告
-print(f"t({df:.0f}) = {t_stat:.2f}, p = {p_value:.3f}")
-print(f"Cohen's d = {cohens_d:.2f}, 95% CI [{ci_lower:.2f}, {ci_upper:.2f}]")
+print(f"t({df:.0f}) = {t_stat:.2f}, p = {p_value:.3f}, d = {cohens_d:.2f}")
 ```
 
-#### 带事后检验的方差分析
+### 带事后检验的方差分析
 
 ```python
 import pingouin as pg
 
-# 单因素方差分析
 aov = pg.anova(dv='score', between='group', data=df, detailed=True)
 print(aov)
 
-# 如果显著，进行事后检验
-if aov['p-unc'].values[0] < 0.05:
-    posthoc = pg.pairwise_tukey(dv='score', between='group', data=df)
-    print(posthoc)
+# 效应量：部分η²
+eta_p2 = aov['np2'].values[0]
 
-# 效应量
-eta_squared = aov['np2'].values[0]  # 部分η²
-print(f"Partial η² = {eta_squared:.3f}")
+# 如果显著，进行事后检验（Tukey HSD控制族错误率）
+if aov['p_unc'].values[0] < 0.05:
+    posthoc = pg.pairwise_tukey(dv='score', between='group', data=df)
+    print(posthoc)  # 包含每对比较的Hedges' g
 ```
 
-#### 带诊断的线性回归
+### 带诊断的线性回归
 
 ```python
 import statsmodels.api as sm
-from statsmodels.stats.outliers_influence import variance_inflation_factor
+from assumption_checks import check_regression_diagnostics
 
-# 拟合模型
 X = sm.add_constant(X_predictors)  # 添加截距
 model = sm.OLS(y, X).fit()
-
-# 摘要
 print(model.summary())
 
-# 检查多重共线性（VIF）
-vif_data = pd.DataFrame()
-vif_data["Variable"] = X.columns
-vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
-print(vif_data)
+# 4面板残差图 + 夏皮罗-威尔克检验、Breusch-Pagan检验、Durbin-Watson检验、VIF
+diag = check_regression_diagnostics(model)
+print(diag['interpretation'])
+print(diag['vif'])
 
-# 检查假设
-residuals = model.resid
-fitted = model.fittedvalues
-
-# 残差图
-import matplotlib.pyplot as plt
-fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-
-# 残差vs拟合值
-axes[0, 0].scatter(fitted, residuals, alpha=0.6)
-axes[0, 0].axhline(y=0, color='r', linestyle='--')
-axes[0, 0].set_xlabel('Fitted values')
-axes[0, 0].set_ylabel('Residuals')
-axes[0, 0].set_title('Residuals vs Fitted')
-
-# Q-Q图
-from scipy import stats
-stats.probplot(residuals, dist="norm", plot=axes[0, 1])
-axes[0, 1].set_title('Normal Q-Q')
-
-# 尺度-位置
-axes[1, 0].scatter(fitted, np.sqrt(np.abs(residuals / residuals.std())), alpha=0.6)
-axes[1, 0].set_xlabel('Fitted values')
-axes[1, 0].set_ylabel('√|Standardized residuals|')
-axes[1, 0].set_title('Scale-Location')
-
-# 残差直方图
-axes[1, 1].hist(residuals, bins=20, edgecolor='black', alpha=0.7)
-axes[1, 1].set_xlabel('Residuals')
-axes[1, 1].set_ylabel('Frequency')
-axes[1, 1].set_title('Histogram of Residuals')
-
-plt.tight_layout()
-plt.show()
+# 如果标记出异方差性，改为报告稳健标准误
+robust = model.get_robustcov_results('HC3')
 ```
 
-#### 贝叶斯T检验
+### 贝叶斯T检验
 
 ```python
 import pymc as pm
@@ -319,33 +227,30 @@ with pm.Model() as model:
     # 派生量
     diff = pm.Deterministic('difference', mu1 - mu2)
 
-    # 采样
-    trace = pm.sample(2000, tune=1000, return_inferencedata=True)
+    trace = pm.sample(2000, tune=1000)
 
-# 总结
-print(az.summary(trace, var_names=['difference']))
+# ArviZ 1.x默认使用89%区间；报告时需显式请求95%
+print(az.summary(trace, var_names=['difference'], ci_prob=0.95))
 
-# group1 > group2的概率
+# 直接的概率陈述（这正是单侧问题所转化成的结果）
 prob_greater = np.mean(trace.posterior['difference'].values > 0)
-print(f"P(μ₁ > μ₂ | data) = {prob_greater:.3f}")
+print(f"P(mu1 > mu2 | data) = {prob_greater:.3f}")
 
-# 绘制后验
-az.plot_posterior(trace, var_names=['difference'], ref_val=0)
+# ArviZ 1.x已移除az.plot_posterior；改用plot_dist（在0.x版本中plot_posterior仍可用）
+az.plot_dist(trace, var_names=['difference'], ci_prob=0.95)
 ```
+
+先验的尺度应与数据相匹配（例如，`sigma=10`适合标准差接近10的结局变量；可用观测到的标准差作为参考），并在报告中说明所用的先验。
 
 ---
 
 ## 效应量
 
-### 始终计算效应量
-
-**效应量量化大小，而p值仅指示效应的存在。**
-
-有关全面指导，请参见`references/effect_sizes_and_power.md`。
+**效应量量化效应大小；p值只能说明效应是否存在。** 每次检验都应报告一个效应量。完整指南参见`references/effect_sizes_and_power.md`。
 
 ### 快速参考：常见效应量
 
-| 测试 | 效应量 | 小 | 中 | 大 |
+| 检验 | 效应量 | 小 | 中 | 大 |
 |------|--------|----|----|----|
 | T检验 | Cohen's d | 0.20 | 0.50 | 0.80 |
 | 方差分析 | η²_p | 0.01 | 0.06 | 0.14 |
@@ -353,41 +258,23 @@ az.plot_posterior(trace, var_names=['difference'], ref_val=0)
 | 回归 | R² | 0.02 | 0.13 | 0.26 |
 | 卡方检验 | Cramér's V | 0.07 | 0.21 | 0.35 |
 
-**重要**：基准是指导方针。上下文很重要！
+这些基准是约定俗成的惯例，不是铁律——一个"小"效应可能极为重要（如药物副作用），而一个"大"效应也可能无关紧要。应结合具体情境解读。
 
 ### 计算效应量
 
-大多数效应量由pingouin自动计算：
-
-```python
-# T检验返回Cohen's d
-result = pg.ttest(x, y)
-d = result['cohen-d'].values[0]
-
-# 方差分析返回部分η²
-aov = pg.anova(dv='score', between='group', data=df)
-eta_p2 = aov['np2'].values[0]
-
-# 相关性：r本身就是效应量
-corr = pg.corr(x, y)
-r = corr['r'].values[0]
-```
+Pingouin会在检验结果中一并返回效应量（`pg.ttest`的`cohen_d`、`pg.anova`的`np2`、`pg.pairwise_tukey`的`hedges`；`pg.corr`返回的`r`本身就是一种效应量）。
 
 ### 效应量的置信区间
 
-始终报告CI以显示精度：
+应报告效应量的置信区间以体现其精度。使用`pg.compute_esci`（注意：`pg.compute_effsize_from_t`只返回点估计——它**不会**返回置信区间）：
 
 ```python
-from pingouin import compute_effsize_from_t
+import pingouin as pg
 
-# 对于t检验
-d, ci = compute_effsize_from_t(
-    t_statistic,
-    nx=len(group1),
-    ny=len(group2),
-    eftype='cohen'
-)
-print(f"d = {d:.2f}, 95% CI [{ci[0]:.2f}, {ci[1]:.2f}]")
+d = pg.compute_effsize(group_a, group_b, eftype='cohen')
+ci_lower, ci_upper = pg.compute_esci(stat=d, nx=len(group_a), ny=len(group_b),
+                                     eftype='cohen', confidence=0.95)
+print(f"d = {d:.2f}, 95% CI [{ci_lower:.2f}, {ci_upper:.2f}]")
 ```
 
 ---
@@ -399,12 +286,9 @@ print(f"d = {d:.2f}, 95% CI [{ci[0]:.2f}, {ci[1]:.2f}]")
 在数据收集前确定所需的样本量：
 
 ```python
-from statsmodels.stats.power import (
-    tt_ind_solve_power,
-    FTestAnovaPower
-)
+from statsmodels.stats.power import tt_ind_solve_power, FTestAnovaPower
 
-# T检验：检测d = 0.5需要多少n？
+# T检验：检测d = 0.5需要每组多少n？
 n_required = tt_ind_solve_power(
     effect_size=0.5,
     alpha=0.05,
@@ -414,23 +298,26 @@ n_required = tt_ind_solve_power(
 )
 print(f"每组所需n: {n_required:.0f}")
 
-# 方差分析：检测f = 0.25需要多少n？
+# 单因素方差分析：检测Cohen's f = 0.25需要多少n？
+# 注意：参数名是k_groups；effect_size是Cohen's f（f = sqrt(eta2/(1-eta2)));
+# 且solve_power返回的是总样本量，而不是每组的n。
+import math
 anova_power = FTestAnovaPower()
-n_per_group = anova_power.solve_power(
+n_total = anova_power.solve_power(
     effect_size=0.25,
-    ngroups=3,
+    k_groups=3,
     alpha=0.05,
     power=0.80
 )
-print(f"每组所需n: {n_per_group:.0f}")
+print(f"所需总样本量: {math.ceil(n_total)}（每组约{math.ceil(n_total / 3)}）")
 ```
 
 ### 敏感性分析（研究后）
 
-确定您可以检测到的效应量：
+确定该研究能够检测到的效应量：
 
 ```python
-# 每组n=50时，我们可以检测到什么效应？
+# 每组n=50时，在80%功效下我们可以检测到什么效应？
 detectable_d = tt_ind_solve_power(
     effect_size=None,  # 求解这个
     nobs1=50,
@@ -439,10 +326,10 @@ detectable_d = tt_ind_solve_power(
     ratio=1.0,
     alternative='two-sided'
 )
-print(f"研究可以检测到d ≥ {detectable_d:.2f}")
+print(f"研究可以检测到d >= {detectable_d:.2f}")
 ```
 
-**注意**：事后功效分析（研究后计算功效）通常不推荐。请改用敏感性分析。
+**注意**：事后的"观测功效"（根据观测到的效应量计算功效）是循环论证且具有误导性的——它其实是p值的确定性函数。如果研究已经完成，有人询问功效问题，应改为进行敏感性分析。
 
 有关详细指导，请参见`references/effect_sizes_and_power.md`。
 
@@ -450,17 +337,13 @@ print(f"研究可以检测到d ≥ {detectable_d:.2f}")
 
 ## 报告结果
 
-### APA风格统计报告
-
-遵循`references/reporting_standards.md`中的指南。
-
-### 必要的报告元素
+遵循`references/reporting_standards.md`中的APA风格指南。每份报告都需要包含：
 
 1. **描述性统计**：所有组/变量的M、SD、n
-2. **测试统计**：测试名称、统计量、df、精确p值
-3. **效应量**：带置信区间
-4. **假设检查**：进行了哪些测试、结果、采取的行动
-5. **所有计划的分析**：包括非显著结果
+2. **检验统计量**：检验名称、统计量、df、精确p值（写作`p = .034`，而不是`p < .05`；只有p值低于.001时才使用`p < .001`）
+3. **效应量**：附带置信区间
+4. **假设检查**：进行了哪些检验、结果如何、采取了什么行动
+5. **所有计划的分析**：包括不显著的结果——省略它们就是选择性报告
 
 ### 示例报告模板
 
@@ -469,9 +352,9 @@ print(f"研究可以检测到d ≥ {detectable_d:.2f}")
 ```
 组A（n = 48, M = 75.2, SD = 8.5）的得分显著高于
 组B（n = 52, M = 68.3, SD = 9.2），t(98) = 3.82, p < .001, d = 0.77,
-95% CI [0.36, 1.18]，双侧检验。正态性（夏皮罗-威尔克：
-组A W = 0.97, p = .18；组B W = 0.96, p = .12）和方差齐性
-（列文检验F(1, 98) = 1.23, p = .27）假设得到满足。
+95% CI [0.36, 1.18]，双侧检验。正态性假设（夏皮罗-威尔克检验：
+组A W = 0.97, p = .18；组B W = 0.96, p = .12）和方差齐性假设
+（列文检验F(1, 98) = 1.23, p = .27）均得到满足。
 ```
 
 #### 单因素方差分析
@@ -499,131 +382,59 @@ F(2, 147) = 8.45, p < .001, η²_p = .10。使用Tukey's HSD的事后
 #### 贝叶斯分析
 
 ```
-使用弱信息先验（均值差异为Normal(0, 1)）进行贝叶斯独立样本t检验。
-后验分布表明组A得分高于组B（M_diff = 6.8, 95% 可信区间 [3.2, 10.4]）。
-贝叶斯因子BF₁₀ = 45.3为组间差异提供了非常强的证据，
+使用弱信息先验（组均值为Normal(0, 10)）进行贝叶斯独立样本t检验。
+后验分布表明组A得分高于组B
+（M_diff = 6.8, 95% 可信区间 [3.2, 10.4]），
 组A均值超过组B均值的后验概率为99.8%。
-收敛诊断令人满意（所有R̂ < 1.01, ESS > 1000）。
+收敛诊断令人满意（所有R-hat < 1.01, ESS > 1000）。
 ```
+
+如果使用了非参数检验，应报告中位数而不是均值、报告U/W/H统计量，以及基于秩的效应量（例如秩双列相关系数，`pg.mwu`会以`RBC`列返回该值）。
 
 ---
 
 ## 贝叶斯统计
 
-### 何时使用贝叶斯方法
+在以下情况下考虑使用贝叶斯方法：
+- 有先验信息需要纳入分析
+- 想要关于假设的直接概率陈述（"该效应有95%的概率落在此区间内"）
+- 样本量较小，或数据收集是序贯进行的（无需为可选停止校正）
+- 需要量化*支持*零假设的证据
+- 模型较为复杂（层次结构、缺失数据）
 
-考虑在以下情况使用贝叶斯方法：
-- 您有先验信息要纳入
-- 您想要关于假设的直接概率陈述
-- 样本量小或计划序贯数据收集
-- 您需要量化对零假设的证据
-- 模型复杂（层次结构、缺失数据）
-
-有关全面指导，请参见`references/bayesian_statistics.md`：
-- 贝叶斯定理和解释
-- 先验指定（信息性、弱信息性、非信息性）
-- 使用贝叶斯因子的贝叶斯假设检验
-- 可信区间与置信区间
-- 贝叶斯t检验、方差分析、回归和层次模型
-- 模型收敛检查和后验预测检查
-
-### 关键优势
-
-1. **直观解释**："给定数据，参数在这个区间内的概率为95%"
-2. **对零假设的证据**：可以量化对无效应的支持
-3. **灵活性**：无p值操纵担忧；可以在数据到达时进行分析
-4. **不确定性量化**：完整的后验分布
+有关先验设定、贝叶斯因子、可信区间、层次模型以及收敛检查（R-hat < 1.01、充足的ESS、后验预测检查），请参见`references/bayesian_statistics.md`。
 
 ---
 
-## 资源
+## 捆绑资源
 
-此技能包含全面的参考材料：
+### 参考文档（`references/`）
 
-### 参考目录
+- **test_selection_guide.md**：涵盖组间比较、关系分析、计数数据、时间-事件分析、一致性/信度和分类分析的决策树
+- **assumptions_and_diagnostics.md**：关于检查和处理假设违反情况的详细指导
+- **effect_sizes_and_power.md**：计算、解释和报告效应量；功效分析
+- **bayesian_statistics.md**：先验、贝叶斯因子、可信区间、层次模型、诊断
+- **reporting_standards.md**：带实例的APA风格报告指南
 
-- **test_selection_guide.md**：选择适当统计测试的决策树
-- **assumptions_and_diagnostics.md**：关于检查和处理假设违反的详细指导
-- **effect_sizes_and_power.md**：计算、解释和报告效应量；进行功效分析
-- **bayesian_statistics.md**：贝叶斯分析方法的完整指南
-- **reporting_standards.md**：带示例的APA风格报告指南
-
-### 脚本目录
+### 脚本（`scripts/`）
 
 - **assumption_checks.py**：带可视化的自动假设检查
-  - `comprehensive_assumption_check()`：完整工作流
-  - `check_normality()`：带Q-Q图的正态性测试
+  - `comprehensive_assumption_check()`：一次调用完成异常值 + 正态性 + 方差齐性检验
+  - `check_normality()`、`check_normality_per_group()`：带Q-Q图的夏皮罗-威尔克检验
   - `check_homogeneity_of_variance()`：带箱线图的列文检验
-  - `check_linearity()`：回归线性检查
-  - `detect_outliers()`：IQR和z分数异常值检测
+  - `check_regression_diagnostics()`：针对已拟合OLS模型的4面板残差图 + 夏皮罗-威尔克检验、Breusch-Pagan检验、Durbin-Watson检验、VIF
+  - `check_linearity()`、`detect_outliers()`
 
 ---
 
-## 最佳实践
+## 统计诚信
 
-1. **预注册分析**（如果可能）以区分验证性和探索性
-2. **始终检查假设**在解释结果之前
-3. **报告效应量**带置信区间
-4. **报告所有计划的分析**包括非显著结果
-5. **区分统计显著性和实际显著性**
-6. **可视化数据**在分析前后
-7. **检查回归/方差分析的诊断**（残差图、VIF等）
-8. **进行敏感性分析**以评估稳健性
-9. **共享数据和代码**以提高可重复性
-10. **透明**关于违反、转换和决策
+以下是让一份分析经得起推敲的实践。它们之所以重要，是因为最常见的统计错误并非计算失误——而是悄悄的"灵活性"（不断尝试直到得出想要的结果）和选择性报告。
 
----
-
-## 要避免的常见陷阱
-
-1. **P值操纵**：不要测试多种方法直到有显著结果
-2. **HARKing**：不要将探索性发现呈现为验证性
-3. **忽略假设**：检查它们并报告违反情况
-4. **混淆显著性和重要性**：p < .05 ≠ 有意义的效应
-5. **不报告效应量**：解释所必需的
-6. **选择性报告结果**：报告所有计划的分析
-7. **误解p值**：它们不是假设为真的概率
-8. **多重比较**：适当时校正族-wise错误
-9. **忽略缺失数据**：了解机制（MCAR、MAR、MNAR）
-10. **过度解释非显著结果**：证据缺失 ≠ 缺失证据
-
----
-
-## 入门清单
-
-开始统计分析时：
-
-- [ ] 定义研究问题和假设
-- [ ] 确定适当的统计测试（使用test_selection_guide.md）
-- [ ] 进行功效分析以确定样本量
-- [ ] 加载并检查数据
-- [ ] 检查缺失数据和异常值
-- [ ] 使用assumption_checks.py验证假设
-- [ ] 运行主要分析
-- [ ] 计算带置信区间的效应量
-- [ ] 如需要进行事后检验（带校正）
-- [ ] 创建可视化
-- [ ] 按照reporting_standards.md撰写结果
-- [ ] 进行敏感性分析
-- [ ] 共享数据和代码
-
----
-
-## 支持和进一步阅读
-
-关于以下问题：
-- **测试选择**：参见references/test_selection_guide.md
-- **假设**：参见references/assumptions_and_diagnostics.md
-- **效应量**：参见references/effect_sizes_and_power.md
-- **贝叶斯方法**：参见references/bayesian_statistics.md
-- **报告**：参见references/reporting_standards.md
-
-**关键教科书**：
-- Cohen, J. (1988). *Statistical Power Analysis for the Behavioral Sciences*
-- Field, A. (2013). *Discovering Statistics Using IBM SPSS Statistics*
-- Gelman, A., & Hill, J. (2006). *Data Analysis Using Regression and Multilevel/Hierarchical Models*
-- Kruschke, J. K. (2014). *Doing Bayesian Data Analysis*
-
-**在线资源**：
-- APA风格指南：https://apastyle.apa.org/
-- 统计咨询：Cross Validated (stats.stackexchange.com)
+1. **区分验证性分析和探索性分析。** 在运行分析之前就说明计划采用的分析方法；将过程中发现的任何结果标注为探索性发现。
+2. **不要为了追求显著性而反复尝试。** 如果计划中的检验结果不显著，那就是结果本身。反复尝试不同的检验方法、子组或异常值剔除方案直到p < .05，会使该p值失去意义。
+3. **在运行一系列检验时，应校正多重比较**（事后方差分析用Tukey HSD；其他系列检验用Holm或Benjamini-Hochberg FDR校正），并说明使用了哪种校正方法。
+4. **不显著的结果不等于没有效应的证据。** 在样本量较小的情况下，研究可能只是功效不足——应运行敏感性分析，或使用贝叶斯分析/等效性检验来真正量化对零假设的支持程度。
+5. **统计显著性不等于实际重要性。** 在样本量较大时，微不足道的效应也能达到p < .001。解读时应以效应量为主导。
+6. **在删除行之前先理解缺失数据的机制。** 列表式删除（listwise deletion）只有在数据完全随机缺失（MCAR）时才是安全的；否则应考虑多重插补，并说明所采取的处理方式。
+7. **保证可复现性。** 设置随机种子，对基于模拟的方法报告所用的库版本，并将分析保存为可运行的脚本。

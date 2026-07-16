@@ -1,10 +1,12 @@
 ---
 name: pennylane
-description: 硬件无关的量子机器学习框架，具有自动微分功能。当通过梯度训练量子电路、构建混合量子经典模型或需要在IBM/Google/Rigetti/IonQ之间实现设备可移植性时使用。最适合变分算法（VQE、QAOA）、量子神经网络以及与PyTorch/JAX/TensorFlow的集成。对于硬件特定优化，请使用qiskit（IBM）或cirq（Google）；对于开放量子系统，请使用qutip。
+description: 硬件无关的量子机器学习框架，具有自动微分功能。当通过梯度训练量子电路、构建混合量子经典模型或需要在IBM/Google/Rigetti/IonQ之间实现设备可移植性时使用。最适合变分算法（VQE、QAOA）、量子神经网络以及与PyTorch或JAX的集成。对于硬件特定优化，请使用qiskit（IBM）或cirq（Google）；对于开放量子系统，请使用qutip。
 license: Apache-2.0 license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+allowed-tools:
+  - Read
+  - Bash
+  - Python
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -20,29 +22,35 @@ PennyLane是一个量子计算库，使训练量子计算机像训练神经网�
 
 ## 安装
 
-使用uv安装：
+PennyLane 0.45.0 需要 Python 3.11 或更高版本。使用 uv 安装，并锁定版本号以保证环境可复现：
 
 ```bash
-uv pip install pennylane
+uv pip install "pennylane==0.45.0"
 ```
 
-对于量子硬件访问，安装设备插件：
+对于量子硬件访问，安装与目标提供商匹配的插件。添加或升级 Qiskit 时，建议从一个干净的环境开始，因为它的依赖关系图较为严格。
 
 ```bash
 # IBM Quantum
-uv pip install pennylane-qiskit
+uv pip install "pennylane-qiskit==0.45.0"
 
 # Amazon Braket
-uv pip install amazon-braket-pennylane-plugin
+uv pip install "amazon-braket-pennylane-plugin==1.34.1"
 
 # Google Cirq
-uv pip install pennylane-cirq
+uv pip install "pennylane-cirq==0.44.0"
 
 # Rigetti Forest
-uv pip install pennylane-rigetti
+uv pip install "pennylane-rigetti==0.40.0"
 
 # IonQ
-uv pip install pennylane-ionq
+uv pip install "pennylane-ionq==0.45.0"
+
+# 高性能本地模拟器
+uv pip install "pennylane-lightning==0.45.0"
+
+# Catalyst JIT 编译
+uv pip install "pennylane-catalyst==0.15.0"
 ```
 
 ## 快速开始
@@ -86,7 +94,7 @@ for i in range(100):
 ### 2. 量子机器学习
 
 创建混合量子-经典模型。请参阅`references/quantum_ml.md`了解：
-- 与PyTorch、JAX、TensorFlow的集成
+- 与PyTorch和JAX的集成
 - 量子神经网络和变分分类器
 - 数据编码策略（角度、振幅、基、IQP）
 - 使用反向传播训练混合模型
@@ -161,19 +169,23 @@ from pennylane import qchem
 
 # 1. 构建哈密顿量
 symbols = ['H', 'H']
-coords = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.74])
-H, n_qubits = qchem.molecular_hamiltonian(symbols, coords)
+geometry = np.array([[0.0, 0.0, -0.66140414], [0.0, 0.0, 0.66140414]])
+molecule = qchem.Molecule(symbols, geometry)
+H, n_qubits = qchem.molecular_hamiltonian(molecule)
+hf_state = qchem.hf_state(electrons=2, orbitals=n_qubits)
+singles, doubles = qchem.excitations(electrons=2, orbitals=n_qubits)
+s_wires, d_wires = qchem.excitations_to_wires(singles, doubles)
 
 # 2. 定义ansatz
 @qml.qnode(dev)
 def vqe_circuit(params):
-    qml.BasisState(qchem.hf_state(2, n_qubits), wires=range(n_qubits))
-    qml.UCCSD(params, wires=range(n_qubits))
+    qml.BasisState(hf_state, wires=range(n_qubits))
+    qml.UCCSD(params, wires=range(n_qubits), s_wires=s_wires, d_wires=d_wires)
     return qml.expval(H)
 
 # 3. 优化
 opt = qml.AdamOptimizer(stepsize=0.1)
-params = np.zeros(10, requires_grad=True)
+params = np.zeros(len(singles) + len(doubles), requires_grad=True)
 
 for i in range(100):
     params, energy = opt.step_and_cost(vqe_circuit, params)
@@ -191,7 +203,11 @@ dev_sim = qml.device('default.qubit', wires=4)
 result_sim = circuit_def(dev_sim)(params)
 
 # 在量子硬件上运行
-dev_hw = qml.device('qiskit.ibmq', wires=4, backend='ibmq_manila')
+from qiskit_ibm_runtime import QiskitRuntimeService
+
+service = QiskitRuntimeService()
+backend = service.least_busy(operational=True, simulator=False, min_num_qubits=4)
+dev_hw = qml.device('qiskit.remote', wires=backend.num_qubits, backend=backend)
 result_hw = circuit_def(dev_hw)(params)
 ```
 

@@ -2,9 +2,7 @@
 name: pathml
 description: 功能全面的计算病理学工具包。用于高级WSI分析，包括多重免疫荧光（CODEX、Vectra）、细胞核分割、组织图构建和病理数据上的ML模型训练。支持160多种切片格式。对于H&E切片的简单图块提取，histolab可能更简单。
 license: GPL-2.0 license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

@@ -20,13 +20,16 @@ Prerequisites:
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
 import logging
 import os
+import re
 from datetime import datetime, timezone
 from typing import Any
 
 import psycopg2
+from _safe_paths import safe_existing_directory, safe_input_json_path, safe_output_json_path, write_json_file
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
@@ -37,6 +40,55 @@ LOOKBACK_HOURS: int = int(os.getenv("LOOKBACK_HOURS", "25"))        # ← SUBSTI
 LOOKBACK_LAG_HOURS: int = int(os.getenv("LOOKBACK_LAG_HOURS", "1")) # ← SUBSTITUTE
 BATCH_SIZE: int = int(os.getenv("BATCH_SIZE", "200"))               # ← SUBSTITUTE
 MAX_QUERIES: int = int(os.getenv("MAX_QUERIES", "10000"))           # ← SUBSTITUTE
+
+_ALLOWED_REDSHIFT_HOST_RE = re.compile(
+    r"^[a-z0-9][a-z0-9.-]*\.(?:redshift|redshift-serverless)\.[a-z0-9-]+\.amazonaws\.com(?:\.cn)?$",
+    re.IGNORECASE,
+)
+
+
+def _explicitly_allowed_redshift_hosts() -> set[str]:
+    raw_hosts = os.getenv("REDSHIFT_ALLOWED_HOSTS", "")
+    return {host.strip().lower().rstrip(".") for host in raw_hosts.split(",") if host.strip()}
+
+
+def validate_redshift_host(host: str, *, allow_private: bool = False) -> str:
+    value = str(host).strip()
+    if not value or any(part in value for part in ("/", "\\", "@", ":")):
+        raise ValueError(f"Invalid Redshift host: {host!r}")
+    hostname = value.lower().rstrip(".")
+    allowed_hosts = _explicitly_allowed_redshift_hosts()
+    try:
+        address = ipaddress.ip_address(value)
+    except ValueError:
+        if hostname in allowed_hosts:
+            return hostname
+        match = _ALLOWED_REDSHIFT_HOST_RE.fullmatch(hostname)
+        if match:
+            return match.group(0)
+        raise ValueError(
+            "Redshift host must be an AWS Redshift endpoint or be listed in REDSHIFT_ALLOWED_HOSTS"
+        )
+    if hostname not in allowed_hosts:
+        raise ValueError("Redshift IP hosts must be listed in REDSHIFT_ALLOWED_HOSTS")
+    blocked = (
+        address.is_loopback
+        or address.is_link_local
+        or address.is_multicast
+        or address.is_unspecified
+        or address.is_reserved
+        or (address.is_private and not allow_private)
+    )
+    if blocked:
+        raise ValueError(f"Redshift host address is not allowed: {host!r}")
+    return str(address)
+
+
+def _bounded_int(value: int, field: str, *, minimum: int, maximum: int) -> int:
+    value = int(value)
+    if value < minimum or value > maximum:
+        raise ValueError(f"{field} must be between {minimum} and {maximum}")
+    return value
 
 
 def _check_available_memory(min_gb: float = 2.0) -> None:
@@ -88,9 +140,12 @@ def fetch_query_metadata(
     max_queries: int,
 ) -> list[dict[str, Any]]:
     """Fetch query execution metadata from sys_query_history."""
+    lookback_hours = _bounded_int(lookback_hours, "lookback_hours", minimum=1, maximum=24 * 31)
+    lag_hours = _bounded_int(lag_hours, "lag_hours", minimum=0, maximum=24 * 7)
+    max_queries = _bounded_int(max_queries, "max_queries", minimum=1, maximum=100000)
     return _dictfetch(
         cursor,
-        f"""
+        """
         SELECT
             query_id,
             start_time,
@@ -100,12 +155,13 @@ def fetch_query_metadata(
             database_name,
             elapsed_time
         FROM sys_query_history
-        WHERE start_time >= DATEADD(hour, -{lookback_hours}, GETDATE())
-          AND start_time <  DATEADD(hour, -{lag_hours},      GETDATE())
+        WHERE start_time >= DATEADD(hour, -%s, GETDATE())
+          AND start_time <  DATEADD(hour, -%s, GETDATE())
           AND status = 'success'
         ORDER BY start_time
-        LIMIT {max_queries}
+        LIMIT %s
         """,  # ← SUBSTITUTE: add AND database_name = 'mydb' to narrow scope
+        (lookback_hours, lag_hours, max_queries),
     )
 
 
@@ -114,11 +170,10 @@ def fetch_query_texts_batch(cursor: Any, query_ids: list[int]) -> dict[int, str]
     if not query_ids:
         return {}
 
-    # Build a VALUES list for the IN clause to avoid large parameter arrays
-    id_list = ", ".join(str(qid) for qid in query_ids)
+    query_ids = [_bounded_int(qid, "query_id", minimum=1, maximum=2**63 - 1) for qid in query_ids]
     rows = _dictfetch(
         cursor,
-        f"""
+        """
         SELECT
             query_id,
             LISTAGG(
@@ -126,9 +181,10 @@ def fetch_query_texts_batch(cursor: Any, query_ids: list[int]) -> dict[int, str]
                 ''
             ) WITHIN GROUP (ORDER BY sequence) AS query_text
         FROM sys_querytext
-        WHERE query_id IN ({id_list})
+        WHERE query_id = ANY(%s)
         GROUP BY query_id
         """,
+        (query_ids,),
     )
     return {r["query_id"]: r["query_text"] for r in rows if r.get("query_text")}
 
@@ -147,6 +203,13 @@ def collect(
 ) -> list[dict[str, Any]]:
     """Connect to Redshift, collect query logs, write a JSON manifest, and return entries."""
     _check_available_memory()
+    allow_private_host = os.getenv("REDSHIFT_ALLOW_PRIVATE_HOST", "").lower() in {"1", "true", "yes"}
+    host = validate_redshift_host(host, allow_private=allow_private_host)
+    port = _bounded_int(port, "port", minimum=1, maximum=65535)
+    lookback_hours = _bounded_int(lookback_hours, "lookback_hours", minimum=1, maximum=24 * 31)
+    lookback_lag_hours = _bounded_int(lookback_lag_hours, "lookback_lag_hours", minimum=0, maximum=24 * 7)
+    batch_size = _bounded_int(batch_size, "batch_size", minimum=1, maximum=10000)
+    max_queries = _bounded_int(max_queries, "max_queries", minimum=1, maximum=100000)
     collected_at = datetime.now(timezone.utc).isoformat()
 
     conn = psycopg2.connect(
@@ -195,8 +258,7 @@ def collect(
         "query_log_count": len(entries),
         "entries": entries,
     }
-    with open(manifest_path, "w") as fh:
-        json.dump(manifest, fh, indent=2)
+    write_json_file(manifest_path, manifest)
     log.info("Manifest written to %s (%d entries)", manifest_path, len(entries))
 
     return entries
@@ -204,7 +266,6 @@ def collect(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Collect Redshift query logs to a manifest file")
-    parser.add_argument("--host", default=os.getenv("REDSHIFT_HOST"))         # ← SUBSTITUTE
     parser.add_argument("--db", default=os.getenv("REDSHIFT_DB"))             # ← SUBSTITUTE
     parser.add_argument("--user", default=os.getenv("REDSHIFT_USER"))         # ← SUBSTITUTE
     parser.add_argument("--password", default=os.getenv("REDSHIFT_PASSWORD")) # ← SUBSTITUTE
@@ -216,13 +277,21 @@ def main() -> None:
     parser.add_argument("--manifest", default="manifest_query_logs.json")
     args = parser.parse_args()
 
-    required = ["host", "db", "user", "password"]
+    required = ["db", "user", "password"]
     missing = [k for k in required if getattr(args, k) is None]
     if missing:
         parser.error(f"Missing required arguments/env vars: {missing}")
 
+    redshift_host = os.getenv("REDSHIFT_HOST")
+    if not redshift_host:
+        parser.error("Missing required env var: REDSHIFT_HOST")
+    redshift_host = validate_redshift_host(
+        redshift_host,
+        allow_private=os.getenv("REDSHIFT_ALLOW_PRIVATE_HOST", "").lower() in {"1", "true", "yes"},
+    )
+
     collect(
-        host=args.host,
+        host=redshift_host,
         db=args.db,
         user=args.user,
         password=args.password,

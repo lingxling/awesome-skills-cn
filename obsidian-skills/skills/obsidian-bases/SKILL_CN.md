@@ -22,10 +22,11 @@ Base 文件使用 `.base` 扩展名并包含有效的 YAML。
 # 全局过滤器应用于 base 中的所有视图
 filters:
   # 可以是单个过滤器字符串
-  # 或递归过滤器对象，带有 and/or/not
-  and: []
-  or: []
-  not: []
+  # 或递归过滤器对象，仅包含 and、or、not 三者之一作为唯一键
+  and:
+    - 'status == "active"'
+    - not:
+        - 'file.hasTag("archived")'
 
 # 定义可在所有视图中使用的公式属性
 formulas:
@@ -52,8 +53,9 @@ views:
     groupBy:                     # 可选：分组结果
       property: property_name
       direction: ASC | DESC
-    filters:                     # 视图特定过滤器
-      and: []
+    filters:                     # 视图特定过滤器遵循相同的规则
+      and:
+        - 'status == "active"'
     order:                       # 按顺序显示的属性
       - file.name
       - property_name

@@ -4,9 +4,7 @@ description: 具有空间文本和边界框的本地文档和PDF解析。用于�
 license: Apache-2.0
 allowed-tools: Read Write Edit Bash
 compatibility: Python 3.10+。可选LibreOffice（Office格式）和ImageMagick（图像）。捆绑Tesseract进行OCR。所有处理都是本地的——无需云API。
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

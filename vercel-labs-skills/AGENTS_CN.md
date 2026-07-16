@@ -12,6 +12,7 @@
 | ----------------------------- | --------------------------------------------------- |
 | `skills`                      | 显示包含可用命令的横幅                 |
 | `skills add <pkg>`            | 从 git 仓库、URL 或本地路径安装技能 |
+| `skills use <pkg>@<skill>`    | 无需安装即可使用某个技能                    |
 | `skills experimental_install` | 从 skills-lock.json 恢复技能                |
 | `skills experimental_sync`    | 将技能从 node_modules 同步到代理目录       |
 | `skills list`                 | 列出已安装的技能（别名：`ls`）                 |
@@ -58,6 +59,8 @@ src/
 │   ├── mintlify.ts
 │   └── wellknown.ts
 ├── init.test.ts     # Init 命令测试
+├── use.ts           # Use 命令 - 生成技能提示或启动代理
+├── use.test.ts      # Use 命令测试
 └── test-utils.ts    # 测试工具
 
 tests/

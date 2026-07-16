@@ -1,5 +1,5 @@
 ---
-name: ckm:slides
+name: slides
 description: Create strategic HTML presentations with Chart.js, design tokens, responsive layouts, copywriting formulas, and contextual slide strategies.
 argument-hint: "[topic] [slide-count]"
 metadata:
@@ -10,8 +10,6 @@ metadata:
 # Slides
 
 Strategic HTML presentation design with data visualization.
-
-<args>$ARGUMENTS</args>
 
 ## When to Use
 

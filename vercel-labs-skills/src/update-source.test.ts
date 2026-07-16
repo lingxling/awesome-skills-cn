@@ -35,10 +35,31 @@ describe('update-source', () => {
       const result = buildUpdateInstallSource({
         source: 'owner/repo',
         sourceUrl: 'https://github.com/owner/repo.git',
+        sourceType: 'github',
         ref: 'feature/install',
         skillPath: 'skills/my-skill/SKILL.md',
       });
       expect(result).toBe('owner/repo/skills/my-skill#feature/install');
+    });
+
+    it('uses sourceUrl for non-GitHub sources with host-stripped source', () => {
+      const result = buildUpdateInstallSource({
+        source: 'acme/skills',
+        sourceUrl: 'https://gitlab.example.com/acme/skills.git',
+        sourceType: 'git',
+        ref: 'main',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBe('https://gitlab.example.com/acme/skills.git#main');
+    });
+
+    it('fails closed for non-GitHub lock entries missing sourceUrl', () => {
+      const result = buildUpdateInstallSource({
+        source: 'acme/skills',
+        sourceType: 'git',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBeNull();
     });
 
     it('falls back to sourceUrl when skillPath is missing', () => {
@@ -55,6 +76,7 @@ describe('update-source', () => {
     it('appends skill folder from skillPath with ref', () => {
       const result = buildLocalUpdateSource({
         source: 'owner/repo',
+        sourceType: 'github',
         ref: 'main',
         skillPath: 'skills/my-skill/SKILL.md',
       });
@@ -64,6 +86,7 @@ describe('update-source', () => {
     it('appends skill folder from skillPath without ref', () => {
       const result = buildLocalUpdateSource({
         source: 'owner/repo',
+        sourceType: 'github',
         skillPath: 'skills/my-skill/SKILL.md',
       });
       expect(result).toBe('owner/repo/skills/my-skill');
@@ -72,6 +95,7 @@ describe('update-source', () => {
     it('keeps root-level skillPath from collapsing to trailing slash', () => {
       const result = buildLocalUpdateSource({
         source: 'owner/repo',
+        sourceType: 'github',
         skillPath: 'SKILL.md',
       });
       expect(result).toBe('owner/repo');
@@ -80,9 +104,72 @@ describe('update-source', () => {
     it('falls back to bare source when skillPath is missing', () => {
       const result = buildLocalUpdateSource({
         source: 'owner/repo',
+        sourceType: 'github',
         ref: 'main',
       });
       expect(result).toBe('owner/repo#main');
+    });
+
+    it('does not append skill folder for SSH sources (would produce unclonable URL)', () => {
+      const result = buildLocalUpdateSource({
+        source: 'git@gitea.example.com:owner/repo.git',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBe('git@gitea.example.com:owner/repo.git');
+    });
+
+    it('keeps ref on SSH sources even when skill folder is dropped', () => {
+      const result = buildLocalUpdateSource({
+        source: 'git@gitea.example.com:owner/repo.git',
+        ref: 'main',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBe('git@gitea.example.com:owner/repo.git#main');
+    });
+
+    it('does not append skill folder for self-hosted HTTPS .git URLs', () => {
+      const result = buildLocalUpdateSource({
+        source: 'https://gitea.example.com/owner/repo.git',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBe('https://gitea.example.com/owner/repo.git');
+    });
+
+    it('appends skill folder for github.com HTTPS URLs', () => {
+      const result = buildLocalUpdateSource({
+        source: 'https://github.com/owner/repo',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBe('https://github.com/owner/repo/skills/my-skill');
+    });
+
+    it('uses sourceUrl for self-hosted GitLab project lock entries', () => {
+      const result = buildLocalUpdateSource({
+        source: 'acme/skills',
+        sourceUrl: 'https://gitlab.example.com/acme/skills.git',
+        sourceType: 'git',
+        ref: 'main',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBe('https://gitlab.example.com/acme/skills.git#main');
+    });
+
+    it('fails closed for generic git shorthand without sourceUrl', () => {
+      const result = buildLocalUpdateSource({
+        source: 'acme/skills',
+        sourceType: 'git',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBeNull();
+    });
+
+    it('fails closed for legacy GitLab shorthands without sourceUrl', () => {
+      const result = buildLocalUpdateSource({
+        source: 'acme/skills',
+        sourceType: 'gitlab',
+        skillPath: 'skills/my-skill/SKILL.md',
+      });
+      expect(result).toBeNull();
     });
   });
 });

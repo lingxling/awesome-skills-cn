@@ -2,11 +2,7 @@
 name: pacsomatic
 description: nf-core/pacsomatic匹配的肿瘤-正常工作流的操作员工具包。当用户需要验证运行输入、生成符合pacsomatic的样本表、准备可重现的Nextflow启动工件、在本地运行或提交到调度程序（LSF/Slurm/PBS/SGE）以及分类执行故障时使用此技能。在运行pacsomatic、准备启动命令/脚本、执行试运行检查或排除管道启动和调度程序提交错误的请求时触发。
 license: MIT
-metadata:
-  version: "1.0"
-  skill-author: Beifang Niu
-  contributors: Haidong, Wenchao
-  upstream-pipeline: https://github.com/nf-core/pacsomatic
+metadata: {"version": "1.0", "skill-author": "Beifang Niu", "contributors": "Haidong, Wenchao", "upstream-pipeline": "https://github.com/nf-core/pacsomatic"}
 ---
 
 

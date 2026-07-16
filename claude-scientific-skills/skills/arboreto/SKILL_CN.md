@@ -2,9 +2,7 @@
 name: arboreto
 description: 使用可扩展算法（GRNBoost2、GENIE3）从基因表达数据推断基因调控网络（GRNs）。当分析转录组学数据（bulk RNA-seq、单细胞RNA-seq）以识别转录因子-靶基因关系和调控相互作用时使用。支持大规模数据集的分布式计算。
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

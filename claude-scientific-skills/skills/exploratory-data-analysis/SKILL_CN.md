@@ -2,9 +2,7 @@
 name: exploratory-data-analysis
 description: 对200多种文件格式的科学数据文件进行综合探索性数据分析。当分析任何科学数据文件以了解其结构、内容、质量和特征时使用此技能。自动检测文件类型并生成详细的markdown报告，包含格式特定的分析、质量指标和下游分析建议。涵盖化学、生物信息学、显微镜、光谱学、蛋白质组学、代谢组学和一般科学数据格式。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

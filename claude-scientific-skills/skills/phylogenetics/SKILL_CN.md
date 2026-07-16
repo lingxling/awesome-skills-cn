@@ -2,9 +2,7 @@
 name: phylogenetics
 description: 使用MAFFT（多重比对）、IQ-TREE 2（最大似然法）和FastTree（快速NJ/ML）构建和分析系统发育树。使用ETE3或FigTree进行可视化。用于进化分析、微生物基因组学、病毒系统动力学、蛋白质家族分析和分子钟研究。
 license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: Kuan-lin Huang
+metadata: {"version": "1.0", "skill-author": "Kuan-lin Huang"}
 ---
 
 

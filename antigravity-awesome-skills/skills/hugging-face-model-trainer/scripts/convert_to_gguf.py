@@ -34,11 +34,13 @@ Usage:
     - BASE_MODEL: Base model used for fine-tuning (e.g., "Qwen/Qwen2.5-0.5B")
     - OUTPUT_REPO: Where to upload GGUF files (e.g., "username/my-model-gguf")
     - HF_USERNAME: Your Hugging Face username (optional, for README)
+    - TRUST_REMOTE_CODE: Set to "1" only for reviewed model repositories that require custom code
 
 Dependencies: All required packages are declared in PEP 723 header above.
 """
 
 import os
+import re
 import sys
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -50,7 +52,7 @@ import subprocess
 def check_system_dependencies():
     """Check if required system packages are available."""
     print("🔍 Checking system dependencies...")
-    
+
     # Check for git
     if subprocess.run(["which", "git"], capture_output=True).returncode != 0:
         print("  ❌ git is not installed. Please install it:")
@@ -58,18 +60,18 @@ def check_system_dependencies():
         print("     RHEL/CentOS: sudo yum install git")
         print("     macOS: brew install git")
         return False
-    
+
     # Check for make or cmake
     has_make = subprocess.run(["which", "make"], capture_output=True).returncode == 0
     has_cmake = subprocess.run(["which", "cmake"], capture_output=True).returncode == 0
-    
+
     if not has_make and not has_cmake:
         print("  ❌ Neither make nor cmake found. Please install build tools:")
         print("     Ubuntu/Debian: sudo apt-get install build-essential cmake")
         print("     RHEL/CentOS: sudo yum groupinstall 'Development Tools' && sudo yum install cmake")
         print("     macOS: xcode-select --install && brew install cmake")
         return False
-    
+
     print("  ✅ System dependencies found")
     return True
 
@@ -82,6 +84,7 @@ def run_command(cmd, description):
             cmd,
             check=True,
             capture_output=True,
+            shell=False,
             text=True
         )
         if result.stdout:
@@ -99,6 +102,31 @@ def run_command(cmd, description):
         return False
 
 
+HF_REPO_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,95}/[A-Za-z0-9][A-Za-z0-9._-]{0,95}$")
+
+
+def require_hf_repo_id(value, name):
+    """Reject local paths, URLs, and shell-like values before loading models."""
+    if not HF_REPO_ID_RE.fullmatch(value):
+        print(
+            f"   Invalid {name}: {value!r}. Use a Hugging Face repo id like owner/model.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
+def safe_filename_component(value, name):
+    """Allow repo-name text only where it becomes a local filename component."""
+    if not re.fullmatch(r"[A-Za-z0-9._-]{1,96}", value):
+        print(f"   Invalid {name}: {value!r}. Use letters, numbers, dots, dashes, or underscores.", file=sys.stderr)
+        sys.exit(1)
+    return value
+
+
+def env_flag(name):
+    return os.environ.get(name, "").strip().lower() in {"1", "true", "yes", "on"}
+
+
 print("🔄 GGUF Conversion Script")
 print("=" * 60)
 
@@ -112,11 +140,17 @@ ADAPTER_MODEL = os.environ.get("ADAPTER_MODEL", "evalstate/qwen-capybara-medium"
 BASE_MODEL = os.environ.get("BASE_MODEL", "Qwen/Qwen2.5-0.5B")
 OUTPUT_REPO = os.environ.get("OUTPUT_REPO", "evalstate/qwen-capybara-medium-gguf")
 username = os.environ.get("HF_USERNAME", ADAPTER_MODEL.split('/')[0])
+TRUST_REMOTE_CODE = env_flag("TRUST_REMOTE_CODE")
+
+require_hf_repo_id(ADAPTER_MODEL, "ADAPTER_MODEL")
+require_hf_repo_id(BASE_MODEL, "BASE_MODEL")
+require_hf_repo_id(OUTPUT_REPO, "OUTPUT_REPO")
 
 print(f"\n📦 Configuration:")
 print(f"   Base model: {BASE_MODEL}")
 print(f"   Adapter model: {ADAPTER_MODEL}")
 print(f"   Output repo: {OUTPUT_REPO}")
+print(f"   Trust remote code: {TRUST_REMOTE_CODE}")
 
 # Step 1: Load base model and adapter
 print("\n🔧 Step 1: Loading base model and LoRA adapter...")
@@ -127,7 +161,7 @@ try:
         BASE_MODEL,
         dtype=torch.float16,
         device_map="auto",
-        trust_remote_code=True,
+        trust_remote_code=TRUST_REMOTE_CODE,
     )
     print("   ✅ Base model loaded")
 except Exception as e:
@@ -149,7 +183,10 @@ except Exception as e:
 
 try:
     # Load tokenizer
-    tokenizer = AutoTokenizer.from_pretrained(ADAPTER_MODEL, trust_remote_code=True)
+    tokenizer = AutoTokenizer.from_pretrained(
+        ADAPTER_MODEL,
+        trust_remote_code=TRUST_REMOTE_CODE,
+    )
     print("   ✅ Tokenizer loaded")
 except Exception as e:
     print(f"   ❌ Failed to load tokenizer: {e}")
@@ -202,7 +239,7 @@ gguf_output_dir = "/tmp/gguf_output"
 os.makedirs(gguf_output_dir, exist_ok=True)
 
 convert_script = "/tmp/llama.cpp/convert_hf_to_gguf.py"
-model_name = ADAPTER_MODEL.split('/')[-1]
+model_name = safe_filename_component(ADAPTER_MODEL.split('/')[-1], "ADAPTER_MODEL repo name")
 gguf_file = f"{gguf_output_dir}/{model_name}-f16.gguf"
 
 print(f"   Running conversion...")
@@ -269,7 +306,7 @@ for quant_type, description in quant_formats:
         continue
 
     quantized_files.append((quant_file, quant_type))
-    
+
     # Get file size
     size_mb = os.path.getsize(quant_file) / (1024 * 1024)
     print(f"   ✅ {quant_type}: {size_mb:.1f} MB")

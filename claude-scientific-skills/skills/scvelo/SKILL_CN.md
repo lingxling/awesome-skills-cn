@@ -2,9 +2,7 @@
 name: scvelo
 description: 使用scVelo进行RNA速度分析。从未剪接/已剪接mRNA动态估计细胞状态转换，推断轨迹方向，计算潜在时间，并在单细胞RNA-seq数据中识别驱动基因。与Scanpy/scVI-tools互补用于轨迹推断。
 license: BSD-3-Clause
-metadata:
-  version: "1.0"
-  skill-author: Kuan-lin Huang
+metadata: {"version": "1.0", "skill-author": "Kuan-lin Huang"}
 ---
 
 

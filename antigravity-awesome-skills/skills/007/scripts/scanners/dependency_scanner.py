@@ -17,6 +17,19 @@ import sys
 import time
 from pathlib import Path
 
+
+def safe_user_path(path_value, base_dir="."):
+    """Resolve a CLI path under the current workspace."""
+    if base_dir != ".":
+        raise ValueError("Custom base directories are not supported for CLI paths")
+    base_path = Path.cwd().resolve()
+    resolved_path = Path(path_value).expanduser().resolve()
+    try:
+        resolved_path.relative_to(base_path)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes allowed directory: {path_value}") from exc
+    return resolved_path
+
 # ---------------------------------------------------------------------------
 # Import from the 007 config hub (parent directory)
 # ---------------------------------------------------------------------------
@@ -155,7 +168,7 @@ _DOCKER_COPY_SENSITIVE_RE = re.compile(
 )
 
 _DOCKER_CURL_PIPE_RE = re.compile(
-    r"""(?:curl|wget)\s+[^|]*\|\s*(?:bash|sh|zsh|python|perl|ruby|node)""",
+    r"""(?:curl|wget)\s+[^|]*\|\s*(?:bash|sh|zsh|python|perl|ruby|node)""",  # security-allowlist: curl-pipe-bash, wget-pipe-sh
     re.IGNORECASE,
 )
 
@@ -776,7 +789,7 @@ def analyze_dockerfile(filepath: Path, verbose: bool = False) -> dict:
                 file=file_str,
                 line=line_num,
                 severity="CRITICAL",
-                description="Pipe-to-shell pattern detected (curl|bash). Remote code execution risk",
+                description="Pipe-to-shell pattern detected (curl|bash). Remote code execution risk",  # security-allowlist: curl-pipe-bash
                 recommendation="Download scripts first, verify checksum, then execute",
                 pattern="curl_pipe_bash",
             ))
@@ -850,27 +863,26 @@ def discover_dependency_files(target: Path) -> list[Path]:
     """
     found: list[Path] = []
 
-    for root, dirs, filenames in os.walk(target):
-        dirs[:] = [d for d in dirs if d not in config.SKIP_DIRECTORIES]
+    for fpath in safe_user_path(target).rglob("*"):
+        if not fpath.is_file() or any(part in config.SKIP_DIRECTORIES for part in fpath.parts):
+            continue
+        fname = fpath.name
+        fname_lower = fname.lower()
 
-        for fname in filenames:
-            fpath = Path(root) / fname
-            fname_lower = fname.lower()
+        # Exact name matches
+        if fname in ALL_DEP_FILES:
+            found.append(fpath)
+            continue
 
-            # Exact name matches
-            if fname in ALL_DEP_FILES:
-                found.append(fpath)
-                continue
+        # requirements*.txt variants
+        if _REQUIREMENTS_RE.match(fname):
+            found.append(fpath)
+            continue
 
-            # requirements*.txt variants
-            if _REQUIREMENTS_RE.match(fname):
-                found.append(fpath)
-                continue
-
-            # Docker files (prefix match)
-            if any(fname_lower.startswith(prefix.lower()) for prefix in DOCKER_PREFIXES):
-                found.append(fpath)
-                continue
+        # Docker files (prefix match)
+        if any(fname_lower.startswith(prefix.lower()) for prefix in DOCKER_PREFIXES):
+            found.append(fpath)
+            continue
 
     return found
 
@@ -1158,7 +1170,7 @@ def run_scan(
 
     config.ensure_directories()
 
-    target = Path(target_path).resolve()
+    target = safe_user_path(target_path).resolve()
     if not target.exists():
         logger.error("Target path does not exist: %s", target)
         sys.exit(1)

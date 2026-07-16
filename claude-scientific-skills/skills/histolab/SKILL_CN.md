@@ -3,9 +3,7 @@ name: histolab
 description: 轻量级WSI图块提取和预处理。用于基本切片处理、组织检测、图块提取和H&E图像的染色归一化。最适合简单管道、数据准备和快速基于图块的分析。高级空间蛋白质组学、多重成像或深度学习管道请使用pathml。
 license: Apache-2.0 license
 compatibility: Requires Python 3.8–3.11 (histolab 0.7.0), OpenSlide system libraries, and Linux or macOS. Sample data via histolab.data requires pooch.
-metadata:
-  version: "1.1"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 

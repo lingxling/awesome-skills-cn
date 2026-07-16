@@ -42,6 +42,7 @@ import numpy as np
 # Independent t-test with effect size
 result = pg.ttest(group1, group2, correction=False)
 cohens_d = result['cohen_d'].values[0]
+# (pingouin 0.6.0 renamed columns; on 0.5.x use 'p-val', 'cohen-d', 'CI95%', 'p-unc')
 
 # Manual calculation
 mean_diff = np.mean(group1) - np.mean(group2)
@@ -55,9 +56,13 @@ cohens_d = result['cohen_d'].values[0]
 
 **Confidence intervals for d**:
 ```python
-from pingouin import compute_effsize_from_t
+import pingouin as pg
 
-d, ci = compute_effsize_from_t(t_statistic, nx=n1, ny=n2, eftype='cohen')
+# compute_effsize_from_t returns only the point estimate;
+# get the CI separately with compute_esci
+d = pg.compute_effsize(group1, group2, eftype='cohen')
+ci = pg.compute_esci(stat=d, nx=len(group1), ny=len(group2),
+                     eftype='cohen', confidence=0.95)
 ```
 
 ---
@@ -70,8 +75,8 @@ d, ci = compute_effsize_from_t(t_statistic, nx=n1, ny=n2, eftype='cohen')
 
 **Python calculation**:
 ```python
-result = pg.ttest(group1, group2, correction=False)
-hedges_g = result['hedges'].values[0]
+# pg.ttest output has no Hedges' g column; compute it directly
+hedges_g = pg.compute_effsize(group1, group2, eftype='hedges')
 ```
 
 **Use Hedges' g when**:
@@ -105,19 +110,19 @@ hedges_g = result['hedges'].values[0]
 - Medium: η² = 0.06 (6% of variance)
 - Large: η² = 0.14 (14% of variance)
 
-**Limitation**: Biased with multiple factors (sums to > 1.0)
+**Limitation**: In multi-factor designs each effect's η² shrinks as other factors are added (classical η² values sum to ≤ 1.0 by construction); it is partial η² that can sum to > 1.0 across factors
 
 **Python calculation**:
 ```python
 import pingouin as pg
 
-# One-way ANOVA
-aov = pg.anova(dv='value', between='group', data=df)
+# One-way ANOVA (detailed=True is required for the SS column)
+aov = pg.anova(dv='value', between='group', data=df, detailed=True)
 eta_squared = aov['SS'][0] / aov['SS'].sum()
 
-# Or use pingouin directly
-aov = pg.anova(dv='value', between='group', data=df, detailed=True)
-eta_squared = aov['np2'][0]  # Note: pingouin reports partial eta-squared
+# Or read pingouin's np2 column, which is PARTIAL eta-squared:
+partial_eta_sq = aov['np2'][0]
+# np2 coincides with classical eta-squared only for one-way (single-factor) designs
 ```
 
 ---
@@ -131,6 +136,8 @@ eta_squared = aov['np2'][0]  # Note: pingouin reports partial eta-squared
 **Interpretation**: Same benchmarks as η²
 
 **When to use**: Multi-factor ANOVA (standard in factorial designs)
+
+**Limitation**: Across factors, partial η² values can sum to > 1.0 — they are not additive shares of total variance
 
 **Python calculation**:
 ```python
@@ -207,7 +214,7 @@ import pingouin as pg
 # Pearson correlation with CI
 result = pg.corr(x, y, method='pearson')
 r = result['r'].values[0]
-ci = result['CI95'].values[0]  # Pingouin 0.5+: was CI95%
+ci = result['CI95'].values[0]  # pingouin 0.6.0 renamed CI95% to CI95
 
 # Spearman correlation
 result = pg.corr(x, y, method='spearman')
@@ -235,10 +242,10 @@ rho = result['r'].values[0]
 **Python calculation**:
 ```python
 from sklearn.metrics import r2_score
-from statsmodels.api import OLS
+import statsmodels.api as sm
 
-# Using statsmodels
-model = OLS(y, X).fit()
+# Using statsmodels (add_constant adds the intercept column)
+model = sm.OLS(y, sm.add_constant(X)).fit()
 r_squared = model.rsquared
 adjusted_r_squared = model.rsquared_adj
 
@@ -285,7 +292,7 @@ beta = model.params
 
 **What it measures**: Effect size for individual predictors or model comparison
 
-**Formula**: f² = R²_AB - R²_A / (1 - R²_AB)
+**Formula**: f² = (R²_AB - R²_A) / (1 - R²_AB)
 
 Where:
 - R²_AB = R² for full model with predictor
@@ -320,22 +327,28 @@ f_squared = (r2_full - r2_reduced) / (1 - r2_full)
 
 Where k = min(rows, columns)
 
-**Interpretation** (for k > 2):
-- Small: V = 0.07
-- Medium: V = 0.21
-- Large: V = 0.35
+**Interpretation** (benchmarks depend on df* = min(rows, columns) − 1):
+
+| df* | Small | Medium | Large |
+|-----|-------|--------|-------|
+| 1 (2×2) | 0.10 | 0.30 | 0.50 |
+| 2 | 0.07 | 0.21 | 0.35 |
+| 3 | 0.06 | 0.17 | 0.29 |
 
 **For 2×2 tables**: Use phi coefficient (φ)
 
 **Python calculation**:
 ```python
+import numpy as np
 from scipy.stats.contingency import association
 
 # Cramér's V
 cramers_v = association(contingency_table, method='cramer')
 
-# Phi coefficient (for 2x2)
-phi = association(contingency_table, method='pearson')
+# Phi coefficient (2x2): |phi| equals Cramér's V for a 2x2 table.
+# Caution: method='pearson' is Pearson's contingency coefficient, NOT phi.
+a, b, c, d = np.asarray(contingency_table).ravel()
+phi = (a * d - b * c) / np.sqrt((a + b) * (c + d) * (a + c) * (b + d))  # signed phi
 ```
 
 ---
@@ -367,19 +380,55 @@ phi = association(contingency_table, method='pearson')
 
 **Python calculation**:
 ```python
+import numpy as np
+from scipy import stats
 import statsmodels.api as sm
 
 # From contingency table
 odds_ratio = (a * d) / (b * c)
 
-# Confidence interval
+# Fisher's exact test returns only the sample OR and a p-value (no CI)
 table = np.array([[a, b], [c, d]])
 oddsratio, pvalue = stats.fisher_exact(table)
+
+# Odds-ratio confidence interval (scipy >= 1.10; conditional MLE estimate)
+or_result = stats.contingency.odds_ratio(table)
+ci = or_result.confidence_interval(confidence_level=0.95)
 
 # From logistic regression
 model = sm.Logit(y, X).fit()
 odds_ratios = np.exp(model.params)  # Exponentiate coefficients
 ci = np.exp(model.conf_int())  # Exponentiate CIs
+```
+
+---
+
+### Nonparametric Effect Sizes
+
+**Rank-biserial correlation (r_rb)**: Effect size for Mann-Whitney U and Wilcoxon signed-rank tests (range −1 to 1; interpret |r_rb| roughly like r). Returned by `pg.mwu` and `pg.wilcoxon` as the `RBC` column.
+
+**Common-language effect size (CLES)**: Probability that a randomly sampled value from one group exceeds a randomly sampled value from the other (0.5 = no effect). Returned by `pg.mwu` as `CLES`.
+
+**r = z / √N**: Classic effect size when a z approximation is reported for Mann-Whitney/Wilcoxon (small 0.10, medium 0.30, large 0.50).
+
+**Epsilon-squared (ε²)**: Effect size for Kruskal-Wallis: ε² = H × (n + 1) / (n² − 1).
+
+**Python calculation**:
+```python
+import numpy as np
+import pandas as pd
+import pingouin as pg
+
+res = pg.mwu(group1, group2)
+print(res[['U_val', 'p_val', 'RBC', 'CLES']])
+
+# Kruskal-Wallis with epsilon-squared
+df = pd.DataFrame({'value': np.concatenate([group1, group2, group3]),
+                   'group': np.repeat(['a', 'b', 'c'],
+                                      [len(group1), len(group2), len(group3)])})
+kw = pg.kruskal(df, dv='value', between='group')
+H, n = kw['H'].values[0], len(df)
+epsilon_sq = H * (n + 1) / (n**2 - 1)
 ```
 
 ---
@@ -394,16 +443,11 @@ ci = np.exp(model.conf_int())  # Exponentiate CIs
 - BF₁₀ = 1: Equal evidence for H₁ and H₀
 - BF₁₀ = 3: H₁ is 3× more likely than H₀ (moderate evidence)
 - BF₁₀ = 10: H₁ is 10× more likely than H₀ (strong evidence)
-- BF₁₀ = 100: H₁ is 100× more likely than H₀ (decisive evidence)
+- BF₁₀ > 100: Decisive evidence for H₁ (30-100 counts as "very strong" on the Jeffreys scale)
 - BF₁₀ = 0.33: H₀ is 3× more likely than H₁
 - BF₁₀ = 0.10: H₀ is 10× more likely than H₁
 
-**Classification** (Jeffreys, 1961):
-- 1-3: Anecdotal evidence
-- 3-10: Moderate evidence
-- 10-30: Strong evidence
-- 30-100: Very strong evidence
-- >100: Decisive evidence
+For the full Jeffreys interpretation table and BF reporting language, see `bayesian_statistics.md`.
 
 **Python calculation**:
 ```python
@@ -413,6 +457,29 @@ import pingouin as pg
 result = pg.ttest(group1, group2, correction=False)
 bf10 = result['BF10'].values[0]
 ```
+
+---
+
+### Bootstrap Confidence Intervals
+
+When no analytic CI exists for an effect size (or its assumptions are doubtful), bootstrap one:
+
+```python
+import numpy as np
+from scipy import stats
+
+def cohen_d(x, y):
+    nx, ny = len(x), len(y)
+    sp = np.sqrt(((nx - 1) * np.var(x, ddof=1) + (ny - 1) * np.var(y, ddof=1))
+                 / (nx + ny - 2))
+    return (np.mean(x) - np.mean(y)) / sp
+
+boot = stats.bootstrap((group1, group2), cohen_d, n_resamples=9999,
+                       method='BCa', rng=np.random.default_rng(42))
+print(boot.confidence_interval)  # 95% BCa CI by default
+```
+
+The same pattern works for any statistic (medians, correlations, rank-biserial, ...). Prefer `method='BCa'` and use at least 5000-10000 resamples.
 
 ---
 
@@ -462,14 +529,16 @@ n_required = tt_ind_solve_power(
     alternative='two-sided'
 )
 
-# ANOVA power analysis
+# ANOVA power analysis (kwarg is k_groups, not ngroups)
 anova_power = FTestAnovaPower()
-n_per_group = anova_power.solve_power(
+n_total = anova_power.solve_power(
     effect_size=0.25,  # Cohen's f
-    ngroups=3,
+    k_groups=3,
     alpha=0.05,
     power=0.80
 )
+# Returns the TOTAL sample size across all groups:
+# f = 0.25, k = 3 -> ~158 total, i.e. ~53 per group
 
 # Correlation power analysis
 from pingouin import power_corr
@@ -539,8 +608,7 @@ print(f"With n=50 per group, we could detect d ≥ {detectable_effect:.2f}")
 **Regression example**:
 > "The regression model significantly predicted exam scores, F(3, 146) = 45.2, p < .001, R² = .48. Study hours (β = .52, p < .001) and prior GPA (β = .31, p < .001) were significant predictors."
 
-**Bayesian example**:
-> "A Bayesian independent samples t-test provided strong evidence for a difference between groups, BF₁₀ = 23.5, indicating the data are 23.5 times more likely under H₁ than H₀."
+**Bayesian example**: See `bayesian_statistics.md` (Reporting Bayesian Results) for Bayes Factor and posterior reporting templates.
 
 ---
 
@@ -566,8 +634,11 @@ print(f"With n=50 per group, we could detect d ≥ {detectable_effect:.2f}")
 | Correlation | r, ρ | 0.10 | 0.30 | 0.50 |
 | Regression | R² | 0.02 | 0.13 | 0.26 |
 | Regression | f² | 0.02 | 0.15 | 0.35 |
-| Chi-square | Cramér's V | 0.07 | 0.21 | 0.35 |
-| Chi-square (2×2) | φ | 0.10 | 0.30 | 0.50 |
+| Chi-square (df* = 1, 2×2) | Cramér's V, φ | 0.10 | 0.30 | 0.50 |
+| Chi-square (df* = 2) | Cramér's V | 0.07 | 0.21 | 0.35 |
+| Chi-square (df* = 3) | Cramér's V | 0.06 | 0.17 | 0.29 |
+
+*Note*: df* = min(rows, columns) − 1.
 
 ---
 

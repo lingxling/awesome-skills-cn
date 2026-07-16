@@ -2,9 +2,7 @@
 name: neurokit2
 description: 综合生物信号处理工具包，用于分析包括ECG、EEG、EDA、RSP、PPG、EMG和EOG信号在内的生理数据。当处理心血管信号、大脑活动、皮肤电反应、呼吸模式、肌肉活动或眼球运动时使用此技能。适用于心率变异性分析、事件相关电位、复杂度测量、自主神经系统评估、心理生理学研究和多模态生理信号整合。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

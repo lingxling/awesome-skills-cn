@@ -3,11 +3,7 @@ name: bgpt-paper-search
 description: 搜索科学论文并通过BGPT MCP服务器检索从全文研究中提取的结构化实验数据。每篇论文返回25+个字段，包括方法、结果、样本量、质量分数和结论。用于文献综述、证据综合和查找仅在摘要中无法获得的实验细节。
 license: MIT
 compatibility: Requires the BGPT MCP server configured in the agent host (npx mcp-remote or npx bgpt-mcp), internet access to bgpt.pro, and an optional BGPT API key for paid usage.
-metadata:
-  version: "1.1"
-  skill-author: BGPT
-  website: https://bgpt.pro/mcp
-  github: https://github.com/connerlambden/bgpt-mcp
+metadata: {"version": "1.1", "skill-author": "BGPT", "website": "https://bgpt.pro/mcp", "github": "https://github.com/connerlambden/bgpt-mcp"}
 ---
 
 

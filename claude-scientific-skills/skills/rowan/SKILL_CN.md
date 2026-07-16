@@ -3,10 +3,8 @@ name: rowan
 description: Rowan是一个云原生的分子建模和药物化学工作流平台，带有Python API。用于pKa和macropKa预测、构象体和互变异构体集合、对接和类似物对接、蛋白质-配体共折叠、MSA生成、分子动力学、渗透性、描述符工作流以及相关的小分子或蛋白质建模任务。非常适合编程批量筛选、多步骤化学管道以及否则需要维护本地HPC/GPU基础架构的工作流。
 license: Proprietary (API key required)
 compatibility: Python 3.12+, API key required
-metadata:
-  version: "1.1"
-  skill-author: Rowan Science
-  trigger-keywords: "pKa prediction, molecular docking, conformer search, chemistry workflow, drug discovery, SMILES, protein structure, batch molecular modeling, cloud chemistry"
+required_environment_variables: [{"name": "ROWAN_API_KEY", "prompt": "Rowan computational chemistry API key.", "required_for": "full functionality"}]
+metadata: {"version": "1.2", "skill-author": "Rowan Science", "trigger-keywords": "pKa prediction, molecular docking, conformer search, chemistry workflow, drug discovery, SMILES, protein structure, batch molecular modeling, cloud chemistry", "openclaw": {"primaryEnv": "ROWAN_API_KEY", "envVars": [{"name": "ROWAN_API_KEY", "required": true, "description": "Rowan computational chemistry API key."}]}}
 ---
 
 

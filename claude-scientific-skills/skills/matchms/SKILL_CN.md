@@ -2,9 +2,7 @@
 name: matchms
 description: 用于代谢组学的光谱相似性和化合物鉴定。用于比较质谱、计算相似性分数（余弦、改进余弦）以及从光谱库中鉴定未知化合物。最适合代谢物鉴定、光谱匹配、库搜索。完整的LC-MS/MS蛋白质组学管道请使用pyopenms。
 license: Apache-2.0 license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

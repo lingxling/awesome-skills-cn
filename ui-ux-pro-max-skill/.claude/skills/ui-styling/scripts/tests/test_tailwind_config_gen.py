@@ -1,5 +1,7 @@
 """Tests for tailwind_config_gen.py"""
 
+import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -334,3 +336,59 @@ class TestTailwindConfigGenerator:
         assert "module.exports" in content
         assert "primary" in content
         assert "@tailwindcss/forms" in content
+
+
+def _strip_to_object(config_str: str) -> str:
+    """Reduce a generated TS/JS config to a bare assignable object so it can be
+    handed to `node --check` without a TypeScript loader."""
+    lines = []
+    for line in config_str.splitlines():
+        if line.startswith("import type"):
+            continue
+        if line.strip() == "export default config":
+            continue
+        line = line.replace("const config: Config =", "const config =")
+        line = line.replace("module.exports =", "const config =")
+        lines.append(line)
+    return "\n".join(lines)
+
+
+class TestGeneratedConfigIsValidJs:
+    """Regression guard for the missing-comma bug between the ``theme`` block and
+    ``plugins`` that produced syntactically invalid config files. The data-shape
+    tests above all passed while the emitted string was unparseable, so these
+    tests validate the serialized output itself."""
+
+    @pytest.mark.parametrize("typescript", [True, False])
+    def test_property_before_plugins_is_comma_terminated(self, typescript):
+        """The property preceding ``plugins`` must end with a comma (pure-Python
+        check, so the regression is caught even where node is unavailable)."""
+        generator = TailwindConfigGenerator(typescript=typescript)
+        generator.add_colors({"brand": "#6366F1"})
+        generator.add_breakpoints({"3xl": "1920px"})
+        config = generator.generate_config_string()
+
+        assert "}\n  plugins:" not in config, "missing comma before plugins"
+        assert "},\n  plugins:" in config
+
+    @pytest.mark.parametrize("typescript", [True, False])
+    def test_node_check_parses_generated_config(self, typescript, tmp_path):
+        """The emitted config parses as valid JS via ``node --check``."""
+        node = shutil.which("node")
+        if not node:
+            pytest.skip("node not available")
+
+        generator = TailwindConfigGenerator(typescript=typescript)
+        generator.add_colors({"brand": "#6366F1", "accent": "#10B981"})
+        generator.add_fonts({"sans": ["Inter"]})
+        generator.add_breakpoints({"3xl": "1920px"})
+        generator.add_plugins(["tailwindcss-animate"])
+
+        snippet = _strip_to_object(generator.generate_config_string())
+        path = tmp_path / "config.cjs"
+        path.write_text(snippet)
+
+        result = subprocess.run(
+            [node, "--check", str(path)], capture_output=True, text=True
+        )
+        assert result.returncode == 0, result.stderr

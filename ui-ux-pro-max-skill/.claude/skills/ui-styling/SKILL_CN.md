@@ -1,5 +1,5 @@
 ---
-name: ckm:ui-styling
+name: ui-styling
 description: 使用shadcn/ui组件（基于Radix UI + Tailwind）、Tailwind CSS实用优先样式和基于画布的视觉设计创建美观、可访问的用户界面。当构建用户界面、实现设计系统、创建响应式布局、添加可访问组件（对话框、下拉菜单、表单、表格）、自定义主题和颜色、实现深色模式、生成视觉设计和海报，或在应用程序中建立一致的样式模式时使用。
 argument-hint: "[组件或布局]"
 license: MIT

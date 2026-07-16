@@ -1,10 +1,8 @@
 ---
 name: networkx
-description: Python中用于创建、分析和可视化复杂网络和图的综合工具包。在处理网络/图数据结构、分析实体之间的关系、计算图算法（最短路径、中心性、聚类）、检测社区、生成合成网络或可视化网络拓扑结构时使用。适用于社交网络、生物网络、交通系统、引用网络和任何涉及成对关系的领域。
+description: 使用NetworkX在Python中创建、分析和可视化复杂网络和图。在处理网络/图数据结构、计算图算法（最短路径、中心性、聚类）、检测社区、生成合成网络（随机、无标度、小世界）、读写图文件格式或绘制网络拓扑结构时使用。常见应用包括社交网络、生物网络、交通网络和引用网络。
 license: 3-clause BSD license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -17,6 +15,8 @@ metadata:
 ## 概述
 
 NetworkX是一个用于创建、操作和分析复杂网络和图的Python包。在处理网络或图数据结构时使用此技能,包括社交网络、生物网络、交通系统、引用网络、知识图谱或任何涉及实体之间关系的系统。
+
+本技能针对 NetworkX 3.x(当前稳定版本:3.6,需要 Python >= 3.11)。若干 3.0 之前的 API(`nx.info`、`nx.write_gpickle`、`nx.read_shp`)以及 3.4 时代的 `nx.random_tree` 已不再存在——本技能通篇使用的是当前的替代方案。
 
 ## 何时使用此技能
 
@@ -136,8 +136,8 @@ G = nx.watts_strogatz_graph(n=100, k=6, p=0.1, seed=42)
 # 网格图
 G = nx.grid_2d_graph(m=5, n=7)
 
-# 随机树
-G = nx.random_tree(n=100, seed=42)
+# 随机树(random_tree 已在 NetworkX 3.4 中移除)
+G = nx.random_labeled_tree(100, seed=42)
 ```
 
 **参考**: 详见`references/generators.md`获取所有图生成器的综合覆盖,包括经典图、随机模型(Erdős-Rényi、Barabási-Albert、Watts-Strogatz)、格、树、社交网络模型和专用生成器,包含详细参数和用例。
@@ -160,7 +160,8 @@ nx.write_graphml(G, 'graph.graphml')
 G = nx.read_gml('graph.gml')
 nx.write_gml(G, 'graph.gml')
 
-# JSON
+# JSON(节点-链接格式;自 NetworkX 3.6 起,边列表存储在 "edges" 键下——
+# 旧文件可能使用 "links",详见 references/io.md)
 data = nx.node_link_data(G)
 G = nx.node_link_graph(data)
 ```
@@ -335,6 +336,7 @@ print(nx.__version__)
 - 考虑仅加载必要的子图
 - 使用高效的文件格式(Python对象使用pickle,压缩格式)
 - 利用近似算法处理非常大的网络(例如,中心性计算中的`k`参数)
+- 对于繁重的工作负载,NetworkX 3.x 通过 `backend=` 关键字参数或 `nx.config.backend_priority` 支持即插即用的加速后端——例如 `nx-cugraph`(GPU）、`nx-parallel`(多核）、`graphblas-algorithms`(稀疏线性代数）。安装相应的后端包,并在受支持的函数中传入 `backend="cugraph"`(或类似值）即可;无需修改算法代码。
 
 **节点和边类型**:
 - 节点可以是任何可哈希的Python对象(数字、字符串、元组、自定义对象)

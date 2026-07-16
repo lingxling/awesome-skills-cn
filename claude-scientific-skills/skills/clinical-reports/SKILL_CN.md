@@ -3,9 +3,8 @@ name: clinical-reports
 description: 撰写综合临床报告，包括病例报告（CARE指南）、诊断报告（放射学/病理学/实验室）、临床试验报告（ICH-E3、SAE、CSR）和患者文档（SOAP、H&P、出院小结）。全面支持模板、法规合规（HIPAA、FDA、ICH-GCP）和验证工具。
 allowed-tools: Read Write Edit Bash
 license: MIT License
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

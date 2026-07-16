@@ -2,9 +2,9 @@
 name: seaborn
 description: 集成pandas的统计可视化。用于快速探索分布、关系和分类比较，默认样式美观。最适合箱线图、小提琴图、配对图、热力图。基于matplotlib构建。对于交互式图表使用plotly；对于出版样式使用scientific-visualization。
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+allowed-tools: Read Write Edit Bash
+compatibility: Requires Python 3.8+ and seaborn 0.13.2-compatible dependencies. Install with uv pip install seaborn==0.13.2; use seaborn[stats]==0.13.2 when advanced regression or clustering examples need scipy/statsmodels.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -17,6 +17,30 @@ metadata:
 ## 概述
 
 Seaborn 是一个用于创建出版物质量统计图形的 Python 可视化库。使用此技能进行面向数据集的绘图、多元分析、自动统计估计和复杂的多面板图形，只需最少的代码。
+
+## 环境与安装
+
+当前上游文档针对 seaborn 0.13.2。官方文档支持 Python 3.8+，强制依赖 NumPy、pandas 和 matplotlib；scipy、statsmodels 和 fastcluster 为可选依赖，用于部分高级统计和聚类工作流。
+
+```bash
+# 为本技能中的示例提供可复现的安装
+uv pip install "seaborn==0.13.2"
+
+# 需要时包含可选统计依赖
+uv pip install "seaborn[stats]==0.13.2"
+```
+
+推荐的导入方式：
+
+```python
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import seaborn.objects as so
+```
+
+`sns.load_dataset()` 会在未缓存时下载公开示例数据。对于私有、受监管或离线工作，应使用 pandas 显式加载本地文件，并将得到的 DataFrame 传给 seaborn。
 
 ## 设计理念
 
@@ -56,7 +80,7 @@ plt.show()
 
 ### 对象接口（现代）
 
-`seaborn.objects` 接口提供类似 ggplot2 的声明式、可组合 API。通过链接方法来指定数据映射、标记、变换和尺度来构建可视化。
+`seaborn.objects` 接口提供类似 ggplot2 的声明式、可组合 API。通过链接方法来指定数据映射、标记、变换和尺度来构建可视化。上游文档在 0.13.2 中仍将此接口描述为实验性且不完整，尽管已经足够稳定可供正式使用；除非组合式 API 能大幅简化图表，否则对保守的生产代码优先使用函数接口。
 
 **何时使用：**
 - 复杂的分层可视化
@@ -74,6 +98,16 @@ from seaborn import objects as so
     .add(so.Line(), so.PolyFit())
 )
 ```
+
+## 当前 API 说明
+
+Seaborn 0.12 和 0.13 改变了几个常见绘图模式：
+
+- 大多数绘图函数现在要求变量使用关键字参数。优先使用 `sns.scatterplot(data=df, x="x", y="y")`，而不是位置参数 `sns.scatterplot(df["x"], df["y"])`。
+- `errorbar` 取代了 `lineplot()`、`barplot()` 和 `pointplot()` 中旧的 `ci` 参数。回归函数如 `regplot()` 和 `lmplot()` 仍然使用 `ci`。
+- 分类图在 0.13 中被重写。当数值或日期时间类别应保持其原始尺度而非序数位置时，使用 `native_scale=True`。
+- 在不指定 `hue` 的情况下传递 `palette` 对分类函数已被弃用。如果每个类别都应有自己的颜色，请分配一个冗余的 hue，例如 `hue="day"` 并设置 `legend=False`。
+- 优先使用重命名后的参数：用 `violinplot(density_norm=..., common_norm=...)` 代替 `scale`/`scale_hue`，用 `boxenplot(width_method=...)` 代替 `scale`，用 `barplot(err_kws=...)` 代替 `errcolor`/`errwidth`。
 
 ## 按类别分类的绘图函数
 
@@ -168,9 +202,13 @@ sns.pairplot(data=df, hue='species', corner=True)
 - `x`, `y` - 变量（通常一个是分类的）
 - `hue` - 附加分类分组
 - `order`, `hue_order` - 控制类别顺序
-- `dodge` - 并排分离 hue 级别
-- `orient` - "v"（垂直）或 "h"（水平）
-- `kind` - catplot 的图类型："strip"、"swarm"、"box"、"violin"、"bar"、"point"
+- `native_scale` - 在分类轴上保留数值/日期时间尺度
+- `log_scale` - 应用对数缩放，无需降级到 matplotlib
+- `formatter` - 控制分类刻度标签
+- `dodge`, `gap` - 并排分离 hue 级别并为分离的元素设置间距
+- `orient` - "x"/"y" 或 "v"/"h" 指定分类轴
+- `legend` - True/False 或 "auto"、"brief"、"full"
+- `kind` - catplot 的图类型："strip"、"swarm"、"box"、"violin"、"boxen"、"bar"、"point"、"count"
 
 ```python
 # 显示所有点的 swarm 图

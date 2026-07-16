@@ -53,14 +53,14 @@ Always use these flags in non-interactive (agent/CI) contexts:
 
 ### text chat
 
-Chat completion. Default model: `MiniMax-M2.7`.
+Chat completion. Default model: `MiniMax-M3`. Pass `--model MiniMax-M2.7` for the previous-generation default when reproducing older outputs.
 
 ```bash
 mmx text chat --message <text> [flags]
 ```
 
 ```bash
-# Single message
+# Single message (uses MiniMax-M3 by default)
 mmx text chat --message "user:What is MiniMax?" --output json --quiet
 
 # Multi-turn with system prompt
@@ -68,6 +68,9 @@ mmx text chat \
   --system "You are a coding assistant." \
   --message "user:Write fizzbuzz in Python" \
   --output json
+
+# Pin to the previous-generation model
+mmx text chat --model MiniMax-M2.7 --message "user:Hello" --output json
 
 # From file
 cat conversation.json | mmx text chat --messages-file - --output json
@@ -77,16 +80,29 @@ cat conversation.json | mmx text chat --messages-file - --output json
 
 ### image generate
 
-Generate images. Model: `image-01`.
+Generate images through MiniMax. Use this command for text-to-image tasks, thumbnails, concept art, social visuals, and quick prompt iteration. Model: `image-01`.
 
 ```bash
 mmx image generate --prompt <text> [flags]
 ```
 
 ```bash
+# Machine-readable response for agents
 mmx image generate --prompt "A cat in a spacesuit" --output json --quiet
+
+# Save multiple generated images to a directory
 mmx image generate --prompt "Logo" --n 3 --out-dir ./gen/ --quiet
+
+# Select region explicitly when a workflow must stay on one MiniMax endpoint family
+mmx image generate --prompt "Product hero image" --region global --output json --quiet
+mmx image generate --prompt "Product hero image" --region cn --output json --quiet
 ```
+
+Agent notes:
+
+- Prefer `--output json --quiet --non-interactive` when another tool will parse the result.
+- Use `--dry-run` before API-backed calls when validating arguments or CI examples.
+- Keep generated media in a task-local output directory and validate returned file paths or URLs before reusing them.
 
 ---
 

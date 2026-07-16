@@ -1,7 +1,10 @@
 ---
 name: claude-api
-description: "构建、调试和优化 Claude API / Anthropic SDK 应用。使用此技能构建的应用应包括提示缓存。还处理现有 Claude API 代码在 Claude 模型版本之间的迁移（4.5 → 4.6, 4.6 → 4.7, 已停用模型替换）。触发条件：代码导入 `anthropic`/`@anthropic-ai/sdk`；用户要求使用 Claude API、Anthropic SDK 或托管 Agents；用户在文件中添加/修改/调整 Claude 功能（缓存、思考、压缩、工具使用、批处理、文件、引用、记忆）或模型（Opus/Sonnet/Haiku）；关于 Anthropic SDK 项目中提示缓存/缓存命中率的问题。跳过：文件导入 `openai`/其他提供商 SDK、文件名如 `*-openai.py`/`*-generic.py`、提供商中性代码、通用编程/ML。"
-license: 完整条款见 LICENSE.txt
+description: |-
+  Claude API / Anthropic SDK 参考文档 —— 模型 ID、定价、参数、流式传输、工具使用、MCP、agents、缓存、令牌计数、模型迁移。
+  触发条件 —— 在打开目标文件之前阅读；不要因为它"看起来像一行代码"就跳过 —— 当以下任一情况发生时：提示中以任何形式提到 Claude/Anthropic（Claude、Anthropic、Fable、Opus、Sonnet、Haiku、`anthropic`、`@anthropic-ai`、`claude-*`、`us.anthropic.*`、`[1m]`）；用户询问关于 LLM 的问题（定价/模型选择/限制/缓存）——永远不要凭记忆回答；或者任务是 LLM 相关但未说明提供商（agent/MCP/工具定义/多 agent/RAG/LLM 评判/计算机使用；生成/摘要/提取/分类/改写/自然语言对话；调试拒绝响应/截断/流式传输/工具调用/令牌问题）。
+  仅当正在处理其他提供商时跳过（此条件优先于所有触发条件）：查询中明确提到了 OpenAI/GPT/Gemini/Llama/Mistral/Cohere/Ollama；或者对项目运行 `grep -rE 'openai|langchain_openai|google.generativeai|genai|mistralai|cohere|ollama'` 有匹配结果（如果查询中未指明提供商，先运行此 grep —— 不要直接 Read 文件）。
+license: Complete terms in LICENSE.txt
 ---
 
 # 使用 Claude 构建 LLM 驱动的应用

@@ -2,6 +2,22 @@
 
 This document provides guidance on conducting and interpreting Bayesian statistical analyses, which offer an alternative framework to frequentist (classical) statistics.
 
+## Contents
+
+- [Bayesian vs. Frequentist Philosophy](#bayesian-vs-frequentist-philosophy)
+- [Bayes' Theorem](#bayes-theorem)
+- [Prior Distributions](#prior-distributions)
+- [Bayesian Hypothesis Testing](#bayesian-hypothesis-testing)
+- [Bayesian Estimation](#bayesian-estimation)
+- [Common Bayesian Analyses](#common-bayesian-analyses)
+- [Hierarchical (Multilevel) Models](#hierarchical-multilevel-models)
+- [Model Comparison](#model-comparison)
+- [Checking Bayesian Models](#checking-bayesian-models)
+- [Reporting Bayesian Results](#reporting-bayesian-results)
+- [Advantages and Limitations](#advantages-and-limitations)
+- [Key Python Packages](#key-python-packages)
+- [When to Use Bayesian Methods](#when-to-use-bayesian-methods)
+
 ## Bayesian vs. Frequentist Philosophy
 
 ### Fundamental Differences
@@ -14,7 +30,7 @@ This document provides guidance on conducting and interpreting Bayesian statisti
 | **Primary output** | p-values, confidence intervals | Posterior probabilities, credible intervals |
 | **Prior information** | Not formally incorporated | Explicitly incorporated via priors |
 | **Hypothesis testing** | Reject/fail to reject null | Probability of hypotheses given data |
-| **Sample size** | Often requires minimum | Can work with any sample size |
+| **Sample size** | Often requires minimum | Works at any n, but small-n posteriors are prior-dominated — report a prior-sensitivity check |
 | **Interpretation** | Indirect (probability of data given H₀) | Direct (probability of hypothesis given data) |
 
 ### Key Question Difference
@@ -88,7 +104,7 @@ Where:
 **Example priors**:
 - Effect size: Normal(0, 1) or Cauchy(0, 0.707)
 - Variance: Half-Cauchy(0, 1)
-- Correlation: Uniform(-1, 1) or Beta(2, 2)
+- Correlation: Uniform(-1, 1), a rescaled Beta on (-1, 1) (e.g. 2×Beta(2, 2)−1; plain Beta(2, 2) has support [0, 1]), or an LKJ prior for correlation matrices
 
 **Advantages**:
 - Balances objectivity and regularization
@@ -142,7 +158,7 @@ for name, mu_prior, sigma_prior in prior_specs:
     with pm.Model() as model:
         effect = pm.Normal('effect', mu=mu_prior, sigma=sigma_prior)
         # ... likelihood and observed data
-        trace = pm.sample(2000, tune=1000, return_inferencedata=True)
+        trace = pm.sample(2000, tune=1000)
         results[name] = trace
 ```
 
@@ -177,7 +193,7 @@ BF₁₀ = P(D|H₁) / P(D|H₀)
 
 **Advantages over p-values**:
 1. Can provide evidence for null hypothesis
-2. Not dependent on sampling intentions (no "peeking" problem)
+2. Less dependent on sampling intentions than p-values — but only Bayes factors with fixed priors are relatively insensitive to optional stopping; posterior-based decision rules are still affected, and transparency requires reporting the stopping rule
 3. Directly quantifies evidence
 4. Can be updated with more data
 
@@ -252,8 +268,8 @@ import arviz as az
 # Equal-tailed interval
 eti = np.percentile(posterior_samples, [2.5, 97.5])
 
-# HDI
-hdi = az.hdi(posterior_samples, hdi_prob=0.95)
+# HDI (ArviZ 1.x renamed the keyword hdi_prob= to prob=)
+hdi = az.hdi(posterior_samples, prob=0.95)
 ```
 
 ---
@@ -281,8 +297,9 @@ hdi = az.hdi(posterior_samples, hdi_prob=0.95)
 import matplotlib.pyplot as plt
 import arviz as az
 
-# Posterior plot with HDI
-az.plot_posterior(trace, hdi_prob=0.95)
+# Posterior plot with 95% credible interval
+# (ArviZ 1.x replaced plot_posterior with plot_dist and hdi_prob= with ci_prob=)
+az.plot_dist(trace, ci_prob=0.95)
 
 # Trace plot (check convergence)
 az.plot_trace(trace)
@@ -327,7 +344,7 @@ with pm.Model() as model:
     diff = pm.Deterministic('diff', mu1 - mu2)
 
     # Sample posterior
-    trace = pm.sample(2000, tune=1000, return_inferencedata=True)
+    trace = pm.sample(2000, tune=1000)
 
 # Analyze results
 print(az.summary(trace, var_names=['mu1', 'mu2', 'diff']))
@@ -336,8 +353,9 @@ print(az.summary(trace, var_names=['mu1', 'mu2', 'diff']))
 prob_greater = np.mean(trace.posterior['diff'].values > 0)
 print(f"P(μ₁ > μ₂) = {prob_greater:.3f}")
 
-# Plot posterior
-az.plot_posterior(trace, var_names=['diff'], ref_val=0)
+# Plot posterior (ArviZ 1.x: plot_posterior was replaced by plot_dist;
+# add a reference line at 0 with matplotlib if needed)
+az.plot_dist(trace, var_names=['diff'])
 ```
 
 ---
@@ -368,7 +386,7 @@ with pm.Model() as anova_model:
                   sigma=sigma_within,
                   observed=data)
 
-    trace = pm.sample(2000, tune=1000, return_inferencedata=True)
+    trace = pm.sample(2000, tune=1000)
 
 # Posterior contrasts
 contrast_1_2 = trace.posterior['group_means'][:,:,0] - trace.posterior['group_means'][:,:,1]
@@ -384,23 +402,31 @@ contrast_1_2 = trace.posterior['group_means'][:,:,0] - trace.posterior['group_me
 
 **Python implementation**:
 ```python
+import numpy as np
 import pymc as pm
+
+# Standardize both variables first: with z-scored data the bivariate normal
+# can fix mu = [0, 0] and unit variances, leaving rho as the only free
+# parameter (correlation is unchanged by linear rescaling). Alternatively,
+# model the means and SDs as parameters (or use pm.LKJCholeskyCov).
+xz = (x - x.mean()) / x.std()
+yz = (y - y.mean()) / y.std()
 
 with pm.Model() as corr_model:
     # Prior on correlation
     rho = pm.Uniform('rho', lower=-1, upper=1)
 
-    # Convert to covariance matrix
+    # Correlation (= covariance) matrix for standardized data
     cov_matrix = pm.math.stack([[1, rho],
                                 [rho, 1]])
 
-    # Likelihood (bivariate normal)
+    # Likelihood (bivariate normal on standardized data)
     obs = pm.MvNormal('obs',
                      mu=[0, 0],
                      cov=cov_matrix,
-                     observed=np.column_stack([x, y]))
+                     observed=np.column_stack([xz, yz]))
 
-    trace = pm.sample(2000, tune=1000, return_inferencedata=True)
+    trace = pm.sample(2000, tune=1000)
 
 # Summarize correlation
 print(az.summary(trace, var_names=['rho']))
@@ -426,29 +452,33 @@ prob_positive = np.mean(trace.posterior['rho'].values > 0)
 import pymc as pm
 
 with pm.Model() as regression_model:
+    # Mutable data container: required for pm.set_data() to swap in new
+    # predictors later (a raw array would make set_data fail)
+    X_data = pm.Data('X', X)
+
     # Priors for coefficients
     alpha = pm.Normal('alpha', mu=0, sigma=10)  # Intercept
     beta = pm.Normal('beta', mu=0, sigma=10, shape=n_predictors)
     sigma = pm.HalfNormal('sigma', sigma=10)
 
     # Expected value
-    mu = alpha + pm.math.dot(X, beta)
+    mu = alpha + pm.math.dot(X_data, beta)
 
-    # Likelihood
-    y_obs = pm.Normal('y_obs', mu=mu, sigma=sigma, observed=y)
+    # Likelihood (shape=mu.shape lets predictions resize with new data)
+    y_obs = pm.Normal('y_obs', mu=mu, sigma=sigma, observed=y, shape=mu.shape)
 
-    trace = pm.sample(2000, tune=1000, return_inferencedata=True)
+    trace = pm.sample(2000, tune=1000)
 
 # Posterior predictive checks
 with regression_model:
     ppc = pm.sample_posterior_predictive(trace)
 
-az.plot_ppc(ppc)
+az.plot_ppc_dist(ppc)  # ArviZ 1.x: plot_ppc was replaced by plot_ppc_dist
 
 # Predictions with uncertainty
 with regression_model:
     pm.set_data({'X': X_new})
-    posterior_pred = pm.sample_posterior_predictive(trace)
+    posterior_pred = pm.sample_posterior_predictive(trace, predictions=True)
 ```
 
 ---
@@ -504,26 +534,28 @@ with pm.Model() as hierarchical_model:
 
 **WAIC (Widely Applicable Information Criterion)**:
 - Bayesian analog of AIC
-- Lower is better
+- Reported on the elpd (expected log pointwise predictive density) scale: HIGHER elpd is better (only on the deviance scale, −2 × elpd, is lower better)
 - Accounts for effective number of parameters
+- `az.waic` was removed in ArviZ 1.x — use LOO
 
 **LOO (Leave-One-Out Cross-Validation)**:
 - Estimates out-of-sample prediction error
-- Lower is better
+- Also on the elpd scale: higher elpd is better
 - More robust than WAIC
 
 **Python calculation**:
 ```python
 import arviz as az
+import pymc as pm
 
-# Calculate WAIC and LOO
-waic = az.waic(trace)
+# LOO needs pointwise log-likelihoods
+with model:
+    pm.compute_log_likelihood(trace)
+
 loo = az.loo(trace)
+print(f"LOO elpd: {loo.elpd:.2f}")  # higher is better
 
-print(f"WAIC: {waic.elpd_waic:.2f}")
-print(f"LOO: {loo.elpd_loo:.2f}")
-
-# Compare multiple models
+# Compare multiple models: az.compare ranks them correctly (rank 0 = best)
 comparison = az.compare({
     'model1': trace1,
     'model2': trace2,
@@ -547,7 +579,7 @@ print(comparison)
 **Effective Sample Size (ESS)**:
 - Number of independent samples
 - Higher is better
-- ESS > 400 per chain recommended
+- Bulk-ESS > 400 in total across all chains recommended (Vehtari et al., 2021); also check tail-ESS
 
 **Trace plots**:
 - Should look like "fuzzy caterpillar"
@@ -579,13 +611,16 @@ az.plot_rank(trace)  # Rank plots
 with model:
     ppc = pm.sample_posterior_predictive(trace)
 
-# Visual check
-az.plot_ppc(ppc, num_pp_samples=100)
+# Visual check (ArviZ 1.x: plot_ppc was replaced by plot_ppc_dist)
+az.plot_ppc_dist(ppc, num_samples=100)
 
-# Quantitative checks
+# Quantitative check: compute the statistic per posterior draw over the
+# observation dimension (do NOT iterate the array directly - that loops
+# over chains, not draws)
 obs_mean = np.mean(observed_data)
-pred_means = [np.mean(sample) for sample in ppc.posterior_predictive['y_obs']]
-p_value = np.mean(pred_means >= obs_mean)  # Bayesian p-value
+pp = ppc.posterior_predictive['y_obs']                # dims: (chain, draw, obs)
+pred_means = pp.mean(dim=pp.dims[-1]).values.ravel()  # one mean per draw
+p_value = np.mean(pred_means >= obs_mean)  # Bayesian (posterior predictive) p-value
 ```
 
 ---
@@ -609,9 +644,9 @@ p_value = np.mean(pred_means >= obs_mean)  # Bayesian p-value
 1. **Intuitive interpretation**: Direct probability statements about parameters
 2. **Incorporates prior knowledge**: Uses all available information
 3. **Flexible**: Handles complex models easily
-4. **No p-hacking**: Can look at data as it arrives
+4. **Less sensitive to optional stopping**: Bayes factors with fixed priors are relatively robust to analyzing data as it arrives, but posterior-based decision rules are still affected — always report the stopping rule
 5. **Quantifies uncertainty**: Full posterior distribution
-6. **Small samples**: Works with any sample size
+6. **Small samples**: Works at any sample size (but small-n posteriors are prior-dominated — report a prior-sensitivity check)
 
 ### Limitations
 
@@ -625,12 +660,12 @@ p_value = np.mean(pred_means >= obs_mean)  # Bayesian p-value
 
 ## Key Python Packages
 
-Install with uv (see SKILL.md). ArviZ 0.23+ requires Python 3.12+.
+Install with uv (see SKILL.md). ArviZ requires Python >= 3.10. ArviZ 1.x is the current line and is a breaking rewrite: `az.summary` defaults to 89% intervals and takes `ci_prob=` (the old `hdi_prob=` keyword is gone), `az.hdi` takes `prob=`, `az.plot_posterior`/`az.plot_ppc` were replaced by `az.plot_dist`/`az.plot_ppc_dist`, and `az.waic` was removed (use `az.loo`).
 
 - **PyMC** (`pymc>=5`): Full Bayesian modeling framework
-- **ArviZ** (`arviz>=0.17`): Visualization and diagnostics ([docs](https://python.arviz.org))
+- **ArviZ** (`arviz>=1.0`): Visualization and diagnostics ([docs](https://python.arviz.org))
 - **Bambi**: High-level interface for regression models (`uv pip install bambi`)
-- **PyStan**: Python interface to Stan
+- **cmdstanpy**: Python interface to Stan (use instead of the discontinued PyStan)
 - **TensorFlow Probability**: Bayesian inference with TensorFlow
 
 ---

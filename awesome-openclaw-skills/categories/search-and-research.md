@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**353 skills**
+**354 skills**
 
 - [1](https://clawskills.sh/skills/nastrology-1) - Personal knowledge base powered by Ensue for capturing and retrieving.
 - [academic-deep-research](https://clawskills.sh/skills/kesslerio-academic-deep-research) - Transparent, rigorous research with full.
@@ -219,6 +219,7 @@
 - [muninn](https://clawskills.sh/skills/endgegnerbert-tech-muninn) - Universal Context Protocol (CXP) for AI agents. v2.3.7 includes the latest high-performance CXP engine (compiled.
 - [muninn-memory](https://clawskills.sh/skills/phillipneho-muninn-memory) - Memory system for AI agents.
 - [mycroft](https://clawskills.sh/skills/fabe-mycroft) - EPUB and ebook ingestion, local vector index, and Q&A CLI for books.
+- [nature-paper-hub](https://clawhub.ai/Yang1Bai/nature-paper-hub) - Full-pipeline AI writing agent for Nature-series journals (12 journals). Covers journal selection, manuscript drafting, figure generation (CSV→PDF), CrossRef citation verification, LaTeX/Word/PPT export, bilingual paper reader, and reviewer response. Includes 534-paper curated literature index.
 - [nadfunagent](https://clawskills.sh/skills/encipher88-nadfunagent) - Autonomous trading agent for Nad.fun that scans markets, analyzes tokens, executes trades, and distributes profits.
 - [native-typeform](https://clawskills.sh/skills/codeninja23-native-typeform) - Read Typeform forms and responses directly via the Typeform API.
 - [naver-shopping](https://clawskills.sh/skills/dryoo-naver-shopping) - Search for products on Naver Shopping.
@@ -286,7 +287,7 @@
 - [skill-seo](https://clawskills.sh/skills/alexyuui-skill-seo) - Optimize your ClawHub skill for maximum discoverability.
 - [skill-store](https://clawskills.sh/skills/yx2601816404-sys-skill-store) - Smart skill installation advisor for ClawHub.
 - [skillzmarket](https://clawskills.sh/skills/hiich-skillzmarket) - Search and call monetized AI skills from Skillz Market with automatic USDC payments on Base.
-- [skywork-search](https://github.com/openclaw/skills/blob/main/skills/gxcun17/skywork-search/SKILL.md) - AI-powered web search for real-time information — retrieve up-to-date content.
+- [skywork-search](https://clawskills.sh/skills/gxcun17-skywork-search) - AI-powered web search for real-time information — retrieve up-to-date content.
 - [social-intelligence](https://clawskills.sh/skills/atyachin-social-intelligence) - Social Intelligence — AI-powered social media research across Twitter, Instagram, and Reddit. 1.5B+ posts indexed.
 - [solo-audit](https://clawskills.sh/skills/fortunto2-solo-audit) - Health check knowledge base for broken links, missing frontmatter, tag inconsistencies, and coverage gaps.
 - [solo-seo-audit](https://clawskills.sh/skills/fortunto2-solo-seo-audit) - SEO health check for any URL — analyzes meta tags, OG, JSON-LD, sitemap, robots.txt, SERP positions, and scores.

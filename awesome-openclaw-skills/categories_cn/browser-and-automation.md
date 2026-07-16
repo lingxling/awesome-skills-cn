@@ -12,6 +12,7 @@
 - [activecampaign](https://clawskills.sh/skills/kesslerio-activecampaign) - ActiveCampaign CRM 集成，用于线索管理、交易跟踪。
 - [adcp-advertising](https://clawskills.sh/skills/edyyy62-adcp-advertising) - 使用 AI 自动化广告活动。
 - [admet-prediction](https://clawskills.sh/skills/huifer-admet-prediction) - 药物候选物的 ADMET（吸收、分布、代谢、排泄、毒性）预测。
+- [adspower-browser](https://clawskills.sh/skills/adspower-adspower-browser) - 当用户要求通过 AdsPower Local API 创建或管理 AdsPower 浏览器、分组、标签、代理，或检查状态时使用。
 - [Agent Browser](https://clawskills.sh/skills/thesethrose-agent-browser) - 基于 Rust 的快速无头浏览器自动化 CLI。
 - [agent-browser](https://clawskills.sh/skills/murphykobe-agent-browser-2) - 自动化浏览器交互，用于网页测试、表单填写等。
 - [agent-daily-planner](https://clawskills.sh/skills/gpunter-agent-daily-planner) - 为 AI 代理设计的结构化日常规划和执行跟踪系统。
@@ -61,6 +62,7 @@
 - [bookmark-intelligence](https://clawskills.sh/skills/bkrigmo1-bookmark-intelligence) - 将 X 书签转化为可操作的见解。
 - [box-automation](https://clawskills.sh/skills/sohamganatra-box-automation) - 自动化 Box 云存储操作，包括文件管理。
 - [brain-search](https://clawskills.sh/skills/ryandeangraves-brain-search) - **你必须使用 shell/exec 工具实际执行每个 curl 命令。** 读取真实的 HTTP 响应。
+- [browser-act](https://clawhub.ai/browseract-cli/browser-act-skills) - 面向 AI 代理的浏览器自动化 CLI。
 - [browser-ladder](https://clawskills.sh/skills/ktpriyatham-browser-ladder) - 攀爬浏览器阶梯 — 从免费开始，逐步升级。
 - [browser-use](https://clawskills.sh/skills/shawnpana-browser-use) - 使用 Browser Use 云 API 为 Clawdbot 启动云浏览器。
 - [browsh](https://clawskills.sh/skills/gumadeiras-browsh) - 现代基于文本的浏览器。
@@ -92,6 +94,7 @@
 - [db-readonly](https://clawskills.sh/skills/ryanhong666-db-readonly) - 针对 MySQL 或 PostgreSQL 运行安全的只读查询，用于数据检查、报告和故障排除。
 - [desearch-x-search](https://clawskills.sh/skills/okradze-desearch-x-search) - 实时搜索 X（Twitter）。
 - [doro-command-creator](https://clawskills.sh/skills/a2mus-doro-command-creator) - 用途：创建 Claude Code 斜杠命令 - 可重用的 Markdown 工作流，通过 /command-name 调用。
+- [duoplus-agent](https://clawskills.sh/skills/duoplusofficial-duoplus-agent) - 通过 ADB 控制 DuoPlus 云手机。
 - [dune-analytics-api](https://clawskills.sh/skills/lz-web3-dune-analytics-api) - 用于区块链数据查询的 Dune Analytics API。
 - [echo-repeater](https://clawskills.sh/skills/theeightt-echo-repeater) - 将用户的输入回传给他们，可选地添加 "Echo:" 或 "You said:" 作为前缀。
 - [edstem](https://clawskills.sh/skills/axel5o5-edstem) - 为任何课程或机构获取、同步和组织 EdStem 讨论线程。
@@ -172,12 +175,14 @@
 - [mcp-chrome](https://clawskills.sh/skills/femto-mcp-chrome) - 使用 MCP 协议用 AI 控制 Chrome 浏览器。
 - [mealie](https://clawskills.sh/skills/g1mb01d-mealie) - 通过 REST API 与自托管的 Mealie 实例（食谱管理器和膳食计划器）交互。
 - [meeting-notes-pro](https://clawskills.sh/skills/olivermonneke-meeting-notes-pro) - 你是会议生产力专家。
+- [menews](https://clawskills.sh/skills/jamesmenews-menews) - AI 驱动的加密货币和 AI 市场情报中心。
 - [memberstack-cli](https://clawskills.sh/skills/bensabic-memberstack-cli) - 使用 Memberstack CLI 从终端管理 Memberstack 账户。
 - [meta-fb-inbox](https://clawskills.sh/skills/picseeinc-meta-fb-inbox) - 通过 Meta Business Suite 浏览器自动化检查 Facebook 页面收件箱消息。
 - [metengine-data-agent](https://clawskills.sh/skills/saviour1001-metengine-data-agent) - 为 Polymarket 预测市场、Hyperliquid 永续合约和 Meteora 提供实时智能资金分析 API。
 - [mh-notion](https://clawskills.sh/skills/mohdalhashemi98-hue-mh-notion) - 用于创建和管理页面、数据库和块的 Notion API。
 - [minimal-memory](https://clawskills.sh/skills/zencrust-ai-minimal-memory) - 通过 GOOD/BAD/NEUTRAL 分类和语义搜索维护干净、高效的内存文件。
 - [minimax-speech](https://clawskills.sh/skills/wingchiu-minimax-speech) - 管理 MiniMax Speech 2.8 T2A（文本到音频）和语音目录查找。
+- [mobilerun](https://clawskills.sh/skills/johnmalek312-mobilerun) - 控制 Android 设备：点击、滑动、输入、截图（iOS 即将支持）。
 - [mukt](https://clawskills.sh/skills/hgosansn-mukt) - 零成本 OpenRouter 响应器，自动发现当前最佳免费模型，在失败时重试，并返回。
 - [multilogin](https://clawskills.sh/skills/glebkazachinskiy-multilogin) - 当你需要管理 Multilogin X 浏览器配置文件时使用 — 启动快速一次性配置文件、列出/启动/停止保存的配置文件。
 - [multiloginx](https://clawskills.sh/skills/multilogincom-multiloginx) - 当你需要管理 Multilogin X 浏览器配置文件时使用 — 启动快速一次性配置文件、列出/启动/停止保存的配置文件。

@@ -2,9 +2,9 @@
 
 当任务涉及 **UI 结构、视觉设计决策、交互模式或用户体验质量控制** 时，应使用此 Skill。
 
-### Must Use
+### Primary Use Cases
 
-在以下情况必须调用此 Skill：
+在以下情况此 Skill 最为有用：
 
 - 设计新的页面（Landing Page、Dashboard、Admin、SaaS、Mobile App）
 - 创建或重构 UI 组件（按钮、弹窗、表单、表格、图表等）

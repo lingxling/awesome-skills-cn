@@ -2,9 +2,7 @@
 name: scvi-tools
 description: 单细胞组学的深度生成模型。当您需要概率性批次校正（scVI）、迁移学习、带不确定性的差异表达或多模态整合（TOTALVI、MultiVI）时使用。最适合高级建模、批次效应、多模态数据。对于标准分析管道，请使用scanpy。
 license: BSD-3-Clause license
-metadata:
-  version: "1.1"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 

@@ -1,16 +1,9 @@
 ---
 name: umap-learn
-description: UMAP降维。快速非线性流形学习，用于2D/3D可视化、聚类预处理（HDBSCAN）、监督/参数UMAP，适用于高维数据。
+description: 使用UMAP-learn进行非线性降维、2D/3D嵌入、聚类预处理、监督或半监督UMAP、DensMAP、AlignedUMAP以及参数化UMAP工作流。
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
-
-
-
-
-
 
 # UMAP-Learn
 
@@ -22,8 +15,10 @@ UMAP（Uniform Manifold Approximation and Projection）是一种用于可视化�
 
 ### 安装
 
+当前稳定版本：**umap-learn 0.5.12**（2026年4月发布）。需要 Python 3.9+，依赖 `scikit-learn>=1.6`、`numba`、`pynndescent`、`numpy` 和 `scipy`。请固定到已验证的版本：
+
 ```bash
-uv pip install umap-learn
+uv pip install umap-learn==0.5.12
 ```
 
 ### 基本用法
@@ -46,7 +41,7 @@ reducer.fit(scaled_data)
 embedding = reducer.embedding_  # 访问训练后的嵌入
 ```
 
-**关键预处理要求：** 在应用UMAP之前，始终将特征标准化到可比较的尺度，以确保跨维度的平等权重。
+**预处理要求：** 预处理方式应与所用度量匹配。对于数值型的欧氏类度量，应在拟合前对特征进行缩放，以免高方差列主导结果。对于余弦、二进制、预计算距离或混合特征的工作流，应选择与度量相匹配的预处理方式，而不是盲目地对每一列都做标准化。
 
 ### 典型工作流程
 
@@ -165,8 +160,6 @@ embedding = umap.UMAP().fit_transform(data, y=labels)
 - 保留每个类内的内部结构
 - 维护类之间的全局关系
 
-**使用场景：** 当你有标记数据并希望分离已知类同时保持有意义的点嵌入时。
-
 ### 半监督UMAP
 
 对于部分标签，按照scikit-learn约定用`-1`标记未标记点：
@@ -182,25 +175,6 @@ embedding = umap.UMAP().fit_transform(data, y=semi_labels)
 
 **使用场景：** 当标记成本高或你有比标签更多的数据时。
 
-### 使用UMAP进行度量学习
-
-在标记数据上训练监督嵌入，然后应用于新的未标记数据：
-
-```python
-# 在标记数据上训练
-mapper = umap.UMAP().fit(train_data, train_labels)
-
-# 转换未标记的测试数据
-test_embedding = mapper.transform(test_data)
-
-# 用作下游分类器的特征工程
-from sklearn.svm import SVC
-clf = SVC().fit(mapper.embedding_, train_labels)
-predictions = clf.predict(test_embedding)
-```
-
-**使用场景：** 用于机器学习管道中的监督特征工程。
-
 ## UMAP用于聚类
 
 UMAP作为基于密度的聚类算法（如HDBSCAN）的有效预处理，克服了维度灾难。
@@ -215,6 +189,12 @@ UMAP作为基于密度的聚类算法（如HDBSCAN）的有效预处理，克服
 - **n_components：** 使用5-10维（保持性能同时比2D更好地保留密度）
 
 ### 聚类工作流程
+
+单独安装HDBSCAN以进行基于密度的聚类：
+
+```bash
+uv pip install hdbscan
+```
 
 ```python
 import umap
@@ -315,7 +295,7 @@ print(f"Test accuracy: {accuracy:.3f}")
 
 **性能：** 转换操作效率高（通常<1秒），尽管由于Numba JIT编译，初始调用可能较慢。
 
-**Scikit-learn兼容性：** UMAP遵循标准sklearn约定，在管道中无缝工作：
+**Scikit-learn兼容性：** UMAP遵循标准sklearn约定，可在管道中使用。最近的0.5.x版本还改进了特征名支持，并提升了与当前scikit-learn验证API的兼容性：
 
 ```python
 from sklearn.pipeline import Pipeline
@@ -328,6 +308,7 @@ pipeline = Pipeline([
 
 pipeline.fit(X_train, y_train)
 predictions = pipeline.predict(X_test)
+feature_names = pipeline.named_steps['umap'].get_feature_names_out()
 ```
 
 ## 高级功能
@@ -344,8 +325,8 @@ predictions = pipeline.predict(X_test)
 
 **安装：**
 ```bash
-uv pip install umap-learn[parametric_umap]
-# 需要TensorFlow 2.x
+uv pip install "umap-learn[parametric-umap]==0.5.12"
+# 安装基于TensorFlow的参数化UMAP扩展。
 ```
 
 **基本用法：**
@@ -366,7 +347,7 @@ import tensorflow as tf
 
 # 定义自定义编码器
 encoder = tf.keras.Sequential([
-    tf.keras.layers.InputLayer(input_shape=(input_dim,)),
+    tf.keras.layers.InputLayer(shape=(input_dim,)),
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dense(64, activation='relu'),
     tf.keras.layers.Dense(2)  # 输出维度
@@ -376,16 +357,23 @@ embedder = ParametricUMAP(encoder=encoder, dims=(input_dim,))
 embedding = embedder.fit_transform(data)
 ```
 
+**持久化保存：** 使用参数化UMAP内置的Keras感知方法保存，而不是直接用pickle：
+
+```python
+embedder.save("parametric_umap_model", exclude_raw_data=True)
+
+from umap.parametric_umap import load_ParametricUMAP
+loaded = load_ParametricUMAP("parametric_umap_model")
+new_embedding = loaded.transform(new_data)
+```
+
+近期0.5.12版本修复了参数化UMAP重新训练的稳定性问题以及度量梯度相关的问题，因此在神经网络工作流中应优先使用固定的当前版本。
+
 **何时使用参数化UMAP：**
 - 需要训练后新数据的高效转换
 - 需要重建能力（逆变换）
 - 想要将UMAP与自编码器结合
 - 处理受益于专门架构的复杂数据类型（图像、序列）
-
-**何时使用标准UMAP：**
-- 需要简单性和快速原型设计
-- 数据集小且计算效率不关键
-- 不需要为未来数据学习变换
 
 ### 逆变换
 
@@ -404,12 +392,6 @@ reconstructed = reducer.inverse_transform(embedding)
 - 计算密集型操作
 - 在嵌入凸包外效果差
 - 在聚类之间有间隙的区域精度降低
-
-**用例：**
-- 理解嵌入数据的结构
-- 可视化聚类之间的平滑过渡
-- 探索数据点之间的插值
-- 在嵌入空间中生成合成样本
 
 **示例：探索嵌入空间：**
 ```python
@@ -435,12 +417,18 @@ from umap import AlignedUMAP
 # 相关数据集列表
 datasets = [day1_data, day2_data, day3_data]
 
+# 关系映射，将连续数据集之间的样本索引一一对应。
+relations = [
+    {day1_idx: day2_idx for day1_idx, day2_idx in matched_day1_to_day2},
+    {day2_idx: day3_idx for day2_idx, day3_idx in matched_day2_to_day3},
+]
+
 # 创建对齐的嵌入
-mapper = AlignedUMAP().fit(datasets)
+mapper = AlignedUMAP().fit(datasets, relations=relations)
 aligned_embeddings = mapper.embeddings_  # 嵌入列表
 ```
 
-**使用场景：** 比较相关数据集的嵌入，同时保持一致的坐标系。
+**使用场景：** 比较相关数据集的嵌入，同时保持一致的坐标系。要实现有意义的对齐，`relations` 是必需的；每个字典描述一个数据集中的样本如何对应到下一个数据集中的样本。
 
 ## 可重现性
 
@@ -451,6 +439,8 @@ reducer = umap.UMAP(random_state=42)
 ```
 
 UMAP使用随机优化，因此没有固定随机状态的情况下，运行之间的结果会略有不同。
+
+设置`random_state`可以优先保证输出的确定性。当吞吐量比精确的可重复性更重要时，可以不设置它，因为没有固定种子时UMAP可以使用更多的并行度。
 
 ## 常见问题和解决方案
 
@@ -469,10 +459,23 @@ UMAP使用随机优化，因此没有固定随机状态的情况下，运行之�
 **问题：** 大型数据集上性能缓慢
 - **解决方案：** 设置`low_memory=True`（默认），或考虑先使用PCA进行降维
 
+**问题：** 输入数据中存在NaN或inf值
+- **解决方案：** 拟合前先填补或删除无效行。当前UMAP在`fit()`和`update()`中使用类似scikit-learn的有限值检查（`ensure_all_finite`），因此干净的数值输入仍是最安全的默认做法
+
 **问题：** 所有点折叠到单个聚类
 - **解决方案：** 检查数据预处理（确保适当缩放），增加`min_dist`
 
+**问题：** 导入解析到了本地文件而不是真正的包
+- **解决方案：** 不要在笔记本或脚本旁保留名为 `umap.py`、`sklearn.py`、`hdbscan.py` 或 `tensorflow.py` 的项目文件。这些文件名可能会遮蔽已安装的包，导致示例损坏或产生误导。
+
 ## 资源
+
+### 官方文档
+
+- [UMAP用户指南](https://umap-learn.readthedocs.io/en/latest/)
+- [发行说明](https://umap-learn.readthedocs.io/en/latest/release_notes.html)
+- [PyPI包](https://pypi.org/project/umap-learn/)（当前稳定版：0.5.12）
+- [GitHub仓库](https://github.com/lmcinnes/umap)
 
 ### references/
 

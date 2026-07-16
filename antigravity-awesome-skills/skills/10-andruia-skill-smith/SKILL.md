@@ -35,7 +35,7 @@ Generar el código para los siguientes archivos:
 - **Snippet de Registro:** La línea de código lista para insertar en la tabla "Full skill registry".
 
 ### FASE 3: Despliegue e Integración
-1. Crear la carpeta física en `D:\...\antigravity-awesome-skills\skills\`.
+1. Crear la carpeta física en `D:\...\agentic-awesome-skills\skills\`.
 2. Escribir el archivo README.md en dicha carpeta.
 3. Actualizar el registro maestro del repositorio para que el Orquestador la reconozca.
 

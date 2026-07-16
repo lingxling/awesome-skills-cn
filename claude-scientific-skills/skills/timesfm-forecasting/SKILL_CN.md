@@ -3,10 +3,7 @@ name: timesfm-forecasting
 description: 使用Google的TimesFM基础模型进行零样本时间序列预测。适用于任何单变量时间序列（销售、传感器、能源、生命体征、天气），无需训练自定义模型。支持CSV/DataFrame/array输入，包含点预测和预测区间。包含预检系统检查脚本，用于在首次使用前验证RAM/GPU。
 allowed-tools: Read Write Edit Bash
 license: Apache-2.0 license
-metadata:
-  version: "1.0"
-  skill-author: Clayton Young / Superior Byte Works, LLC (@borealBytes)
-  skill-version: "1.0.0"
+metadata: {"version": "1.0", "skill-author": "Clayton Young / Superior Byte Works, LLC (@borealBytes)", "skill-version": "1.0.0"}
 ---
 
 

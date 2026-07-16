@@ -26,10 +26,14 @@ Always use `uv add` (never `pip install` or `conda install`) in all install inst
 ```bash
 # pylibraft (core library)
 uv add --extra-index-url=https://pypi.nvidia.com pylibraft-cu12   # For CUDA 12.x
+uv add --extra-index-url=https://pypi.nvidia.com pylibraft-cu13   # For CUDA 13.x
 
 # raft-dask (multi-node multi-GPU support, optional)
 uv add --extra-index-url=https://pypi.nvidia.com raft-dask-cu12   # For CUDA 12.x
+uv add --extra-index-url=https://pypi.nvidia.com raft-dask-cu13   # For CUDA 13.x
 ```
+
+pylibraft and raft-dask wheels (including the companion `libraft` wheel) are also published directly to PyPI, so the extra index is optional.
 
 Verify:
 ```python

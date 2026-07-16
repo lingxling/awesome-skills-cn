@@ -1,10 +1,10 @@
 ---
 name: statsmodels
 description: Python统计模型库。当您需要特定的模型类（OLS、GLM、混合模型、ARIMA）并需要详细诊断、残差和推断时使用。最适合计量经济学、时间序列、使用系数表进行严格推断。若需要带APA报告的引导式统计检验选择，请使用statistical-analysis。
+allowed-tools: Read Write Edit Bash
+compatibility: Requires Python 3.9+ and statsmodels 0.14.6-compatible dependencies. Use `uv pip install statsmodels==0.14.6`; optional predictive-metric examples also need scikit-learn.
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -17,6 +17,16 @@ metadata:
 ## 概述
 
 Statsmodels是Python的首要统计建模库，提供用于各种统计方法的估计、推断和诊断工具。将此技能应用于严格的统计分析，从简单的线性回归到复杂的时间序列模型和计量经济分析。
+
+## 当前兼容性
+
+示例针对 statsmodels 0.14.6（发布于2025年12月5日）编写。为保证环境可复现，请固定主软件包版本：
+
+```bash
+uv pip install statsmodels==0.14.6
+```
+
+对于稳定的高层导入，使用 `statsmodels.api` 和 `statsmodels.formula.api`；当示例需要较新或专门的类（例如 `HurdleCountModel`）时，使用直接的模块导入。
 
 ## 何时使用此技能
 
@@ -124,16 +134,20 @@ print(f"ADF p-value: {adf_result[1]:.4f}")
 
 if adf_result[1] > 0.05:
     # 序列非平稳，差分处理
-    y_diff = y_series.diff().dropna()
+    y_for_acf = y_series.diff().dropna()
+    d = 1
+else:
+    y_for_acf = y_series.dropna()
+    d = 0
 
 # 绘制ACF/PACF以识别p, q
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
-plot_acf(y_diff, lags=40, ax=ax1)
-plot_pacf(y_diff, lags=40, ax=ax2)
+plot_acf(y_for_acf, lags=40, ax=ax1)
+plot_pacf(y_for_acf, lags=40, ax=ax2)
 plt.show()
 
 # 拟合ARIMA(p,d,q)
-model = ARIMA(y_series, order=(1, 1, 1))
+model = ARIMA(y_series, order=(1, d, 1))
 results = model.fit()
 
 print(results.summary())
@@ -172,7 +186,7 @@ print(f"Overdispersion: {overdispersion:.2f}")
 
 if overdispersion > 1.5:
     # 改用负二项式
-    from statsmodels.discrete.count_model import NegativeBinomial
+    from statsmodels.discrete.discrete_model import NegativeBinomial
     nb_model = NegativeBinomial(y_counts, X)
     nb_results = nb_model.fit()
     print(nb_results.summary())
@@ -581,13 +595,13 @@ print(f"CV RMSE: {np.mean(cv_scores):.4f} ± {np.std(cv_scores):.4f}")
 **搜索模式：**
 ```bash
 # 查找有关特定模型的信息
-grep -r "Quantile Regression" references/
+rg "Quantile Regression" references/
 
 # 查找诊断测试
-grep -r "Breusch-Pagan" references/stats_diagnostics.md
+rg "Breusch-Pagan" references/stats_diagnostics.md
 
 # 查找时间序列指导
-grep -r "SARIMAX" references/time_series.md
+rg "SARIMAX" references/time_series.md
 ```
 
 ## 要避免的常见陷阱

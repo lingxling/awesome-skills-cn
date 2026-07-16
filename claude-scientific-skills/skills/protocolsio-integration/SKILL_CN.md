@@ -2,9 +2,7 @@
 name: protocolsio-integration
 description: 与protocols.io API集成以管理科学协议。此技能应在使用protocols.io搜索、创建、更新或发布协议；管理协议步骤和材料；处理讨论和评论；组织工作区；上传和管理文件；或将protocols.io功能集成到工作流中时使用。适用于协议发现、协作协议开发、实验跟踪、实验室协议管理和科学文档。
 license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

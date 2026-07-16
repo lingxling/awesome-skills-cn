@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent
 VERSION_PATHS = [
     (ROOT / ".claude-plugin" / "plugin.json", ("version",)),
     (ROOT / ".claude-plugin" / "marketplace.json", ("metadata", "version")),
+    (ROOT / ".claude-plugin" / "marketplace-internal.json", ("metadata", "version")),
     (ROOT / ".cursor-plugin" / "plugin.json", ("version",)),
     (ROOT / ".cursor-plugin" / "marketplace.json", ("metadata", "version")),
     (ROOT / "gemini-extension.json", ("version",)),
@@ -29,6 +30,7 @@ BUMP_RELEVANT_PATHS = (
     "skills/",
     ".claude-plugin/plugin.json",
     ".claude-plugin/marketplace.json",
+    ".claude-plugin/marketplace-internal.json",
     ".cursor-plugin/marketplace.json",
     "gemini-extension.json",
     "scripts/AGENTS_TEMPLATE.md",
@@ -38,8 +40,9 @@ BUMP_RELEVANT_PATHS = (
 )
 
 GENERATED_PATHS = (
-    "agents/AGENTS.md",
+    "agentsmd/AGENTS.md",
     "README.md",
+    ".claude-plugin/marketplace-internal.json",
     ".cursor-plugin/plugin.json",
     ".mcp.json",
 )

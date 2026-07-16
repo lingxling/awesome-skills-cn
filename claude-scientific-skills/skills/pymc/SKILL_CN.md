@@ -1,10 +1,10 @@
 ---
 name: pymc
 description: 使用PyMC进行贝叶斯建模。构建层次模型、MCMC（NUTS）、变分推断、LOO/WAIC比较、后验检验，用于概率编程和推理。
+allowed-tools: Read Write Edit Bash
+compatibility: Requires Python 3.12+ and PyMC 6.0.1-compatible dependencies. Install reproducible environments with `uv pip install "pymc[nutpie]==6.0.1"`; optional NumPyro or BlackJAX samplers require separately pinned JAX-compatible dependencies.
 license: Apache License, Version 2.0
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -16,7 +16,17 @@ metadata:
 
 ## 概述
 
-PyMC是一个用于贝叶斯建模和概率编程的Python库。使用PyMC的现代API（5.x+版本）构建、拟合、验证和比较贝叶斯模型，包括层次模型、MCMC采样（NUTS）、变分推断和模型比较（LOO、WAIC）。
+PyMC是一个用于贝叶斯建模和概率编程的Python库。使用PyMC的现代API（6.x+版本）构建、拟合、验证和比较贝叶斯模型，包括层次模型、MCMC采样（NUTS）、变分推断、后验预测检查和模型比较（LOO、WAIC）。
+
+## 当前版本与环境设置
+
+截至2026年6月，PyMC 6.0.1是当前的稳定发布版本。它要求Python 3.12+，使用PyTensor 3作为计算图后端，并默认使用Numba等编译后端。为获得可复现的本地环境，请固定版本：
+
+```bash
+uv pip install "pymc[nutpie]==6.0.1"
+```
+
+`nutpie`附加组件启用了更快的Rust/Numba NUTS实现。如果使用NumPyro或BlackJAX，请在同一环境中安装这些可选采样器依赖，并在项目锁定文件中固定其版本。
 
 ## 使用场景
 
@@ -66,16 +76,19 @@ coords = {
 }
 
 with pm.Model(coords=coords) as model:
+    # 可变数据容器，以便之后可以替换预测数据
+    X_data = pm.Data('X_scaled', X_scaled, dims=('obs_id', 'predictors'))
+
     # 先验
     alpha = pm.Normal('alpha', mu=0, sigma=1)
     beta = pm.Normal('beta', mu=0, sigma=1, dims='predictors')
     sigma = pm.HalfNormal('sigma', sigma=1)
 
     # 线性预测器
-    mu = alpha + pm.math.dot(X_scaled, beta)
+    mu = alpha + pm.math.dot(X_data, beta)
 
-    # 似然
-    y_obs = pm.Normal('y_obs', mu=mu, sigma=sigma, observed=y, dims='obs_id')
+    # 将观测变量的形状与X_data绑定，以支持样本外预测
+    y_obs = pm.Normal('y_obs', mu=mu, sigma=sigma, observed=y, shape=X_data.shape[0], dims='obs_id')
 ```
 
 **关键实践：**
@@ -90,7 +103,7 @@ with pm.Model(coords=coords) as model:
 
 ```python
 with model:
-    prior_pred = pm.sample_prior_predictive(samples=1000, random_seed=42)
+    prior_pred = pm.sample_prior_predictive(draws=1000, random_seed=42)
 
 # 可视化
 az.plot_ppc(prior_pred, group='prior')
@@ -125,6 +138,7 @@ with model:
 - `chains=4`：运行4条链用于收敛检查
 - `target_accept=0.9`：对于困难的后验分布更高（0.95-0.99）
 - 包含`log_likelihood=True`用于模型比较
+- 如果使用PyMC 6中特定于采样器的关键字参数，避免使用已弃用的`nuts_sampler_kwargs`；需要时通过`nuts={...}`传递显式的NUTS关键字参数
 
 ### 5. 检查诊断
 
@@ -184,16 +198,17 @@ X_new = ...  # 新的预测变量值
 X_new_scaled = (X_new - X_mean) / X_std
 
 with model:
-    pm.set_data({'X_scaled': X_new_scaled})
+    pm.set_data({'X_scaled': X_new_scaled}, coords={'obs_id': np.arange(len(X_new_scaled))})
     post_pred = pm.sample_posterior_predictive(
-        idata.posterior,
+        idata,
         var_names=['y_obs'],
+        predictions=True,
         random_seed=42
     )
 
 # 提取预测区间
-y_pred_mean = post_pred.posterior_predictive['y_obs'].mean(dim=['chain', 'draw'])
-y_pred_hdi = az.hdi(post_pred.posterior_predictive, var_names=['y_obs'])
+y_pred_mean = post_pred.predictions['y_obs'].mean(dim=['chain', 'draw'])
+y_pred_hdi = az.hdi(post_pred.predictions, var_names=['y_obs'])
 ```
 
 ## 常见模型模式
@@ -344,7 +359,8 @@ averaged_pred, weights = model_averaging(models, var_name='y_obs')
 - `pm.Uniform('p', lower=0, upper=1)` - 非信息（谨慎使用）
 
 **相关矩阵**：
-- `pm.LKJCorr('corr', n=n_vars, eta=2)` - eta=1 均匀，eta>1 偏好单位矩阵
+- `pm.LKJCholeskyCov('chol', n=n_vars, eta=2, sd_dist=pm.HalfNormal.dist(1))` - 首选的协方差先验
+- `pm.LKJCorr('corr', n=n_vars, eta=2)` - 仅相关性先验；eta=1 均匀，eta>1 偏好单位矩阵
 
 ### 用于似然
 

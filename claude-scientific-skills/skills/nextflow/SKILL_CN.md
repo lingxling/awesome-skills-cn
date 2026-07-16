@@ -2,9 +2,7 @@
 name: nextflow
 description: 端到端构建、运行和调试Nextflow数据管道和nf-core工作流。只要用户提到Nextflow、nf-core、.nf文件、nextflow.config、DSL2、processes/channels/operators、samplesheets，或想要运行社区管道（例如nf-core/rnaseq、nf-core/sarek），使用nf-test编写或测试模块/子工作流，配置executors/containers（Docker、Singularity/Apptainer、Conda、Waves），将工作流扩展到HPC/SLURM或云（AWS Batch、Google Batch、Azure、Kubernetes），或调试失败/-resume运行，请务必使用此技能进行任何可重现的科学/生物信息学工作流工作，即使用户没有说"Nextflow"一词，也用于编写符合nf-core规范的管道、模块、配置和linting。
 license: Apache-2.0
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

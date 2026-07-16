@@ -3,9 +3,8 @@ name: citation-management
 description: 学术研究的综合引文管理。搜索Google Scholar和PubMed查找论文、提取准确的元数据、验证引文并生成正确格式的BibTeX条目。当您需要查找论文、验证引文信息、将DOI转换为BibTeX或确保科学写作中的参考文献准确性时使用此技能。
 allowed-tools: Read Write Edit Bash
 license: MIT License
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for LLM-powered citation steps.", "required_for": "optional features"}, {"name": "NCBI_EMAIL", "prompt": "Email for NCBI Entrez identification.", "required_for": "optional features"}, {"name": "NCBI_API_KEY", "prompt": "NCBI API key to raise Entrez rate limits.", "required_for": "optional features"}]
+metadata: {"version": "1.2", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for LLM-powered citation steps."}, {"name": "NCBI_EMAIL", "required": false, "description": "Email for NCBI Entrez identification."}, {"name": "NCBI_API_KEY", "required": false, "description": "NCBI API key to raise Entrez rate limits."}]}}
 ---
 
 
@@ -20,8 +19,6 @@ metadata:
 在整个研究和写作过程中系统地管理引文。此技能提供用于搜索学术数据库(Google Scholar、PubMed)、从多个来源(CrossRef、PubMed、arXiv)提取准确元数据、验证引文信息以及生成正确格式的 BibTeX 条目的工具和策略。
 
 对于维护引文准确性、避免参考错误和确保可重现研究至关重要。与 literature-review 技能无缝集成,以实现全面的研究工作流程。
-
-**关键原则: 引文必须准确、完整、客观并符合适用法规(HIPAA、FDA、ICH-GCP)。患者隐私和数据完整性至关重要。所有临床文档必须支持基于证据的决策制定并符合专业标准。**
 
 ## 何时使用此技能
 
@@ -222,6 +219,97 @@ python scripts/extract_metadata.py --input identifiers.txt --output citations.bi
 - **预印本**: 存储库(arXiv、bioRxiv)、预印本 ID
 - **附加**: 摘要、关键词、URL
 
+### 第 2.5 阶段: 通过网络搜索进行元数据补充(强制)
+
+**目标**: 使用网络搜索检测并填补任何缺失的元数据字段。此阶段在提取之后、格式化之前运行,以确保每个 BibTeX 条目都是完整的。
+
+**为何至关重要**: 来自 API(CrossRef、PubMed、arXiv)的元数据提取有时会返回不完整的记录 —— 缺少卷号、页码、期号或 DOI。在参考书目被视为就绪之前,必须填补这些空缺。
+
+#### 步骤 1: 扫描不完整的条目
+
+提取元数据后,扫描 BibTeX 文件中缺少关键字段的条目:
+
+**按条目类型检查的字段:**
+
+| 条目类型 | 必须具备 | 应该具备 |
+|------------|-----------|-------------|
+| @article | 作者、标题、期刊、年份 | 卷、页、号、doi |
+| @inproceedings | 作者、标题、会议论文集、年份 | 页、doi |
+| @book | 作者/编者、标题、出版商、年份 | isbn、doi |
+| @misc | 作者、标题、年份 | doi 或 url |
+
+任何缺少 `volume`、`pages` 或 `doi` 的 `@article` 条目都被视为**不完整**,必须进行补充。
+
+#### 步骤 2: 为缺失的元数据进行网络搜索
+
+对每个不完整的条目,使用 **parallel-web 技能**搜索缺失的信息:
+
+**选项 A —— 按标题和作者搜索**(最适合查找 DOI):
+```bash
+parallel-cli search "FIRST_AUTHOR TITLE JOURNAL_NAME volume pages DOI" \
+  --json --max-results 10 \
+  -o sources/search_citation_CITATIONKEY.json
+```
+
+**选项 B —— 从 DOI 页面提取**(最适合已知 DOI 但缺少卷/页时):
+```bash
+parallel-cli extract "https://doi.org/10.XXXX/YYYY" --json \
+  --objective "extract complete citation metadata: volume, issue, pages, publication date" \
+  -o sources/extract_doi_CITATIONKEY.json
+```
+
+**选项 C —— 直接搜索 CrossRef API**(程序化、快速):
+```bash
+parallel-cli search "crossref DOI metadata FIRST_AUTHOR TITLE" \
+  --json --max-results 10 \
+  -o sources/search_crossref_CITATIONKEY.json
+```
+
+**选项 D —— 搜索 Google Scholar**(用于难以查找论文的后备方案):
+```bash
+parallel-cli search "google scholar FIRST_AUTHOR TITLE YEAR complete citation" \
+  --json --max-results 10 \
+  -o sources/search_scholar_CITATIONKEY.json
+```
+
+#### 步骤 3: 更新 BibTeX 条目
+
+找到缺失的元数据后:
+
+1. 打开 `references.bib`
+2. 将缺失的字段添加到不完整的条目中
+3. 验证找到的元数据与现有字段一致(相同的作者、标题、年份)
+4. 记录每次修复:
+   ```
+   [HH:MM:SS] METADATA ENRICHED: [CitationKey] - added volume={X}, pages={Y--Z}, doi={10.XXX/YYY} ✅
+   ```
+
+#### 步骤 4: 处理无法找到的元数据
+
+如果网络搜索后仍无法真正找到元数据(非常古老的论文、冷门会议等):
+
+1. 在 BibTeX 条目中添加 `note` 字段说明缺失原因:
+   ```bibtex
+   note = {Volume and pages not available — published online only}
+   ```
+2. 记录例外情况:
+   ```
+   [HH:MM:SS] METADATA INCOMPLETE: [CitationKey] - pages unavailable (online-only publication) ⚠️
+   ```
+3. 这类例外应该很少见 —— 大多数现代论文都能通过网络搜索找到完整的元数据。
+
+#### 快速参考: 常见缺失字段及查找位置
+
+| 缺失字段 | 最佳搜索策略 |
+|---------------|---------------------|
+| DOI | 通过 parallel-cli search 搜索 "AUTHOR TITLE DOI" |
+| 卷号 | 从 DOI 页面提取,或搜索 "JOURNAL YEAR TITLE volume" |
+| 页码 | 从 DOI 页面提取,或搜索出版商网站 |
+| 期号 | 从 DOI 页面提取,或查询 CrossRef |
+| 出版商 | 搜索 "JOURNAL publisher" 或查看期刊网站 |
+
+---
+
 ### 第三阶段: BibTeX 格式化
 
 **目标**: 生成干净、正确格式的 BibTeX 条目。
@@ -318,13 +406,21 @@ python scripts/format_bibtex.py references.bib \
 # 验证 BibTeX 文件
 python scripts/validate_citations.py references.bib
 
-# 验证并修复常见问题
-python scripts/validate_citations.py references.bib \
-  --auto-fix \
-  --output validated_references.bib
+# 针对场所标准进行验证(例如 Nature、NeurIPS、文献综述)
+python scripts/validate_citations.py references.bib --venue nature
+python scripts/validate_citations.py references.bib --venue neurips
+python scripts/validate_citations.py references.bib --venue review
+
+# 使用自定义最低引文数量进行验证
+python scripts/validate_citations.py references.bib --min-count 40
+
+# 对照已撰写的手稿文件检查参考文献(检测缺失或未使用的引文)
+python scripts/validate_citations.py references.bib --manuscript paper.md
 
 # 生成详细验证报告
 python scripts/validate_citations.py references.bib \
+  --venue nature \
+  --manuscript paper.md \
   --report validation_report.json \
   --verbose
 ```
@@ -386,6 +482,39 @@ python scripts/validate_citations.py references.bib \
     }
   ]
 }
+```
+
+#### 按场所划分的引文数量标准
+
+**引文数量必须始终基于所选或推荐场所的期刊和会议发表标准而保持较高水平。** 切勿满足于稀疏的参考文献列表;要用密集、经过验证的引文建立权威、丰富的上下文。
+
+| 场所类型 | 目标引文数量 |
+|------------|----------------------|
+| 高影响力多学科期刊(Nature、Science、Cell) | **35-50+** |
+| ML / CS 会议(NeurIPS、ICML、ICLR、CVPR、ACL) | **30-45+** |
+| 综合性文献综述 / 市场研究报告 | **40-65+** |
+| 医学期刊(NEJM、Lancet、JAMA) | **30-45+** |
+
+始终根据目标场所的标准密度和惯例向上调整引文目标。避免"偷懒式"的引文过度重复 —— 不要反复引用同一篇或两篇论文来支持多个不相关的主张;应从多样化、高质量的可靠参考文献集合中取材。
+
+使用 `validate_citations.py --venue <venue>` 或 `--min-count <N>` 以编程方式强制执行这些标准。
+
+#### 强制性写作后参考文献检查(不可协商)
+
+一旦完整的科学报告或论文起草完成,在编译最终交付物之前,应对所有引文进行全面的写作后验证:
+
+1. **验证无缺失或未解析的引文**: 检查草稿或已编译文档,确保每个正文引文都能正确解析到 `references.bib` 中的引文。必须为零个损坏的引文键、缺失的标识符或未解析的引用(例如 `[?]` 或 `[citation needed]`)。
+2. **验证无未使用(悬空)的参考文献条目**: 检查 `references.bib` 中的每个条目是否确实在报告正文中被引用。删除任何未使用的条目,以保持参考书目完全干净。
+3. **对照目标标准验证引文数量**: 确保最终引文数量达到或超过所选或推荐场所的高标准(见上表)。如果数量低于标准,先进行额外的文献搜索,找到高质量论文,并将其整合到适当的章节中。
+4. **验证元数据完整性**: 确认所有被引用的条目都包含完整、经过全面验证的字段(所有作者姓名、完整的期刊/会议名称、准确的年份、卷、期、页码范围以及有效的 DOI)。
+
+用一条命令运行所有这些检查:
+
+```bash
+python scripts/validate_citations.py references.bib \
+  --venue <venue> \
+  --manuscript paper.md \
+  --report post_writing_check.json
 ```
 
 ### 第五阶段: 与写作工作流程集成
@@ -662,14 +791,15 @@ python scripts/extract_metadata.py \
 
 ### validate_citations.py
 
-验证 BibTeX 条目的准确性和完整性。
+验证 BibTeX 条目的准确性、完整性、场所引文数量标准合规性以及手稿整合情况。
 
 **功能:**
 - 通过 doi.org 和 CrossRef 进行 DOI 验证
 - 必填字段检查
 - 重复检测
 - 格式验证
-- 自动修复常见问题
+- **发表标准引文数量检查**,针对指定场所(Nature、NeurIPS、review 等)或自定义阈值。
+- **强制性写作后检查**,将手稿引文(Markdown 或 LaTeX)与已定义的 BibTeX 条目进行匹配,以检测未解析/缺失或未使用的引用。
 - 详细报告
 
 **用法:**
@@ -677,19 +807,23 @@ python scripts/extract_metadata.py \
 # 基本验证
 python scripts/validate_citations.py references.bib
 
-# 使用自动修复
-python scripts/validate_citations.py references.bib \
-  --auto-fix \
-  --output fixed_references.bib
+# 针对场所标准进行验证(例如 Nature、NeurIPS、文献综述)
+python scripts/validate_citations.py references.bib --venue nature
+python scripts/validate_citations.py references.bib --venue neurips
+python scripts/validate_citations.py references.bib --venue review
 
-# 详细验证报告
+# 使用自定义最低引文数量进行验证
+python scripts/validate_citations.py references.bib --min-count 40
+
+# 对照已撰写的手稿文件检查参考文献(检测缺失或未使用的引文)
+python scripts/validate_citations.py references.bib --manuscript paper.md
+
+# 综合完整验证
 python scripts/validate_citations.py references.bib \
+  --venue nature \
+  --manuscript paper.md \
   --report validation_report.json \
   --verbose
-
-# 仅检查 DOI
-python scripts/validate_citations.py references.bib \
-  --check-dois-only
 ```
 
 ### format_bibtex.py
@@ -862,8 +996,8 @@ python scripts/doi_to_bibtex.py 10.1038/nature12345 --clipboard
 5. **重复条目**: 同一论文多次引用,键不同
    - **解决方案**: 使用验证中的重复检测
 
-6. **缺失必填字段**: 不完整的 BibTeX 条目
-   - **解决方案**: 验证并确保所有必填字段都存在
+6. **缺失必填字段**: 不完整的 BibTeX 条目(缺少卷、页、DOI)
+   - **解决方案**: 运行第 2.5 阶段的元数据补充 —— 在继续之前,为每个缺失字段进行网络搜索。切勿让 @article 条目缺少卷、页和 DOI。
 
 7. **过时的预印本**: 存在发表版本时引用预印本
    - **解决方案**: 检查预印本是否已发表,更新为期刊版本

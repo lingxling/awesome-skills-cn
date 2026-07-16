@@ -1,11 +1,12 @@
 ---
 name: transformers
 description: Hugging Face Transformers用于加载Hub模型、运行管道推理、文本生成，以及在NLP、视觉、音频和多模态任务上进行Trainer微调。当使用AutoModel、管道、分词器或TrainingArguments时使用——不适用于Transformers库之外的通用机器学习。
+allowed-tools: Read Write Edit Bash
 license: Apache-2.0 license
-compatibility: Requires Python 3.10+, PyTorch 2.4+, and transformers 5.x. Gated or private Hub models need an HF token (hf auth login or HF_TOKEN).
+compatibility: Requires Python 3.10+, PyTorch 2.4+, and transformers 5.x. Gated or private Hub models need an HF token (`hf auth login` or `HF_TOKEN`).
 metadata:
-  version: "1.1"
-  skill-author: K-Dense Inc.
+  version: "1.2"
+  skill-author: "K-Dense Inc."
 ---
 
 
@@ -21,51 +22,69 @@ Hugging Face Transformers库提供了数千个预训练模型，适用于NLP、�
 
 ## 安装
 
-安装transformers和核心依赖：
+已针对 **transformers 5.12.0**（当前PyPI发布版本；2026年6月）测试。需要 **Python 3.10+**；`torch` 附加组件目前需要 **PyTorch 2.4+**。
 
 ```bash
-uv pip install torch transformers datasets evaluate accelerate
+uv pip install "transformers[torch]==5.12.0" huggingface_hub==1.19.0 datasets==5.0.0 evaluate==0.4.6 accelerate==1.14.0
 ```
 
 对于视觉任务，添加：
+
 ```bash
-uv pip install timm pillow
+uv pip install timm==1.0.27 pillow==12.2.0
 ```
 
 对于音频任务，添加：
+
 ```bash
-uv pip install librosa soundfile
+uv pip install librosa==0.11.0 soundfile==0.14.0
+```
+
+这些固定版本号是为了保证示例的可复现性。对于探索性工作，只有在查阅过Transformers和Hub的发布说明、确认无API变化后，才应放宽版本限制。
+
+检查您的版本：
+
+```python
+import transformers
+print(transformers.__version__)
 ```
 
 ## 身份验证
 
-Hugging Face Hub上的许多模型需要身份验证。设置访问权限：
+Hugging Face Hub上的许多模型是受限的或私有的。加载它们之前需要先进行身份验证。
+
+**推荐方式：** CLI登录（token会存储在 `~/.cache/huggingface/token`）：
+
+```bash
+hf auth login
+```
+
+**Python方式：**
 
 ```python
 from huggingface_hub import login
-login()  # 按照提示输入token
+login()  # 交互式提示；不要在脚本中硬编码token
 ```
 
-或设置环境变量：
+**服务器/CI环境：** 在环境变量中设置 `HF_TOKEN`（切勿将token提交到git或shell配置文件中）：
+
 ```bash
-export HUGGINGFACE_TOKEN="your_token_here"
+export HF_TOKEN="..."  # 应从密钥管理器读取token，而不是写在源代码中
 ```
 
-在以下位置获取token：https://huggingface.co/settings/tokens
+在此获取token：https://huggingface.co/settings/tokens
+
+**安全提示：** 切勿将token粘贴到notebook、代码仓库或共享配置中。相比在`.bashrc`或`.zshrc`中导出token，更推荐使用`hf auth login`。
+
+使用能满足需求的最小token权限范围：下载私有或受限模型使用`read`权限，只有上传时才使用`write`权限。如果长时间运行的环境不应在每次Hub请求中都发送已存储的token，请设置`HF_HUB_DISABLE_IMPLICIT_TOKEN=1`，并只在需要身份验证的地方传入token。
 
 ## Transformers v5
 
-Transformers v5 是最新版本，带来重大更新：
+Transformers v5 是**仅支持PyTorch**的版本（TensorFlow和JAX后端已被移除）。有关从v4升级的说明，请参见 [v5迁移指南](https://github.com/huggingface/transformers/blob/main/MIGRATION_GUIDE_V5.md)。新项目应搭配使用 **transformers 5.x** 和 **huggingface_hub 1.x**。
 
-- **性能优化**：更快的推理速度和更低的内存占用
-- **新的架构支持**：增强的 multimodal 模型支持
-- **改进的 API**：更直观的接口设计
-- **更好的错误信息**：更清晰的错误提示
+**受限或自定义架构：** 先在Hub上接受模型许可协议，只有在模型卡片要求使用您已审阅过的自定义代码时，才使用`trust_remote_code=True`加载。
 
-升级到 v5：
-```bash
-uv pip install transformers>=5.0.0
-```
+**缓存位置：** 设置 `HF_HOME` 可为所有Hugging Face缓存指定位置，或设置 `HF_HUB_CACHE` 仅为Hub文件指定位置。只有在所需的模型快照已经缓存完毕后，才使用 `HF_HUB_OFFLINE=1`。
 
 ## 快速开始
 
@@ -74,9 +93,9 @@ uv pip install transformers>=5.0.0
 ```python
 from transformers import pipeline
 
-# 文本生成
-generator = pipeline("text-generation", model="gpt2")
-result = generator("The future of AI is", max_length=50)
+# 文本生成（对于因果语言模型，优先使用max_new_tokens）
+generator = pipeline("text-generation", model="Qwen/Qwen2.5-1.5B")
+result = generator("The future of AI is", max_new_tokens=50)
 
 # 文本分类
 classifier = pipeline("text-classification")

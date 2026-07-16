@@ -2,9 +2,7 @@
 name: iso-13485-certification
 description: 用于准备医疗器械质量管理体系的ISO 13485认证文档的综合工具包。当用户需要ISO 13485 QMS文档方面的帮助时使用，包括（1）对现有文档进行差距分析，（2）创建质量手册，（3）开发所需程序和工作指导书，（4）准备医疗器械文件，（5）理解ISO 13485要求，或（6）识别医疗器械认证中缺失的文档。当用户提及医疗器械法规、QMS认证、FDA QMSR、EU MDR或需要质量体系文档方面的帮助时也可使用。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

@@ -2,9 +2,7 @@
 name: glycoengineering
 description: 分析和工程蛋白质糖基化。扫描N-糖基化共有序列（N-X-S/T）序列，预测O-糖基化热点，并访问精选的糖工程工具（NetOGlyc、GlycoShield、GlycoWorkbench）。用于糖蛋白工程、治疗性抗体优化和疫苗设计。
 license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: Kuan-lin Huang
+metadata: {"version": "1.0", "skill-author": "Kuan-lin Huang"}
 ---
 
 

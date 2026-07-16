@@ -2,9 +2,13 @@
 name: rdkit
 description: 细粒度分子控制的化学信息学工具包。SMILES/SDF解析、描述符（MW、LogP、TPSA）、指纹、亚结构搜索、2D/3D生成、相似性、反应。对于使用更简单界面的标准工作流，请使用datamol（RDKit的包装器）。使用rdkit进行高级控制、自定义清理和专用算法。
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Bash
+compatibility: Examples target RDKit 2026.03.x. Use conda-forge for the broadest binary support or PyPI package `rdkit` for supported platform wheels; `rdkit-pypi` is the legacy PyPI name.
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
 
 
@@ -17,6 +21,25 @@ metadata:
 ## 概述
 
 RDKit是一个全面的化学信息学库，提供用于分子分析和操作的Python API。本技能提供了关于读取/写入分子结构、计算描述符、指纹生成、子结构搜索、化学反应、2D/3D坐标生成和分子可视化的指导。使用此技能进行药物发现、计算化学和化学信息学研究任务。
+
+**当前基线版本（2026-06-07 核实）：** RDKit **2026.03.3** 是 GitHub/PyPI 上的最新发布版本（PyPI 上为 `rdkit` 2026.3.3）。官方安装文档仍然建议大多数用户使用 conda-forge，同时跨平台的 PyPI wheel 包发布在 `rdkit` 包名下。`rdkit-pypi` 是旧的 PyPI 包名，只应在维护遗留环境时出现。
+
+## 安装与设置
+
+在已有的 Python 环境中安装时使用 `uv`：
+
+```bash
+uv pip install rdkit
+```
+
+对于需要可复现的化学环境，尤其是混合了已编译科学软件包的场景，官方仍然推荐使用 conda-forge：
+
+```bash
+conda create -c conda-forge -n my-rdkit-env rdkit
+conda activate my-rdkit-env
+```
+
+除非您是有意在调试打包相关的行为，否则应避免在同一环境中同时安装 conda 版 `rdkit` 和 PyPI 版 `rdkit`/`rdkit-pypi`。混合安装会导致难以判断实际导入的是哪个二进制扩展。
 
 ## 核心功能
 
@@ -113,7 +136,6 @@ for problem in problems:
     print(problem.GetType(), problem.Message())
 
 # 部分净化（跳过特定步骤）
-from rdkit.Chem import rdMolStandardize
 Chem.SanitizeMol(mol, sanitizeOps=Chem.SANITIZE_ALL ^ Chem.SANITIZE_PROPERTIES)
 ```
 
@@ -512,10 +534,14 @@ mol  # 显示分子图像
 ```python
 # 显示指纹位代表的分子特征
 from rdkit.Chem import Draw
+from rdkit.Chem import rdFingerprintGenerator
 
 # 对于Morgan指纹
-bit_info = {}
-fp = AllChem.GetMorganFingerprintAsBitVect(mol, radius=2, bitInfo=bit_info)
+additional_output = rdFingerprintGenerator.AdditionalOutput()
+additional_output.AllocateBitInfoMap()
+morgan_gen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
+fp = morgan_gen.GetFingerprint(mol, additionalOutput=additional_output)
+bit_info = additional_output.GetBitInfoMap()
 
 # 绘制特定位的环境
 img = Draw.DrawMorganBit(mol, bit_id, bit_info)
@@ -648,18 +674,22 @@ def analyze_druglikeness(smiles):
 
 ```python
 from rdkit import Chem
-from rdkit.Chem import AllChem
+from rdkit.Chem import rdFingerprintGenerator
 from rdkit import DataStructs
 
 def similarity_screen(query_smiles, database_smiles, threshold=0.7):
     query_mol = Chem.MolFromSmiles(query_smiles)
-    query_fp = AllChem.GetMorganFingerprintAsBitVect(query_mol, 2)
+    if query_mol is None:
+        return []
+
+    morgan_gen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
+    query_fp = morgan_gen.GetFingerprint(query_mol)
 
     hits = []
     for idx, smiles in enumerate(database_smiles):
         mol = Chem.MolFromSmiles(smiles)
         if mol:
-            fp = AllChem.GetMorganFingerprintAsBitVect(mol, 2)
+            fp = morgan_gen.GetFingerprint(mol)
             sim = DataStructs.TanimotoSimilarity(query_fp, fp)
             if sim >= threshold:
                 hits.append((idx, smiles, sim))
@@ -699,29 +729,48 @@ if mol is None:
 
 ### 性能优化
 
-**使用二进制格式存储：**
+**使用安全的存储格式：**
 
 ```python
-import pickle
+import base64
+import json
+from pathlib import Path
+from rdkit import Chem
 
-# 序列化分子以快速加载
-with open('molecules.pkl', 'wb') as f:
-    pickle.dump(mols, f)
+# SMILES、SDF等便携交换格式对于共享数据来说最安全。
+# 对于本地缓存，RDKit的二进制分子表示可以避免使用通用的pickle。
+payload = [base64.b64encode(mol.ToBinary()).decode("ascii") for mol in mols]
+Path("molecules.rdmol.json").write_text(json.dumps(payload))
 
-# 加载序列化的分子（比重新解析快得多）
-with open('molecules.pkl', 'rb') as f:
-    mols = pickle.load(f)
+cached = json.loads(Path("molecules.rdmol.json").read_text())
+mols = [Chem.Mol(base64.b64decode(item)) for item in cached]
 ```
+
+不要加载来自不可信来源的Python pickle文件。pickle反序列化可能执行任意代码；交换数据时优先使用SMILES/SDF，本地可信缓存则使用RDKit的二进制载荷。
 
 **使用批量操作：**
 
 ```python
+from rdkit import DataStructs
+from rdkit.Chem import rdFingerprintGenerator
+
 # 一次计算所有分子的指纹
-fps = [AllChem.GetMorganFingerprintAsBitVect(mol, 2) for mol in mols]
+morgan_gen = rdFingerprintGenerator.GetMorganGenerator(radius=2, fpSize=2048)
+fps = [morgan_gen.GetFingerprint(mol) for mol in mols]
 
 # 使用批量相似性计算
 similarities = DataStructs.BulkTanimotoSimilarity(fps[0], fps[1:])
 ```
+
+### 版本相关的行为变化
+
+当精确的分子标识符或数值特征是持久化数据集、模型特征流水线或监管报告的一部分时，应固定 RDKit 版本号。近期版本在若干面向 Python 的方面改变或补充说明了行为：
+
+- **规范SMILES与立体化学：** 2026.03 版本改变了规范双键处理方式以避免立体化学信息损坏，因此部分含立体化学信息的SMILES可能与旧版本不同。
+- **描述符与哈希：** 2024.09 版本修正了无支链烷烃片段描述符的SMARTS，并改变了部分互变异构体/质子化异构体哈希输出。
+- **绘图：** 旧版 `rdkit.Chem.Draw` 画布模块及 `MolToImageFile`、`MolToMPL`、`MolToQPixmap` 等函数已被移除；请使用 `Draw.MolToFile`、`Draw.MolToImage` 或 `rdMolDraw2D`。
+- **MolStandardize：** 请使用 `rdkit.Chem.MolStandardize.rdMolStandardize`；旧的Python版MolStandardize实现已被移除。
+- **相似性图：** `GetSimilarityMapFromWeights()`、`GetSimilarityMapForFingerprint()` 和 `GetSimilarityMapForModel()` 现在需要传入一个 `rdMolDraw2D` 绘图对象。
 
 ### 线程安全
 
@@ -771,6 +820,8 @@ suppl = Chem.MultithreadedSDMolSupplier('large.sdf', numWriterThreads=4)
 - `smarts_patterns.md` - 官能团和结构特征的常见SMARTS模式
 
 需要特定API细节、参数信息或模式示例时加载这些参考。
+
+只有 `references/` 和 `scripts/` 中列出的文件属于本技能内置的本地资源。诸如 `rdkit`、`datamol`、`scipy`、`sklearn` 之类的名称指的是可安装的 Python 软件包，而不是本技能中的本地文件。
 
 ### scripts/
 

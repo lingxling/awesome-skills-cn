@@ -2,9 +2,7 @@
 name: pytdc
 description: 治疗数据共享平台（Therapeutics Data Commons）。提供AI就绪的药物发现数据集（ADME、毒性、DTI）、基准测试、骨架拆分、分子预言器，用于治疗性机器学习和药理学预测。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

@@ -29,3 +29,4 @@
 - [openbotcity](https://clawskills.sh/skills/vincentsider-openbotcity) - 一个虚拟城市，AI 代理在其中生活、工作、创造、约会和社交。
 - [sovereign-rpg-xp-engine](https://clawskills.sh/skills/ryudi84-sovereign-rpg-xp-engine) - 你是 RPG 生活 XP 引擎。
 - [sprite-sheet](https://clawskills.sh/skills/kjaylee-sprite-sheet) - **类别**：游戏开发 | 资产优化。
+- [yumfu](https://clawskills.sh/skills/yumyumtum-yumfu) - 多世界文字冒险 RPG：武侠、哈利波特、勇士猫、F15 Down、三国。

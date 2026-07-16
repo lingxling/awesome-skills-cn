@@ -2,9 +2,7 @@
 name: labarchive-integration
 description: Electronic lab notebook API 在tegration. Access notebooks, manage entries/attachments, backup notebooks, 在tegrate 使用 Pro到cols.io/Jupyter/REDCap, 用于 programmatic ELN w或kflows.
 license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

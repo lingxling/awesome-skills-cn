@@ -19,6 +19,7 @@ export interface SearchItem<T> {
 export interface LockedSection<T> {
   title: string;
   items: SearchItem<T>[];
+  hiddenCount?: number;
 }
 
 export interface SearchMultiselectOptions<T> {
@@ -207,6 +208,9 @@ export async function searchMultiselect<T>(
           lines.push(`${S_BAR}  ${S_BAR_H}${S_BAR_H} ${lockedTitle} ${S_BAR_H.repeat(12)}`);
           for (const item of lockedSection.items) {
             lines.push(`${S_BAR}    ${S_BULLET} ${pc.bold(item.label)}`);
+          }
+          if (lockedSection.hiddenCount && lockedSection.hiddenCount > 0) {
+            lines.push(`${S_BAR}    ${pc.dim(`…and ${lockedSection.hiddenCount} more`)}`);
           }
           lines.push(`${S_BAR}`);
           lines.push(

@@ -31,6 +31,7 @@ import re
 from datetime import datetime, timezone
 
 from pyhive import hive
+from _safe_paths import safe_existing_directory, safe_input_json_path, safe_output_json_path, write_json_file
 
 
 def _check_available_memory(min_gb: float = 2.0) -> None:
@@ -82,6 +83,47 @@ _HIVE_TYPE_MAP: dict[str, str] = {
 
 # ← SUBSTITUTE: add any internal table name prefixes you want to skip
 _INTERNAL_TABLE_PREFIXES = ("tmp_", "__", "hive_")
+_SAFE_HIVE_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+
+
+def _safe_hive_identifier(identifier: str) -> str:
+    value = str(identifier).strip()
+    if not value:
+        raise ValueError("Hive identifier must not be empty")
+    match = _SAFE_HIVE_IDENTIFIER_RE.fullmatch(value)
+    if not match:
+        raise ValueError("Hive identifier contains characters outside the safe default set")
+    return match.group(0)
+
+
+def _safe_hive_identifier_from_row(row: tuple, index: int = 0) -> str:
+    value = str(row[index]).strip()
+    match = _SAFE_HIVE_IDENTIFIER_RE.fullmatch(value)
+    if not match:
+        raise ValueError("Hive identifier contains characters outside the safe default set")
+    return match.group(0)
+
+
+def _quote_hive_identifier(identifier: str) -> str:
+    value = str(identifier).strip()
+    if not value:
+        raise ValueError("Hive identifier must not be empty")
+    allow_extended = os.getenv("HIVE_ALLOW_EXTENDED_IDENTIFIERS", "").lower() in {"1", "true", "yes"}
+    if not allow_extended:
+        value = _safe_hive_identifier(value)
+    elif not _SAFE_HIVE_IDENTIFIER_RE.fullmatch(value):
+        raise ValueError(
+            "Hive identifier contains characters outside the safe default set; "
+            "set HIVE_ALLOW_EXTENDED_IDENTIFIERS=1 to use escaped extended identifiers"
+        )
+    return "`" + value.replace("`", "``") + "`"
+
+
+def _bounded_int(value: int, field: str, *, minimum: int, maximum: int) -> int:
+    value = int(value)
+    if value < minimum or value > maximum:
+        raise ValueError(f"{field} must be between {minimum} and {maximum}")
+    return value
 
 
 def _normalize_hive_type(hive_type: str) -> str:
@@ -101,9 +143,8 @@ def _connect(host: str, port: int) -> hive.Connection:
     return hive.connect(host=host, port=port, username="hadoop", auth="NONE")
 
 
-def _fetch_rows(cursor, query: str) -> list[tuple]:
-    """Execute a query and fetch results in memory-safe chunks."""
-    cursor.execute(query)
+def _fetch_rows(cursor) -> list[tuple]:
+    """Fetch query results in memory-safe chunks."""
     rows: list[tuple] = []
     while True:
         chunk = cursor.fetchmany(1000)
@@ -207,13 +248,15 @@ def collect(
         Manifest dict with keys: resource_type, collected_at, assets.
     """
     _check_available_memory()
+    hive_port = _bounded_int(hive_port, "hive_port", minimum=1, maximum=65535)
     print(f"Connecting to HiveServer2 at {hive_host}:{hive_port} ...")
     conn = _connect(hive_host, hive_port)
     cursor = conn.cursor()
     assets: list[dict] = []
 
     print("Collecting table metadata ...")
-    databases = [row[0] for row in _fetch_rows(cursor, "SHOW DATABASES")]
+    cursor.execute("SHOW DATABASES")
+    databases = [_safe_hive_identifier_from_row(row) for row in _fetch_rows(cursor)]
     print(f"  Found databases: {databases}")
 
     for db in databases:
@@ -221,8 +264,13 @@ def collect(
         if db in ("information_schema",):
             continue
 
-        tables = _fetch_rows(cursor, f"SHOW TABLES IN {db}")
-        table_names = [row[0] for row in tables]
+        db_match = _SAFE_HIVE_IDENTIFIER_RE.fullmatch(db)
+        if not db_match:
+            raise ValueError("Hive database identifier contains characters outside the safe default set")
+        quoted_db = f"`{db_match.group(0)}`"
+        cursor.execute(f"SHOW TABLES IN {quoted_db}")
+        tables = _fetch_rows(cursor)
+        table_names = [_safe_hive_identifier_from_row(row) for row in tables]
         print(f"  {db}: {len(table_names)} table(s)")
 
         for table in table_names:
@@ -230,7 +278,12 @@ def collect(
                 continue
 
             try:
-                desc_rows = _fetch_rows(cursor, f"DESCRIBE FORMATTED {db}.{table}")
+                table_match = _SAFE_HIVE_IDENTIFIER_RE.fullmatch(table)
+                if not table_match:
+                    raise ValueError("Hive table identifier contains characters outside the safe default set")
+                quoted_table = f"`{table_match.group(0)}`"
+                cursor.execute(f"DESCRIBE FORMATTED {quoted_db}.{quoted_table}")
+                desc_rows = _fetch_rows(cursor)
             except Exception as exc:
                 print(f"    WARNING: could not describe {db}.{table}: {exc}")
                 continue
@@ -303,8 +356,7 @@ def main() -> None:
         hive_port=args.hive_port,
     )
 
-    with open(args.output_file, "w") as fh:
-        json.dump(manifest, fh, indent=2)
+    write_json_file(args.output_file, manifest)
     print(f"Asset manifest written to {args.output_file}")
     print("Done.")
 

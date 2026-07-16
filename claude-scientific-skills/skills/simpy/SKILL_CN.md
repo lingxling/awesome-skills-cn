@@ -2,9 +2,7 @@
 name: simpy
 description: Python中基于过程的离散事件仿真框架。当构建包含过程、队列、资源和时间事件（如制造系统、服务运营、网络流量、物流或任何实体随时间与共享资源交互的系统）的仿真时使用此技能。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

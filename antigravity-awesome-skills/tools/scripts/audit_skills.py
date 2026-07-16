@@ -11,6 +11,17 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
+
+def safe_user_path(path_value, base_dir="."):
+    """Resolve a path under an explicit trusted base directory."""
+    base_path = Path(base_dir).expanduser().resolve()
+    resolved_path = Path(path_value).expanduser().resolve()
+    try:
+        resolved_path.relative_to(base_path)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes allowed directory: {path_value}") from exc
+    return resolved_path
+
 from _project_paths import find_repo_root
 from risk_classifier import suggest_risk
 from validate_skills import configure_utf8_output, has_when_to_use_section, parse_frontmatter
@@ -61,22 +72,46 @@ def has_limitations(content: str) -> bool:
     return any(pattern.search(content) for pattern in LIMITATIONS_HEADING_PATTERNS)
 
 
-def find_dangling_links(content: str, skill_root: Path) -> list[str]:
+def find_dangling_links(
+    content: str,
+    skill_root: Path,
+    snapshot_root: Path | None = None,
+) -> list[str]:
+    """Return missing or escaping local links without consulting host paths.
+
+    ``snapshot_root`` is the trust boundary. A link that escapes it is broken
+    even when the destination happens to exist on the machine running the
+    audit.
+    """
     broken_links: list[str] = []
+    containment_root = (snapshot_root or skill_root).resolve()
     for link in MARKDOWN_LINK_PATTERN.findall(content):
         link_clean = link.split("#", 1)[0].strip()
-        if not link_clean or link_clean.startswith(("http://", "https://", "mailto:", "<", ">")):
+        if link_clean.startswith("<") and link_clean.endswith(">"):
+            link_clean = link_clean[1:-1].strip()
+        if not link_clean or link_clean.startswith(("http://", "https://", "mailto:")):
             continue
         if os.path.isabs(link_clean):
+            broken_links.append(link)
             continue
 
         target_path = (skill_root / link_clean).resolve()
+        try:
+            target_path.relative_to(containment_root)
+        except ValueError:
+            broken_links.append(link)
+            continue
         if not target_path.exists():
             broken_links.append(link)
     return broken_links
 
 
-def build_skill_report(skill_root: Path, skills_dir: Path) -> dict[str, object]:
+def build_skill_report(
+    skill_root: Path,
+    skills_dir: Path,
+    *,
+    snapshot_root: Path | None = None,
+) -> dict[str, object]:
     skill_file = skill_root / "SKILL.md"
     rel_dir = skill_root.relative_to(skills_dir).as_posix()
     rel_file = f"{rel_dir}/SKILL.md"
@@ -155,7 +190,7 @@ def build_skill_report(skill_root: Path, skills_dir: Path) -> dict[str, object]:
 
     if risk is None:
         findings.append(Finding("warning", "missing_risk", "Missing risk classification."))
-    elif risk not in VALID_RISK_LEVELS:
+    elif not isinstance(risk, str) or risk not in VALID_RISK_LEVELS:
         findings.append(
             Finding(
                 "error",
@@ -206,7 +241,7 @@ def build_skill_report(skill_root: Path, skills_dir: Path) -> dict[str, object]:
             )
         )
 
-    for broken_link in find_dangling_links(content, skill_root):
+    for broken_link in find_dangling_links(content, skill_root, snapshot_root):
         findings.append(
             Finding(
                 "error",
@@ -275,7 +310,13 @@ def audit_skills(skills_dir: str | Path) -> dict[str, object]:
         dirs[:] = [directory for directory in dirs if not directory.startswith(".")]
         if "SKILL.md" not in files:
             continue
-        reports.append(build_skill_report(Path(root), skills_root))
+        reports.append(
+            build_skill_report(
+                safe_user_path(root, skills_root),
+                skills_root,
+                snapshot_root=skills_root.parent,
+            )
+        )
 
     reports.sort(key=lambda report: str(report["id"]).lower())
 
@@ -410,7 +451,11 @@ def write_markdown_report(report: dict[str, object], destination: str | Path) ->
     else:
         lines.append("| _none_ | _none_ | _none_ | _n/a_ |")
 
-    Path(destination).write_text("\n".join(lines) + "\n", encoding="utf-8")
+    destination_path = Path(destination).expanduser().resolve()
+    safe_user_path(destination_path, destination_path.parent).write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8",
+    )
 
 
 def print_summary(report: dict[str, object]) -> None:
@@ -533,7 +578,8 @@ def main() -> int:
     print_summary(report)
 
     if args.json_out:
-        Path(args.json_out).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        json_out = Path(args.json_out).expanduser().resolve()
+        safe_user_path(json_out, json_out.parent).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(f"📝 Wrote JSON audit report to {args.json_out}")
 
     if args.markdown_out:

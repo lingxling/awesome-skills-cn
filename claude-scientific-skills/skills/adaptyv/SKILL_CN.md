@@ -3,9 +3,7 @@ name: adaptyv
 description: "如何使用Adaptyv Bio Foundry API和Python SDK进行蛋白质实验设计、提交和结果检索。当用户提及Adaptyv、Foundry API、蛋白质结合实验、蛋白质筛选实验、BLI/SPR实验、热稳定性实验或想要提交蛋白质序列进行实验表征时使用此技能。当代码导入`adaptyv`、`adaptyv_sdk`或`FoundryClient`，或引用`foundry-api-public.adaptyvbio.com`时也会触发。"
 license: MIT
 compatibility: Requires Python 3.10+, an Adaptyv Foundry account, and an API key from foundry.adaptyvbio.com. Install adaptyv-sdk from GitHub with uv pip install.
-metadata:
-  version: "1.2"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.2", "skill-author": "K-Dense Inc."}
 ---
 
 

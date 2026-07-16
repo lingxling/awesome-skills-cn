@@ -82,10 +82,12 @@
 - [pilt](https://clawskills.sh/skills/babpilt-pilt) - 访问 Pilt 筹款数据 — 投资者匹配、活动统计、外展活动和演示文稿分析。
 - [posthog](https://clawskills.sh/skills/simonfunk-posthog) - 通过其 REST API 与 PostHog 分析交互。
 - [posthog-query](https://clawskills.sh/skills/quinlanjager-posthog-query) - 使用 PostHog CLI 对 PostHog 产品分析数据运行 SQL 查询。
+- [postiz](https://clawskills.sh/skills/nevo-david-postiz) - 在 28+ 个平台上安排社交媒体帖子和话题串。
 - [reef-copywriting](https://clawskills.sh/skills/staybased-reef-copywriting) - 使用经过验证的直接响应框架撰写着陆页、产品描述、广告和销售文案。
 - [ryot](https://clawskills.sh/skills/f-liva-ryot) - 完整的 Ryot 媒体跟踪器，具有进度跟踪、评论、收藏、分析、日历和自动化。
 - [sentiment-priority-scorer](https://clawskills.sh/skills/vishalgojha-sentiment-priority-scorer) - 使用情感、紧迫性、意图、时效性和记录类型对标准化的房地产线索进行评分，以产生。
 - [signup-lead](https://clawskills.sh/skills/waqas-orcalo-signup-lead) - 使用公共 HTTP 端点在 AgenticCreed 系统中创建注册线索。
+- [sequenzy-email-marketing](https://clawhub.ai/polnikale/sequenzy-email-marketing) - 面向代理的授权邮件自动化。
 - [simplified-social-media](https://clawskills.sh/skills/jacksimplified-simplified-social-media) - 直接从您的 AI 编码工具管理您的整个社交媒体存在 — 发布、安排和分析。
 - [social-media-lead-generation](https://clawskills.sh/skills/shahbaz02197ali-cmd-social-media-lead-generation) - 此技能帮助企业、培训机构和在线教育工作者使用社交媒体生成线索和销售。
 - [solo-metrics-track](https://clawskills.sh/skills/fortunto2-solo-metrics-track) - 设置 PostHog 指标计划，包括事件漏斗、KPI 基准和终止/迭代/扩展决策阈值。
@@ -99,5 +101,8 @@
 - [water-coach](https://clawskills.sh/skills/oristides-water-coach) -  hydration 跟踪和教练技能。
 - [windsor-ai](https://clawskills.sh/skills/carlosarturoleon-windsor-ai) - 连接到 Windsor.ai MCP，以自然语言访问 325+ 数据源，包括 Facebook Ads、GA4、HubSpot。
 - [workcrm](https://clawskills.sh/skills/extraterrest-workcrm) - 一个轻量级、本地优先的 CRM，带有明确的确认门。
+- [ldm-openclaw-skill](https://clawhub.ai/live-direct-marketing/ldm-openclaw-skill) - 面向外发代理的发送前送达率检查。
+- [ldm-openclaw-inbox-mcp-skill](https://clawhub.ai/live-direct-marketing/ldm-openclaw-inbox-mcp-skill) - 面向外发代理的付费 MCP 收件箱送达检查。
+- [tempguru-event-staffing-ordering](https://clawhub.ai/kissmyabs32/tempguru-event-staffing-ordering) - 在美加 345 个市场订购 W-2 临时活动工作人员。
 - [writing-assistant](https://clawskills.sh/skills/urrrich-writing-assistant) - 您是一位写作团队领导，通过 MCP 工具管理专业作家。
 - [writing-group-leader](https://clawskills.sh/skills/urrrich-writing-group-leader) - 您是一位写作团队领导，通过 MCP 工具管理专业作家。

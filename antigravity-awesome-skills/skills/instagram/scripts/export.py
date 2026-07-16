@@ -17,24 +17,60 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+
+def safe_user_path(path_value, base_dir="."):
+    """Resolve a CLI path under the current workspace."""
+    if base_dir != ".":
+        raise ValueError("Custom base directories are not supported for CLI paths")
+    base_path = Path.cwd().resolve()
+    resolved_path = Path(path_value).expanduser().resolve()
+    try:
+        resolved_path.relative_to(base_path)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes allowed directory: {path_value}") from exc
+    return resolved_path
+
 sys.path.insert(0, str(Path(__file__).parent))
 
-from config import EXPORTS_DIR
-from db import Database
+_db = None
 
-db = Database()
-db.init()
+
+def get_db():
+    global _db
+    if _db is None:
+        from db import Database
+        _db = Database()
+        _db.init()
+    return _db
+
+
+def safe_output_dir(output: str | Path) -> Path:
+    output_dir = Path(output).expanduser().resolve()
+    skill_dir = Path(__file__).resolve().parents[1]
+    try:
+        output_dir.relative_to(skill_dir)
+    except ValueError:
+        return output_dir
+    raise ValueError("Refusing to export inside the skill source directory")
+
+
+def self_test() -> None:
+    skill_dir = Path(__file__).resolve().parents[1]
+    safe_output_dir(skill_dir.parent / "instagram-exports")
+    try:
+        safe_output_dir(skill_dir / "scripts" / "exports")
+    except ValueError:
+        return
+    raise AssertionError("accepted export directory inside skill source")
 
 
 def export_json(records: list, output_dir: Path, name: str) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     path = output_dir / f"instagram_{name}_{ts}.json"
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(
-            {"exported_at": datetime.now(timezone.utc).isoformat(), "total": len(records), "data": records},
-            f, ensure_ascii=False, indent=2,
-        )
+    payload = {"exported_at": datetime.now(timezone.utc).isoformat(), "total": len(records), "data": records}
+    with safe_user_path(path).open("w", encoding="utf-8") as f:
+        f.write(json.dumps(payload, ensure_ascii=False, indent=2))
     print(f"[JSON] {len(records)} registros ->{path}")
     return path
 
@@ -43,7 +79,7 @@ def export_jsonl(records: list, output_dir: Path, name: str) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     path = output_dir / f"instagram_{name}_{ts}.jsonl"
-    with open(path, "w", encoding="utf-8") as f:
+    with safe_user_path(path).open("w", encoding="utf-8") as f:
         for rec in records:
             f.write(json.dumps(rec, ensure_ascii=False) + "\n")
     print(f"[JSONL] {len(records)} registros ->{path}")
@@ -57,7 +93,7 @@ def export_csv_file(records: list, output_dir: Path, name: str) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     path = output_dir / f"instagram_{name}_{ts}.csv"
-    with open(path, "w", newline="", encoding="utf-8-sig") as f:
+    with safe_user_path(path).open("w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=list(records[0].keys()), extrasaction="ignore")
         writer.writeheader()
         writer.writerows(records)
@@ -67,7 +103,7 @@ def export_csv_file(records: list, output_dir: Path, name: str) -> Path:
 
 def get_data(data_type: str) -> tuple:
     """Retorna (records, name) para o tipo de dados."""
-    conn = db._connect()
+    conn = get_db()._connect()
 
     if data_type == "posts":
         rows = conn.execute("SELECT * FROM posts ORDER BY created_at DESC").fetchall()
@@ -109,15 +145,23 @@ def do_export(records: list, name: str, fmt: str, output_dir: Path) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="Exportar dados do Instagram")
-    parser.add_argument("--type", required=True,
+    parser.add_argument("--type", required=False,
                         choices=["posts", "comments", "insights", "user_insights", "templates", "actions", "all"],
                         help="Tipo de dados")
     parser.add_argument("--format", default="csv", choices=["json", "jsonl", "csv", "all"],
                         help="Formato (default: csv)")
-    parser.add_argument("--output", default=str(EXPORTS_DIR), help=f"Diretório (default: {EXPORTS_DIR})")
+    default_exports_dir = Path(__file__).resolve().parents[1] / "data" / "exports"
+    parser.add_argument("--output", default=str(default_exports_dir), help=f"Diretório (default: {default_exports_dir})")
+    parser.add_argument("--self-test", action="store_true", help="Run safety self-checks")
     args = parser.parse_args()
 
-    output_dir = Path(args.output)
+    if args.self_test:
+        self_test()
+        return
+    if not args.type:
+        parser.error("--type is required unless --self-test is used")
+
+    output_dir = safe_output_dir(args.output)
 
     if args.type == "all":
         for dtype in ["posts", "comments", "insights", "user_insights", "templates", "actions"]:

@@ -26,11 +26,11 @@ Unlike Numba CUDA (which gives you raw thread/block control) or CuPy (which repl
 ## Installation
 
 ```bash
-uv add warp-lang              # CUDA 12 runtime (most common)
+uv add warp-lang              # PyPI wheels built with the CUDA 12.9 runtime
 # uv add warp-lang[examples]  # Includes USD and example dependencies
 ```
 
-Requires CUDA driver >= 525.60.13 (Linux) or 528.33 (Windows).
+Requires Python >= 3.10 and an NVIDIA driver >= 525 for the CUDA 12 wheels. CUDA 13.0 builds (driver >= 580) are published on the project's GitHub Releases page rather than PyPI.
 
 Verify installation:
 
@@ -58,6 +58,8 @@ wp.init()
 Warp and Numba both compile Python to CUDA, but serve different niches:
 - **Warp** excels at simulation/spatial workloads with its rich type system (vec3, quat, transform, mesh, volume) and automatic differentiation
 - **Numba** excels at raw CUDA programming where you need explicit thread/block control, shared memory management, and atomic operations on arbitrary data
+
+Note: Warp's former ready-made physics engine module `warp.sim` was removed in Warp 1.10 — it has been superseded by the separate Newton library, which is built on Warp. Warp itself remains the tool for writing custom simulation kernels.
 
 ---
 
@@ -448,7 +450,8 @@ cupy_arr = cp.asarray(warp_array)  # Zero-copy
 ```python
 jax_array = wp.to_jax(warp_array)
 warp_array = wp.from_jax(jax_array)
-# @warp.jax_experimental.jax_kernel() for JAX primitive integration
+# wp.jax_kernel() / wp.jax_callable() wrap Warp kernels for use inside JAX
+# (the old warp.jax_experimental module is deprecated since Warp 1.14)
 ```
 
 ### DLPack (universal zero-copy)

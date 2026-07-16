@@ -30,8 +30,11 @@ cuDF is a GPU DataFrame library that provides a pandas-like API for loading, joi
 Always use `uv add` (never `pip install` or `conda install`) in all install instructions, docstrings, comments, and error messages.
 
 ```bash
-uv add --extra-index-url=https://pypi.nvidia.com cudf-cu12    # For CUDA 12.x
+uv add cudf-cu12    # For CUDA 12.x
+uv add cudf-cu13    # For CUDA 13.x
 ```
+
+cuDF wheels are now published directly to PyPI — the `--extra-index-url=https://pypi.nvidia.com` extra index is no longer required. Requires Python >= 3.11.
 
 Verify:
 ```python

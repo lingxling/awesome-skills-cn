@@ -13,7 +13,7 @@ from update_readme import configure_utf8_output, find_repo_root, load_metadata, 
 
 
 ABOUT_DESCRIPTION_RE = re.compile(r'"description"\s*:\s*"([^"]*)"')
-GITHUB_HOMEPAGE_URL = "https://sickn33.github.io/antigravity-awesome-skills/"
+GITHUB_HOMEPAGE_URL = "https://sickn33.github.io/agentic-awesome-skills/"
 RECOMMENDED_TOPICS = [
     "antigravity",
     "antigravity-skills",
@@ -37,7 +37,7 @@ RECOMMENDED_TOPICS = [
     "mcp",
 ]
 README_TAGLINE_RE = re.compile(
-    r"^> \*\*Installable GitHub library of \d[\d,]*\+ agentic skills for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants\.\*\*$",
+    r"^> \*\*Installable GitHub library of \d[\d,]*\+ agentic skills for Claude Code, Cursor, Codex CLI, (?:Autohand Code, )?Gemini CLI, Antigravity, and other AI coding assistants\.\*\*$",
     re.MULTILINE,
 )
 README_RELEASE_RE = re.compile(r"^\*\*Current release: V[\d.]+\.\*\* .*?$", re.MULTILINE)
@@ -46,19 +46,18 @@ README_BROAD_COVERAGE_RE = re.compile(
     re.MULTILINE,
 )
 README_NEW_HERE_RE = re.compile(
-    r"^\*\*Antigravity Awesome Skills\*\* \(Release [\d.]+\) is a large, installable skill library.*$",
+    r"^\*\*Agentic Awesome Skills\*\* \(Release [\d.]+\) is a large, installable skill library.*$",
     re.MULTILINE,
 )
-README_BROWSE_RE = re.compile(
-    r'^If you want a faster answer than "browse all \d[\d,]*\+ skills", start with a tool-specific guide:$',
-    re.MULTILINE,
+README_INLINE_BROWSE_RE = re.compile(
+    r"\[📚 Browse \d[\d,]*\+ Skills\]\(#browse-\d+-skills\)"
 )
 README_TOC_BROWSE_RE = re.compile(
     r"^- \[Browse \d[\d,]*\+ Skills\]\(#browse-\d+-skills\)$",
     re.MULTILINE,
 )
 GETTING_STARTED_TITLE_RE = re.compile(
-    r"^# Getting Started with Antigravity Awesome Skills \(V[\d.]+\)$", re.MULTILINE
+    r"^# Getting Started with Agentic Awesome Skills \(V[\d.]+\)$", re.MULTILINE
 )
 BUNDLES_FOOTER_RE = re.compile(
     r"^_Last updated: .*? \| Total Skills: \d[\d,]*\+ \| Total Bundles: \d+_$",
@@ -69,8 +68,8 @@ BUNDLES_FOOTER_RE = re.compile(
 def build_about_description(metadata: dict) -> str:
     return (
         f"Installable GitHub library of {metadata['total_skills_label']} agentic skills for "
-        "Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and more. "
-        "Includes installer CLI, bundles, workflows, and official/community skill collections."
+        "Claude Code, Cursor, Codex CLI, Autohand Code, Gemini CLI, Antigravity, and more. "
+        "Includes specialized plugins, installer CLI, bundles, workflows, and official/community skill collections."
     )
 
 
@@ -139,7 +138,7 @@ def sync_readme_copy(content: str, metadata: dict) -> str:
             README_TAGLINE_RE,
             (
                 f"> **Installable GitHub library of {metadata['total_skills_label']} agentic skills "
-                "for Claude Code, Cursor, Codex CLI, Gemini CLI, Antigravity, and other AI coding assistants.**"
+                "for Claude Code, Cursor, Codex CLI, Autohand Code, Gemini CLI, Antigravity, and other AI coding assistants.**"
             ),
         ),
         (
@@ -160,15 +159,16 @@ def sync_readme_copy(content: str, metadata: dict) -> str:
         (
             README_NEW_HERE_RE,
             (
-                f"**Antigravity Awesome Skills** (Release {metadata['version']}) is a large, installable "
-                "skill library for AI coding assistants. It includes onboarding docs, bundles, workflows, "
-                "generated catalogs, and a CLI installer so you can move from discovery to actual usage "
-                "without manually stitching together dozens of repos."
+                f"**Agentic Awesome Skills** (Release {metadata['version']}) is a large, installable "
+                f"skill library for AI coding assistants. It packages {metadata['total_skills_label']} reusable "
+                "`SKILL.md` playbooks, specialized plugins, bundles, workflows, generated catalogs, and a CLI "
+                "installer so Claude Code, Codex CLI, Autohand Code, Cursor, Gemini CLI, Antigravity, and similar tools can "
+                "reuse proven operating instructions instead of one-off prompts."
             ),
         ),
         (
-            README_BROWSE_RE,
-            f'If you want a faster answer than "browse all {metadata["total_skills_label"]} skills", start with a tool-specific guide:',
+            README_INLINE_BROWSE_RE,
+            f"[📚 Browse {metadata['total_skills_label']} Skills](#browse-{metadata['total_skills']}-skills)",
         ),
         (
             README_TOC_BROWSE_RE,
@@ -186,9 +186,33 @@ def sync_getting_started(content: str, metadata: dict) -> str:
     content, _ = replace_if_present(
         content,
         GETTING_STARTED_TITLE_RE,
-        f"# Getting Started with Antigravity Awesome Skills (V{metadata['version']})",
+        f"# Getting Started with Agentic Awesome Skills (V{metadata['version']})",
     )
     return content
+
+
+def sync_web_index_shell(content: str, metadata: dict) -> str:
+    skill_label = metadata["total_skills_label"]
+    return sync_regex_text(
+        content,
+        [
+            (r"\d[\d,]*\+ installable agentic skills", f"{skill_label} installable agentic skills"),
+            (r"\d[\d,]*\+ AI coding skills", f"{skill_label} AI coding skills"),
+        ],
+    )
+
+
+def sync_llms_text(content: str, metadata: dict) -> str:
+    skill_label = metadata["total_skills_label"]
+    return sync_regex_text(
+        content,
+        [
+            (r"Current release: V[\d.]+\.", f"Current release: V{metadata['version']}."),
+            (r"\d[\d,]*\+ agentic SKILL\.md playbooks", f"{skill_label} agentic SKILL.md playbooks"),
+            (r"Skill count: \d[\d,]*\+\.", f"Skill count: {skill_label}."),
+            (r"\d[\d,]*\+ reusable SKILL\.md playbooks", f"{skill_label} reusable SKILL.md playbooks"),
+        ],
+    )
 
 
 def sync_bundles_doc(content: str, metadata: dict, base_dir: str | Path | None = None) -> str:
@@ -206,7 +230,7 @@ def sync_bundles_doc(content: str, metadata: dict, base_dir: str | Path | None =
     content, _ = replace_if_present(
         content,
         BUNDLES_FOOTER_RE,
-        f"_Last updated: March 2026 | Total Skills: {metadata['total_skills_label']} | Total Bundles: {bundle_count}_",
+        f"_Last updated: June 2026 | Total Skills: {metadata['total_skills_label']} | Total Bundles: {bundle_count}_",
     )
     return content
 
@@ -316,6 +340,8 @@ def sync_curated_docs(base_dir: str, metadata: dict, dry_run: bool) -> int:
     updated_files = 0
     updated_files += int(update_text_file(root / "README.md", sync_readme_copy, metadata, dry_run))
     updated_files += int(update_text_file(root / "docs" / "users" / "getting-started.md", sync_getting_started, metadata, dry_run))
+    updated_files += int(update_text_file(root / "apps" / "web-app" / "index.html", sync_web_index_shell, metadata, dry_run))
+    updated_files += int(update_text_file(root / "apps" / "web-app" / "public" / "llms.txt", sync_llms_text, metadata, dry_run))
     updated_files += int(
         update_text_file(
             root / "docs" / "users" / "bundles.md",

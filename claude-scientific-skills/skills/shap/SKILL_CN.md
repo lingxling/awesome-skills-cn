@@ -2,9 +2,7 @@
 name: shap
 description: 使用SHAP（SHapley Additive exPlanations）进行模型可解释性和可解释性分析。当解释机器学习模型预测、计算特征重要性、生成SHAP图（waterfall、beeswarm、bar、scatter、force、heatmap）、调试模型、分析模型偏差或公平性、比较模型或实施可解释AI时使用此技能。适用于基于树的模型（XGBoost、LightGBM、随机森林）、深度学习（TensorFlow、PyTorch）、线性模型和任何黑盒模型。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

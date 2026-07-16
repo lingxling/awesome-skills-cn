@@ -48,8 +48,8 @@ This document provides comprehensive guidance on checking and validating statist
 - Kernel density plot
 
 **Formal tests** (secondary):
-- Shapiro-Wilk test (recommended for n < 50)
-- Kolmogorov-Smirnov test
+- Shapiro-Wilk test (good default; scipy handles n up to ~5000 and warns above that)
+- Lilliefors test (`statsmodels.stats.diagnostic.lilliefors`) — use this instead of a plain Kolmogorov-Smirnov test, which is invalid when the mean/SD are estimated from the data
 - Anderson-Darling test
 
 **Python implementation**:
@@ -71,7 +71,7 @@ stats.probplot(data, dist="norm", plot=plt)
 - Look for severe skewness, outliers, or bimodality
 
 **What to do if violated**:
-- **Mild violations** (slight skewness): Proceed if n > 30 per group
+- **Mild violations** (slight skewness): Proceed if n > 30 per group (this CLT heuristic assumes mild skewness; severely skewed or heavy-tailed data can require much larger samples)
 - **Moderate violations**: Use non-parametric alternatives (Mann-Whitney, Kruskal-Wallis, Wilcoxon)
 - **Severe violations**:
   - Transform data (log, square root, Box-Cox)
@@ -115,6 +115,8 @@ statistic, p_value = stats.levene(group1, group2, group3)
 
 # For regression
 # Breusch-Pagan test
+# Note: exog must include the constant column (e.g. exog = sm.add_constant(X),
+# or pass the fitted model's model.exog)
 from statsmodels.stats.diagnostic import het_breuschpagan
 _, p_value, _, _ = het_breuschpagan(residuals, exog)
 ```
@@ -160,7 +162,9 @@ stats.levene(group1, group2)
 
 # If assumptions violated:
 # Option 1: Welch's t-test (unequal variances)
-pg.ttest(group1, group2, correction=False)  # Welch's
+pg.ttest(group1, group2, correction=True)  # correction=True applies Welch's
+# (correction='auto' applies Welch only when variances/group sizes are unequal;
+# correction=False forces Student's t-test)
 
 # Option 2: Non-parametric alternative
 pg.mwu(group1, group2)  # Mann-Whitney U
@@ -181,14 +185,16 @@ pg.mwu(group1, group2)  # Mann-Whitney U
 **Diagnostic workflow**:
 ```python
 import pingouin as pg
+from scipy import stats
 
 # Check normality per group
 for group in df['group'].unique():
     data = df[df['group'] == group]['value']
-    stats.shapiro(data)
+    w, p = stats.shapiro(data)
+    print(f"{group}: W = {w:.3f}, p = {p:.4f}")
 
 # Check homogeneity of variance
-pg.homoscedasticity(df, dv='value', group='group')
+print(pg.homoscedasticity(df, dv='value', group='group'))
 
 # For repeated measures: Check sphericity
 # Automatically tested in pingouin's rm_anova
@@ -235,6 +241,7 @@ dw_statistic = durbin_watson(residuals)
 **3. Homoscedasticity**:
 ```python
 # Breusch-Pagan test
+# Note: exog must include the constant column (e.g. sm.add_constant(X))
 from statsmodels.stats.diagnostic import het_breuschpagan
 _, p_value, _, _ = het_breuschpagan(residuals, exog)
 
@@ -295,18 +302,21 @@ vif_data["VIF"] = [variance_inflation_factor(X.values, i) for i in range(len(X.c
 
 **3. Influential observations**:
 ```python
-# Cook's distance, DFBetas, leverage
-from statsmodels.stats.outliers_influence import OLSInfluence
-
-influence = OLSInfluence(model)
-cooks_d = influence.cooks_distance
+# Cook's distance, DFBetas, leverage (statsmodels >= 0.10)
+# Do NOT use OLSInfluence on Logit/GLM results; use get_influence(),
+# which returns MLEInfluence (Logit) or GLMInfluence (GLM)
+influence = model.get_influence()
+cooks_d, cooks_p = influence.cooks_distance  # returns a tuple: (distances, p_values)
 ```
 
-**4. Model fit**:
+**4. Model fit / calibration**:
 ```python
-# Hosmer-Lemeshow test
+# Calibration curve: compare predicted probabilities to observed event rates
+# (e.g. sklearn.calibration.calibration_curve), plus the Brier score
 # Pseudo R-squared
 # Classification metrics (accuracy, AUC-ROC)
+# Note: the Hosmer-Lemeshow test is not implemented in scipy/statsmodels
+# and is sensitive to the choice of bins; prefer calibration curves
 ```
 
 ---
@@ -341,7 +351,7 @@ cooks_d = influence.cooks_distance
 - **ANOVA**: n ≥ 30 per group
 - **Correlation**: n ≥ 30 for adequate power
 - **Simple regression**: n ≥ 50
-- **Multiple regression**: n ≥ 10-20 per predictor (minimum 10 + k predictors)
+- **Multiple regression**: 10-15 observations per predictor (or Green's rule: n ≥ 50 + 8k for testing the overall model with k predictors)
 - **Logistic regression**: n ≥ 10-20 events per predictor
 
 ### Small Sample Considerations

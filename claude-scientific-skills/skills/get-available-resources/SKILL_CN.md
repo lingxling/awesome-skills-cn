@@ -2,9 +2,7 @@
 name: get-available-resources
 description: 此技能应在任何计算密集型科学任务的开始使用，以检测和报告可用系统资源（CPU核心、GPU、内存、磁盘空间）。它创建一个包含资源信息和战略建议的JSON文件，为计算方法决策提供信息，例如是否使用并行处理（joblib、multiprocessing）、核外计算（Dask、Zarr）、GPU加速（PyTorch、JAX）或内存高效策略。在运行分析、训练模型、处理大型数据集或任何资源约束重要的任务之前使用此技能。
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

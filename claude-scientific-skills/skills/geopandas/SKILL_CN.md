@@ -2,9 +2,7 @@
 name: geopandas
 description: 用于处理地理空间矢量数据的Python库，包括shapefile、GeoJSON和GeoPackage文件。当进行空间分析、几何操作、坐标变换、空间连接、叠加操作、区域填色图或任何涉及读取/写入/分析矢量地理数据的任务时使用。支持PostGIS数据库、交互式地图以及与matplotlib/folium/cartopy的集成。用于缓冲区分析、数据集之间的空间连接、融合边界、裁剪数据、计算面积/距离、重投影坐标系、创建地图或在空间文件格式之间转换等任务。
 license: BSD-3-Clause license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

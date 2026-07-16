@@ -295,7 +295,7 @@ const unsubscribe = window.electronAPI.on('update:available', (version) => {
 
 ── CONTENT ──
 [ ] Content Security Policy (CSP) headers set on all windows
-[ ] No use of eval(), new Function(), or innerHTML with untrusted data
+[ ] No use of eval(), new Function(), or innerHTML with untrusted data <!-- security-allowlist: defensive Electron checklist -->
 [ ] Remote content (if any) loaded in separate BrowserView with restricted permissions
 [ ] protocol.registerSchemesAsPrivileged() uses minimal permissions
 
@@ -538,12 +538,16 @@ publish:
 # macOS: requires Apple Developer certificate
 # Set environment variables before building:
 export CSC_LINK="path/to/Developer_ID_Application.p12"
-export CSC_KEY_PASSWORD="your-password"
+read -rsp "macOS certificate password: " CSC_KEY_PASSWORD
+echo
+export CSC_KEY_PASSWORD
 
 # Windows: requires EV or standard code signing certificate
 # Set environment variables:
 export WIN_CSC_LINK="path/to/code-signing.pfx"
-export WIN_CSC_KEY_PASSWORD="your-password"
+read -rsp "Windows certificate password: " WIN_CSC_KEY_PASSWORD
+echo
+export WIN_CSC_KEY_PASSWORD
 
 # Build signed app
 npx electron-builder --mac --win --publish never

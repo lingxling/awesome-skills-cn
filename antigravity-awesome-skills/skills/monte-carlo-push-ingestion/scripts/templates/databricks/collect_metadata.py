@@ -22,21 +22,39 @@ import argparse
 import json
 import logging
 import os
+import re
 from datetime import datetime, timezone
 from typing import Any
 
 from databricks import sql
+from _safe_paths import safe_existing_directory, safe_input_json_path, safe_output_json_path, write_json_file
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger(__name__)
 
 RESOURCE_TYPE = "databricks"
+_SAFE_DATABRICKS_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 # Schemas to skip across all catalogs
 SCHEMA_EXCLUSIONS: set[str] = {  # ← SUBSTITUTE: add any internal schemas to skip
     "information_schema",
     "__databricks_internal",
 }
+
+
+def _quote_identifier(identifier: str) -> str:
+    value = str(identifier).strip()
+    if not value:
+        raise ValueError("Identifier must not be empty")
+    if not _SAFE_DATABRICKS_IDENTIFIER_RE.fullmatch(value):
+        raise ValueError(
+            "Databricks identifier contains characters outside the safe default set"
+        )
+    return "`" + value.replace("`", "``") + "`"
+
+
+def _sql_literal(value: str) -> str:
+    return "'" + str(value).replace("'", "''") + "'"
 
 
 def _check_available_memory(min_gb: float = 2.0) -> None:
@@ -59,8 +77,7 @@ def _check_available_memory(min_gb: float = 2.0) -> None:
         )
 
 
-def _query(cursor: Any, sql_text: str, params: tuple | None = None) -> list[dict[str, Any]]:
-    cursor.execute(sql_text, params)
+def _fetch_dict_rows(cursor: Any) -> list[dict[str, Any]]:
     cols = [d[0] for d in cursor.description]
     rows = []
     while True:
@@ -72,32 +89,40 @@ def _query(cursor: Any, sql_text: str, params: tuple | None = None) -> list[dict
 
 
 def collect_tables(cursor: Any, catalog: str) -> list[dict[str, Any]]:
-    return _query(
-        cursor,
+    exclusions = sorted(SCHEMA_EXCLUSIONS)
+    placeholders = ", ".join(["%s"] * len(exclusions))
+    cursor.execute(
         f"""
         SELECT table_catalog, table_schema, table_name, table_type, comment
-        FROM {catalog}.information_schema.tables
-        WHERE table_schema NOT IN ({", ".join(f"'{s}'" for s in SCHEMA_EXCLUSIONS)})
+        FROM system.information_schema.tables
+        WHERE table_catalog = %s AND table_schema NOT IN ({placeholders})
         ORDER BY table_schema, table_name
         """,  # ← SUBSTITUTE: add additional WHERE filters if needed
+        (catalog, *exclusions),
     )
+    return _fetch_dict_rows(cursor)
 
 
 def collect_columns(cursor: Any, catalog: str, schema: str, table: str) -> list[dict[str, Any]]:
-    return _query(
-        cursor,
-        f"""
+    cursor.execute(
+        """
         SELECT column_name, data_type, comment
-        FROM {catalog}.information_schema.columns
-        WHERE table_schema = '{schema}' AND table_name = '{table}'
+        FROM system.information_schema.columns
+        WHERE table_catalog = %s AND table_schema = %s AND table_name = %s
         ORDER BY ordinal_position
         """,
+        (catalog, schema, table),
     )
+    return _fetch_dict_rows(cursor)
 
 
 def collect_detail(cursor: Any, catalog: str, schema: str, table: str) -> dict[str, Any] | None:
     try:
-        rows = _query(cursor, f"DESCRIBE DETAIL `{catalog}`.`{schema}`.`{table}`")
+        cursor.execute(
+            "DESCRIBE DETAIL "
+            f"{_quote_identifier(catalog)}.{_quote_identifier(schema)}.{_quote_identifier(table)}",
+        )
+        rows = _fetch_dict_rows(cursor)
         return rows[0] if rows else None
     except Exception:
         log.debug("DESCRIBE DETAIL failed for %s.%s.%s", catalog, schema, table, exc_info=True)
@@ -178,8 +203,7 @@ def collect(
         "asset_count": len(assets),
         "assets": assets,
     }
-    with open(manifest_path, "w") as fh:
-        json.dump(manifest, fh, indent=2)
+    write_json_file(manifest_path, manifest)
     log.info("Manifest written to %s (%d assets)", manifest_path, len(assets))
 
     return assets

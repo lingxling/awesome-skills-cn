@@ -2,9 +2,7 @@
 name: latchbio-integration
 description: Latch plat用于m 用于 bio在用于matics w或kflows. Build pipel在es 使用 Latch SDK, @w或kflow/@task dec或at或s, deploy serverless w或kflows, LatchFile/LatchDir, Nextflow/Snakemake 在tegration.
 license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

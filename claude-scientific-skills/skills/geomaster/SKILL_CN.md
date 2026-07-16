@@ -2,9 +2,7 @@
 name: geomaster
 description: 综合地理空间科学技能，涵盖遥感、GIS、空间分析、地球观测机器学习和30+个科学领域。支持卫星图像处理（Sentinel、Landsat、MODIS、SAR、高光谱）、矢量和栅格数据操作、空间统计、点云处理、网络分析、云原生工作流（STAC、COG、Planetary Computer）和8种编程语言（Python、R、Julia、JavaScript、C++、Java、Go、Rust），包含500+个代码示例。用于遥感工作流、GIS分析、空间ML、地球观测数据处理、地形分析、水文建模、海洋空间分析、大气科学和任何地理空间计算任务。
 license: MIT License
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

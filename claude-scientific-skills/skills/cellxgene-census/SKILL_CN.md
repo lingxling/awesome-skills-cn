@@ -1,29 +1,26 @@
 ---
 name: cellxgene-census
-description: 以编程方式查询CELLxGENE普查（6100万+细胞）。当需要来自最大精选单细胞图谱的跨组织、疾病或细胞类型的表达数据时使用。最适合群体规模查询、参考图谱比较。分析自己的数据请使用scanpy或scvi-tools。
-license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+description: 以编程方式查询 CZ CELLxGENE Census 中版本化的公开单细胞和空间转录组数据。当需要群体规模的细胞元数据、基因表达切片、Census 汇总计数、源 H5AD URI/下载、嵌入、空间 Census 数据，或跨物种、组织、疾病、检测方式和细胞类型的参考图谱比较时使用。分析自己本地的单细胞数据请使用 scanpy、anndata 或 scvi-tools。
+allowed-tools: Read Write Edit Bash
+license: MIT
+compatibility: 需要 Python >=3.10,<3.13。示例针对 cellxgene-census 1.17.x 和 2025-11-08 稳定 LTS Census；空间工作流程需要 spatial extra 和 TileDB-SOMA >=1.15.5。查询公开 Census 数据无需身份验证。
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc."}
 ---
-
-
-
-
-
 
 # CZ CELLxGENE Census
 
 ## 概述
 
-CZ CELLxGENE Census 提供对来自 CZ CELLxGENE Discover 的全面、版本化标准化单细胞基因组学数据的编程访问。此技能使您能够高效查询和分析数千个数据集中的数百万个细胞。
+CZ CELLxGENE Census 提供对来自 CZ CELLxGENE Discover 的全面、版本化标准化单细胞和空间转录组数据的编程访问。此技能使您能够高效查询和分析公开的 Census 发布版本，而无需先下载整个数据集。
 
 Census 包括:
-- **6100万+细胞**,来自人类和小鼠
+- 2025-11-08 稳定 LTS 发布版本中的 **2.17 亿+总细胞数**和 **1.25 亿+唯一细胞数**
+- 2025-11-08 稳定 LTS 发布版本中的 **1,845 个数据集**
+- 当前模式中的**人类、小鼠、狨猴、恒河猴和黑猩猩**数据
 - **标准化元数据**(细胞类型、组织、疾病、供体)
-- **原始基因表达**矩阵
-- **预计算嵌入**和统计信息
-- **与 PyTorch、scanpy 和其他分析工具集成**
+- **原始基因表达**矩阵，以及源 H5AD 查找/下载辅助工具
+- **预计算的汇总计数、嵌入和空间数据**
+- **与 AnnData、Scanpy、TileDB-SOMA、TileDB-SOMA-ML 和其他分析工具集成**
 
 ## 何时使用此技能
 
@@ -40,12 +37,18 @@ Census 包括:
 
 安装 Census API:
 ```bash
-uv pip install cellxgene-census
+uv pip install "cellxgene-census==1.17.*"
 ```
 
-对于机器学习工作流程,安装额外依赖:
+对于空间工作流程:
 ```bash
-uv pip install cellxgene-census[experimental]
+uv pip install "cellxgene-census[spatial]==1.17.*" "spatialdata[extra]>=0.2.5"
+```
+
+对于 PyTorch 模型训练，使用 TileDB-SOMA-ML。旧的 `cellxgene_census.experimental.ml` 加载器已弃用：
+
+```bash
+uv pip install "cellxgene-census==1.17.*" tiledbsoma-ml
 ```
 
 ## 核心工作流程模式
@@ -61,15 +64,15 @@ import cellxgene_census
 with cellxgene_census.open_soma() as census:
     # 使用 census 数据
 
-# 打开特定版本以确保可重现性
-with cellxgene_census.open_soma(census_version="2023-07-25") as census:
+# 打开当前 LTS 版本以确保可重现性
+with cellxgene_census.open_soma(census_version="2025-11-08") as census:
     # 使用 census 数据
 ```
 
 **关键点:**
 - 使用上下文管理器(`with` 语句)进行自动清理
 - 指定 `census_version` 以确保可重现的分析
-- 默认打开最新的"stable"版本
+- `stable` 打开当前的 LTS Census 发布版本；`latest` 打开保留时间较短的最新每周发布版本
 
 ### 2. 探索 Census 信息
 
@@ -77,15 +80,18 @@ with cellxgene_census.open_soma(census_version="2023-07-25") as census:
 
 **访问摘要信息:**
 ```python
-# 获取摘要统计信息
+# 以 label/value 行形式获取摘要统计信息
 summary = census["census_info"]["summary"].read().concat().to_pandas()
-print(f"总细胞数: {summary['total_cell_count'][0]}")
+summary_values = summary.set_index("label")["value"]
+print(f"总细胞数: {int(summary_values['total_cell_count']):,}")
+print(f"唯一细胞数: {int(summary_values['unique_cell_count']):,}")
 
 # 获取所有数据集
 datasets = census["census_info"]["datasets"].read().concat().to_pandas()
 
-# 按条件筛选数据集
-covid_datasets = datasets[datasets["disease"].str.contains("COVID", na=False)]
+# 按物种、细胞类型、组织、疾病和检测方式获取预计算的计数
+summary_counts = census["census_info"]["summary_cell_counts"].read().concat().to_pandas()
+tissue_counts = summary_counts[summary_counts["category"].eq("tissue_general")]
 ```
 
 **查询细胞元数据以了解可用数据:**
@@ -101,7 +107,13 @@ unique_cell_types = cell_metadata["cell_type"].unique()
 print(f"在脑中发现 {len(unique_cell_types)} 种细胞类型")
 
 # 按组织统计细胞
-tissue_counts = cell_metadata.groupby("tissue_general").size()
+tissue_metadata = cellxgene_census.get_obs(
+    census,
+    "homo_sapiens",
+    value_filter="is_primary_data == True",
+    column_names=["tissue_general"],
+)
+tissue_counts = tissue_metadata["tissue_general"].value_counts()
 ```
 
 **重要提示:** 始终筛选 `is_primary_data == True` 以避免重复计数细胞,除非专门分析重复项。
@@ -135,6 +147,7 @@ adata = cellxgene_census.get_anndata(
 - 使用 `and`、`or` 组合条件
 - 使用 `in` 表示多个值: `tissue in ['lung', 'liver']`
 - 仅使用 `obs_column_names` 选择所需列
+- 在当前 LTS 发布版本中，`disease` 和 `disease_ontology_term_id` 可能包含以 ` || ` 分隔的多个值；在依赖精确相等筛选疾病队列前，先检查可用值
 
 **单独获取元数据:**
 ```python
@@ -161,96 +174,117 @@ gene_metadata = cellxgene_census.get_var(
 import tiledbsoma as soma
 
 # 创建轴查询
-query = census["census_data"]["homo_sapiens"].axis_query(
+with census["census_data"]["homo_sapiens"].axis_query(
     measurement_name="RNA",
     obs_query=soma.AxisQuery(
         value_filter="tissue_general == 'brain' and is_primary_data == True"
     ),
     var_query=soma.AxisQuery(
         value_filter="feature_name in ['FOXP2', 'TBR1', 'SATB2']"
-    )
-)
-
-# 分批迭代处理表达矩阵
-iterator = query.X("raw").tables()
-for batch in iterator:
-    # batch 是 pyarrow.Table,包含列:
-    # - soma_data: 表达值
-    # - soma_dim_0: 细胞(obs)坐标
-    # - soma_dim_1: 基因(var)坐标
-    process_batch(batch)
+    ),
+) as query:
+    # 分批迭代处理表达矩阵
+    iterator = query.X("raw").tables()
+    for batch in iterator:
+        # batch 是 pyarrow.Table,包含列:
+        # - soma_data: 表达值
+        # - soma_dim_0: 细胞(obs)坐标
+        # - soma_dim_1: 基因(var)坐标
+        process_batch(batch)
 ```
 
 **计算增量统计信息:**
 ```python
+import tiledbsoma as soma
+
 # 示例: 计算平均表达
 n_observations = 0
 sum_values = 0.0
 
-iterator = query.X("raw").tables()
-for batch in iterator:
-    values = batch["soma_data"].to_numpy()
-    n_observations += len(values)
-    sum_values += values.sum()
+with census["census_data"]["homo_sapiens"].axis_query(
+    measurement_name="RNA",
+    obs_query=soma.AxisQuery(value_filter="tissue_general == 'brain' and is_primary_data == True"),
+    var_query=soma.AxisQuery(value_filter="feature_name in ['FOXP2', 'TBR1', 'SATB2']"),
+) as query:
+    iterator = query.X("raw").tables()
+    for batch in iterator:
+        values = batch["soma_data"].to_numpy()
+        n_observations += len(values)
+        sum_values += values.sum()
 
 mean_expression = sum_values / n_observations
 ```
 
 ### 5. 使用 PyTorch 进行机器学习
 
-对于训练模型,使用实验性 PyTorch 集成:
+对于训练模型,使用 TileDB-SOMA-ML。旧的 `cellxgene_census.experimental.ml` PyTorch 加载器已弃用，计划移除。
 
 ```python
-from cellxgene_census.experimental.ml import experiment_dataloader
+import tiledbsoma as soma
+from tiledbsoma_ml import ExperimentDataset, experiment_dataloader
 
 with cellxgene_census.open_soma() as census:
-    # 创建数据加载器
-    dataloader = experiment_dataloader(
-        census["census_data"]["homo_sapiens"],
+    experiment = census["census_data"]["homo_sapiens"]
+    with experiment.axis_query(
         measurement_name="RNA",
-        X_name="raw",
-        obs_value_filter="tissue_general == 'liver' and is_primary_data == True",
-        obs_column_names=["cell_type"],
-        batch_size=128,
-        shuffle=True,
-    )
+        obs_query=soma.AxisQuery(
+            value_filter="tissue_general == 'liver' and is_primary_data == True"
+        ),
+    ) as query:
+        dataset = ExperimentDataset(
+            query=query,
+            layer_name="raw",
+            obs_column_names=["cell_type"],
+            batch_size=128,
+            shuffle=True,
+        )
+        dataloader = experiment_dataloader(dataset)
 
-    # 训练循环
-    for epoch in range(num_epochs):
-        for batch in dataloader:
-            X = batch["X"]  # 基因表达张量
-            labels = batch["obs"]["cell_type"]  # 细胞类型标签
+        # 训练循环
+        for epoch in range(num_epochs):
+            dataset.set_epoch(epoch)
+            for X, obs in dataloader:
+                labels = obs["cell_type"]
 
-            # 前向传播
-            outputs = model(X)
-            loss = criterion(outputs, labels)
+                # 前向传播
+                outputs = model(X)
+                loss = criterion(outputs, labels)
 
-            # 反向传播
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+                # 反向传播
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
 ```
 
 **训练/测试拆分:**
 ```python
-from cellxgene_census.experimental.ml import ExperimentDataset
-
-# 从实验创建数据集
-dataset = ExperimentDataset(
-    experiment_axis_query,
-    layer_name="raw",
-    obs_column_names=["cell_type"],
-    batch_size=128,
-)
-
-# 拆分为训练和测试
-train_dataset, test_dataset = dataset.random_split(
-    split=[0.8, 0.2],
-    seed=42
-)
+train_dataset, test_dataset = dataset.random_split(0.8, 0.2, seed=42)
+train_loader = experiment_dataloader(train_dataset, num_workers=2)
+test_loader = experiment_dataloader(test_dataset, num_workers=2)
 ```
 
-### 6. 与 Scanpy 集成
+在 `ExperimentDataset` 上使用 `batch_size` 和 `shuffle`，而不是在 `torch.utils.data.DataLoader` 上；`experiment_dataloader()` 会拒绝 DataLoader 层面的 `batch_size`、`shuffle`、`sampler` 和 `batch_sampler` 参数。
+
+### 6. 空间 Census 数据
+
+对于支持的 Census 发布版本，空间数据存放在独立的 `census_spatial_sequencing` 集合中。查询 Visium 或 Slide-seq V2 数据时，请使用 spatial extra 和当前版本的 TileDB-SOMA：
+
+```python
+import cellxgene_census
+import tiledbsoma as soma
+
+with cellxgene_census.open_soma(census_version="2025-11-08") as census:
+    spatial_experiment = census["census_spatial_sequencing"]["homo_sapiens"]
+    with spatial_experiment.axis_query(
+        measurement_name="RNA",
+        obs_query=soma.AxisQuery(
+            value_filter="dataset_id == '4cceac62-9513-42a4-90e5-2878dbb0192c'"
+        ),
+    ) as query:
+        sdata = query.to_spatialdata(X_name="raw")
+```
+
+### 7. 与 Scanpy 集成
 
 将 Census 数据与 scanpy 工作流程无缝集成:
 
@@ -278,7 +312,7 @@ sc.tl.umap(adata)
 sc.pl.umap(adata, color=["cell_type", "tissue", "disease"])
 ```
 
-### 7. 多数据集集成
+### 8. 多数据集集成
 
 查询和集成多个数据集:
 
@@ -296,8 +330,9 @@ for tissue in tissues:
     adata.obs["tissue"] = tissue
     adatas.append(adata)
 
-# 连接
-combined = adatas[0].concatenate(adatas[1:])
+# 使用 AnnData 当前 API 连接
+import anndata as ad
+combined = ad.concat(adatas, label="tissue", keys=tissues)
 
 # 策略 2: 直接查询多个数据集
 adata = cellxgene_census.get_anndata(
@@ -318,7 +353,7 @@ obs_value_filter="cell_type == 'B cell' and is_primary_data == True"
 ### 指定 Census 版本以确保可重现性
 始终在生产分析中指定 Census 版本:
 ```python
-census = cellxgene_census.open_soma(census_version="2023-07-25")
+census = cellxgene_census.open_soma(census_version="2025-11-08")
 ```
 
 ### 加载前估算查询大小
@@ -394,10 +429,14 @@ adata = cellxgene_census.get_anndata(
 - `dataset_id`
 - `is_primary_data`(布尔值: True = 唯一细胞)
 
+当前模式包含人类和小鼠以外的更多物种集合。可通过 `list(census["census_data"].keys())` 确认所选发布版本中可用的物种。
+
 ### 基因元数据(var)
 - `feature_id`(Ensembl 基因 ID,例如 "ENSG00000161798")
 - `feature_name`(基因符号,例如 "FOXP2")
+- `feature_type`
 - `feature_length`(基因长度,以碱基对为单位)
+- `nnz`、`n_measured_obs`(用于检查稀疏度和覆盖率的可用性汇总信息)
 
 ## 参考文档
 
@@ -419,6 +458,7 @@ adata = cellxgene_census.get_anndata(
 - 小到中等查询(AnnData)
 - 大型查询(核外处理)
 - PyTorch 集成
+- 空间 Census 访问模式
 - Scanpy 集成工作流程
 - 多数据集集成
 - 最佳实践和常见陷阱
@@ -451,22 +491,26 @@ with cellxgene_census.open_soma() as census:
 
 ### 用例 3: 训练细胞类型分类器
 ```python
-from cellxgene_census.experimental.ml import experiment_dataloader
+import tiledbsoma as soma
+from tiledbsoma_ml import ExperimentDataset, experiment_dataloader
 
 with cellxgene_census.open_soma() as census:
-    dataloader = experiment_dataloader(
-        census["census_data"]["homo_sapiens"],
+    experiment = census["census_data"]["homo_sapiens"]
+    with experiment.axis_query(
         measurement_name="RNA",
-        X_name="raw",
-        obs_value_filter="is_primary_data == True",
-        obs_column_names=["cell_type"],
-        batch_size=128,
-        shuffle=True,
-    )
+        obs_query=soma.AxisQuery(value_filter="is_primary_data == True"),
+    ) as query:
+        dataset = ExperimentDataset(
+            query=query,
+            layer_name="raw",
+            obs_column_names=["cell_type"],
+            batch_size=128,
+            shuffle=True,
+        )
+        dataloader = experiment_dataloader(dataset)
 
-    # 训练模型
-    for epoch in range(epochs):
-        for batch in dataloader:
+        for X, obs in dataloader:
+            labels = obs["cell_type"]
             # 训练逻辑
             pass
 ```

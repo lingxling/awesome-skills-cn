@@ -2,8 +2,7 @@
 name: pdf
 description: 只要用户想做任何与PDF文件相关的事情就使用此技能。这包括从PDF读取或提取文本/表格、将多个PDF合并为一个、拆分PDF、旋转页面、添加水印、创建新PDF、填写PDF表单、加密/解密PDF、提取图像以及对扫描的PDF进行OCR以使其可搜索。如果用户提到.pdf文件或要求生成一个，请使用此技能。
 license: Proprietary. LICENSE.txt has complete terms
-metadata:
-  version: "1.0"
+metadata: {"version": "1.0"}
 ---
 
 

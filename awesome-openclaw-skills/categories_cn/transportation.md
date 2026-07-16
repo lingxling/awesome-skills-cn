@@ -102,6 +102,7 @@
 - [tfl](https://clawskills.sh/skills/brianleach-tfl) - 伦敦 TfL 交通 — 实时地铁到达时间、公交车预测、线路状态、服务中断、旅程规划。
 - [tixflow](https://clawskills.sh/skills/seenfinity-tixflow) - 用于发现、预订和协调活动门票的 AI 驱动的活动助手。
 - [tixflow-v2](https://clawskills.sh/skills/seenfinity-tixflow-v2) - 用于发现、预订和协调活动门票的 AI 驱动的活动助手。
+- [tongtu-china-travel](https://clawhub.ai/jesse-tzx/skills/tongtu-china-travel) - 面向来华外国游客的多语言旅行指南 — 通过 FlyAI 提供航班、酒店、火车、景点、签证、支付和交通信息。
 - [track-flight](https://clawskills.sh/skills/rafaforesightai-track-flight) - 实时跟踪航班，提供详细状态、登机口信息、延误和实时位置。
 - [translink-cli](https://clawskills.sh/skills/alanburchill-translink-cli) - 使用本地 translink_* 命令查询、故障排除和解释 Translink SEQ GTFS 静态 + 实时数据。
 - [travel-agent](https://clawskills.sh/skills/aszelem-travel-agent) - 通过电子邮件为您的人类查找、预订和更改航班。

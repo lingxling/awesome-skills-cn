@@ -23,7 +23,21 @@ import sys
 import json
 import re
 import zipfile
+import tempfile
 from pathlib import Path
+
+
+def safe_user_path(path_value, base_dir="."):
+    """Resolve a CLI path under the current workspace."""
+    if base_dir != ".":
+        raise ValueError("Custom base directories are not supported for CLI paths")
+    base_path = Path.cwd().resolve()
+    resolved_path = Path(path_value).expanduser().resolve()
+    try:
+        resolved_path.relative_to(base_path)
+    except ValueError as exc:
+        raise ValueError(f"Path escapes allowed directory: {path_value}") from exc
+    return resolved_path
 
 # ── Configuration ──────────────────────────────────────────────────────────
 
@@ -46,6 +60,23 @@ EXCLUDE_EXTENSIONS = {
     ".pyc", ".pyo", ".db", ".sqlite", ".sqlite3",
     ".log", ".tmp", ".bak",
 }
+SAFE_ARCHIVE_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$")
+
+
+def resolve_existing_dir(path) -> Path:
+    """Resolve a user-provided directory and require it to exist."""
+    resolved = safe_user_path(path).expanduser().resolve()
+    if not resolved.is_dir():
+        raise ValueError(f"Directory not found: {resolved}")
+    return resolved
+
+
+def resolve_output_dir(path) -> Path:
+    """Resolve a user-provided output directory."""
+    resolved = safe_user_path(path).expanduser().resolve()
+    if resolved.exists() and not resolved.is_dir():
+        raise ValueError(f"Output path is not a directory: {resolved}")
+    return resolved
 
 
 # ── YAML Frontmatter Parser ───────────────────────────────────────────────
@@ -131,6 +162,12 @@ def validate_for_web(skill_dir: Path) -> dict:
 
 def should_include(file_path: Path, skill_dir: Path) -> bool:
     """Check if a file should be included in the ZIP."""
+    if file_path.is_symlink():
+        return False
+    try:
+        file_path.resolve(strict=True).relative_to(skill_dir.resolve(strict=True))
+    except (OSError, ValueError):
+        return False
     rel = file_path.relative_to(skill_dir)
 
     # Check directory exclusions
@@ -163,10 +200,10 @@ def package_skill(skill_dir: Path, output_dir: Path = None) -> dict:
               ├── references/
               └── ...
     """
-    skill_dir = Path(skill_dir).resolve()
-
-    if not skill_dir.exists():
-        return {"success": False, "error": f"Directory not found: {skill_dir}"}
+    try:
+        skill_dir = resolve_existing_dir(skill_dir)
+    except ValueError as e:
+        return {"success": False, "error": str(e)}
 
     # Validate
     validation = validate_for_web(skill_dir)
@@ -179,25 +216,25 @@ def package_skill(skill_dir: Path, output_dir: Path = None) -> dict:
 
     skill_name = validation["name"] or skill_dir.name
     skill_name_lower = skill_name.lower()
+    if not SAFE_ARCHIVE_NAME_RE.fullmatch(skill_name_lower):
+        return {"success": False, "error": f"Unsafe archive skill name: {skill_name}"}
 
     # Determine output path
     if output_dir is None:
         output_dir = DEFAULT_OUTPUT
-    output_dir = Path(output_dir).resolve()
+    try:
+        output_dir = resolve_output_dir(output_dir)
+    except ValueError as e:
+        return {"success": False, "error": str(e)}
     output_dir.mkdir(parents=True, exist_ok=True)
 
     zip_path = output_dir / f"{skill_name_lower}.zip"
 
     # Collect files
     files_to_include = []
-    for root, dirs, files in os.walk(skill_dir):
-        # Filter directories in-place to skip excluded ones
-        dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
-
-        for f in files:
-            fp = Path(root) / f
-            if should_include(fp, skill_dir):
-                files_to_include.append(fp)
+    for fp in safe_user_path(skill_dir).rglob("*"):
+        if fp.is_file() and should_include(fp, skill_dir):
+            files_to_include.append(fp)
 
     if not files_to_include:
         return {"success": False, "error": "No files to package"}
@@ -205,13 +242,16 @@ def package_skill(skill_dir: Path, output_dir: Path = None) -> dict:
     # Create ZIP with skill folder as root
     # CRITICAL: ZIP paths MUST use forward slashes, not Windows backslashes
     try:
-        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
-            for fp in sorted(files_to_include):
-                rel_path = fp.relative_to(skill_dir)
-                # Convert Windows backslash to forward slash for ZIP compatibility
-                rel_posix = rel_path.as_posix()
-                archive_path = f"{skill_name_lower}/{rel_posix}"
-                zf.write(fp, archive_path)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_zip_path = Path(temp_dir) / "skill.zip"
+            with zipfile.ZipFile(temp_zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
+                for fp in sorted(files_to_include):
+                    rel_path = fp.relative_to(skill_dir)
+                    # Convert Windows backslash to forward slash for ZIP compatibility
+                    rel_posix = rel_path.as_posix()
+                    archive_path = f"{skill_name_lower}/{rel_posix}"
+                    zf.write(fp, archive_path)
+            zip_path.write_bytes(temp_zip_path.read_bytes())
 
         # Verify ZIP is not empty and valid
         with zipfile.ZipFile(zip_path, "r") as zf_check:
@@ -382,10 +422,10 @@ def main():
     if "--output" in args:
         idx = args.index("--output")
         if idx + 1 < len(args):
-            output_dir = Path(args[idx + 1])
+            output_dir = resolve_output_dir(args[idx + 1])
 
     if do_verify:
-        result = verify_zips(Path(output_dir) if output_dir else None)
+        result = verify_zips(output_dir if output_dir else None)
         print(json.dumps(result, indent=2, ensure_ascii=False))
         sys.exit(0 if result["invalid"] == 0 else 1)
 
@@ -404,7 +444,7 @@ def main():
         sys.exit(1)
 
     if source:
-        result = package_skill(Path(source), output_dir)
+        result = package_skill(source, output_dir)
         print(json.dumps(result, indent=2, ensure_ascii=False))
         sys.exit(0 if result["success"] else 1)
     elif do_all:

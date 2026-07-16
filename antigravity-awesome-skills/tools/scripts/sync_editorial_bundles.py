@@ -23,14 +23,14 @@ SAFE_SKILL_ID_RE = re.compile(
     r"^(?!.*(?:^|/)\.{1,2}(?:/|$))[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*$"
 )
 SAFE_BUNDLE_ID_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?$")
-REPO_URL = "https://github.com/sickn33/antigravity-awesome-skills"
+REPO_URL = "https://github.com/sickn33/agentic-awesome-skills"
 AUTHOR = {
     "name": "sickn33 and contributors",
     "url": REPO_URL,
 }
-ROOT_CLAUDE_PLUGIN_NAME = "antigravity-awesome-skills"
-ROOT_CODEX_PLUGIN_NAME = "antigravity-awesome-skills"
-ROOT_CLAUDE_PLUGIN_DIRNAME = "antigravity-awesome-skills-claude"
+ROOT_CLAUDE_PLUGIN_NAME = "agentic-awesome-skills"
+ROOT_CODEX_PLUGIN_NAME = "agentic-awesome-skills"
+ROOT_CLAUDE_PLUGIN_DIRNAME = "agentic-awesome-skills-claude"
 EDITORIAL_BUNDLES_PATH = Path("data") / "editorial-bundles.json"
 EDITORIAL_TEMPLATE_PATH = Path("tools") / "templates" / "editorial-bundles.md.tmpl"
 CLAUDE_MARKETPLACE_PATH = Path(".claude-plugin") / "marketplace.json"
@@ -144,11 +144,11 @@ def _clean_group_label(group: str) -> str:
 
 
 def _bundle_plugin_name(bundle_id: str) -> str:
-    return f"antigravity-bundle-{bundle_id}"
+    return f"agentic-bundle-{bundle_id}"
 
 
 def _bundle_codex_plugin_name(bundle_id: str) -> str:
-    return f"agyb-{bundle_id}"
+    return f"aasb-{bundle_id}"
 
 
 def _humanize_skill_label(skill_id: str) -> str:
@@ -157,8 +157,31 @@ def _humanize_skill_label(skill_id: str) -> str:
     return " ".join(words)
 
 
+def _string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item).strip() for item in value if str(item).strip()]
+
+
+def _bundle_codex_short_description(bundle: dict[str, Any], category: str, skill_count: int) -> str:
+    positioning = str(bundle.get("positioning", "")).strip()
+    if positioning:
+        return positioning
+    return f"{category} · {skill_count} curated skills"
+
+
+def _format_codex_audience(prefix: str, values: list[str]) -> str:
+    if not values:
+        return ""
+    return f"{prefix}: {', '.join(values)}."
+
+
 def _bundle_codex_long_description(bundle: dict[str, Any]) -> str:
-    audience = bundle.get("audience") or bundle["description"]
+    audience = str(bundle.get("audience") or bundle["description"]).strip()
+    positioning = str(bundle.get("positioning", "")).strip()
+    why = str(bundle.get("why", "")).strip()
+    recommended_for = _string_list(bundle.get("recommendedFor"))
+    not_for = _string_list(bundle.get("notFor"))
     highlights = [
         _humanize_skill_label(skill["id"])
         for skill in bundle["skills"][:2]
@@ -167,15 +190,27 @@ def _bundle_codex_long_description(bundle: dict[str, Any]) -> str:
     remaining = len(bundle["skills"]) - len(highlights)
 
     if not highlights:
-        return f'{audience} Includes {len(bundle["skills"])} curated skills from Antigravity Awesome Skills.'
+        coverage = f'Includes {len(bundle["skills"])} curated skills from Agentic Awesome Skills.'
+    elif remaining > 0:
+        coverage = f"Covers {', '.join(highlights)}, and {remaining} more skills."
+    elif len(highlights) == 1:
+        coverage = f"Covers {highlights[0]}."
+    else:
+        coverage = f"Covers {' and '.join(highlights)}."
 
-    if remaining > 0:
-        return f"{audience} Covers {', '.join(highlights)}, and {remaining} more skills."
-
-    if len(highlights) == 1:
-        return f"{audience} Covers {highlights[0]}."
-
-    return f"{audience} Covers {' and '.join(highlights)}."
+    parts = [positioning or audience]
+    if why and why not in parts:
+        parts.append(why)
+    parts.extend(
+        part
+        for part in (
+            _format_codex_audience("Recommended for", recommended_for),
+            _format_codex_audience("Not for", not_for),
+            coverage,
+        )
+        if part
+    )
+    return " ".join(parts)
 
 
 def _format_count_label(count: int) -> str:
@@ -225,6 +260,10 @@ def _validate_editorial_bundles(root: Path, payload: dict[str, Any]) -> list[dic
         for key in ("group", "emoji", "tagline", "audience", "description"):
             if not str(bundle.get(key, "")).strip():
                 raise ValueError(f"Editorial bundle '{bundle_id}' is missing required field '{key}'.")
+
+        for key in ("recommendedFor", "notFor", "defaultPrompts"):
+            if key in bundle and not _string_list(bundle[key]):
+                raise ValueError(f"Editorial bundle '{bundle_id}' field '{key}' must be a non-empty string array.")
 
         skills = bundle.get("skills")
         if not isinstance(skills, list) or not skills:
@@ -354,7 +393,7 @@ def _root_claude_plugin_manifest(metadata: dict[str, Any], supported_skill_count
         "name": ROOT_CLAUDE_PLUGIN_NAME,
         "version": metadata["version"],
         "description": (
-            f"Plugin-safe Claude Code distribution of Antigravity Awesome Skills with "
+            f"Plugin-safe Claude Code distribution of Agentic Awesome Skills with "
             f"{supported_label} supported skills."
         ),
         "author": AUTHOR,
@@ -376,7 +415,7 @@ def _root_codex_plugin_manifest(metadata: dict[str, Any], supported_skill_count:
     return {
         "name": ROOT_CODEX_PLUGIN_NAME,
         "version": metadata["version"],
-        "description": "Plugin-safe Codex plugin for the Antigravity Awesome Skills library.",
+        "description": "Plugin-safe Codex plugin for the Agentic Awesome Skills library.",
         "author": AUTHOR,
         "homepage": REPO_URL,
         "repository": REPO_URL,
@@ -390,12 +429,12 @@ def _root_codex_plugin_manifest(metadata: dict[str, Any], supported_skill_count:
         ],
         "skills": "./skills/",
         "interface": {
-            "displayName": "Antigravity Awesome Skills",
+            "displayName": "Agentic Awesome Skills",
             "shortDescription": (
                 f"{supported_label} plugin-safe skills for coding, security, product, and ops workflows."
             ),
             "longDescription": (
-                "Install a plugin-safe Codex distribution of Antigravity Awesome Skills. "
+                "Install a plugin-safe Codex distribution of Agentic Awesome Skills. "
                 "Skills that still need hardening or target-specific setup remain available in the repo "
                 "but are excluded from this plugin."
             ),
@@ -418,7 +457,7 @@ def _bundle_claude_plugin_manifest(metadata: dict[str, Any], bundle: dict[str, A
         "name": _bundle_plugin_name(bundle["id"]),
         "version": metadata["version"],
         "description": (
-            f'Editorial "{bundle["name"]}" bundle for Claude Code from Antigravity Awesome Skills.'
+            f'Editorial "{bundle["name"]}" bundle for Claude Code from Agentic Awesome Skills.'
         ),
         "author": AUTHOR,
         "homepage": REPO_URL,
@@ -429,7 +468,7 @@ def _bundle_claude_plugin_manifest(metadata: dict[str, Any], bundle: dict[str, A
             "skills",
             "bundle",
             bundle["id"],
-            "antigravity-awesome-skills",
+            "agentic-awesome-skills",
         ],
     }
 
@@ -438,12 +477,30 @@ def _bundle_codex_plugin_manifest(metadata: dict[str, Any], bundle: dict[str, An
     category = _clean_group_label(bundle["group"])
     plugin_name = _bundle_codex_plugin_name(bundle["id"])
     skill_count = len(bundle["skills"])
+    is_productized = bool(str(bundle.get("positioning", "")).strip() or _string_list(bundle.get("defaultPrompts")))
+    description = (
+        f'Install the "{bundle["name"]}" workflow plugin from Agentic Awesome Skills.'
+        if is_productized
+        else f'Install the "{bundle["name"]}" editorial skill bundle from Agentic Awesome Skills.'
+    )
+    interface = {
+        "displayName": bundle["name"],
+        "shortDescription": _bundle_codex_short_description(bundle, category, skill_count),
+        "longDescription": _bundle_codex_long_description(bundle),
+        "developerName": AUTHOR["name"],
+        "category": category,
+        "capabilities": ["Interactive", "Write"],
+        "websiteURL": REPO_URL,
+        "brandColor": "#111827",
+    }
+    default_prompts = _string_list(bundle.get("defaultPrompts"))
+    if default_prompts:
+        interface["defaultPrompt"] = default_prompts
+
     return {
         "name": plugin_name,
         "version": metadata["version"],
-        "description": (
-            f'Install the "{bundle["name"]}" editorial skill bundle from Antigravity Awesome Skills.'
-        ),
+        "description": description,
         "author": AUTHOR,
         "homepage": REPO_URL,
         "repository": REPO_URL,
@@ -456,16 +513,7 @@ def _bundle_codex_plugin_manifest(metadata: dict[str, Any], bundle: dict[str, An
             "productivity",
         ],
         "skills": "./skills/",
-        "interface": {
-            "displayName": bundle["name"],
-            "shortDescription": f"{category} · {skill_count} curated skills",
-            "longDescription": _bundle_codex_long_description(bundle),
-            "developerName": AUTHOR["name"],
-            "category": category,
-            "capabilities": ["Interactive", "Write"],
-            "websiteURL": REPO_URL,
-            "brandColor": "#111827",
-        },
+        "interface": interface,
     }
 
 
@@ -502,7 +550,7 @@ def _render_claude_marketplace(
             "name": ROOT_CLAUDE_PLUGIN_NAME,
             "version": metadata["version"],
             "description": (
-                "Expose the plugin-safe Claude Code subset of Antigravity Awesome Skills "
+                "Expose the plugin-safe Claude Code subset of Agentic Awesome Skills "
                 "through a single marketplace entry."
             ),
             "author": AUTHOR,
@@ -529,7 +577,7 @@ def _render_claude_marketplace(
         "owner": AUTHOR,
         "metadata": {
             "description": (
-                "Claude Code marketplace entries for the plugin-safe Antigravity Awesome Skills "
+                "Claude Code marketplace entries for the plugin-safe Agentic Awesome Skills "
                 "library and its compatible editorial bundles."
             ),
             "version": metadata["version"],
@@ -578,7 +626,7 @@ def _render_codex_marketplace(
     return {
         "name": ROOT_CODEX_PLUGIN_NAME,
         "interface": {
-            "displayName": "Antigravity Awesome Skills",
+            "displayName": "Agentic Awesome Skills",
         },
         "plugins": plugins,
     }
@@ -605,6 +653,238 @@ def _materialize_plugin_skills(root: Path, destination_root: Path, skill_ids: li
 
     for skill_id in skill_ids:
         _copy_skill_directory(root, skill_id, destination_root)
+
+
+def _skill_tree_files(root: Path, skill_ids: list[str]) -> dict[str, Path]:
+    files: dict[str, Path] = {}
+    skills_root = root / "skills"
+    resolved_skills_root = skills_root.resolve()
+
+    def collect(source_path: Path, relative_path: Path) -> None:
+        resolved_source = source_path.resolve(strict=True)
+        resolved_source.relative_to(resolved_skills_root)
+        if resolved_source.is_dir():
+            for child in resolved_source.iterdir():
+                collect(child, relative_path / child.name)
+            return
+        files[relative_path.as_posix()] = resolved_source
+
+    for skill_id in skill_ids:
+        source_root = skills_root / skill_id
+        if not source_root.is_dir():
+            raise ValueError(f"Expected canonical skill directory is missing: {skill_id}")
+        for child in source_root.iterdir():
+            collect(child, Path(skill_id) / child.name)
+
+    return files
+
+
+def _assert_skill_mirror_matches(
+    root: Path,
+    destination_root: Path,
+    skill_ids: list[str],
+    label: str,
+) -> None:
+    if destination_root.is_symlink():
+        raise ValueError(f"{label} skills directory must not be a symlink: {destination_root}")
+    if not destination_root.is_dir():
+        raise ValueError(f"{label} skills directory is missing: {destination_root}")
+
+    expected_files = _skill_tree_files(root, skill_ids)
+    actual_files = {
+        path.relative_to(destination_root).as_posix(): path
+        for path in destination_root.rglob("*")
+        if path.is_file()
+    }
+    mirrored_symlinks = sorted(
+        path.relative_to(destination_root).as_posix()
+        for path in destination_root.rglob("*")
+        if path.is_symlink()
+    )
+    if mirrored_symlinks:
+        raise ValueError(f"{label} contains unexpected symlink: {mirrored_symlinks[0]}")
+    expected_paths = set(expected_files)
+    actual_paths = set(actual_files)
+
+    missing = sorted(expected_paths - actual_paths)
+    if missing:
+        raise ValueError(f"{label} is missing mirrored file: {missing[0]}")
+
+    unexpected = sorted(actual_paths - expected_paths)
+    if unexpected:
+        raise ValueError(f"{label} contains unexpected mirrored file: {unexpected[0]}")
+
+    for relative_path in sorted(expected_paths):
+        if expected_files[relative_path].read_bytes() != actual_files[relative_path].read_bytes():
+            raise ValueError(f"{label} contains stale mirrored file: {relative_path}")
+
+
+def _assert_json_matches(
+    path: Path,
+    expected: dict[str, Any],
+    label: str,
+    allowed_root: Path,
+) -> None:
+    relative_path = path.relative_to(allowed_root)
+    current_path = allowed_root
+    for part in relative_path.parts:
+        current_path /= part
+        if current_path.is_symlink():
+            raise ValueError(f"{label} path must not contain a symlink: {current_path}")
+    if not path.is_file():
+        raise ValueError(f"{label} is missing: {path}")
+    expected_content = (json.dumps(expected, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+    if path.read_bytes() != expected_content:
+        raise ValueError(f"{label} is out of sync: {path}")
+
+
+def _assert_plugin_metadata_layout(
+    plugin_root: Path,
+    expected_relative_paths: set[str],
+    label: str,
+) -> None:
+    if plugin_root.is_symlink():
+        raise ValueError(f"{label} root must not be a symlink: {plugin_root}")
+    if not plugin_root.is_dir():
+        raise ValueError(f"{label} root is missing: {plugin_root}")
+    actual_relative_paths = {
+        path.relative_to(plugin_root).as_posix()
+        for path in plugin_root.rglob("*")
+        if path.is_file() and "skills" not in path.relative_to(plugin_root).parts[:1]
+    }
+    unexpected_symlinks = sorted(
+        path.relative_to(plugin_root).as_posix()
+        for path in plugin_root.rglob("*")
+        if path.is_symlink() and "skills" not in path.relative_to(plugin_root).parts[:1]
+    )
+    if unexpected_symlinks:
+        raise ValueError(f"{label} contains unexpected metadata symlink: {unexpected_symlinks[0]}")
+    if actual_relative_paths != expected_relative_paths:
+        missing = sorted(expected_relative_paths - actual_relative_paths)
+        unexpected = sorted(actual_relative_paths - expected_relative_paths)
+        detail = f"missing {missing[0]}" if missing else f"unexpected {unexpected[0]}"
+        raise ValueError(f"{label} metadata layout is out of sync: {detail}")
+
+
+def check_editorial_bundle_plugins(
+    root: Path,
+    metadata: dict[str, Any],
+    bundles: list[dict[str, Any]],
+    compatibility: dict[str, dict[str, Any]],
+) -> None:
+    bundle_support = {
+        bundle["id"]: _bundle_target_status(bundle, compatibility)
+        for bundle in bundles
+    }
+    codex_skill_ids = _supported_skill_ids(compatibility, "codex")
+    claude_skill_ids = _supported_skill_ids(compatibility, "claude")
+
+    _assert_json_matches(
+        root / CODEX_MARKETPLACE_PATH,
+        _render_codex_marketplace(bundles, bundle_support),
+        "Codex marketplace",
+        root,
+    )
+    _assert_json_matches(
+        root / CLAUDE_MARKETPLACE_PATH,
+        _render_claude_marketplace(metadata, bundles, bundle_support),
+        "Claude marketplace",
+        root,
+    )
+    _assert_json_matches(
+        root / CLAUDE_PLUGIN_PATH,
+        _root_claude_plugin_manifest(metadata, len(claude_skill_ids)),
+        "root Claude plugin manifest",
+        root,
+    )
+
+    codex_root = root / "plugins" / ROOT_CODEX_PLUGIN_NAME
+    claude_root = root / "plugins" / ROOT_CLAUDE_PLUGIN_DIRNAME
+    _assert_json_matches(
+        codex_root / ".codex-plugin" / "plugin.json",
+        _root_codex_plugin_manifest(metadata, len(codex_skill_ids)),
+        "root Codex plugin manifest",
+        root,
+    )
+    _assert_json_matches(
+        claude_root / ".claude-plugin" / "plugin.json",
+        _root_claude_plugin_manifest(metadata, len(claude_skill_ids)),
+        "root Claude plugin manifest",
+        root,
+    )
+    _assert_plugin_metadata_layout(
+        codex_root,
+        {".codex-plugin/plugin.json"},
+        "root Codex plugin",
+    )
+    _assert_plugin_metadata_layout(
+        claude_root,
+        {".claude-plugin/plugin.json"},
+        "root Claude plugin",
+    )
+    _assert_skill_mirror_matches(root, codex_root / "skills", codex_skill_ids, "root Codex plugin")
+    _assert_skill_mirror_matches(root, claude_root / "skills", claude_skill_ids, "root Claude plugin")
+
+    expected_bundle_names = {
+        _bundle_plugin_name(bundle["id"])
+        for bundle in bundles
+        if bundle_support[bundle["id"]]["codex"] or bundle_support[bundle["id"]]["claude"]
+    }
+    actual_bundle_names = {
+        path.name
+        for path in (root / "plugins").glob("agentic-bundle-*")
+        if path.is_dir()
+    }
+    if actual_bundle_names != expected_bundle_names:
+        missing = sorted(expected_bundle_names - actual_bundle_names)
+        unexpected = sorted(actual_bundle_names - expected_bundle_names)
+        detail = f"missing {missing[0]}" if missing else f"unexpected {unexpected[0]}"
+        raise ValueError(f"Generated bundle plugin directories are out of sync: {detail}")
+
+    for bundle in bundles:
+        support = bundle_support[bundle["id"]]
+        if not support["codex"] and not support["claude"]:
+            continue
+        plugin_root = root / "plugins" / _bundle_plugin_name(bundle["id"])
+        skill_ids = [skill["id"] for skill in bundle["skills"]]
+        _assert_skill_mirror_matches(
+            root,
+            plugin_root / "skills",
+            skill_ids,
+            f'bundle plugin {bundle["id"]}',
+        )
+
+        manifest_specs = (
+            (
+                "codex",
+                plugin_root / ".codex-plugin" / "plugin.json",
+                _bundle_codex_plugin_manifest(metadata, bundle),
+            ),
+            (
+                "claude",
+                plugin_root / ".claude-plugin" / "plugin.json",
+                _bundle_claude_plugin_manifest(metadata, bundle),
+            ),
+        )
+        expected_manifest_paths: set[str] = set()
+        for target, manifest_path, expected_manifest in manifest_specs:
+            if support[target]:
+                expected_manifest_paths.add(manifest_path.relative_to(plugin_root).as_posix())
+                _assert_json_matches(
+                    manifest_path,
+                    expected_manifest,
+                    f'bundle {bundle["id"]} {target} manifest',
+                    root,
+                )
+            elif manifest_path.exists():
+                raise ValueError(
+                    f'Bundle {bundle["id"]} contains an unsupported {target} manifest: {manifest_path}'
+                )
+        _assert_plugin_metadata_layout(
+            plugin_root,
+            expected_manifest_paths,
+            f'bundle plugin {bundle["id"]}',
+        )
 
 
 def _remove_path(path: Path) -> None:
@@ -741,7 +1021,19 @@ def sync_editorial_bundle_plugins(
     for bundle in bundles:
         _sync_bundle_plugin_directory(root, metadata, bundle, bundle_support[bundle["id"]])
 
+    stale_plugin_roots = [
+        plugins_root / "antigravity-awesome-skills",
+        plugins_root / "antigravity-awesome-skills-claude",
+    ]
+    for stale_root in stale_plugin_roots:
+        if stale_root.is_dir():
+            _remove_tree(stale_root)
+
     for candidate in plugins_root.glob("antigravity-bundle-*"):
+        if candidate.is_dir():
+            _remove_tree(candidate)
+
+    for candidate in plugins_root.glob("agentic-bundle-*"):
         if candidate.is_dir() and candidate.name not in expected_plugin_names:
             _remove_tree(candidate)
 
@@ -800,7 +1092,11 @@ def main() -> int:
         current_doc = (root / "docs" / "users" / "bundles.md").read_text(encoding="utf-8")
         if current_doc != expected_doc:
             raise SystemExit("docs/users/bundles.md is out of sync with data/editorial-bundles.json")
-        print("✅ Editorial bundles manifest and generated doc are in sync.")
+        try:
+            check_editorial_bundle_plugins(root, metadata, bundles, compatibility)
+        except ValueError as exc:
+            raise SystemExit(str(exc)) from exc
+        print("✅ Editorial bundles, marketplaces, manifests, and plugin mirrors are in sync.")
         return 0
     sync_editorial_bundles(root)
     print("✅ Editorial bundles synced.")

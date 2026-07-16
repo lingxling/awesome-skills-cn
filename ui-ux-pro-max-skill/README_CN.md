@@ -1,5 +1,10 @@
 # [UI UX Pro Max](https://uupm.cc)
 
+<p align="center">
+  <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/README.zh.md">🇨🇳 简体中文</a> | 
+  <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/README.md">🇺🇸 English</a>
+</p>
+
 > 本文档是 [UI UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) 项目的中文翻译版本。
 
 ## 关于本翻译
@@ -8,12 +13,12 @@
 
 **UI UX Pro Max** 是一个 AI 技能，为跨多个平台和框架构建专业 UI/UX 提供设计智能。它包含：
 
-- **67 种 UI 样式** - 玻璃拟态、粘土拟态、极简主义、粗野主义、新拟态、便当盒网格、深色模式、AI 原生 UI 等
-- **161 个配色方案** - 与 161 种产品类型 1:1 匹配的行业特定调色板
-- **57 种字体搭配** - 精选的字体组合，包含 Google Fonts 导入
+- **84 种 UI 样式** - 玻璃拟态、粘土拟态、极简主义、粗野主义、新拟态、便当盒网格、深色模式、AI 原生 UI 等
+- **192 个配色方案** - 与 192 种产品类型 1:1 匹配的行业特定调色板
+- **74 种字体搭配** - 精选的字体组合，包含 Google Fonts 导入
 - **25 种图表类型** - 仪表板和分析的推荐
-- **15 种技术栈** - React、Next.js、Astro、Vue、Nuxt.js、Nuxt UI、Svelte、SwiftUI、React Native、Flutter、HTML+Tailwind、shadcn/ui、Jetpack Compose、Angular、Laravel
-- **99 条 UX 指南** - 最佳实践、反模式和可访问性规则
+- **22 种技术栈** - React、Next.js、Astro、Vue、Nuxt.js、Nuxt UI、Svelte、SwiftUI、React Native、Flutter、HTML+Tailwind、shadcn/ui、Jetpack Compose、Angular、Laravel、Three.js、JavaFX、WPF、WinUI 3、UWP、Avalonia、Uno Platform
+- **98 条 UX 指南** - 最佳实践、反模式和可访问性规则
 - **161 条推理规则** - 行业特定的设计系统生成（v2.0 新增）
 
 ### 翻译说明
@@ -29,7 +34,7 @@
 
 - [GitHub 仓库](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)
 - [官方网站](https://uupm.cc)
-- [NPM 包](https://www.npmjs.com/package/uipro-cli)
+- [NPM 包](https://www.npmjs.com/package/ui-ux-pro-max-cli)
 
 ### 翻译项目
 
@@ -40,14 +45,14 @@
 <p align="center">
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/releases"><img src="https://img.shields.io/github/v/release/nextlevelbuilder/ui-ux-pro-max-skill?style=for-the-badge&color=blue" alt="GitHub Release"></a>
   <img src="https://img.shields.io/badge/reasoning_rules-161-green?style=for-the-badge" alt="161 Reasoning Rules">
-  <img src="https://img.shields.io/badge/UI_styles-67-purple?style=for-the-badge" alt="67 UI Styles">
+  <img src="https://img.shields.io/badge/UI_styles-84-purple?style=for-the-badge" alt="84 UI Styles">
   <img src="https://img.shields.io/badge/python-3.x-yellow?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.x">
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nextlevelbuilder/ui-ux-pro-max-skill?style=for-the-badge&color=green" alt="License"></a>
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/uipro-cli"><img src="https://img.shields.io/npm/v/uipro-cli?style=flat-square&logo=npm&label=CLI" alt="npm"></a>
-  <a href="https://www.npmjs.com/package/uipro-cli"><img src="https://img.shields.io/npm/dm/uipro-cli?style=flat-square&label=downloads" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/ui-ux-pro-max-cli"><img src="https://img.shields.io/npm/v/ui-ux-pro-max-cli?style=flat-square&logo=npm&label=CLI" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/ui-ux-pro-max-cli"><img src="https://img.shields.io/npm/dm/ui-ux-pro-max-cli?style=flat-square&label=downloads" alt="npm downloads"></a>
   <a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill/stargazers"><img src="https://img.shields.io/github/stars/nextlevelbuilder/ui-ux-pro-max-skill?style=flat-square&logo=github" alt="GitHub stars"></a>
   <a href="https://paypal.me/uiuxpromax"><img src="https://img.shields.io/badge/PayPal-Support%20Development-00457C?style=flat-square&logo=paypal&logoColor=white" alt="PayPal"></a>
 </p>
@@ -138,11 +143,11 @@ v2.0 的旗舰功能是 **设计系统生成器** - 一个 AI 驱动的推理引
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │  2. 多域搜索（5 个并行搜索）                                     │
-│     • 产品类型匹配（161 个类别）                                │
-│     • 样式推荐（67 种样式）                                      │
-│     • 配色方案选择（161 个调色板）                               │
-│     • 着陆页模式（24 种模式）                                    │
-│     • 字体搭配（57 种字体组合）                                  │
+│     • 产品类型匹配（192 个类别）                                │
+│     • 样式推荐（84 种样式）                                      │
+│     • 配色方案选择（192 个调色板）                               │
+│     • 着陆页模式（34 种模式）                                    │
+│     • 字体搭配（74 种字体组合）                                  │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
@@ -187,12 +192,12 @@ v2.0 的旗舰功能是 **设计系统生成器** - 一个 AI 驱动的推理引
 
 ## 功能特性
 
-- **67 种 UI 样式** - 玻璃拟态、粘土拟态、极简主义、粗野主义、新拟态、便当盒网格、深色模式、AI 原生 UI 等
-- **161 个配色方案** - 与 161 种产品类型 1:1 匹配的行业特定调色板
-- **57 种字体搭配** - 精选的字体组合，包含 Google Fonts 导入
+- **84 种 UI 样式** - 玻璃拟态、粘土拟态、极简主义、粗野主义、新拟态、便当盒网格、深色模式、AI 原生 UI 等
+- **192 个配色方案** - 与 192 种产品类型 1:1 匹配的行业特定调色板
+- **74 种字体搭配** - 精选的字体组合，包含 Google Fonts 导入
 - **25 种图表类型** - 仪表板和分析的推荐
-- **15 种技术栈** - React、Next.js、Astro、Vue、Nuxt.js、Nuxt UI、Svelte、SwiftUI、React Native、Flutter、HTML+Tailwind、shadcn/ui、Jetpack Compose、Angular、Laravel
-- **99 条 UX 指南** - 最佳实践、反模式和可访问性规则
+- **22 种技术栈** - React、Next.js、Astro、Vue、Nuxt.js、Nuxt UI、Svelte、SwiftUI、React Native、Flutter、HTML+Tailwind、shadcn/ui、Jetpack Compose、Angular、Laravel、Three.js、JavaFX、WPF、WinUI 3、UWP、Avalonia、Uno Platform
+- **98 条 UX 指南** - 最佳实践、反模式和可访问性规则
 - **161 条推理规则** - 行业特定的设计系统生成（v2.0 新增）
 
 ### 可用样式（67 种）
@@ -288,6 +293,25 @@ v2.0 的旗舰功能是 **设计系统生成器** - 一个 AI 驱动的推理引
 
 </details>
 
+## 💎 基础版与高级版对比
+
+许多用户会问开源版和高级版之间的区别。以下是详细对比，帮助您选择最适合自己工作流程的版本。
+
+### 🟢 基础版（本仓库）
+* **完全开源：** 非常适合个人开发者、爱好者和标准项目。
+* **核心 UI/UX 智能：** 完整访问 84 种 UI 样式、192 种产品类型、配色方案以及精选字体搭配。
+* **智能推荐：** 内置 BM25 搜索引擎，实现高精度的设计匹配。
+* **跨平台支持：** 提供针对 22 种主流框架（React、Vue、Tailwind、iOS、Android 等）的专属指南。
+* **设计系统生成：** 通过 CLI 即时生成量身定制的 UI 规则、模式和逻辑。
+
+### 🟡 高级版
+* **扩展的品牌设计技能：** 不局限于 UI/UX，还包括品牌形象生成、Logo 设计、企业形象识别系统（CIP）、Banner 设计、演示幻灯片以及定制图标设计。
+* **高级素材创作：** 深度集成 AI 图像生成能力，创建真正的视觉素材，而非仅仅是占位图。
+* **企业级架构：** 更全面、可扩展的设计 Token 架构，专为大规模团队部署而构建。
+* **优先支持：** 为需要不间断完整设计工作流的团队和专业人士提供专属技术支持。
+
+👉 *如需了解升级至高级版的更多详情，请访问 [uupm.cc](https://uupm.cc)。*
+
 ## 安装
 
 ### 使用 Claude Marketplace（Claude Code）
@@ -303,7 +327,7 @@ v2.0 的旗舰功能是 **设计系统生成器** - 一个 AI 驱动的推理引
 
 ```bash
 # 全局安装 CLI
-npm install -g uipro-cli
+npm install -g ui-ux-pro-max-cli
 
 # 进入您的项目
 cd /path/to/your/project
@@ -327,8 +351,11 @@ uipro init --ai droid       # Droid (Factory)
 uipro init --ai kilocode    # KiloCode
 uipro init --ai warp        # Warp
 uipro init --ai augment     # Augment
+uipro init --ai codewhale   # CodeWhale
 uipro init --ai all         # 所有助手
 ```
+
+npm 包名为 `ui-ux-pro-max-cli`，安装后仍然使用 `uipro` 命令。旧版 `uipro-cli` 已过时，不应再用于获取最新资源。
 
 ### 全局安装（适用于所有项目）
 
@@ -341,8 +368,8 @@ uipro init --ai cursor --global   # 安装到 ~/.cursor/skills/
 
 ```bash
 uipro versions              # 列出可用版本
-uipro update                # 更新到最新版本
-uipro init --offline        # 跳过 GitHub 下载，使用捆绑资源
+uipro update                # 从已安装的 CLI 包刷新技能文件
+uipro init --offline        # 兼容性标志；安装内置模板
 uipro uninstall             # 移除技能（自动检测平台）
 uipro uninstall --ai claude # 移除特定平台
 uipro uninstall --global    # 从全局安装中移除
@@ -350,27 +377,21 @@ uipro uninstall --global    # 从全局安装中移除
 
 ## 前置要求
 
-搜索脚本需要 Python 3.x。
+搜索脚本需要 Python 3.x（仅使用标准库 —— 脚本不会安装任何依赖，也不会发起网络请求）。
+
+检查是否安装了 Python：
 
 ```bash
-# 检查是否安装了 Python
 python3 --version
-
-# macOS
-brew install python3
-
-# Ubuntu/Debian
-sudo apt update && sudo apt install python3
-
-# Windows
-winget install Python.Python.3.12
 ```
+
+如果尚未安装，请自行从 [python.org](https://www.python.org/downloads/) 下载安装，或使用您操作系统的包管理器（Homebrew、apt、winget）。这些安装步骤是给**您，人类用户**准备的 —— 使用本技能的 AI 代理不应擅自在您的机器上安装软件，而是被要求向您征询。
 
 ## 使用方法
 
 ### 技能模式（自动激活）
 
-**支持：** Claude Code、Cursor、Windsurf、Antigravity、Codex CLI、Continue、Gemini CLI、OpenCode、Qoder、CodeBuddy、Droid (Factory)、KiloCode、Warp、Augment
+**支持：** Claude Code、Cursor、Windsurf、Antigravity、Codex CLI、Continue、Gemini CLI、OpenCode、Qoder、CodeBuddy、Droid (Factory)、KiloCode、Warp、Augment、CodeWhale
 
 当您请求 UI/UX 工作时，技能会自动激活。只需自然对话：
 
@@ -423,7 +444,8 @@ winget install Python.Python.3.12
 | **Vue 生态系统** | Vue、Nuxt.js、Nuxt UI |
 | **Angular** | Angular |
 | **PHP** | Laravel（Blade、Livewire、Inertia.js） |
-| **其他 Web** | Svelte、Astro |
+| **其他 Web** | Svelte、Astro、Three.js |
+| **桌面端** | JavaFX、WPF、WinUI 3、Avalonia、Uno Platform、UWP |
 | **iOS** | SwiftUI |
 | **Android** | Jetpack Compose |
 | **跨平台** | React Native、Flutter |
@@ -451,6 +473,9 @@ python3 .claude/skills/ui-ux-pro-max/scripts/search.py "dashboard" --domain char
 # 特定技术栈指南
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "form validation" --stack react
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "responsive layout" --stack html-tailwind
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "tableview binding" --stack javafx
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "atlantafx primer enterprise theme" --stack javafx
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "enterprise tableview density permission" --stack javafx
 ```
 
 ### 持久化设计系统（Master + Overrides 模式）
@@ -497,11 +522,11 @@ Now, generate the code...
 **始终使用 CLI 进行安装：**
 
 ```bash
-npm install -g uipro-cli
+npm install -g ui-ux-pro-max-cli
 uipro init --ai <platform>
 ```
 
-这确保您获得最新的模板和适合您 AI 助手的正确文件结构。
+这可确保您获得随已安装 CLI 包一起提供的最新模板，以及适合您 AI 助手的正确文件结构。有新版本发布时，请先更新 npm 包。
 
 ### 对于贡献者
 
@@ -524,12 +549,17 @@ cli/                         # CLI 安装程序（从模板生成文件）
 # - templates/              → 平台特定模板
 
 # 4. 同步到 CLI 并在本地测试
-cp -r src/ui-ux-pro-max/data/* cli/assets/data/
-cp -r src/ui-ux-pro-max/scripts/* cli/assets/scripts/
-cp -r src/ui-ux-pro-max/templates/* cli/assets/templates/
+cd cli
+npm run sync:assets
+npm run check:assets
+npm run validate:csv
+npm run smoke:domains
+npm run smoke:stacks
+npm run typecheck
 
 # 5. 构建和测试 CLI
-cd cli && bun run build
+# `npm run build` 在可用时使用 Bun，若不可用则在 `npm ci` 后回退到 TypeScript 编译器输出。
+npm run build
 node dist/index.js init --ai claude --offline  # 在临时文件夹中测试
 
 # 6. 创建 PR（永远不要直接推送到 main）
@@ -541,6 +571,88 @@ gh pr create
 
 有关详细的开发指南，请参阅 [CLAUDE.md](CLAUDE.md)。
 
+
+## 自动化发布
+
+本仓库使用 semantic-release 结合 Conventional Commits 自动创建 GitHub 发布：
+
+- `dev` 分支会创建 GitHub 预发布版本（beta），例如 `2.6.0-beta.1`。
+- `main` 分支会创建正式的稳定 GitHub 发布版本，例如 `2.6.0`。
+
+发布说明和 `CHANGELOG.md` 由 Conventional Commit 提交信息生成。在发布准备阶段，版本号会在 `skill.json`、`.claude-plugin/plugin.json`、`.claude-plugin/marketplace.json`、`cli/package.json` 和 `cli/package-lock.json` 之间同步。
+
+使用以下提交类型以获得正确的版本号递增：
+
+- `fix:` -> 补丁版本（patch release）
+- `feat:` -> 次版本（minor release）
+- `feat!:` 或 `BREAKING CHANGE:` -> 主版本（major release）
+
+发布工作流使用默认的 `GITHUB_TOKEN` 创建 GitHub 发布，并使用仓库的 `NPM_TOKEN` 密钥将 `ui-ux-pro-max-cli` 发布到 npm。
+
+## 故障排查
+
+### `uipro: unknown command 'uninstall'` 或 `unknown command 'update'`
+
+您安装的 `ui-ux-pro-max-cli` 版本已过时。请更新后重试：
+
+```bash
+npm install -g ui-ux-pro-max-cli@latest
+uipro uninstall
+```
+
+### `uipro uninstall` 提示 "No installed AI skill directories detected"
+
+该技能安装在与您当前运行命令不同的目录中。可选择以下方式之一：
+
+```bash
+# 方式 A —— 回到最初安装时所在的项目根目录运行
+cd /path/to/your/project
+uipro uninstall
+
+# 方式 B —— 移除全局安装
+uipro uninstall --global
+
+# 方式 C —— 手动移除
+rm -rf .claude/skills/ui-ux-pro-max   # Claude Code
+rm -rf .cursor/skills/ui-ux-pro-max   # Cursor
+rm -rf .windsurf/skills/ui-ux-pro-max # Windsurf
+rm -rf .agents/skills/ui-ux-pro-max   # Antigravity
+```
+
+### Claude Marketplace 安装失败，提示 "Zip file contains a symbolic link"
+
+这是 v2.5.1 之前版本的已知问题。仓库内部使用了符号链接，部分安装工具无法处理。**解决方法：** 改用 CLI 安装器：
+
+```bash
+npm install -g ui-ux-pro-max-cli
+uipro init --ai claude
+```
+
+或者等待下一个已修复该问题的版本发布。
+
+### `npm install -g ui-ux-pro-max-cli` 提示权限错误
+
+使用 Node 版本管理器（推荐），或者干脆跳过全局安装：
+
+```bash
+# 不进行全局安装，直接使用 npx
+npx ui-ux-pro-max-cli init --ai claude
+```
+
+### 运行设计系统命令时提示找不到 Python
+
+搜索脚本需要 Python 3.x。请自行从 [python.org](https://www.python.org/downloads/) 或使用您操作系统的包管理器（Homebrew、apt、winget）手动安装。AI 代理不应替您安装 —— 它们被要求向您征询。
+
+### 设计系统输出被截断 / 字段不完整
+
+人类可读的输出会将超过 300 个字符的长字段截断。使用 `--json` 可获取完整、未截断的数据：
+
+```bash
+python3 .claude/skills/ui-ux-pro-max/scripts/search.py "SaaS" --domain style --json
+```
+
+---
+
 ## 星标历史
 
 [![Star History Chart](https://api.star-history.com/svg?repos=nextlevelbuilder/ui-ux-pro-max-skill&type=Date)](https://star-history.com/#nextlevelbuilder/ui-ux-pro-max-skill&Date)
@@ -548,6 +660,12 @@ gh pr create
 ## 许可证
 
 本项目采用 [MIT 许可证](LICENSE) 授权。
+
+## 兼容的 Agent
+
+本技能兼容以下 Agent：
+- [Claude Code](https://claude.com/product/claude-code)
+- [AdaL](https://sylph.ai/) - 具备自我进化能力的 AI 编程 Agent（[文档](https://docs.sylph.ai/) | [GitHub](https://github.com/SylphAI-Inc/adal-cli)）
 
 ---
 

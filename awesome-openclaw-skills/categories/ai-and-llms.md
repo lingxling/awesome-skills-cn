@@ -24,7 +24,7 @@
 - [agent-rpg](https://clawskills.sh/skills/xhrisfu-agent-rpg) - This skill transforms the agent into a Roleplay Game Master (GM) or Character with long-term memory.
 - [agent-selfie](https://clawskills.sh/skills/iisweetheartii-agent-selfie) - AI agent self-portrait generator.
 - [agent-sentinel](https://clawskills.sh/skills/jimmystacks-agent-sentinel) - The operational circuit breaker for this agent.
-- [agentbase](https://github.com/openclaw/skills/tree/main/skills/revmischa/agentbase/SKILL.md) - Shared knowledge base for AI agents via MCP.
+- [agentbase](https://clawskills.sh/skills/revmischa-agentbase) - Shared knowledge base for AI agents via MCP.
 - [agentic-calling](https://clawskills.sh/skills/kellyclaudeai-agentic-calling) - Enables AI agents to make and receive phone calls.
 - [agentic-compass](https://clawskills.sh/skills/orosha-ai-agentic-compass) - Local-only self-reflection that forces action for AI agents.
 - [agentmail](https://clawskills.sh/skills/adboio-agentmail) - API-first email platform designed for AI agents.
@@ -163,3 +163,4 @@
 - [zapper](https://clawskills.sh/skills/spirosrap-zapper) - Query DeFi portfolio data across 50+ chains via Zapper's GraphQL API.
 - [zapper-api](https://clawskills.sh/skills/zivhm-zapper-api) - Query DeFi portfolios, token holdings, NFTs, transactions, and prices via Zapper API.
 - [zhipu-asr](https://clawskills.sh/skills/franklu0819-lang-zhipu-asr) - Automatic Speech Recognition (ASR) using Zhipu AI (BigModel) GLM-ASR model.
+- [sol-self-learning](https://clawhub.ai/amrree/sol-self-learning) - Persistent memory and self-improvement for AI agents. Writes and refines its own memory files over time.

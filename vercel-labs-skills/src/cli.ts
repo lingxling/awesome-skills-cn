@@ -12,6 +12,7 @@ import { runSync, parseSyncOptions } from './sync.ts';
 import { flushTelemetry } from './telemetry.ts';
 import { isRunningInAgent } from './detect-agent.ts';
 import { runUpdate } from './update.ts';
+import { runUse, parseUseOptions } from './use.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -69,6 +70,9 @@ function showBanner(): void {
     `  ${DIM}$${RESET} ${TEXT}npx skills add ${DIM}<package>${RESET}        ${DIM}Add a new skill${RESET}`
   );
   console.log(
+    `  ${DIM}$${RESET} ${TEXT}npx skills use ${DIM}<package>@<skill>${RESET} ${DIM}Use a skill without installing${RESET}`
+  );
+  console.log(
     `  ${DIM}$${RESET} ${TEXT}npx skills remove${RESET}               ${DIM}Remove installed skills${RESET}`
   );
   console.log(
@@ -106,9 +110,14 @@ ${BOLD}Manage Skills:${RESET}
   add <package>        Add a skill package (alias: a)
                        e.g. vercel-labs/agent-skills
                             https://github.com/vercel-labs/agent-skills
+  use <package>@<skill>
+                       Generate a prompt for using one skill without installing it
   remove [skills]      Remove installed skills
   list, ls             List installed skills
   find [query]         Search for skills interactively
+
+${BOLD}Find Options:${RESET}
+  --owner <owner>        Search only repositories from a GitHub owner
 
 ${BOLD}Updates:${RESET}
   update [skills...]   Update skills to latest versions (alias: upgrade)
@@ -130,8 +139,17 @@ ${BOLD}Add Options:${RESET}
   -l, --list             List available skills in the repository without installing
   -y, --yes              Skip confirmation prompts
   --copy                 Copy files instead of symlinking to agent directories
+  --metadata <json>      Attach valid JSON to the install telemetry event
+  --subagent <names>     Install to Eve subagents (use 'root' for the root agent)
   --all                  Shorthand for --skill '*' --agent '*' -y
   --full-depth           Search all subdirectories even when a root SKILL.md exists
+
+${BOLD}Use Options:${RESET}
+  -s, --skill <skill>    Specify the skill to use
+  -a, --agent <agent>    Start one supported agent interactively
+  --full-depth           Search all subdirectories even when a root SKILL.md exists
+  --dangerously-accept-openclaw-risks
+                         Allow unverified OpenClaw community skills
 
 ${BOLD}Remove Options:${RESET}
   -g, --global           Remove from global scope
@@ -155,6 +173,8 @@ ${BOLD}Options:${RESET}
 
 ${BOLD}Examples:${RESET}
   ${DIM}$${RESET} skills add vercel-labs/agent-skills
+  ${DIM}$${RESET} skills use vercel-labs/agent-skills@vercel-optimize | claude
+  ${DIM}$${RESET} skills use vercel-labs/agent-skills --skill vercel-optimize --agent claude-code
   ${DIM}$${RESET} skills add vercel-labs/agent-skills -g
   ${DIM}$${RESET} skills add vercel-labs/agent-skills --agent claude-code cursor
   ${DIM}$${RESET} skills add vercel-labs/agent-skills --skill pr-review commit
@@ -167,6 +187,7 @@ ${BOLD}Examples:${RESET}
   ${DIM}$${RESET} skills ls --json                      ${DIM}# JSON output${RESET}
   ${DIM}$${RESET} skills find                          ${DIM}# interactive search${RESET}
   ${DIM}$${RESET} skills find typescript               ${DIM}# search by keyword${RESET}
+  ${DIM}$${RESET} skills find react --owner vercel     ${DIM}# search within an owner${RESET}
   ${DIM}$${RESET} skills update
   ${DIM}$${RESET} skills update my-skill             ${DIM}# update a single skill${RESET}
   ${DIM}$${RESET} skills update -g                    ${DIM}# update global skills only${RESET}
@@ -315,8 +336,22 @@ async function main(): Promise<void> {
     case 'a':
     case 'add': {
       if (!inAgent) showLogo();
-      const { source: addSource, options: addOpts } = parseAddOptions(restArgs);
+      const { source: addSource, options: addOpts, errors } = parseAddOptions(restArgs);
+      if (errors.length > 0) {
+        for (const error of errors) console.error(`Error: ${error}`);
+        process.exitCode = 1;
+        break;
+      }
       await runAdd(addSource, addOpts);
+      break;
+    }
+    case 'use': {
+      const {
+        source: useSource,
+        options: useOptions,
+        errors: useErrors,
+      } = parseUseOptions(restArgs);
+      await runUse(useSource, useOptions, useErrors);
       break;
     }
     case 'remove':
@@ -360,4 +395,4 @@ async function main(): Promise<void> {
   }
 }
 
-main().finally(() => flushTelemetry().then(() => process.exit(0)));
+main().finally(() => flushTelemetry().then(() => process.exit(process.exitCode ?? 0)));

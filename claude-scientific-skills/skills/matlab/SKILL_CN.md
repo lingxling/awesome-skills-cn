@@ -3,9 +3,7 @@ name: matlab
 description: MATLAB和GNU Octave数值计算，用于矩阵运算、数据分析、可视化和科学计算。当编写用于线性代数、信号处理、图像处理、微分方程、优化、统计或创建科学可视化的MATLAB/Octave脚本时使用。当用户需要MATLAB语法、函数的帮助或想要在MATLAB和Python代码之间转换时也使用。脚本可以使用MATLAB或开源GNU Octave解释器执行。
 license: For MATLAB (https://www.mathworks.com/pricing-licensing.html) and for Octave (GNU General Public License version 3)
 compatibility: Requires either MATLAB or Octave to be installed for testing, but not required for just generating scripts.
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

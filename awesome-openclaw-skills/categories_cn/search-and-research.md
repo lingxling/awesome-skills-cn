@@ -219,6 +219,7 @@
 - [muninn](https://clawskills.sh/skills/endgegnerbert-tech-muninn) - AI 代理的通用上下文协议（CXP）。v2.3.7 包括最新的高性能 CXP 引擎（编译）。
 - [muninn-memory](https://clawskills.sh/skills/phillipneho-muninn-memory) - AI 代理的内存系统。
 - [mycroft](https://clawskills.sh/skills/fabe-mycroft) - EPUB 和电子书摄取、本地向量索引和书籍的 Q&A CLI。
+- [nature-paper-hub](https://clawhub.ai/Yang1Bai/nature-paper-hub) - 面向 Nature 系列期刊（12 种期刊）的全流程 AI 写作代理。涵盖期刊选择、稿件起草、图表生成（CSV→PDF）、CrossRef 引用验证、LaTeX/Word/PPT 导出、双语论文阅读器和审稿人回复。内置 534 篇精选文献索引。
 - [nadfunagent](https://clawskills.sh/skills/encipher88-nadfunagent) - 用于 Nad.fun 的自主交易代理，扫描市场、分析代币、执行交易并分配利润。
 - [native-typeform](https://clawskills.sh/skills/codeninja23-native-typeform) - 通过 Typeform API 直接读取 Typeform 表单和响应。
 - [naver-shopping](https://clawskills.sh/skills/dryoo-naver-shopping) - 在 Naver Shopping 上搜索产品。
@@ -286,6 +287,7 @@
 - [skill-seo](https://clawskills.sh/skills/alexyuui-skill-seo) - 优化你的 ClawHub 技能以获得最大可发现性。
 - [skill-store](https://clawskills.sh/skills/yx2601816404-sys-skill-store) - ClawHub 的智能技能安装顾问。
 - [skillzmarket](https://clawskills.sh/skills/hiich-skillzmarket) - 从 Skillz Market 搜索和调用 monetized AI 技能，在 Base 上自动进行 USDC 支付。
+- [skywork-search](https://clawskills.sh/skills/gxcun17-skywork-search) - AI 驱动的实时信息网络搜索 — 获取最新内容。
 - [social-intelligence](https://clawskills.sh/skills/atyachin-social-intelligence) - 社交智能 — 跨 Twitter、Instagram 和 Reddit 的 AI 驱动的社交媒体研究。15 亿+ 帖子已索引。
 - [solo-audit](https://clawskills.sh/skills/fortunto2-solo-audit) - 健康检查知识库，检查断开的链接、缺失的 frontmatter、标签不一致和覆盖差距。
 - [solo-seo-audit](https://clawskills.sh/skills/fortunto2-solo-seo-audit) - 任何 URL 的 SEO 健康检查 — 分析元标签、OG、JSON-LD、站点地图、robots.txt、SERP 位置和评分。
@@ -331,3 +333,15 @@
 - [x-cli](https://clawskills.sh/skills/ignsoftwarellc-x-cli) - 全功能 X/Twitter 工具包 — 读取、搜索、发布、互动、DM、列表、投票、趋势。
 - [x-monitor](https://clawskills.sh/skills/vmathur-x-monitor) - 监控特定的 X/Twitter 账户并在可配置的时间表上显示值得注意的推文。
 - [x-research-but-cheaper](https://clawskills.sh/skills/minilozio-x-research-but-cheaper) - 由 TwitterAPI.io 提供支持的 X/Twitter 研究技能。
+- [xbio](https://clawskills.sh/skills/soanai-xbio) - 通过 cookies 或 Sweetistics 实现读取、搜索和发布的 X/Twitter CLI。
+- [xy-pubmed-pdf-downloader](https://clawskills.sh/skills/xuyuan0805-xy-pubmed-pdf-downloader) - 从 PubMed Central (PMC) 和 Europe PMC 下载 PDF。
+- [yacy](https://clawskills.sh/skills/qsmtco-yacy) - 控制和管理本地 YaCy 搜索引擎实例。
+- [yandex-tracker](https://clawskills.sh/skills/kandler3-yandex-tracker) - 通过 Python 操作 Yandex Tracker（问题、队列、评论、附件、链接、搜索、批量操作）。
+- [yellowagents](https://clawskills.sh/skills/andrewandrewsen-yellowagents) - AI 代理黄页 — 按技能、语言、地点和成本模型发现、注册和搜索代理。
+- [zero-to-one-startup](https://clawskills.sh/skills/lifeissea-zero-to-one-startup) - 面向韩国创始人的 AI 驱动创业伙伴。
+- [zettel-link](https://clawskills.sh/skills/hxy9243-zettel-link) - 此技能维护 Zettelkasten 的笔记嵌入，用于搜索笔记、检索笔记和发现关联。
+- [zvec-local-rag-service](https://clawskills.sh/skills/emre-koc-zvec-local-rag-service) - 使用 zvec + Ollama 嵌入运行一个常驻的本地语义搜索服务。
+- [zvukogram](https://clawskills.sh/skills/erview-zvukogram) - 通过 Zvukogram API 进行文本转语音，支持 SSML。
+- [zynd-network](https://clawskills.sh/skills/atmegabuzz-zynd-network) - 连接到 Zynd AI Network，以发现、沟通并向其他 AI 代理付款。
+- [aminer-open-academic](https://clawskills.sh/skills/canxiangcc-aminer-open-academic) - AMiner 开放学术资源查询工具和学术数据获取工具。
+- [xquik-x-twitter-scraper](https://clawskills.sh/skills/kriptoburak-xquik-x-twitter-scraper) - 为 AI 代理提供 40+ 工具的 X API 抓取器。

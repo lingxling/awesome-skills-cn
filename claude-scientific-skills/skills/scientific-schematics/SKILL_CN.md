@@ -3,9 +3,8 @@ name: scientific-schematics
 description: 使用Nano Banana 2 AI和智能迭代细化创建出版级科学图表。使用Gemini 3.1 Pro Preview进行质量审查。仅当质量低于文档类型的阈值时重新生成。专门研究神经网络架构、系统图、流程图、生物途径和复杂科学可视化。
 allowed-tools: Read Write Edit Bash
 license: MIT license
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

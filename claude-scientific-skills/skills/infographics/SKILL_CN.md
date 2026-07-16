@@ -2,8 +2,8 @@
 name: infographics
 description: "使用Nano Banana Pro AI和智能迭代细化创建专业信息图。使用Gemini 3 Pro进行质量审查。集成research-lookup和网络搜索以获取准确数据。支持10种信息图类型、8种行业风格和色盲安全调色板。"
 allowed-tools: Read Write Edit Bash
-metadata:
-  version: "1.0"
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

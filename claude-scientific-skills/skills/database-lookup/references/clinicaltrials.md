@@ -10,6 +10,15 @@ No API key required. Fully public.
 
 ## Key Endpoints
 
+### API version and data freshness
+```
+GET /version
+```
+
+Check `dataTimestamp` before time-sensitive retrievals to confirm the daily refresh has completed. ClinicalTrials.gov notes that data is generally refreshed Monday through Friday by 9 a.m. ET / 14:00 UTC.
+
+ClinicalTrials.gov modernized its data ingest on August 26, 2025. For reproducible comparisons against older exports, note that some rich text markup fields and location/geopoint data may differ from the legacy pipeline.
+
 ### Search studies
 ```
 GET /studies

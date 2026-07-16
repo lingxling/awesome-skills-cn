@@ -3,9 +3,7 @@ name: cirq
 description: Google量子计算框架。当针对Google Quantum AI硬件、设计噪声感知电路或运行量子表征实验时使用。最适合Google硬件、噪声建模和低级电路设计。IBM硬件请使用qiskit；量子ML与自动微分请使用pennylane；物理模拟请使用qutip。
 license: Apache-2.0 license
 allowed-tools: Read Write Edit Bash
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

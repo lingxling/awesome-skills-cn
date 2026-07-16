@@ -2,9 +2,7 @@
 name: opentrons-integration
 description: 用于OT-2和Flex机器人的官方Opentrons协议API。当为Opentrons硬件专门编写协议并完全访问Protocol API v2功能时使用。最适合生产级Opentrons协议、官方API兼容性。对于多供应商自动化或更广泛的设备控制，请使用pylabrobot。
 license: Unknown
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
 ---
 
 

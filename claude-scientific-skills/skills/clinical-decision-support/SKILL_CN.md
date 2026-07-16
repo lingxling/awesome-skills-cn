@@ -3,9 +3,8 @@ name: clinical-decision-support
 description: 为制药和临床研究环境生成专业临床决策支持（CDS）文档，包括患者队列分析（生物标志物分层并含结局）和治疗建议报告（基于证据的指南并含决策算法）。支持GRADE证据分级、统计分析（风险比、生存曲线、瀑布图）、生物标志物整合和法规合规。输出适合药物开发、临床研究和证据综合的出版就绪LaTeX/PDF格式。
 allowed-tools: Read Write Edit Bash
 license: MIT License
-metadata:
-  version: "1.0"
-  skill-author: K-Dense Inc.
+required_environment_variables: [{"name": "OPENROUTER_API_KEY", "prompt": "OpenRouter API key for the skill's LLM-powered steps.", "required_for": "optional features"}]
+metadata: {"version": "1.1", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "OPENROUTER_API_KEY", "envVars": [{"name": "OPENROUTER_API_KEY", "required": false, "description": "OpenRouter API key for the skill's LLM-powered steps."}]}}
 ---
 
 

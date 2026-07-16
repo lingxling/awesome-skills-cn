@@ -6,6 +6,7 @@ import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import crypto from 'crypto';
+import { ipKeyGenerator, rateLimit } from 'express-rate-limit';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,13 +14,16 @@ const require = createRequire(import.meta.url);
 const { resolveSafeRealPath } = require('../../tools/lib/symlink-safety');
 const ROOT_DIR = path.resolve(__dirname, '..', '..');
 
-const UPSTREAM_REPO = 'https://github.com/sickn33/antigravity-awesome-skills.git';
+const UPSTREAM_REPO = 'https://github.com/sickn33/agentic-awesome-skills.git';
 const UPSTREAM_NAME = 'upstream';
-const REPO_TAR_URL = 'https://github.com/sickn33/antigravity-awesome-skills/archive/refs/heads/main.tar.gz';
-const REPO_ZIP_URL = 'https://github.com/sickn33/antigravity-awesome-skills/archive/refs/heads/main.zip';
-const COMMITS_API_URL = 'https://api.github.com/repos/sickn33/antigravity-awesome-skills/commits/main';
+const REPO_TAR_URL = 'https://github.com/sickn33/agentic-awesome-skills/archive/refs/heads/main.tar.gz';
+const REPO_ZIP_URL = 'https://github.com/sickn33/agentic-awesome-skills/archive/refs/heads/main.zip';
+const COMMITS_API_URL = 'https://api.github.com/repos/sickn33/agentic-awesome-skills/commits/main';
 const SHA_FILE = path.join(__dirname, '.last-sync-sha');
-const ARCHIVE_ROOT = 'antigravity-awesome-skills-main/';
+const ARCHIVE_ROOT = 'agentic-awesome-skills-main/';
+const SAFE_SKILL_ASSET_RE = /^\/skills\/[A-Za-z0-9._/-]+$/;
+const REFRESH_RATE_LIMIT_MS = 30_000;
+const STATIC_RATE_LIMIT_MS = 25;
 
 // ─── Utility helpers ───
 
@@ -109,10 +113,53 @@ function isTokenAuthorized(req) {
     return crypto.timingSafeEqual(expected, provided);
 }
 
+function isLocalSyncEnabled() {
+    return process.env.ENABLE_LOCAL_SKILLS_SYNC === 'true';
+}
+
 function isPathInside(parentPath, childPath) {
     const relative = path.relative(parentPath, childPath);
     return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
 }
+
+function getSafeSkillAssetPath(url = '') {
+    let pathname;
+    try {
+        pathname = new URL(url, 'http://localhost').pathname;
+    } catch {
+        return null;
+    }
+    if (!SAFE_SKILL_ASSET_RE.test(pathname)) return null;
+    const parts = pathname.split('/').filter(Boolean);
+    if (parts[0] !== 'skills' || parts.some((part) => part === '.' || part === '..')) return null;
+    return path.join(ROOT_DIR, ...parts);
+}
+
+const staticRateLimit = rateLimit({
+    windowMs: STATIC_RATE_LIMIT_MS,
+    limit: 1,
+    standardHeaders: false,
+    legacyHeaders: false,
+    skip: () => process.env.NODE_ENV === 'test',
+    keyGenerator: (req) => `${ipKeyGenerator(getRequestRemoteAddress(req) || '127.0.0.1')}:${req.url || ''}`,
+    handler: (_req, res) => {
+        res.statusCode = 429;
+        res.end('Rate limit exceeded');
+    },
+});
+
+const refreshRateLimit = rateLimit({
+    windowMs: REFRESH_RATE_LIMIT_MS,
+    limit: 1,
+    standardHeaders: false,
+    legacyHeaders: false,
+    skip: () => process.env.NODE_ENV === 'test',
+    keyGenerator: (req) => ipKeyGenerator(getRequestRemoteAddress(req) || '127.0.0.1'),
+    handler: (_req, res) => {
+        res.statusCode = 429;
+        res.end(JSON.stringify({ success: false, error: 'Refresh rate limit exceeded' }));
+    },
+});
 
 function normalizeArchiveEntryName(entryName) {
     return String(entryName || '').replace(/\\/g, '/').replace(/^\.\//, '');
@@ -213,10 +260,10 @@ function readTarGzipEntries(archivePath) {
         } else if (type === 'K') {
             longLink = data.toString('utf8').replace(/\0.*$/s, '');
         } else {
-            const name = longName || pax.path || [readTarString(header, 345, 155), readTarString(header, 0, 100)]
+            const name = pax.path || longName || [readTarString(header, 345, 155), readTarString(header, 0, 100)]
                 .filter(Boolean)
                 .join('/');
-            const linkName = longLink || pax.linkpath || readTarString(header, 157, 100);
+            const linkName = pax.linkpath || longLink || readTarString(header, 157, 100);
             entries.push({ name, type: type || '0', linkName });
             pax = {};
             longName = null;
@@ -402,6 +449,15 @@ function checkRemoteSha() {
 async function syncWithGit() {
     ensureUpstream();
 
+    if (git('status --porcelain').trim()) {
+        throw new Error('Local repository has uncommitted changes; commit or stash them before syncing.');
+    }
+
+    const branch = git('branch --show-current').trim();
+    if (branch !== 'main' && branch !== 'master') {
+        throw new Error(`Local sync only supports main/master, not ${branch || 'a detached HEAD'}.`);
+    }
+
     const headBefore = git('rev-parse HEAD');
 
     console.log('[Sync] Fetching from upstream (git)...');
@@ -413,6 +469,9 @@ async function syncWithGit() {
         return { upToDate: true };
     }
 
+    const rollbackRef = `refs/aas-sync-backup/${Date.now()}`;
+    git(`update-ref ${rollbackRef} ${headBefore}`);
+
     console.log('[Sync] Merging updates...');
     try {
         git(`merge ${UPSTREAM_NAME}/main --ff-only`);
@@ -422,7 +481,7 @@ async function syncWithGit() {
         );
     }
 
-    return { upToDate: false };
+    return { upToDate: false, rollbackRef };
 }
 
 /**
@@ -475,7 +534,7 @@ async function syncWithArchive() {
         }
 
         // 3. Move skills to root
-        const extractedRoot = path.join(tempDir, 'antigravity-awesome-skills-main');
+        const extractedRoot = path.join(tempDir, 'agentic-awesome-skills-main');
         const srcSkills = path.join(extractedRoot, 'skills');
         const srcIndex = path.join(extractedRoot, 'skills_index.json');
         const destSkills = path.join(ROOT_DIR, 'skills');
@@ -512,6 +571,10 @@ export default function refreshSkillsPlugin() {
     return {
         name: 'refresh-skills',
         configureServer(server) {
+            server.middlewares.use('/skills.json', staticRateLimit);
+            server.middlewares.use('/skills', staticRateLimit);
+            server.middlewares.use('/api/refresh-skills', refreshRateLimit);
+
             // Serve /skills.json directly from ROOT_DIR
             server.middlewares.use('/skills.json', (req, res, next) => {
                 const filePath = path.join(ROOT_DIR, 'skills_index.json');
@@ -527,8 +590,8 @@ export default function refreshSkillsPlugin() {
             server.middlewares.use((req, res, next) => {
                 if (!req.url || !req.url.startsWith('/skills/')) return next();
 
-                const relativePath = decodeURIComponent(req.url.replace(/\?.*$/, ''));
-                const filePath = path.join(ROOT_DIR, relativePath);
+                const filePath = getSafeSkillAssetPath(req.url);
+                if (!filePath) return next();
                 const safeRealPath = fs.existsSync(filePath)
                     ? resolveSafeRealPath(path.join(ROOT_DIR, 'skills'), filePath)
                     : null;
@@ -552,6 +615,15 @@ export default function refreshSkillsPlugin() {
                     res.statusCode = 405;
                     res.setHeader('Allow', 'POST');
                     res.end(JSON.stringify({ success: false, error: 'Method not allowed' }));
+                    return;
+                }
+
+                if (!isLocalSyncEnabled()) {
+                    res.statusCode = 403;
+                    res.end(JSON.stringify({
+                        success: false,
+                        error: 'Local sync is disabled. Set ENABLE_LOCAL_SKILLS_SYNC=true before starting Vite.',
+                    }));
                     return;
                 }
 
@@ -586,8 +658,7 @@ export default function refreshSkillsPlugin() {
                         console.log('[Sync] Using git (fast path)...');
                         result = await syncWithGit();
                     } else {
-                        console.log('[Sync] Git not available, using archive download (slower)...');
-                        result = await syncWithArchive();
+                        throw new Error('Local sync requires git so it can create a rollback reference.');
                     }
 
                     if (result.upToDate) {
@@ -605,7 +676,7 @@ export default function refreshSkillsPlugin() {
                     }
 
                     console.log(`[Sync] ✅ Successfully synced ${count} skills!`);
-                    res.end(JSON.stringify({ success: true, upToDate: false, count }));
+                    res.end(JSON.stringify({ success: true, upToDate: false, count, rollbackRef: result.rollbackRef }));
 
                 } catch (err) {
                     console.error('[Sync] ❌ Failed:', err.message);
