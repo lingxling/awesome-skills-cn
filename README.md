@@ -14,6 +14,7 @@
 - [**Hugging Face Skills**](https://github.com/huggingface/skills) ([中文学习版](huggingface-skills/)) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（11个技能，已全部翻译）
 - [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) ([中文学习版](obsidian-skills/)) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（5个技能，已全部翻译）
 - [**OpenAI Skills**](https://github.com/openai/skills) ([中文学习版](openai-skills/)) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（38个技能，已全部翻译）
+- [**TweetClaw**](https://github.com/Xquik-dev/tweetclaw) ([中文学习版](tweetclaw/README_CN.md)) [![GitHub Stars](https://badgen.net/github/stars/Xquik-dev/tweetclaw)](https://github.com/Xquik-dev/tweetclaw) - OpenClaw X/Twitter 自动化插件，支持搜索推文、搜索回复、发推、回复、关注者导出、用户查询、媒体上传下载、私信、监控、webhook 和抽奖（1个技能，已全部翻译）
 - [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) ([中文学习版](ui-ux-pro-max-skill/)) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（7个技能，已全部翻译）
 - [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) ([中文学习版](vercel-labs-agent-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（7个技能，6个已翻译）
 - [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) ([中文学习版](vercel-labs-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
@@ -310,6 +311,10 @@ awesome-skills-cn/
 │           │   └── SKILL_CN.md    # 技能创建器
 │           └── skill-installer/
 │               └── SKILL_CN.md    # 技能安装器
+├── tweetclaw/                  # Xquik-dev/tweetclaw 项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/tweetclaw/
+│       └── SKILL_CN.md         # OpenClaw X/Twitter 自动化插件
 ├── ui-ux-pro-max-skill/        # ui-ux-pro-max-skill 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── .claude/skills/
@@ -364,6 +369,7 @@ awesome-skills-cn/
 | huggingface-skills | 11 | ✓ | 11/11 | 已完成 |
 | obsidian-skills | 5 | ✓ | 5/5 | 已完成 |
 | openai-skills | 38 | ✓ | 38/38 | 已完成 |
+| tweetclaw | 1 | ✓ | 1/1 | 已完成 |
 | ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-agent-skills | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
@@ -461,6 +467,10 @@ awesome-skills-cn/
 - [x] [huggingface-trackio](huggingface-skills/skills/huggingface-trackio/SKILL_CN.md) - ML 实验跟踪
 - [x] [huggingface-vision-trainer](huggingface-skills/skills/huggingface-vision-trainer/SKILL_CN.md) - 视觉模型训练
 - [x] [transformers-js](huggingface-skills/skills/transformers-js/SKILL_CN.md) - Transformers.js 机器学习
+
+### tweetclaw (1个)
+
+- [x] [tweetclaw](tweetclaw/skills/tweetclaw/SKILL_CN.md) - OpenClaw X/Twitter 自动化插件
 
 ### obsidian-skills (5个)
 - [x] [obsidian-markdown](obsidian-skills/skills/obsidian-markdown/SKILL_CN.md) - 创建和编辑 Obsidian Flavored Markdown 文档
