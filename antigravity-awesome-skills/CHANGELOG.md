@@ -136,7 +136,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **[@hafiz-actyte](https://github.com/hafiz-actyte)** for PR #805 (`idea-autopsy`).
 - **[@ThibautMelen](https://github.com/ThibautMelen)** and **[supernovae-st/nika-agents](https://github.com/supernovae-st/nika-agents)** for PR #806 (`nika`).
-- **[@samuelbushi](https://github.com/samuelbushi)** and **[aislon/uizze-mcp](https://github.com/aislon/uizze-mcp)** for PR #807 (`uizze-ui-research`).
+- **[@samuelbushi](https://github.com/samuelbushi)** and the current canonical **[uizze/uizze](https://github.com/uizze/uizze)** source for PR #807 (`uizze-ui-research`), migrated from the original repository.
 
 ## [14.1.0] - 2026-07-10 - "Maintainer Batch and Security Boundary Hardening"
 
