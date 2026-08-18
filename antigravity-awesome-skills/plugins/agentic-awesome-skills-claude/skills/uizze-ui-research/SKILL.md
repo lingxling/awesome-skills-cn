@@ -1,13 +1,15 @@
 ---
 name: uizze-ui-research
-description: "Use when building or reviewing web and iOS product UI and you need real UI references, structured design contracts, or implementation validation through UIZZE MCP."
+description: "Use when building or reviewing web and iOS UI and you need real references from the free UIZZE public catalog, a structured design contract, a consent-gated rendered HTML/CSS preview, or a hard pre-ship finish gate."
 category: design
 risk: safe
-source: https://github.com/aislon/uizze-mcp/tree/main/skills/uizze-ui-research
-source_repo: aislon/uizze-mcp
+source: https://github.com/uizze/uizze/tree/main/skills/anti-ui-slop
+source_repo: uizze/uizze
 source_type: official
+license: MIT
+license_source: https://github.com/uizze/uizze/blob/main/LICENSE
 date_added: "2026-07-12"
-author: samuelbushi
+author: UIZZE
 tags: [ui-design, ui-research, mcp, design-contracts, agent-workflows]
 tools: [claude, cursor, codex, copilot, antigravity, lovable]
 ---
@@ -16,7 +18,7 @@ tools: [claude, cursor, codex, copilot, antigravity, lovable]
 
 ## Overview
 
-Use UIZZE to give coding agents real product-UI context before implementation rather than relying on a generic styling prompt. The public catalog is free to browse; the hosted MCP workflow requires full access and a configured UIZZE agent token.
+Use [UIZZE](https://uizze.com) to give coding agents real product-UI context before implementation rather than relying on a generic styling prompt. The public catalog supports a free manual workflow without an account. The hosted preview provides a bounded rendered HTML/CSS check, while the full UIZZE MCP requires an authorized connection for reference search and broader review workflows.
 
 This skill turns UI research into an explicit workflow: retrieve relevant references, translate transferable patterns into a design contract, implement within the current project's system, and run the available validation or critique gates.
 
@@ -29,21 +31,25 @@ This skill turns UI research into an explicit workflow: retrieve relevant refere
 
 ## How It Works
 
-### Step 1: Confirm access and scope
+### Step 1: Confirm product scope and access mode
 
-Confirm that the UIZZE MCP connection is already configured with a valid agent token before invoking hosted workflows. If it is unavailable, use the free public catalog for research or ask the user to configure access; do not attempt to bypass access controls or expose credentials.
+Identify the screen's primary user, job, action, existing design system, real content or data, and required loading, empty, error, success, and permission states. Use the free public catalog for manual research by default. If UIZZE MCP is already configured, use only the tools authorized for the task. If browsing is unavailable, ask the user for two or three relevant UIZZE links or screenshots. Do not block the manual workflow, bypass access controls, expose credentials, or claim that a manual review came from MCP.
 
 ### Step 2: Retrieve relevant visual context
 
-Use the available UIZZE tools to find screens, flows, components, or elements that match the product task. Focus on transferable patterns such as hierarchy, navigation, interaction states, spacing, density, and responsive behavior.
+Find the smallest useful set of screens, flows, components, or elements that match the product task. Focus on transferable patterns such as hierarchy, navigation, interaction states, spacing, density, and responsive behavior. Distinguish observed evidence from assumptions and record whether each finding came from manual browsing, the free preview, or the full MCP.
 
 ### Step 3: Make constraints explicit
 
-Create or use a structured design contract when the task needs explicit acceptance criteria. Adapt patterns to the existing project design system instead of treating any reference as a visual template.
+Write a short design contract that names the screen job, content hierarchy, primary action, allowed project components and tokens, required states, responsive behavior, product-specific decisions, forbidden generic patterns, and verification criteria. Adapt patterns to the existing project design system instead of treating any reference as a visual template.
 
-### Step 4: Validate before completion
+### Step 4: Implement within the product
 
-Use the available UIZZE validation, audit, or critique workflow when the implementation is ready for review. Resolve the findings in the project and run normal project tests before calling the work complete.
+Build with the repository's existing components and tokens. Preserve platform conventions and make the interface specific to the product's content and workflow rather than adding decorative cards, badges, gradients, or motion by default.
+
+### Step 5: Run a hard finish gate
+
+Inspect the rendered result when the environment supports it, use an available UIZZE validation, audit, or critique workflow only when authorized, and reject completion if the hierarchy, interaction outcomes, required states, design-system fit, or product-specific decisions are missing. Name each blocking issue, fix it, and rerun the gate plus the project's normal tests. Never claim a rendered or MCP-backed check that was not actually performed.
 
 ## Examples
 
@@ -69,8 +75,8 @@ Use UIZZE to inspect relevant real product settings screens, audit this implemen
 
 ## Security & Safety Notes
 
-- Keep the UIZZE agent token in local agent configuration or an environment variable only.
-- Hosted MCP workflows require authorized access; the free catalog does not grant permission to use paid workflows.
+- Keep any full-connection credential in local agent configuration or a supported environment variable only; never commit it, paste it into prompts, or include it in client-side code.
+- Hosted MCP workflows require authorized access; the free catalog and preview do not grant permission to use full workflows.
 - Treat returned references as research context, not reusable visual assets.
 
 ## Common Pitfalls

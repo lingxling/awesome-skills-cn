@@ -351,7 +351,7 @@ Key source families include:
 
 ### Official Sources
 
-- **[aislon/uizze-mcp](https://github.com/aislon/uizze-mcp)**: Official source for the `uizze-ui-research` skill and UIZZE MCP-assisted UI research workflows.
+- **[uizze/uizze](https://github.com/uizze/uizze)**: Official source for UIZZE's free MIT `anti-ui-slop` Skill, GitHub Action, MCP tools, and UI workflows grounded in 800,000+ real web and iOS screens. The free catalog and preview work without an account; full UIZZE adds live reference search, design contracts, validation, audits, and rendered critique.
 - **[anthropics/skills](https://github.com/anthropics/skills)**: Official Anthropic skills repository - Document manipulation (DOCX, PDF, PPTX, XLSX), Brand Guidelines, Internal Communications.
 - **[anthropics/claude-cookbooks](https://github.com/anthropics/claude-cookbooks)**: Official notebooks and recipes for building with Claude.
 - **[remotion-dev/skills](https://github.com/remotion-dev/skills)**: Official Remotion skills - Video creation in React with 28 modular rules.
