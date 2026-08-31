@@ -17,6 +17,8 @@
 - [**UI/UX Pro Max Skill**](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) ([中文学习版](ui-ux-pro-max-skill/)) [![GitHub Stars](https://badgen.net/github/stars/nextlevelbuilder/ui-ux-pro-max-skill)](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) - 专业的 UI/UX 设计技能（7个技能，已全部翻译）
 - [**Vercel Labs Agent Skills**](https://github.com/vercel-labs/agent-skills) ([中文学习版](vercel-labs-agent-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/agent-skills)](https://github.com/vercel-labs/agent-skills) - Vercel Labs 官方技能仓库，包含 React 最佳实践、Web 设计指南、React Native 技能等（7个技能，6个已翻译）
 - [**Vercel Labs Skills**](https://github.com/vercel-labs/skills) ([中文学习版](vercel-labs-skills/)) [![GitHub Stars](https://badgen.net/github/stars/vercel-labs/skills)](https://github.com/vercel-labs/skills) - Vercel Labs 官方技能仓库，包含 Skills CLI 工具（1个技能，已全部翻译）
+- [**Claude Skills Pro**](https://github.com/Hahaknight/claude-skills-pro) [![GitHub Stars](https://badgen.net/github/stars/Hahaknight/claude-skills-pro)](https://github.com/Hahaknight/claude-skills-pro) - 工程师工作流技能包（15 个技能，**原生中文**、无需翻译）：代码审查、测试锻造、根因调试、安全审查等，7 个免费 MIT，附《中文实战手册》
+
 
 ## SKILL 是什么
 
