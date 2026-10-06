@@ -6,7 +6,7 @@
 
 ### 原项目介绍
 
-**Skills CLI** 是开放代理技能生态系统的命令行工具，用于管理 AI 编程助手的技能包。它支持 70+ 种 AI 编程助手，包括：
+**Skills CLI** 是开放代理技能生态系统的命令行工具，用于管理 AI 编程助手的技能包。它支持 75+ 种 AI 编程助手，包括：
 
 - Claude Code
 - Cursor
@@ -55,10 +55,16 @@ Skills CLI 让你可以：
 开放代理技能生态系统的 CLI。
 
 <!-- agent-list:start -->
-支持 **OpenCode**、**Claude Code**、**Codex**、**Cursor**，以及 [69 个更多](#supported-agents)。
+支持 **OpenCode**、**Claude Code**、**Codex**、**Cursor**，以及[其他 75 个代理](#supported-agents)。
 <!-- agent-list:end -->
 
-[![skills.sh](https://skills.sh/b/vercel-labs/skills)](https://skills.sh/vercel-labs/skills)
+<p>
+  <a href="https://vercel.com/labs#labs-products"><img alt="Vercel Labs Product" src="https://img.shields.io/badge/LABS-PRODUCT-0a0a0a.svg?style=for-the-badge&amp;logo=Vercel&amp;labelColor=000000" height="28"></a>
+  <a href="https://www.npmjs.com/package/skills"><img alt="npm version: skills" src="https://img.shields.io/npm/v/skills.svg?style=for-the-badge&amp;labelColor=000000" height="28"></a>
+  <a href="https://github.com/vercel-labs/skills/blob/main/LICENSE"><img alt="License: MIT" src="https://img.shields.io/github/license/vercel-labs/skills.svg?style=for-the-badge&amp;labelColor=000000" height="28"></a>
+  <a href="https://www.npmjs.com/package/skills"><img alt="npm downloads per month: skills" src="https://img.shields.io/npm/dm/skills.svg?style=for-the-badge&amp;labelColor=000000&amp;label=npm%20downloads" height="28"></a>
+  <a href="https://skills.sh/vercel-labs/skills"><img alt="skills.sh" src="https://skills.sh/b/vercel-labs/skills?style=for-the-badge" height="28"></a>
+</p>
 
 ## 安装技能
 
@@ -92,12 +98,39 @@ npx skills add https://github.com/vercel-labs/agent-skills/tree/main/skills/web-
 # GitLab URL
 npx skills add https://gitlab.com/org/repo
 
+# Azure Repos（Azure DevOps Services 或 Server）
+npx skills add https://dev.azure.com/org/project/_git/repo
+npx skills add https://dev.azure.com/org/project/_git/repo?path=/skills/web-design&version=GBmain
+
 # 任何 git URL
 npx skills add git@github.com:vercel-labs/agent-skills.git
 
 # 本地路径
 npx skills add ./my-local-skills
 ```
+
+### 私有仓库
+
+公开仓库和私有仓库使用相同的命令。CLI 会使用该仓库 URL 已配置好的身份验证方式：
+
+```bash
+# GitHub 简写或 HTTPS（依次尝试 Git 凭据助手、GitHub CLI，最后回退到 SSH）
+npx skills add acme/private-skills
+
+# GitHub、GitLab 或其他 Git 托管平台上的 SSH
+npx skills add git@github.com:acme/private-skills.git
+npx skills add ssh://git@git.example.com/acme/private-skills.git
+
+# 任意 Git 托管平台上的 HTTPS（使用您配置的 Git 凭据助手）
+npx skills add https://git.example.com/acme/private-skills.git
+npx skills add https://dev.azure.com/org/project/_git/private-skills
+```
+
+对于 GitHub HTTPS 和简写形式的来源，`skills` 首先使用常规的 Git 凭据。如果失败且 GitHub CLI 已完成身份验证，则尝试 `gh repo clone`，然后再尝试 SSH。它不会执行 `gh auth token`，也不会将 GitHub CLI 存储的凭据复制到 Node.js 进程中。
+
+对于 GitHub 目录树查询，`skills` 首先以匿名方式尝试 API，然后使用显式提供的环境变量令牌，最后使用 `gh api`。GitHub CLI 会使用其自身存储的身份验证信息，并且只返回 API 响应；凭据永远不会被打印出来，也不会被 `skills` 读取。如果 API 访问仍然失败，更新检查会回退为通过已认证的 Git 克隆进行。
+
+可以显式设置 `GITHUB_TOKEN` 或 `GH_TOKEN` 用于 GitHub API 访问，包括私有仓库下载和更新检查。如果已经配置了 Git、GitHub CLI 或 SSH 身份验证，那么安装时这两个变量是可选的。
 
 ### 选项
 
@@ -137,7 +170,12 @@ npx skills add vercel-labs/agent-skills --skill '*' -a claude-code
 
 # 将特定技能安装到所有代理
 npx skills add vercel-labs/agent-skills --agent '*' --skill frontend-design
+
+# 从直接的 SKILL.md 或压缩包下载 URL 安装
+npx skills add https://example.com/download/my-skill
 ```
+
+直接下载 URL 会在 well-known 发现之后尝试。它可以指向单个有效的 `SKILL.md` 文件，也可以指向 `.zip`、`.tar`、`.tar.gz` 或 `.tgz` 压缩包；URL 不需要包含文件扩展名。默认情况下，下载大小限制为 10 MiB，解压后内容限制为 25 MiB，压缩包内文件数限制为 1000 个。当您信任该来源时，可以通过 `SKILLS_DOWNLOAD_MAX_BYTES`、`SKILLS_EXTRACT_MAX_BYTES` 和 `SKILLS_EXTRACT_MAX_FILES` 覆盖这些限制。
 
 ### 安装范围
 
@@ -269,8 +307,8 @@ npx skills rm my-skill
 | 选项         | 描述                                      |
 | -------------- | ------------------------------------------------ |
 | `-g, --global` | 从全局范围（~/）而不是项目移除 |
-| `-a, --agent`  | 从特定代理移除（对所有使用 `'*'）  |
-| `-s, --skill`  | 指定要移除的技能（对所有使用 `'*'）     |
+| `-a, --agent`  | 从特定代理移除（使用 `'*'` 表示所有代理） |
+| `-s, --skill`  | 指定要移除的技能（使用 `'*'` 表示所有技能） |
 | `-y, --yes`    | 跳过确认提示                        |
 | `--all`        | `--skill '*' --agent '*' -y` 的简写       |
 
@@ -303,7 +341,7 @@ npx skills rm my-skill
 | IBM Bob | `bob` | `.bob/skills/` | `~/.bob/skills/` |
 | Claude Code | `claude-code` | `.claude/skills/` | `~/.claude/skills/` |
 | OpenClaw | `openclaw` | `skills/` | `~/.openclaw/skills/` |
-| Cline, Dexto, Kimi Code CLI, Loaf, Warp, Zed | `cline`, `dexto`, `kimi-code-cli`, `loaf`, `warp`, `zed` | `.agents/skills/` | `~/.agents/skills/` |
+| Cline, Dexto, Kimi Code CLI, Loaf, Pi, Sarvam Code, Warp, Zed | `cline`, `dexto`, `kimi-code-cli`, `loaf`, `pi`, `sarvam-code`, `warp`, `zed` | `.agents/skills/` | `~/.agents/skills/` |
 | CodeArts Agent | `codearts-agent` | `.codeartsdoer/skills/` | `~/.codeartsdoer/skills/` |
 | CodeBuddy | `codebuddy` | `.codebuddy/skills/` | `~/.codebuddy/skills/` |
 | Codemaker | `codemaker` | `.codemaker/skills/` | `~/.codemaker/skills/` |
@@ -316,30 +354,34 @@ npx skills rm my-skill
 | Cursor | `cursor` | `.agents/skills/` | `~/.cursor/skills/` |
 | Deep Agents | `deepagents` | `.agents/skills/` | `~/.deepagents/agent/skills/` |
 | Devin for Terminal | `devin` | `.devin/skills/` | `~/.config/devin/skills/` |
-| Droid | `droid` | `.factory/skills/` | `~/.factory/skills/` |
+| Droid | `droid` | `.agents/skills/` | `~/.factory/skills/` |
 | Eve | `eve` | `agent/skills/` | 不适用（仅项目级） |
 | Firebender | `firebender` | `.agents/skills/` | `~/.firebender/skills/` |
 | ForgeCode | `forgecode` | `.forge/skills/` | `~/.forge/skills/` |
+| fx | `fx` | `.fx/skills/` | `~/.fx/skills/` |
 | Gemini CLI | `gemini-cli` | `.agents/skills/` | `~/.gemini/skills/` |
 | GitHub Copilot | `github-copilot` | `.agents/skills/` | `~/.copilot/skills/` |
 | Goose | `goose` | `.goose/skills/` | `~/.config/goose/skills/` |
+| Grok Build | `grok` | `.grok/skills/` | `~/.grok/skills/` |
 | Hermes Agent | `hermes-agent` | `.hermes/skills/` | `~/.hermes/skills/` |
 | inference.sh | `inference-sh` | `.inferencesh/skills/` | `~/.inferencesh/skills/` |
 | Jazz | `jazz` | `.jazz/skills/` | `~/.jazz/skills/` |
 | Junie | `junie` | `.junie/skills/` | `~/.junie/skills/` |
 | iFlow CLI | `iflow-cli` | `.iflow/skills/` | `~/.iflow/skills/` |
-| Kilo Code | `kilo` | `.kilocode/skills/` | `~/.kilocode/skills/` |
+| Kilo Code | `kilo` | `.agents/skills/` | `~/.kilo/skills/` |
+| Kimchi | `kimchi` | `.kimchi/skills/` | `~/.config/kimchi/harness/skills/` |
 | Kiro CLI | `kiro-cli` | `.kiro/skills/` | `~/.kiro/skills/` |
 | Kode | `kode` | `.kode/skills/` | `~/.kode/skills/` |
 | Lingma | `lingma` | `.lingma/skills/` | `~/.lingma/skills/` |
 | MCPJam | `mcpjam` | `.mcpjam/skills/` | `~/.mcpjam/skills/` |
+| MiniMax Code | `minimax-code` | `.minimax/skills/` | `~/.minimax/skills/` |
 | Mistral Vibe | `mistral-vibe` | `.vibe/skills/` | `~/.vibe/skills/` |
 | Moxby | `moxby` | `.moxby/skills/` | `~/.moxby/skills/` |
 | Mux | `mux` | `.mux/skills/` | `~/.mux/skills/` |
 | OpenCode | `opencode` | `.agents/skills/` | `~/.config/opencode/skills/` |
 | OpenHands | `openhands` | `.openhands/skills/` | `~/.openhands/skills/` |
 | Ona | `ona` | `.ona/skills/` | `~/.ona/skills/` |
-| Pi | `pi` | `.pi/skills/` | `~/.pi/agent/skills/` |
+| Posit Assistant | `posit-assistant` | `.posit/assistant/skills/` | `~/.posit/assistant/skills/` |
 | Qoder | `qoder` | `.qoder/skills/` | `~/.qoder/skills/` |
 | Qoder CN | `qoder-cn` | `.qoder/skills/` | `~/.qoder-cn/skills/` |
 | Qwen Code | `qwen-code` | `.qwen/skills/` | `~/.qwen/skills/` |
@@ -415,9 +457,10 @@ metadata:
 
 ### 技能发现
 
-CLI 在仓库中的以下位置搜索技能。每个技能容器目录会向下遍历一层，
-适用于常见的扁平布局（`skills/<name>/SKILL.md`），并再向下多遍历一层，
-适用于分类目录布局（`skills/<category>/<name>/SKILL.md`）。较浅层级发现的
+CLI 在仓库中的以下位置搜索技能。每个技能容器目录最多向下遍历三层，
+覆盖扁平布局（`skills/<name>/SKILL.md`）以及包含一层或两层分类的分类目录布局
+（`skills/<category>/<name>/SKILL.md` 或
+`skills/<category>/<category>/<name>/SKILL.md`）。在较浅层级发现的
 `SKILL.md` 会遮蔽其下嵌套的内容。使用 `--full-depth` 可发现这些容器目录之外的
 `SKILL.md` 文件（例如位于 `examples/` 或 `tests/` 下的文件）。
 
@@ -443,26 +486,28 @@ CLI 在仓库中的以下位置搜索技能。每个技能容器目录会向下�
 - `.cortex/skills/`
 - `.crush/skills/`
 - `.devin/skills/`
-- `.factory/skills/`
 - `agent/skills/`
 - `.forge/skills/`
+- `.fx/skills/`
 - `.goose/skills/`
+- `.grok/skills/`
 - `.hermes/skills/`
 - `.inferencesh/skills/`
 - `.jazz/skills/`
 - `.junie/skills/`
 - `.iflow/skills/`
-- `.kilocode/skills/`
+- `.kimchi/skills/`
 - `.kiro/skills/`
 - `.kode/skills/`
 - `.lingma/skills/`
 - `.mcpjam/skills/`
+- `.minimax/skills/`
 - `.vibe/skills/`
 - `.moxby/skills/`
 - `.mux/skills/`
 - `.openhands/skills/`
 - `.ona/skills/`
-- `.pi/skills/`
+- `.posit/assistant/skills/`
 - `.qoder/skills/`
 - `.qwen/skills/`
 - `.reasonix/skills/`
@@ -498,7 +543,7 @@ CLI 在仓库中的以下位置搜索技能。每个技能容器目录会向下�
 }
 ```
 
-这实现了与 [Claude Code 插件市场](https://code.claude.com/docs/en/plugin-marketplaces)生态系统的兼容性。清单中声明的技能路径会按其声明的深度进行搜索，不受上述分类目录深度为 2 的遍历规则限制。
+这实现了与 [Claude Code 插件市场](https://code.claude.com/docs/en/plugin-marketplaces)生态系统的兼容性。清单中声明的技能路径会按其声明的深度进行搜索，不受上述有界的深度为 3 的分类目录遍历规则限制。
 
 如果在标准位置未找到技能，则执行递归搜索。
 
@@ -536,6 +581,8 @@ CLI 在仓库中的以下位置搜索技能。每个技能容器目录会向下�
 | `INSTALL_INTERNAL_SKILLS` | 设置为 `1` 或 `true` 以显示和安装标记为 `internal: true` 的技能 |
 | `DISABLE_TELEMETRY`       | 设置以禁用匿名使用遥测                                   |
 | `DO_NOT_TRACK`            | 禁用遥测的替代方法                                       |
+| `GITHUB_TOKEN`            | 可选，用于经过身份验证的 GitHub API 请求的显式令牌              |
+| `GH_TOKEN`                | 备用的显式令牌，用于经过身份验证的 GitHub API 请求              |
 
 ```bash
 # 安装内部技能
@@ -546,7 +593,7 @@ INSTALL_INTERNAL_SKILLS=1 npx skills add vercel-labs/agent-skills --list
 
 此 CLI 收集匿名使用数据以帮助改进工具。不收集任何个人信息。
 
-遥测在 CI 环境中会自动禁用。
+只有在 GitHub 明确确认仓库为公开仓库时，才会发送 GitHub 仓库和技能标识符。其他类型的远程来源可能会在安装遥测中包含来源和技能标识符，因为无法通过 GitHub 检查它们的可见性。安全审计请求仍然仅限于已确认公开的 GitHub 仓库。设置 `DISABLE_TELEMETRY=1` 或 `DO_NOT_TRACK=1` 可完全禁用这两者。
 
 ## 相关链接
 
@@ -574,6 +621,7 @@ INSTALL_INTERNAL_SKILLS=1 npx skills add vercel-labs/agent-skills --list
 - [Qwen Code 技能文档](https://qwenlm.github.io/qwen-code-docs/en/users/features/skills/)
 - [OpenHands 技能文档](https://docs.openhands.ai/modules/usage/how-to/using-skills)
 - [Pi 技能文档](https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md)
+- [Posit Assistant 技能文档](https://assistant.posit.co/docs/features/skills/)
 - [Qoder 技能文档](https://docs.qoder.com/cli/Skills)
 - [Replit 技能文档](https://docs.replit.com/replitai/skills)
 - [Roo Code 技能文档](https://docs.roocode.com/features/skills)
@@ -582,5 +630,5 @@ INSTALL_INTERNAL_SKILLS=1 npx skills add vercel-labs/agent-skills --list
 
 ## 许可证
 
-MIT
+本项目基于 [MIT 许可证](LICENSE) 授权。
 </content>

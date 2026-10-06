@@ -1,6 +1,6 @@
 ---
 name: PandaDoc Automation
-description: "Automate document workflows with PandaDoc -- create documents from files, manage contacts, organize folders, set up webhooks, create templates, and track document status through the Composio PandaDoc integration."
+description: "通过 Composio 的 PandaDoc 集成自动化文档工作流 —— 从文件创建文档、管理联系人、整理文件夹、设置 webhook、创建模板，并追踪文档状态。"
 requires:
   mcp:
     - rube
@@ -8,155 +8,155 @@ requires:
 
 # PandaDoc Automation
 
-Manage **PandaDoc** document workflows directly from Claude Code. Create documents from uploaded files, manage recipients and contacts, organize with folders, set up event webhooks, create templates, and track document status without leaving your terminal.
+直接从 Claude Code 管理 **PandaDoc** 文档工作流。从已上传的文件创建文档、管理收件人和联系人、用文件夹整理内容、设置事件 webhook、创建模板，并追踪文档状态，全程无需离开终端。
 
-**Toolkit docs:** [composio.dev/toolkits/pandadoc](https://composio.dev/toolkits/pandadoc)
+**工具包文档：** [composio.dev/toolkits/pandadoc](https://composio.dev/toolkits/pandadoc)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your configuration:
+1. 将 Composio MCP 服务器添加到你的配置中：
    ```
    https://rube.app/mcp
    ```
-2. 连接 your PandaDoc account when prompted. The agent will provide an OAuth link to authenticate.
-3. Ensure your PandaDoc workspace has the appropriate plan for the features you need (e.g., e-signatures, templates, webhooks).
+2. 在提示时连接你的 PandaDoc 账户。代理会提供一个 OAuth 链接用于身份验证。
+3. 确保你的 PandaDoc 工作区拥有所需功能对应的套餐（例如电子签名、模板、webhook）。
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Create a Document from File
+### 1. 从文件创建文档
 
-Upload a PDF, DOCX, or RTF file to create a new PandaDoc document with designated recipients for signing and tracking.
+上传 PDF、DOCX 或 RTF 文件以创建一个新的 PandaDoc 文档，并指定用于签署和追踪的收件人。
 
-**Tool:** `PANDADOC_CREATE_DOCUMENT_FROM_FILE`
+**工具：** `PANDADOC_CREATE_DOCUMENT_FROM_FILE`
 
-Key parameters:
-- `name` (required) -- document name
-- `recipients` (required) -- array of recipient objects, each with:
-  - `email` (required) -- recipient email
-  - `first_name`, `last_name` -- recipient name
-  - `role` -- `signer` (default), `approver`, or `cc` (must be unique per recipient)
-  - `signing_order` -- numeric order (if set for one, must be set for all)
-- `file` -- uploaded file object with `name`, `mimetype`, and `s3key`
-- `url` -- alternatively, a public HTTPS URL to the file
-- `parse_form_fields` (default false) -- parse PDF form fields
-- `tags` -- array of strings for categorization
-- `owner` -- document owner (email or membership_id)
+关键参数：
+- `name`（必填）—— 文档名称
+- `recipients`（必填）—— 收件人对象数组，每个对象包含：
+  - `email`（必填）—— 收件人邮箱
+  - `first_name`、`last_name` —— 收件人姓名
+  - `role` —— `signer`（默认）、`approver` 或 `cc`（每个收件人必须唯一）
+  - `signing_order` —— 数字顺序（若为一人设置，则必须为所有人设置）
+- `file` —— 上传的文件对象，包含 `name`、`mimetype` 和 `s3key`
+- `url` —— 或者，提供一个可公开访问的 HTTPS 文件链接
+- `parse_form_fields`（默认 false）—— 解析 PDF 表单字段
+- `tags` —— 用于分类的字符串数组
+- `owner` —— 文档所有者（邮箱或 membership_id）
 
-Example prompt: *"Create a PandaDoc document from contract.pdf with john@example.com as signer and jane@example.com as approver"*
-
----
-
-### 2. Get Document Details
-
-Fetch comprehensive metadata for a document including recipients, fields, tokens, pricing, tags, and content-block references.
-
-**Tool:** `PANDADOC_GET_DOCUMENT_DETAILS`
-
-Key parameters:
-- `id` (required) -- the unique document identifier (e.g., `BhVzRcxH9Z2LgfPPGXFUqa`)
-
-Use this to check document status, inspect recipient completion, review field values, or gather metadata for reporting.
-
-Example prompt: *"Get the full details and status for PandaDoc document BhVzRcxH9Z2LgfPPGXFUqa"*
+示例提示：*“根据 contract.pdf 创建一个 PandaDoc 文档，john@example.com 作为签署人，jane@example.com 作为审批人”*
 
 ---
 
-### 3. Manage Contacts
+### 2. 获取文档详情
 
-Create new contacts or update existing ones in PandaDoc. Contacts are matched by email -- if a contact with the given email exists, it gets updated; otherwise, a new one is created.
+获取文档的完整元数据，包括收件人、字段、令牌、定价、标签以及内容块引用。
 
-**Tool:** `PANDADOC_CREATE_OR_UPDATE_CONTACT`
+**工具：** `PANDADOC_GET_DOCUMENT_DETAILS`
 
-Key parameters:
-- `email` (required) -- contact email address
-- `first_name`, `last_name` -- contact name
-- `company` -- company name
-- `job_title` -- role/title
-- `phone` -- phone number
-- `street_address`, `city`, `state`, `postal_code`, `country` -- address fields
+关键参数：
+- `id`（必填）—— 文档唯一标识符（例如 `BhVzRcxH9Z2LgfPPGXFUqa`）
 
-Example prompt: *"Create a PandaDoc contact for john.doe@example.com at Acme Corp as Software Engineer"*
+用于检查文档状态、查看收件人完成情况、审阅字段值，或为报告收集元数据。
+
+示例提示：*“获取 PandaDoc 文档 BhVzRcxH9Z2LgfPPGXFUqa 的完整详情和状态”*
 
 ---
 
-### 4. Organize with Folders
+### 3. 管理联系人
 
-Create folders and move documents to organize your PandaDoc workspace.
+在 PandaDoc 中创建新联系人或更新现有联系人。联系人按邮箱匹配 —— 如果给定邮箱的联系人已存在，则更新；否则创建新联系人。
 
-**Tools:** `PANDADOC_CREATE_FOLDER`, `PANDADOC_LIST_DOCUMENT_FOLDERS`, `PANDADOC_MOVE_DOCUMENT_TO_FOLDER`
+**工具：** `PANDADOC_CREATE_OR_UPDATE_CONTACT`
 
-For creating folders:
-- `name` (required) -- folder name
-- `parent_uuid` -- parent folder UUID for nested structures
+关键参数：
+- `email`（必填）—— 联系人邮箱地址
+- `first_name`、`last_name` —— 联系人姓名
+- `company` —— 公司名称
+- `job_title` —— 职位/头衔
+- `phone` —— 电话号码
+- `street_address`、`city`、`state`、`postal_code`、`country` —— 地址字段
 
-Example prompt: *"Create a 'Q1 2026 Contracts' folder in PandaDoc and move document BhVzRcxH9Z to it"*
-
----
-
-### 5. Set Up Webhooks
-
-Create webhook subscriptions to receive real-time notifications when document events occur.
-
-**Tool:** `PANDADOC_CREATE_WEBHOOK`
-
-Key parameters:
-- `name` (required) -- descriptive name for the webhook
-- `url` (required) -- endpoint URL for notifications
-- `triggers` (required) -- event types: `document_state_changed`, `recipient_completed`, `document_updated`, etc.
-- `active` (default true) -- enable/disable the webhook
-- `payload` -- additional data to include: `fields`, `products`, `metadata`, `tokens`, `pricing`
-
-Example prompt: *"Set up a PandaDoc webhook to notify https://api.example.com/hooks when documents change state or recipients complete"*
+示例提示：*“为 Acme Corp 的软件工程师 john.doe@example.com 创建一个 PandaDoc 联系人”*
 
 ---
 
-### 6. Create Templates
+### 4. 用文件夹整理内容
 
-Create reusable templates from PDF files or from scratch with structured content blocks.
+创建文件夹并移动文档，以整理你的 PandaDoc 工作区。
 
-**Tool:** `PANDADOC_CREATE_TEMPLATE`
+**工具：** `PANDADOC_CREATE_FOLDER`、`PANDADOC_LIST_DOCUMENT_FOLDERS`、`PANDADOC_MOVE_DOCUMENT_TO_FOLDER`
 
-Key parameters:
-- `name` (required) -- template name
-- `file_path` -- path to PDF file for template creation
-- `content` -- structured content object with `title` and `blocks` array for building from scratch
-- `description` -- template description
-- `tags` -- categorization tags
+创建文件夹时：
+- `name`（必填）—— 文件夹名称
+- `parent_uuid` —— 用于嵌套结构的父文件夹 UUID
 
-Example prompt: *"Create a PandaDoc template called 'Standard NDA' from the nda-template.pdf file"*
+示例提示：*“在 PandaDoc 中创建一个‘Q1 2026 Contracts’文件夹，并将文档 BhVzRcxH9Z 移动到其中”*
 
 ---
 
-## 已知陷阱
+### 5. 设置 Webhook
 
-- **Unique recipient roles:** PandaDoc API does not allow duplicate roles within a single document. Each recipient must have a unique `role` value (e.g., `signer`, `signer_2`, `approver`, `cc`).
-- **Signing order consistency:** If you specify `signing_order` for any recipient, you must specify it for ALL recipients in the document. Partial ordering will cause errors.
-- **File upload requirements:** Either `file` (with `s3key`) or `url` must be provided for document creation, not both. The URL must be publicly accessible HTTPS.
-- **Contact upsert behavior:** `PANDADOC_CREATE_OR_UPDATE_CONTACT` matches by email. If you need to update a contact's email itself, you must create a new contact and handle the old one separately.
-- **Document ID format:** Document IDs are alphanumeric strings (e.g., `BhVzRcxH9Z2LgfPPGXFUqa`). They are returned when documents are created and can be found via the PandaDoc dashboard.
-- **Webhook event naming:** Trigger event names must match exactly (e.g., `document_state_changed`, not `stateChanged` or `state_changed`). Check PandaDoc API docs for the complete list.
-- **Folder operations require UUIDs:** Moving documents requires both the document ID and the destination folder UUID. List folders first to get the correct UUID.
-- **Template content blocks:** When creating templates from scratch, the `blocks` array must contain valid content block objects per PandaDoc's schema. Check their API documentation for supported block types.
+创建 webhook 订阅，以在文档事件发生时接收实时通知。
+
+**工具：** `PANDADOC_CREATE_WEBHOOK`
+
+关键参数：
+- `name`（必填）—— webhook 的描述性名称
+- `url`（必填）—— 接收通知的终端点 URL
+- `triggers`（必填）—— 事件类型：`document_state_changed`、`recipient_completed`、`document_updated` 等
+- `active`（默认 true）—— 启用/禁用该 webhook
+- `payload` —— 要包含的附加数据：`fields`、`products`、`metadata`、`tokens`、`pricing`
+
+示例提示：*“设置一个 PandaDoc webhook，在文档状态变化或收件人完成时通知 https://api.example.com/hooks”*
+
+---
+
+### 6. 创建模板
+
+从 PDF 文件创建可复用模板，或使用结构化内容块从零创建。
+
+**工具：** `PANDADOC_CREATE_TEMPLATE`
+
+关键参数：
+- `name`（必填）—— 模板名称
+- `file_path` —— 用于创建模板的 PDF 文件路径
+- `content` —— 包含 `title` 和 `blocks` 数组的结构化内容对象，用于从零构建
+- `description` —— 模板描述
+- `tags` —— 分类标签
+
+示例提示：*“根据 nda-template.pdf 文件创建一个名为‘Standard NDA’的 PandaDoc 模板”*
+
+---
+
+## 已知坑点
+
+- **收件人角色唯一性：** PandaDoc API 不允许单个文档中出现重复角色。每个收件人必须有唯一的 `role` 值（例如 `signer`、`signer_2`、`approver`、`cc`）。
+- **签署顺序一致性：** 如果为任意收件人指定了 `signing_order`，则必须为文档中的所有收件人都指定。部分设置顺序会导致错误。
+- **文件上传要求：** 创建文档时必须提供 `file`（含 `s3key`）或 `url` 二者之一，不能同时提供。URL 必须是可公开访问的 HTTPS 链接。
+- **联系人 upsert 行为：** `PANDADOC_CREATE_OR_UPDATE_CONTACT` 按邮箱匹配。如果需要更新联系人自身的邮箱，必须创建一个新联系人并单独处理旧的那个。
+- **文档 ID 格式：** 文档 ID 是字母数字字符串（例如 `BhVzRcxH9Z2LgfPPGXFUqa`）。文档创建时会返回该 ID，也可以在 PandaDoc 仪表盘中找到。
+- **Webhook 事件命名：** 触发事件名称必须完全匹配（例如 `document_state_changed`，而不是 `stateChanged` 或 `state_changed`）。请查阅 PandaDoc API 文档获取完整列表。
+- **文件夹操作需要 UUID：** 移动文档需要同时提供文档 ID 和目标文件夹的 UUID。请先列出文件夹以获取正确的 UUID。
+- **模板内容块：** 从零创建模板时，`blocks` 数组必须包含符合 PandaDoc 架构的有效内容块对象。请查阅其 API 文档了解支持的块类型。
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 描述 |
 |---|---|
-| `PANDADOC_CREATE_DOCUMENT_FROM_FILE` | Create a document from PDF/DOCX/RTF with recipients |
-| `PANDADOC_GET_DOCUMENT_DETAILS` | Get full document metadata, status, and fields |
-| `PANDADOC_CREATE_OR_UPDATE_CONTACT` | Create or update a contact by email |
-| `PANDADOC_CREATE_FOLDER` | Create a folder for document organization |
-| `PANDADOC_LIST_DOCUMENT_FOLDERS` | List all document folders |
-| `PANDADOC_MOVE_DOCUMENT_TO_FOLDER` | Move a document to a specific folder |
-| `PANDADOC_CREATE_WEBHOOK` | Set up event notification webhooks |
-| `PANDADOC_CREATE_TEMPLATE` | Create a reusable document template |
+| `PANDADOC_CREATE_DOCUMENT_FROM_FILE` | 从 PDF/DOCX/RTF 创建带收件人的文档 |
+| `PANDADOC_GET_DOCUMENT_DETAILS` | 获取完整文档元数据、状态和字段 |
+| `PANDADOC_CREATE_OR_UPDATE_CONTACT` | 按邮箱创建或更新联系人 |
+| `PANDADOC_CREATE_FOLDER` | 创建用于文档整理的文件夹 |
+| `PANDADOC_LIST_DOCUMENT_FOLDERS` | 列出所有文档文件夹 |
+| `PANDADOC_MOVE_DOCUMENT_TO_FOLDER` | 将文档移动到指定文件夹 |
+| `PANDADOC_CREATE_WEBHOOK` | 设置事件通知 webhook |
+| `PANDADOC_CREATE_TEMPLATE` | 创建可复用的文档模板 |
 
 ---
 
-*由 [Composio](https://composio.dev) 提供支持*
+*Powered by [Composio](https://composio.dev)*

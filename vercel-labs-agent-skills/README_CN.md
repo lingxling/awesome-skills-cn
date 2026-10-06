@@ -240,6 +240,17 @@ npx skills add vercel-labs/agent-skills
 帮我优化这个 Next.js 页面
 ```
 
+## 发现索引
+
+`main` 分支上对技能的每一次变更，都会发布一个不可变的 GitHub release，其中包含
+一个 Agent Skills 发现索引，以及每个技能各一个构建产物。可以使用以下命令在本地
+构建相同的产物：
+
+```bash
+npm ci --ignore-scripts
+node scripts/build-discovery-index.mjs https://example.com/skills
+```
+
 ## 技能结构
 
 每个技能包含：

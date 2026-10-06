@@ -1,228 +1,299 @@
-# Common DICOM Tags Reference
+# DICOM data elements, tags, and privacy review
 
-This document provides a comprehensive list of commonly used DICOM tags organized by category. Tags can be accessed in pydicom using attribute notation (e.g., `ds.PatientName`) or tag tuple notation (e.g., `ds[0x0010, 0x0010]`).
+This is a working guide, not a complete DICOM dictionary or an attribute
+confidentiality profile. pydicom 3.0.2 bundles the 2024c public dictionary; use
+the live DICOM PS3.3/PS3.6 and the selected IOD when correctness depends on a
+newer edition.
 
-## Patient Information Tags
+## Privacy boundary
 
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0010,0010) | PatientName | PN | Patient's full name |
-| (0010,0020) | PatientID | LO | Primary identifier for the patient |
-| (0010,0030) | PatientBirthDate | DA | Date of birth (YYYYMMDD) |
-| (0010,0032) | PatientBirthTime | TM | Time of birth (HHMMSS) |
-| (0010,0040) | PatientSex | CS | Patient's sex (M, F, O) |
-| (0010,1010) | PatientAge | AS | Patient's age (format: nnnD/W/M/Y) |
-| (0010,1020) | PatientSize | DS | Patient's height in meters |
-| (0010,1030) | PatientWeight | DS | Patient's weight in kilograms |
-| (0010,1040) | PatientAddress | LO | Patient's mailing address |
-| (0010,2160) | EthnicGroup | SH | Ethnic group of patient |
-| (0010,4000) | PatientComments | LT | Additional comments about patient |
+DICOM metadata and pixels may contain PHI. Do not print a complete `Dataset`,
+serialize the full dataset to JSON, or copy arbitrary values into logs. Tag
+names that appear technical can still identify a person through site-specific
+values, free text, private data, UIDs, dates, devices, or linkage with external
+records.
 
-## Study Information Tags
+DICOM PS3.15 Annex E says that applying attribute actions does not guarantee
+that the Information Object is de-identified. A valid workflow must select a
+profile/options for its context and include expert verification and
+re-identification risk review.
 
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0020,000D) | StudyInstanceUID | UI | Unique identifier for the study |
-| (0008,0020) | StudyDate | DA | Date study started (YYYYMMDD) |
-| (0008,0030) | StudyTime | TM | Time study started (HHMMSS) |
-| (0008,1030) | StudyDescription | LO | Description of the study |
-| (0020,0010) | StudyID | SH | User or site-defined study identifier |
-| (0008,0050) | AccessionNumber | SH | RIS-generated study identifier |
-| (0008,0090) | ReferringPhysicianName | PN | Name of patient's referring physician |
-| (0008,1060) | NameOfPhysiciansReadingStudy | PN | Name of physician(s) reading study |
-| (0008,1080) | AdmittingDiagnosesDescription | LO | Diagnosis description at admission |
+## pydicom access model
 
-## Series Information Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0020,000E) | SeriesInstanceUID | UI | Unique identifier for the series |
-| (0020,0011) | SeriesNumber | IS | Numeric identifier for this series |
-| (0008,103E) | SeriesDescription | LO | Description of the series |
-| (0008,0060) | Modality | CS | Type of equipment (CT, MR, US, etc.) |
-| (0008,0021) | SeriesDate | DA | Date series started (YYYYMMDD) |
-| (0008,0031) | SeriesTime | TM | Time series started (HHMMSS) |
-| (0018,0015) | BodyPartExamined | CS | Body part examined |
-| (0018,5100) | PatientPosition | CS | Patient position (HFS, FFS, etc.) |
-| (0020,0060) | Laterality | CS | Laterality of paired body part (R, L) |
-
-## Image Information Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0008,0018) | SOPInstanceUID | UI | Unique identifier for this instance |
-| (0020,0013) | InstanceNumber | IS | Number that identifies this image |
-| (0008,0008) | ImageType | CS | Image identification characteristics |
-| (0008,0023) | ContentDate | DA | Date of content creation (YYYYMMDD) |
-| (0008,0033) | ContentTime | TM | Time of content creation (HHMMSS) |
-| (0020,0032) | ImagePositionPatient | DS | Position of image (x, y, z) in mm |
-| (0020,0037) | ImageOrientationPatient | DS | Direction cosines of image rows/columns |
-| (0020,1041) | SliceLocation | DS | Relative position of image plane |
-| (0018,0050) | SliceThickness | DS | Slice thickness in mm |
-| (0018,0088) | SpacingBetweenSlices | DS | Spacing between slices in mm |
-
-## Pixel Data Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (7FE0,0010) | PixelData | OB/OW | Actual pixel data of the image |
-| (0028,0010) | Rows | US | Number of rows in image |
-| (0028,0011) | Columns | US | Number of columns in image |
-| (0028,0100) | BitsAllocated | US | Bits allocated for each pixel sample |
-| (0028,0101) | BitsStored | US | Bits stored for each pixel sample |
-| (0028,0102) | HighBit | US | Most significant bit for pixel sample |
-| (0028,0103) | PixelRepresentation | US | 0=unsigned, 1=signed |
-| (0028,0002) | SamplesPerPixel | US | Number of samples per pixel (1 or 3) |
-| (0028,0004) | PhotometricInterpretation | CS | Color space (MONOCHROME2, RGB, etc.) |
-| (0028,0006) | PlanarConfiguration | US | Color pixel data arrangement |
-| (0028,0030) | PixelSpacing | DS | Physical spacing [row, column] in mm |
-| (0028,0008) | NumberOfFrames | IS | Number of frames in multi-frame image |
-| (0028,0034) | PixelAspectRatio | IS | Ratio of vertical to horizontal pixel |
-
-## Windowing and Display Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0028,1050) | WindowCenter | DS | Window center for display |
-| (0028,1051) | WindowWidth | DS | Window width for display |
-| (0028,1052) | RescaleIntercept | DS | b in output = m*SV + b |
-| (0028,1053) | RescaleSlope | DS | m in output = m*SV + b |
-| (0028,1054) | RescaleType | LO | Type of rescaling (HU, etc.) |
-| (0028,1055) | WindowCenterWidthExplanation | LO | Explanation of window values |
-| (0028,3010) | VOILUTSequence | SQ | VOI LUT description |
-
-## CT-Specific Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0018,0060) | KVP | DS | Peak kilovoltage |
-| (0018,1030) | ProtocolName | LO | Scan protocol name |
-| (0018,1100) | ReconstructionDiameter | DS | Diameter of reconstruction circle |
-| (0018,1110) | DistanceSourceToDetector | DS | Distance in mm |
-| (0018,1111) | DistanceSourceToPatient | DS | Distance in mm |
-| (0018,1120) | GantryDetectorTilt | DS | Gantry tilt in degrees |
-| (0018,1130) | TableHeight | DS | Table height in mm |
-| (0018,1150) | ExposureTime | IS | Exposure time in ms |
-| (0018,1151) | XRayTubeCurrent | IS | X-ray tube current in mA |
-| (0018,1152) | Exposure | IS | Exposure in mAs |
-| (0018,1160) | FilterType | SH | X-ray filter material |
-| (0018,1210) | ConvolutionKernel | SH | Reconstruction algorithm |
-
-## MR-Specific Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0018,0080) | RepetitionTime | DS | TR in ms |
-| (0018,0081) | EchoTime | DS | TE in ms |
-| (0018,0082) | InversionTime | DS | TI in ms |
-| (0018,0083) | NumberOfAverages | DS | Number of times data was averaged |
-| (0018,0084) | ImagingFrequency | DS | Frequency in MHz |
-| (0018,0085) | ImagedNucleus | SH | Nucleus that is imaged (1H, etc.) |
-| (0018,0086) | EchoNumbers | IS | Echo number(s) |
-| (0018,0087) | MagneticFieldStrength | DS | Field strength in Tesla |
-| (0018,0088) | SpacingBetweenSlices | DS | Spacing in mm |
-| (0018,0089) | NumberOfPhaseEncodingSteps | IS | Number of encoding steps |
-| (0018,0091) | EchoTrainLength | IS | Number of echoes in a train |
-| (0018,0093) | PercentSampling | DS | Fraction of acquisition matrix sampled |
-| (0018,0094) | PercentPhaseFieldOfView | DS | Ratio of phase to frequency FOV |
-| (0018,1030) | ProtocolName | LO | Scan protocol name |
-| (0018,1314) | FlipAngle | DS | Flip angle in degrees |
-
-## File Meta Information Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0002,0000) | FileMetaInformationGroupLength | UL | Length of file meta information |
-| (0002,0001) | FileMetaInformationVersion | OB | Version of file meta information |
-| (0002,0002) | MediaStorageSOPClassUID | UI | SOP Class UID |
-| (0002,0003) | MediaStorageSOPInstanceUID | UI | SOP Instance UID |
-| (0002,0010) | TransferSyntaxUID | UI | Transfer syntax UID |
-| (0002,0012) | ImplementationClassUID | UI | Implementation class UID |
-| (0002,0013) | ImplementationVersionName | SH | Implementation version name |
-
-## Equipment Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0008,0070) | Manufacturer | LO | Equipment manufacturer |
-| (0008,0080) | InstitutionName | LO | Institution name |
-| (0008,0081) | InstitutionAddress | ST | Institution address |
-| (0008,1010) | StationName | SH | Equipment station name |
-| (0008,1040) | InstitutionalDepartmentName | LO | Department name |
-| (0008,1050) | PerformingPhysicianName | PN | Physician performing procedure |
-| (0008,1070) | OperatorsName | PN | Operator name(s) |
-| (0008,1090) | ManufacturerModelName | LO | Model name |
-| (0018,1000) | DeviceSerialNumber | LO | Device serial number |
-| (0018,1020) | SoftwareVersions | LO | Software version(s) |
-
-## Timing Tags
-
-| Tag | Name | Type | Description |
-|-----|------|------|-------------|
-| (0008,0012) | InstanceCreationDate | DA | Date instance was created |
-| (0008,0013) | InstanceCreationTime | TM | Time instance was created |
-| (0008,0022) | AcquisitionDate | DA | Date acquisition started |
-| (0008,0032) | AcquisitionTime | TM | Time acquisition started |
-| (0008,002A) | AcquisitionDateTime | DT | Acquisition date and time |
-
-## DICOM Value Representations (VR)
-
-Common value representation types used in DICOM:
-
-- **AE**: Application Entity (max 16 chars)
-- **AS**: Age String (nnnD/W/M/Y)
-- **CS**: Code String (max 16 chars)
-- **DA**: Date (YYYYMMDD)
-- **DS**: Decimal String
-- **DT**: Date Time (YYYYMMDDHHMMSS.FFFFFF&ZZXX)
-- **IS**: Integer String
-- **LO**: Long String (max 64 chars)
-- **LT**: Long Text (max 10240 chars)
-- **PN**: Person Name
-- **SH**: Short String (max 16 chars)
-- **SQ**: Sequence of Items
-- **ST**: Short Text (max 1024 chars)
-- **TM**: Time (HHMMSS.FFFFFF)
-- **UI**: Unique Identifier (UID)
-- **UL**: Unsigned Long (4 bytes)
-- **US**: Unsigned Short (2 bytes)
-- **OB**: Other Byte String
-- **OW**: Other Word String
-
-## Usage Examples
-
-### Accessing Tags by Name
 ```python
-patient_name = ds.PatientName
-study_date = ds.StudyDate
-modality = ds.Modality
+from pydicom import dcmread
+from pydicom.tag import Tag
+
+ds = dcmread(
+    "authorized/input.dcm",
+    stop_before_pixels=True,
+    specific_tags=["SOPClassUID", "Modality", "Rows", "Columns"],
+)
+
+modality = ds.get("Modality", "UNSPECIFIED")
+element = ds.get_item(Tag(0x0008, 0x0016))
 ```
 
-### Accessing Tags by Number
-```python
-patient_name = ds[0x0010, 0x0010].value
-study_date = ds[0x0008, 0x0020].value
-modality = ds[0x0008, 0x0060].value
+- Keyword access (`ds.Modality`) returns the value and raises `AttributeError`
+  when absent.
+- `ds.get("Modality", default)` is safer for optional elements.
+- Tag indexing (`ds[0x0008, 0x0016]`) returns a `DataElement`; read `.value`
+  only when authorized.
+- A tag consists of a 16-bit group and 16-bit element.
+- Standard public tags generally use even groups. Private data uses odd groups
+  and private creator blocks.
+- `Dataset` contains `DataElement` objects. A value with VR `SQ` is a
+  `Sequence` of nested `Dataset` items.
+
+## Narrow technical allowlist
+
+The following values are commonly useful for bounded technical inventory.
+They do not make an entire record safe to disclose.
+
+| Tag | Keyword | VR | Technical use |
+|---|---|---|---|
+| (0008,0016) | SOPClassUID | UI | Identifies the standardized SOP Class |
+| (0008,0060) | Modality | CS | Modality code |
+| (0002,0010) | TransferSyntaxUID | UI | File encoding/compression |
+| (0028,0002) | SamplesPerPixel | US | Samples per pixel |
+| (0028,0004) | PhotometricInterpretation | CS | Pixel color/monochrome interpretation |
+| (0028,0006) | PlanarConfiguration | US | Color sample layout |
+| (0028,0008) | NumberOfFrames | IS | Declared frames |
+| (0028,0010) | Rows | US | Rows per frame |
+| (0028,0011) | Columns | US | Columns per frame |
+| (0028,0100) | BitsAllocated | US | Storage bits per sample |
+| (0028,0101) | BitsStored | US | Meaningful bits per sample |
+| (0028,0102) | HighBit | US | Highest stored bit |
+| (0028,0103) | PixelRepresentation | US | Unsigned (0) or signed (1) |
+| (0028,0301) | BurnedInAnnotation | CS | Declared burned-in annotation status |
+| (0028,0302) | RecognizableVisualFeatures | CS | Declared recognizable-feature status |
+| (0028,2110) | LossyImageCompression | CS | Whether lossy compression occurred |
+
+`BurnedInAnnotation=NO` is a declaration, not proof that pixels are clean.
+Absence, `YES`, or another value requires review. Even `NO` does not address
+recognizable facial/anatomic features or matching against source images.
+
+## Instance, relationship, and spatial elements
+
+These values are technically important but can enable linkage or reveal
+individual context. Do not emit them in default reports.
+
+| Tag | Keyword | Privacy/semantic concern |
+|---|---|---|
+| (0008,0018) | SOPInstanceUID | Instance identifier; may support linkage |
+| (0020,000D) | StudyInstanceUID | Study-level linkage |
+| (0020,000E) | SeriesInstanceUID | Series-level linkage |
+| (0020,0052) | FrameOfReferenceUID | Spatial/reference linkage |
+| (0008,1155) | ReferencedSOPInstanceUID | Cross-instance relationship |
+| (0020,0032) | ImagePositionPatient | Patient-coordinate position |
+| (0020,0037) | ImageOrientationPatient | Patient-coordinate orientation |
+| (0028,0030) | PixelSpacing | Physical sample spacing |
+| (0018,0050) | SliceThickness | Nominal reconstructed thickness |
+| (0018,0088) | SpacingBetweenSlices | Center-to-center spacing when defined |
+
+Do not sort a series only by `SliceLocation` or assume `SliceThickness` equals
+inter-slice spacing. Reconstruct geometry from the applicable IOD, orientation,
+position, frame functional groups, and validated series membership.
+
+For the Image Plane Module with BIPED or absent Anatomical Orientation Type,
+patient coordinates increase left, posterior, and toward the head (LPS).
+`PixelSpacing = [row_spacing, column_spacing]` in mm. For zero-based NumPy
+indices `[row, column]`, the pixel center is:
+
+```text
+ImagePositionPatient
+  + column * PixelSpacing[1] * ImageOrientationPatient[:3]
+  + row    * PixelSpacing[0] * ImageOrientationPatient[3:]
 ```
 
-### Checking if Tag Exists
-```python
-if hasattr(ds, 'PatientName'):
-    print(ds.PatientName)
+For a consistent parallel stack, sort positions projected onto the cross product
+of the two orientation vectors, then check duplicates, spacing, orientation,
+Frame of Reference, and acquisition dimensions. Series membership alone does
+not separate time points/echoes/diffusion directions. Enhanced multi-frame
+ordering uses Dimension Index Values and frame functional groups. A PNG does
+not retain patient geometry; resampling/rotation requires corresponding affine
+updates and interpolation appropriate to the data. QUADRUPED conventions differ.
 
-# Or using 'in' operator
-if (0x0010, 0x0010) in ds:
-    print(ds[0x0010, 0x0010].value)
+## Direct and quasi-identifiers
+
+The following examples are not exhaustive. PS3.15 Table E.1-1 and the chosen
+options control action selection, including nested occurrences.
+
+| Tag | Keyword | Typical risk |
+|---|---|---|
+| (0010,0010) | PatientName | Direct identifier |
+| (0010,0020) | PatientID | Direct/local identifier |
+| (0010,0021) | IssuerOfPatientID | Identifier namespace |
+| (0010,0030) | PatientBirthDate | Date/quasi-identifier |
+| (0010,0032) | PatientBirthTime | Time/quasi-identifier |
+| (0010,0040) | PatientSex | Patient characteristic |
+| (0010,1010) | PatientAge | Patient characteristic |
+| (0010,1020) | PatientSize | Patient characteristic |
+| (0010,1030) | PatientWeight | Patient characteristic |
+| (0010,1040) | PatientAddress | Direct identifier |
+| (0010,2154) | PatientTelephoneNumbers | Direct identifier |
+| (0010,4000) | PatientComments | Free text |
+| (0008,0050) | AccessionNumber | Order/study linkage |
+| (0020,0010) | StudyID | Local study identifier |
+| (0040,1001) | RequestedProcedureID | Order linkage |
+| (0040,0009) | ScheduledProcedureStepID | Workflow linkage |
+| (0008,0090) | ReferringPhysicianName | Person identifier |
+| (0008,1050) | PerformingPhysicianName | Person identifier |
+| (0008,1070) | OperatorsName | Person identifier |
+| (0008,0080) | InstitutionName | Organization identifier |
+| (0008,0081) | InstitutionAddress | Organization/location identifier |
+| (0008,1010) | StationName | Device/site identifier |
+| (0018,1000) | DeviceSerialNumber | Device identifier |
+| (0008,1030) | StudyDescription | Potential free text |
+| (0008,103E) | SeriesDescription | Potential free text |
+| (0018,1030) | ProtocolName | Site/user-entered text |
+
+Required IOD type matters. A PS3.15 action can remove (`X`), zero (`Z`),
+replace with a valid dummy value (`D`), replace a UID consistently (`U`), keep
+(`K`), or clean (`C`), with conditional combinations. Blind deletion can make
+an instance non-conformant.
+
+## Dates and times
+
+Common date/time elements include:
+
+| Tag | Keyword | VR |
+|---|---|---|
+| (0008,0012) | InstanceCreationDate | DA |
+| (0008,0013) | InstanceCreationTime | TM |
+| (0008,0020) | StudyDate | DA |
+| (0008,0030) | StudyTime | TM |
+| (0008,0021) | SeriesDate | DA |
+| (0008,0031) | SeriesTime | TM |
+| (0008,0022) | AcquisitionDate | DA |
+| (0008,0032) | AcquisitionTime | TM |
+| (0008,002A) | AcquisitionDateTime | DT |
+| (0008,0023) | ContentDate | DA |
+| (0008,0033) | ContentTime | TM |
+
+VR syntax:
+
+- `DA`: `YYYYMMDD`
+- `TM`: `HHMMSS.FFFFFF` with permitted truncation
+- `DT`: `YYYYMMDDHHMMSS.FFFFFF&ZZXX` with permitted truncation
+
+Date/time handling is not solved by replacing every value with a constant.
+Review:
+
+- whether full dates or modified dates are allowed by the selected PS3.15
+  option;
+- one consistent shift across the intended longitudinal scope;
+- leap days, range limits, partial precision, time zones, and midnight
+  crossings;
+- standalone `TM` values that cannot be shifted safely without a paired date;
+- interval preservation and external event linkage;
+- IOD Type 1/2 requirements and scientific utility.
+
+Record the policy and caveats without logging original values.
+
+## UIDs: replace instance relationships, not semantics
+
+UID VR is `UI`, but not every UID is an identifier to pseudonymize.
+
+Usually structural/semantic and preserved:
+
+- Transfer Syntax UID
+- SOP Class UID and Referenced SOP Class UID
+- coding/context/template UIDs defined by standards
+- implementation UID handling according to rebuilt File Meta Information
+
+Often instance/reference linkage requiring profile-directed, consistent
+replacement:
+
+- Study, Series, SOP Instance, and Frame of Reference UIDs
+- Device UID (PS3.15 default action U; explicit retention options may apply)
+- Referenced SOP Instance UIDs in sequences
+- synchronization, concatenation, tracking, specimen, and transaction UIDs
+
+Use one-to-one replacement over the declared scope. A keyed deterministic
+mapping can maintain consistency, but the key/map is sensitive. Replacing UIDs
+does not itself prevent pixel or metadata matching and must not create false
+confidence.
+
+## Sequences and recursive traversal
+
+Identifiers may occur at any nesting depth:
+
+```python
+def visit(dataset):
+    for element in dataset:
+        if element.VR == "SQ":
+            for item in element.value:
+                visit(item)
+        else:
+            review(element.tag, element.keyword, element.VR)
 ```
 
-### Safe Access with Default Value
+Bound recursion depth and total elements for untrusted files. Do not print
+values from the callback. pydicom's `Dataset.walk()` is also recursive by
+default, and `remove_private_tags()` uses recursive traversal.
+
+## Private data
+
+Private elements use odd group numbers and a private creator block. Their
+semantics are vendor-defined and names may be unknown or non-unique. Access by
+tag or `PrivateBlock`, not by the descriptive display name.
+
 ```python
-patient_name = getattr(ds, 'PatientName', 'Unknown')
-study_desc = ds.get('StudyDescription', 'No description')
+private_count = sum(1 for element in ds.iterall() if element.tag.is_private)
 ```
 
-## References
+`Dataset.remove_private_tags()` recursively removes private elements, but:
 
-- DICOM Standard: https://www.dicomstandard.org/
-- DICOM Tag Browser: https://dicom.innolitics.com/ciods
-- Pydicom Documentation: https://pydicom.github.io/pydicom/
+- private removal alone is not de-identification;
+- standard elements, sequences, pixels, graphics, and overlays still matter;
+- some private elements may be scientifically necessary;
+- the PS3.15 Retain Safe Private Option requires evidence that retained
+  elements are safe and removal/processing of all others.
+
+Default to remove or reject private data. Explicit retention needs a reviewed
+allowlist and provenance.
+
+## Pixel, graphics, and structured content
+
+Potential identifying content is not limited to `(7FE0,0010) PixelData`:
+
+- Float/Double Float Pixel Data
+- overlays in repeating `60xx` groups
+- retired curves in `50xx` groups
+- presentation-state graphics and annotations
+- Structured Report text/content items
+- waveforms, encapsulated documents, spectra, and other bulk content
+- full-face images and recognizable head/neck reconstructions
+
+The PS3.15 Clean Pixel Data, Clean Recognizable Visual Features, Clean
+Graphics, and Clean Structured Content options address different risks.
+Human review may be required, and cleaning can impair utility.
+
+## DICOM JSON
+
+`Dataset.to_json()` and `to_json_dict()` preserve DICOM element content.
+Binary data is either base64 `InlineBinary` or represented by `BulkDataURI`.
+Therefore:
+
+- JSON is not a safe metadata summary;
+- full JSON can contain the same PHI as the source dataset;
+- a bulk-data handler must enforce storage and retrieval authorization;
+- pydicom 3.0.2 documents JSON support as beta.
+
+Use `scripts/extract_metadata.py` for allowlisted aggregate inventory.
+
+## Sources (verified 2026-10-01)
+
+- [pydicom 3.0.2 dataset basics](https://pydicom.github.io/pydicom/stable/tutorials/dataset_basics.html)
+- [pydicom core elements](https://pydicom.github.io/pydicom/stable/guides/user/base_element.html)
+- [pydicom private elements](https://pydicom.github.io/pydicom/stable/guides/user/private_data_elements.html)
+- [pydicom DICOM JSON tutorial](https://pydicom.github.io/pydicom/stable/tutorials/dicom_json.html)
+- [DICOM PS3.3 2026d, Information Object Definitions](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/PS3.3.html)
+- [DICOM PS3.3 Image Pixel Module](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.3.html)
+- [DICOM PS3.3 Image Plane Module](https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.2.html)
+- [DICOM PS3.15 Table E.1-1 actions](https://dicom.nema.org/medical/dicom/current/output/chtml/part15/chapter_E.html)
+- [DICOM PS3.5, Data Structures and Encoding](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/PS3.5.html)
+- [DICOM PS3.5 private elements](https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_7.8.2.html)
+- [DICOM PS3.6, Data Dictionary](https://dicom.nema.org/medical/dicom/current/output/chtml/part06/PS3.6.html)
+- [DICOM PS3.15 2026d, Annex E confidentiality profiles](https://dicom.nema.org/medical/dicom/current/output/html/part15.html)

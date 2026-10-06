@@ -1,55 +1,55 @@
 ---
 name: Excel Automation
-description: "Excel Automation: create workbooks, manage worksheets, read/write cell data, and format spreadsheets via Microsoft Excel and Google Sheets integration"
+description: "Excel 自动化：通过 Microsoft Excel 和 Google Sheets 集成创建工作簿、管理工作表、读写单元格数据以及格式化表格"
 requires:
   mcp: [rube]
 ---
 
 # Excel Automation
 
-Automate spreadsheet operations including creating workbooks, writing data, formatting cells, upserting rows, and managing worksheets. Works with Microsoft Excel (OneDrive) and Google Sheets.
+自动化电子表格操作，包括创建工作簿、写入数据、格式化单元格、更新插入（upsert）行以及管理工作表。支持 Microsoft Excel（OneDrive）和 Google Sheets。
 
-**Toolkit docs:** [composio.dev/toolkits/excel](https://composio.dev/toolkits/excel)
+**工具包文档：** [composio.dev/toolkits/excel](https://composio.dev/toolkits/excel)
 
 ---
 
 ## 设置
 
-This skill requires the **Rube MCP server** connected at `https://rube.app/mcp`.
+本技能需要连接 **Rube MCP 服务器**，地址为 `https://rube.app/mcp`。
 
-Before executing any tools, ensure an active connection exists for the `excel` (and optionally `googlesheets`) toolkit. If no connection is active, initiate one via `RUBE_MANAGE_CONNECTIONS`.
-
----
-
-## Core Workflows
-
-### 1. Create a New Excel Workbook
-
-Use `EXCEL_CREATE_WORKBOOK` to generate a new `.xlsx` file and upload it to OneDrive.
-
-**Tool:** `EXCEL_CREATE_WORKBOOK`
-
-**Steps:**
-1. Call `EXCEL_CREATE_WORKBOOK` with worksheet names and data
-2. The tool creates a `.xlsx` file and uploads it to OneDrive
-3. Use the returned file path/URL for subsequent operations
+在执行任何工具之前，请确保 `excel`（以及可选的 `googlesheets`）工具包已存在有效连接。如果没有活动连接，请通过 `RUBE_MANAGE_CONNECTIONS` 发起一个。
 
 ---
 
-### 2. Write Data to a Spreadsheet
+## 核心工作流
 
-Use `GOOGLESHEETS_BATCH_UPDATE` to write values to a specific range or append rows.
+### 1. 创建新的 Excel 工作簿
 
-**Tool:** `GOOGLESHEETS_BATCH_UPDATE`
+使用 `EXCEL_CREATE_WORKBOOK` 生成一个新的 `.xlsx` 文件并上传到 OneDrive。
 
-**Key Parameters:**
-- `spreadsheet_id` (required) -- The spreadsheet ID from the URL (44-char alphanumeric string)
-- `sheet_name` (required) -- Tab name, e.g., `"Sheet1"`, `"Sales Data"`
-- `values` (required) -- 2D array of cell values, e.g., `[["Name","Amount"],["Alice",100]]`
-- `first_cell_location` -- Starting cell in A1 notation (e.g., `"A1"`, `"D3"`). Omit to append rows
-- `valueInputOption` -- `"USER_ENTERED"` (default, parses formulas) or `"RAW"` (stores as-is)
+**工具：** `EXCEL_CREATE_WORKBOOK`
 
-**Example:**
+**步骤：**
+1. 调用 `EXCEL_CREATE_WORKBOOK`，传入工作表名称和数据
+2. 该工具会创建一个 `.xlsx` 文件并上传到 OneDrive
+3. 使用返回的文件路径/URL 进行后续操作
+
+---
+
+### 2. 向表格写入数据
+
+使用 `GOOGLESHEETS_BATCH_UPDATE` 将值写入指定范围或追加行。
+
+**工具：** `GOOGLESHEETS_BATCH_UPDATE`
+
+**关键参数：**
+- `spreadsheet_id`（必填）—— 来自 URL 的表格 ID（44 位字母数字字符串）
+- `sheet_name`（必填）—— 标签页名称，例如 `"Sheet1"`、`"Sales Data"`
+- `values`（必填）—— 单元格值的二维数组，例如 `[["Name","Amount"],["Alice",100]]`
+- `first_cell_location` —— A1 表示法的起始单元格（例如 `"A1"`、`"D3"`）。省略则追加行
+- `valueInputOption` —— `"USER_ENTERED"`（默认，解析公式）或 `"RAW"`（原样存储）
+
+**示例：**
 ```
 Tool: GOOGLESHEETS_BATCH_UPDATE
 Arguments:
@@ -61,21 +61,21 @@ Arguments:
 
 ---
 
-### 3. Upsert Rows by Key Column
+### 3. 按键列更新插入（Upsert）行
 
-Use `GOOGLESHEETS_UPSERT_ROWS` to update existing rows by matching a key column, or append new rows if no match is found. Ideal for CRM syncs, inventory updates, and deduplication.
+使用 `GOOGLESHEETS_UPSERT_ROWS` 通过匹配键列来更新现有行，若未找到匹配项则追加新行。非常适合 CRM 同步、库存更新和去重。
 
-**Tool:** `GOOGLESHEETS_UPSERT_ROWS`
+**工具：** `GOOGLESHEETS_UPSERT_ROWS`
 
-**Key Parameters:**
-- `spreadsheetId` (required) -- The spreadsheet ID
-- `sheetName` (required) -- Tab name
-- `rows` (required) -- 2D array of data rows (min 1 row). If `headers` is omitted, the first row is treated as headers
-- `headers` -- Column names for the data, e.g., `["Email","Phone","Status"]`
-- `keyColumn` -- Column header to match on, e.g., `"Email"`, `"SKU"`, `"Lead ID"`
-- `strictMode` -- `true` (default) errors on mismatched columns; `false` truncates silently
+**关键参数：**
+- `spreadsheetId`（必填）—— 表格 ID
+- `sheetName`（必填）—— 标签页名称
+- `rows`（必填）—— 数据行的二维数组（至少 1 行）。如果省略 `headers`，第一行将被视为表头
+- `headers` —— 数据的列名，例如 `["Email","Phone","Status"]`
+- `keyColumn` —— 用于匹配的列标题，例如 `"Email"`、`"SKU"`、`"Lead ID"`
+- `strictMode` —— `true`（默认）在列不匹配时报错；`false` 则静默截断
 
-**Example:**
+**示例：**
 ```
 Tool: GOOGLESHEETS_UPSERT_ROWS
 Arguments:
@@ -88,22 +88,22 @@ Arguments:
 
 ---
 
-### 4. Format Cells
+### 4. 格式化单元格
 
-Use `GOOGLESHEETS_FORMAT_CELL` to apply bold, italic, font size, and background colors to ranges.
+使用 `GOOGLESHEETS_FORMAT_CELL` 对范围应用粗体、斜体、字号和背景颜色。
 
-**Tool:** `GOOGLESHEETS_FORMAT_CELL`
+**工具：** `GOOGLESHEETS_FORMAT_CELL`
 
-**Key Parameters:**
-- `spreadsheet_id` (required) -- The spreadsheet ID
-- `range` -- Cell range in A1 notation, e.g., `"A1:D1"`, `"B2:B10"` (recommended over index-based)
-- `sheet_name` -- Worksheet name, e.g., `"Sheet1"`
-- `bold` -- `true`/`false`
-- `italic` -- `true`/`false`
-- `fontSize` -- Font size in points, e.g., `12`
-- `red`, `green`, `blue` -- Background color components (0.0--1.0 float scale, NOT 0--255)
+**关键参数：**
+- `spreadsheet_id`（必填）—— 表格 ID
+- `range` —— A1 表示法的单元格范围，例如 `"A1:D1"`、`"B2:B10"`（推荐优先于基于索引的方式）
+- `sheet_name` —— 工作表名称，例如 `"Sheet1"`
+- `bold` —— `true`/`false`
+- `italic` —— `true`/`false`
+- `fontSize` —— 字号（磅），例如 `12`
+- `red`、`green`、`blue` —— 背景颜色分量（0.0--1.0 的浮点数范围，而非 0--255）
 
-**Example (bold header row with blue background):**
+**示例（表头行加粗并设置蓝色背景）：**
 ```
 Tool: GOOGLESHEETS_FORMAT_CELL
 Arguments:
@@ -119,18 +119,18 @@ Arguments:
 
 ---
 
-### 5. Add New Worksheet Tabs
+### 5. 添加新工作表标签页
 
-Use `GOOGLESHEETS_ADD_SHEET` to create new tabs within an existing spreadsheet.
+使用 `GOOGLESHEETS_ADD_SHEET` 在现有表格中创建新的标签页。
 
-**Tool:** `GOOGLESHEETS_ADD_SHEET`
+**工具：** `GOOGLESHEETS_ADD_SHEET`
 
-**Key Parameters:**
-- `spreadsheetId` (required) -- The spreadsheet ID
-- `title` -- Name for the new tab, e.g., `"Q4 Report"`
-- `forceUnique` -- `true` (default) auto-appends suffix if name exists
+**关键参数：**
+- `spreadsheetId`（必填）—— 表格 ID
+- `title` —— 新标签页的名称，例如 `"Q4 Report"`
+- `forceUnique` —— `true`（默认）在名称已存在时自动追加后缀
 
-**Example:**
+**示例：**
 ```
 Tool: GOOGLESHEETS_ADD_SHEET
 Arguments:
@@ -141,63 +141,63 @@ Arguments:
 
 ---
 
-### 6. Read Data and Verify Content
+### 6. 读取数据并验证内容
 
-Use `GOOGLESHEETS_BATCH_GET` to retrieve data from specified cell ranges for validation or further processing.
+使用 `GOOGLESHEETS_BATCH_GET` 从指定单元格范围检索数据以进行验证或进一步处理。
 
-**Tool:** `GOOGLESHEETS_BATCH_GET`
+**工具：** `GOOGLESHEETS_BATCH_GET`
 
-**Steps:**
-1. Call `GOOGLESHEETS_BATCH_GET` with the spreadsheet ID and target ranges
-2. Validate headers and data alignment
-3. Use results to inform subsequent write or update operations
+**步骤：**
+1. 调用 `GOOGLESHEETS_BATCH_GET`，传入表格 ID 和目标范围
+2. 验证表头和数据对齐情况
+3. 使用结果来指导后续的写入或更新操作
 
-**Supporting Tools:**
-- `GOOGLESHEETS_GET_SHEET_NAMES` -- List all tab names in a spreadsheet
-- `GOOGLESHEETS_GET_SPREADSHEET_INFO` -- Get metadata (sheet IDs, properties)
-- `GOOGLESHEETS_FIND_WORKSHEET_BY_TITLE` -- Check if a specific tab exists
-
----
-
-## Recommended Execution Plan
-
-1. **Create or locate the spreadsheet** using `GOOGLESHEETS_CREATE_GOOGLE_SHEET1` or reuse an existing `spreadsheetId`
-2. **Confirm the destination tab** using `GOOGLESHEETS_GET_SHEET_NAMES` or `GOOGLESHEETS_FIND_WORKSHEET_BY_TITLE`; create it with `GOOGLESHEETS_ADD_SHEET` if missing
-3. **Read existing headers** (optional) using `GOOGLESHEETS_BATCH_GET` to align columns
-4. **Write or upsert data** using `GOOGLESHEETS_BATCH_UPDATE` or `GOOGLESHEETS_UPSERT_ROWS`
-5. **Apply formatting** (optional) using `GOOGLESHEETS_FORMAT_CELL`
-6. **Verify results** (optional) using `GOOGLESHEETS_BATCH_GET`
-7. **Fallback:** If Google Sheets creation is blocked (HTTP 403), use `EXCEL_CREATE_WORKBOOK` for local `.xlsx` output
+**辅助工具：**
+- `GOOGLESHEETS_GET_SHEET_NAMES` —— 列出表格中的所有标签页名称
+- `GOOGLESHEETS_GET_SPREADSHEET_INFO` —— 获取元数据（工作表 ID、属性）
+- `GOOGLESHEETS_FIND_WORKSHEET_BY_TITLE` —— 检查特定标签页是否存在
 
 ---
 
-## 已知陷阱
+## 推荐执行计划
 
-| Pitfall | Detail |
+1. **创建或定位表格**，使用 `GOOGLESHEETS_CREATE_GOOGLE_SHEET1` 或复用现有的 `spreadsheetId`
+2. **确认目标标签页**，使用 `GOOGLESHEETS_GET_SHEET_NAMES` 或 `GOOGLESHEETS_FIND_WORKSHEET_BY_TITLE`；若不存在则用 `GOOGLESHEETS_ADD_SHEET` 创建
+3. **读取现有表头**（可选），使用 `GOOGLESHEETS_BATCH_GET` 对齐列
+4. **写入或更新插入数据**，使用 `GOOGLESHEETS_BATCH_UPDATE` 或 `GOOGLESHEETS_UPSERT_ROWS`
+5. **应用格式化**（可选），使用 `GOOGLESHEETS_FORMAT_CELL`
+6. **验证结果**（可选），使用 `GOOGLESHEETS_BATCH_GET`
+7. **回退方案：** 如果 Google Sheets 创建被阻止（HTTP 403），使用 `EXCEL_CREATE_WORKBOOK` 输出本地 `.xlsx` 文件
+
+---
+
+## 已知坑点
+
+| 坑点 | 详情 |
 |---------|--------|
-| **HTTP 403 on sheet creation** | `GOOGLESHEETS_CREATE_GOOGLE_SHEET1` fails when Drive create scope is missing. Reuse an existing `spreadsheetId` or fall back to `EXCEL_CREATE_WORKBOOK`. |
-| **Cell limit and rate throttling** | Google Sheets has a ~5,000,000 cell limit per spreadsheet. Excessive write frequency triggers HTTP 429. Batch changes and chunk large writes (~500 rows/call). |
-| **Format range off-by-one** | `GOOGLESHEETS_FORMAT_CELL` uses 0-based, endIndex-exclusive ranges when using index mode. Background color uses 0--1 float RGB, NOT 0--255 integer RGB. |
-| **Sheet title uniqueness** | Sheet titles are not guaranteed unique across API responses. Prefer operating by numeric `sheetId` and verify the resolved tab before writing. |
-| **Upsert payload shape** | `GOOGLESHEETS_UPSERT_ROWS` requires headers + 2D rows array. Sending list-of-dicts or empty `rows` causes validation errors. Ensure at least 1 data row. |
+| **创建表格时出现 HTTP 403** | 当缺少 Drive 创建权限（create scope）时，`GOOGLESHEETS_CREATE_GOOGLE_SHEET1` 会失败。请复用现有的 `spreadsheetId` 或回退到 `EXCEL_CREATE_WORKBOOK`。 |
+| **单元格数量限制与限流** | 每个 Google 表格大约有 500 万个单元格的上限。写入频率过高会触发 HTTP 429。请批量处理变更，并将大批量写入分块（每次调用约 500 行）。 |
+| **格式范围偏移一位** | 使用索引模式时，`GOOGLESHEETS_FORMAT_CELL` 采用从 0 开始、endIndex 不包含在内的范围。背景颜色使用 0--1 的浮点 RGB，而不是 0--255 的整数 RGB。 |
+| **工作表标题唯一性** | 工作表标题在 API 响应中并不保证唯一。建议通过数字型 `sheetId` 操作，并在写入前验证已解析的标签页。 |
+| **Upsert 数据格式** | `GOOGLESHEETS_UPSERT_ROWS` 需要表头加二维行数组。传入字典列表或空的 `rows` 会导致校验错误。请确保至少有 1 行数据。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 描述 |
 |-----------|-------------|
-| `EXCEL_CREATE_WORKBOOK` | Create a new `.xlsx` workbook and upload to OneDrive |
-| `GOOGLESHEETS_BATCH_UPDATE` | Write values to a range or append new rows |
-| `GOOGLESHEETS_UPSERT_ROWS` | Update existing rows by key or append new ones |
-| `GOOGLESHEETS_FORMAT_CELL` | Apply text/background formatting to cell ranges |
-| `GOOGLESHEETS_ADD_SHEET` | Add a new worksheet tab to a spreadsheet |
-| `GOOGLESHEETS_CREATE_GOOGLE_SHEET1` | Create a new Google Spreadsheet in Drive |
-| `GOOGLESHEETS_GET_SHEET_NAMES` | List all worksheet names in a spreadsheet |
-| `GOOGLESHEETS_GET_SPREADSHEET_INFO` | Retrieve spreadsheet metadata |
-| `GOOGLESHEETS_FIND_WORKSHEET_BY_TITLE` | Check if a worksheet exists by title |
-| `GOOGLESHEETS_BATCH_GET` | Read data from specified cell ranges |
+| `EXCEL_CREATE_WORKBOOK` | 创建一个新的 `.xlsx` 工作簿并上传到 OneDrive |
+| `GOOGLESHEETS_BATCH_UPDATE` | 将值写入某个范围或追加新行 |
+| `GOOGLESHEETS_UPSERT_ROWS` | 按键更新现有行或追加新行 |
+| `GOOGLESHEETS_FORMAT_CELL` | 对单元格范围应用文本/背景格式 |
+| `GOOGLESHEETS_ADD_SHEET` | 向表格添加新的工作表标签页 |
+| `GOOGLESHEETS_CREATE_GOOGLE_SHEET1` | 在 Drive 中创建新的 Google 表格 |
+| `GOOGLESHEETS_GET_SHEET_NAMES` | 列出表格中的所有工作表名称 |
+| `GOOGLESHEETS_GET_SPREADSHEET_INFO` | 获取表格元数据 |
+| `GOOGLESHEETS_FIND_WORKSHEET_BY_TITLE` | 按标题检查工作表是否存在 |
+| `GOOGLESHEETS_BATCH_GET` | 从指定单元格范围读取数据 |
 
 ---
 
-*由 [Composio](https://composio.dev) 提供支持*
+*Powered by [Composio](https://composio.dev)*

@@ -1,30 +1,35 @@
 import { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Link, NavLink, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Link, NavLink, Route, Routes } from 'react-router';
+import { Analytics } from '@vercel/analytics/react';
 import { Icon } from './components/ui/Icon';
+import { toIndexableRoutePath } from './utils/seo';
 
+const Landing = lazy(() => import('./pages/Landing'));
 const Home = lazy(() => import('./pages/Home'));
 const SkillDetail = lazy(() => import('./pages/SkillDetail'));
 const Workbench = lazy(() => import('./pages/Workbench'));
 const Plugins = lazy(() => import('./pages/Plugins'));
+const Docs = lazy(() => import('./pages/Docs'));
 const TopicLanding = lazy(() => import('./pages/TopicLanding'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const CatalogRouteProvider = lazy(() => import('./context/CatalogRouteProvider'));
 
 function App(): React.ReactElement {
-  const logoSrc = `${import.meta.env.BASE_URL}agentic-skills-logo.png`;
+  const logoSrc = `${import.meta.env.BASE_URL}aas-wordmark.png`;
 
   return (
     <Router basename={import.meta.env.BASE_URL.replace(/\/$/, '') || '/'}>
       <div className="app-shell min-h-screen bg-[var(--surface-canvas)] text-[var(--text-primary)]">
         <header className="app-header">
           <div className="app-header__inner">
-            <Link to="/" className="brand-link" aria-label="Agentic Skills home">
+            <Link to="/" className="brand-link" aria-label="Agentic Awesome Skills home">
               <img
                 src={logoSrc}
-                alt="Agentic Skills logo"
+                alt="AAS"
                 className="brand-link__logo"
               />
               <span className="brand-link__name">
-                Agentic Skills
+                Agentic Awesome Skills
               </span>
             </Link>
 
@@ -34,19 +39,28 @@ function App(): React.ReactElement {
                 end
                 className={({ isActive }) => `app-nav__link ${isActive ? 'is-active' : ''}`}
               >
-                Explore
+                Home
               </NavLink>
               <NavLink
-                to="/workbench"
+                to={toIndexableRoutePath('/core')}
+                className={({ isActive }) => `app-nav__link ${isActive ? 'is-active' : ''}`}
+              >
+                Core
+              </NavLink>
+              <NavLink
+                to={toIndexableRoutePath('/workbench')}
                 className={({ isActive }) => `app-nav__link ${isActive ? 'is-active' : ''}`}
               >
                 Workbench
               </NavLink>
               <NavLink
-                to="/plugins"
+                to={toIndexableRoutePath('/plugins')}
                 className={({ isActive }) => `app-nav__link ${isActive ? 'is-active' : ''}`}
               >
                 Plugins
+              </NavLink>
+              <NavLink to="/docs/" className={({ isActive }) => `app-nav__link ${isActive ? 'is-active' : ''}`}>
+                Docs
               </NavLink>
             </nav>
 
@@ -64,9 +78,11 @@ function App(): React.ReactElement {
               <details className="mobile-nav">
                 <summary aria-label="Open navigation">Menu</summary>
                 <nav aria-label="Mobile navigation">
-                  <Link to="/">Explore</Link>
-                  <Link to="/workbench">Workbench</Link>
-                  <Link to="/plugins">Plugins</Link>
+                  <Link to="/">Home</Link>
+                  <Link to={toIndexableRoutePath('/core')}>Core</Link>
+                  <Link to={toIndexableRoutePath('/workbench')}>Workbench</Link>
+                  <Link to={toIndexableRoutePath('/plugins')}>Plugins</Link>
+                  <Link to="/docs/">Docs</Link>
                   <a href="https://github.com/sickn33/agentic-awesome-skills" target="_blank" rel="noreferrer">View on GitHub</a>
                 </nav>
               </details>
@@ -83,11 +99,16 @@ function App(): React.ReactElement {
             }
           >
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route element={<CatalogRouteProvider />}>
+                <Route path="/" element={<Landing />} />
+                <Route path="/core" element={<Home />} />
+                <Route path="/topics/:slug" element={<TopicLanding />} />
+                <Route path="/skill/:id" element={<SkillDetail />} />
+              </Route>
               <Route path="/plugins" element={<Plugins />} />
+              <Route path="/docs" element={<Docs />} />
+              <Route path="/docs/:slug" element={<Docs />} />
               <Route path="/workbench" element={<Workbench />} />
-              <Route path="/topics/:slug" element={<TopicLanding />} />
-              <Route path="/skill/:id" element={<SkillDetail />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
@@ -96,12 +117,14 @@ function App(): React.ReactElement {
         <footer className="app-footer">
           <p>Independent, community-curated project. Review skills before use.</p>
           <nav aria-label="Footer navigation">
+            <Link to="/docs/">Documentation</Link>
             <a href="https://github.com/sickn33/agentic-awesome-skills#contributing" target="_blank" rel="noreferrer">Contributing</a>
             <a href="https://github.com/sickn33/agentic-awesome-skills/blob/main/LICENSE" target="_blank" rel="noreferrer">License</a>
             <a href="https://github.com/sickn33/agentic-awesome-skills/blob/main/CODE_OF_CONDUCT.md" target="_blank" rel="noreferrer">Code of Conduct</a>
           </nav>
         </footer>
       </div>
+      <Analytics />
     </Router>
   );
 }

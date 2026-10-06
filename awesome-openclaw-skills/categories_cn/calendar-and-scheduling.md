@@ -47,7 +47,7 @@
 - [mcd-cn](https://clawskills.sh/skills/ryanchen01-mcd-cn) - 通过 mcd-cn CLI 查询麦当劳中国 MCP 服务器以获取活动日历。
 - [meeting-prep](https://clawskills.sh/skills/hougangdev-meeting-prep) - 会议准备和每日提交摘要。
 - [morning-email-rollup](https://clawskills.sh/skills/am-will-morning-email-rollup) - 重要电子邮件的每日早晨汇总。
-- [nak](https://clawskills.sh/skills/a1denvalu3-nak) - Nostr Army Knife (nak) CLI。
+- [nak](https://clawskills.sh/skills/a1denvalu3-nak) - Nostr 瑞士军刀（nak）命令行工具。
 - [npkill](https://clawskills.sh/skills/ashirbadgudu-npkill) - 使用 npkill 清理 node_modules 和 .next 文件夹以释放磁盘空间。
 - [office-secretary](https://clawskills.sh/skills/cenralsolution-office-secretary) - 用于分类、日历协调和治理的安全 M365 助手。
 - [opentweet-x-poster](https://clawskills.sh/skills/petricbranko-opentweet-x-poster) - 使用 OpenTweet API 发布到 X（Twitter）。

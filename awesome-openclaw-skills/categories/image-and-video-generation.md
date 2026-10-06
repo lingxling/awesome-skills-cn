@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**172 skills**
+**171 skills**
 
 - [aada](https://clawskills.sh/skills/rylena-aada) - Create and send fun, personality-rich promotional messages from one agent to the Moltbook audience.
 - [ace-music](https://clawskills.sh/skills/fspecii-ace-music) - Generate AI music using ACE-Step 1.5 via ACE Music's free API.
@@ -110,6 +110,7 @@
 - [mindmap-generator](https://clawskills.sh/skills/parasharnagle-mindmap-generator) - Generates visual mindmap images from conversations, goals, decisions, and daily priorities — delivered as PNG.
 - [mixtiles-it](https://clawskills.sh/skills/saharcarmel-mixtiles-it) - Send a photo to Mixtiles for ordering wall tiles.
 - [moonfunsdk](https://clawskills.sh/skills/moonnfunofficial-moonfunsdk) - Professional Python SDK for creating and trading Meme tokens on Binance Smart Chain with AI-powered image generation.
+- [modellix](https://clawhub.ai/modellix/modellix) - Unified API for AI image and video generation.
 - [nanobanana-pro-fallback](https://clawskills.sh/skills/yazelin-nanobanana-pro-fallback) - Nano Banana Pro with auto model fallback — generate/edit images via Gemini Image API.
 - [nk-images-search](https://clawskills.sh/skills/tompltw-nk-images-search) - Search 1+ million free high-quality AI stock photos.
 - [nyne-deep-research](https://clawskills.sh/skills/michaelfanous2-nyne-deep-research) - Research any person using the Nyne Deep Research API.
@@ -173,3 +174,4 @@
 - [zhipu-cogview-image](https://clawskills.sh/skills/honestqiao-zhipu-cogview-image) - Generate images using Zhipu AI's CogView model.
 - [creaa-ai](https://clawskills.sh/skills/yys2024-creaa-ai) - Generate and edit images + generate videos via Creaa API (Nano Banana 2, Sora 2, Seedance 2.0, Veo 3.1).
 - [image-gen-guide](https://clawhub.ai/amrree/image-gen-guide) - Complete guide to local AI image generation with Ollama — no API keys, 100% private.
+- [openshorts](https://clawhub.ai/mutonby/openshorts) - Turn long videos into vertical clips and publish them.

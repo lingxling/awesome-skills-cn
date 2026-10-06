@@ -1,41 +1,41 @@
 ---
 name: Coinbase Automation
-description: "Coinbase Automation: list and manage cryptocurrency wallets, accounts, and portfolio data via Coinbase CDP SDK"
+description: "Coinbase 自动化：通过 Coinbase CDP SDK 列出并管理加密货币钱包、账户和投资组合数据"
 requires:
   mcp: [rube]
 ---
 
-# Coinbase Automation
+# Coinbase 自动化
 
-Automate Coinbase operations including listing cryptocurrency wallets, paginating through wallet collections, and retrieving portfolio data.
+自动化 Coinbase 操作，包括列出加密货币钱包、对钱包集合进行分页遍历以及检索投资组合数据。
 
-**Toolkit docs:** [composio.dev/toolkits/coinbase](https://composio.dev/toolkits/coinbase)
+**工具包文档：** [composio.dev/toolkits/coinbase](https://composio.dev/toolkits/coinbase)
 
 ---
 
 ## 设置
 
-This skill requires the **Rube MCP server** connected at `https://rube.app/mcp`.
+此技能需要连接到 `https://rube.app/mcp` 的 **Rube MCP 服务器**。
 
-Before executing any tools, ensure an active connection exists for the `coinbase` toolkit. If no connection is active, initiate one via `RUBE_MANAGE_CONNECTIONS`.
+在执行任何工具之前，请确保 `coinbase` 工具包存在有效连接。如果没有活动连接，请通过 `RUBE_MANAGE_CONNECTIONS` 发起连接。
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. List All Wallets
+### 1. 列出所有钱包
 
-Retrieve all wallets from Coinbase with pagination support.
+检索 Coinbase 中的所有钱包，支持分页。
 
-**Tool:** `COINBASE_LIST_WALLETS`
+**工具：** `COINBASE_LIST_WALLETS`
 
-**Key Parameters:**
-- `limit` -- Results per page (1--100, default: 25)
-- `order` -- Sort order: `"asc"` (ascending) or `"desc"` (descending, default)
-- `starting_after` -- Cursor for forward pagination: ID of the last wallet from the previous page
-- `ending_before` -- Cursor for backward pagination: ID of the first wallet from the previous page
+**关键参数：**
+- `limit` -- 每页结果数（1--100，默认：25）
+- `order` -- 排序方式：`"asc"`（升序）或 `"desc"`（降序，默认）
+- `starting_after` -- 向前分页的游标：上一页最后一个钱包的 ID
+- `ending_before` -- 向后分页的游标：上一页第一个钱包的 ID
 
-**Example (first page):**
+**示例（第一页）：**
 ```
 Tool: COINBASE_LIST_WALLETS
 Arguments:
@@ -43,7 +43,7 @@ Arguments:
   order: "desc"
 ```
 
-**Example (next page):**
+**示例（下一页）：**
 ```
 Tool: COINBASE_LIST_WALLETS
 Arguments:
@@ -54,56 +54,56 @@ Arguments:
 
 ---
 
-### 2. Paginate Through All Wallets
+### 2. 分页遍历所有钱包
 
-To retrieve a complete wallet inventory, iterate through pages.
+要检索完整的钱包清单，请逐页迭代。
 
-**Steps:**
-1. Call `COINBASE_LIST_WALLETS` with desired `limit` and `order`
-2. If the response contains more results, note the ID of the last wallet returned
-3. Call `COINBASE_LIST_WALLETS` again with `starting_after` set to that last wallet ID
-4. Repeat until no more results are returned
-
----
-
-### 3. Audit Wallet Portfolio
-
-Retrieve wallet data for portfolio analysis and reporting.
-
-**Steps:**
-1. Call `COINBASE_LIST_WALLETS` with `limit: 100` to maximize per-page results
-2. Collect wallet balances and metadata from each page
-3. Aggregate data across all pages for a complete portfolio view
+**步骤：**
+1. 使用所需的 `limit` 和 `order` 调用 `COINBASE_LIST_WALLETS`
+2. 如果响应中包含更多结果，记下返回的最后一个钱包的 ID
+3. 再次调用 `COINBASE_LIST_WALLETS`，将 `starting_after` 设置为该最后一个钱包 ID
+4. 重复直到不再返回结果
 
 ---
 
-### 4. Monitor Wallet Changes
+### 3. 审计钱包投资组合
 
-Periodically list wallets to detect new additions or changes.
+检索钱包数据，用于投资组合分析和报告。
 
-**Steps:**
-1. Call `COINBASE_LIST_WALLETS` with `order: "desc"` to get newest wallets first
-2. Compare against previously stored wallet IDs to identify new entries
-3. Schedule periodic checks for continuous monitoring
+**步骤：**
+1. 使用 `limit: 100` 调用 `COINBASE_LIST_WALLETS`，以最大化每页结果数
+2. 从每一页收集钱包余额和元数据
+3. 汇总所有页面的数据，得到完整的投资组合视图
+
+---
+
+### 4. 监控钱包变化
+
+定期列出钱包，以检测新增或变更。
+
+**步骤：**
+1. 使用 `order: "desc"` 调用 `COINBASE_LIST_WALLETS`，优先获取最新的钱包
+2. 与之前存储的钱包 ID 比较，以识别新条目
+3. 安排定期检查以实现持续监控
 
 ---
 
 ## 已知陷阱
 
-| Pitfall | Detail |
+| 陷阱 | 详情 |
 |---------|--------|
-| **Pagination required** | Wallet lists are paginated. Always check for additional pages using cursor-based pagination (`starting_after`/`ending_before`). |
-| **Limit bounds** | The `limit` parameter accepts 1--100. Values outside this range cause errors. Default is 25. |
-| **Cursor-based pagination** | Uses wallet IDs as cursors, not page numbers. You must extract the last/first wallet ID from each response to navigate pages. |
-| **CDP SDK scope** | This tool uses the Coinbase CDP SDK. Available operations depend on the API key permissions granted during connection setup. |
+| **必须分页** | 钱包列表是分页的。请始终使用基于游标的分页（`starting_after`/`ending_before`）检查是否有更多页面。 |
+| **limit 范围** | `limit` 参数接受 1--100。超出此范围的值会导致错误。默认值为 25。 |
+| **基于游标的分页** | 使用钱包 ID 作为游标，而不是页码。你必须从每个响应中提取最后一个/第一个钱包 ID 来翻页。 |
+| **CDP SDK 范围** | 此工具使用 Coinbase CDP SDK。可用的操作取决于连接设置期间授予的 API 密钥权限。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具 Slug | 描述 |
 |-----------|-------------|
-| `COINBASE_LIST_WALLETS` | List cryptocurrency wallets with pagination |
+| `COINBASE_LIST_WALLETS` | 列出加密货币钱包，支持分页 |
 
 ---
 

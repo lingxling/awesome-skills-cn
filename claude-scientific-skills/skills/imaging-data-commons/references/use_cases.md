@@ -1,8 +1,9 @@
 # Common Use Cases for IDC
 
-**Tested with:** idc-index 0.11.9 (IDC data version v23)
+**Tested with:** idc-index 0.12.5 (IDC data version v24)
 
-This guide provides complete end-to-end workflow examples for common IDC use cases. Each use case demonstrates the full workflow from query to download with best practices.
+These download and local-file processing examples are illustrative; metadata queries were
+smoke-tested with the pinned IDC release. This guide provides end-to-end workflow examples for common IDC use cases. Each use case demonstrates the full workflow from query to download with best practices.
 
 ## When to Use This Guide
 
@@ -16,9 +17,8 @@ For core API patterns (query, download, visualize, citations), see the "Core Cap
 
 ## Prerequisites
 
-```bash
-pip install --upgrade idc-index
-```
+Needs `idc-index` installed — run `python scripts/check_version.py`, which reports the installed
+version and prints the install command for the interpreter you are running.
 
 ## Use Case 1: Find and Download Lung CT Scans for Deep Learning
 
@@ -35,7 +35,8 @@ query = """
 SELECT
   PatientID,
   SeriesInstanceUID,
-  SeriesDescription
+  SeriesDescription,
+  crdc_series_uuid, series_aws_url, license_short_name, source_DOI
 FROM index
 WHERE collection_id = 'nlst'
   AND Modality = 'CT'
@@ -93,17 +94,13 @@ for _, row in manufacturers.head(3).iterrows():
     mfr = row['Manufacturer']
     model = row['ManufacturerModelName']
 
-    query = f"""
-    SELECT SeriesInstanceUID
-    FROM index
-    WHERE Manufacturer = '{mfr}'
-      AND ManufacturerModelName = '{model}'
-      AND Modality = 'MR'
-      AND BodyPartExamined LIKE '%BRAIN%'
-    LIMIT 5
-    """
-
-    series = client.sql_query(query)
+    # Use DataFrame equality to handle quotes and missing values in vendor strings.
+    series = client.index[
+        client.index['Manufacturer'].eq(mfr) &
+        client.index['ManufacturerModelName'].eq(model) &
+        client.index['Modality'].eq('MR') &
+        client.index['BodyPartExamined'].str.contains('BRAIN', na=False)
+    ].head(5)
     client.download_from_selection(
         seriesInstanceUID=list(series['SeriesInstanceUID'].values),
         downloadDir=f"./quality_study/{mfr.replace(' ', '_')}"
@@ -153,10 +150,10 @@ SELECT
   SeriesInstanceUID,
   collection_id,
   PatientID,
-  Modality
+  Modality,
+  crdc_series_uuid, series_aws_url, license_short_name, source_DOI
 FROM index
-WHERE license_short_name LIKE 'CC BY%'
-  AND license_short_name NOT LIKE '%NC%'
+WHERE license_short_name IN ('CC BY 3.0', 'CC BY 4.0')
   AND Modality IN ('CT', 'MR')
   AND BodyPartExamined IN ('CHEST', 'BRAIN', 'ABDOMEN')
 LIMIT 200
@@ -177,6 +174,96 @@ client.download_from_selection(
 # Save license information
 cc_by_data.to_csv('commercial_dataset_manifest_CC-BY_ONLY.csv', index=False)
 ```
+
+## Use Case 5: Batch Download with Filtering
+
+**Objective:** Download a large filtered dataset in batches to avoid timeouts
+
+**Steps:**
+```python
+from idc_index import IDCClient
+import pandas as pd
+
+client = IDCClient()
+
+# Find chest CT scans from GE scanners with a permissive license
+query = """
+SELECT
+  SeriesInstanceUID,
+  PatientID,
+  collection_id,
+  ManufacturerModelName
+FROM index
+WHERE Modality = 'CT'
+  AND BodyPartExamined = 'CHEST'
+  AND Manufacturer = 'GE MEDICAL SYSTEMS'
+  AND license_short_name = 'CC BY 4.0'
+LIMIT 100
+"""
+
+results = client.sql_query(query)
+
+# Save manifest for reproducibility
+results.to_csv('lung_ct_manifest.csv', index=False)
+
+# Download in batches to avoid timeout
+batch_size = 10
+for i in range(0, len(results), batch_size):
+    batch = results.iloc[i:i+batch_size]
+    client.download_from_selection(
+        seriesInstanceUID=list(batch['SeriesInstanceUID'].values),
+        downloadDir=f"./data/batch_{i//batch_size}"
+    )
+```
+
+## Use Case 6: Integration with Analysis Pipelines
+
+**Objective:** Load downloaded DICOM files into Python for processing
+
+**Read individual DICOM files with pydicom:**
+```python
+import pydicom
+import os
+
+series_dir = "./data/rider/rider_pilot/RIDER-1007893286/CT_1.3.6.1..."
+
+dicom_files = [os.path.join(series_dir, f) for f in os.listdir(series_dir)
+               if f.endswith('.dcm')]
+
+ds = pydicom.dcmread(dicom_files[0])
+print(f"Patient ID: {ds.PatientID}")
+print(f"Modality: {ds.Modality}")
+print(f"Image shape: {ds.pixel_array.shape}")
+```
+
+**Load one conventional CT series with SimpleITK:**
+
+This example requires local DICOM files and is illustrative. Use `volume_geometry_index`
+to screen candidates, then check orientation, spacing, missing/duplicate slices, and pixel
+units in the actual files. Sorting only `ImagePositionPatient[2]` is wrong for oblique or
+sagittal series, and raw `pixel_array` values are not automatically Hounsfield units.
+
+```python
+import SimpleITK as sitk
+
+series_path = "./data/ct_series"
+series_ids = sitk.ImageSeriesReader.GetGDCMSeriesIDs(series_path)
+if len(series_ids) != 1:
+    raise ValueError(f"Select exactly one CT series; found {len(series_ids)}")
+reader = sitk.ImageSeriesReader()
+dicom_names = reader.GetGDCMSeriesFileNames(series_path, series_ids[0])
+reader.SetFileNames(dicom_names)
+image = reader.Execute()
+print(image.GetSize(), image.GetSpacing(), image.GetDirection())
+# Confirm CT rescale/unit semantics before treating intensities as HU.
+image = sitk.Cast(image, sitk.sitkFloat32)
+smoothed = sitk.CurvatureFlow(image1=image, timeStep=0.125, numberOfIterations=5)
+sitk.WriteImage(smoothed, "processed_volume.nii.gz")
+```
+
+For ML datasets, split by patient (and where needed institution), keep all studies and
+series from one patient in the same split, and document collection/label provenance.
+Selecting 100 series is not equivalent to selecting 100 independent patients.
 
 ## Resources
 

@@ -1,0 +1,5 @@
+# Constructed from biom file
+#OTU ID	sampleA	sampleB	taxonomy
+f1	60	30	d__Bacteria; p__Firmicutes; c__Bacilli; o__Lactobacillales; f__Lactobacillaceae; g__Lactobacillus
+f2	40	70	d__Bacteria; p__Bacteroidota; c__Bacteroidia; o__Bacteroidales; f__Bacteroidaceae; g__Bacteroides
+f3	0	0	Unassigned

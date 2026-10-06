@@ -33,6 +33,8 @@ def main():
     parser.add_argument("--out-mzml", help="Write spectrum to mzML")
     parser.add_argument("--out-csv", help="Write annotated peak list to CSV")
     args = parser.parse_args()
+    if args.charge < 1:
+        parser.error("--charge must be positive")
 
     seq = ms.AASequence.fromString(args.peptide)
     tsg = ms.TheoreticalSpectrumGenerator()
@@ -45,12 +47,17 @@ def main():
     tsg.setParameters(p)
 
     spec = ms.MSSpectrum()
+    spec.setMSLevel(2)
+    spec.setType(ms.SpectrumSettings.SpectrumType.CENTROID)
     tsg.getSpectrum(spec, seq, 1, args.charge)
     print(f"Peptide: {seq.toString()}  ({len(spec)} fragment peaks)")
 
     mz, inten = spec.get_peaks()
-    names = [spec.getStringDataArrays()[0][i].decode() if spec.getStringDataArrays() else ""
-             for i in range(len(mz))]
+    annotations = spec.getStringDataArrays()
+    names = []
+    for i in range(len(mz)):
+        label = annotations[0][i] if annotations else ""
+        names.append(label.decode("utf-8") if isinstance(label, bytes) else str(label))
     rows = sorted(zip(mz, inten, names), key=lambda r: r[0])
     for m, _, name in rows:
         print(f"  {name:12s} m/z {m:.4f}")

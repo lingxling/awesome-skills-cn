@@ -8,7 +8,13 @@ const HEAD_SHA = "2".repeat(40);
 const BLOB_SHA = "3".repeat(40);
 const ZERO_SHA = "0".repeat(40);
 
-function makeCheckRun(name, status, conclusion, startedAt, id) {
+assert.strictEqual(
+  mergeBatch.EVIDENCE_TIMEOUT_MS,
+  300_000,
+  "repository-wide trusted evidence must have a five-minute execution budget",
+);
+
+function makeCheckRun(name, status, conclusion, startedAt, id, suiteId = 1) {
   return {
     name,
     status,
@@ -18,19 +24,13 @@ function makeCheckRun(name, status, conclusion, startedAt, id) {
     created_at: startedAt,
     id,
     app: { id: 15368 },
+    check_suite: { id: suiteId },
   };
 }
 
 function evidenceSnapshot(overrides = {}) {
   return {
-    score: {
-      scores: {
-        metadata: 90,
-        documentation: 80,
-        security: 100,
-        total: 90,
-      },
-    },
+    audit: { counts: { error: 0, warning: 0, info: 0 } },
     ...overrides,
   };
 }
@@ -64,19 +64,6 @@ function evidenceSnapshot(overrides = {}) {
 }
 
 {
-  const template = `# Pull Request Description\n\nIntro\n\n## Change Classification\n- [ ] Skill PR\n\n## Quality Bar Checklist ✅\n- [ ] Standards`;
-  const body = mergeBatch.normalizePrBody(
-    `Short summary\n\n## Change Classification\n- [ ] Old item`,
-    template,
-  );
-
-  assert.ok(body.startsWith("Short summary"));
-  assert.ok(body.includes("## Change Classification"));
-  assert.ok(body.includes("## Quality Bar Checklist ✅"));
-  assert.ok(!body.includes("Old item"));
-}
-
-{
   const aliases = mergeBatch.getRequiredCheckAliases({ hasSkillChanges: true });
   assert.ok(aliases.some((entry) => !Array.isArray(entry) && entry.aliases.includes("review")));
   assert.ok(aliases.some((entry) => entry.aliases.includes("pr-policy")));
@@ -103,6 +90,22 @@ function evidenceSnapshot(overrides = {}) {
 
   const latest = mergeBatch.selectLatestCheckRuns(runs);
   assert.strictEqual(latest.get("pr-policy").conclusion, "success");
+
+  const olderLateFailure = {
+    ...makeCheckRun("artifact-preview", "completed", "failure", "2026-04-01T10:00:00Z", 7),
+    created_at: "2026-04-01T10:00:00Z",
+    completed_at: "2026-04-01T10:20:00Z",
+  };
+  const newerPending = {
+    ...makeCheckRun("artifact-preview", "in_progress", null, "2026-04-01T10:10:00Z", 8),
+    created_at: "2026-04-01T10:10:00Z",
+    completed_at: null,
+  };
+  assert.strictEqual(
+    mergeBatch.selectLatestCheckRuns([olderLateFailure, newerPending]).get("artifact-preview").id,
+    8,
+    "run creation order must win over a stale run's later completion time",
+  );
 
   const spoofed = { ...makeCheckRun("pr-policy", "completed", "success", "2026-04-01T10:20:00Z", 6), app: { id: 999 } };
   assert.deepStrictEqual(
@@ -159,26 +162,6 @@ function evidenceSnapshot(overrides = {}) {
     ["missing"],
     "a skipped manual-review job must not pass",
   );
-  const missingCredentials = makeCheckRun(
-    "Skill Review / missing-review-credentials",
-    "completed",
-    "failure",
-    "2026-04-01T10:04:00Z",
-    14,
-  );
-  assert.deepStrictEqual(
-    mergeBatch.summarizeRequiredCheckRuns(
-      [skippedReview, skippedManual, missingCredentials],
-      [withAttestation],
-    ).map((entry) => entry.state),
-    ["failed"],
-    "missing internal review credentials must fail promptly",
-  );
-}
-
-{
-  assert.strictEqual(mergeBatch.isRetryableMergeError(new Error("Base branch was modified")), true);
-  assert.strictEqual(mergeBatch.isRetryableMergeError(new Error("Something else")), false);
 }
 
 {
@@ -232,6 +215,19 @@ function evidenceSnapshot(overrides = {}) {
   assert.throws(() => mergeBatch.parseRawDiff(invalidUtf8), /canonical UTF-8/);
 }
 
+{
+  const records = mergeBatch.readRawChangeRecords("/tmp/repo", BASE_SHA, HEAD_SHA, {
+    runCommandBuffer() {
+      return Buffer.alloc(0);
+    },
+  });
+  assert.deepStrictEqual(
+    records,
+    [],
+    "a zero-diff contributor PR should remain mergeable through the protected batch workflow",
+  );
+}
+
 function workflowFixture(overrides = {}) {
   return {
     id: 100,
@@ -252,6 +248,7 @@ function runFixture(overrides = {}) {
     head_repository: { full_name: "contributor/repo" },
     repository: { full_name: "owner/repo" },
     pull_requests: [{ number: 450 }],
+    check_suite_id: 900,
     ...overrides,
   };
 }
@@ -264,6 +261,22 @@ function runFixture(overrides = {}) {
     HEAD_SHA,
   );
   assert.strictEqual(valid.length, 1);
+
+  assert.ok(
+    mergeBatch.approvalWorkflowPaths.has(".github/workflows/aas-agent-first-preview.yml"),
+    "the pinned read-only AAS agent-first preview workflow must be approvable for fork web-app PRs",
+  );
+  assert.ok(
+    mergeBatch.approvalWorkflowPaths.has(".github/workflows/skillspector-advisory.yml"),
+    "the pinned read-only SkillSpector advisory workflow must be approvable for fork skill PRs",
+  );
+  const previewValid = mergeBatch.validateActionRequiredRuns(
+    [runFixture({ path: ".github/workflows/aas-agent-first-preview.yml", workflow_id: 102 })],
+    [workflowFixture({ id: 102, path: ".github/workflows/aas-agent-first-preview.yml" })],
+    450,
+    HEAD_SHA,
+  );
+  assert.strictEqual(previewValid.length, 1);
 
   const emptyMetadataIdentity = {
     headRefName: "feature/example",
@@ -367,6 +380,27 @@ function approvalDependencies(overrides = {}) {
 
 {
   const prDetails = { number: 450, baseRefName: "main", baseRefOid: BASE_SHA, headRefOid: HEAD_SHA };
+  let blobReads = 0;
+  let classifications = 0;
+  const dependencies = approvalDependencies({
+    readRawChangeRecords() { return []; },
+    resolveBlobSizes() { blobReads += 1; return new Map(); },
+    classifyChangeRecords() { classifications += 1; throw new Error("empty diffs need no path classification"); },
+    listActionRequiredRuns() { return []; },
+  });
+  const result = mergeBatch.approveActionRequiredRuns("/repo", "owner/repo", prDetails, {
+    dependencies,
+    dryRun: true,
+  });
+  assert.strictEqual(result.policy.approvalSafe, true);
+  assert.deepStrictEqual(result.records, []);
+  assert.strictEqual(result.policy.requiresHumanReview, false);
+  assert.strictEqual(blobReads, 0);
+  assert.strictEqual(classifications, 0);
+}
+
+{
+  const prDetails = { number: 450, baseRefName: "main", baseRefOid: BASE_SHA, headRefOid: HEAD_SHA };
   const supportRecord = {
     status: "M",
     old_path: "skills/example/references/guide.md",
@@ -390,6 +424,36 @@ function approvalDependencies(overrides = {}) {
     reviewedHeads: [HEAD_SHA],
     dryRun: true,
   });
+  assert.strictEqual(approved.policy.requiresHumanReview, true);
+  assert.deepStrictEqual(approved.policy.canonicalSkillChanges, []);
+}
+
+{
+  const prDetails = { number: 450, baseRefName: "main", baseRefOid: BASE_SHA, headRefOid: HEAD_SHA };
+  const webAppRecord = {
+    status: "M",
+    old_path: "apps/web-app/src/hooks/useSkillStars.ts",
+    new_path: "apps/web-app/src/hooks/useSkillStars.ts",
+    old_mode: "100644",
+    new_mode: "100644",
+    old_oid: BASE_SHA,
+    new_oid: BLOB_SHA,
+  };
+  const dependencies = approvalDependencies({
+    readRawChangeRecords() { return [webAppRecord]; },
+    resolveBlobSizes() { return new Map([[BASE_SHA, 100], [BLOB_SHA, 100]]); },
+  });
+  assert.throws(
+    () => mergeBatch.approveActionRequiredRuns("/repo", "owner/repo", prDetails, { dependencies }),
+    /--reviewed-head/,
+    "web-app browser source must require an exact-head maintainer attestation",
+  );
+  const approved = mergeBatch.approveActionRequiredRuns("/repo", "owner/repo", prDetails, {
+    dependencies,
+    reviewedHeads: [HEAD_SHA],
+    dryRun: true,
+  });
+  assert.strictEqual(approved.policy.approvalSafe, true);
   assert.strictEqual(approved.policy.requiresHumanReview, true);
   assert.deepStrictEqual(approved.policy.canonicalSkillChanges, []);
 }
@@ -518,6 +582,63 @@ function approvalDependencies(overrides = {}) {
 }
 
 {
+  const prDetails = {
+    number: 450,
+    baseRefName: "main",
+    baseRefOid: BASE_SHA,
+    headRefOid: HEAD_SHA,
+    headRefName: "maintenance/internal",
+    headRepository: { nameWithOwner: "OWNER/REPO" },
+    author: { login: "owner" },
+  };
+  let classifications = 0;
+  const dependencies = approvalDependencies({
+    classifyChangeRecords() {
+      classifications += 1;
+      return {
+        approvalSafe: false,
+        reasons: ["record_0:new_unapproved_path"],
+        requiresHumanReview: false,
+        canonicalSkillChanges: [],
+      };
+    },
+    listActionRequiredRuns() { return []; },
+    loadPullRequestDetails() { return prDetails; },
+  });
+  const result = mergeBatch.approveActionRequiredRuns("/repo", "owner/repo", prDetails, {
+    dependencies,
+    reviewedHeads: [HEAD_SHA],
+  });
+  assert.strictEqual(result.sameRepository, true);
+  assert.strictEqual(classifications, 2);
+  assert.deepStrictEqual(result.runs, []);
+}
+
+{
+  const prDetails = {
+    number: 451,
+    baseRefName: "main",
+    baseRefOid: BASE_SHA,
+    headRefOid: HEAD_SHA,
+    headRefName: "maintenance/internal",
+    headRepository: { nameWithOwner: "owner/repo" },
+    author: { login: "collaborator" },
+  };
+  const dependencies = approvalDependencies({
+    classifyChangeRecords() {
+      return { approvalSafe: false, reasons: ["record_0:new_unapproved_path"] };
+    },
+  });
+  assert.throws(
+    () => mergeBatch.approveActionRequiredRuns("/repo", "owner/repo", prDetails, {
+      dependencies,
+      reviewedHeads: [HEAD_SHA],
+    }),
+    /not fork-approval-safe/,
+  );
+}
+
+{
   const record = {
     status: "M",
     old_path: "skills/example/SKILL.md",
@@ -551,6 +672,23 @@ function approvalDependencies(overrides = {}) {
     }),
     report,
   );
+  const nestedBundleRecord = {
+    ...record,
+    old_path: "skills/example/examples/app/package-lock.json",
+    new_path: "skills/example/examples/app/package-lock.json",
+  };
+  const nestedBundleReport = {
+    ...report,
+    changes: [{ ...report.changes[0], records: [nestedBundleRecord] }],
+  };
+  assert.strictEqual(
+    mergeBatch.validateChangedSkillEvidence(nestedBundleReport, {
+      mergeBaseOid: BASE_SHA,
+      headOid: HEAD_SHA,
+      rawRecords: [nestedBundleRecord],
+    }),
+    nestedBundleReport,
+  );
   assert.throws(
     () => mergeBatch.validateChangedSkillEvidence(
       { ...report, head_oid: BLOB_SHA },
@@ -575,10 +713,10 @@ function approvalDependencies(overrides = {}) {
   );
   assert.throws(
     () => mergeBatch.validateChangedSkillEvidence(
-      { ...report, changes: [{ ...report.changes[0], after: evidenceSnapshot({ score: { scores: { metadata: NaN } } }) }] },
+      { ...report, changes: [{ ...report.changes[0], after: evidenceSnapshot({ audit: { counts: { error: -1, warning: 0, info: 0 } } }) }] },
       { mergeBaseOid: BASE_SHA, headOid: HEAD_SHA, rawRecords: [record] },
     ),
-    /missing or non-finite/,
+    /missing or invalid/,
   );
 }
 

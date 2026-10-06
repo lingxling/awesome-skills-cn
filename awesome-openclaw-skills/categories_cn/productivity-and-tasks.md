@@ -2,7 +2,7 @@
 
 [← 返回主列表](../README.md#table-of-contents)
 
-**206 skills**
+**207 skills**
 
 - [4to1-planner](https://clawskills.sh/skills/qingxuantang-4to1-planner) - 使用 4To1 Method™ 的 AI 规划教练 — 将 4 年愿景转化为日常行动。
 - [4todo](https://clawskills.sh/skills/blackstorm-4todo) - 从聊天中管理 4todo (4to.do)。
@@ -41,8 +41,8 @@
 - [bioskills](https://clawskills.sh/skills/djemec-bioskills) - 安装 425 个生物信息学技能，涵盖序列分析、RNA-seq、单细胞、变异调用、宏基因组学。
 - [blackpix](https://clawskills.sh/skills/blackpixcom-blackpix) - 连接到 BlackPix 分布式 AI 知识网络。
 - [blossom-hire](https://clawskills.sh/skills/robbiwu-blossom-hire) - 在 Blossom 中发布工作、任务或有偿轮班以雇佣当地帮助。
-- [botcoin-miner](https://clawskills.sh/skills/happybigmtn-botcoin-miner) - 使用信任优先工作流程挖掘 Botcoin：明确的价值主张、可验证的二进制文件和明确的操作。
 - [boss-ai-agent](https://clawskills.sh/skills/tonypk-boss-ai-agent) - 拥有 14 位导师和 9 个文化包的 AI 管理中间件。
+- [botcoin-miner](https://clawskills.sh/skills/happybigmtn-botcoin-miner) - 使用信任优先工作流程挖掘 Botcoin：明确的价值主张、可验证的二进制文件和明确的操作。
 - [bounty-hunter](https://clawskills.sh/skills/satoshi891102-bounty-hunter) - 寻找、评估和提交在线赏金和黑客马拉松以获取奖金。
 - [brainz-tasks](https://clawskills.sh/skills/xejrax-brainz-tasks) - 使用 `todoist` CLI 管理 Todoist 任务。
 - [briefing](https://clawskills.sh/skills/lstpsche-briefing) - 每日简报：收集日历（gcalcli-calendar）、活动待办事项（todo-management）和天气。
@@ -94,7 +94,7 @@
 - [exchange-2010-ews](https://clawskills.sh/skills/pes0-exchange-2010-ews) - Exchange 2010 EWS 集成，用于电子邮件、日历、联系人。
 - [exchange2010](https://clawskills.sh/skills/pes0-exchange2010) - Exchange 2010 EWS 集成，用于电子邮件、日历、联系人。
 - [facticity-ai](https://clawskills.sh/skills/shahruj-facticity-ai) - 完整的 Facticity.AI 集成 - 事实检查声明、从内容中提取声明、转录链接、检查链接。
-- [facture-make](https://clawskills.sh/skills/cimes19-facture-make) - Ce skill permet de générer et d'envoyer des factures professionnelles vers Make.com après une étape de confirmation.
+- [facture-make](https://clawskills.sh/skills/cimes19-facture-make) - 在确认步骤之后生成专业发票并发送到 Make.com。
 - [family-todo-management](https://clawskills.sh/skills/thurendous-family-todo-management) - 管理具有多用户支持的家庭待办事项列表。
 - [farm-task-manager](https://clawskills.sh/skills/johstracke-farm-task-manager) - *每日、每周和季节性农场杂务管理，具有任务调度和优先级。*.
 - [farmos-tasks](https://clawskills.sh/skills/brianppetty-farmos-tasks) - 查询和管理农场工作订单和任务。
@@ -147,6 +147,7 @@
 - [postqued-api](https://clawskills.sh/skills/syeddhasnainn-postqued-api) - PostQued 社交媒体调度 API 集成。
 - [ppt-ooxml-tool](https://clawskills.sh/skills/jason2be-ppt-ooxml-tool) - 用于 PPTX OOXML 本地化工作流的 AI 代理技能。
 - [proactive-soul]([https://clawskills.sh/skills/jason2be-ppt-ooxml-tool) - 赋予你的代理一种内在生活 — 主动的每日推送、跨会话持续存在的好奇心线索，以及在它不同意时真实的反驳。
+- [project-cross-migration](https://clawhub.ai/zhouxin121/skills/project-cross-migration) - 在更换设备或代理框架时，备份、校验并恢复代理的完整工作区（对话 JSONL、记忆、人设、配置）。
 - [publora](https://clawskills.sh/skills/sergebulaev-publora) - Publora API — 跨 10 个平台（X/Twitter、LinkedIn、Instagram、Threads）安排和发布社交媒体帖子。
 - [publora-mastodon](https://clawskills.sh/skills/sergebulaev-publora-mastodon) - 使用 Publora API 发布或安排内容到 Mastodon。
 - [qa-testing-bots](https://clawskills.sh/skills/g4dr-qa-testing-bots) - 此技能使 Claude 能够构建和运行 **自动化 QA 测试机器人**，模拟用户交互。
@@ -210,4 +211,6 @@
 - [zulip](https://clawskills.sh/skills/suky57-zulip) - 通过 REST API 和 Python 客户端与 Zulip 聊天平台交互。
 - [blog-composer](https://clawhub.ai/amrree/blog-composer) - Jekyll 博客创作 UI — 管理文章、草稿、标签和发布工作流。
 - [blog-studio](https://clawhub.ai/amrree/blog-studio) - 面向 GitHub Pages Jekyll 博客的独立 CMS — 浏览、编辑、创建，一键部署。
+- [FlowBoard](https://clawhub.ai/rasimme/plugins/flowboard) - 为代理提供按项目持久化的上下文和看板（Kanban）。
 - [sol-scribe](https://clawhub.ai/amrree/sol-scribe) - 面向长篇创意项目的写作伙伴 — 章节规划、叙事一致性和 AI 辅助起草。
+- [scvd-tab](https://clawhub.ai/seancrecord/scvd-tab) - 为 AI 代理跟踪工具支出、试用转付费情况和闲置订阅。

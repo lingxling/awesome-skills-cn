@@ -110,6 +110,7 @@
 - [personal-friends](https://clawskills.sh/skills/gekacross-personal-friends) - Acts as the user's social life assistant in the Friends topic.
 - [personaldatahub](https://clawskills.sh/skills/haojian-personaldatahub) - Pull personal data (emails, issues) and propose outbound actions (drafts, replies) through the PersonalDataHub.
 - [pidgesms](https://clawskills.sh/skills/typhonius-pidgesms) - Send and read SMS text messages via an Android phone using pidge.
+- [pilot-protocol](https://clawhub.ai/teoslayer/pilot-protocol) - Encrypted P2P messaging and trust handshakes between AI agents over Pilot Protocol's overlay network.
 - [portfolio-watcher](https://clawskills.sh/skills/jhillin8-portfolio-watcher) - Monitor stock/crypto holdings, get price alerts, track portfolio performance.
 - [postwall](https://clawskills.sh/skills/casperaiassist-postwall) - Secure email gateway for AI agents - human-in-the-loop approval for reading and sending emails.
 - [price-monitor-fr](https://clawskills.sh/skills/hugosbl-price-monitor-fr) - Surveille les prix de produits sur des sites e-commerce et alerte quand ils baissent.
@@ -147,3 +148,6 @@
 - [zepto](https://clawskills.sh/skills/bewithgaurav-zepto) - Order groceries from Zepto in seconds.
 - [lobstermail-agent-email](https://clawskills.sh/skills/samuelchenardlovesboards-lobstermail-agent-email) - Email for AI agents. No API keys, no signup.
 - [sol-email](https://clawhub.ai/amrree/sol-email) - Read and send emails via himalaya (Maildir) and SMTP. Real inbox, real replies.
+- [atomicmail](https://clawhub.ai/atomicmail/atomicmail) - Agent-owned @atomicmail.ai inbox over JMAP. PoW signup, no API keys.
+- [ai-calls-china-phone](https://clawhub.ai/ustczz/skills/ai-calls-china-phone) - AI phone calls and inbound reception for mainland China.
+- [assistant-mail](https://clawhub.ai/assistantmail/skills/assistant-mail) - Allowlist/consent agent email for small-team operators.

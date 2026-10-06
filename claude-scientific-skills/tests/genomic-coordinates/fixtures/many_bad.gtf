@@ -1,0 +1,10 @@
+chr1	src	exon	0	100	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	101	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	102	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	103	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	104	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	105	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	106	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	107	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	108	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	exon	0	109	.	+	.	gene_id "A"; transcript_id "B";

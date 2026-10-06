@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>http://arxiv.org/api/errors#incorrect_id_format_for_start</id>
+  <title type="html">arXiv Search Results</title>
+  <updated>2026-07-27T20:52:14-04:00</updated>
+  <opensearch:totalResults xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">1</opensearch:totalResults>
+  <opensearch:startIndex xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">0</opensearch:startIndex>
+  <opensearch:itemsPerPage xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/">1</opensearch:itemsPerPage>
+  <entry>
+    <id>http://arxiv.org/api/errors#incorrect_id_format_for_start</id>
+    <title>Error</title>
+    <summary>start must be an integer</summary>
+    <updated>2026-07-27T20:52:14-04:00</updated>
+    <author><name>arXiv api core</name></author>
+    <link href="http://arxiv.org/api/errors#incorrect_id_format_for_start" rel="alternate" type="text/html"/>
+  </entry>
+</feed>

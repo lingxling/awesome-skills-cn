@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-tree.py — persistent hypothesis-tree state manager for Arbor-style
+tree.py -- persistent hypothesis-tree state manager for Arbor-style
 Hypothesis Tree Refinement (HTR).
 
 The hypothesis tree is the durable research state for an Autonomous
 Optimization (AO) run. This script owns the *mechanical* parts of that state
-— creating nodes, writing back evidence, propagating insights up the tree,
+-- creating nodes, writing back evidence, propagating insights up the tree,
 pruning falsified branches, recording the held-out merge gate, and rendering
-an "Observe" projection — so the coordinator (you, the model) can spend its
+an "Observe" projection -- so the coordinator (you, the model) can spend its
 judgment on what the evidence *means* rather than on bookkeeping.
 
 Division of labor:
@@ -18,20 +18,20 @@ Division of labor:
     those decisions.
 
 State lives in `.arbor/` under the run directory (default: current dir):
-  .arbor/tree.json   — the hypothesis tree (nodes, edges, evidence, insights)
-  .arbor/run.json    — run-level config: objective, evaluators, budget, M_best
+  .arbor/tree.json   -- the hypothesis tree (nodes, edges, evidence, insights)
+  .arbor/run.json    -- run-level config: objective, evaluators, budget, M_best
 
 Node fields mirror the paper's research unit  n = <h, iota, mu>:
-  hypothesis  (h)    — the falsifiable claim this node tests
-  insight     (iota) — distilled, reusable lesson (filled after execution)
-  metadata    (mu)   — status, dev_score, test_score, result, branch_ref, depth
+  hypothesis  (h)    -- the falsifiable claim this node tests
+  insight     (iota) -- distilled, reusable lesson (filled after execution)
+  metadata    (mu)   -- status, dev_score, test_score, result, branch_ref, depth
 
 Run `python tree.py --help` or `python tree.py <command> --help`.
 """
 
 import argparse
 import json
-import os
+import math
 import sys
 import time
 from pathlib import Path
@@ -41,6 +41,14 @@ from pathlib import Path
 # ----------------------------------------------------------------------------
 
 VALID_STATUS = {"pending", "running", "executed", "merged", "pruned", "root"}
+
+
+def _finite_score(value):
+    """Reject failed-evaluation sentinels instead of persisting invalid scores."""
+    score = float(value)
+    if not math.isfinite(score):
+        raise argparse.ArgumentTypeError("score must be finite (not NaN or infinity)")
+    return score
 
 
 def _dir(run_dir):
@@ -85,6 +93,13 @@ def _next_id(tree):
     n = tree.get("_counter", 0) + 1
     tree["_counter"] = n
     return f"n{n}"
+
+
+def _id_sort_key(node_id):
+    """Order generated ids numerically, then any manually assigned ids by name."""
+    if isinstance(node_id, str) and node_id.startswith("n") and node_id[1:].isdecimal():
+        return (0, int(node_id[1:]), node_id)
+    return (1, 0, str(node_id))
 
 
 def _node(tree, node_id):
@@ -195,6 +210,24 @@ def cmd_add_node(args):
     print(f"Added {kind} node {nid} (depth {depth}) under {args.parent}: {args.hypothesis}")
 
 
+def cmd_baseline(args):
+    """Record the evaluated initial artifact once, before any merge decisions."""
+    tree = _load_tree(args.run_dir)
+    run = _load_run(args.run_dir)
+    if run["best_test_score"] is not None or run["best_node"] is not None:
+        sys.exit("error: a baseline or best artifact is already recorded; start a new run to change the baseline.")
+    root = _node(tree, tree["root"])
+    root["metadata"]["test_score"] = args.test_score
+    root["metadata"]["branch_ref"] = args.branch_ref
+    run["best_node"] = tree["root"]
+    run["best_test_score"] = args.test_score
+    run["best_branch_ref"] = args.branch_ref
+    _stamp(root)
+    _save(_tree_path(args.run_dir), tree)
+    _save(_run_path(args.run_dir), run)
+    print(f"Recorded baseline {tree['root']}: test={args.test_score}, ref={args.branch_ref}")
+
+
 def cmd_set_status(args):
     tree = _load_tree(args.run_dir)
     node = _node(tree, args.node)
@@ -211,6 +244,8 @@ def cmd_set_evidence(args):
     leaf part). Insight propagation upward is a separate, deliberate call."""
     tree = _load_tree(args.run_dir)
     node = _node(tree, args.node)
+    if args.status is not None and args.status not in VALID_STATUS:
+        sys.exit(f"error: status must be one of {sorted(VALID_STATUS)}")
     meta = node["metadata"]
     if args.dev_score is not None:
         meta["dev_score"] = args.dev_score
@@ -261,7 +296,7 @@ def cmd_propagate(args):
 
 def cmd_prune(args):
     """Mark a node (and its subtree) pruned. Pruned hypotheses become negative
-    constraints — record *why* so future ideation avoids the dead end."""
+    constraints -- record *why* so future ideation avoids the dead end."""
     tree = _load_tree(args.run_dir)
     _node(tree, args.node)
     stack = [args.node]
@@ -278,7 +313,7 @@ def cmd_prune(args):
         pruned.append(cur)
         stack.extend(_children(tree, cur))
     _save(_tree_path(args.run_dir), tree)
-    print(f"Pruned {pruned}" + (f" — reason: {args.reason}" if args.reason else ""))
+    print(f"Pruned {pruned}" + (f" -- reason: {args.reason}" if args.reason else ""))
 
 
 def cmd_merge(args):
@@ -291,14 +326,17 @@ def cmd_merge(args):
 
     direction = run["metric_direction"]
     prev = run["best_test_score"]
+    if prev is None:
+        sys.exit("error: evaluate the initial artifact and run `tree.py baseline` before merging candidates.")
+    if not math.isfinite(prev):
+        sys.exit("error: stored best score is not finite; restore a valid scored run before merging.")
+    if args.node == tree["root"]:
+        sys.exit("error: merge a candidate node; the root stores the initial baseline.")
 
-    def better(new, old):
-        if old is None:
-            return True
-        return new > old if direction == "max" else new < old
-
-    improves = better(args.test_score, prev)
+    improves = args.test_score > prev if direction == "max" else args.test_score < prev
     node["metadata"]["test_score"] = args.test_score
+    if args.branch_ref is not None:
+        node["metadata"]["branch_ref"] = args.branch_ref
     if improves:
         node["status"] = "merged"
         run["best_node"] = args.node
@@ -331,7 +369,7 @@ def cmd_cycle(args):
     left = run["budget_cycles"] - run["cycles_used"]
     print(f"Cycle {run['cycles_used']}/{run['budget_cycles']} ({left} remaining).")
     if left <= 0:
-        print("Budget exhausted — finish the run: do a final merge-gate check and report.")
+        print("Budget exhausted -- finish the run: do a final merge-gate check and report.")
 
 
 # ----------------------------------------------------------------------------
@@ -360,7 +398,7 @@ def cmd_observe(args):
     root = nodes[tree["root"]]
 
     print("=" * 72)
-    print("OBSERVE — current research state")
+    print("OBSERVE -- current research state")
     print("=" * 72)
     print(f"Objective       : {run['objective']}")
     print(f"Metric direction: {run['metric_direction']}")
@@ -375,7 +413,7 @@ def cmd_observe(args):
         + (
             f"{run['best_node']} (test={run['best_test_score']}, ref={run['best_branch_ref']})"
             if run["best_node"]
-            else "none yet — M_best is the initial material"
+            else "none yet -- M_best is the initial material"
         )
     )
 
@@ -390,8 +428,8 @@ def cmd_observe(args):
     ]
     print("\n-- Active frontier (selectable hypotheses) --")
     if not frontier:
-        print("  (empty — ideate new children under a promising node)")
-    for n in sorted(frontier, key=lambda x: x["id"]):
+        print("  (empty -- ideate new children under a promising node)")
+    for n in sorted(frontier, key=lambda x: _id_sort_key(x["id"])):
         anc = _ancestors(tree, n["id"])
         anc_ins = " | ".join(
             nodes[a]["insight"].replace("\n", " ")[:80] for a in anc if nodes[a]["insight"].strip()
@@ -405,19 +443,19 @@ def cmd_observe(args):
     print("\n-- Executed / merged nodes (evidence) --")
     if not executed:
         print("  (none yet)")
-    for n in sorted(executed, key=lambda x: x["id"]):
+    for n in sorted(executed, key=lambda x: _id_sort_key(x["id"])):
         print(f"  {n['id']} [{n['status']}]{_fmt_score(n, run)}: {n['hypothesis']}")
         if n["insight"].strip():
             print(f"      insight: {n['insight'].splitlines()[0][:120]}")
 
     # Pruned lessons (negative constraints)
     pruned = [n for n in nodes.values() if n["status"] == "pruned"]
-    print("\n-- Pruned lessons (negative constraints — avoid these) --")
+    print("\n-- Pruned lessons (negative constraints -- avoid these) --")
     if not pruned:
         print("  (none yet)")
-    for n in sorted(pruned, key=lambda x: x["id"]):
+    for n in sorted(pruned, key=lambda x: _id_sort_key(x["id"])):
         reason = n["metadata"].get("prune_reason", "")
-        print(f"  {n['id']}: {n['hypothesis']}" + (f" — {reason}" if reason else ""))
+        print(f"  {n['id']}: {n['hypothesis']}" + (f" -- {reason}" if reason else ""))
 
     print("\n" + "=" * 72)
     print(
@@ -427,7 +465,7 @@ def cmd_observe(args):
 
 
 def cmd_status(args):
-    """ASCII tree render — useful for reports and quick scans."""
+    """ASCII tree render -- useful for reports and quick scans."""
     tree = _load_tree(args.run_dir)
     run = _load_run(args.run_dir)
     nodes = tree["nodes"]
@@ -446,7 +484,7 @@ def cmd_status(args):
         sym = symbol.get(n["status"], "?")
         best = " <== M_best" if nid == run["best_node"] else ""
         print(f"{prefix}[{sym}] {nid} {n['hypothesis'][:70]}{_fmt_score(n, run)}{best}")
-        kids = sorted(_children(tree, nid))
+        kids = sorted(_children(tree, nid), key=_id_sort_key)
         for i, c in enumerate(kids):
             render(c, prefix + "    ")
 
@@ -456,7 +494,7 @@ def cmd_status(args):
 
 
 def cmd_validate(args):
-    """Check invariants — catch a corrupted or inconsistent tree early."""
+    """Check invariants -- catch a corrupted or inconsistent tree early."""
     tree = _load_tree(args.run_dir)
     run = _load_run(args.run_dir)
     nodes = tree["nodes"]
@@ -479,7 +517,7 @@ def cmd_validate(args):
         for p in problems:
             print(f"  - {p}")
         sys.exit(1)
-    print(f"OK — {len(nodes)} nodes, root={tree['root']}, best={run['best_node']}")
+    print(f"OK -- {len(nodes)} nodes, root={tree['root']}, best={run['best_node']}")
 
 
 # ----------------------------------------------------------------------------
@@ -504,6 +542,11 @@ def build_parser():
     s.add_argument("--force", action="store_true", help="Overwrite an existing run")
     s.set_defaults(func=cmd_init)
 
+    s = sub.add_parser("baseline", help="Record the initial artifact's held-out score before candidate merges")
+    s.add_argument("--test-score", type=_finite_score, required=True)
+    s.add_argument("--branch-ref", required=True, help="Immutable git commit or named branch of M_0")
+    s.set_defaults(func=cmd_baseline)
+
     s = sub.add_parser("observe", help="Print the research-state projection (start of each cycle)")
     s.set_defaults(func=cmd_observe)
 
@@ -519,11 +562,11 @@ def build_parser():
 
     s = sub.add_parser("set-evidence", help="Write an executor report into its node (Backpropagate, leaf)")
     s.add_argument("--node", required=True)
-    s.add_argument("--dev-score", type=float, default=None, help="Dev evaluator score returned by the executor")
+    s.add_argument("--dev-score", type=_finite_score, default=None, help="Dev evaluator score returned by the executor")
     s.add_argument("--result", default=None, help="Factual result summary")
     s.add_argument("--insight", default=None, help="Distilled, reusable lesson from this experiment")
     s.add_argument("--branch-ref", default=None, help="Git branch/commit/worktree path of the artifact")
-    s.add_argument("--status", default=None, help="Override status (default: executed)")
+    s.add_argument("--status", default=None, help=f"Override status (default: executed), one of {sorted(VALID_STATUS)}")
     s.set_defaults(func=cmd_set_evidence)
 
     s = sub.add_parser("propagate", help="Abstract a leaf insight up to ancestors (Backpropagate, upward)")
@@ -539,7 +582,7 @@ def build_parser():
 
     s = sub.add_parser("merge", help="Record a held-out merge gate decision (Decide)")
     s.add_argument("--node", required=True)
-    s.add_argument("--test-score", type=float, required=True, help="Score on the TEST evaluator in a fresh worktree")
+    s.add_argument("--test-score", type=_finite_score, required=True, help="Score on the TEST evaluator in a fresh worktree")
     s.add_argument("--branch-ref", default=None, help="Artifact ref to promote if it passes")
     s.set_defaults(func=cmd_merge)
 

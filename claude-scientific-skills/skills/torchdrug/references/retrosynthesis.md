@@ -1,436 +1,265 @@
 # Retrosynthesis
 
-## Overview
+The official
+[TorchDrug 0.2.1 retrosynthesis tutorial](https://torchdrug.ai/docs/tutorials/retrosynthesis.html)
+implements the G2Gs workflow:
 
-Retrosynthesis is the process of planning synthetic routes from target molecules back to commercially available starting materials. TorchDrug provides tools for learning-based retrosynthesis prediction, breaking down the complex task into manageable subtasks.
+1. identify reaction centers,
+2. split products into synthons,
+3. complete synthons into reactants,
+4. combine both trained tasks for end-to-end prediction.
 
-## Available Datasets
+This is a single-step reactant prediction pipeline. Multi-step route search,
+commercial availability, conditions, yields, and cost optimization are not
+provided by `tasks.Retrosynthesis`.
+The long training/beam-search examples are source-verified illustrations, not
+completed benchmark experiments from this review.
 
-### USPTO-50K
-
-The standard benchmark dataset for retrosynthesis derived from US patent literature.
-
-**Statistics:**
-- 50,017 reaction examples
-- Single-step reactions
-- Filtered for quality and canonicalization
-- Contains atom mapping for reaction center identification
-
-**Reaction Types:**
-- Diverse organic reactions
-- Drug-like transformations
-- Well-balanced across common reaction classes
-
-**Data Splits:**
-- Training: ~40k reactions
-- Validation: ~5k reactions
-- Test: ~5k reactions
-
-**Format:**
-- Product → Reactants
-- SMILES representation
-- Atom-mapped reactions for training
-
-## Task Types
-
-TorchDrug decomposes retrosynthesis into a multi-step pipeline:
-
-### 1. CenterIdentification
-
-Identifies the reaction center - which bonds were formed/broken in the forward reaction.
-
-**Input:** Product molecule
-**Output:** Probability for each bond of being part of reaction center
-
-**Purpose:**
-- Locate where chemistry happened
-- Guide subsequent synthon generation
-- Reduce search space dramatically
-
-**Model Architecture:**
-- Graph neural network on product molecule
-- Edge-level classification
-- Attention mechanisms to highlight reactive regions
-
-**Evaluation Metrics:**
-- **Top-K Accuracy**: Correct reaction center in top K predictions
-- **Bond-level F1**: Precision and recall for bond predictions
-
-### 2. SynthonCompletion
-
-Given the product and identified reaction center, predict the reactant structures (synthons).
-
-**Input:**
-- Product molecule
-- Identified reaction center (broken/formed bonds)
-
-**Output:**
-- Predicted reactant molecules (synthons)
-
-**Process:**
-1. Break bonds at reaction center
-2. Modify atom environments (valence, charges)
-3. Determine leaving groups and protecting groups
-4. Generate complete reactant structures
-
-**Challenges:**
-- Multiple valid reactant sets
-- Stereospecificity
-- Atom environment changes (hybridization, charge)
-- Leaving group selection
-
-**Evaluation:**
-- **Exact Match**: Generated reactants exactly match ground truth
-- **Top-K Accuracy**: Correct reactants in top K predictions
-- **Chemical Validity**: Generated molecules are valid
-
-### 3. Retrosynthesis (End-to-End)
-
-Combines center identification and synthon completion into a unified pipeline.
-
-**Input:** Target product molecule
-**Output:** Ranked list of reactant sets (synthesis pathways)
-
-**Workflow:**
-1. Identify top-K reaction centers
-2. For each center, generate reactant candidates
-3. Rank combinations by model confidence
-4. Filter for commercial availability and feasibility
-
-**Advantages:**
-- Single model to train and deploy
-- Joint optimization of subtasks
-- Error propagation from center identification accounted for
-
-## Training Workflows
-
-### Basic Pipeline
+## Prepare synchronized datasets
 
 ```python
-from torchdrug import datasets, models, tasks
+import torch
+from torchdrug import datasets
 
-# Load dataset
-dataset = datasets.USPTO50k("~/retro-datasets/")
-
-# For center identification
-model_center = models.RGCN(
-    input_dim=dataset.node_feature_dim,
-    num_relation=dataset.num_bond_type,
-    hidden_dims=[256, 256, 256]
+reaction_dataset = datasets.USPTO50k(
+    "~/molecule-datasets/",
+    atom_feature="center_identification",
+    kekulize=True,
+)
+synthon_dataset = datasets.USPTO50k(
+    "~/molecule-datasets/",
+    as_synthon=True,
+    atom_feature="synthon_completion",
+    kekulize=True,
 )
 
-task_center = tasks.CenterIdentification(
-    model_center,
-    top_k=3  # Consider top 3 reaction centers
+torch.manual_seed(1)
+reaction_train, reaction_valid, reaction_test = reaction_dataset.split()
+torch.manual_seed(1)
+synthon_train, synthon_valid, synthon_test = synthon_dataset.split()
+```
+
+The repeated seed follows upstream's split protocol. Verify source `"sample id"`
+sets as shown in [datasets](datasets.md#splitting-correctly), because filtering
+or different graph-conversion outcomes can break alignment. Row counts across
+the two views need not match.
+
+- Reaction mode stores `(reactants, product)` pairs.
+- Synthon mode stores `(reactant, synthon)` pairs.
+
+## Center identification
+
+The official tutorial uses RGCN and three feature groups:
+
+```python
+from torchdrug import core, models, tasks
+
+reaction_model = models.RGCN(
+    input_dim=reaction_dataset.node_feature_dim,
+    hidden_dims=[256, 256, 256, 256, 256, 256],
+    num_relation=reaction_dataset.num_bond_type,
+    concat_hidden=True,
+)
+reaction_task = tasks.CenterIdentification(
+    reaction_model,
+    feature=("graph", "atom", "bond"),
 )
 
-# For synthon completion
-model_synthon = models.GIN(
-    input_dim=dataset.node_feature_dim,
-    hidden_dims=[256, 256, 256]
+reaction_optimizer = torch.optim.Adam(
+    reaction_task.parameters(),
+    lr=1e-3,
+)
+reaction_solver = core.Engine(
+    reaction_task,
+    reaction_train,
+    reaction_valid,
+    reaction_test,
+    reaction_optimizer,
+    batch_size=128,
+)
+reaction_solver.train(num_epoch=50)
+reaction_solver.evaluate("valid")
+reaction_solver.save("g2gs-reaction.pth")
+```
+
+`CenterIdentification` predicts reaction centers. Its
+`predict_synthon(batch, k=...)` method returns **one dictionary**, despite the
+release docstring's `list of dict` annotation. Its keys are `synthon`,
+`num_synthon`, `reaction_center`, `log_likelihood`, and `reaction`; packed graph
+attributes carry product/split IDs.
+
+## Synthon completion
+
+The official tutorial again uses RGCN:
+
+```python
+synthon_model = models.RGCN(
+    input_dim=synthon_dataset.node_feature_dim,
+    hidden_dims=[256, 256, 256, 256, 256, 256],
+    num_relation=synthon_dataset.num_bond_type,
+    concat_hidden=True,
+)
+synthon_task = tasks.SynthonCompletion(
+    synthon_model,
+    feature=("graph",),
 )
 
-task_synthon = tasks.SynthonCompletion(
-    model_synthon,
-    center_topk=3,  # Use top 3 from center identification
-    num_synthon_beam=5  # Beam search for synthon generation
+synthon_optimizer = torch.optim.Adam(
+    synthon_task.parameters(),
+    lr=1e-3,
 )
+synthon_solver = core.Engine(
+    synthon_task,
+    synthon_train,
+    synthon_valid,
+    synthon_test,
+    synthon_optimizer,
+    batch_size=128,
+)
+synthon_solver.train(num_epoch=10)
+synthon_solver.evaluate("valid")
+synthon_solver.save("g2gs-synthon.pth")
+```
 
-# End-to-end
-task_retro = tasks.Retrosynthesis(
-    model=model_center,
-    synthon_model=model_synthon,
-    center_topk=5,
-    num_synthon_beam=10
+Do not substitute a GIN constructor copied from another implementation unless
+you intentionally redesign and validate the model.
+
+## End-to-end task
+
+Combine the **tasks**, not the raw models:
+
+```python
+task = tasks.Retrosynthesis(
+    reaction_task,
+    synthon_task,
+    center_topk=2,
+    num_synthon_beam=5,
+    max_prediction=10,
 )
 ```
 
-### Transfer Learning
+If neither subtask has been attached to an `Engine`, preprocess them manually
+before composition:
+
+```python
+reaction_task.preprocess(reaction_train, None, None)
+synthon_task.preprocess(synthon_train, None, None)
+```
+
+The `Retrosynthesis` constructor accepts:
+
+- `center_identification`
+- `synthon_completion`
+- `center_topk`
+- `num_synthon_beam`
+- `max_prediction`
+- top-k metrics
 
-Pre-train on large reaction datasets (e.g., USPTO-full with 1M+ reactions), then fine-tune on specific reaction classes.
+It does not accept `model=`, `synthon_model=`, or a raw GNN pair.
 
-**Benefits:**
-- Better generalization to rare reaction types
-- Improved performance on small datasets
-- Learn general reaction patterns
+## Checkpoint loading
 
-### Multi-Task Learning
+The official workflow saves each subtask and loads checkpoints without optimizer
+state when composing the pipeline:
 
-Train jointly on:
-- Forward reaction prediction
-- Retrosynthesis
-- Reaction type classification
-- Yield prediction
+```python
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
+solver = core.Engine(
+    task,
+    reaction_train,
+    reaction_valid,
+    reaction_test,
+    optimizer,
+    batch_size=32,
+)
+solver.load("g2gs-reaction.pth", load_optimizer=False)
+solver.load("g2gs-synthon.pth", load_optimizer=False)
+solver.evaluate("valid")
+```
 
-**Advantages:**
-- Shared representations of chemistry
-- Better sample efficiency
-- Improved robustness
+Keep model architectures, feature sets, and dataset metadata identical to the
+training run. The composite's `load_state_dict` matches the exact key set of one
+subtask and requires `strict=True`; it cannot restore its own combined state dict
+through this override. Keep the two individual solver checkpoints. Load only
+trusted files because this PyTorch 2.0 path uses pickle.
 
-## Model Architectures
+## Prediction output
 
-### Graph Neural Networks
+The end-to-end task returns packed reactant predictions and a count per input:
 
-**RGCN (Relational Graph Convolutional Network):**
-- Handles multiple bond types (single, double, triple, aromatic)
-- Edge-type-specific transformations
-- Good for reaction center identification
+```python
+from torchdrug import data
 
-**GIN (Graph Isomorphism Network):**
-- Powerful message passing
-- Captures structural patterns
-- Works well for synthon completion
+batch = data.graph_collate([reaction_valid[i] for i in range(min(4, len(reaction_valid)))])
+task.eval()
+with torch.no_grad():
+    predictions, num_prediction = task.predict(batch)
 
-**GAT (Graph Attention Network):**
-- Attention weights highlight important atoms/bonds
-- Interpretable reaction center predictions
-- Flexible for various reaction types
+top1_index = num_prediction.cumsum(0) - num_prediction
+for index, count in zip(top1_index.tolist(), num_prediction.tolist()):
+    if count == 0:
+        print("No reactant prediction")
+        continue
+    reactants = predictions[index].connected_components()[0]
+    print(reactants.to_smiles())
+```
 
-### Sequence-Based Models
+Call `utils.cuda` only when the task/models are on CUDA. Keep the batch on CPU
+for CPU execution.
+Validate that `len(num_prediction)` equals the number of input products and
+that `num_prediction.sum() == len(predictions)` before associating outputs with
+inputs. Empty beam-search results may also raise inside the released task;
+record these failures rather than reporting a candidate for the next product.
 
-**Transformer Models:**
-- SMILES-to-SMILES translation
-- Can capture long-range dependencies
-- Require large datasets
+## Evaluation
 
-**LSTM/GRU:**
-- Sequence generation for reactants
-- Autoregressive decoding
-- Good for small molecules
+The end-to-end task supports top-k exact-match metrics such as top-1, top-3,
+top-5, and top-10. Also inspect:
 
-### Hybrid Approaches
+- chemical validity,
+- duplicate predictions,
+- performance by reaction class,
+- atom-map consistency,
+- stereochemistry retention,
+- uncertainty or score gaps.
 
-Combine graph and sequence representations:
-- Graph encoder for products
-- Sequence decoder for reactants
-- Best of both representations
+Top-k exact match against USPTO50k is not proof that a reaction is practical.
 
-## Reaction Chemistry Considerations
+## Scope and safety
 
-### Reaction Classes
+TorchDrug's tutorial predicts reactant connectivity. It does not directly
+predict:
 
-**Common Transformations:**
-- C-C bond formation (coupling, addition)
-- Functional group interconversions (oxidation, reduction)
-- Heterocycle synthesis (cyclizations)
-- Protection/deprotection
-- Aromatic substitutions
+- reagents, catalysts, solvent, temperature, or pressure,
+- yield or selectivity,
+- commercial availability,
+- multi-step search trees,
+- process safety or scale-up feasibility.
 
-**Rare Reactions:**
-- Novel coupling methods
-- Complex rearrangements
-- Multi-component reactions
+Treat outputs as model proposals requiring forward validation, literature
+precedent, and expert chemistry review.
 
-### Selectivity Issues
+## Common failures
 
-**Regioselectivity:**
-- Which position reacts on molecule
-- Requires understanding of electronics and sterics
+### Reaction and synthon samples do not align
 
-**Stereoselectivity:**
-- Control of stereochemistry
-- Diastereoselectivity and enantioselectivity
-- Critical for drug synthesis
+Reset the same seed immediately before each `split()`.
 
-**Chemoselectivity:**
-- Which functional group reacts
-- Requires protecting group strategies
+### Feature dimension mismatch
 
-### Reaction Conditions
+Use the dedicated `center_identification` and `synthon_completion` atom features
+and derive model dimensions from each corresponding dataset.
 
-While TorchDrug focuses on reaction connectivity, consider:
-- Temperature and pressure
-- Catalysts and reagents
-- Solvents
-- Reaction time
-- Work-up and purification
+### End-to-end constructor error
 
-## Multi-Step Synthesis Planning
+Pass `reaction_task` and `synthon_task`, not their models.
 
-### Single-Step Retrosynthesis
+### Uninitialized metadata
 
-Predict immediate precursors for target molecule.
+Construct each subtask's engine first or call `preprocess()` manually.
 
-**Use Case:**
-- Late-stage transformations
-- Simple molecules (1-2 steps from commercial)
-- Initial route scouting
+## Source links
 
-### Multi-Step Planning
-
-Recursively apply retrosynthesis to each predicted reactant until reaching commercial building blocks.
-
-**Tree Search Strategies:**
-
-**Breadth-First Search:**
-- Explore all routes to same depth
-- Find shortest routes
-- Memory intensive
-
-**Depth-First Search:**
-- Follow each route to completion
-- Memory efficient
-- May miss optimal routes
-
-**Monte Carlo Tree Search (MCTS):**
-- Balance exploration and exploitation
-- Guided by model confidence
-- State-of-the-art for multi-step planning
-
-**A\* Search:**
-- Heuristic-guided search
-- Optimizes for cost, complexity, or feasibility
-- Efficient for finding best routes
-
-### Route Scoring
-
-Rank synthetic routes by:
-1. **Number of Steps**: Fewer is better (efficiency)
-2. **Convergent vs Linear**: Convergent routes preferred
-3. **Commercial Availability**: How many steps to buyable compounds
-4. **Reaction Feasibility**: Likelihood each step works
-5. **Overall Yield**: Estimated end-to-end yield
-6. **Cost**: Reagents, labor, equipment
-7. **Green Chemistry**: Environmental impact, safety
-
-### Stopping Criteria
-
-Stop retrosynthesis when reaching:
-- **Commercial Compounds**: Available from vendors (e.g., Sigma-Aldrich, Enamine)
-- **Building Blocks**: Standard synthetic intermediates
-- **Max Depth**: e.g., 6-10 steps
-- **Low Confidence**: Model uncertainty too high
-
-## Validation and Filtering
-
-### Chemical Validity
-
-Check each predicted reaction:
-- Reactants are valid molecules
-- Reaction is chemically reasonable
-- Atom mapping is consistent
-- Stoichiometry balances
-
-### Synthetic Feasibility
-
-**Filters:**
-- Reaction precedent (literature examples)
-- Functional group compatibility
-- Typical reaction conditions
-- Expected yield ranges
-
-**Expert Systems:**
-- Rule-based validation (e.g., ARChem Route Designer)
-- Check for incompatible functional groups
-- Identify protection/deprotection needs
-
-### Commercial Availability
-
-**Databases:**
-- eMolecules: 10M+ commercial compounds
-- ZINC: Annotated with vendor info
-- Reaxys: Commercially available building blocks
-
-**Considerations:**
-- Cost per gram
-- Purity and quality
-- Lead time for delivery
-- Minimum order quantities
-
-## Integration with Other Tools
-
-### Reaction Prediction (Forward)
-
-Train forward reaction prediction models to validate retrosynthetic proposals:
-- Predict products from proposed reactants
-- Validate reaction feasibility
-- Estimate yields
-
-### Retrosynthesis Software
-
-**Integration with:**
-- SciFinder (CAS)
-- Reaxys (Elsevier)
-- ARChem Route Designer
-- IBM RXN for Chemistry
-
-**TorchDrug as Component:**
-- Use TorchDrug models within larger planning systems
-- Combine ML predictions with rule-based systems
-- Hybrid AI + expert system approaches
-
-### Experimental Validation
-
-**High-Throughput Screening:**
-- Rapid testing of predicted reactions
-- Automated synthesis platforms
-- Feedback loop to improve models
-
-**Robotic Synthesis:**
-- Automated execution of planned routes
-- Real-time optimization
-- Data generation for model improvement
-
-## Best Practices
-
-1. **Ensemble Predictions**: Use multiple models for robustness
-2. **Reaction Validation**: Always validate with chemistry rules
-3. **Commercial Check**: Verify building block availability early
-4. **Diversity**: Generate multiple diverse routes, not just top-1
-5. **Expert Review**: Have chemists evaluate proposed routes
-6. **Literature Search**: Check for precedents of key steps
-7. **Iterative Refinement**: Update models with experimental feedback
-8. **Interpretability**: Understand why model suggests each step
-9. **Edge Cases**: Handle unusual functional groups and scaffolds
-10. **Benchmarking**: Compare against known synthesis routes
-
-## Common Applications
-
-### Drug Synthesis Planning
-
-- Small molecule drugs
-- Natural product total synthesis
-- Late-stage functionalization strategies
-
-### Library Enumeration
-
-- Virtual library design
-- Retrosynthetic filtering of generated molecules
-- Prioritize synthesizable compounds
-
-### Process Chemistry
-
-- Route scouting for large-scale synthesis
-- Cost optimization
-- Green chemistry alternatives
-
-### Synthetic Method Development
-
-- Identify gaps in synthetic methodology
-- Guide development of new reactions
-- Expand retrosynthesis model capabilities
-
-## Challenges and Future Directions
-
-### Current Limitations
-
-- Limited to single-step predictions (most models)
-- Doesn't consider reaction conditions explicitly
-- Stereochemistry handling is challenging
-- Rare reaction types underrepresented
-
-### Active Research Areas
-
-- End-to-end multi-step planning
-- Incorporation of reaction conditions
-- Stereoselective retrosynthesis
-- Integration with robotics for closed-loop optimization
-- Semi-template methods (balance templates and templates-free)
-- Uncertainty quantification for predictions
-
-### Emerging Techniques
-
-- Large language models for chemistry (ChemGPT, MolT5)
-- Reinforcement learning for route optimization
-- Graph transformers for long-range interactions
-- Self-supervised pre-training on reaction databases
+- [Retrosynthesis tutorial](https://torchdrug.ai/docs/tutorials/retrosynthesis.html)
+- [Retrosynthesis tasks](https://torchdrug.ai/docs/api/tasks.html#retrosynthesis-tasks)
+- [USPTO50k dataset](https://torchdrug.ai/docs/api/datasets.html#uspto50k)

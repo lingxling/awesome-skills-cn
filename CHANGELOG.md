@@ -5,6 +5,29 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.35.0] - 2026-10-06
+### 修复
+ - 修复 test_run.py 只覆盖复制、从不删除文件，导致上游已删除/改名的技能（及其 SKILL_CN.md）一直残留的问题：同步后会自动清理上游已不存在的文件（保留原文仍存在的翻译文件）；本次共清理 9473 个过期文件（含 66 个过期的 _CN.md）
+ - 修复 composio-skills 中 253 个自动化技能的 description 未翻译、正文含大段英文的问题（历史遗留），已全部重新翻译
+ - 修复 anthropics-skills（skill-creator、algorithmic-art）、openai-skills（gh-address-comments、yeet）、huggingface-skills（huggingface-datasets）中翻译缺失/截断/结构不一致的问题
+ - 修复 obsidian-skills README_CN 中 defuddle 链接指向错误仓库、vercel-labs-skills README_CN 中表格转义错误等翻译问题
+ - 修复主 README.md 中 claude-scientific-skills 目录路径（scientific-skills → skills）及已不存在的技能链接
+
+### 变更
+ - 所有项目+翻译更新至最新版本
+   - anthropics-skills/（新增 academy-guide、discernment-nudge；重译 claude-api、docx、pptx、xlsx、frontend-design）
+   - antigravity-awesome-skills/
+   - awesome-openclaw-skills/（同步分类列表，共 5202 个技能）
+   - claude-scientific-skills/（重译/新增 155 个技能及 README_CN，当前共 177 个技能）
+   - composiohq-awesome-claude-skills/
+   - huggingface-skills/（新增 hf-cloud-*、hf-mem 等，当前共 25 个技能）
+   - obsidian-skills/（新增 knap）
+   - openai-skills/（新增 define-goal、hatch-pet、plugin-creator 等；该上游仓库已标记弃用，已删除上游移除的技能）
+   - ui-ux-pro-max-skill/（重译 banner-design，同步 README_CN 及各子技能）
+   - vercel-labs-agent-skills/（新增 vercel-optimize、writing-guidelines；同步 react-view-transitions）
+   - vercel-labs-skills/
+ - 更新主 README.md 的技能数量与翻译进度（antigravity-awesome-skills 实际为 2552 个技能，仍未翻译）
+
 ## [2.34.0] - 2026-07-16
 ### 修复
  - 修复 test_run.py 在 Windows 终端下打印 ✓/✗ 符号时因 GBK 编码崩溃的问题，改为强制 UTF-8 输出

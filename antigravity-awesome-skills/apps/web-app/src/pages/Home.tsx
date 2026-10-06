@@ -1,27 +1,32 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router';
 import { VirtuosoGrid } from 'react-virtuoso';
+import { categoryFacet, matchCatalogSkill, searchMode, type SearchMode } from '../utils/catalogSearch';
 import { SkillCard } from '../components/SkillCard';
+import { ShortlistReview } from '../components/ShortlistReview';
+import OutcomeExplorer from '../components/OutcomeExplorer';
+import WorkflowExplorer from '../components/WorkflowExplorer';
 import { Icon } from '../components/ui/Icon';
 import { useSkills } from '../context/SkillContext';
 import { seoLandingPages } from '../data/seoLandingPages';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useSkillShortlist } from '../hooks/useSkillShortlist';
 import type { CategoryStats, SyncMessage } from '../types';
-import { buildHomeMeta, getHomeFaqItems } from '../utils/seo';
+import { buildHomeMeta, getHomeFaqItems, toIndexableRoutePath } from '../utils/seo';
 
 const conceptCards = [
-  { title: 'Specialized plugins', body: 'Focused distributions for a domain or job.' },
-  { title: 'Skills', body: 'Reusable SKILL.md playbooks for repeatable execution.' },
-  { title: 'MCP tools', body: 'External capabilities the assistant can call.' },
-  { title: 'Bundles', body: 'Curated starting sets for a role or team.' },
-  { title: 'Workflows', body: 'Ordered playbooks for a concrete outcome.' },
+  { title: 'AAS Core preview', body: 'The local boundary that validates an agent-selected skill stack and immutable plan preview.' },
+  { title: 'Local MCP', body: 'The agent-facing tools for neutral catalog retrieval, inspection, composition, and stack comparison.' },
+  { title: 'Catalog', body: 'The complete evidence-backed source the coding agent searches before selecting exact skills.' },
+  { title: 'Workbench', body: 'A browser-local review surface for stack manifests and immutable plans.' },
+  { title: 'Plugins', body: 'Focused distributions for users who prefer a packaged domain surface.' },
 ] as const;
 
 const integrationGuides = [
-  { name: 'Claude Code', href: 'https://github.com/sickn33/agentic-awesome-skills/blob/main/docs/users/claude-code-skills.md' },
-  { name: 'Cursor', href: 'https://github.com/sickn33/agentic-awesome-skills/blob/main/docs/users/cursor-skills.md' },
-  { name: 'Codex CLI', href: 'https://github.com/sickn33/agentic-awesome-skills/blob/main/docs/users/codex-cli-skills.md' },
-  { name: 'Gemini CLI', href: 'https://github.com/sickn33/agentic-awesome-skills/blob/main/docs/users/gemini-cli-skills.md' },
+  { name: 'Claude Code', href: `${import.meta.env.BASE_URL}docs/claude-code-skills/` },
+  { name: 'Cursor', href: `${import.meta.env.BASE_URL}docs/cursor-skills/` },
+  { name: 'Codex CLI', href: `${import.meta.env.BASE_URL}docs/codex-cli-skills/` },
+  { name: 'Gemini CLI', href: `${import.meta.env.BASE_URL}docs/gemini-cli-skills/` },
   { name: 'Antigravity', href: 'https://github.com/sickn33/agentic-awesome-skills#choose-your-tool' },
 ] as const;
 
@@ -29,19 +34,86 @@ const syncFeatureEnabled = (
   (import.meta as ImportMeta & { env: Record<string, string | undefined> }).env.VITE_ENABLE_SKILLS_SYNC === 'true'
 );
 
+const RISK_FILTERS = new Set(['all', 'safe', 'none', 'unknown', 'critical', 'offensive']);
+const SOURCE_FILTERS = new Set(['all', 'official', 'community', 'self']);
+const SCOPE_FILTERS = new Set(['all', 'shortlist']);
+const SORT_OPTIONS = new Set(['default', 'stars', 'newest', 'az']);
+
 function labelCategory(category: string): string {
   if (category === 'all') return 'All categories';
   return category.replace(/-/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function getInitialFilter(searchParams: URLSearchParams, key: string, fallback: string): string {
+  return searchParams.get(key)?.trim() || fallback;
+}
+
+function getAllowedFilter(searchParams: URLSearchParams, key: string, allowed: ReadonlySet<string>, fallback: string): string {
+  const value = getInitialFilter(searchParams, key, fallback);
+  return allowed.has(value) ? value : fallback;
+}
+
+function getCategoryFilter(searchParams: URLSearchParams, categories: string[], hasCatalog: boolean): string {
+  const value = categoryFacet(getInitialFilter(searchParams, 'category', 'all'));
+  return !hasCatalog || value === 'all' || categories.includes(value) ? value : 'all';
+}
+
+/** Keep a ref pointing at the latest committed value without writing during render. */
+function useLatest<T>(value: T): { readonly current: T } {
+  const ref = useRef(value);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref;
+}
+
+const isMacLike =
+  typeof navigator !== 'undefined' &&
+  /Mac|iPhone|iPad|iPod/i.test(
+    (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData?.platform ??
+    navigator.platform ??
+    '',
+  );
+const searchShortcutHint = isMacLike ? '⌘K' : 'Ctrl K';
+
 export function Home(): React.ReactElement {
   const { skills, stars, loading, error, refreshSkills } = useSkills();
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
-  const [sortBy, setSortBy] = useState('default');
+  const { categories, categoryStats } = useMemo(() => {
+    const stats: CategoryStats = Object.create(null);
+    skills.forEach((skill) => { const category = categoryFacet(skill.category); stats[category] = (stats[category] || 0) + 1; });
+    const ordered = Object.keys(stats)
+      .filter((category) => category !== 'uncategorized')
+      .sort((a, b) => stats[b] - stats[a]);
+    if (stats.uncategorized) ordered.push('uncategorized');
+    return { categories: ['all', ...ordered], categoryStats: stats };
+  }, [skills]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState(() => getInitialFilter(searchParams, 'q', ''));
+  const [debouncedSearch, setDebouncedSearch] = useState(() => getInitialFilter(searchParams, 'q', ''));
+  const [categoryFilter, setCategoryFilter] = useState(() => getCategoryFilter(searchParams, categories, skills.length > 0));
+  const [matchMode, setMatchMode] = useState<SearchMode>(() => searchMode(searchParams.get('match')));
+  const [requiredTerms, setRequiredTerms] = useState(() => getInitialFilter(searchParams, 'required', ''));
+  const [riskFilter, setRiskFilter] = useState(() => getAllowedFilter(searchParams, 'risk', RISK_FILTERS, 'all'));
+  const [sourceFilter, setSourceFilter] = useState(() => getAllowedFilter(searchParams, 'source', SOURCE_FILTERS, 'all'));
+  const [scopeFilter, setScopeFilter] = useState(() => getAllowedFilter(searchParams, 'scope', SCOPE_FILTERS, 'all'));
+  const [sortBy, setSortBy] = useState(() => getAllowedFilter(searchParams, 'sort', SORT_OPTIONS, 'default'));
+  const [discoveryGoal, setDiscoveryGoal] = useState('');
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<SyncMessage | null>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const { ids: shortlistIds, toggle: toggleShortlist, clear: clearShortlist } = useSkillShortlist();
+  // Set right before writing the URL ourselves so the URL->state listener below
+  // can tell its own writes apart from browser navigation (back/forward) and
+  // restore filters from the URL instead of letting them get overwritten back.
+  const skipNextUrlSyncRef = useRef(false);
+  // Latest committed URL. The state->URL effect compares against this ref
+  // instead of subscribing to searchParams, so it never re-fires on
+  // back/forward navigation and overwrites the restored URL with stale state.
+  const searchParamsRef = useLatest(searchParams);
+  // setSearchParams is not referentially stable in react-router v8 (it is
+  // rebuilt whenever location.search changes), so holding it in a ref keeps the
+  // state->URL effect from re-running on every navigation.
+  const setSearchParamsRef = useLatest(setSearchParams);
 
   usePageMeta(buildHomeMeta(skills.length));
 
@@ -53,32 +125,88 @@ export function Home(): React.ReactElement {
     return () => window.clearTimeout(timeoutId);
   }, [search]);
 
+  useEffect(() => {
+    const handleSearchShortcut = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleSearchShortcut);
+    return () => window.removeEventListener('keydown', handleSearchShortcut);
+  }, []);
+
+  // State -> URL: keep the address bar shareable/bookmarkable as the user
+  // changes filters. Uses replace so typing in search does not pollute history.
+  useEffect(() => {
+    const next = new URLSearchParams();
+    if (search) next.set('q', search);
+    if (matchMode !== 'all') next.set('match', matchMode);
+    if (requiredTerms) next.set('required', requiredTerms);
+    if (categoryFilter !== 'all') next.set('category', categoryFilter);
+    if (riskFilter !== 'all') next.set('risk', riskFilter);
+    if (sourceFilter !== 'all') next.set('source', sourceFilter);
+    if (scopeFilter !== 'all') next.set('scope', scopeFilter);
+    if (sortBy !== 'default') next.set('sort', sortBy);
+    if (next.toString() !== searchParamsRef.current.toString()) {
+      skipNextUrlSyncRef.current = true;
+      setSearchParamsRef.current(next, { replace: true });
+    }
+  }, [categoryFilter, matchMode, requiredTerms, riskFilter, scopeFilter, search, searchParamsRef, setSearchParamsRef, sortBy, sourceFilter]);
+
+  // URL -> State: restore filters after browser back/forward navigation or a
+  // manual address-bar edit. Without this, the state->URL effect would
+  // immediately overwrite the restored URL with the stale in-memory filters.
+  useEffect(() => {
+    if (skipNextUrlSyncRef.current) {
+      skipNextUrlSyncRef.current = false;
+      return;
+    }
+    const nextSearch = getInitialFilter(searchParams, 'q', '');
+    setSearch(nextSearch);
+    setDebouncedSearch(nextSearch); // avoid a 300ms unfiltered flash on load/nav
+    setCategoryFilter(getCategoryFilter(searchParams, categories, skills.length > 0));
+    setMatchMode(searchMode(searchParams.get('match')));
+    setRequiredTerms(getInitialFilter(searchParams, 'required', ''));
+    setRiskFilter(getAllowedFilter(searchParams, 'risk', RISK_FILTERS, 'all'));
+    setSourceFilter(getAllowedFilter(searchParams, 'source', SOURCE_FILTERS, 'all'));
+    setScopeFilter(getAllowedFilter(searchParams, 'scope', SCOPE_FILTERS, 'all'));
+    setSortBy(getAllowedFilter(searchParams, 'sort', SORT_OPTIONS, 'default'));
+  }, [categories, searchParams, skills.length]);
+
+  const searchMatches = useMemo(() => new Map(skills.map((skill) => [skill.id, matchCatalogSkill(skill, debouncedSearch, matchMode, requiredTerms)])), [skills, debouncedSearch, matchMode, requiredTerms]);
+
   const filteredSkills = useMemo(() => {
     let result = [...skills];
-    if (debouncedSearch) {
-      const query = debouncedSearch.toLowerCase();
-      result = result.filter((skill) => (
-        skill.name.toLowerCase().includes(query)
-        || skill.description.toLowerCase().includes(query)
-        || skill.tags?.some((tag) => tag.toLowerCase().includes(query))
-      ));
-    }
-    if (categoryFilter !== 'all') result = result.filter((skill) => skill.category === categoryFilter);
+    result = result.filter((skill) => searchMatches.get(skill.id)?.matches);
+    if (categoryFilter !== 'all') result = result.filter((skill) => categoryFacet(skill.category) === categoryFilter);
+    if (riskFilter !== 'all') result = result.filter((skill) => (skill.risk || 'unknown') === riskFilter);
+    if (sourceFilter !== 'all') result = result.filter((skill) => (skill.source_type || 'community') === sourceFilter);
+    if (scopeFilter === 'shortlist') result = result.filter((skill) => shortlistIds.includes(skill.id));
     if (sortBy === 'stars') result.sort((a, b) => (stars[b.id] || 0) - (stars[a.id] || 0));
     if (sortBy === 'newest') result.sort((a, b) => (b.date_added || '').localeCompare(a.date_added || ''));
     if (sortBy === 'az') result.sort((a, b) => a.name.localeCompare(b.name));
     return result;
-  }, [categoryFilter, debouncedSearch, skills, sortBy, stars]);
+  }, [categoryFilter, searchMatches, riskFilter, scopeFilter, shortlistIds, skills, sortBy, sourceFilter, stars]);
 
-  const { categories, categoryStats } = useMemo(() => {
-    const stats: CategoryStats = {};
-    skills.forEach((skill) => { stats[skill.category] = (stats[skill.category] || 0) + 1; });
-    const ordered = Object.keys(stats)
-      .filter((category) => category !== 'uncategorized')
-      .sort((a, b) => stats[b] - stats[a]);
-    if (stats.uncategorized) ordered.push('uncategorized');
-    return { categories: ['all', ...ordered], categoryStats: stats };
+  const catalogHealth = useMemo(() => {
+    const latest = skills.reduce<string | null>((current, skill) => !current || (skill.date_added || '') > current ? skill.date_added || null : current, null);
+    const documented = skills.filter((skill) => skill.tags && skill.tags.length > 0).length;
+    return { latest, documented };
   }, [skills]);
+
+  const shortlistSkills = useMemo(() => skills.filter((skill) => shortlistIds.includes(skill.id)), [shortlistIds, skills]);
+
+  const clearFilters = () => {
+    setSearch('');
+    setRequiredTerms('');
+    setMatchMode('all');
+    setCategoryFilter('all');
+    setRiskFilter('all');
+    setSourceFilter('all');
+    setScopeFilter('all');
+    setSortBy('default');
+  };
 
   const handleSync = async () => {
     setSyncing(true);
@@ -120,16 +248,17 @@ export function Home(): React.ReactElement {
             </button>
           ))}
         </nav>
-        <Link to="/workbench" className="catalog-rail__workbench">
+        <Link to={toIndexableRoutePath('/workbench')} className="catalog-rail__workbench">
           <Icon name="fileCode" size={17} />
-          Saved & exact installs
+          AAS Core Workbench
         </Link>
       </aside>
 
       <div className="catalog-content">
         <section className="catalog-hero">
-          <h1>Find the right skill.<br />Ship the better agent.</h1>
-          <p>Search {catalogCountLabel} installable skills, plugins, and workflows — curated for real agent work.</p>
+          <h1>AAS Core: agent-first skill stacks for Codex, Claude Code, and compatible clients</h1>
+          <p><strong>Search. Choose. Validate. Preview.</strong></p>
+          <p>Let your coding agent choose exact IDs, preserve its project profile in <code>aas-stack.json</code>, and preview an immutable plan without target writes, backed by {catalogCountLabel} cataloged skills.</p>
 
           <label className="catalog-search">
             <span className="sr-only">Search skills</span>
@@ -138,11 +267,27 @@ export function Home(): React.ReactElement {
               type="search"
               aria-label="Search skills"
               placeholder="Search skills, tools, or workflows"
+              maxLength={256}
               value={search}
+              ref={searchInputRef}
               onChange={(event) => setSearch(event.target.value)}
             />
-            <kbd>⌘K</kbd>
+            <kbd>{searchShortcutHint}</kbd>
           </label>
+
+          <div className="catalog-search-options">
+            <label>Match
+              <select aria-label="Search matching" value={matchMode} onChange={(event) => setMatchMode(searchMode(event.target.value))}>
+                <option value="all">All words</option>
+                <option value="any">Any word</option>
+                <option value="fuzzy">Approximate</option>
+              </select>
+            </label>
+            <label>Must also include
+              <input aria-label="Required search terms" type="text" value={requiredTerms} maxLength={1024} placeholder="e.g. postgres" onChange={(event) => setRequiredTerms(event.target.value)} />
+            </label>
+          </div>
+          <p className="catalog-note">{matchMode === 'fuzzy' ? 'Approximate matching allows gaps between letters. Required terms still match whole words.' : 'Match whole words and known aliases across names, descriptions, categories, and tags.'} Results keep catalog order unless you choose another sort.</p>
 
           <div className="catalog-mobile-categories" aria-label="Quick category filters">
             {categories.slice(0, 6).map((category) => (
@@ -170,18 +315,49 @@ export function Home(): React.ReactElement {
                 </select>
               </label>
               <label>
+                <span className="sr-only">Filter by risk</span>
+                <select aria-label="Filter by risk" value={riskFilter} onChange={(event) => setRiskFilter(event.target.value)}>
+                  <option value="all">All risk levels</option>
+                  <option value="safe">Safe</option>
+                  <option value="none">None</option>
+                  <option value="unknown">Unknown</option>
+                  <option value="critical">Critical</option>
+                  <option value="offensive">Offensive</option>
+                </select>
+              </label>
+              <label>
+                <span className="sr-only">Filter by source</span>
+                <select aria-label="Filter by source" value={sourceFilter} onChange={(event) => setSourceFilter(event.target.value)}>
+                  <option value="all">All sources</option>
+                  <option value="official">Official</option>
+                  <option value="community">Community</option>
+                  <option value="self">Self</option>
+                </select>
+              </label>
+              <label>
+                <span className="sr-only">Filter by shortlist</span>
+                <select aria-label="Filter by shortlist" value={scopeFilter} onChange={(event) => setScopeFilter(event.target.value)}>
+                  <option value="all">Full catalog</option>
+                  <option value="shortlist">My shortlist ({shortlistIds.length})</option>
+                </select>
+              </label>
+              <label>
                 <span className="sr-only">Sort skills</span>
                 <select aria-label="Sort skills" value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
-                  <option value="default">Recommended</option>
+                  <option value="default">Catalog order</option>
                   <option value="stars">Community saves</option>
                   <option value="newest">Newest</option>
                   <option value="az">A to Z</option>
                 </select>
               </label>
             </div>
-            <Link to="/workbench">Compose an exact install <Icon name="arrowRight" size={16} /></Link>
+            <Link to={toIndexableRoutePath('/workbench')}>Review an AAS Core stack <Icon name="arrowRight" size={16} /></Link>
           </div>
         </section>
+
+        <OutcomeExplorer catalog={skills} onGoalChange={setDiscoveryGoal} />
+        <WorkflowExplorer catalog={skills} shortlistIds={shortlistIds} onToggleShortlist={toggleShortlist} />
+        <ShortlistReview suggestedGoal={discoveryGoal} skills={shortlistSkills} onRemove={toggleShortlist} onClear={clearShortlist} />
 
         <section className="catalog-results" aria-labelledby="catalog-results-title">
           <header>
@@ -218,7 +394,7 @@ export function Home(): React.ReactElement {
               <Icon name="search" size={28} />
               <h3>No skills found</h3>
               <p>Try a broader search or another category.</p>
-              <button type="button" onClick={() => { setSearch(''); setCategoryFilter('all'); }}>Clear filters</button>
+              <button type="button" onClick={clearFilters}>Clear filters</button>
             </div>
           ) : (
             <VirtuosoGrid
@@ -227,16 +403,27 @@ export function Home(): React.ReactElement {
               listClassName="catalog-result-list"
               itemContent={(index) => {
                 const skill = filteredSkills[index];
-                return <SkillCard key={skill.id} skill={skill} starCount={stars[skill.id] || 0} />;
+                return <SkillCard key={skill.id} skill={skill} starCount={stars[skill.id] || 0} matchExplanation={searchMatches.get(skill.id)?.explanation} shortlisted={shortlistIds.includes(skill.id)} onToggleShortlist={toggleShortlist} />;
               }}
             />
           )}
         </section>
 
+        <section className="catalog-health" aria-labelledby="catalog-health-title">
+          <div><p>Catalog health</p><h2 id="catalog-health-title">A quick view of the library you are choosing from.</h2></div>
+          <dl>
+            <div><dt>Cataloged skills</dt><dd>{skills.length.toLocaleString('en-US')}</dd></div>
+            <div><dt>Categories</dt><dd>{Math.max(categories.length - 1, 0)}</dd></div>
+            <div><dt>Tagged for discovery</dt><dd>{skills.length ? Math.round((catalogHealth.documented / skills.length) * 100) : 0}%</dd></div>
+            <div><dt>Latest addition</dt><dd>{catalogHealth.latest || 'Not recorded'}</dd></div>
+          </dl>
+          <p>Search and shortlist stay in this browser. Check each skill's setup, source, and instructions before using it.</p>
+        </section>
+
         <section className="catalog-support" aria-label="Catalog guides">
           <div className="catalog-support__intro">
-            <h2>Understand the system behind the catalog</h2>
-            <p>Skills, tools, bundles, plugins, and workflows solve different parts of the same job.</p>
+            <h2>How AAS Core uses the catalog</h2>
+            <p>The coding agent chooses from catalog evidence; the local MCP validates the selection, the CLI persists and plans it, and Workbench reviews the resulting artifacts.</p>
           </div>
           <div className="catalog-support__concepts">
             {conceptCards.map((card) => (
@@ -250,7 +437,7 @@ export function Home(): React.ReactElement {
             </div>
             <div>
               <h2>Search topics</h2>
-              <nav>{seoLandingPages.map((page) => <Link key={page.slug} to={`/topics/${page.slug}`}>{page.h1}<Icon name="arrowRight" size={14} /></Link>)}</nav>
+              <nav>{seoLandingPages.map((page) => <Link key={page.slug} to={toIndexableRoutePath(`/topics/${page.slug}`)}>{page.h1}<Icon name="arrowRight" size={14} /></Link>)}</nav>
             </div>
           </div>
           <div className="catalog-faq">

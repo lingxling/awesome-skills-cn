@@ -1,334 +1,386 @@
 #!/usr/bin/env python3
-"""
-LabArchives Entry Operations
+"""Offline LabArchives request-signing helpers and redacted request plans.
 
-Utilities for creating entries, uploading attachments, and managing notebook content.
+The CLI performs no network requests and never prints credentials or reusable
+signatures. Import the functions into institution-reviewed HTTP code when
+needed, and pass returned authentication material directly to the client.
 """
+
+from __future__ import annotations
 
 import argparse
-import sys
-import yaml
+import base64
+import getpass
+import hashlib
+import hmac
+import json
 import os
-from pathlib import Path
-from datetime import datetime
+import re
+import sys
+import time
+from collections.abc import Mapping, Sequence
+from typing import Any
+from urllib.parse import quote
+
+from setup_config import (
+    ENV_ACCESS_KEY_ID,
+    ENV_ACCESS_PASSWORD,
+    ENV_API_URL,
+    ENV_INVENTORY_LAB_ID,
+    ENV_USER_ID,
+    INVENTORY_API_BASE_URL,
+    ConfigError,
+    normalize_eln_api_url,
+)
 
 
-def load_config(config_path='config.yaml'):
-    """Load configuration from YAML file"""
-    try:
-        with open(config_path, 'r') as f:
-            return yaml.safe_load(f)
-    except FileNotFoundError:
-        print(f"❌ Configuration file not found: {config_path}")
-        print("   Run setup_config.py first to create configuration")
-        sys.exit(1)
-    except Exception as e:
-        print(f"❌ Error loading configuration: {e}")
-        sys.exit(1)
+_ELN_COMPONENT = re.compile(r"^[a-z][a-z0-9_]*$")
+_INVENTORY_PATH = re.compile(r"^/public/v1/[A-Za-z0-9._~!$&'()*+,;=:@/-]+$")
+_OFFICIAL_VECTOR = {
+    "access_key_id": "0234wedkfjrtfd34er",
+    "api_method_input": "entry_attachment",
+    "expires_ms": 264433207000,
+    "access_password": "1234567890",
+    "signature": (
+        "mT7pS+KgqlNseR0bo4YLQOVIsgOugMWzlQGllInXS25Q7VpA6lRmL0nUq/"
+        "UUdrlF+WV7POYE1vcwvN/pnac7bw=="
+    ),
+}
 
 
-def init_client(config):
-    """Initialize LabArchives API client"""
-    try:
-        from labarchivespy.client import Client
-        return Client(
-            config['api_url'],
-            config['access_key_id'],
-            config['access_password']
+def _require_text(value: str, label: str) -> str:
+    normalized = value.strip()
+    if not normalized:
+        raise ConfigError(f"{label} must not be empty")
+    return normalized
+
+
+def _require_secret(value: str, label: str) -> str:
+    if not value:
+        raise ConfigError(f"{label} must not be empty")
+    return value
+
+
+def _expires_ms(value: int | None = None) -> int:
+    selected = time.time_ns() // 1_000_000 if value is None else value
+    if selected < 0:
+        raise ConfigError("expires must be a non-negative epoch-millisecond value")
+    return selected
+
+
+def create_signature(
+    access_key_id: str,
+    api_method_input: str,
+    expires_ms: int,
+    access_password: str,
+) -> str:
+    """Create the documented Base64(HMAC-SHA-512) LabArchives signature.
+
+    No separators are inserted. The result is not URI-encoded.
+    """
+
+    key_id = _require_text(access_key_id, "Access Key ID")
+    method_input = _require_text(api_method_input, "API method input")
+    secret = _require_secret(access_password, "Access Password")
+    expires = _expires_ms(expires_ms)
+    message = f"{key_id}{method_input}{expires}".encode("utf-8")
+    digest = hmac.new(secret.encode("utf-8"), message, hashlib.sha512).digest()
+    return base64.b64encode(digest).decode("ascii")
+
+
+def encode_eln_signature(signature: str) -> str:
+    """URI-encode a Base64 signature for an ELN sig query parameter."""
+
+    return quote(_require_text(signature, "signature"), safe="")
+
+
+def build_eln_auth_params(
+    access_key_id: str,
+    access_password: str,
+    api_method: str,
+    expires_ms: int | None = None,
+) -> dict[str, str]:
+    """Return ELN query authentication parameters.
+
+    Keep the returned mapping out of logs. A normal query encoder will
+    URI-encode the Base64 signature.
+    """
+
+    method = validate_eln_component(api_method, "ELN API method")
+    expires = _expires_ms(expires_ms)
+    signature = create_signature(access_key_id, method, expires, access_password)
+    return {
+        "akid": _require_text(access_key_id, "Access Key ID"),
+        "expires": str(expires),
+        "sig": signature,
+    }
+
+
+def build_inventory_headers(
+    access_key_id: str,
+    access_password: str,
+    user_id: str,
+    lab_id: str | None,
+    relative_path: str,
+    expires_ms: int | None = None,
+) -> dict[str, str]:
+    """Return documented Inventory v1 authentication headers.
+
+    The relative path includes resolved route parameters and excludes any query
+    string. The users/me bootstrap route does not require a Lab ID; pass None
+    or an empty string there to omit that header. Other routes require a Lab ID.
+    Keep the returned mapping out of logs.
+    """
+
+    path = validate_inventory_path(relative_path)
+    expires = _expires_ms(expires_ms)
+    signature = create_signature(access_key_id, path, expires, access_password)
+    headers = {
+        "X-LabArchives-UId": _require_text(user_id, "Inventory user ID"),
+        "X-LabArchives-AKId": _require_text(access_key_id, "Access Key ID"),
+        "X-LabArchives-Signature": signature,
+        "X-LabArchives-Expires": str(expires),
+    }
+    if path != "/public/v1/users/me" or (lab_id and lab_id.strip()):
+        headers["X-LabArchives-LabId"] = _require_text(lab_id or "", "Inventory Lab ID")
+    return headers
+
+
+def validate_eln_component(value: str, label: str) -> str:
+    """Validate a class or method copied from the official ELN API tree."""
+
+    normalized = value.strip()
+    if not _ELN_COMPONENT.fullmatch(normalized):
+        raise ConfigError(
+            f"{label} must match {_ELN_COMPONENT.pattern!r}; "
+            "copy it from the current official method page"
         )
-    except ImportError:
-        print("❌ labarchives-py package not installed")
-        print("   Install with: pip install git+https://github.com/mcmero/labarchives-py")
-        sys.exit(1)
+    return normalized
 
 
-def get_user_id(client, config):
-    """Get user ID via authentication"""
-    import xml.etree.ElementTree as ET
+def validate_inventory_path(value: str) -> str:
+    """Validate an exact, resolved Inventory v1 relative route."""
 
-    login_params = {
-        'login_or_email': config['user_email'],
-        'password': config['user_external_password']
-    }
-
-    try:
-        response = client.make_call('users', 'user_access_info', params=login_params)
-
-        if response.status_code == 200:
-            uid = ET.fromstring(response.content)[0].text
-            return uid
-        else:
-            print(f"❌ Authentication failed: HTTP {response.status_code}")
-            print(f"   Response: {response.content.decode('utf-8')[:200]}")
-            sys.exit(1)
-
-    except Exception as e:
-        print(f"❌ Error during authentication: {e}")
-        sys.exit(1)
-
-
-def create_entry(client, uid, nbid, title, content=None, date=None):
-    """Create a new entry in a notebook"""
-    print(f"\n📝 Creating entry: {title}")
-
-    # Prepare parameters
-    params = {
-        'uid': uid,
-        'nbid': nbid,
-        'title': title
-    }
-
-    if content:
-        # Ensure content is HTML formatted
-        if not content.startswith('<'):
-            content = f'<p>{content}</p>'
-        params['content'] = content
-
-    if date:
-        params['date'] = date
-
-    try:
-        response = client.make_call('entries', 'create_entry', params=params)
-
-        if response.status_code == 200:
-            print("✅ Entry created successfully")
-
-            # Try to extract entry ID from response
-            try:
-                import xml.etree.ElementTree as ET
-                root = ET.fromstring(response.content)
-                entry_id = root.find('.//entry_id')
-                if entry_id is not None:
-                    print(f"   Entry ID: {entry_id.text}")
-                    return entry_id.text
-            except:
-                pass
-
-            return True
-
-        else:
-            print(f"❌ Entry creation failed: HTTP {response.status_code}")
-            print(f"   Response: {response.content.decode('utf-8')[:200]}")
-            return None
-
-    except Exception as e:
-        print(f"❌ Error creating entry: {e}")
-        return None
+    path = value.strip()
+    if "?" in path or "#" in path:
+        raise ConfigError(
+            "Inventory signature path must exclude query strings and fragments"
+        )
+    if "\\" in path or "%" in path or any(character.isspace() for character in path):
+        raise ConfigError(
+            "Inventory signature path must be an unencoded relative route"
+        )
+    if "{" in path or "}" in path:
+        raise ConfigError("resolve all Inventory route placeholders before signing")
+    if not _INVENTORY_PATH.fullmatch(path):
+        raise ConfigError(
+            "Inventory path must be an exact route beginning with /public/v1/"
+        )
+    segments = path.split("/")
+    if any(segment in {".", ".."} for segment in segments) or "//" in path:
+        raise ConfigError("Inventory path contains an unsafe or ambiguous segment")
+    return path
 
 
-def create_comment(client, uid, nbid, entry_id, comment):
-    """Add a comment to an existing entry"""
-    print(f"\n💬 Adding comment to entry {entry_id}")
-
-    params = {
-        'uid': uid,
-        'nbid': nbid,
-        'entry_id': entry_id,
-        'comment': comment
-    }
-
-    try:
-        response = client.make_call('entries', 'create_comment', params=params)
-
-        if response.status_code == 200:
-            print("✅ Comment added successfully")
-            return True
-        else:
-            print(f"❌ Comment creation failed: HTTP {response.status_code}")
-            return False
-
-    except Exception as e:
-        print(f"❌ Error creating comment: {e}")
-        return False
+def _secret_fingerprint(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()[:16]
 
 
-def upload_attachment(client, config, uid, nbid, entry_id, file_path):
-    """Upload a file attachment to an entry"""
-    import requests
-
-    file_path = Path(file_path)
-
-    if not file_path.exists():
-        print(f"❌ File not found: {file_path}")
-        return False
-
-    print(f"\n📎 Uploading attachment: {file_path.name}")
-    print(f"   Size: {file_path.stat().st_size / 1024:.2f} KB")
-
-    url = f"{config['api_url']}/entries/upload_attachment"
-
-    try:
-        with open(file_path, 'rb') as f:
-            files = {'file': f}
-            data = {
-                'uid': uid,
-                'nbid': nbid,
-                'entry_id': entry_id,
-                'filename': file_path.name,
-                'access_key_id': config['access_key_id'],
-                'access_password': config['access_password']
-            }
-
-            response = requests.post(url, files=files, data=data)
-
-        if response.status_code == 200:
-            print("✅ Attachment uploaded successfully")
-            return True
-        else:
-            print(f"❌ Upload failed: HTTP {response.status_code}")
-            print(f"   Response: {response.content.decode('utf-8')[:200]}")
-            return False
-
-    except Exception as e:
-        print(f"❌ Error uploading attachment: {e}")
-        return False
+def _dump(payload: Mapping[str, Any], *, compact: bool, stream: Any) -> None:
+    if compact:
+        json.dump(payload, stream, sort_keys=True, separators=(",", ":"))
+    else:
+        json.dump(payload, stream, indent=2, sort_keys=True)
+    stream.write("\n")
 
 
-def batch_upload(client, config, uid, nbid, entry_id, directory):
-    """Upload all files from a directory as attachments"""
-    directory = Path(directory)
+def _load_credentials(
+    args: argparse.Namespace, env: Mapping[str, str]
+) -> tuple[str, str]:
+    access_key_id = env.get(ENV_ACCESS_KEY_ID, "").strip()
+    if not access_key_id:
+        raise ConfigError(
+            f"required environment variable is missing: {ENV_ACCESS_KEY_ID}"
+        )
 
-    if not directory.is_dir():
-        print(f"❌ Directory not found: {directory}")
-        return
-
-    files = list(directory.glob('*'))
-    files = [f for f in files if f.is_file()]
-
-    if not files:
-        print(f"❌ No files found in {directory}")
-        return
-
-    print(f"\n📦 Batch uploading {len(files)} files from {directory}")
-
-    successful = 0
-    failed = 0
-
-    for file_path in files:
-        if upload_attachment(client, config, uid, nbid, entry_id, file_path):
-            successful += 1
-        else:
-            failed += 1
-
-    print("\n" + "="*60)
-    print(f"Batch upload complete: {successful} successful, {failed} failed")
-    print("="*60)
+    access_password = env.get(ENV_ACCESS_PASSWORD, "")
+    if not access_password and args.prompt_missing_secret:
+        access_password = getpass.getpass(f"{ENV_ACCESS_PASSWORD}: ")
+    if not access_password:
+        raise ConfigError(
+            f"required environment variable is missing: {ENV_ACCESS_PASSWORD}"
+        )
+    return access_key_id, access_password
 
 
-def create_entry_with_attachments(client, config, uid, nbid, title, content,
-                                  attachments):
-    """Create entry and upload multiple attachments"""
-    # Create entry
-    entry_id = create_entry(client, uid, nbid, title, content)
-
-    if not entry_id:
-        print("❌ Cannot upload attachments without entry ID")
-        return False
-
-    # Upload attachments
-    for attachment_path in attachments:
-        upload_attachment(client, config, uid, nbid, entry_id, attachment_path)
-
-    return True
-
-
-def main():
-    """Main command-line interface"""
-    parser = argparse.ArgumentParser(
-        description='LabArchives Entry Operations',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Create simple entry
-  python3 entry_operations.py create --nbid 12345 --title "Experiment Results"
-
-  # Create entry with content
-  python3 entry_operations.py create --nbid 12345 --title "Results" \\
-    --content "PCR amplification successful"
-
-  # Create entry with HTML content
-  python3 entry_operations.py create --nbid 12345 --title "Results" \\
-    --content "<p>Results:</p><ul><li>Sample A: Positive</li></ul>"
-
-  # Upload attachment to existing entry
-  python3 entry_operations.py upload --nbid 12345 --entry-id 67890 \\
-    --file data.csv
-
-  # Batch upload multiple files
-  python3 entry_operations.py batch-upload --nbid 12345 --entry-id 67890 \\
-    --directory ./experiment_data/
-
-  # Add comment to entry
-  python3 entry_operations.py comment --nbid 12345 --entry-id 67890 \\
-    --text "Follow-up analysis needed"
-        """
+def command_self_test(args: argparse.Namespace) -> int:
+    actual = create_signature(
+        _OFFICIAL_VECTOR["access_key_id"],
+        _OFFICIAL_VECTOR["api_method_input"],
+        int(_OFFICIAL_VECTOR["expires_ms"]),
+        _OFFICIAL_VECTOR["access_password"],
     )
-
-    parser.add_argument('--config', default='config.yaml',
-                       help='Path to configuration file (default: config.yaml)')
-    parser.add_argument('--nbid', required=True,
-                       help='Notebook ID')
-
-    subparsers = parser.add_subparsers(dest='command', help='Command to execute')
-
-    # Create entry command
-    create_parser = subparsers.add_parser('create', help='Create new entry')
-    create_parser.add_argument('--title', required=True, help='Entry title')
-    create_parser.add_argument('--content', help='Entry content (HTML supported)')
-    create_parser.add_argument('--date', help='Entry date (YYYY-MM-DD)')
-    create_parser.add_argument('--attachments', nargs='+',
-                              help='Files to attach to the new entry')
-
-    # Upload attachment command
-    upload_parser = subparsers.add_parser('upload', help='Upload attachment to entry')
-    upload_parser.add_argument('--entry-id', required=True, help='Entry ID')
-    upload_parser.add_argument('--file', required=True, help='File to upload')
-
-    # Batch upload command
-    batch_parser = subparsers.add_parser('batch-upload',
-                                        help='Upload all files from directory')
-    batch_parser.add_argument('--entry-id', required=True, help='Entry ID')
-    batch_parser.add_argument('--directory', required=True,
-                             help='Directory containing files to upload')
-
-    # Comment command
-    comment_parser = subparsers.add_parser('comment', help='Add comment to entry')
-    comment_parser.add_argument('--entry-id', required=True, help='Entry ID')
-    comment_parser.add_argument('--text', required=True, help='Comment text')
-
-    args = parser.parse_args()
-
-    if not args.command:
-        parser.print_help()
-        sys.exit(1)
-
-    # Load configuration and initialize
-    config = load_config(args.config)
-    client = init_client(config)
-    uid = get_user_id(client, config)
-
-    # Execute command
-    if args.command == 'create':
-        if args.attachments:
-            create_entry_with_attachments(
-                client, config, uid, args.nbid, args.title,
-                args.content, args.attachments
-            )
-        else:
-            create_entry(client, uid, args.nbid, args.title,
-                        args.content, args.date)
-
-    elif args.command == 'upload':
-        upload_attachment(client, config, uid, args.nbid,
-                         args.entry_id, args.file)
-
-    elif args.command == 'batch-upload':
-        batch_upload(client, config, uid, args.nbid,
-                    args.entry_id, args.directory)
-
-    elif args.command == 'comment':
-        create_comment(client, uid, args.nbid, args.entry_id, args.text)
+    passed = hmac.compare_digest(actual, str(_OFFICIAL_VECTOR["signature"]))
+    payload = {
+        "passed": passed,
+        "source": "official LabArchives Call Authentication example",
+        "signature_fingerprint": _secret_fingerprint(actual),
+        "credentials_used": "public dummy test vector only",
+        "remote_request_performed": False,
+    }
+    _dump(payload, compact=args.compact, stream=sys.stdout)
+    return 0 if passed else 1
 
 
-if __name__ == '__main__':
-    main()
+def command_eln_plan(
+    args: argparse.Namespace, env: Mapping[str, str] | None = None
+) -> int:
+    selected_env = os.environ if env is None else env
+    access_key_id, access_password = _load_credentials(args, selected_env)
+    api_class = validate_eln_component(args.api_class, "ELN API class")
+    api_method = validate_eln_component(args.api_method, "ELN API method")
+    api_url = normalize_eln_api_url(args.api_url or selected_env.get(ENV_API_URL, ""))
+    auth = build_eln_auth_params(
+        access_key_id,
+        access_password,
+        api_method,
+        expires_ms=args.expires_ms,
+    )
+    payload = {
+        "dry_run": True,
+        "remote_request_performed": False,
+        "api_surface": "legacy ELN",
+        "endpoint_without_query": f"{api_url}/{api_class}/{api_method}",
+        "signature_input": api_method,
+        "expires_ms": int(auth["expires"]),
+        "authentication_parameter_names": sorted(auth),
+        "access_key_id_fingerprint": _secret_fingerprint(access_key_id),
+        "signature_fingerprint": _secret_fingerprint(auth["sig"]),
+        "reusable_authentication_material_printed": False,
+        "warning": (
+            "Verify the exact official method page, HTTP verb, and parameters "
+            "before implementing a request."
+        ),
+    }
+    _dump(payload, compact=args.compact, stream=sys.stdout)
+    return 0
+
+
+def command_inventory_plan(
+    args: argparse.Namespace, env: Mapping[str, str] | None = None
+) -> int:
+    selected_env = os.environ if env is None else env
+    access_key_id, access_password = _load_credentials(args, selected_env)
+    user_id = selected_env.get(ENV_USER_ID, "")
+    lab_id = selected_env.get(ENV_INVENTORY_LAB_ID, "")
+    headers = build_inventory_headers(
+        access_key_id,
+        access_password,
+        user_id,
+        lab_id,
+        args.path,
+        expires_ms=args.expires_ms,
+    )
+    payload = {
+        "dry_run": True,
+        "remote_request_performed": False,
+        "api_surface": "Inventory API v1",
+        "relative_path": validate_inventory_path(args.path),
+        "absolute_base_url": INVENTORY_API_BASE_URL,
+        "expires_ms": int(headers["X-LabArchives-Expires"]),
+        "authentication_header_names": sorted(headers),
+        "access_key_id_fingerprint": _secret_fingerprint(access_key_id),
+        "signature_fingerprint": _secret_fingerprint(
+            headers["X-LabArchives-Signature"]
+        ),
+        "reusable_authentication_material_printed": False,
+        "warning": (
+            "The Inventory overview documents this base URL. Confirm the account "
+            "deployment before a live request; do not infer regional variants."
+        ),
+    }
+    _dump(payload, compact=args.compact, stream=sys.stdout)
+    return 0
+
+
+def _add_plan_options(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "--expires-ms",
+        type=int,
+        help=(
+            "explicit current epoch milliseconds for deterministic validation; "
+            "defaults to the local current time"
+        ),
+    )
+    parser.add_argument(
+        "--prompt-missing-secret",
+        action="store_true",
+        help="use getpass for a missing Access Password without saving it",
+    )
+    parser.add_argument("--compact", action="store_true", help="emit compact JSON")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Generate redacted, offline LabArchives signing plans. "
+            "No HTTP requests are implemented."
+        )
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    self_test = subparsers.add_parser(
+        "self-test", help="check HMAC implementation against the official vector"
+    )
+    self_test.add_argument("--compact", action="store_true", help="emit compact JSON")
+    self_test.set_defaults(handler=command_self_test)
+
+    eln = subparsers.add_parser(
+        "eln-plan", help="create a redacted legacy ELN request-signing plan"
+    )
+    eln.add_argument(
+        "--api-url",
+        help=f"allowlisted ELN API URL; otherwise read {ENV_API_URL}",
+    )
+    eln.add_argument("--api-class", required=True, help="official ELN API class")
+    eln.add_argument("--api-method", required=True, help="official ELN API method")
+    _add_plan_options(eln)
+    eln.set_defaults(handler=command_eln_plan)
+
+    inventory = subparsers.add_parser(
+        "inventory-plan",
+        help="create a redacted Inventory v1 request-signing plan",
+    )
+    inventory.add_argument(
+        "--path",
+        required=True,
+        help="exact /public/v1/... route with path values resolved and no query",
+    )
+    _add_plan_options(inventory)
+    inventory.set_defaults(handler=command_inventory_plan)
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    try:
+        return int(args.handler(args))
+    except ConfigError as exc:
+        _dump(
+            {
+                "valid": False,
+                "error": str(exc),
+                "remote_request_performed": False,
+            },
+            compact=getattr(args, "compact", False),
+            stream=sys.stderr,
+        )
+        return 2
+    except KeyboardInterrupt:
+        print('{"valid":false,"error":"cancelled"}', file=sys.stderr)
+        return 130
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

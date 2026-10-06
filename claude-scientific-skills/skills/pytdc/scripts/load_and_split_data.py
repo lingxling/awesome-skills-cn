@@ -1,214 +1,399 @@
 #!/usr/bin/env python3
-"""
-TDC Data Loading and Splitting Template
+"""Plan or explicitly execute one bounded PyTDC dataset split."""
 
-This script demonstrates how to load TDC datasets and apply different
-splitting strategies for model training and evaluation.
+from __future__ import annotations
 
-Usage:
-    python load_and_split_data.py
-"""
+import argparse
+import importlib
+import itertools
+import sys
+from pathlib import Path
+from typing import Any
 
-from tdc.single_pred import ADME
-from tdc.multi_pred import DTI
-from tdc import Evaluator
-import pandas as pd
-
-
-def load_single_pred_example():
-    """
-    Example: Loading and splitting a single-prediction dataset (ADME)
-    """
-    print("=" * 60)
-    print("Example 1: Single-Prediction Task (ADME)")
-    print("=" * 60)
-
-    # Load Caco2 dataset (intestinal permeability)
-    print("\nLoading Caco2_Wang dataset...")
-    data = ADME(name='Caco2_Wang')
-
-    # Get basic dataset info
-    print(f"\nDataset size: {len(data.get_data())} molecules")
-    data.print_stats()
-
-    # Method 1: Scaffold split (default, recommended)
-    print("\n--- Scaffold Split ---")
-    split = data.get_split(method='scaffold', seed=42, frac=[0.7, 0.1, 0.2])
-
-    train = split['train']
-    valid = split['valid']
-    test = split['test']
-
-    print(f"Train: {len(train)} molecules")
-    print(f"Valid: {len(valid)} molecules")
-    print(f"Test: {len(test)} molecules")
-
-    # Display sample data
-    print("\nSample training data:")
-    print(train.head(3))
-
-    # Method 2: Random split
-    print("\n--- Random Split ---")
-    split_random = data.get_split(method='random', seed=42, frac=[0.8, 0.1, 0.1])
-    print(f"Train: {len(split_random['train'])} molecules")
-    print(f"Valid: {len(split_random['valid'])} molecules")
-    print(f"Test: {len(split_random['test'])} molecules")
-
-    return split
+from _common import (
+    CliError,
+    bounded_int,
+    canonical_name,
+    emit_json,
+    load_pytdc_metadata,
+    safe_directory,
+    truncate_value,
+    validate_fractions,
+)
 
 
-def load_multi_pred_example():
-    """
-    Example: Loading and splitting a multi-prediction dataset (DTI)
-    """
-    print("\n" + "=" * 60)
-    print("Example 2: Multi-Prediction Task (DTI)")
-    print("=" * 60)
+# Public imports verified against the PyTDC 1.1.15 source distribution.
+TASKS: dict[str, tuple[str, str, str]] = {
+    "ADME": ("tdc.single_pred", "ADME", "ADME"),
+    "CRISPROutcome": ("tdc.single_pred", "CRISPROutcome", "CRISPROutcome"),
+    "Develop": ("tdc.single_pred", "Develop", "Develop"),
+    "Epitope": ("tdc.single_pred", "Epitope", "Epitope"),
+    "HTS": ("tdc.single_pred", "HTS", "HTS"),
+    "Paratope": ("tdc.single_pred", "Paratope", "Paratope"),
+    "QM": ("tdc.single_pred", "QM", "QM"),
+    "Tox": ("tdc.single_pred", "Tox", "Tox"),
+    "Yields": ("tdc.single_pred", "Yields", "Yields"),
+    "AntibodyAff": ("tdc.multi_pred", "AntibodyAff", "AntibodyAff"),
+    "Catalyst": ("tdc.multi_pred", "Catalyst", "Catalyst"),
+    "DDI": ("tdc.multi_pred", "DDI", "DDI"),
+    "DrugRes": ("tdc.multi_pred", "DrugRes", "DrugRes"),
+    "DrugSyn": ("tdc.multi_pred", "DrugSyn", "DrugSyn"),
+    "DTI": ("tdc.multi_pred", "DTI", "DTI"),
+    "GDA": ("tdc.multi_pred", "GDA", "GDA"),
+    "MTI": ("tdc.multi_pred", "MTI", "MTI"),
+    "PeptideMHC": ("tdc.multi_pred", "PeptideMHC", "PeptideMHC"),
+    "PPI": ("tdc.multi_pred", "PPI", "PPI"),
+    "ProteinPeptide": ("tdc.multi_pred", "ProteinPeptide", "ProteinPeptide"),
+    "TCREpitopeBinding": (
+        "tdc.multi_pred",
+        "TCREpitopeBinding",
+        "TCREpitopeBinding",
+    ),
+    "TrialOutcome": ("tdc.multi_pred", "TrialOutcome", "TrialOutcome"),
+    "MolGen": ("tdc.generation", "MolGen", "MolGen"),
+    "Reaction": ("tdc.generation", "Reaction", "Reaction"),
+    "RetroSyn": ("tdc.generation", "RetroSyn", "RetroSyn"),
+}
 
-    # Load BindingDB Kd dataset (drug-target interactions)
-    print("\nLoading BindingDB_Kd dataset...")
-    data = DTI(name='BindingDB_Kd')
-
-    # Get basic dataset info
-    full_data = data.get_data()
-    print(f"\nDataset size: {len(full_data)} drug-target pairs")
-    print(f"Unique drugs: {full_data['Drug_ID'].nunique()}")
-    print(f"Unique targets: {full_data['Target_ID'].nunique()}")
-
-    # Method 1: Random split
-    print("\n--- Random Split ---")
-    split_random = data.get_split(method='random', seed=42)
-    print(f"Train: {len(split_random['train'])} pairs")
-    print(f"Valid: {len(split_random['valid'])} pairs")
-    print(f"Test: {len(split_random['test'])} pairs")
-
-    # Method 2: Cold drug split (unseen drugs in test)
-    print("\n--- Cold Drug Split ---")
-    split_cold_drug = data.get_split(method='cold_drug', seed=42)
-
-    train = split_cold_drug['train']
-    test = split_cold_drug['test']
-
-    # Verify no drug overlap
-    train_drugs = set(train['Drug_ID'])
-    test_drugs = set(test['Drug_ID'])
-    overlap = train_drugs & test_drugs
-
-    print(f"Train: {len(train)} pairs, {len(train_drugs)} unique drugs")
-    print(f"Test: {len(test)} pairs, {len(test_drugs)} unique drugs")
-    print(f"Drug overlap: {len(overlap)} (should be 0)")
-
-    # Method 3: Cold target split (unseen targets in test)
-    print("\n--- Cold Target Split ---")
-    split_cold_target = data.get_split(method='cold_target', seed=42)
-
-    train = split_cold_target['train']
-    test = split_cold_target['test']
-
-    train_targets = set(train['Target_ID'])
-    test_targets = set(test['Target_ID'])
-    overlap = train_targets & test_targets
-
-    print(f"Train: {len(train)} pairs, {len(train_targets)} unique targets")
-    print(f"Test: {len(test)} pairs, {len(test_targets)} unique targets")
-    print(f"Target overlap: {len(overlap)} (should be 0)")
-
-    # Display sample data
-    print("\nSample DTI data:")
-    print(full_data.head(3))
-
-    return split_cold_drug
+SPLIT_METHODS = ("random", "scaffold", "cold_split", "combination", "time")
 
 
-def evaluation_example(split):
-    """
-    Example: Evaluating model predictions with TDC evaluators
-    """
-    print("\n" + "=" * 60)
-    print("Example 3: Model Evaluation")
-    print("=" * 60)
-
-    test = split['test']
-
-    # For demonstration, create dummy predictions
-    # In practice, replace with your model's predictions
-    import numpy as np
-    np.random.seed(42)
-
-    # Simulate predictions (replace with model.predict(test['Drug']))
-    y_true = test['Y'].values
-    y_pred = y_true + np.random.normal(0, 0.5, len(y_true))  # Add noise
-
-    # Evaluate with different metrics
-    print("\nEvaluating predictions...")
-
-    # Regression metrics
-    mae_evaluator = Evaluator(name='MAE')
-    mae = mae_evaluator(y_true, y_pred)
-    print(f"MAE: {mae:.4f}")
-
-    rmse_evaluator = Evaluator(name='RMSE')
-    rmse = rmse_evaluator(y_true, y_pred)
-    print(f"RMSE: {rmse:.4f}")
-
-    r2_evaluator = Evaluator(name='R2')
-    r2 = r2_evaluator(y_true, y_pred)
-    print(f"R²: {r2:.4f}")
-
-    spearman_evaluator = Evaluator(name='Spearman')
-    spearman = spearman_evaluator(y_true, y_pred)
-    print(f"Spearman: {spearman:.4f}")
+def normalize_columns(values: list[str] | None) -> list[str]:
+    columns: list[str] = []
+    for value in values or []:
+        columns.extend(part.strip() for part in value.split(",") if part.strip())
+    columns = list(dict.fromkeys(columns))
+    if len(columns) > 8:
+        raise CliError("at most eight cold-split columns may be specified")
+    return columns
 
 
-def custom_split_example():
-    """
-    Example: Creating custom splits with different fractions
-    """
-    print("\n" + "=" * 60)
-    print("Example 4: Custom Split Fractions")
-    print("=" * 60)
+def validate_label(task: str, dataset: str, label: str | None) -> str | None:
+    """Resolve multi-label targets from the download-free upstream registry."""
+    from tdc.utils import dataset2target_lists
 
-    data = ADME(name='HIA_Hou')
-
-    # Custom split fractions
-    custom_fracs = [
-        ([0.6, 0.2, 0.2], "60/20/20 split"),
-        ([0.8, 0.1, 0.1], "80/10/10 split"),
-        ([0.7, 0.15, 0.15], "70/15/15 split")
-    ]
-
-    for frac, description in custom_fracs:
-        split = data.get_split(method='scaffold', seed=42, frac=frac)
-        print(f"\n{description}:")
-        print(f"  Train: {len(split['train'])} ({frac[0]*100:.0f}%)")
-        print(f"  Valid: {len(split['valid'])} ({frac[1]*100:.0f}%)")
-        print(f"  Test: {len(split['test'])} ({frac[2]*100:.0f}%)")
+    choices = dataset2target_lists.get(dataset, [])
+    if choices:
+        if TASKS[task][0] == "tdc.generation" or task in {"DrugSyn", "TCREpitopeBinding"}:
+            raise CliError(f"{task}/{dataset} has no supported label-selecting constructor")
+        if label is None:
+            raise CliError(f"{dataset} requires --label-name; available: {', '.join(choices[:20])}")
+        return canonical_name(label, choices, "label")
+    if label is not None:
+        raise CliError(f"{dataset} has no target list in the reviewed package registry")
+    return None
 
 
-def main():
-    """
-    Main function to run all examples
-    """
-    print("\n" + "=" * 60)
-    print("TDC Data Loading and Splitting Examples")
-    print("=" * 60)
+def validate_request(
+    *,
+    task_query: str,
+    dataset_query: str,
+    method: str,
+    columns: list[str],
+    time_column: str | None,
+    metadata: Any,
+) -> tuple[str, str]:
+    """Resolve exact registry names and reject unsupported split combinations."""
 
-    # Example 1: Single prediction with scaffold split
-    split = load_single_pred_example()
+    task = canonical_name(task_query, TASKS, "task")
+    module_name, _, registry_key = TASKS[task]
+    registry_key = canonical_name(registry_key, metadata.dataset_names, "task registry")
+    dataset = canonical_name(
+        dataset_query, metadata.dataset_names[registry_key], f"{task} dataset"
+    )
 
-    # Example 2: Multi prediction with cold splits
-    dti_split = load_multi_pred_example()
+    if method == "scaffold" and task not in {"ADME", "Tox", "HTS"}:
+        raise CliError(
+            "the official generic scaffold-split documentation limits this method "
+            "to the molecule-based ADME, Tox, and HTS single-instance tasks"
+        )
+    if method == "cold_split":
+        if module_name != "tdc.multi_pred":
+            raise CliError("cold_split is only exposed by multi-instance loaders")
+        if not columns:
+            raise CliError("cold_split requires one or more --column values")
+    elif columns:
+        raise CliError("--column is only valid with --method cold_split")
 
-    # Example 3: Model evaluation
-    evaluation_example(split)
+    if method == "combination" and task != "DrugSyn":
+        raise CliError(
+            "the built-in combination split is documented for DrugSyn combination data"
+        )
 
-    # Example 4: Custom split fractions
-    custom_split_example()
+    if method == "time":
+        if not (
+            task == "DTI"
+            and dataset.casefold() == "bindingdb_patent"
+            and time_column
+        ):
+            raise CliError(
+                "the verified built-in temporal case is DTI/BindingDB_Patent and "
+                "requires --time-column (normally Year)"
+            )
+    elif time_column:
+        raise CliError("--time-column is only valid with --method time")
 
-    print("\n" + "=" * 60)
-    print("Examples completed!")
-    print("=" * 60)
+    if module_name == "tdc.generation" and method != "random":
+        raise CliError("the verified MolGen/Reaction/RetroSyn loaders expose random split")
+    return task, dataset
+
+
+def build_plan(
+    *,
+    task: str,
+    dataset: str,
+    method: str,
+    seed: int,
+    fractions: tuple[float, float, float],
+    columns: list[str],
+    time_column: str | None,
+    data_dir: Path,
+    package_version: str,
+    label_name: str | None = None,
+) -> dict[str, Any]:
+    return {
+        "action": "plan",
+        "acknowledgement_required": "--execute",
+        "data_directory": str(data_dir),
+        "dataset": dataset,
+        "label_name": label_name,
+        "download_performed": False,
+        "network_and_storage": (
+            "Constructing the loader may contact TDC/Harvard Dataverse and write "
+            "the complete dataset under data_directory."
+        ),
+        "package": "PyTDC",
+        "package_version": package_version,
+        "split": {
+            "cold_columns": columns,
+            "fractions": list(fractions),
+            "method": method,
+            "seed": seed,
+            "time_column": time_column,
+        },
+        "task": task,
+    }
+
+
+def _summarize_frame(frame: Any, preview: int) -> dict[str, Any]:
+    summary: dict[str, Any] = {"rows": len(frame)}
+    if hasattr(frame, "columns"):
+        summary["columns"] = [str(column) for column in list(frame.columns)[:100]]
+    if preview and hasattr(frame, "head") and hasattr(frame, "to_dict"):
+        records = frame.head(preview).to_dict(orient="records")
+        summary["preview"] = truncate_value(records)
+    return summary
+
+
+def _audit_cold_columns(
+    split: dict[str, Any], columns: list[str]
+) -> dict[str, Any]:
+    """Report exact-value overlap; this is not a general leakage proof."""
+
+    audit: dict[str, Any] = {}
+    partitions = ("train", "valid", "test")
+    for column in columns:
+        missing = [
+            name
+            for name in partitions
+            if not hasattr(split[name], "columns") or column not in split[name].columns
+        ]
+        if missing:
+            audit[column] = {"missing_from": missing}
+            continue
+        values = {
+            name: set(str(value) for value in split[name][column].dropna().unique())
+            for name in partitions
+        }
+        audit[column] = {
+            "distinct_values": {name: len(items) for name, items in values.items()},
+            "pairwise_overlap_counts": {
+                f"{left}:{right}": len(values[left] & values[right])
+                for left, right in itertools.combinations(partitions, 2)
+            },
+        }
+    return audit
+
+
+def execute_split(
+    *,
+    task: str,
+    dataset: str,
+    method: str,
+    seed: int,
+    fractions: tuple[float, float, float],
+    columns: list[str],
+    time_column: str | None,
+    data_dir: Path,
+    preview: int,
+    package_version: str,
+    label_name: str | None = None,
+) -> dict[str, Any]:
+    """Instantiate a loader only after the caller acknowledges the download."""
+
+    module_name, class_name, _ = TASKS[task]
+    task_class = getattr(importlib.import_module(module_name), class_name)
+    constructor_kwargs = {"label_name": label_name} if label_name is not None else {}
+    loader = task_class(name=dataset, path=str(data_dir), **constructor_kwargs)
+
+    split_kwargs: dict[str, Any] = {
+        "method": method,
+        "seed": seed,
+        "frac": list(fractions),
+    }
+    if method == "cold_split":
+        split_kwargs["column_name"] = columns
+    if method == "time":
+        split_kwargs["time_column"] = time_column
+    split = loader.get_split(**split_kwargs)
+
+    expected = {"train", "valid", "test"}
+    if not isinstance(split, dict) or not expected.issubset(split):
+        raise CliError("PyTDC returned an unexpected split structure")
+
+    result: dict[str, Any] = {
+        "action": "executed",
+        "data_directory": str(data_dir),
+        "dataset": dataset,
+        "label_name": label_name,
+        "download_acknowledged": True,
+        "package": "PyTDC",
+        "package_version": package_version,
+        "partitions": {
+            name: _summarize_frame(split[name], preview)
+            for name in ("train", "valid", "test")
+        },
+        "split": {
+            "cold_columns": columns,
+            "fractions": list(fractions),
+            "method": method,
+            "seed": seed,
+            "time_column": time_column,
+        },
+        "task": task,
+    }
+    if method == "cold_split":
+        result["cold_column_audit"] = _audit_cold_columns(split, columns)
+        result["cold_column_audit_note"] = (
+            "Counts cover exact values in requested columns only; zero overlap is "
+            "not a blanket claim that all biological or chemical leakage is absent."
+        )
+    return result
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Validate and plan a PyTDC dataset split. The default is download-free; "
+            "pass --execute to acknowledge that loader construction may download "
+            "and cache the full dataset."
+        )
+    )
+    parser.add_argument("--task", required=True, help="exact public PyTDC task class")
+    parser.add_argument("--dataset", required=True, help="exact package-registry name")
+    parser.add_argument("--label-name", help="required target for a multi-label dataset")
+    parser.add_argument(
+        "--method",
+        choices=SPLIT_METHODS,
+        default="random",
+        help="split method (default: random)",
+    )
+    parser.add_argument(
+        "--column",
+        action="append",
+        help="cold-split column; repeat or pass comma-separated values",
+    )
+    parser.add_argument("--time-column", help="time column for --method time")
+    parser.add_argument(
+        "--frac",
+        nargs=3,
+        type=float,
+        metavar=("TRAIN", "VALID", "TEST"),
+        default=(0.7, 0.1, 0.2),
+        help="split fractions summing to 1 (default: 0.7 0.1 0.2)",
+    )
+    parser.add_argument(
+        "--seed",
+        type=bounded_int(0, 4_294_967_295),
+        default=42,
+        help="non-negative split seed (default: 42)",
+    )
+    parser.add_argument(
+        "--data-dir",
+        default=".pytdc-data",
+        help="relative cache directory (default: .pytdc-data)",
+    )
+    parser.add_argument(
+        "--preview",
+        type=bounded_int(0, 10),
+        default=0,
+        help="include at most this many bounded rows per partition (default: 0)",
+    )
+    parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="acknowledge network/storage use and construct the loader",
+    )
+    parser.add_argument("--output", help="write JSON to a relative workspace path")
+    parser.add_argument(
+        "--force", action="store_true", help="replace an existing --output file"
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        fractions = validate_fractions(args.frac)
+        columns = normalize_columns(args.column)
+        metadata, package_version = load_pytdc_metadata()
+        task, dataset = validate_request(
+            task_query=args.task,
+            dataset_query=args.dataset,
+            method=args.method,
+            columns=columns,
+            time_column=args.time_column,
+            metadata=metadata,
+        )
+        label_name = validate_label(task, dataset, args.label_name)
+        data_dir = safe_directory(
+            args.data_dir,
+            label="data directory",
+            create=args.execute,
+        )
+        if args.execute:
+            result = execute_split(
+                task=task,
+                dataset=dataset,
+                method=args.method,
+                seed=args.seed,
+                fractions=fractions,
+                columns=columns,
+                time_column=args.time_column,
+                data_dir=data_dir,
+                preview=args.preview,
+                package_version=package_version,
+                label_name=label_name,
+            )
+        else:
+            result = build_plan(
+                task=task,
+                dataset=dataset,
+                method=args.method,
+                seed=args.seed,
+                fractions=fractions,
+                columns=columns,
+                time_column=args.time_column,
+                data_dir=data_dir,
+                package_version=package_version,
+                label_name=label_name,
+            )
+        emit_json(result, args.output, force=args.force)
+    except (CliError, ImportError, OSError, TypeError, ValueError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

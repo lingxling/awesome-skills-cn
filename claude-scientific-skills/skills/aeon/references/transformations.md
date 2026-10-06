@@ -14,11 +14,10 @@ Aeon distinguishes between:
 
 Fast, scalable feature generation using random kernels:
 
-- `RocketTransformer` - Random convolutional kernels
-- `MiniRocketTransformer` - Simplified ROCKET for speed
-- `MultiRocketTransformer` - Enhanced ROCKET variant
+- `Rocket` - Random convolutional kernels
+- `MiniRocket` - Simplified ROCKET for speed
+- `MultiRocket` - Enhanced ROCKET variant
 - `HydraTransformer` - Multi-resolution dilated convolutions
-- `MultiRocketHydraTransformer` - Combines ROCKET and Hydra
 - `ROCKETGPU` - GPU-accelerated variant
 
 **Use when**: Need fast, scalable features for any ML algorithm, strong baseline performance.
@@ -85,12 +84,14 @@ Data preparation and normalization:
 
 Advanced analysis methods:
 
-- `MatrixProfile` - Computes distance profiles for pattern discovery
+- `MatrixProfileTransformer` (series module) - Nearest-neighbor distance per subsequence; requires stumpy
 - `DWTTransformer` - Discrete Wavelet Transform
 - `AutocorrelationFunctionTransformer` - ACF computation
-- `Dobin` - Distance-based Outlier BasIs using Neighbors
-- `SignatureTransformer` - Path signature methods
-- `PLATransformer` - Piecewise Linear Approximation
+- `Dobin` (series module) - Distance-based Outlier BasIs using Neighbors
+- `SignatureTransformer` - Path signature methods; aeon 1.6 uses RoughPy instead of esig
+- `PLASeriesTransformer` (series module) - Piecewise Linear Approximation
+
+`Normalizer` and `MinMaxScaler` scale each case/channel along time; they do not learn population-wide feature statistics. `Catch22` uses native features by default; `use_pycatch22` is deprecated in 1.6.
 
 ### Class Imbalance Handling
 
@@ -98,7 +99,7 @@ Advanced analysis methods:
 - `SMOTE` - Synthetic Minority Over-sampling
 - `OHIT` - Over-sampling with Highly Imbalanced Time series
 
-**Use when**: Classification with imbalanced classes.
+**Use when**: Classification with imbalanced classes. Apply samplers only inside training folds; sampler `fit_transform(X, y)` returns resampled `(X, y)`, so do not treat it as a feature-only transformer.
 
 ### Pipeline Composition
 
@@ -111,13 +112,14 @@ Transform individual time series (e.g., for preprocessing in forecasting).
 ### Statistical Analysis
 
 - `AutoCorrelationSeriesTransformer` - Autocorrelation
-- `StatsModelsACF` - ACF using statsmodels
-- `StatsModelsPACF` - Partial autocorrelation
+- `StatsModelsACF` / `StatsModelsPACF` are deprecated in 1.6; prefer `AutoCorrelationSeriesTransformer` for ACF and a supported statsmodels PACF workflow when needed
 
 ### Smoothing and Filtering
 
+Import smoothing classes from `aeon.transformations.series.smoothing`; `BKFilter` remains in `aeon.transformations.series`.
+
 - `ExponentialSmoothing` - Exponentially weighted moving average
-- `MovingAverage` - Simple or weighted moving average
+- `MovingAverage` - Simple sliding-window average
 - `SavitzkyGolayFilter` - Polynomial smoothing
 - `GaussianFilter` - Gaussian kernel smoothing
 - `BKFilter` - Baxter-King bandpass filter
@@ -128,7 +130,7 @@ Transform individual time series (e.g., for preprocessing in forecasting).
 ### Dimensionality Reduction
 
 - `PCASeriesTransformer` - Principal component analysis
-- `PlASeriesTransformer` - Piecewise Linear Approximation
+- `PLASeriesTransformer` - Piecewise Linear Approximation
 
 ### Transformations
 
@@ -138,13 +140,13 @@ Transform individual time series (e.g., for preprocessing in forecasting).
 
 ### Pipeline Composition
 
-- `SeriesTransformerPipeline` - Chain series transformers
+- `SeriesTransformerPipeline` (from `aeon.transformations.series.compose`) - Chain series transformers
 
 ## Quick Start: Feature Extraction
 
 ```python
-from aeon.transformations.collection.convolution_based import RocketTransformer
-from aeon.classification.sklearn import RotationForest
+from aeon.transformations.collection.convolution_based import Rocket
+from aeon.classification.sklearn import RotationForestClassifier
 from aeon.datasets import load_classification
 
 # Load data
@@ -152,12 +154,12 @@ X_train, y_train = load_classification("GunPoint", split="train")
 X_test, y_test = load_classification("GunPoint", split="test")
 
 # Extract ROCKET features
-rocket = RocketTransformer()
+rocket = Rocket()
 X_train_features = rocket.fit_transform(X_train)
 X_test_features = rocket.transform(X_test)
 
 # Use with any sklearn classifier
-clf = RotationForest()
+clf = RotationForestClassifier()
 clf.fit(X_train_features, y_train)
 accuracy = clf.score(X_test_features, y_test)
 ```
@@ -167,9 +169,9 @@ accuracy = clf.score(X_test_features, y_test)
 ```python
 from aeon.transformations.collection import (
     MinMaxScaler,
-    SimpleImputer,
-    CollectionTransformerPipeline
+    SimpleImputer
 )
+from aeon.transformations.collection.compose import CollectionTransformerPipeline
 
 # Build preprocessing pipeline
 pipeline = CollectionTransformerPipeline([
@@ -183,17 +185,18 @@ X_transformed = pipeline.fit_transform(X_train)
 ## Quick Start: Series Smoothing
 
 ```python
-from aeon.transformations.series import MovingAverage
+from aeon.transformations.series.smoothing import MovingAverage
 
 # Smooth individual time series
 smoother = MovingAverage(window_size=5)
 y_smoothed = smoother.fit_transform(y)
+# Univariate output shape: (1, len(y) - window_size + 1)
 ```
 
 ## Algorithm Selection
 
 ### For Feature Extraction:
-- **Speed + Performance**: MiniRocketTransformer
+- **Speed + Performance**: MiniRocket
 - **Interpretability**: Catch22, TSFresh
 - **Dimensionality reduction**: PAA, SAX, PCA
 - **Discriminative patterns**: Shapelet transforms
@@ -224,7 +227,7 @@ y_smoothed = smoother.fit_transform(y)
    pipeline = CollectionTransformerPipeline([
        ('imputer', SimpleImputer()),
        ('scaler', Normalizer()),
-       ('features', RocketTransformer())
+       ('features', Rocket())
    ])
    ```
 

@@ -1,6 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
+const { isReviewedSupportPath } = require("./reviewed-fork-skills");
+
 const { findProjectRoot } = require("./project-root");
 
 const DOC_PREFIXES = ["docs/"];
@@ -29,6 +31,12 @@ const SKILL_SUPPORT_PATH = new RegExp(
   "u",
 );
 const NARROW_DOC_PATH = /^(?:README\.md|CONTRIBUTING\.md|docs\/(?:[^/]+\/)*[^/]+\.md)$/;
+// Browser source for the hosted catalog app. It is reviewable in isolation: it
+// cannot change dependencies, lockfiles, build configuration or generated
+// assets, and every change still requires an exact-head maintainer attestation
+// before merge (see requiresHumanReview in classifyChangeRecords).
+const WEB_APP_SOURCE_PATH = /^apps\/web-app\/src\/(?:[^/]+\/)*[^/]+$/;
+const WEB_APP_SOURCE_EXTENSIONS = new Set([".css", ".ts", ".tsx"]);
 const LOW_RISK_EXTENSIONS = new Set([
   ".csv",
   ".gif",
@@ -122,10 +130,13 @@ function classifyPathPolicy(filePath) {
     kind = "skill_support";
   } else if (NARROW_DOC_PATH.test(filePath)) {
     kind = "documentation";
+  } else if (WEB_APP_SOURCE_PATH.test(filePath)) {
+    kind = "web_app_source";
   }
 
   const extension = path.posix.extname(filePath).toLowerCase();
-  const recognizedExtension = LOW_RISK_EXTENSIONS.has(extension);
+  const recognizedExtension = LOW_RISK_EXTENSIONS.has(extension)
+    || (kind === "web_app_source" && WEB_APP_SOURCE_EXTENSIONS.has(extension));
   const reasons = [];
   if (kind === "unknown") {
     reasons.push("unapproved_path");
@@ -185,6 +196,7 @@ function classifyChangeRecords(records, options = {}) {
   const skillContentChanges = [];
   let sensitive = false;
   let totalBlobBytes = 0;
+  let webAppSourceChangeCount = 0;
 
   if (!Array.isArray(records) || records.length === 0) {
     return {
@@ -241,7 +253,21 @@ function classifyChangeRecords(records, options = {}) {
         continue;
       }
 
-      const pathPolicy = classifyPathPolicy(filePath);
+      let pathPolicy = classifyPathPolicy(filePath);
+      const reviewedRoots = options.reviewedSkillRoots || [];
+      const reviewedExtraPaths = options.reviewedSupportPaths || [];
+      const reviewedSupport = isReviewedSupportPath(filePath, reviewedRoots, reviewedExtraPaths);
+      // A Git copy reads its origin; only its destination changes. Git pairs a
+      // copy by similarity against any path that already exists in the base
+      // tree, so the origin's own path class is not author-controlled and the
+      // pull request cannot mutate it. The original side still passes
+      // raw-path, mode, object, size and total-budget checks, and a matching
+      // deletion of that origin still fails closed through its own record.
+      const copyOrigin = status === "C" && side === "old";
+      if ((reviewedSupport || copyOrigin) && validateRawRepoPath(filePath).safe) {
+        pathPolicy = { safe: true, sensitive: false, approvalSafe: true,
+          kind: reviewedSupport ? "skill_support" : "copy_origin", reasons: [] };
+      }
       paths.push({ record: index, side, path: filePath, ...pathPolicy });
       if (!pathPolicy.approvalSafe) {
         sensitive = true;
@@ -254,6 +280,9 @@ function classifyChangeRecords(records, options = {}) {
       }
       if (["canonical_skill", "skill_support"].includes(pathPolicy.kind)) {
         skillContentChanges.push(filePath);
+      }
+      if (pathPolicy.kind === "web_app_source") {
+        webAppSourceChangeCount += 1;
       }
 
       if (mode !== REGULAR_FILE_MODE) {
@@ -311,10 +340,64 @@ function classifyChangeRecords(records, options = {}) {
     approvalSafe,
     reasons: uniqueReasons,
     paths,
-    requiresHumanReview: uniqueSkillContentChanges.length > 0,
+    requiresHumanReview: uniqueSkillContentChanges.length > 0 || webAppSourceChangeCount > 0,
     canonicalSkillChanges: uniqueCanonicalSkillChanges,
     skillContentChanges: uniqueSkillContentChanges,
   };
+}
+
+function classifyShadowImpact(records, contract) {
+  if (!Array.isArray(records) || records.length === 0) {
+    return { profile: "unknown", reasons: ["missing_change_records"] };
+  }
+
+  const changedPaths = [];
+  const reasons = [];
+  for (const [index, record] of records.entries()) {
+    const expectedSides = CHANGE_STATUS_SIDES[String(record?.status || "")];
+    if (!expectedSides) {
+      reasons.push(`record_${index}:unknown_status`);
+      continue;
+    }
+    for (const side of ["old", "new"]) {
+      if (!expectedSides[side]) continue;
+      const filePath = record?.[`${side}_path`];
+      const validation = validateRawRepoPath(filePath);
+      if (!validation.safe) {
+        reasons.push(...validation.reasons.map((reason) => `record_${index}:${side}_${reason}`));
+        continue;
+      }
+      changedPaths.push(filePath);
+    }
+  }
+
+  if (reasons.length > 0 || changedPaths.length === 0) {
+    return {
+      profile: "unknown",
+      reasons: [...new Set(reasons.length > 0 ? reasons : ["missing_changed_paths"])],
+    };
+  }
+
+  const uniquePaths = [...new Set(changedPaths)];
+  const pathPolicies = uniquePaths.map((filePath) => classifyPathPolicy(filePath));
+  if (pathPolicies.every((policy) => ["canonical_skill", "skill_support"].includes(policy.kind))) {
+    return { profile: "narrow-skill", reasons: [] };
+  }
+  if (pathPolicies.every((policy) => policy.kind === "documentation")) {
+    return { profile: "narrow-docs", reasons: [] };
+  }
+
+  const classification = classifyChangedFiles(uniquePaths, contract);
+  const hasKnownFullImpact = classification.categories.length > 0
+    || uniquePaths.some((filePath) => isDerivedFile(filePath, contract));
+  if (hasKnownFullImpact) {
+    return {
+      profile: "full",
+      reasons: ["mixed_or_broad_change"],
+    };
+  }
+
+  return { profile: "unknown", reasons: ["unclassified_path"] };
 }
 
 function matchesContractEntry(filePath, entry) {
@@ -481,6 +564,7 @@ module.exports = {
   classifyChangeRecords,
   classifyChangedFiles,
   classifyPathPolicy,
+  classifyShadowImpact,
   extractChangelogSection,
   getDirectDerivedChanges,
   getManagedFiles,

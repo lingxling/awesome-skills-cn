@@ -1,403 +1,229 @@
-# Liquid Handling with PyLabRobot
+# Liquid handling
 
-## Overview
+Verified against **PyLabRobot 0.2.2** on **2026-10-01**. Examples in this
+reference are planning or chatterbox-only. They are not authorization to connect
+to a robot.
 
-The liquid handling module (`pylabrobot.liquid_handling`) provides a unified interface for controlling liquid handling robots. The `LiquidHandler` class serves as the main interface for all pipetting operations, working across different hardware platforms through backend abstraction.
-
-## Basic Setup
-
-### Initializing a Liquid Handler
+## Stable frontend and backend
 
 ```python
 from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends import STAR
-from pylabrobot.resources import STARLetDeck
+from pylabrobot.liquid_handling.backends import LiquidHandlerChatterboxBackend
+from pylabrobot.resources.hamilton import STARLetDeck
 
-# Create liquid handler with STAR backend
-lh = LiquidHandler(backend=STAR(), deck=STARLetDeck())
-await lh.setup()
-
-# When done
-await lh.stop()
+lh = LiquidHandler(
+    backend=LiquidHandlerChatterboxBackend(num_channels=8),
+    deck=STARLetDeck(),
+)
+await lh.setup()  # prints operations; no hardware transport
 ```
 
-### Switching Between Backends
+For 0.2.2, the important frontend signatures are:
 
-Change robots by swapping the backend without rewriting protocols:
-
-```python
-# Hamilton STAR
-from pylabrobot.liquid_handling.backends import STAR
-lh = LiquidHandler(backend=STAR(), deck=STARLetDeck())
-
-# Opentrons OT-2
-from pylabrobot.liquid_handling.backends import OpentronsBackend
-lh = LiquidHandler(backend=OpentronsBackend(host="192.168.1.100"), deck=OTDeck())
-
-# Simulation (no hardware required)
-from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-lh = LiquidHandler(backend=ChatterboxBackend(), deck=STARLetDeck())
+```text
+pick_up_tips(tip_spots, use_channels=None, offsets=None, **backend_kwargs)
+drop_tips(tip_spots, use_channels=None, offsets=None,
+          allow_nonzero_volume=False, **backend_kwargs)
+return_tips(use_channels=None, allow_nonzero_volume=False, offsets=None,
+            **backend_kwargs)
+aspirate(resources, vols, use_channels=None, flow_rates=None, offsets=None,
+         liquid_height=None, blow_out_air_volume=None, spread="wide",
+         mix=None, **backend_kwargs)
+dispense(resources, vols, use_channels=None, flow_rates=None, offsets=None,
+         liquid_height=None, blow_out_air_volume=None, spread="wide",
+         mix=None, **backend_kwargs)
 ```
 
-## Core Operations
+Volumes are microlitres (`uL`), coordinates/heights are millimetres (`mm`), and
+flow rates are `uL/s` unless the exact backend page says otherwise. Use lists
+whose lengths agree with selected resources/channels; do not rely on scalar
+broadcasting copied from an older example.
 
-### Tip Management
+## Safe operation shape
 
-Picking up and dropping tips is fundamental to liquid handling operations:
+With the software-only backend and already assigned resources:
 
 ```python
-# Pick up tips from specific positions
-await lh.pick_up_tips(tip_rack["A1"])           # Single tip
-await lh.pick_up_tips(tip_rack["A1:H1"])        # Row of 8 tips
-await lh.pick_up_tips(tip_rack["A1:A12"])       # Column of 12 tips
+source.get_well("A1").tracker.set_volume(100.0)  # bookkeeping only
+destination.get_well("A1").tracker.set_volume(0.0)
 
-# Drop tips
-await lh.drop_tips()                             # Drop at current location
-await lh.drop_tips(waste)                        # Drop at specific location
-
-# Return tips to original rack
+await lh.pick_up_tips(tips["A1"])
+await lh.aspirate(
+    source["A1"],
+    vols=[25.0],
+    use_channels=[0],
+    flow_rates=[50.0],
+    liquid_height=[1.0],
+)
+await lh.dispense(
+    destination["A1"],
+    vols=[25.0],
+    use_channels=[0],
+    flow_rates=[75.0],
+    liquid_height=[2.0],
+)
 await lh.return_tips()
 ```
 
-**Tip Tracking**: Enable automatic tip tracking to monitor tip usage:
+Before translating this to any physical system, verify:
+
+- resource and well identity, actual position, orientation, dimensions, and
+  reachability;
+- source fill volume **and dead volume**; destination capacity and headspace;
+- tip model, fitting, filter, capacity, rack state, liquid compatibility, and
+  channel compatibility;
+- 0-based `use_channels` mapping against the physical head and mounted tools;
+- volume, length, rate, and time units;
+- aspiration/dispense height, offset, rate, settling, blowout, mixing, air gaps,
+  surface behavior, and validated liquid class;
+- contamination grouping, filtered-tip requirement, tip reuse prohibition or
+  validated policy, waste route, and carryover controls.
+
+The bundled transfer planner makes the conservative choice of one new tip per
+CSV row.
+
+## `transfer()` is not the old plate-copy API
+
+In 0.2.2 the verified signature is:
+
+```text
+transfer(source: Well, targets: List[Well], source_vol=None, ratios=None,
+         target_vols=None, aspiration_flow_rate=None,
+         dispense_flow_rates=None, **backend_kwargs)
+```
+
+It represents distribution from one source to multiple targets. Old examples
+that pass parallel `source=source_plate["A1:H12"]`, `dest=...`, and `vols=...`
+do not match this stable signature. For one-to-one transfers, plan explicit
+aspirate/dispense pairs and validate channel/tip state.
+
+## Tip tracking
+
+Enable tracking before operations:
 
 ```python
 from pylabrobot.resources import set_tip_tracking
-set_tip_tracking(True)  # Enable globally
+
+set_tip_tracking(True)
 ```
 
-### Aspirating Liquids
+Tip racks normally start populated; supported factories accept
+`with_tips=False`, and `TipRack.fill()`, `empty()`, and `set_tip_state(...)`
+modify planned state. `return_tips()` depends on operation history. Tip tracking
+can catch inconsistent planned operations, but it cannot detect whether a tip
+is physically present, seated, blocked, damaged, or the expected type.
 
-Draw liquid from wells or containers:
+Never disable tracking merely to bypass `NoTipError` or `HasTipError`. Reconcile
+the physical deck and planned state instead.
 
-```python
-# Basic aspiration
-await lh.aspirate(plate["A1"], vols=100)         # 100 µL from A1
-
-# Multiple wells with same volume
-await lh.aspirate(plate["A1:H1"], vols=100)      # 100 µL from each well
-
-# Multiple wells with different volumes
-await lh.aspirate(
-    plate["A1:A3"],
-    vols=[100, 150, 200]                          # Different volumes
-)
-
-# Advanced parameters
-await lh.aspirate(
-    plate["A1"],
-    vols=100,
-    flow_rate=50,                                 # µL/s
-    liquid_height=5,                              # mm from bottom
-    blow_out_air_volume=10                        # µL air
-)
-```
-
-### Dispensing Liquids
-
-Dispense liquid into wells or containers:
-
-```python
-# Basic dispensing
-await lh.dispense(plate["A2"], vols=100)         # 100 µL to A2
-
-# Multiple wells
-await lh.dispense(plate["A1:H1"], vols=100)      # 100 µL to each
-
-# Different volumes
-await lh.dispense(
-    plate["A1:A3"],
-    vols=[100, 150, 200]
-)
-
-# Advanced parameters
-await lh.dispense(
-    plate["A2"],
-    vols=100,
-    flow_rate=50,                                 # µL/s
-    liquid_height=2,                              # mm from bottom
-    blow_out_air_volume=10                        # µL air
-)
-```
-
-### Transferring Liquids
-
-Transfer combines aspirate and dispense in a single operation:
-
-```python
-# Basic transfer
-await lh.transfer(
-    source=source_plate["A1"],
-    dest=dest_plate["A1"],
-    vols=100
-)
-
-# Multiple transfers (same tips)
-await lh.transfer(
-    source=source_plate["A1:H1"],
-    dest=dest_plate["A1:H1"],
-    vols=100
-)
-
-# Different volumes per well
-await lh.transfer(
-    source=source_plate["A1:A3"],
-    dest=dest_plate["B1:B3"],
-    vols=[50, 100, 150]
-)
-
-# With tip handling
-await lh.pick_up_tips(tip_rack["A1:H1"])
-await lh.transfer(
-    source=source_plate["A1:H12"],
-    dest=dest_plate["A1:H12"],
-    vols=100
-)
-await lh.drop_tips()
-```
-
-## Advanced Techniques
-
-### Serial Dilutions
-
-Create serial dilutions across plate rows or columns:
-
-```python
-# 2-fold serial dilution
-source_vols = [100, 50, 50, 50, 50, 50, 50, 50]
-dest_vols = [0, 50, 50, 50, 50, 50, 50, 50]
-
-# Add diluent first
-await lh.pick_up_tips(tip_rack["A1"])
-await lh.transfer(
-    source=buffer["A1"],
-    dest=plate["A2:A8"],
-    vols=50
-)
-await lh.drop_tips()
-
-# Perform serial dilution
-await lh.pick_up_tips(tip_rack["A2"])
-for i in range(7):
-    await lh.aspirate(plate[f"A{i+1}"], vols=50)
-    await lh.dispense(plate[f"A{i+2}"], vols=50)
-    # Mix
-    await lh.aspirate(plate[f"A{i+2}"], vols=50)
-    await lh.dispense(plate[f"A{i+2}"], vols=50)
-await lh.drop_tips()
-```
-
-### Plate Replication
-
-Copy an entire plate layout to another plate:
-
-```python
-# Setup tips
-await lh.pick_up_tips(tip_rack["A1:H1"])
-
-# Replicate 96-well plate (12 columns)
-for col in range(1, 13):
-    await lh.transfer(
-        source=source_plate[f"A{col}:H{col}"],
-        dest=dest_plate[f"A{col}:H{col}"],
-        vols=100
-    )
-
-await lh.drop_tips()
-```
-
-### Multi-Channel Pipetting
-
-Use multiple channels simultaneously for parallel operations:
-
-```python
-# 8-channel transfer (entire row)
-await lh.pick_up_tips(tip_rack["A1:H1"])
-await lh.transfer(
-    source=source_plate["A1:H1"],
-    dest=dest_plate["A1:H1"],
-    vols=100
-)
-await lh.drop_tips()
-
-# Process entire plate with 8-channel
-for col in range(1, 13):
-    await lh.pick_up_tips(tip_rack[f"A{col}:H{col}"])
-    await lh.transfer(
-        source=source_plate[f"A{col}:H{col}"],
-        dest=dest_plate[f"A{col}:H{col}"],
-        vols=100
-    )
-    await lh.drop_tips()
-```
-
-### Mixing Liquids
-
-Mix liquids by repeatedly aspirating and dispensing:
-
-```python
-# Mix by aspiration/dispensing
-await lh.pick_up_tips(tip_rack["A1"])
-
-# Mix 5 times
-for _ in range(5):
-    await lh.aspirate(plate["A1"], vols=80)
-    await lh.dispense(plate["A1"], vols=80)
-
-await lh.drop_tips()
-```
-
-## Volume Tracking
-
-Track liquid volumes in wells automatically:
+## Volume tracking is bookkeeping
 
 ```python
 from pylabrobot.resources import set_volume_tracking
 
-# Enable volume tracking globally
 set_volume_tracking(True)
-
-# Set initial volumes
-plate["A1"].tracker.set_liquids([(None, 200)])  # 200 µL
-
-# After aspirating 100 µL
-await lh.aspirate(plate["A1"], vols=100)
-print(plate["A1"].tracker.get_volume())  # 100 µL
-
-# Check remaining volume
-remaining = plate["A1"].tracker.get_volume()
+well.tracker.set_volume(200.0)
+used_uL = well.tracker.get_used_volume()
+free_uL = well.tracker.get_free_volume()
 ```
 
-## Liquid Classes
+`set_volume()` and `load_state()` do not validate the initial physical value
+against capacity. Validate finite, nonnegative starting volumes and capacity
+before seeding trackers. The tracker does not track chemical composition:
+deprecated `get_liquids()` returns unknown liquid identity.
 
-Define liquid properties for optimal pipetting:
+The `VolumeTracker` updates planned volumes and can reject under-aspiration,
+tip overfill, or well overfill. It does **not** measure a meniscus or confirm
+liquid identity. Initial state must come from a trusted preparation record and
+human reconciliation.
+
+Keep dead volume separate from geometric capacity. The tracker may allow a
+withdrawal that is physically unreliable because of vessel shape, tilt,
+surface tension, foam, viscosity, or required submersion.
+
+### Physical liquid detection is backend-specific
+
+Hamilton STAR liquid-level detection is a separate physical feature. Stable
+STAR docs expose backend kwargs such as `lld_mode`, `immersion_depth`, and
+`surface_following_distance`. It is not portable to all backends and is not
+enabled by volume tracking. Validate the model, sensors, consumables, conductive
+properties, firmware behavior, failure handling, and channel-specific values
+before considering it.
+
+## Liquid classes
+
+There is no stable generic import:
 
 ```python
-# Liquid classes control aspiration/dispense parameters
-from pylabrobot.liquid_handling import LiquidClass
+# Invalid in 0.2.2:
+# from pylabrobot.liquid_handling import LiquidClass
+```
 
-# Create custom liquid class
-water = LiquidClass(
-    name="Water",
-    aspiration_flow_rate=100,
-    dispense_flow_rate=150,
-    aspiration_mix_flow_rate=100,
-    dispense_mix_flow_rate=100,
-    air_transport_retract_dist=10
+Hamilton liquid classes are vendor-specific:
+
+```python
+from pylabrobot.liquid_handling.liquid_classes.hamilton import HamiltonLiquidClass
+from pylabrobot.liquid_handling.liquid_classes.hamilton.star import (
+    HighVolumeFilter_Water_DispenseSurface_Part,
 )
 
-# Use with operations
 await lh.aspirate(
-    plate["A1"],
-    vols=100,
-    liquid_class=water
+    source["A1"],
+    vols=[100.0],
+    hamilton_liquid_classes=[
+        HighVolumeFilter_Water_DispenseSurface_Part
+    ],
 )
 ```
 
-## Error Handling
+This STAR example is **illustrative and source-verified only**; it was not
+executed on hardware. The keyword is not a universal frontend contract.
+`TecanLiquidClass` and `get_liquid_class` exist under
+`pylabrobot.liquid_handling.liquid_classes.tecan`, but are a different
+vendor-specific system.
 
-Handle errors in liquid handling operations:
+Do not select a class from its name alone. Review liquid, tip, head, volume
+range, jet/surface mode, vessel geometry, calibration curve, flow, settling,
+transport air, blowout, and firmware/model applicability. Custom classes need
+documented gravimetric or assay validation and operator approval.
 
-```python
-try:
-    await lh.setup()
-    await lh.pick_up_tips(tip_rack["A1"])
-    await lh.transfer(source["A1"], dest["A1"], vols=100)
-    await lh.drop_tips()
-except Exception as e:
-    print(f"Error during liquid handling: {e}")
-    # Attempt to drop tips if holding them
-    try:
-        await lh.drop_tips()
-    except:
-        pass
-finally:
-    await lh.stop()
+## Mixing, serial dilution, and multichannel work
+
+- Make every aspirate/dispense pair explicit in the plan.
+- Check the tip's current planned volume before mixing.
+- Keep the mix volume below both tip capacity and usable well volume.
+- For serial dilutions, define where a tip may be reused and where a fresh tip
+  is mandatory; do not infer contamination safety from row order.
+- Confirm well order and channel order. A plate slice is not proof that the
+  physical channels align with those wells.
+- Include residual volume, pre-wet cycles, adsorption, foaming, and carryover in
+  the acceptance criteria.
+
+## Deterministic preflight
+
+```bash
+python3 skills/pylabrobot/scripts/plan_transfers.py \
+  --manifest tests/pylabrobot/fixtures/protocol_manifest.json \
+  --transfers tests/pylabrobot/fixtures/transfers.csv
 ```
 
-## Best Practices
+The CSV header is exact and fixed. Unknown columns, duplicate IDs, unsupported
+tip policies, missing source or destination starting volumes, non-finite numbers, out-of-grid wells,
+unallowlisted liquid classes/tips, excess rates/heights/volumes, channel
+mismatches, dead-volume violations, destination overflow, and insufficient tips
+fail closed.
 
-1. **Always Setup and Stop**: Call `await lh.setup()` before operations and `await lh.stop()` when done
-2. **Enable Tracking**: Use tip tracking and volume tracking for accurate state management
-3. **Tip Management**: Always pick up tips before aspirating and drop them when done
-4. **Flow Rates**: Adjust flow rates based on liquid viscosity and vessel type
-5. **Liquid Height**: Set appropriate aspiration/dispense heights to avoid splashing
-6. **Error Handling**: Use try/finally blocks to ensure proper cleanup
-7. **Test in Simulation**: Use ChatterboxBackend to test protocols before running on hardware
-8. **Volume Limits**: Respect tip volume limits and well capacities
-9. **Mixing**: Mix after dispensing viscous liquids or when accuracy is critical
-10. **Documentation**: Document liquid classes and custom parameters for reproducibility
+## Sources
 
-## Common Patterns
+Checked **2026-10-01**:
 
-### Complete Liquid Handling Protocol
-
-```python
-from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends import STAR
-from pylabrobot.resources import STARLetDeck, TIP_CAR_480_A00, Cos_96_DW_1mL
-from pylabrobot.resources import set_tip_tracking, set_volume_tracking
-
-# Enable tracking
-set_tip_tracking(True)
-set_volume_tracking(True)
-
-# Initialize
-lh = LiquidHandler(backend=STAR(), deck=STARLetDeck())
-await lh.setup()
-
-try:
-    # Define resources
-    tip_rack = TIP_CAR_480_A00(name="tips")
-    source = Cos_96_DW_1mL(name="source")
-    dest = Cos_96_DW_1mL(name="dest")
-
-    # Assign to deck
-    lh.deck.assign_child_resource(tip_rack, rails=1)
-    lh.deck.assign_child_resource(source, rails=10)
-    lh.deck.assign_child_resource(dest, rails=15)
-
-    # Set initial volumes
-    for well in source.children:
-        well.tracker.set_liquids([(None, 200)])
-
-    # Execute protocol
-    await lh.pick_up_tips(tip_rack["A1:H1"])
-    await lh.transfer(
-        source=source["A1:H12"],
-        dest=dest["A1:H12"],
-        vols=100
-    )
-    await lh.drop_tips()
-
-finally:
-    await lh.stop()
-```
-
-## Hardware-Specific Notes
-
-### Hamilton STAR
-
-- Supports full liquid handling capabilities
-- Uses USB connection for communication
-- Firmware commands executed directly
-- Supports CO-RE (Compressed O-Ring Expansion) tips
-
-### Opentrons OT-2
-
-- Requires IP address for network connection
-- Uses HTTP API for communication
-- Limited to 8-channel and single-channel pipettes
-- Simpler deck layout compared to STAR
-
-### Tecan EVO
-
-- Work-in-progress support
-- Similar capabilities to Hamilton STAR
-- Check current compatibility status in documentation
-
-## Additional Resources
-
-- Official Liquid Handling Guide: https://docs.pylabrobot.org/user_guide/basic.html
-- API Reference: https://docs.pylabrobot.org/api/pylabrobot.liquid_handling.html
-- Example Protocols: https://github.com/PyLabRobot/pylabrobot/tree/main/examples
+- [Hosted basic Hamilton tutorial](https://docs.pylabrobot.org/stable/user_guide/00_liquid-handling/hamilton-star/basic.html)
+  — 0.2.1 historical guide; 0.2.2 signatures verified from released source.
+- [Hosted liquid-handling API](https://docs.pylabrobot.org/stable/api/pylabrobot.liquid_handling.html)
+  — frontend/backend split and `LiquidHandlerChatterboxBackend`.
+- [Hosted tracker guide](https://docs.pylabrobot.org/stable/user_guide/machine-agnostic-features/using-trackers.html)
+  — tip/volume tracker behavior.
+- [Hosted Hamilton liquid classes](https://docs.pylabrobot.org/stable/user_guide/00_liquid-handling/hamilton-star/hamilton-liquid-classes.html)
+  and [STAR liquid-level detection](https://docs.pylabrobot.org/stable/user_guide/00_liquid-handling/hamilton-star/star_lld.html).
+- [released 0.2.2 liquid-handler source](https://pypi.org/project/PyLabRobot/0.2.2/#files)
+  — signatures and import verification; released 2026-07-30.

@@ -20,6 +20,10 @@ Brand identity, voice, messaging, asset management, and consistency frameworks.
 - Asset organization, naming, and approval
 - Color palette management and typography specs
 
+## Script Paths
+
+Script paths in this skill and its `references/` are relative to the directory that contains this SKILL.md, not to the project: `scripts/<file>` is this skill's own `scripts/` folder, and `../<skill>/scripts/<file>` is a sibling sub-skill installed alongside it. Build the full path from that directory (Claude Code reports it as the skill's base directory when the skill loads) and keep the working directory at the project root — the scripts read and write project files such as `docs/brand-guidelines.md`, `assets/design-tokens.json` or `src/` relative to it.
+
 ## Quick Start
 
 **Inject brand context into prompts:**
@@ -48,6 +52,13 @@ node scripts/sync-brand-to-tokens.cjs
 # 3. Verify
 node scripts/inject-brand-context.cjs --json | head -20
 ```
+
+The sync stops when it detects existing token files, `:root` custom properties
+or Tailwind v4 `@theme` variables in common CSS entry points and their local
+CSS imports, or Tailwind theme colors and presets. Review the reported source
+before proceeding. If the detected files are the managed
+`assets/design-tokens.*` outputs from an earlier sync and replacing them is
+intentional, re-run with `--force`.
 
 **Files synced:**
 - `docs/brand-guidelines.md` → Source of truth

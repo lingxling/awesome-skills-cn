@@ -1,342 +1,162 @@
 ---
 name: glycoengineering
-description: 分析和工程蛋白质糖基化。扫描N-糖基化共有序列（N-X-S/T）序列，预测O-糖基化热点，并访问精选的糖工程工具（NetOGlyc、GlycoShield、GlycoWorkbench）。用于糖蛋白工程、治疗性抗体优化和疫苗设计。
+description: 通过扫描经典 N-糖基化序列基序（sequon）、描述富含 S/T 的区域、检查经整理的糖基证据，并准备 NetNGlyc、NetOGlyc 和 GlycoSHIELD 工作流,来分析和改造蛋白质糖基化。适用于糖蛋白工程、抗体 Fc 糖基化、糖链屏蔽,以及位点特异性糖蛋白质组学的解读。
 license: Unknown
-metadata: {"version": "1.0", "skill-author": "Kuan-lin Huang"}
+compatibility: Local sequence helpers require Python 3.10+. Public GlyTouCan lookup requires requests and network access. DTU predictors use a browser; optional GlycoSHIELD needs a separate source installation, glycan libraries, and GROMACS for SASA analysis.
+metadata:
+  version: "1.4"
+  skill-author: Kuan-lin Huang
+  last-reviewed: "2026-10-01"
 ---
-
-
-
-
-
 
 # 糖基化工程
 
-## 概述
+## 何时使用
 
-糖基化是蛋白质最常见和最复杂的翻译后修饰（PTM），影响超过50%的所有人类蛋白质。糖链调节蛋白质折叠、稳定性、免疫识别、受体相互作用和治疗性蛋白质的药代动力学。糖基化工程涉及对糖基化模式进行合理修饰，以提高治疗功效、稳定性或免疫逃逸。
+适用于经典 N-糖基化候选位点分析、O-GalNAc 候选位点筛选、
+抗体糖型比较，或结构性糖链屏蔽。应将四类结果分开看待：序列基序、
+预测结果、有实验支持的占位情况，以及糖链结构/组成。单独任何一项都不能确立其他几项。
 
-**两种主要糖基化类型：**
-- **N-糖基化**：附着于序列子N-X-[S/T]中的天冬酰胺（N），其中X ≠ 脯氨酸；发生在内质网/高尔基体中
-- **O-糖基化**：附着于丝氨酸（S）或苏氨酸（T）；无严格共识基序；主要是GalNAc起始
+本工作流聚焦于真核生物分泌通路的 N-糖基化,以及黏蛋白型
+O-GalNAc。O-GlcNAc、O-甘露糖、O-岩藻糖以及其他 O-连接修饰需要
+相应的证据和预测工具；仅凭 S/T 富集并不能确定修饰类型。
 
-## 何时使用此技能
+## 工作流程
 
-使用此技能当：
+1. 记录蛋白质登录号、同种型/版本、确切序列、表达宿主、
+   信号肽/跨膜拓扑结构,以及构建体边界。应保留一份
+   从提交序列坐标到成熟蛋白、PDB 链/残基标识符以及（如适用）抗体编号的映射关系。
+2. 扫描经典的 N-X-[S/T] 候选位点，其中 X 不是 Pro。应保留重叠位点：`NNST`
+   在位置 1 和 2 都有候选位点。缺少经典基序并不能排除
+   非常规的 N-糖基化；存在该基序也不能确立占位情况。
+3. 利用拓扑结构和经整理的证据，优先考虑分泌/管腔内/细胞外的区域。仅凭序列
+   在细胞质区域得出的结果，并不能作为分泌通路糖基化的证据。
+4. 对于 O-GalNAc，只将 S/T 密度用作描述性特征，然后检视
+   合适的预测工具以及细胞/转移酶背景。**不要排除 SP/TP 基序**：
+   相邻的 Pro 可能是有利的，这取决于具体的 GalNAc 转移酶和上下文背景。
+   见[GalNAc-T 底物研究](https://doi.org/10.1093/glycob/cwu089)。
+5. 提出明确编号的突变，列出每一个被改变的残基，并对整个产物重新扫描，检查丢失/新产生的重叠基序。应独立于糖基化情况评估结构和
+   表达方面的影响。
+6. 通过实验验证占位情况和糖型，需要有定位证据、
+   糖链组成/结构方面的置信度，以及该工程目标所需要的生物学检测方法。对于生物类似药的比较，在比较糖链百分比之前，应先匹配样品处理方式、
+   分析覆盖范围和定量方法。
 
-- **抗体工程**：优化Fc糖基化以增强ADCC、CDC或降低免疫原性
-- **治疗性蛋白质设计**：识别影响半衰期、稳定性或免疫原性的糖基化位点
-- **疫苗抗原设计**：工程化糖链屏蔽以将免疫反应集中在保守表位上
-- **生物类似药表征**：比较参考药和生物类似药之间的糖链模式
-- **药物靶点分析**：糖基化是否影响受体的靶点参与？
-- **蛋白质稳定性**：N-糖链通常稳定蛋白质；识别稳定化突变的位点
+## 本地序列分析
 
-## N-糖基化序列子分析
-
-### 扫描N-糖基化位点
-
-N-糖基化发生在序列子**N-X-[S/T]**，其中X ≠ 脯氨酸。
-
-```python
-import re
-from typing import List, Tuple
-
-def find_n_glycosylation_sequons(sequence: str) -> List[dict]:
-    """
-    扫描蛋白质序列以查找规范N连接糖基化序列子。
-    基序：N-X-[S/T]，其中X ≠ 脯氨酸。
-
-    参数:
-        sequence: 单字母氨基酸序列
-
-    返回:
-        包含位置（1-based）、基序和上下文的字典列表
-    """
-    seq = sequence.upper()
-    results = []
-    i = 0
-    while i <= len(seq) - 3:
-        triplet = seq[i:i+3]
-        if triplet[0] == 'N' and triplet[1] != 'P' and triplet[2] in {'S', 'T'}:
-            context = seq[max(0, i-3):i+6]  # ±3残基上下文
-            results.append({
-                'position': i + 1,   # 1-based
-                'motif': triplet,
-                'context': context,
-                'sequon_type': 'NXS' if triplet[2] == 'S' else 'NXT'
-            })
-            i += 3
-        else:
-            i += 1
-    return results
-
-def summarize_glycosylation_sites(sequence: str, protein_name: str = "") -> str:
-    """生成N-糖基化位点的研究日志摘要。"""
-    sequons = find_n_glycosylation_sequons(sequence)
-
-    lines = [f"# N-糖基化序列子分析：{protein_name or '蛋白质'}"]
-    lines.append(f"序列长度：{len(sequence)}")
-    lines.append(f"总N-糖基化序列子：{len(sequons)}")
-
-    if sequons:
-        lines.append(f"\nN-X-S位点：{sum(1 for s in sequons if s['sequon_type'] == 'NXS')}")
-        lines.append(f"N-X-T位点：{sum(1 for s in sequons if s['sequon_type'] == 'NXT')}")
-        lines.append(f"\n位点详情：")
-        for s in sequons:
-            lines.append(f"  位置 {s['position']}：{s['motif']}（上下文：...{s['context']}...）")
-    else:
-        lines.append("未检测到规范N-糖基化序列子。")
-
-    return "\n".join(lines)
-
-# 示例：IgG1 Fc区域
-fc_sequence = "APELLGGPSVFLFPPKPKDTLMISRTPEVTCVVVDVSHEDPEVKFNWYVDGVEVHNAKTKPREEQYNSTYRVVSVLTVLHQDWLNGKEYKCKVSNKALPAPIEKTISKAKGQPREPQVYTLPPSREEMTKNQVSLTCLVKGFYPSDIAVEWESNGQPENNYKTTPPVLDSDGSFFLYSKLTVDKSRWQQGNVFSCSVMHEALHNHYTQKSLSLSPGK"
-print(summarize_glycosylation_sites(fc_sequence, "IgG1 Fc"))
-```
-
-### 突变N-糖基化位点
+标准库辅助脚本 [scripts/glycoengineering_tools.py](scripts/glycoengineering_tools.py)
+取代了零散的代码片段。导入时请将本技能的 `scripts/` 目录加入
+`PYTHONPATH`，或从该目录运行 Python。它接受原始的经典
+20 种氨基酸序列，会归一化空白字符/大小写，并拒绝 FASTA header、
+缺口、未知残基和空输入。应先解析 FASTA 记录；不要移除未知残基，因为那样会改变坐标。坐标是在归一化后提交的序列中以 1 起始计数的。
 
 ```python
-def eliminate_glycosite(sequence: str, position: int, replacement: str = "Q") -> str:
-    """
-    通过将天冬酰胺突变为谷氨酰胺（保守）来消除N-糖基化位点。
+from glycoengineering_tools import (
+    normalize_sequence, find_n_glycosylation_sequons,
+    eliminate_glycosite, add_glycosite, find_st_rich_sites,
+)
 
-    参数:
-        sequence: 蛋白质序列
-        position: 要突变的天冬酰胺的1-based位置
-        replacement: 要替换的氨基酸（默认Q = 谷氨酰胺；大小相似，不被糖基化）
+sequence = normalize_sequence("NNST")
+sites = find_n_glycosylation_sequons(sequence)
+assert [site["position"] for site in sites] == [1, 2]
 
-    返回:
-        突变后的序列
-    """
-    seq = list(sequence.upper())
-    idx = position - 1
-    assert seq[idx] == 'N', f"位置{position}是'{seq[idx]}'，不是'N'"
-    seq[idx] = replacement.upper()
-    return ''.join(seq)
+mutant = eliminate_glycosite(sequence, 1, "Q")
+assert mutant == "QNST"  # 位置 2 处的重叠 sequon 依然存在
+assert [site["position"] for site in find_n_glycosylation_sequons(mutant)] == [2]
 
-def add_glycosite(sequence: str, position: int, flanking_context: str = "S") -> str:
-    """
-    通过将残基突变为天冬酰胺来引入N-糖基化位点，
-    并确保X ≠ 脯氨酸且+2 = S/T。
+# 三处预期变化：A1N、P2A、A3T。P->A 必须明确指定。
+parent = "APA"
+product = add_glycosite(parent, 1, "T", allow_proline_substitution=True)
+changes = [(i, before, after) for i, (before, after) in
+           enumerate(zip(parent, product), 1) if before != after]
+assert product == "NAT" and len(changes) == 3
 
-    参数:
-        position: 要引入天冬酰胺的1-based位置
-        flanking_context: 位置+2处的'S'或'T'（如果需要修改）
-    """
-    seq = list(sequence.upper())
-    idx = position - 1
-
-    # 突变为天冬酰胺
-    seq[idx] = 'N'
-
-    # 确保X+1 != 脯氨酸（如果需要则突变为丙氨酸）
-    if idx + 1 < len(seq) and seq[idx + 1] == 'P':
-        seq[idx + 1] = 'A'
-
-    # 确保X+2 = S或T
-    if idx + 2 < len(seq) and seq[idx + 2] not in ('S', 'T'):
-        seq[idx + 2] = flanking_context
-
-    return ''.join(seq)
+# 密度是残基的比例，不是 O-糖基化概率。
+o_candidates = find_st_rich_sites("STPST", window=7, min_st_fraction=0.4)
+assert [site["position"] for site in o_candidates] == [1, 2, 4, 5]
 ```
 
-## O-糖基化分析
+`eliminate_glycosite` 需要一个完整的经典 sequon，以及一个非 N 的单残基
+替换。`add_glycosite` 最多可以改变三个残基；它会保留 +2 位置上已存在的 S/T。两个函数都不预测突变体的折叠方式、糖链占位情况、
+功能或耐受性。即使没有糖链方面的影响，N 到 Q 的替换也可能改变蛋白质的行为。
 
-### 启发式O-糖基化热点预测
+S/T 密度窗口必须是一个正奇数。末端窗口会缩短，
+其分母是实际的窗口长度。密集区域可能有助于筛选黏蛋白样序列；孤立的真实 O-GalNAc 位点可能会被漏掉。
+
+对于批量分析，应保留标识符和归一化后的序列长度：
 
 ```python
-def predict_o_glycosylation_hotspots(
-    sequence: str,
-    window: int = 7,
-    min_st_fraction: float = 0.4,
-    disallow_proline_next: bool = True
-) -> List[dict]:
-    """
-    基于局部S/T密度的启发式O-糖基化热点评分。
-    不能替代NetOGlyc；用作快速基线。
-
-    规则:
-    - O-GalNAc糖基化聚集在富含S/T的片段上
-    - 标记S/T残基在富含S/T的窗口中
-    - 避免S/T紧随脯氨酸（TP/SP基序抑制GalNAc-T）
-
-    参数:
-        window: 局部S/T密度的奇数窗口大小
-        min_st_fraction: 标记位点的窗口中S/T的最小分数
-    """
-    if window % 2 == 0:
-        window = 7
-    seq = sequence.upper()
-    half = window // 2
-    candidates = []
-
-    for i, aa in enumerate(seq):
-        if aa not in ('S', 'T'):
-            continue
-        if disallow_proline_next and i + 1 < len(seq) and seq[i+1] == 'P':
-            continue
-
-        start = max(0, i - half)
-        end = min(len(seq), i + half + 1)
-        segment = seq[start:end]
-        st_count = sum(1 for c in segment if c in ('S', 'T'))
-        frac = st_count / len(segment)
-
-        if frac >= min_st_fraction:
-            candidates.append({
-                'position': i + 1,
-                'residue': aa,
-                'st_fraction': round(frac, 3),
-                'window': f"{start+1}-{end}",
-                'segment': segment
-            })
-
-    return candidates
+sequences = {"overlap": "NNST", "control": "APAA", "mucin_like": "STPST"}
+rows = []
+for name, raw_sequence in sequences.items():
+    seq = normalize_sequence(raw_sequence)
+    positions = [site["position"] for site in find_n_glycosylation_sequons(seq)]
+    rows.append({"protein": name, "length": len(seq),
+                 "n_sequon_positions": positions,
+                 "n_sequons_per_100_residues": 100 * len(positions) / len(seq),
+                 "st_rich_positions": [site["position"] for site in find_st_rich_sites(seq)]})
 ```
 
-## 外部糖基化工程工具
+## 预测服务
 
-### 1. NetOGlyc 4.0（O-糖基化预测）
+使用官方提供的表单，它们接受 FASTA 格式并返回网页结果；本技能
+不提供稳定的提交 API 或任务轮询端点。保存一个 CGI URL 并不等于提交了任务。应将输出、输入和服务版本一起保存。
 
-用于高精度O-GalNAc位点预测的Web服务：
-- **URL**：https://services.healthtech.dtu.dk/services/NetOGlyc-4.0/
-- **输入**：FASTA蛋白质序列
-- **输出**：每个残基的O-糖基化概率评分
-- **方法**：在实验验证的O-GalNAc位点上训练的神经网络
+| 服务 | 当前文档记载的适用范围与解读方式 |
+| --- | --- |
+| [NetNGlyc 1.0](https://services.healthtech.dtu.dk/services/NetNGlyc-1.0/) | 人类 N-糖基化；报告网络潜力和评审团一致性。默认阈值 0.5；不是经过校准的占位概率。最多 2,000 条序列 / 总计 200,000 个残基 / 每条序列 4,000 个残基。会运行 SignalP，但不检查细胞外拓扑结构。该服务器可能对 N-P-S/T 打分；除非有独立证据值得复核，否则应将这些排除在经典候选集之外。 |
+| [NetOGlyc 4.0](https://services.healthtech.dtu.dk/services/NetOGlyc-4.0/) | 哺乳动物黏蛋白型 O-GalNAc；输出 GFF2 置信度分数，分数**大于** 0.5 标记为阳性。最多 50 条序列 / 总计 200,000 个残基 / 每条序列 4,000 个残基。建议使用包含信号肽的完整序列；孤立位点在两侧都需要 15 个残基的侧翼上下文。阳性结果支持的是区域可能性，而不是保证的位点占位，也不代表超出该模型 O-GalNAc 范围之外的糖链类型。 |
 
-```python
-import requests
+本次更新审查了服务文档和示例输出；在本次刷新过程中没有提交新的预测任务。
 
-def submit_netoglycv4(fasta_sequence: str) -> str:
-    """
-    将序列提交到NetOGlyc 4.0 Web服务。
-    返回结果检索的作业URL。
+## 使用 GlycoSHIELD 进行结构屏蔽
 
-    注意：这使用DTU Health Tech Web服务。结果需要~1-5分钟。
-    """
-    url = "https://services.healthtech.dtu.dk/cgi-bin/webface2.cgi"
-    # NetOGlyc提交（参数可能随Web服务版本变化）
-    # 建议大多数用例直接使用Web界面
-    print("在以下位置提交序列：https://services.healthtech.dtu.dk/services/NetOGlyc-4.0/")
-    return url
+[GlycoSHIELD](https://gitlab.mpcdf.mpg.de/dioscuri-biophysics/glycoshield-md/)
+将预先模拟好的糖链构象嫁接到蛋白质结构上，并过滤空间位阻冲突。它不预测哪些 sequon 会被占位，也不会为每个查询运行全新的分子
+动力学模拟。见 [Tsai et al., 2024](https://doi.org/10.1016/j.cell.2024.01.034)。
 
-# 还有：NetNGlyc用于N-糖基化预测
-# URL: https://services.healthtech.dtu.dk/services/NetNGlyc-1.0/
-```
+关于锚定的源码版本、安装方法、直接 Python API、输入映射和 SASA 分析，见
+[references/glycoshield.md](references/glycoshield.md)。**经审查的上游 CLI 会静默忽略若干已解析的选项，包括 `--mode`、
+`--threshold` 和 `--dryrun`；应使用文档中记载的直接 API 变通方案。**输出
+包括每个位点的 PDB/XTC 集合,以及编码在 PDB B-factor 列中的屏蔽程度；
+这些值并不是晶体学温度因子。
 
-### 2. GlycoShield-MD（糖链屏蔽分析）
+## 数据库证据与糖链记法
 
-GlycoShield-MD在MD模拟期间分析糖链如何屏蔽蛋白质表面：
-- **URL**：https://gitlab.mpcdf.mpg.de/dioscuri-biophysics/glycoshield-md/
-- **用途**：在MD轨迹上映射糖链屏蔽
-- **输出**：每个残基的屏蔽分数、可视化
+关于实时的 GlyTouCan SPARQL 查询、GlyConnect 访问限制、经整理的资源和
+记法，见[references/glycan_databases.md](references/glycan_databases.md)。查询确切的登录号，并保留数据集/数据来源的日期、物种、
+组织/细胞背景以及支持性出版物。记录缺失或服务错误并不能证明某个蛋白质未被糖基化。
 
-```bash
-# 安装
-pip install glycoshield
+像 `Hex:5 HexNAc:4 dHex:1` 这样的单糖组成并不能解析连接方式、
+分支位置，也无法区分 GlcNAc 和 GalNAc。没有连接方式的示意图只是图示，并非 IUPAC 简缩记法。应在可能的情况下使用真实序列
+（保留不确定性的 WURCS/GlycoCT/IUPAC 记法）和登录号。核心岩藻糖连接在 N-糖链最内侧的 GlcNAc 上，而不是核心甘露糖上。
 
-# 基本用法：分析糖基化蛋白质MD轨迹的糖链屏蔽
-glycoshield \
-    --topology glycoprotein.pdb \
-    --trajectory glycoprotein.xtc \
-    --glycan_resnames BGLCNA FUC \
-    --output shielding_analysis/
-```
+## 抗体工程决策
 
-### 3. GlycoWorkbench（糖链结构绘制/分析）
+应以一套明确的方案（通常是 EU）给 Fc 突变编号，然后将其映射到
+实际的构建体上。EU 编号中的 N297 并不是孤立 Fc FASTA 序列中的第 297 个残基。Fc 糖链
+和任何 Fab 糖链必须通过分析方法区分开来。
 
-- **URL**：https://www.eurocarbdb.org/project/glycoworkbench
-- **用途**：绘制糖链结构、计算质量、注释MS谱
-- **格式**：GlycoCT、IUPAC浓缩糖链表示法
+| 目标 | 候选策略 | 所需的解读方式 |
+| --- | --- | --- |
+| 增强 FcγRIIIa 结合 / ADCC | 在保留糖链的同时降低 Fc 核心岩藻糖化程度 | 效应大小取决于抗体、受体和检测方法；不要假设存在普遍适用的提升幅度。[结构证据](https://pubmed.ncbi.nlm.nih.gov/22023369/)。 |
+| 移除经典 Fc N-糖基化位点 | N297Q/A/D，或用 T299A 破坏 +2 位置残基 | 这是对 sequon 的破坏；不能保证其他方面的结构或效应器功能保持不变。应验证实际产物。 |
+| 改变血清持久性 | 结合相关蛋白表征糖型特异性的清除情况 | IgG 高甘露糖糖型的清除可能会增加；唾液酸化并不是普遍适用的 IgG 半衰期配方。[人体 PK 研究](https://pubmed.ncbi.nlm.nih.gov/21421994/)。 |
+| 研究 Fc 的抗炎活性 | 比较明确定义的唾液酸化糖型 | 连接方式、制备方法和生物学模型都很重要。在特定模型中获得的阳性结果并不能确立一个普遍适用的 IVIG 机制。[明确的 Fc 研究](https://pubmed.ncbi.nlm.nih.gov/18420934/)。 |
+| 降低非人源糖链表位 | 测量 α-Gal 和 Neu5Gc 并选择兼容的生产条件 | 仅靠序列编辑并不能控制宿主的糖链加工过程。 |
+| 研究表位可及性 | 引入或移除一个已映射的表面 sequon | 确认占位情况、折叠、结合和抗原性；屏蔽计算只是几何学上的假设。 |
 
-### 4. GlyConnect（糖链-蛋白质数据库）
+像 S298A/E333A/K334A 或包含 F243L 的 Fc 序列变体
+可能同时改变受体相互作用和宿主依赖性的糖链加工。不要
+将单独的 F243L 标记为一个确定性的去岩藻糖化开关。参见
+[2026 年 Fc 变体糖链研究](https://pubmed.ncbi.nlm.nih.gov/41873859/)。
 
-- **URL**：https://glyconnect.expasy.org/
-- **用途**：查找实验验证的糖蛋白和糖基化位点
-- **查询**：按蛋白质（UniProt ID）、糖链结构或组织
+## 实验解读与验证边界
 
-```python
-import requests
+糖肽搜索可以支持肽段身份、组成，有时还可以支持位点定位，
+但无法解析出完整的糖链结构。应审查定位片段、相互竞争的归属结果、搜索空间的选择,以及错误控制。在
+[Byonic](https://support.proteinmetrics.com/hc/en-us/articles/18139992247060-Byonic-O-Linked-Glycopeptide-Analysis)
+中，组成并不能确定拓扑结构；即使识别出一个糖肽，O-糖基化位点的歧义性仍可能存在。检测到的各糖型之间的相对信号并不自动等同于绝对
+位点占位；占位计算需要恰当的修饰型和未修饰型分母，以及分析响应方面的考量。
 
-def query_glyconnect(uniprot_id: str) -> dict:
-    """查询蛋白质的糖基化数据。"""
-    url = f"https://glyconnect.expasy.org/api/proteins/uniprot/{uniprot_id}"
-    response = requests.get(url, headers={"Accept": "application/json"})
-    if response.status_code == 200:
-        return response.json()
-    return {}
-
-# 示例：查询EGFR糖基化
-egfr_glyco = query_glyconnect("P00533")
-```
-
-### 5. UniCarbKB（糖链结构数据库）
-
-- **URL**：https://unicarbkb.org/
-- **用途**：浏览糖链结构、按质量或组成搜索
-- **格式**：GlycoCT或IUPAC表示法
-
-## 关键糖基化工程策略
-
-### 用于治疗性抗体
-
-| 目标 | 策略 | 注意 |
-|------|----------|-------|
-| 增强ADCC | 去岩藻糖化于Fc Asn297 | 去岩藻糖基化IgG1的FcγRIIIa结合力提高约50倍 |
-| 降低免疫原性 | 去除非人类糖链 | 消除α-Gal、NGNA表位 |
-| 改善PK半衰期 | 唾酸化 | 唾酸化糖链延长半衰期 |
-| 减少炎症 | 超唾液酸化 | IVIG抗炎机制 |
-| 创建糖链屏蔽 | 添加N-糖基化位点到表面 | 屏蔽脆弱表位（疫苗设计） |
-
-### 常用突变
-
-| 突变 | 效应 |
-|----------|--------|
-| N297A/Q（IgG1） | 移除Fc糖基化（无糖） |
-| N297D（IgG1） | 移除Fc糖基化 |
-| S298A/E333A/K334A | 增加FcγRIIIa结合 |
-| F243L（IgG1） | 增加去岩藻糖化 |
-| T299A | 移除Fc糖基化 |
-
-## 糖链表示法
-
-### IUPAC 浓缩表示法（单糖缩写）
-
-| 符号 | 全名 | 类型 |
-|--------|-----------|------|
-| Glc | 葡萄糖 | 己糖 |
-| GlcNAc | N-乙酰葡萄糖 | 己糖胺 |
-| Man | 甘露糖 | 己糖 |
-| Gal | 半乳糖 | 己糖 |
-| Fuc | 岩藻糖 | 脱氧己糖 |
-| Neu5Ac | N-乙酰神经氨酸（唾液酸） | 唾液酸 |
-| GalNAc | N-乙酰半乳糖胺 | 己糖胺 |
-
-### 复杂N-糖链结构
-
-```
-典型复杂双天线N-糖链：
-Neu5Ac-Gal-GlcNAc-Man\
-                       Man-GlcNAc-GlcNAc-[Asn]
-Neu5Ac-Gal-GlcNAc-Man/
-（±核心岩藻糖在最内层GlcNAc上）
-```
-
-## 最佳实践
-
-- **从NetNGlyc/NetOGlyc开始**，在实验验证之前进行计算预测
-- **用质谱验证**：糖蛋白质组学（Byonic、Mascot）用于位点特异性糖链谱分析
-- **考虑位点上下文**：并非所有预测的序列子实际上都被糖基化（可及性、细胞类型、蛋白质构象）
-- **对于抗体**：Fc N297糖链至关重要——始终首先表征此位点
-- **使用GlyConnect**检查感兴趣的蛋白质是否具有实验验证的糖基化数据
-
-## 其他资源
-
-- **GlyTouCan**（糖链结构存储库）：https://glytoucan.org/
-- **GlyConnect**：https://glyconnect.expasy.org/
-- **CFG功能糖组学**：http://www.functionalglycomics.org/
-- **DTU Health Tech服务器**（NetNGlyc、NetOGlyc）：https://services.healthtech.dtu.dk/
-- **GlycoWorkbench**：https://glycoworkbench.software.informer.com/
-- **综述**：Apweiler R et al. (1999) Biochim Biophys Acta. PMID: 10564035
-- **治疗性糖基化工程综述**：Jefferis R (2009) Nature Reviews Drug Discovery. PMID: 19448661
+本地序列行为已通过合成测试覆盖。公共登录号查询已实际执行；API 错误处理是模拟的。GlycoSHIELD 的源码/参数处理已经过检查，但完整的构象嫁接、GROMACS SASA、DTU 任务、商业 MS
+软件以及生物学性能均未实际执行。支持性参考资料记录了服务/源码审查日期和尚未解决的访问缺口。

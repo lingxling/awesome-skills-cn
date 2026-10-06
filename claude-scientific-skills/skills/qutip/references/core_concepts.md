@@ -1,293 +1,299 @@
-# QuTiP Core Concepts
+# QuTiP 5.3 Core Concepts
 
-## Quantum Objects (Qobj)
+Research and API verification date: **2026-10-01**. Examples target
+`qutip==5.3.1`.
 
-All quantum objects in QuTiP are represented by the `Qobj` class:
+## Units and the equation being solved
+
+QuTiP does not attach physical units. The standard solver equations use
+\(\hbar=1\), so a Hamiltonian has angular-frequency units and time has reciprocal
+units:
+
+\[
+\dot{\rho}=-i[H,\rho]+\sum_k\left(C_k\rho C_k^\dagger
+-\tfrac12\{C_k^\dagger C_k,\rho\}\right).
+\]
+
+Choose one unit system and state it in reports:
+
+- if time is ns, Hamiltonian coefficients and rates are in ns\(^{-1}\);
+- a frequency quoted in cycles/time becomes angular frequency \(2\pi f\);
+- temperature in HEOM or thermal spectra must be converted consistently with
+  \(k_B=1\) only if that convention was explicitly selected.
+
+Dimensional consistency is a model property, not something QuTiP can infer.
+
+## Qobj structure
+
+`Qobj` stores numerical data plus quantum dimension metadata:
 
 ```python
-from qutip import *
+from qutip import Qobj, basis, sigmaz
 
-# Create a quantum object
-psi = basis(2, 0)  # Ground state of 2-level system
-rho = fock_dm(5, 2)  # Density matrix for n=2 Fock state
-H = sigmaz()  # Pauli Z operator
+ket = basis(2, 0)
+rho = ket.proj()
+H = 0.5 * sigmaz()
+
+assert ket.isket and ket.dims == [[2], [1]]
+assert rho.isoper and rho.dims == [[2], [2]]
+assert H.isherm
 ```
 
-Key attributes:
-- `.dims` - Dimension structure
-- `.shape` - Matrix dimensions
-- `.type` - Type (ket, bra, oper, super)
-- `.isherm` - Check if Hermitian
-- `.dag()` - Hermitian conjugate
-- `.tr()` - Trace
-- `.norm()` - Norm
+Important properties and methods:
 
-## States
+| API | Meaning |
+|---|---|
+| `.dims` | Structured input/output Hilbert spaces |
+| `.shape` | Flattened matrix shape |
+| `.type` | `ket`, `bra`, `oper`, `super`, `operator-ket`, or `operator-bra` |
+| `.isket`, `.isoper`, `.issuper` | Semantic type checks |
+| `.isherm`, `.isunitary` | Cached/computed structural properties |
+| `.dag()` | Adjoint |
+| `.tr()` | Trace |
+| `.norm()` | L2 norm for kets by default; trace norm for operators by default |
+| `.proj()` | Ket/bra projector |
+| `.ptrace(sel)` | Keep selected subsystems and trace out the rest |
+| `.full()` | Dense matrix with flattened shape |
+| `.full_tensor()` | QuTiP 5.3 dense array reshaped by tensor dimensions |
 
-### Basis States
+Construct raw `Qobj` values only when built-in constructors are unsuitable:
 
 ```python
-# Fock (number) states
-n = 2  # Excitation level
-N = 10  # Hilbert space dimension
-psi = basis(N, n)  # or fock(N, n)
+from qutip import Qobj
 
-# Coherent states
-alpha = 1 + 1j
-coherent(N, alpha)
-
-# Thermal states (density matrices)
-n_avg = 2.0  # Average photon number
-thermal_dm(N, n_avg)
+rho = Qobj(
+    [[0.75, 0.1], [0.1, 0.25]],
+    dims=[[2], [2]],
+)
 ```
 
-### Spin States
+Supplying correct matrix shape with incorrect `dims` can invalidate later
+tensor, partial-trace, and superoperator operations.
+
+## States and physicality
+
+### Kets
 
 ```python
-# Spin-1/2 states
-spin_state(1/2, 1/2)  # Spin up
-spin_coherent(1/2, theta, phi)  # Coherent spin state
+from qutip import basis, coherent
 
-# Multi-qubit computational basis
-basis([2,2,2], [0,1,0])  # |010⟩ for 3 qubits
+qubit = (basis(2, 0) + basis(2, 1)).unit()
+oscillator = coherent(30, 1.5)
+
+assert abs(qubit.norm() - 1.0) < 1e-12
 ```
 
-### Composite States
+### Density matrices
+
+A physical finite-dimensional density matrix is Hermitian, trace one, and
+positive semidefinite:
 
 ```python
-# Tensor products
-psi1 = basis(2, 0)
-psi2 = basis(2, 1)
-tensor(psi1, psi2)  # |01⟩
+import numpy as np
+from qutip import thermal_dm
 
-# Bell states
-bell_state('00')  # (|00⟩ + |11⟩)/√2
-maximally_mixed_dm(2)  # Maximally mixed state
+rho = thermal_dm(20, 0.7)
+tol = 1e-10
+eigenvalues = np.asarray(rho.eigenenergies(), dtype=float)
+
+assert rho.isherm
+assert abs(complex(rho.tr()) - 1.0) < tol
+assert eigenvalues.min() >= -tol
 ```
 
-## Operators
+Use a tolerance tied to solver error and matrix scale. Report the minimum
+eigenvalue instead of silently clipping it. If a method such as non-secular
+Bloch-Redfield produces material negativity, revisit its physical assumptions.
 
-### Creation/Annihilation
+Common constructors:
 
 ```python
-N = 10
-a = destroy(N)  # Annihilation operator
-a_dag = create(N)  # Creation operator
-num = num(N)  # Number operator (a†a)
+from qutip import (
+    basis,
+    coherent,
+    coherent_dm,
+    fock,
+    fock_dm,
+    maximally_mixed_dm,
+    thermal_dm,
+)
+
+psi_n = fock(16, 3)
+rho_n = fock_dm(16, 3)
+psi_alpha = coherent(24, 1.2)
+rho_alpha = coherent_dm(24, 1.2)
+rho_th = thermal_dm(24, 0.5)
+rho_mix = maximally_mixed_dm([2, 2])
 ```
 
-### Pauli Matrices
+Oscillator constructors use a finite truncation. Sweep the cutoff and monitor
+edge population, observables, and state trace. A normalized truncated state is
+not by itself evidence that the cutoff is adequate.
+
+## Tensor products and subsystem order
+
+Arguments to `tensor` define subsystem order from left to right:
 
 ```python
-sigmax()  # σx
-sigmay()  # σy
-sigmaz()  # σz
-sigmap()  # σ+ = (σx + iσy)/2
-sigmam()  # σ- = (σx - iσy)/2
-```
+from qutip import basis, destroy, qeye, sigmaz, tensor
 
-### Angular Momentum
-
-```python
-# Spin operators for arbitrary j
-j = 1  # Spin-1
-jmat(j, 'x')  # Jx
-jmat(j, 'y')  # Jy
-jmat(j, 'z')  # Jz
-jmat(j, '+')  # J+
-jmat(j, '-')  # J-
-```
-
-### Displacement and Squeezing
-
-```python
-alpha = 1 + 1j
-displace(N, alpha)  # Displacement operator D(α)
-
-z = 0.5  # Squeezing parameter
-squeeze(N, z)  # Squeezing operator S(z)
-```
-
-## Tensor Products and Composition
-
-### Building Composite Systems
-
-```python
-# Tensor product of operators
-H1 = sigmaz()
-H2 = sigmax()
-H_total = tensor(H1, H2)
-
-# Identity operators
-qeye([2, 2])  # Identity for two qubits
-
-# Partial application
-# σz ⊗ I for 3-qubit system
-tensor(sigmaz(), qeye(2), qeye(2))
-```
-
-### Partial Trace
-
-```python
-# Composite system state
-rho = bell_state('00').proj()  # |Φ+⟩⟨Φ+|
-
-# Trace out subsystem
-rho_A = ptrace(rho, 0)  # Trace out subsystem 0
-rho_B = ptrace(rho, 1)  # Trace out subsystem 1
-```
-
-## Expectation Values and Measurements
-
-```python
-# Expectation values
-psi = coherent(N, alpha)
-expect(num, psi)  # ⟨n⟩
-
-# For multiple operators
-ops = [a, a_dag, num]
-expect(ops, psi)  # Returns list
-
-# Variance
-variance(num, psi)  # Var(n) = ⟨n²⟩ - ⟨n⟩²
-```
-
-## Superoperators and Liouvillians
-
-### Lindblad Form
-
-```python
-# System Hamiltonian
-H = num
-
-# Collapse operators (dissipation)
-c_ops = [np.sqrt(0.1) * a]  # Decay rate 0.1
-
-# Liouvillian superoperator
-L = liouvillian(H, c_ops)
-
-# Alternative: explicit form
-L = -1j * (spre(H) - spost(H)) + lindblad_dissipator(a, a)
-```
-
-### Superoperator Representations
-
-```python
-# Kraus representation
-kraus_to_super(kraus_ops)
-
-# Choi matrix
-choi_to_super(choi_matrix)
-
-# Chi (process) matrix
-chi_to_super(chi_matrix)
-
-# Conversions
-super_to_choi(L)
-choi_to_kraus(choi_matrix)
-```
-
-## Quantum Gates (requires qutip-qip)
-
-```python
-from qutip_qip.operations import *
-
-# Single-qubit gates
-hadamard_transform()  # Hadamard
-rx(np.pi/2)  # X-rotation
-ry(np.pi/2)  # Y-rotation
-rz(np.pi/2)  # Z-rotation
-phasegate(np.pi/4)  # Phase gate
-snot()  # Hadamard (alternative)
-
-# Two-qubit gates
-cnot()  # CNOT
-swap()  # SWAP
-iswap()  # iSWAP
-sqrtswap()  # √SWAP
-berkeley()  # Berkeley gate
-swapalpha(alpha)  # SWAP^α
-
-# Three-qubit gates
-fredkin()  # Controlled-SWAP
-toffoli()  # Controlled-CNOT
-
-# Expanding to multi-qubit systems
-N = 3  # Total qubits
-target = 1
-controls = [0, 2]
-gate_expand_2toN(cnot(), N, [controls[0], target])
-```
-
-## Common Hamiltonians
-
-### Jaynes-Cummings Model
-
-```python
-# Cavity mode
-N = 10
+N = 12
+psi = tensor(basis(N, 2), basis(2, 0))  # cavity index 0, qubit index 1
 a = tensor(destroy(N), qeye(2))
+sz = tensor(qeye(N), sigmaz())
 
-# Atom
-sm = tensor(qeye(N), sigmam())
-
-# Hamiltonian
-wc = 1.0  # Cavity frequency
-wa = 1.0  # Atom frequency
-g = 0.05  # Coupling strength
-H = wc * a.dag() * a + wa * sm.dag() * sm + g * (a.dag() * sm + a * sm.dag())
+assert psi.dims == [[N, 2], [1]]
+assert a.dims == [[N, 2], [N, 2]]
+assert sz.dims == a.dims
 ```
 
-### Driven Systems
+`Qobj.ptrace(sel)` keeps `sel`:
 
 ```python
-# Time-dependent Hamiltonian
-H0 = sigmaz()
-H1 = sigmax()
-
-def drive(t, args):
-    return np.sin(args['w'] * t)
-
-H = [H0, [H1, drive]]
-args = {'w': 1.0}
+rho = psi.proj()
+rho_cavity = rho.ptrace(0)
+rho_qubit = rho.ptrace(1)
 ```
 
-### Spin Chains
+The selected subsystems remain in their original order even if `sel` is passed
+in another order. Use `permute` when an explicit subsystem reordering is
+intended.
+
+For a composite operator with `dims == [[2, 3], [2, 3]]`,
+`full_tensor().shape` is `(2, 3, 2, 3)`. Treat this as a useful dimensional
+audit, not a replacement for documenting subsystem labels.
+
+## Operators and observables
 
 ```python
-# Heisenberg chain
-N_spins = 5
-J = 1.0  # Exchange coupling
+from qutip import create, destroy, jmat, num, sigmam, sigmap, sigmax, sigmay, sigmaz
 
-# Build Hamiltonian
-H = 0
-for i in range(N_spins - 1):
-    # σᵢˣσᵢ₊₁ˣ + σᵢʸσᵢ₊₁ʸ + σᵢᶻσᵢ₊₁ᶻ
-    H += J * (
-        tensor_at([sigmax()], i, N_spins) * tensor_at([sigmax()], i+1, N_spins) +
-        tensor_at([sigmay()], i, N_spins) * tensor_at([sigmay()], i+1, N_spins) +
-        tensor_at([sigmaz()], i, N_spins) * tensor_at([sigmaz()], i+1, N_spins)
-    )
+N = 20
+a = destroy(N)
+adag = create(N)
+n = num(N)
+sx, sy, sz = sigmax(), sigmay(), sigmaz()
+sm, sp = sigmam(), sigmap()
+Jx = jmat(1, "x")
 ```
 
-## Useful Utility Functions
+Hamiltonians and ideal observables should be Hermitian within tolerance.
+Collapse operators generally need not be Hermitian.
+
+Expectation and variance:
 
 ```python
-# Generate random quantum objects
-rand_ket(N)  # Random ket
-rand_dm(N)  # Random density matrix
-rand_herm(N)  # Random Hermitian operator
-rand_unitary(N)  # Random unitary
+from qutip import expect, variance
 
-# Commutator and anti-commutator
-commutator(A, B)  # [A, B]
-anti_commutator(A, B)  # {A, B}
-
-# Matrix exponential
-(-1j * H * t).expm()  # e^(-iHt)
-
-# Eigenvalues and eigenvectors
-H.eigenstates()  # Returns (eigenvalues, eigenvectors)
-H.eigenenergies()  # Returns only eigenvalues
-H.groundstate()  # Ground state energy and state
+mean_n = expect(n, rho)
+var_n = variance(n, rho)
 ```
+
+Do not interpret a visibly non-real expectation of a Hermitian observable as a
+physical value; first audit Hermiticity, state validity, dimensions, and solver
+accuracy.
+
+## Collapse operators and rate conventions
+
+If a dissipator is written as \(\gamma\,\mathcal{D}[A]\rho\), pass
+\(C=\sqrt{\gamma}A\):
+
+```python
+import numpy as np
+from qutip import sigmam, sigmaz
+
+gamma_down = 0.2
+gamma_phi = 0.05  # desired off-diagonal coherence decay
+c_ops = [
+    np.sqrt(gamma_down) * sigmam(),
+    np.sqrt(gamma_phi / 2.0) * sigmaz(),
+]
+```
+
+The factor for dephasing depends on how a publication defines its dephasing
+rate. Derive the matrix-element decay for the chosen dissipator and test it on
+a two-level state instead of copying a symbol by name.
+
+For a thermal oscillator with occupation \(n_\mathrm{th}\):
+
+```python
+c_ops = [
+    np.sqrt(kappa * (n_th + 1.0)) * a,
+    np.sqrt(kappa * n_th) * a.dag(),
+]
+```
+
+Rates must be finite and nonnegative in standard Lindblad form. Time-dependent
+rates require extra care: a coefficient multiplies the collapse **amplitude**,
+so a target rate \(\gamma(t)\) needs an amplitude proportional to
+\(\sqrt{\gamma(t)}\).
+
+## Liouvillians and vectorization
+
+```python
+from qutip import liouvillian, operator_to_vector, vector_to_operator
+
+L = liouvillian(H, c_ops)
+rho_vec = operator_to_vector(rho)
+derivative = L * rho_vec
+rho_roundtrip = vector_to_operator(rho_vec)
+
+assert L.issuper
+assert (rho_roundtrip - rho).norm() < 1e-12
+```
+
+QuTiP uses column-stacked operator vectorization. Use
+`operator_to_vector`/`vector_to_operator`; do not reproduce reshape order by
+guesswork.
+
+Useful superoperator constructors and conversions include:
+
+```python
+from qutip import (
+    kraus_to_super,
+    spost,
+    spre,
+    sprepost,
+    to_choi,
+    to_kraus,
+    to_super,
+)
+```
+
+For a quantum channel, check the intended representation and the map properties
+such as complete positivity and trace preservation. QuTiP exposes properties
+including `iscp`, `istp`, and `iscptp` on suitable map objects.
+
+## Truncation and basis audits
+
+For every truncated bosonic or spin model:
+
+1. increase each cutoff independently;
+2. compare the actual reported observables, not only energies;
+3. inspect occupation near the cutoff;
+4. recheck all tensor dimensions after changing a cutoff;
+5. state whether the model is in a bare, dressed, rotating, Floquet, Dicke, or
+   other basis;
+6. document every rotating-wave or excitation-number restriction.
+
+An excitation-number-restricted space does not have the same factorization as
+the corresponding full tensor space. Do not apply subsystem operations unless
+their meaning in the restricted representation is established.
+
+## Local model validation
+
+`../scripts/qobj_model_validator.py` accepts a bounded strict-JSON model made
+only of numeric arrays. It rejects URLs, symlinks, duplicate keys, non-finite
+numbers, unknown roles, executable coefficients, dimensions whose product
+exceeds 64, and incompatible subsystem structures. It checks Hamiltonian and
+observable Hermiticity, initial-state norm/trace/positivity, and nonnegative
+collapse rates.
+
+It is a preflight audit, not a proof that the physical model is appropriate.
+
+## Sources (verified 2026-10-01)
+
+- [QuTiP 5.3 quantum-object API](https://qutip.readthedocs.io/en/stable/apidoc/quantumobject.html)
+- [Tensor-product guide](https://qutip.readthedocs.io/en/stable/guide/guide-tensor.html)
+- [QuTiP 5.3.1 release notes](https://github.com/qutip/qutip/releases/tag/v5.3.1)
+- [QuTiP 5.3 changelog](https://qutip.readthedocs.io/en/stable/changelog.html)

@@ -12,11 +12,14 @@
 
 ### 翻译说明
 
-本翻译包含以下 16 个技能的中文翻译：
+本翻译包含以下 19 个技能的中文翻译：
 
+- [academy-guide/SKILL_CN.md](skills/academy-guide/SKILL_CN.md) - Claude Academy 学习资源推荐
 - [algorithmic-art/SKILL_CN.md](skills/algorithmic-art/SKILL_CN.md) - 算法艺术生成
 - [brand-guidelines/SKILL_CN.md](skills/brand-guidelines/SKILL_CN.md) - 品牌指南
 - [canvas-design/SKILL_CN.md](skills/canvas-design/SKILL_CN.md) - Canvas 设计
+- [claude-api/SKILL_CN.md](skills/claude-api/SKILL_CN.md) - Claude API 和 Agent SDK
+- [discernment-nudge/SKILL_CN.md](skills/discernment-nudge/SKILL_CN.md) - 审辨提醒（帮助用户核查回答）
 - [doc-coauthoring/SKILL_CN.md](skills/doc-coauthoring/SKILL_CN.md) - 文档协作
 - [docx/SKILL_CN.md](skills/docx/SKILL_CN.md) - Word 文档处理
 - [frontend-design/SKILL_CN.md](skills/frontend-design/SKILL_CN.md) - 前端设计

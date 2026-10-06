@@ -1,6 +1,6 @@
 ---
 name: OpenAI Automation
-description: "Automate OpenAI API operations -- generate responses with multimodal and structured output support, create embeddings, generate images, and list models via the Composio MCP integration."
+description: "自动化 OpenAI API 操作 -- 通过 Composio MCP 集成生成响应（支持多模态和结构化输出）、创建嵌入向量、生成图像以及列出模型。"
 requires:
   mcp:
     - rube
@@ -8,25 +8,25 @@ requires:
 
 # OpenAI Automation
 
-Automate your OpenAI API workflows -- generate text with the Responses API (including multimodal image+text inputs and structured JSON outputs), create embeddings for search and clustering, generate images with DALL-E and GPT Image models, and list available models.
+自动化你的 OpenAI API 工作流 -- 使用 Responses API 生成文本（包括多模态图像+文本输入和结构化 JSON 输出）、为搜索和聚类创建嵌入向量、用 DALL-E 和 GPT Image 模型生成图像，并列出可用模型。
 
-**Toolkit docs:** [composio.dev/toolkits/openai](https://composio.dev/toolkits/openai)
+**工具包文档：** [composio.dev/toolkits/openai](https://composio.dev/toolkits/openai)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your client: `https://rube.app/mcp`
-2. 连接 your OpenAI account when prompted (API key authentication)
-3. Start using the workflows below
+1. 将 Composio MCP 服务器添加到你的客户端：`https://rube.app/mcp`
+2. 按提示连接你的 OpenAI 账户（API 密钥身份验证）
+3. 开始使用下面的工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Generate a Response (Text, Multimodal, Structured)
+### 1. 生成响应（文本、多模态、结构化）
 
-Use `OPENAI_CREATE_RESPONSE` for one-shot model responses including text, image analysis, OCR, and structured JSON outputs.
+使用 `OPENAI_CREATE_RESPONSE` 获取一次性的模型响应，包括文本、图像分析、OCR 以及结构化 JSON 输出。
 
 ```
 Tool: OPENAI_CREATE_RESPONSE
@@ -51,11 +51,11 @@ Inputs:
   - stream: boolean
 ```
 
-**Structured output example:** Set `text.format` to `{ type: "json_schema", name: "person", schema: { type: "object", properties: { name: { type: "string" }, age: { type: "integer" } }, required: ["name", "age"], additionalProperties: false }, strict: true }`.
+**结构化输出示例：** 将 `text.format` 设置为 `{ type: "json_schema", name: "person", schema: { type: "object", properties: { name: { type: "string" }, age: { type: "integer" } }, required: ["name", "age"], additionalProperties: false }, strict: true }`。
 
-### 2. Create Embeddings
+### 2. 创建嵌入向量
 
-Use `OPENAI_CREATE_EMBEDDINGS` for vector search, clustering, recommendations, and RAG pipelines.
+使用 `OPENAI_CREATE_EMBEDDINGS` 实现向量搜索、聚类、推荐和 RAG 流水线。
 
 ```
 Tool: OPENAI_CREATE_EMBEDDINGS
@@ -67,9 +67,9 @@ Inputs:
   - user: string (optional, end-user ID for abuse monitoring)
 ```
 
-### 3. Generate Images
+### 3. 生成图像
 
-Use `OPENAI_CREATE_IMAGE` to create images from text prompts using GPT Image or DALL-E models.
+使用 `OPENAI_CREATE_IMAGE` 通过 GPT Image 或 DALL-E 模型根据文本提示创建图像。
 
 ```
 Tool: OPENAI_CREATE_IMAGE
@@ -84,9 +84,9 @@ Inputs:
   - user: string (optional)
 ```
 
-### 4. List Available Models
+### 4. 列出可用模型
 
-Use `OPENAI_LIST_MODELS` to discover which models are accessible with your API key.
+使用 `OPENAI_LIST_MODELS` 查看你的 API 密钥可以访问哪些模型。
 
 ```
 Tool: OPENAI_LIST_MODELS
@@ -95,27 +95,27 @@ Inputs: (none)
 
 ---
 
-## 已知陷阱
+## 常见陷阱
 
-| Pitfall | Detail |
+| 陷阱 | 详情 |
 |---------|--------|
-| DALL-E deprecation | DALL-E 2 and DALL-E 3 are deprecated and will stop being supported on 05/12/2026. Prefer GPT Image models. |
-| DALL-E 3 single image only | `OPENAI_CREATE_IMAGE` with DALL-E 3 only supports `n=1`. Use GPT Image models or DALL-E 2 for multiple images. |
-| Token limits for embeddings | Input must not exceed 8192 tokens per item and 2048 items per batch for embedding models. |
-| Reasoning model restrictions | `temperature` and `top_p` are not supported with reasoning models (o3-mini, etc.). Use `reasoning.effort` instead. |
-| Structured output strict mode | When `strict: true` in json_schema format, ALL schema properties must be listed in the `required` array. |
-| Prompt length varies by model | Image prompt max lengths differ: 32000 (GPT Image), 4000 (DALL-E 3), 1000 (DALL-E 2). |
+| DALL-E 已被弃用 | DALL-E 2 和 DALL-E 3 已被弃用，将于 2026 年 5 月 12 日停止支持。请优先使用 GPT Image 模型。 |
+| DALL-E 3 仅支持单图 | 使用 DALL-E 3 的 `OPENAI_CREATE_IMAGE` 仅支持 `n=1`。若需生成多张图像，请使用 GPT Image 模型或 DALL-E 2。 |
+| 嵌入向量的 token 限制 | 对于嵌入模型，每项输入不得超过 8192 个 token，每批不得超过 2048 项。 |
+| 推理模型的限制 | 推理模型（o3-mini 等）不支持 `temperature` 和 `top_p`。请改用 `reasoning.effort`。 |
+| 结构化输出的严格模式 | 当 json_schema 格式中 `strict: true` 时，所有 schema 属性必须都列在 `required` 数组中。 |
+| 提示长度因模型而异 | 图像提示的最大长度各不相同：32000（GPT Image）、4000（DALL-E 3）、1000（DALL-E 2）。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 说明 |
 |-----------|-------------|
-| `OPENAI_CREATE_RESPONSE` | Generate text/multimodal responses with structured output support |
-| `OPENAI_CREATE_EMBEDDINGS` | Create text embeddings for search, clustering, and RAG |
-| `OPENAI_CREATE_IMAGE` | Generate images from text prompts |
-| `OPENAI_LIST_MODELS` | List all models available to your API key |
+| `OPENAI_CREATE_RESPONSE` | 生成文本/多模态响应，支持结构化输出 |
+| `OPENAI_CREATE_EMBEDDINGS` | 创建用于搜索、聚类和 RAG 的文本嵌入向量 |
+| `OPENAI_CREATE_IMAGE` | 根据文本提示生成图像 |
+| `OPENAI_LIST_MODELS` | 列出你的 API 密钥可用的所有模型 |
 
 ---
 

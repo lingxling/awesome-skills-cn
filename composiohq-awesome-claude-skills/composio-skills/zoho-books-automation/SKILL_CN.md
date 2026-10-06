@@ -1,6 +1,6 @@
 ---
 name: Zoho Books Automation
-description: "Automate Zoho Books accounting workflows including invoice creation, bill management, contact lookup, payment tracking, and multi-organization support through natural language commands"
+description: "通过自然语言命令自动化 Zoho Books 会计工作流，包括开票、账单管理、联系人查找、付款跟踪以及多组织支持"
 requires:
   mcp:
     - rube
@@ -8,192 +8,192 @@ requires:
 
 # Zoho Books Automation
 
-Automate Zoho Books accounting workflows -- create and manage invoices, track bills and payments, look up contacts, export PDFs, and handle multi-organization setups -- all through natural language.
+自动化 Zoho Books 会计工作流——创建和管理发票、跟踪账单和付款、查找联系人、导出 PDF，并处理多组织设置——全部通过自然语言完成。
 
-**Toolkit docs:** [composio.dev/toolkits/zoho_books](https://composio.dev/toolkits/zoho_books)
+**工具包文档：** [composio.dev/toolkits/zoho_books](https://composio.dev/toolkits/zoho_books)
 
 ---
 
 ## 设置
 
-1. Add the Rube MCP server to your environment: `https://rube.app/mcp`
-2. 连接 your Zoho Books account when prompted (OAuth flow via Composio)
-3. Start issuing natural language commands for Zoho Books automation
+1. 将 Rube MCP 服务器添加到你的环境中：`https://rube.app/mcp`
+2. 按提示连接你的 Zoho Books 账户（通过 Composio 的 OAuth 流程）
+3. 开始发出用于 Zoho Books 自动化的自然语言命令
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Discover Organizations
+### 1. 发现组织
 
-Retrieve all organizations for the authenticated user. This is a prerequisite since `organization_id` is required by nearly every other endpoint.
+获取已认证用户的所有组织。这是一个前提条件，因为几乎所有其他端点都需要 `organization_id`。
 
-**Tool:** `ZOHO_BOOKS_LIST_ORGANIZATIONS`
+**工具：** `ZOHO_BOOKS_LIST_ORGANIZATIONS`
 
-No parameters required. Returns organization IDs, names, and metadata.
+无需参数。返回组织 ID、名称和元数据。
 
-> Always call this first to obtain the `organization_id` needed by all other Zoho Books tools.
+> 始终先调用此工具，以获取所有其他 Zoho Books 工具所需的 `organization_id`。
 
-Example prompt:
-> "List my Zoho Books organizations"
-
----
-
-### 2. Create and Manage Invoices
-
-Create invoices with line items, manage existing invoices, and export them as PDFs.
-
-**Create:** `ZOHO_BOOKS_CREATE_INVOICE`
-
-Key parameters:
-- `organization_id` -- target organization (required)
-- `customer_id` -- customer to bill (required)
-- `line_items` -- array of line items (required), each with:
-  - `item_id` or `name` -- reference existing item or create ad-hoc line
-  - `quantity`, `rate` -- amount details
-  - `description`, `tax_id`, `discount` -- optional details
-- `date` / `due_date` -- dates in `YYYY-MM-DD` format
-- `invoice_number` -- custom number (set `ignore_auto_number_generation=true`)
-- `discount` / `discount_type` -- invoice-level discount (`entity_level` or `item_level`)
-- `notes` / `terms` -- printed on the invoice
-- `send` -- email the invoice immediately after creation
-- `payment_terms` -- number of days for payment
-
-**List:** `ZOHO_BOOKS_LIST_INVOICES`
-
-Key parameters:
-- `organization_id` (required)
-- `status` -- `sent`, `draft`, `overdue`, `paid`, `void`, `unpaid`, `partially_paid`, `viewed`
-- `customer_id` / `customer_name` -- filter by customer
-- `date_start` / `date_end` -- date range filter (`YYYY-MM-DD`)
-- `search_text` -- search invoice number, reference, or customer name
-- `sort_column` / `sort_order` -- sort by `date`, `due_date`, `total`, `balance`, etc.
-- `page` / `per_page` -- pagination (max 200 per page)
-
-**Get details:** `ZOHO_BOOKS_GET_INVOICE` -- fetch by `invoice_id` with `accept` format: `json`, `pdf`, or `html`
-
-**Delete:** `ZOHO_BOOKS_DELETE_INVOICE` -- remove by `invoice_id`
-
-**Bulk export:** `ZOHO_BOOKS_BULK_EXPORT_INVOICES_PDF` -- merge up to 25 invoices into a single PDF
-
-**Bulk print:** `ZOHO_BOOKS_BULK_PRINT_INVOICES` -- generate a combined print-ready PDF for up to 25 invoices
-
-Example prompt:
-> "Create an invoice for customer 1234567890 with 2 line items: 10 units of Widget A at $25 each, and 5 units of Widget B at $50 each, due in 30 days"
+示例提示：
+> "列出我的 Zoho Books 组织"
 
 ---
 
-### 3. Track and Manage Bills
+### 2. 创建和管理发票
 
-List, view, and update vendor bills with comprehensive filtering.
+创建带有明细项的发票、管理现有发票，并将其导出为 PDF。
 
-**List:** `ZOHO_BOOKS_LIST_BILLS`
+**创建：** `ZOHO_BOOKS_CREATE_INVOICE`
 
-Key parameters:
-- `organization_id` (required)
-- `status` -- `paid`, `open`, `overdue`, `void`, `partially_paid`
-- `vendor_id` / `vendor_name_contains` -- filter by vendor
-- `bill_number` / `bill_number_contains` -- filter by bill number
-- `date_start` / `date_end` -- date range filter
-- `total_greater_than` / `total_less_than` -- amount range filters
-- `sort_column` / `sort_order` -- sort by `vendor_name`, `bill_number`, `date`, `due_date`, `total`, etc.
-- `page` / `per_page` -- pagination (max 200)
+关键参数：
+- `organization_id` —— 目标组织（必需）
+- `customer_id` —— 收款对象客户（必需）
+- `line_items` —— 明细项数组（必需），每项包含：
+  - `item_id` 或 `name` —— 引用现有商品或创建临时明细行
+  - `quantity`、`rate` —— 金额明细
+  - `description`、`tax_id`、`discount` —— 可选明细
+- `date` / `due_date` —— 日期，格式为 `YYYY-MM-DD`
+- `invoice_number` —— 自定义编号（需设置 `ignore_auto_number_generation=true`）
+- `discount` / `discount_type` —— 发票级折扣（`entity_level` 或 `item_level`）
+- `notes` / `terms` —— 打印在发票上的说明
+- `send` —— 创建后立即发送发票邮件
+- `payment_terms` —— 付款期限天数
 
-**Get details:** `ZOHO_BOOKS_GET_BILL` -- fetch full bill by `bill_id` and `organization_id`
+**列出：** `ZOHO_BOOKS_LIST_INVOICES`
 
-**Update:** `ZOHO_BOOKS_UPDATE_BILL` -- modify existing bill (requires `bill_id`, `organization_id`, `vendor_id`, `bill_number`)
+关键参数：
+- `organization_id`（必需）
+- `status` —— `sent`、`draft`、`overdue`、`paid`、`void`、`unpaid`、`partially_paid`、`viewed`
+- `customer_id` / `customer_name` —— 按客户筛选
+- `date_start` / `date_end` —— 日期范围筛选（`YYYY-MM-DD`）
+- `search_text` —— 按发票编号、参考号或客户名称搜索
+- `sort_column` / `sort_order` —— 按 `date`、`due_date`、`total`、`balance` 等排序
+- `page` / `per_page` —— 分页（每页最多 200 条）
 
-Example prompt:
-> "List all overdue bills for my organization, sorted by due date"
+**获取详情：** `ZOHO_BOOKS_GET_INVOICE` —— 通过 `invoice_id` 获取，`accept` 格式可为：`json`、`pdf` 或 `html`
 
----
+**删除：** `ZOHO_BOOKS_DELETE_INVOICE` —— 按 `invoice_id` 删除
 
-### 4. Look Up Contacts
+**批量导出：** `ZOHO_BOOKS_BULK_EXPORT_INVOICES_PDF` —— 将最多 25 张发票合并为单个 PDF
 
-Search and filter contacts (customers and vendors) for use in invoices and bills.
+**批量打印：** `ZOHO_BOOKS_BULK_PRINT_INVOICES` —— 为最多 25 张发票生成合并的可打印 PDF
 
-**Tool:** `ZOHO_BOOKS_LIST_CONTACTS`
-
-Key parameters:
-- `organization_id` (required)
-- `contact_type` -- `customer` or `vendor`
-- `contact_name_contains` / `contact_name_startswith` -- name filters
-- `email_contains` / `email_startswith` -- email filters
-- `company_name_contains` -- company name filter
-- `filter_by` -- status filter: `Status.Active`, `Status.Inactive`, `Status.Duplicate`, etc.
-- `search_text` -- search by contact name or notes (max 100 chars)
-- `sort_column` -- sort by `contact_name`, `email`, `outstanding_receivable_amount`, `created_time`, etc.
-- `page` / `per_page` -- pagination (max 200)
-
-Example prompt:
-> "Find all active customers whose company name contains 'Acme'"
+示例提示：
+> "为客户 1234567890 创建一张发票，包含 2 个明细项：10 件 Widget A，单价 25 美元，以及 5 件 Widget B，单价 50 美元，30 天内到期"
 
 ---
 
-### 5. Track Invoice Payments
+### 3. 跟踪和管理账单
 
-List all payments recorded against a specific invoice.
+列出、查看和更新供应商账单，支持全面筛选。
 
-**Tool:** `ZOHO_BOOKS_LIST_INVOICE_PAYMENTS`
+**列出：** `ZOHO_BOOKS_LIST_BILLS`
 
-Key parameters:
-- `invoice_id` -- the invoice to check (required)
-- `organization_id` -- the organization (required)
+关键参数：
+- `organization_id`（必需）
+- `status` —— `paid`、`open`、`overdue`、`void`、`partially_paid`
+- `vendor_id` / `vendor_name_contains` —— 按供应商筛选
+- `bill_number` / `bill_number_contains` —— 按账单编号筛选
+- `date_start` / `date_end` —— 日期范围筛选
+- `total_greater_than` / `total_less_than` —— 金额范围筛选
+- `sort_column` / `sort_order` —— 按 `vendor_name`、`bill_number`、`date`、`due_date`、`total` 等排序
+- `page` / `per_page` —— 分页（最多 200）
 
-Returns all payment transactions applied to the invoice including amounts, dates, and payment methods.
+**获取详情：** `ZOHO_BOOKS_GET_BILL` —— 通过 `bill_id` 和 `organization_id` 获取完整账单
 
-Example prompt:
-> "Show all payments recorded against invoice 451025000000123045"
+**更新：** `ZOHO_BOOKS_UPDATE_BILL` —— 修改现有账单（需要 `bill_id`、`organization_id`、`vendor_id`、`bill_number`）
+
+示例提示：
+> "列出我组织的所有逾期账单，按到期日排序"
 
 ---
 
-### 6. Full Invoicing Workflow
+### 4. 查找联系人
 
-Combine tools for end-to-end invoice management:
+搜索和筛选联系人（客户和供应商），用于发票和账单。
 
-1. **Organization**: `ZOHO_BOOKS_LIST_ORGANIZATIONS` -- get `organization_id`
-2. **Contacts**: `ZOHO_BOOKS_LIST_CONTACTS` -- find or verify `customer_id`
-3. **Create**: `ZOHO_BOOKS_CREATE_INVOICE` -- create invoice with line items
-4. **Review**: `ZOHO_BOOKS_GET_INVOICE` -- fetch invoice details or PDF
-5. **Track**: `ZOHO_BOOKS_LIST_INVOICE_PAYMENTS` -- monitor payment status
-6. **Export**: `ZOHO_BOOKS_BULK_EXPORT_INVOICES_PDF` -- batch export for records
+**工具：** `ZOHO_BOOKS_LIST_CONTACTS`
 
-Example prompt:
-> "Find the customer ID for 'Acme Corp', create an invoice for them with consulting services, and then get the PDF"
+关键参数：
+- `organization_id`（必需）
+- `contact_type` —— `customer` 或 `vendor`
+- `contact_name_contains` / `contact_name_startswith` —— 名称筛选
+- `email_contains` / `email_startswith` —— 邮箱筛选
+- `company_name_contains` —— 公司名称筛选
+- `filter_by` —— 状态筛选：`Status.Active`、`Status.Inactive`、`Status.Duplicate` 等
+- `search_text` —— 按联系人名称或备注搜索（最多 100 字符）
+- `sort_column` —— 按 `contact_name`、`email`、`outstanding_receivable_amount`、`created_time` 等排序
+- `page` / `per_page` —— 分页（最多 200）
+
+示例提示：
+> "查找所有公司名称包含 'Acme' 的活跃客户"
+
+---
+
+### 5. 跟踪发票付款
+
+列出针对特定发票记录的所有付款。
+
+**工具：** `ZOHO_BOOKS_LIST_INVOICE_PAYMENTS`
+
+关键参数：
+- `invoice_id` —— 要查询的发票（必需）
+- `organization_id` —— 组织（必需）
+
+返回应用于该发票的所有付款交易，包括金额、日期和付款方式。
+
+示例提示：
+> "显示发票 451025000000123045 的所有付款记录"
+
+---
+
+### 6. 完整开票工作流
+
+组合多个工具以实现端到端的发票管理：
+
+1. **组织**：`ZOHO_BOOKS_LIST_ORGANIZATIONS` —— 获取 `organization_id`
+2. **联系人**：`ZOHO_BOOKS_LIST_CONTACTS` —— 查找或验证 `customer_id`
+3. **创建**：`ZOHO_BOOKS_CREATE_INVOICE` —— 创建带明细项的发票
+4. **审核**：`ZOHO_BOOKS_GET_INVOICE` —— 获取发票详情或 PDF
+5. **跟踪**：`ZOHO_BOOKS_LIST_INVOICE_PAYMENTS` —— 监控付款状态
+6. **导出**：`ZOHO_BOOKS_BULK_EXPORT_INVOICES_PDF` —— 批量导出以供存档
+
+示例提示：
+> "找到 'Acme Corp' 的客户 ID，为其创建一张包含咨询服务的发票，然后获取 PDF"
 
 ---
 
 ## 已知陷阱
 
-| Pitfall | Details |
-|---------|---------|
-| Organization ID always required | Nearly every endpoint requires `organization_id` -- always call `ZOHO_BOOKS_LIST_ORGANIZATIONS` first |
-| Line items required for invoices | `ZOHO_BOOKS_CREATE_INVOICE` requires at least one line item with either `item_id` or `name` |
-| Invoice ID format | Use the numeric `invoice_id` from the invoice object (e.g., `7472322000000264123`), not the encoded ID from `invoice_url` |
-| Bulk limits | Both `ZOHO_BOOKS_BULK_EXPORT_INVOICES_PDF` and `ZOHO_BOOKS_BULK_PRINT_INVOICES` accept a maximum of 25 invoice IDs |
-| Pagination max 200 | All list endpoints cap at 200 records per page -- iterate pages for complete results |
-| Bill update requires all fields | `ZOHO_BOOKS_UPDATE_BILL` requires `bill_id`, `organization_id`, `vendor_id`, and `bill_number` even for partial updates |
-| Date format | All date parameters use `YYYY-MM-DD` format |
-| response_option undocumented | `ZOHO_BOOKS_LIST_INVOICES` has an undocumented `response_option` parameter (0=full, 1=full+totals, 2=counts only) that may change without notice |
+| 陷阱 | 详情 |
+|---------|--------|
+| 始终需要组织 ID | 几乎每个端点都需要 `organization_id` —— 始终先调用 `ZOHO_BOOKS_LIST_ORGANIZATIONS` |
+| 发票需要明细项 | `ZOHO_BOOKS_CREATE_INVOICE` 需要至少一个明细项，带 `item_id` 或 `name` |
+| 发票 ID 格式 | 使用发票对象中的数字 `invoice_id`（例如 `7472322000000264123`），而不是 `invoice_url` 中的编码 ID |
+| 批量限制 | `ZOHO_BOOKS_BULK_EXPORT_INVOICES_PDF` 和 `ZOHO_BOOKS_BULK_PRINT_INVOICES` 均最多接受 25 个发票 ID |
+| 分页上限 200 | 所有列表端点每页上限为 200 条记录 —— 需要遍历分页以获取完整结果 |
+| 账单更新需要所有字段 | 即使是部分更新，`ZOHO_BOOKS_UPDATE_BILL` 也需要 `bill_id`、`organization_id`、`vendor_id` 和 `bill_number` |
+| 日期格式 | 所有日期参数均使用 `YYYY-MM-DD` 格式 |
+| response_option 未文档化 | `ZOHO_BOOKS_LIST_INVOICES` 有一个未文档化的 `response_option` 参数（0=完整，1=完整+总计，2=仅计数），可能随时变更而无通知 |
 
 ---
 
 ## 快速参考
 
-| Action | Tool Slug | Key Params |
+| 操作 | 工具标识 | 关键参数 |
 |--------|-----------|------------|
-| List organizations | `ZOHO_BOOKS_LIST_ORGANIZATIONS` | (none) |
-| Create invoice | `ZOHO_BOOKS_CREATE_INVOICE` | `organization_id`, `customer_id`, `line_items` |
-| List invoices | `ZOHO_BOOKS_LIST_INVOICES` | `organization_id`, `status`, `date_start` |
-| Get invoice | `ZOHO_BOOKS_GET_INVOICE` | `invoice_id`, `organization_id`, `accept` |
-| Delete invoice | `ZOHO_BOOKS_DELETE_INVOICE` | `invoice_id`, `organization_id` |
-| Bulk export PDF | `ZOHO_BOOKS_BULK_EXPORT_INVOICES_PDF` | `organization_id`, `invoice_ids` |
-| Bulk print | `ZOHO_BOOKS_BULK_PRINT_INVOICES` | `organization_id`, `invoice_ids` |
-| List bills | `ZOHO_BOOKS_LIST_BILLS` | `organization_id`, `status`, `vendor_id` |
-| Get bill | `ZOHO_BOOKS_GET_BILL` | `bill_id`, `organization_id` |
-| Update bill | `ZOHO_BOOKS_UPDATE_BILL` | `bill_id`, `organization_id`, `vendor_id` |
-| List contacts | `ZOHO_BOOKS_LIST_CONTACTS` | `organization_id`, `contact_type`, `search_text` |
-| List payments | `ZOHO_BOOKS_LIST_INVOICE_PAYMENTS` | `invoice_id`, `organization_id` |
+| 列出组织 | `ZOHO_BOOKS_LIST_ORGANIZATIONS` | （无） |
+| 创建发票 | `ZOHO_BOOKS_CREATE_INVOICE` | `organization_id`、`customer_id`、`line_items` |
+| 列出发票 | `ZOHO_BOOKS_LIST_INVOICES` | `organization_id`、`status`、`date_start` |
+| 获取发票 | `ZOHO_BOOKS_GET_INVOICE` | `invoice_id`、`organization_id`、`accept` |
+| 删除发票 | `ZOHO_BOOKS_DELETE_INVOICE` | `invoice_id`、`organization_id` |
+| 批量导出 PDF | `ZOHO_BOOKS_BULK_EXPORT_INVOICES_PDF` | `organization_id`、`invoice_ids` |
+| 批量打印 | `ZOHO_BOOKS_BULK_PRINT_INVOICES` | `organization_id`、`invoice_ids` |
+| 列出账单 | `ZOHO_BOOKS_LIST_BILLS` | `organization_id`、`status`、`vendor_id` |
+| 获取账单 | `ZOHO_BOOKS_GET_BILL` | `bill_id`、`organization_id` |
+| 更新账单 | `ZOHO_BOOKS_UPDATE_BILL` | `bill_id`、`organization_id`、`vendor_id` |
+| 列出联系人 | `ZOHO_BOOKS_LIST_CONTACTS` | `organization_id`、`contact_type`、`search_text` |
+| 列出付款 | `ZOHO_BOOKS_LIST_INVOICE_PAYMENTS` | `invoice_id`、`organization_id` |
 
 ---
 

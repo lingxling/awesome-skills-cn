@@ -1,171 +1,260 @@
-# Molecular Property Prediction
+# Molecular Property Prediction and Pretraining
 
-## Overview
+Follow the official
+[property prediction](https://torchdrug.ai/docs/tutorials/property_prediction.html)
+and
+[pretrained molecular representations](https://torchdrug.ai/docs/tutorials/pretrain.html)
+tutorials for TorchDrug 0.2.1.
 
-Molecular property prediction involves predicting chemical, physical, or biological properties of molecules from their structure. TorchDrug provides comprehensive support for both classification and regression tasks on molecular graphs.
+Run the [ClinTox cache preparation](datasets.md#clintox-download-repair) first;
+the packaged download URL is stale. Full benchmark/pretraining runs below are
+illustrative; the review uses small CPU checks, not converged pretrained models.
 
-## Available Datasets
+## Supervised property prediction
 
-### Drug Discovery Datasets
+### 1. Load and split data
 
-**Classification Tasks:**
-- **BACE** (1,513 molecules): Binary classification for β-secretase inhibition
-- **BBBP** (2,039 molecules): Blood-brain barrier penetration prediction
-- **HIV** (41,127 molecules): Ability to inhibit HIV replication
-- **Tox21** (7,831 molecules): Toxicity prediction across 12 targets
-- **ToxCast** (8,576 molecules): Toxicology screening
-- **ClinTox** (1,478 molecules): Clinical trial toxicity
-- **SIDER** (1,427 molecules): Drug side effects (27 system organ classes)
-- **MUV** (93,087 molecules): Maximum unbiased validation for virtual screening
+The official tutorial uses a random 80/10/10 ClinTox split:
 
-**Regression Tasks:**
-- **ESOL** (1,128 molecules): Water solubility prediction
-- **FreeSolv** (642 molecules): Hydration free energy
-- **Lipophilicity** (4,200 molecules): Octanol/water distribution coefficient
-- **SAMPL** (643 molecules): Solvation free energies
-
-### Large-Scale Datasets
-
-- **QM7** (7,165 molecules): Quantum mechanical properties
-- **QM8** (21,786 molecules): Electronic spectra and excited state properties
-- **QM9** (133,885 molecules): Geometric, energetic, electronic, and thermodynamic properties
-- **PCQM4M** (3,803,453 molecules): Large-scale quantum chemistry dataset
-- **ZINC250k/2M** (250k/2M molecules): Drug-like compounds for generative modeling
-
-## Task Types
-
-### PropertyPrediction
-
-Standard task for graph-level property prediction supporting both classification and regression.
-
-**TorchDrug 0.2.1+:** `predict()` returns values on the **original scale** (not standardized). Update thresholds and downstream metrics if migrating from older versions.
-
-**Key Parameters:**
-- `model`: Graph representation model (GNN)
-- `task`: "node", "edge", or "graph" level prediction
-- `criterion`: Loss function ("mse", "bce", "ce")
-- `metric`: Evaluation metrics ("mae", "rmse", "auroc", "auprc")
-- `num_mlp_layer`: Number of MLP layers for readout
-
-**Example Workflow:**
 ```python
 import torch
-from torchdrug import core, models, tasks, datasets
+from torchdrug import datasets
 
-# Load dataset
-dataset = datasets.BBBP("~/molecule-datasets/")
-
-# Define model
-model = models.GIN(input_dim=dataset.node_feature_dim,
-                   hidden_dims=[256, 256, 256, 256],
-                   edge_input_dim=dataset.edge_feature_dim,
-                   batch_norm=True, readout="mean")
-
-# Define task
-task = tasks.PropertyPrediction(model, task=dataset.tasks,
-                                 criterion="bce",
-                                 metric=("auprc", "auroc"))
+dataset = datasets.ClinTox("~/molecule-datasets/")
+lengths = [int(0.8 * len(dataset)), int(0.1 * len(dataset))]
+lengths.append(len(dataset) - sum(lengths))
+train_set, valid_set, test_set = torch.utils.data.random_split(
+    dataset, lengths, generator=torch.Generator().manual_seed(1)
+)
 ```
 
-### MultipleBinaryClassification
+This is a random split, not a scaffold split. If a benchmark requires a scaffold
+split, use `data.scaffold_split(dataset, lengths)` and record the actual
+partition sizes/scaffold overlap. The 0.2.1 `ordered_scaffold_split` implementation
+hardcodes 80/10/10 despite accepting `lengths`; do not use it for custom ratios.
 
-Specialized task for multi-label scenarios where each molecule can have multiple binary labels (e.g., Tox21, SIDER).
+### 2. Define the representation model
 
-**Key Features:**
-- Handles missing labels gracefully
-- Computes metrics per label and averaged
-- Supports weighted loss for imbalanced datasets
-
-## Model Selection
-
-### Recommended Models by Task
-
-**Small Molecules (< 1000 molecules):**
-- GIN (Graph Isomorphism Network)
-- SchNet (for 3D structures)
-
-**Medium Datasets (1k-100k molecules):**
-- GCN, GAT, or GIN
-- NFP (Neural Fingerprint)
-- MPNN (Message Passing Neural Network)
-
-**Large Datasets (> 100k molecules):**
-- Pre-trained models with fine-tuning
-- InfoGraph or MultiviewContrast for self-supervised pre-training
-- GIN with deeper architectures
-
-**3D Structure Available:**
-- SchNet (continuous-filter convolutions)
-- GearNet (geometry-aware relational graph)
-
-## Feature Engineering
-
-### Node Features
-
-TorchDrug automatically extracts atom features:
-- Atom type
-- Formal charge
-- Explicit/implicit hydrogens
-- Hybridization
-- Aromaticity
-- Chirality
-
-### Edge Features
-
-Bond features include:
-- Bond type (single, double, triple, aromatic)
-- Stereochemistry
-- Conjugation
-- Ring membership
-
-### Custom Features
-
-Add custom node/edge features using transforms:
 ```python
-from torchdrug import data, transforms
+from torchdrug import models
 
-# Add custom features
-transform = transforms.VirtualNode()  # Add virtual node
-dataset = datasets.BBBP("~/molecule-datasets/",
-                        transform=transform)
+model = models.GIN(
+    input_dim=dataset.node_feature_dim,
+    hidden_dims=[256, 256, 256, 256],
+    short_cut=True,
+    batch_norm=True,
+    concat_hidden=True,
+)
 ```
 
-## Training Workflow
+### 3. Define the task
 
-### Basic Pipeline
+```python
+from torchdrug import tasks
 
-1. **Load Dataset**: Choose appropriate dataset
-2. **Split Data**: Use scaffold split for drug discovery
-3. **Define Model**: Select GNN architecture
-4. **Create Task**: Configure loss and metrics
-5. **Setup Optimizer**: Adam typically works well
-6. **Train**: Use PyTorch Lightning or custom loop
+task = tasks.PropertyPrediction(
+    model,
+    task=dataset.tasks,
+    criterion="bce",
+    metric=("auprc", "auroc"),
+)
+```
 
-### Data Splitting Strategies
+`task` means the target field name(s) or a mapping of target names to weights. It
+does not mean `"node"`, `"edge"`, or `"graph"`.
 
-**Random Split**: Standard train/val/test split
-**Scaffold Split**: Group molecules by Bemis-Murcko scaffolds (recommended for drug discovery)
-**Stratified Split**: Maintain label distribution across splits
+Documented `PropertyPrediction` criteria are:
 
-### Best Practices
+- `"mse"`
+- `"bce"`
+- `"ce"`
 
-- Use scaffold splitting for realistic drug discovery evaluation
-- Apply data augmentation (virtual nodes, edges) for small datasets
-- Monitor multiple metrics (AUROC, AUPRC for classification; MAE, RMSE for regression)
-- Use early stopping based on validation performance
-- Consider ensemble methods for critical applications
-- Pre-train on large datasets before fine-tuning on small datasets
+The API docstring lists these basic metrics:
 
-## Common Issues and Solutions
+- `"mae"`
+- `"rmse"`
+- `"auprc"`
+- `"auroc"`
 
-**Issue: Poor performance on imbalanced datasets**
-- Solution: Use weighted loss, focal loss, or over/under-sampling
+Released source also supports `"acc"`, `"mcc"`, `"r2"`, `"spearmanr"`, and
+`"pearsonr"`. Use `"acc"`/`"mcc"` with CE multiclass outputs; the AUROC/AUPRC
+branches expect binary targets, not an implicit multiclass averaging scheme.
 
-**Issue: Overfitting on small datasets**
-- Solution: Increase regularization, use simpler models, apply data augmentation, or pre-train on larger datasets
+Other useful constructor options include `num_mlp_layer`, `normalization`,
+`num_class`, `mlp_batch_norm`, `mlp_dropout`, and
+`graph_construction_model`.
 
-**Issue: Large memory consumption**
-- Solution: Reduce batch size, use gradient accumulation, or implement graph sampling
+For large multi-label problems, inspect `tasks.MultipleBinaryClassification`,
+which has its own task IDs, metrics, and reweighting behavior.
 
-**Issue: Slow training**
-- Solution: Use GPU acceleration, optimize data loading with multiple workers, or use mixed precision training
+### 4. Train with Engine
+
+```python
+from torchdrug import core
+
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
+solver = core.Engine(
+    task,
+    train_set,
+    valid_set,
+    test_set,
+    optimizer,
+    batch_size=1024,
+)
+solver.train(num_epoch=100)
+solver.evaluate("valid")
+```
+
+Add `gpus=[0]` only for supported CUDA execution. Start with one epoch and a
+smaller batch for a smoke test.
+
+## Manual prediction
+
+Use TorchDrug collation:
+
+```python
+from torchdrug import data
+
+batch = data.graph_collate([valid_set[i] for i in range(min(8, len(valid_set)))])
+task.eval()
+with torch.no_grad():
+    logits = task.predict(batch)
+    probabilities = torch.sigmoid(logits)
+    targets = task.target(batch)
+```
+
+For binary classification, `predict()` returns logits and the tutorial applies
+sigmoid. For normalized regression, TorchDrug 0.2.1 returns predictions on the
+original target scale; this changed from earlier releases.
+
+When predicting on CUDA manually, move the whole nested batch:
+
+```python
+from torchdrug import utils
+
+batch = utils.cuda(batch)
+```
+
+## Self-supervised pretraining
+
+The tutorial uses ClinTox only as a small illustration and recommends a larger
+unlabeled corpus such as ZINC2m for real pretraining.
+
+Use matching pretraining features:
+
+```python
+dataset = datasets.ClinTox(
+    "~/molecule-datasets/",
+    atom_feature="pretrain",
+    bond_feature="pretrain",
+)
+```
+
+### InfoGraph
+
+```python
+from torchdrug import core, models, tasks
+
+gin_model = models.GIN(
+    input_dim=dataset.node_feature_dim,
+    hidden_dims=[300, 300, 300, 300, 300],
+    edge_input_dim=dataset.edge_feature_dim,
+    batch_norm=True,
+    readout="mean",
+)
+model = models.InfoGraph(gin_model, separate_model=False)
+task = tasks.Unsupervised(model)
+
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
+solver = core.Engine(
+    task,
+    dataset,
+    None,
+    None,
+    optimizer,
+    batch_size=256,
+)
+solver.train(num_epoch=100)
+solver.save("gin-infograph.pth")
+```
+
+### Attribute masking
+
+```python
+model = models.GIN(
+    input_dim=dataset.node_feature_dim,
+    hidden_dims=[300, 300, 300, 300, 300],
+    edge_input_dim=dataset.edge_feature_dim,
+    batch_norm=True,
+    readout="mean",
+)
+task = tasks.AttributeMasking(model, mask_rate=0.15)
+
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
+solver = core.Engine(
+    task,
+    dataset,
+    None,
+    None,
+    optimizer,
+    batch_size=256,
+)
+solver.train(num_epoch=100)
+solver.save("gin-attribute-masking.pth")
+```
+
+### Fine-tune the encoder
+
+Recreate the same GIN architecture and feature dimensions, then wrap it in the
+supervised task:
+
+```python
+model = models.GIN(
+    input_dim=dataset.node_feature_dim,
+    hidden_dims=[300, 300, 300, 300, 300],
+    edge_input_dim=dataset.edge_feature_dim,
+    batch_norm=True,
+    readout="mean",
+)
+task = tasks.PropertyPrediction(
+    model,
+    task=dataset.tasks,
+    criterion="bce",
+    metric=("auprc", "auroc"),
+)
+
+# Load only a checkpoint whose origin you trust (PyTorch 2.0 uses pickle).
+checkpoint = torch.load("gin-attribute-masking.pth", map_location="cpu")["model"]
+transfer = task.load_state_dict(checkpoint, strict=False)
+print(transfer.missing_keys, transfer.unexpected_keys)
+```
+
+Then construct a new optimizer and supervised `Engine`. `strict=False` is
+intentional because the pretraining and supervised task heads differ. Review
+missing and unexpected keys if changing the architecture.
+This direct transfer applies to **AttributeMasking**, where encoder keys start
+with `model.`. An InfoGraph checkpoint nests them under `model.model.`; blindly
+using `strict=False` can load zero encoder weights. Extract that encoder's keys
+and load the recreated GIN with `strict=True` before wrapping it in a new task.
+
+## Experiment checks
+
+- Confirm `dataset.tasks` names and label shapes.
+- Check labeled counts in each training target and both class counts for each
+  binary evaluation target. Empty/single-class metrics and zero/undefined
+  regression standard deviations are not meaningful performance estimates.
+- Confirm classification vs regression before choosing criterion and metrics.
+- Record the exact split protocol; do not mislabel random splits as scaffold
+  splits.
+- Use AUPRC as well as AUROC for heavily imbalanced binary tasks.
+- Keep feature arguments identical when loading pretrained weights.
+- Fit preprocessing only on the training split.
+- Reserve the test split until model selection is complete.
+
+## Source links
+
+- [Property tutorial](https://torchdrug.ai/docs/tutorials/property_prediction.html)
+- [Pretraining tutorial](https://torchdrug.ai/docs/tutorials/pretrain.html)
+- [Property task API](https://torchdrug.ai/docs/api/tasks.html#property-prediction-tasks)
+- [Molecule dataset API](https://torchdrug.ai/docs/api/datasets.html#molecule-property-prediction-datasets)
+- [0.2.1 release notes](https://github.com/DeepGraphLearning/torchdrug/releases/tag/v0.2.1)

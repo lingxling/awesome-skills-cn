@@ -1,360 +1,329 @@
-# PufferLib Training Guide
+# Training, Evaluation, Configuration, and Logging
 
-## Overview
+Review: **2026-10-01**. Native 5.0 guidance is in [native-5.md](native-5.md);
+3.0 and the pinned 4.0 snapshot below are historical profiles.
 
-PuffeRL is PufferLib's high-performance training algorithm based on CleanRL's PPO with LSTMs, enhanced with proprietary research improvements. It achieves training at millions of steps per second through optimized vectorization and efficient implementation.
+## Choose a version profile first
 
-## Training Workflow
+### Published stable package
 
-### Basic Training Loop
+PyPI's latest stable `pufferlib` release is **3.0.0**, published
+**2025-06-23**. It declares Python `>=3.9` and is distributed only as a
+60.7 MB source archive:
 
-The PuffeRL trainer provides three core methods:
-
-```python
-# Collect environment interactions
-rollout_data = trainer.evaluate()
-
-# Train on collected batch
-train_metrics = trainer.train()
-
-# Aggregate and log results
-trainer.mean_and_log()
+```text
+pufferlib-3.0.0.tar.gz
+sha256: 7df3a3e3f5f894d78d2a1f5374097890aec01473183e748abefe4f3faa10eaa9
 ```
 
-### CLI Training
+The uploaded metadata depends on NumPy `<2.0`, Gym `<=0.23`, Gymnasium
+`<=0.29.1`, PettingZoo `<=1.24.1`, Shimmy, Torch, Neptune, W&B, and other
+packages without a complete transitive lock. It does not declare a CUDA
+version or a minimum Torch version. Do not invent compatibility guarantees.
 
-Quick start training via command line:
+### Reviewed 4.0 source line
+
+The historical branch is `4.0`; its `pyproject.toml` says version `4.0.0`,
+Python `>=3.10`, and Torch `>=2.9`. As of the research date, this source line
+is not the latest stable PyPI artifact.
+
+The historical PufferTank 4.0 Dockerfile uses:
+
+- Ubuntu 24.04
+- NVIDIA CUDA `13.0.2` cuDNN development image
+- Python 3.12
+- the CUDA 13.0 PyTorch wheel index
+- Nsight Systems `2025.6.3`
+
+The Dockerfile does **not** pin an exact Torch wheel, uv version, PufferLib
+commit, or every apt package. It is an upstream convenience environment, not a
+complete reproducibility lock.
+
+## Reproducible uv workflow
+
+Installation/native training commands in this reference are illustrative and
+were not executed in this review. Source signatures below were checked against
+the hash-verified PyPI sdist, which differs from branch `3.0`.
+
+Do not use an unpinned `uv pip install pufferlib`. Work in a disposable,
+project-specific environment and commit `pyproject.toml` plus `uv.lock`.
+
+For the published profile, after reviewing the source archive and build:
 
 ```bash
-# Basic training
-puffer train environment_name --train.device cuda --train.learning-rate 0.001
-
-# Custom configuration
-puffer train environment_name \
-    --train.device cuda \
-    --train.batch-size 32768 \
-    --train.learning-rate 0.0003 \
-    --train.num-iterations 10000
+uv venv --python 3.11
+uv add --exact --no-sync "pufferlib==3.0.0"
+uv lock
+uv sync --frozen
 ```
 
-### Python Training Script
+Confirm the lock records the published SHA-256 above and review every resolved
+dependency. The 3.0.0 source build can compile native code and may fetch build
+assets. Resolve and build in a sandbox with no credentials or sensitive mounts.
+Do not treat a successful resolver run as a security review.
 
-```python
-import pufferlib
-from pufferlib import PuffeRL
-
-# Initialize environment
-env = pufferlib.make('environment_name', num_envs=256)
-
-# Create trainer
-trainer = PuffeRL(
-    env=env,
-    policy=my_policy,
-    device='cuda',
-    learning_rate=3e-4,
-    batch_size=32768,
-    n_epochs=4,
-    gamma=0.99,
-    gae_lambda=0.95,
-    clip_coef=0.2,
-    ent_coef=0.01,
-    vf_coef=0.5,
-    max_grad_norm=0.5
-)
-
-# Training loop
-for iteration in range(num_iterations):
-    # Collect rollouts
-    rollout_data = trainer.evaluate()
-
-    # Train on batch
-    train_metrics = trainer.train()
-
-    # Log results
-    trainer.mean_and_log()
-```
-
-## Key Training Parameters
-
-### Core Hyperparameters
-
-- **learning_rate**: Learning rate for optimizer (default: 3e-4)
-- **batch_size**: Number of timesteps per training batch (default: 32768)
-- **n_epochs**: Number of training epochs per batch (default: 4)
-- **num_envs**: Number of parallel environments (default: 256)
-- **num_steps**: Steps per environment per rollout (default: 128)
-
-### PPO Parameters
-
-- **gamma**: Discount factor (default: 0.99)
-- **gae_lambda**: Lambda for GAE calculation (default: 0.95)
-- **clip_coef**: PPO clipping coefficient (default: 0.2)
-- **ent_coef**: Entropy coefficient for exploration (default: 0.01)
-- **vf_coef**: Value function loss coefficient (default: 0.5)
-- **max_grad_norm**: Maximum gradient norm for clipping (default: 0.5)
-
-### Performance Parameters
-
-- **device**: Computing device ('cuda' or 'cpu')
-- **compile**: Use torch.compile for faster training (default: True)
-- **num_workers**: Number of vectorization workers (default: auto)
-
-## Distributed Training
-
-### Multi-GPU Training
-
-Use torchrun for distributed training across multiple GPUs:
+For 4.0 source work, pin an immutable revision rather than branch `4.0`:
 
 ```bash
-torchrun --nproc_per_node=4 train.py \
-    --train.device cuda \
-    --train.batch-size 131072
+uv add --no-sync \
+  "pufferlib @ git+https://github.com/PufferAI/PufferLib.git@25647630e1b15330bb3153a5a0d3ff8d234c3acf"
+uv lock
 ```
 
-### Multi-Node Training
+The commit above is the reviewed 4.0 branch head on 2026-07-23. Re-review before
+updating it. Native training still requires an audited build of a specific
+environment; uv locking does not lock compilers, CUDA, NCCL, cuDNN, Raylib, or
+system libraries.
 
-For distributed training across multiple nodes:
+Never run remote install scripts directly from a pipe. Download, inspect, pin,
+verify, and execute only in an appropriate sandbox.
+
+## Published 3.0.0 training
+
+### CLI
+
+The 3.0 console entry point is `puffer = pufferlib.pufferl:main`:
 
 ```bash
-# On main node (rank 0)
-torchrun --nproc_per_node=8 \
-    --nnodes=4 \
-    --node_rank=0 \
-    --master_addr=MASTER_IP \
-    --master_port=29500 \
-    train.py
-
-# On worker nodes (rank 1, 2, 3)
-torchrun --nproc_per_node=8 \
-    --nnodes=4 \
-    --node_rank=NODE_RANK \
-    --master_addr=MASTER_IP \
-    --master_port=29500 \
-    train.py
+puffer train ENV_NAME [OPTIONS]
+puffer eval ENV_NAME [OPTIONS]
+puffer sweep ENV_NAME [OPTIONS]
+puffer autotune ENV_NAME [OPTIONS]
+puffer profile ENV_NAME [OPTIONS]
+puffer export ENV_NAME [OPTIONS]
 ```
 
-## Monitoring and Logging
+Environment, vector, policy, recurrent, training, and sweep values come from
+INI sections. Overrides use section-qualified flags:
 
-### Logger Integration
-
-PufferLib supports multiple logging backends:
-
-#### Weights & Biases
-
-```python
-from pufferlib import WandbLogger
-
-logger = WandbLogger(
-    project='my_project',
-    entity='my_team',
-    name='experiment_name',
-    config=trainer_config
-)
-
-trainer = PuffeRL(env, policy, logger=logger)
+```bash
+puffer train puffer_breakout \
+  --train.device cpu \
+  --train.total-timesteps 100000 \
+  --vec.backend Serial \
+  --vec.num-envs 2
 ```
 
-#### Neptune
+Run `puffer train ENV_NAME --help` against the exact locked environment because
+available options are generated from merged INI files.
+
+### Python API
+
+The stable trainer is `pufferlib.pufferl.PuffeRL`, not a top-level
+`pufferlib.PuffeRL`:
 
 ```python
-from pufferlib import NeptuneLogger
+from pufferlib import pufferl
 
-logger = NeptuneLogger(
-    project='my_team/my_project',
-    name='experiment_name',
-    api_token='YOUR_TOKEN'
-)
+args = pufferl.load_config("puffer_breakout")
+vecenv = pufferl.load_env("puffer_breakout", args)
+policy = pufferl.load_policy(args, vecenv)
+train_config = dict(args["train"], env="puffer_breakout")
+trainer = pufferl.PuffeRL(train_config, vecenv, policy)
 
-trainer = PuffeRL(env, policy, logger=logger)
-```
-
-#### No Logger
-
-```python
-from pufferlib import NoLogger
-
-trainer = PuffeRL(env, policy, logger=NoLogger())
-```
-
-### Key Metrics
-
-Training logs include:
-
-- **Performance Metrics**:
-  - Steps per second (SPS)
-  - Training throughput
-  - Wall-clock time per iteration
-
-- **Learning Metrics**:
-  - Episode rewards (mean, min, max)
-  - Episode lengths
-  - Value function loss
-  - Policy loss
-  - Entropy
-  - Explained variance
-  - Clipfrac
-
-- **Environment Metrics**:
-  - Environment-specific rewards
-  - Success rates
-  - Custom metrics
-
-### Terminal Dashboard
-
-PufferLib provides a real-time terminal dashboard showing:
-- Training progress
-- Current SPS
-- Episode statistics
-- Loss values
-- GPU utilization
-
-## Checkpointing
-
-### Saving Checkpoints
-
-```python
-# Save checkpoint
-trainer.save_checkpoint('checkpoint.pt')
-
-# Save with additional metadata
-trainer.save_checkpoint(
-    'checkpoint.pt',
-    metadata={'iteration': iteration, 'best_reward': best_reward}
-)
-```
-
-### Loading Checkpoints
-
-```python
-# Load checkpoint
-trainer.load_checkpoint('checkpoint.pt')
-
-# Resume training
-for iteration in range(resume_iteration, num_iterations):
-    trainer.evaluate()
-    trainer.train()
-    trainer.mean_and_log()
-```
-
-## Hyperparameter Tuning with Protein
-
-The Protein system enables automatic hyperparameter and reward tuning:
-
-```python
-from pufferlib import Protein
-
-# Define search space
-search_space = {
-    'learning_rate': [1e-4, 3e-4, 1e-3],
-    'batch_size': [16384, 32768, 65536],
-    'ent_coef': [0.001, 0.01, 0.1],
-    'clip_coef': [0.1, 0.2, 0.3]
-}
-
-# Run hyperparameter search
-protein = Protein(
-    env_name='environment_name',
-    search_space=search_space,
-    num_trials=100,
-    metric='mean_reward'
-)
-
-best_config = protein.optimize()
-```
-
-## Performance Optimization Tips
-
-### Maximizing Throughput
-
-1. **Batch Size**: Increase batch_size to fully utilize GPU
-2. **Num Envs**: Balance between CPU and GPU utilization
-3. **Compile**: Enable torch.compile for 10-20% speedup
-4. **Workers**: Adjust num_workers based on environment complexity
-5. **Device**: Always use 'cuda' for neural network training
-
-### Environment Speed
-
-- Pure Python environments: ~100k-500k SPS
-- C-based environments: ~4M SPS
-- With training overhead: ~1M-4M total SPS
-
-### Memory Management
-
-- Reduce batch_size if running out of GPU memory
-- Decrease num_envs if running out of CPU memory
-- Use gradient accumulation for large effective batch sizes
-
-## Common Training Patterns
-
-### Curriculum Learning
-
-```python
-# Start with easy tasks, gradually increase difficulty
-difficulty_levels = [0.1, 0.3, 0.5, 0.7, 1.0]
-
-for difficulty in difficulty_levels:
-    env = pufferlib.make('environment_name', difficulty=difficulty)
-    trainer = PuffeRL(env, policy)
-
-    for iteration in range(iterations_per_level):
+try:
+    while trainer.epoch < trainer.total_epochs:
         trainer.evaluate()
         trainer.train()
-        trainer.mean_and_log()
+finally:
+    trainer.close()
 ```
 
-### Reward Shaping
+The exact public methods include `evaluate`, `train`, `mean_and_log`,
+`save_checkpoint`, `print_dashboard`, and `close`. Use the CLI when possible;
+the Python trainer is a relatively low-level implementation surface.
 
-```python
-# Wrap environment with custom reward shaping
-class RewardShapedEnv(pufferlib.PufferEnv):
-    def step(self, actions):
-        obs, rewards, dones, infos = super().step(actions)
+### Stable configuration checks
 
-        # Add shaped rewards
-        shaped_rewards = rewards + 0.1 * proximity_bonus
+- Make rollout/batch relationships explicit; do not rely on `auto` in a
+  published experiment.
+- Record environment, vector, policy, recurrent, and train sections verbatim.
+- Seed Python, NumPy and Torch **before constructing the policy**, in addition
+  to environment/action-space seeds. The sdist trainer reads `[train] seed` for
+  vector reset but leaves Python/NumPy/Torch seeding commented out. A config seed
+  alone does not seed initial weights.
+- Record `torch_deterministic`, precision, compile settings, optimizer, horizon,
+  minibatch, and total timesteps.
+- Keep evaluation seeds, instances, and metrics separate from training.
 
-        return obs, shaped_rewards, dones, infos
+### Important 3.0 learner limitations
+
+The sdist allocates a truncation tensor but does not populate it in rollouts;
+it leaves a TODO for separate truncation handling and explicitly notes that
+masks are not yet handled in the learner. Preserving adapter flags does not
+prove correct time-limit targets or exclusion of inactive PettingZoo slots.
+Audit/fix the learner and run a short analytic terminal/truncation/mask test
+before using those cases for scientific conclusions. `evaluate()` collects
+training rollouts; it is not held-out evaluation. The stock `puffer eval` path
+is a rendering loop, not a bounded multi-episode statistical evaluator.
+
+The planner's `horizon` maps to `--train.bptt-horizon` in 3.0 and
+`--train.horizon` in 4.0. Its preview leaves environment-specific rollout size,
+zero-copy/start-method selection and native build/device selection to the
+caller. In 3.0, record `batch_size` explicitly, ensure it is at least the
+minibatch and provides enough horizon segments for every agent. CLI booleans
+in the historical parsers use Python `bool(string)`: `False` is truthy. Set
+false-valued booleans in INI or the Python argument mapping, not textual CLI
+`False`, then inspect the resolved config.
+
+## Historical 4.0 training
+
+Build one audited environment, then use:
+
+```bash
+puffer train breakout
+puffer eval breakout --load-model-path checkpoints/.../weights.bin
+puffer sweep breakout
+puffer match breakout \
+  --load-model-path trusted-a.bin \
+  --load-enemy-model-path trusted-b.bin
 ```
 
-### Multi-Stage Training
+Historical modes are `train`, `eval`, `sweep`, `paretosweep`, and `match`.
+Native training is the default. `--slowly` selects the Torch fallback.
+Configuration uses sections such as:
 
-```python
-# Train in multiple stages with different configurations
-stages = [
-    {'learning_rate': 1e-3, 'iterations': 1000},   # Exploration
-    {'learning_rate': 3e-4, 'iterations': 5000},   # Main training
-    {'learning_rate': 1e-4, 'iterations': 2000}    # Fine-tuning
-]
+```ini
+[vec]
+total_agents = 4096
+num_buffers = 2
+num_threads = 16
 
-for stage in stages:
-    trainer.learning_rate = stage['learning_rate']
-    for iteration in range(stage['iterations']):
-        trainer.evaluate()
-        trainer.train()
-        trainer.mean_and_log()
+[train]
+total_timesteps = 10_000_000
+minibatch_size = 8192
+horizon = 64
+
+[torch]
+network = MinGRU
+encoder = DefaultEncoder
+decoder = DefaultDecoder
 ```
 
-## Troubleshooting
+Reviewed 4.0 source validates that `minibatch_size` is divisible by `horizon` and
+does not exceed `horizon * total_agents`. Multi-GPU launch uses spawn. Do a
+small CPU/local build and contract test before CUDA training.
 
-### Low Performance
+## Held-out evaluation
 
-- Check environment is vectorized correctly
-- Verify GPU utilization with `nvidia-smi`
-- Increase batch_size to saturate GPU
-- Enable compile mode
-- Profile with `torch.profiler`
+Training rollouts are not evaluation. For every reported result:
 
-### Training Instability
+1. Freeze one checkpoint-selection rule before inspecting held-out scores.
+2. Construct fresh evaluation environment instances.
+3. Use evaluation seeds disjoint from training seeds.
+4. Disable optimizer updates, exploration noise unless explicitly measuring it,
+   curriculum updates, normalization-stat updates, and reward shaping used only
+   for training.
+5. Report deterministic and stochastic policy protocols separately.
+6. Run enough episodes for uncertainty; report per-seed results and aggregate
+   intervals, not only a best run.
+7. Preserve terminated versus truncated semantics in return/length accounting.
+8. Record wrappers, frame skip, autoreset mode, opponent pool, policy state
+   reset, and rendering state.
 
-- Reduce learning_rate
-- Decrease batch_size
-- Increase num_envs for more diverse samples
-- Add entropy coefficient for more exploration
-- Check reward scaling
+Generate a starting plan:
 
-### Memory Issues
+```bash
+python3 scripts/repro_plan.py --environment synthetic
+```
 
-- Reduce batch_size or num_envs
-- Use gradient accumulation
-- Disable compile mode if causing OOM
-- Check for memory leaks in custom environments
+## Checkpoints
+
+PufferLib 3.0 saves a policy `state_dict` with `torch.save` and a separate
+trainer state containing optimizer state, global step, epoch, and run ID. Its
+loading paths call `torch.load`. The 4.0 native backend writes `.bin` weight
+files; the 4.0 Torch fallback also uses `torch.save`/`torch.load`.
+
+Rules:
+
+- Never load an untrusted checkpoint, even to “inspect” it.
+- Record SHA-256, size, source URL, immutable revision, license, environment,
+  policy architecture, package lock, and training config in a strict JSON
+  sidecar.
+- Do not use `latest` in a reproducible run; resolve and record the exact path
+  and digest.
+- Do not auto-download a run artifact by ID.
+- Test restore and evaluation in a disposable environment before a long resume.
+- A model-only checkpoint is not a bitwise resume; optimizer, scheduler,
+  normalizer, RNG, environment, and recurrent state may also matter.
+
+Safe metadata inspection:
+
+```bash
+python3 scripts/inspect_checkpoint.py trusted/model.pt \
+  --expected-sha256 EXPECTED_DIGEST
+```
+
+The helper hashes and classifies bytes only. It never imports Torch, invokes
+pickle, opens archive members, or extracts files.
+
+## External logging
+
+Local logging is the default. W&B is an optional network service
+that may transmit configuration, metrics, source metadata, hardware telemetry,
+stdout/stderr, and explicitly uploaded checkpoints/artifacts. They can create
+storage, seat, compute, or retention costs and are subject to vendor privacy,
+access, and retention policies.
+
+Credential rules:
+
+- W&B: use the named environment variable `WANDB_API_KEY` or an approved secret
+  manager.
+- Neptune historically used `NEPTUNE_API_TOKEN`; its hosted service shut down
+  on 2026-03-05. The planner rejects Neptune for both profiles.
+- Never pass either secret as a CLI argument, INI/JSON value, logger config,
+  tag, run name, or chat/tool input.
+- Never print the value or include it in a broad environment dump.
+- Do not recursively search for `.env` files. If policy permits a local secret
+  file, read only the explicitly named key from the explicitly named file.
+- Sanitize configuration before logging; reject keys containing token, secret,
+  password, credential, authorization, private key, or API key.
+- Disable checkpoint/source upload unless separately approved.
+
+The 3.0 source contains both logger flags; only W&B remains a candidate for a
+new hosted run. Its SDK handles authentication, requests, uploads, retries and
+pagination; this skill implements no REST endpoint or manual HTTP payload.
+W&B's official SDK reads `WANDB_API_KEY` and uses `https://api.wandb.ai` by default
+(or a reviewed deployment selected by `WANDB_BASE_URL`). No authenticated W&B
+run was performed in this review; SDK source inspection is not live-service
+verification.
+
+The **actual PyPI 3.0.0 sdist** calls `log_artifact` unconditionally at W&B close;
+there is no `--no-model-upload` option. The pinned 4.0 ordinary W&B training path
+also uploads its model. Use local logging, or approve model upload explicitly;
+metrics-only use needs a reviewed custom logger/patch. The planner rejects a
+W&B plan that omits this artifact opt-in:
+
+```bash
+python3 scripts/train_template.py \
+  --logger wandb \
+  --enable-external-logging \
+  --acknowledge-external-disclosure \
+  --upload-checkpoints
+```
+
+The helper remains a dry-run and never reads credentials or contacts the service.
+
+## Sources
+
+- [PyPI: pufferlib 3.0.0](https://pypi.org/project/pufferlib/3.0.0/) —
+  released 2025-06-23; accessed 2026-07-23.
+- [PyPI 3.0.0 JSON metadata](https://pypi.org/pypi/pufferlib/3.0.0/json) —
+  package requirements and digest; accessed 2026-07-23.
+- [PufferLib 3.0 trainer](https://github.com/PufferAI/PufferLib/blob/3.0/pufferlib/pufferl.py)
+  — moving branch; API claims above use the [exact 3.0.0 sdist](https://files.pythonhosted.org/packages/7c/e1/5292f9b69c6263707b40ba04a87e6b9bcc177281d31092f77afd90c412f1/pufferlib-3.0.0.tar.gz), verified 2026-10-01.
+- [PufferLib 3.0 default config](https://github.com/PufferAI/PufferLib/blob/3.0/pufferlib/config/default.ini)
+  — stable parameters; accessed 2026-07-23.
+- [PufferLib live 5.0 docs](https://puffer.ai/docs.html) — current native workflow;
+  rechecked 2026-10-01. Historical 4.0 claims use its pinned source below.
+- [PufferLib 4.0 trainer](https://github.com/PufferAI/PufferLib/blob/25647630e1b15330bb3153a5a0d3ff8d234c3acf/pufferlib/pufferl.py)
+  — historical modes/config/checkpoints; accessed 2026-07-23.
+- [PufferLib 4.0 package metadata](https://github.com/PufferAI/PufferLib/blob/25647630e1b15330bb3153a5a0d3ff8d234c3acf/pyproject.toml)
+  — historical Python/Torch requirements; accessed 2026-07-23.
+- [PufferTank 4.0 Dockerfile](https://github.com/PufferAI/PufferTank/blob/4.0/puffertank.dockerfile)
+  — CUDA/Python reference environment; accessed 2026-07-23.
+- [Neptune shutdown notice](https://docs.neptune.ai/) — permanent 2026-03-05
+  shutdown; checked 2026-10-01.
+- [W&B official login source](https://github.com/wandb/wandb/blob/main/wandb/sdk/wandb_login.py)
+  and [environment variable names](https://github.com/wandb/wandb/blob/main/wandb/env.py)
+  — checked 2026-10-01; hosted docs redirected during review.

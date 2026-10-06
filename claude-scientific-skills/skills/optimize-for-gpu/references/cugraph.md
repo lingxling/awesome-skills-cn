@@ -1,9 +1,15 @@
 # cuGraph Reference
 
-cuGraph is NVIDIA's GPU-accelerated graph analytics library within the RAPIDS ecosystem. It provides NetworkX-compatible APIs for graph algorithms, delivering 10-500x+ speedup over CPU-based NetworkX on medium to large graphs. It supports both a direct Python API and a **zero-code-change NetworkX backend** (nx-cugraph) that accelerates existing NetworkX code with no modifications.
+> Review: 2026-10-01. Code below is illustrative unless explicitly described as CPU-tested.
+> GPU execution, performance, GDS, and multi-GPU behavior require validation on target hardware.
 
-> **Full documentation:** https://docs.rapids.ai/api/cugraph/stable/
-> **Version (stable):** 26.06.00
+cuGraph is NVIDIA's GPU-accelerated graph analytics library within the RAPIDS ecosystem. It
+supports both a direct Python API and an **nx-cugraph** NetworkX backend. Performance depends on
+algorithm, graph topology and size, graph-construction cost, fallback behavior, and GPU hardware,
+so benchmark the complete workload instead of promising a fixed speedup.
+
+> **Full documentation:** https://docs.nvidia.com/cugraph/26.08/
+> **Version target:** 26.08
 > **Repository:** https://github.com/rapidsai/cugraph
 
 ## Table of Contents
@@ -27,15 +33,16 @@ cuGraph is NVIDIA's GPU-accelerated graph analytics library within the RAPIDS ec
 
 ## Installation and Setup
 
-Always use `uv add` (never `pip install` or `conda install`) in all install instructions, docstrings, comments, and error messages.
+Use `uv add` in standalone examples; follow the user's existing project package manager when one
+is already configured.
 
 ```bash
-uv add --extra-index-url=https://pypi.nvidia.com cugraph-cu12    # Core cuGraph for CUDA 12.x
-uv add --extra-index-url=https://pypi.nvidia.com nx-cugraph-cu12 # NetworkX backend
+uv add --extra-index-url=https://pypi.nvidia.com "cugraph-cu12==26.8.*"    # Core cuGraph for CUDA 12.x
+uv add --extra-index-url=https://pypi.nvidia.com "nx-cugraph-cu12==26.8.*" # NetworkX backend
 # For CUDA 13.x, use the -cu13 packages: cugraph-cu13, nx-cugraph-cu13
 ```
 
-Unlike cuDF/cuML (whose wheels are now on PyPI directly), the cugraph and nx-cugraph packages on PyPI are stub sdists — keep the `pypi.nvidia.com` extra index for these.
+26.08 cuGraph and nx-cugraph wheels are published on PyPI. The NVIDIA index is optional for these current packages; historical releases may still use stub distributions.
 
 **Platform:** Linux and WSL2 only (no native macOS or Windows).
 **Requires:** Python >= 3.11, NVIDIA GPU with CUDA 12.x or 13.x support, NetworkX >= 3.2 (>= 3.5 recommended for optimal nx-cugraph).
@@ -290,10 +297,10 @@ sym_df = cugraph.symmetrize(source_col, dest_col, weight_col)
 ```
 
 ### Vertex Renumbering
-cuGraph internally renumbers vertices to contiguous integers starting from 0. Use `unrenumber()` to map back to original IDs:
+cuGraph internally renumbers vertices to contiguous integers starting from 0. Native high-level algorithms such as PageRank already restore external IDs. Do not unrenumber those results twice:
 ```python
 result = cugraph.pagerank(G)
-result = G.unrenumber(result, "vertex")  # Map internal IDs back to original
+# Use G.unrenumber only for an explicitly internal-ID table from a lower-level API.
 ```
 
 ---
@@ -306,7 +313,7 @@ result = G.unrenumber(result, "vertex")  # Map internal IDs back to original
 | **Directed** | `cugraph.Graph(directed=True)` | Directed edges; some algorithms require directed/undirected |
 | **Weighted** | Set `edge_attr` in `from_cudf_edgelist` | Edge weights used by SSSP, PageRank, Louvain, etc. |
 | **MultiGraph** | `cugraph.MultiGraph()` | Multiple edges between same vertex pairs |
-| **Bipartite** | Supported via standard Graph with bipartite structure | No dedicated class; algorithms in `cugraph.bipartite` |
+| **Bipartite** | Represent bipartite structure in a standard Graph | Check nx-cugraph for supported NetworkX bipartite operations |
 
 **Important:** cuGraph uses a CSR (Compressed Sparse Row) internal representation. Graphs are immutable after creation -- you cannot dynamically add/remove individual edges after calling `from_cudf_edgelist()`. To modify a graph, reconstruct it from a new DataFrame.
 
@@ -314,29 +321,34 @@ result = G.unrenumber(result, "vertex")  # Map internal IDs back to original
 
 ## Algorithm Catalog
 
+The multi-GPU column uses callable aliases exported by `import cugraph.dask`.
+Namespace subpackages may instead expose modules or single-GPU imports; do not
+construct an API path by inserting `centrality`, `community`, or `components`.
+Column entries identify APIs, not interchangeable return schemas or weight support.
+
 ### Centrality
 
 | Algorithm | Single-GPU | Multi-GPU | NetworkX Equivalent |
 |---|---|---|---|
-| Betweenness Centrality | `cugraph.betweenness_centrality(G)` | `cugraph.dask.centrality.betweenness_centrality()` | `nx.betweenness_centrality()` |
-| Edge Betweenness | `cugraph.edge_betweenness_centrality(G)` | `cugraph.dask.centrality.edge_betweenness_centrality()` | `nx.edge_betweenness_centrality()` |
+| Betweenness Centrality | `cugraph.betweenness_centrality(G)` | `cugraph.dask.betweenness_centrality()` | `nx.betweenness_centrality()` |
+| Edge Betweenness | `cugraph.edge_betweenness_centrality(G)` | `cugraph.dask.edge_betweenness_centrality()` | `nx.edge_betweenness_centrality()` |
 | Degree Centrality | `cugraph.degree_centrality(G)` | -- | `nx.degree_centrality()` |
-| Eigenvector Centrality | `cugraph.eigenvector_centrality(G)` | `cugraph.dask.centrality.eigenvector_centrality()` | `nx.eigenvector_centrality()` |
-| Katz Centrality | `cugraph.katz_centrality(G)` | `cugraph.dask.centrality.katz_centrality()` | `nx.katz_centrality()` |
+| Eigenvector Centrality | `cugraph.eigenvector_centrality(G)` | `cugraph.dask.eigenvector_centrality()` | `nx.eigenvector_centrality()` |
+| Katz Centrality | `cugraph.katz_centrality(G)` | `cugraph.dask.katz_centrality()` | `nx.katz_centrality()` |
 
 ### Community Detection
 
 | Algorithm | Single-GPU | Multi-GPU | NetworkX Equivalent |
 |---|---|---|---|
-| Louvain | `cugraph.louvain(G, max_level=, max_iter=, resolution=)` | `cugraph.dask.community.louvain.louvain()` | `nx.community.louvain_communities()` |
-| Leiden | `cugraph.leiden(G, max_iter=, resolution=)` | `cugraph.dask.community.leiden.leiden()` | `nx.community.leiden_communities()` |
-| ECG | `cugraph.ecg(G, min_weight=)` | `cugraph.dask.community.ecg.ecg()` | -- |
+| Louvain | `cugraph.louvain(G, max_level=, max_iter=, resolution=)` | `cugraph.dask.louvain()` | `nx.community.louvain_communities()` |
+| Leiden | `cugraph.leiden(G, max_iter=, resolution=)` | `cugraph.dask.leiden()` | `nx.community.leiden_communities()` |
+| ECG | `cugraph.ecg(G, min_weight=)` | `cugraph.dask.ecg()` | -- |
 | Spectral Balanced Cut | `cugraph.spectralBalancedCutClustering(G, num_clusters)` | -- | -- |
 | Spectral Modularity | `cugraph.spectralModularityMaximizationClustering(G, num_clusters)` | -- | -- |
-| Triangle Counting | `cugraph.triangle_count(G)` | `cugraph.dask.community.triangle_count()` | `nx.triangles()` |
-| K-Truss | `cugraph.k_truss(G, k)` or `cugraph.ktruss_subgraph(G, k)` | `cugraph.dask.community.ktruss_subgraph()` | `nx.k_truss()` |
-| EgoNet | `cugraph.ego_graph(G, n, radius=)` | `cugraph.dask.community.egonet()` | `nx.ego_graph()` |
-| Induced Subgraph | `cugraph.induced_subgraph(G, vertices)` | `cugraph.dask.community.induced_subgraph()` | `G.subgraph(vertices)` |
+| Triangle Counting | `cugraph.triangle_count(G)` | `cugraph.dask.triangle_count()` | `nx.triangles()` |
+| K-Truss | `cugraph.k_truss(G, k)` or `cugraph.ktruss_subgraph(G, k)` | `cugraph.dask.ktruss_subgraph()` | `nx.k_truss()` |
+| EgoNet | `cugraph.ego_graph(G, n, radius=)` | `cugraph.dask.ego_graph()` | `nx.ego_graph()` |
+| Induced Subgraph | `cugraph.induced_subgraph(G, vertices)` | `cugraph.dask.induced_subgraph()` | `G.subgraph(vertices)` |
 
 **Clustering Analysis:**
 - `cugraph.analyzeClustering_edge_cut(G, n_clusters, clustering)`
@@ -347,9 +359,9 @@ result = G.unrenumber(result, "vertex")  # Map internal IDs back to original
 
 | Algorithm | Single-GPU | Multi-GPU | NetworkX Equivalent |
 |---|---|---|---|
-| BFS | `cugraph.bfs(G, start=, depth_limit=)` | `cugraph.dask.traversal.bfs.bfs()` | `nx.bfs_edges()` |
+| BFS | `cugraph.bfs(G, start=, depth_limit=)` | `cugraph.dask.bfs()` | `nx.bfs_edges()` |
 | BFS Edges | `cugraph.bfs_edges(G, source)` | -- | `nx.bfs_edges()` |
-| SSSP | `cugraph.sssp(G, source=)` | `cugraph.dask.traversal.sssp.sssp()` | `nx.single_source_dijkstra()` |
+| SSSP | `cugraph.sssp(G, source=)` | `cugraph.dask.sssp()` | `nx.single_source_dijkstra()` |
 | Shortest Path | `cugraph.shortest_path(G, source=)` | -- | `nx.shortest_path()` |
 | Shortest Path Length | `cugraph.shortest_path_length(G, source, target=)` | -- | `nx.shortest_path_length()` |
 | Filter Unreachable | `cugraph.filter_unreachable(df)` | -- | -- |
@@ -358,17 +370,17 @@ result = G.unrenumber(result, "vertex")  # Map internal IDs back to original
 
 | Algorithm | Single-GPU | Multi-GPU | NetworkX Equivalent |
 |---|---|---|---|
-| PageRank | `cugraph.pagerank(G, alpha=)` | `cugraph.dask.link_analysis.pagerank()` | `nx.pagerank()` |
-| HITS | `cugraph.hits(G, max_iter=, tol=)` | `cugraph.dask.link_analysis.hits()` | `nx.hits()` |
+| PageRank | `cugraph.pagerank(G, alpha=)` | `cugraph.dask.pagerank()` | `nx.pagerank()` |
+| HITS | `cugraph.hits(G, max_iter=, tol=)` | `cugraph.dask.hits()` | `nx.hits()` |
 
 ### Link Prediction / Similarity
 
 | Algorithm | Single-GPU | Multi-GPU | NetworkX Equivalent |
 |---|---|---|---|
-| Jaccard | `cugraph.jaccard(G, vertex_pair=)` | -- | `nx.jaccard_coefficient()` |
-| Cosine Similarity | `cugraph.cosine(G, vertex_pair=)` | -- | -- |
-| Overlap | `cugraph.overlap(G, vertex_pair=)` | `cugraph.dask.link_prediction.overlap()` | -- |
-| Sorensen | `cugraph.sorensen(G, vertex_pair=)` | `cugraph.dask.link_prediction.sorensen()` | -- |
+| Jaccard | `cugraph.jaccard(G, vertex_pair=)` | `cugraph.dask.jaccard()` | `nx.jaccard_coefficient()` |
+| Cosine Similarity | `cugraph.cosine(G, vertex_pair=)` | `cugraph.dask.cosine()` | -- |
+| Overlap | `cugraph.overlap(G, vertex_pair=)` | `cugraph.dask.overlap()` | -- |
+| Sorensen | `cugraph.sorensen(G, vertex_pair=)` | `cugraph.dask.sorensen()` | -- |
 
 **NetworkX-compatible wrappers:** `cugraph.jaccard_coefficient(G, ebunch)`, `cugraph.overlap_coefficient(G, ebunch)`, `cugraph.sorensen_coefficient(G, ebunch)`
 
@@ -377,23 +389,23 @@ result = G.unrenumber(result, "vertex")  # Map internal IDs back to original
 | Algorithm | Single-GPU | Multi-GPU | NetworkX Equivalent |
 |---|---|---|---|
 | Connected Components | `cugraph.connected_components(G)` | -- | `nx.connected_components()` |
-| Weakly Connected | `cugraph.weakly_connected_components(G)` | `cugraph.dask.components.weakly_connected_components()` | `nx.weakly_connected_components()` |
+| Weakly Connected | `cugraph.weakly_connected_components(G)` | `cugraph.dask.weakly_connected_components()` | `nx.weakly_connected_components()` |
 | Strongly Connected | `cugraph.strongly_connected_components(G)` | -- | `nx.strongly_connected_components()` |
 
 ### Cores
 
 | Algorithm | Single-GPU | Multi-GPU | NetworkX Equivalent |
 |---|---|---|---|
-| Core Number | `cugraph.core_number(G, degree_type=)` | `cugraph.dask.cores.core_number()` | `nx.core_number()` |
-| K-Core | `cugraph.k_core(G, k=, core_number=)` | `cugraph.dask.cores.k_core()` | `nx.k_core()` |
+| Core Number | `cugraph.core_number(G, degree_type=)` | `cugraph.dask.core_number()` | `nx.core_number()` |
+| K-Core | `cugraph.k_core(G, k=, core_number=)` | `cugraph.dask.k_core()` | `nx.k_core()` |
 
 ### Sampling
 
 | Algorithm | Single-GPU | Multi-GPU | Notes |
 |---|---|---|---|
-| Biased Random Walks | `cugraph.biased_random_walks(G, start_vertices)` | `cugraph.dask.sampling.biased_random_walks()` | Weighted/biased traversal |
-| Uniform Random Walks | -- | `cugraph.dask.sampling.uniform_random_walks()` | Padded result with max path length |
-| Random Walks | -- | `cugraph.dask.sampling.random_walks()` | General random walk |
+| Biased Random Walks | `cugraph.biased_random_walks(G, start_vertices)` | `cugraph.dask.biased_random_walks()` | Weighted/biased traversal |
+| Uniform Random Walks | -- | `cugraph.dask.uniform_random_walks()` | Padded result with max path length |
+| Random Walks | -- | `cugraph.dask.random_walks()` | General random walk |
 | Node2Vec | -- | `cugraph.dask.sampling.node2vec_random_walks()` | Node2Vec sampling framework |
 | Homogeneous Neighbor Sample | `cugraph.homogeneous_neighbor_sample(G, start_vertices, fanout)` | -- | Configurable fan-out per hop |
 | Heterogeneous Neighbor Sample | `cugraph.heterogeneous_neighbor_sample(G, ...)` | -- | Multi-type node/edge graphs |
@@ -444,6 +456,8 @@ import dask_cudf
 # Initialize multi-GPU cluster
 cluster = LocalCUDACluster()
 client = Client(cluster)
+import cugraph.dask.comms.comms as Comms
+Comms.initialize(p2p=True)
 
 # Load distributed edge list
 ddf = dask_cudf.read_csv("large_graph.csv", names=["src", "dst", "weight"])
@@ -455,6 +469,11 @@ G.from_dask_cudf_edgelist(ddf, source="src", destination="dst", edge_attr="weigh
 # Run multi-GPU algorithms
 pr = dask_cugraph.pagerank(G)
 components = dask_cugraph.weakly_connected_components(G)
+# Materialize or write distributed outputs before teardown.
+pr_local = pr.compute()
+Comms.destroy()
+client.close()
+cluster.close()
 ```
 
 ### Algorithms with Multi-GPU Support
@@ -485,7 +504,7 @@ cugraph-pyg provides native GPU-accelerated implementations of PyG's core interf
 - **Sampler/Loader**: GPU-accelerated neighborhood sampling with configurable fan-out
 
 ```bash
-uv add --extra-index-url=https://pypi.nvidia.com cugraph-pyg-cu12
+uv add --extra-index-url=https://pypi.nvidia.com "cugraph-pyg-cu12==26.8.*"
 ```
 
 **Key capabilities:**
@@ -501,7 +520,7 @@ uv add --extra-index-url=https://pypi.nvidia.com cugraph-pyg-cu12
 WholeGraph provides distributed GPU memory management for large-scale GNN training through its **WholeMemory** abstraction.
 
 ```bash
-uv add --extra-index-url=https://pypi.nvidia.com pylibwholegraph-cu12
+uv add --extra-index-url=https://pypi.nvidia.com "pylibwholegraph-cu12==26.8.*"
 ```
 
 **Core concepts:**
@@ -534,45 +553,23 @@ uv add --extra-index-url=https://pypi.nvidia.com pylibwholegraph-cu12
 
 ## Performance Characteristics and Benchmarks
 
-### nx-cugraph Benchmarks (NetworkX backend)
+Benchmark with the user's actual topology and algorithm:
 
-**Hardware:** Intel Xeon w9-3495X (56 cores), NVIDIA RTX 3090 (24GB), 251 GB RAM, CUDA 12.8
+1. Check that the requested NetworkX algorithm dispatches to nx-cugraph rather than falling back
+   to CPU.
+2. Measure graph construction and conversion separately from repeated algorithm calls, then report
+   both warm algorithm time and end-to-end time.
+3. Warm the CUDA context before collecting timed repetitions.
+4. Verify output semantics, convergence tolerance, sampled-algorithm parameters, and floating-point
+   tolerance against the CPU implementation.
+5. Record vertices, edges, directedness, weight dtype, GPU model, CPU baseline, software versions,
+   and whether the graph was already device-resident.
+6. Use multi-GPU only after estimating graph and temporary-memory requirements and measuring the
+   communication cost.
 
-**Datasets tested:**
-
-| Dataset | Nodes | Edges | Type |
-|---|---|---|---|
-| netscience | 1,461 | 5,484 | Small |
-| amazon0302 | 262,111 | 1,234,877 | Medium |
-| cit-Patents | 3,774,768 | 16,518,948 | Large |
-| soc-LiveJournal1 | 4,847,571 | 68,993,773 | Very large |
-
-**Speedups (GPU vs CPU NetworkX):**
-
-| Algorithm | Medium Graph | Large Graph | Very Large Graph |
-|---|---|---|---|
-| `betweenness_centrality` (k=100) | ~20x | ~520x | ~300x |
-| `katz_centrality` | ~100x | ~5,000x | ~24,768x |
-| `average_clustering` | ~50x | ~1,000x | ~2,828x |
-| `transitivity` | ~50x | ~1,000x | ~2,832x |
-| `louvain_communities` | ~30x | ~273x | ~200x |
-| `pagerank` | ~2x | ~50x | ~188x |
-| `eigenvector_centrality` | ~7x | ~100x | ~376x |
-| `k_truss` | ~8x | ~200x | ~540x |
-
-**Key finding:** Speedup increases dramatically with graph size. Small graphs (< 5K edges) may see overhead from GPU initialization that negates speedup. For graphs with > 100K edges, expect 10-500x+ improvement on most algorithms.
-
-**Concrete example:** Betweenness centrality on cit-Patents (3.7M nodes, 16.5M edges):
-- CPU NetworkX: 7 min 41 sec
-- nx-cugraph GPU: 5.32 sec (~86x speedup)
-
-### General Performance Guidelines
-
-- **Small graphs (< 10K edges):** GPU overhead may dominate; NetworkX CPU may be faster
-- **Medium graphs (100K-1M edges):** 10-100x speedup typical
-- **Large graphs (1M-100M edges):** 100-1000x+ speedup typical
-- **Very large graphs (> 100M edges):** Use multi-GPU; single GPU memory may be insufficient
-- **First call overhead:** Initial GPU kernel compilation and graph transfer adds ~1-3 seconds; subsequent calls on same graph are much faster
+Small or one-shot graphs can lose to NetworkX after setup and transfer. Large device-resident
+graphs with supported algorithms are better candidates, but graph size alone does not establish a
+speedup.
 
 ---
 
@@ -581,8 +578,7 @@ uv add --extra-index-url=https://pypi.nvidia.com pylibwholegraph-cu12
 ### GPU Memory Considerations
 
 - cuGraph stores graphs in CSR format on GPU memory
-- Memory usage is approximately: `(num_edges * 2 * 4 bytes) + (num_vertices * 4 bytes)` for unweighted, plus `(num_edges * 8 bytes)` for weighted (float64 weights)
-- A graph with 100M edges requires roughly ~1.6 GB unweighted or ~2.4 GB weighted
+- Estimate CSR storage from offset/index/weight dtypes, edge symmetrization, renumber maps and retained edge lists. Peak construction/algorithm memory can be much larger than final CSR storage.
 - Algorithm working memory varies; some algorithms (like betweenness centrality) need additional O(V) or O(E) temporary space
 
 ### Strategies for Large Graphs
@@ -594,7 +590,7 @@ uv add --extra-index-url=https://pypi.nvidia.com pylibwholegraph-cu12
    import rmm
    rmm.reinitialize(pool_allocator=True, initial_pool_size=2**30)  # 1 GB pool
    ```
-4. **Monitor memory** with `nvidia-smi` or `rmm.get_memory_info()`
+4. **Monitor memory** with `nvidia-smi` or `cupy.cuda.runtime.memGetInfo()` (device free/total, not per-process peak)
 5. **Delete intermediate results** explicitly: `del result; import gc; gc.collect()`
 
 ---
@@ -634,20 +630,19 @@ import cupy, scipy
 ### With NetworkX
 ```python
 import networkx as nx
-import cugraph
+import nx_cugraph as nxcg
 
-# NetworkX -> cuGraph
+# Convert once when repeated algorithms justify keeping the graph on GPU.
 G_nx = nx.karate_club_graph()
-G_cu = cugraph.from_networkx(G_nx)  # Not yet available in all versions
-
-# Or use nx-cugraph backend for transparent acceleration
+G_gpu = nxcg.from_networkx(G_nx)
+result = nx.pagerank(G_gpu)
 ```
 
 ### With PyTorch Geometric
 ```python
 # Via cugraph-pyg (see GNN Support section)
-from cugraph_pyg.data import CuGraphStore
-from cugraph_pyg.loader import CuGraphNeighborLoader
+from cugraph_pyg.data import GraphStore, FeatureStore
+from cugraph_pyg.loader import NeighborLoader
 ```
 
 ### With Pandas
@@ -672,7 +667,7 @@ G.from_pandas_edgelist(df, source="src", destination="dst")
 8. **Spectral Clustering:** Single-GPU only.
 9. **Minimum/Maximum Spanning Tree:** Single-GPU only.
 10. **Force Atlas 2 layout:** Single-GPU only.
-11. **Compatibility doc:** The official list of NetworkX APIs accelerated by nx-cugraph is maintained at https://docs.rapids.ai/api/cugraph/stable/nx_cugraph/supported-algorithms/ (~80 algorithms plus generators and utilities).
+11. **Compatibility doc:** The official list of NetworkX APIs accelerated by nx-cugraph is maintained at https://docs.nvidia.com/cugraph/26.08/nx_cugraph/supported-algorithms/ (~80 algorithms plus generators and utilities).
 
 ---
 
@@ -696,7 +691,7 @@ pr = nx.pagerank(G)
 import networkx as nx
 G = nx.from_pandas_edgelist(df, "src", "dst")
 pr = nx.pagerank(G, alpha=0.85)
-bc = nx.betweenness_centrality(G, k=100)
+bc = nx.betweenness_centrality(G)  # Exact baseline; use matched sampling for large graphs
 communities = nx.community.louvain_communities(G, resolution=1.0)
 
 # After (cuGraph):
@@ -743,10 +738,15 @@ import dask_cudf
 
 cluster = LocalCUDACluster()
 client = Client(cluster)
+import cugraph.dask.comms.comms as Comms
+Comms.initialize(p2p=True)
 
 ddf = dask_cudf.from_cudf(edges, npartitions=len(cluster.workers))
 G = cugraph.Graph()
 G.from_dask_cudf_edgelist(ddf, source="src", destination="dst")
 result = dcg.pagerank(G)
-result_local = result.compute()  # Collect to single GPU
+result_local = result.compute()  # Only if the result fits one GPU
+Comms.destroy()
+client.close()
+cluster.close()
 ```

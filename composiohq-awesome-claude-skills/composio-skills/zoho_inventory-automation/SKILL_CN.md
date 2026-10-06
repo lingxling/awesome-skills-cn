@@ -1,48 +1,48 @@
 ---
 name: zoho_inventory-automation
-description: "Automate Zoho Inventory tasks via Rube MCP (Composio): items, orders, warehouses, shipments, and stock management. Always search tools first for current schemas."
+description: "通过 Rube MCP（Composio）自动化 Zoho Inventory 任务：商品、订单、仓库、发货和库存管理。始终先搜索工具以获取当前模式。"
 requires:
   mcp: [rube]
 ---
 
-# Zoho Inventory Automation via Rube MCP
+# 通过 Rube MCP 实现 Zoho Inventory 自动化
 
-Automate Zoho Inventory operations through Composio's Zoho Inventory toolkit via Rube MCP.
+通过 Rube MCP 使用 Composio 的 Zoho Inventory 工具包自动化 Zoho Inventory 操作。
 
-**Toolkit docs**: [composio.dev/toolkits/zoho_inventory](https://composio.dev/toolkits/zoho_inventory)
+**工具包文档**：[composio.dev/toolkits/zoho_inventory](https://composio.dev/toolkits/zoho_inventory)
 
 ## 前置条件
 
-- Rube MCP 必须已连接（RUBE_SEARCH_TOOLS 可用）
-- Active Zoho Inventory connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `zoho_inventory`
-- 始终首先调用 `RUBE_SEARCH_TOOLS` 以获取当前工具架构
+- 必须已连接 Rube MCP（RUBE_SEARCH_TOOLS 可用）
+- 通过 `RUBE_MANAGE_CONNECTIONS` 并使用工具包 `zoho_inventory` 建立有效的 Zoho Inventory 连接
+- 始终先调用 `RUBE_SEARCH_TOOLS` 以获取当前的工具模式
 
 ## 设置
 
-**获取 Rube MCP**: 在客户端配置中添加 `https://rube.app/mcp` 作为 MCP 服务器。无需 API 密钥 — 只需添加端点即可使用。
+**获取 Rube MCP**：在客户端配置中将 `https://rube.app/mcp` 添加为 MCP 服务器。无需 API 密钥——只需添加该端点即可使用。
 
-1. 通过确认 `RUBE_SEARCH_TOOLS` 响应来验证 Rube MCP 可用
-2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `zoho_inventory`
-3. 如果连接未处于 ACTIVE 状态，请按照返回的授权链接完成设置
+1. 通过确认 `RUBE_SEARCH_TOOLS` 有响应来验证 Rube MCP 可用
+2. 使用工具包 `zoho_inventory` 调用 `RUBE_MANAGE_CONNECTIONS`
+3. 如果连接状态不是 ACTIVE，请按照返回的授权链接完成设置
 4. 在运行任何工作流之前，确认连接状态显示为 ACTIVE
 
 ## 工具发现
 
-在执行工作流之前，始终发现可用工具：
+在执行工作流之前，始终先发现可用工具：
 
 ```
 RUBE_SEARCH_TOOLS: queries=[{"use_case": "items, orders, warehouses, shipments, and stock management", "known_fields": ""}]
 ```
 
-This returns:
-- Available tool slugs for Zoho Inventory
-- Recommended execution plan steps
-- Known pitfalls and edge cases
-- Input schemas for each tool
+这将返回：
+- Zoho Inventory 可用的工具 slug
+- 推荐的执行计划步骤
+- 已知的陷阱和边界情况
+- 每个工具的输入模式
 
-## Core Workflows
+## 核心工作流
 
-### 1. Discover Available Zoho Inventory Tools
+### 1. 发现可用的 Zoho Inventory 工具
 
 ```
 RUBE_SEARCH_TOOLS:
@@ -50,11 +50,11 @@ RUBE_SEARCH_TOOLS:
     - use_case: "list all available Zoho Inventory tools and capabilities"
 ```
 
-Review the returned tools, their descriptions, and input schemas before proceeding.
+在继续之前，请查看返回的工具、其描述和输入模式。
 
-### 2. 执行 Zoho Inventory 操作s
+### 2. 执行 Zoho Inventory 操作
 
-After discovering tools, execute them via:
+发现工具后，通过以下方式执行：
 
 ```
 RUBE_MULTI_EXECUTE_TOOL:
@@ -65,46 +65,46 @@ RUBE_MULTI_EXECUTE_TOOL:
   sync_response_to_workbench: false
 ```
 
-### 3. Multi-Step Workflows
+### 3. 多步骤工作流
 
-For complex workflows involving multiple Zoho Inventory operations:
+对于涉及多个 Zoho Inventory 操作的复杂工作流：
 
-1. Search for all relevant tools: `RUBE_SEARCH_TOOLS` with specific use case
-2. 执行 prerequisite steps first (e.g., fetch before update)
-3. Pass data between steps using tool responses
-4. Use `RUBE_REMOTE_WORKBENCH` for bulk operations or data processing
+1. 搜索所有相关工具：使用特定用例调用 `RUBE_SEARCH_TOOLS`
+2. 先执行前置步骤（例如，更新前先获取）
+3. 使用工具响应在步骤之间传递数据
+4. 对批量操作或数据处理使用 `RUBE_REMOTE_WORKBENCH`
 
-## Common Patterns
+## 常见模式
 
-### Search Before Action
-Always search for existing resources before creating new ones to avoid duplicates.
+### 先搜索再操作
+在创建新资源之前，始终先搜索现有资源，以避免重复。
 
-### Pagination
-Many list operations support pagination. Check responses for `next_cursor` or `page_token` and continue fetching until exhausted.
+### 分页
+许多列表操作支持分页。检查响应中的 `next_cursor` 或 `page_token`，并持续获取直到取完。
 
-### Error Handling
-- Check tool responses for errors before proceeding
-- If a tool fails, verify the connection is still ACTIVE
-- Re-authenticate via `RUBE_MANAGE_CONNECTIONS` if connection expired
+### 错误处理
+- 在继续之前检查工具响应中的错误
+- 如果工具失败，请验证连接是否仍为 ACTIVE
+- 如果连接已过期，通过 `RUBE_MANAGE_CONNECTIONS` 重新认证
 
-### Batch 操作s
-For bulk operations, use `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` in a loop with `ThreadPoolExecutor` for parallel execution.
+### 批量操作
+对于批量操作，在循环中使用 `RUBE_REMOTE_WORKBENCH` 的 `run_composio_tool()`，并配合 `ThreadPoolExecutor` 进行并行执行。
 
 ## 已知陷阱
 
-- **Always search tools first**: Tool schemas and available operations may change. Never hardcode tool slugs without first discovering them via `RUBE_SEARCH_TOOLS`.
-- **Check connection status**: Ensure the Zoho Inventory connection is ACTIVE before executing any tools. Expired OAuth tokens require re-authentication.
-- **Respect rate limits**: If you receive rate limit errors, reduce request frequency and implement backoff.
-- **Validate schemas**: Always pass strictly schema-compliant arguments. Use `RUBE_GET_TOOL_SCHEMAS` to load full input schemas when `schemaRef` is returned instead of `input_schema`.
+- **始终先搜索工具**：工具模式和可用操作可能会变化。在未通过 `RUBE_SEARCH_TOOLS` 发现之前，切勿硬编码工具 slug。
+- **检查连接状态**：在执行任何工具之前，确保 Zoho Inventory 连接为 ACTIVE。过期的 OAuth 令牌需要重新认证。
+- **遵守速率限制**：如果收到速率限制错误，请降低请求频率并实现退避。
+- **验证模式**：始终传入严格符合模式的参数。当返回的是 `schemaRef` 而非 `input_schema` 时，使用 `RUBE_GET_TOOL_SCHEMAS` 加载完整的输入模式。
 
 ## 快速参考
 
 | 操作 | 方法 |
 |-----------|----------|
-| 查找工具 | `RUBE_SEARCH_TOOLS` with Zoho Inventory-specific use case |
-| 连接 | `RUBE_MANAGE_CONNECTIONS` with toolkit `zoho_inventory` |
-| 执行 | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |
-| 批量操作 | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |
-| 完整架构 | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |
+| 查找工具 | 使用针对 Zoho Inventory 的用例调用 `RUBE_SEARCH_TOOLS` |
+| 连接 | 使用工具包 `zoho_inventory` 调用 `RUBE_MANAGE_CONNECTIONS` |
+| 执行 | 使用已发现的工具 slug 调用 `RUBE_MULTI_EXECUTE_TOOL` |
+| 批量操作 | 使用 `run_composio_tool()` 调用 `RUBE_REMOTE_WORKBENCH` |
+| 完整模式 | 对带有 `schemaRef` 的工具使用 `RUBE_GET_TOOL_SCHEMAS` |
 
-> **Toolkit docs**: [composio.dev/toolkits/zoho_inventory](https://composio.dev/toolkits/zoho_inventory)
+> **工具包文档**：[composio.dev/toolkits/zoho_inventory](https://composio.dev/toolkits/zoho_inventory)

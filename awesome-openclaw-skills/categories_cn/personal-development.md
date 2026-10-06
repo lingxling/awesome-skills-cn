@@ -18,7 +18,7 @@
 - [beaverhabits](https://clawskills.sh/skills/daya0576-beaverhabits) - 使用 Beaver Habit Tracker API 跟踪和管理你的习惯。
 - [brw-case-study-builder](https://clawskills.sh/skills/brianrwagner-brw-case-study-builder) - 将客户成功转化为格式化的案例研究，用于提案、社会证明和销售对话。
 - [canvas-design](https://clawskills.sh/skills/seanphan-canvas-design) - 在 .png 和 .pdf 文档中创建美丽的视觉艺术。
-- [cedh-advisor](https://clawskills.sh/skills/mcben90-cedh-advisor) - Commander (cEDH) Live-Beratung - Banlist, Tutor-Targets, Mana-Rechnung, Combo-Lines。
+- [cedh-advisor](https://clawskills.sh/skills/mcben90-cedh-advisor) - 指挥官赛制（cEDH）实时建议——禁卡表、检索目标、法术力计算、连击组合路线。
 - [clawcierge](https://clawskills.sh/skills/tmansmann0-clawcierge) - > 你在 AI 时代的个人礼宾 🦀。
 - [crucial-conversations-coach](https://clawskills.sh/skills/pors-crucial-conversations-coach) - 友好的高管生活教练。
 - [daily-questions](https://clawskills.sh/skills/daijo-bu-daily-questions) - 每日自我改进问卷，了解用户并优化代理行为。
@@ -30,6 +30,7 @@
 - [english-learn-cards](https://clawskills.sh/skills/racymind-english-learn-cards) - 基于抽认卡的英语词汇学习。
 - [expanso-cve-scan](https://clawskills.sh/skills/aronchick-expanso-cve-scan) - 扫描 SBOM 以查找已知的 CVE 漏洞。
 - [ezbookkeeping](https://clawskills.sh/skills/mayswind-ezbookkeeping) - ezBookkeeping 是一个轻量级、自托管的个人财务应用程序。
+- [first-principles](https://clawhub.ai/deciqai/first-principles) - 将问题拆解到最基本的事实，再重新构建推理。
 - [fix-life-in-1-day](https://clawskills.sh/skills/evgyur-fix-life-in-1-day) - 在 1 天内修复你的整个生活。
 - [founder-coach](https://clawskills.sh/skills/goforu-founder-coach) - AI 驱动的创业思维教练，帮助创始人升级思维。
 - [game-design-philosophy](https://clawskills.sh/skills/nyxur42-game-design-philosophy) - 自动学习你的设计直觉。

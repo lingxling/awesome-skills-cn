@@ -106,4 +106,4 @@
 - [x-to-kindle](https://clawskills.sh/skills/brianlu365ai-x-to-kindle) - 将 X/Twitter 帖子发送到 Kindle 以进行无干扰阅读。
 - [xapi-labs](https://clawskills.sh/skills/glacier-luo-xapi-labs) - AI 代理的聚合 API 平台。
 - [xapi123123](https://clawskills.sh/skills/glacier-luo-xapi123123) - AI 代理的聚合 API 平台。
-- [bluente-translate](https://github.com/openclaw/skills/blob/main/skills/varsmallrookie/bluente-translate/SKILL.md) - 在 2 分钟内翻译你的文档，保持格式完整。
+- [bluente-translate](https://clawskills.sh/skills/varsmallrookie-bluente-translate) - 在 2 分钟内翻译你的文档，保持格式完整。

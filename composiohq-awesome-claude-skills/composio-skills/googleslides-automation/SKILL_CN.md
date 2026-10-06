@@ -1,116 +1,116 @@
 ---
 name: googleslides-automation
-description: "Automate Google Slides tasks via Rube MCP (Composio): create presentations, add slides from Markdown, batch update, copy from templates, get thumbnails. Always search tools first for current schemas."
+description: "通过 Rube MCP（Composio）自动化 Google Slides 任务：创建演示文稿、从 Markdown 添加幻灯片、批量更新、从模板复制、获取缩略图。请始终先搜索工具以获取最新模式。"
 requires:
   mcp: [rube]
 ---
 
-# Google Slides Automation via Rube MCP
+# 通过 Rube MCP 实现 Google Slides 自动化
 
-Create, edit, and manage Google Slides presentations programmatically using Rube MCP (Composio).
+使用 Rube MCP（Composio）以编程方式创建、编辑和管理 Google Slides 演示文稿。
 
-**Toolkit docs**: [composio.dev/toolkits/googleslides](https://composio.dev/toolkits/googleslides)
+**工具包文档**：[composio.dev/toolkits/googleslides](https://composio.dev/toolkits/googleslides)
 
 ## 前置条件
-- Rube MCP 必须已连接（RUBE_SEARCH_TOOLS 可用）
-- Active connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `googleslides`
-- 始终首先调用 `RUBE_SEARCH_TOOLS` 以获取当前工具架构
+- 必须已连接 Rube MCP（`RUBE_SEARCH_TOOLS` 可用）
+- 已通过 `RUBE_MANAGE_CONNECTIONS` 为工具包 `googleslides` 建立活动连接
+- 始终先调用 `RUBE_SEARCH_TOOLS` 以获取当前工具模式
 
 ## 设置
-**获取 Rube MCP**: 在客户端配置中添加 `https://rube.app/mcp` 作为 MCP 服务器。无需 API 密钥 — 只需添加端点即可使用。
+**获取 Rube MCP**：在你的客户端配置中添加 `https://rube.app/mcp` 作为 MCP 服务器。无需 API 密钥——只需添加该端点即可使用。
 
-1. 通过确认 `RUBE_SEARCH_TOOLS` 响应来验证 Rube MCP 可用
-2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `googleslides`
-3. 如果连接未处于 ACTIVE 状态，请按照返回的授权链接完成设置
+1. 通过确认 `RUBE_SEARCH_TOOLS` 有响应来验证 Rube MCP 是否可用
+2. 对工具包 `googleslides` 调用 `RUBE_MANAGE_CONNECTIONS`
+3. 如果连接未处于 ACTIVE 状态，请按返回的授权链接完成设置
 4. 在运行任何工作流之前，确认连接状态显示为 ACTIVE
 
-## Core Workflows
+## 核心工作流
 
-### 1. Create a Blank Presentation
-Use `GOOGLESLIDES_PRESENTATIONS_CREATE` to initialize a new blank presentation.
+### 1. 创建空白演示文稿
+使用 `GOOGLESLIDES_PRESENTATIONS_CREATE` 初始化一个新的空白演示文稿。
 ```
 Tool: GOOGLESLIDES_PRESENTATIONS_CREATE
 Parameters:
-  - title (required): Title for the new presentation
-  - presentationId (optional): Specific ID to assign (usually auto-generated)
+  - title（必填）: 新演示文稿的标题
+  - presentationId（可选）: 要指定的特定 ID（通常自动生成）
 ```
 
-### 2. Create Slides from Markdown
-Use `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` to generate a full presentation from Markdown text. Content is automatically split into slides.
+### 2. 从 Markdown 创建幻灯片
+使用 `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` 从 Markdown 文本生成完整的演示文稿。内容会自动拆分为多张幻灯片。
 ```
 Tool: GOOGLESLIDES_CREATE_SLIDES_MARKDOWN
 Parameters:
-  - title (required): Presentation title
-  - markdown_text (required): Markdown content (auto-split into slides)
+  - title（必填）: 演示文稿标题
+  - markdown_text（必填）: Markdown 内容（自动拆分为幻灯片）
 ```
 
-### 3. Batch Update a Presentation
-Use `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` to apply updates to an existing presentation using Markdown or raw API requests.
+### 3. 批量更新演示文稿
+使用 `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE`，通过 Markdown 或原始 API 请求对现有演示文稿应用更新。
 ```
 Tool: GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE
 Parameters:
-  - presentationId (required): Target presentation ID
-  - markdown_text: Markdown content to update slides
-  - requests: Raw Google Slides API batch update requests
-  - writeControl: Write control settings
+  - presentationId（必填）: 目标演示文稿 ID
+  - markdown_text: 用于更新幻灯片的 Markdown 内容
+  - requests: 原始 Google Slides API 批量更新请求
+  - writeControl: 写入控制设置
 ```
 
-### 4. Copy from Template
-Use `GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE` to duplicate an existing presentation as a template.
+### 4. 从模板复制
+使用 `GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE` 将现有演示文稿复制为模板。
 ```
 Tool: GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE
 Parameters:
-  - template_presentation_id (required): Source template presentation ID
-  - new_title (required): Title for the new copy
-  - parent_folder_id (optional): Google Drive folder for the copy
+  - template_presentation_id（必填）: 源模板演示文稿 ID
+  - new_title（必填）: 新副本的标题
+  - parent_folder_id（可选）: 用于存放副本的 Google Drive 文件夹
 ```
 
-### 5. Get Presentation Details
-Use `GOOGLESLIDES_PRESENTATIONS_GET` to retrieve the current state of a presentation including all slides and elements.
+### 5. 获取演示文稿详情
+使用 `GOOGLESLIDES_PRESENTATIONS_GET` 检索某演示文稿的当前状态，包括所有幻灯片和元素。
 ```
 Tool: GOOGLESLIDES_PRESENTATIONS_GET
 Parameters:
-  - presentationId (required): Presentation ID to retrieve
-  - fields (optional): Specific fields to return
+  - presentationId（必填）: 要检索的演示文稿 ID
+  - fields（可选）: 要返回的特定字段
 ```
 
-### 6. Generate Slide Thumbnails
-Use `GOOGLESLIDES_PRESENTATIONS_PAGES_GET_THUMBNAIL` to generate a thumbnail image URL for a specific slide.
+### 6. 生成幻灯片缩略图
+使用 `GOOGLESLIDES_PRESENTATIONS_PAGES_GET_THUMBNAIL` 为特定幻灯片生成缩略图图像 URL。
 ```
 Tool: GOOGLESLIDES_PRESENTATIONS_PAGES_GET_THUMBNAIL
 Parameters:
-  - presentationId (required): Presentation ID
-  - pageObjectId (required): Page/slide object ID
-  - thumbnailProperties.mimeType: Image format (e.g., PNG)
-  - thumbnailProperties.thumbnailSize: Thumbnail size
+  - presentationId（必填）: 演示文稿 ID
+  - pageObjectId（必填）: 页面/幻灯片对象 ID
+  - thumbnailProperties.mimeType: 图像格式（例如 PNG）
+  - thumbnailProperties.thumbnailSize: 缩略图大小
 ```
 
-## Common Patterns
+## 常见模式
 
-- **Markdown-first workflow**: Use `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` to quickly generate presentations from structured text. The tool auto-splits content into separate slides.
-- **Template-based generation**: Use `GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE` to copy a styled template, then `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` to fill in content.
-- **Retrieve then modify**: Use `GOOGLESLIDES_PRESENTATIONS_GET` to inspect slide structure and object IDs, then `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` to make targeted changes.
-- **Export thumbnails**: Use `GOOGLESLIDES_PRESENTATIONS_PAGES_GET` to list page object IDs, then `GOOGLESLIDES_PRESENTATIONS_PAGES_GET_THUMBNAIL` to generate preview images.
-- **Share presentations**: Combine with `GOOGLEDRIVE_ADD_FILE_SHARING_PREFERENCE` (googledrive toolkit) to share after creation.
+- **以 Markdown 为先的工作流**：使用 `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` 从结构化文本快速生成演示文稿。该工具会自动将内容拆分为多张幻灯片。
+- **基于模板的生成**：使用 `GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE` 复制一个带样式的模板，然后使用 `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` 填充内容。
+- **先检索再修改**：使用 `GOOGLESLIDES_PRESENTATIONS_GET` 检查幻灯片结构和对象 ID，然后使用 `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` 进行有针对性的修改。
+- **导出缩略图**：使用 `GOOGLESLIDES_PRESENTATIONS_PAGES_GET` 列出页面对象 ID，然后使用 `GOOGLESLIDES_PRESENTATIONS_PAGES_GET_THUMBNAIL` 生成预览图像。
+- **分享演示文稿**：创建完成后，结合 `GOOGLEDRIVE_ADD_FILE_SHARING_PREFERENCE`（googledrive 工具包）进行分享。
 
-## 已知陷阱
+## 已知坑点
 
-- `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` creates a brand-new presentation each time -- it cannot append to an existing one.
-- `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` with raw `requests` requires knowledge of the Google Slides API request format. Prefer `markdown_text` for simpler updates.
-- Page object IDs must be obtained from `GOOGLESLIDES_PRESENTATIONS_GET` before using thumbnail or page-get tools.
-- The `presentationId` is the long alphanumeric string from the Google Slides URL (between `/d/` and `/edit`).
-- Copying from a template requires the authenticated user to have at least read access to the template presentation.
+- `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` 每次都会创建一个全新的演示文稿——它不能追加到现有的演示文稿中。
+- 使用原始 `requests` 的 `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` 需要了解 Google Slides API 的请求格式。对于更简单的更新，优先使用 `markdown_text`。
+- 页面对象 ID 必须先通过 `GOOGLESLIDES_PRESENTATIONS_GET` 获取，然后才能使用缩略图或页面获取工具。
+- `presentationId` 是 Google Slides URL 中那段较长的字母数字字符串（位于 `/d/` 和 `/edit` 之间）。
+- 从模板复制要求经过身份验证的用户至少对该模板演示文稿拥有读取权限。
 
 ## 快速参考
-| Action | Tool | Key Parameters |
+| 操作 | 工具 | 关键参数 |
 |--------|------|----------------|
-| Create blank presentation | `GOOGLESLIDES_PRESENTATIONS_CREATE` | `title` |
-| Create from Markdown | `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` | `title`, `markdown_text` |
-| Batch update slides | `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` | `presentationId`, `markdown_text` or `requests` |
-| Copy from template | `GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE` | `template_presentation_id`, `new_title` |
-| Get presentation | `GOOGLESLIDES_PRESENTATIONS_GET` | `presentationId` |
-| Get page details | `GOOGLESLIDES_PRESENTATIONS_PAGES_GET` | `presentationId`, `pageObjectId` |
-| Get slide thumbnail | `GOOGLESLIDES_PRESENTATIONS_PAGES_GET_THUMBNAIL` | `presentationId`, `pageObjectId` |
+| 创建空白演示文稿 | `GOOGLESLIDES_PRESENTATIONS_CREATE` | `title` |
+| 从 Markdown 创建 | `GOOGLESLIDES_CREATE_SLIDES_MARKDOWN` | `title`、`markdown_text` |
+| 批量更新幻灯片 | `GOOGLESLIDES_PRESENTATIONS_BATCH_UPDATE` | `presentationId`、`markdown_text` 或 `requests` |
+| 从模板复制 | `GOOGLESLIDES_PRESENTATIONS_COPY_FROM_TEMPLATE` | `template_presentation_id`、`new_title` |
+| 获取演示文稿 | `GOOGLESLIDES_PRESENTATIONS_GET` | `presentationId` |
+| 获取页面详情 | `GOOGLESLIDES_PRESENTATIONS_PAGES_GET` | `presentationId`、`pageObjectId` |
+| 获取幻灯片缩略图 | `GOOGLESLIDES_PRESENTATIONS_PAGES_GET_THUMBNAIL` | `presentationId`、`pageObjectId` |
 
 ---
-*由 [Composio](https://composio.dev) 提供支持*
+*Powered by [Composio](https://composio.dev)*

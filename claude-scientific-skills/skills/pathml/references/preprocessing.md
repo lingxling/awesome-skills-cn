@@ -1,722 +1,376 @@
-# Preprocessing Pipelines & Transforms
+# Preprocessing pipelines, masks, stain handling, and QC
 
-## Overview
+This reference describes **PathML 3.0.8 stable**. It corrects older examples that
+called nonexistent `Pipeline.run()`, omitted required mask/label names, or passed
+unsupported transform arguments.
 
-PathML provides a modular preprocessing architecture based on composable transforms organized into pipelines. Transforms are individual operations that modify images, create masks, or extract features. Pipelines chain transforms together to create reproducible, scalable preprocessing workflows for computational pathology.
+## Pipeline execution model
 
-## Pipeline Architecture
-
-### Pipeline Class
-
-The `Pipeline` class composes a sequence of transforms applied consecutively:
+A `Pipeline` is an ordered list of `Transform` objects. `Pipeline.apply(tile)`
+modifies one `Tile` in place and returns it. A slide or dataset owns execution:
 
 ```python
-from pathml.preprocessing import Pipeline, Transform1, Transform2
+from pathml.core import HESlide
+from pathml.preprocessing import BoxBlur, Pipeline, TissueDetectionHE
 
-# Create pipeline
-pipeline = Pipeline([
-    Transform1(param1=value1),
-    Transform2(param2=value2),
-    # ... more transforms
-])
+slide = HESlide("data/slide-001.svs", backend="openslide")
+pipeline = Pipeline(
+    [
+        BoxBlur(kernel_size=5),
+        TissueDetectionHE(mask_name="tissue"),
+    ]
+)
 
-# Run on a single slide
-pipeline.run(slide_data)
-
-# Run on a dataset
-pipeline.run(dataset, distributed=True, n_workers=8)
-```
-
-**Key features:**
-- Sequential execution of transforms
-- Automatic handling of tiles and masks
-- Distributed processing support with Dask
-- Reproducible workflows with serializable configuration
-
-### Transform Base Class
-
-All transforms inherit from the `Transform` base class and implement:
-- `apply()` - Core transformation logic
-- `input_type` - Expected input (tile, mask, etc.)
-- `output_type` - Produced output
-
-## Transform Categories
-
-PathML provides transforms in six major categories:
-
-1. **Image Modification** - Blur, rescale, histogram equalization
-2. **Mask Creation** - Tissue detection, nucleus detection, thresholding
-3. **Mask Modification** - Morphological operations on masks
-4. **Stain Processing** - H&E stain normalization and separation
-5. **Quality Control** - Artifact detection, white space labeling
-6. **Specialized** - Multiparametric imaging, cell segmentation
-
-## Image Modification Transforms
-
-### Blur Operations
-
-Apply various blurring kernels for noise reduction:
-
-**MedianBlur:**
-```python
-from pathml.preprocessing import MedianBlur
-
-# Apply median filter
-transform = MedianBlur(kernel_size=5)
-```
-- Effective for salt-and-pepper noise
-- Preserves edges better than Gaussian blur
-
-**GaussianBlur:**
-```python
-from pathml.preprocessing import GaussianBlur
-
-# Apply Gaussian blur
-transform = GaussianBlur(kernel_size=5, sigma=1.0)
-```
-- Smooth noise reduction
-- Adjustable sigma controls blur strength
-
-**BoxBlur:**
-```python
-from pathml.preprocessing import BoxBlur
-
-# Apply box filter
-transform = BoxBlur(kernel_size=5)
-```
-- Fastest blur operation
-- Uniform averaging within kernel
-
-### Intensity Adjustments
-
-**RescaleIntensity:**
-```python
-from pathml.preprocessing import RescaleIntensity
-
-# Rescale intensity to [0, 255]
-transform = RescaleIntensity(
-    in_range=(0, 1.0),
-    out_range=(0, 255)
+slide.run(
+    pipeline,
+    distributed=False,
+    tile_size=512,
+    tile_stride=512,
+    level=0,
+    tile_pad=False,
 )
 ```
 
-**HistogramEqualization:**
+Stable facts:
+
+- `Pipeline(transform_sequence=None)` and `Pipeline.apply(tile)` are public.
+- `Pipeline` has no `run()` method.
+- `SlideData.run()` and `SlideDataset.run()` apply pipelines.
+- `distributed=True` is the default and may create a local Dask cluster using
+  available cores. Start with `distributed=False`.
+- Existing tiles are protected unless `overwrite_existing_tiles=True`.
+- `write_dir` causes a `<slide.name>.h5path` write after processing.
+- `Pipeline.save()` writes a pickle. A pickle is executable on load; never use a
+  pipeline file from an untrusted source.
+
+## Stable transform imports
+
 ```python
-from pathml.preprocessing import HistogramEqualization
-
-# Global histogram equalization
-transform = HistogramEqualization()
-```
-- Enhances global contrast
-- Spreads out intensity distribution
-
-**AdaptiveHistogramEqualization (CLAHE):**
-```python
-from pathml.preprocessing import AdaptiveHistogramEqualization
-
-# Contrast Limited Adaptive Histogram Equalization
-transform = AdaptiveHistogramEqualization(
-    clip_limit=0.03,
-    tile_grid_size=(8, 8)
+from pathml.preprocessing import (
+    AdaptiveHistogramEqualization,
+    BinaryThreshold,
+    BoxBlur,
+    CollapseRunsCODEX,
+    CollapseRunsVectra,
+    ForegroundDetection,
+    GaussianBlur,
+    HistogramEqualization,
+    LabelArtifactTileHE,
+    LabelWhiteSpaceHE,
+    MedianBlur,
+    MorphClose,
+    MorphOpen,
+    NucleusDetectionHE,
+    Pipeline,
+    QuantifyMIF,
+    RescaleIntensity,
+    SegmentMIF,
+    SegmentMIFRemote,
+    StainNormalizationHE,
+    SuperpixelInterpolation,
+    TissueDetectionHE,
 )
 ```
-- Enhances local contrast
-- Prevents over-amplification with clip_limit
-- Better for images with varying local contrast
 
-### Superpixel Processing
+There is no stable `transform='...'` registry and no safe reason to construct
+transforms from arbitrary Python expressions. Parse a strict allowlisted config,
+then instantiate known classes explicitly.
 
-**SuperpixelInterpolation:**
-```python
-from pathml.preprocessing import SuperpixelInterpolation
+## Tissue detection
 
-# Divide into superpixels using SLIC
-transform = SuperpixelInterpolation(
-    n_segments=100,
-    compactness=10.0
-)
-```
-- Segments image into perceptually meaningful regions
-- Useful for feature extraction and segmentation
-
-## Mask Creation Transforms
-
-### H&E Tissue and Nucleus Detection
-
-**TissueDetectionHE:**
 ```python
 from pathml.preprocessing import TissueDetectionHE
 
-# Detect tissue regions in H&E slides
-transform = TissueDetectionHE(
-    use_saturation=True,  # Use HSV saturation channel
-    threshold=10,  # Intensity threshold
-    min_region_size=500  # Minimum tissue region size in pixels
+tissue = TissueDetectionHE(
+    mask_name="tissue",
+    use_saturation=True,
+    blur_ksize=17,
+    threshold=None,          # Otsu when None
+    morph_n_iter=3,
+    morph_k_size=7,
+    min_region_size=5000,
+    max_hole_size=1500,
+    outer_contours_only=False,
 )
 ```
-- Creates binary tissue mask
-- Filters small regions and artifacts
-- Stores mask in `tile.masks['tissue']`
 
-**NucleusDetectionHE:**
+The transform expects an H&E `uint8` tile. It:
+
+1. uses HSV saturation or greyscale;
+2. median-blurs;
+3. applies Otsu or the explicit threshold;
+4. performs morphological opening and closing;
+5. keeps foreground regions under the configured area/hole policy; and
+6. writes `tile.masks["tissue"]`.
+
+`mask_name` is required in practice; `None` fails when `apply()` runs.
+`min_region_size`, `max_hole_size`, and morphology kernels are measured in pixels
+at the processing level. Re-tune if level or MPP changes.
+
+Tissue detection is tile-local. It can disagree at tile edges, and PathML does not
+automatically remove background tiles from the pipeline. Compute and record tissue
+coverage after the mask exists:
+
 ```python
-from pathml.preprocessing import NucleusDetectionHE
-
-# Detect nuclei in H&E images
-transform = NucleusDetectionHE(
-    stain='hematoxylin',  # Use hematoxylin channel
-    threshold=0.3,
-    min_nucleus_size=10
-)
+coverage = float((tile.masks["tissue"] > 0).mean())
+keep = coverage >= 0.50
 ```
-- Separates hematoxylin stain
-- Thresholds to create nucleus mask
-- Stores mask in `tile.masks['nucleus']`
 
-### Binary Thresholding
+Choose the coverage rule on training data and preserve rejected-tile counts.
 
-**BinaryThreshold:**
+## Whitespace and artifact QC
+
+These transforms write **tile labels**, not pixel masks:
+
 ```python
-from pathml.preprocessing import BinaryThreshold
+from pathml.preprocessing import LabelArtifactTileHE, LabelWhiteSpaceHE
 
-# Threshold using Otsu's method
-transform = BinaryThreshold(
-    method='otsu',  # 'otsu' or manual threshold value
-    invert=False
+whitespace = LabelWhiteSpaceHE(
+    label_name="mostly_white",
+    greyscale_threshold=230,
+    proportion_threshold=0.5,
 )
-
-# Or specify manual threshold
-transform = BinaryThreshold(threshold=128)
+artifact = LabelArtifactTileHE(label_name="artifact")
 ```
 
-### Foreground Detection
+- `LabelWhiteSpaceHE` labels a tile when the proportion of greyscale pixels above
+  the threshold exceeds `proportion_threshold`.
+- `LabelArtifactTileHE` is a fixed rule-based HSI heuristic for whitespace,
+  dark regions, and pen-like colors. It exposes only `label_name`; older examples
+  with `pen_threshold` or `bubble_threshold` are invalid.
 
-**ForegroundDetection:**
-```python
-from pathml.preprocessing import ForegroundDetection
+Neither is a complete slide-quality system. Review representative overlays and
+track blur, folds, bubbles, pen, tissue coverage, clipping, color drift, missing
+channels, and focus separately. Do not convert a heuristic QC flag into a clinical
+quality judgment.
 
-# Detect foreground regions
-transform = ForegroundDetection(
-    threshold=0.5,
-    min_region_size=1000,  # Minimum size in pixels
-    use_saturation=True
-)
+The dependency-free helper provides a deliberately simple synthetic/local check,
+not a replacement for PathML:
+
+```bash
+python scripts/image_qc.py synthetic --width 256 --height 256
+python scripts/image_qc.py inspect --image tests/fixtures/synthetic.ppm --root .
 ```
 
-## Mask Modification Transforms
+It reports brightness/saturation and a coarse tissue-like mask using bounded
+pixels. PNG/JPEG/TIFF input needs Pillow, imported only after argument validation.
 
-Apply morphological operations to clean up masks:
-
-**MorphOpen:**
-```python
-from pathml.preprocessing import MorphOpen
-
-# Remove small objects and noise
-transform = MorphOpen(
-    kernel_size=5,
-    mask_name='tissue'  # Which mask to modify
-)
-```
-- Erosion followed by dilation
-- Removes small objects and noise
-
-**MorphClose:**
-```python
-from pathml.preprocessing import MorphClose
-
-# Fill small holes
-transform = MorphClose(
-    kernel_size=5,
-    mask_name='tissue'
-)
-```
-- Dilation followed by erosion
-- Fills small holes in mask
-
-## Stain Normalization
-
-### StainNormalizationHE
-
-Normalize H&E staining across slides to account for variations in staining procedure and scanners:
+## H&E stain normalization and separation
 
 ```python
 from pathml.preprocessing import StainNormalizationHE
 
-# Normalize to reference slide
-transform = StainNormalizationHE(
-    target='normalize',  # 'normalize', 'hematoxylin', or 'eosin'
-    stain_estimation_method='macenko',  # 'macenko' or 'vahadane'
-    tissue_mask_name=None  # Optional tissue mask for better estimation
+normalizer = StainNormalizationHE(
+    target="normalize",             # normalize | hematoxylin | eosin
+    stain_estimation_method="macenko",  # macenko | vahadane
+    optical_density_threshold=0.15,
+    regularizer=0.1,
+    angular_percentile=0.01,
+    background_intensity=245,
 )
 ```
 
-**Target modes:**
-- `'normalize'` - Normalize both stains to reference
-- `'hematoxylin'` - Extract hematoxylin channel only
-- `'eosin'` - Extract eosin channel only
+Stable `StainNormalizationHE` does **not** accept `tissue_mask_name`,
+`target_od`, or `target_concentrations`. It accepts `stain_matrix_target_od` and
+`max_c_target`, and supplies fixed defaults.
 
-**Stain estimation methods:**
-- `'macenko'` - Macenko et al. 2009 method (faster, more stable)
-- `'vahadane'` - Vahadane et al. 2016 method (more accurate, slower)
+To fit a reference:
 
-**Advanced parameters:**
 ```python
-transform = StainNormalizationHE(
-    target='normalize',
-    stain_estimation_method='macenko',
-    target_od=None,  # Optical density matrix for reference (optional)
-    target_concentrations=None,  # Target stain concentrations (optional)
-    regularizer=0.1,  # Regularization for vahadane method
-    background_intensity=240  # Background intensity level
+normalizer.fit_to_reference(training_reference_rgb)
+normalized_rgb = normalizer.F(source_rgb)
+```
+
+Leakage controls:
+
+- Select the reference and tune OD parameters using training slides only.
+- Freeze the fitted stain matrix and target concentration before validation/test.
+- Do not choose a reference because test performance looks better.
+- Record source slide pseudonym, region coordinates, level, MPP, method, and all
+  fitted arrays without direct identifiers.
+- Fit on tissue-rich, artifact-free RGB regions. Stable API does not consume a
+  tissue mask directly, so crop/filter the reference beforehand.
+
+Macenko and Vahadane are model-based color standardization methods, not guarantees
+that biological staining becomes comparable. Preserve raw inputs and assess
+whether normalization removes task-relevant signal or amplifies artifacts.
+
+## Simple H&E nucleus mask
+
+```python
+from pathml.preprocessing import NucleusDetectionHE
+
+nuclei = NucleusDetectionHE(
+    mask_name="nuclei",
+    stain_estimation_method="vahadane",
+    superpixel_region_size=10,
+    n_iter=30,
 )
 ```
 
-**Workflow:**
-1. Convert RGB to optical density (OD)
-2. Estimate stain matrix (H&E vectors)
-3. Decompose into stain concentrations
-4. Normalize to reference stain distribution
-5. Reconstruct normalized RGB image
+This is a simple transform: hematoxylin separation, superpixel interpolation, and
+Otsu thresholding. It writes a binary tile mask. It is not HoVer-Net, does not
+assign nucleus classes, and should not be treated as a validated cell count.
+Inspect touching objects, fragments, necrosis, stain failure, and tile boundaries.
 
-**Example with tissue mask:**
+## Binary and morphology building blocks
+
+Useful stable signatures:
+
 ```python
-from pathml.preprocessing import Pipeline, TissueDetectionHE, StainNormalizationHE
+from pathml.preprocessing import BinaryThreshold, MorphClose, MorphOpen
 
-pipeline = Pipeline([
-    TissueDetectionHE(),  # Create tissue mask first
-    StainNormalizationHE(
-        target='normalize',
-        stain_estimation_method='macenko',
-        tissue_mask_name='tissue'  # Use tissue mask for better estimation
-    )
-])
-```
-
-## Quality Control Transforms
-
-### Artifact Detection
-
-**LabelArtifactTileHE:**
-```python
-from pathml.preprocessing import LabelArtifactTileHE
-
-# Label tiles containing artifacts
-transform = LabelArtifactTileHE(
-    pen_threshold=0.5,  # Threshold for pen marking detection
-    bubble_threshold=0.5  # Threshold for bubble detection
+threshold = BinaryThreshold(
+    mask_name="foreground",
+    use_otsu=True,
+    threshold=0,
+    inverse=False,
 )
-```
-- Detects pen markings, bubbles, and other artifacts
-- Labels affected tiles for filtering
-
-**LabelWhiteSpaceHE:**
-```python
-from pathml.preprocessing import LabelWhiteSpaceHE
-
-# Label tiles with excessive white space
-transform = LabelWhiteSpaceHE(
-    threshold=0.9,  # Fraction of white pixels
-    mask_name='white_space'
-)
-```
-- Identifies tiles with mostly background
-- Useful for filtering uninformative tiles
-
-## Multiparametric Imaging Transforms
-
-### Cell Segmentation
-
-**SegmentMIF:**
-```python
-from pathml.preprocessing import SegmentMIF
-
-# Segment cells using Mesmer deep learning model
-transform = SegmentMIF(
-    nuclear_channel='DAPI',  # Nuclear marker channel name
-    cytoplasm_channel='CD45',  # Cytoplasm marker channel name
-    model='mesmer',  # Deep learning segmentation model
-    image_resolution=0.5,  # Microns per pixel
-    compartment='whole-cell'  # 'nuclear', 'cytoplasm', or 'whole-cell'
-)
-```
-- Uses DeepCell Mesmer model for cell segmentation
-- Requires nuclear and cytoplasm channel specification
-- Produces instance segmentation masks
-
-**SegmentMIFRemote:**
-```python
-from pathml.preprocessing import SegmentMIFRemote
-
-# Remote inference using DeepCell API
-transform = SegmentMIFRemote(
-    nuclear_channel='DAPI',
-    cytoplasm_channel='CD45',
-    model='mesmer',
-    api_url='https://deepcell.org/api'
-)
-```
-- Same functionality as SegmentMIF but uses remote API
-- No local GPU required
-- Suitable for batch processing
-
-### Marker Quantification
-
-**QuantifyMIF:**
-```python
-from pathml.preprocessing import QuantifyMIF
-
-# Quantify marker expression per cell
-transform = QuantifyMIF(
-    segmentation_mask_name='cell_segmentation',
-    markers=['CD3', 'CD4', 'CD8', 'CD20', 'CD45'],
-    output_format='anndata'  # or 'dataframe'
-)
-```
-- Extracts mean marker intensity per segmented cell
-- Computes morphological features (area, perimeter, etc.)
-- Outputs AnnData object for downstream single-cell analysis
-
-### CODEX/Vectra Specific
-
-**CollapseRunsCODEX:**
-```python
-from pathml.preprocessing import CollapseRunsCODEX
-
-# Consolidate multi-run CODEX data
-transform = CollapseRunsCODEX(
-    z_slice=2,  # Select specific z-slice
-    run_order=[0, 1, 2]  # Order of acquisition runs
-)
-```
-- Merges channels from multiple CODEX acquisition runs
-- Selects focal plane from z-stacks
-
-**CollapseRunsVectra:**
-```python
-from pathml.preprocessing import CollapseRunsVectra
-
-# Process Vectra multiplex IF data
-transform = CollapseRunsVectra(
-    wavelengths=[520, 570, 620, 670, 780]  # Emission wavelengths
-)
+opened = MorphOpen(mask_name="foreground", kernel_size=5, n_iterations=1)
+closed = MorphClose(mask_name="foreground", kernel_size=5, n_iterations=1)
 ```
 
-## Building Comprehensive Pipelines
+`BinaryThreshold.apply()` creates a named mask. `MorphOpen` and `MorphClose`
+modify the named mask. Match dtype, polarity, and dimensions explicitly.
 
-### Basic H&E Preprocessing Pipeline
+## Recommended pilot pipeline
 
 ```python
 from pathml.preprocessing import (
-    Pipeline,
-    TissueDetectionHE,
-    StainNormalizationHE,
-    NucleusDetectionHE,
-    MedianBlur,
-    LabelWhiteSpaceHE
-)
-
-pipeline = Pipeline([
-    # 1. Quality control
-    LabelWhiteSpaceHE(threshold=0.9),
-
-    # 2. Noise reduction
-    MedianBlur(kernel_size=3),
-
-    # 3. Tissue detection
-    TissueDetectionHE(min_region_size=500),
-
-    # 4. Stain normalization
-    StainNormalizationHE(
-        target='normalize',
-        stain_estimation_method='macenko',
-        tissue_mask_name='tissue'
-    ),
-
-    # 5. Nucleus detection
-    NucleusDetectionHE(threshold=0.3)
-])
-```
-
-### CODEX Multiparametric Pipeline
-
-```python
-from pathml.preprocessing import (
-    Pipeline,
-    CollapseRunsCODEX,
-    SegmentMIF,
-    QuantifyMIF
-)
-
-codex_pipeline = Pipeline([
-    # 1. Consolidate multi-run data
-    CollapseRunsCODEX(z_slice=2),
-
-    # 2. Cell segmentation
-    SegmentMIF(
-        nuclear_channel='DAPI',
-        cytoplasm_channel='CD45',
-        model='mesmer',
-        image_resolution=0.377
-    ),
-
-    # 3. Quantify markers
-    QuantifyMIF(
-        segmentation_mask_name='cell_segmentation',
-        markers=['CD3', 'CD4', 'CD8', 'CD20', 'PD1', 'PDL1'],
-        output_format='anndata'
-    )
-])
-```
-
-### Advanced Pipeline with Quality Control
-
-```python
-from pathml.preprocessing import (
-    Pipeline,
-    LabelWhiteSpaceHE,
+    BoxBlur,
     LabelArtifactTileHE,
-    TissueDetectionHE,
-    MorphOpen,
-    MorphClose,
+    LabelWhiteSpaceHE,
+    Pipeline,
     StainNormalizationHE,
-    AdaptiveHistogramEqualization
+    TissueDetectionHE,
 )
 
-advanced_pipeline = Pipeline([
-    # Stage 1: Quality control
-    LabelWhiteSpaceHE(threshold=0.85),
-    LabelArtifactTileHE(pen_threshold=0.5, bubble_threshold=0.5),
-
-    # Stage 2: Tissue detection
-    TissueDetectionHE(threshold=10, min_region_size=1000),
-    MorphOpen(kernel_size=5, mask_name='tissue'),
-    MorphClose(kernel_size=7, mask_name='tissue'),
-
-    # Stage 3: Stain normalization
-    StainNormalizationHE(
-        target='normalize',
-        stain_estimation_method='vahadane',
-        tissue_mask_name='tissue'
-    ),
-
-    # Stage 4: Contrast enhancement
-    AdaptiveHistogramEqualization(clip_limit=0.03, tile_grid_size=(8, 8))
-])
-```
-
-## Running Pipelines
-
-### Single Slide Processing
-
-```python
-from pathml.core import SlideData
-
-# Load slide
-wsi = SlideData.from_slide("slide.svs")
-
-# Generate tiles
-wsi.generate_tiles(level=1, tile_size=256, stride=256)
-
-# Run pipeline
-pipeline.run(wsi)
-
-# Access processed data
-for tile in wsi.tiles:
-    normalized_image = tile.image
-    tissue_mask = tile.masks.get('tissue')
-    nucleus_mask = tile.masks.get('nucleus')
-```
-
-### Batch Processing with Distributed Execution
-
-```python
-from pathml.core import SlideDataset
-from dask.distributed import Client
-import glob
-
-# Start Dask client
-client = Client(n_workers=8, threads_per_worker=2, memory_limit='4GB')
-
-# Create dataset
-slide_paths = glob.glob("data/*.svs")
-dataset = SlideDataset(
-    slide_paths,
-    tile_size=512,
-    stride=512,
-    level=1
-)
-
-# Run pipeline in parallel
-dataset.run(
-    pipeline,
-    distributed=True,
-    client=client
-)
-
-# Save results
-dataset.to_hdf5("processed_dataset.h5")
-
-client.close()
-```
-
-### Conditional Pipeline Execution
-
-Execute transforms only on tiles meeting specific criteria:
-
-```python
-# Filter tiles before processing
-wsi.generate_tiles(level=1, tile_size=256)
-
-# Run pipeline only on tissue tiles
-for tile in wsi.tiles:
-    if tile.masks.get('tissue') is not None:
-        pipeline.run(tile)
-```
-
-## Performance Optimization
-
-### Memory Management
-
-```python
-# Process large datasets in batches
-batch_size = 100
-for i in range(0, len(slide_paths), batch_size):
-    batch_paths = slide_paths[i:i+batch_size]
-    batch_dataset = SlideDataset(batch_paths)
-    batch_dataset.run(pipeline, distributed=True)
-    batch_dataset.to_hdf5(f"batch_{i}.h5")
-```
-
-### GPU Acceleration
-
-Certain transforms leverage GPU acceleration when available:
-
-```python
-import torch
-
-# Check GPU availability
-print(f"CUDA available: {torch.cuda.is_available()}")
-
-# Transforms that benefit from GPU:
-# - SegmentMIF (Mesmer deep learning model)
-# - StainNormalizationHE (matrix operations)
-```
-
-### Parallel Workers Configuration
-
-```python
-from dask.distributed import Client
-
-# CPU-bound tasks (image processing)
-client = Client(
-    n_workers=8,
-    threads_per_worker=1,  # Use processes, not threads
-    memory_limit='8GB'
-)
-
-# GPU tasks (deep learning inference)
-client = Client(
-    n_workers=2,  # Fewer workers for GPU
-    threads_per_worker=4,
-    processes=True
+pipeline = Pipeline(
+    [
+        LabelWhiteSpaceHE(
+            label_name="mostly_white",
+            greyscale_threshold=230,
+            proportion_threshold=0.8,
+        ),
+        LabelArtifactTileHE(label_name="artifact"),
+        BoxBlur(kernel_size=3),
+        TissueDetectionHE(
+            mask_name="tissue",
+            min_region_size=5000,
+            outer_contours_only=False,
+        ),
+        StainNormalizationHE(
+            target="normalize",
+            stain_estimation_method="macenko",
+        ),
+    ]
 )
 ```
 
-## Custom Transforms
+QC labels do not short-circuit later transforms. If expensive stages should run
+only on accepted tiles, write an explicit custom transform or bounded manual loop
+with a documented policy. Keep the logic deterministic and test it.
 
-Create custom preprocessing operations by subclassing `Transform`:
+## Bounded dry run
+
+PathML has no `max_tiles` argument. Use `islice` for a local pilot:
 
 ```python
-from pathml.preprocessing.transforms import Transform
-import numpy as np
+from itertools import islice
 
-class CustomTransform(Transform):
-    def __init__(self, param1, param2):
-        self.param1 = param1
-        self.param2 = param2
-
-    def apply(self, tile):
-        # Access tile image
-        image = tile.image
-
-        # Apply custom operation
-        processed = self.custom_operation(image, self.param1, self.param2)
-
-        # Update tile
-        tile.image = processed
-
-        return tile
-
-    def custom_operation(self, image, param1, param2):
-        # Implement custom logic
-        return processed_image
-
-# Use in pipeline
-pipeline = Pipeline([
-    CustomTransform(param1=10, param2=0.5),
-    # ... other transforms
-])
+sampled = []
+for tile in islice(
+    slide.generate_tiles(shape=512, stride=512, pad=False, level=0),
+    16,
+):
+    pipeline.apply(tile)
+    sampled.append(
+        {
+            "coords_ij": tile.coords,
+            "shape": tuple(tile.image.shape),
+            "tissue_fraction": float((tile.masks["tissue"] > 0).mean()),
+            "mostly_white": bool(tile.labels["mostly_white"]),
+            "artifact": bool(tile.labels["artifact"]),
+        }
+    )
 ```
 
-## Best Practices
+Plan first:
 
-1. **Order transforms appropriately:**
-   - Quality control first (LabelWhiteSpace, LabelArtifact)
-   - Noise reduction early (Blur)
-   - Tissue detection before stain normalization
-   - Stain normalization before color-dependent operations
+```bash
+python scripts/plan_pipeline.py \
+  --width 100000 --height 80000 \
+  --tile-size 512 --stride 512 \
+  --pipeline TissueDetectionHE,LabelWhiteSpaceHE,StainNormalizationHE \
+  --max-tiles 1000000
+```
 
-2. **Use tissue masks for stain normalization:**
-   - Improves accuracy by excluding background
-   - `TissueDetectionHE()` then `StainNormalizationHE(tissue_mask_name='tissue')`
+The planner never opens the slide or imports PathML. Supply dimensions from a
+trusted technical metadata inspection. Its storage estimate uses h5path's
+float16 image/mask payload, excludes counts/labels/metadata, and assumes the
+supplied channel count remains unchanged. It is not peak RAM or a guarantee of
+available disk. At nonzero levels supply exact `--level-width`/`--level-height`.
 
-3. **Apply morphological operations to clean masks:**
-   - `MorphOpen` to remove small false positives
-   - `MorphClose` to fill small gaps
+## Masks, labels, padding, and overlap
 
-4. **Leverage distributed processing for large datasets:**
-   - Use Dask for parallel execution
-   - Configure workers based on available resources
+- A tile mask's first two dimensions must match the tile image.
+- Use distinct semantic names (`tissue`, `nuclei`, `cell_segmentation`) and record
+  whether each mask is binary, semantic, or instance-labeled.
+- Instance masks use 0 for background and positive integer object IDs.
+- `tile_pad=True` introduces zeros. Document whether padded pixels are ignored in
+  QC, stain fitting, loss, and stitching.
+- Stable `SlideData.generate_tiles()` cannot slice slide-level masks into padded
+  tiles.
+- Overlap duplicates tissue/cells. Deduplicate by slide coordinates or use an
+  explicit blending/cropping policy before counting.
+- Keep masks at the same level as their coordinates. Resampling an instance mask
+  requires nearest-neighbor interpolation and relabel/QC.
 
-5. **Save intermediate results:**
-   - Store processed data to HDF5 for reuse
-   - Avoid reprocessing computationally expensive transforms
+## Train/validation/test leakage checklist
 
-6. **Validate preprocessing on sample images:**
-   - Visualize intermediate steps
-   - Tune parameters on representative samples before batch processing
+Do all splitting before:
 
-7. **Handle edge cases:**
-   - Check for empty masks before downstream operations
-   - Validate tile quality before expensive computations
+- choosing stain references;
+- estimating QC or tissue thresholds;
+- fitting feature scalers;
+- learning augmentations or color distributions;
+- selecting segmentation parameters;
+- extracting overlapping tiles;
+- constructing graphs; or
+- calibrating model thresholds.
 
-## Common Issues and Solutions
+All tiles, regions, serial sections, and repeat scans from one patient belong to
+one split. If site/scanner generalization is the target, reserve entire sites or
+scanners as designed. Record exclusions before viewing test outcomes.
 
-**Issue: Stain normalization produces artifacts**
-- Use tissue mask to exclude background
-- Try different stain estimation method (macenko vs. vahadane)
-- Verify optical density parameters match your images
+## Reproducibility record
 
-**Issue: Out of memory during pipeline execution**
-- Reduce number of Dask workers
-- Decrease tile size
-- Process images at lower pyramid level
-- Enable memory_limit parameter in Dask client
+For each run, retain:
 
-**Issue: Tissue detection misses tissue regions**
-- Adjust threshold parameter
-- Use saturation channel: `use_saturation=True`
-- Reduce min_region_size to capture smaller tissue fragments
+- PathML and dependency lock versions;
+- source SHA-256 and pseudonymous IDs;
+- backend, level, downsample, MPP, tile size/stride/pad;
+- ordered transform names and all constructor values;
+- fitted stain arrays and training-only reference provenance;
+- QC/mask definitions and per-slide accept/reject totals;
+- Dask configuration, worker count, CPU/GPU, and failure/retry policy;
+- code revision, random seeds, split manifest hash, and output hashes.
 
-**Issue: Nucleus detection is inaccurate**
-- Verify stain separation quality (visualize hematoxylin channel)
-- Adjust threshold parameter
-- Apply stain normalization before nucleus detection
+## Sources and further reading
 
-## Additional Resources
+API baseline reviewed 2026-10-01 using the released wheel/tag; hosted docs may lag.
 
-- **PathML Preprocessing API:** https://pathml.readthedocs.io/en/latest/api_preprocessing_reference.html
-- **Stain Normalization Methods:**
-  - Macenko et al. 2009: "A method for normalizing histology slides for quantitative analysis"
-  - Vahadane et al. 2016: "Structure-Preserving Color Normalization and Sparse Stain Separation"
-- **DeepCell Mesmer:** https://www.deepcell.org/ (cell segmentation model)
+- Stable pipeline guide:
+  https://pathml.readthedocs.io/en/stable/creating_pipelines.html
+- Stable execution guide:
+  https://pathml.readthedocs.io/en/stable/running_pipelines.html
+- Stable preprocessing API:
+  https://pathml.readthedocs.io/en/stable/api_preprocessing_reference.html
+- Stable transforms source:
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/preprocessing/transforms.py
+- Stable pipeline source:
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/preprocessing/pipeline.py
+- Macenko et al. (2009):
+  https://doi.org/10.1109/ISBI.2009.5193250
+- Vahadane et al. (2016):
+  https://doi.org/10.1109/TMI.2016.2529665

@@ -1,0 +1,6 @@
+label,accuracy_pct,precision_pct
+LLOQ,18,20
+low,10,12
+medium,8,11
+high,9,10
+ULOQ,20,19

@@ -1,318 +1,299 @@
-# Pymatgen Core Classes Reference
+# Core classes: explicit chemistry, coordinates, and periodicity
 
-This reference documents the fundamental classes in `pymatgen.core` that form the foundation for materials analysis.
+This reference targets the verified `pymatgen==2026.9.24` wrapper with
+`pymatgen-core==2026.9.23`. Core objects now ship from `pymatgen-core` but keep
+the public `pymatgen.core` namespace.
 
-## Architecture Principles
+## Units and representation
 
-Pymatgen follows an object-oriented design where elements, sites, and structures are represented as objects. The framework emphasizes periodic boundary conditions for crystal representation while maintaining flexibility for molecular systems.
+Pymatgen does not make every quantity "atomic units." Common contracts include:
 
-**Unit Conventions**: All units in pymatgen are typically assumed to be in atomic units:
-- Lengths: angstroms (Å)
-- Energies: electronvolts (eV)
-- Angles: degrees
+- lattice vectors and Cartesian coordinates: Å
+- lattice angles: degrees
+- structure volume: Å³
+- density: g/cm³
+- composition weight: amu for the represented composition
+- electronic and entry energies: usually eV; phase-diagram normalized values:
+  eV/atom
 
-## Element and Periodic Table
+Read the specific method contract before combining quantities. Record units in
+every artifact.
 
-### Element
-Represents periodic table elements with comprehensive properties.
+`Structure` is periodic and owns a `Lattice`; `Molecule` is non-periodic.
+Structure coordinates are fractional by default. Molecule coordinates are
+Cartesian. Never infer which object or coordinate mode the user intended.
 
-**Creation methods:**
-```python
-from pymatgen.core import Element
-
-# Create from symbol
-si = Element("Si")
-# Create from atomic number
-si = Element.from_Z(14)
-# Create from name
-si = Element.from_name("silicon")
-```
-
-**Key properties:**
-- `atomic_mass`: Atomic mass in amu
-- `atomic_radius`: Atomic radius in angstroms
-- `electronegativity`: Pauling electronegativity
-- `ionization_energy`: First ionization energy in eV
-- `common_oxidation_states`: List of common oxidation states
-- `is_metal`, `is_halogen`, `is_noble_gas`, etc.: Boolean properties
-- `X`: Element symbol as string
-
-### Species
-Extends Element for charged ions and specific oxidation states.
+## Element and Species
 
 ```python
-from pymatgen.core import Species
+from pymatgen.core import DummySpecies, Element, Species
 
-# Create an Fe2+ ion
-fe2 = Species("Fe", 2)
-# Or with explicit sign
-fe2 = Species("Fe", +2)
+iron = Element("Fe")
+silicon = Element.from_Z(14)
+oxygen = Element.from_name("oxygen")
+fe2 = Species("Fe", oxidation_state=2)
+vacancy_label = DummySpecies("X")
 ```
 
-### DummySpecies
-Placeholder atoms for special structural representations (e.g., vacancies).
+Important distinctions:
 
-```python
-from pymatgen.core import DummySpecies
+- `Element.symbol` is the chemical symbol.
+- `Element.Z` is atomic number.
+- `Element.X` is Pauling electronegativity, not the symbol.
+- Elemental properties can be missing or uncertain; do not replace missing
+  values with zero.
+- `Species` adds oxidation state and optional properties. Oxidation state is
+  formal chemical annotation, not an automatically validated charge model.
+- A dummy species is a modeling label, not a physical atom.
 
-vacancy = DummySpecies("X")
-```
+Current API documentation also exposes predicates and data such as
+`is_metal`, `is_noble_gas`, `atomic_mass`, oxidation-state sets, and electronic
+configuration. Check for `None`/missing values and retain property provenance.
 
 ## Composition
 
-Represents chemical formulas and compositions, enabling chemical analysis and manipulation.
+Use strict parsing at external boundaries:
 
-### Creation
 ```python
 from pymatgen.core import Composition
 
-# From string formula
-comp = Composition("Fe2O3")
-# From dictionary
-comp = Composition({"Fe": 2, "O": 3})
-# From weight dictionary
-comp = Composition.from_weight_dict({"Fe": 111.69, "O": 48.00})
+composition = Composition("LiFePO4", strict=True)
+formula = composition.formula
+reduced = composition.reduced_formula
+chemical_system = composition.chemical_system
+mass_amu = float(composition.weight)
 ```
 
-### Key methods
-- `get_reduced_formula_and_factor()`: Returns reduced formula and multiplication factor
-- `oxi_state_guesses()`: Attempts to determine oxidation states
-- `replace(replacements_dict)`: Replace elements
-- `add_charges_from_oxi_state_guesses()`: Infer and add oxidation states
-- `is_element`: Check if composition is a single element
+Construction from a mapping is explicit:
 
-### Key properties
-- `weight`: Molecular weight
-- `reduced_formula`: Reduced chemical formula
-- `hill_formula`: Formula in Hill notation (C, H, then alphabetical)
-- `num_atoms`: Total number of atoms
-- `chemical_system`: Alphabetically sorted elements (e.g., "Fe-O")
-- `element_composition`: Dictionary of element to amount
+```python
+composition = Composition({"Fe": 2, "O": 3}, strict=True)
+```
+
+Safety rules:
+
+1. Bound formula length before parsing.
+2. Reject duplicate JSON keys, non-finite values, and non-positive amounts in
+   external mappings.
+3. Keep full and reduced formulas distinct. Reduction loses the integer scale.
+4. A composition is not a structure, phase, oxidation-state assignment, or
+   proof that a compound exists.
+5. `oxi_state_guesses()` is heuristic and can be combinatorial. Call it only
+   after explicit user approval and bound elements, formula size, runtime, and
+   returned guesses.
+6. Do not mix `Element` and oxidized `Species` keys without intentionally
+   defining how charge decoration should behave.
+
+The bundled validator does not guess by default:
+
+```bash
+python scripts/composition_structure_validator.py composition "Fe2O3"
+python scripts/composition_structure_validator.py composition "Fe2O3" \
+  --guess-oxidation-states
+```
 
 ## Lattice
 
-Defines unit cell geometry for crystal structures.
-
-### Creation
 ```python
 from pymatgen.core import Lattice
 
-# From lattice parameters
-lattice = Lattice.from_parameters(a=3.84, b=3.84, c=3.84,
-                                  alpha=120, beta=90, gamma=60)
-
-# From matrix (row vectors are lattice vectors)
-lattice = Lattice([[3.84, 0, 0],
-                   [0, 3.84, 0],
-                   [0, 0, 3.84]])
-
-# Cubic lattice
-lattice = Lattice.cubic(3.84)
-# Hexagonal lattice
-lattice = Lattice.hexagonal(a=2.95, c=4.68)
+cubic = Lattice.cubic(5.64)
+triclinic = Lattice.from_parameters(
+    a=4.0,
+    b=5.0,
+    c=6.0,
+    alpha=80,
+    beta=90,
+    gamma=100,
+)
+matrix_lattice = Lattice(
+    [
+        [4.0, 0.0, 0.0],
+        [0.5, 5.0, 0.0],
+        [0.2, 0.3, 6.0],
+    ],
+    pbc=(True, True, True),
+)
 ```
 
-### Key methods
-- `get_niggli_reduced_lattice()`: Returns Niggli-reduced lattice
-- `get_distance_and_image(frac_coords1, frac_coords2)`: Distance between fractional coordinates with periodic boundary conditions
-- `get_all_distances(frac_coords1, frac_coords2)`: Distances including periodic images
+The matrix rows are lattice vectors. Preserve:
 
-### Key properties
-- `volume`: Volume of the unit cell (Å³)
-- `abc`: Lattice parameters (a, b, c) as tuple
-- `angles`: Lattice angles (alpha, beta, gamma) as tuple
-- `matrix`: 3x3 matrix of lattice vectors
-- `reciprocal_lattice`: Reciprocal lattice object
-- `is_orthogonal`: Whether lattice vectors are orthogonal
+- matrix and `(a, b, c)`
+- `(alpha, beta, gamma)`
+- determinant/volume and handedness
+- periodic-boundary-condition tuple
+- whether the cell was reduced, standardized, strained, or transformed
 
-## Sites
+Niggli/LLL reduction and crystallographic standardization can change the cell
+basis and site coordinates without changing intended periodic geometry. They
+still produce new representations and require provenance.
 
-### Site
-Represents an atomic position in non-periodic systems.
+## Structure and IStructure
+
+The verified constructor includes explicit safety-relevant switches:
 
 ```python
-from pymatgen.core import Site
+from pymatgen.core import Lattice, Structure
 
-site = Site("Si", [0.0, 0.0, 0.0])  # Species and Cartesian coordinates
+structure = Structure(
+    lattice=Lattice.cubic(5.64),
+    species=["Na", "Cl"],
+    coords=[[0, 0, 0], [0.5, 0.5, 0.5]],
+    coords_are_cartesian=False,
+    validate_proximity=True,
+    to_unit_cell=False,
+)
 ```
 
-### PeriodicSite
-Represents an atomic position in a periodic lattice with fractional coordinates.
+`Structure` is mutable. `IStructure` is immutable/hashable. Prefer:
 
 ```python
-from pymatgen.core import PeriodicSite
-
-site = PeriodicSite("Si", [0.5, 0.5, 0.5], lattice)  # Species, fractional coords, lattice
+original = Structure.from_file("input.cif", primitive=False, sort=False)
+derived = original.copy()
+derived.make_supercell([2, 2, 2])
 ```
 
-**Key methods:**
-- `distance(other_site)`: Distance to another site
-- `is_periodic_image(other_site)`: Check if sites are periodic images
+Do not mutate `original` in a provenance-sensitive workflow.
 
-**Key properties:**
-- `species`: Species or element at the site
-- `coords`: Cartesian coordinates
-- `frac_coords`: Fractional coordinates (for PeriodicSite)
-- `x`, `y`, `z`: Individual Cartesian coordinates
+### Disorder and occupancy
 
-## Structure
+Each periodic site's `species` is a composition-like mapping. An ordered site
+has one species with occupancy 1. A disordered site can contain multiple
+species and fractional occupancies.
 
-Represents a crystal structure as a collection of periodic sites. `Structure` is mutable, while `IStructure` is immutable.
-
-### Creation
 ```python
-from pymatgen.core import Structure, Lattice
-
-# From scratch
-coords = [[0, 0, 0], [0.75, 0.5, 0.75]]
-lattice = Lattice.from_parameters(a=3.84, b=3.84, c=3.84,
-                                  alpha=120, beta=90, gamma=60)
-struct = Structure(lattice, ["Si", "Si"], coords)
-
-# From file (automatic format detection)
-struct = Structure.from_file("POSCAR")
-struct = Structure.from_file("structure.cif")
-
-# From spacegroup
-struct = Structure.from_spacegroup("Fm-3m", Lattice.cubic(3.5),
-                                   ["Si"], [[0, 0, 0]])
+for index, site in enumerate(structure):
+    occupancy_sum = sum(float(value) for value in site.species.values())
+    print(index, site.species, occupancy_sum)
 ```
 
-### File I/O
+Before downstream analysis:
+
+- report `structure.is_ordered`
+- reject non-positive or overfull occupancy unless an explicitly documented
+  parser tolerance explains a tiny rounding deviation
+- preserve vacancy conventions and oxidation-state decoration
+- check whether the target method supports disorder
+
+Ordering a disordered structure changes the model and may create many
+candidates. It is never a format cleanup.
+
+### Coordinate safety
+
+`site.frac_coords` and `site.coords` are fractional and Cartesian,
+respectively. Fractional coordinates outside `[0, 1)` can be valid periodic
+images; wrapping them is a transformation, not an automatic fix.
+
+Record whether `to_unit_cell`, sorting, merging, primitive reduction, or
+standardization occurred. Check minimum periodic distances under a site-count
+bound; an all-pairs matrix is quadratic.
+The bundled distance checks exclude periodic images of the same site, so a
+one-site structure has a null pair distance. Check lattice self-image contacts
+separately when small cells are possible.
+
+### Oxidation states
+
+Oxidation states can be attached to species:
+
 ```python
-# Write to file (format inferred from extension)
-struct.to(filename="output.cif")
-struct.to(filename="POSCAR")
-struct.to(filename="structure.xyz")
-
-# Get string representation
-cif_string = struct.to(fmt="cif")
-poscar_string = struct.to(fmt="poscar")
+decorated = structure.copy()
+decorated.add_oxidation_state_by_element({"Na": 1, "Cl": -1})
 ```
 
-### Key methods
+This mutates the copied structure. Preserve the undecorated parent, mapping,
+method, and any charge-balance assumptions. `add_oxidation_state_by_guess()` is
+heuristic; do not invoke it implicitly.
 
-**Structure modification:**
-- `append(species, coords)`: Add a site
-- `insert(i, species, coords)`: Insert site at index
-- `remove_sites(indices)`: Remove sites by index
-- `replace(i, species)`: Replace species at index
-- `apply_strain(strain)`: Apply strain to structure
-- `perturb(distance)`: Randomly perturb atomic positions
-- `make_supercell(scaling_matrix)`: Create supercell
-- `get_primitive_structure()`: Get primitive cell
+### Common methods
 
-**Analysis:**
-- `get_distance(i, j)`: Distance between sites i and j
-- `get_neighbors(site, r)`: Get neighbors within radius r
-- `get_all_neighbors(r)`: Get all neighbors for all sites
-- `get_space_group_info()`: Get space group information
-- `matches(other_struct)`: Check if structures match
+Current public operations include:
 
-**Interpolation:**
-- `interpolate(end_structure, nimages)`: Interpolate between structures
+- `Structure.from_file(path, primitive=False, sort=False, merge_tol=0.0)`
+- `Structure.from_str(text, fmt=...)`
+- `structure.to(filename=..., fmt=...)`
+- `get_distance(i, j)` and bounded neighbor methods
+- `get_primitive_structure()`
+- `copy()`, `make_supercell()`, `apply_strain()`, and site editing
+- `interpolate()` for compatible endpoints
 
-### Key properties
-- `lattice`: Lattice object
-- `species`: List of species at each site
-- `sites`: List of PeriodicSite objects
-- `num_sites`: Number of sites
-- `volume`: Volume of the structure
-- `density`: Density in g/cm³
-- `composition`: Composition object
-- `formula`: Chemical formula
-- `distance_matrix`: Matrix of pairwise distances
+Every operation has assumptions. Interpolation does not establish a physical
+path; primitive/standard cells can alter site order and properties.
 
-## Molecule
+## Molecule and IMolecule
 
-Represents non-periodic collections of atoms. `Molecule` is mutable, while `IMolecule` is immutable.
-
-### Creation
 ```python
 from pymatgen.core import Molecule
 
-# From scratch
-coords = [[0.00, 0.00, 0.00],
-          [0.00, 0.00, 1.08]]
-mol = Molecule(["C", "O"], coords)
-
-# From file
-mol = Molecule.from_file("molecule.xyz")
-mol = Molecule.from_file("molecule.mol")
+water = Molecule(
+    ["O", "H", "H"],
+    [[0.0, 0.0, 0.0], [0.758, 0.0, 0.504], [-0.758, 0.0, 0.504]],
+    charge=0,
+    spin_multiplicity=1,
+)
 ```
 
-### Key methods
-- `get_covalent_bonds()`: Returns bonds based on covalent radii
-- `get_neighbors(site, r)`: Get neighbors within radius
-- `get_zmatrix()`: Get Z-matrix representation
-- `get_distance(i, j)`: Distance between sites
-- `get_centered_molecule()`: Center molecule at origin
+Molecule coordinates are Cartesian Å. Record:
 
-### Key properties
-- `species`: List of species
-- `sites`: List of Site objects
-- `num_sites`: Number of atoms
-- `charge`: Total charge of molecule
-- `spin_multiplicity`: Spin multiplicity
-- `center_of_mass`: Center of mass coordinates
+- charge and spin multiplicity
+- atom order, labels, and site properties
+- coordinate origin/orientation
+- whether hydrogens, bond perception, centering, or geometry generation changed
+  the object
 
-## Serialization
+File formats often omit charge, multiplicity, bonding, isotope, or atom-label
+semantics. `Molecule.from_file()` parsing success does not prove those fields
+were present or preserved.
 
-All core objects implement `as_dict()` and `from_dict()` methods for robust JSON/YAML persistence.
+## Explicit JSON serialization
+
+Core objects expose `as_dict()` and `from_dict()`:
 
 ```python
-# Serialize to dictionary
-struct_dict = struct.as_dict()
-
-# Write to JSON
 import json
-with open("structure.json", "w") as f:
-    json.dump(struct_dict, f)
+from pymatgen.core import Structure
 
-# Read from JSON
-with open("structure.json", "r") as f:
-    struct_dict = json.load(f)
-    struct = Structure.from_dict(struct_dict)
+payload = structure.as_dict()
+text = json.dumps(payload, allow_nan=False, sort_keys=True)
+
+decoded = json.loads(text)
+restored = Structure.from_dict(decoded)
 ```
 
-This approach addresses limitations of Python pickling and maintains compatibility across pymatgen versions.
+For untrusted JSON:
 
-## Additional Core Classes
+1. enforce byte, nesting, collection, and string limits
+2. reject duplicate keys and non-finite numbers
+3. validate the expected `Structure` schema
+4. call the specific class constructor
 
-### CovalentBond
-Represents bonds in molecules.
+Do not use pickle. Do not feed attacker-controlled MSON metadata to a general
+decoder that dynamically imports classes. JSON is only a syntax; schema
+validation is the trust boundary.
 
-**Key properties:**
-- `length`: Bond length
-- `get_bond_order()`: Returns bond order (single, double, triple)
+In this release, even `Structure.from_dict()` decodes MSON-valued site
+properties through `PeriodicSite.from_dict()`. The example above is a trusted
+round trip. The bundled intake rejects nested `@...` metadata and duplicate
+keys before this constructor; supply ordinary JSON lists/numbers for properties
+such as magmoms rather than serialized arbitrary Python objects.
 
-### Ion
-Represents charged ionic species with oxidation states.
+## Validation checklist
 
-```python
-from pymatgen.core import Ion
+- object kind (composition/molecule/periodic structure) is explicit
+- units and coordinate mode are explicit
+- lattice/PBC and charge/spin are recorded where applicable
+- all parser warnings are preserved
+- occupancy/disorder and oxidation states are reported
+- coordinates and lattice values are finite
+- minimum distances are checked under a bound
+- original is immutable or retained unchanged
+- output schema and maximum size are explicit
+- provenance links every derived object to its parent checksum
 
-# Create Fe2+ ion
-fe2_ion = Ion.from_formula("Fe2+")
-```
+## Sources (verified 2026-09-30)
 
-### Interface
-Represents substrate-film combinations for heterojunction analysis.
-
-### GrainBoundary
-Represents crystallographic grain boundaries.
-
-### Spectrum
-Represents spectroscopic data with methods for normalization and processing.
-
-**Key methods:**
-- `normalize(mode="max")`: Normalize spectrum
-- `smear(sigma)`: Apply Gaussian smearing
-
-## Best Practices
-
-1. **Immutability**: Use immutable versions (`IStructure`, `IMolecule`) when structures shouldn't be modified
-2. **Serialization**: Prefer `as_dict()`/`from_dict()` over pickle for long-term storage
-3. **Units**: Always work in atomic units (Å, eV) - conversions are available in `pymatgen.core.units`
-4. **File I/O**: Use `from_file()` for automatic format detection
-5. **Coordinates**: Pay attention to whether methods expect Cartesian or fractional coordinates
+- [pymatgen core API](https://pymatgen.org/pymatgen.core.html)
+- [pymatgen usage guide](https://pymatgen.org/usage.html)
+- [pymatgen-core 2026.9.23 package metadata](https://pypi.org/project/pymatgen-core/)
+- [pymatgen 2026.9.24 package metadata](https://pypi.org/project/pymatgen/)
+- [pymatgen-core source](https://github.com/materialsproject/pymatgen-core)
+- [pymatgen changelog](https://pymatgen.org/CHANGES.html)

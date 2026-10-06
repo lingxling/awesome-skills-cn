@@ -1,349 +1,234 @@
-# Matrices and Arrays Reference
+# Arrays, Indexing, Data Types, and Performance
 
-## Table of Contents
-1. [Array Creation](#array-creation)
-2. [Indexing and Subscripting](#indexing-and-subscripting)
-3. [Array Manipulation](#array-manipulation)
-4. [Concatenation and Reshaping](#concatenation-and-reshaping)
-5. [Array Information](#array-information)
-6. [Sorting and Searching](#sorting-and-searching)
+This reference targets MATLAB R2026a. Verify GNU Octave behavior separately.
 
-## Array Creation
+## Array model
 
-### Basic Creation
+MATLAB is 1-based and column-major. Most numeric literals are `double`.
+Orientation and trailing singleton dimensions matter.
 
 ```matlab
-% Direct specification
-A = [1 2 3; 4 5 6; 7 8 9];    % 3x3 matrix (rows separated by ;)
-v = [1, 2, 3, 4, 5];           % Row vector
-v = [1; 2; 3; 4; 5];           % Column vector
+row = 1:5;                 % 1-by-5
+column = (1:5).';          % 5-by-1, nonconjugate transpose
+A = reshape(1:12, 3, 4);   % values fill down columns
 
-% Range operators
-v = 1:10;                       % 1 to 10, step 1
-v = 0:0.5:5;                    % 0 to 5, step 0.5
-v = 10:-1:1;                    % 10 down to 1
-
-% Linearly/logarithmically spaced
-v = linspace(0, 1, 100);        % 100 points from 0 to 1
-v = logspace(0, 3, 50);         % 50 points from 10^0 to 10^3
+sameShape = zeros(size(A), "like", A);
+singleData = zeros(100, 1, "single");
+logicalMask = false(size(A));
 ```
 
-### Special Matrices
+Use `.'` for a plain transpose and `'` for a conjugate transpose. Use
+`size(A,dim)`, `numel`, and `ndims`; avoid `length` when a specific dimension
+is intended.
+
+### Core storage choices
+
+| Type | Use | Caution |
+|---|---|---|
+| dense numeric/logical array | homogeneous computation | implicit conversion and memory |
+| sparse numeric/logical array | low-density 2-D matrices | not every operation preserves sparsity |
+| string array | text with missing values | differs from character arrays |
+| categorical | finite labels and ordering | undefined category is missing |
+| cell array | heterogeneous containers | `{}` versus `()` semantics |
+| structure | named heterogeneous fields | structure arrays complicate shape |
+| table | named, equal-height variables | `()` versus `{}` versus dot indexing |
+| timetable | table with row times | time zone, sorting, duplicates, alignment |
+| datetime/duration | time points/elapsed time | time zones and calendar duration differ |
+
+Choose integer classes for storage or exact integer semantics, not as a drop-in
+for floating computation. Integer overflow and mixed-class operations need
+explicit tests. Preserve units in names or metadata.
+
+## Indexing
 
 ```matlab
-% Common patterns
-I = eye(n);                     % n×n identity matrix
-I = eye(m, n);                  % m×n identity matrix
-Z = zeros(m, n);                % m×n zeros
-O = ones(m, n);                 % m×n ones
-D = diag([1 2 3]);              % Diagonal matrix from vector
-d = diag(A);                    % Extract diagonal from matrix
+value = A(2, 3);       % row 2, column 3
+linear = A(5);         % column-major linear index
+row = A(2, :);
+lastRows = A(max(1,end-2):end, :);
+positive = A(A > 0);
+A(A < 0) = 0;
 
-% Random matrices
-R = rand(m, n);                 % Uniform [0,1]
-R = randn(m, n);                % Normal (mean=0, std=1)
-R = randi([a b], m, n);         % Random integers in [a,b]
-R = randperm(n);                % Random permutation of 1:n
-
-% Logical arrays
-T = true(m, n);                 % All true
-F = false(m, n);                % All false
-
-% Grids for 2D/3D
-[X, Y] = meshgrid(x, y);        % 2D grid from vectors
-[X, Y, Z] = meshgrid(x, y, z);  % 3D grid
-[X, Y] = ndgrid(x, y);          % Alternative (different orientation)
+[r, c] = ind2sub(size(A), linearIndex);
+linearIndex = sub2ind(size(A), r, c);
 ```
 
-### Creating from Existing
+Prefer logical indexing for selection and `find` only when numeric indices are
+needed. Verify mask shape. Deleting with `A(index)=[]` changes shape and can be
+ambiguous for multidimensional arrays.
+
+R2026b changes an easy-to-miss edge case: linear logical deletion with an
+all-false mask can still reshape built-in arrays into a row vector. Preserve
+and check the intended shape even when no values match, and include a
+no-match case in migration tests.
+
+### Cell, structure, and table indexing
 
 ```matlab
-A_like = zeros(size(B));        % Same size as B
-A_like = ones(size(B), 'like', B);  % Same size and type as B
-A_copy = A;                     % Copy (by value, not reference)
+C = {42, "sample"; [1 2], datetime("today")};
+cellContainer = C(1, :);  % still a cell array
+cellContent = C{1, 1};    % contained value
+
+S.SampleID = "S01";
+name = S.("SampleID");
+
+tableSlice = T(1:10, ["Time" "Value"]); % table
+numericValues = T{:, "Value"};          % underlying content
+oneVariable = T.Value;                  % variable content
 ```
 
-## Indexing and Subscripting
+Curly extraction from a table succeeds only when selected variable contents
+can concatenate. Preserve table form when variable names and metadata matter.
 
-### Basic Indexing
+## Operators and implicit expansion
+
+| Operation | Matrix | Element-wise |
+|---|---|---|
+| multiply | `A*B` | `A.*B` |
+| divide | `A/B`, `A\B` | `A./B`, `A.\B` |
+| power | `A^n` | `A.^n` |
+
+Addition, subtraction, comparisons, and many element-wise functions use
+compatible-size implicit expansion. Since R2016b, a column and row can create
+an outer result:
 
 ```matlab
-% Single element (1-based indexing)
-elem = A(2, 3);                 % Row 2, column 3
-elem = A(5);                    % Linear index (column-major order)
-
-% Ranges
-row = A(2, :);                  % Entire row 2
-col = A(:, 3);                  % Entire column 3
-sub = A(1:2, 2:3);              % Rows 1-2, columns 2-3
-
-% End keyword
-last = A(end, :);               % Last row
-last3 = A(end-2:end, :);        % Last 3 rows
+x = (1:3).';
+y = 10:10:40;
+outerSum = x + y;   % 3-by-4
 ```
 
-### Logical Indexing
+Before relying on expansion, assert intended orientation:
 
 ```matlab
-% Find elements meeting condition
-idx = A > 5;                    % Logical array
-elements = A(A > 5);            % Extract elements > 5
-A(A < 0) = 0;                   % Set negative elements to 0
-
-% Combine conditions
-idx = (A > 0) & (A < 10);       % AND
-idx = (A < 0) | (A > 10);       % OR
-idx = ~(A == 0);                % NOT
+assert(iscolumn(x));
+assert(isrow(y));
 ```
 
-### Linear Indexing
+Do not use `repmat` solely to emulate supported implicit expansion, but use it
+when an explicitly materialized tiled array is actually needed.
+
+## Missing and nonfinite values
+
+Standard missing values are type-specific:
+
+- `NaN`: `double`, `single`, `duration`, `calendarDuration`
+- `NaT`: `datetime`
+- `<missing>`: `string`
+- `<undefined>`: `categorical`
+- `''` inside a cell array of character vectors
+
+Integer and logical arrays have no standard missing value. A sentinel such as
+`-99` is a data contract, not a MATLAB default.
 
 ```matlab
-% Convert between linear and subscript indices
-[row, col] = ind2sub(size(A), linearIdx);
-linearIdx = sub2ind(size(A), row, col);
-
-% Find indices of nonzero/condition
-idx = find(A > 5);              % Linear indices where A > 5
-idx = find(A > 5, k);           % First k indices
-idx = find(A > 5, k, 'last');   % Last k indices
-[row, col] = find(A > 5);       % Subscript indices
+missingMask = ismissing(T);
+anyMissing = anymissing(T);
+clean = rmmissing(T);
+filled = fillmissing(T, "linear", DataVariables="Value");
 ```
 
-### Advanced Indexing
+Define whether `Inf` is valid separately; it is not a standard missing
+floating-point value. `isfinite` distinguishes finite values. `ismissing`
+ignores timetable row times, so validate row times explicitly.
+
+## Tables and timetables
+
+Every table variable has the same row count but can have a different type and
+width. Timetables add row times.
 
 ```matlab
-% Index with arrays
-rows = [1 3 5];
-cols = [2 4];
-sub = A(rows, cols);            % Submatrix
+T = table(sampleID, group, value, ...
+    VariableNames=["SampleID" "Group" "Value"]);
 
-% Logical indexing with another array
-B = A(logical_mask);            % Elements where mask is true
-
-% Assignment with indexing
-A(1:2, 1:2) = [10 20; 30 40];   % Assign submatrix
-A(:) = 1:numel(A);              % Assign all elements (column-major)
+TT = timetable(time, value, quality, ...
+    VariableNames=["Value" "Quality"]);
+TT = sortrows(TT);
+hourly = retime(TT, "hourly", "mean");
+aligned = synchronize(TT1, TT2, "intersection");
 ```
 
-## Array Manipulation
+Before time alignment:
 
-### Element-wise Operations
+1. normalize or record time zones;
+2. define duplicate-time policy;
+3. sort row times;
+4. choose union/intersection and interpolation/aggregation deliberately;
+5. record daylight-saving and calendar assumptions.
+
+Direct calculations on tables/timetables are supported for compatible
+variables, but mixed nonnumeric variables can invalidate an operation.
+Selecting numeric variables first is often clearer:
 
 ```matlab
-% Arithmetic (element-wise uses . prefix)
-C = A + B;                      % Addition
-C = A - B;                      % Subtraction
-C = A .* B;                     % Element-wise multiplication
-C = A ./ B;                     % Element-wise division
-C = A .\ B;                     % Element-wise left division (B./A)
-C = A .^ n;                     % Element-wise power
-
-% Comparison (element-wise)
-C = A == B;                     % Equal
-C = A ~= B;                     % Not equal
-C = A < B;                      % Less than
-C = A <= B;                     % Less than or equal
-C = A > B;                      % Greater than
-C = A >= B;                     % Greater than or equal
+numericT = T(:, vartype("numeric"));
 ```
 
-### Matrix Operations
+## Concatenation and reshaping
 
 ```matlab
-% Matrix arithmetic
-C = A * B;                      % Matrix multiplication
-C = A ^ n;                      % Matrix power
-C = A';                         % Conjugate transpose
-C = A.';                        % Transpose (no conjugate)
-
-% Matrix functions
-B = inv(A);                     % Inverse
-B = pinv(A);                    % Pseudoinverse
-d = det(A);                     % Determinant
-t = trace(A);                   % Trace (sum of diagonal)
-r = rank(A);                    % Rank
-n = norm(A);                    % Matrix/vector norm
-n = norm(A, 'fro');             % Frobenius norm
-
-% Solve linear systems
-x = A \ b;                      % Solve Ax = b
-x = b' / A';                    % Solve xA = b
+wide = [A B];
+tall = [A; B];
+flat = A(:);
+B = reshape(A, [], 4);
+C = permute(X, [2 1 3]);
 ```
 
-### Common Functions
+Concatenated dimensions and classes must be compatible. `squeeze` can remove
+different dimensions depending on input shape; avoid it in APIs whose output
+rank must be stable.
+
+## Performance without folklore
+
+1. Write the clearest correct array code.
+2. Use representative data and `timeit`; use the profiler for call-level
+   diagnosis.
+3. Preallocate when a loop's output shape is known.
+4. Vectorize operations that map naturally to array kernels.
+5. Keep a loop when vectorization creates large temporaries or obscures logic.
+6. Preserve sparsity and data class where appropriate.
+7. Benchmark each supported release/platform; R2026a includes implementation
+   speedups that can change old trade-offs.
 
 ```matlab
-% Apply to each element
-B = abs(A);                     % Absolute value
-B = sqrt(A);                    % Square root
-B = exp(A);                     % Exponential
-B = log(A);                     % Natural log
-B = log10(A);                   % Log base 10
-B = sin(A);                     % Sine (radians)
-B = sind(A);                    % Sine (degrees)
-B = round(A);                   % Round to nearest integer
-B = floor(A);                   % Round down
-B = ceil(A);                    % Round up
-B = real(A);                    % Real part
-B = imag(A);                    % Imaginary part
-B = conj(A);                    % Complex conjugate
+y = zeros(size(x), "like", x);
+for k = 1:numel(x)
+    y(k) = localTransform(x(k));
+end
 ```
 
-## Concatenation and Reshaping
+Avoid growing arrays in a loop. However, do not preallocate the wrong class or
+shape. `zeros(size(x),"like",x)` is usually safer than an unqualified `zeros`.
 
-### Concatenation
+Parallel arrays, GPU arrays, tall arrays, `parfor`, and distributed arrays
+require specific products and supported functions. They also change ordering,
+reduction, RNG, and tolerance concerns. Do not suggest them merely because a
+loop exists.
 
-```matlab
-% Horizontal (side by side)
-C = [A B];                      % Concatenate columns
-C = [A, B];                     % Same as above
-C = horzcat(A, B);              % Function form
-C = cat(2, A, B);               % Concatenate along dimension 2
+## Numerical review checklist
 
-% Vertical (stacked)
-C = [A; B];                     % Concatenate rows
-C = vertcat(A, B);              % Function form
-C = cat(1, A, B);               % Concatenate along dimension 1
+- [ ] Shapes and orientation are asserted where expansion matters.
+- [ ] Matrix versus element-wise operators are intentional.
+- [ ] Conjugation behavior is intentional.
+- [ ] Indexing preserves expected rank and container type.
+- [ ] Missing, nonfinite, and sentinel policies are explicit.
+- [ ] Table variable names/types and timetable time zones are preserved.
+- [ ] Integer overflow and mixed-class conversion are tested.
+- [ ] Sparse inputs remain sparse where required.
+- [ ] Preallocation and vectorization are measured, not assumed.
+- [ ] Memory estimates include temporaries and expanded outputs.
 
-% Block diagonal
-C = blkdiag(A, B, C);           % Block diagonal matrix
-```
+## Sources (reviewed 2026-10-01)
 
-### Reshaping
-
-```matlab
-% Reshape
-B = reshape(A, m, n);           % Reshape to m×n (same total elements)
-B = reshape(A, [], n);          % Auto-compute rows
-v = A(:);                       % Flatten to column vector
-
-% Transpose and permute
-B = A';                         % Transpose 2D
-B = permute(A, [2 1 3]);        % Permute dimensions
-B = ipermute(A, [2 1 3]);       % Inverse permute
-
-% Remove/add dimensions
-B = squeeze(A);                 % Remove singleton dimensions
-B = shiftdim(A, n);             % Shift dimensions
-
-% Replication
-B = repmat(A, m, n);            % Tile m×n times
-B = repelem(A, m, n);           % Repeat elements
-```
-
-### Flipping and Rotating
-
-```matlab
-B = flip(A);                    % Flip along first non-singleton dimension
-B = flip(A, dim);               % Flip along dimension dim
-B = fliplr(A);                  % Flip left-right (columns)
-B = flipud(A);                  % Flip up-down (rows)
-B = rot90(A);                   % Rotate 90° counterclockwise
-B = rot90(A, k);                % Rotate k×90°
-B = circshift(A, k);            % Circular shift
-```
-
-## Array Information
-
-### Size and Dimensions
-
-```matlab
-[m, n] = size(A);               % Rows and columns
-m = size(A, 1);                 % Number of rows
-n = size(A, 2);                 % Number of columns
-sz = size(A);                   % Size vector
-len = length(A);                % Largest dimension
-num = numel(A);                 % Total number of elements
-ndim = ndims(A);                % Number of dimensions
-```
-
-### Type Checking
-
-```matlab
-tf = isempty(A);                % Is empty?
-tf = isscalar(A);               % Is scalar (1×1)?
-tf = isvector(A);               % Is vector (1×n or n×1)?
-tf = isrow(A);                  % Is row vector?
-tf = iscolumn(A);               % Is column vector?
-tf = ismatrix(A);               % Is 2D matrix?
-tf = isnumeric(A);              % Is numeric?
-tf = isreal(A);                 % Is real (no imaginary)?
-tf = islogical(A);              % Is logical?
-tf = isnan(A);                  % Which elements are NaN?
-tf = isinf(A);                  % Which elements are Inf?
-tf = isfinite(A);               % Which elements are finite?
-```
-
-### Comparison
-
-```matlab
-tf = isequal(A, B);             % Are arrays equal?
-tf = isequaln(A, B);            % Equal, treating NaN as equal?
-tf = all(A);                    % All nonzero/true?
-tf = any(A);                    % Any nonzero/true?
-tf = all(A, dim);               % All along dimension
-tf = any(A, dim);               % Any along dimension
-```
-
-## Sorting and Searching
-
-### Sorting
-
-```matlab
-B = sort(A);                    % Sort columns ascending
-B = sort(A, 'descend');         % Sort descending
-B = sort(A, dim);               % Sort along dimension
-[B, idx] = sort(A);             % Also return original indices
-B = sortrows(A);                % Sort rows by first column
-B = sortrows(A, col);           % Sort by specific column(s)
-B = sortrows(A, col, 'descend');
-```
-
-### Unique and Set Operations
-
-```matlab
-B = unique(A);                  % Unique elements
-[B, ia, ic] = unique(A);        % With index information
-B = unique(A, 'rows');          % Unique rows
-
-% Set operations
-C = union(A, B);                % Union
-C = intersect(A, B);            % Intersection
-C = setdiff(A, B);              % A - B (in A but not B)
-C = setxor(A, B);               % Symmetric difference
-tf = ismember(A, B);            % Is each element of A in B?
-```
-
-### Min/Max
-
-```matlab
-m = min(A);                     % Column minimums
-m = min(A, [], 'all');          % Global minimum
-[m, idx] = min(A);              % With indices
-m = min(A, B);                  % Element-wise minimum
-
-M = max(A);                     % Column maximums
-M = max(A, [], 'all');          % Global maximum
-[M, idx] = max(A);              % With indices
-
-[minVal, minIdx] = min(A(:));   % Global min with linear index
-[maxVal, maxIdx] = max(A(:));   % Global max with linear index
-
-% k smallest/largest
-B = mink(A, k);                 % k smallest elements
-B = maxk(A, k);                 % k largest elements
-```
-
-### Sum and Product
-
-```matlab
-s = sum(A);                     % Column sums
-s = sum(A, 'all');              % Total sum
-s = sum(A, dim);                % Sum along dimension
-s = cumsum(A);                  % Cumulative sum
-
-p = prod(A);                    % Column products
-p = prod(A, 'all');             % Total product
-p = cumprod(A);                 % Cumulative product
-```
+- [Array Indexing](https://www.mathworks.com/help/matlab/math/array-indexing.html)
+- [Compatible Array Sizes for Basic Operations](https://www.mathworks.com/help/matlab/matlab_prog/compatible-array-sizes-for-basic-operations.html)
+- [MATLAB Data Types](https://www.mathworks.com/help/matlab/data-types.html)
+- [Tables](https://www.mathworks.com/help/matlab/tables.html)
+- [Timetables](https://www.mathworks.com/help/matlab/timetables.html)
+- [`ismissing`](https://www.mathworks.com/help/matlab/ref/ismissing.html)
+- [Missing Data in MATLAB](https://www.mathworks.com/help/matlab/data_analysis/missing-data-in-matlab.html)
+- [Vectorization](https://www.mathworks.com/help/matlab/matlab_prog/vectorization.html)
+- [Preallocation](https://www.mathworks.com/help/matlab/matlab_prog/preallocating-arrays.html)
+- [`timeit`](https://www.mathworks.com/help/matlab/ref/timeit.html)
+- [Profile MATLAB Code](https://www.mathworks.com/help/matlab/matlab_prog/profiling-for-improving-performance.html)
+- [R2026b release notes: logical deletion](https://www.mathworks.com/help/matlab/release-notes.html)

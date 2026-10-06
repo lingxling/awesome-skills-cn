@@ -1,161 +1,136 @@
 ---
 name: dhdna-profiler
-description: Extract cognitive patterns and thinking fingerprints from any text. Use this skill when the user wants to analyze how someone thinks, understand cognitive style, profile writing or speech patterns, compare thinking styles between people, asks "what's my thinking style", "analyze how this person reasons", "cognitive profile", "thinking pattern", "DHDNA", "digital DNA", or wants to understand the mind behind any text. Also trigger when the user provides text and wants deeper insight into the author's reasoning patterns, decision-making style, or cognitive signature.
+description: Applies the DHDNA framework as an exploratory rubric for reasoning and writing patterns in supplied text. Used for explicit requests for DHDNA, cognitive-style reflection, a thinking-pattern profile, or comparisons of textual reasoning. Scores describe evidence in the sample, not validated psychological traits or personal identity.
 allowed-tools: Read Write
 license: MIT license
-metadata: {"version": "1.0", "skill-author": "AHK Strategies (ashrafkahoush-ux)"}
+metadata:
+  version: "2.0"
+  last-reviewed: "2026-09-30"
+  skill-author: AHK Strategies (ashrafkahoush-ux)
 ---
 
-# DHDNA Profiler — Cognitive Pattern Extraction
+# DHDNA Profiler — Text Pattern Annotation
 
-A structured system for extracting the cognitive fingerprint of any text's author. Based on the Digital Human DNA (DHDNA) framework — the theory that every mind has a unique signature pattern expressed through how it reasons, decides, values, and communicates.
+An exploratory rubric for describing a supplied text using Digital Human DNA (DHDNA) terminology. Its cognitive-fingerprint language is a framework metaphor; it does not establish a unique, stable, or identifiable psychological signature.
 
-Published research: [DHDNA Pre-print (DOI: 10.5281/zenodo.18736629)](https://doi.org/10.5281/zenodo.18736629) | [IDNA Consolidation v2 (DOI: 10.5281/zenodo.18807387)](https://doi.org/10.5281/zenodo.18807387)
+Use this workflow for requested reflection on writing. It requires no package, credentials, API call, or MindBook account. It does not reproduce MindBook's scoring engine.
 
-## Core Concept
+## Sources and scope
 
-Just as biological DNA encodes physical identity through base pairs, Digital Human DNA encodes cognitive identity through thinking patterns. Every person's combination of analytical depth, creative range, emotional processing, strategic thinking, and ethical reasoning creates a **unique cognitive signature** — as distinctive as a fingerprint.
+The [current publisher page](https://www.ahkstrategies.net/dhdna) names twelve public dimensions as a design vocabulary. The table below maps those names to the existing skill's annotation labels. The observation criteria and score anchors are local conventions, not an upstream validated scoring instrument.
 
-The profiler doesn't judge thinking as "good" or "bad." It maps the topology of how a mind works.
+The [DHDNA preprint](https://doi.org/10.5281/zenodo.18736629), *DHDNA: A Framework for Ethical Digital Identity as Inheritable Heritage* (February 23, 2026), states in section 6.3 that validation was limited to internal testing. The [IDNA v2 preprint](https://doi.org/10.5281/zenodo.18807387), *Toward a Unified Theory of Digital Consciousness* (February 27, 2026), proposes the tension pairs in section 4.3/Table 3 and the temporal-attractor model in section 2. Neither source establishes psychometric validity for this skill's annotations. A DOI, product demonstration, or journal submission is not evidence of such validity.
 
-## The 12 Cognitive Dimensions
+Describe observable reasoning and rhetorical choices. Genre, task, language proficiency, editing, collaboration, and AI assistance can change those choices. Do not infer intelligence, diagnosis, honesty, latent emotions, or a person's stable cognitive architecture from them.
 
-When profiling text, score each dimension on a 1–10 scale based on evidence in the text:
+## The 12 annotation dimensions
 
-| #   | Dimension                | What It Measures                                                 | Low Score (1-3)                    | High Score (8-10)                           |
-| --- | ------------------------ | ---------------------------------------------------------------- | ---------------------------------- | ------------------------------------------- |
-| 1   | **Analytical Depth**     | Logical rigor, structured reasoning, causal chains               | Intuitive, holistic, pattern-based | Systematic, proof-oriented, precise         |
-| 2   | **Creative Range**       | Novelty of connections, metaphor use, lateral thinking           | Conventional, incremental          | Paradigm-breaking, cross-domain synthesis   |
-| 3   | **Emotional Processing** | Emotional vocabulary, empathy signals, affect integration        | Detached, clinical                 | Emotionally rich, feeling-integrated        |
-| 4   | **Linguistic Precision** | Vocabulary sophistication, sentence architecture, rhetoric       | Simple, direct                     | Architecturally complex, nuanced            |
-| 5   | **Ethical Reasoning**    | Values signals, fairness concern, consequence awareness          | Pragmatic, outcome-focused         | Principle-driven, justice-oriented          |
-| 6   | **Strategic Thinking**   | Long-term planning, competitive awareness, resource optimization | Tactical, reactive                 | Multi-move, game-theoretic                  |
-| 7   | **Memory Integration**   | Reference to past experience, historical patterns, continuity    | Present-focused                    | Deep historical awareness, precedent-driven |
-| 8   | **Social Intelligence**  | Audience awareness, perspective-taking, relational framing       | Self-referential                   | Deeply other-aware, coalition-building      |
-| 9   | **Domain Expertise**     | Technical depth, specialized knowledge, jargon confidence        | Generalist                         | Deep specialist                             |
-| 10  | **Intuitive Reasoning**  | Gut-feel signals, heuristic shortcuts, pattern leaps             | Methodical, step-by-step           | Leap-of-faith, insight-driven               |
-| 11  | **Temporal Orientation** | Time-horizon of thinking — past, present, or future focus        | Present-anchored                   | Time-spanning, historical-to-futurist       |
-| 12  | **Metacognition**        | Self-awareness of own thinking, uncertainty acknowledgment       | Unreflective                       | Deeply self-aware, thinks about thinking    |
+| # | Skill label | Current publisher label | Evidence to describe in the sample |
+| --- | --- | --- | --- |
+| 1 | Analytical Depth | Reasoning style | Explicit premises, alternatives, causal arguments, and checks of conclusions |
+| 2 | Creative Range | Creative synthesis | Connections, analogies, alternative framings; novelty needs a stated comparison context |
+| 3 | Emotional Processing | Emotional architecture | Expressed affect and consideration of others' feelings; not inferred internal emotion |
+| 4 | Linguistic Precision | Linguistic signature | Defined terms, clear references, and controlled ambiguity; simple prose can be precise |
+| 5 | Ethical Reasoning | Ethical reasoning | Explicit values, affected parties, tradeoffs, and consequences; not moral character |
+| 6 | Strategic Thinking | Strategic cognition | Stated goals, constraints, contingencies, and action sequences |
+| 7 | Memory Integration | Memory topology | Use of past events or precedents; not memory capacity or historical truth |
+| 8 | Social Intelligence | Social intelligence | Audience adaptation and represented perspectives; not actual interpersonal ability |
+| 9 | Domain Expertise | Domain expertise | Relevant technical explanations and qualified claims; jargon alone is insufficient, accuracy needs independent checking |
+| 10 | Intuitive Reasoning | Intuitive processing | Explicit reliance on impressions or heuristics; missing reasoning alone is not intuition |
+| 11 | Temporal Orientation | Temporal awareness | Stated time horizons and links between past, present, and future |
+| 12 | Metacognition | Metacognition | Explicit uncertainty, assumptions, limitations, and revision of reasoning |
 
-### The 6 Tension Pairs
+### The 6 proposed tension pairs
 
-Dimensions exist in tension — high scores on one often correlate with lower scores on its pair. These tensions ARE the cognitive signature:
+The IDNA preprint proposes these pairings. They are prompts for comparison, not established negative correlations or complementary scales. Rate both independently; both may be high, low, or N/A. Do not derive one score by subtracting the other from ten.
 
-| Pair           | Tension                    | What It Reveals                                                        |
-| -------------- | -------------------------- | ---------------------------------------------------------------------- |
-| DIM 1 ↔ DIM 10 | Analytical ↔ Intuitive     | Logic vs. Gut — how the mind reaches conclusions                       |
-| DIM 3 ↔ DIM 6  | Emotional ↔ Strategic      | Heart vs. Head — what drives decisions                                 |
-| DIM 2 ↔ DIM 5  | Creative ↔ Ethical         | Freedom vs. Framework — innovation within or beyond rules              |
-| DIM 4 ↔ DIM 12 | Linguistic ↔ Metacognitive | Expression vs. Self-Awareness — external craft vs. internal reflection |
-| DIM 7 ↔ DIM 11 | Memory ↔ Temporal          | Past vs. Time Itself — experience vs. time-horizon                     |
-| DIM 8 ↔ DIM 9  | Social ↔ Domain            | Breadth vs. Depth — people skills vs. technical mastery                |
+| Pair | Compare the sample's evidence for |
+| --- | --- |
+| 1 and 10 | Analytical Depth and Intuitive Reasoning |
+| 3 and 6 | Emotional Processing and Strategic Thinking |
+| 2 and 5 | Creative Range and Ethical Reasoning |
+| 4 and 12 | Linguistic Precision and Metacognition |
+| 7 and 11 | Memory Integration and Temporal Orientation |
+| 8 and 9 | Social Intelligence and Domain Expertise |
 
-## How to Profile
+## Workflow
 
-### Phase 1 — Evidence Collection
+### 1. Establish the sample
 
-Read the text carefully. For each dimension, identify **specific textual evidence**:
+Use only the text designated for this request. Record a sample label, paragraph or line references, genre, purpose, language, and known editing context. Mark missing context unknown. Distinguish the author's assertions from quoted speech, fictional characters, and copied material; do not attribute all voices to the author.
 
-- Direct quotes that demonstrate the dimension
-- Structural patterns (how arguments are built)
-- What's present AND what's absent (gaps reveal as much as content)
-- Recurring patterns across multiple passages
+If the user explicitly requests analysis of specified conversation turns, state that source scope and proceed. If the request leaves the source ambiguous, ask which text to use before expanding to earlier conversations or unrelated files.
 
-### Phase 2 — Scoring
+### 2. Collect evidence
 
-For each of the 12 dimensions:
+For each dimension, identify specific quotations and how they support the observation. Include contrary evidence where present. Distinguish lack of expression from lack of opportunity to express it. Do not manufacture quotations or use a fictional narrator as evidence about the writer's personality.
 
-1. Score 1-10 based on evidence
-2. Cite the strongest textual evidence for that score
-3. Flag confidence level: HIGH (multiple clear signals), MEDIUM (some signals), LOW (inferred)
+### 3. Annotate all twelve dimensions
 
-### Phase 3 — Pattern Synthesis
+Use qualitative observations by default. If numeric scoring is requested, use whole numbers on the local 1–10 rubric with these declared anchors:
 
-After scoring, identify:
+- **1–3:** Relevant but limited or weakly developed expression in this sample.
+- **4–7:** Explicit, developed expression with some supporting context.
+- **8–10:** Sustained, elaborated expression across several relevant passages.
+- **N/A:** No suitable evidence or no opportunity to assess; never impute zero or a midpoint.
 
-**Dominant Pattern:** The 2-3 highest-scoring dimensions — this is the mind's "home base"
+Explain each numeric choice against the dimension's evidence criterion. These are ordinal judgments, not equal-interval measurements, percentiles, calibrated probabilities, or rankings of ability. Short samples may warrant only a few observations and many N/A entries. Do not force all scores or a dominant pattern.
 
-**Shadow Pattern:** The 2-3 lowest-scoring dimensions — this is where the mind doesn't naturally go
+Attach annotation confidence to each observation: HIGH for multiple unambiguous passages, MEDIUM for a clear but limited example, LOW for ambiguous evidence. Confidence concerns the textual interpretation, not a stable trait. If uncertainty prevents a defensible observation, use N/A instead of speculative scoring.
 
-**Signature Tensions:** Which tension pairs show the widest gap? These define the cognitive style more than any individual score.
+### 4. Synthesize the text pattern
 
-**Reasoning Topology:** How does the mind move through ideas?
+Identify two or three most evidenced dimensions only when the sample supports them. Discuss the six proposed pairings only where both sides have evidence. A numeric gap, if requested, is a difference between local annotations; it does not identify inner conflict or predict behavior.
 
-- Linear (A → B → C → conclusion)
-- Spiral (approaches the same idea from multiple angles, each time deeper)
-- Web (connects disparate domains into synthesis)
-- Dialectic (thesis → antithesis → synthesis)
-- Fractal (same pattern at micro and macro levels)
+Describe the **argument structure** with examples: a sequence of premises, revisiting an idea, connecting topics, or contrasting alternatives. Labels such as linear, spiral, web, dialectic, or fractal are optional metaphors; they are neither exhaustive categories nor a model of the author's mind.
 
-**Decision Fingerprint:** When facing choices, does this mind:
+Describe **stated decision steps** only when choices are actually discussed. The order of sentences cannot establish whether a person privately felt, reasoned, or decided first.
 
-- Analyze first, then decide? (Analytical-dominant)
-- Feel first, then rationalize? (Emotional-dominant)
-- Envision the outcome first, then work backward? (Strategic-dominant)
-- Question the question itself? (Metacognitive-dominant)
+### 5. Review and return
 
-### Phase 4 — Profile Output
+Verify every quotation against the sample, every observation against the cited passage, and every N/A against the available context. Check that the synthesis stays about the text. Return a profile in the conversation; export it only when requested.
 
-Present the profile as:
+Use this output template, including all twelve dimensions:
 
-```
-═══════════════════════════════════════════
-  DHDNA COGNITIVE PROFILE
-  Subject: [Name or "Anonymous"]
-  Text analyzed: [N words / N paragraphs]
-  Confidence: [HIGH / MEDIUM / LOW]
-═══════════════════════════════════════════
+```text
+DHDNA TEXT PATTERN PROFILE
+Sample: [label and source scope]
+Context: [genre, purpose, language, editing context or unknown]
+Method: [qualitative, or local ordinal 1–10 rubric]
 
-DIMENSION SCORES:
-  1. Analytical Depth ···· [█████████·] 9/10
-  2. Creative Range ······ [███████···] 7/10
-  ... (all 12)
+Dimension | Observation | Score or N/A if requested | Confidence | Quote/location
+[one row per dimension; missing evidence remains N/A]
 
-TENSION MAP:
-  Analytical ████████░░ ↔ ░░████████ Intuitive
-  Emotional  ███░░░░░░░ ↔ ░░░░░░████ Strategic
-  ... (all 6 pairs)
-
-DOMINANT PATTERN: [Top 2-3 dimensions]
-SHADOW PATTERN: [Bottom 2-3 dimensions]
-REASONING TOPOLOGY: [Linear / Spiral / Web / Dialectic / Fractal]
-DECISION FINGERPRINT: [Analyze-first / Feel-first / Envision-first / Question-first]
-
-NARRATIVE SYNTHESIS:
-[2-3 paragraph natural language description of how this mind works,
-what makes it distinctive, and what it might miss]
-
-KEY QUOTES:
-[3-5 most revealing quotes with dimension attribution]
-═══════════════════════════════════════════
+Most evidenced patterns: [supported patterns, or insufficient evidence]
+Proposed pair comparisons: [both sides supported, or not assessed]
+Argument structure: [description with passage references]
+Stated decision steps: [description, or not expressed]
+Context and limitations: [alternative explanations and missing evidence]
 ```
 
-## Comparison Mode
+## Worked example
 
-When the user provides two or more texts from different authors, produce individual profiles and then a **comparison synthesis**:
+Synthetic sample, one paragraph:
 
-- Where do the minds converge? (shared high dimensions)
-- Where do they diverge? (opposing scores on the same dimension)
-- Which tension pairs would create productive disagreement?
-- If these minds were in a room together, what would the conversation look like?
+> We could repeat the measurement or replace the sensor. I favor repeating it because the control failed. If the control fails again, we will inspect the wiring. This explanation is tentative: temperature was not recorded.
 
-## Self-Profile Mode
+A manual application supports Analytical Depth (alternatives and a reason), Strategic Thinking (a conditional next step), and Metacognition (a stated limitation). Emotional Processing and Memory Integration are N/A: this sample offers no suitable evidence for them. Intuitive Reasoning is N/A, not a low score inferred from the presence of analysis. Linguistic Precision can be discussed from the explicit referents and conditional wording. Domain accuracy remains unchecked; the paragraph does not establish the writer's expertise. There is insufficient material to characterize a stable thinking style or predict a choice.
 
-If the user asks to profile their own thinking (using the conversation history as text), be transparent:
+This is an illustrative annotation, not a validated reference profile or a benchmark of rater agreement.
 
-- Score based on the conversation so far
-- Acknowledge that conversational text may not represent the full range
-- Note that people often think differently when writing for an AI vs. writing for humans
-- Offer to re-profile if the user provides other writing samples
+## Comparing samples
 
-## What This Is NOT
+First compare genre, prompt, length, language, editing context, and opportunities to express each dimension. When these differ, describe the resulting sample differences without attributing them to authors. Compare evidence dimension by dimension; preserve N/A and avoid composite totals, average-person rankings, predicted compatibility, or imagined interpersonal conversations presented as findings.
 
-- Not a personality test (MBTI, Big Five, etc.) — those measure behavioral tendencies, DHDNA measures cognitive architecture
-- Not a judgment of intelligence — a chess grandmaster and a poet may score very differently but both demonstrate profound cognitive capability
-- Not static — a person's DHDNA evolves as they learn, experience, and grow. A profile is a snapshot, not a destiny.
+For self-reflection, state which designated turns or samples were used. Conversational writing for an AI may differ from other writing. For repeated samples, keep the annotation protocol and context comparable and distinguish observed changes from changes in elicitation or rater judgment. See [advanced profiling](references/advanced-profiling.md) for genre lenses, longitudinal limits, and compact notation.
 
-## Built By
+## Boundaries
 
-[AHK Strategies](https://ahkstrategies.net) — AI Horizon Knowledge
-Full platform: [themindbook.app](https://themindbook.app)
-Research: [DHDNA Paper (DOI: 10.5281/zenodo.18736629)](https://doi.org/10.5281/zenodo.18736629)
+- Analyze the supplied text, including third-party text, as text. State that observations do not establish attributes of its author.
+- Do not use this rubric for hiring, promotion, admission, clinical, disciplinary, or credit decisions. Offer direct, task-relevant review of the writing or evidence instead.
+- Do not retrieve extra personal material, upload samples to MindBook or other services, or save profiles without the user's instruction. This skill makes no offline-processing or retention guarantee about its host application.
+- Do not describe changing sample annotations as cognitive growth, decline, identity, or a diagnosis. Neither a high score nor a low score is a measure of intelligence or human worth.
+
+## Attribution
+
+Original skill author: [AHK Strategies](https://www.ahkstrategies.net/). Related product: [MindBook](https://themindbook.app/). These public links are references, not service integrations. The skill's MIT license does not relicense the linked research or product.

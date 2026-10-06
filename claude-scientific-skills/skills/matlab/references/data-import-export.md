@@ -1,479 +1,236 @@
-# Data Import and Export Reference
+# Data Import, Tables, Timetables, and MAT Files
 
-## Table of Contents
-1. [Text and CSV Files](#text-and-csv-files)
-2. [Spreadsheets](#spreadsheets)
-3. [MAT Files](#mat-files)
-4. [Images](#images)
-5. [Tables and Data Types](#tables-and-data-types)
-6. [Low-Level File I/O](#low-level-file-io)
+This reference targets MATLAB R2026a. Treat every external file as untrusted
+until its provenance, size, structure, and parser risk are reviewed.
 
-## Text and CSV Files
+## Safe import workflow
 
-### Reading Text Files
+1. Accept one named local path under a confirmed root.
+2. Reject URLs, traversal, symlinks, device files, and unexpected extensions.
+3. Bound compressed and uncompressed size, rows, columns, variables, nesting,
+   strings, and HDF5 objects.
+4. Inventory format and metadata before loading values.
+5. Define schema, classes, units, encoding, missing sentinels, time zones, and
+   duplicate policy.
+6. Import the narrowest columns/ranges needed.
+7. Validate before computation.
+8. Write to a new local output; refuse accidental overwrite.
 
-```matlab
-% Recommended high-level functions
-T = readtable('data.csv');          % Read as table (mixed types)
-M = readmatrix('data.csv');         % Read as numeric matrix
-C = readcell('data.csv');           % Read as cell array
-S = readlines('data.txt');          % Read as string array (lines)
-str = fileread('data.txt');         % Read entire file as string
+Do not use a broad directory scan or environment dump to find data. Remote
+imports add network, redirect, credential, and changing-content risks; download
+them through a separately approved, checksum-recorded workflow.
 
-% With options
-T = readtable('data.csv', 'ReadVariableNames', true);
-T = readtable('data.csv', 'Delimiter', ',');
-T = readtable('data.csv', 'NumHeaderLines', 2);
-M = readmatrix('data.csv', 'Range', 'B2:D100');
+## High-level text and spreadsheet import
 
-% Detect import options
-opts = detectImportOptions('data.csv');
-opts.VariableNames = {'Col1', 'Col2', 'Col3'};
-opts.VariableTypes = {'double', 'string', 'double'};
-opts.SelectedVariableNames = {'Col1', 'Col3'};
-T = readtable('data.csv', opts);
-```
-
-### Writing Text Files
+Choose the output model intentionally:
 
 ```matlab
-% High-level functions
-writetable(T, 'output.csv');
-writematrix(M, 'output.csv');
-writecell(C, 'output.csv');
-writelines(S, 'output.txt');
-
-% With options
-writetable(T, 'output.csv', 'Delimiter', '\t');
-writetable(T, 'output.csv', 'WriteVariableNames', false);
-writematrix(M, 'output.csv', 'Delimiter', ',');
+options = detectImportOptions("measurements.csv", ...
+    TextType="string");
+options.SelectedVariableNames = ...
+    ["SampleID" "Timestamp" "Value" "Quality"];
+options = setvartype(options, "SampleID", "string");
+T = readtable("measurements.csv", options);
 ```
 
-### Tab-Delimited Files
+- `readtable`: mixed, named column-oriented data.
+- `readmatrix`: homogeneous numeric data.
+- `readcell`: heterogeneous cells when a table schema is inappropriate.
+- `readlines`/`fileread`: bounded text, with explicit encoding expectations.
+- `readtimetable`: time-indexed data when row-time semantics are known.
+
+Use `writetable`, `writematrix`, `writecell`, `writelines`, or
+`writetimetable` for corresponding exports. Text/spreadsheet round trips can
+change formatting, precision, names, multidimensional variables, empty values,
+or types. If exact MATLAB structure matters and the file is trusted, a MAT file
+can preserve it—but MAT files have object/code risks and are not a universal
+interchange format.
+
+R2026a adds JSON read/write support for tables and timetables. Define the JSON
+orientation/schema and test consumers; "JSON" alone does not specify table
+shape, time representation, or missing semantics.
+
+## Tables and timetables
 
 ```matlab
-% Reading
-T = readtable('data.tsv', 'Delimiter', '\t');
-T = readtable('data.txt', 'FileType', 'text', 'Delimiter', '\t');
-
-% Writing
-writetable(T, 'output.tsv', 'Delimiter', '\t');
-writetable(T, 'output.txt', 'FileType', 'text', 'Delimiter', '\t');
+required = ["SampleID" "Timestamp" "Value"];
+assert(all(ismember(required, string(T.Properties.VariableNames))));
+assert(isstring(T.SampleID));
+assert(isdatetime(T.Timestamp));
+assert(isnumeric(T.Value));
 ```
 
-## Spreadsheets
+Table rules:
 
-### Reading Excel Files
+- all variables have the same row count;
+- variables may differ in class and width;
+- `T(rows,vars)` preserves a table;
+- `T{rows,vars}` extracts/concatenates contents;
+- `T.Var` extracts one variable;
+- properties can store units and descriptions but are not always preserved by
+  external formats.
+
+Timetable rules:
+
+- row times are distinct metadata, not an ordinary variable;
+- sort and validate row times;
+- preserve or normalize `TimeZone`;
+- define duplicates before `retime` or `synchronize`;
+- choose interpolation/aggregation and union/intersection deliberately;
+- validate missing row times separately from `ismissing(TT)`.
+
+## Missing values
+
+Standard indicators:
+
+| Class | Standard missing |
+|---|---|
+| `double`, `single`, `duration`, `calendarDuration` | `NaN` |
+| `datetime` | `NaT` |
+| `string` | `<missing>` |
+| `categorical` | `<undefined>` |
+| cell array of character vectors | empty character vector |
+| integer/logical | none |
+
+Use `standardizeMissing` when source sentinels are documented. Include
+`missing` in a custom indicator list when you intend to preserve standard
+indicators too. `Inf` is not missing by default.
+
+Never call `rmmissing` as generic cleaning without reporting what rows,
+variables, groups, or time coverage were removed.
+
+## MAT file versions
+
+MAT files are MATLAB binary workspace containers:
+
+| Version | `save` option | Compression | Key capability/limit |
+|---|---|---|---|
+| 4 | `"-v4"` | no | 2-D double, character, sparse; legacy |
+| 6 | `"-v6"` | no | N-D, cell, structure; under 2 GiB per variable |
+| 7 | `"-v7"` | yes | Unicode and v6 features; under 2 GiB per variable |
+| 7.3 | `"-v7.3"` | yes/chunked | HDF5-based, partial access, variables at least 2 GiB on 64-bit |
+
+Factory-default `save` operations use version 7, but the user can change the
+default in MAT and FIG Files settings. Explicitly specify `-v7` or `-v7.3`
+when exchange compatibility matters. Creating a new file with
+`matfile` defaults to version 7.3. File-system limits still apply. Version 7.3
+adds HDF5 metadata/chunk overhead and can be larger for heterogeneous
+containers.
+
+Do not label arbitrary HDF5 as MATLAB v7.3. The format is HDF5-based but has
+MATLAB conventions, references, metadata, and type encodings. GNU Octave 11
+cannot save MATLAB v7.3 and has only limited HDF5-based read support.
+
+## MAT safety
+
+Never `load` an untrusted MAT file, even if selecting one variable. A MAT file
+can contain:
+
+- MATLAB objects whose classes customize deserialization with `loadobj` or
+  custom element serialization;
+- constructors, listeners, or System object load hooks reachable from class
+  restoration;
+- function handles and opaque values;
+- Java objects and data interpreted by installed code;
+- deeply nested/compressed structures that exhaust resources.
+
+`whos("-file", path)` is useful inside an already approved MATLAB environment,
+but invoking MATLAB is itself execution. The bundled
+`scripts/inventory_mat_file.py` never launches MATLAB and:
+
+- identifies the header/version;
+- optionally uses `scipy.io.whosmat` for Level-5 metadata only;
+- optionally uses `h5py` for bounded HDF5 names, shapes, dtypes, links, and
+  attribute names;
+- never calls `scipy.io.loadmat`;
+- never reads dataset values or follows soft/external HDF5 links;
+- never deserializes objects or Python pickle.
+
+HDF5 inventory distinguishes null dataspaces (`shape: null`) from scalar
+datasets (`shape: []`) and zero-length arrays (for example, `shape: [0]`).
+All three are valid HDF5 metadata states, and none is proof of MATLAB v7.3.
+
+An inventory is triage, not a safety certificate. Object-like, opaque,
+function, external-link, malformed, or unsupported content requires
+quarantine and expert review.
+
+R2026b changes failure recovery for loading some scalar and non-heterogeneous
+object arrays: MATLAB can substitute default-constructed objects, or return
+an empty class array if replacement fails. In trusted migration tests, check
+load warnings, classes, dimensions, and field invariants; successful completion
+alone does not prove the saved scientific state was restored.
+
+## Partial access
+
+For a trusted version 7.3 file:
 
 ```matlab
-% Basic reading
-T = readtable('data.xlsx');
-M = readmatrix('data.xlsx');
-C = readcell('data.xlsx');
-
-% Specific sheet
-T = readtable('data.xlsx', 'Sheet', 'Sheet2');
-T = readtable('data.xlsx', 'Sheet', 2);
-
-% Specific range
-M = readmatrix('data.xlsx', 'Range', 'B2:D100');
-M = readmatrix('data.xlsx', 'Sheet', 2, 'Range', 'A1:F50');
-
-% With options
-opts = detectImportOptions('data.xlsx');
-opts.Sheet = 'Data';
-opts.DataRange = 'A2';
-preview(opts.VariableNames)     % Check column names
-T = readtable('data.xlsx', opts);
-
-% Get sheet names
-[~, sheets] = xlsfinfo('data.xlsx');
+file = matfile("trusted-large.mat");
+shape = size(file, "measurements");
+block = file.measurements(1:1000, :);
 ```
 
-### Writing Excel Files
+`matfile` avoids loading an entire variable, but it still processes a MAT file
+and can expose class/content risks. Partial read performance depends on HDF5
+chunk layout. Do not use it as a security sandbox.
+
+## Low-level I/O
+
+Use `onCleanup` to close reviewed files:
 
 ```matlab
-% Basic writing
-writetable(T, 'output.xlsx');
-writematrix(M, 'output.xlsx');
-writecell(C, 'output.xlsx');
-
-% Specific sheet and range
-writetable(T, 'output.xlsx', 'Sheet', 'Results');
-writetable(T, 'output.xlsx', 'Sheet', 'Data', 'Range', 'B2');
-writematrix(M, 'output.xlsx', 'Sheet', 2, 'Range', 'A1');
-
-% Append to existing sheet (use Range to specify start position)
-writetable(T2, 'output.xlsx', 'Sheet', 'Data', 'WriteMode', 'append');
+[fid, message] = fopen("trusted-input.bin", "rb");
+assert(fid >= 0, message);
+cleanup = onCleanup(@() fclose(fid));
+values = fread(fid, [4 1000], "single=>single");
 ```
 
-## MAT Files
-
-### Saving Variables
-
-```matlab
-% Save all workspace variables
-save('data.mat');
-
-% Save specific variables
-save('data.mat', 'x', 'y', 'results');
-
-% Save with options
-save('data.mat', 'x', 'y', '-v7.3');    % Large files (>2GB)
-save('data.mat', 'x', '-append');        % Append to existing file
-save('data.mat', '-struct', 's');        % Save struct fields as variables
-
-% Compression options
-save('data.mat', 'x', '-v7');            % Compressed (default)
-save('data.mat', 'x', '-v6');            % Uncompressed, faster
-```
-
-### Loading Variables
-
-```matlab
-% Load all variables
-load('data.mat');
-
-% Load specific variables
-load('data.mat', 'x', 'y');
-
-% Load into structure
-S = load('data.mat');
-S = load('data.mat', 'x', 'y');
-x = S.x;
-y = S.y;
-
-% List contents without loading
-whos('-file', 'data.mat');
-vars = who('-file', 'data.mat');
-```
-
-### MAT-File Object (Large Files)
-
-```matlab
-% Create MAT-file object for partial access
-m = matfile('data.mat');
-m.Properties.Writable = true;
-
-% Read partial data
-x = m.bigArray(1:100, :);       % First 100 rows only
-
-% Write partial data
-m.bigArray(1:100, :) = newData;
-
-% Get variable info
-sz = size(m, 'bigArray');
-```
-
-## Images
-
-### Reading Images
-
-```matlab
-% Read image
-img = imread('image.png');
-img = imread('image.jpg');
-img = imread('image.tiff');
-
-% Get image info
-info = imfinfo('image.png');
-info.Width
-info.Height
-info.ColorType
-info.BitDepth
-
-% Read specific frames (multi-page TIFF, GIF)
-img = imread('animation.gif', 3);  % Frame 3
-[img, map] = imread('indexed.gif');  % Indexed image with colormap
-```
-
-### Writing Images
-
-```matlab
-% Write image
-imwrite(img, 'output.png');
-imwrite(img, 'output.jpg');
-imwrite(img, 'output.tiff');
-
-% With options
-imwrite(img, 'output.jpg', 'Quality', 95);
-imwrite(img, 'output.png', 'BitDepth', 16);
-imwrite(img, 'output.tiff', 'Compression', 'lzw');
-
-% Write indexed image with colormap
-imwrite(X, map, 'indexed.gif');
-
-% Append to multi-page TIFF
-imwrite(img1, 'multipage.tiff');
-imwrite(img2, 'multipage.tiff', 'WriteMode', 'append');
-```
-
-### Image Formats
-
-```matlab
-% Supported formats (partial list)
-% BMP  - Windows Bitmap
-% GIF  - Graphics Interchange Format
-% JPEG - Joint Photographic Experts Group
-% PNG  - Portable Network Graphics
-% TIFF - Tagged Image File Format
-% PBM, PGM, PPM - Portable bitmap formats
-
-% Check supported formats
-formats = imformats;
-```
-
-## Tables and Data Types
-
-### Creating Tables
-
-```matlab
-% From variables
-T = table(var1, var2, var3);
-T = table(var1, var2, 'VariableNames', {'Col1', 'Col2'});
-
-% From arrays
-T = array2table(M);
-T = array2table(M, 'VariableNames', {'A', 'B', 'C'});
-
-% From cell array
-T = cell2table(C);
-T = cell2table(C, 'VariableNames', {'Name', 'Value'});
-
-% From struct
-T = struct2table(S);
-```
-
-### Accessing Table Data
-
-```matlab
-% By variable name
-col = T.VariableName;
-col = T.('VariableName');
-col = T{:, 'VariableName'};
-
-% By index
-row = T(5, :);              % Row 5
-col = T(:, 3);              % Column 3 as table
-data = T{:, 3};             % Column 3 as array
-subset = T(1:10, 2:4);      % Subset as table
-data = T{1:10, 2:4};        % Subset as array
-
-% Logical indexing
-subset = T(T.Value > 5, :);
-```
-
-### Modifying Tables
-
-```matlab
-% Add variable
-T.NewVar = newData;
-T = addvars(T, newData, 'NewName', 'Col4');
-T = addvars(T, newData, 'Before', 'ExistingCol');
-
-% Remove variable
-T.OldVar = [];
-T = removevars(T, 'OldVar');
-T = removevars(T, {'Col1', 'Col2'});
-
-% Rename variable
-T = renamevars(T, 'OldName', 'NewName');
-T.Properties.VariableNames{'OldName'} = 'NewName';
-
-% Reorder variables
-T = movevars(T, 'Col3', 'Before', 'Col1');
-T = T(:, {'Col2', 'Col1', 'Col3'});
-```
-
-### Table Operations
-
-```matlab
-% Sorting
-T = sortrows(T, 'Column');
-T = sortrows(T, 'Column', 'descend');
-T = sortrows(T, {'Col1', 'Col2'}, {'ascend', 'descend'});
-
-% Unique rows
-T = unique(T);
-T = unique(T, 'rows');
-
-% Join tables
-T = join(T1, T2);                   % Inner join on common keys
-T = join(T1, T2, 'Keys', 'ID');
-T = innerjoin(T1, T2);
-T = outerjoin(T1, T2);
-
-% Stack/unstack
-T = stack(T, {'Var1', 'Var2'});
-T = unstack(T, 'Values', 'Keys');
-
-% Group operations
-G = groupsummary(T, 'GroupVar', 'mean', 'ValueVar');
-G = groupsummary(T, 'GroupVar', {'mean', 'std'}, 'ValueVar');
-```
-
-### Cell Arrays
-
-```matlab
-% Create cell array
-C = {1, 'text', [1 2 3]};
-C = cell(m, n);             % Empty m×n cell array
-
-% Access contents
-contents = C{1, 2};         % Contents of cell (1,2)
-subset = C(1:2, :);         % Subset of cells (still cell array)
-
-% Convert
-A = cell2mat(C);            % To matrix (if compatible)
-T = cell2table(C);          % To table
-S = cell2struct(C, fields); % To struct
-```
-
-### Structures
-
-```matlab
-% Create structure
-S.field1 = value1;
-S.field2 = value2;
-S = struct('field1', value1, 'field2', value2);
-
-% Access fields
-val = S.field1;
-val = S.('field1');
-
-% Field names
-names = fieldnames(S);
-tf = isfield(S, 'field1');
-
-% Structure arrays
-S(1).name = 'Alice';
-S(2).name = 'Bob';
-names = {S.name};           % Extract all names
-```
-
-## Low-Level File I/O
-
-### Opening and Closing Files
-
-```matlab
-% Open file
-fid = fopen('file.txt', 'r');   % Read
-fid = fopen('file.txt', 'w');   % Write (overwrite)
-fid = fopen('file.txt', 'a');   % Append
-fid = fopen('file.bin', 'rb');  % Read binary
-fid = fopen('file.bin', 'wb');  % Write binary
-
-% Check for errors
-if fid == -1
-    error('Could not open file');
-end
-
-% Close file
-fclose(fid);
-fclose('all');              % Close all files
-```
-
-### Text File I/O
-
-```matlab
-% Read formatted data
-data = fscanf(fid, '%f');           % Read floats
-data = fscanf(fid, '%f %f', [2 Inf]);  % Two columns
-C = textscan(fid, '%f %s %f');      % Mixed types
-
-% Read lines
-line = fgetl(fid);          % One line (no newline)
-line = fgets(fid);          % One line (with newline)
-
-% Write formatted data
-fprintf(fid, '%d, %f, %s\n', intVal, floatVal, strVal);
-fprintf(fid, '%6.2f\n', data);
-
-% Read/write strings
-str = fscanf(fid, '%s');
-fprintf(fid, '%s', str);
-```
-
-### Binary File I/O
-
-```matlab
-% Read binary data
-data = fread(fid, n, 'double');     % n doubles
-data = fread(fid, [m n], 'int32');  % m×n int32s
-data = fread(fid, Inf, 'uint8');    % All bytes
-
-% Write binary data
-fwrite(fid, data, 'double');
-fwrite(fid, data, 'int32');
-
-% Data types: 'int8', 'uint8', 'int16', 'uint16', 'int32', 'uint32',
-%             'int64', 'uint64', 'single', 'double', 'char'
-```
-
-### File Position
-
-```matlab
-% Get position
-pos = ftell(fid);
-
-% Set position
-fseek(fid, 0, 'bof');       % Beginning of file
-fseek(fid, 0, 'eof');       % End of file
-fseek(fid, offset, 'cof'); % Current position + offset
-
-% Rewind to beginning
-frewind(fid);
-
-% Check end of file
-tf = feof(fid);
-```
-
-### File and Directory Operations
-
-```matlab
-% Check existence
-tf = exist('file.txt', 'file');
-tf = exist('folder', 'dir');
-tf = isfile('file.txt');
-tf = isfolder('folder');
-
-% List files
-files = dir('*.csv');           % Struct array
-files = dir('folder/*.mat');
-names = {files.name};
-
-% File info
-info = dir('file.txt');
-info.name
-info.bytes
-info.date
-info.datenum
-
-% File operations
-copyfile('src.txt', 'dst.txt');
-movefile('src.txt', 'dst.txt');
-delete('file.txt');
-
-% Directory operations
-mkdir('newfolder');
-rmdir('folder');
-rmdir('folder', 's');           % Remove with contents
-cd('path');
-pwd                             % Current directory
-```
-
-### Path Operations
-
-```matlab
-% Construct paths
-fullpath = fullfile('folder', 'subfolder', 'file.txt');
-fullpath = fullfile(pwd, 'file.txt');
-
-% Parse paths
-[path, name, ext] = fileparts('/path/to/file.txt');
-% path = '/path/to', name = 'file', ext = '.txt'
-
-% Temporary files/folders
-tmpfile = tempname;
-tmpdir = tempdir;
-```
+Specify byte order, element type, dimensions, record framing, and maximum
+length. Validate `fread` counts and check arithmetic for overflow before
+allocating.
+
+HDF5, netCDF, CDF, FITS, Parquet, audio, video, images, databases, and
+spreadsheets each have format/library/product/platform constraints. Use their
+official current documentation and enforce parser-specific bounds.
+
+## Export and provenance
+
+Record:
+
+- source and output checksums;
+- schema/version, encoding, delimiter, locale, and numeric precision;
+- variable names, classes, units, dimensions, missing rules;
+- timestamp/time-zone representation;
+- sort/group order;
+- MAT version or external format/library;
+- MATLAB release and required products.
+
+Prefer a documented language-neutral format for exchange:
+
+- CSV/TSV for simple rectangular values with a sidecar schema;
+- JSON for bounded structured data with an explicit schema;
+- Parquet for typed tabular interchange when all consumers agree;
+- HDF5/netCDF for scientific arrays with documented conventions;
+- MAT only for trusted MATLAB-oriented storage.
+
+Python pickle is executable deserialization, not a scientific interchange
+format. Never create, load, or recommend pickle for MATLAB exchange.
+
+## Sources (reviewed 2026-10-01)
+
+- [Data Import and Export](https://www.mathworks.com/help/matlab/data-import-and-export.html)
+- [`detectImportOptions`](https://www.mathworks.com/help/matlab/ref/detectimportoptions.html)
+- [`readtable`](https://www.mathworks.com/help/matlab/ref/readtable.html)
+- [`writetable`](https://www.mathworks.com/help/matlab/ref/writetable.html)
+- [Tables](https://www.mathworks.com/help/matlab/tables.html)
+- [Timetables](https://www.mathworks.com/help/matlab/timetables.html)
+- [`ismissing`](https://www.mathworks.com/help/matlab/ref/ismissing.html)
+- [MAT File Versions](https://www.mathworks.com/help/matlab/import_export/mat-file-versions.html)
+- [`MatFile`](https://www.mathworks.com/help/matlab/ref/matlab.io.matfile.html)
+- [Object Save and Load](https://www.mathworks.com/help/matlab/save-and-load.html)
+- [`loadobj`](https://www.mathworks.com/help/matlab/ref/loadobj.html)
+- [HDF5 Files](https://www.mathworks.com/help/matlab/hdf5-files.html)
+- [MATLAB release notes](https://www.mathworks.com/help/matlab/release-notes.html)
+
+- [SciPy MAT metadata inventory](https://docs.scipy.org/doc/scipy/reference/generated/scipy.io.whosmat.html)
+- [h5py null dataspaces](https://docs.h5py.org/en/stable/high/dataset.html#creating-and-reading-empty-or-null-datasets-and-attributes)

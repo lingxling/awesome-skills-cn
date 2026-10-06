@@ -1,5 +1,8 @@
 # NVIDIA Warp Reference — GPU Simulation & Spatial Computing
 
+> Review: 2026-10-01. Code below is illustrative unless explicitly described as CPU-tested.
+> GPU execution, performance, GDS, and multi-GPU behavior require validation on target hardware.
+
 NVIDIA Warp is a Python framework for writing high-performance simulation and graphics code. It JIT-compiles Python functions decorated with `@wp.kernel` into efficient C++/CUDA code that runs on CPU or GPU. Warp is designed specifically for spatial computing — physics simulation, robotics, geometry processing, and differentiable programming — with rich built-in types (vectors, matrices, quaternions, transforms) and spatial primitives (meshes, volumes, hash grids, BVH).
 
 Unlike Numba CUDA (which gives you raw thread/block control) or CuPy (which replaces NumPy ops), Warp provides a higher-level programming model with built-in support for differentiable simulation, spatial queries, and tile-based cooperative operations.
@@ -26,11 +29,11 @@ Unlike Numba CUDA (which gives you raw thread/block control) or CuPy (which repl
 ## Installation
 
 ```bash
-uv add warp-lang              # PyPI wheels built with the CUDA 12.9 runtime
-# uv add warp-lang[examples]  # Includes USD and example dependencies
+uv add "warp-lang==1.17.*"              # PyPI wheels built with the CUDA 12.9 runtime
+# uv add "warp-lang[examples]==1.17.*"  # Includes USD and example dependencies
 ```
 
-Requires Python >= 3.10 and an NVIDIA driver >= 525 for the CUDA 12 wheels. CUDA 13.0 builds (driver >= 580) are published on the project's GitHub Releases page rather than PyPI.
+Requires Python >= 3.10. Windows/Linux wheels support CPU or CUDA; the macOS Apple Silicon wheel is CPU-only, with no Metal backend. CUDA 12 wheels need an NVIDIA driver >=525. CUDA 13.0 builds (driver >= 580) are published on the project's GitHub Releases page rather than PyPI.
 
 Verify installation:
 
@@ -46,12 +49,13 @@ wp.init()
 
 | Use Case | Best Choice | Why |
 |----------|------------|-----|
-| Physics simulation (particles, cloth, fluids) | **Warp** | Built-in spatial primitives, differentiable, simulation-oriented |
+| High-level rigid-body / robotics simulation | **Newton** | Maintained engine built on Warp; successor to removed `warp.sim` |
+| Custom physics kernels (particles, cloth, fluids) | **Warp** | Spatial primitives, autodiff, and explicit kernels |
 | Geometry processing (meshes, ray casting, SDFs) | **Warp** | Native mesh/volume/BVH types, spatial queries |
 | Differentiable simulation for ML training | **Warp** | Automatic forward/backward AD, PyTorch/JAX integration |
 | Robotics (kinematics, dynamics, control) | **Warp** | Transforms, quaternions, spatial vectors built-in |
 | NumPy array math (FFT, linear algebra, sorting) | **CuPy** | Drop-in NumPy replacement, wraps cuBLAS/cuFFT |
-| Custom CUDA kernels with raw thread control | **Numba** | Direct CUDA programming model, shared memory |
+| General custom CUDA kernels with explicit SIMT control | **Numba-CUDA-MLIR** or **Numba-CUDA** | Direct CUDA programming model and shared memory |
 | Data wrangling / ETL on tabular data | **cuDF** | pandas API on GPU |
 | ML training (sklearn-style) | **cuML** | scikit-learn API on GPU |
 
@@ -59,7 +63,9 @@ Warp and Numba both compile Python to CUDA, but serve different niches:
 - **Warp** excels at simulation/spatial workloads with its rich type system (vec3, quat, transform, mesh, volume) and automatic differentiation
 - **Numba** excels at raw CUDA programming where you need explicit thread/block control, shared memory management, and atomic operations on arbitrary data
 
-Note: Warp's former ready-made physics engine module `warp.sim` was removed in Warp 1.10 — it has been superseded by the separate Newton library, which is built on Warp. Warp itself remains the tool for writing custom simulation kernels.
+Warp's former ready-made physics engine module `warp.sim` was removed in Warp 1.10. Use the
+separate Newton library, built on Warp, for maintained high-level simulation APIs. Warp itself
+remains the tool for writing custom kernels and domain primitives.
 
 ---
 
@@ -116,6 +122,8 @@ i, j, k = wp.tid()    # 3D
 def spring_force(x0: wp.vec3, x1: wp.vec3, rest_length: float, stiffness: float):
     delta = x1 - x0
     length = wp.length(delta)
+    if length <= 1.0e-8:
+        return wp.vec3(0.0, 0.0, 0.0)  # Chosen degenerate-spring convention
     direction = delta / length
     return stiffness * (length - rest_length) * direction
 ```
@@ -236,7 +244,7 @@ wp.launch(raycast, dim=n, inputs=[mesh.id, origins, dirs, hits])
 
 # Update vertex positions (topology stays fixed)
 mesh.points = new_positions
-mesh.refit()  # Rebuild BVH
+mesh.refit()  # Refit bounds without rebuilding topology
 ```
 
 ### Hash Grids (`wp.HashGrid`)
@@ -248,7 +256,8 @@ grid = wp.HashGrid(dim_x=128, dim_y=128, dim_z=128, device="cuda")
 grid.build(points=particle_positions, radius=search_radius)
 
 @wp.kernel
-def find_neighbors(grid_id: wp.uint64, positions: wp.array(dtype=wp.vec3)):
+def find_neighbors(grid_id: wp.uint64, positions: wp.array(dtype=wp.vec3),
+                   search_radius: float):
     tid = wp.tid()
     pos = positions[tid]
 
@@ -326,7 +335,7 @@ def tile_gemm(A: wp.array2d(dtype=float), B: wp.array2d(dtype=float),
     i, j = wp.tid()
 
     sum = wp.tile_zeros(shape=(TILE_M, TILE_N), dtype=wp.float32)
-    count = int(A.shape[1] / TILE_K)
+    count = (A.shape[1] + TILE_K - 1) // TILE_K
 
     for k in range(count):
         a = wp.tile_load(A, shape=(TILE_M, TILE_K), offset=(i * TILE_M, k * TILE_K))
@@ -335,9 +344,13 @@ def tile_gemm(A: wp.array2d(dtype=float), B: wp.array2d(dtype=float),
 
     wp.tile_store(C, sum, offset=(i * TILE_M, j * TILE_N))
 
-wp.launch_tiled(tile_gemm, dim=(M // TILE_M, N // TILE_N),
+wp.launch_tiled(tile_gemm, dim=((M + TILE_M - 1) // TILE_M, (N + TILE_N - 1) // TILE_N),
                 inputs=[A, B, C], block_dim=TILE_THREADS)
 ```
+
+Require `A.shape == (M, K)`, `B.shape == (K, N)`, and `C.shape == (M, N)`.
+With default bounds checks, Warp 1.17 tile loads zero-pad partial boundary tiles
+and tile stores omit out-of-bounds elements; retain those checks for the ceiling grid.
 
 Key tile operations:
 - **Construction**: `tile_zeros`, `tile_ones`, `tile_load`, `tile_from_thread`
@@ -362,9 +375,9 @@ a = wp.zeros(1024, dtype=wp.vec3, device="cuda", requires_grad=True)
 # Record forward pass
 tape = wp.Tape()
 with tape:
-    wp.launch(kernel=compute1, inputs=[a, b], device="cuda")
-    wp.launch(kernel=compute2, inputs=[c, d], device="cuda")
-    wp.launch(kernel=loss_fn, inputs=[d, loss], device="cuda")
+    wp.launch(kernel=compute1, dim=a.size, inputs=[a, b], device="cuda")
+    wp.launch(kernel=compute2, dim=c.size, inputs=[c, d], device="cuda")
+    wp.launch(kernel=loss_fn, dim=1, inputs=[d, loss], device="cuda")
 
 # Backward pass
 tape.backward(loss)
@@ -374,7 +387,7 @@ grad_a = tape.gradients[a]
 ```
 
 Key features:
-- Automatic adjoint code generation for all kernels
+- Adjoint code generation for supported differentiable operations; check custom functions, control flow and gradient validity
 - `wp.Tape` records and replays computation graphs
 - Integrates with PyTorch autograd and JAX JIT
 - Custom gradient functions via `@wp.func_grad`
@@ -436,7 +449,8 @@ wp_array = wp.from_numpy(np_array, dtype=wp.vec3, device="cuda")
 ```python
 torch_tensor = wp.to_torch(warp_array)      # Zero-copy
 warp_array = wp.from_torch(torch_tensor)     # Zero-copy
-# Gradient arrays are converted between Warp tape and PyTorch autograd
+# Sharing tensor/gradient storage does not attach Warp operations to a PyTorch graph.
+# Use a torch.autograd.Function bridge or explicitly transfer gradients as below.
 ```
 
 ### CuPy/Numba (zero-copy via CUDA Array Interface)
@@ -486,15 +500,19 @@ Keep data on GPU. Use `wp.array` on device, avoid `.numpy()` in inner loops.
 
 ### 3. Use Tile Operations for Reductions and GEMM
 
-Tile-based reductions are 50x+ faster than per-thread atomics. Use `wp.tile()` + `wp.tile_sum()` + `wp.tile_atomic_add()` instead of `wp.atomic_add()`.
+Tile operations can reduce global traffic and atomic contention, but they also change resource use.
+Compare `wp.tile()` / `wp.tile_sum()` designs with the simpler atomic implementation on the target
+shape and GPU.
 
 ### 4. Prefer float32 Over float64
 
-GPU float32 throughput is 2x-32x higher than float64.
+Use float32 only when the numerical contract permits it. The float32/float64 throughput ratio is
+architecture-specific; validate accuracy and benchmark the target GPU.
 
 ### 5. Kernel Caching
 
-Warp caches compiled kernels between runs. First launch compiles (can take seconds); subsequent runs load from cache in milliseconds.
+Warp caches compiled kernels between runs. Exclude first-use compilation from steady-state kernel
+timing, but include it when one-shot application latency matters.
 
 ### 6. Object Lifetime
 
@@ -513,7 +531,7 @@ def integrate_particles(positions: wp.array(dtype=wp.vec3),
                         forces: wp.array(dtype=wp.vec3),
                         dt: float):
     tid = wp.tid()
-    vel = velocities[tid] + forces[tid] * dt
+    vel = velocities[tid] + forces[tid] * dt  # forces denotes acceleration (or unit mass)
     pos = positions[tid] + vel * dt
 
     velocities[tid] = vel
@@ -551,6 +569,8 @@ def simulate(state: wp.array(dtype=wp.vec3), params: wp.array(dtype=float),
 optimizer = torch.optim.Adam([torch_params], lr=1e-3)
 
 for epoch in range(100):
+    optimizer.zero_grad(set_to_none=True)
+    loss.zero_()  # loss/output/intermediate differentiable arrays need requires_grad=True
     wp_params = wp.from_torch(torch_params)
     tape = wp.Tape()
     with tape:
@@ -561,6 +581,7 @@ for epoch in range(100):
     grad = wp.to_torch(tape.gradients[wp_params])
     torch_params.grad = grad
     optimizer.step()
+    tape.zero()  # Clear accumulated Warp gradients before the next iteration
 ```
 
 ### SPH Fluid with Hash Grid
@@ -599,7 +620,7 @@ wp.launch(compute_density, dim=n, inputs=[grid.id, positions, densities, h])
 
 2. **Using Python data structures in kernels** — No lists, dicts, or sets. Use `wp.array`, `wp.vec3`, `@wp.struct`.
 
-3. **Calling `wp.tid()` in user functions** — `wp.tid()` only works in kernels. Pass the thread index as a parameter to `@wp.func` functions.
+3. **Launch dimensions** — Match `wp.tid()` arity to the launch dimensions and preserve bounds in custom indexing.
 
 4. **Object lifetime issues** — Spatial primitives (Mesh, HashGrid, Volume, BVH) must stay alive (referenced in Python) while their `.id` is used in kernels. Letting the Python object get garbage-collected causes crashes.
 

@@ -109,6 +109,8 @@ ${BOLD}Usage:${RESET} skills <command> [options]
 ${BOLD}Manage Skills:${RESET}
   add <package>        Add a skill package (alias: a)
                        e.g. vercel-labs/agent-skills
+                            notion
+                            https://notion.so/<skill-page>
                             https://github.com/vercel-labs/agent-skills
   use <package>@<skill>
                        Generate a prompt for using one skill without installing it
@@ -143,20 +145,19 @@ ${BOLD}Add Options:${RESET}
   --subagent <names>     Install to Eve subagents (use 'root' for the root agent)
   --all                  Shorthand for --skill '*' --agent '*' -y
   --full-depth           Search all subdirectories even when a root SKILL.md exists
+  --json                 Output results as JSON (machine-readable, no ANSI codes)
 
 ${BOLD}Use Options:${RESET}
   -s, --skill <skill>    Specify the skill to use
   -a, --agent <agent>    Start one supported agent interactively
   --full-depth           Search all subdirectories even when a root SKILL.md exists
-  --dangerously-accept-openclaw-risks
-                         Allow unverified OpenClaw community skills
 
 ${BOLD}Remove Options:${RESET}
   -g, --global           Remove from global scope
-  -a, --agent <agents>   Remove from specific agents (use '*' for all agents)
+  -a, --agent <agents>   Remove from specific agents (omit to clean all agent links)
   -s, --skill <skills>   Specify skills to remove (use '*' for all skills)
   -y, --yes              Skip confirmation prompts
-  --all                  Shorthand for --skill '*' --agent '*' -y
+  --all                  Remove every installed skill (-y implied). Do not combine with named skills.
   
 ${BOLD}Experimental Sync Options:${RESET}
   -a, --agent <agents>   Specify agents to install to (use '*' for all agents)
@@ -178,6 +179,7 @@ ${BOLD}Examples:${RESET}
   ${DIM}$${RESET} skills add vercel-labs/agent-skills -g
   ${DIM}$${RESET} skills add vercel-labs/agent-skills --agent claude-code cursor
   ${DIM}$${RESET} skills add vercel-labs/agent-skills --skill pr-review commit
+  ${DIM}$${RESET} skills add vercel-labs/agent-skills --json -y ${DIM}# JSON output${RESET}
   ${DIM}$${RESET} skills remove                        ${DIM}# interactive remove${RESET}
   ${DIM}$${RESET} skills remove web-design             ${DIM}# remove by name${RESET}
   ${DIM}$${RESET} skills rm --global frontend-design
@@ -213,10 +215,10 @@ ${BOLD}Arguments:${RESET}
 
 ${BOLD}Options:${RESET}
   -g, --global       Remove from global scope (~/) instead of project scope
-  -a, --agent        Remove from specific agents (use '*' for all agents)
+  -a, --agent        Remove from specific agents (omit to clean all agent links)
   -s, --skill        Specify skills to remove (use '*' for all skills)
   -y, --yes          Skip confirmation prompts
-  --all              Shorthand for --skill '*' --agent '*' -y
+  --all              Remove every installed skill (-y implied). Do not combine with named skills.
 
 ${BOLD}Examples:${RESET}
   ${DIM}$${RESET} skills remove                           ${DIM}# interactive selection${RESET}
@@ -312,6 +314,25 @@ async function main(): Promise<void> {
   const command = args[0];
   const restArgs = args.slice(1);
 
+  // Subcommand --help / -h must short-circuit before dispatch so that running
+  // e.g. `skills update --help` prints help instead of executing the update
+  // flow. Without this pre-check, every subcommand handler that doesn't
+  // inspect `--help` itself ends up running its side-effecting work.
+  if (
+    command !== '--help' &&
+    command !== '-h' &&
+    command !== '--version' &&
+    command !== '-v' &&
+    (restArgs.includes('--help') || restArgs.includes('-h'))
+  ) {
+    if (command === 'remove' || command === 'rm' || command === 'r') {
+      showRemoveHelp();
+    } else {
+      showHelp();
+    }
+    return;
+  }
+
   switch (command) {
     case 'find':
     case 'search':
@@ -335,10 +356,13 @@ async function main(): Promise<void> {
     case 'install':
     case 'a':
     case 'add': {
-      if (!inAgent) showLogo();
       const { source: addSource, options: addOpts, errors } = parseAddOptions(restArgs);
+      // JSON mode must keep stdout parseable — no logo
+      if (!inAgent && !addOpts.json) showLogo();
       if (errors.length > 0) {
         for (const error of errors) console.error(`Error: ${error}`);
+        // JSON mode promises exactly one JSON value on stdout, even here
+        if (addOpts.json) console.log('[]');
         process.exitCode = 1;
         break;
       }
@@ -356,15 +380,11 @@ async function main(): Promise<void> {
     }
     case 'remove':
     case 'rm':
-    case 'r':
-      // Check for --help or -h flag
-      if (restArgs.includes('--help') || restArgs.includes('-h')) {
-        showRemoveHelp();
-        break;
-      }
+    case 'r': {
       const { skills, options: removeOptions } = parseRemoveOptions(restArgs);
       await removeCommand(skills, removeOptions);
       break;
+    }
     case 'experimental_sync': {
       if (!inAgent) showLogo();
       const { options: syncOptions } = parseSyncOptions(restArgs);
@@ -392,6 +412,7 @@ async function main(): Promise<void> {
     default:
       console.log(`Unknown command: ${command}`);
       console.log(`Run ${BOLD}skills --help${RESET} for usage.`);
+      process.exitCode = 1;
   }
 }
 

@@ -1,684 +1,397 @@
-# TDC Utilities and Data Functions
+# Splits, evaluators, and benchmark groups
 
-This document provides comprehensive documentation for TDC's data processing, evaluation, and utility functions.
+This reference describes behavior verified in the **PyTDC 1.1.15** source
+distribution on 2026-10-01. The official website documents user-facing intent;
+source inspection resolves exact method spellings and edge cases.
 
-## Overview
+## Split API overview
 
-TDC provides utilities organized into four main categories:
-1. **Dataset Splits** - Train/validation/test partitioning strategies
-2. **Model Evaluation** - Standardized performance metrics
-3. **Data Processing** - Molecule conversion, filtering, and transformation
-4. **Entity Retrieval** - Database queries and conversions
-
-## 1. Dataset Splits
-
-Dataset splitting is crucial for evaluating model generalization. TDC provides multiple splitting strategies designed for therapeutic ML.
-
-### Basic Split Usage
+Ordinary loaders return:
 
 ```python
-from tdc.single_pred import ADME
+{
+    "train": train_frame,
+    "valid": validation_frame,
+    "test": test_frame,
+}
+```
 
-data = ADME(name='Caco2_Wang')
+The key is `valid`, not `val`. Generic defaults are:
 
-# Get split with default parameters
-split = data.get_split()
-# Returns: {'train': DataFrame, 'valid': DataFrame, 'test': DataFrame}
-
-# Customize split parameters
+```python
 split = data.get_split(
-    method='scaffold',
+    method="random",
     seed=42,
-    frac=[0.7, 0.1, 0.2]
+    frac=[0.7, 0.1, 0.2],
 )
 ```
 
-### Split Methods
+Fractions are train/validation/test and should be finite, non-negative, and sum to
+one. Upstream does not consistently validate this before arithmetic; the bundled
+CLI does.
 
-#### Random Split
-Random shuffling of data - suitable for general ML tasks.
+### Loader-specific methods
 
-```python
-split = data.get_split(method='random', seed=1)
-```
+| Loader family | Verified methods | Additional arguments |
+|---|---|---|
+| Single prediction | `random`, `scaffold`, internal `cold_<entity>` | none |
+| Pair prediction (`DTI`, `DDI`, etc.) | `random`, `cold_split`, entity aliases such as `cold_drug`, `combination`, `time` | `column_name`, `time_column` |
+| General multi-prediction frame | `random`, `cold_split`, `combination` | `column_name` |
+| `MolGen`, `Reaction`, `RetroSyn` | `random` | none |
+| Benchmark train/valid | group metadata chooses `scaffold`, `random`, `combination`, or `group` | `benchmark`, `split_type`, `seed` |
 
-**When to use:**
-- Baseline model evaluation
-- When chemical/temporal structure is not important
-- Quick prototyping
-
-**Not recommended for:**
-- Realistic drug discovery scenarios
-- Evaluating generalization to new chemical matter
-
-#### Scaffold Split
-Splits based on molecular scaffolds (Bemis-Murcko scaffolds) - ensures test molecules are structurally distinct from training.
+The generic official cold-start spelling is:
 
 ```python
-split = data.get_split(method='scaffold', seed=1)
+split = data.get_split(
+    method="cold_split",
+    column_name=["Drug", "Target"],
+    seed=42,
+    frac=[0.7, 0.1, 0.2],
+)
 ```
 
-**When to use:**
-- Default for most single prediction tasks
-- Evaluating generalization to new chemical series
-- Realistic drug discovery scenarios
+Inspect `data.get_data().columns` first. A DTI frame commonly uses `Drug` and
+`Target`, but other tasks have different entity names. Prefer `cold_split` with
+explicit columns over inferred aliases.
 
-**How it works:**
-1. Extract Bemis-Murcko scaffold from each molecule
-2. Group molecules by scaffold
-3. Assign scaffolds to train/valid/test sets
-4. Ensures test molecules have unseen scaffolds
+## Random split details
 
-#### Cold Splits (DTI/DDI Tasks)
-For multi-instance prediction, cold splits ensure test set contains unseen drugs, targets, or both.
+`create_fold`:
 
-**Cold Drug Split:**
+1. samples test rows with `random_state=seed`;
+2. samples validation rows from the remainder with **fixed**
+   `random_state=1`;
+3. assigns remaining rows to train;
+4. resets partition indices.
+
+Consequences:
+
+- the supplied seed changes test membership;
+- it does not independently seed validation sampling;
+- integer rounding and Pandas sampling can make exact counts differ from naïve
+  multiplication;
+- a different seed is not a guarantee that every partition changes.
+
+Record content hashes or stable IDs when exact split reproducibility matters.
+
+## Scaffold split details
+
+The official generic documentation limits scaffold split to molecule-based
+single-instance ADME, Tox, and HTS tasks. In 1.1.15 the implementation:
+
+- requires RDKit;
+- parses the configured molecular entity as SMILES;
+- computes Bemis–Murcko scaffold strings with `includeChirality=False`;
+- groups rows by exact scaffold string;
+- shuffles large and small scaffold groups with `seed`;
+- greedily assigns whole groups to partitions;
+- omits SMILES that raise during scaffold generation.
+
+The requested row fractions are targets, not guarantees, because whole scaffold
+groups are assigned together. “Scaffold split” means exact computed scaffold groups
+do not cross partitions in that implementation. It does **not** establish that:
+
+- close analogs or similar scaffolds cannot cross;
+- duplicates, labels, assay batches, sources, or dates are isolated;
+- stereochemistry is isolated;
+- invalid/missing structures are represented;
+- preprocessing performed before splitting did not leak information.
+
+Audit exact structures, scaffolds, identifiers, labels, provenance, and temporal
+fields appropriate to the scientific question. Use cautious language such as
+“partitioned by PyTDC's 1.1.15 Murcko-scaffold implementation,” not “leakage-free.”
+
+## Cold split details
+
+`cold_split` samples unique values independently for each requested column, then:
+
+- keeps test rows satisfying all sampled test-entity memberships;
+- removes any row containing a test entity from the train/validation pool;
+- samples validation entity values from the remainder;
+- keeps validation rows satisfying all validation memberships;
+- removes validation entities from train.
+
+For multiple columns this intersection/removal process can discard many
+cross-combination rows, produce empty validation/test partitions, and yield row
+fractions far from `frac`. PyTDC raises `ValueError` when test or validation is
+empty.
+
+Exact values in each requested column are designed to be disjoint across returned
+partitions. That is a narrow entity-overlap property, not proof against:
+
+- aliases or duplicated entities with different identifiers;
+- homologous targets or structurally near-identical compounds;
+- shared higher-level groups;
+- preprocessing or label leakage.
+
+The bundled loader CLI reports pairwise exact-value overlap counts for requested
+columns without making a broader claim.
+
+`cold_drug_target` is not a 1.1.15 method. Use:
+
 ```python
-from tdc.multi_pred import DTI
-data = DTI(name='BindingDB_Kd')
-split = data.get_split(method='cold_drug', seed=1)
-```
-- Test set contains drugs not seen during training
-- Evaluates generalization to new compounds
-
-**Cold Target Split:**
-```python
-split = data.get_split(method='cold_target', seed=1)
-```
-- Test set contains targets not seen during training
-- Evaluates generalization to new proteins
-
-**Cold Drug-Target Split:**
-```python
-split = data.get_split(method='cold_drug_target', seed=1)
-```
-- Test set contains novel drug-target pairs
-- Most challenging evaluation scenario
-
-#### Temporal Split
-For datasets with temporal information - ensures test data is from later time points.
-
-```python
-split = data.get_split(method='temporal', seed=1)
+data.get_split(
+    method="cold_split",
+    column_name=["Drug", "Target"],
+    seed=42,
+)
 ```
 
-**When to use:**
-- Datasets with time stamps
-- Simulating prospective prediction
-- Clinical trial outcome prediction
+## Combination and time splits
 
-### Custom Split Fractions
+### Combination
+
+The built-in `combination` implementation is designed for DrugSyn data with
+`Drug1_ID`, `Drug2_ID`, and `Cell_Line_ID`. It separates drug-pair combinations
+across partitions while representing cell lines.
+
+In 1.1.15 it adds an internal `concat` column and does not remove it consistently
+from every returned partition. Inspect schemas rather than assuming identical
+columns. Do not apply it generically to DDI or DTI.
+
+### Time
+
+Pair loaders use:
 
 ```python
-# 80% train, 10% valid, 10% test
-split = data.get_split(method='scaffold', frac=[0.8, 0.1, 0.1])
-
-# 70% train, 15% valid, 15% test
-split = data.get_split(method='scaffold', frac=[0.7, 0.15, 0.15])
+split = data.get_split(
+    method="time",
+    time_column="Year",
+    frac=[0.7, 0.1, 0.2],
+)
 ```
 
-### Stratified Splits
+The verified built-in dataset case is `DTI(name="BindingDB_Patent")`, whose loader
+adds `Year`. The implementation sorts by the time column and returns an additional
+`split_time` summary. It does not use `seed`.
 
-For classification tasks with imbalanced labels:
+The spelling `temporal` is unsupported. Time boundaries can contain ties and the
+implementation uses boundary comparisons, so inspect timestamps and counts.
 
-```python
-split = data.get_split(method='scaffold', stratified=True)
+`stratified=True` is not a supported `get_split` argument in these loaders.
+
+## Evaluator registry
+
+Discover exact names from the installed package:
+
+```bash
+python scripts/discover_metadata.py --kind evaluators --limit 100
 ```
 
-Maintains label distribution across train/valid/test sets.
+Verified scalar registry names include:
 
-## 2. Model Evaluation
+```text
+roc-auc, f1, pr-auc, precision, recall, accuracy,
+mse, rmse, mae, r2, pcc, spearman,
+micro-f1, macro-f1, kappa, avg-roc-auc,
+rp@k, pr@k, range_logAUC
+```
 
-TDC provides standardized evaluation metrics for different task types.
+Generation/distribution names include:
 
-### Basic Evaluator Usage
+```text
+novelty, diversity, uniqueness, validity, fcd_distance, kl_divergence
+```
+
+Coordinate names include `rmsd` and `kabsch_rmsd`. Metadata also lists `smina`, but
+the 1.1.15 `Evaluator.assign_evaluator` implementation does not bind an evaluator
+function for it; treat `Evaluator("smina")` as an unresolved upstream inconsistency,
+not supported usage.
+
+Always pass exact registry names. Fuzzy matching exists, but aliases such as
+`Pearson`, `Micro-AUPR`, and `Macro-AUPR` are not registered.
+
+### Inputs and direction
+
+| Metrics | Input | Better direction |
+|---|---|---|
+| `mse`, `rmse`, `mae` | continuous truth and predictions | lower |
+| `r2`, `pcc`, `spearman` | continuous truth and predictions | higher |
+| `roc-auc`, `pr-auc`, `range_logAUC` | binary truth and real-valued scores | higher |
+| `accuracy`, `precision`, `recall`, `f1` | binary truth and scores plus optional threshold | higher |
+| `micro-f1`, `macro-f1`, `kappa` | integer class labels | higher |
+| `avg-roc-auc` | per-instance sequences of binary truth/scores | higher |
+| `pr@k`, `rp@k` | binary truth/scores and target recall/precision | higher |
+| `validity`, `uniqueness`, `novelty`, `diversity` | SMILES collections (some also need a reference set) | higher by their documented definitions |
+| `kl_divergence` | generated and reference SMILES | higher; mean of `exp(-KL)` terms |
+| `fcd_distance` | generated and reference SMILES | backend-dependent; see below |
+| `rmsd`, `kabsch_rmsd` | paired coordinate arrays | lower |
+
+This table describes evaluator semantics, not every benchmark's leaderboard
+objective. Use `bm_metric_names` or the official benchmark page for the chosen
+benchmark. Never infer a dataset's metric from “classification” or “regression”
+alone.
+
+### Call behavior
 
 ```python
 from tdc import Evaluator
 
-# Initialize evaluator
-evaluator = Evaluator(name='ROC-AUC')
-
-# Evaluate predictions
-score = evaluator(y_true, y_pred)
+mae = Evaluator("MAE")(y_true, y_pred)
+auroc = Evaluator("ROC-AUC")(y_true_binary, predicted_scores)
+spearman = Evaluator("Spearman")(y_true, y_pred)
 ```
 
-### Classification Metrics
+Thresholded `accuracy`, `precision`, `recall`, and `f1` default to 0.5 and convert
+scores with `score > threshold`; a score exactly equal to the threshold becomes
+class 0. `PR@K` and `RP@K` default to **0.5 through Evaluator**, overriding the
+underlying functions' 0.9 default. Pass `threshold=0.9` explicitly when desired. Spearman returns
+only the correlation coefficient from SciPy's result.
 
-#### ROC-AUC
-Receiver Operating Characteristic - Area Under Curve
+`pr-auc` calls scikit-learn `average_precision_score`, not trapezoidal PR-curve
+integration. `avg-roc-auc` averages over axis 0 (one AUC per row/sequence), so
+transpose task matrices only when that matches the intended unit of averaging.
+`range_logAUC` defaults to FPR range `(0.001, 0.1)`; the public wrapper does not
+forward `FPR_range`. Likewise `Evaluator("kabsch_rmsd")` performs rotation without
+centroid translation and ignores a `translate` keyword; center paired coordinates
+first or call `tdc.evaluator.kabsch_rmsd(P, Q, translate=True)` directly.
+
+`kl_divergence` averages ten `exp(-KL)` terms over molecular descriptors and
+internal similarity. Higher means closer distributions; it is not raw KL.
+Unpatched 1.1.15 also imports removed `scipy.histogram`: KL fails on the tested
+modern SciPy stack. A test-only alias to `numpy.histogram` reproduced the intended
+transform, but is not an upstream fix or a supported unpatched workflow. Its KDE
+can fail for tiny, constant, or singular samples.
+`fcd_distance` tries TensorFlow/FCD first, returning `exp(-0.2 * raw_FCD)` (higher
+is closer), then falls back to PyTorch/fcd_torch, returning raw FCD (lower is
+closer). Record the selected backend and transformation; do not compare these
+values directly or infer direction from the registry name. Optional FCD models
+were source-verified only, not downloaded/executed in this refresh.
+
+Validate lengths, shapes, label encoding, missing values, score calibration, and
+class presence before calling. ROC-AUC is undefined when only one class is present.
+
+## BenchmarkGroup API
+
+Public specialized imports in 1.1.15 are:
 
 ```python
-evaluator = Evaluator(name='ROC-AUC')
-score = evaluator(y_true, y_pred_proba)
+from tdc.benchmark_group import (
+    admet_group,
+    docking_group,
+    drugcombo_group,
+    dti_dg_group,
+)
 ```
 
-**Best for:**
-- Binary classification
-- Imbalanced datasets
-- Overall discriminative ability
-
-**Range:** 0-1 (higher is better, 0.5 is random)
-
-#### PR-AUC
-Precision-Recall Area Under Curve
+The generic top-level import is deprecated:
 
 ```python
-evaluator = Evaluator(name='PR-AUC')
-score = evaluator(y_true, y_pred_proba)
+# Compatibility only; emits a deprecation message.
+from tdc import BenchmarkGroup
 ```
 
-**Best for:**
-- Highly imbalanced datasets
-- When positive class is rare
-- Complements ROC-AUC
-
-**Range:** 0-1 (higher is better)
-
-#### F1 Score
-Harmonic mean of precision and recall
-
-```python
-evaluator = Evaluator(name='F1')
-score = evaluator(y_true, y_pred_binary)
-```
-
-**Best for:**
-- Balance between precision and recall
-- Multi-class classification
-
-**Range:** 0-1 (higher is better)
-
-#### Accuracy
-Fraction of correct predictions
-
-```python
-evaluator = Evaluator(name='Accuracy')
-score = evaluator(y_true, y_pred_binary)
-```
-
-**Best for:**
-- Balanced datasets
-- Simple baseline metric
-
-**Not recommended for:** Imbalanced datasets
-
-#### Cohen's Kappa
-Agreement between predictions and ground truth, accounting for chance
-
-```python
-evaluator = Evaluator(name='Kappa')
-score = evaluator(y_true, y_pred_binary)
-```
-
-**Range:** -1 to 1 (higher is better, 0 is random)
-
-### Regression Metrics
-
-#### RMSE - Root Mean Squared Error
-```python
-evaluator = Evaluator(name='RMSE')
-score = evaluator(y_true, y_pred)
-```
-
-**Best for:**
-- Continuous predictions
-- Penalizes large errors heavily
-
-**Range:** 0-∞ (lower is better)
-
-#### MAE - Mean Absolute Error
-```python
-evaluator = Evaluator(name='MAE')
-score = evaluator(y_true, y_pred)
-```
-
-**Best for:**
-- Continuous predictions
-- More robust to outliers than RMSE
-
-**Range:** 0-∞ (lower is better)
-
-#### R² - Coefficient of Determination
-```python
-evaluator = Evaluator(name='R2')
-score = evaluator(y_true, y_pred)
-```
-
-**Best for:**
-- Variance explained by model
-- Comparing different models
-
-**Range:** -∞ to 1 (higher is better, 1 is perfect)
-
-#### MSE - Mean Squared Error
-```python
-evaluator = Evaluator(name='MSE')
-score = evaluator(y_true, y_pred)
-```
-
-**Range:** 0-∞ (lower is better)
-
-### Ranking Metrics
-
-#### Spearman Correlation
-Rank correlation coefficient
-
-```python
-evaluator = Evaluator(name='Spearman')
-score = evaluator(y_true, y_pred)
-```
-
-**Best for:**
-- Ranking tasks
-- Non-linear relationships
-- Ordinal data
-
-**Range:** -1 to 1 (higher is better)
-
-#### Pearson Correlation
-Linear correlation coefficient
-
-```python
-evaluator = Evaluator(name='Pearson')
-score = evaluator(y_true, y_pred)
-```
-
-**Best for:**
-- Linear relationships
-- Continuous data
-
-**Range:** -1 to 1 (higher is better)
-
-### Multi-Label Classification
-
-```python
-evaluator = Evaluator(name='Micro-F1')
-score = evaluator(y_true_multilabel, y_pred_multilabel)
-```
-
-Available: `Micro-F1`, `Macro-F1`, `Micro-AUPR`, `Macro-AUPR`
-
-### Benchmark Group Evaluation
-
-For benchmark groups, evaluation requires multiple seeds:
+Use a specialized class. Construction can download and extract an entire group
+archive:
 
 ```python
 from tdc.benchmark_group import admet_group
 
-group = admet_group(path='data/')
-benchmark = group.get('Caco2_Wang')
-
-# Predictions must be dict with seeds as keys
-predictions = {}
-for seed in [1, 2, 3, 4, 5]:
-    # Train model and predict
-    predictions[seed] = model_predictions
-
-# Evaluate with mean and std across seeds
-results = group.evaluate(predictions)
-print(results)  # {'Caco2_Wang': [mean_score, std_score]}
+group = admet_group(path=".pytdc-benchmarks")
 ```
 
-## 3. Data Processing
+Do this only after user approval.
 
-TDC provides 11 comprehensive data processing utilities.
-
-### Molecule Format Conversion
-
-Convert between ~15 molecular representations.
+### Retrieve fixed test and train/validation data
 
 ```python
-from tdc.chem_utils import MolConvert
+benchmark = group.get("Caco2_Wang")
+name = benchmark["name"]
+train_val = benchmark["train_val"]
+test = benchmark["test"]
 
-# SMILES to PyTorch Geometric
-converter = MolConvert(src='SMILES', dst='PyG')
-pyg_graph = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
-
-# SMILES to DGL
-converter = MolConvert(src='SMILES', dst='DGL')
-dgl_graph = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
-
-# SMILES to Morgan Fingerprint (ECFP)
-converter = MolConvert(src='SMILES', dst='ECFP')
-fingerprint = converter('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
-```
-
-**Available formats:**
-- **Text**: SMILES, SELFIES, InChI
-- **Fingerprints**: ECFP (Morgan), MACCS, RDKit, AtomPair, TopologicalTorsion
-- **Graphs**: PyG (PyTorch Geometric), DGL (Deep Graph Library)
-- **3D**: Graph3D, Coulomb Matrix, Distance Matrix
-
-**Batch conversion:**
-```python
-converter = MolConvert(src='SMILES', dst='PyG')
-graphs = converter(['SMILES1', 'SMILES2', 'SMILES3'])
-```
-
-### Molecule Filters
-
-Remove non-drug-like molecules using curated chemical rules.
-
-```python
-from tdc.chem_utils import MolFilter
-
-# Initialize filter with rules
-mol_filter = MolFilter(
-    rules=['PAINS', 'BMS'],  # Chemical filter rules
-    property_filters_dict={
-        'MW': (150, 500),      # Molecular weight range
-        'LogP': (-0.4, 5.6),   # Lipophilicity range
-        'HBD': (0, 5),         # H-bond donors
-        'HBA': (0, 10)         # H-bond acceptors
-    }
-)
-
-# Filter molecules
-filtered_smiles = mol_filter(smiles_list)
-```
-
-**Available filter rules:**
-- `PAINS` - Pan-Assay Interference Compounds
-- `BMS` - Bristol-Myers Squibb HTS deck filters
-- `Glaxo` - GlaxoSmithKline filters
-- `Dundee` - University of Dundee filters
-- `Inpharmatica` - Inpharmatica filters
-- `LINT` - Pfizer LINT filters
-
-### Label Distribution Visualization
-
-```python
-# Visualize label distribution
-data.label_distribution()
-
-# Print statistics
-data.print_stats()
-```
-
-Displays histogram and computes mean, median, std for continuous labels.
-
-### Label Binarization
-
-Convert continuous labels to binary using threshold.
-
-```python
-from tdc.utils import binarize
-
-# Binarize with threshold
-binary_labels = binarize(y_continuous, threshold=5.0, order='ascending')
-# order='ascending': values >= threshold become 1
-# order='descending': values <= threshold become 1
-```
-
-### Label Units Conversion
-
-Transform between measurement units.
-
-```python
-from tdc.chem_utils import label_transform
-
-# Convert nM to pKd
-y_pkd = label_transform(y_nM, from_unit='nM', to_unit='p')
-
-# Convert μM to nM
-y_nM = label_transform(y_uM, from_unit='uM', to_unit='nM')
-```
-
-**Available conversions:**
-- Binding affinity: nM, μM, pKd, pKi, pIC50
-- Log transformations
-- Natural log conversions
-
-### Label Meaning
-
-Get interpretable descriptions for labels.
-
-```python
-# Get label mapping
-label_map = data.get_label_map(name='DrugBank')
-print(label_map)
-# {0: 'No interaction', 1: 'Increased effect', 2: 'Decreased effect', ...}
-```
-
-### Data Balancing
-
-Handle class imbalance via over/under-sampling.
-
-```python
-from tdc.utils import balance
-
-# Oversample minority class
-X_balanced, y_balanced = balance(X, y, method='oversample')
-
-# Undersample majority class
-X_balanced, y_balanced = balance(X, y, method='undersample')
-```
-
-### Graph Transformation for Pair Data
-
-Convert paired data to graph representations.
-
-```python
-from tdc.utils import create_graph_from_pairs
-
-# Create graph from drug-drug pairs
-graph = create_graph_from_pairs(
-    pairs=ddi_pairs,  # [(drug1, drug2, label), ...]
-    format='edge_list'  # or 'PyG', 'DGL'
+train, valid = group.get_train_valid_split(
+    seed=1,
+    benchmark=name,
+    split_type="default",
 )
 ```
 
-### Negative Sampling
+There is no general `get_test()` method in 1.1.15. `group.get()` returns
+`train_val`, `test`, and normalized `name`. `get_train_valid_split` reads the
+downloaded train/validation file and applies group metadata. The held-out test set
+is fixed. The base splitter uses `[0.875, 0.125, 0.0]` of train_val for ordinary
+train/valid splits; the `group` path instead holds out 0.2 within `Year`. With zero
+test fraction, the random path's fixed validation seed makes its split identical
+across the requested seeds. Vary model training seeds independently.
 
-Generate negative samples for binary tasks.
+### One-run evaluation
+
+Predictions must align exactly with the downloaded test-frame row order:
 
 ```python
-from tdc.utils import negative_sample
-
-# Generate negative samples for DTI
-negative_pairs = negative_sample(
-    positive_pairs=known_interactions,
-    all_drugs=drug_list,
-    all_targets=target_list,
-    ratio=1.0  # Negative:positive ratio
-)
+predictions = {name: y_pred_test}
+result = group.evaluate(predictions)
+# {normalized_name: {metric_name: value}}
 ```
 
-**Use cases:**
-- Drug-target interaction prediction
-- Drug-drug interaction tasks
-- Creating balanced datasets
+Do not include test labels as model features, generate predictions from test labels,
+or tune against repeated test evaluations.
 
-### Entity Retrieval
-
-Convert between database identifiers.
-
-#### PubChem CID to SMILES
-```python
-from tdc.utils import cid2smiles
-
-smiles = cid2smiles(2244)  # Aspirin
-# Returns: 'CC(=O)Oc1ccccc1C(=O)O'
-```
-
-#### UniProt ID to Amino Acid Sequence
-```python
-from tdc.utils import uniprot2seq
-
-sequence = uniprot2seq('P12345')
-# Returns: 'MVKVYAPASS...'
-```
-
-#### Batch Retrieval
-```python
-# Multiple CIDs
-smiles_list = [cid2smiles(cid) for cid in [2244, 5090, 6323]]
-
-# Multiple UniProt IDs
-sequences = [uniprot2seq(uid) for uid in ['P12345', 'Q9Y5S9']]
-```
-
-## 4. Advanced Utilities
-
-### Retrieve Dataset Names
+### Multi-run aggregation
 
 ```python
-from tdc.utils import retrieve_dataset_names
-
-# Get all datasets for a task
-adme_datasets = retrieve_dataset_names('ADME')
-dti_datasets = retrieve_dataset_names('DTI')
-tox_datasets = retrieve_dataset_names('Tox')
-
-print(f"ADME datasets: {adme_datasets}")
-```
-
-### Fuzzy Search
-
-TDC supports fuzzy matching for dataset names:
-
-```python
-from tdc.single_pred import ADME
-
-# These all work (typo-tolerant)
-data = ADME(name='Caco2_Wang')
-data = ADME(name='caco2_wang')
-data = ADME(name='Caco2')  # Partial match
-```
-
-### Data Format Options
-
-```python
-# Pandas DataFrame (default)
-df = data.get_data(format='df')
-
-# Dictionary
-data_dict = data.get_data(format='dict')
-
-# DeepPurpose format (for DeepPurpose library)
-dp_format = data.get_data(format='DeepPurpose')
-
-# PyG/DGL graphs (if applicable)
-graphs = data.get_data(format='PyG')
-```
-
-### Data Loader Utilities
-
-```python
-from tdc.utils import create_fold
-
-# Create cross-validation folds
-folds = create_fold(data, fold=5, seed=42)
-# Returns list of (train_idx, test_idx) tuples
-
-# Iterate through folds
-for i, (train_idx, test_idx) in enumerate(folds):
-    train_data = data.iloc[train_idx]
-    test_data = data.iloc[test_idx]
-    # Train and evaluate
-```
-
-## Common Workflows
-
-### Workflow 1: Complete Data Pipeline
-
-```python
-from tdc.single_pred import ADME
-from tdc import Evaluator
-from tdc.chem_utils import MolConvert, MolFilter
-
-# 1. Load data
-data = ADME(name='Caco2_Wang')
-
-# 2. Filter molecules
-mol_filter = MolFilter(rules=['PAINS'])
-filtered_data = data.get_data()
-filtered_data = filtered_data[
-    filtered_data['Drug'].apply(lambda x: mol_filter([x]))
+prediction_runs = [
+    {name: y_pred_seed_1},
+    {name: y_pred_seed_2},
+    {name: y_pred_seed_3},
+    {name: y_pred_seed_4},
+    {name: y_pred_seed_5},
 ]
-
-# 3. Split data
-split = data.get_split(method='scaffold', seed=42)
-train, valid, test = split['train'], split['valid'], split['test']
-
-# 4. Convert to graph representations
-converter = MolConvert(src='SMILES', dst='PyG')
-train_graphs = converter(train['Drug'].tolist())
-
-# 5. Train model (user implements)
-# model.fit(train_graphs, train['Y'])
-
-# 6. Evaluate
-evaluator = Evaluator(name='MAE')
-# score = evaluator(test['Y'], predictions)
+summary = group.evaluate_many(prediction_runs)
+# {normalized_name: [mean, population_standard_deviation]}
 ```
 
-### Workflow 2: Multi-Task Learning Preparation
+Single-run scores are rounded to three decimals before `evaluate_many` computes
+population standard deviation (`ddof=0`), then rounds the aggregate to three
+decimals. Retain raw per-run metric values separately when more precision matters.
+`evaluate(testing=False)` references an undefined `true` variable in 1.1.15; use
+an explicit `Evaluator` on validation labels instead.
 
-```python
-from tdc.benchmark_group import admet_group
-from tdc.chem_utils import MolConvert
+The input is a list of per-run dictionaries, not `{seed: predictions}` and not a
+benchmark object indexed by seed. Non-docking groups require at least five runs.
+The 1.1.15 implementation returns a `ValueError` object instead of raising when
+fewer are supplied; the bundled CLI validates count first.
 
-# Load benchmark group
-group = admet_group(path='data/')
+The official guidance calls for at least five independent runs. A seed should
+control model initialization, stochastic training, and the train/validation split
+where the upstream splitter actually uses it. Report every seed and protocol.
 
-# Get multiple datasets
-datasets = ['Caco2_Wang', 'HIA_Hou', 'Bioavailability_Ma']
-all_data = {}
+## Bundled benchmark JSON
 
-for dataset_name in datasets:
-    benchmark = group.get(dataset_name)
-    all_data[dataset_name] = benchmark
+Plan mode never constructs a group:
 
-# Prepare for multi-task learning
-converter = MolConvert(src='SMILES', dst='ECFP')
-# Process each dataset...
+```bash
+python scripts/benchmark_evaluation.py \
+  --group admet_group --dataset Caco2_Wang
 ```
 
-### Workflow 3: DTI Cold Split Evaluation
+Single-run input:
 
-```python
-from tdc.multi_pred import DTI
-from tdc import Evaluator
-
-# Load DTI data
-data = DTI(name='BindingDB_Kd')
-
-# Cold drug split
-split = data.get_split(method='cold_drug', seed=42)
-train, test = split['train'], split['test']
-
-# Verify no drug overlap
-train_drugs = set(train['Drug_ID'])
-test_drugs = set(test['Drug_ID'])
-assert len(train_drugs & test_drugs) == 0, "Drug leakage detected!"
-
-# Train and evaluate
-# model.fit(train)
-evaluator = Evaluator(name='RMSE')
-# score = evaluator(test['Y'], predictions)
+```json
+{
+  "caco2_wang": [0.1, 0.2, 0.3]
+}
 ```
 
-## Best Practices
+Multi-run input:
 
-1. **Always use meaningful splits** - Use scaffold or cold splits for realistic evaluation
-2. **Multiple seeds** - Run experiments with multiple seeds for robust results
-3. **Appropriate metrics** - Choose metrics that match your task and dataset characteristics
-4. **Data filtering** - Remove PAINS and non-drug-like molecules before training
-5. **Format conversion** - Convert molecules to appropriate format for your model
-6. **Batch processing** - Use batch operations for efficiency with large datasets
+```json
+{
+  "runs": [
+    {"seed": 1, "predictions": {"caco2_wang": [0.1, 0.2]}},
+    {"seed": 2, "predictions": {"caco2_wang": [0.1, 0.2]}},
+    {"seed": 3, "predictions": {"caco2_wang": [0.1, 0.2]}},
+    {"seed": 4, "predictions": {"caco2_wang": [0.1, 0.2]}},
+    {"seed": 5, "predictions": {"caco2_wang": [0.1, 0.2]}}
+  ]
+}
+```
 
-## Performance Tips
-
-- Convert molecules in batch mode for faster processing
-- Cache converted representations to avoid recomputation
-- Use appropriate data formats for your framework (PyG, DGL, etc.)
-- Filter data early in the pipeline to reduce computation
-
-## References
-
-- TDC Documentation: https://tdc.readthedocs.io
-- Data Functions: https://tdcommons.ai/fct_overview/
-- Evaluation Metrics: https://tdcommons.ai/functions/model_eval/
-- Data Splits: https://tdcommons.ai/functions/data_split/
+The CLI bounds input size/run count/value count, rejects non-finite numbers,
+duplicate normalized names, unequal benchmark sets or per-benchmark run lengths,
+and verifies test-row counts before scoring. It requires `--execute` before group
+construction. It intentionally excludes
+`docking_group` because that path can invoke docking, receptor downloads, molecular
+filters, and optional external services.

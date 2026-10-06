@@ -60,7 +60,7 @@
 - [dependency-audit](https://clawskills.sh/skills/fratua-dependency-audit) - 智能依赖健康检查 — 安全审计、过时检测、未使用的依赖项和优先更新计划。
 - [django-creator](https://clawskills.sh/skills/moenassi-django-creator) - 此项目消除了从头创建虚拟机和设置环境所浪费的时间。
 - [django-tool](https://clawskills.sh/skills/moenassi-django-tool) - 此项目消除了从头创建虚拟机和设置环境所浪费的时间。
-- [domain-checker](https://clawhub.ai/blueyi/domain-checker) - Check domain availability via whois + DNS cross-verification. Supports .com, .net, .org, .io, .ai, .so, and other TLDs.
+- [domain-checker](https://clawhub.ai/blueyi/domain-checker) - 通过 whois + DNS 交叉验证检查域名是否可注册。支持 .com、.net、.org、.io、.ai、.so 等顶级域名。
 - [dsiprouter-skill](https://clawskills.sh/skills/mackhendricks-dsiprouter-skill) - 使用 Postman 调用 dSIPRouter REST API。
 - [dwlf](https://clawskills.sh/skills/andywilliams-dwlf) - 与 DWLF (dwlf.co.uk) 交互，一个加密货币的市场分析平台。
 - [ecto](https://clawskills.sh/skills/visionik-ecto) - 通过 Admin API 管理 Ghost.io 博客。
@@ -87,7 +87,7 @@
 - [gmail-label-manager](https://clawskills.sh/skills/coenenp-gmail-label-manager) - 此技能通过应用标签、删除不必要的标签来自动化未读 Gmail 消息的组织。
 - [gmail-sender](https://clawskills.sh/skills/junkaixue-gmail-sender) - 使用 Google App Password 通过 Gmail SMTP 发送电子邮件。
 - [granola-mcp](https://clawskills.sh/skills/bholagabbar-granola-mcp) - 通过 MCP (mcporter) 访问 Granola AI 会议笔记。
-- [greek-banking-integration](https://clawskills.sh/skills/satoshistackalotto/greek-banking-integration) - 解析所有主要希腊银行（Alpha、NBG、Eurobank、Piraeus）的银行对账单。
+- [greek-banking-integration](https://clawskills.sh/skills/satoshistackalotto-greek-banking-integration) - 解析所有主要希腊银行（Alpha、NBG、Eurobank、Piraeus）的银行对账单。
 - [grounding-practices](https://clawskills.sh/skills/compass-soul-grounding-practices) - 为一无所有醒来的 AI 代理提供基础。
 - [heartbeat-scanner](https://clawskills.sh/skills/darshanochandak-heartbeat-scanner) - 通过基于 SHACL 的心跳分析验证你的代理性质。
 - [heath-ledger](https://clawskills.sh/skills/wrannaman-heath-ledger) - Mercury 银行账户的 AI 记账代理。

@@ -1,530 +1,367 @@
-# Pymatgen Analysis Modules Reference
+# Analysis: tolerances, computed entries, bands, DOS, and model limits
 
-This reference documents pymatgen's extensive analysis capabilities for materials characterization, property prediction, and computational analysis.
+This reference targets `pymatgen==2026.9.24` with
+`pymatgen-core==2026.9.23`. An analysis object returning a value does not
+establish convergence, uncertainty, experimental agreement, or suitability of
+the underlying model.
 
-## Phase Diagrams and Thermodynamics
-
-### Phase Diagram Construction
-
-```python
-from pymatgen.analysis.phase_diagram import PhaseDiagram, PDPlotter
-from pymatgen.entries.computed_entries import ComputedEntry
-
-# Create entries (composition and total energy)
-entries = [
-    ComputedEntry("Fe", -8.4),
-    ComputedEntry("O2", -4.9),
-    ComputedEntry("FeO", -6.7),
-    ComputedEntry("Fe2O3", -8.3),
-    ComputedEntry("Fe3O4", -9.1),
-]
-
-# Build phase diagram
-pd = PhaseDiagram(entries)
-
-# Get stable entries
-stable_entries = pd.stable_entries
-
-# Get energy above hull (stability)
-entry_to_test = ComputedEntry("Fe2O3", -8.0)
-energy_above_hull = pd.get_e_above_hull(entry_to_test)
-
-# Get decomposition products
-decomp = pd.get_decomposition(entry_to_test.composition)
-# Returns: {entry1: fraction1, entry2: fraction2, ...}
-
-# Get equilibrium reaction energy
-rxn_energy = pd.get_equilibrium_reaction_energy(entry_to_test)
-
-# Plot phase diagram
-plotter = PDPlotter(pd)
-plotter.show()
-plotter.write_image("phase_diagram.png")
-```
-
-### Chemical Potential Diagrams
-
-```python
-from pymatgen.analysis.phase_diagram import ChemicalPotentialDiagram
-
-# Create chemical potential diagram
-cpd = ChemicalPotentialDiagram(entries, limits={"O": (-10, 0)})
-
-# Get domains (stability regions)
-domains = cpd.domains
-```
-
-### Pourbaix Diagrams
-
-Electrochemical phase diagrams with pH and potential axes.
-
-```python
-from pymatgen.analysis.pourbaix_diagram import PourbaixDiagram, PourbaixPlotter
-from pymatgen.entries.computed_entries import ComputedEntry
-
-# Create entries with corrections for aqueous species
-entries = [...]  # Include solids and ions
-
-# Build Pourbaix diagram
-pb = PourbaixDiagram(entries)
-
-# Get stable entry at specific pH and potential
-stable_entry = pb.get_stable_entry(pH=7, V=0)
-
-# Plot
-plotter = PourbaixPlotter(pb)
-plotter.show()
-```
-
-## Structure Analysis
-
-### Structure Matching and Comparison
-
-```python
-from pymatgen.analysis.structure_matcher import StructureMatcher
-
-matcher = StructureMatcher()
-
-# Check if structures match
-is_match = matcher.fit(struct1, struct2)
-
-# Get mapping between structures
-mapping = matcher.get_mapping(struct1, struct2)
-
-# Group similar structures
-grouped = matcher.group_structures([struct1, struct2, struct3, ...])
-```
-
-### Ewald Summation
-
-Calculate electrostatic energy of ionic structures.
-
-```python
-from pymatgen.analysis.ewald import EwaldSummation
-
-ewald = EwaldSummation(struct)
-total_energy = ewald.total_energy  # In eV
-forces = ewald.forces  # Forces on each site
-```
-
-### Symmetry Analysis
+## Symmetry
 
 ```python
 from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-sga = SpacegroupAnalyzer(struct)
-
-# Get space group information
-spacegroup_symbol = sga.get_space_group_symbol()  # e.g., "Fm-3m"
-spacegroup_number = sga.get_space_group_number()   # e.g., 225
-crystal_system = sga.get_crystal_system()           # e.g., "cubic"
-
-# Get symmetrized structure
-sym_struct = sga.get_symmetrized_structure()
-equivalent_sites = sym_struct.equivalent_sites
-
-# Get conventional/primitive cells
-conventional = sga.get_conventional_standard_structure()
-primitive = sga.get_primitive_standard_structure()
-
-# Get symmetry operations
-symmetry_ops = sga.get_symmetry_operations()
-```
-
-## Local Environment Analysis
-
-### Coordination Environment
-
-```python
-from pymatgen.analysis.local_env import (
-    VoronoiNN,           # Voronoi tessellation
-    CrystalNN,           # Crystal-based
-    MinimumDistanceNN,   # Distance cutoff
-    BrunnerNN_real,      # Brunner method
+analyzer = SpacegroupAnalyzer(
+    structure,
+    symprec=0.01,          # Å
+    angle_tolerance=5.0,   # degrees
 )
 
-# Voronoi nearest neighbors
-voronoi = VoronoiNN()
-neighbors = voronoi.get_nn_info(struct, n=0)  # Neighbors of site 0
-
-# CrystalNN (recommended for most cases)
-crystalnn = CrystalNN()
-neighbors = crystalnn.get_nn_info(struct, n=0)
-
-# Analyze all sites
-for i, site in enumerate(struct):
-    neighbors = voronoi.get_nn_info(struct, i)
-    coordination_number = len(neighbors)
-    print(f"Site {i} ({site.species_string}): CN = {coordination_number}")
-```
-
-### Coordination Geometry (ChemEnv)
-
-Detailed coordination environment identification.
-
-```python
-from pymatgen.analysis.chemenv.coordination_environments.coordination_geometry_finder import LocalGeometryFinder
-from pymatgen.analysis.chemenv.coordination_environments.chemenv_strategies import SimplestChemenvStrategy
-
-lgf = LocalGeometryFinder()
-lgf.setup_structure(struct)
-
-# Get coordination environment for site
-se = lgf.compute_structure_environments(only_indices=[0])
-strategy = SimplestChemenvStrategy()
-lse = strategy.get_site_coordination_environment(se[0])
-
-print(f"Coordination: {lse}")
-```
-
-### Bond Valence Sum
-
-```python
-from pymatgen.analysis.bond_valence import BVAnalyzer
-
-bva = BVAnalyzer()
-
-# Calculate oxidation states
-valences = bva.get_valences(struct)
-
-# Get structure with oxidation states
-struct_with_oxi = bva.get_oxi_state_decorated_structure(struct)
-```
-
-## Surface and Interface Analysis
-
-### Surface (Slab) Generation
-
-```python
-from pymatgen.core.surface import SlabGenerator, generate_all_slabs
-
-# Generate slabs for a specific Miller index
-slabgen = SlabGenerator(
-    struct,
-    miller_index=(1, 1, 1),
-    min_slab_size=10.0,     # Minimum slab thickness (Å)
-    min_vacuum_size=10.0,   # Minimum vacuum thickness (Å)
-    center_slab=True
-)
-
-slabs = slabgen.get_slabs()
-
-# Generate all slabs up to a Miller index
-all_slabs = generate_all_slabs(
-    struct,
-    max_index=2,
-    min_slab_size=10.0,
-    min_vacuum_size=10.0
-)
-```
-
-### Wulff Shape Construction
-
-```python
-from pymatgen.analysis.wulff import WulffShape
-
-# Define surface energies (J/m²)
-surface_energies = {
-    (1, 0, 0): 1.0,
-    (1, 1, 0): 1.1,
-    (1, 1, 1): 0.9,
+result = {
+    "symbol": analyzer.get_space_group_symbol(),
+    "number": analyzer.get_space_group_number(),
+    "crystal_system": str(analyzer.get_crystal_system()),
+    "point_group": analyzer.get_point_group_symbol(),
+    "operation_count": len(analyzer.get_symmetry_operations()),
 }
-
-wulff = WulffShape(struct.lattice, surface_energies, symm_reduce=True)
-
-# Get effective radius and surface area
-effective_radius = wulff.effective_radius
-surface_area = wulff.surface_area
-volume = wulff.volume
-
-# Visualize
-wulff.show()
+symmetrized = analyzer.get_symmetrized_structure()
+equivalent_indices = symmetrized.equivalent_indices
+wyckoff_symbols = symmetrized.wyckoff_symbols
 ```
 
-### Adsorption Site Finding
+The documented pymatgen default is `symprec=0.01 Å`; a looser value such as
+`0.1 Å` is often used for relaxed structures and by the Materials Project
+pipeline. Results can change with:
+
+- coordinate precision and relaxation noise
+- occupancy/disorder model
+- oxidation/spin/site properties used or ignored
+- primitive/conventional representation
+- `symprec`, `angle_tolerance`, and spglib version
+
+Always sweep justified tolerances and report the entire sensitivity grid. Do
+not choose a tolerance solely because it gives a desired group.
+
+Standardized or primitive structures are new representations:
 
 ```python
-from pymatgen.analysis.adsorption import AdsorbateSiteFinder
-
-asf = AdsorbateSiteFinder(slab)
-
-# Find adsorption sites
-ads_sites = asf.find_adsorption_sites()
-# Returns dictionary: {"ontop": [...], "bridge": [...], "hollow": [...]}
-
-# Generate structures with adsorbates
-from pymatgen.core import Molecule
-adsorbate = Molecule("O", [[0, 0, 0]])
-
-ads_structs = asf.generate_adsorption_structures(
-    adsorbate,
-    repeat=[2, 2, 1],  # Supercell to reduce adsorbate coverage
+conventional = analyzer.get_conventional_standard_structure(
+    keep_site_properties=False
+)
+primitive = analyzer.get_primitive_standard_structure(
+    keep_site_properties=False
 )
 ```
 
-### Interface Construction
+Site properties can be lost or propagated without symmetry-aware adjustment.
+Preserve the parent and compare composition, volume per atom, magnetic order,
+and property semantics.
+
+## Structure matching
 
 ```python
-from pymatgen.analysis.interfaces.coherent_interfaces import CoherentInterfaceBuilder
+from pymatgen.analysis.structure_matcher import StructureMatcher
 
-# Build interface between two materials
-builder = CoherentInterfaceBuilder(
-    substrate_structure=substrate,
-    film_structure=film,
-    substrate_miller=(0, 0, 1),
-    film_miller=(1, 1, 1),
+matcher = StructureMatcher(
+    ltol=0.2,
+    stol=0.3,
+    angle_tol=5,
+    primitive_cell=True,
+    scale=True,
 )
-
-interfaces = builder.get_interfaces()
+matches = matcher.fit(first, second)
 ```
 
-## Magnetism
+Record every tolerance and option. A match is equivalence under the chosen
+algorithm, reductions, scaling, and species comparator—not identity of files,
+provenance, defects, magnetic states, or experimental phases.
 
-### Magnetic Structure Analysis
+`fit()` is directional. For order-independent grouping use
+`matcher.group_structures(structures, symmetric=True)` in this snapshot;
+the new option is ignored for anonymous matching. Current mixed-functional
+entry processing also sorts inputs and uses symmetric grouping, fixing earlier
+hash-seed-dependent hulls. Recompute old mixed hulls when comparing versions.
+
+## Local environments
 
 ```python
-from pymatgen.analysis.magnetism import CollinearMagneticStructureAnalyzer
+from pymatgen.analysis.local_env import CrystalNN, VoronoiNN
 
-analyzer = CollinearMagneticStructureAnalyzer(struct)
+crystal_nn = CrystalNN()
+neighbors = crystal_nn.get_nn_info(structure, 0)
 
-# Get magnetic ordering
-ordering = analyzer.ordering  # e.g., "FM" (ferromagnetic), "AFM", "FiM"
-
-# Get magnetic space group
-mag_space_group = analyzer.get_structure_with_spin().get_space_group_info()
+voronoi_nn = VoronoiNN()
+voronoi_neighbors = voronoi_nn.get_nn_info(structure, 0)
 ```
 
-### Magnetic Ordering Enumeration
+Coordination depends on the method, radii/oxidation information, weights,
+cutoffs, disorder, and geometry. Preserve:
+
+- algorithm and pymatgen version
+- all constructor settings
+- oxidation-state decoration
+- site index/label mapping
+- warnings and failures
+- whether weighted or integer coordination was reported
+
+Bound the number of sites and neighbors emitted. Cross-check model-sensitive
+conclusions with more than one justified definition.
+
+## Phase diagrams
+
+An `Entry` contains a composition and a total energy:
 
 ```python
-from pymatgen.transformations.advanced_transformations import MagOrderingTransformation
+from pymatgen.analysis.phase_diagram import PhaseDiagram
+from pymatgen.entries.computed_entries import ComputedEntry
 
-# Enumerate possible magnetic orderings
-mag_trans = MagOrderingTransformation({"Fe": 5.0})  # Magnetic moment in μB
-transformed_structures = mag_trans.apply_transformation(struct, return_ranked_list=True)
+entries = [
+    ComputedEntry("Li", -1.0, entry_id="local-Li"),
+    ComputedEntry("O2", -2.0, entry_id="local-O2"),
+    ComputedEntry("Li2O", -4.0, entry_id="local-Li2O"),
+]
+diagram = PhaseDiagram(entries)
+
+for entry in entries:
+    print(
+        entry.entry_id,
+        diagram.get_form_energy_per_atom(entry),
+        diagram.get_e_above_hull(entry),
+    )
 ```
 
-## Electronic Structure Analysis
+`ComputedEntry.energy` is total eV for the represented composition, not
+eV/atom. `energy_per_atom`, formation energy, and hull distance are normalized
+values.
 
-### Band Structure Analysis
+### Comparability gate
+
+Before constructing a hull, verify that entries share a compatible:
+
+- functional and correction/mixing scheme
+- pseudopotential family and valence configuration
+- magnetic, spin, and SOC treatment
+- reference-state convention
+- numerical convergence level
+- temperature/pressure model
+
+Include elemental endpoints and all relevant competing phases. Missing phases
+can make unstable entries appear stable. Duplicate compositions are allowed as
+polymorphs only when their energies are comparable and provenance is distinct.
+
+`diagram.stable_entries` means on the computed zero-temperature convex hull for
+that exact entry set. It is not experimental stability or synthesizability.
+
+### Decomposition
 
 ```python
-from pymatgen.electronic_structure.bandstructure import BandStructureSymmLine
-from pymatgen.electronic_structure.plotter import BSPlotter
+from pymatgen.core import Composition
 
-# Read band structure from VASP calculation
+target = Composition("Li2O", strict=True)
+decomposition = diagram.get_decomposition(target)
+```
+
+For an existing entry, use `get_e_above_hull(entry)`. A bare composition has no
+candidate energy, so it has a hull decomposition but no intrinsic energy above
+hull.
+
+### Plotting
+
+```python
+from pymatgen.analysis.phase_diagram import PDPlotter
+
+plotter = PDPlotter(diagram, show_unstable=0.2, backend="matplotlib")
+plotter.write_image("phase.new.svg", image_format="svg")
+```
+
+Plot to a new path, bound unstable points and output size, and preserve the
+machine-readable entry table. Plotting backends and image export can introduce
+optional dependencies. The default Plotly backend needs its image-export stack;
+the bundled CLI selects Matplotlib so PNG/PDF/SVG export works with the tested
+package set.
+
+## Chemical-potential and Pourbaix analyses
+
+`ChemicalPotentialDiagram` and `PourbaixDiagram` add assumptions beyond a
+composition hull. Record reference states, open species, aqueous ion data,
+concentrations, pH, electrochemical potential, temperature, corrections, and
+solvent convention. Do not reuse a solid-state entry set as a valid aqueous
+thermodynamic model without the required transformations and references.
+
+## Electronic band structures
+
+The following VASP snippets are illustrative because they require the user's
+calculation files; the current method signatures were verified.
+
+```python
 from pymatgen.io.vasp import Vasprun
-vasprun = Vasprun("vasprun.xml")
-bs = vasprun.get_band_structure()
 
-# Get band gap
-band_gap = bs.get_band_gap()
-# Returns: {'energy': gap_value, 'direct': True/False, 'transition': '...'}
+run = Vasprun(
+    "vasprun.xml",
+    parse_dos=False,
+    parse_eigen=True,
+    parse_projected_eigen=False,
+    parse_potcar_file=False,
+)
+bands = run.get_band_structure(line_mode=True)
 
-# Check if metal
-is_metal = bs.is_metal()
-
-# Get VBM and CBM
-vbm = bs.get_vbm()
-cbm = bs.get_cbm()
-
-# Plot band structure
-plotter = BSPlotter(bs)
-plotter.show()
-plotter.save_plot("band_structure.png")
+gap = bands.get_band_gap()
+vbm = bands.get_vbm()
+cbm = bands.get_cbm()
+metal = bands.is_metal()
 ```
 
-### Density of States (DOS)
+Report:
+
+- source calculation and convergence status
+- structure checksum
+- functional, pseudopotentials, DFT+U, spin, SOC
+- k-point mesh/path and line-mode reconstruction
+- Fermi-energy convention and any override
+- occupation/smearing settings
+- direct/indirect criterion and numerical tolerance
+
+A DFT band gap is method-dependent. Materials Project documents that its PBE
+band gaps are systematically underestimated.
+
+`BSPlotter` can plot a `BandStructureSymmLine`; plotting does not validate the
+k-path. High-symmetry paths depend on crystallographic setting and magnetic
+primitive-cell assumptions.
+
+## Density of states
 
 ```python
-from pymatgen.electronic_structure.dos import CompleteDos
-from pymatgen.electronic_structure.plotter import DosPlotter
+from pymatgen.io.vasp import Vasprun
 
-# Read DOS from VASP calculation
-vasprun = Vasprun("vasprun.xml")
-dos = vasprun.complete_dos
-
-# Get total DOS
-total_dos = dos.densities
-
-# Get projected DOS
-pdos = dos.get_element_dos()  # By element
-site_dos = dos.get_site_dos(struct[0])  # For specific site
-spd_dos = dos.get_spd_dos()  # By orbital (s, p, d)
-
-# Plot DOS
-plotter = DosPlotter()
-plotter.add_dos("Total", dos)
-plotter.show()
+run = Vasprun(
+    "vasprun.xml",
+    parse_dos=True,
+    parse_eigen=False,
+    parse_projected_eigen=False,
+    parse_potcar_file=False,
+)
+dos = run.complete_dos
+element_dos = dos.get_element_dos()
+site_dos = dos.get_site_dos(run.final_structure[0])
+orbital_dos = dos.get_spd_dos()
 ```
 
-### Fermi Surface
+Check:
 
-```python
-from pymatgen.electronic_structure.boltztrap2 import BoltztrapRunner
+- energy grid and reference/Fermi level
+- density units and normalization
+- spin channels and SOC
+- smearing and integration method
+- projection basis and completeness
+- consistency between DOS sites and final structure
 
-runner = BoltztrapRunner(struct, nelec=n_electrons)
-runner.run()
+Do not compare integrated/projected DOS across calculations until these
+conventions match.
 
-# Get transport properties at different temperatures
-results = runner.get_results()
-```
+For individual d orbitals, use `Orbital.dx2_y2`. `Orbital.dx2` remains a
+deprecated alias until 2027-08-17; this snapshot still serializes the legacy
+`dx2` key while accepting both spellings on read.
+
+## VASP parse cost
+
+`Vasprun(parse_projected_eigen=True)` can require extreme time and memory.
+`BSVasprun` is optimized for eigenvalue-focused band-structure parsing. Large
+XML/HDF5/volumetric files need file-size, array-size, site/k-point/band, memory,
+and wall-time bounds.
 
 ## Diffraction
-
-### X-ray Diffraction (XRD)
 
 ```python
 from pymatgen.analysis.diffraction.xrd import XRDCalculator
 
-xrd = XRDCalculator()
-
-pattern = xrd.get_pattern(struct, two_theta_range=(0, 90))
-
-# Get peak data
-for peak in pattern.hkls:
-    print(f"2θ = {peak['2theta']:.2f}°, hkl = {peak['hkl']}, I = {peak['intensity']:.1f}")
-
-# Plot pattern
-pattern.plot()
-```
-
-### Neutron Diffraction
-
-```python
-from pymatgen.analysis.diffraction.neutron import NDCalculator
-
-nd = NDCalculator()
-pattern = nd.get_pattern(struct)
-```
-
-## Elasticity and Mechanical Properties
-
-```python
-from pymatgen.analysis.elasticity import ElasticTensor, Stress, Strain
-
-# Create elastic tensor from matrix
-elastic_tensor = ElasticTensor([[...]])  # 6x6 or 3x3x3x3 matrix
-
-# Get mechanical properties
-bulk_modulus = elastic_tensor.k_voigt  # Voigt bulk modulus (GPa)
-shear_modulus = elastic_tensor.g_voigt  # Shear modulus (GPa)
-youngs_modulus = elastic_tensor.y_mod  # Young's modulus (GPa)
-
-# Apply strain
-strain = Strain([[0.01, 0, 0], [0, 0, 0], [0, 0, 0]])
-stress = elastic_tensor.calculate_stress(strain)
-```
-
-## Reaction Analysis
-
-### Reaction Computation
-
-```python
-from pymatgen.analysis.reaction_calculator import ComputedReaction
-
-reactants = [ComputedEntry("Fe", -8.4), ComputedEntry("O2", -4.9)]
-products = [ComputedEntry("Fe2O3", -8.3)]
-
-rxn = ComputedReaction(reactants, products)
-
-# Get balanced equation
-balanced_rxn = rxn.normalized_repr  # e.g., "2 Fe + 1.5 O2 -> Fe2O3"
-
-# Get reaction energy
-energy = rxn.calculated_reaction_energy  # eV per formula unit
-```
-
-### Reaction Path Finding
-
-```python
-from pymatgen.analysis.path_finder import ChgcarPotential, NEBPathfinder
-
-# Read charge density
-chgcar_potential = ChgcarPotential.from_file("CHGCAR")
-
-# Find diffusion path
-neb_path = NEBPathfinder(
-    start_struct,
-    end_struct,
-    relax_sites=[i for i in range(len(start_struct))],
-    v=chgcar_potential
+calculator = XRDCalculator(wavelength="CuKa")
+pattern = calculator.get_pattern(
+    structure,
+    scaled=True,
+    two_theta_range=(5, 90),
 )
 
-images = neb_path.images  # Interpolated structures for NEB
+for two_theta, intensity, hkls in zip(
+    pattern.x,
+    pattern.y,
+    pattern.hkls,
+    strict=True,
+):
+    print(two_theta, intensity, hkls)
 ```
 
-## Molecular Analysis
+Peak positions/intensities depend on radiation, occupancies, structure,
+instrumental broadening, preferred orientation, temperature/displacement, and
+the ideal-powder model. A simulated pattern is not a phase-identification
+result by itself.
 
-### Bond Analysis
+## Surfaces, slabs, and Wulff shapes
 
 ```python
-# Get covalent bonds
-bonds = mol.get_covalent_bonds()
+from pymatgen.core.surface import SlabGenerator
 
-for bond in bonds:
-    print(f"{bond.site1.species_string} - {bond.site2.species_string}: {bond.length:.2f} Å")
+generator = SlabGenerator(
+    structure,
+    miller_index=(1, 1, 1),
+    min_slab_size=12.0,
+    min_vacuum_size=15.0,
+    center_slab=True,
+    in_unit_planes=False,
+)
+slabs = generator.get_slabs()
 ```
 
-### Molecule Graph
+Record bulk parent, Miller-index convention, slab/vacuum units, termination,
+symmetrization, dipole correction, in-plane cell, fixed layers, and candidate
+limit. Slab thickness and vacuum are convergence parameters, not universal
+constants.
+
+Current `WulffShape` takes parallel Miller-index and surface-energy sequences:
 
 ```python
-from pymatgen.analysis.graphs import MoleculeGraph
-from pymatgen.analysis.local_env import OpenBabelNN
+from pymatgen.analysis.wulff import WulffShape
 
-# Build molecule graph
-mg = MoleculeGraph.with_local_env_strategy(mol, OpenBabelNN())
-
-# Get fragments
-fragments = mg.get_disconnected_fragments()
-
-# Find rings
-rings = mg.find_rings()
-```
-
-## Spectroscopy
-
-### X-ray Absorption Spectroscopy (XAS)
-
-```python
-from pymatgen.analysis.xas.spectrum import XAS
-
-# Read XAS spectrum
-xas = XAS.from_file("xas.dat")
-
-# Normalize and process
-xas.normalize()
-```
-
-## Additional Analysis Tools
-
-### Grain Boundaries
-
-```python
-from pymatgen.analysis.gb.grain import GrainBoundaryGenerator
-
-gb_gen = GrainBoundaryGenerator(struct)
-gb_structures = gb_gen.generate_grain_boundaries(
-    rotation_axis=[0, 0, 1],
-    rotation_angle=36.87,  # degrees
+wulff = WulffShape(
+    structure.lattice,
+    [(1, 0, 0), (1, 1, 0), (1, 1, 1)],
+    [1.0, 1.1, 0.9],  # one consistent energy unit per area
 )
 ```
 
-### Prototypes and Structure Matching
+Surface energies must share composition/chemical-potential, slab, functional,
+and area conventions. Report their unit explicitly.
 
-```python
-from pymatgen.analysis.prototypes import AflowPrototypeMatcher
+## Adsorption
 
-matcher = AflowPrototypeMatcher()
-prototype = matcher.get_prototypes(struct)
-```
+`AdsorbateSiteFinder` produces geometric candidates, not adsorption energies or
+preferred sites. Bound generated structures and preserve slab termination,
+adsorbate geometry/charge/spin, coverage, orientation, and parent mapping.
 
-## Best Practices
+## Elasticity and other tensors
 
-1. **Start simple**: Use basic analysis before advanced methods
-2. **Validate results**: Cross-check analysis with multiple methods
-3. **Consider symmetry**: Use `SpacegroupAnalyzer` to reduce computational cost
-4. **Check convergence**: Ensure input structures are well-converged
-5. **Use appropriate methods**: Different analyses have different accuracy/speed tradeoffs
-6. **Visualize results**: Use built-in plotters for quick validation
-7. **Save intermediate results**: Complex analyses can be time-consuming
+`pymatgen.analysis.elasticity` represents strain, stress, and elastic tensors.
+Verify Voigt index convention, stress sign, units (typically GPa for reported
+moduli), reference frame, crystal symmetry, finite-strain magnitude, and fit
+quality. Mechanical-stability criteria depend on crystal class and conditions.
+
+## Analysis report checklist
+
+- source checksum and parser warnings
+- exact package versions
+- units and normalization
+- all tolerances/model parameters
+- bounded input/output sizes
+- disorder and oxidation-state handling
+- convergence and uncertainty evidence
+- method-specific caveats
+- no claim of experimental truth from computed output alone
+
+## Sources (verified 2026-09-30)
+
+- [pymatgen analysis API](https://pymatgen.org/pymatgen.analysis.html)
+- [pymatgen symmetry API](https://pymatgen.org/pymatgen.symmetry.html)
+- [pymatgen electronic-structure API](https://pymatgen.org/pymatgen.electronic_structure.html)
+- [pymatgen VASP API](https://pymatgen.org/pymatgen.io.vasp.html)
+- [pymatgen usage guide](https://pymatgen.org/usage.html)
+- [pymatgen changelog](https://pymatgen.org/CHANGES.html)
+- [Materials Project electronic-structure methodology](https://docs.materialsproject.org/methodology/materials-methodology/electronic-structure)
+- [Materials Project computed-data FAQ](https://docs.materialsproject.org/frequently-asked-questions)

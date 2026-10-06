@@ -23,7 +23,7 @@ metadata:
 | 2 | **Suspense 揭示** | "数据已加载" |
 | 3 | **列表标识** (每项目 `key`) | "相同项目，新排列" |
 | 4 | **状态变化** (`enter`/`exit`) | "某物出现/消失" |
-| 5 | **路由变化** (布局级别) | "前往新位置" |
+| 5 | **路由变化** (页面级别) | "前往新位置" |
 
 这是一个实现顺序，不是"选择一个"的列表。实现适合应用的每一个模式。只有当应用没有该模式的用例时才跳过它。
 
@@ -44,13 +44,13 @@ metadata:
 
 - **Next.js：** 不要安装 `react@canary` — App Router 已经在内部捆绑了 React canary。`ViewTransition` 开箱即用。`npm ls react` 可能显示一个看起来稳定的版本；这是预期的。
 - **没有 Next.js：** 安装 `react@canary react-dom@canary`（`ViewTransition` 不在稳定版 React 中）。
-- 浏览器支持：Chromium 111+、Firefox 144+、Safari 18.2+。在不支持的浏览器上优雅降级。
+- 浏览器支持：Chromium 125+（React 需要 `startViewTransition` 的 v2 对象形式）、Firefox 144+、Safari 18.2+。在不支持的浏览器上优雅降级。
 
 ---
 
 ## 实现工作流
 
-当向现有应用添加视图过渡时，**逐步遵循 `references/implementation.md`**。从审计开始 — 不要跳过它。将 `references/css-recipes.md` 中的 CSS 配方复制到全局样式表中 — 不要自己编写动画 CSS。
+当向现有应用添加视图过渡时，**逐步遵循 [references/implementation.md](references/implementation.md)**。从审计开始 — 不要跳过它。使用 [references/css-recipes.md](references/css-recipes.md) 中适用的 CSS，并根据应用进行调整。
 
 ---
 
@@ -74,7 +74,7 @@ React 会自动分配唯一的 `view-transition-name` 并在后台调用 `docume
 |---------|--------------|
 | **enter** | `<ViewTransition>` 在过渡期间首次插入 |
 | **exit** | `<ViewTransition>` 在过渡期间首次移除 |
-| **update** | `<ViewTransition>` 内部的 DOM 突变。对于嵌套 VT，突变应用于最内层的一个 |
+| **update** | `<ViewTransition>` 内部的 DOM 突变，或边界本身因相邻兄弟元素而改变尺寸/位置。对于嵌套 VT，突变应用于最内层的一个 |
 | **share** | 命名 VT 卸载，另一个具有相同 `name` 的 VT 在同一过渡中挂载 |
 
 只有 `startTransition`、`useDeferredValue` 或 `Suspense` 会激活 VT。常规 `setState` 不会动画。
@@ -118,7 +118,7 @@ React 会自动分配唯一的 `view-transition-name` 并在后台调用 `docume
 - `::view-transition-group(.class)` — 容器
 - `::view-transition-image-pair(.class)` — 旧 + 新配对
 
-有关即用型动画配方，请参见 `references/css-recipes.md`。
+有关即用型动画配方，请参见 [references/css-recipes.md](references/css-recipes.md)。
 
 ---
 
@@ -177,11 +177,15 @@ export function DirectionalTransition({ children }: { children: React.ReactNode 
 
 ### `router.back()` 和浏览器后退按钮
 
-`router.back()` 和浏览器的后退/前进按钮**不会**触发视图过渡（`popstate` 是同步的，与 `startViewTransition` 不兼容）。改用带有显式 URL 的 `router.push()`。
+`router.back()` 和浏览器的后退/前进按钮**不携带过渡类型**，因此按类型键控的动画（定向滑动）会解析为其 `default` 值而不会播放 — 未指定类型的共享元素变形仍然有效。对于带类型的动画，请使用带有显式 URL 的 `router.push()`。
 
 ### 类型和 Suspense
 
 类型在导航期间可用，但在后续的 Suspense 揭示期间**不可用**（单独的过渡，无类型）。对页面级 enter/exit 使用类型映射；对 Suspense 揭示使用简单的字符串属性。
+
+### 共享元素就绪
+
+只有当旧视图和新视图在同一个过渡中都已渲染时，共享元素过渡才能将元素配对。如果传入的内容处于挂起（suspend）状态，那么该次更新中只存在其回退内容；解析后的内容会在之后的 Suspense 过渡中出现，并且可以单独进行动画。
 
 ---
 
@@ -202,6 +206,7 @@ export function DirectionalTransition({ children }: { children: React.ReactNode 
 
 - 一次只能挂载一个具有给定 `name` 的 VT — 使用唯一名称 (`photo-${id}`)。注意可重用组件：如果带有命名 VT 的组件同时在模态框/弹出框和页面中渲染，两者会同时挂载并破坏变形。要么使名称条件化（通过属性），要么将命名 VT 从共享组件移到特定消费者中。
 - `share` 优先于 `enter`/`exit`。仔细考虑每个导航路径：当没有形成匹配对时（例如，目标页面没有相同的名称），`enter`/`exit` 会触发。考虑元素是否需要这些路径的回退动画。
+- 已接好线的变形会静默不触发的两种情况：(1) `default="none"` 且没有显式的 `share` 属性 — share 会解析为 none；(2) 按类型键控的 `share`，但导航从未添加该类型 — 普通的链接点击会解析为映射中的 `default`。每个应该触发变形的链接都必须添加该类型（`next/link` 上的 `transitionTypes`，或 `addTransitionType`）。
 - 永远不要在带有共享变形的页面上使用淡出退出 — 改用定向滑动。
 
 ---
@@ -225,6 +230,10 @@ export function DirectionalTransition({ children }: { children: React.ReactNode 
 ```
 
 在 `startTransition` 内部触发。避免在列表和 VT 之间使用包装 `<div>`。
+
+### 布局位移变形
+
+只有位于已激活边界内部的内容才会以动画方式改变位置 — 其他所有内容都会直接跳到新的布局位置。将正在增长/收缩的列表下方的兄弟内容包裹在一个裸 `<ViewTransition>` 中，使其平滑滑动而不是跳动。参见 [布局位移变形](references/patterns.md#layout-displacement-morph)。
 
 ### 组合共享元素和列表标识
 
@@ -271,7 +280,7 @@ export function DirectionalTransition({ children }: { children: React.ReactNode 
 </Suspense>
 ```
 
-有关更多模式，请参见 `references/patterns.md`。
+有关更多模式，请参见 [references/patterns.md](references/patterns.md)。
 
 ---
 
@@ -279,9 +288,11 @@ export function DirectionalTransition({ children }: { children: React.ReactNode 
 
 每个匹配触发器的 VT 在单个 `document.startViewTransition` 中同时触发。**不同**过渡中的 VT（导航与稍后的 Suspense 解析）不会竞争。
 
-### 大量使用 `default="none"`
+### 审慎使用 `default="none"`
 
-没有它，每个 VT 会在**每次**过渡时触发浏览器交叉淡入淡出 — Suspense 解析、`useDeferredValue` 更新、后台重新验证。始终使用 `default="none"` 并仅明确启用所需的触发器。
+没有它，每个 VT 会在**每次**过渡时触发浏览器交叉淡入淡出 — Suspense 解析、`useDeferredValue` 更新、后台重新验证。对命名/共享元素和按类型键控的页面 VT 使用 `default="none"`。
+
+但它也会关闭 `update`（布局/重排变形）和 `share`（没有显式 `share` 属性的命名配对永远不会变形）。带 key 的列表项和被位移的兄弟元素*需要* update — 让它们保持裸 VT，或设置 `update="auto"`。
 
 ### 两种模式共存
 
@@ -292,28 +303,29 @@ export function DirectionalTransition({ children }: { children: React.ReactNode 
 
 ### 嵌套 VT 限制
 
-当父 VT 退出时，其内部的嵌套 VT **不会**触发自己的 enter/exit — 只有最外层的 VT 会动画。页面导航期间的每项目交错动画目前不可能实现。有关实验性选择加入修复，请参见 [react#36135](https://github.com/facebook/react/pull/36135)。
+当父 VT 与其内部的嵌套 VT **作为一个整体**挂载/卸载时，嵌套的 VT 不会触发自己的 enter/exit — 只有最外层的 VT 会动画。（在*持续存在*的父 VT 内挂载的子 VT 会正常触发 enter/exit。）页面导航期间的每项目交错动画目前在 Next.js 中尚不可用；有关上游的实验性进展，请参见 [故障排除](references/troubleshooting.md)。
 
 ---
 
 ## Next.js 集成
 
-有关 Next.js 设置（`experimental.viewTransition` 标志、`next/link` 上的 `transitionTypes` 属性、App Router 模式、服务器组件），请参见 `references/nextjs.md`。
+有关 Next.js 集成（`next/link` 和 `useRouter` 上的 `transitionTypes`、App Router 模式、服务器组件），请参见 [references/nextjs.md](references/nextjs.md)。
 
 ---
 
 ## 可访问性
 
-始终将 `references/css-recipes.md` 中的减少运动 CSS 添加到全局样式表中。
+始终将 [references/css-recipes.md](references/css-recipes.md#reduced-motion) 中的减少运动 CSS 添加到全局样式表中。
 
 ---
 
 ## 参考文件
 
-- **`references/implementation.md`** — 逐步实现工作流。
-- **`references/patterns.md`** — 模式、动画时机、事件 API、故障排除。
-- **`references/css-recipes.md`** — 即用型 CSS 动画配方。
-- **`references/nextjs.md`** — Next.js App Router 模式和服务器组件详细信息。
+- **[references/implementation.md](references/implementation.md)** — 逐步实现工作流。
+- **[references/patterns.md](references/patterns.md)** — 模式、动画时机和事件 API。
+- **[references/troubleshooting.md](references/troubleshooting.md)** — 按症状排查问题以及运行时限制。
+- **[references/css-recipes.md](references/css-recipes.md)** — 即用型 CSS 动画配方。
+- **[references/nextjs.md](references/nextjs.md)** — Next.js App Router 模式和服务器组件详细信息。
 
 ## 完整编译文档
 

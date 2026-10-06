@@ -1,0 +1,3 @@
+chr1	src	exon	0	100	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	CDS	200	150	.	+	.	gene_id "A"; transcript_id "B";
+chr1	src	CDS	300	400	.	*	.	gene_id "A"; transcript_id "B";

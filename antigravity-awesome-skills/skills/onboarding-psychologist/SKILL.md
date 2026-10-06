@@ -1,6 +1,6 @@
 ---
 name: onboarding-psychologist
-description: "One sentence - what this skill does and when to invoke it"
+description: "Design first-use and onboarding experiences that bring an early win, cut setup friction, build ownership and form habits through stable cues. Use when onboarding loses users early, time-to-value is long, or the first session should build confidence, momentum and a lasting habit."
 risk: safe
 source: community
 date_added: "2026-04-04"
@@ -112,6 +112,12 @@ Before finalizing output, the agent asks:
 - [ ] Did I create ownership and identity shift?
 - [ ] Did I attach a stable cue to the behavior?
 - [ ] Does the flow feel supportive rather than coercive?
+
+## Example
+
+**User request:**
+
+> Redesign this onboarding flow to reduce uncertainty, friction, and early abandonment.
 
 ## Limitations
 - Use this skill only when the task clearly matches the scope described above.

@@ -1,88 +1,88 @@
 ---
 name: GroqCloud Automation
-description: "Automate AI inference, chat completions, audio translation, and TTS voice management through GroqCloud's high-performance API via Composio"
+description: "通过 Composio 借助 GroqCloud 的高性能 API 自动化 AI 推理、聊天补全、音频翻译和 TTS 语音管理"
 requires:
   mcp:
     - rube
 ---
 
-# GroqCloud Automation
+# GroqCloud 自动化
 
-Automate AI inference workflows using GroqCloud's ultra-fast API -- chat completions, model discovery, audio translation, and TTS voice selection -- all orchestrated through the Composio MCP integration.
+使用 GroqCloud 的超高速 API 自动化 AI 推理工作流——聊天补全、模型发现、音频翻译和 TTS 语音选择——全部通过 Composio MCP 集成进行编排。
 
-**Toolkit docs:** [composio.dev/toolkits/groqcloud](https://composio.dev/toolkits/groqcloud)
+**工具包文档：** [composio.dev/toolkits/groqcloud](https://composio.dev/toolkits/groqcloud)
 
 ---
 
 ## 设置
 
-1. 连接 your GroqCloud account through the Composio MCP server at `https://rube.app/mcp`
-2. The agent will prompt you with an authentication link if no active connection exists
-3. Once connected, all `GROQCLOUD_*` tools become available for execution
+1. 通过 `https://rube.app/mcp` 的 Composio MCP 服务器连接你的 GroqCloud 账户
+2. 如果不存在有效连接，智能体会向你提供一个认证链接
+3. 连接后，所有 `GROQCLOUD_*` 工具都可用于执行
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Discover Available Models
-List all models available on GroqCloud to find valid model IDs before running inference.
+### 1. 发现可用模型
+列出 GroqCloud 上所有可用的模型，以便在运行推理之前找到有效的模型 ID。
 
-**Tool:** `GROQCLOUD_LIST_MODELS`
+**工具：** `GROQCLOUD_LIST_MODELS`
 
 ```
 No parameters required -- returns all available models with metadata.
 ```
 
-Use this as a prerequisite before any chat completion call to ensure you reference a valid, non-deprecated model ID.
+在任何聊天补全调用之前，请先使用它，以确保引用的是有效且未被弃用的模型 ID。
 
 ---
 
-### 2. Run Chat Completions
-Generate AI responses for conversational prompts using a specified GroqCloud model.
+### 2. 运行聊天补全
+使用指定的 GroqCloud 模型为对话式提示生成 AI 响应。
 
-**Tool:** `GROQCLOUD_GROQ_CREATE_CHAT_COMPLETION`
+**工具：** `GROQCLOUD_GROQ_CREATE_CHAT_COMPLETION`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| `model` | string | Yes | Model ID from `GROQCLOUD_LIST_MODELS` |
-| `messages` | array | Yes | Ordered list of `{role, content}` objects (`system`, `user`, `assistant`) |
-| `temperature` | number | No | Sampling temperature 0-2 (default: 1) |
-| `max_completion_tokens` | integer | No | Max tokens to generate |
-| `top_p` | number | No | Nucleus sampling 0-1 (default: 1) |
-| `stop` | string/array | No | Up to 4 stop sequences |
-| `stream` | boolean | No | Enable SSE streaming (default: false) |
+| `model` | string | 是 | 来自 `GROQCLOUD_LIST_MODELS` 的模型 ID |
+| `messages` | array | 是 | `{role, content}` 对象的有序列表（`system`、`user`、`assistant`） |
+| `temperature` | number | 否 | 采样温度 0-2（默认：1） |
+| `max_completion_tokens` | integer | 否 | 生成的最大 token 数 |
+| `top_p` | number | 否 | 核采样 0-1（默认：1） |
+| `stop` | string/array | 否 | 最多 4 个停止序列 |
+| `stream` | boolean | 否 | 启用 SSE 流式传输（默认：false） |
 
 ---
 
-### 3. Inspect Model Details
-Retrieve detailed metadata for a specific model including context window and capabilities.
+### 3. 查看模型详情
+检索特定模型的详细元数据，包括上下文窗口和能力。
 
-**Tool:** `GROQCLOUD_GROQ_RETRIEVE_MODEL`
+**工具：** `GROQCLOUD_GROQ_RETRIEVE_MODEL`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| `model` | string | Yes | Model identifier (e.g., `groq-1-large`) |
+| `model` | string | 是 | 模型标识符（例如 `groq-1-large`） |
 
 ---
 
-### 4. Translate Audio to English
-Translate non-English audio files into English text using Whisper models.
+### 4. 将音频翻译为英文
+使用 Whisper 模型将非英语音频文件翻译为英文文本。
 
-**Tool:** `GROQCLOUD_GROQ_CREATE_AUDIO_TRANSLATION`
+**工具：** `GROQCLOUD_GROQ_CREATE_AUDIO_TRANSLATION`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 必填 | 描述 |
 |-----------|------|----------|-------------|
-| `file_path` | string | Yes | Local path, HTTP(S) URL, or base64 data URL for audio |
-| `model` | string | No | Model ID (default: `whisper-large-v3`). Note: `whisper-large-v3-turbo` may not support translations |
-| `response_format` | string | No | `json`, `verbose_json`, or `text` (default: `json`) |
-| `temperature` | number | No | Sampling temperature 0-1 (default: 0) |
+| `file_path` | string | 是 | 音频的本地路径、HTTP(S) URL 或 base64 data URL |
+| `model` | string | 否 | 模型 ID（默认：`whisper-large-v3`）。注意：`whisper-large-v3-turbo` 可能不支持翻译 |
+| `response_format` | string | 否 | `json`、`verbose_json` 或 `text`（默认：`json`） |
+| `temperature` | number | 否 | 采样温度 0-1（默认：0） |
 
 ---
 
-### 5. List TTS Voices
-Enumerate available text-to-speech voices for Groq PlayAI models to drive voice selection UX.
+### 5. 列出 TTS 语音
+枚举 Groq PlayAI 模型可用的文本转语音语音，以驱动语音选择的用户体验。
 
-**Tool:** `GROQCLOUD_LIST_VOICES`
+**工具：** `GROQCLOUD_LIST_VOICES`
 
 ```
 Returns the set of supported TTS voices. Note: this is a static list maintained manually.
@@ -92,25 +92,25 @@ Returns the set of supported TTS voices. Note: this is a static list maintained 
 
 ## 已知陷阱
 
-| Pitfall | Details |
+| 陷阱 | 详情 |
 |---------|---------|
-| **Nested model list** | `GROQCLOUD_LIST_MODELS` response may be nested at `response['data']['data']` -- do not assume a flat top-level array |
-| **Hard-coded model IDs break** | Always fetch model IDs dynamically via `GROQCLOUD_LIST_MODELS`; hard-coded names can break when models are deprecated or renamed |
-| **Audio format validation** | `GROQCLOUD_GROQ_CREATE_AUDIO_TRANSLATION` rejects invalid or unsupported audio formats silently -- validate inputs before calling |
-| **Model metadata drifts** | Data from `GROQCLOUD_GROQ_RETRIEVE_MODEL` (context window, features) can change as models update -- do not treat it as static |
-| **TTS voice changes** | Voice sets from `GROQCLOUD_LIST_VOICES` may shrink or rename over time -- handle missing voices gracefully |
+| **嵌套的模型列表** | `GROQCLOUD_LIST_MODELS` 的响应可能嵌套在 `response['data']['data']` 中——不要假设它是扁平的顶层数组 |
+| **硬编码的模型 ID 会失效** | 始终通过 `GROQCLOUD_LIST_MODELS` 动态获取模型 ID；当模型被弃用或重命名时，硬编码的名称可能会失效 |
+| **音频格式验证** | `GROQCLOUD_GROQ_CREATE_AUDIO_TRANSLATION` 会静默拒绝无效或不受支持的音频格式——调用前请验证输入 |
+| **模型元数据会漂移** | `GROQCLOUD_GROQ_RETRIEVE_MODEL` 返回的数据（上下文窗口、功能）会随着模型更新而变化——不要将其视为静态数据 |
+| **TTS 语音变化** | `GROQCLOUD_LIST_VOICES` 返回的语音集合可能会随时间缩减或重命名——请妥善处理缺失的语音 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Purpose |
+| 工具 Slug | 用途 |
 |-----------|---------|
-| `GROQCLOUD_LIST_MODELS` | List all available models and metadata |
-| `GROQCLOUD_GROQ_CREATE_CHAT_COMPLETION` | Generate chat-based AI completions |
-| `GROQCLOUD_GROQ_RETRIEVE_MODEL` | Get detailed info for a specific model |
-| `GROQCLOUD_GROQ_CREATE_AUDIO_TRANSLATION` | Translate non-English audio to English text |
-| `GROQCLOUD_LIST_VOICES` | Retrieve available TTS voices for PlayAI |
+| `GROQCLOUD_LIST_MODELS` | 列出所有可用模型及元数据 |
+| `GROQCLOUD_GROQ_CREATE_CHAT_COMPLETION` | 生成基于聊天的 AI 补全 |
+| `GROQCLOUD_GROQ_RETRIEVE_MODEL` | 获取特定模型的详细信息 |
+| `GROQCLOUD_GROQ_CREATE_AUDIO_TRANSLATION` | 将非英语音频翻译为英文文本 |
+| `GROQCLOUD_LIST_VOICES` | 检索 PlayAI 可用的 TTS 语音 |
 
 ---
 

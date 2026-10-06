@@ -1,34 +1,34 @@
 ---
 name: rev-ai-automation
-description: "Automate Rev AI tasks via Rube MCP (Composio). Always search tools first for current schemas."
+description: "通过 Rube MCP (Composio) 自动化 Rev AI 任务。请始终先搜索工具以获取当前的 schema。"
 requires:
   mcp: [rube]
 ---
 
-# Rev AI Automation via Rube MCP
+# 通过 Rube MCP 实现 Rev AI 自动化
 
-Automate Rev AI operations through Composio's Rev AI toolkit via Rube MCP.
+通过 Rube MCP，借助 Composio 的 Rev AI 工具包自动化 Rev AI 操作。
 
-**Toolkit docs**: [composio.dev/toolkits/rev_ai](https://composio.dev/toolkits/rev_ai)
+**工具包文档**：[composio.dev/toolkits/rev_ai](https://composio.dev/toolkits/rev_ai)
 
 ## 前置条件
 
-- Rube MCP 必须已连接（RUBE_SEARCH_TOOLS 可用）
-- Active Rev AI connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `rev_ai`
-- 始终首先调用 `RUBE_SEARCH_TOOLS` 以获取当前工具架构
+- 必须已连接 Rube MCP（RUBE_SEARCH_TOOLS 可用）
+- 通过 `RUBE_MANAGE_CONNECTIONS` 使用工具包 `rev_ai` 建立有效的 Rev AI 连接
+- 始终先调用 `RUBE_SEARCH_TOOLS` 以获取当前的工具 schema
 
 ## 设置
 
-**获取 Rube MCP**: 在客户端配置中添加 `https://rube.app/mcp` 作为 MCP 服务器。无需 API 密钥 — 只需添加端点即可使用。
+**获取 Rube MCP**：在你的客户端配置中将 `https://rube.app/mcp` 添加为 MCP 服务器。无需 API 密钥——只需添加该端点即可使用。
 
-1. 通过确认 `RUBE_SEARCH_TOOLS` 响应来验证 Rube MCP 可用
-2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `rev_ai`
-3. 如果连接未处于 ACTIVE 状态，请按照返回的授权链接完成设置
+1. 通过确认 `RUBE_SEARCH_TOOLS` 有响应来验证 Rube MCP 是否可用
+2. 使用工具包 `rev_ai` 调用 `RUBE_MANAGE_CONNECTIONS`
+3. 如果连接状态不是 ACTIVE，请按照返回的授权链接完成设置
 4. 在运行任何工作流之前，确认连接状态显示为 ACTIVE
 
 ## 工具发现
 
-在执行工作流之前，始终发现可用工具：
+在执行工作流之前，始终先发现可用工具：
 
 ```
 RUBE_SEARCH_TOOLS
@@ -36,7 +36,7 @@ queries: [{use_case: "Rev AI operations", known_fields: ""}]
 session: {generate_id: true}
 ```
 
-这将返回可用的工具标识符、输入架构、推荐的执行计划和已知陷阱。
+这将返回可用的工具 slug、输入 schema、推荐的执行计划以及已知的陷阱。
 
 ## 核心工作流模式
 
@@ -62,7 +62,7 @@ session_id: "your_session_id"
 RUBE_MULTI_EXECUTE_TOOL
 tools: [{
   tool_slug: "TOOL_SLUG_FROM_SEARCH",
-  arguments: {/* 符合架构的参数，来自搜索结果 */}
+  arguments: {/* schema-compliant args from search results */}
 }]
 memory: {}
 session_id: "your_session_id"
@@ -70,22 +70,22 @@ session_id: "your_session_id"
 
 ## 已知陷阱
 
-- **始终先搜索**: 工具架构会变化。不要在不调用 `RUBE_SEARCH_TOOLS` 的情况下硬编码工具标识符或参数
-- **检查连接**: 在执行工具之前，验证 `RUBE_MANAGE_CONNECTIONS` 显示 ACTIVE 状态
-- **架构合规**: 使用搜索结果中的确切字段名称和类型
-- **Memory 参数**: 始终在 `RUBE_MULTI_EXECUTE_TOOL` 调用中包含 `memory`，即使为空 (`{}`)
-- **会话重用**: 在工作流内重用会话 ID。为新工作流生成新的会话 ID
-- **分页**: 检查响应中的分页令牌并继续获取，直到完成
+- **始终先搜索**：工具 schema 会变化。在未调用 `RUBE_SEARCH_TOOLS` 的情况下，切勿硬编码工具 slug 或参数
+- **检查连接**：在执行工具之前，确认 `RUBE_MANAGE_CONNECTIONS` 显示 ACTIVE 状态
+- **遵循 schema**：使用搜索结果中确切的字段名称和类型
+- **Memory 参数**：`RUBE_MULTI_EXECUTE_TOOL` 调用中始终包含 `memory`，即使为空（`{}`）
+- **会话复用**：在同一工作流中复用会话 ID，新工作流则生成新的会话 ID
+- **分页**：检查响应中的分页令牌，并持续获取直到完成
 
 ## 快速参考
 
 | 操作 | 方法 |
-|-----------|----------|
-| 查找工具 | `RUBE_SEARCH_TOOLS` with Rev AI-specific use case |
-| 连接 | `RUBE_MANAGE_CONNECTIONS` with toolkit `rev_ai` |
-| 执行 | `RUBE_MULTI_EXECUTE_TOOL` with discovered tool slugs |
-| 批量操作 | `RUBE_REMOTE_WORKBENCH` with `run_composio_tool()` |
-| 完整架构 | `RUBE_GET_TOOL_SCHEMAS` for tools with `schemaRef` |
+|------|------|
+| 查找工具 | 使用针对 Rev AI 的用例调用 `RUBE_SEARCH_TOOLS` |
+| 连接 | 使用工具包 `rev_ai` 调用 `RUBE_MANAGE_CONNECTIONS` |
+| 执行 | 使用发现的工具 slug 调用 `RUBE_MULTI_EXECUTE_TOOL` |
+| 批量操作 | 使用 `run_composio_tool()` 调用 `RUBE_REMOTE_WORKBENCH` |
+| 完整 schema | 对带有 `schemaRef` 的工具使用 `RUBE_GET_TOOL_SCHEMAS` |
 
 ---
 *由 [Composio](https://composio.dev) 提供支持*

@@ -1,348 +1,390 @@
-# QuTiP Time Evolution and Dynamics Solvers
+# QuTiP 5.3 Time Evolution
 
-## Overview
+Research and API verification date: **2026-10-01**. All signatures and examples
+target `qutip==5.3.1`.
 
-QuTiP provides multiple solvers for quantum dynamics:
-- `sesolve` - Schrödinger equation (unitary evolution)
-- `mesolve` - Master equation (open systems with dissipation)
-- `mcsolve` - Monte Carlo (quantum trajectories)
-- `brmesolve` - Bloch-Redfield master equation
-- `fmmesolve` - Floquet-Markov master equation
-- `ssesolve/smesolve` - Stochastic Schrödinger/master equations
+## Solver selection
 
-## Schrödinger Equation Solver (sesolve)
+| Solver | State/model | Main uncertainty |
+|---|---|---|
+| `sesolve` | Schrödinger equation, pure state, no collapse channels | ODE and model approximation |
+| `mesolve` | Lindblad master equation, mixed state, or Liouvillian | channel validity and ODE error |
+| `mcsolve` | quantum-jump trajectories | ODE error plus sampling error |
+| `brmesolve` | microscopic weak-coupling bath spectra | Born-Markov/secular approximation and positivity |
+| `ssesolve` | stochastic Schrödinger equation | diffusive record sampling |
+| `smesolve` | stochastic master equation with monitored/unmonitored channels | diffusive record sampling |
+| `fsesolve`/`fmmesolve` | periodic Floquet dynamics | period, basis, harmonic and bath approximations |
 
-For closed quantum systems evolving unitarily.
+Do not use `mcsolve` merely to make a deterministic calculation parallel. Do
+not use `brmesolve` as a generic replacement for a Lindblad model.
 
-### Basic Usage
+## Current function signatures
+
+The important QuTiP 5.3 call boundaries are:
+
+```text
+sesolve(H, psi0, tlist, *, e_ops=None, args=None, options=None)
+mesolve(H, rho0, tlist, c_ops=None, *, e_ops=None, args=None, options=None)
+mcsolve(H, state, tlist, c_ops=(), *, e_ops=None, ntraj=500,
+        args=None, options=None, seeds=None, target_tol=None, timeout=None)
+brmesolve(H, psi0, tlist, a_ops=None, sec_cutoff=0.1, *,
+          c_ops=None, e_ops=None, args=None, options=None)
+ssesolve(H, psi0, tlist, sc_ops=(), heterodyne=False, *,
+         e_ops=None, args=None, ntraj=500, options=None, seeds=None,
+         target_tol=None, timeout=None)
+smesolve(H, rho0, tlist, c_ops=(), sc_ops=(), heterodyne=False, *,
+         e_ops=None, args=None, ntraj=500, options=None, seeds=None,
+         target_tol=None, timeout=None)
+```
+
+In 5.3, `e_ops`, `args`, and `options` are keyword-only. Passing solver options
+as arbitrary solver keyword arguments was removed. The old `qutip.Options`
+export is no longer present; pass an ordinary dictionary.
+
+## `sesolve`: closed unitary evolution
 
 ```python
-from qutip import *
 import numpy as np
+from qutip import basis, sesolve, sigmax, sigmaz
 
-# System setup
-N = 10
-psi0 = basis(N, 0)  # Initial state
-H = num(N)  # Hamiltonian
-
-# Time points
-tlist = np.linspace(0, 10, 100)
-
-# Solve
-result = sesolve(H, psi0, tlist)
-
-# Access results
-states = result.states  # List of states at each time
-final_state = result.states[-1]
-```
-
-### With Expectation Values
-
-```python
-# Operators to compute expectation values
-e_ops = [num(N), destroy(N), create(N)]
-
-result = sesolve(H, psi0, tlist, e_ops=e_ops)
-
-# Access expectation values
-n_t = result.expect[0]  # ⟨n⟩(t)
-a_t = result.expect[1]  # ⟨a⟩(t)
-```
-
-### Time-Dependent Hamiltonians
-
-```python
-# Method 1: String-based (faster, requires Cython)
-H = [num(N), [destroy(N) + create(N), 'cos(w*t)']]
-args = {'w': 1.0}
-result = sesolve(H, psi0, tlist, args=args)
-
-# Method 2: Function-based
-def drive(t, args):
-    return np.exp(-t/args['tau']) * np.sin(args['w'] * t)
-
-H = [num(N), [destroy(N) + create(N), drive]]
-args = {'w': 1.0, 'tau': 5.0}
-result = sesolve(H, psi0, tlist, args=args)
-
-# Method 3: QobjEvo (most flexible)
-from qutip import QobjEvo
-H_td = QobjEvo([num(N), [destroy(N) + create(N), drive]], args=args)
-result = sesolve(H_td, psi0, tlist)
-```
-
-## Master Equation Solver (mesolve)
-
-For open quantum systems with dissipation and decoherence.
-
-### Basic Usage
-
-```python
-# System Hamiltonian
-H = num(N)
-
-# Collapse operators (Lindblad operators)
-kappa = 0.1  # Decay rate
-c_ops = [np.sqrt(kappa) * destroy(N)]
-
-# Initial state
-psi0 = coherent(N, 2.0)
-
-# Solve
-result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
-
-# Result is a density matrix evolution
-rho_t = result.states  # List of density matrices
-n_t = result.expect[0]  # ⟨n⟩(t)
-```
-
-### Multiple Dissipation Channels
-
-```python
-# Photon loss
-kappa = 0.1
-# Dephasing
-gamma = 0.05
-# Thermal excitation
-nth = 0.5  # Thermal photon number
-
-c_ops = [
-    np.sqrt(kappa * (1 + nth)) * destroy(N),  # Thermal decay
-    np.sqrt(kappa * nth) * create(N),  # Thermal excitation
-    np.sqrt(gamma) * num(N)  # Pure dephasing
-]
-
-result = mesolve(H, psi0, tlist, c_ops)
-```
-
-### Time-Dependent Dissipation
-
-```python
-# Time-dependent decay rate
-def kappa_t(t, args):
-    return args['k0'] * (1 + np.sin(args['w'] * t))
-
-c_ops = [[np.sqrt(1.0) * destroy(N), kappa_t]]
-args = {'k0': 0.1, 'w': 1.0}
-
-result = mesolve(H, psi0, tlist, c_ops, args=args)
-```
-
-## Monte Carlo Solver (mcsolve)
-
-Simulates quantum trajectories for open systems.
-
-### Basic Usage
-
-```python
-# Same setup as mesolve
-H = num(N)
-c_ops = [np.sqrt(0.1) * destroy(N)]
-psi0 = coherent(N, 2.0)
-
-# Number of trajectories
-ntraj = 500
-
-result = mcsolve(H, psi0, tlist, c_ops, e_ops=[num(N)], ntraj=ntraj)
-
-# Results averaged over trajectories
-n_avg = result.expect[0]
-n_std = result.std_expect[0]  # Standard deviation
-
-# Individual trajectories (if options.store_states=True)
-options = Options(store_states=True)
-result = mcsolve(H, psi0, tlist, c_ops, ntraj=ntraj, options=options)
-trajectories = result.states  # List of trajectory lists
-```
-
-### Photon Counting
-
-```python
-# Track quantum jumps
-result = mcsolve(H, psi0, tlist, c_ops, ntraj=ntraj, options=options)
-
-# Access jump times and which operator caused the jump
-for traj in result.col_times:
-    print(f"Jump times: {traj}")
-
-for traj in result.col_which:
-    print(f"Jump operator indices: {traj}")
-```
-
-## Bloch-Redfield Solver (brmesolve)
-
-For weak system-bath coupling in the secular approximation.
-
-```python
-# System Hamiltonian
-H = sigmaz()
-
-# Coupling operators and spectral density
-a_ops = [[sigmax(), lambda w: 0.1 * w if w > 0 else 0]]  # Ohmic bath
-
+H = 0.5 * sigmax()
 psi0 = basis(2, 0)
-result = brmesolve(H, psi0, tlist, a_ops, e_ops=[sigmaz(), sigmax()])
+tlist = np.linspace(0.0, 10.0, 201)
+
+result = sesolve(
+    H,
+    psi0,
+    tlist,
+    e_ops={"z": sigmaz()},
+    options={"atol": 1e-10, "rtol": 1e-8, "progress_bar": ""},
+)
+z = np.asarray(result.e_data["z"])
 ```
 
-## Floquet Solver (fmmesolve)
+For an ODE norm/trace audit, set `options["normalize_output"] = False`:
+`sesolve`/`mesolve` normally normalize an initially normalized state on output,
+which can conceal integrator drift. Quantum-jump trajectory normalization is
+part of the unravelling and is a different operation.
 
-For time-periodic Hamiltonians.
+Audit Hamiltonian Hermiticity and state norm. If norm drift is material, tighten
+tolerances or investigate the model; do not normalize away unexplained error.
+
+## `mesolve`: Lindblad or explicit Liouvillian evolution
 
 ```python
-# Time-periodic Hamiltonian
-w_d = 1.0  # Drive frequency
-H0 = sigmaz()
-H1 = sigmax()
-H = [H0, [H1, 'cos(w*t)']]
-args = {'w': w_d}
+import numpy as np
+from qutip import basis, mesolve, sigmam, sigmaz
 
-# Floquet modes and quasi-energies
-T = 2 * np.pi / w_d  # Period
-f_modes, f_energies = floquet_modes(H, T, args)
+gamma = 0.2
+excited = basis(2, 0)
+tlist = np.linspace(0.0, 12.0, 241)
 
-# Initial state in Floquet basis
-psi0 = basis(2, 0)
-
-# Dissipation in Floquet basis
-c_ops = [np.sqrt(0.1) * sigmam()]
-
-result = fmmesolve(H, psi0, tlist, c_ops, e_ops=[num(2)], T=T, args=args)
+result = mesolve(
+    0.5 * sigmaz(),
+    excited,
+    tlist,
+    c_ops=[np.sqrt(gamma) * sigmam()],
+    e_ops={"p_excited": excited.proj()},
+    options={
+        "method": "adams",
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "store_final_state": True,
+        "progress_bar": "",
+    },
+)
 ```
 
-## Stochastic Solvers
+When no collapse operators are supplied and `H` is not a superoperator,
+`mesolve` may defer to `sesolve`. If `H` is an explicit Liouvillian, document
+whether it is in valid Lindblad form or represents a deliberate approximation.
 
-### Stochastic Schrödinger Equation (ssesolve)
+## `mcsolve`: quantum jumps
 
 ```python
-# Diffusion operator
-sc_ops = [np.sqrt(0.1) * destroy(N)]
+result = mcsolve(
+    0.5 * sigmaz(),
+    excited,
+    tlist,
+    [np.sqrt(gamma) * sigmam()],
+    e_ops=[excited.proj()],
+    ntraj=500,
+    seeds=20260723,
+    options={
+        "keep_runs_results": False,
+        "progress_bar": "",
+    },
+)
 
-# Heterodyne detection
-result = ssesolve(H, psi0, tlist, sc_ops=sc_ops, e_ops=[num(N)],
-                   ntraj=500, noise=1)  # noise=1 for heterodyne
+mean_population = result.average_expect[0]
+trajectory_spread = result.std_expect[0]
+seed_manifest = result.seeds
 ```
 
-### Stochastic Master Equation (smesolve)
+`seeds` may be one integer/`SeedSequence` used to spawn trajectory seeds, or a
+list with one seed per trajectory. QuTiP stores the realized seeds in the
+result. Reusing them enables a paired comparison, but paired runs are not
+independent replicates.
+
+Trajectory rigor:
+
+- increase `ntraj` and report stabilization or a target uncertainty;
+- distinguish trajectory standard deviation from standard error of the mean;
+- set `options={"keep_runs_results": True}` only when individual trajectories
+  are actually required, because memory scales with trajectories and time
+  points;
+- collapse records are available per trajectory through result attributes such
+  as `collapse`; do not print unbounded records by default;
+- `target_tol` may stop before `ntraj`, so report the number actually run;
+- report timeout termination and solver stats.
+
+For mixed initial conditions, current QuTiP can sample the initial mixture; the
+result then includes initial-state accounting. State this extra source of
+sampling explicitly.
+
+## `brmesolve`: Bloch-Redfield evolution
 
 ```python
-result = smesolve(H, psi0, tlist, c_ops=[], sc_ops=sc_ops,
-                   e_ops=[num(N)], ntraj=500)
+import numpy as np
+from qutip import basis, brmesolve, sigmax, sigmaz
+
+def one_sided_spectrum(w):
+    return 0.03 * w if w > 0.0 else 0.0
+
+tlist = np.linspace(0.0, 30.0, 601)
+result = brmesolve(
+    0.5 * sigmaz(),
+    basis(2, 0),
+    tlist,
+    a_ops=[(sigmax(), one_sided_spectrum)],
+    e_ops={"z": sigmaz()},
+    sec_cutoff=0.1,
+    options={"atol": 1e-10, "rtol": 1e-8, "progress_bar": ""},
+)
 ```
 
-## Propagators
+The coupling operator in each `a_ops` pair is normally Hermitian, and the
+spectrum is a function of **angular frequency**. Prefer a current QuTiP
+Environment object when it represents the bath more clearly.
 
-### Time-Evolution Operator
+Required checks:
+
+- weak system-bath coupling (Born approximation);
+- short bath memory compared with system dynamics (Markov approximation);
+- stationary bath and correct positive/negative-frequency convention;
+- secular choice: `sec_cutoff=-1` disables secularization and can worsen
+  positivity;
+- density-matrix trace, Hermiticity, and minimum eigenvalue over time.
+
+See `advanced.md` for the physical boundaries.
+
+## Stochastic Schrödinger and master equations
+
+Use these for diffusive continuous-measurement unravellings, not jump
+trajectories:
 
 ```python
-# Evolution operator U(t) such that ψ(t) = U(t)ψ(0)
-U = (-1j * H * t).expm()
-psi_t = U * psi0
-
-# For master equation (superoperator propagator)
-L = liouvillian(H, c_ops)
-U_super = (L * t).expm()
-rho_t = vector_to_operator(U_super * operator_to_vector(rho0))
+result = smesolve(
+    H,
+    rho0,
+    tlist,
+    c_ops=unmonitored_channels,
+    sc_ops=monitored_channels,
+    heterodyne=False,  # homodyne
+    e_ops={"signal": measured_quadrature},
+    ntraj=200,
+    seeds=20260723,
+    options={"dt": 0.001, "store_measurement": "end", "progress_bar": ""},
+)
 ```
 
-### Propagator Function
+- `c_ops` are unmonitored deterministic dissipation channels. Even from a ket,
+  use `smesolve` if any such channel is present; `ssesolve` has no `c_ops`.
+- Stochastic methods include `platen`, `rouchon`, and `euler`, each with its
+  own options. Do not pass deterministic `adams`/`bdf` or their `atol`/`rtol`
+  to a fixed-step stochastic integrator; converge `dt` instead.
+- `sc_ops` are monitored stochastic channels.
+- `heterodyne=False` is homodyne; `True` is heterodyne.
+- Legacy integer `noise` selectors are not current API.
+- Measurement records can be much larger than expectation summaries; store
+  them only when needed.
+- Converge the stochastic integration step `dt` separately from `ntraj`.
+- `result.measurement` has shape `(ntraj, n_sc_ops, len(tlist)-1)` for homodyne
+  and `(ntraj, n_sc_ops, 2, len(tlist)-1)` for heterodyne. Use
+  `store_measurement="start"` for replay with `run_from_experiment(...,
+  measurement=True)`; the default/end record uses different state timing.
+
+## Time-dependent systems and QobjEvo
+
+### Pythonic callable coefficients
 
 ```python
-# Generate propagators for multiple times
-U_list = propagator(H, tlist, c_ops)
+import numpy as np
+from qutip import QobjEvo, sigmax, sigmaz
 
-# Apply to states
-psi_t = [U_list[i] * psi0 for i in range(len(tlist))]
+def pulse(t, amplitude, center, width):
+    return amplitude * np.exp(-0.5 * ((t - center) / width) ** 2)
+
+H = QobjEvo(
+    [0.5 * sigmaz(), [sigmax(), pulse]],
+    args={"amplitude": 0.2, "center": 5.0, "width": 1.0},
+)
+H_at_t = H(5.0)
+H.arguments(amplitude=0.15)
 ```
 
-## Steady State Solutions
+The Pythonic form `f(t, parameter, ...)` is current. The legacy
+`f(t, args_dictionary)` form is deprecated in 5.3 and scheduled for removal in
+5.5.
 
-### Direct Steady State
+### Sampled coefficients
 
 ```python
-# Find steady state of Liouvillian
-rho_ss = steadystate(H, c_ops)
-
-# Check it's steady
-L = liouvillian(H, c_ops)
-assert (L * operator_to_vector(rho_ss)).norm() < 1e-10
+coefficient_times = np.linspace(0.0, 10.0, 501)
+samples = np.cos(coefficient_times)
+H = QobjEvo(
+    [0.5 * sigmaz(), [sigmax(), samples]],
+    tlist=coefficient_times,
+    order=3,
+)
 ```
 
-### Pseudo-Inverse Method
+Sample times must be sorted and match coefficient length. `order=0` gives a
+left/previous-value step function; the default cubic spline can overshoot.
+Converge the coefficient sampling independently of solver output times.
+
+QuTiP also accepts expression strings and may compile them, but this skill does
+not construct such expressions from configuration or user text. Use trusted
+callables or numeric arrays in generated workflows.
+
+## Option dictionaries and integrators
+
+Common solver options:
 
 ```python
-# For degenerate steady states
-rho_ss = steadystate(H, c_ops, method='direct')
-# or 'eigen', 'svd', 'power'
+options = {
+    "method": "adams",
+    "atol": 1e-10,
+    "rtol": 1e-8,
+    "nsteps": 10000,
+    "store_states": False,
+    "store_final_state": True,
+    "progress_bar": "",
+}
 ```
 
-## Correlation Functions
+Options are solver- and integrator-specific. Consult the selected solver's
+`.options` documentation before using a key.
 
-### Two-Time Correlation
+Common integration choices:
+
+- `adams`: non-stiff default for many deterministic solvers;
+- `bdf`: stiff systems;
+- `lsoda`: switches between non-stiff and stiff methods;
+- explicit high-order methods such as `dop853`, `vern7`, or `vern9`;
+- `diag`: diagonalization-based constant-system evolution;
+- `krylov`: suitable cases where Krylov evolution is beneficial.
+
+An integrator label is not an accuracy certificate. Compare at least two
+tolerance levels, inspect warnings/stats, and compare a second method for a
+representative stiff or difficult case.
+
+QuTiP 5.3 adds `matrix_form` for `mesolve`/`MESolver`:
 
 ```python
-# ⟨A(t+τ)B(t)⟩
-A = destroy(N)
-B = create(N)
-
-# Emission spectrum
-taulist = np.linspace(0, 10, 200)
-corr = correlation_2op_1t(H, None, taulist, c_ops, A, B)
-
-# Power spectrum
-w, S = spectrum_correlation_fft(taulist, corr)
+options = {"matrix_form": True, "atol": 1e-10, "rtol": 1e-8}
 ```
 
-### Multi-Time Correlation
+It uses matrix-matrix products and may reduce memory in suitable models.
+Benchmark both time and verified observables before adopting it.
+
+## Time grids
+
+`tlist` is the requested output grid, not necessarily the integrator's internal
+step sequence.
+
+Checks:
+
+1. finite, strictly increasing values;
+2. includes the physically intended initial time;
+3. resolves the fastest Hamiltonian, decay, drive-envelope, and measurement
+   scales in the returned output;
+4. long enough to capture transients or steady behavior;
+5. converged under a denser output grid where downstream interpolation, FFT, or
+   peak detection depends on sampling.
+
+For FFT spectra, a uniform `taulist` is required and its spacing/window set
+Nyquist range and frequency resolution.
+
+## Result semantics
+
+Current solver results can contain:
+
+| Attribute | Meaning |
+|---|---|
+| `times` | returned times |
+| `states` | stored states; may be empty depending on options and `e_ops` |
+| `final_state` | final state when requested |
+| `expect` | list aligned with list-form `e_ops` |
+| `e_data` | dictionary keyed like dict-form `e_ops` |
+| `options` | effective result/solver options |
+| `solver` | solver name |
+| `stats` | timing and diagnostic statistics |
+
+Multi-trajectory results add trajectory counts, seeds, standard deviations,
+average states, measurements, and optionally individual run results. Never
+assume `.states` means individual trajectories; inspect
+`keep_runs_results` and the concrete result type. For multi-trajectory results,
+`.expect`/`.e_data` and `.states` switch to per-run arrays when runs are retained.
+Use `.average_expect`/`.average_e_data` and `.average_states` explicitly for
+ensemble means, and `.runs_expect`/`.runs_states` for individual trajectories.
+Trajectory count is an unravelling sample count, not hardware measurement shots.
+
+QuTiP 5.3 adds `Result.plot_expect()` and `MultiTrajResult.plot_expect()`.
+Prefer explicit axes in reusable code.
+
+## Repeated systems
+
+Solver classes (`SESolver`, `MESolver`, `MCSolver`, `BRSolver`, `SMESolver`,
+and others) can reuse a constructed right-hand side across runs:
 
 ```python
-# ⟨A(t3)B(t2)C(t1)⟩
-corr = correlation_3op_1t(H, None, taulist, c_ops, A, B, C)
+from qutip import MESolver
+
+solver = MESolver(H, c_ops, options={"atol": 1e-10, "rtol": 1e-8})
+first = solver.run(rho_a, tlist, e_ops=e_ops)
+second = solver.run(rho_b, tlist, e_ops=e_ops)
 ```
 
-## Solver Options
+Use the class interface when repeated setup is material, and verify that
+updated arguments and initial states are the intended ones.
 
-```python
-from qutip import Options
+## Portable output
 
-options = Options()
-options.nsteps = 10000  # Max internal steps
-options.atol = 1e-8  # Absolute tolerance
-options.rtol = 1e-6  # Relative tolerance
-options.method = 'adams'  # or 'bdf' for stiff problems
-options.store_states = True  # Store all states
-options.store_final_state = True  # Store only final state
+Do not load untrusted serialized Python or QuTiP objects. For exchange and
+audit, save:
 
-result = mesolve(H, psi0, tlist, c_ops, options=options)
-```
+- scalar configuration and assumptions;
+- real/imaginary numeric arrays;
+- dimensions, versions, tolerances, seeds, and solver stats;
+- checksums and schema versions where long-term provenance matters.
 
-### Progress Bar
+The bundled CLIs use bounded strict JSON and never pickle results.
 
-```python
-options.progress_bar = True
-result = mesolve(H, psi0, tlist, c_ops, options=options)
-```
+## Local tools
 
-## Saving and Loading Results
+- `../scripts/two_level_simulation.py`: bounded `mesolve`/`mcsolve` example.
+- `../scripts/solver_config_planner.py`: solver and option checklist.
+- `../scripts/convergence_sweep.py`: deterministic or trajectory convergence.
+- `../scripts/result_audit.py`: portable JSON audit.
 
-```python
-# Save results
-result.save("my_simulation.dat")
+## Sources (verified 2026-10-01)
 
-# Load results
-from qutip import Result
-loaded_result = Result.load("my_simulation.dat")
-```
-
-## Tips for Efficient Simulations
-
-1. **Sparse matrices**: QuTiP automatically uses sparse matrices
-2. **Small Hilbert spaces**: Truncate when possible
-3. **Time-dependent terms**: String format is fastest (requires compilation)
-4. **Parallel trajectories**: mcsolve automatically parallelizes
-5. **Convergence**: Check by varying `ntraj`, `nsteps`, tolerances
-6. **Solver selection**:
-   - Pure states: Use `sesolve` (faster)
-   - Mixed states/dissipation: Use `mesolve`
-   - Noise/measurements: Use `mcsolve`
-   - Weak coupling: Use `brmesolve`
-   - Periodic driving: Use Floquet methods
+- [Dynamics API](https://qutip.readthedocs.io/en/stable/apidoc/solver.html)
+- [QobjEvo and coefficients API](https://qutip.readthedocs.io/en/stable/apidoc/time_dep.html)
+- [Dynamics user guide](https://qutip.readthedocs.io/en/stable/guide/guide-dynamics.html)
+- [Monte Carlo guide](https://qutip.readthedocs.io/en/stable/guide/dynamics/dynamics-monte.html)
+- [Stochastic solver guide](https://qutip.readthedocs.io/en/stable/guide/dynamics/dynamics-stochastic.html)
+- [Bloch-Redfield guide](https://qutip.readthedocs.io/en/stable/guide/dynamics/dynamics-bloch-redfield.html)
+- [QuTiP 5.3.1 release](https://github.com/qutip/qutip/releases/tag/v5.3.1)
+- [QuTiP 5 migration changelog](https://qutip.readthedocs.io/en/stable/changelog.html#qutip-5-0-0-2024-03-28)

@@ -1,238 +1,350 @@
-# Consensus Peaks: Universe Building
+# Consensus peaks and universe assessment
 
-## Overview
+Verified against `geniml==0.8.4` release source and official BEDbase
+documentation on 2026-10-01.
 
-Geniml provides tools for building genomic "universes" — standardized reference sets of consensus peaks from collections of BED files. These universes represent genomic regions where analyzed datasets show significant coverage overlap, serving as reference vocabularies for tokenization and analysis.
+## Method scope
 
-## When to Use
+A Geniml universe is a reference interval vocabulary derived from coverage
+across a collection of BED files. Release 0.8.4 implements:
 
-Use consensus peak creation when:
-- Building reference peak sets from multiple experiments
-- Creating universe files for Region2Vec or BEDspace tokenization
-- Standardizing genomic regions across a collection of datasets
-- Defining regions of interest with statistical significance
+- **CC**: coverage cutoff;
+- **CCF**: coverage cutoff with flexible core/boundary fields;
+- **ML**: maximum-likelihood flexible universe;
+- **HMM**: hidden-state model over start/core/end coverage.
 
-## Workflow
+Primary source: Rymuza et al. (2024), *Methods for constructing and evaluating
+consensus genomic interval sets*,
+doi:[10.1093/nar/gkae685](https://doi.org/10.1093/nar/gkae685).
 
-### Step 1: Combine BED Files
+The paper motivates and evaluates these methods; it does not make one method
+universally best. Choose using training-only data, assay-specific validation,
+resource constraints, and held-out universe-fit metrics.
 
-Merge all BED files into a single combined file:
+## Non-negotiable input contract
+
+All source BED files and chromosome sizes must agree on:
+
+- assembly/accession and patch;
+- 0-based half-open BED coordinates;
+- chromosome/contig naming and inclusion policy;
+- sort order;
+- duplicate and overlap handling;
+- strand interpretation;
+- liftover provenance, if any.
+
+Reject malformed rows, negative starts, `end <= start`, coordinates beyond
+contig length, unknown contigs, mixed assemblies, and integer overflow before
+coverage generation. A chromosome name match alone is not proof of assembly
+compatibility.
+
+Build the universe only from the training patients/donors. If samples from a
+held-out patient contribute to coverage, the resulting vocabulary leaks test
+feature prevalence.
 
 ```bash
-cat /path/to/bed/files/*.bed > combined_files.bed
+python skills/geniml/scripts/corpus_auditor.py \
+  --manifest data/train_manifest.tsv \
+  --group-column patient_id \
+  --split-column split \
+  --assembly-column assembly
 ```
 
-### Step 2: Generate Coverage Tracks
+## Coverage prerequisites
 
-Create bigWig coverage tracks using uniwig with a smoothing window:
+Geniml consumes bigWig tracks in a local coverage directory. With the default
+prefix `all`, methods expect:
 
-```bash
-uniwig -m 25 combined_files.bed chrom.sizes coverage/
+```text
+all_start.bw
+all_core.bw
+all_end.bw
 ```
 
-**Parameters:**
-- `-m 25`: Smoothing window size (25bp typical for chromatin accessibility)
-- `chrom.sizes`: Chromosome sizes file for your genome
-- `coverage/`: Output directory for bigWig files
+CC and CCF read `all_core.bw`. HMM and likelihood-based methods use
+start/core/end tracks. The tracks must share contigs and lengths with the
+checksummed chromosome-sizes file. CC, CCF, and HMM cast coverage to uint16:
+require finite nonnegative integer counts no greater than 65,535. Fractional
+coverage is truncated and larger counts can wrap. Do not feed normalized
+BigWigs into these methods without verifying the required count semantics.
 
-The smoothing window helps reduce noise and creates more robust peak boundaries.
+Official Geniml pages describe producing these tracks with the ecosystem's
+coverage tooling, but the current Gtars CLI has changed across releases. Do not
+emit or run a guessed `uniwig` command. Pin the exact Gtars/uniwig executable,
+capture its `--help`, and smoke-test its output naming on synthetic local BED
+data. Record:
 
-### Step 3: Build Universe
+- tool version and binary SHA-256;
+- complete argv (not a shell-expanded wildcard);
+- chromosome-sizes SHA-256;
+- ordered input manifest and checksums;
+- smoothing/binning parameters;
+- output track sizes, contigs, lengths, and checksums.
 
-Use one of four methods to construct the consensus peaks:
-
-## Universe-Building Methods
-
-### 1. Coverage Cutoff (CC)
-
-The simplest approach using a fixed coverage threshold:
+The bundled planner validates local inputs and emits the Geniml stage, but
+intentionally marks coverage generation as an external prerequisite:
 
 ```bash
-geniml universe build cc \
-  --coverage-folder coverage/ \
-  --output-file universe_cc.bed \
-  --cutoff 5 \
+python skills/geniml/scripts/consensus_plan.py \
+  --manifest data/train_manifest.tsv \
+  --chrom-sizes refs/GRCh38.chrom.sizes \
+  --assembly GRCh38 \
+  --method cc \
+  --cutoff 2 \
+  --output-dir work/consensus
+```
+
+It does not execute Geniml, Gtars, native binaries, or network requests.
+
+## Exact 0.8.4 CLI
+
+All shown CLI forms were checked against installed help. CC was executed on a
+synthetic BigWig; CCF, likelihood/ML, HMM, and assessment are source-verified
+illustrative templates, not completed end-to-end workflows in this review.
+
+The top-level command is `build-universe`, not `universe build`.
+
+### CC
+
+```bash
+geniml build-universe cc \
+  --coverage-folder /absolute/project/coverage \
+  --coverage-prefix all \
+  --output-file /absolute/project/universe_cc.bed \
+  --cutoff 2 \
   --merge 100 \
   --filter-size 50
 ```
 
-**Parameters:**
-- `--cutoff`: Coverage threshold (1 = union; file count = intersection)
-- `--merge`: Distance for merging adjacent peaks (bp)
-- `--filter-size`: Minimum peak size for inclusion (bp)
+`--cutoff` is an integer. If omitted, release source uses mean base coverage
+for each chromosome. `--merge` merges nearby output segments; `--filter-size`
+removes shorter segments. The output file must not already exist.
+A tiny count-track smoke produced the exact expected BED interval. In contrast,
+all-zero selected positions, 0.5-valued tracks, and 65,536-valued tracks
+reproduced empty-selection IndexError failures. The release can leave partial
+output if a later chromosome fails; reconcile every requested chromosome.
 
-**Use when:** Simple threshold-based selection is sufficient
+`merge=0, filter_size>0` enters the merging implementation and can split
+adjacent covered bases into individual bases. Until that upstream behavior is
+corrected, build with both zero and perform a separately validated BED
+length-filter/merge step when precise gap semantics matter.
 
-### 2. Coverage Cutoff Flexible (CCF)
+Do not claim `cutoff=number_of_files` is a strict sample intersection unless
+coverage generation contributes exactly one unit per sample at each base.
+Fragment/read coverage or duplicated intervals can violate that assumption.
 
-Creates confidence intervals around likelihood cutoffs for boundaries and region cores:
-
-```bash
-geniml universe build ccf \
-  --coverage-folder coverage/ \
-  --output-file universe_ccf.bed \
-  --cutoff 5 \
-  --confidence 0.95 \
-  --merge 100 \
-  --filter-size 50
-```
-
-**Additional parameters:**
-- `--confidence`: Confidence level for flexible boundaries (0-1)
-
-**Use when:** Uncertainty in peak boundaries should be captured
-
-### 3. Maximum Likelihood (ML)
-
-Builds probabilistic models accounting for region start/end positions:
-
-```bash
-geniml universe build ml \
-  --coverage-folder coverage/ \
-  --output-file universe_ml.bed \
-  --merge 100 \
-  --filter-size 50 \
-  --model-type gaussian
-```
-
-**Parameters:**
-- `--model-type`: Distribution for likelihood estimation (gaussian, poisson)
-
-**Use when:** Statistical modeling of peak locations is important
-
-### 4. Hidden Markov Model (HMM)
-
-Models genomic regions as hidden states with coverage as emissions:
-
-```bash
-geniml universe build hmm \
-  --coverage-folder coverage/ \
-  --output-file universe_hmm.bed \
-  --states 3 \
-  --merge 100 \
-  --filter-size 50
-```
-
-**Parameters:**
-- `--states`: Number of HMM hidden states (typically 2-5)
-
-**Use when:** Complex patterns of genomic states should be captured
-
-## Python API
+Python:
 
 ```python
-from geniml.universe import build_universe
+from geniml.universe.cc_universe import cc_universe
 
-# Build using coverage cutoff method
-universe = build_universe(
-    coverage_folder='coverage/',
-    method='cc',
-    cutoff=5,
-    merge_distance=100,
-    min_size=50,
-    output_file='universe.bed'
+cc_universe(
+    cove="work/coverage",
+    file_out="work/universe_cc.bed",
+    cove_prefix="all",
+    merge=100,
+    filter_size=50,
+    cutoff=2,
 )
 ```
 
-## Method Comparison
+### CCF
 
-| Method | Complexity | Flexibility | Computational Cost | Best For |
-|--------|------------|-------------|-------------------|----------|
-| CC | Low | Low | Low | Quick reference sets |
-| CCF | Medium | Medium | Medium | Boundary uncertainty |
-| ML | High | High | High | Statistical rigor |
-| HMM | High | High | Very High | Complex patterns |
+```bash
+geniml build-universe ccf \
+  --coverage-folder /absolute/project/coverage \
+  --coverage-prefix all \
+  --output-file /absolute/project/universe_ccf.bed
+```
 
-## Best Practices
-
-### Choosing a Method
-
-1. **Start with CC**: Quick and interpretable for initial exploration
-2. **Use CCF**: When peak boundaries are uncertain or noisy
-3. **Apply ML**: For publication-quality statistical analysis
-4. **Deploy HMM**: When modeling complex chromatin states
-
-### Parameter Selection
-
-**Coverage cutoff:**
-- `cutoff = 1`: Union of all peaks (most permissive)
-- `cutoff = n_files`: Intersection (most stringent)
-- `cutoff = 0.5 * n_files`: Moderate consensus (typical choice)
-
-**Merge distance:**
-- ATAC-seq: 100-200bp
-- ChIP-seq (narrow peaks): 50-100bp
-- ChIP-seq (broad peaks): 500-1000bp
-
-**Filter size:**
-- Minimum 30bp to avoid artifacts
-- 50-100bp typical for most assays
-- Larger for broad histone marks
-
-### Quality Control
-
-After building, assess universe quality:
+Python:
 
 ```python
-from geniml.evaluation import assess_universe
+from geniml.universe.ccf_universe import ccf_universe
 
-metrics = assess_universe(
-    universe_file='universe.bed',
-    coverage_folder='coverage/',
-    bed_files='bed_files/'
+ccf_universe(
+    cove="work/coverage",
+    file_out="work/universe_ccf.bed",
+    cove_prefix="all",
 )
-
-print(f"Number of regions: {metrics['n_regions']}")
-print(f"Mean region size: {metrics['mean_size']:.1f}bp")
-print(f"Coverage of input peaks: {metrics['coverage']:.1%}")
 ```
 
-**Key metrics:**
-- **Region count**: Should capture major features without excessive fragmentation
-- **Size distribution**: Should match expected biology (e.g., ~500bp for ATAC-seq)
-- **Input coverage**: Proportion of original peaks represented (typically >80%)
+The stable source has no CCF `--confidence`, `--merge`, or `--filter-size`
+arguments. CCF writes BED9-like rows carrying core/boundary information; do
+not reduce them to BED3 before confirming downstream semantics.
 
-## Output Format
+### Likelihood model and ML universe
 
-Consensus peaks are saved as BED files with three required columns:
+The 0.8.4 likelihood command has no `build_model` subcommand:
 
+```bash
+geniml lh \
+  --model-file /absolute/project/model.tar \
+  --coverage-folder /absolute/project/coverage \
+  --coverage-prefix all \
+  --file-no 4
 ```
-chr1    1000    1500
-chr1    2000    2800
-chr2    500     1000
+
+Then:
+
+```bash
+geniml build-universe ml \
+  --model-file /absolute/project/model.tar \
+  --coverage-folder /absolute/project/coverage \
+  --coverage-prefix all \
+  --output-file /absolute/project/universe_ml.bed
 ```
 
-Additional columns may include confidence scores or state annotations depending on the method.
+Python:
 
-## Common Workflows
+```python
+from geniml.likelihood.build_model import main as build_likelihood
+from geniml.universe.ml_universe import ml_universe
 
-### For Region2Vec
+build_likelihood(
+    model_file="work/model.tar",
+    coverage_folder="work/coverage",
+    coverage_prefix="all",
+    file_no=4,
+)
+ml_universe(
+    model_file="work/model.tar",
+    cove_folder="work/coverage",
+    cove_prefix="all",
+    file_out="work/universe_ml.bed",
+)
+```
 
-1. Build universe using preferred method
-2. Use universe as tokenization reference
-3. Tokenize BED files
-4. Train Region2Vec model
+Treat the `.tar` likelihood model as an untrusted archive if it is not locally
+created and checksummed. Inspect archive member names and reject absolute
+paths, `..`, links, devices, and excessive expansion before extraction.
 
-### For BEDspace
+### HMM
 
-1. Build universe from all datasets
-2. Use universe in preprocessing step
-3. Train BEDspace with metadata
-4. Query across regions and labels
+```bash
+geniml build-universe hmm \
+  --coverage-folder /absolute/project/coverage \
+  --coverage-prefix all \
+  --output-file /absolute/project/universe_hmm.bed
+```
 
-### For scEmbed
+Use `--not-normalize` only after validating what scale the model expects.
+`--save-max-cove` adds maximum coverage information. The 0.8.4 CLI has no
+`--states` argument; the model structure is defined in source constants.
 
-1. Create universe from bulk or aggregated scATAC-seq
-2. Use for cell tokenization
-3. Train scEmbed model
-4. Generate cell embeddings
+Python:
 
-## Troubleshooting
+```python
+from geniml.universe.hmm_universe import hmm_universe
 
-**Too few regions:** Lower cutoff threshold or reduce filter size
+hmm_universe(
+    coverage_folder="work/coverage",
+    out_file="work/universe_hmm.bed",
+    prefix="all",
+    normalize=True,
+    save_max_cove=False,
+)
+```
 
-**Too many regions:** Raise cutoff threshold, increase merge distance, or increase filter size
+## Validate every output
 
-**Noisy boundaries:** Use CCF or ML methods instead of CC
+Universe builders do not replace input validation. After construction:
 
-**Long computation:** Start with CC method for quick results, then refine with ML/HMM if needed
+1. Re-run BED validation against the same chromosome sizes.
+2. Confirm sorted, nonempty output and expected BED column count.
+3. Check region count, length distribution, covered bases, overlaps, and
+   duplicate coordinates.
+4. Confirm no unknown contigs or out-of-bounds ends.
+5. Record output SHA-256 and method parameters.
+6. Build a fresh Gtars tokenizer and record vocabulary/special-token sizes.
+7. Never reorder the universe after a model or token corpus has been created.
+
+Some 0.8.4 functions assume at least one selected base per chromosome and may
+index an empty result. Test sparse/empty chromosomes synthetically and fail
+closed rather than accepting a partial output.
+
+## Assess fit to held-out collections
+
+The release CLI is:
+
+```bash
+geniml assess-universe \
+  --raw-data-folder /absolute/project/validation_beds \
+  --file-list /absolute/project/validation_files.txt \
+  --universe /absolute/project/universe_cc.bed \
+  --overlap \
+  --distance \
+  --distance-universe-to-file \
+  --folder-out /absolute/project/assessment \
+  --pref validation \
+  --no-workers 4
+```
+
+Available flags include:
+
+- `--overlap`;
+- `--distance`;
+- `--distance-flexible`;
+- `--distance-universe-to-file`;
+- `--distance-flexible-universe-to-file`;
+- `--save-to-file`;
+- `--save-each`.
+
+`--save-each` can generate large, sensitive per-interval outputs. Leave it off
+unless required and bound output size. The docs still show `geniml assess`;
+that is not the 0.8.4 top-level command.
+
+Python entry points include:
+
+```python
+from geniml.assess.assess import (
+    get_f_10_score,
+    get_mean_rbs,
+    run_all_assessment_methods,
+)
+```
+
+F10, reciprocal-boundary-style distance summaries, and likelihood measure
+different properties. Compare multiple candidate universes on validation
+patients, then evaluate the chosen one once on test patients. Do not tune the
+cutoff, merging, or method on the test collection.
+
+## Reproducibility record
+
+Store:
+
+- ordered input manifest and grouping;
+- assembly/accession, chromosome sizes, coordinate and contig policy;
+- every input and coverage checksum;
+- exact coverage and Geniml argv;
+- Geniml, Gtars, pyBigWig, NumPy, HMM, Python, OS, and architecture versions;
+- method, cutoff/model, prefix, normalization, merge/filter parameters;
+- output and assessment checksums;
+- exclusions, failures, empty contigs, and liftover losses.
+
+Keep file names and sample labels redacted in portable reports.
+
+## Migration corrections
+
+Remove or correct these stale patterns:
+
+- `geniml universe build ...` → `geniml build-universe ...`;
+- `geniml universe evaluate ...` → `geniml assess-universe ...`;
+- CCF `--confidence` → not present in 0.8.4;
+- HMM `--states` → not present in 0.8.4;
+- ML `--model-type gaussian|poisson` → not present in 0.8.4;
+- generic `build_universe(...)` → not exported by the stable universe module;
+- claims that a fixed percentage coverage is universally appropriate.
+
+## Official sources
+
+- [Official consensus CLI guide](https://docs.bedbase.org/geniml/tutorials/create-consensus-peaks)
+  (undated; accessed 2026-10-01)
+- [Official consensus Python guide](https://docs.bedbase.org/geniml/notebooks/create-consensus-peaks-python)
+  (undated; accessed 2026-10-01)
+- [Official universe assessment guide](https://docs.bedbase.org/geniml/tutorials/assess-universe/)
+  (undated; fetch failed 2026-10-01; release source checked)
+- [Geniml v0.8.4 universe source](https://github.com/databio/geniml/tree/v0.8.4/geniml/universe)
+  (released 2026-01-14; accessed 2026-10-01)
+- [Primary consensus-universe paper](https://doi.org/10.1093/nar/gkae685)
+  (2024)

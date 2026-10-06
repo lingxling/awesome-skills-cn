@@ -2,35 +2,57 @@
 
 Source: https://pi.dev/docs/latest/sessions
 
+Reviewed against Pi 0.99.2 and the package versions listed in `../SKILL.md` on 2026-09-30.
+
 Pi auto-saves conversations to `~/.pi/agent/sessions/`, organized by working directory. Each session is a JSONL tree.
 
 ## Session Commands
 
 ```bash
-pi -c
-pi -r
-pi --no-session
-pi --name "my task"
-pi --session <path|id>
-pi --fork <path|id>
+pi -c                  # continue most recent
+pi -r                  # browse and select
+pi --no-session        # ephemeral, do not save
+pi --name "my task"    # display name at startup
+pi --session <path|id> # specific file or partial session ID
+pi --fork <path|id>    # fork into a new session file
 ```
 
-Interactive commands: `/resume`, `/new`, `/name`, `/session`, `/tree`, `/fork`, `/clone`, `/compact [prompt]`, `/export [file]`, `/share`.
+Interactive: `/resume`, `/new`, `/name <name>`, `/session` (file, ID, message count, tokens, cost), `/tree`, `/fork`, `/clone`, `/compact [prompt]`, `/export [file]`, `/share`.
 
-## Resuming
+## Resuming and Deleting
 
-`/resume` and `pi -r` open a picker. Search by typing; use Ctrl+P to toggle path display, Ctrl+S sort, Ctrl+N named-only filter, Ctrl+R rename, Ctrl+D delete. Pi uses `trash` when available.
+`/resume` (and `pi -r`) opens a picker for the current project. Search by typing; Ctrl+P toggles path display, Ctrl+S cycles sort mode, Ctrl+N filters to named sessions, Ctrl+R renames, Ctrl+D deletes with confirmation. Pi uses the `trash` CLI when available instead of permanently removing files.
 
-## Branching
+## Branching with `/tree`
 
-Sessions are trees with `id` and `parentId`. `/tree` lets you jump to a previous point and continue without creating a new file. Selecting a user/custom message moves to its parent and puts that message in the editor so it can be edited and resubmitted. Selecting assistant/tool/compaction entries moves the leaf there with an empty editor.
+Sessions are trees: every entry has `id` and `parentId`, and the current position is the active leaf. `/tree` jumps to any previous point and continues from there without creating a new file.
+
+| Key | Action |
+|---|---|
+| ↑/↓ | Navigate visible entries |
+| ←/→ | Page up/down |
+| Ctrl+←/→ or Alt+←/→ | Fold/unfold or jump between branch segments |
+| Shift+L | Set or clear a label on the selected entry |
+| Shift+T | Toggle label timestamps |
+| Enter | Select entry |
+| Escape / Ctrl+C | Cancel |
+| Ctrl+O | Cycle filter mode |
+
+Filter modes: default, no-tools, user-only, labeled-only, all. Set the default with `treeFilterMode`.
+
+### Selection Behavior
+
+Selecting a **user or custom** message moves the leaf to that message's parent, puts the message text in the editor, and lets you edit and resubmit — creating a new branch. Selecting an **assistant, tool, compaction, or other non-user** entry moves the leaf there with an empty editor so you continue from that point. Selecting the root user message resets the leaf to an empty conversation with the original prompt in the editor.
 
 ## Tree vs Fork vs Clone
 
-- `/tree`: same session file, full tree, optional branch summary.
-- `/fork`: new session file from an earlier user message.
-- `/clone`: new session file duplicating current active branch.
+| | `/tree` | `/fork` | `/clone` |
+|---|---|---|---|
+| Output | Same session file | New session file | New session file |
+| View | Full tree | User-message selector | Current active branch |
+| Typical use | Explore alternatives in place | Start a new session from an earlier prompt | Duplicate current work before continuing |
+| Summary | Optional branch summary | None | None |
 
 ## Branch Summaries
 
-When switching branches through `/tree`, Pi can summarize the abandoned branch and attach that context at the new position. See `compaction.md` for internals.
+When `/tree` switches away from one branch, Pi can summarize the abandoned branch and attach the summary at the new position, preserving context without replaying the branch. When prompted, choose no summary, the default prompt, or custom focus instructions. Internals and extension hooks: `references/compaction.md`. File format and `SessionManager` API: `references/session-format.md`.

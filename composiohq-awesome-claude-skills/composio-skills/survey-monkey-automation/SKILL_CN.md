@@ -1,6 +1,6 @@
 ---
 name: SurveyMonkey Automation
-description: "Automate SurveyMonkey survey creation, response collection, collector management, and survey discovery through natural language commands"
+description: "通过自然语言命令自动化 SurveyMonkey 问卷创建、回复收集、收集器管理和问卷发现"
 requires:
   mcp:
     - rube
@@ -8,158 +8,158 @@ requires:
 
 # SurveyMonkey Automation
 
-Automate SurveyMonkey survey workflows -- create surveys, list and search existing surveys, manage collectors and distribution links, retrieve responses, and inspect survey details -- all through natural language.
+自动化 SurveyMonkey 问卷工作流 -- 创建问卷、列出和搜索现有问卷、管理收集器和分发链接、获取回复、查看问卷详情 -- 全部通过自然语言完成。
 
-**Toolkit docs:** [composio.dev/toolkits/survey_monkey](https://composio.dev/toolkits/survey_monkey)
+**工具包文档：** [composio.dev/toolkits/survey_monkey](https://composio.dev/toolkits/survey_monkey)
 
 ---
 
 ## 设置
 
-1. Add the Rube MCP server to your environment: `https://rube.app/mcp`
-2. 连接 your SurveyMonkey account when prompted (OAuth flow via Composio)
-3. Start issuing natural language commands for SurveyMonkey automation
+1. 将 Rube MCP 服务器添加到你的环境中：`https://rube.app/mcp`
+2. 按提示连接你的 SurveyMonkey 账户（通过 Composio 的 OAuth 流程）
+3. 开始使用自然语言命令进行 SurveyMonkey 自动化操作
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Create a New Survey
+### 1. 创建新问卷
 
-Create a new empty survey that can be further configured with questions and pages.
+创建一个空的新问卷，之后可以进一步配置问题和页面。
 
-**Tool:** `SURVEY_MONKEY_CREATE_SURVEY`
+**工具：** `SURVEY_MONKEY_CREATE_SURVEY`
 
-Key parameters:
-- `title` -- survey title displayed to respondents (required)
-- `nickname` -- optional internal name for organizing surveys (not shown to respondents)
-- `language` -- ISO 639-1 language code (default `en`); examples: `es`, `fr`, `de`
-- `footer` -- whether to display SurveyMonkey branding footer (default `true`)
+关键参数：
+- `title` -- 显示给受访者的问卷标题（必填）
+- `nickname` -- 用于组织问卷的内部名称（可选，不会展示给受访者）
+- `language` -- ISO 639-1 语言代码（默认 `en`）；示例：`es`、`fr`、`de`
+- `footer` -- 是否显示 SurveyMonkey 品牌页脚（默认 `true`）
 
-> The created survey starts with one empty page and no questions. Use the returned `survey_id` with other actions to add content and configure collectors.
+> 新创建的问卷以一个空页面开始，不含任何问题。请使用返回的 `survey_id` 配合其他操作添加内容并配置收集器。
 
-Example prompt:
-> "Create a new survey titled 'Customer Satisfaction Q1 2026'"
-
----
-
-### 2. List and Search Surveys
-
-Enumerate all surveys in your account with filtering, sorting, and pagination.
-
-**Tool:** `SURVEY_MONKEY_GET_SURVEYS`
-
-Key parameters:
-- `title` -- search by survey title (partial match)
-- `sort_by` -- sort by `title`, `date_modified`, or `num_responses`
-- `sort_order` -- `ASC` or `DESC`
-- `page` / `per_page` -- pagination controls (default 50 per page, max 100)
-- `include` -- additional fields: `response_count`, `date_modified`, `date_created`, `question_count`, `page_count`, `category`, `language`, `folder_id`
-- `folder_id` -- filter to surveys in a specific folder
-- `start_modified_at` / `end_modified_at` -- date range filter (format: `YYYY-MM-DDTHH:MM:SS`)
-
-Example prompt:
-> "List all my surveys sorted by most recent modification, include response counts"
+示例提示词：
+> "创建一个标题为 'Customer Satisfaction Q1 2026' 的新问卷"
 
 ---
 
-### 3. Get Survey Details
+### 2. 列出和搜索问卷
 
-Retrieve comprehensive metadata for a specific survey including configuration, question/page counts, response counts, and all relevant URLs.
+枚举账户中的所有问卷，支持筛选、排序和分页。
 
-**Tool:** `SURVEY_MONKEY_GET_SURVEY_DETAILS`
+**工具：** `SURVEY_MONKEY_GET_SURVEYS`
 
-Key parameters:
-- `survey_id` -- the unique survey identifier (required)
+关键参数：
+- `title` -- 按问卷标题搜索（支持部分匹配）
+- `sort_by` -- 按 `title`、`date_modified` 或 `num_responses` 排序
+- `sort_order` -- `ASC` 或 `DESC`
+- `page` / `per_page` -- 分页控制（默认每页 50 条，最大 100）
+- `include` -- 附加字段：`response_count`、`date_modified`、`date_created`、`question_count`、`page_count`、`category`、`language`、`folder_id`
+- `folder_id` -- 筛选指定文件夹中的问卷
+- `start_modified_at` / `end_modified_at` -- 日期范围筛选（格式：`YYYY-MM-DDTHH:MM:SS`）
 
-Returns: title, language, question_count, page_count, response_count, URLs for preview/edit/analyze/collect, button text, and timestamps.
-
-Example prompt:
-> "Show me the full details and response count for survey 123456789"
-
----
-
-### 4. Manage Collectors and Distribution Links
-
-Retrieve collectors (distribution channels) for a survey to get shareable links and monitor response progress.
-
-**Tool:** `SURVEY_MONKEY_GET_COLLECTORS`
-
-Key parameters:
-- `survey_id` -- the survey to get collectors for (required)
-- `include` -- additional fields: `type`, `status`, `response_count`, `date_created`, `date_modified`, `url`
-- `name` -- partial match filter on collector name
-- `sort_by` -- sort by `id`, `date_modified`, `type`, `status`, or `name`
-- `sort_order` -- `ASC` or `DESC`
-- `page` / `per_page` -- pagination (default 50, max 1000)
-- `start_date` / `end_date` -- filter by creation date (format: `YYYY-MM-DDTHH:MM:SS`)
-
-Example prompt:
-> "Get all collectors for survey 123456789, include URLs and response counts"
+示例提示词：
+> "列出我所有的问卷，按最近修改时间排序，并包含回复数"
 
 ---
 
-### 5. Retrieve Survey Responses
+### 3. 获取问卷详情
 
-Fetch response data for a specific survey with comprehensive filtering options.
+获取特定问卷的完整元数据，包括配置、问题/页面数量、回复数以及所有相关网址。
 
-**Tool:** `SURVEY_MONKEY_GET_RESPONSES`
+**工具：** `SURVEY_MONKEY_GET_SURVEY_DETAILS`
 
-Key parameters:
-- `survey_id` -- the survey to retrieve responses from (required)
-- `status` -- filter by `completed`, `partial`, `overquota`, or `disqualified`
-- `page` / `per_page` -- pagination (default 50, max 1000)
-- `sort_order` -- `ASC` or `DESC` (sorted by `date_modified`)
-- `start_created_at` / `end_created_at` -- filter by creation date range (ISO 8601)
-- `start_modified_at` / `end_modified_at` -- filter by modification date range
-- `email` -- filter by respondent email
-- `first_name` / `last_name` -- filter by respondent name
-- `ip` -- filter by IP address
-- `total_time_min` / `total_time_max` / `total_time_units` -- filter by completion time
+关键参数：
+- `survey_id` -- 唯一问卷标识符（必填）
 
-Example prompt:
-> "Get all completed responses for survey 123456789 from the last 30 days"
+返回内容：标题、语言、问题数量、页面数量、回复数量、预览/编辑/分析/收集的网址、按钮文本和时间戳。
+
+示例提示词：
+> "给我看问卷 123456789 的完整详情和回复数"
 
 ---
 
-### 6. Full Survey Lifecycle Workflow
+### 4. 管理收集器和分发链接
 
-Combine tools for end-to-end survey management:
+获取问卷的收集器（分发渠道）以获取可分享链接并监控回复进度。
 
-1. **Create**: `SURVEY_MONKEY_CREATE_SURVEY` -- create the survey, store the `survey_id`
-2. **Distribute**: `SURVEY_MONKEY_GET_COLLECTORS` -- retrieve the collector link to share with respondents
-3. **Monitor**: `SURVEY_MONKEY_GET_SURVEY_DETAILS` -- check response counts and survey status
-4. **Collect**: `SURVEY_MONKEY_GET_RESPONSES` -- retrieve completed responses, filter by `status=completed`
-5. **Audit**: `SURVEY_MONKEY_GET_SURVEYS` -- browse and find surveys if `survey_id` is lost
+**工具：** `SURVEY_MONKEY_GET_COLLECTORS`
 
-Example prompt:
-> "Create a survey called 'Event Feedback', then show me how to distribute it"
+关键参数：
+- `survey_id` -- 要获取收集器的问卷（必填）
+- `include` -- 附加字段：`type`、`status`、`response_count`、`date_created`、`date_modified`、`url`
+- `name` -- 按收集器名称部分匹配筛选
+- `sort_by` -- 按 `id`、`date_modified`、`type`、`status` 或 `name` 排序
+- `sort_order` -- `ASC` 或 `DESC`
+- `page` / `per_page` -- 分页（默认 50，最大 1000）
+- `start_date` / `end_date` -- 按创建日期筛选（格式：`YYYY-MM-DDTHH:MM:SS`）
+
+示例提示词：
+> "获取问卷 123456789 的所有收集器，包含网址和回复数"
 
 ---
 
-## 已知陷阱
+### 5. 获取问卷回复
 
-| Pitfall | Details |
+获取特定问卷的回复数据，并提供全面的筛选选项。
+
+**工具：** `SURVEY_MONKEY_GET_RESPONSES`
+
+关键参数：
+- `survey_id` -- 要获取回复的问卷（必填）
+- `status` -- 按状态筛选：`completed`、`partial`、`overquota` 或 `disqualified`
+- `page` / `per_page` -- 分页（默认 50，最大 1000）
+- `sort_order` -- `ASC` 或 `DESC`（按 `date_modified` 排序）
+- `start_created_at` / `end_created_at` -- 按创建日期范围筛选（ISO 8601）
+- `start_modified_at` / `end_modified_at` -- 按修改日期范围筛选
+- `email` -- 按受访者邮箱筛选
+- `first_name` / `last_name` -- 按受访者姓名筛选
+- `ip` -- 按 IP 地址筛选
+- `total_time_min` / `total_time_max` / `total_time_units` -- 按完成时间筛选
+
+示例提示词：
+> "获取问卷 123456789 过去 30 天内所有已完成的回复"
+
+---
+
+### 6. 完整问卷生命周期工作流
+
+组合多个工具实现端到端的问卷管理：
+
+1. **创建**：`SURVEY_MONKEY_CREATE_SURVEY` -- 创建问卷，保存 `survey_id`
+2. **分发**：`SURVEY_MONKEY_GET_COLLECTORS` -- 获取可分享给受访者的收集器链接
+3. **监控**：`SURVEY_MONKEY_GET_SURVEY_DETAILS` -- 检查回复数和问卷状态
+4. **收集**：`SURVEY_MONKEY_GET_RESPONSES` -- 获取已完成的回复，按 `status=completed` 筛选
+5. **查找**：`SURVEY_MONKEY_GET_SURVEYS` -- 如果 `survey_id` 丢失，浏览并查找问卷
+
+示例提示词：
+> "创建一个名为 'Event Feedback' 的问卷，然后告诉我如何分发它"
+
+---
+
+## 常见陷阱
+
+| 陷阱 | 详情 |
 |---------|---------|
-| Pagination required | `SURVEY_MONKEY_GET_COLLECTORS` and `SURVEY_MONKEY_GET_RESPONSES` require managing `page`/`per_page` for large surveys to avoid missing data |
-| Status filtering critical | `SURVEY_MONKEY_GET_RESPONSES` returns partial, overquota, and disqualified entries unless filtered -- use `status=completed` for reliable data |
-| No shareable link on create | `SURVEY_MONKEY_CREATE_SURVEY` does not create a distribution link -- use `SURVEY_MONKEY_GET_COLLECTORS` to get shareable URLs |
-| Survey ID storage | Losing track of `survey_id` forces reliance on `SURVEY_MONKEY_GET_SURVEYS` which is slower -- store IDs immediately after creation |
-| Question ID mapping | Question IDs and answer formats from responses must be carefully mapped; use `SURVEY_MONKEY_GET_SURVEY_DETAILS` to understand the structure |
-| Date format | Date filters use `YYYY-MM-DDTHH:MM:SS` format, not ISO 8601 with timezone |
-| Empty survey on create | New surveys start with one empty page and no questions -- further configuration is needed |
+| 需要分页 | `SURVEY_MONKEY_GET_COLLECTORS` 和 `SURVEY_MONKEY_GET_RESPONSES` 在处理大型问卷时需要管理 `page`/`per_page`，以免遗漏数据 |
+| 状态筛选至关重要 | `SURVEY_MONKEY_GET_RESPONSES` 如果不筛选会返回部分、超配额和不合格的条目 -- 使用 `status=completed` 获取可靠数据 |
+| 创建时不生成可分享链接 | `SURVEY_MONKEY_CREATE_SURVEY` 不会创建分发链接 -- 使用 `SURVEY_MONKEY_GET_COLLECTORS` 获取可分享网址 |
+| survey_id 的保存 | 丢失 `survey_id` 会被迫依赖较慢的 `SURVEY_MONKEY_GET_SURVEYS` -- 创建后应立即保存 ID |
+| 问题 ID 映射 | 回复中的问题 ID 和答案格式需要仔细映射；使用 `SURVEY_MONKEY_GET_SURVEY_DETAILS` 了解结构 |
+| 日期格式 | 日期筛选使用 `YYYY-MM-DDTHH:MM:SS` 格式，而不是带时区的 ISO 8601 |
+| 创建时为空问卷 | 新问卷以一个空页面开始，不含任何问题 -- 需要进一步配置 |
 
 ---
 
 ## 快速参考
 
-| Action | Tool Slug | Key Params |
+| 操作 | 工具标识 | 关键参数 |
 |--------|-----------|------------|
-| Create survey | `SURVEY_MONKEY_CREATE_SURVEY` | `title`, `language`, `nickname` |
-| List surveys | `SURVEY_MONKEY_GET_SURVEYS` | `title`, `sort_by`, `include`, `page` |
-| Get survey details | `SURVEY_MONKEY_GET_SURVEY_DETAILS` | `survey_id` |
-| List collectors | `SURVEY_MONKEY_GET_COLLECTORS` | `survey_id`, `include`, `sort_by` |
-| Get responses | `SURVEY_MONKEY_GET_RESPONSES` | `survey_id`, `status`, `start_created_at` |
+| 创建问卷 | `SURVEY_MONKEY_CREATE_SURVEY` | `title`、`language`、`nickname` |
+| 列出问卷 | `SURVEY_MONKEY_GET_SURVEYS` | `title`、`sort_by`、`include`、`page` |
+| 获取问卷详情 | `SURVEY_MONKEY_GET_SURVEY_DETAILS` | `survey_id` |
+| 列出收集器 | `SURVEY_MONKEY_GET_COLLECTORS` | `survey_id`、`include`、`sort_by` |
+| 获取回复 | `SURVEY_MONKEY_GET_RESPONSES` | `survey_id`、`status`、`start_created_at` |
 
 ---
 

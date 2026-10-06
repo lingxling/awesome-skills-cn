@@ -1,510 +1,212 @@
-# Respiratory Signal Processing
+# Respiration
 
-## Overview
+Checked **2026-10-01** against NeuroKit2 0.2.13 stable runtime/source,
+the official RSP API/examples, and cardiorespiratory interpretation guidance.
 
-Respiratory signal processing in NeuroKit2 enables analysis of breathing patterns, respiratory rate, amplitude, and variability. Respiration is closely linked to cardiac activity (respiratory sinus arrhythmia), emotional state, and cognitive processes.
+## Acquisition contract and polarity
 
-## Main Processing Pipeline
+Record sensor type (belt, airflow, capnography, impedance, derived proxy), placement,
+gain/range, physical unit, native rate, clock, hardware filters, calibration, and
+annotations for speech, cough, sigh, breath hold, swallowing, movement, and detachment.
 
-### rsp_process()
+A belt/impedance amplitude is not tidal volume unless calibrated and validated.
+Different devices have opposite polarity. NeuroKit2's documented convention labels:
 
-Automated processing of respiratory signals with peak/trough detection and feature extraction.
+- `RSP_Peaks`: exhalation onsets;
+- `RSP_Troughs`: inhalation onsets; and
+- `RSP_Phase`: `1` inspiration, `0` expiration.
 
-```python
-signals, info = nk.rsp_process(rsp_signal, sampling_rate=100, method='khodadad2018')
-```
+Verify these labels against the actual device and a known breath. Invert or relabel
+explicitly before interpretation if needed.
 
-**Pipeline steps:**
-1. Signal cleaning (noise removal, filtering)
-2. Peak (exhalation) and trough (inhalation) detection
-3. Respiratory rate calculation
-4. Amplitude computation
-5. Phase determination (inspiration/expiration)
-6. Respiratory volume per time (RVT)
-
-**Returns:**
-- `signals`: DataFrame with:
-  - `RSP_Clean`: Filtered respiratory signal
-  - `RSP_Peaks`, `RSP_Troughs`: Extrema markers
-  - `RSP_Rate`: Instantaneous breathing rate (breaths/min)
-  - `RSP_Amplitude`: Breath-to-breath amplitude
-  - `RSP_Phase`: Inspiration (0) vs. expiration (1)
-  - `RSP_Phase_Completion`: Phase completion percentage (0-1)
-  - `RSP_RVT`: Respiratory volume per time
-- `info`: Dictionary with peak/trough indices
-
-**Methods:**
-- `'khodadad2018'`: Khodadad et al. algorithm (default, robust)
-- `'biosppy'`: BioSPPy-based processing (alternative)
-
-## Preprocessing Functions
-
-### rsp_clean()
-
-Remove noise and smooth respiratory signal.
+## Stable high-level pipeline
 
 ```python
-cleaned_rsp = nk.rsp_clean(rsp_signal, sampling_rate=100, method='khodadad2018')
+signals, info = nk.rsp_process(
+    rsp,
+    sampling_rate=50,
+    method="khodadad2018",
+    method_rvt="harrison2021",
+)
 ```
 
-**Methods:**
+Pinned default columns:
 
-**1. Khodadad2018 (default):**
-- Butterworth low-pass filter
-- Removes high-frequency noise
-- Preserves breathing waveform
-
-**2. BioSPPy:**
-- Alternative filtering approach
-- Similar performance to Khodadad
-
-**3. Hampel filter:**
-```python
-cleaned_rsp = nk.rsp_clean(rsp_signal, sampling_rate=100, method='hampel')
+```text
+RSP_Raw, RSP_Clean, RSP_Amplitude, RSP_Rate, RSP_RVT,
+RSP_Phase, RSP_Phase_Completion,
+RSP_Symmetry_PeakTrough, RSP_Symmetry_RiseDecay,
+RSP_Peaks, RSP_Troughs
 ```
-- Median-based outlier removal
-- Robust to artifacts and spikes
-- Preserves sharp transitions
 
-**Typical respiratory frequency:**
-- Adults at rest: 12-20 breaths/min (0.2-0.33 Hz)
-- Children: faster rates
-- During exercise: up to 40-60 breaths/min
+`info` contained `RSP_Peaks`, `RSP_Troughs`, and `sampling_rate`. This is a
+default schema observation, not a universal contract.
 
-### rsp_peaks()
-
-Identify inhalation troughs and exhalation peaks in respiratory signal.
+## Cleaning and extrema
 
 ```python
-peaks, info = nk.rsp_peaks(cleaned_rsp, sampling_rate=100, method='khodadad2018')
+clean = nk.rsp_clean(rsp, sampling_rate=50, method="khodadad2018")
+markers, extrema = nk.rsp_peaks(
+    clean,
+    sampling_rate=50,
+    method="khodadad2018",
+)
 ```
 
-**Detection methods:**
-- `'khodadad2018'`: Optimized for clean signals
-- `'biosppy'`: Alternative approach
-- `'scipy'`: Simple scipy-based detection
+Stable peak methods include `khodadad2018`, `biosppy`, `scipy`, and
+`schafer2008`. `rsp_fixpeaks()` is currently documented as a placeholder that does
+not correct respiration extrema.
 
-**Returns:**
-- Dictionary with:
-  - `RSP_Peaks`: Indices of exhalation peaks (maximum points)
-  - `RSP_Troughs`: Indices of inhalation troughs (minimum points)
+Validate extrema during irregular breathing, pauses, speech, motion, and changing
+amplitude. A smooth sinusoidal simulation is not enough.
 
-**Respiratory cycle definition:**
-- **Inhalation**: Trough → Peak (air flows in, chest/abdomen expands)
-- **Exhalation**: Peak → Trough (air flows out, chest/abdomen contracts)
+## Rate, amplitude, and phase signatures
 
-### rsp_findpeaks()
-
-Low-level peak detection with multiple algorithm options.
+These functions do not all accept the same peak object:
 
 ```python
-peaks_dict = nk.rsp_findpeaks(cleaned_rsp, sampling_rate=100, method='scipy')
+rate = nk.rsp_rate(
+    clean,
+    troughs=extrema["RSP_Troughs"],
+    sampling_rate=50,
+    method="trough",
+)
+amplitude = nk.rsp_amplitude(
+    clean,
+    peaks=extrema["RSP_Peaks"],
+    troughs=extrema["RSP_Troughs"],
+)
+phase = nk.rsp_phase(
+    extrema["RSP_Peaks"],
+    troughs=extrema["RSP_Troughs"],
+    desired_length=len(clean),
+)
 ```
 
-**Methods:**
-- `'scipy'`: Scipy's find_peaks
-- Custom threshold-based algorithms
+- `rsp_rate()` takes the cleaned signal first; `method="trough"` uses inhalation
+  onsets, while `method="xcorr"` estimates a windowed principal rate.
+- `rsp_amplitude()` returns a same-length interpolated amplitude series.
+- `rsp_phase()` takes peaks/troughs, not the cleaned signal, and returns a DataFrame
+  with phase and completion.
 
-**Use case:**
-- Fine-tuned peak detection
-- Custom parameter adjustment
-- Algorithm comparison
+Rates are breaths/minute. Amplitude remains in the sensor's arbitrary/calibrated unit.
+Phase accuracy depends on extrema and polarity.
 
-### rsp_fixpeaks()
-
-Correct detected peak/trough anomalies (e.g., missed or false detections).
+## RRV and RAV
 
 ```python
-corrected_peaks = nk.rsp_fixpeaks(peaks, sampling_rate=100)
+rrv = nk.rsp_rrv(
+    signals["RSP_Rate"],
+    troughs=info["RSP_Troughs"],
+    sampling_rate=50,
+)
+rav = nk.rsp_rav(
+    signals["RSP_Amplitude"],
+    peaks=info,
+)
 ```
 
-**Corrections:**
-- Remove physiologically implausible intervals
-- Interpolate missing peaks
-- Remove artifact-related false peaks
+The pinned `rsp_rrv()` output had 20 columns spanning interval, frequency, Poincaré,
+and entropy metrics (`RRV_RMSSD` through `RRV_SampEn`). The pinned RAV output had
+`RAV_Mean`, `RAV_SD`, `RAV_RMSSD`, and `RAV_CVSD`.
 
-## Feature Extraction Functions
+Do not interpret RRV/RAV from only a few breaths. Choose duration from the lowest
+frequency and nonlinear metric being estimated, and report breath count, usable
+duration, irregular-breath exclusions, and sensitivity. There is no universal
+“higher is healthier” interpretation.
 
-### rsp_rate()
+## Respiratory volume per time
 
-Compute instantaneous breathing rate (breaths per minute).
+Direct stable signature:
+
+```text
+rsp_rvt(
+  rsp_signal, sampling_rate=1000, method="power2020",
+  boundaries=[2.0, 0.033333...], iterations=10, ...
+)
+```
+
+Direct `rsp_rvt()` defaults to `power2020`, while `rsp_process()` defaults its
+`method_rvt` to `harrison2021`. Other stable option: `birn2006`.
 
 ```python
-rate = nk.rsp_rate(peaks, sampling_rate=100, desired_length=None)
+rvt = nk.rsp_rvt(
+    clean,
+    sampling_rate=50,
+    method="harrison2021",
+)
 ```
 
-**Method:**
-- Calculate inter-breath intervals from peak/trough timing
-- Convert to breaths per minute (BPM)
-- Interpolate to match signal length
+RVT is a derived proxy/regressor. It is not calibrated respiratory volume or minute
+ventilation. For fMRI nuisance modeling, match the cited definition, acquisition,
+lag/convolution, resampling, and scanner preprocessing; do not treat one method as
+interchangeable with another.
 
-**Typical values:**
-- Resting adult: 12-20 BPM
-- Slow breathing: <10 BPM (meditation, relaxation)
-- Fast breathing: >25 BPM (exercise, anxiety)
+## Missing data and artifacts
 
-### rsp_amplitude()
+Respiration signals commonly contain nonstationary physiology. Do not automatically
+classify sighs, pauses, speech, coughing, or swallowing as noise. Annotate them according
+to the research question.
 
-Compute breath-to-breath amplitude (peak-to-trough difference).
+- Segment long gaps/detachment.
+- Do not interpolate across apnea-like pauses or speech and then compute rate.
+- Preserve raw/clean/extrema overlays.
+- Track filter and window edge validity.
+- Quantify missing breaths and altered intervals after exclusions.
+- Verify belt slippage and baseline drift separately from breathing depth.
+
+## Event and interval analysis
 
 ```python
-amplitude = nk.rsp_amplitude(cleaned_rsp, peaks)
+epochs = nk.epochs_create(
+    signals,
+    events,
+    sampling_rate=50,
+    epochs_start=-1,
+    epochs_end=8,
+    baseline_correction=False,
+)
+event_features = nk.rsp_eventrelated(epochs)
+interval_features = nk.rsp_intervalrelated(signals, sampling_rate=50)
 ```
 
-**Interpretation:**
-- Larger amplitude: deeper breaths (tidal volume increase)
-- Smaller amplitude: shallow breaths
-- Variable amplitude: irregular breathing pattern
+Event-related features are conditional and include rate/amplitude baselines and
+post-event summaries, phase/completion at onset, and RVT fields when present. Interval
+analysis can append RRV/RAV and inspiration/expiration duration features. Inspect the
+runtime schema.
 
-**Clinical relevance:**
-- Reduced amplitude: restrictive lung disease, chest wall rigidity
-- Increased amplitude: compensatory hyperventilation
+Baseline subtraction is usually inappropriate for binary phase/peak columns. Prespecify
+which continuous features, if any, are baseline corrected.
 
-### rsp_phase()
+## RSA and alignment
 
-Determine inspiration/expiration phases and completion percentage.
+For RSA, ECG and respiration need a shared clock and verified lag/drift:
 
 ```python
-phase, completion = nk.rsp_phase(cleaned_rsp, peaks, sampling_rate=100)
+rsa = nk.hrv_rsa(
+    ecg_signals,
+    rsp_signals,
+    rpeaks=ecg_info,
+    sampling_rate=common_rate,
+    continuous=False,
+)
 ```
 
-**Returns:**
-- `RSP_Phase`: Binary (0 = inspiration, 1 = expiration)
-- `RSP_Phase_Completion`: Continuous 0-1 indicating phase progress
-
-**Use cases:**
-- Respiratory-gated stimulus presentation
-- Phase-locked averaging
-- Respiratory-cardiac coupling analysis
-
-### rsp_symmetry()
-
-Analyze breath symmetry patterns (peak-trough balance, rise-decay timing).
-
-```python
-symmetry = nk.rsp_symmetry(cleaned_rsp, peaks)
-```
-
-**Metrics:**
-- Peak-trough symmetry: Are peaks and troughs equally spaced?
-- Rise-decay symmetry: Is inhalation time equal to exhalation time?
-
-**Interpretation:**
-- Symmetric: normal, relaxed breathing
-- Asymmetric: effortful breathing, airway obstruction
-
-## Advanced Analysis Functions
-
-### rsp_rrv()
-
-Respiratory Rate Variability - analogous to heart rate variability.
-
-```python
-rrv_indices = nk.rsp_rrv(peaks, sampling_rate=100)
-```
-
-**Time-domain metrics:**
-- `RRV_SDBB`: Standard deviation of breath-to-breath intervals
-- `RRV_RMSSD`: Root mean square of successive differences
-- `RRV_MeanBB`: Mean breath-to-breath interval
-
-**Frequency-domain metrics:**
-- Power in frequency bands (if applicable)
-
-**Interpretation:**
-- Higher RRV: flexible, adaptive breathing control
-- Lower RRV: rigid, constrained breathing
-- Altered RRV: anxiety, respiratory disorders, autonomic dysfunction
-
-**Recording duration:**
-- Minimum: 2-3 minutes
-- Optimal: 5-10 minutes for stable estimates
-
-### rsp_rvt()
-
-Respiratory Volume per Time - fMRI confound regressor.
-
-```python
-rvt = nk.rsp_rvt(cleaned_rsp, peaks, sampling_rate=100)
-```
-
-**Calculation:**
-- Derivative of respiratory signal
-- Captures rate of volume change
-- Correlates with BOLD signal fluctuations
-
-**Use cases:**
-- fMRI artifact correction
-- Neuroimaging preprocessing
-- Respiratory confound regression
-
-**Reference:**
-- Birn, R. M., et al. (2008). Separating respiratory-variation-related fluctuations from neuronal-activity-related fluctuations in fMRI. NeuroImage, 31(4), 1536-1548.
-
-### rsp_rav()
-
-Respiratory Amplitude Variability indices.
-
-```python
-rav = nk.rsp_rav(amplitude, sampling_rate=100)
-```
-
-**Metrics:**
-- Standard deviation of amplitudes
-- Coefficient of variation
-- Range of amplitudes
-
-**Interpretation:**
-- High RAV: irregular depth (sighing, arousal changes)
-- Low RAV: stable, controlled breathing
-
-## Analysis Functions
-
-### rsp_analyze()
-
-Automatically select event-related or interval-related analysis.
-
-```python
-analysis = nk.rsp_analyze(signals, sampling_rate=100)
-```
-
-**Mode selection:**
-- Duration < 10 seconds → event-related
-- Duration ≥ 10 seconds → interval-related
-
-### rsp_eventrelated()
-
-Analyze respiratory responses to specific events/stimuli.
-
-```python
-results = nk.rsp_eventrelated(epochs)
-```
-
-**Computed metrics (per epoch):**
-- `RSP_Rate_Mean`: Average breathing rate during epoch
-- `RSP_Rate_Min/Max`: Minimum/maximum rate
-- `RSP_Amplitude_Mean`: Average breath depth
-- `RSP_Phase`: Respiratory phase at event onset
-- Dynamics of rate and amplitude across epoch
-
-**Use cases:**
-- Respiratory changes during emotional stimuli
-- Anticipatory breathing before task events
-- Breath-holding or hyperventilation paradigms
-
-### rsp_intervalrelated()
-
-Analyze extended respiratory recordings.
-
-```python
-results = nk.rsp_intervalrelated(signals, sampling_rate=100)
-```
-
-**Computed metrics:**
-- `RSP_Rate_Mean`: Average breathing rate
-- `RSP_Rate_SD`: Variability in rate
-- `RSP_Amplitude_Mean`: Average breath depth
-- RRV indices (if sufficient data)
-- RAV indices
-
-**Recording duration:**
-- Minimum: 60 seconds
-- Optimal: 5-10 minutes
-
-**Use cases:**
-- Resting state breathing patterns
-- Baseline respiratory assessment
-- Stress or relaxation monitoring
-
-## Simulation and Visualization
-
-### rsp_simulate()
-
-Generate synthetic respiratory signals for testing.
-
-```python
-synthetic_rsp = nk.rsp_simulate(duration=60, sampling_rate=100, respiratory_rate=15,
-                                method='sinusoidal', noise=0.1, random_state=42)
-```
-
-**Methods:**
-- `'sinusoidal'`: Simple sinusoidal oscillation (fast)
-- `'breathmetrics'`: Advanced realistic breathing model (slower, more accurate)
-
-**Parameters:**
-- `respiratory_rate`: Breaths per minute (default: 15)
-- `noise`: Gaussian noise level
-- `random_state`: Seed for reproducibility
-
-**Use cases:**
-- Algorithm validation
-- Parameter tuning
-- Educational demonstrations
-
-### rsp_plot()
-
-Visualize processed respiratory signal.
-
-```python
-nk.rsp_plot(signals, info, static=True)
-```
-
-**Displays:**
-- Raw and cleaned respiratory signal
-- Detected peaks and troughs
-- Instantaneous breathing rate
-- Phase markers
-
-**Interactive mode:** Set `static=False` for Plotly visualization
-
-## Practical Considerations
-
-### Sampling Rate Recommendations
-- **Minimum**: 10 Hz (adequate for rate estimation)
-- **Standard**: 50-100 Hz (research-grade)
-- **High-resolution**: 1000 Hz (typically unnecessary, oversampled)
-
-### Recording Duration
-- **Rate estimation**: ≥10 seconds (few breaths)
-- **RRV analysis**: ≥2-3 minutes
-- **Resting state**: 5-10 minutes
-- **Circadian patterns**: Hours to days
-
-### Signal Acquisition Methods
-
-**Strain gauge/piezoelectric belt:**
-- Chest or abdominal expansion
-- Most common
-- Comfortable, non-invasive
-
-**Thermistor/thermocouple:**
-- Nasal/oral airflow temperature
-- Direct airflow measurement
-- Can be intrusive
-
-**Capnography:**
-- End-tidal CO₂ measurement
-- Gold standard for physiology
-- Expensive, clinical settings
-
-**Impedance pneumography:**
-- Derived from ECG electrodes
-- Convenient for multi-modal recording
-- Less accurate than dedicated sensors
-
-### Common Issues and Solutions
-
-**Irregular breathing:**
-- Normal in awake, resting humans
-- Sighs, yawns, speech, swallowing cause variability
-- Exclude artifacts or model as events
-
-**Shallow breathing:**
-- Low signal amplitude
-- Check sensor placement and tightness
-- Increase gain if available
-
-**Movement artifacts:**
-- Spikes or discontinuities
-- Minimize participant movement
-- Use robust peak detection (Hampel filter)
-
-**Talking/coughing:**
-- Disrupts natural breathing pattern
-- Annotate and exclude from analysis
-- Or model as separate event types
-
-### Best Practices
-
-**Standard workflow:**
-```python
-# 1. Clean signal
-cleaned = nk.rsp_clean(rsp_raw, sampling_rate=100, method='khodadad2018')
-
-# 2. Detect peaks/troughs
-peaks, info = nk.rsp_peaks(cleaned, sampling_rate=100)
-
-# 3. Extract features
-rate = nk.rsp_rate(peaks, sampling_rate=100, desired_length=len(cleaned))
-amplitude = nk.rsp_amplitude(cleaned, peaks)
-phase = nk.rsp_phase(cleaned, peaks, sampling_rate=100)
-
-# 4. Comprehensive processing (alternative)
-signals, info = nk.rsp_process(rsp_raw, sampling_rate=100)
-
-# 5. Analyze
-analysis = nk.rsp_analyze(signals, sampling_rate=100)
-```
-
-**Respiratory-cardiac integration:**
-```python
-# Process both signals
-ecg_signals, ecg_info = nk.ecg_process(ecg, sampling_rate=1000)
-rsp_signals, rsp_info = nk.rsp_process(rsp, sampling_rate=100)
-
-# Respiratory sinus arrhythmia (RSA)
-rsa = nk.hrv_rsa(ecg_info['ECG_R_Peaks'], rsp_signals['RSP_Clean'], sampling_rate=1000)
-
-# Or use bio_process for multi-signal integration
-bio_signals, bio_info = nk.bio_process(ecg=ecg, rsp=rsp, sampling_rate=1000)
-```
-
-## Clinical and Research Applications
-
-**Psychophysiology:**
-- Emotion and arousal (rapid, shallow breathing during stress)
-- Relaxation interventions (slow, deep breathing)
-- Respiratory biofeedback
-
-**Anxiety and panic disorders:**
-- Hyperventilation during panic attacks
-- Altered breathing patterns
-- Breathing retraining therapy effectiveness
-
-**Sleep medicine:**
-- Sleep apnea detection
-- Breathing pattern abnormalities
-- Sleep stage correlates
-
-**Cardiorespiratory coupling:**
-- Respiratory sinus arrhythmia (HRV modulation by breathing)
-- Heart-lung interaction
-- Autonomic nervous system assessment
-
-**Neuroimaging:**
-- fMRI artifact correction (RVT regressor)
-- BOLD signal confound removal
-- Respiratory-related brain activity
-
-**Meditation and mindfulness:**
-- Breath awareness training
-- Slow breathing practices (resonance frequency ~6 breaths/min)
-- Physiological markers of relaxation
-
-**Athletic performance:**
-- Breathing efficiency
-- Training adaptations
-- Recovery monitoring
-
-## Interpretation Guidelines
-
-**Breathing rate:**
-- **Normal**: 12-20 BPM (adults at rest)
-- **Slow**: <10 BPM (relaxation, meditation, sleep)
-- **Fast**: >25 BPM (exercise, anxiety, pain, fever)
-
-**Breathing amplitude:**
-- Tidal volume typically 400-600 mL at rest
-- Deep breathing: 2-3 L
-- Shallow breathing: <300 mL
-
-**Respiratory patterns:**
-- **Normal**: Smooth, regular sinusoidal
-- **Cheyne-Stokes**: Crescendo-decrescendo with apneas (clinical pathology)
-- **Ataxic**: Completely irregular (brainstem lesion)
-
-## References
-
-- Khodadad, D., Nordebo, S., Müller, B., Waldmann, A., Yerworth, R., Becher, T., ... & Bayford, R. (2018). A review of tissue substitutes for ultrasound imaging. Ultrasound in medicine & biology, 44(9), 1807-1823.
-- Grossman, P., & Taylor, E. W. (2007). Toward understanding respiratory sinus arrhythmia: Relations to cardiac vagal tone, evolution and biobehavioral functions. Biological psychology, 74(2), 263-285.
-- Birn, R. M., Diamond, J. B., Smith, M. A., & Bandettini, P. A. (2006). Separating respiratory-variation-related fluctuations from neuronal-activity-related fluctuations in fMRI. NeuroImage, 31(4), 1536-1548.
+Measure and report respiration; spontaneous or paced breathing changes the estimand.
+RSA can reflect cardiac vagal modulation under suitable conditions but is confounded by
+respiratory parameters, activity, posture, age, and adrenergic influence.
+
+## Interpretation boundary
+
+Use this module for respiratory time-series research. It is not a validated system for
+apnea detection, capnography, tidal-volume measurement, respiratory diagnosis,
+biofeedback safety, patient/driver monitoring, or ventilatory control.
+
+## Sources checked 2026-10-01
+
+- [Official RSP API](https://neuropsychology.github.io/NeuroKit/functions/rsp.html)
+- [Official RRV example](https://neuropsychology.github.io/NeuroKit/examples/rsp_rrv/rsp_rrv.html)
+- [Stable v0.2.13 RSP source](https://github.com/neuropsychology/NeuroKit/tree/v0.2.13/neurokit2/rsp)
+- [Grossman & Taylor (2007), respiration/RSA caveats](https://doi.org/10.1016/j.biopsycho.2005.11.014)
+- [Berntson et al. (1997), HRV origins/methods/caveats](https://doi.org/10.1111/j.1469-8986.1997.tb02140.x)
+- [Birn et al. (2006), RVT and fMRI](https://doi.org/10.1016/j.neuroimage.2005.11.053)

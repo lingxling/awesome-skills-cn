@@ -47,7 +47,6 @@ src/
 ├── git.ts           # Git 克隆操作
 ├── telemetry.ts     # 匿名使用跟踪
 ├── types.ts         # TypeScript 类型
-├── mintlify.ts      # Mintlify 技能获取（遗留）
 ├── plugin-manifest.ts # 插件清单发现支持
 ├── prompts/         # 交互式提示助手
 │   └── search-multiselect.ts
@@ -55,8 +54,6 @@ src/
 │   ├── index.ts
 │   ├── registry.ts
 │   ├── types.ts
-│   ├── huggingface.ts
-│   ├── mintlify.ts
 │   └── wellknown.ts
 ├── init.test.ts     # Init 命令测试
 ├── use.ts           # Use 命令 - 生成技能提示或启动代理
@@ -85,8 +82,8 @@ tests/
 
 1. 读取 `~/.agents/.skill-lock.json` 获取已安装的技能
 2. 筛选具有 `skillFolderHash` 和 `skillPath` 的 GitHub 支持的技能
-3. 对于每个技能，调用 `fetchSkillFolderHash(source, skillPath, token)`。可选的认证令牌来自 `GITHUB_TOKEN`、`GH_TOKEN` 或 `gh auth token` 以提高速率限制。
-4. `fetchSkillFolderHash` 直接调用 GitHub Trees API（`/git/trees/<branch>?recursive=1` 用于 `main`，然后回退到 `master`）
+3. 对于每个技能，调用 `fetchSkillFolderHash(source, skillPath, token)`。树请求首先以匿名方式发起，然后使用显式设置的 `GITHUB_TOKEN`/`GH_TOKEN`，再然后使用 `gh api`（不导出 GitHub CLI 凭据）。
+4. `fetchSkillFolderHash` 调用 GitHub Trees API（`/git/trees/<branch>?recursive=1` 用于 `main`，然后回退到 `master`）；当 API 不可用时，更新检查会回退为通过已认证的 Git 克隆进行
 5. 将最新的文件夹树 SHA 与锁文件 `skillFolderHash` 进行比较；不匹配意味着有可用更新
 6. `skills update` 通过直接调用当前 CLI 入口点（`node <repo>/bin/cli.mjs add <source-tree-url> -g -y`）重新安装已更改的技能，以避免嵌套的 npm exec/npx 行为
 

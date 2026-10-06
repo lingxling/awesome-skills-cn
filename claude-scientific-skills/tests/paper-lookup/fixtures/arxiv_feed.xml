@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<feed xmlns:opensearch="http://a9.com/-/spec/opensearch/1.1/" xmlns:arxiv="http://arxiv.org/schemas/atom" xmlns="http://www.w3.org/2005/Atom">
+  <id>https://arxiv.org/api/zUwBFJ+vAUSpXAR7QFveSY/bZos</id>
+  <title>arXiv Query: search_query=&amp;id_list=1706.03762&amp;start=0&amp;max_results=10</title>
+  <updated>2026-07-28T00:26:25Z</updated>
+  <link href="https://arxiv.org/api/query?search_query=&amp;start=0&amp;max_results=10&amp;id_list=1706.03762" type="application/atom+xml"/>
+  <opensearch:itemsPerPage>10</opensearch:itemsPerPage>
+  <opensearch:totalResults>1</opensearch:totalResults>
+  <opensearch:startIndex>0</opensearch:startIndex>
+  <entry>
+    <id>http://arxiv.org/abs/1706.03762v7</id>
+    <title>Attention Is All You Need</title>
+    <updated>2023-08-02T00:41:18Z</updated>
+    <link href="https://arxiv.org/abs/1706.03762v7" rel="alternate" type="text/html"/>
+    <link href="https://arxiv.org/pdf/1706.03762v7" rel="related" type="application/pdf" title="pdf"/>
+    <summary>The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.</summary>
+    <category term="cs.CL" scheme="http://arxiv.org/schemas/atom"/>
+    <category term="cs.LG" scheme="http://arxiv.org/schemas/atom"/>
+    <published>2017-06-12T17:57:34Z</published>
+    <arxiv:comment>15 pages, 5 figures</arxiv:comment>
+    <arxiv:primary_category term="cs.CL"/>
+    <author>
+      <name>Ashish Vaswani</name>
+    </author>
+    <author>
+      <name>Noam Shazeer</name>
+    </author>
+    <author>
+      <name>Niki Parmar</name>
+    </author>
+    <author>
+      <name>Jakob Uszkoreit</name>
+    </author>
+    <author>
+      <name>Llion Jones</name>
+    </author>
+    <author>
+      <name>Aidan N. Gomez</name>
+    </author>
+    <author>
+      <name>Lukasz Kaiser</name>
+    </author>
+    <author>
+      <name>Illia Polosukhin</name>
+    </author>
+  </entry>
+</feed>

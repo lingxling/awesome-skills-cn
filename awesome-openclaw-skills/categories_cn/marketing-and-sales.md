@@ -68,6 +68,7 @@
 - [lifi-orchestrator](https://clawskills.sh/skills/rhlsthrm-lifi-orchestrator) - 通过 LI.FI 进行跨链桥接和交换 — 领先的桥接聚合器，可跨 30+ 桥接和 DEX 路由。
 - [linkfuse](https://clawskills.sh/skills/oliverw-linkfuse) - 从任何 URL 创建 Linkfuse 联盟短链接。
 - [listing-swarm](https://clawhub.ai/skills/listing-swarm) - 自动将 AI 产品提交到 70+ 目录。
+- [lumail](https://clawhub.ai/melvynx/lumail) - 通过 CLI 管理电子邮件营销活动。
 - [marketing-strategy-pmm](https://clawskills.sh/skills/alirezarezvani-marketing-strategy-pmm) - 产品营销技能，用于定位、GTM 策略、竞争情报和产品发布。
 - [meta-ads-report](https://clawskills.sh/skills/kein-s-meta-ads-report) - 一个强大的工具包，可通过聊天直接监控您的 Meta（Facebook/Instagram）广告效果。
 - [meta-tags-optimizer](https://clawskills.sh/skills/aaron-he-zhu-meta-tags-optimizer) - 当用户要求"优化标题标签"、"撰写元描述"、"提高 CTR"、"Open Graph 标签"、"社交"时使用。
@@ -98,11 +99,15 @@
 - [tiktok-viral-marketing](https://clawskills.sh/skills/realroc-tiktok-viral-marketing) - 聘请专门从事病毒内容创作、趋势挑战和爆发性 reach 活动的 TikTok 创作者。
 - [transition-mcp](https://clawskills.sh/skills/nftechie-transition-mcp) - AI 驱动的多 sport 教练 — 获取个性化锻炼、训练计划和跑步的表现分析。
 - [ttrpg-gm](https://clawskills.sh/skills/rogerkink6-ttrpg-gm) - 成熟暗黑主题战役的 TTRPG 游戏大师。
-- [water-coach](https://clawskills.sh/skills/oristides-water-coach) -  hydration 跟踪和教练技能。
+- [water-coach](https://clawskills.sh/skills/oristides-water-coach) - hydration 跟踪和教练技能。
 - [windsor-ai](https://clawskills.sh/skills/carlosarturoleon-windsor-ai) - 连接到 Windsor.ai MCP，以自然语言访问 325+ 数据源，包括 Facebook Ads、GA4、HubSpot。
 - [workcrm](https://clawskills.sh/skills/extraterrest-workcrm) - 一个轻量级、本地优先的 CRM，带有明确的确认门。
+- [writing-assistant](https://clawskills.sh/skills/urrrich-writing-assistant) - 您是一位写作团队领导，通过 MCP 工具管理专业作家。
+- [writing-group-leader](https://clawskills.sh/skills/urrrich-writing-group-leader) - 您是一位写作团队领导，通过 MCP 工具管理专业作家。
 - [ldm-openclaw-skill](https://clawhub.ai/live-direct-marketing/ldm-openclaw-skill) - 面向外发代理的发送前送达率检查。
 - [ldm-openclaw-inbox-mcp-skill](https://clawhub.ai/live-direct-marketing/ldm-openclaw-inbox-mcp-skill) - 面向外发代理的付费 MCP 收件箱送达检查。
 - [tempguru-event-staffing-ordering](https://clawhub.ai/kissmyabs32/tempguru-event-staffing-ordering) - 在美加 345 个市场订购 W-2 临时活动工作人员。
-- [writing-assistant](https://clawskills.sh/skills/urrrich-writing-assistant) - 您是一位写作团队领导，通过 MCP 工具管理专业作家。
-- [writing-group-leader](https://clawskills.sh/skills/urrrich-writing-group-leader) - 您是一位写作团队领导，通过 MCP 工具管理专业作家。
+- [posteahora](https://clawhub.ai/sashadiz/posteahora) - 在所有主流社交网络上排期并发布社交帖子。
+- [postnitro](https://clawhub.ai/iammuneeb/skills/postnitro) - 创建符合品牌风格的社交媒体轮播图和单图帖子，并排期发布到 LinkedIn、Instagram、TikTok 和 Threads。
+- [linkedin-post-writer](https://clawhub.ai/sergebulaev/linkedin-post-writer) - LinkedIn 营销技能：爆款开头、评论、算法审计、去 AI 味润色。
+- [upload-post](https://clawhub.ai/victorcavero14/upload-post) - 通过一个 API 发布和排期社交媒体帖子。

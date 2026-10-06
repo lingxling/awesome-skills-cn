@@ -1,320 +1,232 @@
 # Knowledge Graph Reasoning
 
-## Overview
+The official
+[TorchDrug 0.2.1 reasoning tutorial](https://torchdrug.ai/docs/tutorials/reasoning.html)
+covers two workflows:
 
-Knowledge graphs represent structured information as entities and relations in a graph format. TorchDrug provides comprehensive support for knowledge graph completion (link prediction) using embedding-based models and neural reasoning approaches.
+- knowledge graph embeddings with RotatE,
+- neural inductive logic programming with NeuralLP.
 
-## Available Datasets
+Both use `tasks.KnowledgeGraphCompletion`.
+Full benchmark runs are illustrative; a tiny local graph can verify batching
+and loss/ranking semantics without downloading these datasets.
 
-### General Knowledge Graphs
+## Datasets
 
-**FB15k (Freebase subset):**
-- 14,951 entities
-- 1,345 relation types
-- 592,213 triples
-- General world knowledge from Freebase
+Documented knowledge graph datasets:
 
-**FB15k-237:**
-- 14,541 entities
-- 237 relation types
-- 310,116 triples
-- Filtered version removing inverse relations
-- More challenging benchmark
+- `FB15k`: 14,951 entities, 1,345 relations, 592,213 triplets
+- `FB15k237`: 14,541 entities, 237 relations, 310,116 triplets
+- `WN18`: 40,943 entities, 18 relations, 151,442 triplets
+- `WN18RR`: 40,943 entities, 11 relations, 93,003 triplets
+- `Hetionet`: 45,158 entities, 24 relations, 2,025,177 triplets
 
-**WN18 (WordNet):**
-- 40,943 entities (word senses)
-- 18 relation types (lexical relations)
-- 151,442 triples
-- Linguistic knowledge graph
-
-**WN18RR:**
-- 40,943 entities
-- 11 relation types
-- 93,003 triples
-- Filtered WordNet removing easy inverse patterns
-
-### Biomedical Knowledge Graphs
-
-**Hetionet:**
-- 45,158 entities (genes, compounds, diseases, pathways, etc.)
-- 24 relation types (treats, causes, binds, etc.)
-- 2,250,197 edges
-- Integrates 29 public biomedical databases
-- Designed for drug repurposing and disease understanding
-
-## Task: KnowledgeGraphCompletion
-
-The primary task for knowledge graphs is link prediction - given a head entity and relation, predict the tail entity (or vice versa).
-
-### Task Modes
-
-**Head Prediction:**
-- Given (?, relation, tail), predict head entity
-- "What can cause Disease X?"
-
-**Tail Prediction:**
-- Given (head, relation, ?), predict tail entity
-- "What diseases does Gene X cause?"
-
-**Both:**
-- Predict both head and tail
-- Standard evaluation protocol
-
-### Evaluation Metrics
-
-**Ranking Metrics:**
-- **Mean Rank (MR)**: Average rank of correct entity
-- **Mean Reciprocal Rank (MRR)**: Average of 1/rank
-- **Hits@K**: Percentage of correct entities in top K predictions
-  - Typically reported for K=1, 3, 10
-
-**Filtered vs Raw:**
-- **Filtered**: Remove other known true triples from ranking
-- **Raw**: Rank among all possible entities
-- Filtered is standard for evaluation
-
-## Embedding Models
-
-### Translational Models
-
-**TransE (Translation Embedding):**
-- Represents relations as translations in embedding space
-- h + r ≈ t (head + relation ≈ tail)
-- Simple and effective baseline
-- Works well for 1-to-1 relations
-- Struggles with N-to-N relations
-
-**RotatE (Rotation Embedding):**
-- Relations as rotations in complex space
-- Better handles symmetric and inverse relations
-- State-of-the-art on many benchmarks
-- Can model composition patterns
-
-### Semantic Matching Models
-
-**DistMult:**
-- Bilinear scoring function
-- Handles symmetric relations naturally
-- Cannot model asymmetric relations
-- Fast and memory efficient
-
-**ComplEx:**
-- Complex-valued embeddings
-- Models asymmetric and inverse relations
-- Better than DistMult for most graphs
-- Balances expressiveness and efficiency
-
-**SimplE:**
-- Extends DistMult with inverse relations
-- Fully expressive (can represent any relation pattern)
-- Two embeddings per entity (canonical and inverse)
-
-### Neural Logic Models
-
-**NeuralLP (Neural Logic Programming):**
-- Learns logical rules through differentiable operations
-- Interprets predictions via learned rules
-- Good for sparse knowledge graphs
-- Computationally more expensive
-
-**KBGAT (Knowledge Base Graph Attention):**
-- Graph attention networks for KG completion
-- Learns entity representations from neighborhood
-- Handles unseen entities through inductive learning
-- Better for incomplete graphs
-
-## Training Workflow
-
-### Basic Pipeline
+Use predefined splits:
 
 ```python
-from torchdrug import datasets, models, tasks, core
+from torchdrug import datasets
 
-# Load dataset
 dataset = datasets.FB15k237("~/kg-datasets/")
+train_set, valid_set, test_set = dataset.split()
+```
 
-# Define model
+## RotatE embedding workflow
+
+### Model
+
+```python
+import torch
+from torchdrug import core, models, tasks
+
 model = models.RotatE(
     num_entity=dataset.num_entity,
     num_relation=dataset.num_relation,
-    embedding_dim=2000,
-    max_score=9
+    embedding_dim=2048,
+    max_score=9,
 )
-
-# Define task
-task = tasks.KnowledgeGraphCompletion(
-    model,
-    num_negative=128,
-    adversarial_temperature=2,
-    criterion="bce"
-)
-
-# Train with PyTorch Lightning or custom loop
 ```
 
-### Negative Sampling
+`embedding_dim=2048` follows the tutorial and may be reduced for memory or speed.
 
-**Strategies:**
-- **Uniform**: Sample entities uniformly at random
-- **Self-Adversarial**: Weight samples by current model's scores
-- **Type-Constrained**: Sample only valid entity types for relation
+### Task
 
-**Parameters:**
-- `num_negative`: Number of negative samples per positive triple
-- `adversarial_temperature`: Temperature for self-adversarial weighting
-- Higher temperature = more focus on hard negatives
+```python
+task = tasks.KnowledgeGraphCompletion(
+    model,
+    num_negative=256,
+    adversarial_temperature=1,
+)
+```
 
-### Loss Functions
+- `num_negative` controls negative samples per positive.
+- `adversarial_temperature` enables score-weighted negative sampling.
 
-**Binary Cross-Entropy (BCE):**
-- Treats each triple independently
-- Balanced classification between positive and negative
+### Train and evaluate
 
-**Margin Loss:**
-- Ensures positive scores higher than negative by margin
-- `max(0, margin + score_neg - score_pos)`
+```python
+optimizer = torch.optim.Adam(task.parameters(), lr=2e-5)
+solver = core.Engine(
+    task,
+    train_set,
+    valid_set,
+    test_set,
+    optimizer,
+    batch_size=1024,
+)
+solver.train(num_epoch=200)
+solver.evaluate("valid")
+```
 
-**Logistic Loss:**
-- Smooth version of margin loss
-- Better gradient properties
+Add `gpus=[0]` for a supported CUDA device. Reduce the epoch count for smoke
+tests.
 
-## Model Selection Guide
+## NeuralLP workflow
 
-### By Relation Patterns
+NeuralLP learns weighted chain-like rules up to a configured maximum length.
 
-**1-to-1 Relations:**
-- TransE works well
-- Any model will likely succeed
+```python
+model = models.NeuralLP(
+    num_relation=dataset.num_relation,
+    hidden_dim=128,
+    num_step=3,
+    num_lstm_layer=2,
+)
 
-**1-to-N Relations:**
-- DistMult, ComplEx, SimplE
-- Avoid TransE
+task = tasks.KnowledgeGraphCompletion(
+    model,
+    fact_ratio=0.75,
+    num_negative=256,
+    sample_weight=False,
+)
+```
 
-**N-to-1 Relations:**
-- DistMult, ComplEx, SimplE
-- Avoid TransE
+`fact_ratio=0.75` reserves 75% of training facts for the background graph used
+for reasoning and uses the remaining training triples as supervised labels.
+`Engine` adopts that reduced training subset returned by `preprocess()`.
 
-**N-to-N Relations:**
-- ComplEx, SimplE, RotatE
-- Most challenging pattern
+```python
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
+solver = core.Engine(
+    task,
+    train_set,
+    valid_set,
+    test_set,
+    optimizer,
+    batch_size=64,
+)
+solver.train(num_epoch=10)
+solver.evaluate("valid")
+```
 
-**Symmetric Relations:**
-- DistMult, ComplEx
-- RotatE with proper initialization
+## Other documented models
 
-**Antisymmetric Relations:**
-- ComplEx, SimplE, RotatE
-- Avoid DistMult
+Embedding models:
 
-**Inverse Relations:**
-- ComplEx, SimplE, RotatE
-- Important for bidirectional reasoning
+- `models.TransE`
+- `models.DistMult`
+- `models.ComplEx`
+- `models.SimplE`
+- `models.RotatE`
 
-**Composition:**
-- RotatE (best)
-- TransE (reasonable)
-- Captures multi-hop paths
+Graph-attention model:
 
-### By Dataset Characteristics
+- `models.KBGAT`
 
-**Small Graphs (< 50k entities):**
-- ComplEx or SimplE
-- Lower embedding dimensions (200-500)
+Verify each constructor in the
+[model API](https://torchdrug.ai/docs/api/models.html#knowledge-graph-reasoning-models).
+Do not transfer argument names from PyKEEN, DGL-KE, or PyTorch Geometric.
 
-**Large Graphs (> 100k entities):**
-- DistMult for efficiency
-- RotatE for accuracy
-- Higher dimensions (500-2000)
+## Task behavior
 
-**Sparse Graphs:**
-- NeuralLP (learns rules from limited data)
-- Pre-train embeddings on larger graphs
+`KnowledgeGraphCompletion` owns:
 
-**Dense, Complete Graphs:**
-- Any embedding model works well
-- Choose based on relation patterns
+- negative sampling,
+- fact-graph construction,
+- loss computation,
+- head and tail prediction,
+- filtered ranking evaluation.
 
-**Biomedical/Domain Graphs:**
-- Consider type constraints in sampling
-- Use domain-specific negative sampling
-- Hetionet benefits from relation-specific models
+Important constructor options include:
 
-## Advanced Techniques
+- `criterion`
+- `metric`
+- `num_negative`
+- `margin`
+- `adversarial_temperature`
+- `strict_negative`
+- `fact_ratio`
+- `sample_weight`
+- `filtered_ranking` (default `True`)
+- `full_batch_eval`
 
-### Multi-Hop Reasoning
+TorchDrug 0.2.1 added full-batch evaluation support. Choose it according to graph
+size and available memory.
 
-Chain multiple relations to answer complex queries:
-- "What drugs treat diseases caused by gene X?"
-- Requires path-based or rule-based reasoning
-- NeuralLP naturally supports this
+## Evaluation
 
-### Temporal Knowledge Graphs
+Use filtered ranking metrics:
 
-Extend to time-varying facts:
-- Add temporal information to triples
-- Predict future facts
-- Requires temporal encoding in models
+- mean rank (MR)
+- mean reciprocal rank (MRR)
+- Hits@1
+- Hits@3
+- Hits@10
 
-### Few-Shot Learning
+Filtered evaluation removes other known true triples before ranking. Preserve
+training, validation, and test facts exactly as the task expects to avoid leakage
+or incorrect filtering.
 
-Handle relations with few examples:
-- Meta-learning approaches
-- Transfer from related relations
-- Important for emerging knowledge
+Also report:
 
-### Inductive Learning
+- results by relation,
+- head vs tail prediction,
+- variance across seeds,
+- memory/runtime settings,
+- whether reciprocal relations were added.
 
-Generalize to unseen entities:
-- KBGAT and other GNN-based methods
-- Use entity features/descriptions
-- Critical for evolving knowledge graphs
+## Biomedical use
 
-## Biomedical Applications
+Hetionet supports biomedical link-prediction experiments, but a high model score
+does not establish a new treatment, causal mechanism, or validated association.
 
-### Drug Repurposing
+For drug-repurposing analysis:
 
-Predict "drug treats disease" links in Hetionet:
-1. Train on known drug-disease associations
-2. Predict new treatment candidates
-3. Filter by mechanism (gene, pathway involvement)
-4. Validate predictions experimentally
+1. define the exact relation being predicted,
+2. preserve entity and relation type constraints,
+3. exclude known positives correctly,
+4. check for train/test leakage through inverse or duplicate relations,
+5. calibrate or rank model scores,
+6. validate candidates against independent evidence and domain experts.
 
-### Disease Gene Discovery
+TorchDrug's generic `KnowledgeGraphCompletion` API does not automatically apply
+biomedical type constraints or causal interpretation.
 
-Identify genes associated with diseases:
-1. Model gene-disease-pathway networks
-2. Predict missing gene-disease links
-3. Incorporate protein interactions, expression data
-4. Prioritize candidates for validation
+## Common failures
 
-### Protein Function Prediction
+### Entity/relation mismatch
 
-Link proteins to biological processes:
-1. Integrate protein interactions, GO terms
-2. Predict missing GO annotations
-3. Transfer function from similar proteins
+Build model sizes from `dataset.num_entity` and `dataset.num_relation`.
 
-## Common Issues and Solutions
+### Evaluation out of memory
 
-**Issue: Poor performance on specific relation types**
-- Solution: Analyze relation patterns, choose appropriate model, or use relation-specific models
+Lower batch size or disable full-batch evaluation. With `full_batch_eval=False`,
+`num_negative` also sets the chunk size for scoring candidate entities during
+evaluation. All entities are still ranked, and score/mask tensors scale with
+batch size times the entity count; chunking does not make this sampled evaluation.
 
-**Issue: Overfitting on small graphs**
-- Solution: Reduce embedding dimension, increase regularization, or use simpler models
+### NeuralLP produces invalid shapes
 
-**Issue: Slow training on large graphs**
-- Solution: Reduce negative samples, use DistMult for efficiency, or implement mini-batch training
+Use `num_relation=dataset.num_relation` and let
+`KnowledgeGraphCompletion.preprocess()` construct the fact graph.
 
-**Issue: Cannot handle new entities**
-- Solution: Use inductive models (KBGAT), incorporate entity features, or pre-compute embeddings for new entities based on their neighbors
+### Inflated metrics
 
-## Best Practices
+Check for inverse-relation leakage, duplicate triples, accidental use of test
+facts, and raw rather than filtered ranking.
 
-1. Start with ComplEx or RotatE for most tasks
-2. Use self-adversarial negative sampling
-3. Tune embedding dimension (typically 500-2000)
-4. Apply regularization to prevent overfitting
-5. Use filtered evaluation metrics
-6. Analyze performance per relation type
-7. Consider relation-specific models for heterogeneous graphs
-8. Validate predictions with domain experts
+## Source links
+
+- [Reasoning tutorial](https://torchdrug.ai/docs/tutorials/reasoning.html)
+- [Knowledge graph datasets](https://torchdrug.ai/docs/api/datasets.html#knowledge-graph-datasets)
+- [Knowledge graph models](https://torchdrug.ai/docs/api/models.html#knowledge-graph-reasoning-models)
+- [KnowledgeGraphCompletion task](https://torchdrug.ai/docs/api/tasks.html#knowledge-graph-completion)

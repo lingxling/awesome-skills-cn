@@ -1,0 +1,150 @@
+name: Skill Spec Validation
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/skill-spec-validation.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "skills/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-spec-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate skills against the Agent Skills spec
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --python 3.13
+
+      # The reference validator from https://agentskills.io/specification. It checks the
+      # closed set of allowed frontmatter fields, name rules (incl. directory match),
+      # description/compatibility length limits, and parses frontmatter with strictyaml
+      # -- which rejects JSON-style flow mappings such as `metadata: {"version": "1.0"}`.
+      - name: skills-ref validate
+        run: |
+          set -uo pipefail
+          fail=0
+          for d in skills/*/; do
+            if ! out=$(uv run skills-ref validate "$d" 2>&1); then
+              fail=1
+              echo "::error file=${d}SKILL.md::$(echo "$out" | tail -n +2 | tr '\n' ' ')"
+              echo "FAIL $d"
+              echo "$out" | sed 's/^/    /'
+            fi
+          done
+          echo "Validated $(ls -d skills/*/ | wc -l) skills."
+          exit $fail
+
+      # Rules the reference validator does not enforce: this repo's metadata.version
+      # requirement (see AGENTS.md), plus spec constraints skills-ref accepts but the
+      # spec text requires -- allowed-tools must be a space-separated string, and
+      # metadata values must be strings apart from the host-manifest blocks that have
+      # to stay nested objects (see NESTED_OK below).
+      - name: Repo and spec rules skills-ref does not check
+        run: |
+          uv run --with pyyaml python - <<'PY'
+          import re
+          import sys
+          from pathlib import Path
+          import yaml
+
+          # Host manifest blocks that must stay nested mappings. OpenClaw's
+          # resolveOpenClawManifestBlock() requires `typeof candidate === "object"`, so
+          # encoding these as JSON strings silently disables its gating and credential
+          # injection. Nested mappings still pass `skills-ref validate`.
+          NESTED_OK = {"openclaw", "hermes"}
+
+          # Requires the closing delimiter on its own line. A naive split("---") would
+          # happily re-split at a `---` accidentally glued to the last frontmatter value.
+          FM_RE = re.compile(r"\A---\n(.*?)\n---\n", re.S)
+
+          errors, warnings = [], []
+          for d in sorted(Path("skills").iterdir()):
+              if not d.is_dir():
+                  continue
+              md = d / "SKILL.md"
+              if not md.exists():
+                  errors.append(f"{d}: missing SKILL.md")
+                  continue
+              text = md.read_text()
+              m_fm = FM_RE.match(text)
+              if not m_fm:
+                  errors.append(
+                      f"{md}: frontmatter must open with `---` and close with `---` "
+                      f"on its own line"
+                  )
+                  continue
+              fm = yaml.safe_load(m_fm.group(1))
+
+              at = fm.get("allowed-tools")
+              if at is not None:
+                  if not isinstance(at, str):
+                      errors.append(
+                          f"{md}: allowed-tools must be a space-separated string, "
+                          f"got {type(at).__name__}"
+                      )
+                  elif "," in at:
+                      errors.append(
+                          f"{md}: allowed-tools must be space-separated, not "
+                          f"comma-separated: {at!r}"
+                      )
+
+              m = fm.get("metadata")
+              if not isinstance(m, dict):
+                  errors.append(f"{md}: missing a `metadata` mapping (see AGENTS.md)")
+              else:
+                  if "version" not in m:
+                      errors.append(f"{md}: metadata.version is required (see AGENTS.md)")
+                  for k, v in m.items():
+                      if k in NESTED_OK:
+                          if not isinstance(v, dict):
+                              errors.append(
+                                  f"{md}: metadata.{k} must stay a nested mapping, got "
+                                  f"{type(v).__name__} -- a JSON string silently disables "
+                                  f"host gating and credential injection"
+                              )
+                          continue
+                      if isinstance(v, str):
+                          continue
+                      errors.append(
+                          f"{md}: metadata.{k} must be a string, got {type(v).__name__} "
+                          f"-- quote it (versions and dates especially)"
+                      )
+
+              lines = text.count("\n") + 1
+              if lines > 500:
+                  warnings.append(f"{md}: {lines} lines; the spec recommends under 500")
+
+          for w in warnings:
+              print(f"::warning file={w.split(':')[0]}::{w}")
+          for e in errors:
+              print(f"::error file={e.split(':')[0]}::{e}")
+              print(f"FAIL {e}")
+          print(f"\n{len(errors)} error(s), {len(warnings)} warning(s).")
+          sys.exit(1 if errors else 0)
+          PY

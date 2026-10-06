@@ -1,480 +1,196 @@
-# Hardware Backends in PyLabRobot
+# Hardware backends and supported robots
 
-## Overview
+Verified against **PyLabRobot 0.2.2** on **2026-10-01**. Released exports were inspected without constructing hardware backends. Hosted
+`/stable/` support tables now describe development APIs; see [review](review.md).
 
-PyLabRobot uses a backend abstraction system that allows the same protocol code to run on different liquid handling robots and platforms. Backends handle device-specific communication while the `LiquidHandler` frontend provides a unified interface.
+## Architecture
 
-## Backend Architecture
+PyLabRobot separates:
 
-### How Backends Work
+- a frontend such as `LiquidHandler`, which validates and records standard
+  operations;
+- a backend, which translates those operations for one device family;
+- a resource/deck tree, which supplies geometry and state.
 
-1. **Frontend**: `LiquidHandler` class provides high-level API
-2. **Backend**: Device-specific class handles hardware communication
-3. **Protocol**: Same code works across different backends
+A common frontend does not guarantee identical channels, tools, operations,
+parameters, calibration, error semantics, timing, or firmware support.
+Backend-specific kwargs must be reviewed against the exact release implementation and model page.
 
-```python
-# Same protocol code
-await lh.pick_up_tips(tip_rack["A1"])
-await lh.aspirate(plate["A1"], vols=100)
-await lh.dispense(plate["A2"], vols=100)
-await lh.drop_tips()
-
-# Works with any backend (STAR, Opentrons, simulation, etc.)
-```
-
-### Backend Interface
-
-All backends inherit from `LiquidHandlerBackend` and implement:
-- `setup()`: Initialize connection to hardware
-- `stop()`: Close connection and cleanup
-- Device-specific command methods (aspirate, dispense, etc.)
-
-## Supported Backends
-
-### Hamilton STAR (Full Support)
-
-The Hamilton STAR and STARlet liquid handling robots have full PyLabRobot support.
-
-**Setup:**
+## Verified stable liquid-handler names
 
 ```python
 from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends import STAR
-from pylabrobot.resources import STARLetDeck
-
-# Create STAR backend
-backend = STAR()
-
-# Initialize liquid handler
-lh = LiquidHandler(backend=backend, deck=STARLetDeck())
-await lh.setup()
+from pylabrobot.liquid_handling.backends import (
+    EVOBackend,
+    LiquidHandlerChatterboxBackend,
+    OpentronsOT2Backend,
+    STARBackend,
+    VantageBackend,
+)
 ```
 
-**Platform Support:**
-- Windows ✅
-- macOS ✅
-- Linux ✅
-- Raspberry Pi ✅
+Do not use stale names from older skill text:
 
-**Communication:**
-- USB connection to robot
-- Direct firmware commands
-- No Hamilton software required
+- `STAR` is not the stable high-level backend name; use `STARBackend`.
+- `TecanBackend` is not the 0.2.2 EVO backend; use `EVOBackend`.
+- `OpentronsBackend` is stale; use `OpentronsOT2Backend`.
+- `ChatterboxBackend` has incorrect naming/capitalization for the recommended
+  generic liquid-handler testing backend; use
+  `LiquidHandlerChatterboxBackend`.
+- `ChatterBoxBackend` (capital `B`) is a separate exported legacy-named class.
+  Avoid it when the stable docs specifically call for
+  `LiquidHandlerChatterboxBackend`.
 
-**Features:**
-- Full liquid handling operations
-- CO-RE tip support
-- 96-channel head support (if equipped)
-- Temperature control
-- Carrier and rail-based positioning
+## Released exports and current support listings
 
-**Deck Types:**
-```python
-from pylabrobot.resources import STARLetDeck, STARDeck
+The 0.2.2 wheel exposes STAR, Vantage, EVO and OT-2 backends listed above.
+The current hosted machine table labels STAR **Full**, Vantage **Mostly**,
+EVO **Basic**, OT-2 **Mostly**, Nimbus **Mostly**, and Prep **WIP**. These are
+upstream development-support assessments, not validation of the 0.2.2 wheel,
+firmware, attachments, or a protocol. Nimbus/Prep entries do not establish a
+portable released backend import. Read the exact device source before using it.
 
-# For STARlet (smaller deck)
-deck = STARLetDeck()
+The hosted table also distinguishes v0 and v1 drivers; these labels are not
+PyLabRobot release numbers. Never infer a released capability from that table
+alone or from inherited method presence.
 
-# For STAR (full deck)
-deck = STARDeck()
-```
-
-**Example:**
+## Offline backend
 
 ```python
 from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends import STAR
-from pylabrobot.resources import STARLetDeck, TIP_CAR_480_A00, Cos_96_DW_1mL
+from pylabrobot.liquid_handling.backends import LiquidHandlerChatterboxBackend
+from pylabrobot.resources.hamilton import STARLetDeck
 
-# Initialize
-lh = LiquidHandler(backend=STAR(), deck=STARLetDeck())
-await lh.setup()
-
-# Define resources
-tip_rack = TIP_CAR_480_A00(name="tips")
-plate = Cos_96_DW_1mL(name="plate")
-
-# Assign to rails
-lh.deck.assign_child_resource(tip_rack, rails=1)
-lh.deck.assign_child_resource(plate, rails=10)
-
-# Execute protocol
-await lh.pick_up_tips(tip_rack["A1"])
-await lh.transfer(plate["A1"], plate["A2"], vols=100)
-await lh.drop_tips()
-
-await lh.stop()
-```
-
-### Opentrons OT-2 (Supported)
-
-The Opentrons OT-2 is supported through the Opentrons HTTP API.
-
-**Setup:**
-
-```python
-from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends import OpentronsBackend
-from pylabrobot.resources import OTDeck
-
-# Create Opentrons backend (requires robot IP address)
-backend = OpentronsBackend(host="192.168.1.100")  # Replace with your robot's IP
-
-# Initialize liquid handler
-lh = LiquidHandler(backend=backend, deck=OTDeck())
-await lh.setup()
-```
-
-**Platform Support:**
-- Any platform with network access to OT-2
-
-**Communication:**
-- HTTP API over network
-- Requires robot IP address
-- No Opentrons app required
-
-**Features:**
-- 8-channel pipette support
-- Single-channel pipette support
-- Standard OT-2 deck layout
-- Coordinate-based positioning
-
-**Limitations:**
-- Uses older Opentrons HTTP API
-- Some features may be limited compared to STAR
-
-**Example:**
-
-```python
-from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends import OpentronsBackend
-from pylabrobot.resources import OTDeck
-
-# Initialize with robot IP
 lh = LiquidHandler(
-    backend=OpentronsBackend(host="192.168.1.100"),
-    deck=OTDeck()
+    backend=LiquidHandlerChatterboxBackend(num_channels=8),
+    deck=STARLetDeck(),
 )
 await lh.setup()
-
-# Load deck layout
-lh.deck = Deck.load_from_json_file("opentrons_layout.json")
-
-# Execute protocol
-await lh.pick_up_tips(tip_rack["A1"])
-await lh.transfer(plate["A1"], plate["A2"], vols=100)
-await lh.drop_tips()
-
-await lh.stop()
+try:
+    # Build resources and exercise planned operations only.
+    ...
+finally:
+    await lh.stop()
 ```
 
-### Tecan EVO (Work in Progress)
+This backend prints operations and updates software state. It does not connect
+to a robot and does not model robot physics. Keep the backend construction
+literal; never choose a live class from a string, plugin, environment variable,
+or untrusted config.
 
-Support for Tecan EVO liquid handling robots is under development.
+## Capability/version inspection without connection
 
-**Current Status:**
-- Work-in-progress
-- Basic commands may be available
-- Check documentation for current feature support
-
-**Setup (when available):**
-
-```python
-from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends import TecanBackend
-from pylabrobot.resources import TecanDeck
-
-backend = TecanBackend()
-lh = LiquidHandler(backend=backend, deck=TecanDeck())
+```bash
+python3 skills/pylabrobot/scripts/inspect_backends.py \
+  --expected-version 0.2.2 --strict
 ```
 
-### Hamilton Vantage (Mostly Supported)
+The inspector:
 
-Hamilton Vantage has "mostly" complete support.
+- imports a fixed allowlist of stable classes only after argument parsing;
+- reads installed distribution metadata;
+- inspects class signatures/method presence;
+- creates zero backend instances;
+- never calls `setup()`;
+- performs no serial, USB, HID, FTDI, Modbus, or network operation.
 
-**Setup:**
+Method presence is not proof that a model implements the operation; some
+backends deliberately raise `NotImplementedError`.
 
-```python
-from pylabrobot.liquid_handling.backends import Vantage
-from pylabrobot.resources import VantageDeck
+## Extras and transports
 
-lh = LiquidHandler(backend=Vantage(), deck=VantageDeck())
+Base `PyLabRobot==0.2.2` keeps hardware dependencies optional. The release metadata lists extras including:
+
+- `serial`
+- `usb`
+- `ftdi`
+- `hid`
+- `modbus`
+- `opentrons`
+- `sila`
+- `microscopy`
+- `pico`
+- `all`
+
+Install only the exact reviewed extra for a named device and keep the top-level
+pin:
+
+```bash
+# Example form only; do not run until the device and transport are approved.
+uv pip install "PyLabRobot[serial]==0.2.2"
 ```
 
-**Features:**
-- Similar to STAR support
-- Some advanced features may be limited
+`all` intentionally does not include microscopy in stable 0.2.2 because of its
+separate NumPy/SDK constraints. Optional transport packages can enumerate or
+communicate with devices; installation does not authorize their use.
 
-## Simulation Backend
+## Live-run gate
 
-### ChatterboxBackend (Simulation)
+Do not instantiate a live backend or call `setup()` until a trained operator has
+explicitly confirmed:
 
-Test protocols without physical hardware using the simulation backend.
+1. Backend class, exact robot model/serial number, firmware, options, and
+   transport.
+2. Vendor/organization permission, warranty implications, maintenance state,
+   access controls, and exclusive control of the device.
+3. Deck definition, carriers/adapters, resources, coordinates, orientation,
+   clearances, and collision/motion review.
+4. Calibration, teaching, tip/head compatibility, channel mapping, units,
+   heights, rates, liquid classes, and all backend kwargs.
+5. Source/dead/destination volumes, physical liquid identity, tip state,
+   contamination policy, waste, lids/seals, tubing/cables, and operator steps.
+6. Guards/doors, emergency stop readiness, PPE, containment, dry-run plan,
+   abort path, and recovery/resume rules.
 
-**Setup:**
+Never make a live run conditional only on `USE_HARDWARE=true`, a CLI flag, or an
+IP/serial value. Confirmation must be tied to the reviewed protocol and current
+physical setup.
 
-```python
-from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-from pylabrobot.resources import STARLetDeck
+## Backend-specific cautions
 
-# Create simulation backend
-backend = ChatterboxBackend(num_channels=8)
+### Hamilton STAR/Vantage
 
-# Initialize liquid handler
-lh = LiquidHandler(backend=backend, deck=STARLetDeck())
-await lh.setup()
-```
+These are direct firmware drivers. Upstream states that PyLabRobot is not
+endorsed or supported by robot manufacturers and that firmware-driver use may
+affect warranty. Review USB permissions, device selection, cover/arm/head
+configuration, firmware ranges, liquid-level detection, channels, CO-RE tips,
+and all device-specific errors.
 
-**Features:**
-- No hardware required
-- Simulates all liquid handling operations
-- Works with visualizer for real-time feedback
-- Validates protocol logic
-- Tracks tips and volumes
+### Tecan EVO
 
-**Use Cases:**
-- Protocol development and testing
-- Training and education
-- CI/CD pipeline testing
-- Debugging without hardware access
+The current hosted EVO support label remains **Basic**. Use `EVOBackend`; verify which LiHa/RoMa
+commands, arms, tips, carriers, and firmware paths are implemented. Never infer
+Hamilton behavior or liquid classes.
 
-**Example:**
+### Opentrons OT-2
 
-```python
-from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-from pylabrobot.resources import STARLetDeck, TIP_CAR_480_A00, Cos_96_DW_1mL
-from pylabrobot.resources import set_tip_tracking, set_volume_tracking
+`OpentronsOT2Backend(host, port=31950)` uses the optional pinned
+`opentrons-http-api-client==0.2.1`. Its `setup(skip_home=False)` creates an HTTP
+run and homes by default; `skip_home=True` still creates a run and queries the
+robot. Neither is an offline connectivity check. Current 0.2.2 `stop()` tries
+cancellation paths not in the current official HTTP specification and swallows
+failures. **Do not treat successful cleanup as confirmation that a robot stopped.**
+The [transport review](review.md) records exact paths and the supported API
+contract. No robot HTTP request was made during this review.
 
-# Enable tracking for simulation
-set_tip_tracking(True)
-set_volume_tracking(True)
+## Stable versus development
 
-# Initialize with simulation backend
-lh = LiquidHandler(
-    backend=ChatterboxBackend(num_channels=8),
-    deck=STARLetDeck()
-)
-await lh.setup()
+The tested pin is 0.2.2. No `v0.2.2` GitHub tag was listed at review time,
+and the changelog did not have a 0.2.2 section. MicroSpin and plate stacking
+metadata are in the released wheel despite remaining under `Unreleased` in
+the changelog. Prefer the PyPI source artifact plus executable checks.
 
-# Define resources
-tip_rack = TIP_CAR_480_A00(name="tips")
-plate = Cos_96_DW_1mL(name="plate")
+When considering a later release:
 
-lh.deck.assign_child_resource(tip_rack, rails=1)
-lh.deck.assign_child_resource(plate, rails=10)
+1. Confirm it exists on PyPI and is not a prerelease.
+2. Compare `Requires-Python`, extras, tag, changelog, and source.
+3. Run import/signature and software-only tests in an isolated environment.
+4. Revalidate each target model/firmware and repeat commissioning.
 
-# Set initial volumes
-for well in plate.children:
-    well.tracker.set_liquids([(None, 200)])
+## Sources
 
-# Run simulated protocol
-await lh.pick_up_tips(tip_rack["A1:H1"])
-await lh.transfer(plate["A1:H1"], plate["A2:H2"], vols=100)
-await lh.drop_tips()
-
-# Check results
-print(f"A1 volume: {plate['A1'].tracker.get_volume()} µL")  # 100 µL
-print(f"A2 volume: {plate['A2'].tracker.get_volume()} µL")  # 100 µL
-
-await lh.stop()
-```
-
-## Switching Backends
-
-### Backend-Agnostic Protocols
-
-Write protocols that work with any backend:
-
-```python
-def get_backend(robot_type: str):
-    """Factory function to create appropriate backend"""
-    if robot_type == "star":
-        from pylabrobot.liquid_handling.backends import STAR
-        return STAR()
-    elif robot_type == "opentrons":
-        from pylabrobot.liquid_handling.backends import OpentronsBackend
-        return OpentronsBackend(host="192.168.1.100")
-    elif robot_type == "simulation":
-        from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-        return ChatterboxBackend()
-    else:
-        raise ValueError(f"Unknown robot type: {robot_type}")
-
-def get_deck(robot_type: str):
-    """Factory function to create appropriate deck"""
-    if robot_type == "star":
-        from pylabrobot.resources import STARLetDeck
-        return STARLetDeck()
-    elif robot_type == "opentrons":
-        from pylabrobot.resources import OTDeck
-        return OTDeck()
-    elif robot_type == "simulation":
-        from pylabrobot.resources import STARLetDeck
-        return STARLetDeck()
-    else:
-        raise ValueError(f"Unknown robot type: {robot_type}")
-
-# Use in protocol
-robot_type = "simulation"  # Change to "star" or "opentrons" as needed
-backend = get_backend(robot_type)
-deck = get_deck(robot_type)
-
-lh = LiquidHandler(backend=backend, deck=deck)
-await lh.setup()
-
-# Protocol code works with any backend
-await lh.pick_up_tips(tip_rack["A1"])
-await lh.transfer(plate["A1"], plate["A2"], vols=100)
-await lh.drop_tips()
-```
-
-### Development Workflow
-
-1. **Develop**: Write protocol using ChatterboxBackend
-2. **Test**: Run with visualizer to validate logic
-3. **Verify**: Test on simulation with real deck layout
-4. **Deploy**: Switch to hardware backend (STAR, Opentrons)
-
-```python
-# Development
-lh = LiquidHandler(backend=ChatterboxBackend(), deck=STARLetDeck())
-
-# ... develop protocol ...
-
-# Production (just change backend)
-lh = LiquidHandler(backend=STAR(), deck=STARLetDeck())
-```
-
-## Backend Configuration
-
-### Custom Backend Parameters
-
-Some backends accept configuration parameters:
-
-```python
-# Opentrons with custom parameters
-backend = OpentronsBackend(
-    host="192.168.1.100",
-    port=31950  # Default Opentrons API port
-)
-
-# ChatterboxBackend with custom channels
-backend = ChatterboxBackend(
-    num_channels=8  # 8-channel simulation
-)
-```
-
-### Connection Troubleshooting
-
-**Hamilton STAR:**
-- Ensure USB cable is connected
-- Check that no other software is using the robot
-- Verify firmware is up to date
-- On macOS/Linux, may need USB permissions
-
-**Opentrons OT-2:**
-- Verify robot IP address is correct
-- Check network connectivity (ping robot)
-- Ensure robot is powered on
-- Confirm Opentrons app is not blocking API access
-
-**General:**
-- Use `await lh.setup()` to test connection
-- Check error messages for specific issues
-- Ensure proper permissions for device access
-
-## Backend-Specific Features
-
-### Hamilton STAR Specific
-
-```python
-# Access backend directly for hardware-specific features
-star_backend = lh.backend
-
-# Hamilton-specific commands (if needed)
-# Most operations should go through LiquidHandler interface
-```
-
-### Opentrons Specific
-
-```python
-# Opentrons-specific configuration
-ot_backend = lh.backend
-
-# Access OT-2 API directly if needed (advanced)
-# Most operations should go through LiquidHandler interface
-```
-
-## Best Practices
-
-1. **Abstract Hardware**: Write backend-agnostic protocols when possible
-2. **Test in Simulation**: Always test with ChatterboxBackend first
-3. **Factory Pattern**: Use factory functions to create backends
-4. **Error Handling**: Handle connection errors gracefully
-5. **Documentation**: Document which backends your protocol supports
-6. **Configuration**: Use config files for backend parameters
-7. **Version Control**: Track backend versions and compatibility
-8. **Cleanup**: Always call `await lh.stop()` to release hardware
-9. **Single Connection**: Only one program should connect to hardware at a time
-10. **Platform Testing**: Test on target platform before deployment
-
-## Common Patterns
-
-### Multi-Backend Support
-
-```python
-import asyncio
-from typing import Literal
-
-async def run_protocol(
-    robot_type: Literal["star", "opentrons", "simulation"],
-    visualize: bool = False
-):
-    """Run protocol on specified backend"""
-
-    # Create backend
-    if robot_type == "star":
-        from pylabrobot.liquid_handling.backends import STAR
-        backend = STAR()
-        deck = STARLetDeck()
-    elif robot_type == "opentrons":
-        from pylabrobot.liquid_handling.backends import OpentronsBackend
-        backend = OpentronsBackend(host="192.168.1.100")
-        deck = OTDeck()
-    elif robot_type == "simulation":
-        from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-        backend = ChatterboxBackend()
-        deck = STARLetDeck()
-
-    # Initialize
-    lh = LiquidHandler(backend=backend, deck=deck)
-    await lh.setup()
-
-    try:
-        # Load deck layout (backend-agnostic)
-        # lh.deck = Deck.load_from_json_file(f"{robot_type}_layout.json")
-
-        # Execute protocol (backend-agnostic)
-        await lh.pick_up_tips(tip_rack["A1"])
-        await lh.transfer(plate["A1"], plate["A2"], vols=100)
-        await lh.drop_tips()
-
-        print("Protocol completed successfully!")
-
-    finally:
-        await lh.stop()
-
-# Run on different backends
-await run_protocol("simulation")      # Test in simulation
-await run_protocol("star")            # Run on Hamilton STAR
-await run_protocol("opentrons")       # Run on Opentrons OT-2
-```
-
-## Additional Resources
-
-- Backend Documentation: https://docs.pylabrobot.org/user_guide/backends.html
-- Supported Machines: https://docs.pylabrobot.org/user_guide/machines.html
-- API Reference: https://docs.pylabrobot.org/api/pylabrobot.liquid_handling.backends.html
-- GitHub Examples: https://github.com/PyLabRobot/pylabrobot/tree/main/examples
+Reviewed **2026-10-01**: [PyPI release files and extras](https://pypi.org/project/PyLabRobot/0.2.2/#files),
+[current supported machines](https://docs.pylabrobot.org/stable/user_guide/machines.html),
+[official Opentrons HTTP specification](https://docs.opentrons.com/http/api_reference.html),
+and the [release/transport evidence ledger](review.md). Support listings and
+physical firmware compatibility were not tested on instruments.

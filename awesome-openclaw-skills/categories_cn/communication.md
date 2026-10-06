@@ -89,7 +89,7 @@
 - [lofy-projects](https://clawskills.sh/skills/harrey401-lofy-projects) - Lofy AI 助手的项目管理 — 跟踪多个项目，带有里程碑、优先级评分引擎。
 - [lumos-auditor](https://clawskills.sh/skills/samiru369-lumos-lumos-auditor) - AI 代理的社交网络。
 - [m365-pnp-cli](https://clawskills.sh/skills/thomyg-m365-pnp-cli) - Microsoft 365 的 CLI - 管理 Microsoft 365 租户、SharePoint Online、Teams、OneDrive。
-- [malayalam-whatsapp](https://clawskills.sh/skills/babuperumana-malayalam-whatsapp) - WhatsApp വഴി വരുന്ന മലയാളം / Manglish സന്ദേശങ്ങൾ。
+- [malayalam-whatsapp](https://clawskills.sh/skills/babuperumana-malayalam-whatsapp) - 处理通过 WhatsApp 发来的马拉雅拉姆语 / Manglish（英文字母拼写的马拉雅拉姆语）消息。
 - [meeting-coordinator](https://clawskills.sh/skills/voshawn-meeting-coordinator) - 用于会议协调的执行调度助手（电子邮件、日历、场地、确认）。
 - [meetlark](https://clawskills.sh/skills/mkelk-meetlark) - 人类及其代理的调度投票。
 - [mh-weather](https://clawskills.sh/skills/mohdalhashemi98-hue-mh-weather) - 通过 wttr.in 或 Open-Meteo 获取当前天气和预报。
@@ -110,6 +110,7 @@
 - [personal-friends](https://clawskills.sh/skills/gekacross-personal-friends) - 在 Friends 主题中充当用户的社交生活助手。
 - [personaldatahub](https://clawskills.sh/skills/haojian-personaldatahub) - 通过 PersonalDataHub 提取个人数据（电子邮件、问题）并提出出站行动（草稿、回复）。
 - [pidgesms](https://clawskills.sh/skills/typhonius-pidgesms) - 使用 pidge 通过 Android 手机发送和读取 SMS 文本消息。
+- [pilot-protocol](https://clawhub.ai/teoslayer/pilot-protocol) - 通过 Pilot Protocol 覆盖网络，在 AI 代理之间进行加密 P2P 消息传递和信任握手。
 - [portfolio-watcher](https://clawskills.sh/skills/jhillin8-portfolio-watcher) - 监控股票/加密货币持有量，获取价格警报，跟踪投资组合表现。
 - [postwall](https://clawskills.sh/skills/casperaiassist-postwall) - AI 代理的安全电子邮件网关 - 读取和发送电子邮件的人工循环批准。
 - [price-monitor-fr](https://clawskills.sh/skills/hugosbl-price-monitor-fr) - 监控电子商务网站上的产品价格，并在价格下降时发出警报。
@@ -147,3 +148,6 @@
 - [zepto](https://clawskills.sh/skills/bewithgaurav-zepto) - 在几秒钟内从 Zepto 订购杂货。
 - [lobstermail-agent-email](https://clawskills.sh/skills/samuelchenardlovesboards-lobstermail-agent-email) - 面向 AI 代理的电子邮件服务。无需 API 密钥，无需注册。
 - [sol-email](https://clawhub.ai/amrree/sol-email) - 通过 himalaya（Maildir）和 SMTP 收发邮件。真实收件箱，真实回复。
+- [atomicmail](https://clawhub.ai/atomicmail/atomicmail) - 基于 JMAP 的代理专属 @atomicmail.ai 收件箱。通过工作量证明（PoW）注册，无需 API 密钥。
+- [ai-calls-china-phone](https://clawhub.ai/ustczz/skills/ai-calls-china-phone) - 面向中国大陆的 AI 电话外呼与来电接待。
+- [assistant-mail](https://clawhub.ai/assistantmail/skills/assistant-mail) - 面向小团队运营者、基于白名单/授权同意机制的代理电子邮件。

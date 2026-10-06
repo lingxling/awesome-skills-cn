@@ -26,15 +26,30 @@ function runGitOutput(args: string[], cwd?: string): Promise<string> {
 describe('cloneRepo LFS handling', () => {
   const tempDirs: string[] = [];
   const originalEnv = {
+    EDITOR: process.env.EDITOR,
+    GIT_CONFIG_COUNT: process.env.GIT_CONFIG_COUNT,
     GIT_CONFIG_GLOBAL: process.env.GIT_CONFIG_GLOBAL,
+    GIT_CONFIG_KEY_0: process.env.GIT_CONFIG_KEY_0,
     GIT_CONFIG_NOSYSTEM: process.env.GIT_CONFIG_NOSYSTEM,
+    GIT_CONFIG_VALUE_0: process.env.GIT_CONFIG_VALUE_0,
+    PAGER: process.env.PAGER,
   };
 
   afterEach(async () => {
+    if (originalEnv.EDITOR === undefined) delete process.env.EDITOR;
+    else process.env.EDITOR = originalEnv.EDITOR;
+    if (originalEnv.GIT_CONFIG_COUNT === undefined) delete process.env.GIT_CONFIG_COUNT;
+    else process.env.GIT_CONFIG_COUNT = originalEnv.GIT_CONFIG_COUNT;
     if (originalEnv.GIT_CONFIG_GLOBAL === undefined) delete process.env.GIT_CONFIG_GLOBAL;
     else process.env.GIT_CONFIG_GLOBAL = originalEnv.GIT_CONFIG_GLOBAL;
+    if (originalEnv.GIT_CONFIG_KEY_0 === undefined) delete process.env.GIT_CONFIG_KEY_0;
+    else process.env.GIT_CONFIG_KEY_0 = originalEnv.GIT_CONFIG_KEY_0;
     if (originalEnv.GIT_CONFIG_NOSYSTEM === undefined) delete process.env.GIT_CONFIG_NOSYSTEM;
     else process.env.GIT_CONFIG_NOSYSTEM = originalEnv.GIT_CONFIG_NOSYSTEM;
+    if (originalEnv.GIT_CONFIG_VALUE_0 === undefined) delete process.env.GIT_CONFIG_VALUE_0;
+    else process.env.GIT_CONFIG_VALUE_0 = originalEnv.GIT_CONFIG_VALUE_0;
+    if (originalEnv.PAGER === undefined) delete process.env.PAGER;
+    else process.env.PAGER = originalEnv.PAGER;
 
     await Promise.all(tempDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })));
   });
@@ -65,13 +80,23 @@ describe('cloneRepo LFS handling', () => {
   process = skills-test-missing-lfs filter-process
 `
     );
+    // Preserve callers that inject Git configuration through the environment,
+    // including credential helpers commonly supplied by surrounding tooling.
+    process.env.GIT_CONFIG_COUNT = '1';
+    process.env.GIT_CONFIG_KEY_0 = 'credential.helper';
+    process.env.GIT_CONFIG_VALUE_0 = '';
     process.env.GIT_CONFIG_NOSYSTEM = '1';
     process.env.GIT_CONFIG_GLOBAL = globalConfig;
+    // These are harmless for clone, but simple-git still validates explicitly
+    // supplied inherited environment variables before spawning Git.
+    process.env.EDITOR = 'false';
+    process.env.PAGER = 'cat';
 
     const cloneDir = await cloneRepo(source);
     tempDirs.push(cloneDir);
 
-    await expect(readFile(join(cloneDir, 'asset.bin'), 'utf8')).resolves.toBe(expectedContents);
+    const actualContents = await readFile(join(cloneDir, 'asset.bin'), 'utf8');
+    expect(actualContents.replaceAll('\r\n', '\n')).toBe(expectedContents.replaceAll('\r\n', '\n'));
     await cleanupTempDir(cloneDir);
     tempDirs.splice(tempDirs.indexOf(cloneDir), 1);
   }, 20_000);

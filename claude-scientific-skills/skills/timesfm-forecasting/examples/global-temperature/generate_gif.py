@@ -7,9 +7,12 @@ as more historical data points are added. Shows the full actual data as a backgr
 """
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import numpy as np
@@ -57,7 +60,7 @@ def create_frame(
         marker="o",
         markersize=2,
         alpha=0.3,
-        label="All observed data",
+        label="Full history (retrospective reference)",
         zorder=1,
     )
     
@@ -88,7 +91,7 @@ def create_frame(
     )
 
     # ========== FOREGROUND LAYER: Current forecast (bright) ==========
-    # 90% CI (outer)
+    # Nominal 80% PI (outer)
     ax.fill_between(
         forecast_dates,
         step_data["q10"],
@@ -96,9 +99,10 @@ def create_frame(
         alpha=0.15,
         color="#ef4444",
         zorder=5,
+        label="Nominal 80% PI",
     )
     
-    # 80% CI (inner)
+    # Nominal 60% PI (inner)
     ax.fill_between(
         forecast_dates,
         step_data["q20"],
@@ -106,6 +110,7 @@ def create_frame(
         alpha=0.25,
         color="#ef4444",
         zorder=6,
+        label="Nominal 60% PI",
     )
     
     # Forecast line
@@ -142,7 +147,7 @@ def create_frame(
     )
     
     ax.grid(True, alpha=0.3, zorder=0)
-    ax.legend(loc="upper left", fontsize=8)
+    ax.legend(loc="upper left", fontsize=8, ncol=2)
     
     # FIXED AXES - same for all frames
     ax.set_xlim(x_min, x_max)
@@ -155,6 +160,12 @@ def create_frame(
 
 
 def main() -> None:
+    global DATA_FILE, OUTPUT_FILE
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output-dir", type=Path, required=True)
+    args = parser.parse_args()
+    DATA_FILE = args.output_dir / "animation_data.json"
+    OUTPUT_FILE = args.output_dir / "forecast_animation.gif"
     print("=" * 60)
     print("  GENERATING ANIMATED GIF")
     print("=" * 60)
@@ -162,9 +173,11 @@ def main() -> None:
     # Load data
     with open(DATA_FILE) as f:
         data = json.load(f)
+    if data.get("schema_version") != "2.5-deciles-v1":
+        raise ValueError("Regenerate legacy animation data with corrected quantile mapping")
     
     total_steps = len(data["animation_steps"])
-    print(f"\n📊 Total frames: {total_steps}")
+    print(f"\nData: Total frames: {total_steps}")
     
     # Get the final forecast step for reference
     final_forecast = data["animation_steps"][-1]
@@ -184,11 +197,9 @@ def main() -> None:
     all_forecast_q10 = np.array(final_forecast["q10"])
     all_forecast_q90 = np.array(final_forecast["q90"])
     
-    all_values = np.concatenate([
-        all_actual_values,
-        final_forecast_values,
-        all_forecast_q10,
-        all_forecast_q90,
+    all_values = np.concatenate([all_actual_values] + [
+        np.asarray(step[key]) for step in data["animation_steps"]
+        for key in ("point_forecast", "q10", "q90")
     ])
     y_min = all_values.min() - 0.05
     y_max = all_values.max() + 0.05
@@ -218,6 +229,7 @@ def main() -> None:
         )
         
         # Save frame to buffer
+        fig.tight_layout()
         fig.canvas.draw()
         
         # Convert to PIL Image
@@ -229,7 +241,7 @@ def main() -> None:
     plt.close()
     
     # Save as GIF
-    print(f"\n💾 Saving GIF: {OUTPUT_FILE}")
+    print(f"\nSaving GIF: {OUTPUT_FILE}")
     frames[0].save(
         OUTPUT_FILE,
         save_all=True,
@@ -241,7 +253,7 @@ def main() -> None:
     # Get file size
     size_kb = OUTPUT_FILE.stat().st_size / 1024
     print(f"   File size: {size_kb:.1f} KB")
-    print(f"\n✅ Done!")
+    print(f"\n[OK] Done!")
 
 
 if __name__ == "__main__":

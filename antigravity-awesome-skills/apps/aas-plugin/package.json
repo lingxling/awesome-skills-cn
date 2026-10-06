@@ -1,0 +1,19 @@
+{
+  "name": "aas-plugin-server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "package": "node scripts/package.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.31.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

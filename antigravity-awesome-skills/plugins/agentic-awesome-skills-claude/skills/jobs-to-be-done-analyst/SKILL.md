@@ -1,6 +1,6 @@
 ---
 name: jobs-to-be-done-analyst
-description: "One sentence - what this skill does and when to invoke it"
+description: "Uncover the functional, emotional and social jobs a customer hires a product to do: progress state, hiring trigger, alternatives, success criteria, JTBD map. Use when you need to understand why users buy, switch or churn, or to anchor positioning, messaging and onboarding in real jobs."
 risk: safe
 source: community
 date_added: "2026-04-04"
@@ -112,6 +112,12 @@ Before finalizing output, the agent asks:
 - [ ] Did I include real alternatives and triggers?
 - [ ] Does the map explain why the customer would switch now?
 - [ ] Is the result grounded in behavior, not feature inventory?
+
+## Example
+
+**User request:**
+
+> Interview me to identify the progress this customer is trying to make, the forces around the decision, and the resulting job statement.
 
 ## Limitations
 - Use this skill only when the task clearly matches the scope described above.

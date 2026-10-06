@@ -1,532 +1,187 @@
-# Visualization & Simulation in PyLabRobot
+# Visualization and software-only simulation
 
-## Overview
+Verified against **PyLabRobot 0.2.2** on **2026-10-01**.
 
-PyLabRobot provides visualization and simulation tools for developing, testing, and validating laboratory protocols without physical hardware. The visualizer offers real-time 3D visualization of deck state, while simulation backends enable protocol testing and validation.
+## Three different layers
 
-## The Visualizer
+Do not conflate:
 
-### What is the Visualizer?
+1. **Manifest/ledger planning** — the bundled dependency-free CLIs validate
+   bounded JSON/CSV and produce non-executable JSON.
+2. **Chatterbox backend** — PyLabRobot validates frontend/tracker operations and
+   prints them instead of sending hardware commands.
+3. **Visualizer** — a browser renderer that receives resource and tracker events
+   over localhost HTTP/WebSocket services.
 
-The PyLabRobot Visualizer is a browser-based tool that:
-- Displays 3D visualization of the deck layout
-- Shows real-time tip presence and liquid volumes
-- Works with both simulated and physical robots
-- Provides interactive deck state inspection
-- Enables visual protocol validation
+None is a robot physics simulator, collision-motion planner, liquid-dynamics
+model, or physical sensor.
 
-### Starting the Visualizer
+## Chatterbox backend
 
-The visualizer runs as a web server and displays in your browser:
-
-```python
-from pylabrobot.visualizer import Visualizer
-
-# Create visualizer
-vis = Visualizer()
-
-# Start web server (opens browser automatically)
-await vis.start()
-
-# Stop visualizer
-await vis.stop()
-```
-
-**Default Settings:**
-- Port: 1234 (http://localhost:1234)
-- Opens browser automatically when started
-
-### Connecting Liquid Handler to Visualizer
+The verified stable import is:
 
 ```python
 from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-from pylabrobot.resources import STARLetDeck
-from pylabrobot.visualizer import Visualizer
+from pylabrobot.liquid_handling.backends import LiquidHandlerChatterboxBackend
+from pylabrobot.resources.hamilton import STARLetDeck
 
-# Create visualizer
-vis = Visualizer()
-await vis.start()
-
-# Create liquid handler with simulation backend
 lh = LiquidHandler(
-    backend=ChatterboxBackend(num_channels=8),
-    deck=STARLetDeck()
+    backend=LiquidHandlerChatterboxBackend(num_channels=8),
+    deck=STARLetDeck(),
 )
-
-# Connect liquid handler to visualizer
-lh.visualizer = vis
-
 await lh.setup()
-
-# Now all operations are visualized in real-time
-await lh.pick_up_tips(tip_rack["A1:H1"])
-await lh.aspirate(plate["A1:H1"], vols=100)
-await lh.dispense(plate["A2:H2"], vols=100)
-await lh.drop_tips()
+try:
+    # Assign resources, seed tracker state, and execute planned calls.
+    ...
+finally:
+    await lh.stop()
 ```
 
-### Tracking Features
+`setup()` above is offline only because the backend is constructed literally as
+`LiquidHandlerChatterboxBackend`. Never replace it from a config string,
+environment variable, plugin, or auto-detected device.
 
-#### Enable Tracking
+The stable docs sometimes use the generic phrase `ChatterboxBackend`, but the
+verified liquid-handler class/import is `LiquidHandlerChatterboxBackend`.
+`ChatterBoxBackend` (capital `B`) is a distinct exported legacy-named class.
 
-For the visualizer to display tips and liquids, enable tracking:
+## Visualizer API
+
+Source-verified illustrative usage; server startup/browser rendering was not
+run during this refresh:
+
+```python
+from pylabrobot.visualizer import Visualizer
+
+vis = Visualizer(
+    resource=lh,
+    host="127.0.0.1",
+    ws_port=2121,
+    fs_port=1337,
+    open_browser=False,
+)
+await vis.setup()
+try:
+    # Exercise the software-only liquid handler.
+    ...
+finally:
+    await vis.stop()
+```
+
+Corrections to stale examples:
+
+- `Visualizer` requires a root `resource`; `Visualizer()` alone is incomplete.
+- Use `setup()` / `stop()`, not `start()`.
+- Do not assign `lh.visualizer = vis`; pass `lh` as the Visualizer resource.
+- Stable defaults are WebSocket port 2121 and file-server port 1337, not 1234.
+
+The Visualizer starts two local servers and can open a browser. It therefore
+uses localhost networking even when the liquid handler is software-only.
+Do not use it where the requirement is "no network." Bind only to loopback,
+keep `open_browser=False` for controlled tests, avoid shared/untrusted hosts,
+and stop both services reliably.
+
+The bundled CLIs and tests do **not** start the Visualizer or any socket.
+
+## What the Visualizer does
+
+It:
+
+- renders a `Resource` tree;
+- receives assignment/unassignment callbacks;
+- renders tracker state such as planned tips and volumes;
+- updates as frontend operations change state.
+
+It does not:
+
+- calculate physical trajectories or clearances;
+- detect an incorrect/missing physical resource, tip, or liquid;
+- model meniscus, viscosity, foam, pressure, carryover, or pipetting error;
+- emulate firmware timing, sensors, interlocks, doors, arms, or failures;
+- validate liquid classes or calibrations;
+- authorize a live run.
+
+Upstream's contributor guide explicitly describes the browser as passive: it
+renders messages and does not perform simulation logic.
+
+## Tracker setup
 
 ```python
 from pylabrobot.resources import set_tip_tracking, set_volume_tracking
 
-# Enable globally (before creating resources)
 set_tip_tracking(True)
 set_volume_tracking(True)
+source.get_well("A1").tracker.set_volume(100.0)
 ```
 
-#### Setting Initial Liquids
+Set initial state from a synthetic fixture for tests. For later live work,
+reconcile planned state with the physical deck; do not infer physical presence
+from what the browser draws.
 
-Define initial liquid contents for visualization:
+## Deterministic no-network plan
 
-```python
-# Set liquid in a single well
-plate["A1"].tracker.set_liquids([
-    (None, 200)  # (liquid_type, volume_in_µL)
-])
+Generate a JSON plan without importing PyLabRobot:
 
-# Set multiple liquids in one well
-plate["A2"].tracker.set_liquids([
-    ("water", 100),
-    ("ethanol", 50)
-])
-
-# Set liquids in multiple wells
-for well in plate["A1:H1"]:
-    well.tracker.set_liquids([(None, 200)])
-
-# Set liquids in entire plate
-for well in plate.children:
-    well.tracker.set_liquids([("sample", 150)])
+```bash
+python3 skills/pylabrobot/scripts/generate_simulation_plan.py \
+  --manifest tests/pylabrobot/fixtures/protocol_manifest.json \
+  --transfers tests/pylabrobot/fixtures/transfers.csv
 ```
 
-#### Visualizing Tip Presence
+The output:
 
-```python
-# Tips are automatically tracked when using pick_up/drop operations
-await lh.pick_up_tips(tip_rack["A1:H1"])  # Tips shown as absent in visualizer
-await lh.return_tips()                     # Tips shown as present in visualizer
+- fixes the target at `PyLabRobot==0.2.2`;
+- names only `LiquidHandlerChatterboxBackend`;
+- marks live backends as forbidden;
+- records zero connection attempts and no serial/USB/network access;
+- expands each transfer into tip pickup, aspirate, dispense, and tip disposal;
+- includes final planned volumes, tip counts, limitations, and a mandatory human
+  review checklist.
+
+It intentionally produces data, not executable Python.
+
+## Test strategy
+
+Use layers of evidence:
+
+1. Strict manifest schema validation.
+2. Static deck bounds and axis-aligned overlap screen.
+3. Transfer/dead-volume/destination/tip/channel/rate/height ledger.
+4. Non-executable simulation plan review.
+5. Pinned 0.2.2 import/signature inspection with zero backend instances.
+6. Chatterbox-only protocol smoke with synthetic resources.
+7. Optional Visualizer review on an approved loopback host.
+8. Independent physical commissioning only after explicit operator approval.
+
+Test failures should be deterministic. Do not catch broad errors and continue;
+do not disable trackers; do not mutate expected state to make a failed
+assertion pass.
+
+Run the skill's tests without bytecode:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python tests/run_all.py --isolated pylabrobot
 ```
 
-### Complete Visualizer Example
-
-```python
-from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-from pylabrobot.resources import (
-    STARLetDeck,
-    TIP_CAR_480_A00,
-    Cos_96_DW_1mL,
-    set_tip_tracking,
-    set_volume_tracking
-)
-from pylabrobot.visualizer import Visualizer
-
-# Enable tracking
-set_tip_tracking(True)
-set_volume_tracking(True)
-
-# Create visualizer
-vis = Visualizer()
-await vis.start()
-
-# Create liquid handler
-lh = LiquidHandler(
-    backend=ChatterboxBackend(num_channels=8),
-    deck=STARLetDeck()
-)
-lh.visualizer = vis
-await lh.setup()
-
-# Define resources
-tip_rack = TIP_CAR_480_A00(name="tips")
-source_plate = Cos_96_DW_1mL(name="source")
-dest_plate = Cos_96_DW_1mL(name="dest")
-
-# Assign to deck
-lh.deck.assign_child_resource(tip_rack, rails=1)
-lh.deck.assign_child_resource(source_plate, rails=10)
-lh.deck.assign_child_resource(dest_plate, rails=15)
-
-# Set initial volumes
-for well in source_plate.children:
-    well.tracker.set_liquids([("sample", 200)])
-
-# Execute protocol with visualization
-await lh.pick_up_tips(tip_rack["A1:H1"])
-await lh.transfer(
-    source_plate["A1:H12"],
-    dest_plate["A1:H12"],
-    vols=100
-)
-await lh.drop_tips()
-
-# Keep visualizer open to inspect final state
-input("Press Enter to close visualizer...")
-
-# Cleanup
-await lh.stop()
-await vis.stop()
-```
-
-## Deck Layout Editor
-
-### Using the Deck Editor
-
-PyLabRobot includes a graphical deck layout editor:
-
-**Features:**
-- Visual deck design interface
-- Drag-and-drop resource placement
-- Edit initial liquid states
-- Set tip presence
-- Save/load layouts as JSON
-
-**Usage:**
-- Accessed through the visualizer interface
-- Create layouts graphically instead of code
-- Export to JSON for use in protocols
-
-### Loading Deck Layouts
-
-```python
-from pylabrobot.resources import Deck
-
-# Load deck from JSON file
-deck = Deck.load_from_json_file("my_deck_layout.json")
-
-# Use with liquid handler
-lh = LiquidHandler(backend=backend, deck=deck)
-await lh.setup()
-
-# Resources are already assigned
-source = deck.get_resource("source")
-dest = deck.get_resource("dest")
-tip_rack = deck.get_resource("tips")
-```
-
-## Simulation
-
-### ChatterboxBackend
-
-The ChatterboxBackend simulates liquid handling operations:
-
-**Features:**
-- No hardware required
-- Validates protocol logic
-- Tracks tips and volumes
-- Supports all liquid handling operations
-- Works with visualizer
-
-**Setup:**
-
-```python
-from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-
-# Create simulation backend
-backend = ChatterboxBackend(
-    num_channels=8  # Simulate 8-channel pipette
-)
-
-# Use with liquid handler
-lh = LiquidHandler(backend=backend, deck=STARLetDeck())
-```
-
-### Simulation Use Cases
-
-#### Protocol Development
-
-```python
-async def develop_protocol():
-    """Develop protocol using simulation"""
-
-    # Use simulation for development
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
-
-    # Connect visualizer
-    vis = Visualizer()
-    await vis.start()
-    lh.visualizer = vis
-
-    await lh.setup()
-
-    try:
-        # Develop and test protocol
-        await lh.pick_up_tips(tip_rack["A1"])
-        await lh.transfer(plate["A1"], plate["A2"], vols=100)
-        await lh.drop_tips()
-
-        print("Protocol development complete!")
-
-    finally:
-        await lh.stop()
-        await vis.stop()
-```
-
-#### Protocol Validation
-
-```python
-async def validate_protocol():
-    """Validate protocol logic without hardware"""
-
-    set_tip_tracking(True)
-    set_volume_tracking(True)
-
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
-    await lh.setup()
-
-    try:
-        # Setup resources
-        tip_rack = TIP_CAR_480_A00(name="tips")
-        plate = Cos_96_DW_1mL(name="plate")
-
-        lh.deck.assign_child_resource(tip_rack, rails=1)
-        lh.deck.assign_child_resource(plate, rails=10)
-
-        # Set initial state
-        for well in plate.children:
-            well.tracker.set_liquids([(None, 200)])
-
-        # Execute protocol
-        await lh.pick_up_tips(tip_rack["A1:H1"])
-
-        # Test different volumes
-        test_volumes = [50, 100, 150]
-        for i, vol in enumerate(test_volumes):
-            await lh.transfer(
-                plate[f"A{i+1}:H{i+1}"],
-                plate[f"A{i+4}:H{i+4}"],
-                vols=vol
-            )
-
-        await lh.drop_tips()
-
-        # Validate volumes
-        for i, vol in enumerate(test_volumes):
-            for row in "ABCDEFGH":
-                well = plate[f"{row}{i+4}"]
-                actual_vol = well.tracker.get_volume()
-                assert actual_vol == vol, f"Volume mismatch in {well.name}"
-
-        print("✓ Protocol validation passed!")
-
-    finally:
-        await lh.stop()
-```
-
-#### Testing Edge Cases
-
-```python
-async def test_edge_cases():
-    """Test protocol edge cases in simulation"""
-
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
-    await lh.setup()
-
-    try:
-        # Test 1: Empty well aspiration
-        try:
-            await lh.aspirate(empty_plate["A1"], vols=100)
-            print("✗ Should have raised error for empty well")
-        except Exception as e:
-            print(f"✓ Correctly raised error: {e}")
-
-        # Test 2: Overfilling well
-        try:
-            await lh.dispense(small_well, vols=1000)  # Too much
-            print("✗ Should have raised error for overfilling")
-        except Exception as e:
-            print(f"✓ Correctly raised error: {e}")
-
-        # Test 3: Tip capacity
-        try:
-            await lh.aspirate(large_volume_well, vols=2000)  # Exceeds tip capacity
-            print("✗ Should have raised error for tip capacity")
-        except Exception as e:
-            print(f"✓ Correctly raised error: {e}")
-
-    finally:
-        await lh.stop()
-```
-
-### CI/CD Integration
-
-Use simulation for automated testing:
-
-```python
-# test_protocols.py
-import pytest
-from pylabrobot.liquid_handling import LiquidHandler
-from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-
-@pytest.mark.asyncio
-async def test_transfer_protocol():
-    """Test liquid transfer protocol"""
-
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
-    await lh.setup()
-
-    try:
-        # Setup
-        tip_rack = TIP_CAR_480_A00(name="tips")
-        plate = Cos_96_DW_1mL(name="plate")
-
-        lh.deck.assign_child_resource(tip_rack, rails=1)
-        lh.deck.assign_child_resource(plate, rails=10)
-
-        # Set initial volumes
-        plate["A1"].tracker.set_liquids([(None, 200)])
-
-        # Execute
-        await lh.pick_up_tips(tip_rack["A1"])
-        await lh.transfer(plate["A1"], plate["A2"], vols=100)
-        await lh.drop_tips()
-
-        # Assert
-        assert plate["A1"].tracker.get_volume() == 100
-        assert plate["A2"].tracker.get_volume() == 100
-
-    finally:
-        await lh.stop()
-```
-
-## Best Practices
-
-1. **Always Use Simulation First**: Develop and test protocols in simulation before running on hardware
-2. **Enable Tracking**: Turn on tip and volume tracking for accurate visualization
-3. **Set Initial States**: Define initial liquid volumes for realistic simulation
-4. **Visual Inspection**: Use visualizer to verify deck layout and protocol execution
-5. **Validate Logic**: Test edge cases and error conditions in simulation
-6. **Automated Testing**: Integrate simulation into CI/CD pipelines
-7. **Save Layouts**: Use JSON to save and share deck layouts
-8. **Document States**: Record initial states for reproducibility
-9. **Interactive Development**: Keep visualizer open during development
-10. **Protocol Refinement**: Iterate in simulation before hardware runs
-
-## Common Patterns
-
-### Development to Production Workflow
-
-```python
-import os
-
-# Configuration
-USE_HARDWARE = os.getenv("USE_HARDWARE", "false").lower() == "true"
-
-# Create appropriate backend
-if USE_HARDWARE:
-    from pylabrobot.liquid_handling.backends import STAR
-    backend = STAR()
-    print("Running on Hamilton STAR hardware")
-else:
-    from pylabrobot.liquid_handling.backends.simulation import ChatterboxBackend
-    backend = ChatterboxBackend()
-    print("Running in simulation mode")
-
-# Rest of protocol is identical
-lh = LiquidHandler(backend=backend, deck=STARLetDeck())
-
-if not USE_HARDWARE:
-    # Enable visualizer for simulation
-    vis = Visualizer()
-    await vis.start()
-    lh.visualizer = vis
-
-await lh.setup()
-
-# Protocol execution
-# ... (same code for hardware and simulation)
-
-# Run with: USE_HARDWARE=false python protocol.py  # Simulation
-# Run with: USE_HARDWARE=true python protocol.py   # Hardware
-```
-
-### Visual Protocol Verification
-
-```python
-async def visual_verification():
-    """Run protocol with visual verification pauses"""
-
-    vis = Visualizer()
-    await vis.start()
-
-    lh = LiquidHandler(
-        backend=ChatterboxBackend(),
-        deck=STARLetDeck()
-    )
-    lh.visualizer = vis
-    await lh.setup()
-
-    try:
-        # Step 1
-        await lh.pick_up_tips(tip_rack["A1:H1"])
-        input("Press Enter to continue...")
-
-        # Step 2
-        await lh.aspirate(source["A1:H1"], vols=100)
-        input("Press Enter to continue...")
-
-        # Step 3
-        await lh.dispense(dest["A1:H1"], vols=100)
-        input("Press Enter to continue...")
-
-        # Step 4
-        await lh.drop_tips()
-        input("Press Enter to finish...")
-
-    finally:
-        await lh.stop()
-        await vis.stop()
-```
-
-## Troubleshooting
-
-### Visualizer Not Updating
-
-- Ensure `lh.visualizer = vis` is set before operations
-- Check that tracking is enabled globally
-- Verify visualizer is running (`vis.start()`)
-- Refresh browser if connection is lost
-
-### Tracking Not Working
-
-```python
-# Must enable tracking BEFORE creating resources
-set_tip_tracking(True)
-set_volume_tracking(True)
-
-# Then create resources
-tip_rack = TIP_CAR_480_A00(name="tips")
-plate = Cos_96_DW_1mL(name="plate")
-```
-
-### Simulation Errors
-
-- Simulation validates operations (e.g., can't aspirate from empty well)
-- Use try/except to handle validation errors
-- Check initial states are set correctly
-- Verify volumes don't exceed capacities
-
-## Additional Resources
-
-- Visualizer Documentation: https://docs.pylabrobot.org/user_guide/using-the-visualizer.html (if available)
-- Simulation Guide: https://docs.pylabrobot.org/user_guide/simulation.html (if available)
-- API Reference: https://docs.pylabrobot.org/api/pylabrobot.visualizer.html
-- GitHub Examples: https://github.com/PyLabRobot/pylabrobot/tree/main/examples
+## Stable versus development
+
+Use the released wheel/source for pinned 0.2.2 behavior. Hosted `/stable/` now
+mixes older API pages with development pages; `/dev/` and repository `main` may
+change event payloads, serialization or the UI. See [review](review.md).
+Do not copy development examples without checking the installed release.
+
+## Sources
+
+Checked **2026-10-01**:
+
+- [Hosted Visualizer guide](https://docs.pylabrobot.org/stable/user_guide/machine-agnostic-features/using-the-visualizer.html)
+  — development guide; released constructor and ports checked in source.
+- [Visualizer contributor architecture](https://docs.pylabrobot.org/stable/contributor_guide/visualizer.html)
+  — passive rendering, file server, WebSocket server, and callbacks.
+- [Hosted tracker guide](https://docs.pylabrobot.org/stable/user_guide/machine-agnostic-features/using-trackers.html)
+  — planned tip/volume state.
+- [Hosted liquid-handling API](https://docs.pylabrobot.org/stable/api/pylabrobot.liquid_handling.html)
+  — `LiquidHandlerChatterboxBackend`.
+- [released 0.2.2 Visualizer source](https://pypi.org/project/PyLabRobot/0.2.2/#files)
+  and [chatterbox source](https://pypi.org/project/PyLabRobot/0.2.2/#files)
+  — exact constructor/method verification; released 2026-07-30.

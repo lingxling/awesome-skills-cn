@@ -1,523 +1,325 @@
-# QuTiP Analysis and Measurement
+# QuTiP 5.3 Analysis, Steady States, and Spectra
 
-## Expectation Values
+Research and API verification date: **2026-10-01**. Examples target
+`qutip==5.3.1`.
 
-### Basic Expectation Values
+## Analysis starts with invariants
+
+For every reported state, record quantitative checks before interpreting an
+observable:
 
 ```python
-from qutip import *
 import numpy as np
 
-# Single operator
-psi = coherent(N, 2)
-n_avg = expect(num(N), psi)
-
-# Multiple operators
-ops = [num(N), destroy(N), create(N)]
-results = expect(ops, psi)  # Returns list
+def density_audit(rho, tolerance=1e-9):
+    if not rho.isoper:
+        raise ValueError("density_audit requires an operator")
+    hermitian = bool(rho.isherm)
+    eigenvalues = np.linalg.eigvalsh(rho.full()) if hermitian else None
+    trace = complex(rho.tr())
+    return {
+        "is_hermitian": hermitian,
+        "trace_error": float(abs(trace - 1.0)),
+        "minimum_eigenvalue": float(eigenvalues.min()) if hermitian else None,
+        "positive_within_tolerance": hermitian and bool(eigenvalues.min() >= -tolerance),
+    }
 ```
 
-### Expectation Values for Density Matrices
+Also check:
+
+- `state.dims` matches every observable and the declared subsystem order;
+- ket norm or density-matrix trace stays stable over time;
+- Hermitian observables have negligible imaginary expectation;
+- populations remain within tolerance of `[0, 1]`;
+- symmetry, conserved quantity, or analytic-limit checks hold where applicable;
+- numerical tolerance is smaller than the effect being claimed.
+
+Do not repair a state by clipping eigenvalues or renormalizing unless that
+post-processing is part of a documented method and its impact is reported.
+
+## Expectations and uncertainty
 
 ```python
-# Works with both pure states and density matrices
-rho = thermal_dm(N, 2)
-n_avg = expect(num(N), rho)
+from qutip import expect, num, variance
+
+n_op = num(N)
+mean_n = expect(n_op, rho)
+variance_n = variance(n_op, rho)
 ```
 
-### Variance
+For solver output, dict-form `e_ops` gives named `result.e_data`:
 
 ```python
-# Calculate variance of observable
-var_n = variance(num(N), psi)
-
-# Manual calculation
-var_n = expect(num(N)**2, psi) - expect(num(N), psi)**2
+result = mesolve(
+    H,
+    rho0,
+    tlist,
+    c_ops=c_ops,
+    e_ops={"number": n_op, "energy": H},
+)
+number_vs_time = result.e_data["number"]
 ```
 
-### Time-Dependent Expectation Values
+For Monte Carlo/stochastic results, report both ensemble means and sampling
+uncertainty. `std_expect` is trajectory spread, not automatically the standard
+error; a simple independent-trajectory standard error scales as
+`std / sqrt(ntraj)`, subject to the solver's sampling design.
+
+## Entropy, purity, and distances
 
 ```python
-# During time evolution
-result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
-n_t = result.expect[0]  # Array of ⟨n⟩ at each time
+from qutip import entropy_linear, entropy_vn, fidelity, tracedist
+
+von_neumann_nats = entropy_vn(rho)          # default natural-log base
+von_neumann_bits = entropy_vn(rho, base=2)
+linear_entropy = entropy_linear(rho)
+purity = float((rho * rho).tr().real)
+state_fidelity = fidelity(rho, sigma)
+trace_distance = tracedist(rho, sigma)
 ```
 
-## Entropy Measures
+Always state the logarithm base. QuTiP `fidelity` returns root fidelity
+`Tr(sqrt(sqrt(rho) * sigma * sqrt(rho)))`; for two kets this is absolute
+overlap. Square it only when the comparison uses the squared convention.
 
-### Von Neumann Entropy
+For bipartite entropy:
 
 ```python
-from qutip import entropy_vn
-
-# Density matrix entropy
-rho = thermal_dm(N, 2)
-S = entropy_vn(rho)  # Returns S = -Tr(ρ log₂ ρ)
+rho_A = rho_AB.ptrace(0)  # keep subsystem 0
+entanglement_entropy = entropy_vn(rho_A, base=2)
 ```
 
-### Linear Entropy
+This is an entanglement entropy only when the global bipartite state and the
+chosen measure meet the necessary assumptions. For mixed states, reduced-state
+entropy also contains classical mixture.
+
+Common specialized functions include `concurrence`, `negativity`,
+`entropy_mutual`, and `partial_transpose`. Verify their supported dimensions and
+argument definitions in the current API before applying them.
+
+## Steady-state calculation
+
+Current signature:
+
+```text
+steadystate(A, c_ops=[], *, method="direct", solver=None, **kwargs)
+```
+
+`A` may be a Hamiltonian or a Liouvillian. Available high-level methods include
+`direct`, `eigen`, `svd`, `power`, and `propagator`; linear-system solver choices
+are separate.
 
 ```python
-from qutip import entropy_linear
+from qutip import liouvillian, operator_to_vector, steadystate
 
-# Linear entropy S_L = 1 - Tr(ρ²)
-S_L = entropy_linear(rho)
+rho_ss = steadystate(H, c_ops, method="direct")
+L = liouvillian(H, c_ops)
+residual = (L * operator_to_vector(rho_ss)).norm()
 ```
 
-### Entanglement Entropy
-
-```python
-# For bipartite systems
-psi = bell_state('00')
-rho = psi.proj()
-
-# Trace out subsystem B to get reduced density matrix
-rho_A = ptrace(rho, 0)
-
-# Entanglement entropy
-S_ent = entropy_vn(rho_A)
-```
-
-### Mutual Information
-
-```python
-from qutip import entropy_mutual
-
-# For bipartite state ρ_AB
-I = entropy_mutual(rho, [0, 1])  # I(A:B) = S(A) + S(B) - S(AB)
-```
-
-### Conditional Entropy
-
-```python
-from qutip import entropy_conditional
-
-# S(A|B) = S(AB) - S(B)
-S_cond = entropy_conditional(rho, 0)  # Entropy of subsystem 0 given subsystem 1
-```
-
-## Fidelity and Distance Measures
-
-### State Fidelity
-
-```python
-from qutip import fidelity
-
-# Fidelity between two states
-psi1 = coherent(N, 2)
-psi2 = coherent(N, 2.1)
-
-F = fidelity(psi1, psi2)  # Returns value in [0, 1]
-```
-
-### Process Fidelity
-
-```python
-from qutip import process_fidelity
-
-# Fidelity between two processes (superoperators)
-U_ideal = (-1j * H * t).expm()
-U_actual = mesolve(H, basis(N, 0), [0, t], c_ops).states[-1]
-
-F_proc = process_fidelity(U_ideal, U_actual)
-```
-
-### Trace Distance
-
-```python
-from qutip import tracedist
-
-# Trace distance D = (1/2) Tr|ρ₁ - ρ₂|
-rho1 = coherent_dm(N, 2)
-rho2 = thermal_dm(N, 2)
-
-D = tracedist(rho1, rho2)  # Returns value in [0, 1]
-```
-
-### Hilbert-Schmidt Distance
-
-```python
-from qutip import hilbert_dist
-
-# Hilbert-Schmidt distance
-D_HS = hilbert_dist(rho1, rho2)
-```
-
-### Bures Distance
-
-```python
-from qutip import bures_dist
-
-# Bures distance
-D_B = bures_dist(rho1, rho2)
-```
-
-### Bures Angle
-
-```python
-from qutip import bures_angle
-
-# Bures angle
-angle = bures_angle(rho1, rho2)
-```
-
-## Entanglement Measures
-
-### Concurrence
-
-```python
-from qutip import concurrence
-
-# For two-qubit states
-psi = bell_state('00')
-rho = psi.proj()
-
-C = concurrence(rho)  # C = 1 for maximally entangled states
-```
-
-### Negativity
-
-```python
-from qutip import negativity
-
-# Negativity (partial transpose criterion)
-N_ent = negativity(rho, 0)  # Partial transpose w.r.t. subsystem 0
-
-# Logarithmic negativity
-from qutip import logarithmic_negativity
-E_N = logarithmic_negativity(rho, 0)
-```
-
-### Entangling Power
-
-```python
-from qutip import entangling_power
-
-# For unitary gates
-U = cnot()
-E_pow = entangling_power(U)
-```
-
-## Purity Measures
-
-### Purity
-
-```python
-# Purity P = Tr(ρ²)
-P = (rho * rho).tr()
-
-# For pure states: P = 1
-# For maximally mixed: P = 1/d
-```
-
-### Checking State Properties
-
-```python
-# Is state pure?
-is_pure = abs((rho * rho).tr() - 1.0) < 1e-10
-
-# Is operator Hermitian?
-H.isherm
-
-# Is operator unitary?
-U.check_isunitary()
-```
-
-## Measurement
-
-### Projective Measurement
-
-```python
-from qutip import measurement
-
-# Measure in computational basis
-psi = (basis(2, 0) + basis(2, 1)).unit()
-
-# Perform measurement
-result, state_after = measurement.measure(psi, None)  # Random outcome
-
-# Specific measurement operator
-M = basis(2, 0).proj()
-prob = measurement.measure_povm(psi, [M, qeye(2) - M])
-```
-
-### Measurement Statistics
-
-```python
-from qutip import measurement_statistics
-
-# Get all possible outcomes and probabilities
-outcomes, probabilities = measurement_statistics(psi, [M0, M1])
-```
-
-### Observable Measurement
-
-```python
-from qutip import measure_observable
-
-# Measure observable and get result + collapsed state
-result, state_collapsed = measure_observable(psi, sigmaz())
-```
-
-### POVM Measurements
-
-```python
-from qutip import measure_povm
-
-# Positive Operator-Valued Measure
-E_0 = Qobj([[0.8, 0], [0, 0.2]])
-E_1 = Qobj([[0.2, 0], [0, 0.8]])
-
-result, state_after = measure_povm(psi, [E_0, E_1])
-```
-
-## Coherence Measures
-
-### l1-norm Coherence
-
-```python
-from qutip import coherence_l1norm
-
-# l1-norm of off-diagonal elements
-C_l1 = coherence_l1norm(rho)
-```
-
-## Correlation Functions
-
-### Two-Time Correlation
+Report:
+
+- residual norm and normalization error;
+- Hermiticity and minimum eigenvalue;
+- method and linear solver;
+- matrix/data representation and relevant tolerances;
+- whether the zero eigenvalue is unique;
+- comparison with long-time evolution from more than one initial state when
+  uniqueness matters.
+
+A small residual does not prove uniqueness or physicality. Degenerate steady
+spaces require analysis of the Liouvillian nullspace and initial-state
+dependence.
+
+The `svd` method is dense and intended for small systems. Sparse/direct methods
+can still be memory intensive; monitor fill-in and compare methods on a reduced
+model.
+
+For periodically driven systems, a static `steadystate` call is generally not
+the desired asymptotic object. Use an appropriate periodic/Floquet approach.
+In QuTiP 5.3, `steadystate_fourier` is the current name for the specialized
+cosine-driven Fourier solver; `steadystate_floquet` is deprecated.
+
+## Two-time correlations
+
+Current stationary/transient two-operator API:
 
 ```python
 from qutip import correlation_2op_1t, correlation_2op_2t
 
-# Single-time correlation ⟨A(t+τ)B(t)⟩
-A = destroy(N)
-B = create(N)
-taulist = np.linspace(0, 10, 200)
+corr_1t = correlation_2op_1t(
+    H,
+    rho0,
+    taulist,
+    c_ops,
+    a_op,
+    b_op,
+    solver="me",
+    options={"atol": 1e-10, "rtol": 1e-8},
+)
 
-corr = correlation_2op_1t(H, rho0, taulist, c_ops, A, B)
-
-# Two-time correlation ⟨A(t)B(τ)⟩
-tlist = np.linspace(0, 10, 100)
-corr_2t = correlation_2op_2t(H, rho0, tlist, taulist, c_ops, A, B)
+corr_2t = correlation_2op_2t(
+    H,
+    rho0,
+    tlist,
+    taulist,
+    c_ops,
+    a_op,
+    b_op,
+)
 ```
 
-### Three-Operator Correlation
+For `correlation_2op_1t`, the quantity is ordered according to the function's
+documented \(A(\tau)B(0)\)-style convention. Do not infer operator order from a
+variable name.
+
+Passing `state0=None` requests a steady-state initial condition only for
+supported constant systems with collapse operators. Compute and audit the
+steady state explicitly when provenance matters.
+
+Current three-operator entry points include:
 
 ```python
-from qutip import correlation_3op_1t
-
-# ⟨A(t)B(t+τ)C(t)⟩
-C_op = num(N)
-corr_3 = correlation_3op_1t(H, rho0, taulist, c_ops, A, B, C_op)
+from qutip import correlation_3op, correlation_3op_1t, correlation_3op_2t
 ```
 
-### Four-Operator Correlation
+QuTiP 5.3 added `max_t_plus_tau` and mapping controls to selected two-time and
+three-operator routines. The old `correlation_4op_1t` recipe is not a current
+public API; express a four-operator quantity through the documented
+three-operator interfaces when mathematically appropriate, or derive a tested
+regression workflow.
+
+Correlation checks:
+
+- operator ordering and adjoints;
+- transient versus stationary definition;
+- normalized versus unnormalized coherence;
+- regression-theorem assumptions;
+- convergence of both `tlist` and `taulist`;
+- tail decay before finite-window transforms.
+
+## Direct stationary spectrum
+
+Current signature:
+
+```text
+spectrum(H, wlist, c_ops, a_op, b_op, solver="es")
+```
 
 ```python
-from qutip import correlation_4op_1t
+import numpy as np
+from qutip import spectrum
 
-# ⟨A(0)B(τ)C(τ)D(0)⟩
-D_op = create(N)
-corr_4 = correlation_4op_1t(H, rho0, taulist, c_ops, A, B, C_op, D_op)
+wlist = np.linspace(-5.0, 5.0, 1001)
+S = spectrum(H, wlist, c_ops, a_op, b_op, solver="es")
 ```
 
-## Spectrum Analysis
+The function computes the Fourier transform of a **steady-state** correlation.
+Supported solver strategies include exponential-series (`"es"`),
+pseudo-inverse (`"pi"`), and generic linear solve (`"solve"`).
 
-### FFT Spectrum
+QuTiP 5 removed public `spectrum_ss` and `spectrum_pi`. Select the strategy with
+the `solver` argument to `spectrum`; do not call the removed functions.
+
+Audit:
+
+- stationarity and steady-state uniqueness;
+- angular-frequency units;
+- operator order;
+- whether the spectrum is symmetrized, one-sided, or normally ordered;
+- negative-frequency interpretation and thermal detailed balance;
+- frequency window/resolution;
+- convergence across solver strategies near singular points.
+
+## FFT of a sampled correlation
+
+Current signature:
+
+```text
+spectrum_correlation_fft(tlist, y, inverse=False)
+```
 
 ```python
 from qutip import spectrum_correlation_fft
 
-# Power spectrum from correlation function
-w, S = spectrum_correlation_fft(taulist, corr)
+frequencies, spectrum_values = spectrum_correlation_fft(taulist, corr)
 ```
 
-### Direct Spectrum Calculation
+Before trusting peaks:
+
+1. require a uniform, strictly increasing `taulist`;
+2. verify the correlation has decayed at the end of the window;
+3. double the time window to test frequency resolution;
+4. halve the timestep to test aliasing and high-frequency content;
+5. compare window functions and disclose any window applied outside QuTiP;
+6. check forward/inverse sign and normalization conventions against an analytic
+   signal;
+7. avoid interpreting zero-padding as additional physical resolution.
+
+Use a direct `spectrum` calculation as a cross-check when its steady-state
+assumptions apply.
+
+## Liouvillian and eigenvalue diagnostics
 
 ```python
-from qutip import spectrum
-
-# Emission/absorption spectrum
-wlist = np.linspace(0, 2, 200)
-spec = spectrum(H, wlist, c_ops, A, B)
+eigenvalues = L.eigenenergies()
+gap_candidates = sorted(
+    (-value.real for value in eigenvalues if value.real < -1e-12)
+)
 ```
 
-### Pseudo-Modes
+Liouvillian spectra are non-Hermitian in general. Eigenvalue conditioning,
+degeneracy, and sparse solver targeting can make naive sorting misleading.
+Verify left/right eigenvector conventions and residuals before interpreting a
+spectral gap.
+
+For Hamiltonians:
 
 ```python
-from qutip import spectrum_pi
-
-# Spectrum with pseudo-mode decomposition
-spec_pi = spectrum_pi(H, rho0, wlist, c_ops, A, B)
+energies, states = H.eigenstates()
+ground_energy, ground_state = H.groundstate()
 ```
 
-## Steady State Analysis
+Track basis and units, handle degeneracy explicitly, and sweep truncation before
+claiming spectral convergence.
 
-### Finding Steady State
+## Convergence matrix
 
-```python
-from qutip import steadystate
+Vary one numerical control at a time, then perform selected joint checks:
 
-# Find steady state ∂ρ/∂t = 0
-rho_ss = steadystate(H, c_ops)
+| Control | Typical comparison |
+|---|---|
+| Hilbert cutoff | observables and boundary occupation |
+| output grid | interpolated trace/peak/FFT quantities |
+| `atol`, `rtol` | endpoint and maximum trajectory differences |
+| integrator | representative observable and invariant differences |
+| simulation duration | steady-state distance and correlation tail |
+| frequency range/spacing | peak location, area, and edge sensitivity |
+| trajectories | mean, uncertainty, and seed sensitivity |
+| `sec_cutoff` | positivity and observable stability |
+| HEOM depth/exponents | reduced state and target observable |
 
-# Different methods
-rho_ss = steadystate(H, c_ops, method='direct')  # Default
-rho_ss = steadystate(H, c_ops, method='eigen')   # Eigenvalue
-rho_ss = steadystate(H, c_ops, method='svd')     # SVD
-rho_ss = steadystate(H, c_ops, method='power')   # Power method
-```
+Define acceptance thresholds before looking at the final comparison. Report
+absolute and relative differences and handle near-zero denominators explicitly.
 
-### Steady State Properties
+## Portable result audit
 
-```python
-# Verify it's steady
-L = liouvillian(H, c_ops)
-assert (L * operator_to_vector(rho_ss)).norm() < 1e-10
+`../scripts/result_audit.py` reads only bounded strict JSON. It checks schema,
+version, finite values, monotonic time grids, population bounds, analytic
+reference error when available, convergence deltas, and whether assumptions,
+seeds, and solver stats were recorded. It does not load QuTiP result files or
+other Python-object serialization. Its pass status means report consistency,
+not numerical convergence or scientific validity; separately inspect analytic
+error, invariant checks, and the sweep acceptance status.
 
-# Compute steady-state expectation values
-n_ss = expect(num(N), rho_ss)
-```
+`../scripts/steady_state_spectrum_planner.py` produces a bounded plan for
+steady-state and direct/FFT spectrum checks without running a model.
 
-## Quantum Fisher Information
+## Sources (verified 2026-10-01)
 
-```python
-from qutip import qfisher
-
-# Quantum Fisher information
-F_Q = qfisher(rho, num(N))  # w.r.t. generator num(N)
-```
-
-## Matrix Analysis
-
-### Eigenanalysis
-
-```python
-# Eigenvalues and eigenvectors
-evals, ekets = H.eigenstates()
-
-# Just eigenvalues
-evals = H.eigenenergies()
-
-# Ground state
-E0, psi0 = H.groundstate()
-```
-
-### Matrix Functions
-
-```python
-# Matrix exponential
-U = (H * t).expm()
-
-# Matrix logarithm
-log_rho = rho.logm()
-
-# Matrix square root
-sqrt_rho = rho.sqrtm()
-
-# Matrix power
-rho_squared = rho ** 2
-```
-
-### Singular Value Decomposition
-
-```python
-# SVD of operator
-U, S, Vh = H.svd()
-```
-
-### Permutations
-
-```python
-from qutip import permute
-
-# Permute subsystems
-rho_permuted = permute(rho, [1, 0])  # Swap subsystems
-```
-
-## Partial Operations
-
-### Partial Trace
-
-```python
-# Reduce to subsystem
-rho_A = ptrace(rho_AB, 0)  # Keep subsystem 0
-rho_B = ptrace(rho_AB, 1)  # Keep subsystem 1
-
-# Keep multiple subsystems
-rho_AC = ptrace(rho_ABC, [0, 2])  # Keep 0 and 2, trace out 1
-```
-
-### Partial Transpose
-
-```python
-from qutip import partial_transpose
-
-# Partial transpose (for entanglement detection)
-rho_pt = partial_transpose(rho, [0, 1])  # Transpose subsystem 0
-
-# Check if entangled (PPT criterion)
-evals = rho_pt.eigenenergies()
-is_entangled = any(evals < -1e-10)
-```
-
-## Quantum State Tomography
-
-### State Reconstruction
-
-```python
-from qutip_qip.tomography import state_tomography
-
-# Prepare measurement results
-# measurements = ... (experimental data)
-
-# Reconstruct density matrix
-rho_reconstructed = state_tomography(measurements, basis='Pauli')
-```
-
-### Process Tomography
-
-```python
-from qutip_qip.tomography import qpt
-
-# Characterize quantum process
-chi = qpt(U_gate, method='lstsq')  # Chi matrix representation
-```
-
-## Random Quantum Objects
-
-Useful for testing and Monte Carlo simulations.
-
-```python
-# Random state vector
-psi_rand = rand_ket(N)
-
-# Random density matrix
-rho_rand = rand_dm(N)
-
-# Random Hermitian operator
-H_rand = rand_herm(N)
-
-# Random unitary
-U_rand = rand_unitary(N)
-
-# With specific properties
-rho_rank2 = rand_dm(N, rank=2)  # Rank-2 density matrix
-H_sparse = rand_herm(N, density=0.1)  # 10% non-zero elements
-```
-
-## Useful Checks
-
-```python
-# Check if operator is Hermitian
-H.isherm
-
-# Check if state is normalized
-abs(psi.norm() - 1.0) < 1e-10
-
-# Check if density matrix is physical
-rho.tr() ≈ 1 and all(rho.eigenenergies() >= 0)
-
-# Check if operators commute
-commutator(A, B).norm() < 1e-10
-```
+- [Solver, correlation, spectrum, and steady-state API](https://qutip.readthedocs.io/en/stable/apidoc/solver.html)
+- [Steady-state guide](https://qutip.readthedocs.io/en/stable/guide/guide-steady.html)
+- [Correlation guide](https://qutip.readthedocs.io/en/stable/guide/guide-correlation.html)
+- [Quantum-object API](https://qutip.readthedocs.io/en/stable/apidoc/quantumobject.html)
+- [QuTiP 5.3.1 release notes](https://github.com/qutip/qutip/releases/tag/v5.3.1)
+- [QuTiP 5 changelog](https://qutip.readthedocs.io/en/stable/changelog.html)

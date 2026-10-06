@@ -1,458 +1,244 @@
 ---
 name: tiledbvcf
-description: 使用TileDB高效存储和检索基因组变异数据。可扩展的VCF/BCF摄取、增量样本添加、压缩存储、并行查询和群体基因组学导出功能。
+description: 使用 TileDB-VCF 存储和检索基因组变异检出结果。适用于带索引的单样本 VCF/BCF 导入、增量式队列构建、区域与样本查询、流式结果处理、等位基因统计、质控（QC）,以及本地或通过 TileDB Cloud 进行的 VCF/BCF 导出。
 license: MIT license
-metadata: {"version": "1.0", "skill-author": "Jeremy Leipzig"}
+compatibility: Requires a native TileDB-VCF installation and Python 3.9-3.12 for the reviewed Conda builds. bcftools compresses/indexes input fixtures. Installation and remote storage need network access; TileDB Cloud needs its Python client, account token, and storage permissions.
+metadata:
+  version: "1.3"
+  skill-author: Jeremy Leipzig
+  last-reviewed: "2026-10-01"
+  upstream-version: "TileDB-VCF 0.40.3; tiledb-cloud 0.14.4"
 ---
-
-
-
-
-
 
 # TileDB-VCF
 
-## 概述
+## 何时使用
 
-TileDB-VCF 是一个高性能 C++ 库，提供 Python 和命令行界面，用于高效存储和检索基因组变异调用数据。它基于 TileDB 的稀疏数组技术构建，支持 VCF/BCF 文件的可扩展导入、无需昂贵合并操作的增量样本添加，以及对本地或云端存储的变异数据的高效并行查询。
+适用于队列（cohort）变异存储、增量式样本导入、区间查询，以及为下游基因组学分析导出子集。TileDB-VCF 只存储记录；它**不**执行联合变异检出（joint variant calling）、关联检验、归一化,或群体结构调整。数据集大小本身并不能决定云端执行是否合适：应针对预期的样本、区域和属性工作负载做基准测试。
 
-## 何时使用此技能
+本技能针对已发布的 **TileDB-VCF 0.40.3**。原生 Python/CLI 检查在 macOS ARM64 上使用了两个合成的单样本 VCF。云客户端 **0.14.4** 的契约已对照其发布的 wheel 包和模拟调度进行了检查；未实际执行托管查询和作业。见[安装与验证说明](references/verification.md)。
 
-当您需要以下功能时，应使用此技能：
-- 学习 TileDB-VCF 概念和工作流程
-- 原型设计基因组学分析和管道
-- 处理中小型数据集（< 1000 个样本）
-- 需要向现有数据集增量添加新样本
-- 需要高效查询多个样本的特定基因组区域
-- 处理云端存储的变异数据（S3、Azure、GCS）
-- 需要导出大型 VCF 数据集的子集
-- 为队列研究构建变异数据库
-- 教育项目和方法开发
-- 变异数据操作的性能至关重要
+## 安装并验证原生技术栈
 
-## 快速开始
+截至本次审查，`tiledbvcf` 的 Python 发行版尚未发布在 PyPI 上。官方的 **`tiledb` Conda 频道**为 macOS ARM64、
+macOS x86-64 和 Linux x86-64 提供了 `tiledbvcf-py` 0.40.3，并带有 Python 3.9-3.12 的构建版本。PyPI 上的 `tiledb` 是 TileDB-Py，并不会安装 TileDB-VCF。原生 Apple Silicon 不再需要强制设置 `CONDA_SUBDIR=osx-64`。
 
-### 安装
+对于经测试的 macOS ARM64 环境，下面的版本锚定可以避免在原本可以成功解析的当前 Conda 解析结果中出现版本化库导入失败的问题：
 
-**首选方法：Conda/Mamba**
 ```bash
-# 如果您使用 M1 Mac，请输入以下两行
-CONDA_SUBDIR=osx-64
-conda config --env --set subdir osx-64
-
-# 创建 conda 环境
-conda create -n tiledb-vcf "python<3.10"
+conda create -n tiledb-vcf -c tiledb -c conda-forge \
+  python=3.12 tiledbvcf-py=0.40.3 \
+  azure-core-cpp=1.16.2 azure-storage-blobs-cpp=12.16.0 \
+  azure-storage-files-datalake-cpp=12.14.0 capnproto=1.4.0 c-blosc2=2.23.1
 conda activate tiledb-vcf
-
-# Mamba 是 conda 的更快、更可靠的替代品
-conda install -c conda-forge mamba
-
-# 安装 TileDB-Py 和 TileDB-VCF，以及其他有用的库
-mamba install -y -c conda-forge -c bioconda -c tiledb tiledb-py tiledbvcf-py pandas pyarrow numpy
+python -c 'import tiledbvcf; print(tiledbvcf.version)'
+tiledbvcf version
 ```
 
-**替代方法：Docker 镜像**
+等效的 Micromamba 解析/安装流程也已实际执行过。这些额外的 ABI 版本锚定是针对 macOS ARM64 的、经验证的变通方案，并不是对所有平台都适用的断言。生产环境应保留已解析出的环境。其他平台的安装方式和官方 Docker 镜像是上游文档中记载的替代方案，本技能未对它们进行测试。
+
+## 准备并创建队列（cohort）
+
+1. 记录参考基因组组装版本、contig 命名/长度、使用的调用软件（caller）、归一化规则、样本身份,以及文件校验和。不要混用不同的基因组组装版本，也不要假定 `1` 和
+   `chr1` 是等价的。确认各输入文件之间 header 是兼容的。
+2. 每个输入文件必须只包含**一个样本**，按坐标排序，并带有索引。使用经 BGZF 压缩的 VCF 或 BCF，并配有匹配的
+   `.csi`/`.tbi`。用 `bcftools query -l sample1.vcf.gz` 检查；文件名并不是样本标识符。
+3. 显式创建数据集，然后再导入。仅以 `mode="w"` 打开并不会创建其 schema。在创建时就实体化（materialize）那些会被频繁读取的字段。
+4. 在扩大规模之前，先在一个已知的小区间上验证一次往返导出（round-trip export）。
+
+对于现有的已排序纯文本 VCF（每个输入文件只需运行一次；输出文件名必须是新的）：
+
 ```bash
-docker pull tiledb/tiledbvcf-py     # Python 接口
-docker pull tiledb/tiledbvcf-cli    # 命令行接口
+bcftools view -Oz -o sample1.vcf.gz sample1.vcf
+bcftools index -c sample1.vcf.gz
+bcftools view -Oz -o sample2.vcf.gz sample2.vcf
+bcftools index -c sample2.vcf.gz
 ```
 
-### 基本示例
+以下本地示例使用样本 ID `S1` 和 `S2`、contig
+`chr1`，坐标 1-100 进行了实际测试；在真实数据中请替换为经验证的 ID 和区间。
 
-**创建并填充数据集：**
 ```python
 import tiledbvcf
 
-# 创建新数据集
-ds = tiledbvcf.Dataset(uri="my_dataset", mode="w",
-                      cfg=tiledbvcf.ReadConfig(memory_budget=1024))
+uri = "cohort"
+config = {"sm.compute_concurrency_level": "2", "sm.io_concurrency_level": "2"}
+with tiledbvcf.Dataset(uri, mode="w", tiledb_config=config) as ds:
+    ds.create_dataset(extra_attrs=["fmt_GT", "fmt_DP"])
+    ds.ingest_samples(
+        ["sample1.vcf.gz"], threads=2, total_memory_budget_mb=512
+    )
 
-# 导入 VCF 文件（必须是带索引的单样本文件）
-# 要求：
-# - VCF 必须是单样本（非多样本）
-# - 必须有索引：.csi（bcftools）或 .tbi（tabix）
-ds.ingest_samples(["sample1.vcf.gz", "sample2.vcf.gz"])
+# 增量导入使用已存在的数据集；不要再次调用 create_dataset。
+with tiledbvcf.Dataset(uri, mode="w", tiledb_config=config) as ds:
+    ds.ingest_samples(
+        ["sample2.vcf.gz"], threads=2, total_memory_budget_mb=512
+    )
 ```
 
-**查询变异数据：**
+schema-v4 的数据数组有 `contig`、起始坐标和样本这几个**维度**；
+header 和可选的统计信息是数据集组内的独立数组。未被显式实体化的字段仍保留在 INFO/FORMAT 负载中。像
+`pos_start` 这样的查询名称并不需要与原始存储列名一致。
+
+上游支持并行的线程/进程导入。应为不同任务分配不同的样本，并协调好生命周期/维护操作；不要盲目地重复导入样本。
+`resume=True` 支持恢复被中断的导入，而不是任意的重复纠正。
+
+## 完整查询并正确解释坐标
+
+| 接口 | 坐标约定 |
+| --- | --- |
+| Python `regions=["chr1:10-14"]` | 1 起始，闭区间 |
+| 返回的 `pos_start`、`pos_end` | 1 起始，记录端点均包含在内 |
+| BED 输入以及 `query_bed_start`、`query_bed_end` | 0 起始，半开区间 |
+| 0.40.3 中 `read_variant_stats()` / `read_allele_count()` 返回的 `pos` 列 | **0 起始**；在与 VCF 的 POS 字段关联之前要加 1 |
+
+查询返回的是**与区间重叠的记录**，而不仅仅是起点落在区间内的记录。
+一个跨越位置 10-14 的缺失会出现在 `chr1:14-14` 查询结果中，其
+`pos_start=10`。对于 BED 的 `[13,14)`，对应的字符串是 `chr1:14-14`。
+Python 的区域解析器要求显式写出 `contig:start-end`；在本版本中，裸的 `"chr1"`
+会被拒绝。对整个 contig 查询时应使用一个已知的 contig 长度。
+
 ```python
-# 打开现有数据集进行读取
-ds = tiledbvcf.Dataset(uri="my_dataset", mode="r")
-
-# 查询特定区域和样本
-df = ds.read(
-    attrs=["sample_name", "pos_start", "pos_end", "alleles", "fmt_GT"],
-    regions=["chr1:1000000-2000000", "chr2:500000-1500000"],
-    samples=["sample1", "sample2", "sample3"]
-)
-print(df.head())
+cfg = tiledbvcf.ReadConfig(memory_budget_mb=128, tiledb_config=config)
+attrs = ["sample_name", "contig", "pos_start", "pos_end", "alleles", "fmt_GT"]
+with tiledbvcf.Dataset(uri, cfg=cfg) as ds:
+    assert {"S1", "S2"}.issubset(ds.samples())
+    assert set(attrs).issubset(ds.attributes())
+    for batch in ds.read_iter(
+        attrs=attrs, regions=["chr1:1-100"], samples=["S1", "S2"]
+    ):
+        print(batch)  # 替换为一个有限制的消费者或分区输出。
 ```
 
-**导出到 VCF：**
+- `read()` 返回一个 pandas DataFrame；`read_arrow()` 返回一个 PyArrow Table。
+  两者都可能只返回第一个受内存限制的批次。应持续调用
+  `continue_read()` / `continue_read_arrow()` 直到 `read_completed()`，或者对普通的 DataFrame 查询使用
+  `read_iter()`。当结果无法完全放入内存时，避免拼接所有批次。
+- `ReadConfig(memory_budget_mb=...)` 控制的是读取操作；写入时请使用
+  `ingest_samples(total_memory_budget_mb=...)`。读取预算并不是进程 RSS 的上限。`limit` 截断的是总输出量；它不是分页大小。
+- `sample_partition=(0, 2)` 选择两个分区中的第零个分区。类似地，
+  `region_partition=(index, number_of_partitions)` 对查询区域进行分区；
+  这些元组不是坐标边界、tile 范围或样本容量。
+- **0.40.3 会保留 BED 选择状态**，即当后续调用省略 `bed_file` 时也是如此。
+  在更改 BED/区域输入时，应打开一个全新的 `Dataset` 以进行独立查询。
+- `fmt_GT` 包含等位基因索引：0 表示 REF，正值索引 ALT，
+  -1 表示缺失。应保留多等位基因身份和倍性信息；不要把每一个正整数都当作双等位基因剂量，也不要把缺失的调用当作参考基因型。
+  这个整数列表本身并不编码原始的带相位（phased）GT 字符串。
+
+## 导出与验证
+
 ```python
-import os
+from pathlib import Path
 
-# 导出两个 VCF 样本
-ds.export(
-    regions=["chr21:8220186-8405573"],
-    samples=["HG00101", "HG00097"],
-    output_format="v",
-    output_dir=os.path.expanduser("~"),
-)
+Path("exported").mkdir(exist_ok=True)
+with tiledbvcf.Dataset(uri, cfg=cfg) as ds:
+    ds.export(
+        samples=["S1"], regions=["chr1:1-100"],
+        output_format="v", output_dir="exported",
+    )
 ```
 
-## 核心功能
+Python 导出格式：`v` VCF、`z` 压缩 VCF、`u` 未压缩 BCF、`b`
+压缩 BCF。`merge=False` 为每个样本写出单独的文件；`merge=True` 需要一个
+合并后的 `output_path`。合并导出并不是联合变异检出。导出的文件在用于带索引的下游访问之前应重新建立索引。应比较样本 ID、contig、记录
+数量、等位基因、INFO/FORMAT 值,以及缺失/带相位的基因型；语义上的往返保留并不意味着字节级相同的压缩方式或 header。
 
-### 1. 数据集创建和导入
-
-创建 TileDB-VCF 数据集并从多个 VCF/BCF 文件增量导入变异数据。这适用于构建群体基因组学数据库和队列研究。
-
-**要求：**
-- **仅支持单样本 VCF**：不支持多样本 VCF
-- **需要索引文件**：VCF/BCF 文件必须有索引（.csi 或 .tbi）
-
-**常见操作：**
-- 创建具有优化数组模式的新数据集
-- 并行导入单个或多个 VCF/BCF 文件
-- 增量添加新样本，无需重新处理现有数据
-- 配置内存使用和压缩设置
-- 处理各种 VCF 格式和 INFO/FORMAT 字段
-- 恢复中断的导入过程
-- 导入期间验证数据完整性
-
-
-### 2. 高效查询和过滤
-
-通过基因组区域、样本和变异属性进行高性能查询。这适用于关联研究、变异发现和群体分析。
-
-**常见操作：**
-- 查询特定基因组区域（单个或多个）
-- 按样本名称或样本组过滤
-- 提取特定变异属性（位置、等位基因、基因型、质量）
-- 高效访问 INFO 和 FORMAT 字段
-- 组合空间和基于属性的过滤
-- 流式处理大型查询结果
-- 跨样本或区域执行聚合
-
-
-### 3. 数据导出和互操作性
-
-以各种格式导出数据，用于下游分析或与其他基因组学工具集成。这适用于共享数据集、创建分析子集或为其他管道提供输入。
-
-**常见操作：**
-- 导出到标准 VCF/BCF 格式
-- 生成带有选定字段的 TSV 文件
-- 创建样本/区域特定的子集
-- 维护数据来源和元数据
-- 无损数据导出，保留所有注释
-- 压缩输出格式
-- 大型数据集的流式导出
-
-
-### 4. 群体基因组学工作流程
-
-TileDB-VCF 在需要高效访问多个样本和基因组区域的变异数据的大规模群体基因组学分析中表现出色。
-
-**常见工作流程：**
-- 全基因组关联研究 (GWAS) 数据准备
-- 稀有变异负担测试
-- 群体分层分析
-- 跨群体的等位基因频率计算
-- 大型队列的质量控制
-- 变异注释和过滤
-- 跨群体比较分析
-
-
-## 关键概念
-
-### 数组模式和数据模型
-
-**TileDB-VCF 数据模型：**
-- 变异存储为稀疏数组，基因组坐标为维度
-- 样本存储为属性，允许高效的样本特定查询
-- INFO 和 FORMAT 字段以原始数据类型保留
-- 自动压缩和分块以实现最佳存储
-
-**模式配置：**
-```python
-# 具有特定瓦片范围的自定义模式
-config = tiledbvcf.ReadConfig(
-    memory_budget=2048,  # MB
-    region_partition=(0, 3095677412),  # 全基因组
-    sample_partition=(0, 10000)  # 最多 10k 样本
-)
-```
-
-### 坐标系和区域
-
-**重要：** TileDB-VCF 使用 **1 基基因组坐标**，遵循 VCF 标准：
-- 位置是 1 基的（第一个碱基是位置 1）
-- 范围两端都包含
-- 区域 "chr1:1000-2000" 包括位置 1000-2000（总共 1001 个碱基）
-
-**区域指定格式：**
-```python
-# 单个区域
-regions = ["chr1:1000000-2000000"]
-
-# 多个区域
-regions = ["chr1:1000000-2000000", "chr2:500000-1500000"]
-
-# 整个染色体
-regions = ["chr1"]
-
-# BED 风格（0 基，半开区间，内部转换）
-regions = ["chr1:999999-2000000"]  # 等效于 1 基的 chr1:1000000-2000000
-```
-
-### 内存管理
-
-**性能考虑：**
-1. **根据可用系统内存设置适当的内存预算**
-2. **对非常大的结果集使用流式查询**
-3. **分区大型导入以避免内存耗尽**
-4. **为重复的区域访问配置瓦片缓存**
-5. **对多个文件使用并行导入**
-6. **通过组合附近区域优化区域查询**
-
-### 云存储集成
-
-TileDB-VCF 无缝支持云存储：
-```python
-# S3 数据集
-ds = tiledbvcf.Dataset(uri="s3://bucket/dataset", mode="r")
-
-# Azure Blob 存储
-ds = tiledbvcf.Dataset(uri="azure://container/dataset", mode="r")
-
-# Google Cloud Storage
-ds = tiledbvcf.Dataset(uri="gcs://bucket/dataset", mode="r")
-```
-
-## 常见陷阱
-
-1. **导入期间内存耗尽**：对大型 VCF 文件使用适当的内存预算和批处理
-2. **低效的区域查询**：组合附近区域而不是进行许多单独的查询
-3. **缺少样本名称**：确保 VCF 头部中的样本名称与查询样本规范匹配
-4. **坐标系混淆**：记住 TileDB-VCF 使用 1 基坐标，如 VCF 标准
-5. **大型结果集**：对返回数百万变异的查询使用流式处理或分页
-6. **云权限**：确保云存储访问的适当认证
-7. **并发访问**：多个写入器对同一数据集的访问可能导致损坏 - 使用适当的锁定
-
-## CLI 使用
-
-TileDB-VCF 提供命令行界面，包含以下子命令：
-
-**可用子命令：**
-- `create` - 创建空的 TileDB-VCF 数据集
-- `store` - 将样本导入到 TileDB-VCF 数据集
-- `export` - 从 TileDB-VCF 数据集导出数据
-- `list` - 列出 TileDB-VCF 数据集中存在的所有样本名称
-- `stat` - 打印关于 TileDB-VCF 数据集的高级统计信息
-- `utils` - 用于处理 TileDB-VCF 数据集的工具
-- `version` - 打印版本信息并退出
+CLI 接受位置参数形式的样本路径,或 `--samples-file`（每行一个 URI），
+而不是逗号分隔的 `--samples` 参数：
 
 ```bash
-# 创建空数据集
-tiledbvcf create --uri my_dataset
-
-# 导入样本（需要带索引的单样本 VCF）
-tiledbvcf store --uri my_dataset --samples sample1.vcf.gz,sample2.vcf.gz
-
-# 导出数据
-tiledbvcf export --uri my_dataset \
-  --regions "chr1:1000000-2000000" \
-  --sample-names "sample1,sample2"
-
-# 列出所有样本
-tiledbvcf list --uri my_dataset
-
-# 显示数据集统计信息
-tiledbvcf stat --uri my_dataset
+tiledbvcf create --uri cli_cohort
+tiledbvcf store --uri cli_cohort --threads 2 --total-memory-budget-mb 512 \
+  -- sample1.vcf.gz sample2.vcf.gz
+tiledbvcf list --uri cli_cohort
+tiledbvcf stat --uri cli_cohort
+tiledbvcf export --uri cli_cohort --regions chr1:1-100 \
+  --sample-names S1,S2 -Ot --tsv-fields 'SAMPLE,CHR,POS,REF,ALT,F:GT' \
+  --output-path variants.tsv
 ```
 
-## 高级功能
+`--` 用于保护位置路径参数不被类似 `--tiledb-config` 这样的可变长度选项误解析。应同时检查预期的产物、样本数量,以及退出码：在经审查的 CLI 中，一个无效的 store 命令会在打印错误信息的同时返回退出码零。TSV 字段中 FORMAT/GT 使用 `F:GT`，INFO/DP 使用 `I:DP`。
 
-### 等位基因频率分析
-```python
-# 计算等位基因频率
-af_df = tiledbvcf.read_allele_frequency(
-    uri="my_dataset",
-    regions=["chr1:1000000-2000000"],
-    samples=["sample1", "sample2", "sample3"]
-)
-```
-
-### 样本质量控制
-```python
-# 执行样本 QC
-qc_results = tiledbvcf.sample_qc(
-    uri="my_dataset",
-    samples=["sample1", "sample2"]
-)
-```
-
-### 自定义配置
-```python
-# 高级配置
-config = tiledbvcf.ReadConfig(
-    memory_budget=4096,
-    tiledb_config={
-        "sm.tile_cache_size": "1000000000",
-        "vfs.s3.region": "us-east-1"
-    }
-)
-```
-
-
-## 资源
-
-## 获取帮助
-
-### 开源 TileDB-VCF 资源
-
-**开源文档：**
-- TileDB 学院：https://cloud.tiledb.com/academy/
-- 群体基因组学指南：https://cloud.tiledb.com/academy/structure/life-sciences/population-genomics/
-- TileDB-VCF GitHub：https://github.com/TileDB-Inc/TileDB-VCF
-
-### TileDB-Cloud 资源
-
-**对于大规模/生产基因组学：**
-- TileDB-Cloud 平台：https://cloud.tiledb.com
-- TileDB 学院（所有文档）：https://cloud.tiledb.com/academy/
-
-**入门：**
-- 免费账户注册：https://cloud.tiledb.com
-- 联系：sales@tiledb.com 了解企业需求
-
-## 扩展到 TileDB-Cloud
-
-当您的基因组学工作负载超出单节点处理能力时，TileDB-Cloud 为生产基因组学管道提供企业级功能。
-
-**注意**：本节基于可用文档涵盖 TileDB-Cloud 功能。有关完整的 API 详细信息和当前功能，请参考官方 TileDB-Cloud 文档和 API 参考。
-
-### 设置 TileDB-Cloud
-
-**1. 创建账户并获取 API 令牌**
-```bash
-# 在 https://cloud.tiledb.com 注册
-# 在账户设置中生成 API 令牌
-```
-
-**2. 安装 TileDB-Cloud Python 客户端**
-```bash
-# 基本安装
-pip install tiledb-cloud
-
-# 带基因组学特定功能
-pip install tiledb-cloud[life-sciences]
-```
-
-**3. 配置认证**
-```bash
-# 设置带有 API 令牌的环境变量
-export TILEDB_REST_TOKEN="your_api_token"
-```
+## 队列统计与质控
 
 ```python
+with tiledbvcf.Dataset(uri, cfg=cfg) as ds:
+    stats = ds.read_variant_stats(regions=["chr1:1-100"], drop_ref=True)
+    stats["vcf_pos"] = stats["pos"] + 1
+    print(stats[["contig", "vcf_pos", "alleles", "ac", "an", "af"]])
+
+qc = tiledbvcf.sample_qc(uri, samples=["S1"], config=config)
+print(qc)
+```
+
+统计数组在创建时默认启用；较旧的/被禁用的数组可能不支持这些操作。
+`read_variant_stats` 没有 `samples` 参数。
+较旧的 `read_allele_frequency(dataset_uri, region)` 包装函数接受单个
+区域，并委托给已废弃的单数参数；应优先使用上面的 Dataset 方法。`sample_qc` 的第一个参数是 `dataset_uri`，而不是 `uri`。
+
+`ac`、`an` 和 `af` 的值总结的是已导入的整个队列，而不是某个选定的
+族群或查询出的样本子集。在经测试的发布版本中，`read(samples=[...], set_af_filter=">0.6")`
+过滤仍然使用的是全队列的 AF。应从正确选出的调用结果中计算子群体频率,并明确规定缺失值、倍性、可调用区域（callable-region）
+和 gVCF 参考区块（reference-block）的处理策略。应使用恰当的已调用等位基因分母，而不是统一使用
+`2 * number_of_samples`；一条缺失的 VCF 记录并不能证明该位点是纯合参考基因型。QC 指标和稀疏存储本身并不能确立 GWAS
+的可用性或科学有效性。
+
+## 对象存储与 TileDB Cloud
+
+直接存储使用 `s3://bucket/path`、`azure://container/path` 或
+`gcs://bucket/path`，由已安装的 TileDB 后端和其对应的提供方凭证支持。这并不会自动分布式执行计算。应使用提供方的凭证链或范围受限的配置，并验证对数据集和源索引两者的访问权限。TileDB Cloud 的 token
+与存储桶凭证是不同的概念。下面的远程存储示例仅作说明性用途、已经过源码核实,但并非经过身份验证的端到端测试。
+
+在兼容的环境中安装 `tiledb-cloud==0.14.4`。它的 `life-sciences`
+附加组件添加的是 TileDB-SOMA，**不是** TileDB-VCF。在导入客户端之前，通过执行环境提供
+`TILEDB_REST_TOKEN`；如有需要，`TILEDB_REST_HOST` 可以选择一个
+自定义部署。不要把 token 嵌入代码中，也不要打印配置信息。
+
+```python
+# 示例性：需要一个可访问的已注册队列和一个计费命名空间。
 import tiledb.cloud
-
-# 认证通过 TILEDB_REST_TOKEN 自动进行
-# 代码中不需要显式登录
-```
-
-### 从开源迁移到 TileDB-Cloud
-
-**大规模导入**
-```python
-# TileDB-Cloud：分布式 VCF 导入
 import tiledb.cloud.vcf
 
-# 使用专门的 VCF 导入模块
-# 注意：确切的 API 需要 TileDB-Cloud 文档
-# 这表示可用功能结构
-tiledb.cloud.vcf.ingestion.ingest_vcf_dataset(
-    source="s3://my-bucket/vcf-files/",
-    output="tiledb://my-namespace/large-dataset",
-    namespace="my-namespace",
-    acn="my-s3-credentials",
-    ingest_resources={"cpu": "16", "memory": "64Gi"}
+cloud_cfg = tiledb.cloud.Config()
+with tiledbvcf.Dataset("tiledb://my-namespace/cohort", tiledb_config=cloud_cfg) as ds:
+    sample_names = ds.samples()
+
+result = tiledb.cloud.vcf.read(
+    dataset_uri="tiledb://my-namespace/cohort",
+    config=cloud_cfg, attrs=["sample_name", "pos_start", "fmt_GT"],
+    regions=["chr1:1-100"], samples=sample_names[:2],
+    num_region_partitions=1, namespace="my-namespace", max_workers=2,
 )
+frame = result.to_pandas()  # read 返回的是 Arrow table，而不是 DataFrame。
 ```
 
-**分布式查询处理**
+分布式读取会在内部组装出一个 Arrow 结果，可能会使用大量的 worker/客户端
+内存。应限定所请求的区域/样本以及 worker 数量；分区并不能使最终拼接出的结果变得不占内存。这是 SDK 任务执行，而不是分页式的 VCF REST 列表 API。
+
 ```python
-# TileDB-Cloud：跨分布式存储的 VCF 查询
-import tiledb.cloud.vcf
-import tiledbvcf
-
-# 定义数据集 URI
-dataset_uri = "tiledb://TileDB-Inc/gvcf-1kg-dragen-v376"
-
-# 从数据集中获取所有样本
-ds = tiledbvcf.Dataset(dataset_uri, tiledb_config=cfg)
-samples = ds.samples()
-
-# 定义要查询的属性和范围
-attrs = ["sample_name", "fmt_GT", "fmt_AD", "fmt_DP"]
-regions = ["chr13:32396898-32397044", "chr13:32398162-32400268"]
-
-# 执行读取，以分布式方式执行
-df = tiledb.cloud.vcf.read(
-    dataset_uri=dataset_uri,
-    regions=regions,
-    samples=samples,
-    attrs=attrs,
-    namespace="my-namespace",  # 指定要收费的账户
+# 示例性的、会产生副作用的云任务：仅在经授权的导入任务中使用。
+submission = tiledb.cloud.vcf.ingest(
+    dataset_uri="s3://my-bucket/cohort",
+    sample_list_uri="s3://my-bucket/inputs/sample-uris.txt",
+    namespace="my-namespace", acn="registered-storage-role",
+    register_name="cohort", max_samples=2,
+    ingest_resources={"cpu": "2", "memory": "4Gi"},
 )
-df.to_pandas()
+print(submission["graph_id"])
 ```
 
-### 企业功能
+`search_uri`、`sample_list_uri` 或 `metadata_uri` 三者中只能恰好使用一个；文件搜索模式适用于 `search_uri`。注册需要访问凭证名称
+（`acn`）。`vcf.ingest` 异步提交任务，返回
+`{"status": "started", "graph_id": ...}`；应追踪该任务图直到终态成功，并在声称完成之前验证已导入的样本。目前没有已发布的
+`ingest_vcf_dataset(source=..., output=...)` API。定价、可用性、安全
+控制措施以及部署义务需要参照当前的账户/服务条款。
 
-**数据共享和协作**
-```python
-# TileDB-Cloud 通过基于命名空间的权限和组管理提供企业数据共享功能
+## 官方参考资料
 
-# 通过 TileDB-Cloud URI 访问共享数据集
-dataset_uri = "tiledb://shared-namespace/population-study"
-
-# 通过共享笔记本和计算资源进行协作
-# (具体 API 需要 TileDB-Cloud 文档)
-```
-
-**成本优化**
-- **无服务器计算**：仅为实际计算时间付费
-- **自动扩展**：根据工作负载自动向上/向下扩展
-- ** Spot 实例**：为批处理作业使用成本优化的计算
-- **数据分层**：自动热/冷存储管理
-
-**安全和合规**
-- **端到端加密**：数据在传输和静止时加密
-- **访问控制**：细粒度权限和审计日志
-- **HIPAA/SOC2 合规**：企业安全标准
-- **VPC 支持**：在私有云环境中部署
-
-### 迁移检查清单
-
-✅ **如果您有以下情况，迁移到 TileDB-Cloud：**
-- [ ] 数据集 > 1000 个样本
-- [ ] 需要处理 > 100GB 的 VCF 数据
-- [ ] 需要分布式计算
-- [ ] 多个团队成员需要访问
-- [ ] 需要企业安全/合规
-- [ ] 想要成本优化的无服务器计算
-- [ ] 需要 24/7 生产正常运行时间
-
-### 开始使用 TileDB-Cloud
-
-1. **免费开始**：TileDB-Cloud 提供用于评估的免费层级
-2. **迁移支持**：TileDB 团队提供迁移协助
-3. **培训**：访问基因组学特定的教程和示例
-4. **专业服务**：定制部署和优化
-
-**后续步骤：**
-- 访问 https://cloud.tiledb.com 创建账户
-- 查看 https://cloud.tiledb.com/academy/ 上的文档
-- 联系 sales@tiledb.com 了解企业需求
+- [TileDB-VCF 0.40.3 发布说明](https://github.com/TileDB-Inc/TileDB-VCF/releases/tag/0.40.3)
+- [Dataset API](https://tiledb-inc.github.io/TileDB-VCF/documentation/reference/Dataset.html)
+- [导入（Ingestion）](https://tiledb-inc.github.io/TileDB-VCF/documentation/how-to/ingest-samples.html)
+- [大型查询](https://tiledb-inc.github.io/TileDB-VCF/documentation/how-to/handle-large-queries.html)
+- [云存储](https://tiledb-inc.github.io/TileDB-VCF/documentation/how-to/work-with-cloud-object-stores.html)
+- [TileDB Cloud 客户端发布版本](https://pypi.org/project/tiledb-cloud/0.14.4/)
+- [验证细节与已知的发布版本问题](references/verification.md)

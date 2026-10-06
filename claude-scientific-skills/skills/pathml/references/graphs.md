@@ -1,653 +1,352 @@
-# Graph Construction & Spatial Analysis
+# Graph construction and spatial schema
 
-## Overview
+This reference targets **PathML 3.0.8 stable**. The stable graph API is based on
+graph builders and PyTorch Geometric data objects; it does not contain the
+`CellGraph.from_instance_map()` abstraction found in older generated examples.
 
-PathML provides tools for constructing spatial graphs from tissue images to represent cellular and tissue-level relationships. Graph-based representations enable sophisticated spatial analysis, including neighborhood analysis, cell-cell interaction studies, and graph neural network applications. These graphs capture both morphological features and spatial topology for downstream computational analysis.
-
-## Graph Types
-
-PathML supports construction of multiple graph types:
-
-### Cell Graphs
-- Nodes represent individual cells
-- Edges represent spatial proximity or biological interactions
-- Node features include morphology, marker expression, cell type
-- Suitable for single-cell spatial analysis
-
-### Tissue Graphs
-- Nodes represent tissue regions or superpixels
-- Edges represent spatial adjacency
-- Node features include tissue composition, texture features
-- Suitable for tissue-level spatial patterns
-
-### Spatial Transcriptomics Graphs
-- Nodes represent spatial spots or cells
-- Edges encode spatial relationships
-- Node features include gene expression profiles
-- Suitable for spatial omics analysis
-
-## Graph Construction Workflow
-
-### From Segmentation to Graphs
-
-Convert nucleus or cell segmentation results into spatial graphs:
+## Stable public exports
 
 ```python
-from pathml.graph import CellGraph
-from pathml.preprocessing import Pipeline, SegmentMIF
+from pathml.graph import (
+    ColorMergedSuperpixelExtractor,
+    Graph,
+    HACTPairData,
+    KNNGraphBuilder,
+    RAGGraphBuilder,
+    build_assignment_matrix,
+    get_full_instance_map,
+)
+```
+
+Other classes documented under `pathml.graph.preprocessing` may be internal or
+not re-exported. Prefer the public names above and pin the PathML version.
+
+## Inputs and coordinate contract
+
+A cell/tissue graph starts with:
+
+1. an instance map `(height, width)`, where 0 is background and each object has a
+   positive integer label;
+2. one feature row per object;
+3. optional node annotation rows and a graph target; and
+4. explicit coordinate units and image level.
+
+For stable builders, make labels contiguous `1..N`. Both graph topology and
+feature alignment assume a deterministic object order. Build and persist a table:
+
+```text
+node_index,instance_label,centroid_x,centroid_y,feature_row
+0,1,120.5,88.0,0
+1,2,175.0,92.5,1
+```
+
+PathML computes centroids from `skimage.measure.regionprops` and stores them as
+`(x, y)` after integer rounding. This differs from tile `(i, j)` order.
+
+If the instance map comes from level `L`, KNN distances and centroids are in
+level-`L` pixels:
+
+```text
+x_um = x_L * downsample_L * mpp_x
+y_um = y_L * downsample_L * mpp_y
+```
+
+Never describe a radius/threshold as biological distance unless it has been
+converted to a physical unit.
+
+## Avoid full-slide reconstruction by default
+
+`get_full_instance_map(wsi, patch_size, mask_name="cell")` reconstructs a dense
+image and instance map large enough to cover the slide. On a gigapixel WSI this
+can exhaust RAM and duplicate tile-overlap objects.
+
+Use it only for a bounded ROI or small image after estimating memory. For large
+slides:
+
+- construct graphs per nonoverlapping region;
+- reconcile boundary objects with stable global IDs;
+- optionally join regional graphs with a documented edge policy; and
+- use sparse coordinates/features rather than a dense whole-slide canvas.
+
+Do not use padded zero regions as tissue. Record crop origin so local coordinates
+can be mapped to the slide.
+
+## KNN graph
+
+```python
 import numpy as np
+from pathml.graph import KNNGraphBuilder
 
-# 1. Perform cell segmentation
-pipeline = Pipeline([
-    SegmentMIF(
-        nuclear_channel='DAPI',
-        cytoplasm_channel='CD45',
-        model='mesmer'
-    )
-])
-pipeline.run(slide)
+# instance_map labels are 0 background, then contiguous 1..N.
+n_nodes = int(instance_map.max())
+features = np.ones((n_nodes, 1), dtype=np.float32)
 
-# 2. Extract instance segmentation mask
-inst_map = slide.masks['cell_segmentation']
-
-# 3. Build cell graph
-cell_graph = CellGraph.from_instance_map(
-    inst_map,
-    image=slide.image,  # Optional: for extracting visual features
-    connectivity='delaunay',  # 'knn', 'radius', or 'delaunay'
-    k=5,  # For knn: number of neighbors
-    radius=50  # For radius: distance threshold in pixels
+builder = KNNGraphBuilder(
+    k=5,
+    thresh=80,              # selected-level pixels
+    add_loc_feats=True,
+    return_networkx=False,
 )
-
-# 4. Access graph components
-nodes = cell_graph.nodes  # Node features
-edges = cell_graph.edges  # Edge list
-adjacency = cell_graph.adjacency_matrix  # Adjacency matrix
-```
-
-### Connectivity Methods
-
-**K-Nearest Neighbors (KNN):**
-```python
-# Connect each cell to its k nearest neighbors
-graph = CellGraph.from_instance_map(
-    inst_map,
-    connectivity='knn',
-    k=5  # Number of neighbors
-)
-```
-- Fixed degree per node
-- Captures local neighborhoods
-- Simple and interpretable
-
-**Radius-based:**
-```python
-# Connect cells within a distance threshold
-graph = CellGraph.from_instance_map(
-    inst_map,
-    connectivity='radius',
-    radius=100,  # Maximum distance in pixels
-    distance_metric='euclidean'  # or 'manhattan', 'chebyshev'
-)
-```
-- Variable degree based on density
-- Biologically motivated (interaction range)
-- Captures physical proximity
-
-**Delaunay Triangulation:**
-```python
-# Connect cells using Delaunay triangulation
-graph = CellGraph.from_instance_map(
-    inst_map,
-    connectivity='delaunay'
-)
-```
-- Creates connected graph from spatial positions
-- No isolated nodes (in convex hull)
-- Captures spatial tessellation
-
-**Contact-based:**
-```python
-# Connect cells with touching boundaries
-graph = CellGraph.from_instance_map(
-    inst_map,
-    connectivity='contact',
-    dilation=2  # Dilate boundaries to capture near-contacts
-)
-```
-- Physical cell-cell contacts
-- Most biologically direct
-- Sparse edges for separated cells
-
-## Node Features
-
-### Morphological Features
-
-Extract shape and size features for each cell:
-
-```python
-from pathml.graph import extract_morphology_features
-
-# Compute morphological features
-morphology_features = extract_morphology_features(
-    inst_map,
-    features=[
-        'area',  # Cell area in pixels
-        'perimeter',  # Cell perimeter
-        'eccentricity',  # Shape elongation
-        'solidity',  # Convexity measure
-        'major_axis_length',
-        'minor_axis_length',
-        'orientation'  # Cell orientation angle
-    ]
-)
-
-# Add to graph
-cell_graph.add_node_features(morphology_features, feature_names=['area', 'perimeter', ...])
-```
-
-**Available morphological features:**
-- **Area** - Number of pixels
-- **Perimeter** - Boundary length
-- **Eccentricity** - 0 (circle) to 1 (line)
-- **Solidity** - Area / convex hull area
-- **Circularity** - 4π × area / perimeter²
-- **Major/Minor axis** - Lengths of fitted ellipse axes
-- **Orientation** - Angle of major axis
-- **Extent** - Area / bounding box area
-
-### Intensity Features
-
-Extract marker expression or intensity statistics:
-
-```python
-from pathml.graph import extract_intensity_features
-
-# Extract mean marker intensities per cell
-intensity_features = extract_intensity_features(
-    inst_map,
-    image=multichannel_image,  # Shape: (H, W, C)
-    channel_names=['DAPI', 'CD3', 'CD4', 'CD8', 'CD20'],
-    statistics=['mean', 'std', 'median', 'max']
-)
-
-# Add to graph
-cell_graph.add_node_features(
-    intensity_features,
-    feature_names=['DAPI_mean', 'CD3_mean', ...]
+graph = builder.process(
+    instance_map,
+    features=features,
+    annotation=None,
+    target=None,
 )
 ```
 
-**Available statistics:**
-- **mean** - Average intensity
-- **median** - Median intensity
-- **std** - Standard deviation
-- **max** - Maximum intensity
-- **min** - Minimum intensity
-- **quantile_25/75** - Quartiles
+Stable behavior:
 
-### Texture Features
+- `k` nearest neighbors are computed from centroids.
+- `thresh=None` keeps all KNN edges; otherwise edges longer than `thresh` are
+  removed.
+- `k` must be smaller than the available node count.
+- adjacency generated by nearest-neighbor queries may be directed; do not assume
+  every reverse edge exists.
+- `add_loc_feats=True` appends centroids normalized by image width/height.
+- `return_networkx` is a **builder constructor** option, not an argument to
+  `process()`.
 
-Compute texture descriptors for each cell region:
+Distinct objects can round to the same centroid; zero-distance adjacency entries
+are discarded by the builder, so inspect coincident centroids and missing edges.
+For anisotropic MPP, pixel-space nearest neighbors are not physical nearest
+neighbors. Convert centroids to micrometres first and use
+`builder.process_with_centroids(centroids_xy_um, features=features)` with
+`centroids_xy_um` as a CPU Torch tensor and `add_loc_feats=False`; set `thresh`
+in micrometres and retain original pixel
+coordinates separately. Scaling only the reported distances after building
+the graph does not fix a topology constructed in the wrong metric.
+
+In v3.0.8 source, `BaseGraphBuilder.process()` reads `features.shape` before its
+nominal `features=None` branch. Pass an explicit `(N, F)` feature array.
+
+## Region adjacency graph
 
 ```python
-from pathml.graph import extract_texture_features
+from pathml.graph import RAGGraphBuilder
 
-# Haralick texture features
-texture_features = extract_texture_features(
-    inst_map,
-    image=grayscale_image,
-    features='haralick',  # or 'lbp', 'gabor'
-    distance=1,
-    angles=[0, np.pi/4, np.pi/2, 3*np.pi/4]
+builder = RAGGraphBuilder(
+    kernel_size=3,
+    hops=1,
+    add_loc_feats=False,
+    return_networkx=False,
 )
-
-cell_graph.add_node_features(texture_features)
+graph = builder.process(instance_map, features=features)
 ```
 
-### Cell Type Annotations
+`RAGGraphBuilder` dilates each labeled instance and connects labels encountered at
+the boundary. `hops>1` expands neighborhoods. Stable implementation assumes
+contiguous positive instance IDs; relabel and validate first.
 
-Add cell type labels from classification:
+Choose RAG for contact/near-contact topology and KNN for centroid proximity. A
+RAG edge is still an image-processing construct, not proof of biological
+interaction.
 
-```python
-# From ML model predictions
-cell_types = hovernet_type_predictions  # Array of cell type IDs
+## Tissue superpixels
 
-cell_graph.add_node_features(
-    cell_types,
-    feature_names=['cell_type']
-)
+`ColorMergedSuperpixelExtractor` performs SLIC superpixels followed by
+color-based hierarchical merging. Its output depends on image color space,
+downsampling, blur, target superpixel size/count, merge threshold, and optional
+tissue mask.
 
-# One-hot encode cell types
-cell_type_onehot = one_hot_encode(cell_types, num_classes=5)
-cell_graph.add_node_features(
-    cell_type_onehot,
-    feature_names=['type_epithelial', 'type_inflammatory', ...]
-)
+Fit/tune these choices on training slides only. Verify:
+
+- every retained superpixel overlaps tissue as intended;
+- object labels are contiguous;
+- tiny/huge regions and holes are handled;
+- downsampled boundaries map correctly to the source level;
+- stain normalization did not erase discriminative structure.
+
+The extractor is influenced by histocartography/HACT implementations. Review
+license obligations when redistributing derived code or artifacts.
+
+## Output schema
+
+Stable `pathml.graph.Graph` is a PyTorch Geometric `Data` subclass with:
+
+```text
+node_centroids   # tensor [N, 2], (x, y)
+node_features    # tensor [N, F] or None
+edge_index       # tensor [2, E]
+edge_features    # tensor/array or None
+node_labels      # tensor/array or None
+target           # graph target or None
 ```
 
-## Edge Features
-
-### Spatial Distance
-
-Compute edge features based on spatial relationships:
+It does not automatically expose canonical PyG `x`, `pos`, `edge_attr`, and `y`
+aliases. Adapt explicitly:
 
 ```python
-from pathml.graph import compute_edge_distances
-
-# Add pairwise distances as edge features
-distances = compute_edge_distances(
-    cell_graph,
-    metric='euclidean'  # or 'manhattan', 'chebyshev'
-)
-
-cell_graph.add_edge_features(distances, feature_names=['distance'])
-```
-
-### Interaction Features
-
-Model biological interactions between cell types:
-
-```python
-from pathml.graph import compute_interaction_features
-
-# Cell type co-occurrence along edges
-interaction_features = compute_interaction_features(
-    cell_graph,
-    cell_types=cell_type_labels,
-    interaction_type='categorical'  # or 'numerical'
-)
-
-cell_graph.add_edge_features(interaction_features)
-```
-
-## Graph-Level Features
-
-Aggregate features for entire graph:
-
-```python
-from pathml.graph import compute_graph_features
-
-# Topological features
-graph_features = compute_graph_features(
-    cell_graph,
-    features=[
-        'num_nodes',
-        'num_edges',
-        'average_degree',
-        'clustering_coefficient',
-        'average_path_length',
-        'diameter'
-    ]
-)
-
-# Cell composition features
-composition = cell_graph.compute_cell_type_composition(
-    cell_type_labels,
-    normalize=True  # Proportions
-)
-```
-
-## Spatial Analysis
-
-### Neighborhood Analysis
-
-Analyze cell neighborhoods and microenvironments:
-
-```python
-from pathml.graph import analyze_neighborhoods
-
-# Characterize neighborhoods around each cell
-neighborhoods = analyze_neighborhoods(
-    cell_graph,
-    cell_types=cell_type_labels,
-    radius=100,  # Neighborhood radius
-    metrics=['diversity', 'density', 'composition']
-)
-
-# Neighborhood diversity (Shannon entropy)
-diversity = neighborhoods['diversity']
-
-# Cell type composition in each neighborhood
-composition = neighborhoods['composition']  # (n_cells, n_cell_types)
-```
-
-### Spatial Clustering
-
-Identify spatial clusters of cell types:
-
-```python
-from pathml.graph import spatial_clustering
-import matplotlib.pyplot as plt
-
-# Detect spatial clusters
-clusters = spatial_clustering(
-    cell_graph,
-    cell_positions,
-    method='dbscan',  # or 'kmeans', 'hierarchical'
-    eps=50,  # DBSCAN: neighborhood radius
-    min_samples=10  # DBSCAN: minimum cluster size
-)
-
-# Visualize clusters
-plt.scatter(
-    cell_positions[:, 0],
-    cell_positions[:, 1],
-    c=clusters,
-    cmap='tab20'
-)
-plt.title('Spatial Clusters')
-plt.show()
-```
-
-### Cell-Cell Interaction Analysis
-
-Test for enrichment or depletion of cell type interactions:
-
-```python
-from pathml.graph import cell_interaction_analysis
-
-# Test for significant interactions
-interaction_results = cell_interaction_analysis(
-    cell_graph,
-    cell_types=cell_type_labels,
-    method='permutation',  # or 'expected'
-    n_permutations=1000,
-    significance_level=0.05
-)
-
-# Interaction scores (positive = attraction, negative = avoidance)
-interaction_matrix = interaction_results['scores']
-
-# Visualize with heatmap
-import seaborn as sns
-sns.heatmap(
-    interaction_matrix,
-    cmap='RdBu_r',
-    center=0,
-    xticklabels=cell_type_names,
-    yticklabels=cell_type_names
-)
-plt.title('Cell-Cell Interaction Scores')
-plt.show()
-```
-
-### Spatial Statistics
-
-Compute spatial statistics and patterns:
-
-```python
-from pathml.graph import spatial_statistics
-
-# Ripley's K function for spatial point patterns
-ripleys_k = spatial_statistics(
-    cell_positions,
-    cell_types=cell_type_labels,
-    statistic='ripleys_k',
-    radii=np.linspace(0, 200, 50)
-)
-
-# Nearest neighbor distances
-nn_distances = spatial_statistics(
-    cell_positions,
-    statistic='nearest_neighbor',
-    by_cell_type=True
-)
-```
-
-## Integration with Graph Neural Networks
-
-### Convert to PyTorch Geometric Format
-
-```python
-from pathml.graph import to_pyg
-import torch
 from torch_geometric.data import Data
 
-# Convert to PyTorch Geometric Data object
-pyg_data = cell_graph.to_pyg()
-
-# Access components
-x = pyg_data.x  # Node features (n_nodes, n_features)
-edge_index = pyg_data.edge_index  # Edge connectivity (2, n_edges)
-edge_attr = pyg_data.edge_attr  # Edge features (n_edges, n_edge_features)
-y = pyg_data.y  # Graph-level label
-pos = pyg_data.pos  # Node positions (n_nodes, 2)
-
-# Use with PyTorch Geometric
-from torch_geometric.nn import GCNConv
-
-class GNN(torch.nn.Module):
-    def __init__(self, in_channels, hidden_channels, out_channels):
-        super().__init__()
-        self.conv1 = GCNConv(in_channels, hidden_channels)
-        self.conv2 = GCNConv(hidden_channels, out_channels)
-
-    def forward(self, data):
-        x, edge_index = data.x, data.edge_index
-        x = self.conv1(x, edge_index).relu()
-        x = self.conv2(x, edge_index)
-        return x
-
-model = GNN(in_channels=pyg_data.num_features, hidden_channels=64, out_channels=5)
-output = model(pyg_data)
+pyg_graph = Data(
+    x=graph.node_features,
+    pos=graph.node_centroids,
+    edge_index=graph.edge_index,
+    edge_attr=graph.edge_features,
+    y=graph.target,
+)
 ```
 
-### Graph Dataset for Multiple Slides
+Validate shapes before training:
 
 ```python
-from pathml.graph import GraphDataset
-from torch_geometric.loader import DataLoader
-
-# Create dataset of graphs from multiple slides
-graphs = []
-for slide in slides:
-    # Build graph for each slide
-    cell_graph = CellGraph.from_instance_map(slide.inst_map, ...)
-    pyg_graph = cell_graph.to_pyg()
-    graphs.append(pyg_graph)
-
-# Create DataLoader
-loader = DataLoader(graphs, batch_size=32, shuffle=True)
-
-# Train GNN
-for batch in loader:
-    output = model(batch)
-    loss = criterion(output, batch.y)
-    loss.backward()
-    optimizer.step()
+assert graph.node_centroids.ndim == 2
+assert graph.node_centroids.shape[1] == 2
+assert graph.node_features.shape[0] == graph.node_centroids.shape[0]
+assert graph.edge_index.shape[0] == 2
+assert int(graph.edge_index.min()) >= 0
+assert int(graph.edge_index.max()) < graph.node_centroids.shape[0]
 ```
 
-## Visualization
+Handle empty/no-edge graphs before `min()`/`max()`. Check finite values,
+self-loops, duplicates, connected components, degree distribution, and edge
+direction.
 
-### Graph Visualization
+## Exchange schema and validator
+
+For safer exchange, use bounded JSON rather than a pickled `.pt` object:
+
+```json
+{
+  "schema_version": "1.0",
+  "slide_id": "slide-001",
+  "coordinate_unit": "um",
+  "nodes": [
+    {"id": "cell-1", "x": 12.5, "y": 30.0, "features": [0.2, 1.3]},
+    {"id": "cell-2", "x": 15.0, "y": 32.0, "features": [0.4, 1.1]}
+  ],
+  "edges": [
+    {"source": "cell-1", "target": "cell-2"}
+  ]
+}
+```
+
+Validate:
+
+```bash
+python scripts/validate_spatial_schema.py graph \
+  --input derived/graph.json \
+  --root . \
+  --max-nodes 100000 \
+  --max-edges 1000000
+```
+
+The validator checks strict JSON, bounded counts, unique node IDs, finite
+coordinates/features, explicit units, valid edge endpoints, self-loops, and
+duplicate edges. It never imports Torch or loads `.pt`.
+
+## HACT cell-to-tissue graphs
+
+HACT represents:
+
+- a cell graph;
+- a tissue/superpixel graph; and
+- an assignment from each cell to a tissue node.
+
+Stable helper:
 
 ```python
-import matplotlib.pyplot as plt
-import networkx as nx
+from pathml.graph import build_assignment_matrix
 
-# Convert to NetworkX
-nx_graph = cell_graph.to_networkx()
-
-# Draw graph with cell positions as layout
-pos = {i: cell_graph.positions[i] for i in range(len(cell_graph.nodes))}
-
-plt.figure(figsize=(12, 12))
-nx.draw_networkx(
-    nx_graph,
-    pos=pos,
-    node_color=cell_type_labels,
-    node_size=50,
-    cmap='tab10',
-    with_labels=False,
-    alpha=0.8
+assignment_sparse = build_assignment_matrix(
+    low_level_centroids=cell_centroids_xy,
+    high_level_map=tissue_instance_map,
+    matrix=False,
 )
-plt.axis('equal')
-plt.title('Cell Graph')
-plt.show()
 ```
 
-### Overlay on Tissue Image
+Inputs must share the same origin, level, orientation, and units.
+`cell_centroids_xy` is `(x, y)`; the helper indexes the image as `[y, x]`.
+Tissue labels should be contiguous positive IDs. Cells on background or outside
+the map require an explicit policy before calling the helper.
 
-```python
-from pathml.graph import visualize_graph_on_image
+The helper truncates centroid coordinates to integers and subtracts one from the
+sampled tissue label. Background label 0 therefore indexes the final tissue
+column rather than producing an unassigned cell. Reject/filter background and
+out-of-bounds centroids first and retain an explicit unassigned-cell record.
 
-# Visualize graph overlaid on tissue
-fig, ax = plt.subplots(figsize=(15, 15))
-ax.imshow(tissue_image)
+`HACTPairData` stores:
 
-# Draw edges
-for edge in cell_graph.edges:
-    node1, node2 = edge
-    pos1 = cell_graph.positions[node1]
-    pos2 = cell_graph.positions[node2]
-    ax.plot([pos1[0], pos2[0]], [pos1[1], pos2[1]], 'b-', alpha=0.3, linewidth=0.5)
-
-# Draw nodes colored by type
-for cell_type in np.unique(cell_type_labels):
-    mask = cell_type_labels == cell_type
-    positions = cell_graph.positions[mask]
-    ax.scatter(positions[:, 0], positions[:, 1], label=f'Type {cell_type}', s=20)
-
-ax.legend()
-ax.axis('off')
-plt.title('Cell Graph on Tissue')
-plt.show()
+```text
+x_cell, edge_index_cell,
+x_tissue, edge_index_tissue,
+assignment, target
 ```
 
-## Complete Workflow Example
+PathML's `EntityDataset` can assemble these from `.pt` files, but stable source
+uses unrestricted PyTorch object loading. Never use it on untrusted artifacts.
 
-```python
-from pathml.core import SlideData, CODEXSlide
-from pathml.preprocessing import Pipeline, CollapseRunsCODEX, SegmentMIF
-from pathml.graph import CellGraph, extract_morphology_features, extract_intensity_features
-import matplotlib.pyplot as plt
+## Graph feature extraction
 
-# 1. Load and preprocess slide
-slide = CODEXSlide('path/to/codex', stain='IF')
+Node features may include:
 
-pipeline = Pipeline([
-    CollapseRunsCODEX(z_slice=2),
-    SegmentMIF(
-        nuclear_channel='DAPI',
-        cytoplasm_channel='CD45',
-        model='mesmer'
-    )
-])
-pipeline.run(slide)
+- morphology from the instance mask;
+- marker intensities from a validated channel manifest;
+- learned image embeddings from a trusted local model;
+- cell-type probabilities rather than hard labels; and
+- normalized position, when scientifically justified.
 
-# 2. Build cell graph
-inst_map = slide.masks['cell_segmentation']
-cell_graph = CellGraph.from_instance_map(
-    inst_map,
-    image=slide.image,
-    connectivity='knn',
-    k=6
-)
+Keep a schema with feature name, unit, transform, missing policy, and training-only
+fit provenance. PathML graph builders do not provide the broad fabricated helper
+catalog (`extract_morphology_features`, `extract_intensity_features`,
+`analyze_neighborhoods`, and similar) shown in older references. Use
+scikit-image/pandas or a reviewed feature package explicitly.
 
-# 3. Extract features
-# Morphological features
-morph_features = extract_morphology_features(
-    inst_map,
-    features=['area', 'perimeter', 'eccentricity', 'solidity']
-)
-cell_graph.add_node_features(morph_features)
+Graph-level topology features can be extracted with
+`pathml.graph.preprocessing.GraphFeatureExtractor`, but disconnected graphs may
+make diameter/radius undefined and some centrality algorithms may not converge.
+Validate topology and handle exceptions rather than dropping graphs silently.
 
-# Intensity features (marker expression)
-intensity_features = extract_intensity_features(
-    inst_map,
-    image=slide.image,
-    channel_names=['DAPI', 'CD3', 'CD4', 'CD8', 'CD20'],
-    statistics=['mean', 'std']
-)
-cell_graph.add_node_features(intensity_features)
+## Boundary and overlap policy
 
-# 4. Spatial analysis
-from pathml.graph import analyze_neighborhoods
+Overlapping tiles can create duplicate cells and duplicated edges. Choose one:
 
-neighborhoods = analyze_neighborhoods(
-    cell_graph,
-    cell_types=cell_type_predictions,
-    radius=100,
-    metrics=['diversity', 'composition']
-)
+- keep only each tile's central crop;
+- reconcile objects by global coordinates and mask overlap;
+- run segmentation on a larger context but emit a nonoverlapping center;
+- construct per-region graphs and join only verified boundary nodes.
 
-# 5. Export for GNN
-pyg_data = cell_graph.to_pyg()
+Record:
 
-# 6. Visualize
-plt.figure(figsize=(15, 15))
-plt.imshow(slide.image)
+- context and emission windows;
+- global instance ID scheme;
+- duplicate matching threshold;
+- edge creation across boundaries;
+- excluded border-object count; and
+- stitching/reconciliation software version.
 
-# Overlay graph
-nx_graph = cell_graph.to_networkx()
-pos = {i: cell_graph.positions[i] for i in range(cell_graph.num_nodes)}
-nx.draw_networkx(
-    nx_graph,
-    pos=pos,
-    node_color=cell_type_predictions,
-    cmap='tab10',
-    node_size=30,
-    with_labels=False
-)
-plt.axis('off')
-plt.title('Cell Graph with Spatial Neighborhood')
-plt.show()
-```
+## Leakage and evaluation
 
-## Performance Considerations
+Graph construction must happen after patient/slide splits. Keep all subgraphs from
+one slide in one split. Fit feature scalers, dimensionality reduction,
+neighborhood thresholds, graph augmentations, and class balancing on training
+graphs only.
 
-**Large tissue sections:**
-- Build graphs tile-by-tile, then merge
-- Use sparse adjacency matrices
-- Leverage GPU for feature extraction
+Report:
 
-**Memory efficiency:**
-- Store only necessary edge features
-- Use int32/float32 instead of int64/float64
-- Batch process multiple slides
+- patient and slide counts, not only graph counts;
+- node/edge distributions by split;
+- site/scanner/stain balance;
+- isolated/disconnected graph handling;
+- external-slide/site validation where relevant;
+- uncertainty and confidence intervals at the patient/slide unit.
 
-**Computational efficiency:**
-- Parallelize feature extraction across cells
-- Use KNN for faster neighbor queries
-- Cache computed features
+Do not treat thousands of correlated nodes or tiles as independent patients.
 
-## Best Practices
+## Sources and further reading
 
-1. **Choose appropriate connectivity:** KNN for uniform analysis, radius for physical interactions, contact for direct cell-cell communication
+API baseline reviewed 2026-10-01 using the released wheel/tag; hosted docs may lag.
 
-2. **Normalize features:** Scale morphological and intensity features for GNN compatibility
-
-3. **Handle edge effects:** Exclude boundary cells or use tissue masks to define valid regions
-
-4. **Validate graph construction:** Visualize graphs on small regions before large-scale processing
-
-5. **Combine multiple feature types:** Morphology + intensity + texture provides rich representations
-
-6. **Consider tissue context:** Tissue type affects appropriate graph parameters (connectivity, radius)
-
-## Common Issues and Solutions
-
-**Issue: Too many/few edges**
-- Adjust k (KNN) or radius (radius-based) parameters
-- Verify pixel-to-micron conversion for biological relevance
-
-**Issue: Memory errors with large graphs**
-- Process tiles separately and merge graphs
-- Use sparse matrix representations
-- Reduce edge features to essential ones
-
-**Issue: Missing cells at tissue boundaries**
-- Apply edge_correction parameter
-- Use tissue masks to exclude invalid regions
-
-**Issue: Inconsistent feature scales**
-- Normalize features: `(x - mean) / std`
-- Use robust scaling for outliers
-
-## Additional Resources
-
-- **PathML Graph API:** https://pathml.readthedocs.io/en/latest/api_graph_reference.html
-- **PyTorch Geometric:** https://pytorch-geometric.readthedocs.io/
-- **NetworkX:** https://networkx.org/
-- **Spatial Statistics:** Baddeley et al., "Spatial Point Patterns: Methodology and Applications with R"
+- Stable graph guide:
+  https://pathml.readthedocs.io/en/stable/graphs.html
+- Stable graph API:
+  https://pathml.readthedocs.io/en/stable/api_graph_reference.html
+- Stable graph builder source:
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/graph/preprocessing.py
+- Stable graph schema/helpers:
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/graph/utils.py
+- Pati et al. (2022), HACT:
+  https://doi.org/10.1016/j.media.2021.102264
+- Jaume et al. (2021), histocartography:
+  https://proceedings.mlr.press/v156/jaume21a.html

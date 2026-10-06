@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 9 * * 1" # Every Monday at 09:00 UTC
   workflow_dispatch: # Allow manual trigger
+    inputs:
+      full_scan:
+        description: "Rescan every skill, ignoring cached findings"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -11,7 +16,11 @@ permissions:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # Scans run concurrently and reuse findings for unchanged skills, so a
+    # typical incremental run is minutes. The headroom is for a full rescan
+    # (triggered by a scanner/model change or the 30-day backstop) plus the
+    # scanner's own rate-limit retries.
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v6
@@ -28,17 +37,35 @@ jobs:
       - name: Run security scan
         env:
           SKILL_SCANNER_LLM_API_KEY: ${{ secrets.SKILL_SCANNER_LLM_API_KEY }}
-          SKILL_SCANNER_LLM_MODEL: ${{ vars.SKILL_SCANNER_LLM_MODEL || 'claude-sonnet-4-6' }}
+          SKILL_SCANNER_LLM_MODEL: ${{ vars.SKILL_SCANNER_LLM_MODEL || 'claude-opus-5' }}
+          # Each skill scan is blocked on LLM network I/O, so concurrency is
+          # bounded by API rate limits rather than by the runner. Lower this if
+          # runs start hitting sustained 429s.
+          SKILL_SCAN_WORKERS: ${{ vars.SKILL_SCAN_WORKERS || '8' }}
+          SKILL_SCAN_FULL: ${{ inputs.full_scan && '1' || '' }}
         run: uv run python scan_skills.py
 
-      - name: Commit updated SECURITY.md
+      - name: Upload report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: |
+            docs/security-report.md
+            docs/security-report.json
+          if-no-files-found: warn
+
+      - name: Commit updated security report
         run: |
-          git diff --quiet SECURITY.md && exit 0
+          if [ -z "$(git status --porcelain docs/security-report.md docs/security-report.json)" ]; then
+            echo "Report unchanged; nothing to commit."
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git stash --include-untracked
           git pull --rebase
           git stash pop || true
-          git add SECURITY.md
+          git add docs/security-report.md docs/security-report.json
           git commit -m "chore: update security scan report [skip ci]"
           git push

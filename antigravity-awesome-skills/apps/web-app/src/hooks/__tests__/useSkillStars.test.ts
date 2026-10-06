@@ -59,6 +59,33 @@ describe('useSkillStars', () => {
 
       consoleSpy.mockRestore();
     });
+
+    it('should ignore non-boolean values in stored save records', () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        'string-false': 'false',
+        'string-true': 'true',
+        'number-one': 1,
+        'real-save': true,
+      }));
+
+      const falseString = renderHook(() => useSkillStars('string-false'));
+      const trueString = renderHook(() => useSkillStars('string-true'));
+      const numberOne = renderHook(() => useSkillStars('number-one'));
+      const realSave = renderHook(() => useSkillStars('real-save'));
+
+      expect(falseString.result.current.hasSaved).toBe(false);
+      expect(trueString.result.current.hasSaved).toBe(false);
+      expect(numberOne.result.current.hasSaved).toBe(false);
+      expect(realSave.result.current.hasSaved).toBe(true);
+    });
+
+    it('should ignore array-shaped stored data', () => {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([true]));
+
+      const { result } = renderHook(() => useSkillStars('0'));
+
+      expect(result.current.hasSaved).toBe(false);
+    });
   });
 
   describe('handleSaveClick', () => {
@@ -85,7 +112,7 @@ describe('useSkillStars', () => {
       expect(result.current.hasSaved).toBe(true);
     });
 
-    it('should optimistically mark the skill as saved', async () => {
+    it('should mark the skill as saved after persistence succeeds', async () => {
       const { result } = renderHook(() => useSkillStars('optimistic-skill'));
 
       expect(result.current.hasSaved).toBe(false);
@@ -131,7 +158,7 @@ describe('useSkillStars', () => {
     it('should handle setItem errors gracefully', async () => {
       const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
-      localStorage.setItem = vi.fn(() => {
+      const setItemSpy = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
         throw new Error('Storage quota exceeded');
       });
 
@@ -141,13 +168,44 @@ describe('useSkillStars', () => {
         await result.current.handleSaveClick();
       });
 
-      expect(result.current.hasSaved).toBe(true);
+      expect(result.current.hasSaved).toBe(false);
+      expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
       expect(consoleSpy).toHaveBeenCalledWith(
         `Failed to save ${STORAGE_KEY} to localStorage:`,
         expect.any(Error)
       );
 
+      setItemSpy.mockRestore();
       consoleSpy.mockRestore();
+    });
+  });
+
+  describe('Cross-tab / cross-hook sync', () => {
+    it('should sync another mounted hook after a local save', async () => {
+      const first = renderHook(() => useSkillStars('shared-skill'));
+      const second = renderHook(() => useSkillStars('shared-skill'));
+
+      await act(async () => {
+        await first.result.current.handleSaveClick();
+      });
+
+      expect(first.result.current.hasSaved).toBe(true);
+      await waitFor(() => expect(second.result.current.hasSaved).toBe(true));
+    });
+
+    it('should sync when another tab updates browser storage', async () => {
+      const { result } = renderHook(() => useSkillStars('external-skill'));
+      const stored = JSON.stringify({ 'external-skill': true });
+
+      act(() => {
+        localStorage.setItem(STORAGE_KEY, stored);
+        window.dispatchEvent(new StorageEvent('storage', {
+          key: STORAGE_KEY,
+          newValue: stored,
+        }));
+      });
+
+      await waitFor(() => expect(result.current.hasSaved).toBe(true));
     });
   });
 

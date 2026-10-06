@@ -1,169 +1,226 @@
 #!/usr/bin/env python3
-"""
-Structure file format converter using pymatgen.
+"""Convert one local periodic structure with explicit loss acknowledgement."""
 
-This script converts between different structure file formats supported by pymatgen.
-Supports automatic format detection and batch conversion.
-
-Usage:
-    python structure_converter.py input_file output_file
-    python structure_converter.py input_file --format cif
-    python structure_converter.py *.cif --output-dir ./converted --format poscar
-
-Examples:
-    python structure_converter.py POSCAR structure.cif
-    python structure_converter.py structure.cif --format json
-    python structure_converter.py *.vasp --output-dir ./cif_files --format cif
-"""
+from __future__ import annotations
 
 import argparse
-import sys
-from pathlib import Path
-from typing import List
+import warnings
 
-try:
-    from pymatgen.core import Structure
-except ImportError:
-    print("Error: pymatgen is not installed. Install with: pip install pymatgen")
-    sys.exit(1)
-
-
-def convert_structure(input_path: Path, output_path: Path = None, output_format: str = None) -> bool:
-    """
-    Convert a structure file to a different format.
-
-    Args:
-        input_path: Path to input structure file
-        output_path: Path to output file (optional if output_format is specified)
-        output_format: Target format (e.g., 'cif', 'poscar', 'json', 'yaml')
-
-    Returns:
-        True if conversion succeeded, False otherwise
-    """
-    try:
-        # Read structure with automatic format detection
-        struct = Structure.from_file(str(input_path))
-        print(f"✓ Read structure: {struct.composition.reduced_formula} from {input_path}")
-
-        # Determine output path
-        if output_path is None and output_format:
-            output_path = input_path.with_suffix(f".{output_format}")
-        elif output_path is None:
-            print("Error: Must specify either output_path or output_format")
-            return False
-
-        # Write structure
-        struct.to(filename=str(output_path))
-        print(f"✓ Wrote structure to {output_path}")
-
-        return True
-
-    except Exception as e:
-        print(f"✗ Error converting {input_path}: {e}")
-        return False
+from _common import (
+    CliError,
+    DEFAULT_MAX_INPUT_BYTES,
+    DEFAULT_MAX_OUTPUT_BYTES,
+    DEFAULT_MAX_SITES,
+    checked_output_file,
+    emit_json,
+    load_structure,
+    positive_int,
+    structure_oxidation_summary,
+    write_text_new,
+)
 
 
-def batch_convert(input_files: List[Path], output_dir: Path, output_format: str) -> None:
-    """
-    Convert multiple structure files to a common format.
-
-    Args:
-        input_files: List of input structure files
-        output_dir: Directory for output files
-        output_format: Target format for all files
-    """
-    output_dir.mkdir(parents=True, exist_ok=True)
-
-    success_count = 0
-    for input_file in input_files:
-        output_file = output_dir / f"{input_file.stem}.{output_format}"
-        if convert_structure(input_file, output_file):
-            success_count += 1
-
-    print(f"\n{'='*60}")
-    print(f"Conversion complete: {success_count}/{len(input_files)} files converted successfully")
+FORMATS = ("cif", "cssr", "json", "poscar", "xsf", "xyz")
+NONPERIODIC_TARGETS = {"xyz"}
+LIMITED_TARGETS = {"cssr", "poscar", "xsf", "xyz"}
 
 
-def main():
+def conversion_risks(structure: object, output_format: str) -> list[str]:
+    """Describe representation that a target format may not preserve."""
+    risks: list[str] = []
+    oxidation = structure_oxidation_summary(structure)
+    site_properties = sorted(structure.site_properties)
+    if output_format != "json" and oxidation["decorated_species_components"]:
+        risks.append("oxidation-state decoration may not round-trip")
+    if output_format != "json" and site_properties:
+        risks.append(
+            "site properties may be omitted or represented format-specifically: "
+            + ", ".join(site_properties[:20])
+        )
+    if output_format in NONPERIODIC_TARGETS:
+        risks.append("target does not preserve lattice vectors or periodicity")
+    if output_format in LIMITED_TARGETS and not structure.is_ordered:
+        risks.append("target cannot faithfully represent partial occupancies/disorder")
+    return risks
+
+
+def render_structure(
+    structure: object,
+    *,
+    output_format: str,
+    coordinate_mode: str,
+) -> str:
+    """Render a structure without giving pymatgen an output path."""
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        if output_format == "poscar":
+            from pymatgen.io.vasp import Poscar
+
+            text = Poscar(structure).get_str(direct=coordinate_mode == "direct")
+        elif output_format == "xyz":
+            if coordinate_mode != "not-applicable":
+                raise CliError("--coordinate-mode is only meaningful for POSCAR output")
+            from pymatgen.io.xyz import XYZ
+
+            # Structure.to() does not register XYZ; this writer explicitly drops PBC.
+            text = str(XYZ(structure))
+        else:
+            if coordinate_mode != "not-applicable":
+                raise CliError(
+                    "--coordinate-mode is only meaningful for POSCAR output"
+                )
+            text = structure.to(fmt=output_format)
+    if caught:
+        messages = "; ".join(str(item.message) for item in caught[:10])
+        raise CliError(f"writer emitted warnings; conversion stopped: {messages}")
+    return text
+
+
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Convert structure files between different formats using pymatgen",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Supported formats:
-  Input:  CIF, POSCAR, CONTCAR, XYZ, PDB, JSON, YAML, and many more
-  Output: CIF, POSCAR, XYZ, PDB, JSON, YAML, XSF, and many more
-
-Examples:
-  %(prog)s POSCAR structure.cif
-  %(prog)s structure.cif --format json
-  %(prog)s *.cif --output-dir ./poscar_files --format poscar
-        """
+        description=(
+            "Convert one bounded local periodic structure. The original and any "
+            "existing output are never overwritten."
+        )
     )
-
+    parser.add_argument("input", help="Existing local structure file")
+    parser.add_argument("output", help="New output file")
     parser.add_argument(
-        "input",
-        nargs="+",
-        help="Input structure file(s). Supports wildcards for batch conversion."
+        "--output-format",
+        required=True,
+        choices=FORMATS,
+        help="Explicit target format; filename inference is not used",
     )
-
     parser.add_argument(
-        "output",
-        nargs="?",
-        help="Output structure file (ignored if --output-dir is used)"
+        "--coordinate-mode",
+        choices=("direct", "cartesian", "not-applicable"),
+        default="not-applicable",
+        help="POSCAR coordinate mode; use not-applicable for other formats",
     )
-
     parser.add_argument(
-        "--format", "-f",
-        help="Output format (e.g., cif, poscar, json, yaml, xyz)"
+        "--structure-index",
+        type=int,
+        default=0,
+        help="Zero-based structure index for a multi-block CIF (default: 0)",
     )
-
     parser.add_argument(
-        "--output-dir", "-o",
-        type=Path,
-        help="Output directory for batch conversion"
+        "--allow-lossy",
+        action="store_true",
+        help="Acknowledge every representation risk listed in the report",
     )
+    parser.add_argument(
+        "--acknowledge-parser-warnings",
+        action="store_true",
+        help="Continue only after reviewing warnings emitted while parsing",
+    )
+    parser.add_argument(
+        "--max-input-bytes",
+        type=positive_int,
+        default=DEFAULT_MAX_INPUT_BYTES,
+    )
+    parser.add_argument(
+        "--max-output-bytes",
+        type=positive_int,
+        default=DEFAULT_MAX_OUTPUT_BYTES,
+    )
+    parser.add_argument(
+        "--max-sites",
+        type=positive_int,
+        default=DEFAULT_MAX_SITES,
+    )
+    return parser
 
-    args = parser.parse_args()
 
-    # Expand wildcards and convert to Path objects
-    input_files = []
-    for pattern in args.input:
-        matches = list(Path.cwd().glob(pattern))
-        if matches:
-            input_files.extend(matches)
-        else:
-            input_files.append(Path(pattern))
-
-    # Filter to files only
-    input_files = [f for f in input_files if f.is_file()]
-
-    if not input_files:
-        print("Error: No input files found")
-        sys.exit(1)
-
-    # Batch conversion mode
-    if args.output_dir or len(input_files) > 1:
-        if not args.format:
-            print("Error: --format is required for batch conversion")
-            sys.exit(1)
-
-        output_dir = args.output_dir or Path("./converted")
-        batch_convert(input_files, output_dir, args.format)
-
-    # Single file conversion
-    elif len(input_files) == 1:
-        input_file = input_files[0]
-
-        if args.output:
-            output_file = Path(args.output)
-            convert_structure(input_file, output_file)
-        elif args.format:
-            convert_structure(input_file, output_format=args.format)
-        else:
-            print("Error: Must specify output file or --format")
-            parser.print_help()
-            sys.exit(1)
+def main() -> int:
+    args = build_parser().parse_args()
+    try:
+        if args.structure_index < 0:
+            raise CliError("--structure-index must be non-negative")
+        if args.output_format == "poscar" and args.coordinate_mode == "not-applicable":
+            raise CliError("POSCAR output requires --coordinate-mode direct|cartesian")
+        structure, input_path, parse_report = load_structure(
+            args.input,
+            structure_index=args.structure_index,
+            max_bytes=args.max_input_bytes,
+            max_sites=args.max_sites,
+        )
+        output_path = checked_output_file(
+            args.output,
+            input_paths=(input_path,),
+        )
+        parser_warnings = [
+            *parse_report["python_warnings"],
+            *parse_report["parser_warnings"],
+        ]
+        if parser_warnings and not args.acknowledge_parser_warnings:
+            raise CliError(
+                "parser warnings require --acknowledge-parser-warnings after review: "
+                + "; ".join(parser_warnings[:10])
+            )
+        risks = conversion_risks(structure, args.output_format)
+        if risks and not args.allow_lossy:
+            raise CliError(
+                "conversion may be lossy; review the I/O plan and rerun with "
+                "--allow-lossy: "
+                + "; ".join(risks)
+            )
+        if not structure.is_ordered and args.output_format in LIMITED_TARGETS:
+            raise CliError(
+                f"{args.output_format} cannot faithfully encode this disordered "
+                "structure; choose JSON or CIF"
+            )
+        text = render_structure(
+            structure,
+            output_format=args.output_format,
+            coordinate_mode=args.coordinate_mode,
+        )
+        write_text_new(
+            output_path,
+            text,
+            max_bytes=args.max_output_bytes,
+        )
+        parse_report["warnings_acknowledged"] = bool(
+            args.acknowledge_parser_warnings
+        )
+        emit_json(
+            {
+                "ok": True,
+                "action": "structure_conversion",
+                "input": parse_report,
+                "output": {
+                    "name": output_path.name,
+                    "format": args.output_format,
+                    "coordinate_mode": args.coordinate_mode,
+                    "bytes": output_path.stat().st_size,
+                    "created": True,
+                    "overwrote_existing": False,
+                },
+                "structure": {
+                    "formula": structure.composition.reduced_formula,
+                    "sites": len(structure),
+                    "ordered": structure.is_ordered,
+                    "periodic_boundary_conditions": list(structure.lattice.pbc),
+                    "oxidation_states": structure_oxidation_summary(structure),
+                },
+                "representation_risks": risks,
+                "losses_acknowledged": bool(args.allow_lossy),
+                "scientific_equivalence_verified": False,
+            }
+        )
+        return 0
+    except (CliError, ImportError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        emit_json(
+            {
+                "ok": False,
+                "error": str(exc),
+                "output_created": False,
+                "hint": (
+                    "Install the pinned snapshot with uv if pymatgen is missing."
+                ),
+            }
+        )
+        return 2
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

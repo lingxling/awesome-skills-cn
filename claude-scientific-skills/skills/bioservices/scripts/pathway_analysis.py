@@ -3,8 +3,8 @@
 KEGG Pathway Network Analysis
 
 This script analyzes all pathways for an organism and extracts:
-- Pathway sizes (number of genes)
-- Protein-protein interactions
+- Pathway sizes (number of KGML entries)
+- KGML relation subtype records
 - Interaction type distributions
 - Network data in various formats (CSV, SIF)
 
@@ -27,6 +27,7 @@ import sys
 import os
 import argparse
 import csv
+from urllib.parse import quote
 from collections import Counter
 from bioservices import KEGG
 
@@ -35,10 +36,12 @@ def get_all_pathways(kegg, organism):
     """Get all pathway IDs for organism."""
     print(f"\nRetrieving pathways for {organism}...")
 
-    kegg.organism = organism
-    pathway_ids = kegg.pathwayIds
+    raw = kegg.services.http_get("list/pathway/" + quote(organism, safe=""), frmt="txt")
+    if not isinstance(raw, str) or (raw.strip() and "\t" not in raw):
+        raise ValueError("KEGG pathway listing failed or returned an unexpected response")
+    pathway_ids = [line.split("\t", 1)[0] for line in raw.splitlines() if line]
 
-    print(f"✓ Found {len(pathway_ids)} pathways")
+    print(f"[OK] Found {len(pathway_ids)} pathways")
 
     return pathway_ids
 
@@ -55,7 +58,7 @@ def analyze_pathway(kegg, pathway_id):
         # Count relation types
         relation_types = Counter()
         for rel in relations:
-            rel_type = rel.get('name', 'unknown')
+            rel_type = rel.get('name') or 'unknown'
             relation_types[rel_type] += 1
 
         # Get pathway name
@@ -82,7 +85,7 @@ def analyze_pathway(kegg, pathway_id):
         return result
 
     except Exception as e:
-        print(f"  ✗ Error analyzing {pathway_id}: {e}")
+        print(f"  [FAIL] Error analyzing {pathway_id}: {e}")
         return None
 
 
@@ -90,7 +93,7 @@ def analyze_all_pathways(kegg, pathway_ids, limit=None):
     """Analyze all pathways."""
     if limit:
         pathway_ids = pathway_ids[:limit]
-        print(f"\n⚠ Limiting analysis to first {limit} pathways")
+        print(f"\n[WARN] Limiting analysis to first {limit} pathways")
 
     print(f"\nAnalyzing {len(pathway_ids)} pathways...")
 
@@ -102,7 +105,7 @@ def analyze_all_pathways(kegg, pathway_ids, limit=None):
         if result:
             results.append(result)
 
-    print(f"\n✓ Successfully analyzed {len(results)}/{len(pathway_ids)} pathways")
+    print(f"\n[OK] Successfully analyzed {len(results)}/{len(pathway_ids)} pathways")
 
     return results
 
@@ -118,8 +121,8 @@ def save_pathway_summary(results, output_file):
         writer.writerow([
             'Pathway_ID',
             'Pathway_Name',
-            'Num_Genes',
-            'Num_Interactions',
+            'Num_Entries',
+            'Num_Relation_Records',
             'Activation',
             'Inhibition',
             'Phosphorylation',
@@ -144,7 +147,7 @@ def save_pathway_summary(results, output_file):
                     if k not in ['activation', 'inhibition', 'phosphorylation', 'binding/association'])
             ])
 
-    print(f"✓ Summary saved")
+    print(f"[OK] Summary saved")
 
 
 def save_interactions_sif(results, output_file):
@@ -158,12 +161,12 @@ def save_interactions_sif(results, output_file):
             for rel in result['relations']:
                 entry1 = rel.get('entry1', '')
                 entry2 = rel.get('entry2', '')
-                interaction_type = rel.get('name', 'interaction')
+                interaction_type = rel.get('name') or 'interaction'
 
                 # Write SIF format: source\tinteraction\ttarget
-                f.write(f"{entry1}\t{interaction_type}\t{entry2}\n")
+                f.write(f"{pathway_id}#{entry1}\t{interaction_type}\t{pathway_id}#{entry2}\n")
 
-    print(f"✓ Interactions saved")
+    print(f"[OK] Interactions saved")
 
 
 def save_detailed_pathway_info(results, output_dir):
@@ -185,11 +188,11 @@ def save_detailed_pathway_info(results, output_dir):
                 writer.writerow([
                     rel.get('entry1', ''),
                     rel.get('entry2', ''),
-                    rel.get('name', 'unknown'),
+                    rel.get('name') or 'unknown',
                     rel.get('link', 'unknown')
                 ])
 
-    print(f"✓ Detailed files saved for {len(results)} pathways")
+    print(f"[OK] Detailed files saved for {len(results)} pathways")
 
 
 def print_statistics(results):
@@ -205,14 +208,14 @@ def print_statistics(results):
 
     print(f"\nOverall:")
     print(f"  Total pathways: {total_pathways}")
-    print(f"  Total genes/proteins: {total_genes}")
-    print(f"  Total interactions: {total_interactions}")
+    print(f"  Total KGML entries (including groups/compounds/maps): {total_genes}")
+    print(f"  Total relation subtype records: {total_interactions}")
 
     # Largest pathways
-    print(f"\nLargest pathways (by gene count):")
+    print(f"\nLargest pathways (by entry count):")
     sorted_by_size = sorted(results, key=lambda x: x['num_entries'], reverse=True)
     for i, result in enumerate(sorted_by_size[:10], 1):
-        print(f"  {i}. {result['pathway_id']}: {result['num_entries']} genes")
+        print(f"  {i}. {result['pathway_id']}: {result['num_entries']} entries")
         print(f"     {result['pathway_name']}")
 
     # Most connected pathways
@@ -268,19 +271,20 @@ Organism codes:
 
     # Initialize KEGG
     kegg = KEGG()
+    kegg.services.url = "https://rest.kegg.jp"
 
     # Get all pathways
     pathway_ids = get_all_pathways(kegg, args.organism)
 
     if not pathway_ids:
-        print(f"\n✗ No pathways found for {args.organism}")
+        print(f"\n[FAIL] No pathways found for {args.organism}")
         sys.exit(1)
 
     # Analyze pathways
     results = analyze_all_pathways(kegg, pathway_ids, args.limit)
 
     if not results:
-        print("\n✗ No pathways successfully analyzed")
+        print("\n[FAIL] No pathways successfully analyzed")
         sys.exit(1)
 
     # Print statistics

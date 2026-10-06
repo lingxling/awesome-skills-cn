@@ -1,233 +1,416 @@
 #!/usr/bin/env python3
-"""
-Phase diagram generator using Materials Project data.
+"""Build a local phase diagram from a strict, provenance-bearing JSON dataset."""
 
-This script generates phase diagrams for chemical systems using data from the
-Materials Project database via pymatgen's MPRester.
-
-Usage:
-    python phase_diagram_generator.py chemical_system [options]
-
-Examples:
-    python phase_diagram_generator.py Li-Fe-O
-    python phase_diagram_generator.py Li-Fe-O --output li_fe_o_pd.png
-    python phase_diagram_generator.py Fe-O --show
-    python phase_diagram_generator.py Li-Fe-O --analyze "LiFeO2"
-"""
+from __future__ import annotations
 
 import argparse
-import os
-import sys
+import math
+import tempfile
 from pathlib import Path
+from typing import Any
 
-try:
+from _common import (
+    ABSOLUTE_MAX_OUTPUT_BYTES,
+    CliError,
+    DEFAULT_MAX_INPUT_BYTES,
+    DEFAULT_MAX_OUTPUT_BYTES,
+    atomic_link_from_temp,
+    checked_output_file,
+    emit_json,
+    finite_float,
+    load_strict_json,
+    positive_int,
+    write_json_new,
+)
+
+
+TOP_LEVEL_KEYS = {
+    "schema_version",
+    "energy_unit",
+    "energy_basis",
+    "provenance",
+    "entries",
+}
+PROVENANCE_KEYS = {
+    "source",
+    "method",
+    "retrieved_at",
+    "database_version",
+    "license",
+    "citation",
+    "notes",
+}
+ENTRY_KEYS = {"entry_id", "composition", "energy_eV", "provenance"}
+
+
+def validate_provenance(value: Any, label: str) -> dict[str, str]:
+    """Validate a small string-only provenance object."""
+    if not isinstance(value, dict):
+        raise CliError(f"{label} must be an object")
+    unknown = set(value) - PROVENANCE_KEYS
+    if unknown:
+        raise CliError(f"{label} has unknown keys: {sorted(unknown)}")
+    if not isinstance(value.get("source"), str) or not value["source"].strip():
+        raise CliError(f"{label}.source must be a non-empty string")
+    result: dict[str, str] = {}
+    for key, item in value.items():
+        if not isinstance(item, str) or len(item) > 2000:
+            raise CliError(f"{label}.{key} must be a string of at most 2000 chars")
+        result[key] = item
+    return result
+
+
+def entries_from_payload(
+    payload: Any,
+    *,
+    max_entries: int,
+) -> tuple[list[Any], dict[str, Any]]:
+    """Validate the strict schema and construct plain ComputedEntry objects."""
+    if not isinstance(payload, dict):
+        raise CliError("top-level JSON value must be an object")
+    missing = TOP_LEVEL_KEYS - set(payload)
+    unknown = set(payload) - TOP_LEVEL_KEYS
+    if missing or unknown:
+        raise CliError(
+            f"top-level keys mismatch; missing={sorted(missing)}, "
+            f"unknown={sorted(unknown)}"
+        )
+    if payload["schema_version"] != "1.0":
+        raise CliError("schema_version must be exactly '1.0'")
+    if payload["energy_unit"] != "eV":
+        raise CliError("energy_unit must be exactly 'eV'")
+    if payload["energy_basis"] != "total_per_entry":
+        raise CliError("energy_basis must be exactly 'total_per_entry'")
+    dataset_provenance = validate_provenance(
+        payload["provenance"], "provenance"
+    )
+    rows = payload["entries"]
+    if not isinstance(rows, list) or not rows:
+        raise CliError("entries must be a non-empty array")
+    if len(rows) > max_entries:
+        raise CliError(f"entries exceeds the {max_entries}-entry limit")
+
     from pymatgen.core import Composition
-    from pymatgen.analysis.phase_diagram import PhaseDiagram, PDPlotter
-except ImportError:
-    print("Error: pymatgen is not installed. Install with: pip install pymatgen")
-    sys.exit(1)
+    from pymatgen.entries.computed_entries import ComputedEntry
 
-try:
-    from mp_api.client import MPRester
-except ImportError:
-    print("Error: mp-api is not installed. Install with: pip install mp-api")
-    sys.exit(1)
-
-
-def get_api_key() -> str:
-    """Get Materials Project API key from environment."""
-    api_key = os.environ.get("MP_API_KEY")
-    if not api_key:
-        print("Error: MP_API_KEY environment variable not set.")
-        print("Get your API key from https://next-gen.materialsproject.org/")
-        print("Then set it with: export MP_API_KEY='your_key_here'")
-        sys.exit(1)
-    return api_key
-
-
-def generate_phase_diagram(chemsys: str, args):
-    """
-    Generate and analyze phase diagram for a chemical system.
-
-    Args:
-        chemsys: Chemical system (e.g., "Li-Fe-O")
-        args: Command line arguments
-    """
-    api_key = get_api_key()
-
-    print(f"\n{'='*60}")
-    print(f"PHASE DIAGRAM: {chemsys}")
-    print(f"{'='*60}\n")
-
-    # Get entries from Materials Project
-    print("Fetching data from Materials Project...")
-    with MPRester(api_key) as mpr:
-        entries = mpr.get_entries_in_chemsys(chemsys)
-
-    print(f"✓ Retrieved {len(entries)} entries")
-
-    if len(entries) == 0:
-        print(f"Error: No entries found for chemical system {chemsys}")
-        sys.exit(1)
-
-    # Build phase diagram
-    print("Building phase diagram...")
-    pd = PhaseDiagram(entries)
-
-    # Get stable entries
-    stable_entries = pd.stable_entries
-    print(f"✓ Phase diagram constructed with {len(stable_entries)} stable phases")
-
-    # Print stable phases
-    print("\n--- STABLE PHASES ---")
-    for entry in stable_entries:
-        formula = entry.composition.reduced_formula
-        energy = entry.energy_per_atom
-        print(f"  {formula:<20} E = {energy:.4f} eV/atom")
-
-    # Analyze specific composition if requested
-    if args.analyze:
-        print(f"\n--- STABILITY ANALYSIS: {args.analyze} ---")
+    entries: list[Any] = []
+    seen_ids: set[str] = set()
+    provenance_by_id: dict[str, dict[str, str]] = {}
+    for index, row in enumerate(rows):
+        label = f"entries[{index}]"
+        if not isinstance(row, dict) or set(row) != ENTRY_KEYS:
+            actual = sorted(row) if isinstance(row, dict) else type(row).__name__
+            raise CliError(f"{label} must contain exactly {sorted(ENTRY_KEYS)}; got {actual}")
+        entry_id = row["entry_id"]
+        if (
+            not isinstance(entry_id, str)
+            or not entry_id.strip()
+            or len(entry_id) > 200
+        ):
+            raise CliError(f"{label}.entry_id must be a short non-empty string")
+        if entry_id in seen_ids:
+            raise CliError(f"duplicate entry_id: {entry_id!r}")
+        seen_ids.add(entry_id)
+        formula = row["composition"]
+        if not isinstance(formula, str) or len(formula) > 500:
+            raise CliError(f"{label}.composition must be a formula string")
         try:
-            comp = Composition(args.analyze)
+            composition = Composition(formula, strict=True)
+        except (TypeError, ValueError) as exc:
+            raise CliError(f"{label}.composition is invalid: {exc}") from exc
+        if composition.num_atoms <= 0:
+            raise CliError(f"{label}.composition must contain positive amounts")
+        energy = finite_float(row["energy_eV"], f"{label}.energy_eV")
+        entry_provenance = validate_provenance(
+            row["provenance"], f"{label}.provenance"
+        )
+        provenance_by_id[entry_id] = entry_provenance
+        entries.append(
+            ComputedEntry(
+                composition,
+                energy,
+                entry_id=entry_id,
+                data={"provenance": entry_provenance},
+            )
+        )
+    return entries, {
+        "dataset": dataset_provenance,
+        "entries": provenance_by_id,
+    }
 
-            # Find closest entry
-            closest_entry = None
-            min_distance = float('inf')
 
-            for entry in entries:
-                if entry.composition.reduced_formula == comp.reduced_formula:
-                    closest_entry = entry
-                    break
+def phase_report(
+    entries: list[Any],
+    provenance: dict[str, Any],
+    *,
+    analyze: list[str],
+    max_report_entries: int,
+) -> tuple[dict[str, Any], Any]:
+    """Construct a phase diagram and a bounded scientific report."""
+    from pymatgen.analysis.phase_diagram import PhaseDiagram
+    from pymatgen.core import Composition
 
-            if closest_entry:
-                # Calculate energy above hull
-                e_above_hull = pd.get_e_above_hull(closest_entry)
-                print(f"Energy above hull:    {e_above_hull:.4f} eV/atom")
+    diagram = PhaseDiagram(entries)
+    stable = set(diagram.stable_entries)
+    ordered_entries = sorted(
+        entries,
+        key=lambda item: (
+            item.composition.reduced_formula,
+            float(item.energy_per_atom),
+            str(item.entry_id),
+        ),
+    )
+    rows: list[dict[str, Any]] = []
+    for entry in ordered_entries[:max_report_entries]:
+        rows.append(
+            {
+                "entry_id": str(entry.entry_id),
+                "formula": entry.composition.reduced_formula,
+                "energy_eV_total": float(entry.energy),
+                "energy_eV_per_atom": float(entry.energy_per_atom),
+                "formation_energy_eV_per_atom": float(
+                    diagram.get_form_energy_per_atom(entry)
+                ),
+                "energy_above_hull_eV_per_atom": float(
+                    diagram.get_e_above_hull(entry)
+                ),
+                "on_computed_convex_hull": entry in stable,
+            }
+        )
 
-                if e_above_hull < 0.001:
-                    print(f"Status:               STABLE (on convex hull)")
-                elif e_above_hull < 0.05:
-                    print(f"Status:               METASTABLE (nearly stable)")
-                else:
-                    print(f"Status:               UNSTABLE")
-
-                    # Get decomposition
-                    decomp = pd.get_decomposition(comp)
-                    print(f"\nDecomposes to:")
-                    for entry, fraction in decomp.items():
-                        formula = entry.composition.reduced_formula
-                        print(f"  {fraction:.3f} × {formula}")
-
-                    # Get reaction energy
-                    rxn_energy = pd.get_equilibrium_reaction_energy(closest_entry)
-                    print(f"\nDecomposition energy: {rxn_energy:.4f} eV/atom")
-
-            else:
-                print(f"No entry found for composition {args.analyze}")
-                print("Checking stability of hypothetical composition...")
-
-                # Analyze hypothetical composition
-                decomp = pd.get_decomposition(comp)
-                print(f"\nWould decompose to:")
-                for entry, fraction in decomp.items():
-                    formula = entry.composition.reduced_formula
-                    print(f"  {fraction:.3f} × {formula}")
-
-        except Exception as e:
-            print(f"Error analyzing composition: {e}")
-
-    # Get chemical potentials
-    if args.chemical_potentials:
-        print("\n--- CHEMICAL POTENTIALS ---")
-        print("(at stability regions)")
+    analyses: list[dict[str, Any]] = []
+    for formula in analyze:
         try:
-            chempots = pd.get_all_chempots()
-            for element, potentials in chempots.items():
-                print(f"\n{element}:")
-                for potential in potentials[:5]:  # Show first 5
-                    print(f"  {potential:.4f} eV")
-        except Exception as e:
-            print(f"Could not calculate chemical potentials: {e}")
+            composition = Composition(formula, strict=True)
+            decomposition = diagram.get_decomposition(composition)
+            matches = [
+                entry
+                for entry in entries
+                if entry.composition.fractional_composition
+                == composition.fractional_composition
+            ]
+            analyses.append(
+                {
+                    "query": formula,
+                    "reduced_formula": composition.reduced_formula,
+                    "matching_entries": [
+                        {
+                            "entry_id": str(entry.entry_id),
+                            "energy_above_hull_eV_per_atom": float(
+                                diagram.get_e_above_hull(entry)
+                            ),
+                        }
+                        for entry in sorted(
+                            matches,
+                            key=lambda item: (
+                                float(item.energy_per_atom),
+                                str(item.entry_id),
+                            ),
+                        )
+                    ],
+                    "computed_hull_decomposition": [
+                        {
+                            "entry_id": str(entry.entry_id),
+                            "formula": entry.composition.reduced_formula,
+                            "fraction": float(fraction),
+                        }
+                        for entry, fraction in sorted(
+                            decomposition.items(),
+                            key=lambda item: str(item[0].entry_id),
+                        )
+                    ],
+                }
+            )
+        except (TypeError, ValueError) as exc:
+            analyses.append(
+                {
+                    "query": formula,
+                    "error": f"{type(exc).__name__}: {exc}"[:500],
+                }
+            )
 
-    # Plot phase diagram
-    print("\n--- GENERATING PLOT ---")
-    plotter = PDPlotter(pd, show_unstable=args.show_unstable)
+    report = {
+        "ok": True,
+        "analysis": "local_computed_phase_diagram",
+        "units": {
+            "input_energy": "eV total per entry",
+            "reported_normalized_energy": "eV/atom",
+        },
+        "chemical_system": "-".join(str(element) for element in diagram.elements),
+        "elements": [str(element) for element in diagram.elements],
+        "entry_count": len(entries),
+        "stable_entry_count": len(stable),
+        "entries": rows,
+        "entries_omitted": max(0, len(entries) - max_report_entries),
+        "composition_analyses": analyses,
+        "provenance": provenance["dataset"],
+        "interpretation_limits": [
+            "The hull is conditional on this exact entry set and energy model.",
+            "Energies from incompatible methods or correction schemes must not be mixed.",
+            "Computed stability is not experimental truth or a synthesis guarantee.",
+            "Finite-temperature, pressure, kinetic, disorder, and uncertainty effects are absent unless encoded upstream.",
+        ],
+        "experimental_validity_established": False,
+    }
+    return report, diagram
 
-    if args.output:
-        output_path = Path(args.output)
-        plotter.write_image(str(output_path), image_format=output_path.suffix[1:])
-        print(f"✓ Phase diagram saved to {output_path}")
 
-    if args.show:
-        print("Opening interactive plot...")
-        plotter.show()
+def write_plot_new(
+    diagram: Any,
+    output_path: Path,
+    *,
+    show_unstable: float,
+    max_bytes: int,
+) -> None:
+    """Render to a sibling temporary file, then link without overwriting."""
+    suffix = output_path.suffix.casefold()
+    if suffix not in {".png", ".pdf", ".svg"}:
+        raise CliError("plot output suffix must be .png, .pdf, or .svg")
+    from pymatgen.analysis.phase_diagram import PDPlotter
 
-    print(f"\n{'='*60}\n")
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            prefix=".pymatgen-phase-",
+            suffix=suffix,
+            dir=output_path.parent,
+            delete=False,
+        ) as handle:
+            temporary_path = Path(handle.name)
+        # Matplotlib exports locally without Plotly's optional Kaleido/browser stack.
+        plotter = PDPlotter(diagram, show_unstable=show_unstable, backend="matplotlib")
+        plotter.write_image(
+            str(temporary_path),
+            image_format=suffix.removeprefix("."),
+        )
+        if temporary_path.stat().st_size > max_bytes:
+            raise CliError(f"plot exceeds the {max_bytes}-byte limit")
+        atomic_link_from_temp(temporary_path, output_path)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
 
 
-def main():
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Generate phase diagrams using Materials Project data",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Requirements:
-  - Materials Project API key (set MP_API_KEY environment variable)
-  - mp-api package: pip install mp-api
-
-Examples:
-  %(prog)s Li-Fe-O
-  %(prog)s Li-Fe-O --output li_fe_o_phase_diagram.png
-  %(prog)s Fe-O --show --analyze "Fe2O3"
-  %(prog)s Li-Fe-O --analyze "LiFeO2" --show-unstable
-        """
+        description=(
+            "Build an offline phase diagram from strict JSON total energies. "
+            "This script never queries Materials Project."
+        )
     )
-
+    parser.add_argument("entries_json", help="Strict local entries dataset")
     parser.add_argument(
-        "chemsys",
-        help="Chemical system (e.g., Li-Fe-O, Fe-O)"
+        "--analyze",
+        action="append",
+        default=[],
+        help="Formula to decompose or match (repeatable, maximum 20)",
     )
-
-    parser.add_argument(
-        "--output", "-o",
-        help="Output file for phase diagram plot (PNG, PDF, SVG)"
-    )
-
-    parser.add_argument(
-        "--show", "-s",
-        action="store_true",
-        help="Show interactive plot"
-    )
-
-    parser.add_argument(
-        "--analyze", "-a",
-        help="Analyze stability of specific composition (e.g., LiFeO2)"
-    )
-
+    parser.add_argument("--output", help="New JSON report; default is stdout")
+    parser.add_argument("--plot", help="New .png, .pdf, or .svg plot")
     parser.add_argument(
         "--show-unstable",
-        action="store_true",
-        help="Include unstable phases in plot"
+        type=float,
+        default=0.2,
+        help="Plot unstable entries up to this eV/atom (default: 0.2)",
     )
-
     parser.add_argument(
-        "--chemical-potentials",
-        action="store_true",
-        help="Calculate chemical potentials"
+        "--max-input-bytes",
+        type=positive_int,
+        default=DEFAULT_MAX_INPUT_BYTES,
     )
+    parser.add_argument("--max-entries", type=positive_int, default=5000)
+    parser.add_argument("--max-report-entries", type=positive_int, default=200)
+    parser.add_argument(
+        "--max-output-bytes",
+        type=positive_int,
+        default=DEFAULT_MAX_OUTPUT_BYTES,
+    )
+    return parser
 
-    args = parser.parse_args()
 
-    # Validate chemical system format
-    elements = args.chemsys.split("-")
-    if len(elements) < 2:
-        print("Error: Chemical system must contain at least 2 elements")
-        print("Example: Li-Fe-O")
-        sys.exit(1)
-
-    # Generate phase diagram
-    generate_phase_diagram(args.chemsys, args)
+def main() -> int:
+    args = build_parser().parse_args()
+    try:
+        if len(args.analyze) > 20:
+            raise CliError("--analyze may be repeated at most 20 times")
+        if not math.isfinite(args.show_unstable) or args.show_unstable < 0:
+            raise CliError("--show-unstable must be finite and non-negative")
+        if args.max_entries > 10_000:
+            raise CliError("--max-entries may not exceed 10000")
+        if args.max_report_entries > 1_000:
+            raise CliError("--max-report-entries may not exceed 1000")
+        if args.max_output_bytes > ABSOLUTE_MAX_OUTPUT_BYTES:
+            raise CliError(
+                f"--max-output-bytes may not exceed {ABSOLUTE_MAX_OUTPUT_BYTES}"
+            )
+        payload, input_path = load_strict_json(
+            args.entries_json,
+            max_bytes=args.max_input_bytes,
+        )
+        entries, provenance = entries_from_payload(
+            payload,
+            max_entries=args.max_entries,
+        )
+        report, diagram = phase_report(
+            entries,
+            provenance,
+            analyze=args.analyze,
+            max_report_entries=args.max_report_entries,
+        )
+        report["input"] = {
+            "name": input_path.name,
+            "bytes": input_path.stat().st_size,
+            "network_accessed": False,
+        }
+        created: list[str] = []
+        if args.output:
+            output_path = checked_output_file(
+                args.output,
+                input_paths=(input_path,),
+            )
+            write_json_new(
+                output_path,
+                report,
+                max_bytes=args.max_output_bytes,
+            )
+            created.append(output_path.name)
+        if args.plot:
+            plot_path = checked_output_file(
+                args.plot,
+                input_paths=(input_path,),
+            )
+            if len(diagram.elements) > 4:
+                raise CliError("plotting is limited to at most four elements")
+            write_plot_new(
+                diagram,
+                plot_path,
+                show_unstable=args.show_unstable,
+                max_bytes=args.max_output_bytes,
+            )
+            created.append(plot_path.name)
+        if created:
+            emit_json(
+                {
+                    "ok": True,
+                    "created": created,
+                    "overwrote_existing": False,
+                    "network_accessed": False,
+                    "entry_count": len(entries),
+                }
+            )
+        else:
+            emit_json(report)
+        return 0
+    except (CliError, ImportError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        emit_json(
+            {
+                "ok": False,
+                "error": f"{type(exc).__name__}: {exc}"[:1000],
+                "network_accessed": False,
+            }
+        )
+        return 2
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

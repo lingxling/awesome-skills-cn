@@ -278,6 +278,120 @@ class TestTailwindConfigGenerator:
         assert "import type { Config }" in content
         assert "brand" in content
 
+    def test_write_config_refuses_to_overwrite_existing_file(self, tmp_path):
+        """Existing project configuration must be preserved by default."""
+        output_path = tmp_path / "tailwind.config.ts"
+        existing = "// existing project config\nexport default { theme: {} }\n"
+        output_path.write_text(existing)
+        generator = TailwindConfigGenerator(output_path=output_path)
+
+        success, message = generator.write_config()
+
+        assert success is False
+        assert "already exists" in message
+        assert "--force" in message
+        assert output_path.read_text() == existing
+
+    def test_write_config_force_overwrites_existing_file(self, tmp_path):
+        """An explicit force opt-in permits replacing an existing config."""
+        output_path = tmp_path / "tailwind.config.ts"
+        output_path.write_text("// existing project config\n")
+        generator = TailwindConfigGenerator(output_path=output_path, force=True)
+        generator.add_colors({"brand": "#3b82f6"})
+
+        success, message = generator.write_config()
+
+        assert success is True
+        assert "written to" in message
+        assert "brand" in output_path.read_text()
+
+    def test_cli_refuses_existing_config_without_force(self, tmp_path):
+        """The CLI must return non-zero and preserve an existing default target."""
+        output_path = tmp_path / "tailwind.config.ts"
+        existing = "// existing project config\n"
+        output_path.write_text(existing)
+        script = Path(__file__).parent.parent / "tailwind_config_gen.py"
+
+        result = subprocess.run(
+            [sys.executable, str(script), "--colors", "brand:#3b82f6"],
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+
+        assert result.returncode == 1
+        assert "already exists" in result.stderr
+        assert "--force" in result.stderr
+        assert output_path.read_text() == existing
+
+    def test_cli_refuses_sibling_config_extension_without_force(self, tmp_path):
+        """A default .ts write must not create a second config beside .js."""
+        existing_path = tmp_path / "tailwind.config.js"
+        existing = "// existing JavaScript project config\nmodule.exports = {}\n"
+        existing_path.write_text(existing)
+        output_path = tmp_path / "tailwind.config.ts"
+        script = Path(__file__).parent.parent / "tailwind_config_gen.py"
+
+        result = subprocess.run(
+            [sys.executable, str(script), "--colors", "brand:#3b82f6"],
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+
+        assert result.returncode == 1
+        assert "tailwind.config.js" in result.stderr
+        assert "--force" in result.stderr
+        assert existing_path.read_text() == existing
+        assert not output_path.exists()
+
+    def test_cli_force_allows_target_beside_sibling_config(self, tmp_path):
+        """The explicit force opt-in also overrides cross-extension detection."""
+        existing_path = tmp_path / "tailwind.config.js"
+        existing = "// existing JavaScript project config\nmodule.exports = {}\n"
+        existing_path.write_text(existing)
+        output_path = tmp_path / "tailwind.config.ts"
+        script = Path(__file__).parent.parent / "tailwind_config_gen.py"
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                "--colors",
+                "brand:#3b82f6",
+                "--force",
+            ],
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+
+        assert result.returncode == 0, result.stderr
+        assert existing_path.read_text() == existing
+        assert "brand" in output_path.read_text()
+
+    def test_cli_force_overwrites_existing_config(self, tmp_path):
+        """The CLI must wire --force through to the generator."""
+        output_path = tmp_path / "tailwind.config.ts"
+        output_path.write_text("// existing project config\n")
+        script = Path(__file__).parent.parent / "tailwind_config_gen.py"
+
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(script),
+                "--colors",
+                "brand:#3b82f6",
+                "--force",
+            ],
+            cwd=tmp_path,
+            capture_output=True,
+            text=True,
+        )
+
+        assert result.returncode == 0, result.stderr
+        assert "brand" in output_path.read_text()
+
     def test_write_config_invalid_path(self):
         """Test writing config to invalid path."""
         generator = TailwindConfigGenerator(output_path=Path("/invalid/path/config.ts"))

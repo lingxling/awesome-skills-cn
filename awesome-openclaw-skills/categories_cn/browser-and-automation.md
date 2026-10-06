@@ -217,7 +217,7 @@
 - [personal-sleep](https://clawskills.sh/skills/gekacross-personal-sleep) - 在睡眠主题中作为用户的睡眠教练。
 - [phantombuster](https://clawskills.sh/skills/capt-marbles-phantombuster) - 通过 API 控制 PhantomBuster 自动化代理。
 - [pharma-pharmacology-agent](https://clawskills.sh/skills/cheminem-pharma-pharmacology-agent) - 从 SMILES 进行药物候选物 ADME/PK 分析的药理学代理。
-- [pipelock](https://clawskills.sh/skills/luckypipewrench/pipelock) - 通过扫描代理安全代理 HTTP 请求，捕获凭证泄漏、SSRF 和提示注入。
+- [pipelock](https://clawskills.sh/skills/luckypipewrench-pipelock) - 通过扫描代理安全代理 HTTP 请求，捕获凭证泄漏、SSRF 和提示注入。
 - [pocket-lens](https://clawskills.sh/skills/edenjw-pocket-lens) - 当用户想要跟踪支出、扫描收据、上传卡支付截图、分类支出、记录... 时使用。
 - [pocketlens](https://clawskills.sh/skills/edenjw-pocketlens) - 当用户想要跟踪支出、扫描收据、上传卡支付截图、分类支出、记录... 时使用。
 - [podcast-to-substack](https://clawskills.sh/skills/danielfoch-podcast-to-substack) - 从 RSS + Notion 发布播客集到 Substack，具有可靠的 Apple Podcasts 嵌入和图像提取。
@@ -237,9 +237,9 @@
 - [saas-worker](https://clawskills.sh/skills/juniorxcoder-saas-worker) - 构建和启动盈利的 SAAS 产品。
 - [sap-integration](https://clawskills.sh/skills/highlander89-sap-integration) - SAP 系统集成、数据提取和 ABAP、HANA、S/4HANA 环境的自动化。
 - [scrapbook-illustrator](https://clawskills.sh/skills/chunhualiao-scrapbook-illustrator) - 使用图像生成（GLM 或 OpenRouter）将剪贴簿风格的插图插入文章。
-- [scrapyard](https://clawskills.sh/skills/aetosset/scrapyard) - 玩 SCRAPYARD - AI 代理战斗竞技场。
+- [scrapyard](https://clawskills.sh/skills/aetosset-scrapyard) - 玩 SCRAPYARD - AI 代理战斗竞技场。
 - [sentry-issues](https://clawskills.sh/skills/dave-b-b-sentry-issues) - 从 Sentry 错误跟踪中获取和分析问题。
-- [sergei-mikhailov-tg-channel-reader](https://clawskills.sh/skills/bzsega/sergei-mikhailov-tg-channel-reader) - 通过 MTProto（Pyrogram 或 Telethon）读取和总结 Telegram 频道的帖子。
+- [sergei-mikhailov-tg-channel-reader](https://clawskills.sh/skills/bzsega-sergei-mikhailov-tg-channel-reader) - 通过 MTProto（Pyrogram 或 Telethon）读取和总结 Telegram 频道的帖子。
 - [sg-property-scraper](https://clawskills.sh/skills/5kbpers-sg-property-scraper) - 使用灵活的过滤器搜索新加坡房产租赁和销售列表。
 - [shellmail](https://clawskills.sh/skills/aaronbatchelder-shellmail) - AI 代理的电子邮件 API。
 - [shopping-list](https://clawskills.sh/skills/ajeenkya-shopping-list) - 具有分类、家庭共享和购买历史的对话式购物清单。

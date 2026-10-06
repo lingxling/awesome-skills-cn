@@ -1,43 +1,43 @@
 ---
 name: QuickBooks Automation
-description: "QuickBooks Automation: manage invoices, customers, accounts, and payments in QuickBooks Online for streamlined bookkeeping"
+description: "QuickBooks Automation：在 QuickBooks Online 中管理发票、客户、账户以及付款，以简化记账流程"
 requires:
   mcp: [rube]
 ---
 
 # QuickBooks Automation
 
-Automate QuickBooks Online operations including creating invoices, managing customers, querying accounts, and listing invoices for financial reporting.
+自动化 QuickBooks Online 操作，包括创建发票、管理客户、查询账户，以及为财务报告列出发票。
 
-**Toolkit docs:** [composio.dev/toolkits/quickbooks](https://composio.dev/toolkits/quickbooks)
+**工具包文档：** [composio.dev/toolkits/quickbooks](https://composio.dev/toolkits/quickbooks)
 
 ---
 
 ## 设置
 
-This skill requires the **Rube MCP server** connected at `https://rube.app/mcp`.
+此技能需要连接 **Rube MCP 服务器**，地址为 `https://rube.app/mcp`。
 
-Before executing any tools, ensure an active connection exists for the `quickbooks` toolkit. If no connection is active, initiate one via `RUBE_MANAGE_CONNECTIONS`.
+在执行任何工具之前，请确保 `quickbooks` 工具包存在有效连接。如果没有有效连接，请通过 `RUBE_MANAGE_CONNECTIONS` 发起一个。
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Create an Invoice
+### 1. 创建发票
 
-Create a new invoice for a customer with line items.
+为客户创建包含明细行项目的新发票。
 
-**Tool:** `QUICKBOOKS_CREATE_INVOICE`
+**工具：** `QUICKBOOKS_CREATE_INVOICE`
 
-**Key Parameters:**
-- `customer_id` (required) -- ID of the customer (CustomerRef.value)
-- `lines` (required) -- Array of line item objects. Each must include:
-  - `DetailType` -- e.g., `"SalesItemLineDetail"`
-  - `Amount` -- Line item total
-  - `SalesItemLineDetail` -- Object with `ItemRef` containing `value` (item ID)
-- `minorversion` -- Optional API version parameter
+**关键参数：**
+- `customer_id`（必填） —— 客户的 ID（CustomerRef.value）
+- `lines`（必填） —— 行项目对象数组。每个对象必须包含：
+  - `DetailType` —— 例如 `"SalesItemLineDetail"`
+  - `Amount` —— 行项目总额
+  - `SalesItemLineDetail` —— 包含 `ItemRef` 的对象，其中含有 `value`（项目 ID）
+- `minorversion` —— 可选的 API 版本参数
 
-**Example:**
+**示例：**
 ```
 Tool: QUICKBOOKS_CREATE_INVOICE
 Arguments:
@@ -53,32 +53,32 @@ Arguments:
   ]
 ```
 
-**前置条件:** Resolve the customer ID using `QUICKBOOKS_READ_CUSTOMER` or create one with `QUICKBOOKS_CREATE_CUSTOMER`. Resolve item/account IDs using `QUICKBOOKS_QUERY_ACCOUNT`.
+**前置条件：** 使用 `QUICKBOOKS_READ_CUSTOMER` 解析客户 ID，或使用 `QUICKBOOKS_CREATE_CUSTOMER` 创建客户。使用 `QUICKBOOKS_QUERY_ACCOUNT` 解析项目/账户 ID。
 
 ---
 
-### 2. Manage Customers
+### 2. 管理客户
 
-Create and read customer records.
+创建和读取客户记录。
 
-**Tools:**
-- `QUICKBOOKS_CREATE_CUSTOMER` -- Create a new customer
-- `QUICKBOOKS_READ_CUSTOMER` -- Read a customer by ID
+**工具：**
+- `QUICKBOOKS_CREATE_CUSTOMER` —— 创建新客户
+- `QUICKBOOKS_READ_CUSTOMER` —— 按 ID 读取客户
 
-**Key Parameters for `QUICKBOOKS_CREATE_CUSTOMER`:**
-- `display_name` -- Display name (must be unique across customers, vendors, employees; max 500 chars)
-- `given_name` -- First name (max 100 chars)
-- `family_name` -- Last name (max 100 chars)
-- `middle_name` -- Middle name (max 100 chars)
-- `title` -- Title, e.g., `"Mr."`, `"Dr."` (max 16 chars)
-- `suffix` -- Name suffix, e.g., `"Jr."` (max 16 chars)
+**`QUICKBOOKS_CREATE_CUSTOMER` 的关键参数：**
+- `display_name` —— 显示名称（在客户、供应商、员工之间必须唯一；最多 500 字符）
+- `given_name` —— 名（最多 100 字符）
+- `family_name` —— 姓（最多 100 字符）
+- `middle_name` —— 中间名（最多 100 字符）
+- `title` —— 称谓，例如 `"Mr."`、`"Dr."`（最多 16 字符）
+- `suffix` —— 名称后缀，例如 `"Jr."`（最多 16 字符）
 
-> At least one of `display_name`, `title`, `given_name`, `middle_name`, `family_name`, or `suffix` is required.
+> `display_name`、`title`、`given_name`、`middle_name`、`family_name` 或 `suffix` 中至少需要提供一项。
 
-**Key Parameters for `QUICKBOOKS_READ_CUSTOMER`:**
-- `customer_id` (required) -- ID of the customer to read
+**`QUICKBOOKS_READ_CUSTOMER` 的关键参数：**
+- `customer_id`（必填） —— 要读取的客户 ID
 
-**Example:**
+**示例：**
 ```
 Tool: QUICKBOOKS_CREATE_CUSTOMER
 Arguments:
@@ -89,18 +89,18 @@ Arguments:
 
 ---
 
-### 3. Query and Read Accounts
+### 3. 查询和读取账户
 
-Retrieve account information for use in invoice line items and financial reporting.
+检索账户信息，用于发票行项目和财务报告。
 
-**Tools:**
-- `QUICKBOOKS_QUERY_ACCOUNT` -- 执行 a query against accounts
-- `QUICKBOOKS_READ_ACCOUNT` -- Read a specific account by ID
+**工具：**
+- `QUICKBOOKS_QUERY_ACCOUNT` —— 对账户执行查询
+- `QUICKBOOKS_READ_ACCOUNT` —— 按 ID 读取特定账户
 
-**Key Parameters for `QUICKBOOKS_QUERY_ACCOUNT`:**
-- `query` (required) -- SQL-like query string, e.g., `"SELECT * FROM Account WHERE AccountType = 'Income'"`
+**`QUICKBOOKS_QUERY_ACCOUNT` 的关键参数：**
+- `query`（必填） —— 类似 SQL 的查询字符串，例如 `"SELECT * FROM Account WHERE AccountType = 'Income'"`
 
-**Example:**
+**示例：**
 ```
 Tool: QUICKBOOKS_QUERY_ACCOUNT
 Arguments:
@@ -109,51 +109,51 @@ Arguments:
 
 ---
 
-### 4. List and Filter Invoices
+### 4. 列出和过滤发票
 
-Retrieve invoices with optional pagination and filtering.
+检索发票，支持可选的分页和过滤。
 
-**Tool:** `QUICKBOOKS_LIST_INVOICES`
+**工具：** `QUICKBOOKS_LIST_INVOICES`
 
-**Steps:**
-1. Call `QUICKBOOKS_LIST_INVOICES` with pagination parameters
-2. Use `start_position` and `max_results` to page through results
-3. Filter by specific criteria as needed
-
----
-
-## Recommended Execution Plan
-
-1. **Resolve the customer** using `QUICKBOOKS_READ_CUSTOMER` (if you have a customer ID) or create one with `QUICKBOOKS_CREATE_CUSTOMER`
-2. **Resolve item/revenue accounts** using `QUICKBOOKS_QUERY_ACCOUNT` and `QUICKBOOKS_READ_ACCOUNT` to get account or item IDs for invoice line items
-3. **Create the invoice** using `QUICKBOOKS_CREATE_INVOICE` with the resolved `customer_id` and well-formed line items
-4. **Verify creation** using `QUICKBOOKS_LIST_INVOICES` to locate the new invoice by ID or DocNumber
+**步骤：**
+1. 使用分页参数调用 `QUICKBOOKS_LIST_INVOICES`
+2. 使用 `start_position` 和 `max_results` 对结果进行分页
+3. 根据需要按特定条件过滤
 
 ---
 
-## 已知陷阱
+## 推荐执行方案
 
-| Pitfall | Detail |
+1. **解析客户**：使用 `QUICKBOOKS_READ_CUSTOMER`（如果已有客户 ID）或使用 `QUICKBOOKS_CREATE_CUSTOMER` 创建客户
+2. **解析项目/收入账户**：使用 `QUICKBOOKS_QUERY_ACCOUNT` 和 `QUICKBOOKS_READ_ACCOUNT` 获取发票行项目所需的账户或项目 ID
+3. **创建发票**：使用 `QUICKBOOKS_CREATE_INVOICE`，传入已解析的 `customer_id` 和格式正确的行项目
+4. **验证创建结果**：使用 `QUICKBOOKS_LIST_INVOICES` 按 ID 或 DocNumber 找到新发票
+
+---
+
+## 已知问题
+
+| 问题 | 详情 |
 |---------|--------|
-| **Invalid references** | `QUICKBOOKS_CREATE_INVOICE` fails if `customer_id` or `ItemRef.value` point to non-existent or inactive records. Always resolve IDs first. |
-| **Line item validation** | Incorrect `DetailType` or missing `SalesItemLineDetail` fields cause schema/validation errors during invoice creation. |
-| **Pagination** | `QUICKBOOKS_LIST_INVOICES` uses `start_position` and `max_results`. Incomplete pagination settings can miss invoices in larger books. |
-| **Sync tokens** | Any later edits require the latest `SyncToken` from a fresh invoice read. Stale sync tokens cause update rejections. |
-| **Rate limits** | QuickBooks enforces per-minute and daily API caps. High-volume runs should include backoff to avoid throttling errors. |
-| **DisplayName uniqueness** | Customer `display_name` must be unique across all Customer, Vendor, and Employee objects. Duplicates cause creation failures. |
+| **无效引用** | 如果 `customer_id` 或 `ItemRef.value` 指向不存在或非活动的记录，`QUICKBOOKS_CREATE_INVOICE` 会失败。请始终先解析 ID。 |
+| **行项目校验** | 错误的 `DetailType` 或缺失的 `SalesItemLineDetail` 字段会在创建发票时导致模式/校验错误。 |
+| **分页** | `QUICKBOOKS_LIST_INVOICES` 使用 `start_position` 和 `max_results`。分页设置不完整可能会在较大的账本中遗漏发票。 |
+| **同步令牌** | 任何后续编辑都需要来自最新发票读取结果的 `SyncToken`。过期的同步令牌会导致更新被拒绝。 |
+| **速率限制** | QuickBooks 强制执行每分钟和每日的 API 上限。高频运行时应包含退避策略以避免限流错误。 |
+| **DisplayName 唯一性** | 客户的 `display_name` 在所有 Customer、Vendor 和 Employee 对象之间必须唯一。重复会导致创建失败。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具 Slug | 描述 |
 |-----------|-------------|
-| `QUICKBOOKS_CREATE_INVOICE` | Create a new invoice with line items |
-| `QUICKBOOKS_READ_CUSTOMER` | Read a customer record by ID |
-| `QUICKBOOKS_CREATE_CUSTOMER` | Create a new customer record |
-| `QUICKBOOKS_QUERY_ACCOUNT` | Query accounts with SQL-like syntax |
-| `QUICKBOOKS_READ_ACCOUNT` | Read a specific account by ID |
-| `QUICKBOOKS_LIST_INVOICES` | List invoices with pagination |
+| `QUICKBOOKS_CREATE_INVOICE` | 创建包含行项目的新发票 |
+| `QUICKBOOKS_READ_CUSTOMER` | 按 ID 读取客户记录 |
+| `QUICKBOOKS_CREATE_CUSTOMER` | 创建新客户记录 |
+| `QUICKBOOKS_QUERY_ACCOUNT` | 使用类似 SQL 的语法查询账户 |
+| `QUICKBOOKS_READ_ACCOUNT` | 按 ID 读取特定账户 |
+| `QUICKBOOKS_LIST_INVOICES` | 列出发票并支持分页 |
 
 ---
 

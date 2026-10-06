@@ -215,6 +215,17 @@ Review this React component for performance issues
 Help me optimize this Next.js page
 ```
 
+## Discovery index
+
+Every change to a skill on `main` publishes an immutable GitHub release with
+an Agent Skills discovery index and one artifact per skill. Build the same
+artifacts locally with:
+
+```bash
+npm ci --ignore-scripts
+node scripts/build-discovery-index.mjs https://example.com/skills
+```
+
 ## Skill Structure
 
 Each skill contains:

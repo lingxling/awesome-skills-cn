@@ -35,13 +35,17 @@
 
 一份全面且精心整理的 1000+ 生产就绪且实用的 Claude Skills 和插件列表，用于提升各种场景下的生产力，不仅适用于 Claude.ai、Claude Code，还适用于 Codex、Cursor、Gemini CLI、Antigravity 等编码代理。
 
-> **想要能够执行更多操作的技能吗？** Claude 可以发送邮件、创建 issue、发布 Slack 消息，并在 1000+ 个应用中执行操作。[查看方法 →](./connect/)
+## 让你的技能执行真实世界的操作
+
+技能告诉你的代理**如何**工作。MCP 网关则为它提供对所需工具的安全访问。
+
+Composio [MCP 网关](https://composio.dev/mcp-gateway) 为 1,000+ 个集成提供单一的 MCP 端点，内置身份验证、基于团队的访问控制、审计日志以及生产级的可靠性。
 
 ---
 
-## 快速开始：连接 Claude 到 500+ 应用
+## 快速开始：连接 Claude 到 1000+ 应用
 
-**connect-apps** 插件让 Claude 能够执行实际操作——发送邮件、创建 issue、发布 Slack 消息。它处理认证并使用 Composio 在后台连接 500+ 个应用。
+**connect-apps** 插件让 Claude 能够执行实际操作——发送邮件、创建 issue、发布 Slack 消息。它处理认证并使用 Composio 在后台连接 1000+ 个应用。
 
 ### 1. 安装插件
 
@@ -66,7 +70,7 @@ claude
 
 > **想要能够执行更多操作的技能吗？** Claude 可以发送邮件、创建 issue、发布 Slack 消息，并在 1000+ 个应用中执行操作。[查看方法 →](./connect/)
 
-如果您收到邮件，说明 Claude 已连接到 500+ 个应用。
+如果您收到邮件，说明 Claude 已连接到 1000+ 个应用。
 
 **[查看所有支持的应用 →](https://composio.dev/toolkits)**
 
@@ -74,7 +78,7 @@ claude
 
 ## 目录
 
-- [快速开始：连接 Claude 到 500+ 应用](#快速开始连接-claude-到-500-应用)
+- [快速开始：连接 Claude 到 1000+ 应用](#快速开始连接-claude-到-1000-应用)
   - [1. 安装插件](#1-安装插件)
   - [2. 运行设置](#2-运行设置)
   - [3. 重启并试用](#3-重启并试用)
@@ -509,5 +513,3 @@ description: 清晰描述此技能的用途和使用时机。
 ---
 
 **注意**：Claude Skills 适用于 Claude.ai、Claude Code 和 Claude API。一旦创建了技能，它就可以在所有平台上移植，使您的工作流程在您使用 Claude 的任何地方都保持一致。
-
-- [AgentsKB](https://agentskb.com) - 使用研究得到的答案升级您的 AI。我们做了研究，所以您的 AI 第一次就能做对。

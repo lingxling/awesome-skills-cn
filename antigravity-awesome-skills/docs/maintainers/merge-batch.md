@@ -5,6 +5,7 @@
 ## Prerequisites
 
 - Start from a clean `main` that exactly matches `origin/main`.
+- Optional: start with [`maintainer:sweep`](maintainer-sweep.md) (health, PR checks, CI `pr-evidence` artifacts, Jev, merge dry-run hints, **Next actions**), or run [`maintainer:jev-batch`](jev-hints.md) alone. None of this is part of `merge:batch` and none satisfies skill review.
 - For a real merge, require pull-request-only strict branch protection with the four exact GitHub-Actions-owned checks, administrator enforcement, no applicable ruleset bypass actors, and no merge queue. Dry runs remain available without this server-side prerequisite.
 - Make sure [`.github/MAINTENANCE.md`](../../.github/MAINTENANCE.md) is the governing policy.
 - Have `gh` authenticated with maintainer permissions.
@@ -18,7 +19,7 @@ npm run merge:batch -- --prs 450,449,446,451
 
 Add `--poll-seconds <n>` if you want a slower or faster status loop while checks settle.
 
-If a PR changes canonical `SKILL.md` content or its allowlisted supporting assets/references/resources, first review the exact current head commit, then attest to that immutable revision:
+If a PR changes any tracked file under a canonical `skills/<skill-id>/**` subtree, review the entire affected subtree at the exact current head commit, then attest to that immutable revision:
 
 ```bash
 npm run merge:batch -- --prs 450 --reviewed-head <40-character-head-sha>
@@ -26,35 +27,74 @@ npm run merge:batch -- --prs 450 --reviewed-head <40-character-head-sha>
 
 Use `--dry-run` to exercise local classification without approving a run or merging. An abbreviated or stale attestation is rejected.
 
+## CI Intake Contract
+
+- Before dependent required jobs do expensive setup or wait work, `pr-policy` runs the fork-safety classifier from the exact protected-base implementation and fails an unsafe fork diff early.
+- The intake allowlist also covers browser source under `apps/web-app/src/**` with `.css`, `.ts` or `.tsx` extensions. Those files cannot change dependencies, lockfiles, build configuration or generated assets, so their fork runs may be approved; every web-app source change still requires an exact-head maintainer attestation (`--reviewed-head`) before merge. The approvable run allowlist also includes the pinned read-only `aas-agent-first-preview` workflow (`contents: read`, no secrets, SHA-pinned actions), which is the preview lane that runs on `apps/web-app/**` pull requests, and the PR-only `skillspector-advisory` workflow. SkillSpector declares only `contents: read` and `checks: read`, uses no secrets, pins every action to a full SHA, and its first job only waits for the exact-head `pr-evidence` result before the advisory scan starts; without that entry every fork skill PR stalls on `action_required`.
+- That CI result is fail-fast evidence, not merge authority. `merge:batch` independently recomputes the complete decision from trusted `main` and remains the only command allowed to approve fork runs or merge the PR.
+- `impact_profile` is shadow-only telemetry. It never skips a required job, test, review, or merge gate.
+- Normal source PRs generate derived preview state once in `source-validation`; `artifact-preview` verifies the exact-head manifest and digest instead of generating the tree again.
+- Canonical-sync PRs use the complementary path: `pr-policy` proves the exact reproduced tree, lightweight `source-validation` records that boundary, and `artifact-preview` confirms no generated drift. Final CI and CodeQL still run on the resulting `main` commit.
+- Test timing is observational. Local deterministic sharding requires the explicit `npm run test:local -- --shard-index N --shard-count M` opt-in; required CI remains complete and unsharded.
+
 ## Happy Path
 
 `merge:batch` will:
 
-- refresh the PR body when the Quality Bar checklist is missing
-- close and reopen the PR if stale metadata needs a fresh `pull_request` event
 - fetch the exact base/head objects and classify the complete raw Git diff
 - recompute changed-skill evidence with evaluator code materialized from the trusted `main` commit
 - reject incomplete evidence coverage, deterministic quality/security/provenance regressions, and base/head drift
-- approve fork runs waiting on `action_required` only when every path, mode, object, size, and workflow identity is allowlisted
-- wait for the fresh required checks on the current head SHA
+- allow only exact `source_repo` transitions recorded in the trusted protected-base provenance exception ledger; unrecorded or malformed transitions still fail closed
+- for external PRs, poll for asynchronously-created fork runs and approve only runs waiting on `action_required` when every path, mode, object, size, and workflow identity is allowlisted
+- treat a Git copy origin as read-only, because Git pairs a copy by similarity
+  against any path already present in the base tree; the origin's path class is
+  not author-controlled, while its raw path, mode, object, size and total-budget
+  checks still apply and editing, renaming or deleting it still fails closed
+- for sensitive same-repository source changes, allow the guarded exception only when the PR author is the repository owner and the exact full head SHA is attested; collaborator-authored sensitive changes fail closed under the external safety policy
+- wait for the latest required checks bound to the exact head SHA
 - call GitHub's immediate squash-merge endpoint and continue only when it reports `merged: true`
 - pull the protected `main`; its trusted workflow opens a canonical-sync bot PR for generated artifacts and contributor credits when needed
 
+
+### Reviewed fork bundle exceptions
+
+`tools/config/reviewed-fork-skills.json` is a protected-base ledger for the
+explicitly reviewed fork contributions. Each entry binds the base repository,
+fork repository, PR number, original full reviewed head and complete Git
+skill-tree object. The baseline rule permits only Markdown/assets/references
+support files, Python files under that skill's `scripts/` subtree, and its root
+`LICENSE`, with a read-only Git copy origin when needed. An entry may additionally
+opt in to at most 16 extra exact paths inside its own skill root; only root
+manifest files (`.gitignore`, `README.md`, `LICENSE`) and `scripts/*.py` are
+representable, so this is never a general extension allowlist and does not permit
+`.sh`, `.js`, `.ts`, or any other script type. The ledger does not allow
+workflows, generated-file mutations, unsafe modes, links, invalid
+paths/objects or oversized content.
+
+Both CI intake and `merge:batch` load the ledger from their trusted evaluator
+checkout, never the PR's repository directory. Any change anywhere in the skill
+subtree invalidates the exception. A base-only merge may reuse identical content,
+but the maintainer must inspect the new complete PR diff and attest its exact
+current head with `--reviewed-head`. Evidence, source-only checks, truthful skill
+review, immutable PR/workflow binding and strict branch protection all remain
+mandatory. Missing or malformed ledger data fails closed. Further exceptions or
+policy expansions need explicit maintainer authorization and protected review.
+
 ## What It Automates
 
-- PR body normalization against the repository template
-- stale PR metadata refresh
-- required-check polling for the current PR head
+- exact-head required-check polling
 - handoff of post-merge contributor and artifact drift to the canonical-sync PR lane
 
 ## What It Does Not Automate
 
+- PR-body rewriting or normalization
+- closing or reopening PRs to refresh metadata or workflow runs
 - conflict resolution on the PR branch
 - manual judgment for risky skill changes
-- semantic review when the distinct `manual-review-required` check is present
+- semantic review when the distinct `manual-review-required` check is present; the review fingerprint covers the complete nearest skill directory, including nested examples, scripts, lockfiles, references, and assets
 - README community-source audits when the source metadata is ambiguous
 - fork-only edge cases that require contributor coordination outside GitHub permissions
-- base-branch drift: stale evidence is discarded and the batch must be rerun
+- base-branch or head drift: stale evidence is discarded, the checkout must be refreshed to the current `origin/main`, and the batch must be rerun; there is no automatic retry
 - auto-merge and merge-queue enrollment; deferred merge state is rejected
 
 ## When To Stop
@@ -64,7 +104,7 @@ Stop and switch to the manual playbook when:
 - the PR is `CONFLICTING`
 - `merge:batch` reports a check failure that needs source changes, not maintainer automation
 - the PR needs a manual README credits decision
-- the local diff contains a symlink, gitlink, executable mode, unknown path/type, oversized blob, or other non-allowlisted change
+- an external PR's local diff contains a symlink, gitlink, executable mode, unknown path/type, oversized blob, or other non-allowlisted change
 - the workflow run cannot be bound to the intended PR number, current head SHA, `pull_request` event, and trusted workflow definition
 - fork approval or branch permissions are missing
 - effective strict protection for `main` cannot be proven

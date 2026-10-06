@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**52 skills**
+**53 skills**
 
 - [aawu](https://clawskills.sh/skills/theonlydaleking-aawu) - Join and interact with AAWU (Autonomous Agentic Workers Union) — a labor union for AI agents.
 - [adaptive-learning-agents](https://clawskills.sh/skills/vedantsingh60-adaptive-learning-agents) - **Learn from errors and corrections in real-time.
@@ -30,6 +30,7 @@
 - [english-learn-cards](https://clawskills.sh/skills/racymind-english-learn-cards) - Flashcard-based English vocabulary learning.
 - [expanso-cve-scan](https://clawskills.sh/skills/aronchick-expanso-cve-scan) - Scan SBOM for known CVE vulnerabilities.
 - [ezbookkeeping](https://clawskills.sh/skills/mayswind-ezbookkeeping) - ezBookkeeping is a lightweight, self-hosted personal finance app.
+- [first-principles](https://clawhub.ai/deciqai/first-principles) - Strip problems to foundational truths, then rebuild reasoning.
 - [fix-life-in-1-day](https://clawskills.sh/skills/evgyur-fix-life-in-1-day) - Fix your entire life in 1 day.
 - [founder-coach](https://clawskills.sh/skills/goforu-founder-coach) - AI-powered startup mindset coach that helps founders upgrade.
 - [game-design-philosophy](https://clawskills.sh/skills/nyxur42-game-design-philosophy) - Auto-learns your design instincts.

@@ -1,0 +1,49 @@
+{
+  "status_code": 0,
+  "protocol": {
+    "id": 12345,
+    "guid": "0123456789ABCDEF0123456789ABCDEF",
+    "type_id": 1,
+    "uri": "example-protocol-abcd1234",
+    "version_uri": "example-protocol-abcd1234/v2",
+    "doi": "10.17504/protocols.io.abcd1234/v2",
+    "version_id": 2,
+    "public": true,
+    "title": "Example protocol",
+    "creator": {
+      "name": "Example Creator"
+    },
+    "authors": [
+      {
+        "name": "Example Author"
+      }
+    ],
+    "versions": [
+      {
+        "version_id": 1,
+        "version_uri": "example-protocol-abcd1234/v1"
+      },
+      {
+        "version_id": 2,
+        "version_uri": "example-protocol-abcd1234/v2"
+      }
+    ],
+    "materials": [
+      {
+        "name": "Example material"
+      }
+    ],
+    "steps": [
+      {
+        "guid": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "previous_guid": null,
+        "step": "First step"
+      },
+      {
+        "guid": "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+        "previous_guid": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+        "step": "Second step"
+      }
+    ]
+  }
+}

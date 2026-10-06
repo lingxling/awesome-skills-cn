@@ -1,6 +1,6 @@
 ---
 name: ElevenLabs Automation
-description: "Automate ElevenLabs text-to-speech workflows -- generate speech from text, browse and inspect voices, check subscription limits, list models, stream audio, and retrieve history via the Composio MCP integration."
+description: "通过 Composio MCP 集成自动化 ElevenLabs 文本转语音工作流——从文本生成语音、浏览和检查语音、查看订阅额度、列出模型、流式传输音频，以及检索历史记录。"
 requires:
   mcp:
     - rube
@@ -8,123 +8,123 @@ requires:
 
 # ElevenLabs Automation
 
-Automate your ElevenLabs text-to-speech workflows -- convert text to natural speech, browse the voice library, inspect voice details, check subscription credits, select TTS models, stream audio for low-latency delivery, and retrieve previously generated audio from history.
+自动化你的 ElevenLabs 文本转语音工作流——将文本转换为自然语音、浏览语音库、检查语音详情、查看订阅额度、选择 TTS 模型、以低延迟方式流式传输音频，并从历史记录中检索之前生成的音频。
 
-**Toolkit docs:** [composio.dev/toolkits/elevenlabs](https://composio.dev/toolkits/elevenlabs)
+**工具包文档：** [composio.dev/toolkits/elevenlabs](https://composio.dev/toolkits/elevenlabs)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your client: `https://rube.app/mcp`
-2. 连接 your ElevenLabs account when prompted (API key authentication)
-3. Start using the workflows below
+1. 将 Composio MCP 服务器添加到你的客户端：`https://rube.app/mcp`
+2. 按提示连接你的 ElevenLabs 账户（API 密钥认证）
+3. 开始使用下面的工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Generate Speech from Text
+### 1. 从文本生成语音
 
-Use `ELEVENLABS_TEXT_TO_SPEECH` to convert text into a downloadable audio file.
-
-```
-Tool: ELEVENLABS_TEXT_TO_SPEECH
-Inputs:
-  - voice_id: string (required) -- obtain from ELEVENLABS_GET_VOICES
-  - text: string (required) -- max ~10,000 chars (most models), 30,000 (Flash/Turbo v2), 40,000 (v2.5)
-  - model_id: string (default "eleven_monolingual_v1") -- e.g., "eleven_multilingual_v2"
-  - output_format: string (default "mp3_44100_128") -- see formats below
-  - optimize_streaming_latency: integer (0-4; NOT supported with eleven_v3)
-  - seed: integer (optional, for reproducibility -- not guaranteed)
-  - pronunciation_dictionary_locators: array (optional, up to 3 dictionaries)
-```
-
-**Output formats:**
-- MP3: `mp3_22050_32`, `mp3_44100_32`, `mp3_44100_64`, `mp3_44100_96`, `mp3_44100_128`, `mp3_44100_192` (Creator+)
-- PCM: `pcm_16000`, `pcm_22050`, `pcm_24000`, `pcm_44100` (Pro+)
-- uLaw: `ulaw_8000` (for Twilio)
-
-**Important:** Output is a file object with a presigned download link at `data.file.s3url` (expires in ~1 hour). Download promptly.
-
-### 2. Browse Available Voices
-
-Use `ELEVENLABS_GET_VOICES` to list all voices with their attributes and settings.
+使用 `ELEVENLABS_TEXT_TO_SPEECH` 将文本转换为可下载的音频文件。
 
 ```
-Tool: ELEVENLABS_GET_VOICES
-Inputs: (none)
+工具：ELEVENLABS_TEXT_TO_SPEECH
+输入：
+  - voice_id：字符串（必需） —— 从 ELEVENLABS_GET_VOICES 获取
+  - text：字符串（必需） —— 最多约 10,000 字符（大多数模型）、30,000（Flash/Turbo v2）、40,000（v2.5）
+  - model_id：字符串（默认 "eleven_monolingual_v1"） —— 例如 "eleven_multilingual_v2"
+  - output_format：字符串（默认 "mp3_44100_128"） —— 见下方格式
+  - optimize_streaming_latency：整数（0-4；eleven_v3 不支持）
+  - seed：整数（可选，用于可重复性——不保证）
+  - pronunciation_dictionary_locators：数组（可选，最多 3 个词典）
 ```
 
-Returns an array at `data.voices[]` with `voice_id`, `name`, `labels` (gender, accent, use_case), and settings.
+**输出格式：**
+- MP3：`mp3_22050_32`、`mp3_44100_32`、`mp3_44100_64`、`mp3_44100_96`、`mp3_44100_128`、`mp3_44100_192`（Creator 及以上）
+- PCM：`pcm_16000`、`pcm_22050`、`pcm_24000`、`pcm_44100`（Pro 及以上）
+- uLaw：`ulaw_8000`（适用于 Twilio）
 
-### 3. Inspect a Specific Voice
+**重要：** 输出是一个文件对象，带有位于 `data.file.s3url` 的预签名下载链接（约 1 小时后过期）。请及时下载。
 
-Use `ELEVENLABS_GET_VOICE` to get detailed metadata for a candidate voice before synthesis.
+### 2. 浏览可用语音
 
-```
-Tool: ELEVENLABS_GET_VOICE
-Inputs:
-  - voice_id: string (required) -- e.g., "21m00Tcm4TlvDq8ikWAM"
-  - with_settings: boolean (default false) -- include detailed voice settings
-```
-
-### 4. Check Subscription and Credits
-
-Use `ELEVENLABS_GET_USER_SUBSCRIPTION_INFO` to verify plan limits and remaining credits before bulk generation.
+使用 `ELEVENLABS_GET_VOICES` 列出所有语音及其属性和设置。
 
 ```
-Tool: ELEVENLABS_GET_USER_SUBSCRIPTION_INFO
-Inputs: (none)
+工具：ELEVENLABS_GET_VOICES
+输入：（无）
 ```
 
-### 5. List Available TTS Models
+返回位于 `data.voices[]` 的数组，包含 `voice_id`、`name`、`labels`（性别、口音、使用场景）和设置。
 
-Use `ELEVENLABS_GET_MODELS` to discover compatible models and filter by `can_do_text_to_speech: true`.
+### 3. 检查特定语音
 
-```
-Tool: ELEVENLABS_GET_MODELS
-Inputs: (none)
-```
-
-### 6. Stream Audio and Retrieve History
-
-Use `ELEVENLABS_TEXT_TO_SPEECH_STREAM` for low-latency streamed delivery, and `ELEVENLABS_GET_AUDIO_FROM_HISTORY_ITEM` to re-download previously generated audio.
+在合成之前，使用 `ELEVENLABS_GET_VOICE` 获取候选语音的详细元数据。
 
 ```
-Tool: ELEVENLABS_TEXT_TO_SPEECH_STREAM
-  - Same core inputs as TEXT_TO_SPEECH but returns a stream for low-latency playback
+工具：ELEVENLABS_GET_VOICE
+输入：
+  - voice_id：字符串（必需） —— 例如 "21m00Tcm4TlvDq8ikWAM"
+  - with_settings：布尔值（默认 false） —— 是否包含详细的语音设置
+```
 
-Tool: ELEVENLABS_GET_AUDIO_FROM_HISTORY_ITEM
-  - history_item_id: string (required) -- ID from a previous generation
+### 4. 检查订阅和额度
+
+在批量生成之前，使用 `ELEVENLABS_GET_USER_SUBSCRIPTION_INFO` 验证计划限额和剩余额度。
+
+```
+工具：ELEVENLABS_GET_USER_SUBSCRIPTION_INFO
+输入：（无）
+```
+
+### 5. 列出可用的 TTS 模型
+
+使用 `ELEVENLABS_GET_MODELS` 发现兼容的模型，并按 `can_do_text_to_speech: true` 筛选。
+
+```
+工具：ELEVENLABS_GET_MODELS
+输入：（无）
+```
+
+### 6. 流式传输音频并检索历史记录
+
+使用 `ELEVENLABS_TEXT_TO_SPEECH_STREAM` 实现低延迟流式传输，使用 `ELEVENLABS_GET_AUDIO_FROM_HISTORY_ITEM` 重新下载之前生成的音频。
+
+```
+工具：ELEVENLABS_TEXT_TO_SPEECH_STREAM
+  - 与 TEXT_TO_SPEECH 的核心输入相同，但返回用于低延迟播放的流
+
+工具：ELEVENLABS_GET_AUDIO_FROM_HISTORY_ITEM
+  - history_item_id：字符串（必需） —— 来自先前生成的 ID
 ```
 
 ---
 
 ## 已知陷阱
 
-| Pitfall | Detail |
+| 陷阱 | 详情 |
 |---------|--------|
-| Text length limits | Most models cap at ~10,000-20,000 chars per request. Oversized input returns HTTP 400. Split long text into chunks (~5000 chars) and generate per chunk. |
-| Output is a presigned URL | `ELEVENLABS_TEXT_TO_SPEECH` returns `data.file.s3url` with a ~1 hour expiry (X-Amz-Expires=3600). Download the audio file promptly. |
-| Quota and credit errors | HTTP 401 with `quota_exceeded` or HTTP 402 `payment_required` means insufficient credits or tier restrictions. Check with `ELEVENLABS_GET_USER_SUBSCRIPTION_INFO` before bulk jobs. |
-| Voice permissions | HTTP 401 with `missing_permissions` means the API key lacks `voices_read` scope. Verify key permissions. |
-| Model compatibility | Not all models support TTS. Use `ELEVENLABS_GET_MODELS` and filter by `can_do_text_to_speech: true`. The `optimize_streaming_latency` parameter is NOT supported with `eleven_v3`. |
-| Large voice list truncation | `ELEVENLABS_GET_VOICES` may return a large list. Select from the full `data.voices[]` payload -- previews may appear truncated. |
+| 文本长度限制 | 大多数模型每次请求上限约为 10,000-20,000 字符。超大输入会返回 HTTP 400。将长文本拆分为多个块（约 5000 字符）并逐块生成。 |
+| 输出是预签名链接 | `ELEVENLABS_TEXT_TO_SPEECH` 返回的 `data.file.s3url` 有效期约 1 小时（X-Amz-Expires=3600）。请及时下载音频文件。 |
+| 配额和额度错误 | HTTP 401 伴随 `quota_exceeded`，或 HTTP 402 `payment_required`，表示额度不足或受套餐限制。在批量任务前用 `ELEVENLABS_GET_USER_SUBSCRIPTION_INFO` 检查。 |
+| 语音权限 | HTTP 401 伴随 `missing_permissions` 表示 API 密钥缺少 `voices_read` 权限范围。请验证密钥权限。 |
+| 模型兼容性 | 并非所有模型都支持 TTS。使用 `ELEVENLABS_GET_MODELS` 并按 `can_do_text_to_speech: true` 筛选。`optimize_streaming_latency` 参数不支持 `eleven_v3`。 |
+| 大型语音列表被截断 | `ELEVENLABS_GET_VOICES` 可能返回很长的列表。请从完整的 `data.voices[]` 负载中进行选择——预览内容可能显示被截断。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 描述 |
 |-----------|-------------|
-| `ELEVENLABS_TEXT_TO_SPEECH` | Convert text to speech, returns downloadable audio file |
-| `ELEVENLABS_GET_VOICES` | List all available voices with attributes |
-| `ELEVENLABS_GET_VOICE` | Get detailed info for a specific voice |
-| `ELEVENLABS_GET_USER_SUBSCRIPTION_INFO` | Check subscription plan and remaining credits |
-| `ELEVENLABS_GET_MODELS` | List available TTS models and capabilities |
-| `ELEVENLABS_TEXT_TO_SPEECH_STREAM` | Stream audio for low-latency delivery |
-| `ELEVENLABS_GET_AUDIO_FROM_HISTORY_ITEM` | Re-download audio from generation history |
+| `ELEVENLABS_TEXT_TO_SPEECH` | 将文本转换为语音，返回可下载的音频文件 |
+| `ELEVENLABS_GET_VOICES` | 列出所有可用语音及其属性 |
+| `ELEVENLABS_GET_VOICE` | 获取特定语音的详细信息 |
+| `ELEVENLABS_GET_USER_SUBSCRIPTION_INFO` | 查看订阅计划和剩余额度 |
+| `ELEVENLABS_GET_MODELS` | 列出可用的 TTS 模型及其能力 |
+| `ELEVENLABS_TEXT_TO_SPEECH_STREAM` | 以低延迟方式流式传输音频 |
+| `ELEVENLABS_GET_AUDIO_FROM_HISTORY_ITEM` | 从生成历史记录中重新下载音频 |
 
 ---
 

@@ -63,7 +63,7 @@
 - [nosi](https://clawskills.sh/skills/billhao-nosi) - 发布内容到 Nosi 并获取可共享的 URL。
 - [nova-letters](https://clawskills.sh/skills/cryptocana-nova-letters) - 给未来的自己写反思信。
 - [personal-love](https://clawskills.sh/skills/gekacross-personal-love) - 在爱情主题中充当用户的关系和约会助手。
-- [publish-guard](https://clawskills.sh/skills/edmonddantesj-publish-guard) - <!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-PG01 -->。
+- [publish-guard](https://clawskills.sh/skills/edmonddantesj-publish-guard) - <!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-PG01 -->（原文仅为验证标记，无功能描述）。
 - [quickbooks-online](https://clawskills.sh/skills/paulbudveit-quickbooks-online) - QuickBooks Online CLI 工具。
 - [rune](https://clawskills.sh/skills/thebobloblaw-rune) - 具有智能上下文注入和自适应学习的自我改进 AI 内存系统。
 - [scent-trails](https://clawskills.sh/skills/otherpowers-scent-trails) - *一种用于护理、记忆和共存的 stigmergic 智能原语*。
@@ -73,3 +73,4 @@
 - [tweet-processor](https://clawskills.sh/skills/caqlayan-tweet-processor) - 从推文链接中提取和分类见解到结构化笔记中。
 - [upnote](https://clawskills.sh/skills/wemcdonald-upnote) - 通过 x-callback-url 自动化管理 UpNote 笔记和笔记本。
 - [voice-notes-pro](https://clawskills.sh/skills/toniaczlog-voice-notes-pro) - Inteligentna transkrypcja i kategoryzacja notatek gosowych z WhatsApp.（注：波兰语，保持原文）
+- [agent-inner-life](https://clawhub.ai/dkistenev/agent-inner-life) - 为代理提供带日期的状态记录、晚间日记和梦境。

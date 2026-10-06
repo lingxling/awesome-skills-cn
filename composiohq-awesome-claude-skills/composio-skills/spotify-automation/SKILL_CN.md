@@ -1,6 +1,6 @@
 ---
 name: Spotify Automation
-description: "Automate Spotify workflows including playlist management, music search, playback control, and user profile access via Composio"
+description: "通过 Composio 自动化 Spotify 工作流，包括播放列表管理、音乐搜索、播放控制和用户资料访问"
 requires:
   mcp:
     - rube
@@ -8,178 +8,178 @@ requires:
 
 # Spotify Automation
 
-Automate Spotify operations -- manage playlists, search the music catalog, control playback, browse albums and tracks, and access user profiles -- all orchestrated through the Composio MCP integration.
+自动化 Spotify 操作 —— 管理播放列表、搜索音乐目录、控制播放、浏览专辑和曲目，以及访问用户资料 —— 全部通过 Composio MCP 集成来协调完成。
 
-**Toolkit docs:** [composio.dev/toolkits/spotify](https://composio.dev/toolkits/spotify)
+**工具包文档：** [composio.dev/toolkits/spotify](https://composio.dev/toolkits/spotify)
 
 ---
 
 ## 设置
 
-1. 连接 your Spotify account through the Composio MCP server at `https://rube.app/mcp`
-2. The agent will prompt you with an authentication link if no active connection exists
-3. Once connected, all `SPOTIFY_*` tools become available for execution
-4. **Note:** Some features (playback control) require a Spotify Premium subscription
+1. 通过 `https://rube.app/mcp` 处的 Composio MCP 服务器连接你的 Spotify 账户
+2. 如果不存在有效连接，代理会提示你一个身份验证链接
+3. 连接成功后，所有 `SPOTIFY_*` 工具即可使用
+4. **注意：** 部分功能（播放控制）需要 Spotify Premium 订阅
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Get Current User Profile
-Retrieve comprehensive profile information for the authenticated Spotify user.
+### 1. 获取当前用户资料
+检索已通过身份验证的 Spotify 用户的完整资料信息。
 
-**Tool:** `SPOTIFY_GET_CURRENT_USER_S_PROFILE`
+**工具：** `SPOTIFY_GET_CURRENT_USER_S_PROFILE`
 
 ```
-No parameters required.
-Returns: display name, email, country, subscription level (premium/free),
-explicit content settings, profile images, follower count, and Spotify URIs.
-Required scopes: user-read-private, user-read-email.
+无需参数。
+返回：显示名称、邮箱、国家、订阅等级（premium/free）、
+露骨内容设置、头像、关注者数量，以及 Spotify URI。
+所需作用域：user-read-private、user-read-email。
 ```
 
 ---
 
-### 2. Search the Spotify Catalog
-Find albums, artists, playlists, tracks, shows, episodes, or audiobooks by keyword.
+### 2. 搜索 Spotify 目录
+按关键词查找专辑、艺术家、播放列表、曲目、节目、单集或有声书。
 
-**Tool:** `SPOTIFY_SEARCH_FOR_ITEM`
+**工具：** `SPOTIFY_SEARCH_FOR_ITEM`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 是否必填 | 说明 |
 |-----------|------|----------|-------------|
-| `q` | string | Yes | Search query keywords |
-| `type` | array | Yes | Item types: `album`, `artist`, `playlist`, `track`, `show`, `episode`, `audiobook` |
-| `limit` | integer | No | Results to return (default: 20) |
-| `offset` | integer | No | Offset for pagination (default: 0) |
-| `market` | string | No | ISO 3166-1 alpha-2 country code |
-| `include_external` | string | No | Set to `audio` to include external content |
+| `q` | string | 是 | 搜索关键词 |
+| `type` | array | 是 | 条目类型：`album`、`artist`、`playlist`、`track`、`show`、`episode`、`audiobook` |
+| `limit` | integer | 否 | 返回结果数（默认：20） |
+| `offset` | integer | 否 | 分页偏移量（默认：0） |
+| `market` | string | 否 | ISO 3166-1 alpha-2 国家代码 |
+| `include_external` | string | 否 | 设为 `audio` 以包含外部内容 |
 
-**Note:** Audiobooks are only available in US, UK, Canada, Ireland, New Zealand, and Australia.
+**注意：** 有声书仅在美国、英国、加拿大、爱尔兰、新西兰和澳大利亚可用。
 
 ---
 
-### 3. Manage Playlists
-Browse, create, modify, and populate playlists.
+### 3. 管理播放列表
+浏览、创建、修改并填充播放列表。
 
-**Get a user's playlists:**
+**获取某用户的播放列表：**
 
-**Tool:** `SPOTIFY_GET_USER_S_PLAYLISTS`
+**工具：** `SPOTIFY_GET_USER_S_PLAYLISTS`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 是否必填 | 说明 |
 |-----------|------|----------|-------------|
-| `user_id` | string | Yes | Spotify user ID |
-| `limit` | integer | No | Max playlists, 1-50 (default: 20) |
-| `offset` | integer | No | Pagination offset, 0-100000 (default: 0) |
+| `user_id` | string | 是 | Spotify 用户 ID |
+| `limit` | integer | 否 | 最大播放列表数，1-50（默认：20） |
+| `offset` | integer | 否 | 分页偏移量，0-100000（默认：0） |
 
-**Get current user's playlists:**
+**获取当前用户的播放列表：**
 
-**Tool:** `SPOTIFY_GET_CURRENT_USER_S_PLAYLISTS`
+**工具：** `SPOTIFY_GET_CURRENT_USER_S_PLAYLISTS`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 是否必填 | 说明 |
 |-----------|------|----------|-------------|
-| `limit` | integer | No | Max playlists, 1-50 (default: 20) |
-| `offset` | integer | No | Pagination offset, 0-100000 (default: 0) |
+| `limit` | integer | 否 | 最大播放列表数，1-50（默认：20） |
+| `offset` | integer | 否 | 分页偏移量，0-100000（默认：0） |
 
-**Get playlist details:**
+**获取播放列表详情：**
 
-**Tool:** `SPOTIFY_GET_PLAYLIST`
+**工具：** `SPOTIFY_GET_PLAYLIST`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 是否必填 | 说明 |
 |-----------|------|----------|-------------|
-| `playlist_id` | string | Yes | Spotify playlist ID (e.g., `3cEYpjA9oz9GiPac4AsH4n`) |
-| `fields` | string | No | Comma-separated field filter to reduce response size |
-| `market` | string | No | ISO country code for market-specific content |
-| `additional_types` | string | No | `track,episode` to include podcast episodes |
+| `playlist_id` | string | 是 | Spotify 播放列表 ID（例如 `3cEYpjA9oz9GiPac4AsH4n`） |
+| `fields` | string | 否 | 逗号分隔的字段过滤器，用于缩减响应大小 |
+| `market` | string | 否 | ISO 国家代码，用于按市场获取内容 |
+| `additional_types` | string | 否 | `track,episode`，用于包含播客单集 |
 
-**Update playlist details:**
+**更新播放列表详情：**
 
-**Tool:** `SPOTIFY_CHANGE_PLAYLIST_DETAILS`
+**工具：** `SPOTIFY_CHANGE_PLAYLIST_DETAILS`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 是否必填 | 说明 |
 |-----------|------|----------|-------------|
-| `playlist_id` | string | Yes | Playlist ID (must be owned by current user) |
-| `name` | string | No | New playlist name |
-| `description` | string | No | New playlist description |
-| `public` | boolean | No | Public/private toggle |
-| `collaborative` | boolean | No | Collaborative mode (only on non-public playlists) |
+| `playlist_id` | string | 是 | 播放列表 ID（必须归当前用户所有） |
+| `name` | string | 否 | 新的播放列表名称 |
+| `description` | string | 否 | 新的播放列表描述 |
+| `public` | boolean | 否 | 公开/私密切换 |
+| `collaborative` | boolean | 否 | 协作模式（仅适用于非公开播放列表） |
 
 ---
 
-### 4. Browse Playlist Items & Add Tracks
-View tracks in a playlist and add new items.
+### 4. 浏览播放列表项并添加曲目
+查看播放列表中的曲目并添加新项目。
 
-**Tool:** `SPOTIFY_GET_PLAYLIST_ITEMS`
+**工具：** `SPOTIFY_GET_PLAYLIST_ITEMS`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 是否必填 | 说明 |
 |-----------|------|----------|-------------|
-| `playlist_id` | string | Yes | Spotify playlist ID |
-| `limit` | integer | No | Items per page, 1-50 (default: 20) |
-| `offset` | integer | No | Pagination offset (default: 0) |
-| `fields` | string | No | Field filter (e.g., `items(track(name,id))`) |
-| `market` | string | No | ISO country code |
-| `additional_types` | string | No | `track,episode` for podcast episodes |
+| `playlist_id` | string | 是 | Spotify 播放列表 ID |
+| `limit` | integer | 否 | 每页项目数，1-50（默认：20） |
+| `offset` | integer | 否 | 分页偏移量（默认：0） |
+| `fields` | string | 否 | 字段过滤器（例如 `items(track(name,id))`） |
+| `market` | string | 否 | ISO 国家代码 |
+| `additional_types` | string | 否 | `track,episode`，用于播客单集 |
 
-**Tool:** `SPOTIFY_ADD_ITEMS_TO_PLAYLIST`
+**工具：** `SPOTIFY_ADD_ITEMS_TO_PLAYLIST`
 
-Add tracks or episodes to a playlist using Spotify URIs.
+使用 Spotify URI 将曲目或单集添加到播放列表。
 
 ---
 
-### 5. Get Track & Album Details
-Retrieve catalog information for individual tracks and albums.
+### 5. 获取曲目和专辑详情
+检索单个曲目和专辑的目录信息。
 
-**Tool:** `SPOTIFY_GET_TRACK` -- Get details for a single track by Spotify ID.
+**工具：** `SPOTIFY_GET_TRACK` —— 按 Spotify ID 获取单个曲目的详情。
 
-**Tool:** `SPOTIFY_GET_ALBUM` -- Get comprehensive album data including track listing, artist info, cover art, and popularity.
+**工具：** `SPOTIFY_GET_ALBUM` —— 获取包含曲目列表、艺术家信息、封面图和热度的完整专辑数据。
 
 ---
 
-### 6. Control Playback
-Start, resume, or change playback on the user's active device.
+### 6. 控制播放
+在用户的活动设备上开始、恢复或更改播放。
 
-**Tool:** `SPOTIFY_START_RESUME_PLAYBACK`
+**工具：** `SPOTIFY_START_RESUME_PLAYBACK`
 
-| Parameter | Type | Required | Description |
+| 参数 | 类型 | 是否必填 | 说明 |
 |-----------|------|----------|-------------|
-| `context_uri` | string | No | Spotify URI of album, artist, or playlist (cannot combine with `uris`) |
-| `uris` | array | No | List of track URIs to play (cannot combine with `context_uri`) |
-| `offset` | object | No | Starting position: `{position: 5}` or `{uri: 'spotify:track:...'}` |
-| `position_ms` | integer | No | Start position in milliseconds |
-| `device_id` | string | No | Target device ID (defaults to active device) |
+| `context_uri` | string | 否 | 专辑、艺术家或播放列表的 Spotify URI（不能与 `uris` 同时使用） |
+| `uris` | array | 否 | 要播放的曲目 URI 列表（不能与 `context_uri` 同时使用） |
+| `offset` | object | 否 | 起始位置：`{position: 5}` 或 `{uri: 'spotify:track:...'}` |
+| `position_ms` | integer | 否 | 以毫秒表示的起始位置 |
+| `device_id` | string | 否 | 目标设备 ID（默认为活动设备） |
 
-**Requirements:** Spotify Premium subscription and at least one active device.
+**要求：** Spotify Premium 订阅，以及至少一个活动设备。
 
 ---
 
 ## 已知陷阱
 
-| Pitfall | Details |
+| 陷阱 | 详情 |
 |---------|---------|
-| **Premium required for playback** | `SPOTIFY_START_RESUME_PLAYBACK` returns 403 if the user does not have Spotify Premium |
-| **Active device required** | Playback control returns 404 if no Spotify device (mobile, desktop, web, speaker) is active |
-| **context_uri vs uris are exclusive** | Cannot use both `context_uri` and `uris` in the same playback call |
-| **Collaborative playlists** | `collaborative` can only be set to `true` on non-public playlists (`public` must be `false`) |
-| **Playlist ownership** | `SPOTIFY_CHANGE_PLAYLIST_DETAILS` only works on playlists owned by the authenticated user |
-| **Audiobook market restrictions** | Audiobooks via search are only available in US, UK, Canada, Ireland, New Zealand, and Australia |
-| **Max 11000 playlists** | Users are limited to approximately 11,000 playlists via `SPOTIFY_CREATE_PLAYLIST` |
+| **播放需要 Premium** | 如果用户没有 Spotify Premium，`SPOTIFY_START_RESUME_PLAYBACK` 会返回 403 |
+| **需要活动设备** | 如果没有活动的 Spotify 设备（移动端、桌面端、网页端、音箱），播放控制会返回 404 |
+| **context_uri 与 uris 互斥** | 同一次播放调用中不能同时使用 `context_uri` 和 `uris` |
+| **协作播放列表** | `collaborative` 只能在非公开播放列表上设为 `true`（`public` 必须为 `false`） |
+| **播放列表所属权** | `SPOTIFY_CHANGE_PLAYLIST_DETAILS` 仅适用于已通过身份验证的用户所拥有的播放列表 |
+| **有声书的市场限制** | 通过搜索获取的有声书仅在美国、英国、加拿大、爱尔兰、新西兰和澳大利亚可用 |
+| **最多 11000 个播放列表** | 通过 `SPOTIFY_CREATE_PLAYLIST`，用户最多可创建约 11,000 个播放列表 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Purpose |
-|-----------|---------|
-| `SPOTIFY_GET_CURRENT_USER_S_PROFILE` | Get authenticated user's profile |
-| `SPOTIFY_SEARCH_FOR_ITEM` | Search catalog for tracks, albums, artists, etc. |
-| `SPOTIFY_GET_USER_S_PLAYLISTS` | Get playlists for any user |
-| `SPOTIFY_GET_CURRENT_USER_S_PLAYLISTS` | Get current user's playlists |
-| `SPOTIFY_GET_PLAYLIST` | Get detailed playlist info |
-| `SPOTIFY_GET_PLAYLIST_ITEMS` | List tracks/episodes in a playlist |
-| `SPOTIFY_CHANGE_PLAYLIST_DETAILS` | Update playlist name, description, visibility |
-| `SPOTIFY_CREATE_PLAYLIST` | Create a new playlist |
-| `SPOTIFY_ADD_ITEMS_TO_PLAYLIST` | Add tracks/episodes to a playlist |
-| `SPOTIFY_GET_TRACK` | Get track details by ID |
-| `SPOTIFY_GET_ALBUM` | Get album details by ID |
-| `SPOTIFY_START_RESUME_PLAYBACK` | Start or resume playback on a device |
+| 工具 Slug | 用途 |
+|-----------|------|
+| `SPOTIFY_GET_CURRENT_USER_S_PROFILE` | 获取已通过身份验证用户的资料 |
+| `SPOTIFY_SEARCH_FOR_ITEM` | 在目录中搜索曲目、专辑、艺术家等 |
+| `SPOTIFY_GET_USER_S_PLAYLISTS` | 获取任意用户的播放列表 |
+| `SPOTIFY_GET_CURRENT_USER_S_PLAYLISTS` | 获取当前用户的播放列表 |
+| `SPOTIFY_GET_PLAYLIST` | 获取详细的播放列表信息 |
+| `SPOTIFY_GET_PLAYLIST_ITEMS` | 列出播放列表中的曲目/单集 |
+| `SPOTIFY_CHANGE_PLAYLIST_DETAILS` | 更新播放列表名称、描述、可见性 |
+| `SPOTIFY_CREATE_PLAYLIST` | 创建新的播放列表 |
+| `SPOTIFY_ADD_ITEMS_TO_PLAYLIST` | 向播放列表添加曲目/单集 |
+| `SPOTIFY_GET_TRACK` | 按 ID 获取曲目详情 |
+| `SPOTIFY_GET_ALBUM` | 按 ID 获取专辑详情 |
+| `SPOTIFY_START_RESUME_PLAYBACK` | 在设备上开始或恢复播放 |
 
 ---
 

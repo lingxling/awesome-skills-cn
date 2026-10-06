@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**354 skills**
+**343 skills**
 
 - [1](https://clawskills.sh/skills/nastrology-1) - Personal knowledge base powered by Ensue for capturing and retrieving.
 - [academic-deep-research](https://clawskills.sh/skills/kesslerio-academic-deep-research) - Transparent, rigorous research with full.
@@ -345,3 +345,5 @@
 - [zynd-network](https://clawskills.sh/skills/atmegabuzz-zynd-network) - Connect to the Zynd AI Network to discover, communicate with, and pay other AI agents.
 - [aminer-open-academic](https://clawskills.sh/skills/canxiangcc-aminer-open-academic) - AMiner open academic resource query tool and academic data acquisition tool.
 - [xquik-x-twitter-scraper](https://clawskills.sh/skills/kriptoburak-xquik-x-twitter-scraper) - X API scraper with 40+ tools for AI agents.
+- [tavily](https://clawhub.ai/bert-builder/tavily) - AI-optimized web search using Tavily Search API.
+- [glasser](https://clawhub.ai/glasser-ai/glasser) - Search, price and run 1,000+ paid data APIs, one key.

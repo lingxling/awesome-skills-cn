@@ -1,6 +1,6 @@
 {
   "name": "aasb-qa-testing",
-  "version": "14.4.0",
+  "version": "18.15.0",
   "description": "Install the \"QA & Testing\" editorial skill bundle from Agentic Awesome Skills.",
   "author": {
     "name": "sickn33 and contributors",
@@ -27,7 +27,13 @@
       "Interactive",
       "Write"
     ],
-    "websiteURL": "https://github.com/sickn33/agentic-awesome-skills",
-    "brandColor": "#111827"
+    "websiteURL": "https://aaskills.tech/",
+    "privacyPolicyURL": "https://github.com/sickn33/agentic-awesome-skills/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/sickn33/agentic-awesome-skills/blob/main/TERMS.md",
+    "brandColor": "#111827",
+    "defaultPrompt": [
+      "Use the \"QA & Testing\" skills to help me complete this task.",
+      "Review this project with the \"QA & Testing\" workflow."
+    ]
   }
 }

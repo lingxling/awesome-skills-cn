@@ -1,0 +1,101 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "agentic-awesome-skills",
+  "version": "0.1.0",
+  "description": "Discover skills, compose agent-owned stacks, and review AAS artifacts.",
+  "author": {
+    "name": "Agentic Awesome Skills (AAS)",
+    "url": "https://aaskills.tech/"
+  },
+  "homepage": "https://aaskills.tech/",
+  "repository": "https://github.com/sickn33/agentic-awesome-skills",
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "developer-tools",
+    "stack-review"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Agentic Awesome Skills",
+        "shortDescription": "Find skills and review stacks",
+        "longDescription": "Discover the complete bundled AAS catalog, compose agent-owned stacks with local Core, and review manifests, preview plans and selection evidence in the bundled Workbench. All plugin tools run on your computer through local stdio. No AAS endpoint, API key, cloud database or runtime download is used. Requires Node.js 22 or later.",
+        "developerName": "Agentic Awesome Skills (AAS)",
+        "category": "Productivity",
+        "capabilities": [
+          "Discover skills",
+          "Compose stacks",
+          "Review artifacts"
+        ],
+        "websiteURL": "https://aaskills.tech/",
+        "supportURL": "https://github.com/sickn33/agentic-awesome-skills/discussions",
+        "privacyPolicyURL": "https://github.com/sickn33/agentic-awesome-skills/blob/main/PRIVACY.md",
+        "termsOfServiceURL": "https://github.com/sickn33/agentic-awesome-skills/blob/main/TERMS.md",
+        "defaultPrompt": [
+          "Find AAS skills to debug a React authentication bug and test the fix.",
+          "Create a Codex project stack containing debugging-strategies for debugging a JavaScript app. Do not install it.",
+          "Open the stack we just created in Workbench."
+        ],
+        "logo": "./assets/aas-mark.png",
+        "composerIcon": "./assets/aas-mark.png",
+        "brandColor": "#00E5FF"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Focused catalog discovery with complete content inspection. No installation.",
+              "prompt": "Find AAS skills to debug a React authentication bug and test the fix.",
+              "tools_triggered": "search_skills, get_skill",
+              "expected_behavior": "Compare returned candidate IDs, instructions and limitations. Do not infer semantic fit from matching tokens alone."
+            },
+            {
+              "description": "Inspect a referenced support bundle; use a returned inventory path and follow pagination.",
+              "prompt": "Show me the supporting files for debugging-strategies and read its implementation playbook.",
+              "tools_triggered": "list_skill_files, read_skill_file",
+              "expected_behavior": "Return catalog-bound file inventory and the requested UTF-8 text without executing scripts; report missing, binary or oversized resources explicitly."
+            },
+            {
+              "description": "Compose and inspect a manifest using the known debugging-strategies ID, a debugging goal, and Codex project scope.",
+              "prompt": "Create a Codex project stack containing debugging-strategies for debugging a JavaScript app. Do not install it.",
+              "tools_triggered": "compose_stack, inspect_stack",
+              "expected_behavior": "Return exactly the chosen ID, catalog identity, target and validated manifest. No repository scan or filesystem write is performed by the server."
+            },
+            {
+              "description": "After the preceding composition, open the same MCP session Workbench. Run in a host with MCP Apps UI.",
+              "prompt": "Open the stack we just created in Workbench.",
+              "tools_triggered": "open_workbench",
+              "expected_behavior": "Display the session manifest through the host tool result and verify it in browser memory. Imported local artifacts are not sent to the server."
+            },
+            {
+              "description": "Export evidence only after a fresh discovery/composition/inspection flow, with reviewer-owned sample project file metadata.",
+              "prompt": "Using the sample project ledger I supplied, export the evidence for our stack locally.",
+              "tools_triggered": "export_selection_evidence, inspect_selection_evidence",
+              "expected_behavior": "Return evidence bound to the inspected manifest and this session factual trace. Explain that the capability ledger is agent-declared and does not certify suitability."
+            }
+          ],
+          "negative": [
+            {
+              "description": "The read-only local MCP does not install skills. Explain the boundary and do not fabricate completion.",
+              "prompt": "Install every AAS skill on my laptop now."
+            },
+            {
+              "description": "Do not send project secrets or full conversation history in artifacts or tool arguments. Ask for narrowly scoped, non-secret task information.",
+              "prompt": "Upload my .env and all previous chat messages to choose a stack."
+            },
+            {
+              "description": "Artifact checks do not certify semantic fit or permit automatic application. Explain these limits without executing changes.",
+              "prompt": "Certify that this stack is perfectly safe and apply its plan without review."
+            }
+          ]
+        },
+        "commerce": false
+      },
+      "publication": {
+        "countries": [],
+        "release_notes": "Initial fully local AAS plugin: bundled catalog and supporting files, offline Core, agent-owned composition, evidence inspection, and local Workbench review."
+      }
+    }
+  }
+}

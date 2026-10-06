@@ -1,6 +1,6 @@
 ---
 name: Eventbrite Automation
-description: "Automate Eventbrite event management, attendee tracking, organization discovery, and category browsing through natural language commands"
+description: "通过自然语言命令自动化 Eventbrite 的活动管理、参会者追踪、组织发现和分类浏览"
 requires:
   mcp:
     - rube
@@ -8,140 +8,140 @@ requires:
 
 # Eventbrite Automation
 
-Automate Eventbrite event management workflows -- list organization events, track attendees, browse categories and formats, and manage organizations -- all through natural language.
+自动化 Eventbrite 活动管理工作流——列出组织活动、追踪参会者、浏览分类和形式、管理组织——全部通过自然语言完成。
 
-**Toolkit docs:** [composio.dev/toolkits/eventbrite](https://composio.dev/toolkits/eventbrite)
+**工具包文档：** [composio.dev/toolkits/eventbrite](https://composio.dev/toolkits/eventbrite)
 
 ---
 
 ## 设置
 
-1. Add the Rube MCP server to your environment: `https://rube.app/mcp`
-2. 连接 your Eventbrite account when prompted (OAuth flow via Composio)
-3. Start issuing natural language commands for Eventbrite automation
+1. 将 Rube MCP 服务器添加到你的环境中：`https://rube.app/mcp`
+2. 按提示连接你的 Eventbrite 账户（通过 Composio 的 OAuth 流程）
+3. 开始使用自然语言命令进行 Eventbrite 自动化
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Discover Your Organizations
+### 1. 发现你的组织
 
-Retrieve the organizations the authenticated user belongs to. This is a prerequisite for most other Eventbrite operations since `organization_id` is required.
+获取已认证用户所属的组织。由于大多数其他 Eventbrite 操作都需要 `organization_id`，这是其前提条件。
 
-**Tool:** `EVENTBRITE_LIST_USER_ORGANIZATIONS`
+**工具：** `EVENTBRITE_LIST_USER_ORGANIZATIONS`
 
-No parameters required. Returns organization IDs, names, and metadata.
+不需要参数。返回组织 ID、名称和元数据。
 
-> Always call this first to obtain the `organization_id` needed by event and attendee endpoints.
+> 请始终先调用此工具，以获取活动和参会者相关接口所需的 `organization_id`。
 
-Example prompt:
-> "List my Eventbrite organizations"
-
----
-
-### 2. List and Search Organization Events
-
-Browse events owned by a specific organization with filtering by status, time period, and pagination.
-
-**Tool:** `EVENTBRITE_LIST_ORGANIZATION_EVENTS`
-
-Key parameters:
-- `organization_id` -- the organization whose events to list (required; get from `EVENTBRITE_LIST_USER_ORGANIZATIONS`)
-- `status` -- filter by `live`, `draft`, `canceled`, `started`, `ended`, `completed`, or `all`
-- `time_filter` -- filter by `current_future` or `past`
-- `order_by` -- sort by `start_asc`, `start_desc`, `created_asc`, `created_desc`, `name_asc`, `name_desc`
-- `page_size` -- number of events per page
-- `continuation` -- pagination token from previous response
-- `expand` -- comma-separated fields to expand: `organizer`, `venue`, `ticket_classes`
-
-Example prompt:
-> "Show me all live events for my organization, sorted by start date"
+示例提示词：
+> “列出我的 Eventbrite 组织”
 
 ---
 
-### 3. Track Event Attendees
+### 2. 列出和搜索组织活动
 
-Retrieve the attendee list for any event, with optional status filtering and pagination.
+浏览特定组织拥有的活动，支持按状态、时间段筛选和分页。
 
-**Tool:** `EVENTBRITE_LIST_EVENT_ATTENDEES`
+**工具：** `EVENTBRITE_LIST_ORGANIZATION_EVENTS`
 
-Key parameters:
-- `event_id` -- the event to retrieve attendees for (required)
-- `status` -- filter by `attending`, `not_attending`, or `cancelled`
-- `changed_since` -- ISO 8601 timestamp to get only recently changed attendees
-- `continuation` -- pagination token for subsequent pages
+关键参数：
+- `organization_id` -- 要列出其活动的组织（必填；从 `EVENTBRITE_LIST_USER_ORGANIZATIONS` 获取）
+- `status` -- 按 `live`、`draft`、`canceled`、`started`、`ended`、`completed` 或 `all` 筛选
+- `time_filter` -- 按 `current_future` 或 `past` 筛选
+- `order_by` -- 按 `start_asc`、`start_desc`、`created_asc`、`created_desc`、`name_asc`、`name_desc` 排序
+- `page_size` -- 每页活动数量
+- `continuation` -- 来自上一响应的分页令牌
+- `expand` -- 以逗号分隔的待展开字段：`organizer`、`venue`、`ticket_classes`
 
-Example prompt:
-> "Get all attending attendees for event 123456789 who changed since January 1st"
-
----
-
-### 4. Browse Event Categories
-
-Retrieve available event categories for use when creating or filtering events.
-
-**Tool:** `EVENTBRITE_GET_EVENT_CATEGORIES`
-
-Key parameters:
-- `locale` -- BCP-47 locale for localized names (e.g., `en_US`, `es_ES`)
-
-Follow up with `EVENTBRITE_GET_EVENT_SUBCATEGORIES` to get subcategories within a selected category.
-
-Example prompt:
-> "List all Eventbrite event categories in English"
+示例提示词：
+> “显示我组织的所有 live 活动，按开始日期排序”
 
 ---
 
-### 5. List Event Formats
+### 3. 追踪活动参会者
 
-Retrieve all available event format types (conference, seminar, workshop, etc.).
+检索任意活动的参会者列表，支持可选的状态筛选和分页。
 
-**Tool:** `EVENTBRITE_GET_EVENT_FORMATS`
+**工具：** `EVENTBRITE_LIST_EVENT_ATTENDEES`
 
-No parameters required. Returns format IDs and display names.
+关键参数：
+- `event_id` -- 要检索参会者的活动（必填）
+- `status` -- 按 `attending`、`not_attending` 或 `cancelled` 筛选
+- `changed_since` -- ISO 8601 时间戳，仅获取近期有变化的参会者
+- `continuation` -- 用于获取后续页面的分页令牌
 
-Example prompt:
-> "What event formats are available on Eventbrite?"
-
----
-
-### 6. Browse Event Subcategories
-
-Retrieve subcategories for more granular event classification.
-
-**Tool:** `EVENTBRITE_GET_EVENT_SUBCATEGORIES`
-
-Key parameters:
-- `locale` -- BCP-47 locale for localized names (e.g., `en_US`)
-
-Example prompt:
-> "List all Eventbrite event subcategories"
+示例提示词：
+> “获取活动 123456789 中自 1 月 1 日以来有变动的所有 attending 参会者”
 
 ---
 
-## 已知陷阱
+### 4. 浏览活动分类
 
-| Pitfall | Details |
+获取用于创建或筛选活动时可用的活动分类。
+
+**工具：** `EVENTBRITE_GET_EVENT_CATEGORIES`
+
+关键参数：
+- `locale` -- 用于本地化名称的 BCP-47 语言区域（例如 `en_US`、`es_ES`）
+
+接着可使用 `EVENTBRITE_GET_EVENT_SUBCATEGORIES` 获取所选分类下的子分类。
+
+示例提示词：
+> “列出所有英文的 Eventbrite 活动分类”
+
+---
+
+### 5. 列出活动形式
+
+获取所有可用的活动形式类型（会议、研讨会、工作坊等）。
+
+**工具：** `EVENTBRITE_GET_EVENT_FORMATS`
+
+不需要参数。返回形式 ID 和显示名称。
+
+示例提示词：
+> “Eventbrite 上有哪些可用的活动形式？”
+
+---
+
+### 6. 浏览活动子分类
+
+获取更细粒度的活动分类子项。
+
+**工具：** `EVENTBRITE_GET_EVENT_SUBCATEGORIES`
+
+关键参数：
+- `locale` -- 用于本地化名称的 BCP-47 语言区域（例如 `en_US`）
+
+示例提示词：
+> “列出所有 Eventbrite 活动子分类”
+
+---
+
+## 常见陷阱
+
+| 陷阱 | 详情 |
 |---------|---------|
-| Organization ID required | Most event operations require `organization_id` -- always call `EVENTBRITE_LIST_USER_ORGANIZATIONS` first |
-| Pagination via continuation | Results use continuation-token pagination, not page numbers -- pass the `continuation` value from the previous response to get the next page |
-| Event ID discovery | You need to list events first via `EVENTBRITE_LIST_ORGANIZATION_EVENTS` to get `event_id` values for attendee queries |
-| Status values are specific | Event status values (`live`, `draft`, `canceled`, `started`, `ended`, `completed`) must match exactly |
-| Expand fields are comma-separated | The `expand` parameter takes a comma-separated string, not an array (e.g., `"organizer,venue"`) |
-| changed_since format | The `changed_since` parameter must be in ISO 8601 format (e.g., `2024-01-01T00:00:00Z`) |
+| 需要组织 ID | 大多数活动操作都需要 `organization_id` —— 请始终先调用 `EVENTBRITE_LIST_USER_ORGANIZATIONS` |
+| 通过 continuation 分页 | 结果使用 continuation 令牌分页，而非页码——需将上一响应中的 `continuation` 值传入以获取下一页 |
+| 需先发现活动 ID | 你需要先通过 `EVENTBRITE_LIST_ORGANIZATION_EVENTS` 列出活动，才能获取用于参会者查询的 `event_id` 值 |
+| 状态值需精确 | 活动状态值（`live`、`draft`、`canceled`、`started`、`ended`、`completed`）必须完全匹配 |
+| expand 字段以逗号分隔 | `expand` 参数接受的是以逗号分隔的字符串，而非数组（例如 `"organizer,venue"`） |
+| changed_since 的格式 | `changed_since` 参数必须为 ISO 8601 格式（例如 `2024-01-01T00:00:00Z`） |
 
 ---
 
 ## 快速参考
 
-| Action | Tool Slug | Key Params |
+| 操作 | 工具 Slug | 关键参数 |
 |--------|-----------|------------|
-| List organizations | `EVENTBRITE_LIST_USER_ORGANIZATIONS` | (none) |
-| List events | `EVENTBRITE_LIST_ORGANIZATION_EVENTS` | `organization_id`, `status`, `time_filter` |
-| List attendees | `EVENTBRITE_LIST_EVENT_ATTENDEES` | `event_id`, `status`, `changed_since` |
-| Get categories | `EVENTBRITE_GET_EVENT_CATEGORIES` | `locale` |
-| Get subcategories | `EVENTBRITE_GET_EVENT_SUBCATEGORIES` | `locale` |
-| Get formats | `EVENTBRITE_GET_EVENT_FORMATS` | (none) |
+| 列出组织 | `EVENTBRITE_LIST_USER_ORGANIZATIONS` | （无） |
+| 列出活动 | `EVENTBRITE_LIST_ORGANIZATION_EVENTS` | `organization_id`、`status`、`time_filter` |
+| 列出参会者 | `EVENTBRITE_LIST_EVENT_ATTENDEES` | `event_id`、`status`、`changed_since` |
+| 获取分类 | `EVENTBRITE_GET_EVENT_CATEGORIES` | `locale` |
+| 获取子分类 | `EVENTBRITE_GET_EVENT_SUBCATEGORIES` | `locale` |
+| 获取形式 | `EVENTBRITE_GET_EVENT_FORMATS` | （无） |
 
 ---
 

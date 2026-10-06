@@ -38,7 +38,7 @@
 - [her-voice](https://clawskills.sh/skills/matusvojtek-her-voice) - 给你的代理一个声音。
 - [inworld-tts](https://clawskills.sh/skills/gugic-inworld-tts) - 通过 Inworld.ai API 进行文本转语音。
 - [jarvis-voice](https://clawskills.sh/skills/globalcaos-jarvis-voice) - 具有 TTS 和视觉转录样式的金属 AI 声音角色。
-- [kesha-voice-kit](https://github.com/openclaw/skills/tree/main/skills/drakulavich/kesha-voice-kit/SKILL.md) - 搭载俄语的本地语音转文字+文字转语音工具，可在苹果硅芯片设备离线运行。
+- [kesha-voice-kit](https://clawskills.sh/skills/drakulavich-kesha-voice-kit) - 离线语音转文字（支持 25 种语言）、文字转语音（支持 9 种语言）及说话人分离。
 - [kokoro-tts](https://clawskills.sh/skills/edkief-kokoro-tts) - 使用本地 Kokoro TTS 引擎从文本生成 spoken 音频。
 - [lnbits](https://clawskills.sh/skills/talvasconcelos-lnbits) - 管理 LNbits Lightning 钱包（余额、支付、发票）
 - [lnbits-with-qrcode](https://clawskills.sh/skills/jamestsetsekas-lnbits-with-qrcode) - 管理 LNbits Lightning 钱包（余额、支付、发票）
@@ -47,3 +47,4 @@
 - [norman-monthly-reconciliation](https://clawskills.sh/skills/stanlee000-norman-monthly-reconciliation) - 执行完整的月度财务对账 - 审查所有交易，匹配发票，检查未结。
 - [ressemble](https://clawskills.sh/skills/adriano-vr-ressemble) - 使用 Resemble AI HTTP API 的文本转语音和语音转文本集成。
 - [siliconflow-tts-gen](https://clawskills.sh/skills/lilei0311-siliconflow-tts-gen) - 使用 SiliconFlow API（CosyVoice2）进行文本转语音。
+- [youtube-transcript-speaker-diarization](https://clawhub.ai/patelnav/youtube-transcript-speaker-diarization) - 通过 diarize.io API 获取带说话人标注的 YouTube 字幕文本。

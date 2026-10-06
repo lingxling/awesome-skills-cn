@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**206 skills**
+**207 skills**
 
 - [4to1-planner](https://clawskills.sh/skills/qingxuantang-4to1-planner) - AI planning coach using the 4To1 Method™ — turn 4-year vision into daily action.
 - [4todo](https://clawskills.sh/skills/blackstorm-4todo) - Manage 4todo (4to.do) from chat.
@@ -147,6 +147,7 @@
 - [postqued-api](https://clawskills.sh/skills/syeddhasnainn-postqued-api) - PostQued social media scheduling API integration.
 - [ppt-ooxml-tool](https://clawskills.sh/skills/jason2be-ppt-ooxml-tool) - AI-agent Skill for PPTX OOXML localization workflows.
 - [proactive-soul]([https://clawskills.sh/skills/jason2be-ppt-ooxml-tool) - Gives your agent an inner life — proactive daily dispatches, persistent curiosity threads across sessions, and genuine pushback when it disagrees.
+- [project-cross-migration](https://clawhub.ai/zhouxin121/skills/project-cross-migration) - Back up, verify, and restore an agent's full workspace (conversation JSONL, memory, persona, configs) when switching devices or agent frameworks.
 - [publora](https://clawskills.sh/skills/sergebulaev-publora) - Publora API — schedule and publish social media posts across 10 platforms (X/Twitter, LinkedIn, Instagram, Threads.
 - [publora-mastodon](https://clawskills.sh/skills/sergebulaev-publora-mastodon) - Post or schedule content to Mastodon using the Publora API.
 - [qa-testing-bots](https://clawskills.sh/skills/g4dr-qa-testing-bots) - This skill enables Claude to build and run **automated QA testing bots** that simulate.
@@ -210,4 +211,6 @@
 - [zulip](https://clawskills.sh/skills/suky57-zulip) - Interact with Zulip chat platform via REST API and Python client.
 - [blog-composer](https://clawhub.ai/amrree/blog-composer) - Jekyll blog authoring UI — manage posts, drafts, tags, and publishing workflow.
 - [blog-studio](https://clawhub.ai/amrree/blog-studio) - Standalone CMS for GitHub Pages Jekyll blogs — browse, edit, create, and deploy with one click.
+- [FlowBoard](https://clawhub.ai/rasimme/plugins/flowboard) - Persistent per-project context and Kanban for agents.
 - [sol-scribe](https://clawhub.ai/amrree/sol-scribe) - Book writing companion for long-form creative projects — chapter planning, narrative consistency, and AI-assisted drafting.
+- [scvd-tab](https://clawhub.ai/seancrecord/scvd-tab) - Track tool spending, trial conversions, and unused subscriptions for AI agents.

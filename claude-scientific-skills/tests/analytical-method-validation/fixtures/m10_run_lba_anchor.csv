@@ -1,0 +1,12 @@
+type,label,nominal,measured
+calibrator,ANCHOR,0.5,0.9
+calibrator,LLOQ,1,1.15
+calibrator,,2,2.1
+calibrator,,5,5.2
+calibrator,,20,19.0
+calibrator,,100,103
+calibrator,ULOQ,500,480
+calibrator,ANCHOR,800,700
+qc,low,3,3.1
+qc,medium,50,52
+qc,high,400,410

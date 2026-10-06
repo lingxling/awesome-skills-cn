@@ -4,9 +4,6 @@ import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-const isWindows = process.platform === 'win32';
-const localBin = (name) => join('node_modules', '.bin', isWindows ? `${name}.cmd` : name);
-
 function run(command, args) {
   const result = spawnSync(command, args, { stdio: 'inherit', shell: false });
   if (result.error && result.error.code === 'ENOENT') {
@@ -20,7 +17,7 @@ if (!bunResult.missing) {
   process.exit(bunResult.status);
 }
 
-const tsc = localBin('tsc');
+const tsc = join('node_modules', 'typescript', 'bin', 'tsc');
 if (!existsSync(tsc)) {
   console.error('Build failed: neither bun nor local TypeScript compiler is available.');
   console.error('Run `npm ci` first, or install Bun from https://bun.sh/docs/installation.');
@@ -28,5 +25,5 @@ if (!existsSync(tsc)) {
 }
 
 console.warn('bun not found; falling back to TypeScript compiler output.');
-const tscResult = run(tsc, []);
+const tscResult = run(process.execPath, [tsc]);
 process.exit(tscResult.status);

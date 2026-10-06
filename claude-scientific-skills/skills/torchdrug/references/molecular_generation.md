@@ -1,352 +1,252 @@
 # Molecular Generation
 
-## Overview
+The official
+[TorchDrug 0.2.1 generation tutorial](https://torchdrug.ai/docs/tutorials/generation.html)
+implements GCPN and GraphAF on ZINC250k. It pretrains with negative
+log-likelihood (NLL), then optionally fine-tunes with proximal policy optimization
+(PPO) for QED or penalized logP.
+Full ZINC250k training and generation are illustrative. Source review and tiny
+CPU checks do not establish validity rates, optimization quality, or convergence.
 
-Molecular generation involves creating novel molecular structures with desired properties. TorchDrug supports both unconditional generation (exploring chemical space) and conditional generation (optimizing for specific properties).
+## Shared dataset
 
-## Task Types
-
-### AutoregressiveGeneration
-
-Generates molecules step-by-step by sequentially adding atoms and bonds. This approach enables fine-grained control and property optimization during generation.
-
-**Key Features:**
-- Sequential atom-by-bond construction
-- Supports property optimization during generation
-- Can incorporate chemical validity constraints
-- Enables multi-objective optimization
-
-**Generation Strategies:**
-1. **Beam Search**: Keep top-k candidates at each step
-2. **Sampling**: Probabilistic selection for diversity
-3. **Greedy**: Always select highest probability action
-
-**Property Optimization:**
-- Reward shaping based on desired properties
-- Real-time constraint satisfaction
-- Multi-objective balancing (e.g., potency + drug-likeness)
-
-### GCPNGeneration (Graph Convolutional Policy Network)
-
-Uses reinforcement learning to generate molecules optimized for specific properties.
-
-**Components:**
-1. **Policy Network**: Decides which action to take (add atom, add bond)
-2. **Reward Function**: Evaluates generated molecule quality
-3. **Training**: Reinforcement learning with policy gradient
-
-**Advantages:**
-- Direct optimization of non-differentiable objectives
-- Can incorporate complex domain knowledge
-- Balances exploration and exploitation
-
-**Applications:**
-- Drug design with specific targets
-- Material discovery with property constraints
-- Multi-objective molecular optimization
-
-## Generative Models
-
-### GraphAutoregressiveFlow
-
-Normalizing flow model for molecular generation with exact likelihood computation.
-
-**Architecture:**
-- Coupling layers transform simple distribution to complex molecular distribution
-- Invertible transformations enable density estimation
-- Supports conditional generation
-
-**Key Features:**
-- Exact likelihood computation (vs. VAE's approximate likelihood)
-- Stable training (vs. GAN's adversarial training)
-- Efficient sampling through invertible transformations
-- Can generate molecules with specified properties
-
-**Training:**
-- Maximum likelihood on molecule dataset
-- Optional property prediction head for conditional generation
-- Typically trained on ZINC or QM9
-
-**Use Cases:**
-- Generating diverse drug-like molecules
-- Interpolation between known molecules
-- Density estimation for molecular space
-
-## Generation Workflows
-
-### Unconditional Generation
-
-Generate diverse molecules without specific property targets.
-
-**Workflow:**
-1. Train generative model on molecule dataset (e.g., ZINC250k)
-2. Sample from learned distribution
-3. Post-process for validity and uniqueness
-4. Evaluate diversity metrics
-
-**Evaluation Metrics:**
-- **Validity**: Percentage of chemically valid molecules
-- **Uniqueness**: Percentage of unique molecules among valid
-- **Novelty**: Percentage not in training set
-- **Diversity**: Internal diversity using fingerprint similarity
-
-### Conditional Generation
-
-Generate molecules optimized for specific properties.
-
-**Property Targets:**
-- **Drug-likeness**: LogP, QED, Lipinski's rule of five
-- **Synthesizability**: SA score, retrosynthesis feasibility
-- **Bioactivity**: Predicted IC50, binding affinity
-- **ADMET**: Absorption, distribution, metabolism, excretion, toxicity
-- **Multi-objective**: Balance multiple properties simultaneously
-
-**Workflow:**
-1. Define reward function combining property objectives
-2. Train GCPN or condition flow model on properties
-3. Generate molecules with desired property ranges
-4. Validate generated molecules (in silico → wet lab)
-
-### Scaffold-Based Generation
-
-Generate molecules around a fixed scaffold or core structure.
-
-**Applications:**
-- Lead optimization keeping core pharmacophore
-- R-group enumeration for SAR studies
-- Fragment linking and growing
-
-**Approaches:**
-- Mask scaffold during training
-- Condition generation on scaffold
-- Post-generation grafting
-
-### Fragment-Based Generation
-
-Build molecules from validated fragments.
-
-**Benefits:**
-- Ensures drug-like substructures
-- Reduces search space
-- Incorporates medicinal chemistry knowledge
-
-**Methods:**
-- Fragment library as building blocks
-- Vocabulary-based generation
-- Fragment linking with learned linkers
-
-## Property Optimization Strategies
-
-### Single-Objective Optimization
-
-Maximize or minimize a single property (e.g., binding affinity).
-
-**Approach:**
-- Define scalar reward function
-- Use GCPN with RL training
-- Generate and rank candidates
-
-**Challenges:**
-- May sacrifice other important properties
-- Risk of adversarial examples (valid but non-drug-like)
-- Need constraints on drug-likeness
-
-### Multi-Objective Optimization
-
-Balance multiple competing objectives (e.g., potency, selectivity, synthesizability).
-
-**Weighting Approaches:**
-- **Linear combination**: w1×prop1 + w2×prop2 + ...
-- **Pareto optimization**: Find non-dominated solutions
-- **Constraint satisfaction**: Threshold on secondary objectives
-
-**Example Objectives:**
-- High binding affinity (target)
-- Low binding affinity (off-targets)
-- High synthesizability (SA score)
-- Drug-like properties (QED)
-- Low molecular weight
-
-**Workflow:**
 ```python
-from torchdrug import tasks
+from torchdrug import datasets
 
-# Define multi-objective reward
-def reward_function(mol):
-    affinity_score = predict_binding(mol)
-    druglikeness = calculate_qed(mol)
-    synthesizability = sa_score(mol)
-
-    # Weighted combination
-    reward = 0.5 * affinity_score + 0.3 * druglikeness + 0.2 * (1 - synthesizability)
-    return reward
-
-# GCPN task with custom reward
-task = tasks.GCPNGeneration(
-    model,
-    reward_function=reward_function,
-    criterion="ppo"  # Proximal policy optimization
+dataset = datasets.ZINC250k(
+    "~/molecule-datasets/",
+    kekulize=True,
+    atom_feature="symbol",
 )
 ```
 
-### Constraint-Based Generation
+The tutorial assumes:
 
-Generate molecules satisfying hard constraints.
+- maximum graph size: 38 atoms
+- 9 atom types
+- 3 bond types
+- `max_edge_unroll=12`
 
-**Common Constraints:**
-- Molecular weight range
-- LogP range
-- Number of rotatable bonds
-- Ring count limits
-- Substructure inclusion/exclusion
-- Synthetic accessibility threshold
+If using another dataset, recompute these assumptions instead of copying the
+ZINC250k values.
 
-**Implementation:**
-- Validity checking during generation
-- Early stopping for invalid molecules
-- Penalty terms in reward function
+## GCPN
 
-## Training Considerations
+### Pretraining task
 
-### Dataset Selection
+```python
+import torch
+from torchdrug import core, models, tasks
 
-**ZINC (Drug-like compounds):**
-- ZINC250k: 250,000 compounds
-- ZINC2M: 2 million compounds
-- Pre-filtered for drug-likeness
-- Good for drug discovery applications
+model = models.RGCN(
+    input_dim=dataset.node_feature_dim,
+    num_relation=dataset.num_bond_type,
+    hidden_dims=[256, 256, 256, 256],
+    batch_norm=False,
+)
+task = tasks.GCPNGeneration(
+    model,
+    dataset.atom_types,
+    max_edge_unroll=12,
+    max_node=38,
+    criterion="nll",
+)
 
-**QM9 (Small organic molecules):**
-- 133,885 molecules
-- Includes quantum properties
-- Good for property prediction models
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
+solver = core.Engine(
+    task,
+    dataset,
+    None,
+    None,
+    optimizer,
+    batch_size=128,
+    log_interval=10,
+)
+solver.train(num_epoch=1)
+solver.save("gcpn-zinc250k.pth")
+```
 
-**ChEMBL (Bioactive molecules):**
-- Millions of bioactive compounds
-- Activity data available
-- Target-specific generation
+Use `gpus=(0,)` or `gpus=[0]` only on supported CUDA hardware.
 
-**Custom Datasets:**
-- Focus on specific chemical space
-- Include expert knowledge
-- Domain-specific constraints
+### Generate samples
 
-### Data Augmentation
+```python
+solver.load("gcpn-zinc250k.pth")
+task.eval()
+results = task.generate(num_sample=32, max_resample=5)
+print(results.to_smiles())
+```
 
-**SMILES Augmentation:**
-- Generate multiple SMILES for same molecule
-- Helps model learn canonical representations
-- Improves robustness
+`results` is a packed molecule object. Validate all returned structures before
+downstream use. Set `task.eval()` before generation; both generation methods
+disable gradients internally but do not automatically disable training-mode
+batch normalization. Record requested/returned counts and bounded resampling.
 
-**Graph Augmentation:**
-- Random node/edge masking
-- Subgraph sampling
-- Motif substitution
+### Goal-directed fine-tuning
 
-### Model Architecture Choices
+The documented optimization tasks are `"qed"` and `"plogp"`. The task does not
+accept an arbitrary `reward_function=` callback in 0.2.1.
 
-**For Small Molecules (<30 atoms):**
-- Simpler architectures sufficient
-- Faster training and generation
-- GCN or GIN backbone
+```python
+task = tasks.GCPNGeneration(
+    model,
+    dataset.atom_types,
+    max_edge_unroll=12,
+    max_node=38,
+    task="plogp",
+    criterion="ppo",
+    reward_temperature=1,
+    agent_update_interval=3,
+    gamma=0.9,
+)
 
-**For Drug-like Molecules:**
-- Deeper architectures (4-6 layers)
-- Attention mechanisms help
-- Consider molecular fingerprints
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-5)
+solver = core.Engine(
+    task,
+    dataset,
+    None,
+    None,
+    optimizer,
+    batch_size=16,
+    log_interval=10,
+)
+solver.load("gcpn-zinc250k.pth", load_optimizer=False)
+solver.train(num_epoch=10)
+```
 
-**For Macrocycles/Polymers:**
-- Handle larger graphs
-- Ring closure mechanisms important
-- Long-range dependencies
+For mixed supervised/RL training, the tutorial also uses:
 
-## Validation and Filtering
+```python
+criterion = ("ppo", "nll")
+```
 
-### In Silico Validation
+or a weighted criterion mapping where supported by the task.
 
-**Chemical Validity:**
-- Valence rules
-- Aromaticity rules
-- Charge neutrality
-- Stable substructures
+## GraphAF
 
-**Drug-likeness Filters:**
-- Lipinski's rule of five
-- Veber's rules
-- PAINS filters (pan-assay interference compounds)
-- BRENK filters (toxic/reactive substructures)
+GraphAF has three distinct layers:
 
-**Synthesizability:**
-- SA score (synthetic accessibility)
-- Retrosynthesis prediction
-- Commercial availability of precursors
+1. an `RGCN` representation model,
+2. node and edge flow models exposed as `models.GraphAF`,
+3. `tasks.AutoregressiveGeneration` as the training objective.
 
-**Property Prediction:**
-- ADMET properties
-- Toxicity prediction
-- Off-target binding
-- Metabolic stability
+The representation model uses discrete atom-type input:
 
-### Ranking and Selection
+```python
+model = models.RGCN(
+    input_dim=dataset.num_atom_type,
+    num_relation=dataset.num_bond_type,
+    hidden_dims=[256, 256, 256],
+    batch_norm=True,
+)
+```
 
-**Criteria:**
-1. Predicted target affinity
-2. Drug-likeness score
-3. Synthesizability
-4. Novelty (dissimilarity to known actives)
-5. Diversity (within generated set)
-6. Predicted ADMET properties
+Create the node and edge priors exactly as shown in the upstream tutorial, then
+construct one flow for nodes and one for edges:
 
-**Selection Strategies:**
-- Pareto frontier selection
-- Weighted scoring
-- Clustering and representative selection
-- Active learning for wet lab validation
+```python
+from torchdrug.layers import distribution
 
-## Best Practices
+num_atom_type = dataset.num_atom_type
+num_bond_type = dataset.num_bond_type + 1  # one extra class for no edge
 
-1. **Start Simple**: Begin with unconditional generation, then add constraints
-2. **Validate Chemistry**: Always check for valid molecules and drug-likeness
-3. **Diverse Training Data**: Use large, diverse datasets for better generalization
-4. **Multi-Objective**: Consider multiple properties from the start
-5. **Iterative Refinement**: Generate → validate → retrain with feedback
-6. **Domain Expert Review**: Consult medicinal chemists before synthesis
-7. **Benchmark**: Compare against known actives and random samples
-8. **Synthesizability**: Prioritize molecules that can actually be made
-9. **Explainability**: Understand why model generates certain structures
-10. **Wet Lab Validation**: Ultimately validate promising candidates experimentally
+node_prior = distribution.IndependentGaussian(
+    torch.zeros(num_atom_type),
+    torch.ones(num_atom_type),
+)
+edge_prior = distribution.IndependentGaussian(
+    torch.zeros(num_bond_type),
+    torch.ones(num_bond_type),
+)
+node_flow = models.GraphAF(
+    model,
+    node_prior,
+    num_layer=12,
+)
+edge_flow = models.GraphAF(
+    model,
+    edge_prior,
+    use_edge=True,
+    num_layer=12,
+)
 
-## Common Applications
+task = tasks.AutoregressiveGeneration(
+    node_flow,
+    edge_flow,
+    max_node=38,
+    max_edge_unroll=12,
+    criterion="nll",
+)
+```
 
-### Drug Discovery
-- Lead generation for novel targets
-- Lead optimization around active scaffolds
-- Bioisostere replacement
-- Fragment elaboration
+Do not omit the documented prior construction. The node and edge prior shapes
+must match the dataset's atom and bond vocabularies.
 
-### Materials Science
-- Polymer design with target properties
-- Catalyst discovery
-- Energy storage materials
-- Photovoltaic materials
+Train and generate through the task:
 
-### Chemical Biology
-- Probe molecule design
-- Degrader (PROTAC) design
-- Molecular glue discovery
+```python
+optimizer = torch.optim.Adam(task.parameters(), lr=1e-3)
+solver = core.Engine(
+    task,
+    dataset,
+    None,
+    None,
+    optimizer,
+    batch_size=128,
+    log_interval=10,
+)
+solver.train(num_epoch=10)
+solver.save("graphaf-zinc250k.pth")
 
-## Integration with Other Tools
+solver.load("graphaf-zinc250k.pth")
+task.eval()
+results = task.generate(num_sample=32)
+print(results.to_smiles())
+```
 
-**Docking:**
-- Generate molecules → Dock to target → Retrain with docking scores
+For PPO fine-tuning, rebuild `AutoregressiveGeneration` with `task="qed"` or
+`task="plogp"`, a PPO criterion, and the tutorial's reward/baseline settings;
+then load the pretrained checkpoint with `load_optimizer=False`.
 
-**Retrosynthesis:**
-- Filter generated molecules by synthetic accessibility
-- Plan synthesis routes for top candidates
+## What the API does not provide
 
-**Property Prediction:**
-- Use trained property prediction models as reward functions
-- Multi-task learning with generation and prediction
+Avoid these unsupported patterns:
 
-**Active Learning:**
-- Generate candidates → Predict properties → Synthesize best → Retrain
+```python
+# Not a TorchDrug 0.2.1 API
+tasks.GCPNGeneration(model, reward_function=my_reward, criterion="ppo")
+```
+
+TorchDrug 0.2.1's built-in generation task names are limited to QED and penalized
+logP. A custom objective requires extending the task implementation rather than
+passing a callback shown in another library.
+
+The tutorial does not document generic scaffold-conditioned or
+fragment-conditioned constructors. Do not claim those capabilities without a
+separate implementation.
+
+## Evaluation and safety
+
+At minimum report:
+
+- validity
+- uniqueness
+- novelty against the training set
+- duplicate-aware property distributions
+- failure and resampling rates
+
+Also:
+
+- canonicalize and sanitize with a chemistry toolkit,
+- reject disconnected or chemically implausible structures as appropriate,
+- screen structural alerts and undesirable substructures,
+- assess synthetic accessibility separately,
+- avoid presenting QED or penalized logP as evidence of efficacy or safety,
+- keep generated structures out of automated synthesis without expert review.
+
+## Source links
+
+- [Generation tutorial](https://torchdrug.ai/docs/tutorials/generation.html)
+- [Generation benchmark](https://torchdrug.ai/docs/benchmark/generation.html)
+- [Generation task API](https://torchdrug.ai/docs/api/tasks.html#molecule-generation-tasks)
+- [Flow model API](https://torchdrug.ai/docs/api/models.html#normalizing-flows)

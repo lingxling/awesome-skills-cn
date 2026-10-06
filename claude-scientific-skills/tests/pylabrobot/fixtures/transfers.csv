@@ -1,0 +1,3 @@
+transfer_id,source,destination,volume_uL,tip_policy,tip_type,liquid_class,aspiration_height_mm,dispense_height_mm,aspiration_rate_uL_s,dispense_rate_uL_s,channel
+transfer_1,source_plate:A1,destination_plate:A1,50,new,generic_300uL,water_validated,1.0,2.0,50,75,0
+transfer_2,source_plate:B1,destination_plate:B1,25,new,generic_300uL,water_validated,1.0,2.0,40,60,1

@@ -1,398 +1,350 @@
-# Advanced Features
+# Forcing, operators, MPI, extensions, and migrations
 
-## Custom Forcing
+## Forcing architecture
 
-### Forcing Types
+FluidSim assembles forcing classes through the selected solver's registry.
+NS2D 0.9 advertises:
 
-FluidSim supports several forcing mechanisms to maintain turbulence or drive specific dynamics.
+- `in_script`
+- `in_script_coarse`
+- `pseudo_spectral`
+- `proportional`
+- `tcrandom`
+- `tcrandom_anisotropic`
 
-#### Time-Correlated Random Forcing
+Availability and default forced variable are solver-specific.
 
-Most common for sustained turbulence:
+Base fields:
 
 ```python
 params.forcing.enable = True
 params.forcing.type = "tcrandom"
-params.forcing.nkmin_forcing = 2  # minimum forced wavenumber
-params.forcing.nkmax_forcing = 5  # maximum forced wavenumber
-params.forcing.forcing_rate = 1.0  # energy injection rate
-params.forcing.tcrandom_time_correlation = 1.0  # correlation time
-```
-
-#### Proportional Forcing
-
-Maintains a specific energy distribution:
-
-```python
-params.forcing.type = "proportional"
 params.forcing.forcing_rate = 1.0
+params.forcing.key_forced = None
+params.forcing.nkmin_forcing = 4
+params.forcing.nkmax_forcing = 5
+params.forcing.tcrandom.time_correlation = "based_on_forcing_rate"
 ```
 
-#### Custom Forcing in Script
+Current source converts `nkmin_forcing`/`nkmax_forcing` to dimensional
+wave-number bounds using the operator's wave-number spacing. Inspect the
+resulting forced region; the integers are not necessarily physical wave
+numbers.
 
-Define forcing directly in the launch script:
+### Normalization
+
+Current normalized-forcing fields include:
 
 ```python
-params.forcing.enable = True
-params.forcing.type = "in_script"
-
-sim = Simul(params)
-
-# Define custom forcing function
-def compute_forcing_fft(sim):
-    """Compute forcing in Fourier space"""
-    forcing_vx_fft = sim.oper.create_arrayK(value=0.)
-    forcing_vy_fft = sim.oper.create_arrayK(value=0.)
-
-    # Add custom forcing logic
-    # Example: force specific modes
-    forcing_vx_fft[10, 10] = 1.0 + 0.5j
-
-    return forcing_vx_fft, forcing_vy_fft
-
-# Override forcing method
-sim.forcing.forcing_maker.compute_forcing_fft = lambda: compute_forcing_fft(sim)
-
-# Run simulation
-sim.time_stepping.start()
+params.forcing.normalized.constant_rate_of = None
+params.forcing.normalized.type = "2nd_degree_eq"
+params.forcing.normalized.which_root = "minabs"
 ```
 
-## Custom Initial Conditions
+The implementation can solve a quadratic normalization so the time-step-mean
+injection of a quadratic quantity matches `forcing_rate`. The exact quadratic
+quantity and key depend on the solver/forced field. Therefore:
 
-### In-Script Initialization
+- State the intended injected invariant and units.
+- Confirm `key_forced`.
+- Measure forcing power in output.
+- Check the global/spectral budget using the same convention.
+- Test time-step sensitivity of the measured injection.
 
-Full control over initial fields:
+Do not call `forcing_rate` “energy input” without verifying the selected class.
+
+### Time-correlated random forcing
+
+The 0.9 field is:
 
 ```python
-from math import pi
-import numpy as np
-
-params = Simul.create_default_params()
-params.oper.nx = params.oper.ny = 256
-params.oper.Lx = params.oper.Ly = 2 * pi
-
-params.init_fields.type = "in_script"
-
-sim = Simul(params)
-
-# Get coordinate arrays
-X, Y = sim.oper.get_XY_loc()
-
-# Define velocity fields
-vx = sim.state.state_phys.get_var("vx")
-vy = sim.state.state_phys.get_var("vy")
-
-# Taylor-Green vortex
-vx[:] = np.sin(X) * np.cos(Y)
-vy[:] = -np.cos(X) * np.sin(Y)
-
-# Initialize state in Fourier space
-sim.state.statephys_from_statespect()
-
-# Run simulation
-sim.time_stepping.start()
+params.forcing.tcrandom.time_correlation = "based_on_forcing_rate"
 ```
 
-### Layer Initialization (Stratified Flows)
+or a positive finite time value. The rate-derived setting requires positive
+`forcing_rate`. Current source derives the default period as a power of
+the forcing rate and stores two random seeds plus the last-change time in state
+parameters under `/state_params/forcing` (`seed0`, `seed1`, `t_last_change`).
+FluidSim 0.9.0 writes these state parameters into restart files;
+0.8.6 fixed a time-correlated forcing restart bug.
 
-Set up density layers:
+For reproducibility, preserve:
+
+- Initial random seed strategy.
+- Saved forcing state parameters.
+- MPI rank count/decomposition and package versions.
+- Correlation-time setting and measured autocorrelation.
+- Restart boundary diagnostics.
+
+### In-script forcing
+
+Use the solver's registered `InScriptForcing*` interface and documented
+`compute_forcing_fft_each_time` or coarse equivalent. Do not monkey-patch a
+method with a lambda copied from an old example:
+
+- State keys have changed in some solvers.
+- Local spectral layout depends on FFT/MPI backend.
+- Hermitian/reality constraints and normalization must be preserved.
+- A literal global Fourier index is not portable across decompositions.
+
+Implement a reviewed subclass/extension with unit tests on tiny sequential and
+MPI layouts. Validate zero-net/target injection, symmetry, and budget effects.
+
+## Operators and array ownership
+
+`sim.oper` provides solver-selected grids, FFT/IFFT, differentiation, vector
+calculus, projections, spectra, dealiasing, and distributed-array helpers.
+Method names and array layouts depend on operator class.
+
+Never assume:
+
+- Axis order from `nx`, `ny`, `nz`.
+- Full global arrays on every rank.
+- A Fourier mode has the same local index under another backend/rank count.
+- All FFT backends use the same spectral shape.
+- A gathered array fits rank-0 memory.
+- Direct NumPy sums have the same normalization as
+  `oper.sum_wavenumbers`.
+
+Use documented operator methods and inspect:
 
 ```python
-from fluidsim.solvers.ns2d.strat.solver import Simul
-
-params = Simul.create_default_params()
-params.N = 1.0  # stratification
-params.init_fields.type = "in_script"
-
-sim = Simul(params)
-
-# Define dense layer
-X, Y = sim.oper.get_XY_loc()
-b = sim.state.state_phys.get_var("b")  # buoyancy field
-
-# Gaussian density anomaly
-x0, y0 = pi, pi
-sigma = 0.5
-b[:] = np.exp(-((X - x0)**2 + (Y - y0)**2) / (2 * sigma**2))
-
-sim.state.statephys_from_statespect()
-sim.time_stepping.start()
+print(type(sim.oper))
+print(sim.oper.axes)
+print(sim.params.oper)
 ```
 
-## Parallel Computing with MPI
+For custom diagnostics, test sequential and distributed shapes and compare
+against analytical transforms at tiny resolution.
 
-### Running MPI Simulations
+## Dealiasing
 
-Install with MPI support:
-```bash
-uv pip install "fluidsim[fft,mpi]"
-```
-
-Run with MPI:
-```bash
-mpirun -np 8 python simulation_script.py
-```
-
-FluidSim automatically detects MPI and distributes computation.
-
-### MPI-Specific Parameters
+The common Cartesian field is:
 
 ```python
-# No special parameters needed
-# FluidSim handles domain decomposition automatically
-
-# For very large 3D simulations
-params.oper.nx = 512
-params.oper.ny = 512
-params.oper.nz = 512
-
-# Run with: mpirun -np 64 python script.py
+params.oper.coef_dealiasing = 2 / 3
+params.oper.truncation_shape = "cubic"
 ```
 
-### Output with MPI
+FluidSim also implements phase-shift time schemes. A coefficient or scheme name
+does not prove alias removal for a custom nonlinearity. Verify:
 
-Output files are written from rank 0 processor. Analysis scripts work identically for serial and MPI runs.
+- Polynomial/nonlinear form and expected alias interactions.
+- Where dealiasing is applied.
+- Truncation geometry.
+- Spectral tails and invariant transfer.
+- Results under stricter truncation or exact phase-shift method.
 
-## Parametric Studies
+Do not combine an aggressive cutoff and high-order dissipation merely to obtain
+a visually smooth spectrum.
 
-### Running Multiple Simulations
+## Time schemes
 
-Script to generate and run multiple parameter combinations:
+Documented pseudospectral names:
+
+- `Euler`
+- `Euler_phaseshift`
+- `Euler_phaseshift_random`
+- `RK2`
+- `RK2_trapezoid`
+- `RK2_phaseshift`
+- `RK2_phaseshift_random`
+- `RK2_phaseshift_random_split`
+- `RK2_phaseshift_exact`
+- `RK4`
+
+The implementation treats linear terms with exact coefficients in its
+pseudospectral stepper and evaluates nonlinear tendencies according to the
+named scheme. Verify source and solver coupling before making an order/stability
+claim.
+
+Always check:
+
+- Advective CFL.
+- Wave frequency limits (stratification, rotation, shallow-water waves).
+- Diffusive/hyperdiffusive limits.
+- Forcing correlation and output cadence relative to `deltat`.
+- Smaller `cfl_coef`/`deltat_max` comparison.
+
+`USE_CFL=True` only activates the solver's CFL logic; it does not guarantee all
+accuracy/stability constraints are resolved.
+
+## Custom initial conditions
+
+`in_script` gives direct control, but use current state keys:
+
+1. Construct `Simul` with `init_fields.type = "in_script"`.
+2. Inspect the solver's state documentation/keys.
+3. Fill canonical physical or spectral variables.
+4. Call the documented conversion in the correct direction.
+5. Apply projection/dealiasing/constraints as required.
+6. Save an initialization checkpoint and verify budgets before stepping.
+
+Old examples that fill `vx`/`vy` and then call a
+spectral-to-physical conversion can overwrite the intended state. NS2D 0.9
+documentation shows physical keys including `ux`, `uy`, and `rot`; use the
+selected solver's actual keys.
+
+## Extending a solver
+
+FluidSim's `InfoSolver`/class registry supports extensions. For a research
+extension:
+
+- Pin FluidSim/FluidSim Core source and version.
+- Subclass the closest solver and extend default parameters through the current
+  class mechanism.
+- Register state variables, operators, initialization, forcing, outputs, and
+  restart state explicitly.
+- Define nonlinear tendencies with documented sign and normalization.
+- Add unit/manufactured-solution tests and budget identities.
+- Test serialization/restart and old/new parameter merging.
+- Benchmark only after correctness tests.
+
+Avoid private-method snippets from old versions without source review.
+
+## FluidFFT backend selection
+
+Registered methods are entry points, not proof their dependencies load.
+Discover them:
 
 ```python
-from fluidsim.solvers.ns2d.solver import Simul
-import numpy as np
+from fluidfft import get_methods
 
-# Parameter ranges
-viscosities = [1e-3, 5e-4, 1e-4, 5e-5]
-resolutions = [128, 256, 512]
-
-for nu in viscosities:
-    for nx in resolutions:
-        params = Simul.create_default_params()
-
-        # Configure simulation
-        params.oper.nx = params.oper.ny = nx
-        params.nu_2 = nu
-        params.time_stepping.t_end = 10.0
-
-        # Unique output directory
-        params.output.sub_directory = f"nu{nu}_nx{nx}"
-
-        # Run simulation
-        sim = Simul(params)
-        sim.time_stepping.start()
+print(sorted(get_methods(ndim=2)))
+print(sorted(get_methods(ndim=3)))
 ```
 
-### Cluster Submission
-
-Submit multiple jobs to a cluster:
+Set per run:
 
 ```python
-from fluiddyn.clusters.legi import Calcul8 as Cluster
-
-cluster = Cluster()
-
-for nu in viscosities:
-    for nx in resolutions:
-        script_content = f"""
-from fluidsim.solvers.ns2d.solver import Simul
-
-params = Simul.create_default_params()
-params.oper.nx = params.oper.ny = {nx}
-params.nu_2 = {nu}
-params.time_stepping.t_end = 10.0
-params.output.sub_directory = "nu{nu}_nx{nx}"
-
-sim = Simul(params)
-sim.time_stepping.start()
-"""
-
-        with open(f"job_nu{nu}_nx{nx}.py", "w") as f:
-            f.write(script_content)
-
-        cluster.submit_script(
-            f"job_nu{nu}_nx{nx}.py",
-            name_run=f"sim_nu{nu}_nx{nx}",
-            nb_nodes=1,
-            nb_cores_per_node=24,
-            walltime="12:00:00"
-        )
+params.oper.type_fft = "fft2d.with_pyfftw"
 ```
 
-### Analyzing Parametric Studies
+or use `FLUIDSIM_TYPE_FFT2D`/`FLUIDSIM_TYPE_FFT3D` before process start.
+Record actual method and plugin distribution.
+
+FluidFFT's 2019 primary paper demonstrates:
+
+- Unified C++/Python APIs for multiple FFT libraries.
+- One-dimensional and pencil/two-dimensional MPI decompositions.
+- Hardware/shape/process-count-dependent fastest methods.
+- Scaling beyond the limits of slab decomposition in the tested cases.
+
+Do not transfer its fastest-method or wall-time numbers to current hardware.
+Benchmark a bounded representative shape in the target environment.
+
+## MPI planning and safety
+
+Never call `mpirun`, `mpiexec`, `srun`, `qsub`, `sbatch`, OAR tools, or a
+FluidDyn cluster submitter automatically.
+
+Required preflight:
+
+- Written resource estimate and output estimate.
+- Approved allocation and partition/account.
+- Exact MPI implementation/ABI and launcher.
+- FFT plugin/native library compatibility.
+- Rank/thread placement and oversubscription check.
+- Per-rank local shapes and no zero-sized unsupported decomposition.
+- Memory/rank and rank-0 gather/output risk.
+- Wall-time signal/checkpoint behavior.
+- Filesystem quota, inode count, stripe policy, and cleanup.
+- Tiny serial then two-rank smoke.
+- Restart plan with immutable parent state.
+
+Output behavior can differ with MPI-enabled h5py. Standard h5py usually causes
+rank 0 to write assembled state; MPI h5py can use an `mpio` driver. Verify the
+locked h5py build and output path with a tiny test.
+
+## Parametric studies
+
+Do not loop over simulations and start them directly in one script by default.
+Instead:
+
+1. Materialize one strict config per case.
+2. Assign a stable case ID and seed.
+3. Validate/estimate each case.
+4. Sum aggregate CPU, memory concurrency, disk, files, and wall time.
+5. Generate scripts only.
+6. Review sampling design and avoid changing multiple factors ambiguously.
+7. Submit through an approved external workflow.
+8. Track failures/missing cases without silently resampling.
+
+Analyze observables with refinement and stochastic uncertainty, not only final
+values.
+
+## Checkpoint and restart
+
+Physical-state saving is checkpoint creation:
 
 ```python
-import os
-import pandas as pd
-from fluidsim import load_sim_for_plot
-import matplotlib.pyplot as plt
-
-results = []
-
-# Collect data from all simulations
-for sim_dir in os.listdir("simulations"):
-    sim_path = f"simulations/{sim_dir}"
-    if not os.path.isdir(sim_path):
-        continue
-
-    try:
-        sim = load_sim_for_plot(sim_path)
-
-        # Extract parameters
-        nu = sim.params.nu_2
-        nx = sim.params.oper.nx
-
-        # Extract results
-        df = sim.output.spatial_means.load()
-        final_energy = df["E"].iloc[-1]
-        mean_energy = df["E"].mean()
-
-        results.append({
-            "nu": nu,
-            "nx": nx,
-            "final_energy": final_energy,
-            "mean_energy": mean_energy
-        })
-    except Exception as e:
-        print(f"Error loading {sim_dir}: {e}")
-
-# Analyze results
-results_df = pd.DataFrame(results)
-
-# Plot results
-plt.figure(figsize=(10, 6))
-for nx in results_df["nx"].unique():
-    subset = results_df[results_df["nx"] == nx]
-    plt.plot(subset["nu"], subset["mean_energy"],
-             marker="o", label=f"nx={nx}")
-
-plt.xlabel("Viscosity")
-plt.ylabel("Mean Energy")
-plt.xscale("log")
-plt.legend()
-plt.savefig("parametric_study_results.png")
+params.output.periods_save.phys_fields = 1.0
 ```
 
-## Custom Solvers
+But checkpoint usability requires:
 
-### Extending Existing Solvers
+- Complete `/state_phys` datasets.
+- `/info_simul/params` and solver metadata.
+- 0.9 state parameters where needed.
+- Matching solver/grid/domain/state.
+- SHA-256 and parent lineage.
+- Enough disk for parent and child.
 
-Create a new solver by inheriting from an existing one:
+Use the bundled compatibility checker before every continuation. A mechanically
+compatible state can still be scientifically invalid after changed viscosity,
+forcing, timestep, backend, or resolution.
 
-```python
-from fluidsim.solvers.ns2d.solver import Simul as SimulNS2D
-from fluidsim.base.setofvariables import SetOfVariables
+## Migration notes to 0.9.0
 
-class SimulCustom(SimulNS2D):
-    """Custom solver with additional physics"""
+### 0.9.0 (release notes dated 2025-12-03)
 
-    @staticmethod
-    def _complete_params_with_default(params):
-        """Add custom parameters"""
-        SimulNS2D._complete_params_with_default(params)
-        params._set_child("custom", {"param1": 0.0})
+- Restart files store state parameters.
+- Added basic physical-field utilities.
+- Fixed restart filenames.
+- Improved post-initialization information and profile analysis.
 
-    def __init__(self, params):
-        super().__init__(params)
-        # Custom initialization
+### 0.8.6 (2025-11-23)
 
-    def tendencies_nonlin(self, state_spect=None):
-        """Override to add custom tendencies"""
-        tendencies = super().tendencies_nonlin(state_spect)
+- h5netcdf 1.7 compatibility.
+- Fixed incorrect restart for time-correlated forcing.
 
-        # Add custom terms
-        # tendencies.vx_fft += custom_term_vx
-        # tendencies.vy_fft += custom_term_vy
+### 0.8.5 (2025-10-23)
 
-        return tendencies
-```
+- Python 3.14 support.
 
-Use the custom solver:
-```python
-params = SimulCustom.create_default_params()
-# Configure params...
-sim = SimulCustom(params)
-sim.time_stepping.start()
-```
+### 0.8.2 (2024-08-17)
 
-## Online Visualization
+- Python 3.12, NumPy 2.0, and mpi4py 4.0 compatibility.
 
-Display fields during simulation:
+### 0.8.0 (2024-01-31)
 
-```python
-params.output.ONLINE_PLOT_OK = True
-params.output.periods_plot.phys_fields = 1.0  # plot every 1.0 time units
-params.output.phys_fields.field_to_plot = "vorticity"
+- Meson/meson-python build system.
 
-sim = Simul(params)
-sim.time_stepping.start()
-```
+Practical migrations from the previous skill:
 
-Plots appear in real-time during execution.
+- Python baseline: `>=3.11`, not `>=3.9` for 0.9.0.
+- Use exact `fluidsim==0.9.0` and lock dependencies.
+- Pseudospectral defaults need the `fft` extra.
+- Use `time_stepping.cfl_coef`, not `CFL`.
+- Use `forcing.tcrandom.time_correlation`, not a flat field.
+- Use `plate2d`, not `fvk`.
+- Physical states default to `.nc`, not `.h5`; spectra remain `.h5`.
+- Use `spect_energy_budg.h5`, not a timestamped budget glob.
+- Prefer `load_for_restart`/`fluidsim-restart --only-check`; preserve state
+  parameters and hashes.
+- Do not advertise ParaView direct compatibility without an explicit tested
+  conversion/plugin.
 
-## Checkpoint and Restart
+## Sources (verified 2026-10-01)
 
-### Automatic Checkpointing
-
-```python
-params.output.periods_save.phys_fields = 1.0  # save every 1.0 time units
-```
-
-Fields are saved automatically during simulation.
-
-### Manual Checkpointing
-
-```python
-# During simulation
-sim.output.phys_fields.save()
-```
-
-### Restarting from Checkpoint
-
-```python
-params = Simul.create_default_params()
-params.init_fields.type = "from_file"
-params.init_fields.from_file.path = "simulation_dir/state_phys_t5.000.h5"
-params.time_stepping.t_end = 20.0  # extend simulation
-
-sim = Simul(params)
-sim.time_stepping.start()
-```
-
-## Memory and Performance Optimization
-
-### Reduce Memory Usage
-
-```python
-# Disable unnecessary outputs
-params.output.periods_save.spectra = 0  # disable spectra saving
-params.output.periods_save.spect_energy_budg = 0  # disable energy budget
-
-# Reduce spatial field saves
-params.output.periods_save.phys_fields = 10.0  # save less frequently
-```
-
-### Optimize FFT Performance
-
-```python
-import os
-
-# Select FFT library
-os.environ["FLUIDSIM_TYPE_FFT2D"] = "fft2d.with_fftw"
-os.environ["FLUIDSIM_TYPE_FFT3D"] = "fft3d.with_fftw"
-
-# Or use MKL if available
-# os.environ["FLUIDSIM_TYPE_FFT2D"] = "fft2d.with_mkl"
-```
-
-### Time Step Optimization
-
-```python
-# Use adaptive time stepping
-params.time_stepping.USE_CFL = True
-params.time_stepping.CFL = 0.8  # slightly larger CFL for faster runs
-
-# Use efficient time scheme
-params.time_stepping.type_time_scheme = "RK4"  # 4th order Runge-Kutta
-```
+- [FluidSim forcing base source](https://github.com/fluiddyn/fluidsim/blob/0.9.0/fluidsim/base/forcing/base.py).
+- [Specific forcing source](https://github.com/fluiddyn/fluidsim/blob/0.9.0/fluidsim/base/forcing/specific.py).
+- [Pseudospectral time-step API](https://fluidsim.readthedocs.io/en/latest/generated/fluidsim.base.time_stepping.pseudo_spect.html).
+- [FluidSim development tutorial](https://fluidsim.readthedocs.io/en/latest/ipynb/tuto_dev.html).
+- [FluidSim release notes](https://fluidsim.readthedocs.io/en/latest/changes.html).
+- [FluidFFT plugins](https://fluidfft.readthedocs.io/en/latest/plugins.html).
+- [FluidFFT supported libraries](https://fluidfft.readthedocs.io/en/latest/install/fft_libs.html).
+- Mohanan et al., [FluidFFT primary paper](https://doi.org/10.5334/jors.238),
+  published 2019-04-01.
+- Mohanan et al., [FluidSim primary paper](https://doi.org/10.5334/jors.239),
+  published 2019-04-26.

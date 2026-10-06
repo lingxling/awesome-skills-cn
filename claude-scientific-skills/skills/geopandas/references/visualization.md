@@ -1,243 +1,253 @@
-# Mapping and Visualization
+# Static and interactive visualization
 
-GeoPandas provides plotting through matplotlib integration.
+A map is a derived analytical artifact. It can misstate units, hide missing
+data, expose exact locations, or contact third-party services even when the
+underlying geometry operations are correct.
 
-## Basic Plotting
+## Privacy gate
 
-```python
-# Simple plot
-gdf.plot()
+Before plotting:
 
-# Customize figure size
-gdf.plot(figsize=(10, 10))
+1. classify coordinates, addresses, trajectories, parcels, facilities, and
+   small-area attributes for sensitivity;
+2. decide whether the audience needs exact geometry;
+3. aggregate, suppress small groups, jitter only with a defensible privacy
+   model, or generalize at an appropriate scale;
+4. remove direct identifiers and sensitive tooltip/popup fields;
+5. inspect the output itself—HTML, SVG, PDF, and GeoJSON can preserve exact
+   coordinates or attributes even when the image looks coarse.
 
-# Set colors
-gdf.plot(color='blue', edgecolor='black')
+The bundled `scripts/sensitive_coordinates_checklist.py` provides a conservative
+release gate. It does not claim legal or privacy compliance.
 
-# Control line width
-gdf.plot(edgecolor='black', linewidth=0.5)
-```
+## Static plotting
 
-## Choropleth Maps
-
-Color features based on data values:
-
-```python
-# Basic choropleth
-gdf.plot(column='population', legend=True)
-
-# Specify colormap
-gdf.plot(column='population', cmap='OrRd', legend=True)
-
-# Other colormaps: 'viridis', 'plasma', 'inferno', 'YlOrRd', 'Blues', 'Greens'
-```
-
-### Classification Schemes
-
-Requires: `uv pip install mapclassify`
-
-```python
-# Quantiles
-gdf.plot(column='population', scheme='quantiles', k=5, legend=True)
-
-# Equal interval
-gdf.plot(column='population', scheme='equal_interval', k=5, legend=True)
-
-# Natural breaks (Fisher-Jenks)
-gdf.plot(column='population', scheme='fisher_jenks', k=5, legend=True)
-
-# Other schemes: 'box_plot', 'headtail_breaks', 'max_breaks', 'std_mean'
-
-# Pass parameters to classification
-gdf.plot(column='population', scheme='quantiles', k=7,
-         classification_kwds={'pct': [10, 20, 30, 40, 50, 60, 70, 80, 90]})
-```
-
-### Legend Customization
-
-```python
-# Position legend outside plot
-gdf.plot(column='population', legend=True,
-         legend_kwds={'loc': 'upper left', 'bbox_to_anchor': (1, 1)})
-
-# Horizontal legend
-gdf.plot(column='population', legend=True,
-         legend_kwds={'orientation': 'horizontal'})
-
-# Custom legend label
-gdf.plot(column='population', legend=True,
-         legend_kwds={'label': 'Population Count'})
-
-# Use separate axes for colorbar
-import matplotlib.pyplot as plt
-fig, ax = plt.subplots(1, 1, figsize=(10, 6))
-divider = make_axes_locatable(ax)
-cax = divider.append_axes("right", size="5%", pad=0.1)
-gdf.plot(column='population', ax=ax, legend=True, cax=cax)
-```
-
-## Handling Missing Data
-
-```python
-# Style missing values
-gdf.plot(column='population',
-         missing_kwds={'color': 'lightgrey', 'edgecolor': 'red', 'hatch': '///',
-                      'label': 'Missing data'})
-```
-
-## Multi-Layer Maps
-
-Combine multiple GeoDataFrames:
+GeoPandas `.plot()` uses Matplotlib:
 
 ```python
 import matplotlib.pyplot as plt
 
-# Create base plot
-fig, ax = plt.subplots(figsize=(10, 10))
-
-# Add layers
-gdf1.plot(ax=ax, color='lightblue', edgecolor='black')
-gdf2.plot(ax=ax, color='red', markersize=5)
-gdf3.plot(ax=ax, color='green', alpha=0.5)
-
-plt.show()
-
-# Control layer order with zorder (higher = on top)
-gdf1.plot(ax=ax, zorder=1)
-gdf2.plot(ax=ax, zorder=2)
-```
-
-## Styling Options
-
-```python
-# Transparency
-gdf.plot(alpha=0.5)
-
-# Marker style for points
-points.plot(marker='o', markersize=50)
-points.plot(marker='^', markersize=100, color='red')
-
-# Line styles
-lines.plot(linestyle='--', linewidth=2)
-lines.plot(linestyle=':', color='blue')
-
-# Categorical coloring
-gdf.plot(column='category', categorical=True, legend=True)
-
-# Vary marker size by column
-gdf.plot(markersize=gdf['value']/1000)
-```
-
-## Map Enhancements
-
-```python
-import matplotlib.pyplot as plt
-
-fig, ax = plt.subplots(figsize=(12, 8))
-gdf.plot(ax=ax, column='population', legend=True)
-
-# Add title
-ax.set_title('Population by Region', fontsize=16)
-
-# Add axis labels
-ax.set_xlabel('Longitude')
-ax.set_ylabel('Latitude')
-
-# Remove axes
+fig, ax = plt.subplots(figsize=(8, 6))
+gdf.plot(
+    ax=ax,
+    column="rate",
+    cmap="viridis",
+    legend=True,
+    missing_kwds={
+        "color": "lightgrey",
+        "edgecolor": "black",
+        "hatch": "///",
+        "label": "Missing",
+    },
+)
+ax.set_title("Synthetic rate by region")
 ax.set_axis_off()
-
-# Add north arrow and scale bar (requires separate packages)
-# See geopandas-plot or contextily for these features
-
-plt.tight_layout()
-plt.show()
+fig.savefig("derived/map.png", dpi=300, bbox_inches="tight")
 ```
 
-## Interactive Maps
+Pin Matplotlib and optional mapping dependencies in the project lock. The
+GeoPandas 1.2 tagged source requires Matplotlib >=3.9 for plotting and
+mapclassify >=2.7 for classifications. Static examples were exercised with
+Matplotlib 3.11.2; the optional classification, interactive, and tile examples
+are illustrative unless those dependencies are installed and tested.
 
-Requires: `uv pip install folium`
+GeoPandas 1.2 rewrote static plotting: categorical palettes/styles accept
+dictionaries, legends reflect geometry types, and layered maps can use
+`ax.legend()`. CRS-based axis labels are enabled by default (`add_labels=False`
+disables them). `scheme=` supports `vmin`/`vmax` and can use
+`legend_kwds={"colorbar": True}` for a classified colorbar. Inspect existing
+figures after migration; Matplotlib collection layout is not a stable contract.
+
+### Choropleth correctness
+
+State in the title/caption or metadata:
+
+- variable definition, units, date, and source;
+- whether values are counts, rates, densities, or percentages;
+- normalization denominator and treatment of zero/missing denominators;
+- classification method, number of bins, and explicit boundaries;
+- color-map direction and meaning;
+- missing/suppressed/out-of-scope styling;
+- CRS/projection and any geographic generalization.
+
+Raw counts over unequal polygon areas often communicate population size rather
+than rate. Compute an appropriate rate/density first and retain numerator and
+denominator.
+
+`scheme=` delegates classification to mapclassify:
 
 ```python
-# Create interactive map
-m = gdf.explore(column='population', cmap='YlOrRd', legend=True)
-m.save('map.html')
-
-# Customize base map
-m = gdf.explore(tiles='OpenStreetMap', legend=True)
-m = gdf.explore(tiles='CartoDB positron', legend=True)
-
-# Add tooltip
-m = gdf.explore(column='population', tooltip=['name', 'population'], legend=True)
-
-# Style options
-m = gdf.explore(color='red', style_kwds={'fillOpacity': 0.5, 'weight': 2})
-
-# Multiple layers
-m = gdf1.explore(color='blue', name='Layer 1')
-gdf2.explore(m=m, color='red', name='Layer 2')
-folium.LayerControl().add_to(m)
+ax = gdf.plot(
+    column="rate",
+    scheme="quantiles",
+    k=5,
+    cmap="viridis",
+    legend=True,
+)
 ```
 
-## Integration with Other Plot Types
+Quantiles balance feature counts but can place almost equal values in different
+bins. Equal intervals can leave sparse bins; natural breaks are data-dependent
+and make cross-map comparisons difficult. For comparisons, reuse explicit
+boundaries and a common normalization.
 
-GeoPandas supports pandas plot types:
+### Missing data
+
+GeoPandas ignores missing values by default. That can make missing areas look
+like background or water. Always count missing values and use `missing_kwds`
+when they are meaningful. Distinguish:
+
+- missing attribute;
+- missing geometry;
+- empty geometry;
+- suppressed value;
+- zero;
+- outside the study area.
+
+Do not coerce missing values to zero for visual convenience.
+
+### Categorical maps
+
+Use `categorical=True` for categories and a qualitative palette. Verify category
+order and legend labels; do not imply magnitude with a sequential palette.
+For example, the following explicit palette is supported in 1.2:
 
 ```python
-# Histogram of attribute
-gdf['population'].plot.hist(bins=20)
-
-# Scatter plot
-gdf.plot.scatter(x='income', y='population')
-
-# Box plot
-gdf.boxplot(column='population', by='region')
+ax = gdf.plot(
+    column="category", categorical=True,
+    cmap={"A": "#4477AA", "B": "#EE6677"},
+    legend=True, tiles=False,
+)
 ```
 
-## Basemaps with Contextily
+Keep the palette complete for the data's categories. The earlier 1.1.4 fix for
+custom categorical/boolean `explore()` legend labels is included.
 
-Requires: `uv pip install contextily`
+### Layering
 
 ```python
-import contextily as ctx
-
-# Reproject to Web Mercator for basemap compatibility
-gdf_webmercator = gdf.to_crs(epsg=3857)
-
-fig, ax = plt.subplots(figsize=(10, 10))
-gdf_webmercator.plot(ax=ax, alpha=0.5, edgecolor='k')
-
-# Add basemap
-ctx.add_basemap(ax, source=ctx.providers.OpenStreetMap.Mapnik)
-# Other sources: ctx.providers.CartoDB.Positron, ctx.providers.Stamen.Terrain
-
-plt.show()
+fig, ax = plt.subplots(figsize=(8, 6))
+areas.plot(ax=ax, facecolor="none", edgecolor="0.4", zorder=1)
+generalized_points.plot(ax=ax, color="black", markersize=8, zorder=2)
 ```
 
-## Cartographic Projections with CartoPy
+- Reproject every layer to a common CRS.
+- Use `facecolor="none"` for transparent polygon faces; Python `None` means
+  something different.
+- Choose `zorder`, alpha, and line width deliberately.
+- Confirm no layer is hidden by a filled polygon.
+- Keep a stable visual scale when comparing panels.
 
-Requires: `uv pip install cartopy`
+## Projection and extent
+
+Choose a map projection for the communication goal:
+
+- equal-area for area comparisons;
+- local conformal for local shape/angles;
+- Web Mercator only when required by a web tile system;
+- a suitable global projection for world views.
+
+GeoPandas may set a latitude-dependent aspect for geographic plots, but that is
+not a replacement for a chosen projection. Exact metric scale bars require a
+projected CRS with known linear units and limited distortion.
+
+Antimeridian-crossing geometries must be split/wrapped before plotting; changing
+axis limits does not repair a line drawn across the map.
+
+## Basemaps are network and licensing dependencies
+
+GeoPandas 1.2 static `plot(tiles=...)`, contextily, and `explore(tiles=...)` can send viewport,
+zoom, IP, and timing information to a provider and can disclose the study area.
+They also introduce attribution, terms-of-use, caching, availability, and
+reproducibility requirements.
+
+Static plots default to `tiles=False`; interactive drafts use `tiles=None`.
+Do not fetch tiles automatically. If a user explicitly approves a provider:
+
+- verify its official URL, license, attribution, and usage limits;
+- generalize sensitive overlays before the request;
+- record provider, style, retrieval date, zoom, and tile hashes/cache;
+- do not put credentials in source or generated HTML;
+- use a vetted cache for reproducible/offline output where permitted.
+
+## Interactive `explore`
+
+`GeoDataFrame.explore()` returns a `folium.Map`. Background tiles require CRS
+metadata and normally cause network requests. Start with a no-tile,
+no-attribute local draft:
 
 ```python
-import cartopy.crs as ccrs
-
-# Create map with specific projection
-fig, ax = plt.subplots(subplot_kw={'projection': ccrs.Robinson()}, figsize=(15, 10))
-
-gdf.plot(ax=ax, transform=ccrs.PlateCarree(), column='population', legend=True)
-
-ax.coastlines()
-ax.gridlines(draw_labels=True)
-
-plt.show()
+interactive = generalized_gdf.explore(
+    tiles=None,
+    tooltip=False,
+    popup=False,
+    style_kwds={"fillOpacity": 0.5, "weight": 1},
+)
+interactive.save("derived/local-draft.html")
 ```
 
-## Saving Figures
+Even `tiles=None` HTML can reference CDN-hosted JavaScript/CSS depending on the
+Folium configuration. Inspect the generated HTML and use an approved offline
+asset strategy before sensitive or air-gapped use.
 
-```python
-# Save to file
-ax = gdf.plot()
-fig = ax.get_figure()
-fig.savefig('map.png', dpi=300, bbox_inches='tight')
-fig.savefig('map.pdf')
-fig.savefig('map.svg')
-```
+Privacy hazards:
+
+- `popup=True` can expose all columns;
+- tooltip lists can expose addresses or unique IDs;
+- coordinates are embedded in the HTML/GeoJSON;
+- layer names and filenames can disclose project context;
+- user-added tile URLs can leak tokens and viewport;
+- sharing the HTML shares data, not just a screenshot.
+
+For multiple layers, add only generalized/allowlisted columns and explicit
+names. Do not use the interactive map as a data-access control boundary.
+
+## Geometry and plotting edge cases
+
+- Empty/missing geometries are not visible; report their counts.
+- Invalid polygons can render inconsistently; validate first.
+- Mixed geometry types need explicit styles per type.
+- Polygon holes and ring orientation should be checked after repair/export.
+- Z/M are ignored by 2D plotting.
+- Marker size is in display units, not map units, unless explicitly transformed.
+- Alpha blending can create misleading dark areas from duplicated/overlapping
+  features; audit duplicate geometry and join multiplication.
+- Tiny overlay slivers can dominate outlines; fix/audit topology rather than
+  merely hiding them.
+
+## Accessibility and honest design
+
+- Prefer perceptually uniform, color-vision-aware palettes.
+- Include text labels/patterns when color alone is insufficient.
+- Keep legend order, labels, precision, and units consistent with the data.
+- Avoid rainbow palettes and excessive classes.
+- Use adequate contrast and minimum line/marker sizes.
+- Include alt text/caption summarizing the main pattern and missing/suppressed
+  data.
+- Do not imply uncertainty-free precision; display uncertainty or caveats.
+
+## Reproducible output
+
+Record:
+
+- source/output hashes and privacy/generalization decision;
+- package versions, CRS, projection, extent, and antimeridian handling;
+- plotted column, normalization, classification/bins, palette, missing style;
+- layer order and styling;
+- figure size, DPI, and format;
+- tile provider/license/retrieval metadata or explicit `tiles=None`;
+- tooltip/popup allowlist and HTML external-resource audit.
+
+Raster PNG reduces direct coordinate extraction compared with SVG/HTML but is
+not anonymization. Check metadata and visual landmarks before release.
+
+## Sources (verified 2026-10-01)
+
+- [GeoPandas mapping and plotting guide](https://geopandas.org/en/stable/docs/user_guide/mapping.html).
+- [GeoPandas interactive mapping guide](https://geopandas.org/en/stable/docs/user_guide/interactive_mapping.html).
+- [GeoDataFrame.plot API](https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.plot.html).
+- [GeoDataFrame.explore API](https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.explore.html).
+- [GeoPandas 1.1.4 release notes](https://github.com/geopandas/geopandas/releases/tag/v1.1.4) — released 2026-06-26.
+- [GeoPandas 1.1.0 release notes](https://github.com/geopandas/geopandas/releases/tag/v1.1.0) — plotting and dependency changes.
+
+- [GeoPandas 1.2.0 plotting implementation](https://github.com/geopandas/geopandas/blob/v1.2.0/geopandas/plotting.py).

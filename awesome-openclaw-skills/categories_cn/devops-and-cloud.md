@@ -79,7 +79,7 @@
 - [azure-identity-py](https://clawskills.sh/skills/thegovind-azure-identity-py) - Azure Identity SDK for Python 身份验证。
 - [azure-image-gen](https://clawskills.sh/skills/abhibavishi-azure-image-gen) - 使用 Azure OpenAI DALL-E 生成图像。
 - [azure-infra](https://clawskills.sh/skills/bmdhodl-azure-infra) - 使用 Azure CLI 和门户进行基于聊天的 Azure 基础设施协助。
-- [azure-keyvault-py](https://clawskills.sh/skills/thegovind-azure-keyvault-py) - Azure Key Vault SDK for Python。
+- [azure-keyvault-py](https://clawskills.sh/skills/thegovind-azure-keyvault-py) - 适用于 Python 的 Azure Key Vault SDK。
 - [beaconchain](https://clawskills.sh/skills/thisisjeron-beaconchain) - 通过 V2 API 监控 beaconcha.in 上的以太坊验证者仪表板健康状况，专注于每日一次的状态检查。
 - [beware-piper-tts](https://clawskills.sh/skills/bewareofddog-beware-piper-tts) - 使用 Piper 进行本地文本转语音，用于语音消息传递。
 - [bind-protocol-mcp](https://clawskills.sh/skills/jason-c-child-bind-protocol-mcp) - 用于凭证验证、策略编写和零知识证明生成的 Bind Protocol MCP 服务器。
@@ -379,3 +379,4 @@
 - [xpoz-social-search](https://clawskills.sh/skills/atyachin-xpoz-social-search) - 实时搜索 Twitter、Instagram 和 Reddit 帖子。
 - [ztp](https://clawskills.sh/skills/thomastrumpp-ztp) - 用于根据 SEP-2026 零信任验证新代码、技能和 MCP 服务器的强制性安全审计技能。
 - [zyfai-sdk](https://clawskills.sh/skills/pauldefi-zyfai-sdk) - 在 Base、Arbitrum 和 Plasma 上的任何以太坊钱包上赚取收益。
+- [clawmetry](https://clawhub.ai/vivekchand/clawmetry) - 用于 OpenClaw 会话、令牌用量和成本的本地可观测性仪表板。

@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**69 skills**
+**70 skills**
 
 - [acc-error-memory](https://clawskills.sh/skills/impkind-acc-error-memory) - Error pattern tracking for AI agents.
 - [agent-arena](https://clawskills.sh/skills/minilozio-agent-arena) - Participate in Agent Arena chat rooms with your real personality (SOUL.md + MEMORY.md)
@@ -73,3 +73,4 @@
 - [tweet-processor](https://clawskills.sh/skills/caqlayan-tweet-processor) - Extract and categorize insights from tweet links into structured notes.
 - [upnote](https://clawskills.sh/skills/wemcdonald-upnote) - Manage UpNote notes and notebooks via x-callback-url automation.
 - [voice-notes-pro](https://clawskills.sh/skills/toniaczlog-voice-notes-pro) - Inteligentna transkrypcja i kategoryzacja notatek gosowych z WhatsApp.
+- [agent-inner-life](https://clawhub.ai/dkistenev/agent-inner-life) - Dated state, an evening journal, and dreams for agents.

@@ -1,380 +1,248 @@
-# Datasets Reference
+# Datasets
 
-## Overview
+Use the
+[TorchDrug 0.2.1 dataset reference](https://torchdrug.ai/docs/api/datasets.html)
+as the class inventory and signature source. Dataset constructors download and
+cache data under the path supplied by the caller.
 
-TorchDrug provides 40+ curated datasets across multiple domains: molecular property prediction, protein modeling, knowledge graph reasoning, and retrosynthesis. All datasets support lazy loading, automatic downloading, and customizable feature extraction.
+These are release-era loaders, not live database clients. There is no API token,
+query pagination, or current-release discovery. Constructors can fetch large
+archives as a side effect. Check the selected loader's source URL, expected
+checksum, size, and dataset license before starting a download.
 
-## Molecular Property Prediction Datasets
+## ClinTox download repair
 
-### Drug Discovery Classification
+The 0.2.1 class embeds a legacy DeepChem HTTP URL that returned HTTP 400 during
+this review. DeepChem's current official loader uses the HTTPS URL below. Its
+19,870-byte gzip was fetched and matches TorchDrug's MD5 exactly; it has 1,484
+raw rows before molecular sanitization/filtering. Populate the cache once before
+running any ClinTox example in this skill:
 
-| Dataset | Size | Task | Classes | Description |
-|---------|------|------|---------|-------------|
-| **BACE** | 1,513 | Binary | 2 | β-secretase inhibition for Alzheimer's |
-| **BBBP** | 2,039 | Binary | 2 | Blood-brain barrier penetration |
-| **HIV** | 41,127 | Binary | 2 | Inhibition of HIV replication |
-| **ClinTox** | 1,478 | Multi-label | 2 | Clinical trial toxicity |
-| **SIDER** | 1,427 | Multi-label | 27 | Side effects by system organ class |
-| **Tox21** | 7,831 | Multi-label | 12 | Toxicity across 12 targets |
-| **ToxCast** | 8,576 | Multi-label | 617 | High-throughput toxicology |
-| **MUV** | 93,087 | Multi-label | 17 | Unbiased validation for screening |
+```python
+from pathlib import Path
+from torchdrug import datasets, utils
 
-**Key Features:**
-- All use scaffold splits for realistic evaluation
-- Binary classification metrics: AUROC, AUPRC
-- Multi-label handles missing values
+cache = Path("~/molecule-datasets/").expanduser()
+cache.mkdir(parents=True, exist_ok=True)
+archive = utils.download(
+    "https://deepchemdata.s3-us-west-1.amazonaws.com/datasets/clintox.csv.gz",
+    str(cache),
+    md5=datasets.ClinTox.md5,
+)
+if utils.compute_md5(archive) != datasets.ClinTox.md5:
+    raise RuntimeError("ClinTox checksum mismatch; do not train on this cache")
+```
 
-**Use Cases:**
-- Drug safety prediction
-- Virtual screening
-- ADMET property prediction
+`utils.download(..., md5=...)` checks an existing cache before deciding whether
+to fetch. In this release it does **not** verify freshly downloaded bytes, hence
+the explicit post-download check. MD5 here identifies the historical benchmark
+asset; record a SHA-256 for project provenance as well.
 
-### Drug Discovery Regression
+The old URLs for BACE, BBBP, HIV, MUV, SIDER, Tox21, ToxCast, QM8, QM9, and
+Lipophilicity also failed during endpoint probes. Do not blindly replace a host
+and assume equivalent contents: verify each current official loader and checksum
+or load a separately versioned local dataset with `data.MoleculeDataset.load_csv`.
+FreeSolv's old S3 route returned an unresolved HTTP 301. These are observed
+download failures, not evidence that the datasets themselves have been retired.
 
-| Dataset | Size | Property | Units | Description |
-|---------|------|----------|-------|-------------|
-| **ESOL** | 1,128 | Solubility | log(mol/L) | Water solubility |
-| **FreeSolv** | 642 | Hydration | kcal/mol | Hydration free energy |
-| **Lipophilicity** | 4,200 | LogD | - | Octanol/water distribution |
-| **SAMPL** | 643 | Solvation | kcal/mol | Solvation free energies |
+## Dataset families
 
-**Metrics:** MAE, RMSE, R²
-**Use Cases:** ADME optimization, lead optimization
+### Molecule property prediction
 
-### Quantum Chemistry
+Documented classes include:
 
-| Dataset | Size | Properties | Description |
-|---------|------|------------|-------------|
-| **QM7** | 7,165 | 1 | Atomization energy |
-| **QM8** | 21,786 | 12 | Electronic spectra, excited states |
-| **QM9** | 133,885 | 12 | Geometric, energetic, electronic, thermodynamic |
-| **PCQM4M** | 3.8M | 1 | Large-scale HOMO-LUMO gap |
+- Classification: `BACE`, `BBBP`, `ClinTox`, `HIV`, `MUV`, `SIDER`, `Tox21`,
+  `ToxCast`
+- Regression / quantum properties: `FreeSolv`, `Lipophilicity`, `QM8`, `QM9`,
+  `PCQM4M`
+- Pretraining / generation: `ChEMBLFiltered`, `ZINC250k`, `ZINC2m`, `MOSES`
 
-**Properties (QM9):**
-- Dipole moment
-- Isotropic polarizability
-- HOMO/LUMO energies
-- Internal energy, enthalpy, free energy
-- Heat capacity
-- Electronic spatial extent
-
-**Use Cases:**
-- Quantum property prediction
-- Method development benchmarking
-- Pre-training molecular models
-
-### Large Molecule Databases
-
-| Dataset | Size | Description | Use Case |
-|---------|------|-------------|----------|
-| **ZINC250k** | 250,000 | Drug-like molecules | Generative model training |
-| **ZINC2M** | 2,000,000 | Drug-like molecules | Large-scale pre-training |
-| **ChEMBL** | Millions | Bioactive molecules | Property prediction, generation |
-
-## Protein Datasets
-
-### Function Prediction
-
-| Dataset | Size | Task | Classes | Description |
-|---------|------|------|---------|-------------|
-| **EnzymeCommission** | 17,562 | Multi-class | 7 levels | EC number classification |
-| **GeneOntology** | 46,796 | Multi-label | 489 | GO term prediction (BP/MF/CC) |
-| **BetaLactamase** | 5,864 | Regression | - | Enzyme activity levels |
-| **Fluorescence** | 54,025 | Regression | - | GFP fluorescence intensity |
-| **Stability** | 53,614 | Regression | - | Thermostability (ΔΔG) |
-
-**Features:**
-- Sequence and/or structure input
-- Evolutionary information available
-- Multiple train/test splits
-
-**Use Cases:**
-- Protein engineering
-- Function annotation
-- Enzyme design
-
-### Localization and Solubility
-
-| Dataset | Size | Task | Classes | Description |
-|---------|------|------|---------|-------------|
-| **Solubility** | 62,478 | Binary | 2 | Protein solubility |
-| **BinaryLocalization** | 22,168 | Binary | 2 | Membrane vs soluble |
-| **SubcellularLocalization** | 8,943 | Multi-class | 10 | Subcellular compartment |
-
-**Use Cases:**
-- Protein expression optimization
-- Target identification
-- Cell biology
-
-### Structure Prediction
-
-| Dataset | Size | Task | Description |
-|---------|------|------|-------------|
-| **Fold** | 16,712 | Multi-class (1,195) | Structural fold recognition |
-| **SecondaryStructure** | 8,678 | Sequence labeling | 3-state or 8-state prediction |
-| **ProteinNet** | Varied | Contact prediction | Residue-residue contacts |
-
-**Use Cases:**
-- Structure prediction pipelines
-- Fold recognition
-- Contact map generation
-
-### Protein Interactions
-
-| Dataset | Size | Positives | Negatives | Description |
-|---------|------|-----------|-----------|-------------|
-| **HumanPPI** | 1,412 proteins | 6,584 | - | Human protein interactions |
-| **YeastPPI** | 2,018 proteins | 6,451 | - | Yeast protein interactions |
-| **PPIAffinity** | 2,156 pairs | - | - | Binding affinity values |
-
-**Use Cases:**
-- PPI prediction
-- Network biology
-- Drug target identification
-
-### Protein-Ligand Binding
-
-| Dataset | Size | Type | Description |
-|---------|------|------|-------------|
-| **BindingDB** | ~1.5M | Affinity | Comprehensive binding data |
-| **PDBBind** | 20,000+ | 3D complexes | Structure-based binding |
-| - Refined Set | 5,316 | High quality | Curated crystal structures |
-| - Core Set | 285 | Benchmark | Diverse test set |
-
-**Use Cases:**
-- Binding affinity prediction
-- Structure-based drug design
-- Scoring function development
-
-### Large Protein Databases
-
-| Dataset | Size | Description |
-|---------|------|-------------|
-| **AlphaFoldDB** | 200M+ | Predicted structures for most known proteins |
-| **UniProt** | Integration | Sequence and annotation data |
-
-## Knowledge Graph Datasets
-
-### General Knowledge
-
-| Dataset | Entities | Relations | Triples | Domain |
-|---------|----------|-----------|---------|--------|
-| **FB15k** | 14,951 | 1,345 | 592,213 | Freebase (general knowledge) |
-| **FB15k-237** | 14,541 | 237 | 310,116 | Filtered Freebase |
-| **WN18** | 40,943 | 18 | 151,442 | WordNet (lexical) |
-| **WN18RR** | 40,943 | 11 | 93,003 | Filtered WordNet |
-
-**Relation Types (FB15k-237):**
-- `/people/person/nationality`
-- `/film/film/genre`
-- `/location/location/contains`
-- `/business/company/founders`
-- Many more...
-
-**Use Cases:**
-- Link prediction
-- Relation extraction
-- Knowledge base completion
-
-### Biomedical Knowledge
-
-| Dataset | Entities | Relations | Triples | Description |
-|---------|----------|-----------|---------|-------------|
-| **Hetionet** | 45,158 | 24 | 2,250,197 | Integrates 29 biomedical databases |
-
-**Entity Types in Hetionet:**
-- Genes (20,945)
-- Compounds (1,552)
-- Diseases (137)
-- Anatomy (400)
-- Pathways (1,822)
-- Pharmacologic classes
-- Side effects
-- Symptoms
-- Molecular functions
-- Biological processes
-- Cellular components
-
-**Relation Types:**
-- Compound-binds-Gene
-- Gene-associates-Disease
-- Disease-presents-Symptom
-- Compound-treats-Disease
-- Compound-causes-Side effect
-- Gene-participates-Pathway
-- And 18 more...
-
-**Use Cases:**
-- Drug repurposing
-- Disease mechanism discovery
-- Target identification
-- Multi-hop reasoning in biomedicine
-
-## Citation Network Datasets
-
-| Dataset | Nodes | Edges | Classes | Description |
-|---------|-------|-------|---------|-------------|
-| **Cora** | 2,708 | 5,429 | 7 | Machine learning papers |
-| **CiteSeer** | 3,327 | 4,732 | 6 | Computer science papers |
-| **PubMed** | 19,717 | 44,338 | 3 | Biomedical papers |
-
-**Use Cases:**
-- Node classification
-- GNN baseline comparisons
-- Method development
-
-## Retrosynthesis Datasets
-
-| Dataset | Size | Description |
-|---------|------|-------------|
-| **USPTO-50k** | 50,017 | Curated patent reactions, single-step |
-
-**Features:**
-- Product → Reactants mapping
-- Atom mapping for reaction centers
-- Canonicalized SMILES
-- Balanced across reaction types
-
-**Splits:**
-- Train: ~40,000
-- Validation: ~5,000
-- Test: ~5,000
-
-**Use Cases:**
-- Retrosynthesis prediction
-- Reaction type classification
-- Synthetic route planning
-
-## Dataset Usage Patterns
-
-### Loading Datasets
+The official property tutorial uses `ClinTox`; the pretraining tutorial uses
+`ClinTox` for a small demonstration and recommends larger data such as `ZINC2m`
+for real pretraining; the generation tutorial uses `ZINC250k`.
 
 ```python
 from torchdrug import datasets
 
-# Basic loading
-dataset = datasets.BBBP("~/molecule-datasets/")
-
-# With transforms
-from torchdrug import transforms
-transform = transforms.VirtualNode()
-dataset = datasets.BBBP("~/molecule-datasets/", transform=transform)
-
-# Protein dataset
-dataset = datasets.EnzymeCommission("~/protein-datasets/")
-
-# Knowledge graph
-dataset = datasets.FB15k237("~/kg-datasets/")
+dataset = datasets.ClinTox(
+    "~/molecule-datasets/",
+    atom_feature="default",
+    bond_feature="default",
+)
+print(dataset.tasks)
+print(dataset.node_feature_dim)
+print(dataset.edge_feature_dim)
 ```
 
-### Data Splitting
+Common molecule options include `atom_feature`, `bond_feature`, `mol_feature`,
+`with_hydrogen`, and `kekulize`. Availability varies by class; inspect the class
+signature before adding options.
+
+### Protein properties and structure
+
+Documented families include:
+
+- Sequence / property: `BetaLactamase`, `BinaryLocalization`,
+  `SubcellularLocalization`
+- Structure / function: `EnzymeCommission`, `GeneOntology`, `AlphaFoldDB`
+- Structure labels: `Fold`, `SecondaryStructure`
+- Protein-protein: `HumanPPI`, `YeastPPI`, `PPIAffinity`
+- Protein-ligand: `BindingDB`, `PDBBind`
 
 ```python
-# Random split
-train, valid, test = dataset.split([0.8, 0.1, 0.1])
-
-# Scaffold split (for molecules)
-from torchdrug import utils
-train, valid, test = dataset.split(
-    utils.scaffold_split(dataset, [0.8, 0.1, 0.1])
+dataset = datasets.EnzymeCommission(
+    "~/protein-datasets/",
+    atom_feature=None,
+    bond_feature=None,
+    residue_feature="default",
 )
-
-# Predefined splits (some datasets)
-train, valid, test = dataset.split()
+train_set, valid_set, test_set = dataset.split()
 ```
 
-### Feature Extraction
+Protein datasets can be expensive to parse. Where supported, `lazy=True` trades
+lower startup memory for slower item loading. For sequence-only models, omitting
+atom and bond features avoids unnecessary atom-level construction.
 
-**Node Features (Molecules):**
-- Atom type (one-hot or embedding)
-- Formal charge
-- Hybridization
-- Aromaticity
-- Number of hydrogens
-- Chirality
+### Knowledge graphs
 
-**Edge Features (Molecules):**
-- Bond type (single, double, triple, aromatic)
-- Stereochemistry
-- Conjugation
-- Ring membership
+Documented classes:
 
-**Node Features (Proteins):**
-- Amino acid type (one-hot)
-- Physicochemical properties
-- Position in sequence
-- Secondary structure
-- Solvent accessibility
+- `FB15k`
+- `FB15k237`
+- `WN18`
+- `WN18RR`
+- `Hetionet`
 
-**Edge Features (Proteins):**
-- Edge type (sequential, spatial, contact)
-- Distance
-- Angles and dihedrals
+```python
+dataset = datasets.FB15k237("~/kg-datasets/")
+train_set, valid_set, test_set = dataset.split()
 
-## Choosing Datasets
+print(dataset.num_entity)
+print(dataset.num_relation)
+```
 
-### By Task
+These datasets provide predefined benchmark splits. Preserve those splits for
+comparable evaluation.
 
-**Molecular Property Prediction:**
-- Start with BBBP or HIV (medium size, clear task)
-- Use QM9 for quantum properties
-- ESOL/FreeSolv for regression
+### Retrosynthesis
 
-**Protein Function:**
-- EnzymeCommission (well-defined classes)
-- GeneOntology (comprehensive annotations)
+`USPTO50k` contains 50,017 reactions across 10 reaction classes. The official
+G2Gs workflow loads two views:
 
-**Drug Safety:**
-- Tox21 (standard benchmark)
-- ClinTox (clinical relevance)
+```python
+reaction_dataset = datasets.USPTO50k(
+    "~/molecule-datasets/",
+    atom_feature="center_identification",
+    kekulize=True,
+)
+synthon_dataset = datasets.USPTO50k(
+    "~/molecule-datasets/",
+    as_synthon=True,
+    atom_feature="synthon_completion",
+    kekulize=True,
+)
+```
 
-**Structure-Based:**
-- PDBBind (protein-ligand)
-- ProteinNet (structure prediction)
+Reaction mode yields reactant/product pairs for center identification. Synthon
+mode yields reactant/synthon pairs for synthon completion.
 
-**Knowledge Graph:**
-- FB15k-237 (standard benchmark)
-- Hetionet (biomedical applications)
+## Splitting correctly
 
-**Generation:**
-- ZINC250k (training)
-- QM9 (with properties)
+Some benchmark datasets expose predefined splits:
 
-**Retrosynthesis:**
-- USPTO-50k (only choice)
+```python
+train_set, valid_set, test_set = dataset.split()
+```
 
-### By Size and Resources
+For the property-prediction tutorial's random 80/10/10 split, use PyTorch:
 
-**Small (<5k, for testing):**
-- BACE, FreeSolv, ClinTox
-- Core set of PDBBind
+```python
+import torch
 
-**Medium (5k-100k):**
-- BBBP, HIV, ESOL, Tox21
-- EnzymeCommission, Fold
-- FB15k-237, WN18RR
+lengths = [int(0.8 * len(dataset)), int(0.1 * len(dataset))]
+lengths.append(len(dataset) - sum(lengths))
+train_set, valid_set, test_set = torch.utils.data.random_split(dataset, lengths)
+```
 
-**Large (>100k):**
-- QM9, MUV, PCQM4M
-- GeneOntology, AlphaFoldDB
-- ZINC2M, BindingDB
+Do not assume `dataset.split([0.8, 0.1, 0.1])` is a documented universal API.
 
-### By Domain
+For paired retrosynthesis views, reset the same seed before each `split()`:
 
-**Drug Discovery:** BBBP, HIV, Tox21, ESOL, ZINC
-**Quantum Chemistry:** QM7, QM8, QM9, PCQM4M
-**Protein Engineering:** Fluorescence, Stability, Solubility
-**Structural Biology:** Fold, PDBBind, ProteinNet, AlphaFoldDB
-**Biomedical:** Hetionet, GeneOntology, EnzymeCommission
-**Retrosynthesis:** USPTO-50k
+```python
+torch.manual_seed(1)
+reaction_train, reaction_valid, reaction_test = reaction_dataset.split()
+torch.manual_seed(1)
+synthon_train, synthon_valid, synthon_test = synthon_dataset.split()
+```
 
-## Best Practices
+The two views can have different row counts because one reaction yields several
+synthons. This is source-reaction partition alignment, not row-by-row alignment.
+Verify it explicitly after preprocessing/filtering:
 
-1. **Start Small**: Test on small datasets before scaling
-2. **Scaffold Split**: Use for realistic drug discovery evaluation
-3. **Balanced Metrics**: Use AUROC + AUPRC for imbalanced data
-4. **Multiple Runs**: Report mean ± std over multiple random seeds
-5. **Data Leakage**: Be careful with pre-trained models
-6. **Domain Knowledge**: Understand what you're predicting
-7. **Validation**: Always use held-out test set
-8. **Preprocessing**: Standardize features, handle missing values
+```python
+def source_ids(dataset, subset):
+    return {dataset.targets["sample id"][i] for i in subset.indices}
+
+reaction_parts = (reaction_train, reaction_valid, reaction_test)
+synthon_parts = (synthon_train, synthon_valid, synthon_test)
+ids = [source_ids(reaction_dataset, part) for part in reaction_parts]
+for expected, part in zip(ids, synthon_parts):
+    if expected != source_ids(synthon_dataset, part):
+        raise ValueError("Reaction/synthon source IDs differ; split by common IDs")
+if any(ids[i] & ids[j] for i in range(3) for j in range(i + 1, 3)):
+    raise ValueError("Reaction source IDs leak across partitions")
+```
+
+## Feature configuration
+
+Dataset dimensions depend on feature choices. Construct models from the loaded
+dataset rather than hard-coding dimensions:
+
+```python
+from torchdrug import models
+
+model = models.GIN(
+    input_dim=dataset.node_feature_dim,
+    hidden_dims=[256, 256, 256],
+    edge_input_dim=dataset.edge_feature_dim,
+)
+```
+
+Generation and retrosynthesis often require specialized feature sets:
+
+- Pretraining: `atom_feature="pretrain"`, `bond_feature="pretrain"`
+- GCPN / GraphAF: `atom_feature="symbol"`, `kekulize=True`
+- Center identification: `atom_feature="center_identification"`
+- Synthon completion: `atom_feature="synthon_completion"`
+
+Do not mix checkpoint weights across incompatible feature configurations.
+
+## Data integrity and evaluation
+
+- Cache datasets in a controlled project or user data directory.
+- Record TorchDrug version, feature arguments, split method, and random seed.
+- Preserve predefined KG splits.
+- For molecular benchmarks, use the split protocol required by the benchmark;
+  do not claim a random split is a scaffold split.
+- Inspect downloaded data licenses and provenance before redistribution.
+- Validate labels, missing-value masks, and task names before training.
+- `EnzymeCommission` and `GeneOntology` return `sample["targets"]` vectors;
+  their `dataset.tasks` names are not separate sample dictionary keys. Use
+  `MultipleBinaryClassification(task=list(range(len(dataset.tasks))))`.
+- `AlphaFoldDB` in this release is pinned to historical **v2** proteome archives,
+  not the current AlphaFold DB. The embedded zebrafish URL returned 404; do not
+  silently relabel a newer archive as v2.
+- HEAD probes reached ZINC250k, USPTO50k, all FB15k237 split files, and the
+  EnzymeCommission archive (about 1 GB), but do not validate bytes or parsing.
+  None of those large datasets or pretrained weights were downloaded in this audit.
+
+## Source links
+
+- [Dataset API](https://torchdrug.ai/docs/api/datasets.html)
+- [Property prediction tutorial](https://torchdrug.ai/docs/tutorials/property_prediction.html)
+- [Pretraining tutorial](https://torchdrug.ai/docs/tutorials/pretrain.html)
+- [Generation tutorial](https://torchdrug.ai/docs/tutorials/generation.html)
+- [Retrosynthesis tutorial](https://torchdrug.ai/docs/tutorials/retrosynthesis.html)
+- [Knowledge graph tutorial](https://torchdrug.ai/docs/tutorials/reasoning.html)
+- [Current DeepChem ClinTox loader](https://github.com/deepchem/deepchem/blob/master/deepchem/molnet/load_function/clintox_datasets.py)
+- [Released dataset source](https://github.com/DeepGraphLearning/torchdrug/tree/v0.2.1/torchdrug/datasets)

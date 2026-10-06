@@ -1,340 +1,210 @@
 #!/usr/bin/env python3
+"""Dependency-free synthetic Gymnasium-style environment template.
+
+This module is intentionally local and synthetic. It does not import PufferLib,
+Gymnasium, environment plug-ins, native extensions, or ROMs. Port the contract
+to a separately reviewed Gymnasium or PufferLib environment only after the
+validator passes.
 """
-PufferLib Environment Template
 
-This template provides a starting point for creating custom PufferEnv environments.
-Customize the observation space, action space, and environment logic for your task.
-"""
+from __future__ import annotations
 
-import numpy as np
-import pufferlib
-from pufferlib import PufferEnv
+import argparse
+import math
+import random
+from dataclasses import dataclass
+from typing import Any
+
+try:
+    from ._common import UserInputError, bounded_int, emit_json
+except ImportError:  # Direct script execution.
+    from _common import UserInputError, bounded_int, emit_json
 
 
-class MyEnvironment(PufferEnv):
-    """
-    Custom PufferLib environment template.
+@dataclass(frozen=True)
+class DiscreteSpace:
+    """Minimal stand-in for a discrete action space."""
 
-    This is a simple grid world example. Customize it for your specific task.
-    """
+    n: int
 
-    def __init__(self, buf=None, grid_size=10, max_steps=1000):
-        """
-        Initialize environment.
+    @property
+    def shape(self) -> tuple[int, ...]:
+        return ()
 
-        Args:
-            buf: Shared memory buffer (managed by PufferLib)
-            grid_size: Size of the grid world
-            max_steps: Maximum steps per episode
-        """
-        super().__init__(buf)
+    def contains(self, value: Any) -> bool:
+        return isinstance(value, int) and not isinstance(value, bool) and 0 <= value < self.n
 
-        self.grid_size = grid_size
+    def sample(self, rng: random.Random) -> int:
+        return rng.randrange(self.n)
+
+
+@dataclass(frozen=True)
+class BoxSpace:
+    """Minimal one-dimensional finite box used by the synthetic environment."""
+
+    low: float
+    high: float
+    shape: tuple[int, ...]
+    dtype: str = "float32"
+
+    def contains(self, value: Any) -> bool:
+        if len(self.shape) != 1 or not isinstance(value, (list, tuple)):
+            return False
+        if len(value) != self.shape[0]:
+            return False
+        for item in value:
+            if isinstance(item, bool) or not isinstance(item, (int, float)):
+                return False
+            if not math.isfinite(float(item)) or not self.low <= float(item) <= self.high:
+                return False
+        return True
+
+
+class SyntheticGymEnv:
+    """Small deterministic environment implementing Gymnasium's five-tuple API."""
+
+    metadata = {"render_modes": []}
+
+    def __init__(self, *, max_steps: int = 16) -> None:
+        if not 1 <= max_steps <= 10_000:
+            raise UserInputError("max_steps must be between 1 and 10000")
         self.max_steps = max_steps
+        self.observation_space = BoxSpace(-1.0, 1.0, (4,))
+        self.action_space = DiscreteSpace(3)
+        self._rng = random.Random()
+        self._initialized = False
+        self._done = False
+        self._position = 0.0
+        self._target = 0.75
+        self._step_count = 0
+        self._last_action = 0.0
 
-        # Define observation space
-        # Option 1: Flat vector observation
-        self.observation_space = self.make_space((4,))  # [x, y, goal_x, goal_y]
+    def _observation(self) -> list[float]:
+        return [
+            float(self._position),
+            float(self._target),
+            float(self._step_count / self.max_steps),
+            float(self._last_action),
+        ]
 
-        # Option 2: Dict observation with multiple components
-        # self.observation_space = self.make_space({
-        #     'position': (2,),
-        #     'goal': (2,),
-        #     'grid': (grid_size, grid_size)
-        # })
+    def reset(
+        self,
+        *,
+        seed: int | None = None,
+        options: dict[str, Any] | None = None,
+    ) -> tuple[list[float], dict[str, Any]]:
+        """Reset state and return ``(observation, info)``."""
+        if seed is not None:
+            self._rng.seed(seed)
+        if options is not None and set(options) - {"position", "target"}:
+            raise UserInputError("reset options may contain only position and target")
 
-        # Option 3: Image observation
-        # self.observation_space = self.make_space((grid_size, grid_size, 3))
+        self._position = self._rng.uniform(-0.5, 0.5)
+        self._target = self._rng.choice((-0.75, 0.75))
+        if options:
+            self._position = float(options.get("position", self._position))
+            self._target = float(options.get("target", self._target))
+        if not -1.0 <= self._position <= 1.0 or not -1.0 <= self._target <= 1.0:
+            raise UserInputError("position and target options must be within [-1, 1]")
 
-        # Define action space
-        # Option 1: Discrete actions
-        self.action_space = self.make_discrete(4)  # 0: up, 1: right, 2: down, 3: left
+        self._step_count = 0
+        self._last_action = 0.0
+        self._initialized = True
+        self._done = False
+        observation = self._observation()
+        return observation, {"seed": seed, "synthetic": True}
 
-        # Option 2: Continuous actions
-        # self.action_space = self.make_space((2,))  # [dx, dy]
+    def step(
+        self, action: int
+    ) -> tuple[list[float], float, bool, bool, dict[str, Any]]:
+        """Advance one step and return the Gymnasium five-tuple."""
+        if not self._initialized:
+            raise RuntimeError("reset() must be called before step()")
+        if self._done:
+            raise RuntimeError("reset() must be called after termination or truncation")
+        if not self.action_space.contains(action):
+            raise ValueError(f"action {action!r} is outside the action space")
 
-        # Option 3: Multi-discrete actions
-        # self.action_space = self.make_multi_discrete([3, 3])  # Two 3-way choices
+        movement = (-0.125, 0.0, 0.125)[action]
+        self._position = max(-1.0, min(1.0, self._position + movement))
+        self._last_action = movement / 0.125
+        self._step_count += 1
 
-        # Initialize state
-        self.agent_pos = None
-        self.goal_pos = None
-        self.step_count = 0
-
-        self.reset()
-
-    def reset(self):
-        """
-        Reset environment to initial state.
-
-        Returns:
-            observation: Initial observation
-        """
-        # Reset state
-        self.agent_pos = np.array([0, 0], dtype=np.float32)
-        self.goal_pos = np.array([self.grid_size - 1, self.grid_size - 1], dtype=np.float32)
-        self.step_count = 0
-
-        # Return initial observation
-        return self._get_observation()
-
-    def step(self, action):
-        """
-        Execute one environment step.
-
-        Args:
-            action: Action to take
-
-        Returns:
-            observation: New observation
-            reward: Reward for this step
-            done: Whether episode is complete
-            info: Additional information
-        """
-        self.step_count += 1
-
-        # Execute action
-        self._apply_action(action)
-
-        # Compute reward
-        reward = self._compute_reward()
-
-        # Check if episode is done
-        done = self._is_done()
-
-        # Get new observation
-        observation = self._get_observation()
-
-        # Additional info
-        info = {}
-        if done:
-            # Include episode statistics when episode ends
-            info['episode'] = {
-                'r': reward,
-                'l': self.step_count
-            }
-
-        return observation, reward, done, info
-
-    def _apply_action(self, action):
-        """Apply action to update environment state."""
-        # Discrete actions: 0=up, 1=right, 2=down, 3=left
-        if action == 0:  # Up
-            self.agent_pos[1] = min(self.agent_pos[1] + 1, self.grid_size - 1)
-        elif action == 1:  # Right
-            self.agent_pos[0] = min(self.agent_pos[0] + 1, self.grid_size - 1)
-        elif action == 2:  # Down
-            self.agent_pos[1] = max(self.agent_pos[1] - 1, 0)
-        elif action == 3:  # Left
-            self.agent_pos[0] = max(self.agent_pos[0] - 1, 0)
-
-    def _compute_reward(self):
-        """Compute reward for current state."""
-        # Distance to goal
-        distance = np.linalg.norm(self.agent_pos - self.goal_pos)
-
-        # Reward shaping: negative distance + bonus for reaching goal
-        reward = -distance / self.grid_size
-
-        # Goal reached
-        if distance < 0.5:
-            reward += 10.0
-
-        return reward
-
-    def _is_done(self):
-        """Check if episode is complete."""
-        # Episode ends if goal reached or max steps exceeded
-        distance = np.linalg.norm(self.agent_pos - self.goal_pos)
-        goal_reached = distance < 0.5
-        timeout = self.step_count >= self.max_steps
-
-        return goal_reached or timeout
-
-    def _get_observation(self):
-        """Generate observation from current state."""
-        # Return flat vector observation
-        observation = np.concatenate([
-            self.agent_pos,
-            self.goal_pos
-        ]).astype(np.float32)
-
-        return observation
-
-
-class MultiAgentEnvironment(PufferEnv):
-    """
-    Multi-agent environment template.
-
-    Example: Cooperative navigation task where agents must reach individual goals.
-    """
-
-    def __init__(self, buf=None, num_agents=4, grid_size=10, max_steps=1000):
-        super().__init__(buf)
-
-        self.num_agents = num_agents
-        self.grid_size = grid_size
-        self.max_steps = max_steps
-
-        # Per-agent observation space
-        self.single_observation_space = self.make_space({
-            'position': (2,),
-            'goal': (2,),
-            'others': (2 * (num_agents - 1),)  # Positions of other agents
-        })
-
-        # Per-agent action space
-        self.single_action_space = self.make_discrete(5)  # 4 directions + stay
-
-        # Initialize state
-        self.agent_positions = None
-        self.goal_positions = None
-        self.step_count = 0
-
-        self.reset()
-
-    def reset(self):
-        """Reset all agents."""
-        # Random initial positions
-        self.agent_positions = np.random.rand(self.num_agents, 2) * self.grid_size
-
-        # Random goal positions
-        self.goal_positions = np.random.rand(self.num_agents, 2) * self.grid_size
-
-        self.step_count = 0
-
-        # Return observations for all agents
-        return {
-            f'agent_{i}': self._get_obs(i)
-            for i in range(self.num_agents)
+        distance = abs(self._target - self._position)
+        terminated = distance <= 0.0625
+        truncated = self._step_count >= self.max_steps and not terminated
+        reward = 1.0 if terminated else -distance
+        self._done = terminated or truncated
+        info = {
+            "distance": float(distance),
+            "episode_step": self._step_count,
         }
+        return self._observation(), float(reward), terminated, truncated, info
 
-    def step(self, actions):
-        """
-        Step all agents.
+    def close(self) -> None:
+        self._initialized = False
+        self._done = True
 
-        Args:
-            actions: Dict of {agent_id: action}
 
-        Returns:
-            observations: Dict of {agent_id: observation}
-            rewards: Dict of {agent_id: reward}
-            dones: Dict of {agent_id: done}
-            infos: Dict of {agent_id: info}
-        """
-        self.step_count += 1
+def run_demo(*, seed: int, steps: int, max_steps: int) -> dict[str, Any]:
+    """Run a bounded deterministic rollout for documentation and smoke tests."""
+    env = SyntheticGymEnv(max_steps=max_steps)
+    action_rng = random.Random(seed + 1)
+    observation, _ = env.reset(seed=seed)
+    total_reward = 0.0
+    resets = 0
+    terminated_count = 0
+    truncated_count = 0
 
-        observations = {}
-        rewards = {}
-        dones = {}
-        infos = {}
+    for index in range(steps):
+        action = env.action_space.sample(action_rng)
+        observation, reward, terminated, truncated, _ = env.step(action)
+        total_reward += reward
+        terminated_count += int(terminated)
+        truncated_count += int(truncated)
+        if terminated or truncated:
+            resets += 1
+            observation, _ = env.reset(seed=seed + resets + index + 1)
 
-        # Update all agents
-        for agent_id, action in actions.items():
-            agent_idx = int(agent_id.split('_')[1])
+    env.close()
+    return {
+        "environment": "synthetic",
+        "last_observation": observation,
+        "network_used": False,
+        "resets": resets,
+        "seed": seed,
+        "steps": steps,
+        "terminated": terminated_count,
+        "total_reward": total_reward,
+        "truncated": truncated_count,
+    }
 
-            # Apply action
-            self._apply_action(agent_idx, action)
 
-            # Generate outputs
-            observations[agent_id] = self._get_obs(agent_idx)
-            rewards[agent_id] = self._compute_reward(agent_idx)
-            dones[agent_id] = self._is_done(agent_idx)
-            infos[agent_id] = {}
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Run the dependency-free synthetic environment template."
+    )
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--steps", type=int, default=16, help="1..10000")
+    parser.add_argument("--max-steps", type=int, default=16, help="1..10000")
+    parser.add_argument("--compact", action="store_true", help="Emit compact JSON")
+    return parser
 
-        # Global done condition
-        dones['__all__'] = all(dones.values()) or self.step_count >= self.max_steps
 
-        return observations, rewards, dones, infos
-
-    def _apply_action(self, agent_idx, action):
-        """Apply action for specific agent."""
-        if action == 0:  # Up
-            self.agent_positions[agent_idx, 1] += 1
-        elif action == 1:  # Right
-            self.agent_positions[agent_idx, 0] += 1
-        elif action == 2:  # Down
-            self.agent_positions[agent_idx, 1] -= 1
-        elif action == 3:  # Left
-            self.agent_positions[agent_idx, 0] -= 1
-        # action == 4: Stay
-
-        # Clip to grid bounds
-        self.agent_positions[agent_idx] = np.clip(
-            self.agent_positions[agent_idx],
-            0,
-            self.grid_size - 1
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
+    try:
+        steps = bounded_int(args.steps, name="steps", minimum=1, maximum=10_000)
+        max_steps = bounded_int(
+            args.max_steps, name="max_steps", minimum=1, maximum=10_000
         )
-
-    def _compute_reward(self, agent_idx):
-        """Compute reward for specific agent."""
-        distance = np.linalg.norm(
-            self.agent_positions[agent_idx] - self.goal_positions[agent_idx]
-        )
-        return -distance / self.grid_size
-
-    def _is_done(self, agent_idx):
-        """Check if specific agent is done."""
-        distance = np.linalg.norm(
-            self.agent_positions[agent_idx] - self.goal_positions[agent_idx]
-        )
-        return distance < 0.5
-
-    def _get_obs(self, agent_idx):
-        """Get observation for specific agent."""
-        # Get positions of other agents
-        other_positions = np.concatenate([
-            self.agent_positions[i]
-            for i in range(self.num_agents)
-            if i != agent_idx
-        ])
-
-        return {
-            'position': self.agent_positions[agent_idx].astype(np.float32),
-            'goal': self.goal_positions[agent_idx].astype(np.float32),
-            'others': other_positions.astype(np.float32)
-        }
+        result = run_demo(seed=args.seed, steps=steps, max_steps=max_steps)
+    except (UserInputError, ValueError, RuntimeError) as exc:
+        parser.error(str(exc))
+    emit_json(result, pretty=not args.compact)
+    return 0
 
 
-def test_environment():
-    """Test environment to verify it works correctly."""
-    print("Testing single-agent environment...")
-    env = MyEnvironment()
-
-    obs = env.reset()
-    print(f"Initial observation shape: {obs.shape}")
-
-    for step in range(10):
-        action = env.action_space.sample()
-        obs, reward, done, info = env.step(action)
-
-        print(f"Step {step}: reward={reward:.3f}, done={done}")
-
-        if done:
-            obs = env.reset()
-            print("Episode finished, resetting...")
-
-    print("\nTesting multi-agent environment...")
-    multi_env = MultiAgentEnvironment(num_agents=4)
-
-    obs = multi_env.reset()
-    print(f"Number of agents: {len(obs)}")
-
-    for step in range(10):
-        actions = {
-            agent_id: multi_env.single_action_space.sample()
-            for agent_id in obs.keys()
-        }
-        obs, rewards, dones, infos = multi_env.step(actions)
-
-        print(f"Step {step}: mean_reward={np.mean(list(rewards.values())):.3f}")
-
-        if dones.get('__all__', False):
-            obs = multi_env.reset()
-            print("Episode finished, resetting...")
-
-    print("\n✓ Environment tests passed!")
-
-
-if __name__ == '__main__':
-    test_environment()
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -20,6 +20,10 @@ metadata:
 - 资产组织、命名和审批
 - 调色板管理和排版规范
 
+## 脚本路径
+
+此技能及其 `references/` 中的脚本路径都是相对于包含此 SKILL.md 的目录，而不是相对于项目：`scripts/<file>` 指此技能自己的 `scripts/` 文件夹，`../<skill>/scripts/<file>` 指与其一同安装的同级子技能。请从该目录拼出完整路径（Claude Code 会在技能加载时将其报告为技能的基础目录），并让工作目录保持在项目根目录——这些脚本会相对于项目根目录读写项目文件，例如 `docs/brand-guidelines.md`、`assets/design-tokens.json` 或 `src/`。
+
 ## 快速开始
 
 **向提示中注入品牌上下文：**
@@ -48,6 +52,11 @@ node scripts/sync-brand-to-tokens.cjs
 # 3. 验证
 node scripts/inject-brand-context.cjs --json | head -20
 ```
+
+当同步脚本在常见 CSS 入口文件及其本地 CSS 导入中检测到已有的令牌文件、`:root` 自定义属性
+或 Tailwind v4 `@theme` 变量，或检测到 Tailwind 主题颜色和预设时，会停止执行。继续之前请先检查
+脚本报告的来源。如果检测到的文件是之前同步生成的受管理的 `assets/design-tokens.*` 输出，
+并且确实有意替换它们，请使用 `--force` 重新运行。
 
 **同步的文件：**
 - `docs/brand-guidelines.md` → 真实来源

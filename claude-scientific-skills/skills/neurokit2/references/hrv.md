@@ -1,480 +1,218 @@
-# Heart Rate Variability (HRV) Analysis
+# Heart-rate variability and RSA
 
-## Overview
+Checked **2026-10-01** against NeuroKit2 0.2.13 stable runtime/source,
+the official HRV API/tutorial, and HRV/RSA measurement guidance.
 
-Heart Rate Variability (HRV) reflects the variation in time intervals between consecutive heartbeats, providing insights into autonomic nervous system regulation, cardiovascular health, and psychological state. NeuroKit2 provides comprehensive HRV analysis across time, frequency, and nonlinear domains.
+## Define the interval series
 
-## Main Function
+HRV analysis needs beat timing plus a defensible classification/correction policy.
+Distinguish:
 
-### hrv()
+- **RR/RRI**: intervals between detected R peaks;
+- **NN**: intervals between beats judged normal sinus beats; and
+- **PP/PRV**: intervals between peripheral pulse peaks.
 
-Compute all available HRV indices at once across all domains.
+Do not relabel automatically corrected RR or PPG intervals as NN. Preserve raw waveform,
+raw peaks, corrected peaks, excluded segments, correction categories, and interval units.
 
-```python
-hrv_indices = nk.hrv(peaks, sampling_rate=1000, show=False)
-```
+Accepted NeuroKit2 inputs include:
 
-**Input:**
-- `peaks`: Dictionary with `'ECG_R_Peaks'` key or array of R-peak indices
-- `sampling_rate`: Signal sampling rate in Hz
+- a list/array of peak sample indices;
+- marker/info objects from `ecg_peaks()`, `ppg_peaks()`, `ecg_process()`, or
+  `bio_process()`; and
+- a dict with `RRI` (milliseconds) and `RRI_Time` (seconds).
 
-**Returns:**
-- DataFrame with HRV indices from all domains:
-  - Time domain metrics
-  - Frequency domain power spectra
-  - Nonlinear complexity measures
+Always pass the sampling rate of the continuous signal in which peak indices were
+defined.
 
-**This is a convenience wrapper** that combines:
-- `hrv_time()`
-- `hrv_frequency()`
-- `hrv_nonlinear()`
-
-## Time Domain Analysis
-
-### hrv_time()
-
-Compute time-domain HRV metrics based on inter-beat intervals (IBIs).
+## Current functions and schemas
 
 ```python
-hrv_time = nk.hrv_time(peaks, sampling_rate=1000)
+time = nk.hrv_time(peaks, sampling_rate=250)
+frequency = nk.hrv_frequency(peaks, sampling_rate=250)
+nonlinear = nk.hrv_nonlinear(peaks, sampling_rate=250)
+all_domains = nk.hrv(peaks, sampling_rate=250)
 ```
 
-### Key Metrics
+All four return one-row DataFrames. `hrv()` concatenates the available domains and can
+append RSA when its input contains processed respiration data. Columns vary with data
+length, kwargs, available modalities, and release.
 
-**Basic interval statistics:**
-- `HRV_MeanNN`: Mean of NN intervals (ms)
-- `HRV_SDNN`: Standard deviation of NN intervals (ms)
-  - Reflects total HRV, captures all cyclic components
-  - Requires ≥5 min for short-term, ≥24 hr for long-term
-- `HRV_RMSSD`: Root mean square of successive differences (ms)
-  - High-frequency variability, reflects parasympathetic activity
-  - More stable with shorter recordings
+Pinned 0.2.13 observations:
 
-**Successive difference measures:**
-- `HRV_SDSD`: Standard deviation of successive differences (ms)
-  - Similar to RMSSD, correlated with parasympathetic activity
-- `HRV_pNN50`: Percentage of successive NN intervals differing >50ms
-  - Parasympathetic indicator, may be insensitive in some populations
-- `HRV_pNN20`: Percentage of successive NN intervals differing >20ms
-  - More sensitive alternative to pNN50
+- `hrv_time()` returned 25 columns, including `HRV_MeanNN`, `HRV_SDNN`,
+  `HRV_RMSSD`, `HRV_SDSD`, `HRV_CVNN`, `HRV_CVSD`, robust interval summaries,
+  `HRV_pNN50`, `HRV_pNN20`, `HRV_HTI`, and `HRV_TINN`. Long-segment indices
+  (`SDANN*`, `SDNNI*`) can be NaN when duration is insufficient.
+- `hrv_frequency()` returned exactly `HRV_ULF`, `HRV_VLF`, `HRV_LF`, `HRV_HF`,
+  `HRV_VHF`, `HRV_TP`, `HRV_LFHF`, `HRV_LFn`, `HRV_HFn`, and `HRV_LnHF` in the
+  default probe.
+- `hrv_nonlinear()` returned Poincaré, asymmetry, fragmentation, DFA/MFDFA,
+  entropy/fractal, Lempel–Ziv, and symbolic-dynamics columns. Stable 0.2.13 added
+  default `HRV_Symbolic_EqualProb4_*` features.
 
-**Range measures:**
-- `HRV_MinNN`, `HRV_MaxNN`: Minimum and maximum NN intervals (ms)
-- `HRV_CVNN`: Coefficient of variation (SDNN/MeanNN)
-  - Normalized measure, useful for cross-subject comparison
-- `HRV_CVSD`: Coefficient of variation of successive differences (RMSSD/MeanNN)
+Do not hard-code a “complete” HRV column list. Persist `list(result.columns)` and map
+only prespecified outputs.
 
-**Median-based statistics:**
-- `HRV_MedianNN`: Median NN interval (ms)
-  - Robust to outliers
-- `HRV_MadNN`: Median absolute deviation of NN intervals
-  - Robust dispersion measure
-- `HRV_MCVNN`: Median-based coefficient of variation
+## Units and interval helpers
 
-**Advanced time-domain:**
-- `HRV_IQRNN`: Interquartile range of NN intervals
-- `HRV_pNN10`, `HRV_pNN25`, `HRV_pNN40`: Additional percentile thresholds
-- `HRV_TINN`: Triangular interpolation of NN interval histogram
-- `HRV_HTI`: HRV triangular index (total NN intervals / histogram height)
-
-### Recording Duration Requirements
-- **Ultra-short (< 5 min)**: RMSSD, pNN50 most reliable
-- **Short-term (5 min)**: Standard for clinical use, all time-domain valid
-- **Long-term (24 hr)**: Required for SDNN interpretation, captures circadian rhythms
-
-## Frequency Domain Analysis
-
-### hrv_frequency()
-
-Analyze HRV power across frequency bands using spectral analysis.
+Time-domain metrics are milliseconds where applicable. For absolute band power in ms²,
+use `hrv_frequency(..., normalize=False)`. The default `normalize=True` divides the
+PSD by its maximum before band integration, so those powers must not be labeled ms².
 
 ```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, ulf=(0, 0.0033), vlf=(0.0033, 0.04),
-                            lf=(0.04, 0.15), hf=(0.15, 0.4), vhf=(0.4, 0.5),
-                            psd_method='welch', normalize=True)
+processed_rri, processed_time, interpolation_rate = nk.intervals_process(
+    rri_ms,
+    intervals_time=time_s,
+    interpolate=True,
+    interpolation_rate=4,
+    detrend=None,
+)
+peaks = nk.intervals_to_peaks(rri_ms, sampling_rate=1000)
 ```
 
-### Frequency Bands
+`intervals_process()` returns three objects: intervals in milliseconds, timestamps in
+seconds, and interpolation rate. `intervals_to_peaks()` returns integer peak indices,
+with a constructed first peak. Verify external-device interval definitions and dropped
+beats before conversion.
 
-**Ultra-Low Frequency (ULF): 0-0.0033 Hz**
-- Requires ≥24 hour recording
-- Circadian rhythms, thermoregulation
-- Slow metabolic processes
+## Recording duration
 
-**Very-Low Frequency (VLF): 0.0033-0.04 Hz**
-- Requires ≥5 minute recording
-- Thermoregulation, hormonal fluctuations
-- Renin-angiotensin system, peripheral vasomotor activity
+Duration requirements are metric-, population-, protocol-, and estimator-specific.
+Use these conservative planning principles:
 
-**Low Frequency (LF): 0.04-0.15 Hz**
-- Mixed sympathetic and parasympathetic influences
-- Baroreceptor reflex activity
-- Blood pressure regulation (10-second rhythm)
+- Five minutes is the conventional standardized short-term HRV window.
+- RMSSD can be computed on shorter windows, but ultra-short estimates require
+  endpoint- and population-specific reliability/validity evidence.
+- A spectral segment should contain enough cycles of the lowest frequency interpreted.
+  Five minutes is a practical reference for conventional LF/HF short-term analysis.
+- Do not interpret ULF from a short recording; it is conventionally associated with
+  long, often 24-hour recordings.
+- VLF physiological interpretation in short recordings is uncertain.
+- Entropy, DFA, MFDFA, correlation dimension, and RQA need enough beats for stable
+  estimation; defaults returning a number do not establish adequacy.
 
-**High Frequency (HF): 0.15-0.4 Hz**
-- Parasympathetic (vagal) activity
-- Respiratory sinus arrhythmia
-- Synchronized with breathing (respiratory rate range)
+Do not compare metrics estimated from unequal durations without a validated strategy.
+Report exact usable duration and beat count after exclusions, not nominal acquisition
+duration.
 
-**Very-High Frequency (VHF): 0.4-0.5 Hz**
-- Rarely used, may reflect measurement noise
-- Requires careful interpretation
+## Ectopy and artifact policy
 
-### Key Metrics
+1. Inspect ECG/PPG quality and peak overlays.
+2. Review the tachogram and interval histogram.
+3. Identify non-sinus beats separately from detector errors when possible.
+4. Report raw and corrected beat counts and percentage.
+5. Limit interpolation/correction according to a prespecified exclusion rule.
+6. Repeat key analyses under plausible correction choices.
 
-**Absolute power (ms²):**
-- `HRV_ULF`, `HRV_VLF`, `HRV_LF`, `HRV_HF`, `HRV_VHF`: Power in each band
-- `HRV_TP`: Total power (variance of NN intervals)
-- `HRV_LFHF`: LF/HF ratio (sympathovagal balance)
+`ecg_process()` requests artifact correction automatically in 0.2.13. If that is not
+the planned policy, run `ecg_clean()` and `ecg_peaks()` explicitly.
 
-**Normalized power:**
-- `HRV_LFn`: LF power / (LF + HF) - normalized LF
-- `HRV_HFn`: HF power / (LF + HF) - normalized HF
-- `HRV_LnHF`: Natural logarithm of HF (log-normal distribution)
+Heavy correction can manufacture smooth HRV. A segment with excessive ectopy,
+detachment, or motion may need exclusion rather than interpolation.
 
-**Peak frequencies:**
-- `HRV_LFpeak`, `HRV_HFpeak`: Frequency of maximum power in each band
-- Useful for identifying dominant oscillations
+## Frequency domain
 
-### Power Spectral Density Methods
+Stable signature:
 
-**Welch's method (default):**
-```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='welch')
+```text
+hrv_frequency(
+  peaks, sampling_rate=1000,
+  ulf=(0, 0.0033), vlf=(0.0033, 0.04),
+  lf=(0.04, 0.15), hf=(0.15, 0.4), vhf=(0.4, 0.5),
+  psd_method="welch", normalize=True, interpolation_rate=100, ...
+)
 ```
-- Windowed FFT with overlap
-- Smoother spectra, reduced variance
-- Good for standard HRV analysis
 
-**Lomb-Scargle periodogram:**
-```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='lomb')
+Set `interpolation_rate=4` to approximate a common Kubios interpolation choice; set it
+to `None` for already-interpolated intervals or Lomb–Scargle. Record detrending,
+interpolation, PSD method, window/order, frequency bands, and normalization.
+
+Stable `HRV_LFn` and `HRV_HFn` divide LF and HF by `HRV_TP`, which sums all five
+requested bands (ULF, VLF, LF, HF, VHF). They are not the conventional LF/(LF+HF) and
+HF/(LF+HF) definitions. Report the exact denominator rather than importing a textbook
+interpretation from the column names. Zero/NaN band power does not prove absent
+physiological modulation.
+
+The bundled pipeline deliberately uses `normalize=False`, Welch, and 4 Hz
+interpolation, records these choices, and gates frequency analysis on the span
+between first and last corrected peaks. This span still does not certify that every
+interval is usable: inspect exclusions, non-sinus beats, and correction burden.
+
+Do **not** interpret `HRV_LFHF` as a direct “sympathovagal balance.” LF contains mixed
+influences; HF depends on breathing frequency/depth and can miss respiratory variation
+outside the default 0.15–0.4 Hz band.
+
+## PPG-derived variability
+
+PPG pulse timing includes pre-ejection and pulse-transit effects, and varies with site,
+vascular state, posture, temperature, motion, contact pressure, and sensor design.
+Label results PRV/PPG-derived HRV and validate against synchronized ECG for the endpoint,
+conditions, sites, and population. Agreement at rest does not imply agreement during
+exercise or stress.
+
+## Respiratory sinus arrhythmia
+
+Stable signature:
+
+```text
+hrv_rsa(
+  ecg_signals, rsp_signals=None, rpeaks=None,
+  sampling_rate=1000, continuous=False,
+  window=None, window_number=None
+)
 ```
-- Handles unevenly sampled data
-- No interpolation required
-- Better for noisy or artifact-containing data
 
-**Multitaper method:**
-```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='multitapers')
-```
-- Superior spectral estimation
-- Reduced variance with minimal bias
-- Computationally intensive
-
-**Burg autoregressive:**
-```python
-hrv_freq = nk.hrv_frequency(peaks, sampling_rate=1000, psd_method='burg', order=16)
-```
-- Parametric method
-- Smooth spectra with well-defined peaks
-- Requires order selection
-
-### Interpretation Guidelines
-
-**LF/HF Ratio:**
-- Traditionally interpreted as sympathovagal balance
-- **Caution**: Recent evidence questions this interpretation
-- LF reflects both sympathetic and parasympathetic influences
-- Context-dependent: controlled respiration affects HF
-
-**HF Power:**
-- Reliable parasympathetic indicator
-- Increases with: rest, relaxation, deep breathing
-- Decreases with: stress, anxiety, sympathetic activation
-
-**Recording Requirements:**
-- **Minimum**: 60 seconds for LF/HF estimation
-- **Recommended**: 2-5 minutes for short-term HRV
-- **Optimal**: 5 minutes per Task Force standards
-- **Long-term**: 24 hours for ULF analysis
-
-## Nonlinear Domain Analysis
-
-### hrv_nonlinear()
-
-Compute complexity, entropy, and fractal measures reflecting autonomic dynamics.
+Use synchronized processed ECG and respiration DataFrames:
 
 ```python
-hrv_nonlinear = nk.hrv_nonlinear(peaks, sampling_rate=1000)
+rsa = nk.hrv_rsa(
+    ecg_signals,
+    rsp_signals,
+    rpeaks=ecg_info,
+    sampling_rate=100,
+    continuous=False,
+)
 ```
 
-### Poincaré Plot Indices
-
-**Poincaré plot**: NN(i+1) vs NN(i) scatter plot geometry
-
-- `HRV_SD1`: Standard deviation perpendicular to line of identity (ms)
-  - Short-term HRV, fast beat-to-beat variability
-  - Reflects parasympathetic activity
-  - Mathematically related to RMSSD: SD1 ≈ RMSSD/√2
-
-- `HRV_SD2`: Standard deviation along line of identity (ms)
-  - Long-term HRV, slow variability
-  - Reflects sympathetic and parasympathetic activity
-  - Related to SDNN
-
-- `HRV_SD1SD2`: Ratio SD1/SD2
-  - Balance between short and long-term variability
-  - <1: predominantly long-term variability
-
-- `HRV_SD2SD1`: Ratio SD2/SD1
-  - Inverse of SD1SD2
-
-- `HRV_S`: Area of ellipse (π × SD1 × SD2)
-  - Total HRV magnitude
-
-- `HRV_CSI`: Cardiac Sympathetic Index (SD2/SD1)
-  - Proposed sympathetic indicator
-
-- `HRV_CVI`: Cardiac Vagal Index (log10(SD1 × SD2))
-  - Proposed parasympathetic indicator
-
-- `HRV_CSI_Modified`: Modified CSI (SD2²/(SD1 × SD2))
-
-### Heart Rate Asymmetry
-
-Analyzes whether heart rate accelerations and decelerations contribute differently to HRV.
-
-- `HRV_GI`: Guzik's Index - asymmetry of short-term variability
-- `HRV_SI`: Slope Index - asymmetry of long-term variability
-- `HRV_AI`: Area Index - overall asymmetry
-- `HRV_PI`: Porta's Index - percentage of decelerations
-- `HRV_C1d`, `HRV_C2d`: Deceleration contributions
-- `HRV_C1a`, `HRV_C2a`: Acceleration contributions
-- `HRV_SD1d`, `HRV_SD1a`: Poincaré SD1 for decelerations/accelerations
-- `HRV_SD2d`, `HRV_SD2a`: Poincaré SD2 for decelerations/accelerations
-
-**Interpretation:**
-- Healthy individuals: asymmetry present (more/larger decelerations)
-- Clinical populations: reduced asymmetry
-- Reflects differential autonomic control of acceleration vs. deceleration
-
-### Entropy Measures
-
-**Approximate Entropy (ApEn):**
-- `HRV_ApEn`: Regularity measure, lower = more regular/predictable
-- Sensitive to data length, order m, tolerance r
-
-**Sample Entropy (SampEn):**
-- `HRV_SampEn`: Improved ApEn, less dependent on data length
-- More consistent with short recordings
-- Lower values = more regular patterns
-
-**Multiscale Entropy (MSE):**
-- `HRV_MSE`: Complexity across multiple time scales
-- Distinguishes true complexity from randomness
-
-**Fuzzy Entropy:**
-- `HRV_FuzzyEn`: Fuzzy membership functions for pattern matching
-- More stable with short data
-
-**Shannon Entropy:**
-- `HRV_ShanEn`: Information-theoretic randomness measure
-
-### Fractal Measures
-
-**Detrended Fluctuation Analysis (DFA):**
-- `HRV_DFA_alpha1`: Short-term fractal scaling exponent (4-11 beats)
-  - α1 > 1: correlations, reduced in heart disease
-  - α1 ≈ 1: pink noise, healthy
-  - α1 < 0.5: anti-correlations
-
-- `HRV_DFA_alpha2`: Long-term fractal scaling exponent (>11 beats)
-  - Reflects long-range correlations
-
-- `HRV_DFA_alpha1alpha2`: Ratio α1/α2
-
-**Correlation Dimension:**
-- `HRV_CorDim`: Dimensionality of attractor in phase space
-- Indicates system complexity
-
-**Higuchi Fractal Dimension:**
-- `HRV_HFD`: Complexity and self-similarity
-- Higher values = more complex, irregular
-
-**Petrosian Fractal Dimension:**
-- `HRV_PFD`: Alternative complexity measure
-- Computationally efficient
-
-**Katz Fractal Dimension:**
-- `HRV_KFD`: Waveform complexity
-
-### Heart Rate Fragmentation
-
-Quantifies abnormal short-term fluctuations reflecting autonomic dysregulation.
-
-- `HRV_PIP`: Percentage of inflection points
-  - Normal: ~50%, Fragmented: >70%
-- `HRV_IALS`: Inverse average length of acceleration/deceleration segments
-- `HRV_PSS`: Percentage of short segments (<3 beats)
-- `HRV_PAS`: Percentage of NN intervals in alternation segments
-
-**Clinical relevance:**
-- Increased fragmentation associated with cardiovascular risk
-- Independent predictor beyond traditional HRV metrics
-
-### Other Nonlinear Metrics
-
-- `HRV_Hurst`: Hurst exponent (long-range dependence)
-- `HRV_LZC`: Lempel-Ziv complexity (algorithmic complexity)
-- `HRV_MFDFA`: Multifractal DFA indices
-
-## Specialized HRV Functions
-
-### hrv_rsa()
-
-Respiratory Sinus Arrhythmia - heart rate modulation by breathing.
-
-```python
-rsa = nk.hrv_rsa(peaks, rsp_signal, sampling_rate=1000, method='porges1980')
-```
-
-**Methods:**
-- `'porges1980'`: Porges-Bohrer method (band-pass filtered HR around breathing frequency)
-- `'harrison2021'`: Peak-to-trough RSA (max-min HR per breath cycle)
-
-**Requirements:**
-- Both ECG and respiratory signals
-- Synchronized timing
-- At least several breath cycles
-
-**Returns:**
-- `RSA`: RSA magnitude (beats/min or similar units depending on method)
-
-### hrv_rqa()
-
-Recurrence Quantification Analysis - nonlinear dynamics from phase space reconstruction.
-
-```python
-rqa = nk.hrv_rqa(peaks, sampling_rate=1000)
-```
-
-**Metrics:**
-- `RQA_RR`: Recurrence rate - system predictability
-- `RQA_DET`: Determinism - percentage of recurrent points forming lines
-- `RQA_LMean`, `RQA_LMax`: Average and maximum diagonal line length
-- `RQA_ENTR`: Shannon entropy of line lengths - complexity
-- `RQA_LAM`: Laminarity - system trapped in specific states
-- `RQA_TT`: Trapping time - duration in laminar states
-
-**Use case:**
-- Detect transitions in physiological states
-- Assess system determinism vs. stochasticity
-
-## Interval Processing
-
-### intervals_process()
-
-Preprocess RR-intervals before HRV analysis.
-
-```python
-processed_intervals = nk.intervals_process(rr_intervals, interpolate=False,
-                                           interpolate_sampling_rate=1000)
-```
-
-**Operations:**
-- Removes physiologically implausible intervals
-- Optional: interpolates to regular sampling
-- Optional: detrending to remove slow trends
-
-**Use case:**
-- When working with pre-extracted RR intervals
-- Cleaning intervals from external devices
-- Preparing data for frequency-domain analysis
-
-### intervals_to_peaks()
-
-Convert interval data (RR, NN) to peak indices for HRV analysis.
-
-```python
-peaks_dict = nk.intervals_to_peaks(rr_intervals, sampling_rate=1000)
-```
-
-**Use case:**
-- Import data from external HRV devices
-- Work with interval data from commercial systems
-- Convert between interval and peak representations
-
-## Practical Considerations
-
-### Minimum Recording Duration
-
-| Analysis | Minimum Duration | Optimal Duration |
-|----------|-----------------|------------------|
-| RMSSD, pNN50 | 30 sec | 5 min |
-| SDNN | 5 min | 5 min (short), 24 hr (long) |
-| LF, HF power | 2 min | 5 min |
-| VLF power | 5 min | 10+ min |
-| ULF power | 24 hr | 24 hr |
-| Nonlinear (ApEn, SampEn) | 100-300 beats | 500+ beats |
-| DFA | 300 beats | 1000+ beats |
-
-### Artifact Management
-
-**Preprocessing:**
-```python
-# Detect R-peaks with artifact correction
-peaks, info = nk.ecg_peaks(cleaned_ecg, sampling_rate=1000, correct_artifacts=True)
-
-# Or manually process intervals
-processed = nk.intervals_process(rr_intervals, interpolate=False)
-```
-
-**Quality checks:**
-- Visual inspection of tachogram (NN intervals over time)
-- Identify physiologically implausible intervals (<300 ms or >2000 ms)
-- Check for sudden jumps or missing beats
-- Assess signal quality before analysis
-
-### Standardization and Comparison
-
-**Task Force Standards (1996):**
-- 5-minute recordings for short-term
-- Supine, controlled breathing recommended
-- 24-hour for long-term assessment
-
-**Normalization:**
-- Consider age, sex, fitness level effects
-- Time of day and circadian effects
-- Body position (supine vs. standing)
-- Breathing rate and depth
-
-**Inter-individual variability:**
-- HRV has large between-subject variation
-- Within-subject changes more interpretable
-- Baseline comparisons preferred
-
-## Clinical and Research Applications
-
-**Cardiovascular health:**
-- Reduced HRV: risk factor for cardiac events
-- SDNN, DFA alpha1: prognostic indicators
-- Post-MI monitoring
-
-**Psychological state:**
-- Anxiety/stress: reduced HRV (especially RMSSD, HF)
-- Depression: altered autonomic balance
-- PTSD: fragmentation indices
-
-**Athletic performance:**
-- Training load monitoring via daily RMSSD
-- Overtraining: reduced HRV
-- Recovery assessment
-
-**Neuroscience:**
-- Emotion regulation studies
-- Cognitive load assessment
-- Brain-heart axis research
-
-**Aging:**
-- HRV decreases with age
-- Complexity measures decline
-- Baseline reference needed
-
-## References
-
-- Task Force of the European Society of Cardiology. (1996). Heart rate variability: standards of measurement, physiological interpretation and clinical use. Circulation, 93(5), 1043-1065.
-- Shaffer, F., & Ginsberg, J. P. (2017). An overview of heart rate variability metrics and norms. Frontiers in public health, 5, 258.
-- Peng, C. K., Havlin, S., Stanley, H. E., & Goldberger, A. L. (1995). Quantification of scaling exponents and crossover phenomena in nonstationary heartbeat time series. Chaos, 5(1), 82-87.
-- Guzik, P., Piskorski, J., Krauze, T., Wykretowicz, A., & Wysocki, H. (2006). Heart rate asymmetry by Poincaré plots of RR intervals. Biomedizinische Technik/Biomedical Engineering, 51(4), 272-275.
-- Costa, M., Goldberger, A. L., & Peng, C. K. (2005). Multiscale entropy analysis of biological signals. Physical review E, 71(2), 021906.
+The pinned summary returned a dict with P2T and Gates statistics, including
+`RSA_P2T_Mean`, `RSA_P2T_SD`, `RSA_P2T_NoRSA`, `RSA_PorgesBohrer`, and Gates
+mean/SD/log fields. `continuous=True` returned a same-length DataFrame with
+`RSA_P2T` and `RSA_Gates`.
+
+Requirements:
+
+- shared clock, sampling grid, and defined lag/drift policy;
+- valid R peaks and respiration cycles;
+- enough cycles/windows for the chosen method;
+- measured respiration rate and context; and
+- reporting of P2T/Gates method and all window parameters.
+
+RSA/HF-HRV is often related to cardiac vagal modulation but is not a direct,
+context-free vagal-tone assay. Respiration, activity, beta-adrenergic influence, age,
+posture, and within- versus between-person contrasts can change interpretation.
+
+## Analysis/report checklist
+
+- package version and observed output schema;
+- ECG/PPG source, sensor/site, sampling, clock, units, and raw-data access;
+- duration, usable duration, beat count, and exclusions;
+- peak detector, quality method, ectopy/artifact criteria, and correction percentage;
+- RRI/NN/PRV terminology;
+- PSD/interpolation/detrending/bands/normalization;
+- respiration measurement and rate/depth context;
+- prespecified metrics and multiplicity control; and
+- no diagnostic, monitoring, or medical-device claim without separate validation.
+
+## Sources checked 2026-10-01
+
+- [Official HRV API](https://neuropsychology.github.io/NeuroKit/functions/hrv.html)
+- [Official HRV example](https://neuropsychology.github.io/NeuroKit/examples/ecg_hrv/ecg_hrv.html)
+- [Pham et al. (2021), NeuroKit2 HRV review/tutorial](https://doi.org/10.3390/s21123998)
+- [Quigley et al. (2024), current SPR HR/HRV guidelines](https://doi.org/10.1111/psyp.14604)
+- [ESC/NASPE Task Force (1996)](https://pubmed.ncbi.nlm.nih.gov/8598068/)
+- [Berntson et al. (1997), interpretive caveats](https://doi.org/10.1111/j.1469-8986.1997.tb02140.x)
+- [Laborde et al. (2017), planning/reporting](https://doi.org/10.3389/fpsyg.2017.00213)
+- [Grossman & Taylor (2007), RSA caveats](https://doi.org/10.1016/j.biopsycho.2005.11.014)
+
+- [Stable `hrv_frequency.py` implementation](https://github.com/neuropsychology/NeuroKit/blob/v0.2.13/neurokit2/hrv/hrv_frequency.py)

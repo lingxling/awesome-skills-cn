@@ -1,47 +1,47 @@
 ---
 name: Xero Automation
-description: "Xero Automation: manage invoices, contacts, payments, bank transactions, and accounts in Xero for cloud-based bookkeeping"
+description: "Xero Automation：管理 Xero 中的发票、联系人、付款、银行交易和账户，实现云端记账"
 requires:
   mcp: [rube]
 ---
 
 # Xero Automation
 
-Automate Xero accounting operations including managing invoices, contacts, payments, bank transactions, and chart of accounts for small business bookkeeping.
+自动化 Xero 会计操作，包括管理发票、联系人、付款、银行交易和会计科目表，服务于小型企业记账。
 
-**Toolkit docs:** [composio.dev/toolkits/xero](https://composio.dev/toolkits/xero)
+**工具包文档：** [composio.dev/toolkits/xero](https://composio.dev/toolkits/xero)
 
 ---
 
 ## 设置
 
-This skill requires the **Rube MCP server** connected at `https://rube.app/mcp`.
+此技能需要连接到 `https://rube.app/mcp` 的 **Rube MCP 服务器**。
 
-Before executing any tools, ensure an active connection exists for the `xero` toolkit. If no connection is active, initiate one via `RUBE_MANAGE_CONNECTIONS`.
+在执行任何工具之前，请确保 `xero` 工具包存在有效连接。如果没有活动连接，请通过 `RUBE_MANAGE_CONNECTIONS` 发起一个。
 
-**Multi-tenant:** If you manage multiple Xero organizations, first call `XERO_GET_CONNECTIONS` to list active tenants and obtain the correct `tenant_id` for subsequent calls.
+**多租户：** 如果你管理多个 Xero 组织，请先调用 `XERO_GET_CONNECTIONS` 列出活动租户，获取后续调用所需的正确 `tenant_id`。
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. List and Filter Invoices
+### 1. 列出和筛选发票
 
-Retrieve invoices with filtering by status, contact, date range, and pagination.
+按状态、联系人、日期范围检索发票，并支持分页。
 
-**Tool:** `XERO_LIST_INVOICES`
+**工具：** `XERO_LIST_INVOICES`
 
-**Key Parameters:**
-- `Statuses` -- Comma-separated status filter: `"DRAFT"`, `"SUBMITTED"`, `"AUTHORISED"`, `"PAID"`
-- `ContactIDs` -- Comma-separated Contact IDs to filter by
-- `InvoiceIDs` -- Comma-separated Invoice IDs to filter by
-- `where` -- OData-style filter, e.g., `"Status==\"AUTHORISED\" AND Total>100"`
-- `order` -- Sort expression, e.g., `"Date DESC"`, `"InvoiceNumber ASC"`
-- `page` -- Page number for pagination
-- `If-Modified-Since` -- UTC timestamp; returns only invoices modified since this date
-- `tenant_id` -- Xero organization ID (uses first tenant if omitted)
+**关键参数：**
+- `Statuses` —— 以逗号分隔的状态筛选：`"DRAFT"`、`"SUBMITTED"`、`"AUTHORISED"`、`"PAID"`
+- `ContactIDs` —— 以逗号分隔的联系人 ID，用于筛选
+- `InvoiceIDs` —— 以逗号分隔的发票 ID，用于筛选
+- `where` —— OData 风格的筛选器，例如 `"Status==\"AUTHORISED\" AND Total>100"`
+- `order` —— 排序表达式，例如 `"Date DESC"`、`"InvoiceNumber ASC"`
+- `page` —— 分页页码
+- `If-Modified-Since` —— UTC 时间戳；仅返回此日期之后被修改的发票
+- `tenant_id` —— Xero 组织 ID（省略时使用第一个租户）
 
-**Example:**
+**示例：**
 ```
 Tool: XERO_LIST_INVOICES
 Arguments:
@@ -52,22 +52,22 @@ Arguments:
 
 ---
 
-### 2. Manage Contacts
+### 2. 管理联系人
 
-Retrieve and search contacts for use in invoices and transactions.
+检索和搜索用于发票和交易的联系人。
 
-**Tool:** `XERO_GET_CONTACTS`
+**工具：** `XERO_GET_CONTACTS`
 
-**Key Parameters:**
-- `searchTerm` -- Case-insensitive search across Name, FirstName, LastName, Email, ContactNumber
-- `ContactID` -- Fetch a single contact by ID
-- `where` -- OData filter, e.g., `"ContactStatus==\"ACTIVE\""`
-- `page`, `pageSize` -- Pagination controls
-- `order` -- Sort, e.g., `"UpdatedDateUTC DESC"`
-- `includeArchived` -- Include archived contacts when `true`
-- `summaryOnly` -- Lightweight response when `true`
+**关键参数：**
+- `searchTerm` —— 跨 Name、FirstName、LastName、Email、ContactNumber 的不区分大小写搜索
+- `ContactID` —— 按 ID 获取单个联系人
+- `where` —— OData 筛选器，例如 `"ContactStatus==\"ACTIVE\""`
+- `page`、`pageSize` —— 分页控制
+- `order` —— 排序，例如 `"UpdatedDateUTC DESC"`
+- `includeArchived` —— 设为 `true` 时包含已归档的联系人
+- `summaryOnly` —— 设为 `true` 时返回轻量级响应
 
-**Example:**
+**示例：**
 ```
 Tool: XERO_GET_CONTACTS
 Arguments:
@@ -76,25 +76,25 @@ Arguments:
   pageSize: 25
 ```
 
-> **Note:** On high-volume accounts, some `where` filters (e.g., `IsCustomer`, `IsSupplier`) may be rejected by Xero. Fall back to `searchTerm` or pagination.
+> **注意：** 在高交易量账户中，某些 `where` 筛选条件（例如 `IsCustomer`、`IsSupplier`）可能会被 Xero 拒绝。此时应回退到使用 `searchTerm` 或分页。
 
 ---
 
-### 3. Create Payments
+### 3. 创建付款
 
-Link an invoice to a bank account by creating a payment record.
+通过创建付款记录，将发票与银行账户关联起来。
 
-**Tool:** `XERO_CREATE_PAYMENT`
+**工具：** `XERO_CREATE_PAYMENT`
 
-**Key Parameters:**
-- `InvoiceID` (required) -- Xero Invoice ID the payment applies to
-- `AccountID` (required) -- Bank account ID for the payment
-- `Amount` (required) -- Payment amount (number)
-- `Date` -- Payment date in `YYYY-MM-DD` format
-- `Reference` -- Payment reference or description
-- `CurrencyRate` -- Exchange rate for foreign currency payments
+**关键参数：**
+- `InvoiceID`（必填）—— 付款所适用的 Xero 发票 ID
+- `AccountID`（必填）—— 付款所使用的银行账户 ID
+- `Amount`（必填）—— 付款金额（数字）
+- `Date` —— 付款日期，格式为 `YYYY-MM-DD`
+- `Reference` —— 付款参考或描述
+- `CurrencyRate` —— 外币付款的汇率
 
-**Example:**
+**示例：**
 ```
 Tool: XERO_CREATE_PAYMENT
 Arguments:
@@ -107,28 +107,28 @@ Arguments:
 
 ---
 
-### 4. Create Bank Transactions
+### 4. 创建银行交易
 
-Record spend (payments out) or receive (money in) bank transactions.
+记录支出（付款支出）或收入（资金进账）银行交易。
 
-**Tool:** `XERO_CREATE_BANK_TRANSACTION`
+**工具：** `XERO_CREATE_BANK_TRANSACTION`
 
-**Key Parameters:**
-- `Type` (required) -- `"SPEND"` (payment out) or `"RECEIVE"` (money in)
-- `ContactID` (required) -- Xero Contact ID
-- `BankAccountCode` (required) -- Bank account code from chart of accounts
-- `LineItems` (required) -- Array of line items, each with:
-  - `Description` (required) -- Line item description
-  - `UnitAmount` (required) -- Unit price
-  - `AccountCode` (required) -- Account code for categorization
-  - `Quantity` -- Quantity (default 1)
-  - `TaxType` -- Tax type: `"OUTPUT"`, `"INPUT"`, `"NONE"`
-- `Date` -- Transaction date in `YYYY-MM-DD` format
-- `Reference` -- Transaction reference
-- `Status` -- `"AUTHORISED"` or `"DELETED"`
-- `CurrencyCode` -- e.g., `"USD"`, `"EUR"`
+**关键参数：**
+- `Type`（必填）—— `"SPEND"`（付款支出）或 `"RECEIVE"`（资金进账）
+- `ContactID`（必填）—— Xero 联系人 ID
+- `BankAccountCode`（必填）—— 会计科目表中的银行账户代码
+- `LineItems`（必填）—— 行项目数组，每个包含：
+  - `Description`（必填）—— 行项目描述
+  - `UnitAmount`（必填）—— 单价
+  - `AccountCode`（必填）—— 用于分类的账户代码
+  - `Quantity` —— 数量（默认 1）
+  - `TaxType` —— 税种：`"OUTPUT"`、`"INPUT"`、`"NONE"`
+- `Date` —— 交易日期，格式为 `YYYY-MM-DD`
+- `Reference` —— 交易参考
+- `Status` —— `"AUTHORISED"` 或 `"DELETED"`
+- `CurrencyCode` —— 例如 `"USD"`、`"EUR"`
 
-**Example:**
+**示例：**
 ```
 Tool: XERO_CREATE_BANK_TRANSACTION
 Arguments:
@@ -150,58 +150,58 @@ Arguments:
 
 ---
 
-### 5. List Payments and Bank Transactions
+### 5. 列出付款和银行交易
 
-Review existing payments and bank transaction history.
+查看现有的付款和银行交易历史。
 
-**Tools:**
-- `XERO_LIST_PAYMENTS` -- List payments linking invoices to bank transactions
-- `XERO_LIST_BANK_TRANSACTIONS` -- List spend/receive bank transactions
+**工具：**
+- `XERO_LIST_PAYMENTS` —— 列出将发票与银行交易关联起来的付款
+- `XERO_LIST_BANK_TRANSACTIONS` —— 列出支出/收入银行交易
 
-**Common Parameters:**
-- `where` -- OData filter, e.g., `"Status==\"AUTHORISED\""`
-- `order` -- Sort expression, e.g., `"Date DESC"`
-- `page` -- Page number for pagination
-- `If-Modified-Since` -- Incremental updates since timestamp
-- `tenant_id` -- Organization ID
-
----
-
-### 6. View Chart of Accounts and 连接ions
-
-**Tools:**
-- `XERO_LIST_ACCOUNTS` -- Retrieve all account codes for categorizing transactions
-- `XERO_GET_CONNECTIONS` -- List active Xero tenant connections
-- `XERO_LIST_ATTACHMENTS` -- List attachments on an entity (invoice, contact, etc.)
+**通用参数：**
+- `where` —— OData 筛选器，例如 `"Status==\"AUTHORISED\""`
+- `order` —— 排序表达式，例如 `"Date DESC"`
+- `page` —— 分页页码
+- `If-Modified-Since` —— 自某时间戳以来的增量更新
+- `tenant_id` —— 组织 ID
 
 ---
 
-## 已知陷阱
+### 6. 查看会计科目表和连接
 
-| Pitfall | Detail |
+**工具：**
+- `XERO_LIST_ACCOUNTS` —— 检索用于分类交易的所有账户代码
+- `XERO_GET_CONNECTIONS` —— 列出活动的 Xero 租户连接
+- `XERO_LIST_ATTACHMENTS` —— 列出某个实体（发票、联系人等）上的附件
+
+---
+
+## 常见陷阱
+
+| 陷阱 | 详情 |
 |---------|--------|
-| **Multi-tenant routing** | If `tenant_id` is omitted, the first connected tenant is used. Always verify the correct tenant with `XERO_GET_CONNECTIONS` when managing multiple organizations. |
-| **High-volume filter rejection** | On large accounts, some `where` filters like `IsCustomer`/`IsSupplier` may be rejected. Fall back to `searchTerm` with pagination. |
-| **OData filter syntax** | Use double-equals (`==`) in OData filters, e.g., `Status==\"AUTHORISED\"`. Single `=` causes errors. |
-| **Pagination required** | Most list endpoints paginate results. Always check for additional pages and continue fetching until complete. |
-| **Date format** | All dates must be in `YYYY-MM-DD` format. Timestamps for `If-Modified-Since` must be full ISO 8601 UTC datetime. |
-| **Bank account codes** | `BankAccountCode` in bank transactions must match a valid code from the chart of accounts. Use `XERO_LIST_ACCOUNTS` to discover valid codes. |
+| **多租户路由** | 如果省略 `tenant_id`，则使用第一个已连接的租户。管理多个组织时，务必使用 `XERO_GET_CONNECTIONS` 验证正确的租户。 |
+| **高交易量账户的筛选拒绝** | 在大型账户中，某些 `where` 筛选条件如 `IsCustomer`/`IsSupplier` 可能会被拒绝。此时应回退到使用 `searchTerm` 配合分页。 |
+| **OData 筛选语法** | 在 OData 筛选器中使用双等号（`==`），例如 `Status==\"AUTHORISED\"`。单个 `=` 会导致错误。 |
+| **需要分页** | 大多数列表端点会对结果分页。务必检查是否存在更多页面，并持续获取直到完整。 |
+| **日期格式** | 所有日期必须为 `YYYY-MM-DD` 格式。`If-Modified-Since` 的时间戳必须是完整的 ISO 8601 UTC 日期时间。 |
+| **银行账户代码** | 银行交易中的 `BankAccountCode` 必须与会计科目表中的有效代码匹配。使用 `XERO_LIST_ACCOUNTS` 来发现有效代码。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 描述 |
 |-----------|-------------|
-| `XERO_LIST_INVOICES` | List invoices with filtering and pagination |
-| `XERO_GET_CONTACTS` | Retrieve and search contacts |
-| `XERO_CREATE_PAYMENT` | Create a payment linking invoice to bank account |
-| `XERO_CREATE_BANK_TRANSACTION` | Record a spend or receive bank transaction |
-| `XERO_LIST_PAYMENTS` | List payment records |
-| `XERO_LIST_BANK_TRANSACTIONS` | List bank transactions |
-| `XERO_LIST_ACCOUNTS` | Retrieve chart of accounts |
-| `XERO_GET_CONNECTIONS` | List active Xero tenant connections |
-| `XERO_LIST_ATTACHMENTS` | List attachments on an entity |
+| `XERO_LIST_INVOICES` | 列出发票，支持筛选和分页 |
+| `XERO_GET_CONTACTS` | 检索和搜索联系人 |
+| `XERO_CREATE_PAYMENT` | 创建将发票与银行账户关联的付款 |
+| `XERO_CREATE_BANK_TRANSACTION` | 记录支出或收入银行交易 |
+| `XERO_LIST_PAYMENTS` | 列出付款记录 |
+| `XERO_LIST_BANK_TRANSACTIONS` | 列出银行交易 |
+| `XERO_LIST_ACCOUNTS` | 检索会计科目表 |
+| `XERO_GET_CONNECTIONS` | 列出活动的 Xero 租户连接 |
+| `XERO_LIST_ATTACHMENTS` | 列出某个实体上的附件 |
 
 ---
 

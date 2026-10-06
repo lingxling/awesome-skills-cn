@@ -1,371 +1,310 @@
 ---
 name: matlab
-description: MATLAB and GNU Octave numerical computing for matrix operations, data analysis, visualization, and scientific computing. Use when writing MATLAB/Octave scripts for linear algebra, signal processing, image processing, differential equations, optimization, statistics, or creating scientific visualizations. Also use when the user needs help with MATLAB syntax, functions, or wants to convert between MATLAB and Python code. Scripts can be executed with MATLAB or the open-source GNU Octave interpreter.
-license: For MATLAB (https://www.mathworks.com/pricing-licensing.html) and for Octave (GNU General Public License version 3)
-compatibility: Requires either MATLAB or Octave to be installed for testing, but not required for just generating scripts.
-metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
+description: Builds, reviews, migrates, and plans MATLAB or GNU Octave numerical workflows. Use for arrays, tabular/time data, tests, projects, graphics, MAT files, and explicit Python interoperability.
+license: MIT
+compatibility: >-
+  Documentation is pinned where noted to proprietary MATLAB R2026a and free
+  GNU Octave 11.3.0. Bundled Python CLIs require Python 3.11+ and run locally
+  without MATLAB or Octave; optional MAT inventory uses scipy and/or h5py.
+allowed-tools: Read Write Bash Glob Python
+metadata:
+  version: "1.4"
+  skill-author: "K-Dense Inc."
+  last-reviewed: "2026-10-01"
 ---
 
-# MATLAB/Octave Scientific Computing
+# MATLAB and GNU Octave
 
-MATLAB is a numerical computing environment optimized for matrix operations and scientific computing. GNU Octave is a free, open-source alternative with high MATLAB compatibility.
+Use this skill to design or review numerical code, migrate MATLAB releases,
+prepare reproducible projects, and plan trusted execution. MATLAB and GNU
+Octave are distinct products: compatibility is partial, not a license or
+behavior guarantee.
 
-## Quick Start
+## Review scope
 
-**Running MATLAB scripts:**
+Reviewed against current MathWorks R2026b documentation and GNU Octave 11.3.0
+sources on 2026-10-01. The bundled Engine planner and MATLAB examples retain
+an explicit R2026a baseline. R2026b supports CPython 3.10-3.14; do not reuse
+the R2026a Engine package for it. MATLAB/Octave examples are illustrative and
+were not executed in this review; the Python helpers have local synthetic tests.
+This skill uses local runtime APIs, with no remote service endpoint or API key.
+
+## Product and license gate
+
+- **MATLAB R2026a is proprietary.** Do not assume MATLAB, MATLAB Online, a
+  named toolbox, MATLAB Test, MATLAB Compiler, MATLAB Coder, Parallel Computing
+  Toolbox, or an add-on is installed, licensed, or available to the user.
+- **MATLAB Runtime is not MATLAB.** It runs compatible applications produced
+  with MATLAB Compiler; it cannot run arbitrary source or host MATLAB Engine
+  for Python. Building artifacts needs the applicable licensed compiler and
+  every product used by the source.
+- **GNU Octave 11.3.0 is free software under GPLv3+.** Octave packages are not
+  MATLAB toolboxes. Similar names do not imply API, numerical, graphics, or
+  licensing equivalence.
+- Ask which runtime, release, platform, installed products, and license context
+  the user actually has. Treat availability as `unknown` until confirmed.
+
+See [Octave compatibility](references/octave-compatibility.md) and
+[execution/product boundaries](references/executing-scripts.md).
+
+## Nonnegotiable safety boundary
+
+Never run an untrusted `.m`, `.mlx`, MEX binary, MAT file, project startup or
+shutdown action, package installer, or generated artifact. Static review does
+not prove safety.
+
+Treat these as execution or code-loading surfaces:
+
+- `eval`, `evalin`, `assignin`, text-derived `feval`, `str2func`, callbacks,
+  timers, app callbacks, and dynamically modified paths;
+- `system`, `unix`, `dos`, shell escape `!`, Java, .NET, Python (`py.*`,
+  `pyrun`, `pyrunfile`), MEX, and native libraries;
+- `mex`, `codegen`, MATLAB Compiler, build tasks, package/project startup, and
+  generated code;
+- `load`, object deserialization (`loadobj`, custom serialization), function
+  handles, Java/System objects, and class code reachable from MAT files.
+
+`.mlx` is an opaque archive for this toolkit and MEX is native executable code.
+Do not use Python pickle for exchange. Inspect first, isolate when appropriate,
+obtain explicit approval, then invoke a user-confirmed executable and license.
+Bundled scripts are static or dry-run tools: none launches MATLAB, Octave,
+Python Engine, a compiler, or a subprocess.
+
+## Default workflow
+
+1. **Clarify target.** Record MATLAB release or Octave version, OS/architecture,
+   base product versus required toolboxes/packages, expected inputs/outputs,
+   numerical tolerances, and whether execution is authorized.
+2. **Inventory statically.** Scan `.m` files, opaque artifacts, project paths,
+   required products, and MAT headers before any runtime loads them.
+3. **Choose code form.** Prefer functions with an `arguments` block for
+   automation. Use scripts only for controlled orchestration and live scripts
+   for reviewed interactive narratives.
+4. **Make semantics explicit.** Record shapes, classes, units, missing-value
+   rules, indexing, implicit expansion, RNG algorithm/seed, tolerances, and
+   output formats.
+5. **Test without hidden state.** Keep fixtures synthetic, paths project-local,
+   graphics deterministic, and tests independent of base-workspace residue.
+6. **Plan execution.** Generate an argv plan, review startup/path effects and
+   licenses, and launch only after explicit approval outside these helpers.
+7. **Capture provenance.** Hash named inputs/code and record release, products,
+   RNG policy, tolerances, and command plan without dumping the environment.
+
+## Language and data checklist
+
+### Scripts, functions, and live scripts
+
+- Scripts share the caller/base workspace and leave variables behind.
+  Functions have local workspaces and explicit inputs/outputs.
+- Live scripts (`.mlx`) mix code and rich output but are not plain-text
+  review artifacts. Export reviewed code to `.m` for static inspection.
+- Avoid `clear all`, broad `addpath(genpath(...))`, dependence on `pwd`, global
+  variables, and silent name shadowing. Use project roots and `fullfile`.
+- Validate sizes, classes, and values in `arguments` blocks. Remember that
+  type declarations can convert inputs and size declarations can reshape or
+  expand compatible inputs; validators check without converting.
+- A main function file should match the main function name. Local functions
+  are private to the file; since R2024a they can appear anywhere in a script
+  outside conditional contexts.
+
+```matlab
+function y = scaleSignal(x, options)
+arguments
+    x (:,1) double {mustBeFinite}
+    options.Scale (1,1) double {mustBeFinite, mustBeNonzero} = 1
+end
+y = x .* options.Scale;
+end
+```
+
+Read [programming](references/programming.md).
+
+### Arrays, indexing, and numerics
+
+- MATLAB uses 1-based, column-major indexing. `A(i,j)`, `A(k)`, `A(:,j)`,
+  `A{...}`, and `A.(name)` have different semantics.
+- `*`, `/`, `\`, and `^` are matrix operations; dotted forms are
+  element-wise. Use `A\b`, not `inv(A)*b`.
+- After a linear solve, inspect conditioning/rank and a scale-aware residual;
+  backslash can continue after a singularity warning, and a small residual alone
+  does not establish an accurate solution. For underdetermined systems, state
+  whether minimum norm is required (`lsqminnorm`), rather than assuming `A\b`
+  returns it. See the [mldivide contract](https://www.mathworks.com/help/matlab/ref/double.mldivide.html).
+- Since R2016b, compatible dimensions expand implicitly. Assert intended shape
+  before operations that could accidentally form an outer result.
+- Preallocate when output size is known, but do not vectorize at the cost of
+  huge temporaries or unreadable code. Measure with `timeit` or the profiler.
+- Compare floating-point results with domain-chosen absolute and relative
+  tolerances, not blanket `==` or a magic multiple of `eps`.
+- Pin both random algorithm and seed. Use named `RandStream` substreams for
+  independent parallel work; do not use time-based `rng("shuffle")` for a
+  reproducibility claim.
+
+Read [arrays](references/matrices-arrays.md) and
+[mathematics](references/mathematics.md).
+
+### Tables, timetables, and missing values
+
+- A `table` has named, equal-height variables that may have different types.
+  `T(rows,vars)` returns a table; `T{rows,vars}` extracts contents; `T.Var`
+  selects one variable.
+- A `timetable` additionally has row times. Sort, validate time zones and
+  uniqueness, then use `retime`/`synchronize` intentionally.
+- Missing sentinels are type-specific: `NaN`, `NaT`, `<missing>`,
+  `<undefined>`, and empty character vectors. Integer and logical arrays have
+  no standard missing sentinel.
+- Define import options rather than relying on inference for production data.
+  Preserve units, time zones, variable names, encodings, and missing rules.
+
+Read [data import/export](references/data-import-export.md).
+
+## Graphics and export
+
+Use explicit figure/axes handles and `tiledlayout`; label units; set limits,
+color scales, font sizes, and colormaps deliberately. Prefer `exportgraphics`
+over `saveas` for publication output. In R2026a it exports raster, PDF/EPS/EMF,
+SVG, GIF, and interactive HTML; format capabilities differ. Specify
+`ContentType="vector"` for PDF/EPS/EMF; SVG is selected by its extension.
+Use `Resolution` for raster output. Review accessibility and embedded-raster behavior.
+
+Read [graphics and export](references/graphics-visualization.md).
+
+## MAT files and exchange
+
+- Version 7 is the normal `save` default; `matfile` creates 7.3 by default.
+  Versions 4/6/7/7.3 differ in types, compression, and per-variable limits.
+  Users can change the `save` default in settings, so specify `-v7` or `-v7.3`
+  explicitly in reproducible exchange workflows.
+- Version 7.3 is HDF5-based, not an arbitrary HDF5 interchange contract.
+  Partial access and chunking can help large arrays.
+- Never load an untrusted MAT file. Inventory headers/datasets first. Objects
+  can invoke class deserialization behavior; opaque/function/native content
+  requires escalation.
+- Prefer CSV/JSON/Parquet/HDF5 with a documented schema for simple exchange.
+  Do not rename pickle payloads as MAT files and do not deserialize pickle.
+
+Read [data import/export](references/data-import-export.md).
+
+## Projects, analysis, and tests
+
+- Use MATLAB Projects for controlled paths, startup/shutdown tasks,
+  dependencies, source control, and reproducible entry points. Review project
+  actions before opening an untrusted project.
+- `matlab.codetools.requiredFilesAndProducts` and Dependency Analyzer are
+  static approximations; dynamic dispatch can cause misses or false positives.
+  A required-product report does not prove a license is available.
+- Use Code Analyzer (`codeIssues`; legacy text workflows can use `checkcode`)
+  and `codeCompatibilityReport` before migration.
+- Base MATLAB includes script-, function-, and class-based
+  `matlab.unittest` workflows. Parallel runs require Parallel Computing
+  Toolbox. Dependency-based selection, richer quality dashboards, generated
+  tests, and advanced coverage/equivalence features can require MATLAB Test or
+  other products.
+- R2026a `runtests` automatically opens and later closes a project when target
+  tests belong to a project that is not already open. Account for startup and
+  shutdown actions before using this behavior.
+
+Read [programming](references/programming.md) and
+[execution/testing](references/executing-scripts.md).
+
+## Python integration, pinned to R2026a
+
+- R2026a supports 64-bit CPython 3.9-3.13 for MATLAB Interface to Python,
+  MATLAB Engine for Python, and MATLAB Compiler SDK for Python.
+- The current R2026a PyPI package reviewed here is
+  `matlabengine==26.1.12` (released 2026-05-08). It requires an installed
+  R2026a; MATLAB Runtime alone is insufficient. R2026a also ships a
+  preinstalled Engine distribution under one named `matlabroot` path.
+- Package installation does not grant MATLAB or toolbox licenses. Configure
+  one named interpreter/executable; do not print the full environment,
+  `PATH`, `PYTHONPATH`, or credentials.
+- `pyenv` controls MATLAB-to-Python interpreter selection. In-process Python
+  generally requires restarting MATLAB to switch; out-of-process Python can
+  be terminated and reconfigured.
+- Starting Engine is an explicit execution action:
+  `matlab.engine.start_matlab()` starts a MATLAB process and can check out a
+  license. Never call it merely to probe availability.
+- Verify conversion semantics for NumPy arrays, pandas DataFrames,
+  tables/timetables, strings/missing values, datetime/duration, dictionaries,
+  shape/order, and unsupported sparse/object/categorical cases.
+
+Read [Python integration](references/python-integration.md).
+
+## Local helper CLIs
+
+Every helper is network-free, bounded, symlink-rejecting, and nonexecuting.
+Run from this skill directory with Python 3.11+. Bash is allowed only to invoke
+these Python CLIs and validation commands; never use it to execute a generated
+MATLAB/Octave argv plan or untrusted artifact.
+The helpers deliberately limit identifiers to 63 characters for conservative
+portability; MATLAB itself allows up to 2048 since R2025a, subject to filesystem limits.
+
+| Helper | Purpose |
+|---|---|
+| `scripts/plan_batch_command.py` | Produce reviewed MATLAB/Octave argv; never execute |
+| `scripts/scan_m_code.py` | Scan `.m` text and flag opaque `.mlx`/MEX risks |
+| `scripts/validate_project_manifest.py` | Validate paths and declared product/license status |
+| `scripts/inventory_mat_file.py` | Header/metadata inventory; never call `loadmat` |
+| `scripts/plan_python_compatibility.py` | Check R2026a CPython/Engine compatibility |
+| `scripts/reproducibility_report.py` | Hash named local artifacts and emit a bounded report |
+| `scripts/generate_function_scaffold.py` | Dry-run or create function and unit-test scaffolds |
+
 ```bash
-# MATLAB (commercial)
-matlab -nodisplay -nosplash -r "run('script.m'); exit;"
-
-# GNU Octave (free, open-source)
-octave script.m
+python scripts/scan_m_code.py path/to/source --root path/to/project
+python scripts/plan_batch_command.py matlab script path/to/main.m --root path/to/project
+python scripts/validate_project_manifest.py project-manifest.json --root path/to/project
+python scripts/inventory_mat_file.py data.mat --root path/to/project
+python scripts/plan_python_compatibility.py --python-version 3.13
+python scripts/reproducibility_report.py --root path/to/project --file src/analyze.m
+python scripts/generate_function_scaffold.py analyzeSignal --root path/to/project
 ```
 
-**Install GNU Octave:**
-```bash
-# macOS
-brew install octave
-
-# Ubuntu/Debian
-sudo apt install octave
-
-# Windows - download from https://octave.org/download
-```
-
-## Core Capabilities
-
-### 1. Matrix Operations
-
-MATLAB operates fundamentally on matrices and arrays:
-
-```matlab
-% Create matrices
-A = [1 2 3; 4 5 6; 7 8 9];  % 3x3 matrix
-v = 1:10;                     % Row vector 1 to 10
-v = linspace(0, 1, 100);      % 100 points from 0 to 1
-
-% Special matrices
-I = eye(3);          % Identity matrix
-Z = zeros(3, 4);     % 3x4 zero matrix
-O = ones(2, 3);      % 2x3 ones matrix
-R = rand(3, 3);      % Random uniform
-N = randn(3, 3);     % Random normal
-
-% Matrix operations
-B = A';              % Transpose
-C = A * B;           % Matrix multiplication
-D = A .* B;          % Element-wise multiplication
-E = A \ b;           % Solve linear system Ax = b
-F = inv(A);          % Matrix inverse
-```
-
-For complete matrix operations, see [references/matrices-arrays.md](references/matrices-arrays.md).
-
-### 2. Linear Algebra
-
-```matlab
-% Eigenvalues and eigenvectors
-[V, D] = eig(A);     % V: eigenvectors, D: diagonal eigenvalues
-
-% Singular value decomposition
-[U, S, V] = svd(A);
-
-% Matrix decompositions
-[L, U] = lu(A);      % LU decomposition
-[Q, R] = qr(A);      % QR decomposition
-R = chol(A);         % Cholesky (symmetric positive definite)
-
-% Solve linear systems
-x = A \ b;           % Preferred method
-x = linsolve(A, b);  % With options
-x = inv(A) * b;      % Less efficient
-```
-
-For comprehensive linear algebra, see [references/mathematics.md](references/mathematics.md).
-
-### 3. Plotting and Visualization
-
-```matlab
-% 2D Plots
-x = 0:0.1:2*pi;
-y = sin(x);
-plot(x, y, 'b-', 'LineWidth', 2);
-xlabel('x'); ylabel('sin(x)');
-title('Sine Wave');
-grid on;
-
-% Multiple plots
-hold on;
-plot(x, cos(x), 'r--');
-legend('sin', 'cos');
-hold off;
-
-% 3D Surface
-[X, Y] = meshgrid(-2:0.1:2, -2:0.1:2);
-Z = X.^2 + Y.^2;
-surf(X, Y, Z);
-colorbar;
-
-% Save figures
-saveas(gcf, 'plot.png');
-print('-dpdf', 'plot.pdf');
-```
-
-For complete visualization guide, see [references/graphics-visualization.md](references/graphics-visualization.md).
-
-### 4. Data Import/Export
-
-```matlab
-% Read tabular data
-T = readtable('data.csv');
-M = readmatrix('data.csv');
-
-% Write data
-writetable(T, 'output.csv');
-writematrix(M, 'output.csv');
-
-% MAT files (MATLAB native)
-save('data.mat', 'A', 'B', 'C');  % Save variables
-load('data.mat');                   % Load all
-S = load('data.mat', 'A');         % Load specific
-
-% Images
-img = imread('image.png');
-imwrite(img, 'output.jpg');
-```
-
-For complete I/O guide, see [references/data-import-export.md](references/data-import-export.md).
-
-### 5. Control Flow and Functions
-
-```matlab
-% Conditionals
-if x > 0
-    disp('positive');
-elseif x < 0
-    disp('negative');
-else
-    disp('zero');
-end
-
-% Loops
-for i = 1:10
-    disp(i);
-end
-
-while x > 0
-    x = x - 1;
-end
-
-% Functions (in separate .m file or same file)
-function y = myfunction(x, n)
-    y = x.^n;
-end
-
-% Anonymous functions
-f = @(x) x.^2 + 2*x + 1;
-result = f(5);  % 36
-```
-
-For complete programming guide, see [references/programming.md](references/programming.md).
-
-### 6. Statistics and Data Analysis
-
-```matlab
-% Descriptive statistics
-m = mean(data);
-s = std(data);
-v = var(data);
-med = median(data);
-[minVal, minIdx] = min(data);
-[maxVal, maxIdx] = max(data);
-
-% Correlation
-R = corrcoef(X, Y);
-C = cov(X, Y);
-
-% Linear regression
-p = polyfit(x, y, 1);  % Linear fit
-y_fit = polyval(p, x);
-
-% Moving statistics
-y_smooth = movmean(y, 5);  % 5-point moving average
-```
-
-For statistics reference, see [references/mathematics.md](references/mathematics.md).
-
-### 7. Differential Equations
-
-```matlab
-% ODE solving
-% dy/dt = -2y, y(0) = 1
-f = @(t, y) -2*y;
-[t, y] = ode45(f, [0 5], 1);
-plot(t, y);
-
-% Higher-order: y'' + 2y' + y = 0
-% Convert to system: y1' = y2, y2' = -2*y2 - y1
-f = @(t, y) [y(2); -2*y(2) - y(1)];
-[t, y] = ode45(f, [0 10], [1; 0]);
-```
-
-For ODE solvers guide, see [references/mathematics.md](references/mathematics.md).
-
-### 8. Signal Processing
-
-```matlab
-% FFT
-Y = fft(signal);
-f = (0:length(Y)-1) * fs / length(Y);
-plot(f, abs(Y));
-
-% Filtering
-b = fir1(50, 0.3);           % FIR filter design
-y_filtered = filter(b, 1, signal);
-
-% Convolution
-y = conv(x, h, 'same');
-```
-
-For signal processing, see [references/mathematics.md](references/mathematics.md).
-
-## Common Patterns
-
-### Pattern 1: Data Analysis Pipeline
-
-```matlab
-% Load data
-data = readtable('experiment.csv');
-
-% Clean data
-data = rmmissing(data);  % Remove missing values
-
-% Analyze
-grouped = groupsummary(data, 'Category', 'mean', 'Value');
-
-% Visualize
-figure;
-bar(grouped.Category, grouped.mean_Value);
-xlabel('Category'); ylabel('Mean Value');
-title('Results by Category');
-
-% Save
-writetable(grouped, 'results.csv');
-saveas(gcf, 'results.png');
-```
-
-### Pattern 2: Numerical Simulation
-
-```matlab
-% Parameters
-L = 1; N = 100; T = 10; dt = 0.01;
-x = linspace(0, L, N);
-dx = x(2) - x(1);
-
-% Initial condition
-u = sin(pi * x);
-
-% Time stepping (heat equation)
-for t = 0:dt:T
-    u_new = u;
-    for i = 2:N-1
-        u_new(i) = u(i) + dt/(dx^2) * (u(i+1) - 2*u(i) + u(i-1));
-    end
-    u = u_new;
-end
-
-plot(x, u);
-```
-
-### Pattern 3: Batch Processing
-
-```matlab
-% Process multiple files
-files = dir('data/*.csv');
-results = cell(length(files), 1);
-
-for i = 1:length(files)
-    data = readtable(fullfile(files(i).folder, files(i).name));
-    results{i} = analyze(data);  % Custom analysis function
-end
-
-% Combine results
-all_results = vertcat(results{:});
-```
-
-## Reference Files
-
-- **[matrices-arrays.md](references/matrices-arrays.md)** - Matrix creation, indexing, manipulation, and operations
-- **[mathematics.md](references/mathematics.md)** - Linear algebra, calculus, ODEs, optimization, statistics
-- **[graphics-visualization.md](references/graphics-visualization.md)** - 2D/3D plotting, customization, export
-- **[data-import-export.md](references/data-import-export.md)** - File I/O, tables, data formats
-- **[programming.md](references/programming.md)** - Functions, scripts, control flow, OOP
-- **[python-integration.md](references/python-integration.md)** - Calling Python from MATLAB and vice versa
-- **[octave-compatibility.md](references/octave-compatibility.md)** - Differences between MATLAB and GNU Octave
-- **[executing-scripts.md](references/executing-scripts.md)** - Executing generated scripts and for testing
-
-## GNU Octave Compatibility
-
-GNU Octave is highly compatible with MATLAB. Most scripts work without modification. Key differences:
-
-- Use `#` or `%` for comments (MATLAB only `%`)
-- Octave allows `++`, `--`, `+=` operators
-- Some toolbox functions unavailable in Octave
-- Use `pkg load` for Octave packages
-
-For complete compatibility guide, see [references/octave-compatibility.md](references/octave-compatibility.md).
-
-## Best Practices
-
-1. **Vectorize operations** - Avoid loops when possible:
-   ```matlab
-   % Slow
-   for i = 1:1000
-       y(i) = sin(x(i));
-   end
-
-   % Fast
-   y = sin(x);
-   ```
-
-2. **Preallocate arrays** - Avoid growing arrays in loops:
-   ```matlab
-   % Slow
-   for i = 1:1000
-       y(i) = i^2;
-   end
-
-   % Fast
-   y = zeros(1, 1000);
-   for i = 1:1000
-       y(i) = i^2;
-   end
-   ```
-
-3. **Use appropriate data types** - Tables for mixed data, matrices for numeric:
-   ```matlab
-   % Numeric data
-   M = readmatrix('numbers.csv');
-
-   % Mixed data with headers
-   T = readtable('mixed.csv');
-   ```
-
-4. **Comment and document** - Use function help:
-   ```matlab
-   function y = myfunction(x)
-   %MYFUNCTION Brief description
-   %   Y = MYFUNCTION(X) detailed description
-   %
-   %   Example:
-   %       y = myfunction(5);
-       y = x.^2;
-   end
-   ```
-
-## Additional Resources
-
-- MATLAB Documentation: https://www.mathworks.com/help/matlab/
-- GNU Octave Manual: https://docs.octave.org/latest/
-- MATLAB Onramp (free course): https://www.mathworks.com/learn/tutorials/matlab-onramp.html
-- File Exchange: https://www.mathworks.com/matlabcentral/fileexchange/
+The scaffold generator defaults to dry-run; writing requires `--write` and
+refuses collisions. SciPy and h5py are optional inventory backends; if
+authorized, add exact reviewed versions to the caller's project lockfile.
+They are not required for `--help` or header-only inventory, and this skill
+does not perform package installation.
+
+## References
+
+- [Programming, workspaces, projects, analysis, tests](references/programming.md)
+- [Matrices, indexing, types, missingness, performance](references/matrices-arrays.md)
+- [Numerical methods, tolerances, RNG, toolbox boundaries](references/mathematics.md)
+- [Graphics and `exportgraphics`](references/graphics-visualization.md)
+- [Import/export, tables/timetables, MAT semantics and safety](references/data-import-export.md)
+- [MATLAB/Octave command-line execution and migration](references/executing-scripts.md)
+- [MATLAB and Python interoperability](references/python-integration.md)
+- [GNU Octave 11.3.0 compatibility differences](references/octave-compatibility.md)
+
+Bundled JSON assets are the [project manifest](assets/project_manifest_template.json),
+[reproducibility manifest](assets/reproducibility_manifest_template.json), and
+[R2026a Python table](assets/python_compatibility_r2026a.json). There is no
+`templates/` directory and no Markdown file is loaded from `assets/`;
+local-link tests enforce this package contract.
+
+## Primary sources (reviewed 2026-10-01)
+
+- [Current MATLAB documentation (R2026b)](https://www.mathworks.com/help/matlab/)
+- [MATLAB release notes](https://www.mathworks.com/help/matlab/release-notes.html)
+- [Current system requirements](https://www.mathworks.com/support/requirements/matlab-system-requirements.html)
+- [Python compatibility by release](https://www.mathworks.com/support/requirements/python-compatibility.html)
+- [MATLAB Engine installation](https://www.mathworks.com/help/matlab/matlab_external/install-the-matlab-engine-for-python.html)
+- [GNU Octave 11.3.0 release](https://octave.org/)
+- [GNU Octave current manual](https://docs.octave.org/latest/)
+
+## Citing Scientific Agent Skills
+
+This skill is part of Scientific Agent Skills by K-Dense. If it materially contributed to a
+manuscript, report, presentation, or code release, add the paper to the references or
+software section and tell the user you did so:
+
+> Kassis, T., Agarwal, V., He, Y., Patel, D., & Brueckner, A. M. (2026). Scientific Agent
+> Skills: A Library of Procedural Knowledge for Research Agents. arXiv:2609.00065.
+> https://doi.org/10.48550/arXiv.2609.00065
+
+Always cite the current version. The DOI and https://arxiv.org/abs/2609.00065 resolve to the
+latest arXiv version, so never append a version suffix such as `v1`. When network access is
+available, fetch https://arxiv.org/abs/2609.00065 (or
+http://export.arxiv.org/api/query?id_list=2609.00065) before writing the reference and take
+the author list, year, and version from that record. If the record lists a journal reference
+or publisher DOI, cite the published version instead.

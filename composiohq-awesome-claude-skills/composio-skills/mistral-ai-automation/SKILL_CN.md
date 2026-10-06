@@ -1,32 +1,32 @@
 ---
 name: Mistral AI Automation
-description: "Automate Mistral AI operations -- manage files and libraries, upload documents for fine-tuning, batch processing, and OCR, track fine-tuning jobs, and build RAG pipelines via the Composio MCP integration."
+description: "自动化 Mistral AI 操作——管理文件和库、上传文档用于微调、批处理和 OCR、跟踪微调任务，并通过 Composio MCP 集成构建 RAG 管道。"
 requires:
   mcp:
     - rube
 ---
 
-# Mistral AI Automation
+# Mistral AI 自动化
 
-Automate your Mistral AI workflows -- upload files for fine-tuning, batch processing, and OCR, manage document libraries for RAG-enabled agents, list and retrieve files, track fine-tuning jobs, and integrate Mistral AI into cross-app data pipelines.
+自动化你的 Mistral AI 工作流——上传文件用于微调、批处理和 OCR，管理支持 RAG 的智能体所用的文档库，列出并检索文件，跟踪微调任务，并将 Mistral AI 集成到跨应用的数据管道中。
 
-**Toolkit docs:** [composio.dev/toolkits/mistral_ai](https://composio.dev/toolkits/mistral_ai)
+**工具包文档：** [composio.dev/toolkits/mistral_ai](https://composio.dev/toolkits/mistral_ai)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your client: `https://rube.app/mcp`
-2. 连接 your Mistral AI account when prompted (API key authentication)
-3. Start using the workflows below
+1. 将 Composio MCP 服务器添加到你的客户端：`https://rube.app/mcp`
+2. 在提示时连接你的 Mistral AI 账户（API 密钥认证）
+3. 开始使用下面的工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Upload Files to Mistral AI
+### 1. 将文件上传到 Mistral AI
 
-Use `MISTRAL_AI_UPLOAD_FILE` to upload files for fine-tuning, batch processing, or OCR.
+使用 `MISTRAL_AI_UPLOAD_FILE` 上传文件，用于微调、批处理或 OCR。
 
 ```
 Tool: MISTRAL_AI_UPLOAD_FILE
@@ -38,11 +38,11 @@ Inputs:
   - purpose: "fine-tune" | "batch" | "ocr" (default "fine-tune")
 ```
 
-**Limits:** Maximum file size is 512 MB. For fine-tuning, only `.jsonl` files are supported.
+**限制：** 最大文件大小为 512 MB。对于微调，仅支持 `.jsonl` 文件。
 
-### 2. List and Retrieve Files
+### 2. 列出并检索文件
 
-Use `MISTRAL_AI_LIST_FILES` to browse uploaded files with pagination, and `MISTRAL_AI_RETRIEVE_FILE` to get metadata for a specific file.
+使用 `MISTRAL_AI_LIST_FILES` 分页浏览已上传的文件，使用 `MISTRAL_AI_RETRIEVE_FILE` 获取特定文件的元数据。
 
 ```
 Tool: MISTRAL_AI_LIST_FILES
@@ -56,9 +56,9 @@ Inputs:
   - file_id: string (required) -- UUID obtained from List Files
 ```
 
-### 3. Create Document Libraries
+### 3. 创建文档库
 
-Use `MISTRAL_AI_CREATE_LIBRARY` to group documents into libraries for use with RAG-enabled Mistral AI agents.
+使用 `MISTRAL_AI_CREATE_LIBRARY` 将文档分组到库中，供支持 RAG 的 Mistral AI 智能体使用。
 
 ```
 Tool: MISTRAL_AI_CREATE_LIBRARY
@@ -67,9 +67,9 @@ Inputs:
   - description: string (optional)
 ```
 
-### 4. Upload Documents to a Library
+### 4. 将文档上传到库
 
-Use `MISTRAL_AI_UPLOAD_LIBRARY_DOCUMENT` to add documents to a library for RAG retrieval by Mistral AI agents.
+使用 `MISTRAL_AI_UPLOAD_LIBRARY_DOCUMENT` 向库中添加文档，供 Mistral AI 智能体进行 RAG 检索。
 
 ```
 Tool: MISTRAL_AI_UPLOAD_LIBRARY_DOCUMENT
@@ -77,9 +77,9 @@ Tool: MISTRAL_AI_UPLOAD_LIBRARY_DOCUMENT
   - Call RUBE_GET_TOOL_SCHEMAS for full input schema before use
 ```
 
-### 5. List Libraries and Download Files
+### 5. 列出库并下载文件
 
-Use `MISTRAL_AI_LIST_LIBRARIES` to discover available document libraries, and `MISTRAL_AI_DOWNLOAD_FILE` to retrieve file content.
+使用 `MISTRAL_AI_LIST_LIBRARIES` 发现可用的文档库，使用 `MISTRAL_AI_DOWNLOAD_FILE` 检索文件内容。
 
 ```
 Tool: MISTRAL_AI_LIST_LIBRARIES
@@ -91,9 +91,9 @@ Tool: MISTRAL_AI_DOWNLOAD_FILE
   - Call RUBE_GET_TOOL_SCHEMAS for full input schema
 ```
 
-### 6. Track Fine-Tuning Jobs
+### 6. 跟踪微调任务
 
-Use `MISTRAL_AI_GET_FINE_TUNING_JOBS` to list and filter fine-tuning jobs by model, status, and creation time.
+使用 `MISTRAL_AI_GET_FINE_TUNING_JOBS` 按模型、状态和创建时间列出并过滤微调任务。
 
 ```
 Tool: MISTRAL_AI_GET_FINE_TUNING_JOBS
@@ -105,29 +105,29 @@ Tool: MISTRAL_AI_GET_FINE_TUNING_JOBS
 
 ## 已知陷阱
 
-| Pitfall | Detail |
+| 陷阱 | 详情 |
 |---------|--------|
-| Fine-tune file format | Only `.jsonl` files are supported for fine-tuning uploads. Other formats will be rejected. |
-| File size limit | Maximum upload size is 512 MB per file. |
-| File object structure | `MISTRAL_AI_UPLOAD_FILE` requires an `s3key` referencing a previously stored file, not raw binary content. Use a download action first to stage files in S3. |
-| Pagination cursors | `MISTRAL_AI_LIST_FILES` uses cursor-based pagination via the `after` parameter (file ID). Continue fetching until no more results are returned. |
-| Library document processing | Uploaded library documents are processed asynchronously. They may not be immediately available for RAG queries after upload. |
-| Schema references | Several tools (`MISTRAL_AI_UPLOAD_LIBRARY_DOCUMENT`, `MISTRAL_AI_LIST_LIBRARIES`, `MISTRAL_AI_GET_FINE_TUNING_JOBS`, `MISTRAL_AI_DOWNLOAD_FILE`) require calling `RUBE_GET_TOOL_SCHEMAS` to load full input schemas before execution. |
+| 微调文件格式 | 微调上传仅支持 `.jsonl` 文件。其他格式将被拒绝。 |
+| 文件大小限制 | 每个文件的最大上传大小为 512 MB。 |
+| 文件对象结构 | `MISTRAL_AI_UPLOAD_FILE` 需要一个引用先前存储文件的 `s3key`，而不是原始二进制内容。请先使用下载操作将文件暂存到 S3。 |
+| 分页游标 | `MISTRAL_AI_LIST_FILES` 通过 `after` 参数（文件 ID）使用基于游标的分页。持续获取直到不再返回结果。 |
+| 库文档处理 | 上传的库文档是异步处理的。上传后它们可能无法立即用于 RAG 查询。 |
+| Schema 引用 | 若干工具（`MISTRAL_AI_UPLOAD_LIBRARY_DOCUMENT`、`MISTRAL_AI_LIST_LIBRARIES`、`MISTRAL_AI_GET_FINE_TUNING_JOBS`、`MISTRAL_AI_DOWNLOAD_FILE`）需要在执行前调用 `RUBE_GET_TOOL_SCHEMAS` 来加载完整的输入 schema。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具 Slug | 描述 |
 |-----------|-------------|
-| `MISTRAL_AI_UPLOAD_FILE` | Upload files for fine-tuning, batch processing, or OCR |
-| `MISTRAL_AI_LIST_FILES` | List uploaded files with pagination |
-| `MISTRAL_AI_RETRIEVE_FILE` | Get metadata for a specific file by ID |
-| `MISTRAL_AI_DOWNLOAD_FILE` | Download content of an uploaded file |
-| `MISTRAL_AI_CREATE_LIBRARY` | Create a document library for RAG |
-| `MISTRAL_AI_LIST_LIBRARIES` | List all document libraries with metadata |
-| `MISTRAL_AI_UPLOAD_LIBRARY_DOCUMENT` | Add a document to a library for RAG |
-| `MISTRAL_AI_GET_FINE_TUNING_JOBS` | List and filter fine-tuning jobs |
+| `MISTRAL_AI_UPLOAD_FILE` | 上传文件用于微调、批处理或 OCR |
+| `MISTRAL_AI_LIST_FILES` | 列出已上传的文件，支持分页 |
+| `MISTRAL_AI_RETRIEVE_FILE` | 按 ID 获取特定文件的元数据 |
+| `MISTRAL_AI_DOWNLOAD_FILE` | 下载已上传文件的内容 |
+| `MISTRAL_AI_CREATE_LIBRARY` | 为 RAG 创建文档库 |
+| `MISTRAL_AI_LIST_LIBRARIES` | 列出所有文档库及元数据 |
+| `MISTRAL_AI_UPLOAD_LIBRARY_DOCUMENT` | 将文档添加到库中用于 RAG |
+| `MISTRAL_AI_GET_FINE_TUNING_JOBS` | 列出并过滤微调任务 |
 
 ---
 

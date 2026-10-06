@@ -1,197 +1,367 @@
-# scEmbed: Single-Cell Embedding Generation
+# scEmbed
 
-## Overview
+Verified against `geniml==0.8.4` release source, current Gtars
+`0.10.0`, and official BEDbase documentation on 2026-10-01.
 
-scEmbed trains Region2Vec models on single-cell ATAC-seq datasets to generate cell embeddings for clustering and analysis. It provides an unsupervised machine learning framework for representing and analyzing scATAC-seq data in low-dimensional space.
+## Scope and evidence
 
-## When to Use
+scEmbed learns region embeddings from scATAC-seq accessibility and pools them
+to represent cells. The primary paper reports that pre-trained region
+embeddings can support clustering and transfer to unseen datasets. Do not turn
+that result into a universal accuracy claim; performance depends on assay,
+reference corpus, universe, filtering, cell types, and split design.
 
-Use scEmbed when working with:
-- Single-cell ATAC-seq (scATAC-seq) data requiring clustering
-- Cell-type annotation tasks
-- Dimensionality reduction for single-cell chromatin accessibility
-- Integration with scanpy workflows for downstream analysis
+Primary source: LeRoy et al. (2024), *Fast clustering and cell-type annotation
+of scATAC data with pre-trained embeddings*,
+doi:[10.1093/nargab/lqae073](https://doi.org/10.1093/nargab/lqae073).
 
-## Workflow
+## Stable API and known drift
 
-### Step 1: Data Preparation
-
-Input data must be in AnnData format with `.var` attributes containing `chr`, `start`, and `end` values for peaks.
-
-**Starting from raw data** (barcodes.txt, peaks.bed, matrix.mtx):
+Use:
 
 ```python
+from geniml.scembed.main import ScEmbed
+from geniml.region2vec.utils import Region2VecDataset
+from gtars.tokenizers import Tokenizer
+```
+
+Do not use `from geniml.scembed import ScEmbed`: the 0.8.4 package
+`__init__` does not export it. The installed `geniml scembed` command parses
+legacy MatrixMarket options but its 0.8.4 command body does no training or
+encoding.
+
+With Geniml 0.8.4 / Gtars 0.10.0, both `tokenize_anndata` and
+`ScEmbed.encode` fail: Geniml omits the required fourth `Region(..., rest)`
+argument. Even after that is fixed, `ScEmbed.encode` assumes an extra nesting
+level that the tokenizer does not return. Use the explicit recipe below; it
+was tested on small synthetic cells, including cell-order and pooling checks.
+The environment must keep AnnData 0.12.19 and Zarr 2.18.7; AnnData 0.13's
+Zarr >=3 requirement conflicts with Geniml.
+
+## AnnData contract
+
+The AnnData object must satisfy:
+
+- rows (`obs`) are cells;
+- columns (`var`) are accessible regions/features;
+- `var["chr"]`, `var["start"]`, and `var["end"]` describe each feature;
+- coordinates are validated 0-based half-open BED coordinates;
+- all features use one declared assembly and contig convention;
+- `X` is sparse CSR for bounded tokenization performance;
+- duplicate feature coordinates and duplicate barcodes have an explicit policy.
+
+Confirm matrix orientation. A 10x peak-by-barcode MatrixMarket file is often
+transposed when constructing AnnData; inspect dimensions instead of copying a
+blind `.T`.
+
+Do not expose barcodes, patient IDs, phenotypes, rare cell labels, or raw
+intervals in logs. An `.h5ad` may contain identifying metadata in `obs`,
+`uns`, embeddings, and file provenance. Output only bounded aggregate counts
+unless the user explicitly approves disclosure.
+
+## Leakage-safe split order
+
+Split before fitting or selecting anything:
+
+1. Group cells by patient/donor and biological replicate.
+2. Assign complete groups to train/validation/test.
+3. Fit QC thresholds, feature/universe selection, token vocabulary, model,
+   annotation references, and hyperparameters on training data only.
+4. Apply the frozen universe/tokenizer/model to validation and test.
+5. Keep technical replicates and multiple samples from one patient together.
+
+Randomly splitting cells from the same donor leaks donor- and batch-specific
+accessibility. Building a consensus universe from all patients can also leak
+test-set feature prevalence even when labels are hidden.
+
+Audit a local manifest without printing metadata values:
+
+```bash
+python skills/geniml/scripts/corpus_auditor.py \
+  --manifest data/cells.tsv \
+  --group-column patient_id \
+  --split-column split \
+  --assembly-column assembly
+```
+
+## Build and validate the tokenizer
+
+Use a local, checksummed universe from the training partition:
+
+```python
+from gtars.tokenizers import Tokenizer
+
+tokenizer = Tokenizer.from_bed("refs/training_universe.bed")
+```
+
+Record:
+
+- source cohort and split;
+- assembly, chromosome sizes, coordinate/contig/strand policy;
+- universe SHA-256, row order, and row count;
+- Gtars version and special-token map/IDs;
+- `len(tokenizer)`.
+
+Gtars 0.10.0 `Tokenizer.from_pretrained(path)` accepts only a path argument;
+it provides no revision/cache kwargs. For an authorized Hub download, fetch
+the exact universe through the Hub client at a reviewed revision and build
+`Tokenizer.from_bed` from those verified local bytes. A model and tokenizer
+are compatible only when the exact universe,
+special-token IDs, and model vocabulary size agree.
+
+## Pre-tokenize to one bounded Parquet file
+
+```python
+import numpy as np
+import pyarrow as pa
+import pyarrow.parquet as pq
 import scanpy as sc
-import pandas as pd
-import scipy.io
-import anndata
+from scipy.sparse import csr_matrix
+from gtars.models import Region
 
-# Load data
-barcodes = pd.read_csv('barcodes.txt', header=None, names=['barcode'])
-peaks = pd.read_csv('peaks.bed', sep='\t', header=None,
-                    names=['chr', 'start', 'end'])
-matrix = scipy.io.mmread('matrix.mtx').tocsr()
+adata = sc.read_h5ad("data/train.h5ad")
+# Validate coordinates/assembly first; do not truncate noninteger coordinates.
+adata.X = csr_matrix(adata.X)
+adata.X.sum_duplicates()
+adata.X.eliminate_zeros()
+if not np.isfinite(adata.X.data).all() or (adata.X.data < 0).any():
+    raise ValueError("accessibility must be finite and nonnegative")
+features = [
+    Region(chrom, int(start), int(end), None)
+    for chrom, start, end in zip(adata.var["chr"], adata.var["start"], adata.var["end"])
+]
+cells = []
+for row in range(adata.n_obs):
+    indices = adata.X.indices[adata.X.indptr[row]:adata.X.indptr[row + 1]]
+    ids = tokenizer([features[i] for i in indices])["input_ids"] if len(indices) else []
+    cells.append(ids)
+special_ids = {getattr(tokenizer, key + "_id") for key in tokenizer.special_tokens_map}
+if any(not ids or special_ids.intersection(ids) for ids in cells):
+    raise ValueError("empty or unmatched cells require an explicit QC policy")
 
-# Create AnnData
-adata = anndata.AnnData(X=matrix.T, obs=barcodes, var=peaks)
-adata.write('scatac_data.h5ad')
+table = pa.table({"tokens": pa.array(cells, type=pa.list_(pa.int32()))})
+pq.write_table(table, "work/train_tokens.parquet")
 ```
 
-### Step 2: Pre-tokenization
+Before writing:
 
-Convert genomic regions into tokens using gtars utilities. This creates a parquet file with tokenized cells for faster training:
+- verify `len(cells) == adata.n_obs`;
+- check each token list is bounded and contains IDs in
+  `[0, len(tokenizer))`;
+- quantify empty cells and out-of-vocabulary/unmatched features;
+- preserve row correspondence in a separate protected manifest;
+- do not include barcodes or labels in the training Parquet unless required.
+
+The upstream issue
+[`databio/geniml#14`](https://github.com/databio/geniml/issues/14)
+(opened 2025-09-05) proposes moving away from one `.gtok` file per cell.
+Prefer the single Parquet corpus for current work; treat `.gtok` as legacy.
+
+## Train
 
 ```python
-from geniml.io import tokenize_cells
+from geniml.region2vec.utils import Region2VecDataset
+from geniml.scembed.main import ScEmbed
 
-tokenize_cells(
-    adata='scatac_data.h5ad',
-    universe_file='universe.bed',
-    output='tokenized_cells.parquet'
+dataset = Region2VecDataset(
+    "work/train_tokens.parquet",
+    shuffle=True,
+    convert_to_str=True,
 )
-```
-
-**Benefits of pre-tokenization:**
-- Faster training iterations
-- Reduced memory requirements
-- Reusable tokenized data for multiple training runs
-
-### Step 3: Model Training
-
-Train the scEmbed model using tokenized data:
-
-```python
-from geniml.scembed import ScEmbed
-from geniml.region2vec import Region2VecDataset
-
-# Load tokenized dataset
-dataset = Region2VecDataset('tokenized_cells.parquet')
-
-# Initialize and train model
 model = ScEmbed(
+    tokenizer=tokenizer,
     embedding_dim=100,
-    window_size=5,
-    negative_samples=5
+    pooling_method="mean",
+    device="cpu",
 )
-
 model.train(
-    dataset=dataset,
-    epochs=100,
-    batch_size=256,
-    learning_rate=0.025
+    dataset,
+    window_size=5,
+    epochs=10,
+    min_count=10,
+    num_cpus=4,
+    seed=42,
 )
-
-# Save model
-model.save('scembed_model/')
 ```
 
-### Step 4: Generate Cell Embeddings
+Seed Python `random` before token shuffling and Torch before construction;
+Gensim's `seed` alone does not set those RNGs. Derive and retain trained-token
+IDs from the training corpus counts and the actual `min_count`; untouched
+Torch rows remain random even after `model.trained` becomes true.
 
-Use the trained model to generate embeddings for cells:
+Bound cells, nonzeros, tokens per cell, workers, epochs, checkpoint frequency,
+RAM, and disk. `Region2VecDataset` loads the full Parquet token column into
+memory. Training uses Gensim and Torch; Gensim checkpoint loading is unsafe for
+untrusted `.model` files.
+
+Generate a run plan first:
+
+```bash
+python skills/geniml/scripts/embedding_plan.py \
+  --mode scembed \
+  --data work/train_tokens.parquet \
+  --universe refs/training_universe.bed \
+  --output-dir work/scembed \
+  --assembly GRCh38 \
+  --embedding-dim 100 --epochs 10 --workers 4 --seed 42
+```
+
+## Export and local loading
 
 ```python
-from geniml.scembed import ScEmbed
+from pathlib import Path
+import shutil
+import yaml
 
-# Load trained model
-model = ScEmbed.from_pretrained('scembed_model/')
-
-# Generate embeddings for AnnData object
-embeddings = model.encode(adata)
-
-# Add to AnnData for downstream analysis
-adata.obsm['scembed_X'] = embeddings
+bundle = Path("models/scembed")
+model.export(str(bundle))
+shutil.copyfile(
+    "refs/training_universe.bed",
+    bundle / "universe.bed",
+)
+config_path = bundle / "config.yaml"
+config = yaml.safe_load(config_path.read_text())
+config["pooling_method"] = model.pooling_method
+config_path.write_text(yaml.safe_dump(config))
 ```
 
-### Step 5: Downstream Analysis
+As in Region2Vec, the 0.8.4 export utility writes `checkpoint.pt` and
+`config.yaml` but does not write the tokenizer universe or preserve
+`pooling_method`. Add the exact validated `universe.bed` and record pooling
+before generating checksums.
 
-Integrate with scanpy for clustering and visualization:
+Inspect before loading:
+
+```bash
+python skills/geniml/scripts/model_artifact_inspector.py \
+  --model-dir models/scembed
+
+python skills/geniml/scripts/tokenizer_compatibility.py \
+  --model-dir models/scembed \
+  --universe refs/training_universe.bed \
+  --assembly GRCh38
+```
+
+Then, for a trusted local bundle:
+
+```python
+from geniml.scembed.main import ScEmbed
+
+model = ScEmbed.from_pretrained("models/scembed")
+```
+
+This classmethod is local. In contrast,
+`ScEmbed(model_path="organization/model")` downloads three files through
+Hugging Face Hub. Constructor kwargs for revision/cache/offline behavior are
+silently discarded in 0.8.4. For authorized downloads, call `hf_hub_download`
+directly at a reviewed immutable revision, verify each file, then load the
+local bundle. No public weights were downloaded in this review.
+
+`checkpoint.pt` is loaded with Torch `weights_only=True`. Continue to treat it
+as untrusted until verified and load in an isolated, resource-bounded
+environment. Never inspect it using pickle.
+
+## Generate and attach cell embeddings
+
+Use the token lists above, in exactly the AnnData cell order. This explicit
+mean pooling rejects unsupported cells rather than assigning random unknown
+or untrained vectors. For held-out data, tokenize its own features with the
+same frozen tokenizer; keep `trained_ids` from the training corpus.
+
+```python
+from collections import Counter
+import numpy as np
+import torch
+
+# Set to the actual min_count passed to model.train, using training cells only.
+min_count = 10
+counts = Counter(token for ids in cells for token in ids)
+trained_ids = {token for token, count in counts.items() if count >= min_count}
+
+def pool_cells(model, cell_tokens, trained_ids):
+    projection = model.model.projection
+    rows = []
+    with torch.inference_mode():
+        for ids in cell_tokens:
+            if not ids or any(token not in trained_ids for token in ids):
+                raise ValueError("cell has empty or untrained token set")
+            tensor = torch.tensor(ids, dtype=torch.long, device=projection.weight.device)
+            rows.append(projection(tensor).mean(dim=0).cpu().numpy())
+    if not rows:
+        raise ValueError("no cells to embed")
+    return np.vstack(rows)
+
+embeddings = pool_cells(model, cells, trained_ids)
+assert embeddings.shape == (adata.n_obs, model.model.embedding_dim)
+assert np.isfinite(embeddings).all()
+adata.obsm["X_scembed"] = embeddings
+```
+
+This recipe explicitly chooses mean pooling. Record a different pooling policy
+if needed and test its effect. Passing `device="cuda"` to the wrapper alone
+does not move its model; CPU training/projection is the tested configuration.
+
+Illustrative downstream analysis (requires the Scanpy Leiden/igraph extras):
 
 ```python
 import scanpy as sc
 
-# Use scEmbed embeddings for neighborhood graph
-sc.pp.neighbors(adata, use_rep='scembed_X')
-
-# Cluster cells
-sc.tl.leiden(adata, resolution=0.5)
-
-# Compute UMAP for visualization
-sc.tl.umap(adata)
-
-# Plot results
-sc.pl.umap(adata, color='leiden')
+sc.pp.neighbors(adata, use_rep="X_scembed")
+sc.tl.leiden(adata, resolution=0.5, random_state=42)
+sc.tl.umap(adata, random_state=42)
 ```
 
-## Key Parameters
+UMAP and Leiden are exploratory unless validated on held-out donors. Store
+software versions, seeds, neighborhood parameters, and the embedding checksum.
 
-### Training Parameters
+## Cell-type annotation
 
-| Parameter | Description | Typical Range |
-|-----------|-------------|---------------|
-| `embedding_dim` | Dimension of cell embeddings | 50 - 200 |
-| `window_size` | Context window for training | 3 - 10 |
-| `negative_samples` | Number of negative samples | 5 - 20 |
-| `epochs` | Training epochs | 50 - 200 |
-| `batch_size` | Training batch size | 128 - 512 |
-| `learning_rate` | Initial learning rate | 0.01 - 0.05 |
+The release contains `geniml.scembed.annotation.Annotator`, but it is not a
+working current-client recipe: it calls removed `QdrantClient.search`, and
+internally hard-codes `obsm["embedding"]` and `obs["leiden"]` despite exposing
+custom key arguments. Its public constructor also does not accept an API key.
+A modern Qdrant integration must use `query_points(...).points`, preserve the
+requested keys, and handle authentication explicitly; this is source/runtime
+API verification, not a validated annotation workflow. That is a separate
+network/data-disclosure decision: embeddings and metadata can be sensitive.
+Do not create or contact an annotation server without explicit approval.
 
-### Tokenization Parameters
+For any KNN annotation:
 
-- **Universe file**: Reference BED file defining the genomic vocabulary
-- **Overlap threshold**: Minimum overlap for peak-universe matching (typically 1e-9)
+- reference and query embeddings must use the same model/tokenizer/universe;
+- fit the reference index using training donors only;
+- tune `k` and score thresholds on validation donors;
+- include unknown/reject behavior;
+- report per-class metrics and calibration on held-out donors;
+- avoid claiming labels for absent reference cell types.
 
-## Pre-trained Models
+Never send raw barcodes, patient metadata, or interval lists to a hosted vector
+store by default.
 
-Pre-trained scEmbed models are available on Hugging Face for common reference datasets. Load them using:
+## Evaluation
 
-```python
-from geniml.scembed import ScEmbed
+Report:
 
-# Load pre-trained model
-model = ScEmbed.from_pretrained('databio/scembed-pbmc-10k')
+- donor-grouped clustering metrics with confidence intervals;
+- annotation macro/micro F1 and per-class support;
+- unknown/reject rate;
+- batch/donor association;
+- runtime and peak memory;
+- baselines fitted on the same training split.
 
-# Generate embeddings
-embeddings = model.encode(adata)
-```
+Do not select clusters, labels, or universe parameters by inspecting the test
+UMAP. If pre-trained public models were trained on overlapping donors or
+datasets, document that possible leakage.
 
-## Best Practices
+## Official sources
 
-- **Data quality**: Use filtered peak-barcode matrices, not raw counts
-- **Pre-tokenization**: Always pre-tokenize to improve training efficiency
-- **Parameter tuning**: Adjust `embedding_dim` and training epochs based on dataset size
-- **Validation**: Use known cell-type markers to validate clustering quality
-- **Integration**: Combine with scanpy for comprehensive single-cell analysis
-- **Model sharing**: Export trained models to Hugging Face for reproducibility
-
-## Example Dataset
-
-The 10x Genomics PBMC 10k dataset (10,000 peripheral blood mononuclear cells) serves as a standard benchmark:
-- Contains diverse immune cell types
-- Well-characterized cell populations
-- Available from 10x Genomics website
-
-## Cell-Type Annotation
-
-After clustering, annotate cell types using k-nearest neighbors (KNN) with reference datasets:
-
-```python
-from geniml.scembed import annotate_celltypes
-
-# Annotate using reference
-annotations = annotate_celltypes(
-    query_adata=adata,
-    reference_adata=reference,
-    embedding_key='scembed_X',
-    k=10
-)
-
-adata.obs['cell_type'] = annotations
-```
-
-## Output
-
-scEmbed produces:
-- Low-dimensional cell embeddings (stored in `adata.obsm`)
-- Trained model files for reuse
-- Compatible format for scanpy downstream analysis
-- Optional export to Hugging Face for sharing
+- [scEmbed training tutorial](https://docs.bedbase.org/geniml/tutorials/train-scembed-model)
+  (undated; accessed 2026-10-01)
+- [scEmbed API page](https://docs.bedbase.org/geniml/api-reference/scembed/)
+  (undated; accessed 2026-10-01)
+- [Geniml v0.8.4 source](https://github.com/databio/geniml/tree/v0.8.4/geniml/scembed)
+  (released 2026-01-14; accessed 2026-10-01)
+- [Gtars tokenizer documentation](https://docs.bedbase.org/gtars/tokenizers)
+  (undated; accessed 2026-10-01)
+- [Primary scEmbed paper](https://doi.org/10.1093/nargab/lqae073)
+  (2024)

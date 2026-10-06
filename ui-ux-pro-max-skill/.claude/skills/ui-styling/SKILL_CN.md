@@ -53,6 +53,10 @@ metadata:
 - 最小文本，最大视觉冲击力
 - 系统模式和精致美学
 
+## 脚本路径
+
+此技能及其 `references/` 中的脚本路径都是相对于包含此 SKILL.md 的目录，而不是相对于项目：`scripts/<file>` 指此技能自己的 `scripts/` 文件夹，`../<skill>/scripts/<file>` 指与其一同安装的同级子技能。请从该目录拼出完整路径（Claude Code 会在技能加载时将其报告为技能的基础目录），并让工作目录保持在项目根目录——这些脚本会相对于项目根目录读写项目文件，例如 `docs/brand-guidelines.md`、`assets/design-tokens.json` 或 `src/`。
+
 ## 快速开始
 
 ### 组件 + 样式设置
@@ -222,6 +226,12 @@ python scripts/shadcn_add.py button card dialog
 生成带有自定义主题的tailwind.config.js：
 ```bash
 python scripts/tailwind_config_gen.py --colors brand:blue --fonts display:Inter
+```
+
+如果同级目录中已经存在任何 `tailwind.config.js`、`.cjs`、`.mjs` 或 `.ts` 文件，生成器会拒绝创建或替换配置。
+请先检查脚本报告的配置文件，只有在确实有意生成一个与之并存的输出时，才传入 `--force`：
+```bash
+python scripts/tailwind_config_gen.py --colors brand:blue --force
 ```
 
 ## 最佳实践

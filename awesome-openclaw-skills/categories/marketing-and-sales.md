@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**106 skills**
+**109 skills**
 
 - [4chan-reader](https://clawskills.sh/skills/aiasisbot61-4chan-reader) - Browse 4chan boards and extract thread discussions.
 - [ad-ready](https://clawskills.sh/skills/pauldelavallaz-ad-ready) - Generate professional advertising images from product URLs.
@@ -68,6 +68,7 @@
 - [lifi-orchestrator](https://clawskills.sh/skills/rhlsthrm-lifi-orchestrator) - Cross-chain bridging and swapping via LI.FI — the leading bridge aggregator that routes across 30+ bridges and DEXs.
 - [linkfuse](https://clawskills.sh/skills/oliverw-linkfuse) - Create a Linkfuse affiliate short link from any URL.
 - [listing-swarm](https://clawhub.ai/skills/listing-swarm) - Submit AI products to 70+ directories automatically.
+- [lumail](https://clawhub.ai/melvynx/lumail) - Manage email marketing campaigns via CLI.
 - [marketing-strategy-pmm](https://clawskills.sh/skills/alirezarezvani-marketing-strategy-pmm) - Product marketing skill for positioning, GTM strategy, competitive intelligence, and product launches.
 - [meta-ads-report](https://clawskills.sh/skills/kein-s-meta-ads-report) - A powerful toolkit to monitor your Meta (Facebook/Instagram) advertising performance directly through chat.
 - [meta-tags-optimizer](https://clawskills.sh/skills/aaron-he-zhu-meta-tags-optimizer) - Use when the user asks to "optimize title tag", "write meta description", "improve CTR", "Open Graph tags", "social.
@@ -106,3 +107,7 @@
 - [ldm-openclaw-skill](https://clawhub.ai/live-direct-marketing/ldm-openclaw-skill) - Pre-send deliverability checks for outbound agents.
 - [ldm-openclaw-inbox-mcp-skill](https://clawhub.ai/live-direct-marketing/ldm-openclaw-inbox-mcp-skill) - Paid MCP inbox-placement checks for outbound agents.
 - [tempguru-event-staffing-ordering](https://clawhub.ai/kissmyabs32/tempguru-event-staffing-ordering) - Order W-2 temporary event staff across 345 US/Canada markets.
+- [posteahora](https://clawhub.ai/sashadiz/posteahora) - Schedule and publish social posts across every major network.
+- [postnitro](https://clawhub.ai/iammuneeb/skills/postnitro) - Create on-brand social media carousels and single-image posts and schedule them to LinkedIn, Instagram, TikTok, and Threads.
+- [linkedin-post-writer](https://clawhub.ai/sergebulaev/linkedin-post-writer) - LinkedIn marketing skills: viral hooks, comments, algorithm audit, humanizer.
+- [upload-post](https://clawhub.ai/victorcavero14/upload-post) - Publish and schedule social media posts through one API.

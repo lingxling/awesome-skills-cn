@@ -1,6 +1,6 @@
 # Support the Open Source Projects We Depend On
 
-Scientific Agent Skills is built on the shoulders of giants. The 148 skills in this repository leverage dozens of incredible open source projects created and maintained by dedicated developers and research communities around the world.
+The [skills in this repository](skills.md) depend on open source projects maintained by developers and research communities around the world. This page highlights projects to cite, contribute to, and support; the skill catalog is the complete inventory.
 
 **If you find value in these skills, please consider supporting the underlying open source projects that make them possible.**
 
@@ -22,22 +22,34 @@ Scientific Agent Skills is built on the shoulders of giants. The 148 skills in t
 
 | Project | Description | Links |
 |---------|-------------|-------|
-| **Biopython** | Computational molecular biology toolkit | [GitHub](https://github.com/biopython/biopython) - [Donate](https://numfocus.org/donate-to-biopython) |
+| **Biopython** | Computational molecular biology toolkit | [GitHub](https://github.com/biopython/biopython) - [Contribute](https://biopython.org/wiki/Contributing) |
 | **Scanpy** | Single-cell analysis in Python | [GitHub](https://github.com/scverse/scanpy) - [scverse](https://scverse.org/) |
 | **AnnData** | Annotated data matrices for single-cell | [GitHub](https://github.com/scverse/anndata) |
 | **scvi-tools** | Deep learning for single-cell omics | [GitHub](https://github.com/scverse/scvi-tools) |
 | **Arboreto** | Gene regulatory network inference | [GitHub](https://github.com/aertslab/arboreto) |
 | **pysam** | SAM/BAM/VCF file interface | [GitHub](https://github.com/pysam-developers/pysam) |
 | **scikit-bio** | Bioinformatics library | [GitHub](https://github.com/scikit-bio/scikit-bio) |
-| **gget** | Gene and transcript info retrieval | [GitHub](https://github.com/pachterlab/gget) |
+| **gget** | Gene and transcript info retrieval | [GitHub](https://github.com/scverse/gget) |
 | **deepTools** | Tools for deep-sequencing data | [GitHub](https://github.com/deeptools/deepTools) |
+| **geniml** | Machine learning for genomic interval sets | [GitHub](https://github.com/databio/geniml) |
+| **Gtars** | Rust/Python genomic interval toolkit | [GitHub](https://github.com/databio/gtars) |
 | **ETE Toolkit** | Phylogenetic tree analysis | [GitHub](https://github.com/etetoolkit/ete) |
+| **Waypoint** | Microbiome foundation models, taxonomic embeddings, and the Compass benchmark | [GitHub](https://github.com/Outpost-Bio/waypoint) |
+| **Folklore MCP adapter** | Public protocol adapter for variant evidence, gene-disease assertions, and literature; the hosted interpretation engine is separate | [GitHub](https://github.com/helena-bioinformatics/folklore-mcp) |
+
+### Scientific Data Management & Knowledge Graphs
+
+| Project | Description | Links |
+|---------|-------------|-------|
+| **DataLad** | Dataset retrieval, versioning, and computational provenance | [GitHub](https://github.com/datalad/datalad) |
+| **git-annex** | Large-file content management used by DataLad | [Project](https://git-annex.branchable.com/) |
+| **ARAX / RTX** | Biomedical knowledge-graph queries and provenance through NCATS Translator | [GitHub](https://github.com/RTXteam/RTX) |
 
 ### Cheminformatics & Drug Discovery
 
 | Project | Description | Links |
 |---------|-------------|-------|
-| **RDKit** | Cheminformatics toolkit | [GitHub](https://github.com/rdkit/rdkit) - [Donate](https://github.com/sponsors/rdkit) |
+| **RDKit** | Cheminformatics toolkit | [GitHub](https://github.com/rdkit/rdkit) - [Cite](https://www.rdkit.org/docs/Overview.html#citing-the-rdkit) |
 | **Datamol** | Molecular manipulation made easy | [GitHub](https://github.com/datamol-io/datamol) |
 | **DeepChem** | Deep learning for chemistry | [GitHub](https://github.com/deepchem/deepchem) |
 | **TorchDrug** | Drug discovery with PyTorch | [GitHub](https://github.com/DeepGraphLearning/torchdrug) |
@@ -56,17 +68,19 @@ Scientific Agent Skills is built on the shoulders of giants. The 148 skills in t
 
 | Project | Description | Links |
 |---------|-------------|-------|
-| **PyTorch Lightning** | Deep learning framework | [GitHub](https://github.com/Lightning-AI/pytorch-lightning) - [Sponsor](https://github.com/sponsors/Lightning-AI) |
+| **PyTorch Lightning** | Deep learning framework | [GitHub](https://github.com/Lightning-AI/pytorch-lightning) |
 | **Transformers** | State-of-the-art NLP | [GitHub](https://github.com/huggingface/transformers) |
 | **scikit-learn** | Machine learning in Python | [GitHub](https://github.com/scikit-learn/scikit-learn) - [Donate](https://numfocus.org/donate-to-scikit-learn) |
 | **PyTorch Geometric** | Geometric deep learning | [GitHub](https://github.com/pyg-team/pytorch_geometric) |
 | **PyMC** | Probabilistic programming | [GitHub](https://github.com/pymc-devs/pymc) - [Donate](https://numfocus.org/donate-to-pymc) |
 | **SHAP** | Model interpretability | [GitHub](https://github.com/shap/shap) |
 | **Stable Baselines3** | Reinforcement learning | [GitHub](https://github.com/DLR-RM/stable-baselines3) |
+| **PufferLib** | High-performance reinforcement learning environments and training | [GitHub](https://github.com/PufferAI/PufferLib) |
 | **scikit-survival** | Survival analysis | [GitHub](https://github.com/sebp/scikit-survival) |
 | **aeon** | Time series ML toolkit | [GitHub](https://github.com/aeon-toolkit/aeon) |
 | **PyMOO** | Multi-objective optimization | [GitHub](https://github.com/anyoptimization/pymoo) |
 | **UMAP** | Dimensionality reduction | [GitHub](https://github.com/lmcinnes/umap) |
+| **HypoGeniC** | LLM-assisted candidate textual hypothesis generation from labeled data | [GitHub](https://github.com/ChicagoHAI/hypothesis-generation) |
 
 ### Data Science & Visualization
 
@@ -90,6 +104,7 @@ Scientific Agent Skills is built on the shoulders of giants. The 148 skills in t
 | **pydicom** | DICOM file handling | [GitHub](https://github.com/pydicom/pydicom) |
 | **histolab** | Digital pathology preprocessing | [GitHub](https://github.com/histolab/histolab) |
 | **PathML** | Pathology ML toolkit | [GitHub](https://github.com/Dana-Farber-AIOS/pathml) |
+| **OMERO.py** | Python client for the OMERO microscopy data platform | [GitHub](https://github.com/ome/omero-py) |
 
 ### Healthcare & Clinical
 
@@ -119,8 +134,9 @@ Scientific Agent Skills is built on the shoulders of giants. The 148 skills in t
 
 | Project | Description | Links |
 |---------|-------------|-------|
-| **SimPy** | Discrete-event simulation | [GitHub](https://github.com/TeamSim/SimPy) |
+| **SimPy** | Discrete-event simulation | [GitLab](https://gitlab.com/team-simpy/simpy/) |
 | **FluidSim** | CFD framework | [GitHub](https://github.com/fluiddyn/fluidsim) |
+| **FluidFFT** | FFT framework and plugins used by FluidSim | [GitHub](https://github.com/fluiddyn/fluidfft) |
 
 ### Laboratory & Automation
 
@@ -141,14 +157,20 @@ Scientific Agent Skills is built on the shoulders of giants. The 148 skills in t
 | **Zarr** | Chunked array storage | [GitHub](https://github.com/zarr-developers/zarr-python) |
 | **FlowIO** | Flow cytometry I/O | [GitHub](https://github.com/whitews/FlowIO) |
 
+### Scientific Communication & Documents
+
+| Project | Description | Links |
+|---------|-------------|-------|
+| **python-pptx** | Create and inspect editable PowerPoint `.pptx` files | [GitHub](https://github.com/scanny/python-pptx) |
+
 ---
 
 ## NumFOCUS-Sponsored Projects
 
 Many of the projects above are sponsored by [NumFOCUS](https://numfocus.org/), a nonprofit supporting open source scientific computing. Consider [donating to NumFOCUS](https://numfocus.org/donate) to support the broader ecosystem.
 
-**NumFOCUS-sponsored projects in this collection:**
-- Biopython
+**Projects in this collection listed in the [NumFOCUS sponsorship directory](https://numfocus.org/sponsored-projects) (checked 2026-09-13):**
+
 - scikit-learn
 - Matplotlib
 - NetworkX
@@ -156,6 +178,9 @@ Many of the projects above are sponsored by [NumFOCUS](https://numfocus.org/), a
 - Dask
 - Astropy
 - PyMC
+- GeoPandas
+- Zarr
+- scverse
 
 ---
 

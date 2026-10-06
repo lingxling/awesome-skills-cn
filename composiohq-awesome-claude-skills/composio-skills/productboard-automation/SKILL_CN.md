@@ -1,157 +1,157 @@
 ---
 name: Productboard Automation
-description: "Automate product management workflows in Productboard -- manage features, notes, objectives, components, and releases through natural language commands."
+description: "在 Productboard 中自动化产品管理工作流——通过自然语言指令管理功能、笔记、目标、组件和发布。"
 requires:
   mcp:
     - rube
 ---
 
-# Productboard Automation
+# Productboard 自动化
 
-Automate your Productboard product management operations directly from Claude Code. Create notes from customer feedback, browse features and objectives, link entities, and track releases -- all without leaving your terminal.
+直接从 Claude Code 自动化你的 Productboard 产品管理操作。根据客户反馈创建笔记、浏览功能和目标、关联实体并跟踪发布——无需离开终端。
 
-**Toolkit docs:** [composio.dev/toolkits/productboard](https://composio.dev/toolkits/productboard)
+**工具包文档：** [composio.dev/toolkits/productboard](https://composio.dev/toolkits/productboard)
 
 ---
 
 ## 设置
 
-1. Add the Rube MCP server to your Claude Code config with URL: `https://rube.app/mcp`
-2. When prompted, authenticate your Productboard account through the connection link provided
-3. Start automating your product management workflows with natural language
+1. 在你的 Claude Code 配置中添加 Rube MCP 服务器，URL 为：`https://rube.app/mcp`
+2. 收到提示时，通过提供的连接链接认证你的 Productboard 账户
+3. 开始用自然语言自动化你的产品管理工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Manage Customer Notes
+### 1. 管理客户笔记
 
-Create notes from customer feedback and organize them with tags, links, and followers.
+根据客户反馈创建笔记，并用标签、链接和关注者进行组织。
 
-**Tools:** `PRODUCTBOARD_CREATE_NOTE`, `PRODUCTBOARD_LIST_NOTES`, `PRODUCTBOARD_ADD_NOTE_TAG`, `PRODUCTBOARD_ADD_NOTE_FOLLOWERS`, `PRODUCTBOARD_CREATE_NOTE_LINK`
-
-```
-Create a note titled "Mobile app crash report" with content from customer feedback, tagged "bug" and linked to feature abc-123
-```
-
-Key parameters for `PRODUCTBOARD_CREATE_NOTE`:
-- `title` (required) and `content` (required) -- note title and body
-- `customer_email` or `user.email` -- attribute to a customer/user
-- `tags` -- array of tag strings for categorization
-- `display_url` -- URL linked from the note title
-- `source` -- origin system with `origin` and `record_id`
-- `company` -- associate with a company
-
-Key parameters for `PRODUCTBOARD_LIST_NOTES`:
-- `createdFrom` / `createdTo` -- ISO 8601 date range
-- `last` -- relative time window (e.g., `"6m"`, `"10d"`, `"24h"`)
-- `term` -- full-text search by title or content
-- `allTags` / `anyTag` -- filter by tags (cannot combine both)
-- `featureId`, `companyId`, `ownerEmail`, `source` -- entity filters
-- `pageLimit` (max 100) / `pageCursor` -- pagination
-
-### 2. Browse and Retrieve Features
-
-List all features/subfeatures and retrieve detailed information.
-
-**Tools:** `PRODUCTBOARD_LIST_FEATURES`, `PRODUCTBOARD_RETRIEVE_FEATURE`
+**工具：** `PRODUCTBOARD_CREATE_NOTE`、`PRODUCTBOARD_LIST_NOTES`、`PRODUCTBOARD_ADD_NOTE_TAG`、`PRODUCTBOARD_ADD_NOTE_FOLLOWERS`、`PRODUCTBOARD_CREATE_NOTE_LINK`
 
 ```
-List the first 50 features in Productboard, then get details on feature abc-def-123
+创建一条标题为 "Mobile app crash report" 的笔记，内容来自客户反馈，标记为 "bug" 并关联到功能 abc-123
 ```
 
-- `PRODUCTBOARD_LIST_FEATURES` supports `pageLimit` (default 100) and `pageOffset` for pagination
-- `PRODUCTBOARD_RETRIEVE_FEATURE` requires feature `id` (UUID) to get complete details
+`PRODUCTBOARD_CREATE_NOTE` 的关键参数：
+- `title`（必填）和 `content`（必填） -- 笔记标题和正文
+- `customer_email` 或 `user.email` -- 归属到某客户/用户
+- `tags` -- 用于分类的标签字符串数组
+- `display_url` -- 从笔记标题链接出去的 URL
+- `source` -- 来源系统，包含 `origin` 和 `record_id`
+- `company` -- 与某公司关联
 
-### 3. Objectives and Key Results (OKRs)
+`PRODUCTBOARD_LIST_NOTES` 的关键参数：
+- `createdFrom` / `createdTo` -- ISO 8601 日期范围
+- `last` -- 相对时间窗口（例如 `"6m"`、`"10d"`、`"24h"`）
+- `term` -- 按标题或内容进行全文搜索
+- `allTags` / `anyTag` -- 按标签过滤（两者不能同时使用）
+- `featureId`、`companyId`、`ownerEmail`、`source` -- 实体过滤器
+- `pageLimit`（最大 100）/ `pageCursor` -- 分页
 
-List objectives, view feature-objective links, and browse key results.
+### 2. 浏览和检索功能
 
-**Tools:** `PRODUCTBOARD_LIST_OBJECTIVES`, `PRODUCTBOARD_LIST_FEATURE_OBJECTIVES`, `PRODUCTBOARD_LIST_KEY_RESULTS`
+列出所有功能/子功能并检索详细信息。
 
-```
-Show me all in-progress objectives owned by alice@example.com
-```
-
-Key parameters for `PRODUCTBOARD_LIST_OBJECTIVES`:
-- `status.name` -- filter by status (e.g., `"In Progress"`)
-- `owner.email` -- filter by owner email
-- `parent.id` -- filter by parent objective
-- `archived` -- filter by archived state
-
-`PRODUCTBOARD_LIST_FEATURE_OBJECTIVES`:
-- Requires `id` (UUID) of a **top-level feature** (not subfeatures)
-- Supports `pageCursor` for pagination
-
-### 4. Component Management
-
-List product components for organizing features and the product hierarchy.
-
-**Tool:** `PRODUCTBOARD_LIST_COMPONENTS`
+**工具：** `PRODUCTBOARD_LIST_FEATURES`、`PRODUCTBOARD_RETRIEVE_FEATURE`
 
 ```
-List all components in our Productboard workspace
+列出 Productboard 中的前 50 个功能，然后获取功能 abc-def-123 的详情
 ```
 
-- Supports `page_limit` and `page_offset` for pagination
-- Follow `links.next` for additional pages
+- `PRODUCTBOARD_LIST_FEATURES` 支持 `pageLimit`（默认 100）和 `pageOffset` 进行分页
+- `PRODUCTBOARD_RETRIEVE_FEATURE` 需要功能 `id`（UUID）才能获取完整详情
 
-### 5. Release Tracking
+### 3. 目标与关键结果（OKR）
 
-View feature-release assignments with state and date filters.
+列出目标、查看功能与目标之间的关联，并浏览关键结果。
 
-**Tool:** `PRODUCTBOARD_LIST_FEATURE_RELEASE_ASSIGNMENTS`
-
-```
-Show all active release assignments for feature abc-123
-```
-
-- Filter by `feature.id`, `release.id`, `release.state` (planned, active, closed)
-- Date range filters: `release.timeframe.endDate.from` and `release.timeframe.endDate.to` (YYYY-MM-DD)
-
-### 6. Link Notes to Features
-
-连接 customer feedback notes to product features for insight aggregation.
-
-**Tool:** `PRODUCTBOARD_CREATE_NOTE_LINK`
+**工具：** `PRODUCTBOARD_LIST_OBJECTIVES`、`PRODUCTBOARD_LIST_FEATURE_OBJECTIVES`、`PRODUCTBOARD_LIST_KEY_RESULTS`
 
 ```
-Link note 3fa85f64-5717 to feature 1b6c8c76-8f5d for tracking
+显示 alice@example.com 负责的所有进行中目标
 ```
 
-- Requires `noteId` (UUID) and `entityId` (UUID of feature, component, or product)
-- Use after creating notes to ensure feedback is connected to the right product areas
+`PRODUCTBOARD_LIST_OBJECTIVES` 的关键参数：
+- `status.name` -- 按状态过滤（例如 `"In Progress"`）
+- `owner.email` -- 按负责人邮箱过滤
+- `parent.id` -- 按父级目标过滤
+- `archived` -- 按归档状态过滤
+
+`PRODUCTBOARD_LIST_FEATURE_OBJECTIVES`：
+- 需要**顶级功能**（非子功能）的 `id`（UUID）
+- 支持 `pageCursor` 进行分页
+
+### 4. 组件管理
+
+列出用于组织功能和产品层级结构的产品组件。
+
+**工具：** `PRODUCTBOARD_LIST_COMPONENTS`
+
+```
+列出我们 Productboard 工作区中的所有组件
+```
+
+- 支持 `page_limit` 和 `page_offset` 进行分页
+- 跟随 `links.next` 获取更多页面
+
+### 5. 发布跟踪
+
+查看带有状态和日期过滤条件的功能-发布分配。
+
+**工具：** `PRODUCTBOARD_LIST_FEATURE_RELEASE_ASSIGNMENTS`
+
+```
+显示功能 abc-123 的所有活动发布分配
+```
+
+- 按 `feature.id`、`release.id`、`release.state`（planned、active、closed）过滤
+- 日期范围过滤器：`release.timeframe.endDate.from` 和 `release.timeframe.endDate.to`（YYYY-MM-DD）
+
+### 6. 将笔记关联到功能
+
+将客户反馈笔记关联到产品功能，以便聚合洞察。
+
+**工具：** `PRODUCTBOARD_CREATE_NOTE_LINK`
+
+```
+将笔记 3fa85f64-5717 关联到功能 1b6c8c76-8f5d 以便跟踪
+```
+
+- 需要 `noteId`（UUID）和 `entityId`（功能、组件或产品的 UUID）
+- 在创建笔记后使用，以确保反馈与正确的产品区域相关联
 
 ---
 
-## 已知陷阱
+## 已知坑点
 
-- **Top-level features only for objectives:** `PRODUCTBOARD_LIST_FEATURE_OBJECTIVES` only works with top-level feature IDs, not subfeature IDs. Use `PRODUCTBOARD_LIST_FEATURES` to identify which features are top-level.
-- **Tag filter exclusivity:** `allTags` and `anyTag` cannot be combined in `PRODUCTBOARD_LIST_NOTES`. Choose one filter strategy per query.
-- **Relative vs. absolute dates:** The `last` parameter (e.g., `"24h"`) cannot be combined with `createdFrom`/`createdTo` in `PRODUCTBOARD_LIST_NOTES`. Use one approach, not both.
-- **Cursor-based pagination:** Follow `links.next` or use `pageCursor` from responses for multi-page results. Offset-based and cursor-based pagination are used on different endpoints -- check each tool.
-- **Note attribution:** Either `user.email` or `customer_email` must be provided in `PRODUCTBOARD_CREATE_NOTE` to attribute feedback. Without it, the note will have no customer association.
-- **UUID formats required:** All entity IDs (features, notes, components) must be valid UUIDs. Passing malformed IDs causes 400 errors.
+- **目标仅适用于顶级功能：** `PRODUCTBOARD_LIST_FEATURE_OBJECTIVES` 只适用于顶级功能 ID，不适用于子功能 ID。使用 `PRODUCTBOARD_LIST_FEATURES` 来确定哪些功能是顶级的。
+- **标签过滤互斥：** `allTags` 和 `anyTag` 不能在 `PRODUCTBOARD_LIST_NOTES` 中同时使用。每次查询只能选择一种过滤策略。
+- **相对日期与绝对日期：** `last` 参数（例如 `"24h"`）不能与 `PRODUCTBOARD_LIST_NOTES` 中的 `createdFrom`/`createdTo` 组合使用。只能使用其中一种方式。
+- **基于游标的分页：** 对于多页结果，跟随响应中的 `links.next` 或使用 `pageCursor`。基于偏移量的分页和基于游标的分页用在不同的端点上——请逐一检查各工具。
+- **笔记归属：** 在 `PRODUCTBOARD_CREATE_NOTE` 中必须提供 `user.email` 或 `customer_email` 之一来归属反馈。否则该笔记将没有客户关联。
+- **需要 UUID 格式：** 所有实体 ID（功能、笔记、组件）都必须是有效的 UUID。传入格式错误的 ID 会导致 400 错误。
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 描述 |
 |---|---|
-| `PRODUCTBOARD_CREATE_NOTE` | Create a customer feedback note (requires `title`, `content`) |
-| `PRODUCTBOARD_LIST_NOTES` | List notes with search, date, and tag filters |
-| `PRODUCTBOARD_ADD_NOTE_TAG` | Add a tag to a note |
-| `PRODUCTBOARD_ADD_NOTE_FOLLOWERS` | Add followers to a note by email |
-| `PRODUCTBOARD_CREATE_NOTE_LINK` | Link a note to a feature/component (requires `noteId`, `entityId`) |
-| `PRODUCTBOARD_LIST_FEATURES` | List all features with pagination |
-| `PRODUCTBOARD_RETRIEVE_FEATURE` | Get detailed feature info by UUID |
-| `PRODUCTBOARD_LIST_OBJECTIVES` | List objectives with status/owner filters |
-| `PRODUCTBOARD_LIST_FEATURE_OBJECTIVES` | List objectives linked to a top-level feature |
-| `PRODUCTBOARD_LIST_KEY_RESULTS` | List key results for objectives |
-| `PRODUCTBOARD_LIST_COMPONENTS` | List product components with pagination |
-| `PRODUCTBOARD_LIST_FEATURE_RELEASE_ASSIGNMENTS` | List feature-release assignments with filters |
+| `PRODUCTBOARD_CREATE_NOTE` | 创建客户反馈笔记（需要 `title`、`content`） |
+| `PRODUCTBOARD_LIST_NOTES` | 列出笔记，支持搜索、日期和标签过滤 |
+| `PRODUCTBOARD_ADD_NOTE_TAG` | 为笔记添加标签 |
+| `PRODUCTBOARD_ADD_NOTE_FOLLOWERS` | 通过邮箱为笔记添加关注者 |
+| `PRODUCTBOARD_CREATE_NOTE_LINK` | 将笔记关联到功能/组件（需要 `noteId`、`entityId`） |
+| `PRODUCTBOARD_LIST_FEATURES` | 分页列出所有功能 |
+| `PRODUCTBOARD_RETRIEVE_FEATURE` | 按 UUID 获取详细功能信息 |
+| `PRODUCTBOARD_LIST_OBJECTIVES` | 按状态/负责人过滤列出目标 |
+| `PRODUCTBOARD_LIST_FEATURE_OBJECTIVES` | 列出与某顶级功能关联的目标 |
+| `PRODUCTBOARD_LIST_KEY_RESULTS` | 列出目标的关键结果 |
+| `PRODUCTBOARD_LIST_COMPONENTS` | 分页列出产品组件 |
+| `PRODUCTBOARD_LIST_FEATURE_RELEASE_ASSIGNMENTS` | 按过滤条件列出功能-发布分配 |
 
 ---
 
-*由 [Composio](https://composio.dev) 提供支持*
+*Powered by [Composio](https://composio.dev)*

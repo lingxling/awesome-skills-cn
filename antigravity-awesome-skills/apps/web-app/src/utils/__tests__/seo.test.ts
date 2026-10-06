@@ -1,8 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import type { Skill } from '../../types';
 import {
+  DEFAULT_TOP_SKILL_COUNT,
   DEFAULT_SOCIAL_IMAGE,
   buildHomeMeta,
+  buildLandingMeta,
   buildSkillFallbackMeta,
   buildSkillMeta,
   buildTopicLandingMeta,
@@ -28,14 +30,32 @@ function createSkill(overrides: Record<string, unknown> = {}) {
 }
 
 describe('SEO helpers', () => {
-  it('builds homepage metadata with the canonical catalog message', () => {
+  it('keeps hydrated priority metadata aligned with the curated sitemap scope', () => {
+    expect(DEFAULT_TOP_SKILL_COUNT).toBe(180);
+  });
+
+  it('builds homepage metadata with the canonical AAS Core preview message', () => {
     const meta = buildHomeMeta(10);
 
-    expect(meta.title).toContain('Agentic Awesome Skills GitHub');
-    expect(meta.title).toContain('10+ AI coding skills');
-    expect(meta.description).toContain('GitHub library of 10+ installable agentic skills');
-    expect(meta.canonicalPath).toBe('/');
+    expect(meta.title).toContain('AAS Core Preview');
+    expect(meta.title).toContain('10+ skills');
+    expect(meta.description).toContain('neutral catalog retrieval, exact agent-owned selection, validation, and planning');
+    expect(meta.description).toContain('10+ cataloged skills');
+    expect(meta.canonicalPath).toBe('/core');
     expect(meta.ogTitle).toBe(meta.title);
+    expect(meta.ogImage).toBe(DEFAULT_SOCIAL_IMAGE);
+    expect(typeof meta.jsonLd).toBe('function');
+  });
+
+  it('builds intro landing metadata for the site root', () => {
+    const meta = buildLandingMeta(2445);
+
+    expect(meta.title).toContain('Agentic Awesome Skills');
+    expect(meta.description).toContain('2,445+ playbooks');
+    expect(meta.description).toContain('AAS Core');
+    expect(meta.description).toContain('plan preview');
+    expect(meta.description.length).toBeLessThanOrEqual(160);
+    expect(meta.canonicalPath).toBe('/');
     expect(meta.ogImage).toBe(DEFAULT_SOCIAL_IMAGE);
     expect(typeof meta.jsonLd).toBe('function');
   });
@@ -91,7 +111,7 @@ describe('SEO helpers', () => {
     const meta = buildTopicLandingMeta(topic!);
 
     expect(meta.title).toContain('GitHub AI Skills Repository');
-    expect(meta.description).toContain('GitHub repository');
+    expect(meta.description).toContain('GitHub source for AAS Core preview');
     expect(meta.canonicalPath).toBe('/topics/github-ai-skills-repository');
     expect(meta.ogImage).toBe(DEFAULT_SOCIAL_IMAGE);
     expect(typeof meta.jsonLd).toBe('function');

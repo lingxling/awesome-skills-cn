@@ -5,17 +5,21 @@ on:
     paths:
       - "src/ui-ux-pro-max/**"
       - "cli/assets/**"
-      - ".claude/skills/ui-ux-pro-max/data/**"
-      - ".claude/skills/ui-ux-pro-max/scripts/**"
+      - ".claude/skills/**"
       - "cli/scripts/sync-assets.mjs"
+      - "cli/package.json"
+      - "scripts/evaluate-relevance.py"
+      - "scripts/relevance_metrics.py"
       - ".github/workflows/check-asset-sync.yml"
   push:
     branches: [main]
     paths:
       - "src/ui-ux-pro-max/**"
       - "cli/assets/**"
-      - ".claude/skills/ui-ux-pro-max/data/**"
-      - ".claude/skills/ui-ux-pro-max/scripts/**"
+      - "cli/package.json"
+      - ".claude/skills/**"
+      - "cli/scripts/sync-assets.mjs"
+      - ".github/workflows/check-asset-sync.yml"
 
 jobs:
   check-assets:
@@ -34,3 +38,119 @@ jobs:
       # installed as a plugin, and previously had no sync check at all.
       - name: Check assets are in sync with source of truth
         run: npm --prefix cli run check:assets
+      # Path contract (#474): skill instructions and scripts reach their scripts
+      # via skill-relative paths ("scripts/<file>" for the skill's own, "../<skill>/scripts/<file>"
+      # for a sibling sub-skill) so they resolve in every install context: marketplace/
+      # plugin cache, project-level CLI install, CLI --global install, manual copy.
+      # Home-rooted ("~/.claude/skills/<skill>"), project-rooted (".claude/skills/<skill>")
+      # and variable-rooted ("$HOME/...", "${PWD}/...") forms each work in only one of them.
+      # Every file under both skill trees is checked, not just SKILL.md - the first
+      # version of this step looked only at SKILL.md and missed 27 home-rooted paths
+      # one directory down in references/. The one allowed absolute form is
+      # "${CLAUDE_PLUGIN_ROOT}/.claude/skills/ui-ux-pro-max/..." (braced or bare variable,
+      # directly followed by "/"): the core skill's SKILL.md is hand-authored for the
+      # plugin install only and that variable anchors it there. The same variable into a
+      # sub-skill is flagged, because sub-skills are also installed by the CLI where it is
+      # unset - and a third check pins the token itself to that one file (plus the checker
+      # that names it), so a sub-skill cannot borrow the core form either: sub-skills ship
+      # through the CLI too, where the variable does not exist. Both patterns require a path INTO a named skill ("skills/<name>"), so a bare
+      # mention of the directory in prose or a code comment ("~/.claude/skills/, or ...")
+      # is not a hit - naming a skill after "skills/" in prose is.
+      # LC_ALL=C so that only NUL-containing files count as binary and an offending line
+      # with a stray non-UTF-8 byte is printed instead of suppressed as improperly encoded
+      # (the verdict is the same in both locales; the diagnostic is not); -I then skips
+      # .claude/skills/ui-styling/scripts/.coverage, a tracked SQLite database whose
+      # recorded absolute paths contain "/.claude/skills/ui-styling/".
+      # Not covered: backslash-separated Windows spellings and the platform-root-relative
+      # "skills/<skill>/..." form - the docs are bash-fenced and skill-relative, so neither
+      # appears; the positive side (every documented invocation names a file that ships)
+      # is src/ui-ux-pro-max/scripts/tests/test_skill_script_paths.py.
+      # grep exit codes: 0 = hits (violation), 1 = clean, 2 = error - only 1 passes, so an
+      # unreadable file can never turn into a green run (a missing tree is caught above).
+      - name: Path contract - no install-specific skill paths
+        run: |
+          for d in .claude/skills cli/assets/skills; do
+            [ -d "$d" ] || { echo "::error::$d is missing - the path contract has nothing to scan"; exit 1; }
+          done
+          status=0
+          rc=0; LC_ALL=C grep -rnIP '~/\.claude/skills/[A-Za-z0-9_-]+\b' .claude/skills cli/assets/skills || rc=$?
+          if [ "$rc" -ne 1 ]; then
+            echo "::error::home-rooted skill paths (~/.claude/skills/<skill>) only resolve for one install layout - use skill-relative paths (see #474); grep rc=$rc"
+            status=1
+          fi
+          rc=0; LC_ALL=C grep -rnIP '(?<![/\w])\.claude/skills/[A-Za-z0-9_-]+\b|(?<!~)(?<!\$CLAUDE_PLUGIN_ROOT)(?<!\$\{CLAUDE_PLUGIN_ROOT\})/\.claude/skills/[A-Za-z0-9_-]+\b|\$\{?CLAUDE_PLUGIN_ROOT\}?/\.claude/skills/(?!ui-ux-pro-max\b)[A-Za-z0-9_-]+\b' .claude/skills cli/assets/skills || rc=$?
+          if [ "$rc" -ne 1 ]; then
+            echo "::error::project- or variable-rooted skill paths (.claude/skills/<skill>, \$HOME/..., \${CLAUDE_PLUGIN_ROOT}/... outside the core skill) only resolve for one install layout - use skill-relative paths (see #474); grep rc=$rc"
+            status=1
+          fi
+          rc=0; found=$(LC_ALL=C grep -rlIF 'CLAUDE_PLUGIN_ROOT' .claude/skills cli/assets/skills) || rc=$?
+          if [ "$rc" -eq 2 ]; then echo "::error::grep failed while scanning for CLAUDE_PLUGIN_ROOT (rc=2)"; status=1; fi
+          offenders=$(printf '%s\n' "$found" | grep -vxF -e '.claude/skills/ui-ux-pro-max/SKILL.md' -e '.claude/skills/ui-ux-pro-max/scripts/tests/test_skill_script_paths.py' | grep -v '^$' || true)
+          if [ -n "$offenders" ]; then
+            printf '%s\n' "$offenders"
+            echo "::error::CLAUDE_PLUGIN_ROOT is only defined under a plugin install; only the plugin-only core SKILL.md may use it - sub-skills ship through the CLI too (see #474)"
+            status=1
+          fi
+          if [ "$status" -eq 0 ]; then echo "OK: all skill paths are skill-relative"; fi
+          exit "$status"
+      # Bundled-skill contract (#474 finding 2): the skill directories under .claude/skills are
+      # everything a plugin or CLI install ships, so a workflow step that names a skill outside
+      # that set ("frontend-design", "chrome-devtools", ...) or a claudekit command namespace
+      # ("/ckm:brand", "/ck:frontend-design") fails silently or leaves the agent improvising under
+      # either install. #473 made banner-design self-contained; this step keeps every shipped
+      # skill that way. Three greps over every shipped Markdown file in both trees:
+      # 1. no claudekit command namespace - "/ck:" or "/ckm:" not preceded by a word character
+      #    or "/", so a URL or file path containing the letters is not a hit;
+      # 2. every backticked name followed by "skill", "skills" or "sub-skill" (the form these docs
+      #    use to name a skill) must be a directory under .claude/skills - an allowlist, so a new
+      #    unbundled name fails without editing this file. The lookahead walks a list ("`a`, `b`,
+      #    and `c` skills", separators ", ", " and ", " or ", "/", " -> ") so every member is
+      #    checked, not only the last one, and tolerates "**" around the name. The file is read as
+      #    one record (-z, separators as \s+) so a list wrapped over several lines is still a
+      #    list; a hit therefore names the file and the name, not the line;
+      # 3. none of the claudekit-only skill names the shipped docs used to reference, matched
+      #    case-insensitively in their hyphenated spelling - "Related Skills: frontend-design, ..."
+      #    carries neither backticks nor a "skill" suffix, so 2. cannot see it. "project-management"
+      #    is also ordinary English: a hit in prose is a reword, not a workflow step.
+      # Not covered: a spaced or underscored spelling ("frontend design"); a bare name with no
+      # backticks and no "skill" suffix that is not on the list in 3.; mentions inside scripts
+      # (brand/scripts/extract-colors.cjs names ai-multimodal three times as a hint, one of them
+      # "if installed" - not a workflow step); cli/assets/templates, the CLI's rendered core skill,
+      # which neither this step nor the path contract scans (clean at the time of writing); and a
+      # bundled-set change - a skill directory added or removed under .claude/skills moves the
+      # allowlist with it, which is the intent.
+      # grep exit codes as above: for 1. and 3. only 1 (no hits) passes; for 2. hits are fine as
+      # long as every name is bundled, and 2 (error) never passes.
+      - name: Bundled-skill contract - no unbundled skill or claudekit command references
+        run: |
+          [ -d .claude/skills ] || { echo "::error::.claude/skills is missing - the bundled set cannot be derived"; exit 1; }
+          bundled=$(find .claude/skills -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | LC_ALL=C sort)
+          [ -n "$bundled" ] || { echo "::error::.claude/skills has no skill directories - the bundled set cannot be derived"; exit 1; }
+          status=0
+          rc=0; LC_ALL=C grep -rnIP --include='*.md' '(?<![\w/])/ckm?:' .claude/skills cli/assets/skills || rc=$?
+          if [ "$rc" -ne 1 ]; then
+            echo "::error::claudekit command namespaces (/ck:, /ckm:) are not shipped by this plugin - name the bundled skill instead (see #474 finding 2); grep rc=$rc"
+            status=1
+          fi
+          rc=0; hits=$(LC_ALL=C grep -rzoIP --include='*.md' '`[a-z0-9-]+`(?:\*\*)?(?=(?:(?:,\s+|\s+and\s+|,\s+and\s+|\s+or\s+|,\s+or\s+|/|\s+→\s+|\s+->\s+)(?:\*\*)?`[a-z0-9-]+`(?:\*\*)?)*\s+(?:sub-)?[Ss]kills?\b)' .claude/skills cli/assets/skills | tr '\0' '\n'; exit "${PIPESTATUS[0]}") || rc=$?
+          if [ "$rc" -eq 2 ]; then echo "::error::grep failed while scanning for skill references (rc=2)"; status=1; fi
+          unbundled=0
+          while IFS= read -r hit; do
+            [ -n "$hit" ] || continue
+            name=$(printf '%s\n' "$hit" | sed 's/.*`\([^`]*\)`.*/\1/')
+            if ! printf '%s\n' "$bundled" | grep -qxF -- "$name"; then
+              printf '%s\n' "$hit"
+              unbundled=1
+            fi
+          done <<< "$hits"
+          if [ "$unbundled" -ne 0 ]; then
+            echo "::error::skill references outside the bundled set ($(printf '%s' "$bundled" | tr '\n' ' ')) fail under a plugin or CLI install - implement the step inline, name a bundled skill, or drop the step (see #474 finding 2)"
+            status=1
+          fi
+          rc=0; LC_ALL=C grep -rniIP --include='*.md' '\b(frontend-design|ai-artist|ai-multimodal|chrome-devtools|assets-organizing|project-management)\b' .claude/skills cli/assets/skills || rc=$?
+          if [ "$rc" -ne 1 ]; then
+            echo "::error::claudekit-only skill names are not shipped by this plugin - implement the step inline, name a bundled skill, or drop the step (see #474 finding 2); grep rc=$rc"
+            status=1
+          fi
+          if [ "$status" -eq 0 ]; then echo "OK: shipped skill docs reference only bundled skills"; fi
+          exit "$status"

@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "protocol_id": "synthetic_transfer",
+  "mode": "offline",
+  "units": {
+    "volume": "uL",
+    "length": "mm",
+    "rate": "uL/s",
+    "time": "s"
+  },
+  "deck": {
+    "name": "synthetic_deck",
+    "size_mm": {
+      "x": 600.0,
+      "y": 400.0,
+      "z": 200.0
+    }
+  },
+  "resources": [
+    {
+      "name": "source_plate",
+      "kind": "plate",
+      "location_mm": {
+        "x": 10.0,
+        "y": 10.0,
+        "z": 0.0
+      },
+      "size_mm": {
+        "x": 127.76,
+        "y": 85.48,
+        "z": 15.0
+      },
+      "grid": {
+        "rows": 8,
+        "columns": 12,
+        "well_capacity_uL": 360.0,
+        "dead_volume_uL": 20.0,
+        "well_depth_mm": 11.0
+      },
+      "initial_volumes_uL": {
+        "A1": 200.0,
+        "B1": 150.0
+      }
+    },
+    {
+      "name": "destination_plate",
+      "kind": "plate",
+      "location_mm": {
+        "x": 160.0,
+        "y": 10.0,
+        "z": 0.0
+      },
+      "size_mm": {
+        "x": 127.76,
+        "y": 85.48,
+        "z": 15.0
+      },
+      "grid": {
+        "rows": 8,
+        "columns": 12,
+        "well_capacity_uL": 360.0,
+        "dead_volume_uL": 0.0,
+        "well_depth_mm": 11.0
+      },
+      "initial_volumes_uL": {
+        "A1": 0.0,
+        "B1": 0.0
+      }
+    },
+    {
+      "name": "tips",
+      "kind": "tip_rack",
+      "location_mm": {
+        "x": 10.0,
+        "y": 120.0,
+        "z": 0.0
+      },
+      "size_mm": {
+        "x": 127.76,
+        "y": 85.48,
+        "z": 60.0
+      },
+      "grid": {
+        "rows": 8,
+        "columns": 12,
+        "tip_capacity_uL": 300.0
+      },
+      "tip_type": "generic_300uL",
+      "tips_available": [
+        "A1",
+        "B1",
+        "C1"
+      ]
+    },
+    {
+      "name": "waste",
+      "kind": "waste",
+      "location_mm": {
+        "x": 320.0,
+        "y": 120.0,
+        "z": 0.0
+      },
+      "size_mm": {
+        "x": 100.0,
+        "y": 100.0,
+        "z": 100.0
+      }
+    }
+  ],
+  "constraints": {
+    "allowed_liquid_classes": [
+      "water_validated"
+    ],
+    "allowed_tip_types": [
+      "generic_300uL"
+    ],
+    "channels": 8,
+    "requires_human_confirmation": true,
+    "max_transfer_uL": 250.0,
+    "max_rate_uL_s": 500.0
+  }
+}

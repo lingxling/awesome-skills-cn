@@ -2,18 +2,28 @@
 
 Thanks for helping improve Scientific Agent Skills. This guide explains how to add or update a skill in this repository while following the open [Agent Skills specification](https://agentskills.io/specification).
 
+Participation in this project is governed by our [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Ways to Contribute
 
 - Add a new scientific package, database, platform, workflow, or research method skill.
 - Improve an existing skill with clearer instructions, current APIs, better examples, references, or scripts.
 - Fix outdated examples, broken install steps, security issues, or documentation gaps.
+- Add or extend a skill's tests under `tests/<skill-name>/` (see [Tests](#tests)).
 - Report bugs or request new skills through GitHub Issues.
 
 ## Skill Location
 
-All repository skills live under `skills/`:
+All repository skills live under `skills/`. The repository root is also an
+[Agent Plugins](https://agent-plugins.org/) package: keep root `plugin.json` schema-valid, do not
+add non-portable top-level fields, and keep its `version` in sync with `pyproject.toml` whenever
+you bump the collection version. After `uv sync`, run
+`uv run python -m pytest tests/_meta -q` to check the manifest against the bundled official
+1.0.0 JSON Schema, version synchronization, package-path containment, and skill structure.
+These checks run in CI on manifest-only changes as well as skill changes.
 
 ```text
+plugin.json
 skills/
 └── skill-name/
     ├── SKILL.md
@@ -28,7 +38,11 @@ Only `SKILL.md` is required. Use optional directories when they make the skill e
 - `scripts/` for executable helpers, validators, or reusable workflow code.
 - `assets/` for templates, static resources, or example data.
 
+Those four are the only directories a skill may contain. Anything else — tests, fixtures, scratch data, generated output — belongs outside `skills/`.
+
 Keep references one level deep from `SKILL.md` where possible, and keep the main `SKILL.md` concise. The Agent Skills specification recommends keeping `SKILL.md` under 500 lines and using progressive disclosure for longer material.
+
+A skill directory holds only what an agent loads, so tests do not belong there. They live in the repository-level suite under `tests/<skill-name>/`, mirroring the skill directory name, with any fixtures in `tests/<skill-name>/fixtures/`. See [Tests](#tests).
 
 ## Required Skill Format
 
@@ -40,7 +54,9 @@ Use this minimum template:
 ---
 name: skill-name
 description: Clear description of what the skill does and when an agent should use it.
-metadata: {"version": "1.0", "skill-author": "Your Name"}
+metadata:
+  version: "1.0"
+  skill-author: Your Name
 ---
 
 # Skill Title
@@ -70,19 +86,33 @@ Follow the [Agent Skills specification](https://agentskills.io/specification) an
 - `description` should explain both what the skill does and when an agent should use it.
 - `metadata.version` is required in this repository, even though `metadata` is optional in the upstream spec.
 - Version values must be quoted numeric strings, such as `"1.0"` or `"1.1"`.
-- **Write `metadata` as a single-line JSON object** (flow style), for example `metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}`. This is valid YAML — so it parses identically in Claude Code, Cursor, Codex, Hermes, Pi, and any Agent Skills-compliant host — and it is the only form OpenClaw's line-based frontmatter reader can parse (a multi-line block `metadata:` is silently dropped there). Do not use a nested `metadata:` block.
+- **Only the six fields defined by the specification are allowed** at the top level: `name`, `description`, `license`, `compatibility`, `allowed-tools`, and `metadata`. The spec defines a closed set and the reference validator rejects any other top-level key, so everything else belongs under `metadata`.
+- **Write `metadata` as a block mapping, not single-line JSON.** The reference validator parses frontmatter with `strictyaml`, which rejects JSON-style flow mappings. A flow mapping does not merely fail one check — the entire frontmatter fails to parse, so `name` and `description` become unreadable and the skill does not register.
+
+  ```yaml
+  # Wrong -- breaks the reference validator
+  metadata: {"version": "1.0", "skill-author": "K-Dense Inc."}
+
+  # Right
+  metadata:
+    version: "1.0"
+    skill-author: K-Dense Inc.
+  ```
 
 Optional frontmatter fields from the specification may be used when relevant:
 
 - `license`: the license for the individual skill, if different or worth stating explicitly.
-- `compatibility`: environment requirements such as Python version, system packages, agent host, or network access.
-- `metadata`: additional metadata. Must be a single-line JSON object (see above). Common keys: `version` (required), `skill-author`, an optional `openclaw` block, and an optional `hermes` block (see below).
-- `allowed-tools`: space-separated tool permissions for hosts that support this experimental field.
-- `required_environment_variables`: top-level Hermes credential declarations (see below). Other hosts ignore it.
+- `compatibility`: environment requirements such as Python version, system packages, agent host, or network access. Maximum 500 characters.
+- `metadata`: additional metadata, as a block mapping of string keys to string values. Quote any value that would otherwise parse as a number, boolean, or date (`version: "1.0"`, `last-reviewed: "2026-07-23"`). Common keys: `version` (required), `skill-author`, and an optional nested `openclaw` or `hermes` block (see below).
+- `allowed-tools`: a **space-separated string** of tool permissions for hosts that support this experimental field, for example `allowed-tools: Read Write Edit Bash`. Not a YAML list.
 
 ### OpenClaw gating (`metadata.openclaw`)
 
-OpenClaw reads an optional `openclaw` object nested inside `metadata` for dependency gating, credential injection, and display. Because it lives under `metadata`, the Agent Skills spec permits it and other hosts ignore it. It is only needed for skills with external requirements (credentials, daemons, specific binaries) — most skills omit it entirely. Supported keys:
+OpenClaw reads an optional `openclaw` object nested inside `metadata` for dependency gating, credential injection, and display. Because it lives under `metadata`, the Agent Skills spec permits it and other hosts ignore it. It is only needed for skills with external requirements (credentials, daemons, specific binaries) — most skills omit it entirely.
+
+**Keep this block a nested mapping — never a JSON string.** OpenClaw's `resolveOpenClawManifestBlock()` requires `typeof candidate === "object"`, so a stringified block silently disables gating and credential injection with no error. This is the one documented exception to the string-values rule for `metadata`, and it still passes `skills-ref validate`.
+
+Supported keys:
 
 - `requires`: hard eligibility gates — `{"bins": [...]}` (all must be on `PATH`), `{"anyBins": [...]}` (at least one), `{"env": [...]}` (vars that must be set), `{"config": [...]}`. A failed gate hides the skill from the agent, so only gate on things the skill genuinely cannot run without.
 - `primaryEnv`: the main credential variable; OpenClaw injects it from its config (`skills.entries.<name>.apiKey`).
@@ -93,29 +123,57 @@ OpenClaw reads an optional `openclaw` object nested inside `metadata` for depend
 Example (an API-key skill that stays available even without the key set, so it gates nothing and only declares the credential):
 
 ```yaml
-metadata: {"version": "1.0", "skill-author": "K-Dense Inc.", "openclaw": {"primaryEnv": "EXA_API_KEY", "envVars": [{"name": "EXA_API_KEY", "required": true, "description": "Exa search API key."}]}}
+metadata:
+  version: "1.0"
+  skill-author: K-Dense Inc.
+  openclaw:
+    primaryEnv: EXA_API_KEY
+    envVars:
+      - name: EXA_API_KEY
+        required: true
+        description: Exa search API key.
 ```
 
 ### Hermes compatibility (`required_environment_variables` and `metadata.hermes`)
 
 [Hermes](https://hermes-agent.nousresearch.com/docs) is Agent Skills-compatible, so every skill in this repository already loads and runs there with no changes. Two optional fields make credentialed skills first-class on Hermes:
 
-- **`required_environment_variables`** (top level): the credentials Hermes should prompt for. Write it as a single-line JSON array — `[{"name": "X_API_KEY", "prompt": "What it is", "required_for": "full functionality"}]`. This is the one Hermes-specific field that is *not* nested under `metadata`, because Hermes reads secrets at the top level. Writing it as single-line JSON keeps it valid YAML for every host and lets OpenClaw's line-based reader skip it cleanly; Claude Code, Cursor, and Codex ignore the unknown key. Mirror the same variables you declare in `metadata.openclaw.envVars`, using `required_for: "full functionality"` for required vars and `"optional features"` for optional ones.
-- **`metadata.hermes`** (nested, spec-safe like `openclaw`): optional classification and gating — `tags`, `category`, `requires_toolsets`, `fallback_for_toolsets`. A failed `requires_toolsets` gate *hides* the skill, so only gate on a tool the skill genuinely cannot run without; prefer leaving it unset so the skill stays available.
+- **`metadata.hermes`** (nested, spec-safe like `openclaw`): optional classification and gating — `tags`, `category`, `requires_toolsets`, `fallback_for_toolsets`. A failed `requires_toolsets` gate *hides* the skill, so only gate on a tool the skill genuinely cannot run without; prefer leaving it unset so the skill stays available. Keep it a nested mapping, not a JSON string.
 
-Example (an API-key skill, declaring its credential for Hermes alongside the OpenClaw block):
+Example (an API-key skill, declaring its credential for OpenClaw and classifying itself for Hermes):
 
 ```yaml
-required_environment_variables: [{"name": "EXA_API_KEY", "prompt": "Exa search API key.", "required_for": "full functionality"}]
-metadata: {"version": "1.0", "skill-author": "Exa", "openclaw": {"primaryEnv": "EXA_API_KEY", "envVars": [{"name": "EXA_API_KEY", "required": true, "description": "Exa search API key."}]}}
+metadata:
+  version: "1.0"
+  skill-author: Exa
+  openclaw:
+    primaryEnv: EXA_API_KEY
+    envVars:
+      - name: EXA_API_KEY
+        required: true
+        description: Exa search API key.
+  hermes:
+    category: research
 ```
+
+### `required_environment_variables` is not used in this repository
+
+Hermes also reads a **top-level** `required_environment_variables` array to prompt for credentials. That field cannot coexist with spec conformance: the specification defines a closed set of six top-level fields, so the reference validator rejects it outright — and because `strictyaml` fails the whole frontmatter block on an unknown-shaped document, the failure is not confined to that one key.
+
+This repository therefore does not use it. Declare credentials in two spec-legal places instead:
+
+- `compatibility` — a human- and agent-readable sentence naming the variables the skill needs.
+- `metadata.openclaw.envVars` — the machine-readable declaration, which ClawHub's security analysis also checks against the variables your scripts actually reference.
+
+Skills still load and run on Hermes; only its automatic credential prompt is unavailable, and the required variables remain discoverable from the two fields above.
 
 ## Versioning
 
-Every `SKILL.md` must include a quoted `version` inside the single-line `metadata` object:
+Every `SKILL.md` must include a quoted `version` inside the `metadata` mapping:
 
 ```yaml
-metadata: {"version": "1.0"}
+metadata:
+  version: "1.0"
 ```
 
 For a new skill, start at `"1.0"`.
@@ -158,9 +216,17 @@ Good skills are specific, practical, and easy for an agent to apply.
 
 5. Test any commands, code examples, and scripts included in the skill.
 
-6. Update related documentation if the new skill changes repository-level lists, examples, or setup guidance.
+6. If the skill ships `scripts/`, add their tests in the repository-level suite, not in the skill directory:
 
-7. Run validation and security checks before opening a pull request.
+   ```text
+   tests/skill-name/
+   ```
+
+   See [Tests](#tests) for the layout, the path anchor to use, and how to run them.
+
+7. Update related documentation if the new skill changes repository-level lists, examples, or setup guidance.
+
+8. Run validation and security checks before opening a pull request.
 
 ## Updating an Existing Skill
 
@@ -169,17 +235,22 @@ Good skills are specific, practical, and easy for an agent to apply.
 3. Make the smallest useful change that fixes or improves the skill.
 4. Increment `metadata.version`.
 5. Test changed examples, commands, and scripts.
-6. Note any behavior changes in the pull request description.
+6. Run the skill's suite if it has one: `uv run --with pytest python -m pytest tests/skill-name -q`. Suites check that `metadata.version` is present and quoted, not what it equals, so a version bump never needs a matching test edit.
+7. Note any behavior changes in the pull request description.
 
 ## Validation
 
-Validate Agent Skills format with the reference validator:
+Validate Agent Skills format with the reference validator, which is already a dev dependency:
 
 ```bash
-skills-ref validate ./skills/skill-name
+uv sync
+uv run skills-ref validate ./skills/skill-name
+
+# or check every skill at once, the same way CI does
+for d in skills/*/; do uv run skills-ref validate "$d"; done
 ```
 
-If `skills-ref` is not installed, follow the installation instructions from the [skills-ref reference library](https://github.com/agentskills/agentskills/tree/main/skills-ref).
+CI runs this on every pull request that touches `skills/`, along with the repo-specific checks in `.github/workflows/skill-spec-validation.yml` (a required `metadata.version`, `allowed-tools` as a string, quoted `metadata` scalars, and a warning above 500 lines).
 
 Security-scan new or substantially changed skills:
 
@@ -190,17 +261,103 @@ skill-scanner scan ./skills/skill-name --use-behavioral
 
 A clean scan reduces review noise but does not replace manual review.
 
+## Tests
+
+**Tests never live under `skills/`.** A skill directory ships only what an agent loads, so tests go in the repository-level suite instead — one directory per skill, named exactly after the skill directory:
+
+```text
+tests/
+└── skill-name/          # matches skills/skill-name/
+    ├── test_scripts.py
+    └── fixtures/        # optional test data
+```
+
+A test reaches the skill it covers through an explicit anchor rather than a relative walk:
+
+```python
+SKILL_ROOT = Path(__file__).resolve().parents[2] / "skills" / "skill-name"
+```
+
+Anything the CLIs under test resolve relative to the working directory should be repo-root relative, since the suite runs from the repository root — `tests/skill-name/fixtures/manifest.json`, not `fixtures/manifest.json`.
+
+Run one skill's suite, or the whole tree:
+
+```bash
+uv run --with pytest python -m pytest tests/skill-name -q
+
+# every skill, in a separate process each, after the repo-wide guard
+uv run --with pytest python tests/run_all.py
+```
+
+Each skill's suite must run in its own process. Skills' `scripts/` directories own plain top-level module names — 32 skills ship a `scripts/_common.py`, and names like `cluster.py` and `validate_manifest.py` recur — so collecting two skills into one interpreter would resolve those imports to whichever skill was imported first and silently test the wrong files. `tests/conftest.py` rejects a multi-skill session, and `tests/run_all.py` forks per skill.
+
+### The repo-wide guard, and what you no longer have to write
+
+```bash
+uv run --with pytest python -m pytest tests/_meta -q
+```
+
+`tests/_meta` is the check to run first and the one CI blocks on. It needs no scientific packages and finishes in seconds. It spans every skill at once — safe, because it parses scripts with `ast` and never imports them — and it enforces the rule this whole layout exists for: **a skill that ships `scripts/` must have a suite at `tests/<name>/` and a `[skills.<name>]` entry in `skill-requirements.toml`.** It also runs the shared structural contract over every skill: frontmatter conformance, the 500-line `SKILL.md` limit, no tests or compiled bytecode under `skills/`, every local link resolving, every script parsing, no `eval`/`exec`/`os.system`, no script shadowing a standard-library module, no hardcoded local path, and valid shell scripts.
+
+Because `tests/_meta` already covers all of that repo-wide, a per-skill suite should not repeat it. Write only what is specific to the skill, and pull the shared pieces from `tests/_contract/`, which `tests/conftest.py` registers as the importable module `skill_contract`:
+
+```python
+import skill_contract
+
+# every argparse script answers --help; skips when the skill's packages are
+# absent, and runs for real under --isolated
+CliHelpTests = skill_contract.cli.help_test_case(SKILL_ROOT)
+
+# for scripts that are importable libraries with a worked example under
+# `if __name__ == "__main__":` rather than argparse CLIs
+DemoBlockTests = skill_contract.cli.demo_test_case(SKILL_ROOT, ("doe_designs.py",))
+```
+
+`skill_contract.schematic` covers the AI schematic generator that several skills ship byte-identical copies of. Instantiate it against your skill root rather than writing the tests again; `tests/_meta` separately fails if the copies drift apart, so those files have to be changed together.
+
+Guard heavy imports at module scope so a suite degrades to skips rather than a collection error when a package is missing:
+
+```python
+np = pytest.importorskip("numpy", reason="skill-name needs numpy")
+```
+
+### One environment per skill
+
+Scientific dependencies are deliberately absent from the repository's default environment, and installing them all into one environment is not possible: the skills' upstream pins contradict each other. `opentrons` requires `numpy<2`; `esm` caps `transformers` below the release the `transformers` skill targets; `geniml` and `spikeinterface` pin `zarr<3` while the `zarr-python` skill targets 3.x; `bioservices` caps `lxml<6` while `matchms` requires 6.0.2+; and `pytdc`, `deepchem`, `histolab`, `vaex`, and `ete3` each need an interpreter older than 3.13.
+
+`--isolated` therefore gives each skill its own throwaway `uv` environment, built from [`tests/skill-requirements.toml`](tests/skill-requirements.toml):
+
+```bash
+python tests/run_all.py --isolated                    # every suite, one env each
+python tests/run_all.py --isolated qutip exa-search   # just these
+```
+
+Nothing is installed into the project environment, so `uv sync` is unaffected. Each `[skills.<name>]` entry lists the packages that skill documents and, where needed, a `python` version for that skill alone — uv downloads the interpreter on demand. Packages that cannot be installed at all (a GitHub-only SDK, a conda-forge-only library, a CUDA build) are listed under `[unavailable]` with the reason, and the runner prints them so the gap appears in the test output.
+
+An entry may also set `uv_config = "tests/<name>/uv.toml"` for extra isolated-build dependencies. The runner applies the file only to that skill's uv process, and `tests/_meta` checks that it is valid TOML inside the skill's test directory. System compilers and native libraries remain separate prerequisites.
+
+A new skill that ships `scripts/` needs a `[skills.<name>]` entry — `tests/_meta` fails without one. Use `packages = []` when its bundled tooling is standard-library only — the skill still gets a clean environment with just pytest. uv caches wheels globally, so repeat runs create each environment in milliseconds.
+
+`.github/workflows/skill-tests.yml` runs `tests/_meta` in the project environment (including the `jsonschema` dev dependency) plus every `packages = []` suite on each relevant pull request. Those isolated skill suites need no wheels beyond pytest. The full `--isolated` sweep is not run in CI: it builds an environment per skill, and several of them need a CUDA toolchain, a JDK, or a local MATLAB install that a runner does not have. Run it locally before a release, and whenever you change anything under `tests/_contract/`.
+
 ## Pull Request Checklist
 
 Before submitting a pull request, confirm:
 
 - The skill directory name and `name` frontmatter match exactly.
+- The skill directory contains only `SKILL.md`, `references/`, `scripts/`, and `assets/` — no `tests/` directory and no `test_*.py` files. Tests live in `tests/<skill-name>/`.
 - `SKILL.md` has valid YAML frontmatter and Markdown body content.
-- `metadata` is a single-line JSON object (not a multi-line block), so it parses on OpenClaw as well as Claude Code, Cursor, Codex, Hermes, and Pi.
-- If the skill needs credentials, `required_environment_variables` is present as a single-line JSON array and mirrors the variables in `metadata.openclaw.envVars`.
+- `uv run skills-ref validate ./skills/<name>` passes.
+- Only the six spec-defined top-level fields are present; anything else lives under `metadata`.
+- `metadata` is a block mapping, not single-line JSON, and its scalar values are quoted where needed.
+- Any `metadata.openclaw` or `metadata.hermes` block is a nested mapping, not a JSON string.
+- If the skill needs credentials, they are named in `compatibility` and declared in `metadata.openclaw.envVars`.
 - `metadata.version` exists and is quoted.
 - Existing skills have a version bump when changed.
+- If the collection version changes, `plugin.json` `version` matches `pyproject.toml`.
 - The `description` clearly says what the skill does and when to use it.
+- `uv run --with pytest python -m pytest tests/_meta -q` passes. This is what CI blocks on, and it catches a missing suite, a missing `skill-requirements.toml` entry, a broken local link, a leaked local path, and a `SKILL.md` over 500 lines.
+- If the skill ships `scripts/`: a suite exists at `tests/<skill-name>/`, a `[skills.<skill-name>]` entry exists in `tests/skill-requirements.toml`, and `python tests/run_all.py --isolated <skill-name>` passes.
 - Examples and scripts have been tested or clearly marked as illustrative.
 - No secrets, credentials, private data, or unsafe instructions are included.
 - Relevant official documentation is linked where useful.

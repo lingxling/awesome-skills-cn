@@ -96,6 +96,43 @@ def init_repo(*, with_skill: bool = True) -> tuple[Path, str]:
 
 
 class ChangedSkillEvidenceTests(unittest.TestCase):
+    def test_canonical_skill_lookup_checks_only_path_ancestors(self):
+        class NonIterableRoots(set):
+            def __iter__(self):
+                raise AssertionError("canonical lookup must not scan every skill root")
+
+        roots = NonIterableRoots({"parent", "parent/child", "unrelated"})
+
+        self.assertEqual(
+            changed_skill_evidence.canonical_skill_id(
+                "skills/parent/child/references/example.md", roots
+            ),
+            "parent/child",
+        )
+        self.assertIsNone(
+            changed_skill_evidence.canonical_skill_id("docs/example.md", roots)
+        )
+
+    def test_copy_into_existing_skill_is_a_modification(self):
+        record = changed_skill_evidence.ChangeRecord(
+            status="C",
+            old_path="skills/source/SKILL.md",
+            new_path="skills/target/references/detailed-guide.md",
+            old_mode="100644",
+            new_mode="100644",
+            old_oid="a" * 40,
+            new_oid="b" * 40,
+            similarity=90,
+        )
+
+        pairs = changed_skill_evidence.skill_pairs(
+            [record],
+            {"source", "target"},
+            {"source", "target"},
+        )
+
+        self.assertEqual(pairs, [("target", "target", [record])])
+
     def test_mixed_copy_and_rename_keep_distinct_change_types(self):
         root, base = init_repo()
         original = root / "skills/example/SKILL.md"
@@ -150,6 +187,30 @@ class ChangedSkillEvidenceTests(unittest.TestCase):
 
         self.assertTrue(any("unsafe_snapshot_regression:100755:run.sh" in reason for reason in report["reasons"]))
 
+    def test_legacy_executable_skill_markdown_can_be_normalized_and_compared(self):
+        root, _ = init_repo()
+        path = root / "skills/example/SKILL.md"
+        os.chmod(path, 0o755)
+        git(root, "add", ".")
+        git(root, "commit", "-m", "legacy executable skill markdown")
+        base = git(root, "rev-parse", "HEAD")
+        path.write_text(
+            path.read_text(encoding="utf-8").replace("risk: safe", "risk: critical"),
+            encoding="utf-8",
+        )
+        os.chmod(path, 0o644)
+        git(root, "add", ".")
+        git(root, "commit", "-m", "normalize skill markdown")
+
+        report = changed_skill_evidence.build_report(root, base, "HEAD")
+
+        change = report["changes"][0]
+        self.assertIsNotNone(change["before"])
+        self.assertIsNotNone(change["after"])
+        self.assertEqual(change["before"]["risk"]["declared"], "safe")
+        self.assertEqual(change["after"]["risk"]["declared"], "critical")
+        self.assertFalse(change["blocking"])
+
     def test_skill_markdown_replaced_by_gitlink_is_not_treated_as_deletion(self):
         root, base = init_repo()
         git(root, "rm", "skills/example/SKILL.md")
@@ -169,7 +230,10 @@ class ChangedSkillEvidenceTests(unittest.TestCase):
         target = root / "skills/copied/SKILL.md"
         target.parent.mkdir(parents=True)
         target.write_text(source.read_text(encoding="utf-8").replace("name: example", "name: copied"), encoding="utf-8")
-        source.write_text(source.read_text(encoding="utf-8").replace("## Examples", "## Removed Examples"), encoding="utf-8")
+        source.write_text(
+            source.read_text(encoding="utf-8").replace("## Examples\n```bash\necho hello\n```\n", ""),
+            encoding="utf-8",
+        )
         git(root, "add", ".")
         git(root, "commit", "-m", "copy plus source regression")
 
@@ -178,7 +242,7 @@ class ChangedSkillEvidenceTests(unittest.TestCase):
         by_id = {change["new_skill_id"]: change for change in report["changes"]}
         self.assertIn("copied", by_id)
         self.assertIn("example", by_id)
-        self.assertTrue(any("example:score_decreased" in reason for reason in report["reasons"]))
+        self.assertTrue(any("example:audit_warning_regression:missing_examples" in reason for reason in report["reasons"]))
 
     def test_security_severity_downgrade_is_not_a_regression(self):
         root, _ = init_repo()
@@ -346,7 +410,6 @@ class ChangedSkillEvidenceTests(unittest.TestCase):
         self.assertTrue(first["blocking"])
         self.assertEqual(first["changes"][0]["change_type"], "modified")
         self.assertTrue(any("missing_examples" in reason for reason in first["reasons"]))
-        self.assertTrue(any("score_decreased" in reason for reason in first["reasons"]))
         self.assertEqual(changed_skill_evidence.stable_json(first), changed_skill_evidence.stable_json(second))
         self.assertNotIn("generated_at", first)
 
@@ -430,43 +493,98 @@ class ChangedSkillEvidenceTests(unittest.TestCase):
         self.assertIn("external:provenance_identity_changed:source_type", report["reasons"])
         self.assertIn("external:provenance_identity_changed:source_repo", report["reasons"])
 
-    def test_score_component_regression_blocks_even_if_total_does_not_decrease(self):
+    def test_exact_trusted_repo_rename_exception_allows_only_recorded_transition(self):
+        root, _ = init_repo(with_skill=False)
+        path = write_skill(
+            root,
+            "external",
+            source="community",
+            source_type="community",
+            source_repo="owner/old-name",
+        )
+        git(root, "add", ".")
+        git(root, "commit", "-m", "external base")
+        base = git(root, "rev-parse", "HEAD")
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                "source_repo: owner/old-name", "source_repo: owner/new-name"
+            ),
+            encoding="utf-8",
+        )
+        git(root, "add", ".")
+        git(root, "commit", "-m", "rename upstream")
+        head = git(root, "rev-parse", "HEAD")
+
+        blocked = changed_skill_evidence.build_report(root, base, head)
+        self.assertIn("external:provenance_identity_changed:source_repo", blocked["reasons"])
+
+        ledger = root / changed_skill_evidence.PROVENANCE_EXCEPTION_PATH
+        ledger.parent.mkdir(parents=True)
+        ledger.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "exceptions": [
+                        {
+                            "skill_id": "external",
+                            "field": "source_repo",
+                            "before": "owner/old-name",
+                            "after": "owner/new-name",
+                            "upstream_repository_id": 12345,
+                            "verified_at": "2026-07-28",
+                            "evidence_url": "https://github.com/owner/new-name",
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        git(root, "add", ".")
+        git(root, "commit", "-m", "trusted rename policy")
+        policy = git(root, "rev-parse", "HEAD")
+
+        allowed = changed_skill_evidence.build_report(
+            root, base, head, policy_ref=policy
+        )
+        self.assertFalse(allowed["blocking"])
+        self.assertEqual(
+            allowed["provenance_exceptions_applied"],
+            ["external:source_repo:owner/old-name->owner/new-name"],
+        )
+
+        path.write_text(
+            path.read_text(encoding="utf-8").replace(
+                "source_repo: owner/new-name", "source_repo: owner/other-name"
+            ),
+            encoding="utf-8",
+        )
+        git(root, "add", ".")
+        git(root, "commit", "-m", "unrecorded rename")
+        unrecorded_head = git(root, "rev-parse", "HEAD")
+        unrecorded = changed_skill_evidence.build_report(
+            root, base, unrecorded_head, policy_ref=policy
+        )
+        self.assertIn(
+            "external:provenance_identity_changed:source_repo", unrecorded["reasons"]
+        )
+
+    def test_declared_risk_downgrade_blocks(self):
         before = {
             "audit": {"findings": {}},
             "security": {"flags": []},
-            "risk": {"declared": "safe", "suggested": "safe"},
-            "score": {
-                "scores": {
-                    "metadata": 90.0,
-                    "documentation": 80.0,
-                    "security": 90.0,
-                    "total": 86.0,
-                }
-            },
+            "risk": {"declared": "safe"},
         }
         after = {
             "audit": {"findings": {}},
             "security": {"flags": []},
-            "risk": {"declared": "safe", "suggested": "safe"},
-            "score": {
-                "scores": {
-                    "metadata": 100.0,
-                    "documentation": 70.0,
-                    "security": 90.0,
-                    "total": 86.0,
-                }
-            },
+            "risk": {"declared": "none"},
         }
 
         reasons = changed_skill_evidence.regression_reasons(
             "example", "modified", before, after
         )
 
-        self.assertIn(
-            "example:score_component_decreased:documentation:80.0->70.0",
-            reasons,
-        )
-        self.assertFalse(any(reason.startswith("example:score_decreased:") for reason in reasons))
+        self.assertEqual(reasons, ["example:risk_downgrade:safe->none"])
 
     def test_explicit_repo_argument_uses_requested_git_repository(self):
         root, base = init_repo()

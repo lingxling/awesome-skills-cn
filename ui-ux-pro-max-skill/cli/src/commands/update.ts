@@ -1,4 +1,5 @@
 import { execFileSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -14,11 +15,18 @@ const CLI_PACKAGE_NAME = 'ui-ux-pro-max-cli';
 
 interface UpdateOptions {
   ai?: AIType;
+  global?: boolean;
   token?: string;
 }
 
 async function getPackageVersion(): Promise<string> {
-  const packagePath = join(__dirname, '..', 'package.json');
+  const packageCandidates = [
+    // Bun bundle or root: dist/index.js -> ../package.json
+    join(__dirname, '..', 'package.json'),
+    // TypeScript fallback: dist/commands/update.js -> ../../package.json
+    join(__dirname, '..', '..', 'package.json'),
+  ];
+  const packagePath = packageCandidates.find(path => existsSync(path)) ?? packageCandidates[0];
   const pkg = JSON.parse(await readFile(packagePath, 'utf-8')) as { version: string };
   return pkg.version;
 }
@@ -38,6 +46,9 @@ export async function updateCommand(options: UpdateOptions): Promise<void> {
     const latestVersion = normalizeTagVersion(release.tag_name);
     spinner.succeed(`Latest version: ${chalk.cyan(release.tag_name)}`);
 
+    const aiFlag = options.ai ? ` --ai ${options.ai}` : ' --ai <platform>';
+    const globalFlag = options.global ? ' --global' : '';
+
     if (currentVersion !== latestVersion) {
       console.log();
 
@@ -46,7 +57,7 @@ export async function updateCommand(options: UpdateOptions): Promise<void> {
       if (!/^\d+\.\d+\.\d+([.-][0-9A-Za-z.-]+)?$/.test(latestVersion)) {
         logger.warn(`Installed CLI is ${chalk.cyan(currentVersion)}; latest release is ${chalk.cyan(release.tag_name)}.`);
         logger.info(`Update the CLI package: ${chalk.cyan(`npm install -g ${CLI_PACKAGE_NAME}@${latestVersion}`)}`);
-        logger.info('Then rerun: uipro init --ai <platform> --force');
+        logger.info(`Then rerun: uipro init${aiFlag} --force${globalFlag}`);
         return;
       }
 
@@ -71,7 +82,7 @@ export async function updateCommand(options: UpdateOptions): Promise<void> {
 
       console.log();
       logger.success(`Updated to ${chalk.cyan(latestVersion)}.`);
-      logger.info(`Now rerun ${chalk.cyan('uipro init --ai <platform> --force')} to refresh your skill files.`);
+      logger.info(`Now rerun ${chalk.cyan(`uipro init${aiFlag} --force${globalFlag}`)} to refresh your skill files.`);
       return;
     }
 
@@ -82,6 +93,7 @@ export async function updateCommand(options: UpdateOptions): Promise<void> {
     await initCommand({
       ai: options.ai,
       force: true,
+      global: options.global,
       token: options.token,
     });
   } catch (error) {

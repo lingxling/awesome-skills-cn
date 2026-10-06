@@ -1,6 +1,6 @@
 # SQL Query Patterns for IDC
 
-**Tested with:** idc-index 0.11.14 (IDC data version v23)
+**Tested with:** idc-index 0.12.5 (IDC data version v24)
 
 Quick reference for common SQL query patterns when working with IDC data. For detailed examples with context, see the "Core Capabilities" section in the main SKILL.md.
 
@@ -14,18 +14,71 @@ Load this guide when you need quick-reference SQL patterns for:
 - Linking imaging data to clinical data
 - Filtering by 3D volume geometry validity (volume_geometry_index)
 - Finding RT Structure Set series and ROI metadata (rtstruct_index)
+- Filtering by CT/MR/PET acquisition parameters (ct_index, mr_index, pt_index)
 
 For table schemas, DataFrame access, and join column references, see `references/index_tables_guide.md`.
 
 ## Prerequisites
 
-```bash
-pip install --upgrade idc-index
-```
+Needs `idc-index` installed — run `python scripts/check_version.py`, which reports the installed
+version and prints the install command for the interpreter you are running.
 
 ```python
 from idc_index import IDCClient
 client = IDCClient()
+```
+
+## Overall Data Scale
+
+Counts and total size across all of IDC — useful for orienting a user, and for sanity-checking
+that the index loaded the release you expect:
+
+```python
+stats = client.sql_query("""
+    SELECT
+        COUNT(DISTINCT collection_id) as collections,
+        COUNT(DISTINCT analysis_result_id) as analysis_results,
+        COUNT(DISTINCT (collection_id, PatientID)) as patients,
+        COUNT(DISTINCT StudyInstanceUID) as studies,
+        COUNT(DISTINCT SeriesInstanceUID) as series,
+        SUM(instanceCount) as instances,
+        SUM(series_size_MB)/1000000 as size_TB
+    FROM index
+""")
+print(stats)
+```
+
+### Per-collection breakdown
+
+```python
+# Get summary statistics from primary index
+collections_summary = client.sql_query("""
+    SELECT collection_id,
+           COUNT(DISTINCT PatientID) as patients,
+           COUNT(DISTINCT SeriesInstanceUID) as series,
+           SUM(series_size_MB) as size_mb
+    FROM index
+    GROUP BY collection_id
+    ORDER BY patients DESC
+""")
+```
+
+For richer per-collection metadata — cancer types, tumor locations, species, supporting data —
+query `collections_index` instead; for derived datasets, `analysis_results_index`. Both need
+`client.fetch_index(...)` first:
+
+```python
+client.fetch_index("collections_index")
+collections_info = client.sql_query("""
+    SELECT collection_id, cancer_types, tumor_locations, species, subjects, supporting_data
+    FROM collections_index
+""")
+
+client.fetch_index("analysis_results_index")
+analysis_info = client.sql_query("""
+    SELECT analysis_result_id, analysis_result_title, subjects, collections, modalities
+    FROM analysis_results_index
+""")
 ```
 
 ## Discover Available Filter Values
@@ -74,7 +127,7 @@ client.sql_query("""
 # List analysis result collections (curated derived datasets)
 client.fetch_index("analysis_results_index")
 client.sql_query("""
-    SELECT analysis_result_id, analysis_result_title, Collections, Modalities
+    SELECT analysis_result_id, analysis_result_title, collections, modalities
     FROM analysis_results_index
 """)
 
@@ -187,6 +240,52 @@ client.sql_query("""
 
 See `references/clinical_data_guide.md` for complete patterns including value mapping and patient cohort selection.
 
+## Version Tracking — "What's New in IDC vX?"
+
+Use `series_init_idc_version` and `series_revised_idc_version` in the main `index` table. Do NOT
+use `prior_versions_index` as a list of new series: it contains historical revisions,
+including UIDs that still exist with different CRDC UUIDs in the current index.
+
+```python
+VERSION = 24  # Replace with target version
+
+# Series added for the first time in vVERSION
+client.sql_query(f"""
+    SELECT collection_id,
+           COUNT(DISTINCT SeriesInstanceUID) as new_series,
+           ROUND(SUM(series_size_MB)/1000, 2) as size_GB
+    FROM index
+    WHERE series_init_idc_version = {VERSION}
+    GROUP BY collection_id
+    ORDER BY new_series DESC
+""")
+
+# Series revised (updated content) in vVERSION but originally added earlier
+client.sql_query(f"""
+    SELECT collection_id,
+           COUNT(DISTINCT SeriesInstanceUID) as revised_series
+    FROM index
+    WHERE series_revised_idc_version = {VERSION}
+      AND series_init_idc_version < {VERSION}
+    GROUP BY collection_id
+    ORDER BY revised_series DESC
+""")
+
+# When was each collection first added to IDC?
+client.fetch_index("version_metadata_index")
+client.sql_query("""
+    WITH first_versions AS (
+        SELECT collection_id, MIN(series_init_idc_version) as first_version
+        FROM index
+        GROUP BY collection_id
+    )
+    SELECT f.collection_id, f.first_version, v.version_timestamp as first_release_date
+    FROM first_versions f
+    JOIN version_metadata_index v ON f.first_version = v.idc_version
+    ORDER BY f.first_version DESC
+""")
+```
+
 ## Troubleshooting
 
 **Issue:** Query returns error "table not found"
@@ -208,7 +307,7 @@ See `references/clinical_data_guide.md` for complete patterns including value ma
 ```python
 client.fetch_index("volume_geometry_index")
 
-# Series that form a regularly-spaced 3D volume (no resampling needed)
+# Candidate regularly spaced series; verify geometry and task-specific resampling needs
 client.sql_query("""
     SELECT i.collection_id, i.SeriesInstanceUID, i.BodyPartExamined,
            v.obliquity_degrees
@@ -238,7 +337,8 @@ Key columns: `regularly_spaced_3d_volume` (composite flag), `obliquity_degrees` 
 
 ## RT Structure Sets
 
-`rtstruct_index` has one row per RTSTRUCT series. Array columns (`ROINames`, `ROIGenerationAlgorithms`, `RTROIInterpretedTypes`) are stored as strings.
+`rtstruct_index` has one row per RTSTRUCT series. `ROINames`, `ROIGenerationAlgorithms`, and `RTROIInterpretedTypes` are string arrays
+(`VARCHAR[]` in DuckDB); use `list_contains` for membership.
 
 ```python
 client.fetch_index("rtstruct_index")
@@ -276,6 +376,89 @@ client.sql_query("""
     LIMIT 10
 """)
 ```
+
+## Modality Acquisition Parameters
+
+`ct_index`, `mr_index`, and `pt_index` (added in idc-index 0.12.3) expose acquisition and reconstruction parameters for CT, MR, and PET series. All join on `SeriesInstanceUID`. Dose-modulated CT acquisitions have `_min`/`_max` columns for tube current, exposure, and exposure time.
+
+```python
+client.fetch_index("ct_index")
+client.fetch_index("mr_index")
+client.fetch_index("pt_index")
+
+# CT: thin-slice series (≤2mm) with standard reconstruction
+client.sql_query("""
+    SELECT i.collection_id, i.SeriesInstanceUID, i.BodyPartExamined,
+           c.SliceThickness, c.ConvolutionKernel, c.KVP
+    FROM index i
+    JOIN ct_index c ON i.SeriesInstanceUID = c.SeriesInstanceUID
+    WHERE c.SliceThickness <= 2.0
+      AND c.ConvolutionKernel IS NOT NULL
+    LIMIT 10
+""")
+
+# CT: dose-modulated acquisitions (tube current varies across slices)
+client.sql_query("""
+    SELECT i.collection_id, c.SeriesInstanceUID,
+           c.XRayTubeCurrent_min, c.XRayTubeCurrent_max, c.SliceThickness
+    FROM ct_index c
+    JOIN index i ON c.SeriesInstanceUID = i.SeriesInstanceUID
+    WHERE c.XRayTubeCurrent_min != c.XRayTubeCurrent_max
+    LIMIT 10
+""")
+
+# MR: DWI series (have non-null DiffusionBValue) at 3T
+client.sql_query("""
+    SELECT i.collection_id, i.SeriesInstanceUID, i.SeriesDescription,
+           m.MagneticFieldStrength, m.DiffusionBValue
+    FROM index i
+    JOIN mr_index m ON i.SeriesInstanceUID = m.SeriesInstanceUID
+    WHERE m.DiffusionBValue IS NOT NULL
+      AND m.MagneticFieldStrength >= 2.9
+    LIMIT 10
+""")
+
+# MR: multi-echo series (EchoTime stored as array with multiple values)
+client.sql_query("""
+    SELECT i.collection_id, i.SeriesInstanceUID,
+           m.EchoTime, m.EchoTrainLength, m.ScanningSequence
+    FROM index i
+    JOIN mr_index m ON i.SeriesInstanceUID = m.SeriesInstanceUID
+    WHERE array_length(m.EchoTime) > 1
+    LIMIT 10
+""")
+
+# PET: discover FDG spellings in Radiopharmaceutical; radionuclide alone does not identify FDG
+client.sql_query("""
+    SELECT i.collection_id, i.SeriesInstanceUID,
+           p.RadionuclideCodeMeaning, p.Radiopharmaceutical, p.ReconstructionMethod,
+           p.Units, p.DecayCorrection
+    FROM index i
+    JOIN pt_index p ON i.SeriesInstanceUID = p.SeriesInstanceUID
+    WHERE LOWER(p.Radiopharmaceutical) LIKE '%fluorodeoxyglucose%'
+       OR LOWER(p.Radiopharmaceutical) LIKE '%fdg%'
+    LIMIT 10
+""")
+
+# PET: dynamic acquisitions (ActualFrameDuration is array with multiple values)
+client.sql_query("""
+    SELECT i.collection_id, i.SeriesInstanceUID,
+           p.NumberOfTimeSlices, p.ActualFrameDuration
+    FROM index i
+    JOIN pt_index p ON i.SeriesInstanceUID = p.SeriesInstanceUID
+    WHERE p.NumberOfTimeSlices > 1
+    LIMIT 10
+""")
+```
+
+`EchoTrainLength` is the echoes within an acquisition train, not the number of distinct
+`EchoTime` values. Fluorine-18 is a radionuclide used by multiple tracers; inspect
+`Radiopharmaceutical` values and source DICOM metadata before declaring a complete FDG cohort.
+
+Key columns by table (use `client.indices_overview["ct_index"]["schema"]` for the full list):
+- **ct_index**: `SliceThickness`, `KVP`, `ConvolutionKernel`, `SpiralPitchFactor`, `XRayTubeCurrent_min/max`, `Exposure_min/max`, `PixelSpacing_row_mm/col_mm`, `Rows`, `Columns`
+- **mr_index**: `MagneticFieldStrength`, `ScanningSequence`, `SequenceVariant`, `MRAcquisitionType`, `EchoTime` (array), `RepetitionTime`, `FlipAngle`, `DiffusionBValue` (array), `NumberOfTemporalPositions`, `ReceiveCoilName`
+- **pt_index**: `RadionuclideCodeMeaning`, `Radiopharmaceutical`, `RadionuclideTotalDose`, `ReconstructionMethod`, `DecayCorrection`, `AttenuationCorrectionMethod`, `ActualFrameDuration` (array), `NumberOfTimeSlices`
 
 ## Resources
 

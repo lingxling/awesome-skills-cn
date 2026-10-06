@@ -1,272 +1,252 @@
 # Protein Modeling
 
-## Overview
+TorchDrug 0.2.1 documents protein data structures, datasets, sequence encoders,
+and geometry-aware graph models in its
+[data](https://torchdrug.ai/docs/api/data.html),
+[dataset](https://torchdrug.ai/docs/api/datasets.html), and
+[model](https://torchdrug.ai/docs/api/models.html) APIs. The primary tutorial
+index focuses on molecular and knowledge-graph workflows, so avoid inventing a
+protein tutorial API that upstream does not provide.
 
-TorchDrug provides extensive support for protein-related tasks including sequence analysis, structure prediction, property prediction, and protein-protein interactions. Proteins are represented as graphs where nodes are amino acid residues and edges represent spatial or sequential relationships.
+Large dataset and pretrained-weight examples are source-verified illustrations;
+this review does not download protein archives or pretrained ESM weights.
 
-## Available Datasets
+## Build protein objects
 
-### Protein Function Prediction
+### From sequence
 
-**Enzyme Function:**
-- **EnzymeCommission** (17,562 proteins): EC number classification (7 levels)
-- **BetaLactamase** (5,864 sequences): Enzyme activity prediction
-
-**Protein Characteristics:**
-- **Fluorescence** (54,025 sequences): GFP fluorescence intensity
-- **Stability** (53,614 sequences): Thermostability prediction
-- **Solubility** (62,478 sequences): Protein solubility classification
-- **BinaryLocalization** (22,168 proteins): Subcellular localization (membrane vs. soluble)
-- **SubcellularLocalization** (8,943 proteins): 10-class localization prediction
-
-**Gene Ontology:**
-- **GeneOntology** (46,796 proteins): GO term prediction across biological process, molecular function, and cellular component
-
-### Protein Structure Prediction
-
-- **Fold** (16,712 proteins): Structural fold classification (1,195 classes)
-- **SecondaryStructure** (8,678 proteins): 3-state or 8-state secondary structure prediction
-- **ContactPrediction** via ProteinNet: Residue-residue contact maps
-
-### Protein Interaction
-
-**Protein-Protein Interactions:**
-- **HumanPPI** (1,412 proteins, 6,584 interactions): Human protein interaction network
-- **YeastPPI** (2,018 proteins, 6,451 interactions): Yeast protein interaction network
-- **PPIAffinity** (2,156 protein pairs): Binding affinity measurements
-
-**Protein-Ligand Binding:**
-- **BindingDB** (~1.5M entries): Comprehensive binding affinity database
-- **PDBBind** (20,000+ complexes): 3D structure-based binding data
-  - Refined set: High-quality crystal structures
-  - Core set: Diverse benchmark set
-
-### Large-Scale Protein Databases
-
-- **AlphaFoldDB**: Access to 200M+ predicted protein structures
-- **ProteinNet**: Standardized dataset for structure prediction
-
-## Task Types
-
-### NodePropertyPrediction
-
-Predict properties at the residue (node) level, such as secondary structure or contact maps.
-
-**Use Cases:**
-- Secondary structure prediction (helix, sheet, coil)
-- Residue-level disorder prediction
-- Post-translational modification sites
-- Binding site prediction
-
-### PropertyPrediction
-
-Predict protein-level properties like function, stability, or localization.
-
-**Use Cases:**
-- Enzyme function classification
-- Subcellular localization
-- Protein stability prediction
-- Gene ontology term prediction
-
-### InteractionPrediction
-
-Predict interactions between protein pairs or protein-ligand pairs.
-
-**Key Features:**
-- Handles both sequence and structure inputs
-- Supports symmetric (PPI) and asymmetric (protein-ligand) interactions
-- Multiple negative sampling strategies
-
-### ContactPrediction
-
-Specialized task for predicting spatial proximity between residues in folded structures.
-
-**Applications:**
-- Structure prediction from sequence
-- Protein folding pathway analysis
-- Validation of predicted structures
-
-## Protein Representation Models
-
-### Sequence-Based Models
-
-**ESM (Evolutionary Scale Modeling):**
-- Pre-trained transformer via `models.EvolutionaryScaleModeling` (ESM-1b and ESM-2; TorchDrug 0.2.1+)
-- State-of-the-art for sequence-only tasks
-- Available in multiple sizes (ESM-1b, ESM-2)
-- Captures evolutionary and structural information
-
-**ProteinBERT:**
-- BERT-style masked language model
-- Pre-trained on UniProt sequences
-- Good for transfer learning
-
-**ProteinLSTM:**
-- Bidirectional LSTM for sequence encoding
-- Lightweight and fast
-- Good baseline for sequence tasks
-
-**ProteinCNN / ProteinResNet:**
-- Convolutional architectures
-- Capture local sequence patterns
-- Faster than transformer models
-
-### Structure-Based Models
-
-**GearNet (Geometry-Aware Relational Graph Network):**
-- Incorporates 3D geometric information
-- Edge types based on sequential, radius, and K-nearest neighbors
-- State-of-the-art for structure-based tasks
-- Supports both backbone and full-atom representations
-
-**GCN/GAT/GIN on Protein Graphs:**
-- Standard GNN architectures adapted for proteins
-- Flexible edge definitions (sequence, spatial, contact)
-
-**SchNet:**
-- Continuous-filter convolutions
-- Handles 3D coordinates directly
-- Good for structure prediction and protein-ligand binding
-
-### Feature-Based Models
-
-**Statistic Features:**
-- Amino acid composition
-- Sequence length statistics
-- Motif counts
-
-**Physicochemical Features:**
-- Hydrophobicity scales
-- Charge properties
-- Secondary structure propensity
-- Molecular weight, pI
-
-## Protein Graph Construction
-
-### Edge Types
-
-**Sequential Edges:**
-- Connect adjacent residues in sequence
-- Captures primary structure
-
-**Spatial Edges:**
-- K-nearest neighbors in 3D space
-- Radius cutoff (e.g., Cα atoms within 10Å)
-- Captures tertiary structure
-
-**Contact Edges:**
-- Based on heavy atom distances
-- Typically < 8Å threshold
-
-### Node Features
-
-**Residue Identity:**
-- One-hot encoding of 20 amino acids
-- Learned embeddings
-
-**Position Information:**
-- 3D coordinates (Cα, N, C, O)
-- Backbone angles (phi, psi, omega)
-- Relative spatial position encodings
-
-**Physicochemical Properties:**
-- Hydrophobicity
-- Charge
-- Size
-- Secondary structure
-
-## Training Workflows
-
-### Pre-training Strategies
-
-**Self-Supervised Pre-training:**
-- Masked residue prediction (like BERT)
-- Distance prediction between residues
-- Angle prediction (phi, psi, omega)
-- Dihedral angle prediction
-- Contact map prediction
-
-**Pre-trained Model Usage:**
-```python
-from torchdrug import models
-
-# Load pre-trained ESM
-model = models.ESM(path="esm1b_t33_650M_UR50S.pt")
-
-# Fine-tune on downstream task
-task = tasks.PropertyPrediction(
-    model, task=["stability"],
-    criterion="mse", metric=["mae", "rmse"]
-)
-```
-
-### Multi-Task Learning
-
-Train on multiple related tasks simultaneously:
-- Joint prediction of function, localization, and stability
-- Improves generalization and data efficiency
-- Shares representations across tasks
-
-### Best Practices
-
-**For Sequence-Only Tasks:**
-1. Start with pre-trained ESM or ProteinBERT
-2. Fine-tune with small learning rate (1e-5 to 1e-4)
-3. Use frozen embeddings for small datasets
-4. Apply dropout for regularization
-
-**For Structure-Based Tasks:**
-1. Use GearNet with multiple edge types
-2. Include geometric features (angles, dihedrals)
-3. Pre-train on large structure databases
-4. Use data augmentation (rotations, crops)
-
-**For Small Datasets:**
-1. Transfer learning from pre-trained models
-2. Multi-task learning with related tasks
-3. Data augmentation (sequence mutations, structure perturbations)
-4. Strong regularization (dropout, weight decay)
-
-## Common Use Cases
-
-### Enzyme Engineering
-- Predict enzyme activity from sequence
-- Design mutations to improve stability
-- Screen for desired catalytic properties
-
-### Antibody Design
-- Predict binding affinity
-- Optimize antibody sequences
-- Predict immunogenicity
-
-### Drug Target Identification
-- Predict protein function
-- Identify druggable sites
-- Analyze protein-ligand interactions
-
-### Protein Structure Prediction
-- Predict secondary structure from sequence
-- Generate contact maps for tertiary structure
-- Refine AlphaFold predictions
-
-## Integration with Other Tools
-
-### AlphaFold Integration
-
-Load AlphaFold-predicted structures:
 ```python
 from torchdrug import data
 
-# Load AlphaFold structure
-protein = data.Protein.from_pdb("alphafold_structure.pdb")
-
-# Use in TorchDrug workflows
+protein = data.Protein.from_sequence(
+    "MKTAYIAKQRQISFVKSHFSRQ",
+    atom_feature=None,
+    bond_feature=None,
+    residue_feature="default",
+)
+print(protein.to_sequence())
 ```
 
-### ESMFold Integration
+For sequence-only work, setting atom and bond features to `None` avoids the cost
+of constructing a full atom-level representation.
+In that fast path, 0.2.1 converts unknown residue symbols to glycine with a
+warning. Validate sequences against the supported 20-residue alphabet first;
+do not allow `X`, gaps, or chain separators to become silently altered biology.
+Also preserve the original sequence separately: the fast path creates no bonds,
+so `to_sequence()` inserts component separators between residues (for example,
+`"M.K.T.A.Y"`). It is not a faithful chain-annotated round trip of this input.
 
-Use ESMFold for structure prediction, then analyze with TorchDrug models.
+### From PDB
 
-### Rosetta/PyRosetta
+```python
+protein = data.Protein.from_pdb(
+    "protein.pdb",
+    atom_feature="default",
+    bond_feature="default",
+    residue_feature="default",
+)
+```
 
-Generate structures with Rosetta, import to TorchDrug for analysis.
+Use trusted local PDB files and validate chain selection, missing residues,
+alternate locations, and nonstandard residues before training.
+
+Documented conversion methods include:
+
+- `Protein.from_sequence`
+- `Protein.from_pdb`
+- `Protein.from_molecule`
+- `Protein.to_sequence`
+- `Protein.to_pdb`
+- `Protein.to_molecule`
+
+Packed equivalents operate on lists:
+
+- `PackedProtein.from_sequence(sequences)`
+- `PackedProtein.from_pdb(pdb_files)`
+- `PackedProtein.from_molecule(mols)`
+
+## Protein datasets
+
+Documented dataset families include:
+
+- Property / sequence: `BetaLactamase`, `BinaryLocalization`,
+  `SubcellularLocalization`
+- Function / structure: `EnzymeCommission`, `GeneOntology`, `AlphaFoldDB`
+- Structure labels: `Fold`, `SecondaryStructure`
+- Protein-protein: `HumanPPI`, `YeastPPI`, `PPIAffinity`
+- Protein-ligand: `BindingDB`, `PDBBind`
+
+Example:
+
+```python
+from torchdrug import datasets, transforms
+
+dataset = datasets.EnzymeCommission(
+    "~/protein-datasets/",
+    atom_feature=None,
+    bond_feature=None,
+    residue_feature="default",
+    transform=transforms.ProteinView(view="residue"),
+)
+train_set, valid_set, test_set = dataset.split()
+```
+
+Unlike sequence-only construction, loading a PDB with `atom_feature=None` still
+creates atoms and an atom view. `ProteinView` exposes residue features as
+`graph.node_feature` to sequence models. EC and GO samples contain a single
+multi-hot `"targets"` tensor; see the matching task below. Keep `lazy=False`
+(the default) for EnzymeCommission: its released lazy `get_item` passes the
+options dictionary positionally to `Protein.from_pdb`, an upstream defect.
+
+Class signatures differ. Options such as `branch`, `test_cutoff`, `lazy`, or
+species/split IDs are dataset-specific; check the API before using them.
+
+## Sequence encoders
+
+### ESM
+
+`models.ESM` is the alias for `EvolutionaryScaleModeling`. The constructor takes
+a directory for downloaded weights, not a checkpoint filename:
+
+```python
+from torchdrug import models
+
+model = models.ESM(
+    path="~/model-weights/esm/",
+    model="ESM-2-150M",
+    readout="mean",
+)
+```
+
+TorchDrug 0.2.1 supports these ESM-2 names:
+
+- `ESM-2-8M`
+- `ESM-2-35M`
+- `ESM-2-150M`
+- `ESM-2-650M`
+- `ESM-2-3B`
+- `ESM-2-15B`
+
+It also supports `ESM-1b` and `ESM-1v`. Maximum sequence input is 1022 residues
+before special tokens. Large checkpoints require substantial memory; start with
+`ESM-2-8M` or `ESM-2-35M` for pipeline validation.
+The wrapper warns and truncates each longer sequence to its **first** 1022
+residues; the returned residue features no longer cover the original full chain.
+Use an explicit cropping/chunking policy and retain residue offsets. Its `esm`
+import comes from `fair-esm==2.0.0`, not the modern `esm` SDK. Checkpoint URLs are
+public static files on `dl.fbaipublicfiles.com`; successful HEAD requests do not
+verify their checksums or model inference.
+
+### Other sequence models
+
+Documented classes include:
+
+- `models.ProteinCNN`
+- `models.ProteinResNet`
+- `models.ProteinLSTM`
+- `models.ProteinBERT`
+
+These models require explicit input/hidden dimensions. Derive input dimensions
+from the dataset's residue feature configuration.
+
+## Structure encoders
+
+Documented structure-aware models include:
+
+- `models.GearNet`
+- `models.SchNet`
+- general graph models such as `GCN`, `GAT`, `GIN`, and `RGCN`
+
+`SchNet` requires `node_position`. `GearNet` requires a graph whose relation and
+geometric feature configuration matches its constructor.
+
+Use TorchDrug graph-construction and geometry layers to create sequential,
+radius, and nearest-neighbor relations. Do not use a nonexistent
+`protein.residue_graph(...)` method.
+
+Before training a structure model, inspect:
+
+```python
+print(protein.num_node)
+print(protein.num_residue)
+print(protein.node_position.shape)
+print(protein.residue_feature.shape)
+```
+
+Confirm whether nodes represent atoms or residues and ensure the model input
+matches that choice.
+
+## Property-prediction task
+
+For the EnzymeCommission dataset above, use integer indices into its target
+vector and a sequence encoder. This is an illustrative training setup:
+
+```python
+from torchdrug import models, tasks
+
+model = models.ProteinCNN(
+    input_dim=dataset[0]["graph"].residue_feature.shape[-1],
+    hidden_dims=[64, 64],
+    readout="mean",
+)
+task = tasks.MultipleBinaryClassification(
+    model,
+    task=list(range(len(dataset.tasks))),
+    criterion="bce",
+    metric=("auprc@micro", "f1_max"),
+)
+```
+
+Construct an optimizer and `Engine` to preprocess/train this task. For datasets
+that instead return separately named scalar targets, `PropertyPrediction` with
+`task=dataset.tasks` is appropriate. Choose criteria from the actual target:
+
+- binary or multi-label classification: BCE, AUPRC/AUROC
+- multiclass classification: CE with `"acc"` or `"mcc"`
+- regression: MSE, MAE/RMSE
+
+Vector labels require the matching task even for a small dataset; target schema,
+not dataset size, determines the choice. `MultipleBinaryClassification` does
+not implement `PropertyPrediction`'s NaN label mask. Do not feed missing labels
+as NaN or silently replace unknown annotation status with negative labels.
+
+## Workflow checks
+
+1. Decide sequence-only versus structure-aware modeling.
+2. Configure protein features to match that representation.
+3. Verify dataset splits and sequence identity cutoffs.
+4. Check maximum sequence length before selecting ESM.
+5. Build graph relations explicitly for structure models.
+6. Derive dimensions from the loaded dataset.
+7. Smoke-test one batch before long training.
+8. Record checkpoint name, feature settings, split, and TorchDrug version.
+
+## Common failures
+
+### ESM constructor error
+
+Use `models.ESM(path=<directory>, model=<supported-name>)`. Do not pass a
+downloaded `.pt` filename as `path`.
+
+### Out-of-memory error
+
+Choose a smaller ESM model, reduce batch size, crop or filter long sequences, or
+freeze the encoder and precompute embeddings.
+
+### Missing coordinates
+
+Sequence-created proteins do not acquire experimental 3D coordinates. Load a PDB
+or another validated structure source before using coordinate-dependent models.
+
+### Relation mismatch
+
+Build the same relation types expected by the structure model and set
+`num_relation` accordingly.
+
+## Source links
+
+- [Protein data API](https://torchdrug.ai/docs/api/data.html#protein)
+- [Protein datasets](https://torchdrug.ai/docs/api/datasets.html#protein-property-prediction-datasets)
+- [Protein sequence encoders](https://torchdrug.ai/docs/api/models.html#protein-sequence-encoders)
+- [Graph neural networks](https://torchdrug.ai/docs/api/models.html#graph-neural-networks)
+- [TorchDrug 0.2.1 release notes](https://github.com/DeepGraphLearning/torchdrug/releases/tag/v0.2.1)

@@ -14,6 +14,7 @@ Usage:
 import argparse
 import deepchem as dc
 import sys
+from _common import load_csv, validate_splits, evaluate_splits
 
 
 AVAILABLE_MODELS = {
@@ -34,6 +35,18 @@ MOLNET_DATASETS = {
     'lipo': ('regression', 1)
 }
 
+# MoleculeNet loader names that are not simply load_<dataset>. BACE ships as
+# separate classification and regression loaders, so dc.molnet.load_bace does
+# not exist; the entry above treats it as a classification benchmark.
+MOLNET_LOADERS = {
+    'bace': 'load_bace_classification'
+}
+
+
+def molnet_loader(dataset_name):
+    """Return the dc.molnet loader function for a MoleculeNet dataset name."""
+    return getattr(dc.molnet, MOLNET_LOADERS.get(dataset_name, f'load_{dataset_name}'))
+
 
 def create_model(model_type, n_tasks, mode='classification'):
     """
@@ -51,6 +64,7 @@ def create_model(model_type, n_tasks, mode='classification'):
         return dc.models.GCNModel(
             n_tasks=n_tasks,
             mode=mode,
+            device="cpu",
             batch_size=128,
             learning_rate=0.001,
             dropout=0.0
@@ -59,6 +73,7 @@ def create_model(model_type, n_tasks, mode='classification'):
         return dc.models.GATModel(
             n_tasks=n_tasks,
             mode=mode,
+            device="cpu",
             batch_size=128,
             learning_rate=0.001
         )
@@ -66,25 +81,40 @@ def create_model(model_type, n_tasks, mode='classification'):
         return dc.models.AttentiveFPModel(
             n_tasks=n_tasks,
             mode=mode,
+            device="cpu",
             batch_size=128,
             learning_rate=0.001
         )
     elif model_type == 'mpnn':
-        return dc.models.MPNNModel(
+        from deepchem.models.torch_models import MPNNModel
+        return MPNNModel(
             n_tasks=n_tasks,
             mode=mode,
+            device="cpu",
             batch_size=128,
             learning_rate=0.001
         )
     elif model_type == 'dmpnn':
         return dc.models.DMPNNModel(
+            n_classes=2,
             n_tasks=n_tasks,
             mode=mode,
+            device="cpu",
             batch_size=128,
             learning_rate=0.001
         )
     else:
         raise ValueError(f"Unknown model type: {model_type}")
+
+
+def create_featurizer(model_type):
+    """Match the released model's representation, including required bonds."""
+    if model_type == 'dmpnn':
+        return dc.feat.DMPNNFeaturizer()
+    if model_type in AVAILABLE_MODELS:
+        return dc.feat.MolGraphConvFeaturizer(
+            use_edges=model_type in ('attentivefp', 'mpnn'))
+    raise ValueError(f"Unknown model type: {model_type}")
 
 
 def train_on_molnet(dataset_name, model_type, n_epochs=50):
@@ -107,10 +137,10 @@ def train_on_molnet(dataset_name, model_type, n_epochs=50):
     task_type, n_tasks_default = MOLNET_DATASETS[dataset_name]
 
     # Load dataset with graph featurization
-    print(f"\nLoading {dataset_name} dataset with GraphConv featurizer...")
-    load_func = getattr(dc.molnet, f'load_{dataset_name}')
+    print(f"\nLoading {dataset_name} dataset with {model_type} features...")
+    load_func = molnet_loader(dataset_name)
     tasks, datasets, transformers = load_func(
-        featurizer='GraphConv',
+        featurizer=create_featurizer(model_type),
         splitter='scaffold'
     )
     train, valid, test = datasets
@@ -122,6 +152,8 @@ def train_on_molnet(dataset_name, model_type, n_epochs=50):
     print(f"  Training samples: {len(train)}")
     print(f"  Validation samples: {len(valid)}")
     print(f"  Test samples: {len(test)}")
+
+    validate_splits((train, valid, test), task_type, len(tasks))
 
     # Create model
     print(f"\nCreating {AVAILABLE_MODELS[model_type]} model...")
@@ -137,26 +169,7 @@ def train_on_molnet(dataset_name, model_type, n_epochs=50):
     print("Model Evaluation")
     print("=" * 70)
 
-    if task_type == 'classification':
-        metrics = [
-            dc.metrics.Metric(dc.metrics.roc_auc_score, name='ROC-AUC'),
-            dc.metrics.Metric(dc.metrics.accuracy_score, name='Accuracy'),
-            dc.metrics.Metric(dc.metrics.f1_score, name='F1'),
-        ]
-    else:
-        metrics = [
-            dc.metrics.Metric(dc.metrics.r2_score, name='R²'),
-            dc.metrics.Metric(dc.metrics.mean_absolute_error, name='MAE'),
-            dc.metrics.Metric(dc.metrics.root_mean_squared_error, name='RMSE'),
-        ]
-
-    results = {}
-    for dataset_name_eval, dataset in [('Train', train), ('Valid', valid), ('Test', test)]:
-        print(f"\n{dataset_name_eval} Set:")
-        scores = model.evaluate(dataset, metrics)
-        results[dataset_name_eval] = scores
-        for metric_name, score in scores.items():
-            print(f"  {metric_name}: {score:.4f}")
+    results = evaluate_splits(model, (train, valid, test), task_type, transformers)
 
     return model, results
 
@@ -182,13 +195,8 @@ def train_on_custom_data(data_path, model_type, task_type, target_cols, smiles_c
 
     # Load and featurize data
     print(f"\nLoading data from {data_path}...")
-    featurizer = dc.feat.MolGraphConvFeaturizer()
-    loader = dc.data.CSVLoader(
-        tasks=target_cols,
-        feature_field=smiles_col,
-        featurizer=featurizer
-    )
-    dataset = loader.create_dataset(data_path)
+    featurizer = create_featurizer(model_type)
+    dataset = load_csv(data_path, target_cols, smiles_col, featurizer)
 
     print(f"Loaded {len(dataset)} molecules")
 
@@ -209,6 +217,7 @@ def train_on_custom_data(data_path, model_type, task_type, target_cols, smiles_c
     # Create model
     print(f"\nCreating {AVAILABLE_MODELS[model_type]} model...")
     n_tasks = len(target_cols)
+    validate_splits((train, valid, test), task_type, n_tasks)
     model = create_model(model_type, n_tasks, mode=task_type)
 
     # Train
@@ -221,22 +230,7 @@ def train_on_custom_data(data_path, model_type, task_type, target_cols, smiles_c
     print("Model Evaluation")
     print("=" * 70)
 
-    if task_type == 'classification':
-        metrics = [
-            dc.metrics.Metric(dc.metrics.roc_auc_score, name='ROC-AUC'),
-            dc.metrics.Metric(dc.metrics.accuracy_score, name='Accuracy'),
-        ]
-    else:
-        metrics = [
-            dc.metrics.Metric(dc.metrics.r2_score, name='R²'),
-            dc.metrics.Metric(dc.metrics.mean_absolute_error, name='MAE'),
-        ]
-
-    for dataset_name, dataset in [('Train', train), ('Valid', valid), ('Test', test)]:
-        print(f"\n{dataset_name} Set:")
-        scores = model.evaluate(dataset, metrics)
-        for metric_name, score in scores.items():
-            print(f"  {metric_name}: {score:.4f}")
+    evaluate_splits(model, (train, valid, test), task_type)
 
     return model, test
 
@@ -292,6 +286,8 @@ def main():
     )
 
     args = parser.parse_args()
+    if args.epochs < 1:
+        parser.error('--epochs must be positive')
 
     # Validate arguments
     if args.dataset is None and args.data is None:

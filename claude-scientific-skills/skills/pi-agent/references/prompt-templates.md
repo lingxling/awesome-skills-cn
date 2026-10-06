@@ -2,15 +2,17 @@
 
 Source: https://pi.dev/docs/latest/prompt-templates
 
-Prompt templates are Markdown snippets that expand into full prompts. Invoke them by typing `/name` where `name` is the filename without `.md`.
+Reviewed against Pi 0.99.2 and the package versions listed in `../SKILL.md` on 2026-09-30.
+
+Prompt templates are Markdown snippets that expand into full prompts. Type `/name` in the editor, where `name` is the filename without `.md` (`review.md` → `/review`).
 
 ## Locations
 
 - Global: `~/.pi/agent/prompts/*.md`
-- Project: `.pi/prompts/*.md` after project trust
-- Packages: `prompts/` directories or `pi.prompts` manifest entries
-- Settings: `prompts` array with files/directories
-- CLI: `--prompt-template`, repeatable
+- Project: `.pi/prompts/*.md` (only after project trust)
+- Packages: `prompts/` directories or `pi.prompts` entries in `package.json`
+- Settings: `prompts` array with files or directories
+- CLI: `--prompt-template <path>` (repeatable)
 
 Disable discovery with `--no-prompt-templates`.
 
@@ -19,19 +21,30 @@ Disable discovery with `--no-prompt-templates`.
 ```md
 ---
 description: Review staged git changes
-argument-hint: "[focus]"
+argument-hint: "<PR-URL>"
 ---
 Review the staged changes (`git diff --cached`). Focus on: $ARGUMENTS
 ```
 
-The description is optional; if missing, Pi uses the first non-empty line. `argument-hint` appears in autocomplete.
+`description` is optional — without it Pi uses the first non-empty line. `argument-hint` is optional and shown **before** the description in the autocomplete dropdown; use `<angle brackets>` for required arguments and `[square brackets]` for optional ones.
+
+## Usage
+
+```text
+/review                           # expands review.md
+/component Button                 # one argument
+/component Button "click handler"  # multiple arguments
+```
 
 ## Arguments
 
-- `$1`, `$2`: positional args.
-- `$@` or `$ARGUMENTS`: all args joined.
-- `${1:-default}`: default value.
-- `${@:N}`: args from N.
-- `${@:N:L}`: L args starting at N.
+- `$1`, `$2`, … positional
+- `$@` or `$ARGUMENTS` all arguments joined
+- `${1:-default}` argument 1 when present and non-empty, otherwise the default
+- `${@:-default}` or `${ARGUMENTS:-default}` all arguments when present, otherwise the default
+- `${@:N}` arguments from the Nth position (1-indexed)
+- `${@:N:L}` `L` arguments starting at N
 
-Discovery in `prompts/` is non-recursive unless subdirectories are explicitly configured in settings or package manifest.
+## Loading Rules
+
+Discovery in `prompts/` is non-recursive. Templates in subdirectories must be added explicitly through the `prompts` setting or a package manifest.

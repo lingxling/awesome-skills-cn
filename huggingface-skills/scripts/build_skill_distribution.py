@@ -3,14 +3,19 @@
 # requires-python = ">=3.10"
 # dependencies = ["pyyaml==6.0.3"]
 # ///
-"""Build static skills distribution artifacts (SEP-2640 index format).
+"""Build static skills distribution artifacts.
 
 Single-file skills are emitted as ``<out>/<name>/SKILL.md`` for easy audit.
 Multi-file skills are emitted as ``<out>/<name>.tar.gz`` archives to keep the
-skill package atomic and avoid implying partial direct-resource support. The
-``index.json`` follows SEP-2640: each entry carries verbatim ``frontmatter`` plus
-either ``url`` + ``digest`` for direct ``SKILL.md`` entries, or an ``archives``
-array for archive-only entries.
+skill package atomic for legacy consumers. ``index.json`` retains the legacy
+archive-oriented format.
+
+``skills.json`` contains the current SEP-2640 skill-entry shape. Each entry has
+the URI of its ``SKILL.md``, its complete parsed frontmatter, and a ``resources``
+manifest containing the URI, raw-byte SHA-256 digest, and byte size of every file
+in the published skill directory. All selected skill files are emitted under
+``<out>/<name>/``; the bucket sync workflow publishes that expanded tree and its
+manifest together.
 """
 
 from __future__ import annotations
@@ -27,6 +32,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 import yaml
 
@@ -69,6 +75,29 @@ def validate_skill_name(name: str, skill_dir: Path) -> None:
 		raise ValueError(f"{skill_dir}: SKILL.md name {name!r} must match directory name")
 
 
+def validate_frontmatter(meta: dict[str, Any], skill_md: Path) -> None:
+	description = meta.get("description")
+	if not isinstance(description, str) or not 1 <= len(description) <= 1024:
+		raise ValueError(f"{skill_md}: description must contain 1-1024 characters")
+	license_value = meta.get("license")
+	if license_value is not None and not isinstance(license_value, str):
+		raise ValueError(f"{skill_md}: license must be a string")
+	compatibility = meta.get("compatibility")
+	if compatibility is not None and (
+		not isinstance(compatibility, str) or not 1 <= len(compatibility) <= 500
+	):
+		raise ValueError(f"{skill_md}: compatibility must contain 1-500 characters")
+	metadata = meta.get("metadata")
+	if metadata is not None and (
+		not isinstance(metadata, dict)
+		or any(not isinstance(key, str) or not isinstance(value, str) for key, value in metadata.items())
+	):
+		raise ValueError(f"{skill_md}: metadata must map string keys to string values")
+	allowed_tools = meta.get("allowed-tools")
+	if allowed_tools is not None and not isinstance(allowed_tools, str):
+		raise ValueError(f"{skill_md}: allowed-tools must be a string")
+
+
 def rel_archive_path(skill_dir: Path, path: Path) -> str:
 	rel = path.relative_to(skill_dir).as_posix()
 	if rel.startswith("/") or ".." in rel.split("/"):
@@ -103,6 +132,7 @@ def load_skills(skills_dir: Path) -> list[Skill]:
 		if not isinstance(description, str) or not description.strip():
 			raise ValueError(f"{skill_md}: missing required description")
 		validate_skill_name(name, skill_md.parent)
+		validate_frontmatter(meta, skill_md)
 		files = discover_files(skill_md.parent)
 		if skill_md not in files:
 			raise ValueError(f"{skill_md}: SKILL.md was not included in discovered files")
@@ -118,12 +148,19 @@ def load_skills(skills_dir: Path) -> list[Skill]:
 	return skills
 
 
-def sha256_hex(path: Path) -> str:
+def sha256_and_size(path: Path) -> tuple[str, int]:
+	"""Hash and count the same raw bytes in a single streaming pass."""
 	h = hashlib.sha256()
+	size = 0
 	with path.open("rb") as handle:
 		for chunk in iter(lambda: handle.read(1024 * 1024), b""):
 			h.update(chunk)
-	return h.hexdigest()
+			size += len(chunk)
+	return h.hexdigest(), size
+
+
+def sha256_hex(path: Path) -> str:
+	return sha256_and_size(path)[0]
 
 
 def write_skill_md(skill: Skill, out_dir: Path) -> Path:
@@ -167,6 +204,38 @@ def uri_join(prefix: str, path: str) -> str:
 	return prefix.rstrip("/") + "/" + path
 
 
+def resource_uri(uri_prefix: str, skill_name: str, relative_path: str) -> str:
+	encoded_path = "/".join(quote(part, safe="") for part in relative_path.split("/"))
+	return uri_join(uri_prefix, f"{quote(skill_name, safe='')}/{encoded_path}")
+
+
+def write_skill_files(skill: Skill, out_dir: Path, uri_prefix: str) -> dict[str, Any]:
+	resources = []
+	for path in skill.files:
+		relative_path = rel_archive_path(skill.dir, path)
+		target = out_dir / skill.name / relative_path
+		target.parent.mkdir(parents=True, exist_ok=True)
+		shutil.copy2(path, target)
+		digest, size = sha256_and_size(target)
+		resources.append(
+			{
+				"uri": resource_uri(uri_prefix, skill.name, relative_path),
+				"digest": f"sha256:{digest}",
+				"size": size,
+			}
+		)
+
+	skill_uri = resource_uri(uri_prefix, skill.name, "SKILL.md")
+	if not any(resource["uri"] == skill_uri for resource in resources):
+		raise ValueError(f"{skill.dir}: resource manifest does not include SKILL.md")
+
+	return {
+		"uri": skill_uri,
+		"frontmatter": skill.frontmatter,
+		"resources": resources,
+	}
+
+
 def build_distribution(skills_dir: Path, out_dir: Path, uri_prefix: str) -> None:
 	if out_dir.exists():
 		shutil.rmtree(out_dir)
@@ -174,9 +243,11 @@ def build_distribution(skills_dir: Path, out_dir: Path, uri_prefix: str) -> None
 
 	skills = load_skills(skills_dir)
 	index_entries: list[dict[str, Any]] = []
+	skill_entries: list[dict[str, Any]] = []
 	catalog_entries: list[dict[str, Any]] = []
 
 	for skill in skills:
+		skill_entries.append(write_skill_files(skill, out_dir, uri_prefix))
 		if len(skill.files) == 1 and skill.files[0].name == "SKILL.md":
 			skill_md_path = write_skill_md(skill, out_dir)
 			skill_md_url = uri_join(uri_prefix, f"{skill.name}/SKILL.md")
@@ -233,6 +304,7 @@ def build_distribution(skills_dir: Path, out_dir: Path, uri_prefix: str) -> None
 
 	generated_at = utc_now()
 	write_json(out_dir / "index.json", {"skills": index_entries})
+	write_json(out_dir / "skills.json", {"skills": skill_entries})
 	write_json(
 		out_dir / "ai-catalog.json",
 		{
@@ -256,6 +328,7 @@ def build_distribution(skills_dir: Path, out_dir: Path, uri_prefix: str) -> None
 			"uri_prefix": uri_prefix,
 			"artifacts": {
 				"skills_index": "index.json",
+				"skills_catalog": "skills.json",
 				"ai_catalog": "ai-catalog.json",
 			},
 		},

@@ -16,12 +16,17 @@ import subprocess
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 
-# Try to import PyPDF2 for PDF analysis
+# PDF page and geometry analysis. pypdf is the maintained continuation of
+# PyPDF2 and exposes the same PdfReader API, so accept whichever is installed.
 try:
-    import PyPDF2
-    HAS_PYPDF2 = True
+    from pypdf import PdfReader
+    HAS_PDF_READER = True
 except ImportError:
-    HAS_PYPDF2 = False
+    try:
+        from PyPDF2 import PdfReader
+        HAS_PDF_READER = True
+    except ImportError:
+        HAS_PDF_READER = False
 
 # Try to import python-pptx for PowerPoint analysis
 try:
@@ -70,7 +75,9 @@ class PresentationValidator:
         # Type-specific validation
         if self.file_type == '.pdf':
             self._validate_pdf()
-        elif self.file_type in ['.pptx', '.ppt']:
+        elif self.file_type == '.ppt':
+            self.issues.append('Legacy .ppt is unsupported; convert it to .pptx or PDF first.')
+        elif self.file_type == '.pptx':
             self._validate_pptx()
         elif self.file_type in ['.tex']:
             self._validate_latex()
@@ -97,16 +104,19 @@ class PresentationValidator:
     
     def _validate_pdf(self):
         """Validate PDF presentation."""
-        if not HAS_PYPDF2:
+        if not HAS_PDF_READER:
             self.warnings.append(
-                "PyPDF2 not installed. Install with: pip install PyPDF2"
+                "pypdf not installed. Install with: uv pip install pypdf"
             )
             return
-        
+
         try:
             with open(self.filepath, 'rb') as f:
-                reader = PyPDF2.PdfReader(f)
+                reader = PdfReader(f)
                 num_pages = len(reader.pages)
+                if num_pages == 0:
+                    self.issues.append("PDF has no pages")
+                    return
                 
                 self.info.append(f"Number of slides: {num_pages}")
                 
@@ -126,7 +136,7 @@ class PresentationValidator:
                 aspect = width / height
                 
                 self.info.append(
-                    f"Slide dimensions: {width_in:.1f}\" × {height_in:.1f}\" "
+                    f"Slide dimensions: {width_in:.1f}\" x {height_in:.1f}\" "
                     f"(aspect ratio: {aspect:.2f})"
                 )
                 
@@ -148,7 +158,7 @@ class PresentationValidator:
         """Validate PowerPoint presentation."""
         if not HAS_PPTX:
             self.warnings.append(
-                "python-pptx not installed. Install with: pip install python-pptx"
+                "python-pptx not installed. Install with: uv pip install python-pptx"
             )
             return
         
@@ -168,7 +178,7 @@ class PresentationValidator:
             aspect = prs.slide_width / prs.slide_height
             
             self.info.append(
-                f"Slide dimensions: {width_inches:.1f}\" × {height_inches:.1f}\" "
+                f"Slide dimensions: {width_inches:.1f}\" x {height_inches:.1f}\" "
                 f"(aspect ratio: {aspect:.2f})"
             )
             
@@ -309,30 +319,30 @@ def print_results(results: Dict):
     
     # Print info
     if results['info']:
-        print("\n📋 Information:")
+        print("\nInformation:")
         for item in results['info']:
-            print(f"  • {item}")
+            print(f"  - {item}")
     
     # Print warnings
     if results['warnings']:
-        print("\n⚠️  Warnings:")
+        print("\n[WARN]  Warnings:")
         for item in results['warnings']:
-            print(f"  • {item}")
+            print(f"  - {item}")
     
     # Print issues
     if results['issues']:
-        print("\n❌ Issues:")
+        print("\n[FAIL] Issues:")
         for item in results['issues']:
-            print(f"  • {item}")
+            print(f"  - {item}")
     
     # Overall status
     print("\n" + "=" * 60)
     if results['valid']:
-        print("✅ Validation PASSED")
+        print("[OK] Validation PASSED")
         if results['warnings']:
             print(f"   ({len(results['warnings'])} warning(s) found)")
     else:
-        print("❌ Validation FAILED")
+        print("[FAIL] Validation FAILED")
         print(f"   ({len(results['issues'])} issue(s) found)")
     print("=" * 60)
 
@@ -349,7 +359,7 @@ Examples:
 
 Supported file types:
   - PDF (.pdf)
-  - PowerPoint (.pptx, .ppt)
+  - PowerPoint (.pptx; convert legacy .ppt first)
   - LaTeX Beamer (.tex)
 
 Validation checks:
@@ -390,7 +400,7 @@ Validation checks:
         if results['warnings'] or results['issues']:
             print_results(results)
         else:
-            print("✅ No issues found")
+            print("[OK] No issues found")
     else:
         print_results(results)
     
@@ -400,4 +410,3 @@ Validation checks:
 
 if __name__ == '__main__':
     main()
-

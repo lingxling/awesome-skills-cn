@@ -1,6 +1,6 @@
 ---
 name: train-sentence-transformers
-description: 训练或微调 sentence-transformers 模型，涵盖 `SentenceTransformer`（双编码器；稠密或静态嵌入模型；用于检索、相似度、聚类、分类、复述挖掘、去重、多模态）、`CrossEncoder`（重排序器；两阶段检索/成对分类的成对打分）和 `SparseEncoder`（SPLADE，稀疏嵌入模型；用于学习稀疏检索）。涵盖损失函数选择、难负样本挖掘、评估器、蒸馏、LoRA、Matryoshka 和 Hugging Face Hub 发布。用于任何 sentence-transformers 训练任务。
+description: 训练或微调 sentence-transformers 模型，涵盖 `SentenceTransformer`（双编码器；稠密或静态嵌入模型；用于检索、相似度、聚类、分类、复述挖掘、去重、多模态）、`CrossEncoder`（重排序器；两阶段检索/成对分类的成对打分）、`SparseEncoder`（SPLADE，稀疏嵌入模型；用于学习稀疏检索）和 `MultiVectorEncoder`（ColBERT / 后期交互，逐 token 嵌入并使用 MaxSim 打分）。涵盖损失函数选择、难负样本挖掘、评估器、蒸馏、LoRA、Matryoshka 和 Hugging Face Hub 发布。用于任何 sentence-transformers 训练任务。
 ---
 
 # 训练 sentence-transformers 模型
@@ -16,8 +16,9 @@ description: 训练或微调 sentence-transformers 模型，涵盖 `SentenceTran
 | **[SentenceTransformer]** | `SentenceTransformer`（双编码器） | 将每个输入映射为固定维度的稠密向量 | 检索、相似度、聚类、分类、复述挖掘、去重 |
 | **[CrossEncoder]** | `CrossEncoder`（重排序器） | 联合为 `(query, passage)` 对打分 | 两阶段检索（对双编码器的 top-100 结果重排序）、成对分类 |
 | **[SparseEncoder]** | `SparseEncoder`（SPLADE） | 基于词表的稀疏向量 | 学习稀疏检索、倒排索引后端（Elasticsearch / OpenSearch / Lucene） |
+| **[MultiVectorEncoder]** | `MultiVectorEncoder`（ColBERT） | 每个 token 一个嵌入，使用 MaxSim 打分 | 后期交互检索、以更高存储成本换取优于双编码器的召回率、多模态（ColPali / ColQwen2） |
 
-请求模糊时的判断规则："embedding model" / "vector search" / "similarity" → **[SentenceTransformer]**。"rerank" / "ranker" / "two-stage" → **[CrossEncoder]**。"SPLADE" / "sparse" / "inverted index" → **[SparseEncoder]**。如果仍不清楚，请询问。
+请求模糊时的判断规则："embedding model" / "vector search" / "similarity" → **[SentenceTransformer]**。"rerank" / "ranker" / "two-stage" → **[CrossEncoder]**。"SPLADE" / "sparse" / "inverted index" → **[SparseEncoder]**。"ColBERT" / "late interaction" / "multi-vector" / "MaxSim" / "ColPali" / "ColQwen" → **[MultiVectorEncoder]**。如果仍不清楚，请询问。
 
 ## 2. 必读内容
 
@@ -40,6 +41,11 @@ description: 训练或微调 sentence-transformers 模型，涵盖 `SentenceTran
 - `references/losses_sparse_encoder.md` — `SpladeLoss` 包装器要求；FLOPS 正则化权重；活跃维度攀升行为的冒烟测试。
 - `references/evaluators_sparse_encoder.md` — `SparseNanoBEIREvaluator`（仅限英文）和领域内替代方案；`eval_{name}_{primary_metric}` 键格式。
 - `scripts/train_sparse_encoder_example.py` — 生产模板；复制此文件作为起点。
+
+**[MultiVectorEncoder]**
+- `references/losses_multi_vector_encoder.md` — MaxSim 打分；按打分模式选择 scale（MaxSim 使用 `scale=1.0`，MeanMaxSim 大约取平均查询长度）；MNRL / CachedMNRL / MarginMSE / DistillKLDiv；XTR 与 ColBERT 打分的区别；CachedMNRL 与 `gradient_checkpointing` 的不兼容性。
+- `references/evaluators_multi_vector_encoder.md` — `MultiVectorNanoBEIREvaluator`（仅限英文）和领域内替代方案；`eval_NanoBEIR_mean_maxsim_ndcg@10` 键格式；蒸馏评估的 spearman 变体。
+- `scripts/train_multi_vector_encoder_example.py` — 生产模板；复制此文件作为起点。
 
 ### 跨类型 — 始终必需（无论任务如何）
 
@@ -79,6 +85,7 @@ description: 训练或微调 sentence-transformers 模型，涵盖 `SentenceTran
 - 任何长运行前进行冒烟测试（`max_steps=1` + 极小数据集切片）。生产模板展示了一种常见模式（`SMOKE_TEST` 环境变量）。
 - **[CrossEncoder]** 包含 `EarlyStoppingCallback(patience>=3)` — CE 重排序器经常在训练中达到峰值后衰退。
 - **[SparseEncoder]** 在 verdict 行中记录 `query_active_dims` / `corpus_active_dims`；高 nDCG 但稀疏性坍塌不是胜利。键会带名称前缀返回（例如 `..._query_active_dims`）；使用后缀匹配来提取它们 — 参见 SPARSE 生产模板中的确切模式。
+- **[MultiVectorEncoder]** 在任何 MNRL 家族损失上，使 `scale` 与打分模式相匹配：对于未归一化的 MaxSim，取接近 `1.0` 的值（不要照搬双编码器 MNRL 的 `scale=20.0`）；对于按长度归一化的 MeanMaxSim，大约取平均查询长度，因为每个分数都会除以对应查询的 token 数。`XTRScores` 是仅用于训练的 `similarity_fct`：评估器会拒绝它，因此评估始终使用 MaxSim 打分，XTR 训练的模型也是如此。
 
 ## 5. 工作流程
 
@@ -94,6 +101,7 @@ description: 训练或微调 sentence-transformers 模型，涵盖 `SentenceTran
 
 ```bash
 pip install "sentence-transformers[train]>=5.0"        # 对于 [SentenceTransformer] 多模态，添加 [train,image] / [audio] / [video]
+                                                       # [MultiVectorEncoder] 需要 >=6.0
 pip install trackio                                    # 可选 tracker；或 wandb / tensorboard / mlflow
 hf auth login                                          # 或设置具有写入权限的 HF_TOKEN（用于 Hub 推送）
 ```

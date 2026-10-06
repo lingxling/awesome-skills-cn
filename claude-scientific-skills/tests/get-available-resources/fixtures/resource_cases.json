@@ -1,0 +1,104 @@
+{
+  "amd_rocm_smi": {
+    "card0": {
+      "Card Series": "AMD Instinct MI250X",
+      "vram Total Memory (B)": "68702699520"
+    }
+  },
+  "linux_cgroup_v2": {
+    "expected": {
+      "cpu_quota_cores": 1.5,
+      "cpuset_logical": 2,
+      "memory_available_bytes": 1610612736,
+      "memory_current_bytes": 134217728,
+      "memory_high_bytes": 1610612736,
+      "memory_max_bytes": 2147483648,
+      "scope": "non_root"
+    },
+    "files": {
+      "/proc/self/cgroup": "0::/jobs/example/step\n",
+      "/sys/fs/cgroup/cgroup.controllers": "cpu cpuset memory pids\n",
+      "/sys/fs/cgroup/cpu.max": "max 100000\n",
+      "/sys/fs/cgroup/jobs/cpu.max": "150000 100000\n",
+      "/sys/fs/cgroup/jobs/example/cpu.max": "max 100000\n",
+      "/sys/fs/cgroup/jobs/example/step/cpu.max": "max 100000\n",
+      "/sys/fs/cgroup/jobs/example/step/cpuset.cpus.effective": "2-3\n",
+      "/sys/fs/cgroup/jobs/example/step/memory.current": "134217728\n",
+      "/sys/fs/cgroup/jobs/example/step/memory.high": "max\n",
+      "/sys/fs/cgroup/jobs/example/step/memory.max": "max\n",
+      "/sys/fs/cgroup/jobs/example/memory.current": "268435456\n",
+      "/sys/fs/cgroup/jobs/example/memory.high": "max\n",
+      "/sys/fs/cgroup/jobs/example/memory.max": "max\n",
+      "/sys/fs/cgroup/jobs/memory.current": "536870912\n",
+      "/sys/fs/cgroup/jobs/memory.high": "1610612736\n",
+      "/sys/fs/cgroup/jobs/memory.max": "2147483648\n",
+      "/sys/fs/cgroup/memory.current": "1073741824\n",
+      "/sys/fs/cgroup/memory.high": "max\n",
+      "/sys/fs/cgroup/memory.max": "max\n",
+      "/sys/fs/cgroup/jobs/example/step/cgroup.controllers": "cpu cpuset memory pids\n"
+    }
+  },
+  "macos": {
+    "profiler": {
+      "SPDisplaysDataType": [
+        {
+          "_name": "Apple M4 Pro",
+          "spdisplays_gpu_cores": "20",
+          "spdisplays_metal": "spdisplays_supported"
+        }
+      ]
+    },
+    "sysctl_stdout": "14\n14\n51539607552\nApple M4 Pro\n"
+  },
+  "nvidia_csv": "0, NVIDIA H100 80GB HBM3, 81559, 70000, 570.133.20, 9.0\n",
+  "slurm": {
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "2,5",
+      "SLURM_CPUS_ON_NODE": "16",
+      "SLURM_CPUS_PER_TASK": "4",
+      "SLURM_GPUS_ON_NODE": "2",
+      "SLURM_GPUS_PER_TASK": "1",
+      "SLURM_JOB_CPUS_PER_NODE": "16(x2)",
+      "SLURM_JOB_ID": "12345",
+      "SLURM_MEM_PER_CPU": "2G",
+      "SLURM_NTASKS": "8",
+      "SLURM_NTASKS_PER_NODE": "4"
+    },
+    "expected": {
+      "cpu_per_process": 4,
+      "cpus_on_node": 16,
+      "gpus_per_process": 1,
+      "gpus_on_node": 2,
+      "memory_effective_bytes": 8589934592,
+      "tasks": 8
+    }
+  },
+  "windows": {
+    "affinity": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "host_logical": 128,
+    "host_physical": 64,
+    "memory_available": 34359738368,
+    "memory_total": 68719476736
+  },
+  "amd_smi_current": [
+    {
+      "gpu": 0,
+      "asic": {
+        "market_name": "AMD Instinct MI300X",
+        "asic_serial": "private-synthetic-serial"
+      },
+      "vram": {
+        "type": "HBM",
+        "size": {
+          "value": 196608,
+          "unit": "MB"
+        }
+      }
+    }
+  ]
+}

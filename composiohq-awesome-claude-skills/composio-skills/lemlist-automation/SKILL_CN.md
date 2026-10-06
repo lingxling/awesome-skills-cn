@@ -1,6 +1,6 @@
 ---
 name: Lemlist Automation
-description: "Automate Lemlist multichannel outreach -- manage campaigns, enroll leads, add personalization variables, export campaign data, and handle unsubscribes via the Composio MCP integration."
+description: "自动化 Lemlist 多渠道外联 -- 通过 Composio MCP 集成管理营销活动、注册潜在客户、添加个性化变量、导出活动数据以及处理退订。"
 requires:
   mcp:
     - rube
@@ -8,25 +8,25 @@ requires:
 
 # Lemlist Automation
 
-Automate your Lemlist multichannel outreach workflows -- manage campaigns, enroll leads at scale, enrich with custom variables, export campaign data, and clean up unsubscribes.
+自动化你的 Lemlist 多渠道外联工作流 -- 管理营销活动、大规模注册潜在客户、用自定义变量进行丰富、导出活动数据，以及清理退订名单。
 
-**Toolkit docs:** [composio.dev/toolkits/lemlist](https://composio.dev/toolkits/lemlist)
+**工具包文档：** [composio.dev/toolkits/lemlist](https://composio.dev/toolkits/lemlist)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your client: `https://rube.app/mcp`
-2. 连接 your Lemlist account when prompted (API key authentication)
-3. Start using the workflows below
+1. 将 Composio MCP 服务器添加到你的客户端：`https://rube.app/mcp`
+2. 按提示连接你的 Lemlist 账户（API 密钥身份验证）
+3. 开始使用下面的工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. List and Discover Campaigns
+### 1. 列出并发现营销活动
 
-Use `LEMLIST_GET_LIST_CAMPAIGNS` to enumerate all campaigns by status, with pagination support.
+使用 `LEMLIST_GET_LIST_CAMPAIGNS` 按状态枚举所有营销活动，支持分页。
 
 ```
 Tool: LEMLIST_GET_LIST_CAMPAIGNS
@@ -38,11 +38,11 @@ Inputs:
   - sortOrder: "asc" | "desc"
 ```
 
-**Important:** The response may be wrapped as `{campaigns: [...], pagination: {...}}` instead of a flat list. Always extract from the `campaigns` key.
+**重要提示：** 响应可能被包装为 `{campaigns: [...], pagination: {...}}`，而不是扁平列表。始终从 `campaigns` 键中提取数据。
 
-### 2. Get Campaign Details
+### 2. 获取营销活动详情
 
-Use `LEMLIST_GET_CAMPAIGN_BY_ID` to validate campaign configuration before writes.
+使用 `LEMLIST_GET_CAMPAIGN_BY_ID` 在写入前验证营销活动配置。
 
 ```
 Tool: LEMLIST_GET_CAMPAIGN_BY_ID
@@ -50,9 +50,9 @@ Inputs:
   - campaignId: string (required) -- e.g., "cam_A1B2C3D4E5F6G7H8I9"
 ```
 
-### 3. Enroll Leads into a Campaign
+### 3. 将潜在客户注册到营销活动
 
-Use `LEMLIST_POST_CREATE_LEAD_IN_CAMPAIGN` to add leads with optional email finding, phone lookup, and LinkedIn enrichment.
+使用 `LEMLIST_POST_CREATE_LEAD_IN_CAMPAIGN` 添加潜在客户，可选邮箱查找、电话查找和 LinkedIn 信息丰富。
 
 ```
 Tool: LEMLIST_POST_CREATE_LEAD_IN_CAMPAIGN
@@ -66,11 +66,11 @@ Inputs:
   - timezone: string (IANA format, e.g., "America/New_York")
 ```
 
-**Bulk pattern:** Chunk leads into batches of ~50 and checkpoint progress between batches.
+**批量模式：** 将潜在客户按约 50 条分批处理，并在批次之间设置检查点以记录进度。
 
-### 4. Add Custom Variables to a Lead
+### 4. 为潜在客户添加自定义变量
 
-Use `LEMLIST_POST_ADD_VARIABLES_TO_LEAD` to enrich leads with personalization fields after enrollment.
+使用 `LEMLIST_POST_ADD_VARIABLES_TO_LEAD` 在注册后为潜在客户丰富个性化字段。
 
 ```
 Tool: LEMLIST_POST_ADD_VARIABLES_TO_LEAD
@@ -80,11 +80,11 @@ Inputs:
   - variables: object (required) -- key-value pairs, e.g., {"score": "42", "color": "yellow"}
 ```
 
-**Important:** This is NOT an upsert -- attempting to add variables that already exist will fail. Resolve the internal `leadId` via `LEMLIST_GET_RETRIEVE_LEAD_BY_EMAIL` if you only have the email address.
+**重要提示：** 这不是一个 upsert 操作 -- 尝试添加已存在的变量会失败。如果你只有邮箱地址，请先通过 `LEMLIST_GET_RETRIEVE_LEAD_BY_EMAIL` 解析出内部的 `leadId`。
 
-### 5. Export Campaign Leads
+### 5. 导出营销活动的潜在客户
 
-Use `LEMLIST_GET_EXPORT_CAMPAIGN_LEADS` to download leads with state filtering for reporting or QA.
+使用 `LEMLIST_GET_EXPORT_CAMPAIGN_LEADS` 按状态过滤下载潜在客户，用于报告或质检。
 
 ```
 Tool: LEMLIST_GET_EXPORT_CAMPAIGN_LEADS
@@ -93,9 +93,9 @@ Inputs:
   - (supports state filtering and JSON/CSV output)
 ```
 
-### 6. Unsubscribe Lead from Campaign
+### 6. 将潜在客户从营销活动中退订
 
-Use `LEMLIST_DELETE_UNSUBSCRIBE_LEAD_FROM_CAMPAIGN` to stop outreach by removing a lead from a campaign.
+使用 `LEMLIST_DELETE_UNSUBSCRIBE_LEAD_FROM_CAMPAIGN` 通过将潜在客户从营销活动中移除来停止外联。
 
 ```
 Tool: LEMLIST_DELETE_UNSUBSCRIBE_LEAD_FROM_CAMPAIGN
@@ -106,29 +106,29 @@ Inputs:
 
 ---
 
-## 已知陷阱
+## 常见陷阱
 
-| Pitfall | Detail |
+| 陷阱 | 详情 |
 |---------|--------|
-| Wrapped campaign list | `LEMLIST_GET_LIST_CAMPAIGNS` may return `{campaigns: [...], pagination: {...}}` instead of a flat array. Always extract from the `campaigns` key. |
-| Cross-campaign deduplication | `LEMLIST_POST_CREATE_LEAD_IN_CAMPAIGN` with deduplication enabled fails with HTTP 500 "Lead already in other campaign" -- disable deduplication for intentional cross-campaign enrollment. |
-| Bulk import failures | Chunk bulk imports to ~50 per batch with checkpoints to avoid losing partial progress on intermittent failures. |
-| Invalid leadId | `LEMLIST_POST_ADD_VARIABLES_TO_LEAD` returns HTTP 400 "Invalid leadId" when using an email as the leadId -- resolve the internal ID via `LEMLIST_GET_RETRIEVE_LEAD_BY_EMAIL` first. |
-| Variable collisions | `LEMLIST_POST_ADD_VARIABLES_TO_LEAD` is not an upsert. Adding keys that already exist returns HTTP 400 "Variables X already exist". |
+| 被包装的营销活动列表 | `LEMLIST_GET_LIST_CAMPAIGNS` 可能返回 `{campaigns: [...], pagination: {...}}`，而不是扁平数组。始终从 `campaigns` 键中提取数据。 |
+| 跨活动去重 | 启用去重的 `LEMLIST_POST_CREATE_LEAD_IN_CAMPAIGN` 会因 "Lead already in other campaign" 返回 HTTP 500 失败 -- 对于有意的跨活动注册，请关闭去重功能。 |
+| 批量导入失败 | 将批量导入按约 50 条一批进行分块，并设置检查点，以避免在间歇性失败时丢失部分进度。 |
+| 无效的 leadId | 如果将邮箱当作 leadId 使用，`LEMLIST_POST_ADD_VARIABLES_TO_LEAD` 会返回 HTTP 400 "Invalid leadId" -- 请先通过 `LEMLIST_GET_RETRIEVE_LEAD_BY_EMAIL` 解析出内部 ID。 |
+| 变量冲突 | `LEMLIST_POST_ADD_VARIABLES_TO_LEAD` 不是 upsert 操作。添加已存在的键会返回 HTTP 400 "Variables X already exist"。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 说明 |
 |-----------|-------------|
-| `LEMLIST_GET_LIST_CAMPAIGNS` | List all campaigns with status filter and pagination |
-| `LEMLIST_GET_CAMPAIGN_BY_ID` | Get detailed campaign info by ID |
-| `LEMLIST_POST_CREATE_LEAD_IN_CAMPAIGN` | Create and enroll a lead into a campaign |
-| `LEMLIST_POST_ADD_VARIABLES_TO_LEAD` | Add custom personalization variables to a lead |
-| `LEMLIST_GET_RETRIEVE_LEAD_BY_EMAIL` | Look up a lead by email address |
-| `LEMLIST_GET_EXPORT_CAMPAIGN_LEADS` | Export leads from a campaign with state filtering |
-| `LEMLIST_DELETE_UNSUBSCRIBE_LEAD_FROM_CAMPAIGN` | Remove a lead from a campaign |
+| `LEMLIST_GET_LIST_CAMPAIGNS` | 列出所有营销活动，支持状态过滤和分页 |
+| `LEMLIST_GET_CAMPAIGN_BY_ID` | 按 ID 获取营销活动的详细信息 |
+| `LEMLIST_POST_CREATE_LEAD_IN_CAMPAIGN` | 创建潜在客户并注册到营销活动 |
+| `LEMLIST_POST_ADD_VARIABLES_TO_LEAD` | 为潜在客户添加自定义个性化变量 |
+| `LEMLIST_GET_RETRIEVE_LEAD_BY_EMAIL` | 按邮箱地址查找潜在客户 |
+| `LEMLIST_GET_EXPORT_CAMPAIGN_LEADS` | 按状态过滤导出营销活动中的潜在客户 |
+| `LEMLIST_DELETE_UNSUBSCRIBE_LEAD_FROM_CAMPAIGN` | 将潜在客户从营销活动中移除 |
 
 ---
 

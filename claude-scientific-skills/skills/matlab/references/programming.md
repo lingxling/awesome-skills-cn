@@ -1,672 +1,232 @@
-# Programming Reference
+# Programming, Projects, Analysis, and Tests
 
-## Table of Contents
-1. [Scripts and Functions](#scripts-and-functions)
-2. [Control Flow](#control-flow)
-3. [Function Types](#function-types)
-4. [Error Handling](#error-handling)
-5. [Performance and Debugging](#performance-and-debugging)
-6. [Object-Oriented Programming](#object-oriented-programming)
+This reference targets MATLAB R2026a. Base MATLAB, separately licensed
+products, and GNU Octave must not be conflated.
 
-## Scripts and Functions
+## Choose the right code artifact
 
-### Scripts
+| Artifact | Workspace | Best use | Main risk |
+|---|---|---|---|
+| script `.m` | caller/base workspace | small reviewed orchestration | hidden inputs, leaked variables, path/state dependence |
+| function `.m` | local workspace | reusable computation and automation | implicit conversions or undocumented side effects |
+| live script `.mlx` | script-like interactive workspace | narrative exploration and teaching | opaque archive, embedded output, weak text review |
+| class `.m` | object state and methods | durable abstractions | constructors, listeners, serialization callbacks |
+| MEX | native process code | approved performance/interface work | arbitrary native execution |
 
-```matlab
-% Scripts are .m files with MATLAB commands
-% They run in the base workspace (share variables)
+Prefer a function with explicit inputs, outputs, and an `arguments` block.
+Keep a top-level script thin. Export reviewed live code to plain `.m` before
+static inspection. Never open or run an untrusted project, live script, app,
+class, MEX file, or package.
 
-% Example: myscript.m
-% This is a comment
-x = 1:10;
-y = x.^2;
-plot(x, y);
-title('My Plot');
-
-% Run script
-myscript;           % Or: run('myscript.m')
-```
-
-### Functions
+Scripts share the base workspace and leave variables there. Functions,
+including local functions, have private workspaces. Since R2024a, local
+functions in scripts can appear anywhere in the file except inside conditional
+contexts. The main function should match its filename.
 
 ```matlab
-% Functions have their own workspace
-% Save in file with same name as function
-
-% Example: myfunction.m
-function y = myfunction(x)
-%MYFUNCTION Brief description of function
-%   Y = MYFUNCTION(X) detailed description
-%
-%   Example:
-%       y = myfunction(5);
-%
-%   See also OTHERFUNCTION
-    y = x.^2;
+function summary = summarizeSignal(signal, options)
+%SUMMARIZESIGNAL Return deterministic summary statistics.
+arguments
+    signal (:,1) double {mustBeFinite}
+    options.Center (1,1) logical = true
 end
 
-% Multiple outputs
-function [result1, result2] = multioutput(x)
-    result1 = x.^2;
-    result2 = x.^3;
+if options.Center
+    signal = signal - mean(signal);
 end
-
-% Variable arguments
-function varargout = flexfun(varargin)
-    % varargin is cell array of inputs
-    % varargout is cell array of outputs
-    n = nargin;          % Number of inputs
-    m = nargout;         % Number of outputs
+summary = struct( ...
+    "Count", numel(signal), ...
+    "Mean", mean(signal), ...
+    "StandardDeviation", std(signal));
 end
 ```
 
-### Input Validation
+### Argument validation details
+
+- A size declaration such as `(:,1)` permits a column of any height.
+- Size declarations also reshape compatible vectors or expand scalars. If
+  orientation must be rejected rather than normalized, use a validator such
+  as `mustBeColumn` without a size declaration that reshapes first.
+- A class declaration can convert compatible input. Do not mistake conversion
+  for validation.
+- Validators such as `mustBeFinite` check values without changing them.
+- A default makes an argument optional. Required positional inputs precede
+  optional inputs.
+- Name-value inputs use a structure name in the signature and dotted fields in
+  the block.
+- `namelengthmax` is 2048 from R2025a onward; filesystem limits can be shorter.
+  The bundled static helpers intentionally retain a 63-character subset.
+- Code generation support is a MATLAB Coder capability with additional
+  restrictions and a separate license; an `arguments` block alone does not
+  make code generation available.
+
+## Workspace and path hygiene
+
+1. Derive files from a confirmed project root, not the user's incidental
+   current folder.
+2. Use `fullfile`; never construct paths by concatenating separators.
+3. Add the narrowest reviewed directory. Avoid broad `genpath` because it can
+   expose hidden, generated, test, private, or malicious files.
+4. Do not silently mutate `path`, `userpath`, preferences, startup files, or
+   Java/native search paths.
+5. Avoid `global`, `persistent` cache state without invalidation, and broad
+   clearing. `clear all` can clear loaded functions and disrupt debugging.
+6. Use `onCleanup` for resources such as files and temporary state.
+7. Pass loaded data through a structure (`S = load(...)`) rather than injecting
+   names into a function or base workspace—but only after the MAT file is
+   trusted.
+
+MATLAB runs `startup.m` when it is found on the search path and `finish.m` on
+normal exit. Projects can add paths and run startup/shutdown actions. Review all
+of these before execution.
+
+## Dynamic and external execution surfaces
+
+Escalate any use of:
+
+- `eval`, `evalin`, `assignin`, `str2func`, text-derived `feval`, dynamic
+  property or callback names;
+- shell entry points (`system`, `unix`, `dos`, `!`);
+- Java class paths/methods, .NET assemblies, Python (`py.*`, `pyrun`,
+  `pyrunfile`), MEX, C/C++ libraries, and generated code;
+- timers, UI callbacks, listeners, project tasks, build tasks, package startup,
+  and test fixtures with external effects;
+- object loading (`loadobj`, `matlab.mixin.CustomElementSerialization`) and
+  System object load hooks.
+
+Function handles are safer than text dispatch only when the handle itself comes
+from trusted code. Never pass untrusted text into a dispatch mechanism. Static
+scanning is triage, not proof of absence.
+
+## MATLAB Projects
+
+A project can track files, control the path, declare references and packages,
+run startup/shutdown tasks, integrate source control, and analyze dependencies.
+Use project APIs only after reviewing project metadata and tasks.
+
+Recommended project record:
+
+- project name and root;
+- MATLAB release and architecture;
+- entry points and test roots;
+- required and optional MathWorks products, each with license status
+  `unknown`, `confirmed`, or `unavailable`;
+- external system dependencies and generated artifacts;
+- startup/shutdown actions and path changes;
+- RNG/tolerance/data-schema policy.
+
+Dependency Analyzer and `matlab.codetools.requiredFilesAndProducts` use static
+analysis. Dynamic dispatch, overloaded methods, callbacks, generated names, and
+conditional paths can cause misses or false positives. Their product lists do
+not prove that a license can be checked out.
+
+## Code Analyzer and compatibility checks
+
+Use these only on trusted text:
+
+- `codeIssues(path)` returns a structured Code Analyzer result and supports
+  programmatic fixes for eligible issues.
+- `checkcode(path)` remains useful for text-oriented or legacy automation.
+- `codeCompatibilityReport(path)` finds potential issues after a release
+  upgrade.
+- Project Upgrade can check and apply some release migrations and produce a
+  report.
+
+Do not auto-apply fixes across a scientific codebase without tests. Analyzer
+silence does not establish numerical correctness, security, toolbox
+availability, or Octave compatibility.
+
+Migration sequence:
+
+1. Freeze representative outputs and tolerance rationale in the old release.
+2. Record release, products, compilers, BLAS/threading context, RNG algorithm
+   and seed, and external data schema.
+3. Run static compatibility and dependency analysis.
+4. Read every relevant product's release notes and bug reports.
+5. Migrate shared libraries before applications.
+6. Run unit, integration, numerical-equivalence, graphics, and performance
+   checks.
+7. Investigate differences rather than automatically widening tolerances.
+
+R2026a-specific checks include changed/removed APIs in release notes, new JSON
+table/timetable I/O, Python 3.13 support, string-array Python conversion,
+interactive HTML graphics export, and platform/compiler support. R2026a no
+longer ships new MATLAB releases for Intel Macs.
+
+## Unit testing
+
+Base MATLAB includes script-, function-, and class-based `matlab.unittest`
+testing. Keep tests deterministic and independent of order.
 
 ```matlab
-function result = validatedinput(x, options)
-    arguments
-        x (1,:) double {mustBePositive}
-        options.Normalize (1,1) logical = false
-        options.Scale (1,1) double {mustBePositive} = 1
-    end
-
-    result = x * options.Scale;
-    if options.Normalize
-        result = result / max(result);
-    end
-end
-
-% Usage
-y = validatedinput([1 2 3], 'Normalize', true, 'Scale', 2);
-
-% Common validators
-% mustBePositive, mustBeNegative, mustBeNonzero
-% mustBeInteger, mustBeNumeric, mustBeFinite
-% mustBeNonNaN, mustBeReal, mustBeNonempty
-% mustBeMember, mustBeInRange, mustBeGreaterThan
-```
-
-### Local Functions
-
-```matlab
-% Local functions appear after main function
-% Only accessible within the same file
-
-function result = mainfunction(x)
-    intermediate = helper1(x);
-    result = helper2(intermediate);
-end
-
-function y = helper1(x)
-    y = x.^2;
-end
-
-function y = helper2(x)
-    y = sqrt(x);
-end
-```
-
-## Control Flow
-
-### Conditional Statements
-
-```matlab
-% if-elseif-else
-if condition1
-    % statements
-elseif condition2
-    % statements
-else
-    % statements
-end
-
-% Logical operators
-%   &  - AND (element-wise)
-%   |  - OR (element-wise)
-%   ~  - NOT
-%   && - AND (short-circuit, scalars)
-%   || - OR (short-circuit, scalars)
-%   == - Equal
-%   ~= - Not equal
-%   <, <=, >, >= - Comparisons
-
-% Example
-if x > 0 && y > 0
-    quadrant = 1;
-elseif x < 0 && y > 0
-    quadrant = 2;
-elseif x < 0 && y < 0
-    quadrant = 3;
-else
-    quadrant = 4;
-end
-```
-
-### Switch Statements
-
-```matlab
-switch expression
-    case value1
-        % statements
-    case {value2, value3}  % Multiple values
-        % statements
-    otherwise
-        % default statements
-end
-
-% Example
-switch dayOfWeek
-    case {'Saturday', 'Sunday'}
-        dayType = 'Weekend';
-    case {'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'}
-        dayType = 'Weekday';
-    otherwise
-        dayType = 'Unknown';
-end
-```
-
-### For Loops
-
-```matlab
-% Basic for loop
-for i = 1:10
-    % statements using i
-end
-
-% Custom step
-for i = 10:-1:1
-    % count down
-end
-
-% Loop over vector
-for val = [1 3 5 7 9]
-    % val takes each value
-end
-
-% Loop over columns of matrix
-for col = A
-    % col is a column vector
-end
-
-% Loop over cell array
-for i = 1:length(C)
-    item = C{i};
-end
-```
-
-### While Loops
-
-```matlab
-% Basic while loop
-while condition
-    % statements
-    % Update condition
-end
-
-% Example
-count = 0;
-while count < 10
-    count = count + 1;
-    % Do something
-end
-```
-
-### Loop Control
-
-```matlab
-% Break - exit loop immediately
-for i = 1:100
-    if someCondition
-        break;
-    end
-end
-
-% Continue - skip to next iteration
-for i = 1:100
-    if skipCondition
-        continue;
-    end
-    % Process i
-end
-
-% Return - exit function
-function y = myfunction(x)
-    if x < 0
-        y = NaN;
-        return;
-    end
-    y = sqrt(x);
-end
-```
-
-## Function Types
-
-### Anonymous Functions
-
-```matlab
-% Create inline function
-f = @(x) x.^2 + 2*x + 1;
-g = @(x, y) x.^2 + y.^2;
-
-% Use
-y = f(5);           % 36
-z = g(3, 4);        % 25
-
-% With captured variables
-a = 2;
-h = @(x) a * x;     % Captures current value of a
-y = h(5);           % 10
-a = 3;              % Changing a doesn't affect h
-y = h(5);           % Still 10
-
-% No arguments
-now_fn = @() datestr(now);
-timestamp = now_fn();
-
-% Pass to other functions
-result = integral(f, 0, 1);
-```
-
-### Nested Functions
-
-```matlab
-function result = outerfunction(x)
-    y = x.^2;           % Shared with nested functions
-
-    function z = nestedfunction(a)
-        z = y + a;      % Can access y from outer scope
-    end
-
-    result = nestedfunction(10);
-end
-```
-
-### Function Handles
-
-```matlab
-% Create handle to existing function
-h = @sin;
-y = h(pi/2);        % 1
-
-% From string
-h = str2func('cos');
-
-% Get function name
-name = func2str(h);
-
-% Get handles to local functions
-handles = localfunctions;
-
-% Function info
-info = functions(h);
-```
-
-### Callbacks
-
-```matlab
-% Using function handles as callbacks
-
-% Timer example
-t = timer('TimerFcn', @myCallback, 'Period', 1);
-start(t);
-
-function myCallback(~, ~)
-    disp(['Time: ' datestr(now)]);
-end
-
-% With anonymous function
-t = timer('TimerFcn', @(~,~) disp('Tick'), 'Period', 1);
-
-% GUI callbacks
-uicontrol('Style', 'pushbutton', 'Callback', @buttonPressed);
-```
-
-## Error Handling
-
-### Try-Catch
-
-```matlab
-try
-    % Code that might error
-    result = riskyOperation();
-catch ME
-    % Handle error
-    disp(['Error: ' ME.message]);
-    disp(['Identifier: ' ME.identifier]);
-
-    % Optionally rethrow
-    rethrow(ME);
-end
-
-% Catch specific errors
-try
-    result = operation();
-catch ME
-    switch ME.identifier
-        case 'MATLAB:divideByZero'
-            result = Inf;
-        case 'MATLAB:nomem'
-            rethrow(ME);
-        otherwise
-            result = NaN;
-    end
-end
-```
-
-### Throwing Errors
-
-```matlab
-% Simple error
-error('Something went wrong');
-
-% With identifier
-error('MyPkg:InvalidInput', 'Input must be positive');
-
-% With formatting
-error('MyPkg:OutOfRange', 'Value %f is out of range [%f, %f]', val, lo, hi);
-
-% Create and throw exception
-ME = MException('MyPkg:Error', 'Error message');
-throw(ME);
-
-% Assertion
-assert(condition, 'Message if false');
-assert(x > 0, 'MyPkg:NotPositive', 'x must be positive');
-```
-
-### Warnings
-
-```matlab
-% Issue warning
-warning('This might be a problem');
-warning('MyPkg:Warning', 'Warning message');
-
-% Control warnings
-warning('off', 'MyPkg:Warning');    % Disable specific warning
-warning('on', 'MyPkg:Warning');     % Enable
-warning('off', 'all');              % Disable all
-warning('on', 'all');               % Enable all
-
-% Query warning state
-s = warning('query', 'MyPkg:Warning');
-
-% Temporarily disable
-origState = warning('off', 'MATLAB:nearlySingularMatrix');
-% ... code ...
-warning(origState);
-```
-
-## Performance and Debugging
-
-### Timing
-
-```matlab
-% Simple timing
-tic;
-% ... code ...
-elapsed = toc;
-
-% Multiple timers
-t1 = tic;
-% ... code ...
-elapsed1 = toc(t1);
-
-% CPU time
-t = cputime;
-% ... code ...
-cpuElapsed = cputime - t;
-
-% Profiler
-profile on;
-myfunction();
-profile viewer;     % GUI to analyze results
-p = profile('info'); % Get programmatic results
-profile off;
-```
-
-### Memory
-
-```matlab
-% Memory info
-[user, sys] = memory;   % Windows only
-whos;                   % Variable sizes
-
-% Clear variables
-clear x y z;
-clear all;              % All variables (use sparingly)
-clearvars -except x y;  % Keep specific variables
-```
-
-### Debugging
-
-```matlab
-% Set breakpoints (in editor or programmatically)
-dbstop in myfunction at 10
-dbstop if error
-dbstop if warning
-dbstop if naninf          % Stop on NaN or Inf
-
-% Step through code
-dbstep                    % Next line
-dbstep in                 % Step into function
-dbstep out                % Step out of function
-dbcont                    % Continue execution
-dbquit                    % Quit debugging
-
-% Clear breakpoints
-dbclear all
-
-% Examine state
-dbstack                   % Call stack
-whos                      % Variables
-```
-
-### Vectorization Tips
-
-```matlab
-% AVOID loops when possible
-% Slow:
-for i = 1:n
-    y(i) = x(i)^2;
-end
-
-% Fast:
-y = x.^2;
-
-% Element-wise operations (use . prefix)
-y = a .* b;             % Element-wise multiply
-y = a ./ b;             % Element-wise divide
-y = a .^ b;             % Element-wise power
-
-% Built-in functions operate on arrays
-y = sin(x);             % Apply to all elements
-s = sum(x);             % Sum all
-m = max(x);             % Maximum
-
-% Logical indexing instead of find
-% Slow:
-idx = find(x > 0);
-y = x(idx);
-
-% Fast:
-y = x(x > 0);
-
-% Preallocate arrays
-% Slow:
-y = [];
-for i = 1:n
-    y(i) = compute(i);
-end
-
-% Fast:
-y = zeros(1, n);
-for i = 1:n
-    y(i) = compute(i);
-end
-```
-
-### Parallel Computing
-
-```matlab
-% Parallel for loop
-parfor i = 1:n
-    results(i) = compute(i);
-end
-
-% Note: parfor has restrictions
-% - Iterations must be independent
-% - Variable classifications (sliced, broadcast, etc.)
-
-% Start parallel pool
-pool = parpool;         % Default cluster
-pool = parpool(4);      % 4 workers
-
-% Delete pool
-delete(gcp('nocreate'));
-
-% Parallel array operations
-spmd
-    % Each worker executes this block
-    localData = myData(labindex);
-    result = process(localData);
-end
-```
-
-## Object-Oriented Programming
-
-### Class Definition
-
-```matlab
-% In file MyClass.m
-classdef MyClass
-    properties
-        PublicProp
-    end
-
-    properties (Access = private)
-        PrivateProp
-    end
-
-    properties (Constant)
-        ConstProp = 42
-    end
-
-    methods
-        % Constructor
-        function obj = MyClass(value)
-            obj.PublicProp = value;
+classdef TestSummarizeSignal < matlab.unittest.TestCase
+    methods (Test)
+        function centersFiniteColumn(testCase)
+            actual = summarizeSignal([1; 2; 3]);
+            testCase.verifyEqual(actual.Count, 3);
+            testCase.verifyEqual(actual.Mean, 0, AbsTol=1e-14);
         end
 
-        % Instance method
-        function result = compute(obj, x)
-            result = obj.PublicProp * x;
-        end
-    end
-
-    methods (Static)
-        function result = staticMethod(x)
-            result = x.^2;
+        function rejectsNonfiniteInput(testCase)
+            testCase.verifyError( ...
+                @() summarizeSignal([1; NaN]), ...
+                "MATLAB:validators:mustBeFinite");
         end
     end
 end
 ```
 
-### Using Classes
+Use domain-derived `AbsTol` and `RelTol`; exact checks remain appropriate for
+integers, strings, dimensions, and invariants. Isolate file output in temporary
+folders and refuse network, interactive dialogs, or real credentials in unit
+tests.
 
-```matlab
-% Create object
-obj = MyClass(10);
+Product boundaries:
 
-% Access properties
-val = obj.PublicProp;
-obj.PublicProp = 20;
+- `runtests`, `testsuite`, `matlab.unittest.TestCase`, and ordinary framework
+  plugins are base MATLAB.
+- Parallel test execution requires Parallel Computing Toolbox.
+- Dependency-based test selection, MATLAB Test Manager, Code Quality Dashboard,
+  advanced coverage, generated tests, and equivalence workflows can require
+  MATLAB Test.
+- Requirements traceability can require Requirements Toolbox; generated-code
+  workflows can require MATLAB Coder, MATLAB Compiler SDK, Embedded Coder, or
+  other named products.
 
-% Call methods
-result = obj.compute(5);
-result = compute(obj, 5);   % Equivalent
+In R2026a, `runtests` automatically opens a project for tests belonging to a
+project that is not already open and closes it afterward. This may execute
+reviewed project startup and shutdown actions; it is not safe for untrusted
+projects.
 
-% Static method
-result = MyClass.staticMethod(3);
+## Review checklist
 
-% Constant property
-val = MyClass.ConstProp;
-```
+- [ ] Main function and filename agree.
+- [ ] Inputs, shapes, classes, units, missingness, and outputs are documented.
+- [ ] No hidden base-workspace dependency.
+- [ ] Dynamic/external execution surfaces are absent or explicitly approved.
+- [ ] Paths are project-local and narrow.
+- [ ] Resources close on both success and failure.
+- [ ] Errors have stable identifiers where tests rely on them.
+- [ ] Tests cover edge shapes, empty values, missing values, nonfinite values,
+      numerical tolerances, and failure behavior.
+- [ ] Required products are declared separately from confirmed license status.
+- [ ] Migration evidence includes release notes and representative baselines.
 
-### Inheritance
+## Sources (reviewed 2026-10-01)
 
-```matlab
-classdef DerivedClass < BaseClass
-    properties
-        ExtraProp
-    end
-
-    methods
-        function obj = DerivedClass(baseVal, extraVal)
-            % Call superclass constructor
-            obj@BaseClass(baseVal);
-            obj.ExtraProp = extraVal;
-        end
-
-        % Override method
-        function result = compute(obj, x)
-            % Call superclass method
-            baseResult = compute@BaseClass(obj, x);
-            result = baseResult + obj.ExtraProp;
-        end
-    end
-end
-```
-
-### Handle vs Value Classes
-
-```matlab
-% Value class (default) - copy semantics
-classdef ValueClass
-    properties
-        Data
-    end
-end
-
-a = ValueClass();
-a.Data = 1;
-b = a;          % b is a copy
-b.Data = 2;     % a.Data is still 1
-
-% Handle class - reference semantics
-classdef HandleClass < handle
-    properties
-        Data
-    end
-end
-
-a = HandleClass();
-a.Data = 1;
-b = a;          % b references same object
-b.Data = 2;     % a.Data is now 2
-```
-
-### Events and Listeners
-
-```matlab
-classdef EventClass < handle
-    events
-        DataChanged
-    end
-
-    properties
-        Data
-    end
-
-    methods
-        function set.Data(obj, value)
-            obj.Data = value;
-            notify(obj, 'DataChanged');
-        end
-    end
-end
-
-% Usage
-obj = EventClass();
-listener = addlistener(obj, 'DataChanged', @(src, evt) disp('Data changed!'));
-obj.Data = 42;  % Triggers event
-```
+- [Scripts vs. Functions](https://www.mathworks.com/help/matlab/matlab_prog/scripts-and-functions.html)
+- [Create Scripts](https://www.mathworks.com/help/matlab/matlab_prog/create-scripts.html)
+- [`arguments`](https://www.mathworks.com/help/matlab/ref/arguments.html)
+- [`mustBeColumn`](https://www.mathworks.com/help/matlab/ref/mustbecolumn.html)
+- [`namelengthmax`](https://www.mathworks.com/help/matlab/ref/namelengthmax.html)
+- [Local Functions](https://www.mathworks.com/help/matlab/matlab_prog/local-functions.html)
+- [MATLAB Projects](https://www.mathworks.com/help/matlab/projects.html)
+- [Analyze Project Dependencies](https://www.mathworks.com/help/matlab/matlab_prog/analyze-project-dependencies.html)
+- [`requiredFilesAndProducts`](https://www.mathworks.com/help/matlab/ref/matlab.codetools.requiredfilesandproducts.html)
+- [MATLAB Code Analyzer Report](https://www.mathworks.com/help/matlab/matlab_prog/matlab-code-analyzer-report.html)
+- [`codeCompatibilityReport`](https://www.mathworks.com/help/matlab/ref/codecompatibilityreport.html)
+- [Project Upgrade](https://www.mathworks.com/help/matlab/matlab_prog/upgrade-projects.html)
+- [Run Unit Tests](https://www.mathworks.com/help/matlab/run-unit-tests.html)
+- [`runtests` R2026a history](https://www.mathworks.com/help/matlab/ref/runtests.html)
+- [MATLAB Test product boundary](https://www.mathworks.com/products/matlab-test.html)
+- [MATLAB release notes](https://www.mathworks.com/help/matlab/release-notes.html)

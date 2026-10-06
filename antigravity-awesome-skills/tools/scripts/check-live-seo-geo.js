@@ -4,7 +4,7 @@ const https = require('node:https');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const DEFAULT_BASE_URL = 'https://sickn33.github.io/agentic-awesome-skills';
+const DEFAULT_BASE_URL = 'https://aaskills.tech';
 const baseUrl = (process.env.SEO_LIVE_BASE_URL || DEFAULT_BASE_URL).replace(/\/+$/, '');
 const repoRoot = path.resolve(__dirname, '..', '..');
 
@@ -17,6 +17,7 @@ function readExpectedState() {
   return {
     countLabel: `${skills.length.toLocaleString('en-US')}+`,
     releaseLabel: `V${pkg.version}`,
+    pluginCount: JSON.parse(fs.readFileSync(path.join(repoRoot, 'data/specialized-plugin-candidates.json'), 'utf8')).candidates.length,
   };
 }
 
@@ -68,24 +69,21 @@ function assertNotIncludes(text, snippet, label) {
   }
 }
 
-async function main() {
-  const expected = readExpectedState();
-  const [home, plugins, sitemap, llms, robots] = await Promise.all([
-    fetchText(`${baseUrl}/`),
-    fetchText(`${baseUrl}/plugins`),
-    fetchText(`${baseUrl}/sitemap.xml`),
-    fetchText(`${baseUrl}/llms.txt`),
-    fetchText(`${baseUrl}/robots.txt`),
-  ]);
-
-  assertIncludes(home, `Agentic Awesome Skills GitHub | ${expected.countLabel} AI coding skills`, 'home');
+function assertLiveSeoDocuments({ home, plugins, sitemap, llms, robots }, expected) {
+  assertIncludes(home, 'Agentic Awesome Skills | Agent-first skill catalog and AAS Core', 'home title');
+  const description = home.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i)?.[1];
+  if (!description) {
+    throw new Error('home description meta tag is missing');
+  }
+  assertIncludes(description, `Explore ${expected.countLabel} playbooks`, 'home description');
+  if (description.length > 160) {
+    throw new Error(`home description is ${description.length} characters; expected no more than 160`);
+  }
   assertIncludes(home, 'SoftwareSourceCode', 'home JSON-LD');
-  assertIncludes(home, 'FAQPage', 'home JSON-LD');
-  assertIncludes(home, 'specialized plugins', 'home');
   assertIncludes(home, expected.countLabel, 'home');
   assertNotIncludes(home, 'prompt templates', 'home');
 
-  assertIncludes(plugins, 'AAS Specialized Plugins | 15 AI coding workflow packs', 'plugins');
+  assertIncludes(plugins, `AAS Specialized Plugins | ${expected.pluginCount.toLocaleString('en-US')} AI coding workflow packs`, 'plugins');
   assertIncludes(plugins, 'specialized plugin packs', 'plugins');
   assertIncludes(plugins, 'numberOfItems', 'plugins JSON-LD');
 
@@ -97,11 +95,28 @@ async function main() {
   assertIncludes(robots, 'User-agent: OAI-SearchBot', 'robots.txt');
   assertIncludes(robots, 'User-agent: ClaudeBot', 'robots.txt');
   assertIncludes(robots, 'User-agent: PerplexityBot', 'robots.txt');
+}
+
+async function main() {
+  const expected = readExpectedState();
+  const [home, plugins, sitemap, llms, robots] = await Promise.all([
+    fetchText(`${baseUrl}/`),
+    fetchText(`${baseUrl}/plugins`),
+    fetchText(`${baseUrl}/sitemap.xml`),
+    fetchText(`${baseUrl}/llms.txt`),
+    fetchText(`${baseUrl}/robots.txt`),
+  ]);
+
+  assertLiveSeoDocuments({ home, plugins, sitemap, llms, robots }, expected);
 
   console.log(`Live SEO/GEO check passed for ${baseUrl}`);
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exit(1);
-});
+if (require.main === module) {
+  main().catch((error) => {
+    console.error(error.message);
+    process.exit(1);
+  });
+}
+
+module.exports = { assertLiveSeoDocuments, readExpectedState };

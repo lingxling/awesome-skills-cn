@@ -1,6 +1,6 @@
 ---
 name: Lemon Squeezy Automation
-description: "Automate Lemon Squeezy store management -- products, orders, subscriptions, customers, discounts, and checkout tracking -- using natural language through the Composio MCP integration."
+description: "通过 Composio MCP 集成，使用自然语言自动化 Lemon Squeezy 店铺管理——产品、订单、订阅、客户、折扣，以及结账跟踪。"
 category: e-commerce
 requires:
   mcp:
@@ -9,147 +9,147 @@ requires:
 
 # Lemon Squeezy Automation
 
-Manage your Lemon Squeezy digital products business -- track orders, monitor subscriptions, analyze customers, review discounts, and audit checkouts -- all through natural language commands.
+管理你的 Lemon Squeezy 数字产品业务——跟踪订单、监控订阅、分析客户、审查折扣，并审计结账——全部通过自然语言命令完成。
 
-**Toolkit docs:** [composio.dev/toolkits/lemon_squeezy](https://composio.dev/toolkits/lemon_squeezy)
+**工具包文档：** [composio.dev/toolkits/lemon_squeezy](https://composio.dev/toolkits/lemon_squeezy)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your client configuration:
+1. 将 Composio MCP 服务器添加到你的客户端配置中：
    ```
    https://rube.app/mcp
    ```
-2. 连接 your Lemon Squeezy account when prompted (API key authentication).
-3. Start issuing natural language commands to manage your store.
+2. 按提示连接你的 Lemon Squeezy 账户（API 密钥身份验证）。
+3. 开始发出自然语言命令来管理你的店铺。
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Discover Stores and Products
-List all stores to get store IDs, then retrieve products and variants for a specific store.
+### 1. 发现店铺和产品
+列出所有店铺以获取店铺 ID，然后检索特定店铺的产品和变体。
 
-**Tools:** `LEMON_SQUEEZY_LIST_ALL_STORES`, `LEMON_SQUEEZY_LIST_ALL_PRODUCTS`, `LEMON_SQUEEZY_LIST_ALL_VARIANTS`
+**工具：** `LEMON_SQUEEZY_LIST_ALL_STORES`、`LEMON_SQUEEZY_LIST_ALL_PRODUCTS`、`LEMON_SQUEEZY_LIST_ALL_VARIANTS`
 
-**Example prompt:**
-> "List all my Lemon Squeezy stores and their products"
+**示例提示：**
+> "列出我所有的 Lemon Squeezy 店铺及其产品"
 
-**Key parameters:**
-- `LEMON_SQUEEZY_LIST_ALL_STORES` -- No parameters required
-- `LEMON_SQUEEZY_LIST_ALL_PRODUCTS` -- Filter by `filter[store_id]`
-- `LEMON_SQUEEZY_LIST_ALL_VARIANTS` -- Filter by `filter[product_id]`, `filter[status]` (pending/draft/published)
-
----
-
-### 2. Track Orders and Order Items
-Retrieve all orders with optional filtering by store, user email, or order number, and drill into individual order items.
-
-**Tools:** `LEMON_SQUEEZY_LIST_ALL_ORDERS`, `LEMON_SQUEEZY_LIST_ALL_ORDER_ITEMS`
-
-**Example prompt:**
-> "Show all orders from johndoe@example.com in my Lemon Squeezy store"
-
-**Key parameters for orders:**
-- `filter[store_id]` -- Filter by store ID
-- `filter[user_email]` -- Filter by customer email
-- `filter[order_number]` -- Filter by specific order number
-- `page[number]` / `page[size]` -- Pagination (max 100 per page)
-
-**Key parameters for order items:**
-- `filter[order_id]`, `filter[product_id]`, `filter[variant_id]` -- Filter by related entity
+**关键参数：**
+- `LEMON_SQUEEZY_LIST_ALL_STORES` —— 无需参数
+- `LEMON_SQUEEZY_LIST_ALL_PRODUCTS` —— 按 `filter[store_id]` 筛选
+- `LEMON_SQUEEZY_LIST_ALL_VARIANTS` —— 按 `filter[product_id]`、`filter[status]`（pending/draft/published）筛选
 
 ---
 
-### 3. Monitor Subscriptions
-List all subscriptions with rich filtering options to track recurring revenue.
+### 2. 跟踪订单和订单项目
+检索所有订单，可选按店铺、用户邮箱或订单号筛选，并深入查看单个订单项目。
 
-**Tool:** `LEMON_SQUEEZY_LIST_ALL_SUBSCRIPTIONS`
+**工具：** `LEMON_SQUEEZY_LIST_ALL_ORDERS`、`LEMON_SQUEEZY_LIST_ALL_ORDER_ITEMS`
 
-**Example prompt:**
-> "Show all active subscriptions in my Lemon Squeezy store"
+**示例提示：**
+> "显示我 Lemon Squeezy 店铺中来自 johndoe@example.com 的所有订单"
 
-**Key parameters:**
-- `filter[status]` -- Filter by status (e.g., `active`, `cancelled`)
-- `filter[store_id]` -- Filter by store
-- `filter[product_id]` -- Filter by product
-- `filter[user_email]` -- Filter by subscriber email
-- `filter[variant_id]` -- Filter by variant
-- `page[number]` / `page[size]` -- Pagination (max 100 per page)
+**订单的关键参数：**
+- `filter[store_id]` —— 按店铺 ID 筛选
+- `filter[user_email]` —— 按客户邮箱筛选
+- `filter[order_number]` —— 按特定订单号筛选
+- `page[number]` / `page[size]` —— 分页（每页最多 100 条）
 
----
-
-### 4. Manage Customers
-Retrieve customer records with details including email, MRR, total revenue, and customer portal URLs.
-
-**Tool:** `LEMON_SQUEEZY_LIST_ALL_CUSTOMERS`
-
-**Example prompt:**
-> "Find the Lemon Squeezy customer with email johndoe@example.com"
-
-**Key parameters:**
-- `filter[email]` -- Filter by exact email address
-- `filter[store_id]` -- Filter by store ID
-- `page[number]` / `page[size]` -- Pagination (max 100 per page)
+**订单项目的关键参数：**
+- `filter[order_id]`、`filter[product_id]`、`filter[variant_id]` —— 按关联实体筛选
 
 ---
 
-### 5. Audit Discounts and Redemptions
-List all discount codes and track how they have been redeemed across orders.
+### 3. 监控订阅
+列出所有订阅，提供丰富的筛选选项，用于跟踪经常性收入。
 
-**Tools:** `LEMON_SQUEEZY_LIST_ALL_DISCOUNTS`, `LEMON_SQUEEZY_LIST_ALL_DISCOUNT_REDEMPTIONS`
+**工具：** `LEMON_SQUEEZY_LIST_ALL_SUBSCRIPTIONS`
 
-**Example prompt:**
-> "Show all discounts for store 12345 and their redemption history"
+**示例提示：**
+> "显示我 Lemon Squeezy 店铺中所有活跃的订阅"
 
-**Key parameters for discounts:**
-- `filter[store_id]` -- Filter by store
-- `page[number]` / `page[size]` -- Pagination
-
-**Key parameters for redemptions:**
-- `filter[discount_id]` -- Filter by discount
-- `filter[order_id]` -- Filter by order
-
----
-
-### 6. Review Checkouts
-List all checkout sessions with optional filtering by store or variant.
-
-**Tool:** `LEMON_SQUEEZY_LIST_ALL_CHECKOUTS`
-
-**Example prompt:**
-> "Show all checkouts for variant 42 in my Lemon Squeezy store"
-
-**Key parameters:**
-- `filter[store_id]` -- Filter by store ID
-- `filter[variant_id]` -- Filter by variant ID
+**关键参数：**
+- `filter[status]` —— 按状态筛选（例如 `active`、`cancelled`）
+- `filter[store_id]` —— 按店铺筛选
+- `filter[product_id]` —— 按产品筛选
+- `filter[user_email]` —— 按订阅者邮箱筛选
+- `filter[variant_id]` —— 按变体筛选
+- `page[number]` / `page[size]` —— 分页（每页最多 100 条）
 
 ---
 
-## 已知陷阱
+### 4. 管理客户
+检索客户记录，包括邮箱、月经常性收入（MRR）、总收入和客户门户 URL 等详细信息。
 
-- **Store ID is foundational**: Most filters require a `store_id`. Always call `LEMON_SQUEEZY_LIST_ALL_STORES` first to discover valid store IDs before filtering other resources.
-- **Pagination is mandatory for large datasets**: All list endpoints use `page[number]` / `page[size]` pagination (max 100 per page). Do not assume the first page is complete.
-- **Filter parameter naming**: Lemon Squeezy uses bracket notation for filters (e.g., `filter[store_id]`, `page[number]`). Ensure exact parameter names are used.
-- **Subscription invoices vs. orders**: Subscription invoices (`LEMON_SQUEEZY_LIST_ALL_SUBSCRIPTION_INVOICES`) are separate from one-time orders. Use the appropriate endpoint for your use case.
+**工具：** `LEMON_SQUEEZY_LIST_ALL_CUSTOMERS`
+
+**示例提示：**
+> "查找邮箱为 johndoe@example.com 的 Lemon Squeezy 客户"
+
+**关键参数：**
+- `filter[email]` —— 按确切邮箱地址筛选
+- `filter[store_id]` —— 按店铺 ID 筛选
+- `page[number]` / `page[size]` —— 分页（每页最多 100 条）
+
+---
+
+### 5. 审计折扣和兑换记录
+列出所有折扣码，并跟踪它们在各订单中的兑换情况。
+
+**工具：** `LEMON_SQUEEZY_LIST_ALL_DISCOUNTS`、`LEMON_SQUEEZY_LIST_ALL_DISCOUNT_REDEMPTIONS`
+
+**示例提示：**
+> "显示店铺 12345 的所有折扣及其兑换历史"
+
+**折扣的关键参数：**
+- `filter[store_id]` —— 按店铺筛选
+- `page[number]` / `page[size]` —— 分页
+
+**兑换记录的关键参数：**
+- `filter[discount_id]` —— 按折扣筛选
+- `filter[order_id]` —— 按订单筛选
+
+---
+
+### 6. 审查结账
+列出所有结账会话，可选按店铺或变体筛选。
+
+**工具：** `LEMON_SQUEEZY_LIST_ALL_CHECKOUTS`
+
+**示例提示：**
+> "显示我 Lemon Squeezy 店铺中变体 42 的所有结账记录"
+
+**关键参数：**
+- `filter[store_id]` —— 按店铺 ID 筛选
+- `filter[variant_id]` —— 按变体 ID 筛选
+
+---
+
+## 常见陷阱
+
+- **店铺 ID 是基础**：大多数筛选条件都需要 `store_id`。在筛选其他资源之前，请始终先调用 `LEMON_SQUEEZY_LIST_ALL_STORES` 来发现有效的店铺 ID。
+- **大型数据集必须分页**：所有列表端点都使用 `page[number]` / `page[size]` 分页（每页最多 100 条）。不要假设第一页就是完整数据。
+- **筛选参数命名**：Lemon Squeezy 使用方括号表示法进行筛选（例如 `filter[store_id]`、`page[number]`）。请确保使用准确的参数名称。
+- **订阅发票与订单的区别**：订阅发票（`LEMON_SQUEEZY_LIST_ALL_SUBSCRIPTION_INVOICES`）与一次性订单是分开的。请根据使用场景选用合适的端点。
 
 ---
 
 ## 快速参考
 
-| Action | Tool Slug | Required Params |
+| 操作 | 工具标识 | 必填参数 |
 |---|---|---|
-| List stores | `LEMON_SQUEEZY_LIST_ALL_STORES` | None |
-| List products | `LEMON_SQUEEZY_LIST_ALL_PRODUCTS` | None (optional filters) |
-| List variants | `LEMON_SQUEEZY_LIST_ALL_VARIANTS` | None (optional filters) |
-| List orders | `LEMON_SQUEEZY_LIST_ALL_ORDERS` | None (optional filters) |
-| List order items | `LEMON_SQUEEZY_LIST_ALL_ORDER_ITEMS` | None (optional filters) |
-| List subscriptions | `LEMON_SQUEEZY_LIST_ALL_SUBSCRIPTIONS` | None (optional filters) |
-| List customers | `LEMON_SQUEEZY_LIST_ALL_CUSTOMERS` | None (optional filters) |
-| List discounts | `LEMON_SQUEEZY_LIST_ALL_DISCOUNTS` | None (optional filters) |
-| List discount redemptions | `LEMON_SQUEEZY_LIST_ALL_DISCOUNT_REDEMPTIONS` | None (optional filters) |
-| List checkouts | `LEMON_SQUEEZY_LIST_ALL_CHECKOUTS` | None (optional filters) |
+| 列出店铺 | `LEMON_SQUEEZY_LIST_ALL_STORES` | 无 |
+| 列出产品 | `LEMON_SQUEEZY_LIST_ALL_PRODUCTS` | 无（可选筛选条件） |
+| 列出变体 | `LEMON_SQUEEZY_LIST_ALL_VARIANTS` | 无（可选筛选条件） |
+| 列出订单 | `LEMON_SQUEEZY_LIST_ALL_ORDERS` | 无（可选筛选条件） |
+| 列出订单项目 | `LEMON_SQUEEZY_LIST_ALL_ORDER_ITEMS` | 无（可选筛选条件） |
+| 列出订阅 | `LEMON_SQUEEZY_LIST_ALL_SUBSCRIPTIONS` | 无（可选筛选条件） |
+| 列出客户 | `LEMON_SQUEEZY_LIST_ALL_CUSTOMERS` | 无（可选筛选条件） |
+| 列出折扣 | `LEMON_SQUEEZY_LIST_ALL_DISCOUNTS` | 无（可选筛选条件） |
+| 列出折扣兑换记录 | `LEMON_SQUEEZY_LIST_ALL_DISCOUNT_REDEMPTIONS` | 无（可选筛选条件） |
+| 列出结账记录 | `LEMON_SQUEEZY_LIST_ALL_CHECKOUTS` | 无（可选筛选条件） |
 
 ---
 

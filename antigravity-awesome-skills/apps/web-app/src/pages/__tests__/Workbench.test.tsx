@@ -1,229 +1,290 @@
-import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
-import packageMetadata from '../../../../../package.json';
-import { createMockSkill } from '../../factories/skill';
-import { useSkills } from '../../context/SkillContext';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createHash } from 'node:crypto';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithRouter } from '../../utils/testUtils';
 import { Workbench } from '../Workbench';
+import { canonicalWorkbenchJson } from '../../utils/workbenchReview';
+import { selectionFixture } from '../../utils/__tests__/selectionEvidenceFixture';
 
-vi.mock('../../context/SkillContext', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../../context/SkillContext')>();
-  return { ...actual, useSkills: vi.fn() };
-});
+const D1 = `sha256-${'1'.repeat(64)}`;
+const D2 = `sha256-${'2'.repeat(64)}`;
+const D3 = `sha256-${'3'.repeat(64)}`;
+const D4 = `sha256-${'4'.repeat(64)}`;
+const D5 = `sha256-${'5'.repeat(64)}`;
 
-vi.mock('react-virtuoso', () => ({
-  VirtuosoGrid: ({ totalCount, itemContent }: { totalCount: number; itemContent: (index: number) => React.ReactNode }) => (
-    <div data-testid="workbench-grid">
-      {Array.from({ length: totalCount }, (_, index) => <div key={index}>{itemContent(index)}</div>)}
-    </div>
-  ),
-}));
-
-const skills = [
-  createMockSkill({
-    id: 'safe-skill',
-    name: 'Safe Skill',
-    category: 'development',
-    tags: ['typescript', 'review'],
-    risk: 'safe',
-    source: 'official',
-    source_type: 'official',
-    source_repo: 'example/official-skills',
-    plugin: {
-      targets: { codex: 'supported', claude: 'supported' },
-      setup: { type: 'none', summary: '', docs: null },
-      reasons: [],
+function stackFixture(overrides: Record<string, unknown> = {}): Record<string, unknown> {
+  return {
+    schemaVersion: 2,
+    name: 'reviewed-web-stack',
+    catalog: { package: 'agentic-awesome-skills', version: '15.0.0', integrity: D1 },
+    targets: [{ host: 'codex', scope: 'project' }],
+    profile: {
+      goals: ['build', 'test'],
+      projectType: 'React web application',
+      languages: ['typescript'],
+      frameworks: ['react'],
+      constraints: ['offline-capable'],
     },
-  }),
-  createMockSkill({
-    id: 'data-pipeline',
-    name: 'Data Pipeline',
-    category: 'data',
-    tags: ['python', 'etl'],
-    risk: 'unknown',
-    source: 'community',
-    source_type: 'community',
-    plugin: {
-      targets: { codex: 'supported', claude: 'supported' },
-      setup: { type: 'manual', summary: 'Install Python.', docs: 'SKILL.md' },
-      reasons: [],
-    },
-  }),
-  createMockSkill({
-    id: 'blocked-skill',
-    name: 'Blocked Skill',
-    category: 'security',
-    risk: 'critical',
-    source: 'community',
-    source_type: 'community',
-    plugin: {
-      targets: { codex: 'blocked', claude: 'supported' },
-      setup: { type: 'none', summary: '', docs: null },
-      reasons: ['Requires Claude-specific tools.'],
-    },
-  }),
-];
-
-function LocationProbe(): React.ReactElement {
-  const location = useLocation();
-  return <output data-testid="workbench-location">{location.pathname}{location.search}</output>;
+    skills: [{ id: 'react-best-practices' }, { id: 'playwright-skill' }],
+    ...overrides,
+  };
 }
 
-function currentLocationParams(): URLSearchParams {
-  const renderedLocation = screen.getByTestId('workbench-location').textContent ?? '';
-  return new URLSearchParams(renderedLocation.split('?')[1] ?? '');
+function planFixture(reasonCode = 'AAS_MANAGED_DRIFT_APPROVED'): Record<string, unknown> {
+  const plan = {
+    schemaVersion: 2,
+    kind: 'aas.stack-plan',
+    digest: D5,
+    payload: {
+      schemaVersion: 2,
+      kind: 'aas.stack-plan.payload',
+      versions: {
+        protocolVersion: '2025-06-18',
+        coreVersion: '1.0.0',
+        catalogSchemaVersion: '2.0.0',
+      },
+      manifestDigest: D2,
+      catalog: { package: 'agentic-awesome-skills', version: '15.0.0', integrity: D1 },
+      runtime: { package: 'agentic-awesome-skills', version: '15.0.0', integrity: 'sha512-runtime', closureDigest: D3 },
+      target: { host: 'codex', scope: 'project', adapterVersion: '1.0.0', identityDigest: D4 },
+      installedState: { digest: D2, entries: [] },
+      desiredSkills: ['react-best-practices'],
+      profile: {
+        goals: ['build', 'test'],
+        projectType: 'React web application',
+        languages: ['typescript'],
+        frameworks: ['react'],
+        constraints: ['offline-capable'],
+      },
+      operations: [{
+        kind: 'install',
+        skillId: 'react-best-practices',
+        sourceTreeDigest: D3,
+        expectedTreeDigest: null,
+        resultTreeDigest: D3,
+        backupRequired: false,
+      }],
+      overrides: [{
+        kind: 'managedDrift',
+        skillId: 'react-best-practices',
+        reasonCodes: [reasonCode],
+      }],
+      stateCommit: { previousDigest: D2, nextDigest: D4, position: 'final' },
+    },
+  };
+  const payload = plan.payload;
+  plan.digest = `sha256-${createHash('sha256').update(canonicalWorkbenchJson(payload)).digest('hex')}`;
+  return plan;
 }
 
-describe('Workbench', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    (useSkills as Mock).mockReturnValue({
-      skills,
-      stars: {},
-      loading: false,
-      error: null,
-      refreshSkills: vi.fn().mockResolvedValue(undefined),
-    });
+async function boundPlanFixture(): Promise<Record<string, unknown>> {
+  const stack = stackFixture();
+  const manifestDigest = `sha256-${createHash('sha256').update(canonicalWorkbenchJson(stack)).digest('hex')}`;
+  const plan = planFixture() as { digest: string; payload: Record<string, unknown> };
+  plan.payload.manifestDigest = manifestDigest;
+  plan.payload.desiredSkills = ['react-best-practices', 'playwright-skill'];
+  plan.digest = `sha256-${createHash('sha256').update(canonicalWorkbenchJson(plan.payload)).digest('hex')}`;
+  return plan;
+}
+
+function paste(label: 'Paste JSON', value: unknown, index = 0): void {
+  const inputs = screen.getAllByLabelText(label);
+  fireEvent.change(inputs[index], { target: { value: JSON.stringify(value) } });
+}
+
+describe('Workbench review UI', () => {
+  it('loads the public recorded manifest and real CLI plan through the same import checks', async () => {
+    renderWithRouter(<Workbench />, { useProvider: false });
+    fireEvent.click(screen.getByRole('button', { name: 'Load recorded example' }));
+    expect(screen.getByRole('status')).toHaveTextContent('Checking example artifacts');
+    await screen.findByRole('heading', { name: 'AAS MCP contract review' });
+    await screen.findByText('All bindings match');
+    expect(screen.getByRole('heading', { name: 'Single-target change review' })).toBeInTheDocument();
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+  });
+  it('reviews evidence in memory and replaces stale consistency results when the manifest changes', async () => {
+    const { stack, evidence } = selectionFixture();
+    const fetchSpy = vi.mocked(globalThis.fetch);
+    renderWithRouter(<Workbench />, { useProvider: false });
+    paste('Paste JSON', stack, 0);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
+    paste('Paste JSON', evidence, 2);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted evidence' }));
+    expect(await screen.findByRole('heading', { name: 'Selection evidence' })).toBeInTheDocument();
+    await screen.findByText('All bindings match');
+    expect(screen.getAllByText('Match')).toHaveLength(3);
+    expect(screen.getByText(/do not authenticate its author/)).toBeInTheDocument();
+    paste('Paste JSON', { ...stack, name: 'a different stack' }, 0);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
+    expect(screen.queryByText('All bindings match')).not.toBeInTheDocument();
+    await screen.findByText('Bindings need attention');
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it('loads URL selection and builds deterministic pinned preview/install commands', async () => {
-    renderWithRouter(<Workbench />, {
-      route: '/workbench?selected=safe-skill&host=codex',
-      path: '/workbench',
-      useProvider: false,
-    });
-
-    expect(screen.getByText('1 exact skills')).toBeInTheDocument();
-    expect(screen.getByText(/--skills safe-skill --dry-run/)).toBeInTheDocument();
-    expect(screen.getByText(/desired state for installer-managed entries/i)).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Select Data Pipeline' }));
-
-    await waitFor(() => {
-      expect(screen.getByText('2 exact skills')).toBeInTheDocument();
-      expect(screen.getByText(/--skills data-pipeline,safe-skill --dry-run/)).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByRole('button', { name: 'Copy dry-run command' }));
-    await waitFor(() => {
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-        `npx agentic-awesome-skills@${packageMetadata.version} --codex --release ${packageMetadata.version} --skills data-pipeline,safe-skill --dry-run`,
-      );
-    });
+  it('rejects changed evidence bytes before displaying its claims', async () => {
+    const { evidence } = selectionFixture();
+    evidence.payload.project.files[0].path = 'tampered.ts';
+    renderWithRouter(<Workbench />, { useProvider: false });
+    paste('Paste JSON', evidence, 2);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted evidence' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Evidence digest does not match');
+    expect(screen.queryByRole('heading', { name: 'Selection evidence' })).not.toBeInTheDocument();
   });
+  beforeEach(() => vi.clearAllMocks());
 
-  it('round-trips the exact selection and host through reviewable URL state', async () => {
-    render(
-      <MemoryRouter initialEntries={['/workbench?selected=safe-skill,safe-skill&host=codex&noise=drop']}>
-        <Routes>
-          <Route path="/workbench" element={<><Workbench /><LocationProbe /></>} />
-        </Routes>
-      </MemoryRouter>,
-    );
-
-    fireEvent.click(screen.getByRole('button', { name: 'Copy review URL' }));
-    await waitFor(() => expect(navigator.clipboard.writeText).toHaveBeenCalled());
-    const copiedReviewUrl = new URL(vi.mocked(navigator.clipboard.writeText).mock.calls.at(-1)?.[0] ?? '');
-    expect(copiedReviewUrl.searchParams.get('selected')).toBe('safe-skill');
-    expect(copiedReviewUrl.searchParams.get('host')).toBe('codex');
-    expect(copiedReviewUrl.searchParams.has('noise')).toBe(false);
-
-    fireEvent.click(screen.getByRole('button', { name: 'Select Data Pipeline' }));
-
-    await waitFor(() => {
-      expect(currentLocationParams().get('selected')).toBe('data-pipeline,safe-skill');
-      expect(currentLocationParams().get('host')).toBe('codex');
-    });
-
-    fireEvent.change(screen.getByLabelText('Select workbench host'), { target: { value: 'claude' } });
-
-    await waitFor(() => {
-      expect(currentLocationParams().get('selected')).toBe('data-pipeline,safe-skill');
-      expect(currentLocationParams().get('host')).toBe('claude');
-    });
-  });
-
-  it('queries tags and filters raw provenance without recommendation logic', async () => {
+  it('reviews a valid stack with text-only installation preparation and no execution actions', () => {
     renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
 
-    fireEvent.change(screen.getByLabelText('Search recorded fields'), { target: { value: 'etl' } });
+    expect(screen.getByRole('heading', { level: 1, name: 'Review what your agent selected.' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Need a stack to review?' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Compare skills in the catalog' })).toHaveAttribute('href', '/core');
+    expect(screen.getByRole('link', { name: 'Configuration and preview commands' })).toHaveAttribute('href', '/docs/aas-core/');
 
-    await waitFor(() => {
-      expect(screen.getByText('Data Pipeline')).toBeInTheDocument();
-      expect(screen.queryByText('Safe Skill')).not.toBeInTheDocument();
-    });
+    paste('Paste JSON', stackFixture());
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
 
-    fireEvent.change(screen.getByLabelText('Search recorded fields'), { target: { value: '' } });
-    fireEvent.change(screen.getByLabelText('Filter workbench by provenance'), { target: { value: 'official' } });
-
-    await waitFor(() => {
-      expect(screen.getByText('Safe Skill')).toBeInTheDocument();
-      expect(screen.queryByText('Data Pipeline')).not.toBeInTheDocument();
-    });
+    expect(screen.getByRole('heading', { level: 2, name: 'reviewed-web-stack' })).toBeInTheDocument();
+    expect(screen.getByText('react-best-practices')).toBeInTheDocument();
+    expect(screen.getByText('playwright-skill')).toBeInTheDocument();
+    expect(screen.getByText('Declared identity only.', { exact: false })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /^(install|apply|share)( |$)/i })).not.toBeInTheDocument();
+    expect(window.location.search).toBe('');
   });
 
-  it('blocks install command copying for an explicitly incompatible host', async () => {
-    renderWithRouter(<Workbench />, {
-      route: '/workbench?selected=blocked-skill&host=codex',
-      path: '/workbench',
-      useProvider: false,
-    });
+  it('reviews plan bindings, the saved profile, operations, and managed drift overrides', async () => {
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
 
-    expect(screen.getByText(/explicitly blocked for this host/i)).toBeInTheDocument();
-    expect(screen.getByText('blocked-skill — Requires Claude-specific tools.')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Resolve blocked IDs first/i })).toBeDisabled();
+    paste('Paste JSON', planFixture(), 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted plan' }));
 
-    fireEvent.change(screen.getByLabelText('Select workbench host'), { target: { value: 'claude' } });
-
-    await waitFor(() => {
-      expect(screen.queryByText(/explicitly blocked for this host/i)).not.toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /Copy pinned install command/i })).toBeEnabled();
-      expect(
-        screen.getAllByText(`--claude --release ${packageMetadata.version}`, { exact: false }),
-      ).toHaveLength(2);
-    });
+    expect(await screen.findByRole('heading', { level: 2, name: 'Single-target change review' })).toBeInTheDocument();
+    expect(screen.getByText('install')).toBeInTheDocument();
+    expect(screen.getAllByText('react-best-practices')).toHaveLength(2);
+    expect(screen.getAllByText('AAS_MANAGED_DRIFT_APPROVED', { exact: false })).toHaveLength(2);
+    expect(screen.getByText('1 overrides')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 3, name: 'Bound project profile' })).toBeInTheDocument();
   });
 
-  it('keeps invalid shared IDs visible and fail-closed', () => {
-    renderWithRouter(<Workbench />, {
-      route: '/workbench?selected=missing-skill,safe-skill&host=codex',
-      path: '/workbench',
-      useProvider: false,
-    });
+  it('shows a paired consistency gate after a bound stack and plan are both loaded', async () => {
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+    paste('Paste JSON', stackFixture());
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
+    paste('Paste JSON', await boundPlanFixture(), 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted plan' }));
 
-    expect(screen.getByText(/1 selected IDs do not resolve/i)).toBeInTheDocument();
-    expect(screen.getAllByText('missing-skill').some((element) => element.classList.contains('text-rose-300'))).toBe(true);
-    expect(screen.getByRole('button', { name: /Resolve blocked IDs first/i })).toBeDisabled();
-    expect(screen.getByText(/install command appears only after exact resolution/i)).toBeInTheDocument();
-  });
-
-  it('exposes named controls, live evidence, and semantic mobile reading order', () => {
-    const { container } = renderWithRouter(<Workbench />, {
-      route: '/workbench?selected=data-pipeline&host=codex',
-      path: '/workbench',
-      useProvider: false,
-    });
-
-    expect(screen.getByRole('heading', { level: 1, name: 'Build a precise, inspectable skill set' })).toBeInTheDocument();
-    expect(screen.getByRole('textbox', { name: 'Search recorded fields' })).toBeInTheDocument();
-    for (const name of [
-      'Filter workbench by category',
-      'Filter workbench by risk',
-      'Filter workbench by provenance',
-      'Select workbench host',
-      'Filter workbench by compatibility',
-      'Filter workbench by setup',
-    ]) {
-      expect(screen.getByRole('combobox', { name })).toBeInTheDocument();
+    expect(await screen.findByText('All bindings match')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Artifact consistency' })).toBeInTheDocument();
+    for (const label of ['Manifest digest', 'Catalog identity', 'Selected skills', 'Plan target', 'Project profile']) {
+      expect(screen.getAllByText(label).length).toBeGreaterThan(0);
     }
-
-    expect(
-      [...container.querySelectorAll('aside[aria-label], main[aria-label]')]
-        .map((element) => element.getAttribute('aria-label')),
-    ).toEqual(['Workbench filters', 'Selected skill ledger', 'Workbench results']);
-    expect(screen.getByText(/unknown risk labels/i).closest('[aria-live="polite"]')).toBeInTheDocument();
-    expect(screen.getByText('data-pipeline — Install Python.')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Remove Data Pipeline' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getAllByText('Match')).toHaveLength(5);
   });
+
+  it('surfaces a selected-skill mismatch without hiding either valid artifact', async () => {
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+    paste('Paste JSON', stackFixture());
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
+    paste('Paste JSON', planFixture(), 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted plan' }));
+
+    expect(await screen.findByText('Bindings need attention')).toBeInTheDocument();
+    expect(screen.getAllByText('Mismatch').length).toBeGreaterThan(0);
+    expect(screen.getByRole('heading', { level: 2, name: 'reviewed-web-stack' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { level: 2, name: 'Single-target change review' })).toBeInTheDocument();
+  });
+
+  it('fails closed on schema drift and clears the previous review', () => {
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+
+    paste('Paste JSON', stackFixture());
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
+    expect(screen.getByText('reviewed-web-stack')).toBeInTheDocument();
+
+    paste('Paste JSON', stackFixture({ unexpected: 'field' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
+
+    expect(screen.getByRole('alert')).toHaveTextContent('unsupported property');
+    expect(screen.queryByText('reviewed-web-stack')).not.toBeInTheDocument();
+  });
+
+  it('rejects a plan whose digest no longer matches its canonical payload', async () => {
+    const plan = planFixture();
+    plan.digest = D5;
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+
+    paste('Paste JSON', plan, 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted plan' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('digest does not match');
+    expect(screen.queryByRole('heading', { level: 2, name: 'Single-target change review' })).not.toBeInTheDocument();
+  });
+
+  it('rejects the retired discovery candidate override', async () => {
+    const plan = planFixture();
+    const payload = plan.payload as { overrides: Array<Record<string, unknown>> };
+    payload.overrides[0] = {
+      kind: 'discoveryCandidate',
+      skillId: 'react-best-practices',
+      reasonCodes: ['AAS_DISCOVERY_PROMOTED'],
+    };
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+
+    paste('Paste JSON', plan, 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted plan' }));
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('kind must equal "managedDrift"');
+  });
+
+  it('renders hostile schema-valid strings as text and never creates executable elements', async () => {
+    const payload = '</script><img src=x onerror="globalThis.pwned=true">javascript:alert(1)';
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+
+    paste('Paste JSON', planFixture(payload), 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted plan' }));
+
+    expect((await screen.findAllByText(payload, { exact: false })).length).toBeGreaterThan(0);
+    expect(document.querySelector('.workbench-page script, .workbench-page img, .workbench-page svg, .workbench-page iframe')).toBeNull();
+    expect(document.querySelector('.workbench-page [onerror], .workbench-page [onload], .workbench-page a[href^="javascript:"]')).toBeNull();
+  });
+
+  it('imports only the file explicitly supplied by the file input', async () => {
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+    const file = new File([JSON.stringify(stackFixture())], 'aas-stack.json', { type: 'application/json' });
+    Object.defineProperty(file, 'arrayBuffer', {
+      value: vi.fn().mockResolvedValue(new TextEncoder().encode(JSON.stringify(stackFixture())).buffer),
+    });
+
+    fireEvent.change(screen.getByLabelText('Choose stack JSON'), { target: { files: [file] } });
+
+    await waitFor(() => expect(screen.getByText('Valid stack loaded from file. Held in this page only.')).toBeInTheDocument());
+    expect(screen.getByText('reviewed-web-stack')).toBeInTheDocument();
+    expect(file.arrayBuffer).toHaveBeenCalledOnce();
+  });
+
+  it('keeps imported data in component memory and clears it on unmount', () => {
+    const first = renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+    paste('Paste JSON', stackFixture());
+    fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
+    expect(screen.getByText('reviewed-web-stack')).toBeInTheDocument();
+
+    first.unmount();
+    renderWithRouter(<Workbench />, { route: '/workbench', path: '/workbench', useProvider: false });
+
+    expect(screen.queryByText('reviewed-web-stack')).not.toBeInTheDocument();
+    expect(screen.getByText('No artifact loaded')).toBeInTheDocument();
+  });
+});
+
+it('hides installation preparation when imported artifacts disagree or fail validation', async () => {
+  renderWithRouter(<Workbench />, { useProvider: false });
+  paste('Paste JSON', stackFixture());
+  fireEvent.click(screen.getByRole('button', { name: 'Review pasted stack' }));
+  expect(screen.getByText('Prepare installation preview')).toBeInTheDocument();
+  paste('Paste JSON', planFixture(), 1);
+  fireEvent.click(screen.getByRole('button', { name: 'Review pasted plan' }));
+  await screen.findByText('Bindings need attention');
+  expect(screen.queryByText('Prepare installation preview')).not.toBeInTheDocument();
+  paste('Paste JSON', { invalid: true }, 1);
+  fireEvent.click(screen.getByRole('button', { name: 'Review pasted plan' }));
+  expect(screen.queryByText('Prepare installation preview')).not.toBeInTheDocument();
 });

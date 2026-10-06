@@ -84,6 +84,7 @@ def run(config, *, start_time, end_time, out_dir,
     for e in events:
         e["text"] = redact(e.get("text", ""))
         e["window_title"] = redact(e.get("window_title", ""))
+        e["app"] = redact(e.get("app", ""))
 
     cluster_cfg = config.get("cluster", {})
     idle_gap = cluster_cfg.get("idle_gap_minutes", 10) * 60
@@ -139,7 +140,7 @@ def main(argv=None):
     import httpx
     import yaml
 
-    from backends import make_backend
+    from backends import check_remote_endpoint, make_backend
 
     parser = argparse.ArgumentParser(prog="autoskill")
     parser.add_argument("--start", required=True, help="ISO start time, e.g. 2026-04-17T00:00:00Z")
@@ -161,7 +162,9 @@ def main(argv=None):
 
     import os
     screenpipe_cfg = config.get("screenpipe", {})
-    screenpipe_url = screenpipe_cfg.get("url", "http://localhost:3030")
+    screenpipe_url = check_remote_endpoint(
+        screenpipe_cfg.get("url", "http://localhost:3030"), "screenpipe"
+    )
     screenpipe_token = (screenpipe_cfg.get("token")
                         or os.environ.get("SCREENPIPE_TOKEN"))
     screenpipe_client = httpx.Client(base_url=screenpipe_url, timeout=60.0)
@@ -173,7 +176,8 @@ def main(argv=None):
         backend = make_backend(config)
         from sentence_transformers import SentenceTransformer
         model = SentenceTransformer(
-            config.get("embeddings", {}).get("model", "sentence-transformers/all-MiniLM-L6-v2")
+            config.get("embeddings", {}).get("model", "sentence-transformers/all-MiniLM-L6-v2"),
+            local_files_only=config.get("embeddings", {}).get("local_files_only", False),
         )
 
         def embedder(text: str):

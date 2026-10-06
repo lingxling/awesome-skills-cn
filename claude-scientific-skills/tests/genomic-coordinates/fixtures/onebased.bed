@@ -1,0 +1,4 @@
+chr1	100	100	snv1	0	+
+chr1	205	205	snv2	0	-
+chr1	300	310	okay	0	.
+chr2	400	400	snv3	0	+

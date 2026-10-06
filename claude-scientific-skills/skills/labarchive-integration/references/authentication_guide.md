@@ -1,357 +1,213 @@
-# LabArchives Authentication Guide
+# LabArchives Authentication and Regions
 
-## Prerequisites
+Verified against official public sources on **2026-09-30**. LabArchives may
+provide additional institution-specific development documentation with API
+credentials; that documentation controls when it differs from this summary.
 
-### 1. Enterprise License
+## Access prerequisites
 
-API access requires an Enterprise LabArchives license. Contact your LabArchives administrator or sales@labarchives.com to:
-- Verify your institution has Enterprise access
-- Request API access enablement for your account
-- Obtain institutional API credentials
+### ELN
 
-### 2. API Credentials
+The official ELN subscription guide (updated 2026-08-27) lists developer API
+access as an Enterprise capability. An Access Key ID and Access Password are
+issued by LabArchives for a specific organization/vendor and intended purpose.
+They are not ordinary account credentials.
 
-You need two sets of credentials:
+Official source:
+https://help.labarchives.com/hc/en-us/articles/11723701830676-ELN-for-Research-Introduction-and-Subscription-Plans
 
-#### Institutional API Credentials (from LabArchives administrator)
-- **Access Key ID**: Institution-level identifier
-- **Access Password**: Institution-level secret
+### Inventory API v1
 
-#### User Authentication Credentials (self-configured)
-- **Email**: Your LabArchives account email (e.g., researcher@university.edu)
-- **External Applications Password**: Set in your LabArchives account settings
+The Inventory FAQ (updated 2026-05-19) states that API access is available only
+to Enterprise and Enterprise Plus licensees. The caller must:
 
-## Setting Up External Applications Password
+- have a LabArchives account,
+- have an Inventory account,
+- be given API access, and
+- remain subject to Inventory application access rights.
 
-The external applications password is different from your regular LabArchives login password. It provides API access without exposing your primary credentials.
+An eligible Inventory license member can request access through
+`support@labarchives.com`.
 
-**Steps to create external applications password:**
+Official source:
+https://help.labarchives.com/hc/en-us/articles/11811035048212-Inventory-FAQs
 
-1. Log into your LabArchives account at mynotebook.labarchives.com (or your institutional URL)
-2. Navigate to **Account Settings** (click your name in top-right corner)
-3. Select **Security & Privacy** tab
-4. Find **External Applications** section
-5. Click **Generate New Password** or **Reset Password**
-6. Copy and securely store this password (you won't see it again)
-7. Use this password for all API authentication
+## Credential types
 
-**Security note:** Treat this password like an API token. If compromised, regenerate it immediately from account settings.
+Keep these values distinct:
 
-## Configuration File Setup
+- **Access Key ID (`akid`)** — identifies the API client.
+- **Access Password** — secret HMAC-SHA-512 key; it is never sent as an API
+  parameter or request-body field.
+- **UID** — user ID scoped to the Access Key ID that obtained it. It is
+  persistent until revoked, but it is not portable across API keys.
+- **Authorization code** — short-lived value returned by the API user-login
+  flow and redeemed promptly through `users::user_access_info`.
+- **Temporary password token** — user-generated alternative accepted as the
+  `password` parameter by `users::user_access_info`.
+- **Inventory Lab ID** — identifies the current Inventory lab and is documented
+  as `X-LabArchives-LabId`; the `/public/v1/users/me` bootstrap endpoint does
+  not require this header and ignores it if supplied.
 
-Create a `config.yaml` file to store your credentials securely:
+Do not use a normal LabArchives account password in API scripts.
 
-```yaml
-# Regional API endpoint
-api_url: https://api.labarchives.com/api
+## Regional browser and ELN API hosts
 
-# Institutional credentials (from administrator)
-access_key_id: YOUR_ACCESS_KEY_ID_HERE
-access_password: YOUR_ACCESS_PASSWORD_HERE
+The two host types are intentionally shown in separate columns. Login URLs come
+from the help-center SSO article updated **2025-11-04**; API URLs come from the
+official ELN API overview updated **2025-11-03**.
 
-# User credentials (for user-specific operations)
-user_email: researcher@university.edu
-user_external_password: YOUR_EXTERNAL_APP_PASSWORD_HERE
+| Region | Browser login | ELN API URL |
+|---|---|---|
+| US and rest of world | `https://mynotebook.labarchives.com` | `https://api.labarchives.com/api` |
+| Canada | `https://ca-mynotebook.labarchives.com` | `https://caapi.labarchives.com/api` |
+| Australia/New Zealand | `https://au-mynotebook.labarchives.com` | `https://auapi.labarchives.com/api` |
+| United Kingdom | `https://uk-mynotebook.labarchives.com` | `https://ukapi.labarchives.com/api` |
+| Europe outside the UK | `https://eu-mynotebook.labarchives.com` | `https://euapi.labarchives.com/api` |
+
+Official sources:
+
+- https://help.labarchives.com/hc/en-us/articles/11728160845332-Using-an-Institutional-Single-Sign-on-for-LabArchives-Access
+- https://mynotebook.labarchives.com/share/LabArchives%20API/NS4yfDI3LzQvVHJlZU5vZGUvMTF8MTMuMg
+
+The official ELN overview recommends `utilities::api_base_urls` for distributed
+applications so they can discover future regional API additions. The bundled
+validator intentionally pins the five hosts documented at this refresh date.
+
+### Inventory absolute base URLs
+
+The official notebook's **Inventory > Overview** publishes
+`https://iapi.labarchives.com` as the base URL for current endpoints. Append the
+exact `/public/v1/...` route. It specifies `Content-Type: application/json` for
+requests; responses can be JSON or ZIP depending on the method. A regional
+absolute base-URL table is not provided. Confirm any region-specific deployment
+with LabArchives rather than deriving a host from a browser login URL.
+
+### Inventory lab discovery
+
+`GET /public/v1/users/me` explicitly does not require `X-LabArchives-LabId`
+(and ignores it if supplied). Sign `/public/v1/users/me` and send the UID,
+Access Key ID, signature, and expires headers. The JSON response contains
+`userId`, `userName`, `status`, and `labs` entries with `labId` and `name`. Select
+an authorized lab before issuing lab-scoped requests. The numeric Inventory
+`userId` is not the Access-Key-scoped ELN UID used for authentication.
+
+Official method page:
+https://mynotebook.labarchives.com/share/LabArchives%20API/MTQ4LjIwMDAwMDAwMDAwMDAyfDI3LzExNC9UcmVlTm9kZS8zODc0Mjc0OTI5fDM3Ni4y
+
+## Named environment variables
+
+These names are conventions used by this skill's local helpers:
+
+```text
+LABARCHIVES_ELN_API_URL
+LABARCHIVES_ACCESS_KEY_ID
+LABARCHIVES_ACCESS_PASSWORD
+LABARCHIVES_USER_ID
+LABARCHIVES_INVENTORY_LAB_ID
 ```
 
-**Alternative: Environment variables**
+Use a shell session, OS keychain, workload secret store, or institution-approved
+secret manager to populate them. The scripts:
 
-For enhanced security, use environment variables instead of config file:
+- inspect only these exact names,
+- never walk parent directories for `.env`,
+- never write secret files, and
+- never print credential values.
+
+Validate presence and endpoint selection:
 
 ```bash
-export LABARCHIVES_API_URL="https://api.labarchives.com/api"
-export LABARCHIVES_ACCESS_KEY_ID="your_key_id"
-export LABARCHIVES_ACCESS_PASSWORD="your_access_password"
-export LABARCHIVES_USER_EMAIL="researcher@university.edu"
-export LABARCHIVES_USER_PASSWORD="your_external_app_password"
+uv run scripts/setup_config.py check
+uv run scripts/setup_config.py check \
+  --require-user-id --require-inventory-lab-id
 ```
 
-## Regional Endpoints
+`--prompt-missing-secret` uses `getpass` for a missing Access Password and keeps
+the value in memory only. It does not save or authenticate it.
 
-Select the correct regional API endpoint for your institution:
+## ELN API user authorization
 
-| Region | Endpoint | Use if your LabArchives URL is |
-|--------|----------|--------------------------------|
-| US/International | `https://api.labarchives.com/api` | `mynotebook.labarchives.com` |
-| Australia | `https://auapi.labarchives.com/api` | `aunotebook.labarchives.com` |
-| UK | `https://ukapi.labarchives.com/api` | `uknotebook.labarchives.com` |
+The official page describes an **OAuth-like** redirect flow. It does not
+document generic OAuth 2.0 client credentials, `/oauth/authorize`, or
+`/oauth/token` endpoints.
 
-Using the wrong regional endpoint will result in authentication failures even with correct credentials.
+1. Select the user's correct regional API host.
+2. Redirect the user to the host's `/api_user_login` path with `akid`,
+   `expires`, `sig`, and `redirect_uri`.
+3. For this special signature, use the exact **unencoded redirect URI** in place
+   of the normal API method name.
+4. LabArchives performs account/SSO login and redirects back with `auth_code`
+   and `email`.
+5. Promptly call the documented `users::user_access_info`, passing the
+   authorization code as its `password` parameter and the returned email as
+   `login_or_email`. The method uses GET query parameters, so redact the whole
+   query and any echoed authentication fields in the XML response.
+6. Store the resulting UID only in approved secure state. It remains bound to
+   the Access Key ID and can be revoked. Respect `<auto-login-allowed>` and
+   institutional restrictions; `user_info_via_id` documents `authenticated=true`
+   only for an explicit user request to extend the session.
 
-## Authentication Flow
+If redirects cannot be used, the official flow allows a user-generated
+temporary password token in the same `password` parameter. Handle it with
+`getpass` or a secure UI field; never put it on a command line or in a log.
 
-### Option 1: Using labarchives-py Python Wrapper
+Official user-login page (updated 2023-03-03):
+https://mynotebook.labarchives.com/share/LabArchives%20API/ODEuOXwyNy82My05My9UcmVlTm9kZS8yMjYyMTU0MTg3fDIwNy44OTk5OTk5OTk5OTk5OA==
 
-```python
-from labarchivespy.client import Client
-import yaml
+## Request signing
 
-# Load configuration
-with open('config.yaml', 'r') as f:
-    config = yaml.safe_load(f)
+The official call-authentication page (updated 2023-05-10) defines:
 
-# Initialize client with institutional credentials
-client = Client(
-    config['api_url'],
-    config['access_key_id'],
-    config['access_password']
-)
-
-# Authenticate as specific user to get UID
-login_params = {
-    'login_or_email': config['user_email'],
-    'password': config['user_external_password']
-}
-response = client.make_call('users', 'user_access_info', params=login_params)
-
-# Parse response to extract UID
-import xml.etree.ElementTree as ET
-uid = ET.fromstring(response.content)[0].text
-print(f"Authenticated as user ID: {uid}")
+```text
+message = AccessKeyID + api_method_input + expires
+signature = Base64(HMAC-SHA-512(key=AccessPassword, message=message))
 ```
 
-### Option 2: Direct HTTP Requests with Python requests
+There are no separators. `expires` is current epoch milliseconds, corrected for
+server clock skew when needed—not a future token lifetime. The official page
+allows two minutes for latency/minor clock synchronization, while the
+best-practices page recommends `utilities::epoch_time` for unreliable clocks.
 
-```python
-import requests
-import yaml
+- **ELN ordinary call:** `api_method_input` is the method name only, without its
+  class.
+- **ELN user-login redirect:** it is the unencoded redirect URI.
+- **Inventory v1:** it is the exact relative route, including resolved path
+  parameters and excluding the query string.
 
-# Load configuration
-with open('config.yaml', 'r') as f:
-    config = yaml.safe_load(f)
+Official signing page:
+https://mynotebook.labarchives.com/share/LabArchives%20API/Ny44fDI3LzYvVHJlZU5vZGUvMTE1MzU5MTAyNXwxOS44
 
-# Construct API call
-url = f"{config['api_url']}/users/user_access_info"
-params = {
-    'access_key_id': config['access_key_id'],
-    'access_password': config['access_password'],
-    'login_or_email': config['user_email'],
-    'password': config['user_external_password']
-}
+`GET /api/utilities/epoch_time` takes `akid` but does not require `sig` or
+`expires`. Its XML `<epoch-time>` is epoch milliseconds. Cache a session clock
+offset instead of calling this utility before every signature.
 
-# Make authenticated request
-response = requests.get(url, params=params)
+Use `scripts/entry_operations.py self-test` to check the implementation against
+the official published test vector without credentials or network access.
 
-if response.status_code == 200:
-    print("Authentication successful!")
-    print(response.content.decode('utf-8'))
-else:
-    print(f"Authentication failed: {response.status_code}")
-    print(response.content.decode('utf-8'))
-```
+## TLS and secret handling
 
-### Option 3: Using R
+- Permit only `https`.
+- Never disable certificate or hostname validation.
+- If an institutional interception proxy is required, use its approved CA
+  bundle and keep hostname verification enabled.
+- Reject credentials embedded in URLs and reject redirects to unapproved hosts.
+- Do not log full ELN URLs after signing; authentication appears in the query.
+- Do not log Inventory authentication headers.
+- Do not include the Access Password in query parameters, headers, form data, or
+  JSON. It is an HMAC key only.
+- Rotate/revoke credentials through LabArchives after suspected exposure.
 
-```r
-library(httr)
-library(xml2)
+## Troubleshooting checklist
 
-# Configuration
-api_url <- "https://api.labarchives.com/api"
-access_key_id <- "YOUR_ACCESS_KEY_ID"
-access_password <- "YOUR_ACCESS_PASSWORD"
-user_email <- "researcher@university.edu"
-user_external_password <- "YOUR_EXTERNAL_APP_PASSWORD"
-
-# Make authenticated request
-response <- GET(
-    paste0(api_url, "/users/user_access_info"),
-    query = list(
-        access_key_id = access_key_id,
-        access_password = access_password,
-        login_or_email = user_email,
-        password = user_external_password
-    )
-)
-
-# Parse response
-if (status_code(response) == 200) {
-    content <- content(response, as = "text", encoding = "UTF-8")
-    xml_data <- read_xml(content)
-    uid <- xml_text(xml_find_first(xml_data, "//uid"))
-    print(paste("Authenticated as user ID:", uid))
-} else {
-    print(paste("Authentication failed:", status_code(response)))
-}
-```
-
-## OAuth Authentication (New Integrations)
-
-LabArchives now uses OAuth 2.0 for new third-party integrations. Legacy API key authentication (described above) continues to work for direct API access.
-
-**OAuth flow (for app developers):**
-
-1. Register your application with LabArchives
-2. Obtain client ID and client secret
-3. Implement OAuth 2.0 authorization code flow
-4. Exchange authorization code for access token
-5. Use access token for API requests
-
-Contact LabArchives developer support for OAuth integration documentation.
-
-## Troubleshooting Authentication Issues
-
-### 401 Unauthorized Error
-
-**Possible causes and solutions:**
-
-1. **Incorrect access_key_id or access_password**
-   - Verify credentials with your LabArchives administrator
-   - Check for typos or extra whitespace in config file
-
-2. **Wrong external applications password**
-   - Confirm you're using the external applications password, not your regular login password
-   - Regenerate external applications password in account settings
-
-3. **API access not enabled**
-   - Contact your LabArchives administrator to enable API access for your account
-   - Verify your institution has Enterprise license
-
-4. **Wrong regional endpoint**
-   - Confirm your api_url matches your institution's LabArchives instance
-   - Check if you're using .com, .auapi, or .ukapi domain
-
-### 403 Forbidden Error
-
-**Possible causes and solutions:**
-
-1. **Insufficient permissions**
-   - Verify your account role has necessary permissions
-   - Check if you have access to the specific notebook (nbid)
-
-2. **Account suspended or expired**
-   - Contact your LabArchives administrator to check account status
-
-### Network and Connection Issues
-
-**Firewall/proxy configuration:**
-
-If your institution uses a firewall or proxy:
-
-```python
-import requests
-
-# Configure proxy
-proxies = {
-    'http': 'http://proxy.university.edu:8080',
-    'https': 'http://proxy.university.edu:8080'
-}
-
-# Make request with proxy
-response = requests.get(url, params=params, proxies=proxies)
-```
-
-**SSL certificate verification:**
-
-For self-signed certificates (not recommended for production):
-
-```python
-# Disable SSL verification (use only for testing)
-response = requests.get(url, params=params, verify=False)
-```
-
-## Security Best Practices
-
-1. **Never commit credentials to version control**
-   - Add `config.yaml` to `.gitignore`
-   - Use environment variables or secret management systems
-
-2. **Rotate credentials regularly**
-   - Change external applications password every 90 days
-   - Regenerate API keys annually
-
-3. **Use least privilege principle**
-   - Request only necessary API permissions
-   - Create separate API credentials for different applications
-
-4. **Monitor API usage**
-   - Regularly review API access logs
-   - Set up alerts for unusual activity
-
-5. **Secure storage**
-   - Encrypt configuration files at rest
-   - Use system keychain or secret management tools (e.g., AWS Secrets Manager, Azure Key Vault)
-
-## Testing Authentication
-
-Use this script to verify your authentication setup:
-
-```python
-#!/usr/bin/env python3
-"""Test LabArchives API authentication"""
-
-from labarchivespy.client import Client
-import yaml
-import sys
-
-def test_authentication():
-    try:
-        # Load config
-        with open('config.yaml', 'r') as f:
-            config = yaml.safe_load(f)
-
-        print("Configuration loaded successfully")
-        print(f"API URL: {config['api_url']}")
-
-        # Initialize client
-        client = Client(
-            config['api_url'],
-            config['access_key_id'],
-            config['access_password']
-        )
-        print("Client initialized")
-
-        # Test authentication
-        login_params = {
-            'login_or_email': config['user_email'],
-            'password': config['user_external_password']
-        }
-        response = client.make_call('users', 'user_access_info', params=login_params)
-
-        if response.status_code == 200:
-            print("✅ Authentication successful!")
-
-            # Extract UID
-            import xml.etree.ElementTree as ET
-            uid = ET.fromstring(response.content)[0].text
-            print(f"User ID: {uid}")
-
-            # Get user info
-            user_response = client.make_call('users', 'user_info_via_id', params={'uid': uid})
-            print("✅ User information retrieved successfully")
-
-            return True
-        else:
-            print(f"❌ Authentication failed: {response.status_code}")
-            print(response.content.decode('utf-8'))
-            return False
-
-    except Exception as e:
-        print(f"❌ Error: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return False
-
-if __name__ == '__main__':
-    success = test_authentication()
-    sys.exit(0 if success else 1)
-```
-
-Run this script to confirm everything is configured correctly:
-
-```bash
-python3 test_auth.py
-```
-
-## Getting Help
-
-If authentication continues to fail after troubleshooting:
-
-1. Contact your institutional LabArchives administrator
-2. Email LabArchives support: support@labarchives.com
-3. Include:
-   - Your institution name
-   - Your LabArchives account email
-   - Error messages and response codes
-   - Regional endpoint you're using
-   - Programming language and library versions
+1. Confirm API access is enabled for the exact product and account.
+2. Confirm the browser account and API host belong to the same region.
+3. Confirm the UID was obtained with the same Access Key ID now in use.
+4. Confirm the local clock or `epoch_time` adjustment.
+5. Confirm the signing input: method-only for ELN, exact relative route for
+   Inventory, unencoded redirect URI for user login.
+6. Confirm URL encoding is applied only after Base64 for the ELN `sig`.
+7. Confirm Inventory path parameters are resolved and query parameters excluded
+   from its signature.
+8. Report status, official API error code, and a redacted response to support.
+   Never include signatures, authorization codes, tokens, or passwords.

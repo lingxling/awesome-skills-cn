@@ -1,0 +1,7 @@
+html, body { min-width: 0; margin: 0; background: var(--color-background-primary, #07090d); color: var(--color-text-primary, #f2f8fc); }
+body { font-family: var(--font-sans, system-ui); }
+.plugin-status { margin: 16px 24px; font-size: 13px; color: var(--color-text-secondary, #c5d0dc); }
+.workbench-page { max-width: 1200px; margin: 0 auto; padding: 24px; }
+textarea, input { max-width: 100%; }
+pre, code { overflow-wrap: anywhere; }
+@media (max-width: 600px) { .workbench-page { padding: 12px; } .plugin-status { margin: 12px; } }

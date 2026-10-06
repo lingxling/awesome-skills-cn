@@ -16,7 +16,7 @@ import {
 } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { installSkillForAgent } from '../src/installer.ts';
+import { installSkillForAgent, installBlobSkillForAgent } from '../src/installer.ts';
 
 async function makeSkillSource(root: string, name: string): Promise<string> {
   const dir = join(root, 'source-skill');
@@ -211,6 +211,84 @@ describe('installer symlink regression', () => {
 
       const contents = await readFile(join(claudeSkillDir, 'SKILL.md'), 'utf-8');
       expect(contents).toContain(`name: ${skillName}`);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  // Regression test for #1607: same claude-code exemption as installSkillForAgent,
+  // but for the blob install path (used by `skills add <owner>/<repo>`).
+  it('creates project-local Claude Code symlinks for blob installs when .claude does not exist', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'add-skill-'));
+    const projectDir = join(root, 'project');
+    await mkdir(projectDir, { recursive: true });
+
+    const skillName = 'fresh-claude-blob-skill';
+
+    try {
+      const result = await installBlobSkillForAgent(
+        {
+          installName: skillName,
+          files: [
+            {
+              path: 'SKILL.md',
+              contents: `---\nname: ${skillName}\ndescription: test\n---\n`,
+            },
+          ],
+        },
+        'claude-code',
+        { cwd: projectDir, mode: 'symlink', global: false }
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.skipped).toBeUndefined();
+      expect(result.symlinkFailed).toBeUndefined();
+
+      const canonicalSkillDir = join(projectDir, '.agents/skills', skillName);
+      const claudeSkillDir = join(projectDir, '.claude/skills', skillName);
+
+      expect((await lstat(canonicalSkillDir)).isDirectory()).toBe(true);
+      expect((await lstat(claudeSkillDir)).isSymbolicLink()).toBe(true);
+
+      const contents = await readFile(join(claudeSkillDir, 'SKILL.md'), 'utf-8');
+      expect(contents).toContain(`name: ${skillName}`);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('creates a blob symlink when the caller allows the missing agent root', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'add-skill-'));
+    const projectDir = join(root, 'project');
+    await mkdir(projectDir, { recursive: true });
+
+    const skillName = 'explicit-kiro-blob-skill';
+
+    try {
+      const result = await installBlobSkillForAgent(
+        {
+          installName: skillName,
+          files: [
+            {
+              path: 'SKILL.md',
+              contents: `---\nname: ${skillName}\ndescription: test\n---\n`,
+            },
+          ],
+        },
+        'kiro-cli',
+        {
+          cwd: projectDir,
+          mode: 'symlink',
+          global: false,
+          createMissingAgentRoot: true,
+        }
+      );
+
+      expect(result.success).toBe(true);
+      expect(result.skipped).toBeUndefined();
+      expect((await lstat(join(projectDir, '.kiro/skills', skillName))).isSymbolicLink()).toBe(
+        true
+      );
     } finally {
       await rm(root, { recursive: true, force: true });
     }

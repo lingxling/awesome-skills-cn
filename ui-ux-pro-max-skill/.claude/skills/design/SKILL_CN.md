@@ -1,6 +1,6 @@
 ---
 name: design
-description: "全面的设计技能：品牌标识、设计令牌、UI样式、标志生成（55种风格，Gemini AI）、企业标识计划（50个交付物，CIP模型）、HTML演示文稿（Chart.js）、横幅设计（22种风格，社交/广告/网络/印刷）、图标设计（15种风格，SVG，Gemini 3.1 Pro）、社交照片（HTML→截图，多平台）。操作：设计标志、创建CIP、生成模型、构建幻灯片、设计横幅、生成图标、创建社交照片、社交媒体图像、品牌标识、设计系统。平台：Facebook、Twitter、LinkedIn、YouTube、Instagram、Pinterest、TikTok、Threads、Google Ads。"
+description: "全面的设计技能：品牌标识、设计令牌、UI样式、标志生成（55种风格，Gemini、Atlas Cloud 或 MuAPI AI）、企业标识计划（50个交付物，CIP样机）、HTML演示文稿（Chart.js）、横幅设计（22种风格，社交/广告/网络/印刷）、图标设计（15种风格，SVG，Gemini 3.1 Pro）、社交照片（HTML→截图，多平台）。操作：设计标志、创建CIP、生成样机、构建幻灯片、设计横幅、生成图标、创建社交照片、社交媒体图像、品牌标识、设计系统。平台：Facebook、Twitter、LinkedIn、YouTube、Instagram、Pinterest、TikTok、Threads、Google Ads。"
 argument-hint: "[设计类型] [上下文]"
 license: MIT
 metadata:
@@ -27,32 +27,37 @@ metadata:
 
 | 任务 | 子技能 | 详情 |
 |------|--------|------|
-| 品牌标识、声音、资产 | `brand` | 外部技能 |
-| 令牌、规范、CSS变量 | `design-system` | 外部技能 |
-| shadcn/ui、Tailwind、代码 | `ui-styling` | 外部技能 |
+| 品牌标识、声音、资产 | `brand` | 内置的同级技能 |
+| 令牌、规范、CSS变量 | `design-system` | 内置的同级技能 |
+| shadcn/ui、Tailwind、代码 | `ui-styling` | 内置的同级技能 |
 | 标志创建、AI生成 | 标志（内置） | `references/logo-design.md` |
-| CIP模型、交付物 | CIP（内置） | `references/cip-design.md` |
+| CIP样机、交付物 | CIP（内置） | `references/cip-design.md` |
 | 演示文稿、宣传幻灯片 | 幻灯片（内置） | `references/slides.md` |
-| 横幅、封面、标题 | 横幅（内置） | `references/banner-sizes-and-styles.md` |
+| 横幅、封面、页眉图 | 横幅（内置） | `references/banner-sizes-and-styles.md` |
 | 社交媒体图像/照片 | 社交照片（内置） | `references/social-photos-design.md` |
 | SVG图标、图标集 | 图标（内置） | `references/icon-design.md` |
 
+## 脚本路径
+
+此技能及其 `references/` 中的脚本路径都是相对于包含此 SKILL.md 的目录，而不是相对于项目：`scripts/<file>` 指此技能自己的 `scripts/` 文件夹，`../<skill>/scripts/<file>` 指与其一同安装的同级子技能。请从该目录拼出完整路径（Claude Code 会在技能加载时将其报告为技能的基础目录），并让工作目录保持在项目根目录——这些脚本会相对于项目根目录读写项目文件，例如 `docs/brand-guidelines.md`、`assets/design-tokens.json` 或 `src/`。
+
 ## 标志设计（内置）
 
-55+ 种风格，30个调色板，25个行业指南。Gemini Nano Banana模型。
+55+ 种风格，30个调色板，25个行业指南。使用 Gemini Nano Banana、Atlas
+Cloud 和 MuAPI 进行图像生成。
 
 ### 标志：生成设计简报
 
 ```bash
-python3 ~/.claude/skills/design/scripts/logo/search.py "tech startup modern" --design-brief -p "BrandName"
+python3 scripts/logo/search.py "tech startup modern" --design-brief -p "BrandName"
 ```
 
 ### 标志：搜索风格/颜色/行业
 
 ```bash
-python3 ~/.claude/skills/design/scripts/logo/search.py "minimalist clean" --domain style
-python3 ~/.claude/skills/design/scripts/logo/search.py "tech professional" --domain color
-python3 ~/.claude/skills/design/scripts/logo/search.py "healthcare medical" --domain industry
+python3 scripts/logo/search.py "minimalist clean" --domain style
+python3 scripts/logo/search.py "tech professional" --domain color
+python3 scripts/logo/search.py "healthcare medical" --domain industry
 ```
 
 ### 标志：用AI生成
@@ -60,13 +65,16 @@ python3 ~/.claude/skills/design/scripts/logo/search.py "healthcare medical" --do
 **始终**生成白色背景的输出标志图像。
 
 ```bash
-python3 ~/.claude/skills/design/scripts/logo/generate.py --brand "TechFlow" --style minimalist --industry tech
-python3 ~/.claude/skills/design/scripts/logo/generate.py --prompt "coffee shop vintage badge" --style vintage
+python3 scripts/logo/generate.py --brand "TechFlow" --style minimalist --industry tech
+python3 scripts/logo/generate.py --prompt "coffee shop vintage badge" --style vintage
+python3 scripts/logo/generate.py --brand "TechFlow" --provider atlas
+python3 scripts/logo/generate.py --brand "TechFlow" --provider muapi
+python3 scripts/logo/generate.py --brand "TechFlow" --provider muapi --muapi-model nano-banana-pro
 ```
 
 **重要：** 当脚本失败时，尝试直接修复它们。
 
-生成后，**始终**通过`AskUserQuestion`询问用户关于HTML预览的问题。如果是，调用`/ui-ux-pro-max`查看图库。
+生成后，**始终**通过`AskUserQuestion`询问用户关于HTML预览的问题。如果是，使用内置的`ui-ux-pro-max`技能生成图库。
 
 ## CIP设计（内置）
 
@@ -75,32 +83,32 @@ python3 ~/.claude/skills/design/scripts/logo/generate.py --prompt "coffee shop v
 ### CIP：生成简报
 
 ```bash
-python3 ~/.claude/skills/design/scripts/cip/search.py "tech startup" --cip-brief -b "BrandName"
+python3 scripts/cip/search.py "tech startup" --cip-brief -b "BrandName"
 ```
 
 ### CIP：搜索域
 
 ```bash
-python3 ~/.claude/skills/design/scripts/cip/search.py "business card letterhead" --domain deliverable
-python3 ~/.claude/skills/design/scripts/cip/search.py "luxury premium elegant" --domain style
-python3 ~/.claude/skills/design/scripts/cip/search.py "hospitality hotel" --domain industry
-python3 ~/.claude/skills/design/scripts/cip/search.py "office reception" --domain mockup
+python3 scripts/cip/search.py "business card letterhead" --domain deliverable
+python3 scripts/cip/search.py "luxury premium elegant" --domain style
+python3 scripts/cip/search.py "hospitality hotel" --domain industry
+python3 scripts/cip/search.py "office reception" --domain mockup
 ```
 
-### CIP：生成模型
+### CIP：生成样机
 
 ```bash
 # 带标志（推荐）
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo /path/to/logo.png --deliverable "business card" --industry "consulting"
+python3 scripts/cip/generate.py --brand "TopGroup" --logo /path/to/logo.png --deliverable "business card" --industry "consulting"
 
 # 完整CIP集
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo /path/to/logo.png --industry "consulting" --set
+python3 scripts/cip/generate.py --brand "TopGroup" --logo /path/to/logo.png --industry "consulting" --set
 
 # Pro模型（4K文本）
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TopGroup" --logo logo.png --deliverable "business card" --model pro
+python3 scripts/cip/generate.py --brand "TopGroup" --logo logo.png --deliverable "business card" --model pro
 
 # 无标志
-python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TechFlow" --deliverable "business card" --no-logo-prompt
+python3 scripts/cip/generate.py --brand "TechFlow" --deliverable "business card" --no-logo-prompt
 ```
 
 模型：`flash`（默认，`gemini-2.5-flash-image`），`pro`（`gemini-3-pro-image-preview`）
@@ -108,7 +116,7 @@ python3 ~/.claude/skills/design/scripts/cip/generate.py --brand "TechFlow" --del
 ### CIP：渲染HTML演示文稿
 
 ```bash
-python3 ~/.claude/skills/design/scripts/cip/render-html.py --brand "TopGroup" --industry "consulting" --images /path/to/cip-output
+python3 scripts/cip/render-html.py --brand "TopGroup" --industry "consulting" --images /path/to/cip-output
 ```
 
 **提示：** 如果没有标志，请先使用上面的标志设计部分。
@@ -131,16 +139,16 @@ python3 ~/.claude/skills/design/scripts/cip/render-html.py --brand "TopGroup" --
 
 ## 横幅设计（内置）
 
-跨社交、广告、网络、印刷的22种艺术指导风格。使用`frontend-design`、`ai-artist`、`ai-multimodal`、`chrome-devtools`技能。
+跨社交、广告、网络、印刷的22种艺术指导风格。此工作流不需要任何包外的东西：只需 `references/banner-sizes-and-styles.md` 和内置的 `ui-ux-pro-max` 技能来提供风格和调色板指导。浏览器调研、图像生成和截图都是可选的运行时能力；如果不可用，请使用用户提供的素材、CSS 构建的视觉效果，以及运行环境的标准预览或截图流程。
 
 加载`references/banner-sizes-and-styles.md`获取完整的尺寸和风格参考。
 
 ### 横幅：工作流程
 
 1. **收集需求** 通过`AskUserQuestion` — 目的、平台、内容、品牌、风格、数量
-2. **研究** — 激活`ui-ux-pro-max`，浏览Pinterest获取参考
-3. **设计** — 使用`frontend-design`创建HTML/CSS横幅，使用`ai-artist`/`ai-multimodal`生成视觉效果
-4. **导出** — 通过`chrome-devtools`以准确尺寸截图为PNG
+2. **研究** — 阅读 `references/banner-sizes-and-styles.md`，并使用内置的 `ui-ux-pro-max` 技能获取风格和调色板指导；如果浏览器调研可用且被允许，收集 3–5 个参考
+3. **设计** — 按准确的平台尺寸创建 HTML/CSS 横幅；使用用户提供的素材或 CSS 构建的视觉效果，如果运行环境提供了经授权的图像生成能力，也可以使用它
+4. **导出** — 使用运行环境的浏览器或截图能力，以准确尺寸截取 PNG；如果不可用，则交付 HTML/CSS 源码，并将 PNG 导出标记为待完成
 5. **展示** — 并排显示所有选项，根据反馈迭代
 
 ### 横幅：快速尺寸参考
@@ -148,13 +156,13 @@ python3 ~/.claude/skills/design/scripts/cip/render-html.py --brand "TopGroup" --
 | 平台 | 类型 | 尺寸（像素） |
 |------|------|-------------|
 | Facebook | 封面 | 820 x 312 |
-| Twitter/X | 标题 | 1500 x 500 |
+| Twitter/X | 页眉图 | 1500 x 500 |
 | LinkedIn | 个人 | 1584 x 396 |
-| YouTube | 频道艺术 | 2560 x 1440 |
+| YouTube | 频道封面图 | 2560 x 1440 |
 | Instagram | 故事 | 1080 x 1920 |
 | Instagram | 帖子 | 1080 x 1080 |
 | Google Ads | 中等矩形 | 300 x 250 |
-| 网站 | 标题 | 1920 x 600-1080 |
+| 网站 | 首屏主视觉（Hero） | 1920 x 600-1080 |
 
 ### 横幅：顶级艺术风格
 
@@ -183,21 +191,21 @@ python3 ~/.claude/skills/design/scripts/cip/render-html.py --brand "TopGroup" --
 ### 图标：生成单个图标
 
 ```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "settings gear" --style outlined
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "shopping cart" --style filled --color "#6366F1"
-python3 ~/.claude/skills/design/scripts/icon/generate.py --name "dashboard" --category navigation --style duotone
+python3 scripts/icon/generate.py --prompt "settings gear" --style outlined
+python3 scripts/icon/generate.py --prompt "shopping cart" --style filled --color "#6366F1"
+python3 scripts/icon/generate.py --name "dashboard" --category navigation --style duotone
 ```
 
 ### 图标：生成批量变体
 
 ```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "cloud upload" --batch 4 --output-dir ./icons
+python3 scripts/icon/generate.py --prompt "cloud upload" --batch 4 --output-dir ./icons
 ```
 
 ### 图标：多尺寸导出
 
 ```bash
-python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "user profile" --sizes "16,24,32,48" --output-dir ./icons
+python3 scripts/icon/generate.py --prompt "user profile" --sizes "16,24,32,48" --output-dir ./icons
 ```
 
 ### 图标：顶级风格
@@ -216,20 +224,20 @@ python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "user profile"
 
 ## 社交照片（内置）
 
-多平台社交图像设计：HTML/CSS → 截图导出。使用`ui-ux-pro-max`、`brand`、`design-system`、`chrome-devtools`技能。
+多平台社交图像设计：HTML/CSS → 截图导出。使用内置的 `ui-ux-pro-max`、`brand` 和 `design-system` 技能；截图导出通过 Chrome headless、Playwright 或 Puppeteer 完成（参见参考文档）。
 
 加载`references/social-photos-design.md`获取尺寸、模板、最佳实践。
 
 ### 社交照片：工作流程
 
-1. **编排** — `project-management`技能用于TODO任务；并行子代理用于独立工作
+1. **编排** — 使用运行环境原生的任务列表跟踪以下步骤；并行子代理用于独立工作
 2. **分析** — 解析提示：主题、平台、风格、品牌上下文、内容元素
 3. **构思** — 3-5个概念，通过`AskUserQuestion`展示
-4. **设计** — `/ckm:brand` → `/ckm:design-system` → 随机调用`/ck:ui-ux-pro-max`或`/ck:frontend-design`；每个创意×尺寸的HTML
-5. **导出** — `chrome-devtools`或Playwright以准确像素截图（2x设备缩放因子）
-6. **验证** — 使用Chrome MCP或`chrome-devtools`技能视觉检查导出的设计；修复布局/样式问题并重新导出
+4. **设计** — 内置的 `brand` → `design-system` → `ui-ux-pro-max` 技能；每个创意×尺寸一个HTML
+5. **导出** — 使用 Chrome headless、Playwright 或 Puppeteer 以准确像素截图（工具支持时使用 2x 设备缩放因子；参见参考文档）
+6. **验证** — 在可用的浏览器或图片查看器中打开导出的 PNG 并进行检查；修复布局/样式问题并重新导出
 7. **报告** — 向`plans/reports/`提交设计决策摘要
-8. **组织** — 调用`assets-organizing`技能对输出文件和报告进行排序
+8. **组织** — 将输出文件和报告整理到项目的素材目录中
 
 ### 社交照片：关键尺寸
 
@@ -245,7 +253,7 @@ python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "user profile"
 ### 完整品牌包
 
 1. **标志** → `scripts/logo/generate.py` → 生成标志变体
-2. **CIP** → `scripts/cip/generate.py --logo ...` → 创建交付物模型
+2. **CIP** → `scripts/cip/generate.py --logo ...` → 创建交付物样机
 3. **演示文稿** → 加载`references/slides-create.md` → 构建宣传幻灯片
 
 ### 新设计系统
@@ -284,8 +292,8 @@ python3 ~/.claude/skills/design/scripts/icon/generate.py --prompt "user profile"
 | `scripts/logo/generate.py` | 用Gemini AI生成标志 |
 | `scripts/logo/core.py` | 标志数据的BM25搜索引擎 |
 | `scripts/cip/search.py` | 搜索CIP交付物、风格、行业 |
-| `scripts/cip/generate.py` | 用Gemini生成CIP模型 |
-| `scripts/cip/render-html.py` | 从CIP模型渲染HTML演示文稿 |
+| `scripts/cip/generate.py` | 用Gemini生成CIP样机 |
+| `scripts/cip/render-html.py` | 从CIP样机渲染HTML演示文稿 |
 | `scripts/cip/core.py` | CIP数据的BM25搜索引擎 |
 | `scripts/icon/generate.py` | 用Gemini 3.1 Pro生成SVG图标 |
 
@@ -303,11 +311,21 @@ python3 --version || python --version
 ```bash
 export GEMINI_API_KEY="your-key"  # https://aistudio.google.com/apikey
 pip install google-genai pillow
+
+# 可选的 MuAPI 提供商（不需要额外的 Python 包）
+export MUAPI_API_KEY="your-key"
 ```
+
+MuAPI 使用异步模型端点和预测结果 API。有关身份验证，请参阅
+[MuAPI API 参考](https://muapi.ai/docs/api-reference)；有关当前各模型的具体 schema，请参阅
+[nano-banana 模型约定](https://api.muapi.ai/api/v1/models/nano-banana)
+或 [nano-banana-pro 模型约定](https://api.muapi.ai/api/v1/models/nano-banana-pro)。
+标志生成器支持这两个文档中列出的模型 slug，并发送它们共有的必填字段 `prompt` 以及可选的 `aspect_ratio`
+字段；Pro 模型还接受一个可选的 `resolution` 字段，这个专注于标志的工作流会将其保留为提供商的默认值。
 
 > **Windows注意事项：** 在需要的地方使用`python`而不是`pip`（例如，使用`python -m pip install ...`）。
 
 ## 集成
 
-**外部子技能：** brand、design-system、ui-styling
-**相关技能：** frontend-design、ui-ux-pro-max、ai-multimodal、chrome-devtools
+**内置子技能：** brand、design-system、ui-styling
+**相关技能：** ui-ux-pro-max

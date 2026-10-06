@@ -8,6 +8,24 @@ import {
 } from '../publicAssetUrls';
 
 describe('public asset URL helpers', () => {
+  it('resolves hosted assets at the custom-domain root', () => {
+    expect(
+      getSkillsIndexCandidateUrls({
+        baseUrl: '/',
+        origin: 'https://aaskills.tech',
+        pathname: '/skill/some-id',
+        documentBaseUrl: 'https://aaskills.tech/',
+      }),
+    ).toEqual([
+      'https://aaskills.tech/skills.json',
+      'https://aaskills.tech/skills.json.backup',
+      'https://aaskills.tech/skill/skills.json',
+      'https://aaskills.tech/skill/skills.json.backup',
+      'https://aaskills.tech/skill/some-id/skills.json',
+      'https://aaskills.tech/skill/some-id/skills.json.backup',
+    ]);
+  });
+
   it('normalizes dot-relative BASE_URL values', () => {
     expect(normalizeBasePath('./')).toBe('/');
     expect(normalizeBasePath('/agentic-awesome-skills/')).toBe('/agentic-awesome-skills/');

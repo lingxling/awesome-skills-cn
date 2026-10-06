@@ -1,138 +1,138 @@
 ---
 name: google-maps-automation
-description: "Automate Google Maps tasks via Rube MCP (Composio): geocode addresses, search places, get directions, compute route matrices, reverse geocode, autocomplete, get place details. Always search tools first for current schemas."
+description: "通过 Rube MCP（Composio）自动化 Google Maps 任务：地址地理编码、搜索地点、获取路线、计算路线矩阵、反向地理编码、自动补全、获取地点详情。请始终先搜索工具以获取最新模式。"
 requires:
   mcp: [rube]
 ---
 
-# Google Maps Automation via Rube MCP
+# 通过 Rube MCP 实现 Google Maps 自动化
 
-Geocode addresses, search places, get directions, compute distance matrices, and retrieve place details using Google Maps via Rube MCP (Composio).
+通过 Rube MCP（Composio）使用 Google Maps 对地址进行地理编码、搜索地点、获取路线、计算距离矩阵，以及检索地点详情。
 
-**Toolkit docs**: [composio.dev/toolkits/google_maps](https://composio.dev/toolkits/google_maps)
+**工具包文档**：[composio.dev/toolkits/google_maps](https://composio.dev/toolkits/google_maps)
 
 ## 前置条件
-- Rube MCP 必须已连接（RUBE_SEARCH_TOOLS 可用）
-- Active connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `google_maps`
-- 始终首先调用 `RUBE_SEARCH_TOOLS` 以获取当前工具架构
+- 必须已连接 Rube MCP（`RUBE_SEARCH_TOOLS` 可用）
+- 已通过 `RUBE_MANAGE_CONNECTIONS` 为工具包 `google_maps` 建立活动连接
+- 始终先调用 `RUBE_SEARCH_TOOLS` 以获取当前工具模式
 
 ## 设置
-**获取 Rube MCP**: 在客户端配置中添加 `https://rube.app/mcp` 作为 MCP 服务器。无需 API 密钥 — 只需添加端点即可使用。
+**获取 Rube MCP**：在你的客户端配置中添加 `https://rube.app/mcp` 作为 MCP 服务器。无需 API 密钥——只需添加该端点即可使用。
 
-1. 通过确认 `RUBE_SEARCH_TOOLS` 响应来验证 Rube MCP 可用
-2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `google_maps`
-3. 如果连接未处于 ACTIVE 状态，请按照返回的授权链接完成设置
+1. 通过确认 `RUBE_SEARCH_TOOLS` 有响应来验证 Rube MCP 是否可用
+2. 对工具包 `google_maps` 调用 `RUBE_MANAGE_CONNECTIONS`
+3. 如果连接未处于 ACTIVE 状态，请按返回的授权链接完成设置
 4. 在运行任何工作流之前，确认连接状态显示为 ACTIVE
 
-## Core Workflows
+## 核心工作流
 
-### 1. Geocode an Address
-Use `GOOGLE_MAPS_GEOCODING_API` to convert a street address into geographic coordinates (latitude/longitude).
+### 1. 对地址进行地理编码
+使用 `GOOGLE_MAPS_GEOCODING_API` 将街道地址转换为地理坐标（经纬度）。
 ```
 Tool: GOOGLE_MAPS_GEOCODING_API
 Parameters:
-  - address: Street address or plus code to geocode
-  - latlng: Lat/lng for reverse geocoding (e.g., "40.714224,-73.961452")
-  - place_id: Place ID for place geocoding
-  - language: Language for results
-  - region: Region bias (ccTLD code)
-  - bounds: Bounding box for viewport bias
-  - components: Component filter (e.g., "postal_code:94043|country:US")
+  - address: 要进行地理编码的街道地址或 plus code
+  - latlng: 用于反向地理编码的经纬度（例如 "40.714224,-73.961452"）
+  - place_id: 用于地点地理编码的地点 ID
+  - language: 结果使用的语言
+  - region: 区域偏好（ccTLD 代码）
+  - bounds: 用于视口偏好的边界框
+  - components: 组件过滤器（例如 "postal_code:94043|country:US"）
 ```
 
-### 2. Search for Places
-Use `GOOGLE_MAPS_TEXT_SEARCH` to find places using a free-text query.
+### 2. 搜索地点
+使用 `GOOGLE_MAPS_TEXT_SEARCH` 通过自由文本查询查找地点。
 ```
 Tool: GOOGLE_MAPS_TEXT_SEARCH
 Parameters:
-  - textQuery (required): Search text (e.g., "restaurants in London")
-  - fieldMask: Fields to return (e.g., "displayName,formattedAddress,rating")
-  - maxResultCount: Max results (1-20, default 10)
+  - textQuery（必填）: 搜索文本（例如 "restaurants in London"）
+  - fieldMask: 要返回的字段（例如 "displayName,formattedAddress,rating"）
+  - maxResultCount: 最大结果数（1-20，默认 10）
 ```
 
-### 3. Get Directions Between Two Locations
-Use `GOOGLE_MAPS_GET_ROUTE` to calculate routes with distance and duration.
+### 3. 获取两个位置之间的路线
+使用 `GOOGLE_MAPS_GET_ROUTE` 计算路线，包括距离和用时。
 ```
 Tool: GOOGLE_MAPS_GET_ROUTE
 Parameters:
-  - origin_address (required): Starting point (address or "lat,lng")
-  - destination_address (required): End point (address or "lat,lng")
-  - travelMode: DRIVE, BICYCLE, WALK, TWO_WHEELER, or TRANSIT
-  - routingPreference: TRAFFIC_UNAWARE, TRAFFIC_AWARE, TRAFFIC_AWARE_OPTIMAL
-  - computeAlternativeRoutes: Return alternative routes (boolean)
-  - units: METRIC or IMPERIAL
-  - languageCode: BCP-47 language code
-  - routeModifiers_avoidTolls / avoidHighways / avoidFerries: Route preferences
+  - origin_address（必填）: 起点（地址或 "lat,lng"）
+  - destination_address（必填）: 终点（地址或 "lat,lng"）
+  - travelMode: DRIVE、BICYCLE、WALK、TWO_WHEELER 或 TRANSIT
+  - routingPreference: TRAFFIC_UNAWARE、TRAFFIC_AWARE、TRAFFIC_AWARE_OPTIMAL
+  - computeAlternativeRoutes: 是否返回备选路线（布尔值）
+  - units: METRIC 或 IMPERIAL
+  - languageCode: BCP-47 语言代码
+  - routeModifiers_avoidTolls / avoidHighways / avoidFerries: 路线偏好
 ```
 
-### 4. Compute Distance Matrix
-Use `GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX` to calculate distances and durations between multiple origins and destinations.
+### 4. 计算距离矩阵
+使用 `GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX` 计算多个起点与终点之间的距离和用时。
 ```
 Tool: GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX
 Parameters:
-  - origins (required): Array of origin locations (address strings or lat/lng objects)
-  - destinations (required): Array of destination locations
-  - travelMode: DRIVE, BICYCLE, WALK, TWO_WHEELER, or TRANSIT
-  - routingPreference: TRAFFIC_UNAWARE, TRAFFIC_AWARE, TRAFFIC_AWARE_OPTIMAL
-  - fieldMask: Response fields to include
-  - units: METRIC or IMPERIAL
+  - origins（必填）: 起点位置数组（地址字符串或经纬度对象）
+  - destinations（必填）: 终点位置数组
+  - travelMode: DRIVE、BICYCLE、WALK、TWO_WHEELER 或 TRANSIT
+  - routingPreference: TRAFFIC_UNAWARE、TRAFFIC_AWARE、TRAFFIC_AWARE_OPTIMAL
+  - fieldMask: 要包含的响应字段
+  - units: METRIC 或 IMPERIAL
 ```
 
-### 5. Get Place Details
-Use `GOOGLE_MAPS_GET_PLACE_DETAILS` to retrieve comprehensive information about a specific place.
+### 5. 获取地点详情
+使用 `GOOGLE_MAPS_GET_PLACE_DETAILS` 检索特定地点的详细信息。
 ```
 Tool: GOOGLE_MAPS_GET_PLACE_DETAILS
-Description: Retrieves comprehensive details for a place using its resource
-  name (places/{place_id} format). Returns hours, contacts, reviews, etc.
-Note: Call RUBE_SEARCH_TOOLS to get the full schema for this tool.
+Description: 使用资源名称（places/{place_id} 格式）检索某地点的详细信息。
+  返回营业时间、联系方式、评价等。
+Note: 调用 RUBE_SEARCH_TOOLS 以获取此工具的完整模式。
 ```
 
-### 6. Search Nearby Places
-Use `GOOGLE_MAPS_NEARBY_SEARCH` to find places within a circular area around a point.
+### 6. 搜索附近地点
+使用 `GOOGLE_MAPS_NEARBY_SEARCH` 查找某点周围圆形区域内的地点。
 ```
 Tool: GOOGLE_MAPS_NEARBY_SEARCH
 Parameters:
-  - latitude (required): Center latitude (-90 to 90)
-  - longitude (required): Center longitude (-180 to 180)
-  - radius (required): Search radius in meters (max 50000)
-  - includedTypes: Place types to include (e.g., ["restaurant", "cafe"])
-  - excludedTypes: Place types to exclude
-  - fieldMask: Fields to return
-  - maxResultCount: Max results (1-20)
+  - latitude（必填）: 中心纬度（-90 到 90）
+  - longitude（必填）: 中心经度（-180 到 180）
+  - radius（必填）: 搜索半径，单位为米（最大 50000）
+  - includedTypes: 要包含的地点类型（例如 ["restaurant", "cafe"]）
+  - excludedTypes: 要排除的地点类型
+  - fieldMask: 要返回的字段
+  - maxResultCount: 最大结果数（1-20）
 ```
 
-## Common Patterns
+## 常见模式
 
-- **Geocode then route**: Use `GOOGLE_MAPS_GEOCODING_API` to convert addresses to coordinates, then `GOOGLE_MAPS_GET_ROUTE` for directions between them.
-- **Search then detail**: Use `GOOGLE_MAPS_TEXT_SEARCH` to find places, then `GOOGLE_MAPS_GET_PLACE_DETAILS` for richer metadata (hours, contacts, reviews).
-- **Autocomplete UX**: Use `GOOGLE_MAPS_AUTOCOMPLETE` for type-ahead search suggestions as users type addresses or place names.
-- **Reverse geocode**: Use `GOOGLE_MAPS_GEOCODE_LOCATION` to convert coordinates back to a human-readable address.
-- **Batch distance calculation**: Use `GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX` for many-to-many distance calculations instead of calling `GOOGLE_MAPS_GET_ROUTE` repeatedly.
-- **Embed maps**: Use `GOOGLE_MAPS_MAPS_EMBED_API` to generate embeddable map URLs for places, directions, or search results.
+- **先地理编码再获取路线**：使用 `GOOGLE_MAPS_GEOCODING_API` 将地址转换为坐标，再用 `GOOGLE_MAPS_GET_ROUTE` 获取它们之间的路线。
+- **先搜索再获取详情**：使用 `GOOGLE_MAPS_TEXT_SEARCH` 查找地点，再用 `GOOGLE_MAPS_GET_PLACE_DETAILS` 获取更丰富的元数据（营业时间、联系方式、评价）。
+- **自动补全体验**：在用户输入地址或地点名称时，使用 `GOOGLE_MAPS_AUTOCOMPLETE` 提供输入联想建议。
+- **反向地理编码**：使用 `GOOGLE_MAPS_GEOCODE_LOCATION` 将坐标转换回人类可读的地址。
+- **批量距离计算**：对多对多的距离计算使用 `GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX`，而不要反复调用 `GOOGLE_MAPS_GET_ROUTE`。
+- **嵌入地图**：使用 `GOOGLE_MAPS_MAPS_EMBED_API` 为地点、路线或搜索结果生成可嵌入的地图 URL。
 
-## 已知陷阱
+## 已知坑点
 
-- **Route matrix results structure**: `GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX` returns results under `data.elements` with `originIndex` and `destinationIndex` plus `distanceMeters` and `duration` -- not a `routes[]` structure.
-- **Duration format**: `GOOGLE_MAPS_GET_ROUTE` returns durations as strings like `"937s"` inside `data.response_data.routes`. You must parse these before numeric comparisons.
-- **Place IDs for chaining**: Use place identifiers returned from `GOOGLE_MAPS_TEXT_SEARCH` when calling `GOOGLE_MAPS_GET_PLACE_DETAILS` for richer fields.
-- **Reverse geocoding input**: `GOOGLE_MAPS_GEOCODE_LOCATION` is coordinate-driven. Ensure you pass lat/lng (not an address string) to avoid mismatched lookups.
-- **Routing preference restrictions**: `routingPreference` cannot be set when `travelMode` is WALK, BICYCLE, or TRANSIT -- it must be omitted for these modes.
-- **Nearby search type validity**: `"food"` is NOT a valid type for `GOOGLE_MAPS_NEARBY_SEARCH` (it is Table B). Use specific types like `restaurant`, `cafe`, `bakery`, `fast_food_restaurant` instead.
-- **Embed API uses API keys only**: `GOOGLE_MAPS_MAPS_EMBED_API` requires an API key and does not support OAuth2.
+- **路线矩阵结果结构**：`GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX` 返回的结果位于 `data.elements` 下，包含 `originIndex` 和 `destinationIndex` 以及 `distanceMeters` 和 `duration`——而不是 `routes[]` 结构。
+- **时长格式**：`GOOGLE_MAPS_GET_ROUTE` 在 `data.response_data.routes` 中以字符串形式返回时长，如 `"937s"`。在进行数值比较前必须先解析这些字符串。
+- **用于链式调用的地点 ID**：在调用 `GOOGLE_MAPS_GET_PLACE_DETAILS` 获取更丰富的字段时，使用从 `GOOGLE_MAPS_TEXT_SEARCH` 返回的地点标识符。
+- **反向地理编码的输入**：`GOOGLE_MAPS_GEOCODE_LOCATION` 是以坐标驱动的。确保传入经纬度（而不是地址字符串），以避免查找不匹配。
+- **路线偏好限制**：当 `travelMode` 为 WALK、BICYCLE 或 TRANSIT 时，不能设置 `routingPreference`——这些模式下必须省略该参数。
+- **附近搜索的类型有效性**：`"food"` 不是 `GOOGLE_MAPS_NEARBY_SEARCH` 的有效类型（它属于 Table B）。请改用具体类型，如 `restaurant`、`cafe`、`bakery`、`fast_food_restaurant`。
+- **嵌入 API 仅支持 API 密钥**：`GOOGLE_MAPS_MAPS_EMBED_API` 需要 API 密钥，不支持 OAuth2。
 
 ## 快速参考
-| Action | Tool | Key Parameters |
+| 操作 | 工具 | 关键参数 |
 |--------|------|----------------|
-| Geocode address | `GOOGLE_MAPS_GEOCODING_API` | `address` or `latlng` or `place_id` |
-| Reverse geocode | `GOOGLE_MAPS_GEOCODE_LOCATION` | (see full schema via RUBE_SEARCH_TOOLS) |
-| Text search | `GOOGLE_MAPS_TEXT_SEARCH` | `textQuery`, `fieldMask`, `maxResultCount` |
-| Nearby search | `GOOGLE_MAPS_NEARBY_SEARCH` | `latitude`, `longitude`, `radius`, `includedTypes` |
-| Get directions | `GOOGLE_MAPS_GET_ROUTE` | `origin_address`, `destination_address`, `travelMode` |
-| Distance matrix | `GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX` | `origins`, `destinations`, `travelMode` |
-| Place details | `GOOGLE_MAPS_GET_PLACE_DETAILS` | (see full schema via RUBE_SEARCH_TOOLS) |
-| Autocomplete | `GOOGLE_MAPS_AUTOCOMPLETE` | `input`, `includedRegionCodes`, `locationBias` |
-| Place photo | `GOOGLE_MAPS_PLACE_PHOTO` | (see full schema via RUBE_SEARCH_TOOLS) |
-| Embed map | `GOOGLE_MAPS_MAPS_EMBED_API` | `mode`, plus mode-specific params |
+| 地址地理编码 | `GOOGLE_MAPS_GEOCODING_API` | `address` 或 `latlng` 或 `place_id` |
+| 反向地理编码 | `GOOGLE_MAPS_GEOCODE_LOCATION` | （通过 RUBE_SEARCH_TOOLS 查看完整模式） |
+| 文本搜索 | `GOOGLE_MAPS_TEXT_SEARCH` | `textQuery`、`fieldMask`、`maxResultCount` |
+| 附近搜索 | `GOOGLE_MAPS_NEARBY_SEARCH` | `latitude`、`longitude`、`radius`、`includedTypes` |
+| 获取路线 | `GOOGLE_MAPS_GET_ROUTE` | `origin_address`、`destination_address`、`travelMode` |
+| 距离矩阵 | `GOOGLE_MAPS_COMPUTE_ROUTE_MATRIX` | `origins`、`destinations`、`travelMode` |
+| 地点详情 | `GOOGLE_MAPS_GET_PLACE_DETAILS` | （通过 RUBE_SEARCH_TOOLS 查看完整模式） |
+| 自动补全 | `GOOGLE_MAPS_AUTOCOMPLETE` | `input`、`includedRegionCodes`、`locationBias` |
+| 地点照片 | `GOOGLE_MAPS_PLACE_PHOTO` | （通过 RUBE_SEARCH_TOOLS 查看完整模式） |
+| 嵌入地图 | `GOOGLE_MAPS_MAPS_EMBED_API` | `mode`，以及模式相关的其他参数 |
 
 ---
-*由 [Composio](https://composio.dev) 提供支持*
+*Powered by [Composio](https://composio.dev)*

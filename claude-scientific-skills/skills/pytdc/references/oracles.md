@@ -1,400 +1,278 @@
-# TDC Molecule Generation Oracles
+# Molecular generation and PyTDC oracles
 
-Oracles are functions that evaluate the quality of generated molecules across specific dimensions. TDC provides 17+ oracle functions for molecular optimization tasks in de novo drug design.
+This reference targets **PyTDC 1.1.15**, verified 2026-10-01. Oracle names and
+behavior are heterogeneous. Discover the installed registry and classify side
+effects before constructing an `Oracle`.
 
-## Overview
+## PyTDC's role
 
-Oracles measure molecular properties and serve two main purposes:
+Core PyTDC provides:
 
-1. **Goal-Directed Generation**: Optimize molecules to maximize/minimize specific properties
-2. **Distribution Learning**: Evaluate whether generated molecules match desired property distributions
+- molecular corpora through `tdc.generation.MolGen`;
+- `Evaluator` functions for generated sets;
+- scalar, composite, checkpoint-backed, remote-service, and docking oracles.
 
-## Using Oracles
+It does not supply one universal trainable molecule generator. Users bring or
+implement the generative model and must define a scientifically justified
+objective, constraints, validation protocol, and experimental follow-up.
 
-### Basic Usage
+## Discover names without calling an oracle
+
+```bash
+uv run --no-project --isolated --python 3.11 --with "setuptools==80.9.0" --with "PyTDC==1.1.15" \
+  python scripts/discover_metadata.py --kind oracles --limit 100
+```
+
+This reads `tdc.metadata.oracle_names`; it does not instantiate an oracle, download
+a checkpoint/receptor, or transmit a SMILES string.
+
+Use exact names. PyTDC fuzzy matching can silently normalize approximate input,
+which is undesirable for expensive or remote operations.
+
+## Side-effect categories in the stable metadata
+
+### Local scalar property
+
+Verified direct local scalar name:
+
+```text
+qed
+```
+
+`qed` requires RDKit but no PyTDC model artifact. It is the quantitative estimate
+of drug-likeness; higher is more drug-like on its documented 0–1 scale.
+
+Although upstream metadata groups `logp` and `sa` with “trivial” oracles, source
+and execution verification show that both call `calculateScore`, which downloads
+the `fpscores` artifact when absent. Treat both as download-backed.
+
+### Local composite/GuacaMol-style objectives
+
+The registry contains rediscovery, similarity, isomer, median, MPO, SMARTS, and hop
+objectives. Some names use fixed targets; `*_meta` variants require constructor
+arguments such as `target_smiles`.
+
+Do not infer a constructor signature or score direction from the name. Read the
+matching official oracle section and stable source before use. The bundled CLI does
+not execute these objectives.
+
+### Checkpoint-backed models
+
+Stable download metadata includes:
+
+```text
+drd2, gsk3b, jnk3, cyp3a4_veith, fpscores,
+drd2_current, gsk3b_current, jnk3_current
+```
+
+Constructing one can call Harvard Dataverse and write a model file beneath
+`./oracle`. For DRD2/GSK3B/JNK3, PyTDC may normalize the request to a `_current`
+checkpoint according to the installed scikit-learn version.
+
+Checkpoint files are serialized model artifacts. Review source, origin, local path,
+size, and trust boundary before download/loading. The bundled CLI supports only
+bounded LogP/SA/DRD2/GSK3B/JNK3/CYP3A4_Veith calls and requires both `--execute`
+and `--download`.
+
+The 1.1.15 `LogP` oracle is not raw octanol/water partition alone. It implements
+the normalized **penalized logP** objective: RDKit MolLogP plus a normalized
+negative synthetic-accessibility term and a large-cycle penalty. Higher is the
+objective's optimization direction. `SA` returns synthetic accessibility, for
+which lower conventionally means easier synthesis. Do not combine either with
+other scores without documenting transformation, scale, and direction.
+
+### Distribution evaluators
+
+The Oracle/Evaluator registries include:
+
+```text
+novelty, diversity, uniqueness, validity, fcd_distance, kl_divergence
+```
+
+These operate on collections, and several need a training/reference set. They are
+not interchangeable scalar objectives:
+
+- validity/uniqueness/novelty/diversity are higher by their documented definitions;
+- `kl_divergence` returns mean `exp(-KL)`, so higher means closer distributions;
+- `fcd_distance` returns transformed similarity with TensorFlow/FCD but raw distance
+  with PyTorch/fcd_torch in 1.1.15; record backend and transformation before ranking;
+- unpatched KL fails on modern SciPy because of removed `scipy.histogram`; see
+  [utilities.md](utilities.md) for the verified compatibility limitation;
+- novelty and distribution comparisons depend on the exact reference corpus and
+  canonicalization;
+- optional chemical-model dependencies may be substantial.
+
+Use `Evaluator` and the official input signature. Do not send these through the
+bundled scalar-scoring helper.
+
+### Remote synthesis services
+
+Metadata includes `askcos` and `ibm_rxn`. Official documentation describes extra
+host/API inputs. Calling them can transmit molecular structures and credentials to
+an external service.
+
+Before any call:
+
+1. identify the exact service operator and current terms;
+2. determine whether the molecule is confidential or patent-sensitive;
+3. obtain explicit user approval for transmission and cost;
+4. read only the named credential required by that service;
+5. never print or save the credential in JSON, logs, or command arguments;
+6. enforce request/time/call limits.
+
+The bundled script intentionally refuses these remote services. The 1.1.15 docs may
+show historical endpoints or token flows; verify them with the service provider.
+
+### Receptor and docking oracles
+
+The registry contains PDB-specific names ending in `_docking`,
+`_docking_normalize`, and `_docking_vina`, plus specialized names such as
+`pyscreener`, `docking_score`, `smina`, `rmsd`, and `kabsch_rmsd`.
+
+These paths can involve:
+
+- receptor PDB/PDBQT downloads;
+- local executables and substantial CPU/storage;
+- user-specified box centers/sizes;
+- generated conformers and temporary files;
+- license restrictions for docking software;
+- remote or proprietary synthesis scoring in benchmark evaluation.
+
+Raw docking energies and normalized variants have different directions. Never infer
+direction from a generic “Docking” label. The bundled molecular CLI and benchmark
+CLI do not execute docking.
+
+## Bounded local scoring
+
+Plan first:
+
+```bash
+python scripts/molecular_generation.py score \
+  --oracle QED \
+  --smiles "CCO"
+```
+
+The JSON plan reports classification, input count, runtime directory, and required
+acknowledgement. It does not instantiate `Oracle`.
+
+Execute a local scalar only after review:
+
+```bash
+python scripts/molecular_generation.py score \
+  --oracle QED \
+  --smiles "CCO" \
+  --execute
+```
+
+Execute a supported checkpoint-backed model only after approving the checkpoint:
+
+```bash
+python scripts/molecular_generation.py score \
+  --oracle DRD2 \
+  --smiles "CCO" \
+  --runtime-dir .pytdc-oracles \
+  --execute --download
+```
+
+The helper:
+
+- accepts at most 500 SMILES and a 1 MiB input file;
+- keeps output in input order with a zero-based index and explicit validity flag;
+- emits `score: null` for invalid or zero-atom structures without scoring them;
+- truncates long strings;
+- never ranks candidates or assumes score direction;
+- changes into the safe runtime directory so upstream `./oracle` writes remain
+  contained;
+- refuses remote services, docking, distribution metrics, and composite objectives.
+
+## Direct Oracle API
+
+After side-effect review:
 
 ```python
 from tdc import Oracle
 
-# Initialize oracle
-oracle = Oracle(name='GSK3B')
-
-# Evaluate single molecule (SMILES string)
-score = oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
-
-# Evaluate multiple molecules
-scores = oracle(['SMILES1', 'SMILES2', 'SMILES3'])
+oracle = Oracle(name="QED", num_max_call=100)
+scores = oracle(["CCO", "c1ccccc1"])
 ```
 
-### Oracle Categories
+`num_max_call` bounds accumulated valid scalar calls for supported paths. It is not
+a network timeout, memory limit, or cost limit.
 
-TDC oracles are organized into several categories based on the molecular property being evaluated.
+For list input, PyTDC validates each SMILES with RDKit. Invalid entries can receive
+the oracle's default value (commonly zero) rather than raising. The bundled helper pre-validates
+structures and emits an explicit validity flag plus null score for these inputs;
+do not interpret an upstream default as a measured low score.
 
-## Biochemical Oracles
+Oracle results are predictions or computed proxies, not experimental evidence.
+Applicability domains, model training data, stereochemistry, protonation,
+tautomerization, salts, and assay context can materially change interpretation.
 
-Predict binding affinity or activity against biological targets.
+## MolGen datasets
 
-### Target-Specific Oracles
+Discover the exact stable registry:
 
-**DRD2 - Dopamine Receptor D2**
-```python
-oracle = Oracle(name='DRD2')
-score = oracle(smiles)
-```
-- Measures binding affinity to DRD2 receptor
-- Important for neurological and psychiatric drug development
-- Higher scores indicate stronger binding
-
-**GSK3B - Glycogen Synthase Kinase-3 Beta**
-```python
-oracle = Oracle(name='GSK3B')
-score = oracle(smiles)
-```
-- Predicts GSK3β inhibition
-- Relevant for Alzheimer's, diabetes, and cancer research
-- Higher scores indicate better inhibition
-
-**JNK3 - c-Jun N-terminal Kinase 3**
-```python
-oracle = Oracle(name='JNK3')
-score = oracle(smiles)
-```
-- Measures JNK3 kinase inhibition
-- Target for neurodegenerative diseases
-- Higher scores indicate stronger inhibition
-
-**5HT2A - Serotonin 2A Receptor**
-```python
-oracle = Oracle(name='5HT2A')
-score = oracle(smiles)
-```
-- Predicts serotonin receptor binding
-- Important for psychiatric medications
-- Higher scores indicate stronger binding
-
-**ACE - Angiotensin-Converting Enzyme**
-```python
-oracle = Oracle(name='ACE')
-score = oracle(smiles)
-```
-- Measures ACE inhibition
-- Target for hypertension treatment
-- Higher scores indicate better inhibition
-
-**MAPK - Mitogen-Activated Protein Kinase**
-```python
-oracle = Oracle(name='MAPK')
-score = oracle(smiles)
-```
-- Predicts MAPK inhibition
-- Target for cancer and inflammatory diseases
-
-**CDK - Cyclin-Dependent Kinase**
-```python
-oracle = Oracle(name='CDK')
-score = oracle(smiles)
-```
-- Measures CDK inhibition
-- Important for cancer drug development
-
-**P38 - p38 MAP Kinase**
-```python
-oracle = Oracle(name='P38')
-score = oracle(smiles)
-```
-- Predicts p38 MAPK inhibition
-- Target for inflammatory diseases
-
-**PARP1 - Poly (ADP-ribose) Polymerase 1**
-```python
-oracle = Oracle(name='PARP1')
-score = oracle(smiles)
-```
-- Measures PARP1 inhibition
-- Target for cancer treatment (DNA repair mechanism)
-
-**PIK3CA - Phosphatidylinositol-4,5-Bisphosphate 3-Kinase**
-```python
-oracle = Oracle(name='PIK3CA')
-score = oracle(smiles)
-```
-- Predicts PIK3CA inhibition
-- Important target in oncology
-
-## Physicochemical Oracles
-
-Evaluate drug-like properties and ADME characteristics.
-
-### Drug-Likeness Oracles
-
-**QED - Quantitative Estimate of Drug-likeness**
-```python
-oracle = Oracle(name='QED')
-score = oracle(smiles)
-```
-- Combines multiple physicochemical properties
-- Score ranges from 0 (non-drug-like) to 1 (drug-like)
-- Based on Bickerton et al. criteria
-
-**Lipinski - Rule of Five**
-```python
-oracle = Oracle(name='Lipinski')
-score = oracle(smiles)
-```
-- Number of Lipinski rule violations
-- Rules: MW ≤ 500, logP ≤ 5, HBD ≤ 5, HBA ≤ 10
-- Score of 0 means fully compliant
-
-### Molecular Properties
-
-**SA - Synthetic Accessibility**
-```python
-oracle = Oracle(name='SA')
-score = oracle(smiles)
-```
-- Estimates ease of synthesis
-- Score ranges from 1 (easy) to 10 (difficult)
-- Lower scores indicate easier synthesis
-
-**LogP - Octanol-Water Partition Coefficient**
-```python
-oracle = Oracle(name='LogP')
-score = oracle(smiles)
-```
-- Measures lipophilicity
-- Important for membrane permeability
-- Typical drug-like range: 0-5
-
-**MW - Molecular Weight**
-```python
-oracle = Oracle(name='MW')
-score = oracle(smiles)
-```
-- Returns molecular weight in Daltons
-- Drug-like range typically 150-500 Da
-
-## Composite Oracles
-
-Combine multiple properties for multi-objective optimization.
-
-**Isomer Meta**
-```python
-oracle = Oracle(name='Isomer_Meta')
-score = oracle(smiles)
-```
-- Evaluates specific isomeric properties
-- Used for stereochemistry optimization
-
-**Median Molecules**
-```python
-oracle = Oracle(name='Median1', 'Median2')
-score = oracle(smiles)
-```
-- Tests ability to generate molecules with median properties
-- Useful for distribution learning benchmarks
-
-**Rediscovery**
-```python
-oracle = Oracle(name='Rediscovery')
-score = oracle(smiles)
-```
-- Measures similarity to known reference molecules
-- Tests ability to regenerate existing drugs
-
-**Similarity**
-```python
-oracle = Oracle(name='Similarity')
-score = oracle(smiles)
-```
-- Computes structural similarity to target molecules
-- Based on molecular fingerprints (typically Tanimoto similarity)
-
-**Uniqueness**
-```python
-oracle = Oracle(name='Uniqueness')
-scores = oracle(smiles_list)
-```
-- Measures diversity in generated molecule set
-- Returns fraction of unique molecules
-
-**Novelty**
-```python
-oracle = Oracle(name='Novelty')
-scores = oracle(smiles_list, training_set)
-```
-- Measures how different generated molecules are from training set
-- Higher scores indicate more novel structures
-
-## Specialized Oracles
-
-**ASKCOS - Retrosynthesis Scoring**
-```python
-oracle = Oracle(name='ASKCOS')
-score = oracle(smiles)
-```
-- Evaluates synthetic feasibility using retrosynthesis
-- Requires ASKCOS backend (IBM RXN)
-- Scores based on retrosynthetic route availability
-
-**Docking Score**
-```python
-oracle = Oracle(name='Docking')
-score = oracle(smiles)
-```
-- Molecular docking score against target protein
-- Requires protein structure and docking software
-- Lower scores typically indicate better binding
-
-**Vina - AutoDock Vina Score**
-```python
-oracle = Oracle(name='Vina')
-score = oracle(smiles)
-```
-- Uses AutoDock Vina for protein-ligand docking
-- Predicts binding affinity in kcal/mol
-- More negative scores indicate stronger binding
-
-## Multi-Objective Optimization
-
-Combine multiple oracles for multi-property optimization:
-
-```python
-from tdc import Oracle
-
-# Initialize multiple oracles
-qed_oracle = Oracle(name='QED')
-sa_oracle = Oracle(name='SA')
-drd2_oracle = Oracle(name='DRD2')
-
-# Define custom scoring function
-def multi_objective_score(smiles):
-    qed = qed_oracle(smiles)
-    sa = 1 / (1 + sa_oracle(smiles))  # Invert SA (lower is better)
-    drd2 = drd2_oracle(smiles)
-
-    # Weighted combination
-    return 0.3 * qed + 0.3 * sa + 0.4 * drd2
-
-# Evaluate molecule
-score = multi_objective_score('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
+```bash
+python scripts/discover_metadata.py --kind datasets --task MolGen
 ```
 
-## Oracle Performance Considerations
+Plan a random split:
 
-### Speed
-- **Fast**: QED, SA, LogP, MW, Lipinski (rule-based calculations)
-- **Medium**: Target-specific ML models (DRD2, GSK3B, etc.)
-- **Slow**: Docking-based oracles (Vina, ASKCOS)
-
-### Reliability
-- Oracles are ML models trained on specific datasets
-- May not generalize to all chemical spaces
-- Use multiple oracles to validate results
-
-### Batch Processing
-```python
-# Efficient batch evaluation
-oracle = Oracle(name='GSK3B')
-smiles_list = ['SMILES1', 'SMILES2', ..., 'SMILES1000']
-scores = oracle(smiles_list)  # Faster than individual calls
+```bash
+python scripts/molecular_generation.py dataset \
+  --dataset MOSES \
+  --seed 42 \
+  --data-dir .pytdc-molgen
 ```
 
-## Common Workflows
+MolGen corpora can contain hundreds of thousands or millions of structures. Review
+the official page, per-dataset license, compressed/decompressed size, free disk,
+and network budget. Execution intentionally requires both flags:
 
-### Goal-Directed Generation
-```python
-from tdc import Oracle
-from tdc.generation import MolGen
-
-# Load training data
-data = MolGen(name='ChEMBL_V29')
-train_smiles = data.get_data()['Drug'].tolist()
-
-# Initialize oracle
-oracle = Oracle(name='GSK3B')
-
-# Generate molecules (user implements generative model)
-# generated_smiles = generator.generate(n=1000)
-
-# Evaluate generated molecules
-scores = oracle(generated_smiles)
-best_molecules = [(s, score) for s, score in zip(generated_smiles, scores)]
-best_molecules.sort(key=lambda x: x[1], reverse=True)
-
-print(f"Top 10 molecules:")
-for smiles, score in best_molecules[:10]:
-    print(f"{smiles}: {score:.3f}")
+```bash
+python scripts/molecular_generation.py dataset \
+  --dataset MOSES \
+  --seed 42 \
+  --data-dir .pytdc-molgen \
+  --execute --download
 ```
 
-### Distribution Learning
-```python
-from tdc import Oracle
-import numpy as np
+PyTDC 1.1.15's MolGen loader exposes random split only. The supplied seed controls
+test sampling, while the generic splitter uses fixed `random_state=1` for
+validation sampling.
 
-# Initialize oracle
-oracle = Oracle(name='QED')
+## Goal-directed optimization safeguards
 
-# Evaluate training set
-train_scores = oracle(train_smiles)
-train_mean = np.mean(train_scores)
-train_std = np.std(train_scores)
+Before optimizing:
 
-# Evaluate generated set
-gen_scores = oracle(generated_smiles)
-gen_mean = np.mean(gen_scores)
-gen_std = np.std(gen_scores)
+- define whether every objective is maximized, minimized, targeted, or constrained;
+- normalize only with justified transformations;
+- separate train, validation, and final evaluation budgets;
+- cap total unique oracle calls and deduplicate canonical structures;
+- record invalid/failed/time-out results rather than silently dropping them;
+- retain all candidates and scores needed for audit, but keep chat/CLI output
+  bounded;
+- monitor exploitation of model artifacts and out-of-domain structures;
+- evaluate novelty against the exact declared training/reference set;
+- add medicinal-chemistry, synthesizability, selectivity, safety, and diversity
+  review rather than relying on a single score;
+- treat computational hits as hypotheses requiring expert and experimental
+  validation.
 
-# Compare distributions
-print(f"Training: μ={train_mean:.3f}, σ={train_std:.3f}")
-print(f"Generated: μ={gen_mean:.3f}, σ={gen_std:.3f}")
-```
+Do not claim a weighted sum is scientifically valid merely because every term is
+numerical.
 
-## Integration with TDC Benchmarks
+## Unsupported historical examples removed
 
-```python
-from tdc.generation import MolGen
+The stable 1.1.15 metadata/public imports do not support old examples that presented
+the following as generic ready-to-use APIs:
 
-# Use with GuacaMol benchmark
-data = MolGen(name='GuacaMol')
+- `PairMolGen` / `Prodrug`;
+- `MolGen(name="GuacaMol")`;
+- `evaluate_guacamol(...)`;
+- scalar `MW`, `Lipinski`, generic `Docking`, or generic `Vina` oracle names;
+- target oracles such as `5HT2A`, `ACE`, `MAPK`, `CDK`, `P38`, `PARP1`, or
+  `PIK3CA`.
 
-# Oracles are automatically integrated
-# Each GuacaMol task has associated oracle
-benchmark_results = data.evaluate_guacamol(
-    generated_molecules=your_molecules,
-    oracle_name='GSK3B'
-)
-```
-
-## Notes
-
-- Oracle scores are predictions, not experimental measurements
-- Always validate top candidates experimentally
-- Different oracles may have different score ranges and interpretations
-- Some oracles require additional dependencies or API access
-- Check oracle documentation for specific details: https://tdcommons.ai/functions/oracles/
-
-## Adding Custom Oracles
-
-To create custom oracle functions:
-
-```python
-class CustomOracle:
-    def __init__(self):
-        # Initialize your model/method
-        pass
-
-    def __call__(self, smiles):
-        # Implement your scoring logic
-        # Return score or list of scores
-        pass
-
-# Use like built-in oracles
-custom_oracle = CustomOracle()
-score = custom_oracle('CC(C)Cc1ccc(cc1)C(C)C(O)=O')
-```
-
-## References
-
-- TDC Oracles Documentation: https://tdcommons.ai/functions/oracles/
-- GuacaMol Paper: "GuacaMol: Benchmarking Models for de Novo Molecular Design"
-- MOSES Paper: "Molecular Sets (MOSES): A Benchmarking Platform for Molecular Generation Models"
+Do not restore these names without verifying a newer official package registry and
+source implementation.

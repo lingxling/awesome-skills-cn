@@ -1,742 +1,390 @@
-# Data Management & Storage
+# Data management, h5path, manifests, datasets, and provenance
 
-## Overview
+This reference targets **PathML 3.0.8 stable** and a local, de-identified research
+workflow.
 
-PathML provides efficient data management solutions for handling large-scale pathology datasets through HDF5 storage, tile management strategies, and optimized batch processing workflows. The framework enables seamless storage and retrieval of images, masks, features, and metadata in formats optimized for machine learning pipelines and downstream analysis.
+## Data boundaries
 
-## HDF5 Integration
+Separate four classes of data:
 
-HDF5 (Hierarchical Data Format) is the primary storage format for processed PathML data, providing:
-- Efficient compression and chunked storage
-- Fast random access to subsets of data
-- Support for arbitrarily large datasets
-- Hierarchical organization of heterogeneous data types
-- Cross-platform compatibility
+1. **Source slides** — immutable, access-controlled originals.
+2. **Linkage data** — direct identifiers and the pseudonym mapping, held outside
+   the analysis workspace by an authorized custodian.
+3. **Analysis data** — pseudonymous manifests, tiles, masks, counts, graphs, and
+   features.
+4. **Reports/models** — potentially identifying derived artifacts that still
+   require governance.
 
-### Saving to HDF5
+Do not assume derived images or embeddings are anonymous. Rare morphology,
+scanner metadata, dates, or cohort combinations can re-identify a participant.
+Apply the minimum-necessary principle and institutional retention policy.
 
-**Single slide:**
-```python
-from pathml.core import SlideData
+## Manifest first
 
-# Load and process slide
-wsi = SlideData.from_slide("slide.svs")
-wsi.generate_tiles(level=1, tile_size=256, stride=256)
+Use one row per slide. Recommended columns:
 
-# Run preprocessing pipeline
-pipeline.run(wsi)
-
-# Save to HDF5
-wsi.to_hdf5("processed_slide.h5")
+```text
+slide_id,patient_id,specimen_id,path,split,stain,backend,site,scanner
 ```
 
-**Multiple slides (SlideDataset):**
-```python
-from pathml.core import SlideDataset
-import glob
-
-# Create dataset
-slide_paths = glob.glob("data/*.svs")
-dataset = SlideDataset(slide_paths, tile_size=256, stride=256, level=1)
-
-# Process
-dataset.run(pipeline, distributed=True, n_workers=8)
-
-# Save entire dataset
-dataset.to_hdf5("processed_dataset.h5")
-```
-
-### HDF5 File Structure
-
-PathML HDF5 files are organized hierarchically:
-
-```
-processed_dataset.h5
-├── slide_0/
-│   ├── metadata/
-│   │   ├── name
-│   │   ├── level
-│   │   ├── dimensions
-│   │   └── ...
-│   ├── tiles/
-│   │   ├── tile_0/
-│   │   │   ├── image  (H, W, C) array
-│   │   │   ├── coords  (x, y)
-│   │   │   └── masks/
-│   │   │       ├── tissue
-│   │   │       ├── nucleus
-│   │   │       └── ...
-│   │   ├── tile_1/
-│   │   └── ...
-│   └── features/
-│       ├── tile_features  (n_tiles, n_features)
-│       └── feature_names
-├── slide_1/
-└── ...
-```
-
-### Loading from HDF5
-
-**Load entire slide:**
-```python
-from pathml.core import SlideData
-
-# Load from HDF5
-wsi = SlideData.from_hdf5("processed_slide.h5")
-
-# Access tiles
-for tile in wsi.tiles:
-    image = tile.image
-    masks = tile.masks
-    # Process tile...
-```
-
-**Load specific tiles:**
-```python
-# Load only tiles at specific indices
-tile_indices = [0, 10, 20, 30]
-tiles = wsi.load_tiles_from_hdf5("processed_slide.h5", indices=tile_indices)
-
-for tile in tiles:
-    # Process subset...
-    pass
-```
-
-**Memory-mapped access:**
-```python
-import h5py
-
-# Open HDF5 file without loading into memory
-with h5py.File("processed_dataset.h5", 'r') as f:
-    # Access specific data
-    tile_0_image = f['slide_0/tiles/tile_0/image'][:]
-    tissue_mask = f['slide_0/tiles/tile_0/masks/tissue'][:]
-
-    # Iterate through tiles efficiently
-    for tile_key in f['slide_0/tiles'].keys():
-        tile_image = f[f'slide_0/tiles/{tile_key}/image'][:]
-        # Process without loading all tiles...
-```
-
-## Tile Management
-
-### Tile Generation Strategies
-
-**Fixed-size tiles with no overlap:**
-```python
-wsi.generate_tiles(
-    level=1,
-    tile_size=256,
-    stride=256,  # stride = tile_size → no overlap
-    pad=False  # Don't pad edge tiles
-)
-```
-- **Use case:** Standard tile-based processing, classification
-- **Pros:** Simple, no redundancy, fast processing
-- **Cons:** Edge effects at tile boundaries
-
-**Overlapping tiles:**
-```python
-wsi.generate_tiles(
-    level=1,
-    tile_size=256,
-    stride=128,  # 50% overlap
-    pad=False
-)
-```
-- **Use case:** Segmentation, detection (reduces boundary artifacts)
-- **Pros:** Better boundary handling, smoother stitching
-- **Cons:** More tiles, redundant computation
-
-**Adaptive tiling based on tissue content:**
-```python
-from pathml.utils import adaptive_tile_generation
-
-# Generate tiles only in tissue regions
-wsi.generate_tiles(level=1, tile_size=256, stride=256)
-
-# Filter to keep only tiles with sufficient tissue
-tissue_tiles = []
-for tile in wsi.tiles:
-    if tile.masks.get('tissue') is not None:
-        tissue_coverage = tile.masks['tissue'].sum() / (tile_size**2)
-        if tissue_coverage > 0.5:  # Keep tiles with >50% tissue
-            tissue_tiles.append(tile)
-
-wsi.tiles = tissue_tiles
-```
-- **Use case:** Sparse tissue samples, efficiency
-- **Pros:** Reduces processing of background tiles
-- **Cons:** Requires tissue detection preprocessing step
-
-### Tile Stitching
-
-Reconstruct full slide from processed tiles:
-
-```python
-from pathml.utils import stitch_tiles
-
-# Process tiles
-for tile in wsi.tiles:
-    tile.prediction = model.predict(tile.image)
-
-# Stitch predictions back to full resolution
-full_prediction_map = stitch_tiles(
-    wsi.tiles,
-    output_shape=wsi.level_dimensions[1],  # Use level 1 dimensions
-    tile_size=256,
-    stride=256,
-    method='average'  # 'average', 'max', or 'first'
-)
-
-# Visualize
-import matplotlib.pyplot as plt
-plt.figure(figsize=(15, 15))
-plt.imshow(full_prediction_map)
-plt.title('Stitched Prediction Map')
-plt.axis('off')
-plt.show()
-```
-
-**Stitching methods:**
-- `'average'`: Average overlapping regions (smooth transitions)
-- `'max'`: Maximum value in overlapping regions
-- `'first'`: Keep first tile's value (no blending)
-- `'weighted'`: Distance-weighted blending for smooth boundaries
-
-### Tile Caching
-
-Cache frequently accessed tiles for faster iteration:
-
-```python
-from pathml.utils import TileCache
-
-# Create cache
-cache = TileCache(max_size_gb=10)
-
-# Cache tiles during first iteration
-for i, tile in enumerate(wsi.tiles):
-    cache.add(f'tile_{i}', tile.image)
-    # Process tile...
-
-# Subsequent iterations use cached data
-for i in range(len(wsi.tiles)):
-    cached_image = cache.get(f'tile_{i}')
-    # Fast access...
-```
-
-## Dataset Organization
-
-### Directory Structure for Large Projects
-
-Organize pathology projects with consistent structure:
-
-```
-project/
-├── raw_slides/
-│   ├── cohort1/
-│   │   ├── slide001.svs
-│   │   ├── slide002.svs
-│   │   └── ...
-│   └── cohort2/
-│       └── ...
-├── processed/
-│   ├── cohort1/
-│   │   ├── slide001.h5
-│   │   ├── slide002.h5
-│   │   └── ...
-│   └── cohort2/
-│       └── ...
-├── features/
-│   ├── cohort1_features.h5
-│   └── cohort2_features.h5
-├── models/
-│   ├── hovernet_checkpoint.pth
-│   └── classifier.onnx
-├── results/
-│   ├── predictions/
-│   ├── visualizations/
-│   └── metrics.csv
-└── metadata/
-    ├── clinical_data.csv
-    └── slide_manifest.csv
-```
-
-### Metadata Management
-
-Store slide-level and cohort-level metadata:
-
-```python
-import pandas as pd
-
-# Slide manifest
-manifest = pd.DataFrame({
-    'slide_id': ['slide001', 'slide002', 'slide003'],
-    'path': ['raw_slides/cohort1/slide001.svs', ...],
-    'cohort': ['cohort1', 'cohort1', 'cohort2'],
-    'tissue_type': ['breast', 'breast', 'lung'],
-    'scanner': ['Aperio', 'Hamamatsu', 'Aperio'],
-    'magnification': [40, 40, 20],
-    'staining': ['H&E', 'H&E', 'H&E']
-})
-
-manifest.to_csv('metadata/slide_manifest.csv', index=False)
-
-# Clinical data
-clinical = pd.DataFrame({
-    'slide_id': ['slide001', 'slide002', 'slide003'],
-    'patient_id': ['P001', 'P002', 'P003'],
-    'age': [55, 62, 48],
-    'diagnosis': ['invasive', 'in_situ', 'invasive'],
-    'stage': ['II', 'I', 'III'],
-    'outcome': ['favorable', 'favorable', 'poor']
-})
-
-clinical.to_csv('metadata/clinical_data.csv', index=False)
-
-# Load and merge
-manifest = pd.read_csv('metadata/slide_manifest.csv')
-clinical = pd.read_csv('metadata/clinical_data.csv')
-data = manifest.merge(clinical, on='slide_id')
-```
-
-## Batch Processing Strategies
-
-### Sequential Processing
-
-Process slides one at a time (memory-efficient):
-
-```python
-import glob
-from pathml.core import SlideData
-from pathml.preprocessing import Pipeline
-
-slide_paths = glob.glob('raw_slides/**/*.svs', recursive=True)
-
-for slide_path in slide_paths:
-    # Load slide
-    wsi = SlideData.from_slide(slide_path)
-    wsi.generate_tiles(level=1, tile_size=256, stride=256)
-
-    # Process
-    pipeline.run(wsi)
-
-    # Save
-    output_path = slide_path.replace('raw_slides', 'processed').replace('.svs', '.h5')
-    wsi.to_hdf5(output_path)
-
-    print(f"Processed: {slide_path}")
-```
-
-### Parallel Processing with Dask
-
-Process multiple slides in parallel:
-
-```python
-from pathml.core import SlideDataset
-from dask.distributed import Client, LocalCluster
-from pathml.preprocessing import Pipeline
-
-# Start Dask cluster
-cluster = LocalCluster(
-    n_workers=8,
-    threads_per_worker=2,
-    memory_limit='8GB',
-    dashboard_address=':8787'  # View progress at localhost:8787
-)
-client = Client(cluster)
-
-# Create dataset
-slide_paths = glob.glob('raw_slides/**/*.svs', recursive=True)
-dataset = SlideDataset(slide_paths, tile_size=256, stride=256, level=1)
-
-# Distribute processing
-dataset.run(
-    pipeline,
-    distributed=True,
-    client=client,
-    scheduler='distributed'
-)
-
-# Save results
-for i, slide in enumerate(dataset):
-    output_path = slide_paths[i].replace('raw_slides', 'processed').replace('.svs', '.h5')
-    slide.to_hdf5(output_path)
-
-client.close()
-cluster.close()
-```
-
-### Batch Processing with Job Arrays
-
-For HPC clusters (SLURM, PBS):
-
-```python
-# submit_jobs.py
-import os
-import glob
-
-slide_paths = glob.glob('raw_slides/**/*.svs', recursive=True)
-
-# Write slide list
-with open('slide_list.txt', 'w') as f:
-    for path in slide_paths:
-        f.write(path + '\n')
-
-# Create SLURM job script
-slurm_script = """#!/bin/bash
-#SBATCH --array=1-{n_slides}
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=16G
-#SBATCH --time=4:00:00
-#SBATCH --output=logs/slide_%A_%a.out
-
-# Get slide path for this array task
-SLIDE_PATH=$(sed -n "${{SLURM_ARRAY_TASK_ID}}p" slide_list.txt)
-
-# Run processing
-python process_slide.py --slide_path $SLIDE_PATH
-""".format(n_slides=len(slide_paths))
-
-with open('submit_jobs.sh', 'w') as f:
-    f.write(slurm_script)
-
-# Submit: sbatch submit_jobs.sh
-```
-
-```python
-# process_slide.py
-import argparse
-from pathml.core import SlideData
-from pathml.preprocessing import Pipeline
-
-parser = argparse.ArgumentParser()
-parser.add_argument('--slide_path', type=str, required=True)
-args = parser.parse_args()
-
-# Load and process
-wsi = SlideData.from_slide(args.slide_path)
-wsi.generate_tiles(level=1, tile_size=256, stride=256)
-
-pipeline = Pipeline([...])
-pipeline.run(wsi)
-
-# Save
-output_path = args.slide_path.replace('raw_slides', 'processed').replace('.svs', '.h5')
-wsi.to_hdf5(output_path)
-
-print(f"Processed: {args.slide_path}")
-```
-
-## Feature Extraction and Storage
-
-### Extracting Features
-
-```python
-from pathml.core import SlideData
-import torch
-import numpy as np
-
-# Load pre-trained model for feature extraction
-model = torch.load('models/feature_extractor.pth')
-model.eval()
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-model = model.to(device)
-
-# Load processed slide
-wsi = SlideData.from_hdf5('processed/slide001.h5')
-
-# Extract features for each tile
-features = []
-coords = []
-
-for tile in wsi.tiles:
-    # Preprocess tile
-    tile_tensor = torch.from_numpy(tile.image).permute(2, 0, 1).unsqueeze(0).float()
-    tile_tensor = tile_tensor.to(device)
-
-    # Extract features
-    with torch.no_grad():
-        feature_vec = model(tile_tensor).cpu().numpy().flatten()
-
-    features.append(feature_vec)
-    coords.append(tile.coords)
-
-features = np.array(features)  # Shape: (n_tiles, feature_dim)
-coords = np.array(coords)  # Shape: (n_tiles, 2)
-```
-
-### Storing Features in HDF5
-
-```python
-import h5py
-
-# Save features
-with h5py.File('features/slide001_features.h5', 'w') as f:
-    f.create_dataset('features', data=features, compression='gzip')
-    f.create_dataset('coords', data=coords)
-    f.attrs['feature_dim'] = features.shape[1]
-    f.attrs['num_tiles'] = features.shape[0]
-    f.attrs['model'] = 'resnet50'
-
-# Load features
-with h5py.File('features/slide001_features.h5', 'r') as f:
-    features = f['features'][:]
-    coords = f['coords'][:]
-    feature_dim = f.attrs['feature_dim']
-```
-
-### Feature Database for Multiple Slides
-
-```python
-# Create consolidated feature database
-import h5py
-import glob
-
-feature_files = glob.glob('features/*_features.h5')
-
-with h5py.File('features/all_features.h5', 'w') as out_f:
-    for i, feature_file in enumerate(feature_files):
-        slide_name = feature_file.split('/')[-1].replace('_features.h5', '')
-
-        with h5py.File(feature_file, 'r') as in_f:
-            features = in_f['features'][:]
-            coords = in_f['coords'][:]
-
-            # Store in consolidated file
-            grp = out_f.create_group(f'slide_{i}')
-            grp.create_dataset('features', data=features, compression='gzip')
-            grp.create_dataset('coords', data=coords)
-            grp.attrs['slide_name'] = slide_name
-
-# Query features from all slides
-with h5py.File('features/all_features.h5', 'r') as f:
-    for slide_key in f.keys():
-        slide_name = f[slide_key].attrs['slide_name']
-        features = f[f'{slide_key}/features'][:]
-        # Process...
-```
-
-## Data Versioning
-
-### Version Control with DVC
-
-Use Data Version Control (DVC) for large dataset management:
+Rules:
+
+- IDs are pseudonyms, not MRNs, accessions, initials, dates, or names.
+- `slide_id` is unique.
+- one `patient_id` maps to exactly one split;
+- one slide path maps to one slide ID;
+- paths are local, relative to a declared root where possible;
+- URLs and symlinks are rejected;
+- split values are a fixed allowlist such as `train`, `validation`, `test`;
+- serial sections, rescans, and multiple blocks from one patient remain together.
+
+Validate before PathML:
 
 ```bash
-# Initialize DVC
-dvc init
-
-# Add data directory
-dvc add raw_slides/
-dvc add processed/
-
-# Commit to git
-git add raw_slides.dvc processed.dvc .gitignore
-git commit -m "Add raw and processed slides"
-
-# Push data to remote storage (S3, GCS, etc.)
-dvc remote add -d storage s3://my-bucket/pathml-data
-dvc push
-
-# Pull data on another machine
-git pull
-dvc pull
+python scripts/slide_manifest.py validate \
+  --manifest metadata/manifest.csv \
+  --root .
 ```
 
-### Checksums and Validation
+The validator checks strict CSV structure, duplicate IDs/paths, missing local
+files, unsafe paths, supported suffixes, and patient/slide leakage. It does not
+upload data or inspect arbitrary clinical fields.
+If the `split` column is present, every row must supply it. Without that column,
+the report explicitly leaves patient split isolation unchecked.
 
-Validate data integrity:
+## h5path format
+
+PathML processes slides into an HDF5-based `.h5path` file. Stable documentation
+describes:
+
+```text
+root/
+├── fields/
+│   ├── labels/          # slide-level attributes
+│   └── slide_type/      # stain/platform flags
+├── masks/               # slide-level masks
+├── counts/              # AnnData-like counts storage
+└── tiles/
+    ├── attributes       # tile_shape, tile_stride
+    └── "(i, j)"/
+        ├── array
+        ├── masks/
+        ├── labels/
+        └── attributes   # coords, name
+```
+
+Write and reopen through public APIs:
+
+```python
+from pathml.core import SlideData
+
+slide.write("derived/slide-001.h5path")
+reopened = SlideData("derived/slide-001.h5path")
+```
+
+There is no stable `to_hdf5()`, `from_hdf5()`, or
+`load_tiles_from_hdf5()` API. `SlideDataset.write(directory, filenames=None)`
+calls each slide's `write()`.
+
+Released `h5pathManager.add_tile()` explicitly casts both tile images and tile
+masks to `float16`. Integers through 2048 are exact, but 2049 rounds to 2048 and
+large values can overflow beyond 65504. Thus distinct instance IDs can merge;
+intensity values can also lose precision. This is a storage limitation, even
+when Bio-Formats read with `normalize=False`.
+
+Preserve authoritative quantitative images and integer instance maps in a
+separate lossless, typed format. Check actual label identity and dtype after a
+small h5path round trip before downstream counting. Binary masks are not subject
+to the same instance-ID loss. Record tolerances for float measurements, but
+require exact equality for categorical labels.
+
+## h5path trust boundary
+
+Treat `.h5path` as a structured binary input, not harmless data:
+
+- HDF5 parsers have a large attack surface; open third-party files in isolation.
+- PathML 3.0.8 `TileDataset` and core h5path/tile code dynamically interpret the
+  stored `tile_shape` attribute as a Python expression. Never open an untrusted
+  `.h5path`, including through `SlideData`.
+- Labels can contain sensitive values. Do not copy direct identifiers into HDF5.
+- A malformed file can request large allocations. Check file size and schema
+  before loading.
+- Do not edit HDF5 concurrently from multiple processes unless the access pattern
+  is explicitly designed and tested.
+
+Use a sidecar JSON manifest for provenance rather than relying on arbitrary HDF5
+labels. Keep the JSON strict, bounded, pseudonymous, and versioned.
+
+## PyTorch tile dataset
+
+The canonical stable import is:
+
+```python
+from pathml.datasets import TileDataset
+from torch.utils.data import DataLoader
+
+tiles = TileDataset("derived/slide-001.h5path")
+loader = DataLoader(
+    tiles,
+    batch_size=8,
+    shuffle=False,
+    num_workers=0,
+)
+```
+
+Each item is:
+
+```text
+(tile_image, tile_masks, tile_labels, slide_labels)
+```
+
+Shapes:
+
+- RGB/multichannel 3-D input becomes `(C, H, W)`.
+- 5-D PathML input `(i, j, z, c, t)` becomes `(T, C, Z, W, H)` in stable
+  source; verify axis semantics before use.
+- masks are stacked as `(n_masks, tile_height, tile_width)` when present.
+- values returned by the dataset are NumPy arrays; the PyTorch loader collates
+  them to tensors. Missing masks are `None`, which default collation cannot
+  handle; use a custom `collate_fn` for missing masks or nonstandard labels.
+
+`TileDataset` does not return coordinates explicitly. Keep a parallel mapping
+from sample index to its stored tile key/coords (HDF5 iteration is not a numeric
+row/column sort), or include validated coordinate metadata in a custom dataset.
+
+Do not assume mask dictionary order carries semantics. Persist ordered mask names
+in a separate schema and assert them when loading.
+
+`pathml.ml.TileDataset` is also exported in 3.0.8, but
+`pathml.datasets.TileDataset` is the documented dataset API.
+
+## SlideDataset
+
+`SlideDataset(slides)` accepts a list of already constructed `SlideData` objects:
+
+```python
+from pathml.core import HESlide, SlideDataset
+
+slides = [
+    HESlide("data/slide-001.svs", backend="openslide"),
+    HESlide("data/slide-002.svs", backend="openslide"),
+]
+cohort = SlideDataset(slides)
+cohort.run(pipeline, distributed=False, tile_size=512, level=0)
+cohort.write("derived")
+```
+
+It does not accept a glob/path list plus tiling arguments as a constructor.
+Preserve a deterministic manifest order and map output filenames explicitly.
+
+## Public data modules
+
+Stable `pathml.datasets` exports:
+
+```python
+from pathml.datasets import DeepFocusDataModule, PanNukeDataModule
+```
+
+### PanNuke
+
+```python
+pannuke = PanNukeDataModule(
+    data_dir="approved_data/pannuke",
+    download=False,
+    shuffle=True,
+    nucleus_type_labels=True,
+    split=1,
+    batch_size=8,
+    hovernet_preprocess=True,
+)
+```
+
+- 7,901 256-pixel patches, 19 tissue types, five nucleus categories plus
+  background.
+- `download=False` is the safe default.
+- `download=True` downloads three ZIPs from
+  `https://warwick.ac.uk/fac/cross_fac/tia/data/pannuke/fold_{1,2,3}.zip` and
+  extracts them. These are binary GETs, without authentication or pagination.
+- `split` must be 1, 2, 3, or `None`; each integer rotates the three published
+  folds across train/validation/test.
+- `split=None` exposes the whole dataset; do not use it for performance
+  estimation.
+
+Published folds are not a substitute for verifying patient/source-slide
+independence for the intended claim.
+
+### DeepFocus
+
+```python
+deepfocus = DeepFocusDataModule(
+    data_dir="approved_data/deepfocus",
+    download=False,
+    shuffle=True,
+    batch_size=8,
+)
+```
+
+- focus classification patches derived from four slides/patients and four stains;
+- `download=True` GETs
+  `https://zenodo.org/record/1134848/files/outoffocus2017_patches5Classification.h5`
+  without authentication/pagination;
+- the integrity method checks a fixed MD5 before reusing a local file, but the
+  download method does not perform a second post-download check. Verify the
+  completed file independently before use.
+
+MD5 here is an upstream integrity check, not a modern provenance guarantee.
+Record a SHA-256 and dataset license/source separately.
+
+PathML 3.0.8 does **not** export `TCGADataModule`. Use a separately governed data
+acquisition process for TCGA/GDC and document its API/version/consent terms.
+
+## Download consent
+
+Before changing any `download` flag to `True`, tell the user:
+
+- exact host and expected dataset;
+- approximate transfer and expanded sizes (review-time HEAD responses for the
+  three PanNuke ZIPs total 2,077,087,715 bytes; processing/expansion needs much
+  more disk, with upstream docs estimating ~37.33 GB; the DeepFocus HDF5 is
+  10,027,826,144 bytes);
+- destination and available disk;
+- dataset license/terms and citation;
+- whether the environment logs outbound IP/account metadata; and
+- that no local slide or clinical data will be uploaded.
+
+Require explicit opt-in. Never place downloaded archives inside the repository.
+
+Review-time HEAD checks reached all four source URLs; DeepFocus redirected from
+`/record/` to `/records/`. No bodies were downloaded, so this establishes endpoint
+availability, not content integrity, license acceptance, or working extraction.
+The common download helper skips any existing file by name, including a partial
+one; independently verify size/checksum before treating such a file as complete.
+
+## Graph datasets and unsafe `.pt` files
+
+`pathml.datasets.EntityDataset` assembles cell graphs, tissue graphs, and
+assignment matrices. Stable source opens `.pt` files using PyTorch object
+deserialization with unrestricted object loading.
+
+Consequences:
+
+- only load artifacts created by the trusted project;
+- never load an emailed/downloaded `.pt` file merely to inspect it;
+- verify SHA-256, producer, code revision, PyTorch/PyG versions, and schema;
+- prefer non-executable interchange formats for exchange;
+- run legacy artifacts in a disposable, network-disabled environment if review is
+  unavoidable.
+
+The bundled inference planner and graph validator never load `.pt`, `.pth`,
+`.ckpt`, pickle, ONNX, or other model/graph binaries.
+
+## Split design and leakage
+
+Create the split column once, before tiling:
+
+```text
+patient → specimen/block → slide/rescan/serial section → region → tile
+```
+
+Everything below a patient follows the patient's split unless the scientific
+design explicitly requires a stricter grouping.
+
+Common leakage paths:
+
+- overlapping tiles from one slide in different splits;
+- serial sections or rescans assigned separately;
+- stain reference fitted on all slides;
+- QC threshold chosen after viewing test failures;
+- normalization/scaling fit before split;
+- graph neighborhoods crossing a split boundary;
+- duplicated public patches;
+- institution/scanner confounding;
+- selecting a checkpoint on the test metric.
+
+The manifest validator reports patient and slide leakage, but it cannot discover
+unknown biological relatedness. Document grouping assumptions.
+
+## Provenance sidecar
+
+Recommended strict JSON fields:
+
+```json
+{
+  "schema_version": "1.0",
+  "pathml_version": "3.0.8",
+  "source_sha256": "hex-digest",
+  "slide_id": "slide-001",
+  "patient_id": "patient-001",
+  "split": "train",
+  "backend": "openslide",
+  "level": 0,
+  "downsample": 1.0,
+  "mpp_x": null,
+  "mpp_y": null,
+  "tile_size_ij": [512, 512],
+  "tile_stride_ij": [512, 512],
+  "tile_pad": false,
+  "pipeline_id": "he-v1",
+  "code_revision": "project-commit",
+  "created_utc": "RFC3339 timestamp"
+}
+```
+
+Do not put a direct identifier in these fields. Add:
+
+- ordered transform parameters and fitted stain arrays;
+- mask/label schema;
+- QC counts and exclusion reasons;
+- dependency lock hash;
+- model artifact SHA-256 and license;
+- random seed manifest;
+- coordinate units and conversion;
+- output hashes and software/hardware details.
+
+Use SHA-256 for provenance:
 
 ```python
 import hashlib
-import pandas as pd
+from pathlib import Path
 
-def compute_checksum(file_path):
-    """Compute MD5 checksum of file."""
-    hash_md5 = hashlib.md5()
-    with open(file_path, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hash_md5.update(chunk)
-    return hash_md5.hexdigest()
-
-# Create checksum manifest
-slide_paths = glob.glob('raw_slides/**/*.svs', recursive=True)
-checksums = []
-
-for slide_path in slide_paths:
-    checksum = compute_checksum(slide_path)
-    checksums.append({
-        'path': slide_path,
-        'checksum': checksum,
-        'size_mb': os.path.getsize(slide_path) / 1e6
-    })
-
-checksum_df = pd.DataFrame(checksums)
-checksum_df.to_csv('metadata/checksums.csv', index=False)
-
-# Validate files
-def validate_files(manifest_path):
-    manifest = pd.read_csv(manifest_path)
-    for _, row in manifest.iterrows():
-        current_checksum = compute_checksum(row['path'])
-        if current_checksum != row['checksum']:
-            print(f"ERROR: Checksum mismatch for {row['path']}")
-        else:
-            print(f"OK: {row['path']}")
-
-validate_files('metadata/checksums.csv')
+def sha256_file(path: Path, chunk_bytes: int = 1024 * 1024) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(chunk_bytes), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 ```
 
-## Performance Optimization
+Hash only authorized local files and expect full-slide hashing to be I/O-heavy.
+Do not print paths containing identifiers.
 
-### Compression Settings
+## Storage and lifecycle checklist
 
-Optimize HDF5 compression for speed vs. size:
+- Estimate raw, temporary, `.h5path`, mask, count, graph, and model storage.
+- Write to a same-filesystem temporary destination, validate, then atomically
+  rename where possible.
+- Do not overwrite source slides.
+- Use private permissions and encrypted storage/backups.
+- Verify output counts, shapes, dtypes, coordinates, and hashes.
+- Record partial failures and retry policy.
+- Test disaster recovery and retention/deletion.
+- Do not commit slide data, model binaries, linkage files, or manifests with PHI.
 
-```python
-import h5py
+## Sources and further reading
 
-# Fast compression (less CPU, larger files)
-with h5py.File('output.h5', 'w') as f:
-    f.create_dataset(
-        'images',
-        data=images,
-        compression='gzip',
-        compression_opts=1  # Level 1-9, lower = faster
-    )
+API baseline reviewed 2026-10-01 using the released wheel/tag; hosted docs may lag.
 
-# Maximum compression (more CPU, smaller files)
-with h5py.File('output.h5', 'w') as f:
-    f.create_dataset(
-        'images',
-        data=images,
-        compression='gzip',
-        compression_opts=9
-    )
-
-# Balanced (recommended)
-with h5py.File('output.h5', 'w') as f:
-    f.create_dataset(
-        'images',
-        data=images,
-        compression='gzip',
-        compression_opts=4,
-        chunks=True  # Enable chunking for better I/O
-    )
-```
-
-### Chunking Strategy
-
-Optimize chunked storage for access patterns:
-
-```python
-# For tile-based access (access one tile at a time)
-with h5py.File('tiles.h5', 'w') as f:
-    f.create_dataset(
-        'tiles',
-        shape=(n_tiles, 256, 256, 3),
-        dtype='uint8',
-        chunks=(1, 256, 256, 3),  # One tile per chunk
-        compression='gzip'
-    )
-
-# For channel-based access (access all tiles for one channel)
-with h5py.File('tiles.h5', 'w') as f:
-    f.create_dataset(
-        'tiles',
-        shape=(n_tiles, 256, 256, 3),
-        dtype='uint8',
-        chunks=(n_tiles, 256, 256, 1),  # All tiles for one channel
-        compression='gzip'
-    )
-```
-
-### Memory-Mapped Arrays
-
-Use memory mapping for large arrays:
-
-```python
-import numpy as np
-
-# Save as memory-mapped file
-features_mmap = np.memmap(
-    'features/features.mmap',
-    dtype='float32',
-    mode='w+',
-    shape=(n_tiles, feature_dim)
-)
-
-# Populate
-for i, tile in enumerate(wsi.tiles):
-    features_mmap[i] = extract_features(tile)
-
-# Flush to disk
-features_mmap.flush()
-
-# Load without reading into memory
-features_mmap = np.memmap(
-    'features/features.mmap',
-    dtype='float32',
-    mode='r',
-    shape=(n_tiles, feature_dim)
-)
-
-# Access subset efficiently
-subset = features_mmap[1000:2000]  # Only loads requested rows
-```
-
-## Best Practices
-
-1. **Use HDF5 for processed data:** Save preprocessed tiles and features to HDF5 for fast access
-
-2. **Separate raw and processed data:** Keep original slides separate from processed outputs
-
-3. **Maintain metadata:** Track slide provenance, processing parameters, and clinical annotations
-
-4. **Implement checksums:** Validate data integrity, especially after transfers
-
-5. **Version datasets:** Use DVC or similar tools to version large datasets
-
-6. **Optimize storage:** Balance compression level with I/O performance
-
-7. **Organize by cohort:** Structure directories by study cohort for clarity
-
-8. **Regular backups:** Back up both data and metadata to remote storage
-
-9. **Document processing:** Keep logs of processing steps, parameters, and versions
-
-10. **Monitor disk usage:** Track storage consumption as datasets grow
-
-## Common Issues and Solutions
-
-**Issue: HDF5 files very large**
-- Increase compression level: `compression_opts=9`
-- Store only necessary data (avoid redundant copies)
-- Use appropriate data types (uint8 for images vs. float64)
-
-**Issue: Slow HDF5 read/write**
-- Optimize chunk size for access pattern
-- Reduce compression level for faster I/O
-- Use SSD storage instead of HDD
-- Enable parallel HDF5 with MPI
-
-**Issue: Running out of disk space**
-- Delete intermediate files after processing
-- Compress inactive datasets
-- Move old data to archival storage
-- Use cloud storage for less-accessed data
-
-**Issue: Data corruption or loss**
-- Implement regular backups
-- Use RAID for redundancy
-- Validate checksums after transfers
-- Use version control (DVC)
-
-## Additional Resources
-
-- **HDF5 Documentation:** https://www.hdfgroup.org/solutions/hdf5/
-- **h5py:** https://docs.h5py.org/
-- **DVC (Data Version Control):** https://dvc.org/
-- **Dask:** https://docs.dask.org/
-- **PathML Data Management API:** https://pathml.readthedocs.io/en/latest/api_data_reference.html
+- Stable h5path guide:
+  https://pathml.readthedocs.io/en/stable/h5path.html
+- Stable datasets guide:
+  https://pathml.readthedocs.io/en/stable/datasets.html
+- Stable datasets API:
+  https://pathml.readthedocs.io/en/stable/api_datasets_reference.html
+- Stable `TileDataset`/`EntityDataset` source:
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/datasets/datasets.py
+- Stable PanNuke source:
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/datasets/pannuke.py
+- Stable DeepFocus source:
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/datasets/deepfocus.py
+- PanNuke extension paper: https://arxiv.org/abs/2003.10778
+- DeepFocus paper: https://doi.org/10.1371/journal.pone.0205387

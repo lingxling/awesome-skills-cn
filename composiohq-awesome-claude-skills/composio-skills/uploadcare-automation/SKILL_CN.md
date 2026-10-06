@@ -1,6 +1,6 @@
 ---
 name: Uploadcare Automation
-description: "Automate Uploadcare file management including listing, storing, inspecting, downloading, and organizing file groups through natural language commands"
+description: "通过自然语言命令自动化 Uploadcare 文件管理，包括列出、存储、检查、下载文件以及组织文件组"
 requires:
   mcp:
     - rube
@@ -8,145 +8,145 @@ requires:
 
 # Uploadcare Automation
 
-Automate Uploadcare file handling workflows -- list project files, permanently store uploads, retrieve file metadata, get download URLs, and manage file groups -- all through natural language.
+自动化 Uploadcare 文件处理工作流——列出项目文件、永久存储上传内容、获取文件元数据、获取下载链接，以及管理文件组——全部通过自然语言完成。
 
-**Toolkit docs:** [composio.dev/toolkits/uploadcare](https://composio.dev/toolkits/uploadcare)
+**工具包文档：** [composio.dev/toolkits/uploadcare](https://composio.dev/toolkits/uploadcare)
 
 ---
 
 ## 设置
 
-1. Add the Rube MCP server to your environment: `https://rube.app/mcp`
-2. 连接 your Uploadcare account when prompted (API key auth via Composio)
-3. Start issuing natural language commands for Uploadcare automation
+1. 将 Rube MCP 服务器添加到你的环境中：`https://rube.app/mcp`
+2. 按提示连接你的 Uploadcare 账户（通过 Composio 的 API 密钥认证）
+3. 开始发出用于 Uploadcare 自动化的自然语言命令
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. List Project Files
+### 1. 列出项目文件
 
-Browse uploaded files in your Uploadcare project with filtering, sorting, and pagination.
+浏览 Uploadcare 项目中已上传的文件，支持筛选、排序和分页。
 
-**Tool:** `UPLOADCARE_LIST_FILES`
+**工具：** `UPLOADCARE_LIST_FILES`
 
-Key parameters:
-- `stored` -- filter by storage status: `"true"` for stored, `"false"` for unstored
-- `removed` -- filter by removal status: `"true"` for removed, `"false"` for active
-- `ordering` -- sort by `datetime_uploaded` (ascending) or `-datetime_uploaded` (descending)
-- `limit` -- files per page, 1-1000 (default 100)
-- `offset` -- zero-based pagination offset
-- `from_date` -- ISO 8601 timestamp to filter files uploaded after this date
-- `to_date` -- ISO 8601 timestamp to filter files uploaded before this date
-- `include` -- set to `"total"` to include total file count in response
+关键参数：
+- `stored` —— 按存储状态筛选：`"true"` 表示已存储，`"false"` 表示未存储
+- `removed` —— 按移除状态筛选：`"true"` 表示已移除，`"false"` 表示有效
+- `ordering` —— 按 `datetime_uploaded`（升序）或 `-datetime_uploaded`（降序）排序
+- `limit` —— 每页文件数，1-1000（默认 100）
+- `offset` —— 从零开始的分页偏移量
+- `from_date` —— ISO 8601 时间戳，筛选在此日期之后上传的文件
+- `to_date` —— ISO 8601 时间戳，筛选在此日期之前上传的文件
+- `include` —— 设置为 `"total"` 可在响应中包含文件总数
 
-Example prompt:
-> "List the 50 most recently uploaded stored files in my Uploadcare project"
-
----
-
-### 2. Store a File Permanently
-
-Mark an uploaded file as permanently stored. By default, Uploadcare files are temporary and will be deleted after 24 hours unless stored.
-
-**Tool:** `UPLOADCARE_STORE_FILE`
-
-Key parameters:
-- `uuid` -- UUID of the file to store (required); must be in `8-4-4-4-12` hex format (e.g., `3e55317b-23d1-4f35-9b4c-b9accb7b53f4`)
-
-> Always store files after upload to prevent automatic deletion.
-
-Example prompt:
-> "Permanently store the file with UUID 3e55317b-23d1-4f35-9b4c-b9accb7b53f4"
+示例提示：
+> "列出我 Uploadcare 项目中最近上传的 50 个已存储文件"
 
 ---
 
-### 3. Get File Metadata
+### 2. 永久存储文件
 
-Retrieve detailed information about a specific file including size, MIME type, CDN URL, image dimensions, and more.
+将已上传的文件标记为永久存储。默认情况下，Uploadcare 文件是临时的，除非被存储，否则将在 24 小时后被删除。
 
-**Tool:** `UPLOADCARE_GET_FILE_INFO`
+**工具：** `UPLOADCARE_STORE_FILE`
 
-Key parameters:
-- `uuid` -- the UUID of the file to inspect (required); format: `8-4-4-4-12` hex
+关键参数：
+- `uuid` —— 要存储的文件的 UUID（必需）；必须是 `8-4-4-4-12` 十六进制格式（例如 `3e55317b-23d1-4f35-9b4c-b9accb7b53f4`）
 
-Returns: filename, size, MIME type, CDN URL, upload date, storage status, image info (dimensions, color mode), and more.
+> 上传后始终存储文件，以防止自动删除。
 
-Example prompt:
-> "Get the metadata and dimensions for file 3e0923f2-e05a-4b37-9f0d-343b981c9d70"
-
----
-
-### 4. Get a Temporary Download URL
-
-Retrieve a temporary direct download link for a specific file.
-
-**Tool:** `UPLOADCARE_GET_FILE_DOWNLOAD_URL`
-
-Key parameters:
-- `file_id` -- the unique file identifier (required)
-
-Returns a time-limited URL that can be used for direct file download.
-
-Example prompt:
-> "Get a download link for file 3e0923f2-e05a-4b37-9f0d-343b981c9d70"
+示例提示：
+> "永久存储 UUID 为 3e55317b-23d1-4f35-9b4c-b9accb7b53f4 的文件"
 
 ---
 
-### 5. Browse File Groups
+### 3. 获取文件元数据
 
-List file groups in your project. Groups are collections of files uploaded together.
+获取特定文件的详细信息，包括大小、MIME 类型、CDN 链接、图像尺寸等。
 
-**Tool:** `UPLOADCARE_LIST_GROUPS`
+**工具：** `UPLOADCARE_GET_FILE_INFO`
 
-Key parameters:
-- `limit` -- groups per page, 1-1000 (default 20)
-- `offset` -- zero-based pagination offset (default 0)
-- `ordering` -- sort by `datetime_created` (ascending) or `-datetime_created` (descending)
+关键参数：
+- `uuid` —— 要检查的文件的 UUID（必需）；格式：`8-4-4-4-12` 十六进制
 
-Example prompt:
-> "List my 10 most recent file groups"
+返回：文件名、大小、MIME 类型、CDN 链接、上传日期、存储状态、图像信息（尺寸、颜色模式）等。
+
+示例提示：
+> "获取文件 3e0923f2-e05a-4b37-9f0d-343b981c9d70 的元数据和尺寸"
 
 ---
 
-### 6. File Lifecycle Workflow
+### 4. 获取临时下载链接
 
-Combine tools for end-to-end file management:
+获取特定文件的临时直接下载链接。
 
-1. **Upload**: Files are uploaded via Uploadcare's upload API or widget (outside this toolkit)
-2. **Store**: `UPLOADCARE_STORE_FILE` -- mark files as permanent to prevent auto-deletion
-3. **Inspect**: `UPLOADCARE_GET_FILE_INFO` -- verify metadata, check dimensions and MIME type
-4. **Share**: `UPLOADCARE_GET_FILE_DOWNLOAD_URL` -- generate a temporary download link
-5. **Browse**: `UPLOADCARE_LIST_FILES` -- audit all files with status and date filters
-6. **Groups**: `UPLOADCARE_LIST_GROUPS` -- review batch uploads
+**工具：** `UPLOADCARE_GET_FILE_DOWNLOAD_URL`
 
-Example prompt:
-> "Store file abc-123, then get its metadata and a download link"
+关键参数：
+- `file_id` —— 唯一的文件标识符（必需）
+
+返回一个限时链接，可用于直接下载文件。
+
+示例提示：
+> "获取文件 3e0923f2-e05a-4b37-9f0d-343b981c9d70 的下载链接"
+
+---
+
+### 5. 浏览文件组
+
+列出项目中的文件组。组是一起上传的文件集合。
+
+**工具：** `UPLOADCARE_LIST_GROUPS`
+
+关键参数：
+- `limit` —— 每页组数，1-1000（默认 20）
+- `offset` —— 从零开始的分页偏移量（默认 0）
+- `ordering` —— 按 `datetime_created`（升序）或 `-datetime_created`（降序）排序
+
+示例提示：
+> "列出我最近的 10 个文件组"
+
+---
+
+### 6. 文件生命周期工作流
+
+组合多个工具以实现端到端的文件管理：
+
+1. **上传**：文件通过 Uploadcare 的上传 API 或小部件上传（不在本工具包范围内）
+2. **存储**：`UPLOADCARE_STORE_FILE` —— 将文件标记为永久，以防止自动删除
+3. **检查**：`UPLOADCARE_GET_FILE_INFO` —— 验证元数据，检查尺寸和 MIME 类型
+4. **分享**：`UPLOADCARE_GET_FILE_DOWNLOAD_URL` —— 生成临时下载链接
+5. **浏览**：`UPLOADCARE_LIST_FILES` —— 通过状态和日期筛选审计所有文件
+6. **组**：`UPLOADCARE_LIST_GROUPS` —— 查看批量上传
+
+示例提示：
+> "存储文件 abc-123，然后获取其元数据和下载链接"
 
 ---
 
 ## 已知陷阱
 
-| Pitfall | Details |
-|---------|---------|
-| Auto-deletion of unstored files | Uploaded files are temporary by default and deleted after 24 hours -- always call `UPLOADCARE_STORE_FILE` to persist them |
-| UUID format strict | File UUIDs must be in exact `8-4-4-4-12` hex format (e.g., `3e55317b-23d1-4f35-9b4c-b9accb7b53f4`); invalid formats will be rejected |
-| Filter values are strings | The `stored` and `removed` parameters accept string values `"true"` or `"false"`, not booleans |
-| Temporary download URLs | URLs from `UPLOADCARE_GET_FILE_DOWNLOAD_URL` are time-limited and will expire |
-| Pagination is offset-based | Use `offset` + `limit` for pagination; there are no cursor-based pagination tokens |
-| No upload tool | File uploads happen through Uploadcare's upload API or widget, not through this toolkit -- these tools manage already-uploaded files |
+| 陷阱 | 详情 |
+|---------|--------|
+| 未存储文件会自动删除 | 上传的文件默认是临时的，24 小时后会被删除——始终调用 `UPLOADCARE_STORE_FILE` 来持久化保存 |
+| UUID 格式严格 | 文件 UUID 必须严格符合 `8-4-4-4-12` 十六进制格式（例如 `3e55317b-23d1-4f35-9b4c-b9accb7b53f4`）；格式无效将被拒绝 |
+| 筛选值是字符串 | `stored` 和 `removed` 参数接受字符串值 `"true"` 或 `"false"`，而不是布尔值 |
+| 临时下载链接 | 来自 `UPLOADCARE_GET_FILE_DOWNLOAD_URL` 的链接是限时的，会过期 |
+| 分页基于偏移量 | 使用 `offset` + `limit` 进行分页；没有基于游标的分页令牌 |
+| 没有上传工具 | 文件上传通过 Uploadcare 的上传 API 或小部件完成，而不是通过本工具包——这些工具管理的是已上传的文件 |
 
 ---
 
 ## 快速参考
 
-| Action | Tool Slug | Key Params |
+| 操作 | 工具标识 | 关键参数 |
 |--------|-----------|------------|
-| List files | `UPLOADCARE_LIST_FILES` | `stored`, `ordering`, `limit`, `offset` |
-| Store file | `UPLOADCARE_STORE_FILE` | `uuid` |
-| Get file info | `UPLOADCARE_GET_FILE_INFO` | `uuid` |
-| Get download URL | `UPLOADCARE_GET_FILE_DOWNLOAD_URL` | `file_id` |
-| List groups | `UPLOADCARE_LIST_GROUPS` | `limit`, `offset`, `ordering` |
+| 列出文件 | `UPLOADCARE_LIST_FILES` | `stored`、`ordering`、`limit`、`offset` |
+| 存储文件 | `UPLOADCARE_STORE_FILE` | `uuid` |
+| 获取文件信息 | `UPLOADCARE_GET_FILE_INFO` | `uuid` |
+| 获取下载链接 | `UPLOADCARE_GET_FILE_DOWNLOAD_URL` | `file_id` |
+| 列出组 | `UPLOADCARE_LIST_GROUPS` | `limit`、`offset`、`ordering` |
 
 ---
 

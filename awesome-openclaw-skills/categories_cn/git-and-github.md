@@ -159,3 +159,4 @@
 - [xpr-structured-data](https://clawskills.sh/skills/paulgnz-xpr-structured-data) - CSV 解析、JSON 到 CSV 转换和 SVG 图表生成。
 - [zai-tts](https://clawskills.sh/skills/al-one-zai-tts) - 使用 GLM-TTS 服务通过 `uvx zai-tts` 命令进行文本到语音转换，从文本生成音频。
 - [zhipu-tts](https://clawskills.sh/skills/franklu0819-lang-zhipu-tts) - 使用智谱 AI（BigModel）GLM-TTS 模型进行文本到语音转换。
+- [repo-standardizer](https://clawhub.ai/programmingwtf/repo-standardizer) - 完善任意 GitHub 仓库的门面：标签、Issue 表单、PR 模板、CI、规则集、文档。

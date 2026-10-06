@@ -1,32 +1,32 @@
 ---
 name: Replicate Automation
-description: "Automate Replicate AI model operations -- run predictions, upload files, inspect model schemas, list versions, and manage prediction history via the Composio MCP integration."
+description: "自动化 Replicate AI 模型操作 -- 通过 Composio MCP 集成运行预测、上传文件、检查模型模式、列出版本以及管理预测历史。"
 requires:
   mcp:
     - rube
 ---
 
-# Replicate Automation
+# Replicate 自动化
 
-Automate your Replicate AI model workflows -- run predictions on any public model (image generation, LLMs, audio, video), upload input files, inspect model schemas and documentation, list model versions, and track prediction history.
+自动化你的 Replicate AI 模型工作流 -- 在任何公开模型（图像生成、LLM、音频、视频）上运行预测、上传输入文件、检查模型模式和文档、列出模型版本以及跟踪预测历史。
 
-**Toolkit docs:** [composio.dev/toolkits/replicate](https://composio.dev/toolkits/replicate)
+**工具包文档:** [composio.dev/toolkits/replicate](https://composio.dev/toolkits/replicate)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your client: `https://rube.app/mcp`
-2. 连接 your Replicate account when prompted (API token authentication)
-3. Start using the workflows below
+1. 将 Composio MCP 服务器添加到你的客户端：`https://rube.app/mcp`
+2. 在提示时连接你的 Replicate 账户（API 令牌认证）
+3. 开始使用下面的工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Get Model Details and Schema
+### 1. 获取模型详情和模式
 
-Use `REPLICATE_MODELS_GET` to inspect a model's input/output schema before running predictions.
+在运行预测之前，使用 `REPLICATE_MODELS_GET` 检查模型的输入/输出模式。
 
 ```
 Tool: REPLICATE_MODELS_GET
@@ -35,11 +35,11 @@ Inputs:
   - model_name: string (required) -- e.g., "meta-llama-3-8b-instruct", "flux-1.1-pro"
 ```
 
-**Important:** Each model has unique input keys and types. Always check the `openapi_schema` from this response before constructing prediction inputs.
+**重要：** 每个模型都有独特的输入键和类型。在构造预测输入之前，请务必检查此响应中的 `openapi_schema`。
 
-### 2. Run a Prediction
+### 2. 运行预测
 
-Use `REPLICATE_MODELS_PREDICTIONS_CREATE` to run inference on any model with optional synchronous waiting and webhooks.
+使用 `REPLICATE_MODELS_PREDICTIONS_CREATE` 在任何模型上运行推理，可选择同步等待和 webhook。
 
 ```
 Tool: REPLICATE_MODELS_PREDICTIONS_CREATE
@@ -53,11 +53,11 @@ Inputs:
   - webhook_events_filter: array (optional) -- ["start", "output", "logs", "completed"]
 ```
 
-**Sync vs Async:** Use `wait_for` (1-60s) for fast models. For long-running jobs, omit it and use webhooks or poll via `REPLICATE_PREDICTIONS_LIST`.
+**同步与异步：** 对于快速模型使用 `wait_for`（1-60 秒）。对于长时间运行的任务，请省略它，改用 webhook 或通过 `REPLICATE_PREDICTIONS_LIST` 轮询。
 
-### 3. Upload Files for Model Input
+### 3. 上传模型输入文件
 
-Use `REPLICATE_CREATE_FILE` to upload images, documents, or other binary inputs that models need.
+使用 `REPLICATE_CREATE_FILE` 上传图像、文档或模型所需的其他二进制输入。
 
 ```
 Tool: REPLICATE_CREATE_FILE
@@ -68,9 +68,9 @@ Inputs:
   - metadata: object (optional) -- custom JSON metadata
 ```
 
-### 4. Read Model Documentation
+### 4. 阅读模型文档
 
-Use `REPLICATE_MODELS_README_GET` to access a model's README in Markdown format for detailed usage instructions.
+使用 `REPLICATE_MODELS_README_GET` 以 Markdown 格式获取模型的 README，了解详细的使用说明。
 
 ```
 Tool: REPLICATE_MODELS_README_GET
@@ -79,9 +79,9 @@ Inputs:
   - model_name: string (required)
 ```
 
-### 5. List Model Versions
+### 5. 列出模型版本
 
-Use `REPLICATE_MODELS_VERSIONS_LIST` to see all available versions of a model, sorted newest first.
+使用 `REPLICATE_MODELS_VERSIONS_LIST` 查看模型的所有可用版本，按最新优先排序。
 
 ```
 Tool: REPLICATE_MODELS_VERSIONS_LIST
@@ -90,9 +90,9 @@ Inputs:
   - model_name: string (required)
 ```
 
-### 6. Track Prediction History and Files
+### 6. 跟踪预测历史和文件
 
-Use `REPLICATE_PREDICTIONS_LIST` to retrieve prediction history, and `REPLICATE_FILES_GET`/`REPLICATE_FILES_LIST` to manage uploaded files.
+使用 `REPLICATE_PREDICTIONS_LIST` 检索预测历史，并使用 `REPLICATE_FILES_GET`/`REPLICATE_FILES_LIST` 管理已上传的文件。
 
 ```
 Tool: REPLICATE_PREDICTIONS_LIST
@@ -109,29 +109,29 @@ Tool: REPLICATE_FILES_GET
 
 ## 已知陷阱
 
-| Pitfall | Detail |
+| 陷阱 | 详情 |
 |---------|--------|
-| Model-specific input keys | Each model has unique input keys and types. Using the wrong key causes validation errors. Always call `REPLICATE_MODELS_GET` first to check the `openapi_schema`. |
-| File upload encoding | `REPLICATE_CREATE_FILE` requires base64-encoded content. Binary files treated as text (UTF-8) will fail with decode errors. |
-| Public vs deployment paths | Public models must be run via `REPLICATE_MODELS_PREDICTIONS_CREATE`. Using deployment-oriented paths causes HTTP 404 failures. |
-| Sync wait limits | `wait_for` supports 1-60 seconds only. Long-running jobs need async handling via webhooks or polling `REPLICATE_PREDICTIONS_LIST`. |
-| Image model constraints | Image models like flux-1.1-pro have specific constraints (e.g., max width/height 1440px, valid aspect ratios). Check the model schema first. |
-| Stale file references | Heavy usage creates many uploads. Routinely check `REPLICATE_FILES_LIST` to avoid using stale `file_id` references. |
+| 模型特定的输入键 | 每个模型都有独特的输入键和类型。使用错误的键会导致验证错误。请务必先调用 `REPLICATE_MODELS_GET` 检查 `openapi_schema`。 |
+| 文件上传编码 | `REPLICATE_CREATE_FILE` 需要 base64 编码的内容。被当作文本（UTF-8）处理的二进制文件会因解码错误而失败。 |
+| 公开模型与部署路径 | 公开模型必须通过 `REPLICATE_MODELS_PREDICTIONS_CREATE` 运行。使用面向部署的路径会导致 HTTP 404 失败。 |
+| 同步等待限制 | `wait_for` 仅支持 1-60 秒。长时间运行的任务需要通过 webhook 或轮询 `REPLICATE_PREDICTIONS_LIST` 进行异步处理。 |
+| 图像模型约束 | flux-1.1-pro 等图像模型有特定约束（例如，最大宽/高 1440px、有效的宽高比）。请先检查模型模式。 |
+| 过期的文件引用 | 大量使用会产生许多上传文件。请定期检查 `REPLICATE_FILES_LIST`，避免使用过期的 `file_id` 引用。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具 Slug | 描述 |
 |-----------|-------------|
-| `REPLICATE_MODELS_GET` | Get model details, schema, and metadata |
-| `REPLICATE_MODELS_PREDICTIONS_CREATE` | Run a prediction on a model |
-| `REPLICATE_CREATE_FILE` | Upload a file for model input |
-| `REPLICATE_MODELS_README_GET` | Get model README documentation |
-| `REPLICATE_MODELS_VERSIONS_LIST` | List all versions of a model |
-| `REPLICATE_PREDICTIONS_LIST` | List prediction history with pagination |
-| `REPLICATE_FILES_LIST` | List uploaded files |
-| `REPLICATE_FILES_GET` | Get file details by ID |
+| `REPLICATE_MODELS_GET` | 获取模型详情、模式和元数据 |
+| `REPLICATE_MODELS_PREDICTIONS_CREATE` | 在模型上运行预测 |
+| `REPLICATE_CREATE_FILE` | 上传文件作为模型输入 |
+| `REPLICATE_MODELS_README_GET` | 获取模型 README 文档 |
+| `REPLICATE_MODELS_VERSIONS_LIST` | 列出模型的所有版本 |
+| `REPLICATE_PREDICTIONS_LIST` | 列出带分页的预测历史 |
+| `REPLICATE_FILES_LIST` | 列出已上传的文件 |
+| `REPLICATE_FILES_GET` | 按 ID 获取文件详情 |
 
 ---
 

@@ -10,6 +10,7 @@ If you recognize your work here and it is not properly attributed, please open a
 | `owasp-top-10`              | [OWASP](https://owasp.org/)                                                | CC-BY-SA       | Methodology adapted.          |
 | `burp-suite-testing`        | [PortSwigger](https://portswigger.net/burp)                                | N/A            | Usage guide only (no binary). |
 | `crewai`                    | [CrewAI](https://github.com/joaomdmoura/crewAI)                            | MIT            | Framework guides.             |
+| `atlas-cloud-media`         | [Atlas Cloud](https://atlascloud.ai/)                                      | MIT            | Official source for asynchronous image and video generation through the Atlas Cloud API. |
 | `hasdata`, `hasdata-cli`    | [HasData CLI](https://github.com/HasData/hasdata-cli)                      | MIT            | Official HasData API and CLI guidance. |
 | `runapi-cli`                | [RunAPI CLI Skill](https://github.com/runapi-ai/cli-skill)                 | Apache-2.0     | Official RunAPI CLI skill for generating AI images, videos, and music/audio, plus other model API jobs. |
 | `weaviate`, `weaviate-cookbooks` | [Weaviate Agent Skills](https://github.com/weaviate/agent-skills)     | BSD-3-Clause   | Official Weaviate vector database operations, RAG cookbooks, and agentic app blueprints. |
@@ -19,6 +20,15 @@ If you recognize your work here and it is not properly attributed, please open a
 | `langgraph`                 | [LangGraph](https://github.com/langchain-ai/langgraph)                     | MIT            | Framework guides.             |
 | `react-patterns`            | [React Docs](https://react.dev/)                                           | CC-BY          | Official patterns.            |
 | **All Official Skills**     | [Anthropic / Google / OpenAI / Microsoft / Supabase / Apify / Vercel Labs] | Proprietary    | Usage encouraged by vendors.  |
+
+## Skills from zhaoxuya520/reverse-skill
+
+The following 43 security skills were adapted from the [reverse-skill](https://github.com/zhaoxuya520/reverse-skill) cybersecurity routing pack (MIT). The GPLv3 `CTF-Sandbox-Orchestrator` sidecar and runtime bootstrap scripts were intentionally not bundled.
+
+| Skill | Original Source | License | Notes |
+| :---- | :-------------- | :------ | :---- |
+| `api-security`, `apk-reverse`, `attack-chain`, `binary-diff`, `browser-extension-reverse`, `case-review`, `cloud-k8s`, `code-audit`, `database-security`, `diagram-generator`, `digital-forensics`, `docs-generator`, `dotnet-reverse`, `edr-bypass-re`, `email-security`, `firmware-pentest`, `ghidra-reverse`, `go-rust-reverse`, `hardware-security`, `ida-reverse`, `identity-federation`, `js-reverse`, `llm-security`, `macos-reverse`, `malware-analysis`, `mobile-reverse`, `ot-ics`, `patch-diff-exploit`, `pentest-tools`, `protocol-reverse`, `pwn-chain`, `radare2`, `radio-sdr`, `reverse-browser-automation`, `reverse-engineering`, `supply-chain-security`, `thick-client`, `threat-hunting`, `threat-intelligence`, `wifi-wireless`, `windows-ad`, `reverse-engineering/dsl-vm-reverse`, `pentest-tools/src-hunter` | [zhaoxuya520/reverse-skill](https://github.com/zhaoxuya520/reverse-skill) | MIT | Reverse engineering, binary analysis, offensive assessment, and threat-intelligence workflows, adapted with English metadata and upstream safety gates. |
+
 
 ## Skills from VoltAgent/awesome-agent-skills
 
@@ -162,6 +172,45 @@ The following skills were added during the March 2026 skills update:
 **Total: 80+ new skills added**
 
 ---
+
+## Skills from yylo-dev/yylo-skills
+
+The following 7 skills were adapted from [yylo-skills](https://github.com/yylo-dev/yylo-skills) (MIT, v2.0.1) — repo-resident task and state management for coding-agent CLIs (Kanban/task ledger, wiki, workflows, artifacts, Ralph execution loop). Docs-only import: the `ralph-loop-yylo` `scripts/kanban.sh` wrapper is intentionally not bundled; `references/` holds the worker contract.
+
+| Skill | Original Source | License | Notes |
+| :---- | :-------------- | :------ | :---- |
+| `ledger-tasks-yylo`, `plan-ledger-tasks-yylo`, `ralph-loop-yylo`, `understand-project-yylo`, `wiki-yylo`, `workflow-yylo`, `artifact-yylo` | [yylo-dev/yylo-skills](https://github.com/yylo-dev/yylo-skills) | MIT | Kanban ledger lifecycle, PDR planning, Ralph single-task execution loop, project understanding, wiki/workflow/artifact records; adapted with upstream frontmatter, When to Use/Limitations, and fail-closed safety boundaries. |
+
+## Skills from issue #126, batch 1 (addyosmani + adhd + career-ops + geo-seo) — issue126-batch1
+
+The following 19 skills were adapted for [FrancoStino/opencode-skills-collection#126](https://github.com/FrancoStino/opencode-skills-collection/issues/126). Docs-only imports: upstream helper scripts, runtimes, agents, hooks, and templates are intentionally not bundled.
+
+| Skill | Original Source | License | Notes |
+| :---- | :-------------- | :------ | :---- |
+| `constraint-driven-development`, `interview-me`, `using-agent-skills` | [addyosmani/agent-skills](https://github.com/addyosmani/agent-skills) | MIT | New names only; 22/25 upstream names in this repo were already sourced from this repository. |
+| `i-have-adhd` | [ayghri/i-have-adhd](https://github.com/ayghri/i-have-adhd) | MIT | ADHD-friendly output shaping (`/i-have-adhd` toggle). |
+| `career-ops` | [career-ops-hq/career-ops](https://github.com/career-ops-hq/career-ops) | MIT | Multi-CLI job-search command center; Node runtime not bundled. |
+| `geo-audit`, `geo-brand-mentions`, `geo-citability`, `geo-compare`, `geo-content`, `geo-crawlers`, `geo-llmstxt`, `geo-platform-optimizer`, `geo-proposal`, `geo-prospect`, `geo-report`, `geo-report-pdf`, `geo-schema`, `geo-technical` | [zubair-trabzada/geo-seo-claude](https://github.com/zubair-trabzada/geo-seo-claude) | MIT | GEO/SEO site audits and client reporting; `geo-update` (self-updating installer skill) intentionally excluded; `geo-technical` categories modularized under `references/`. |
+## Skills from BagelHole/DevOps-Security-Agent-Skills: compliance (19) — issue126-devsec-compliance
+
+Compliance batch of [FrancoStino/opencode-skills-collection#126](https://github.com/FrancoStino/opencode-skills-collection/issues/126) from [DevOps-Security-Agent-Skills](https://github.com/BagelHole/DevOps-Security-Agent-Skills) (MIT): governance, frameworks (SOC2/ISO27001/PCI-DSS/HIPAA/GDPR/FedRAMP), continuity, and auditing guidance. All `risk: safe`. Docs-only import: helper scripts and templates not bundled.
+## Skills from BagelHole/DevOps-Security-Agent-Skills: security (35) — issue126-devsec-security
+
+Security batch of [FrancoStino/opencode-skills-collection#126](https://github.com/FrancoStino/opencode-skills-collection/issues/126) from [DevOps-Security-Agent-Skills](https://github.com/BagelHole/DevOps-Security-Agent-Skills) (MIT): secrets management, scanning (SAST/DAST/dependency/container/SBOM/vulnerability), network defense, security operations, and AI security hardening. Risk split: `safe` for static guidance and read-only analysis, `critical` for privileged security operations, `offensive` (with `AUTHORIZED USE ONLY` + confirmation gate) for live probing (`vulnerability-scanning`, `dast-scanning`, `supply-chain-attack-response`) and `penetration-testing`. Docs-only import: helper scripts and templates not bundled.
+## Skills from BagelHole/DevOps-Security-Agent-Skills: infrastructure (70) — issue126-devsec-infrastructure
+
+Infrastructure batch of [FrancoStino/opencode-skills-collection#126](https://github.com/FrancoStino/opencode-skills-collection/issues/126) from [DevOps-Security-Agent-Skills](https://github.com/BagelHole/DevOps-Security-Agent-Skills) (MIT): servers, storage, databases (incl. `postgresql-devsec`, renamed — `postgresql` already exists in the catalog), networking, cloud (AWS/Azure/GCP), and local-AI infrastructure. All `risk: critical` (guidance mutates infrastructure state). Docs-only import: helper scripts and templates not bundled. `azure-functions` renamed to `azure-functions-devsec` (`azure-functions` already exists in the catalog).
+## Skills from elementalsouls/Claude-BugHunter — issue126-bughunter
+
+The following 83 skills were adapted from [Claude-BugHunter](https://github.com/elementalsouls/Claude-BugHunter) (MIT) for [FrancoStino/opencode-skills-collection#126](https://github.com/FrancoStino/opencode-skills-collection/issues/126) — bug-bounty and external red-team workflows across 24 vulnerability classes plus identity/infrastructure attack matrices. Docs-only import: helper scripts, slash commands, engine, and research assets are intentionally not bundled.
+
+| Skill | Original Source | License | Notes |
+| :---- | :-------------- | :------ | :---- |
+| 5 process skills (`report-writing`, `redteam-report-template`, `bugcrowd-reporting`, `evidence-hygiene`, `mid-engagement-ir-detection` — reporting, evidence handling, detection notes) | [elementalsouls/Claude-BugHunter](https://github.com/elementalsouls/Claude-BugHunter) | MIT | Process guidance, no active probing; `risk: safe`. |
+
+## Skills from BagelHole/DevOps-Security-Agent-Skills: devops (39) — issue126-devsec-devops
+
+DevOps batch of [FrancoStino/opencode-skills-collection#126](https://github.com/FrancoStino/opencode-skills-collection/issues/126) from [DevOps-Security-Agent-Skills](https://github.com/BagelHole/DevOps-Security-Agent-Skills) (MIT): CI/CD, orchestration (Kubernetes/Helm/Kustomize/ArgoCD/OpenShift), observability (Prometheus/OTel/SRE), release practices, containers, and AI workload operations. All `risk: critical` (guidance executes against real environments). Docs-only import: helper scripts and templates not bundled.
 
 ## License Policy
 

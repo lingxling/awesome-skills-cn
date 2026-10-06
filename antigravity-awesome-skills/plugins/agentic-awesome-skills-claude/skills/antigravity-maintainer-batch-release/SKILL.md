@@ -1,0 +1,272 @@
+---
+name: antigravity-maintainer-batch-release
+description: "Run protected AAS maintainer sweeps, PR merge batches, canonical sync, Core preview checks, and scripted releases. Use for repository maintenance, main alignment, CLI/MCP/Workbench changes, or release work; not ordinary contribution tasks."
+risk: critical
+source: self
+date_added: "2026-07-18"
+---
+
+# Antigravity Maintainer Batch Release
+
+## When to Use
+
+Use this skill for repository-wide AAS maintenance, maintainer-side PR repair or merge batches, canonical synchronization, AAS Core or Workbench changes, protected releases, and hosted catalog or legacy redirect infrastructure. Do not use it for ordinary contribution work that does not require maintainer privileges or canonical convergence.
+
+## Protected-Main Contract
+
+Treat the repository root containing this skill as pull-request-only:
+
+- Read `AGENTS.md`, `.github/MAINTENANCE.md`, and current maintainer docs before mutation.
+- Never commit or push directly to `main`, even when the user says “push to main.” That phrase names the final target state.
+- Preserve unrelated dirty work. Use a clean temporary clone or a topic branch for maintainer changes.
+- Use `npm run merge:batch` for accepted source PRs. Do not substitute a raw merge API, generic GitHub skill, or generic push helper.
+- Let `automation/canonical-repo-state` own generated artifacts and contributor-credit convergence after the source batch. That lane runs `sync:repo-state`, which now also recomputes the README `## Top Contributors` leaderboards through `sync:top-contributors`: never hand-edit those tables, and treat a stale ranking as a generator or exclusion-list defect instead.
+- Use `release:prepare` and `release:publish` for releases. They never authorize a direct `main` push.
+
+## Source Checks
+
+Before changing anything:
+
+1. Fetch `origin/main`; prove the clean maintainer checkout is on `main` and equals `origin/main`.
+2. Inspect live PRs, issues, discussions in scope, Actions failures, Dependabot, CodeQL, secret scanning, and `npm audit` where relevant.
+3. Confirm current scripts from `package.json` and the workflow files listed in **Current CI workflow**; do not rely on remembered CI or release behavior.
+4. Capture user worktree status separately and keep those files out of maintainer commits.
+
+## Current CI workflow
+
+Read `.github/workflows/ci.yml`, `.github/workflows/skill-review.yml`, `.github/workflows/skillspector-advisory.yml`, and their protected-base scripts on the exact task base. Job dependencies define execution order; file order and a green workflow badge do not define merge authority.
+
+### Required PR checks and independent review
+
+| Lane | Actual sequence and evidence |
+| --- | --- |
+| Intake | `pr-policy` runs first. Ordinary source PRs use the exact protected-base classifier and its dependencies for fork safety and source-only policy. |
+| Source validation | After `pr-policy`, `source-validation` checks sources, refreshes ephemeral generated state once, validates applicable references, runs the complete unsharded test suite and documentation security checks, and uploads the exact-head preview manifest. |
+| Changed-skill evidence | Also after `pr-policy`, `pr-evidence` runs in parallel with `source-validation`. It publishes changed-skill evidence and a shadow decision manifest, then enforces deterministic regressions. Its advisory semantic-review state does not replace the separate skill-review result. |
+| Artifact preview | `artifact-preview` waits for `pr-policy` and `source-validation`, verifies the source-preview manifest and its repository/head/workflow/run-attempt bindings, and does not regenerate ordinary source-PR artifacts. It does not wait for `pr-evidence`. |
+| Semantic review | The separate `skill-review.yml` workflow fingerprints the complete changed skill trees. `review` means a passing Tessl result or valid identical-content reuse; `manual-review-required` needs the maintainer's semantic review and exact full-head attestation. It is independent of the required-CI DAG. |
+| Static advisory scan | The separate PR-only `skillspector-advisory.yml` workflow runs `evidence-ready`, then `skillspector-advisory`. It waits for the latest GitHub Actions `pr-evidence` check for the same PR and exact head SHA, independently of `source-validation`, `artifact-preview`, and semantic review. |
+
+The four routine protected checks remain `pr-policy`, `pr-evidence`, `source-validation`, and `artifact-preview`. Review skill-content changes truthfully and use `merge:batch` with exact-head attestation where required. SkillSpector, Jev, shadow decisions, and timing telemetry neither satisfy these checks nor authorize a merge. Inspect available advisory findings during semantic review, but do not add an advisory workflow to branch protection, fork-run approval prerequisites, or `merge:batch` without a separately authorized contract change.
+
+For protected canonical-sync PRs, `pr-policy` reproduces the exact managed tree from trusted `main`; `source-validation` and `pr-evidence` record lightweight successful boundaries, while `artifact-preview` regenerates to confirm no drift. Do not describe those boundary jobs as fresh source tests or semantic scans. On merged `main`, `main-validation-and-sync` performs the repository-state sync, reference validation, dependency audit, full tests, web coverage, and documentation security checks. It creates or updates the protected canonical PR only when managed drift exists. Wait for that PR's guarded merge, then verify the final `main` CI, CodeQL, clean tree, and idempotent generated state. This path does not authorize a release or Pages deployment.
+
+### SkillSpector advisory CI
+
+Use the current `.github/workflows/skillspector-advisory.yml` and `tools/scripts/skillspector_advisory.py` as the implementation contract:
+
+1. `evidence-ready` polls the exact head's checks for a `pr-evidence` result from GitHub Actions app ID `15368` associated with the same PR number. It makes up to 60 polls separated by 10 seconds, with a 12-minute job timeout. A failed evidence check or timeout means no scan ran. This workflow has only the `pull_request` trigger for `main`; it has no manual, push, or privileged trigger.
+2. The advisory job checks out the PR's protected base with persisted Git credentials disabled, fetches the immutable PR head as data, and plans changed canonical `skills/<skill-id>/**` directories. A copy changes only its destination; a rename examines both roots. Plugin-only mirror changes are outside this scanner's canonical scope. Deleted roots without a `SKILL.md` are recorded as `deleted-or-no-skill`.
+3. When the planned skill list is empty, installation and scanning are skipped. Inspect `manifest.json` first: an empty list with `errors` can mean an exceeded limit, not an empty or successful scan. A missing wrapper on the protected base produces the documented bootstrap skip. A green bootstrap or planning-only run is not proof that SkillSpector executed.
+4. For planned skills, install NVIDIA SkillSpector v2.12.0 at immutable commit `c7958a3268d9498644b22edb75d0f051bbc8cbfc` using Python 3.12, `uv==0.8.22`, and `uv sync --frozen --no-dev`. Copy complete changed canonical trees from Git into private inert snapshots. Executable blobs are copied with mode `0600` and listed under `executable_git_blobs`; they are never invoked. Links, gitlinks, unsupported modes, and invalid paths are rejected. This scanner snapshot is separate from the deterministic evidence evaluator's stricter executable-file rejection.
+5. Run `--no-llm` inside a Linux network namespace as the runner user, with a sanitized scanner environment and tracing disabled. Static mode alone does not guarantee offline behavior; the namespace also prevents OSV and other network requests. No contributed baseline or automatic suppression is applied.
+6. Observe the implementation bounds: at most 50 changed skill roots, 1,000 files and 16 MiB per skill, 60 seconds per scanner invocation, a 600-second aggregate budget checked between skills, 8 MiB per JSON report, and a 15-minute advisory job timeout. Missing, malformed, oversized, timed-out, or unsupported inputs remain incomplete; never treat absent output as a clean scan.
+7. Read the `skillspector-advisory-<PR_NUMBER>` artifact, retained for 14 days, and the scan-step outcome. The manifest's `head_sha` is the exact scanned head; `base_sha` is the resolved Git merge base. Compare those bindings before using the report. The job has `continue-on-error: true`, so its green overall result alone is not a scanner pass or safety certificate.
+
+Interpret manifest states from the actual report, not from a workflow badge:
+
+| State | Meaning and maintainer action |
+| --- | --- |
+| `dry-run` | Planning copied the tree but did not invoke the scanner. Look for the subsequent scan report. |
+| `deleted-or-no-skill` | The head has no canonical `SKILL.md` at that root; no scan ran for it. |
+| `reported` | Exit zero, execution successful, and analysis marked complete. Inspect `finding_count` and the full JSON; this is not merge approval or a general safety guarantee. |
+| `partial` | Exit zero and execution successful, but analysis is incomplete. Inspect the report's limitations and coverage. |
+| `scanner-nonzero` | Nonzero exit or unsuccessful execution. Inspect `exit_code`, `finding_count`, `execution_successful`, `analysis_complete`, and the full JSON: a nonzero exit may report findings rather than an operational failure. |
+| `incomplete` | Snapshot rejection, timeout, malformed/missing output, or another caught operational error. Read the recorded error; do not infer a clean result. |
+
+Review findings individually during the pilot. Missing `allowed-tools`, environment credentials sent to an API, low risk scores, and offensive educational examples require context and declared purpose. Do not bulk-accept a baseline or silently suppress reports. Any later suppression policy or blocking rule needs a separately reviewed workflow-contract change. The official skill-content review remains Tessl or exact-head maintainer attestation.
+
+### SkillSpector triage calibration
+
+Calibrate raw finding counts against the repository's own corpus shape before treating them as defect counts. A full static maintenance sweep prints thousands of findings, most of which are the scanner describing documentation, not the skill acting:
+
+- Prose dominates. Roughly nine in ten findings sit in `SKILL.md`, README, and `references/**` prose. A security reference that documents `Ignore all previous instructions` or `.env` handling is describing an attack, not performing one. Triage the executable surface first: a finding in a shipped `.py`/`.js`/`.sh`/`.ts`, not in a `.md`, is the one worth a code review.
+- `Credential Access` on a `.env`, `access_token`, or `keychain` token is usually configuration reading, and can even be a guard such as `--exclude='.env'`. Confirm intent by reading the line before treating it as privilege escalation.
+- Offensive-by-design skills (pentest, exploit, privilege-escalation, reverse-engineering) match offensive patterns because that is their declared purpose and risk label. Do not count them as regressions or use their score to gate them.
+- `partial` / incomplete analysis is the static-mode default, not a repository defect. It means at least one analyzer was degraded or a bounded parser hit its span limit.
+- Bundled fixture trees (generated apps, benchmarks, `examples/**`, recorded sessions) inflate a skill's score with code the skill does not ship as guidance. Clean the packaging; do not patch fixture vulnerabilities.
+
+When a real executable defect is confirmed, fix it in the source skill with the normal validation and PR path, and treat the scanner as advisory input. A near-total reduction in headline findings after calibration is expected and is not an unexplained gap.
+
+The official skill-content review remains Tessl or exact-head maintainer attestation.
+
+## Maintainer Sweep
+
+1. Triage every open PR before editing.
+   - Separate valid source changes, repairable PRs, conflicts, generated-only noise, promotional links, and unsupported ownership/license changes.
+   - Review semantics, safety, provenance, risk labels, limitations, source credits, and changed-skill evidence.
+   - Prefer narrow maintainer repairs on the contributor branch when maintainer edits are enabled.
+   - Optional accelerator before editing: run `npm run maintainer:sweep` for repo health, open PR check rollup, advisory download of CI `pr-evidence-*` artifacts (when `pr-evidence` succeeded), optional Jev triage (`TYPESAFE_API_KEY` in `.env.local`), `merge:batch --dry-run` on CI-ready PRs, and a **Next actions** hint list. Prefer CI evidence over re-running `npm run pr:evidence` locally when the artifact head matches. For a single head only, use `npm run maintainer:jev-hints -- --base origin/main --head <head-sha>`. Sweep/Jev/CI summaries are advisory only; `merge:batch` recomputes from trusted `main`, and Tessl plus `--reviewed-head` attestation remain authoritative. See `docs/maintainers/maintainer-sweep.md` and `docs/maintainers/jev-hints.md`.
+
+2. Validate changed skills truthfully.
+   - Run `npm run validate`, `npm run validate:references`, `npm run security:docs`, changed-skill evidence, and the relevant tests.
+   - Treat the entire tracked `skills/<skill-id>/**` subtree as skill content. Inspect semantics, safety, provenance, declared risk, limitations, and every bundled file directly, including nested examples, scripts, lockfiles, references, and assets. Never reduce evidence or review to `SKILL.md` or a fixed support-directory allowlist.
+   - Require changed-skill evidence to cover every Git record in each changed canonical skill subtree. Require the `skill-review` workflow for changes under `skills/**` or `plugins/**/skills/**`; its reusable result must be keyed by the complete nearest skill-directory fingerprint on the exact current head SHA.
+   - Keep canonical skill ownership lookup proportional to changed-path depth, not total registry size, and preserve the five-minute trusted evaluator budget so repository-wide evidence completes without weakening fail-closed checks. Parse a legacy executable-mode canonical `SKILL.md` only as private, non-executable snapshot data; keep it reported as unsafe and never materialize symlinks, gitlinks, or other executable files.
+   - `review` means Tessl semantic review actually ran or a valid identical-content result was reused.
+   - `manual-review-required` means Tessl credentials or credits were unavailable, or Tessl did not produce a passing result. Perform the maintainer semantic review and attest with `--reviewed-head <full-40-character-sha>`.
+   - Any non-passing Tessl outcome produces `manual-review-required`; complete the semantic review and bind the judgment to the exact head instead of treating a heuristic score as merge authority.
+   - Never report `manual-review-required` as “Tessl passed.”
+   - Scoped content-review fingerprints document exact bytes and observed checks, not general reliability. Keep explicit compatibility aliases and their complete local support bundles synchronized; the alias-integrity regression checks equality without affecting selection eligibility. Report remaining corpus debt rather than awarding an unqualified validation badge.
+   - A verified upstream repository rename may bypass the provenance-identity blocker only through an exact entry in the trusted protected-base exception ledger. Record the skill ID, old and new `source_repo`, stable upstream repository ID, verification date, and canonical GitHub URL; all other provenance changes remain blocked.
+
+3. Run checks in parallel where independent.
+   - Follow the **Current CI workflow** lanes below the source checks. Read available SkillSpector reports with their manifest states and exact-head bindings; never confuse a planning-only, partial, or green advisory run with complete semantic review.
+   - Use the repository validation, test, docs-security, source-credit, reference, warning-budget, and targeted app checks required by the changed files.
+   - Fix deterministic policy failures in the source; do not wait for them as if they were flaky CI.
+   - For source-only changed paths, a Git copy changes only its destination; renames change both paths. Treat a Git copy origin as read-only in the fork classifier too: Git pairs a copy by similarity against any path already in the base tree, so that origin's path class is not author-controlled and the same new canonical skill must not pass or fail depending on which existing file Git chose. Keep its raw-record, mode, object, size and total-budget checks, and keep editing, renaming or deleting that origin as definite failures.
+   - Treat `pr-policy` fork classification from the exact protected-base implementation as an unprivileged fail-fast gate before dependent work, never as approval authority. Install and resolve every dependency used by that classifier from the same protected-base worktree; never expose it to pull-request-controlled `node_modules`. `merge:batch` must still recompute the current trusted decision before approving any fork run or merging. The intake allowlist also covers browser source under `apps/web-app/src/**` (`.css`, `.ts`, `.tsx`); those fork runs may be approved, but every web-app source change still requires an exact-head maintainer attestation before merge. Keep every read-only PR-only workflow that runs on fork pull requests in the approval allowlist too: a workflow missing from it leaves those PRs stuck on `action_required` with no gate to merge, even when the workflow itself declares only read permissions, uses no secrets, and pins its actions to full SHAs.
+   - Treat `impact_profile` as shadow-only telemetry. It must not skip, downgrade, or satisfy any required check.
+   - For ordinary source PRs, require `source-validation` to generate preview state once and `artifact-preview` to verify the manifest bound to the exact head and run identity. For canonical-sync PRs, rely on `pr-policy` exact-tree reproduction, keep `source-validation` lightweight, require `artifact-preview` to confirm no drift, and retain final CI and CodeQL on the merged `main` commit.
+   - Keep timing observational and test sharding opt-in. Required CI must continue to run the full unsharded `npm run test`; deterministic local shards may be used only through `npm run test:local -- --shard-index N --shard-count M`.
+
+4. Merge accepted source PRs in conflict-aware order.
+   - Run a dry classification first when useful.
+   - For changed skill content, review the exact head and run:
+
+     ```bash
+     npm run merge:batch -- --prs <PR_LIST> --reviewed-head <FULL_HEAD_SHA>
+     ```
+
+   - `merge:batch` does not rewrite the PR body and does not close or reopen the PR. It evaluates the current immutable PR tuple and may approve only workflow runs bound to that PR and exact head SHA.
+   - Same-repository location is not sufficient authority for sensitive changes. The guarded same-repository exception is limited to a PR authored by the repository owner and requires an exact full-head attestation; collaborator-authored sensitive PRs fail closed under the external safety policy.
+   - The routine protected checks are `pr-policy`, `pr-evidence`, `source-validation`, and `artifact-preview`. The retired `aas-v1-baseline` workflow is not a merge prerequisite and must not be awaited or approved during source or canonical-sync batches.
+   - If the PR head or base changes, discard stale evidence, refresh to the current `origin/main`, and rerun the batch. The command does not retry base drift automatically.
+
+5. Converge canonical state once after the source batch.
+   - Wait for the protected `automation/canonical-repo-state` PR.
+   - Verify its managed-only diff, required checks, merge result, and the resulting `origin/main`.
+   - If an unmanaged repair remains, use a topic PR; never patch `main` directly.
+
+
+### Reviewed fork bundle exceptions
+
+`tools/config/reviewed-fork-skills.json` is a protected-base ledger for the
+explicitly reviewed fork contributions. Each entry binds the base repository,
+fork repository, PR number, original full reviewed head and complete Git
+skill-tree object. The baseline rule permits only Markdown/assets/references
+support files, Python files under that skill's `scripts/` subtree and its root
+`LICENSE`, with a read-only Git copy origin when needed. An entry may opt in to
+at most 16 extra exact paths inside its own skill root; the validator can only
+represent root manifest files (`.gitignore`, `README.md`, `LICENSE`) and
+`scripts/*.py`, so it can never become a general extension allowlist. It does not
+allow workflows, arbitrary script types, generated-file mutations, unsafe modes,
+links, invalid paths/objects or oversized content.
+
+Both CI intake and `merge:batch` load the ledger from their trusted evaluator
+checkout, never the PR's repository directory. Any change anywhere in the skill
+subtree invalidates the exception. A base-only merge may reuse identical content,
+but the maintainer must inspect the new complete PR diff and attest its exact
+current head with `--reviewed-head`. Evidence, source-only checks, truthful skill
+review, immutable PR/workflow binding and strict branch protection all remain
+mandatory. Missing or malformed ledger data fails closed. Further exceptions or
+policy expansions need explicit maintainer authorization and protected review.
+
+## Workflow Contract Change Gate
+
+When changing maintainer scripts, workflows, or policy, update the canonical skill, maintainer documentation, and regression tests in the same source PR. Add a negative test for every failure mode being fixed, run the relevant dry-run path, and reject any implementation/documentation mismatch. Source PRs must exclude generated registries and plugin mirrors; the protected canonical-sync PR owns that derived state, except for files intentionally staged by the scripted protected-release flow.
+
+## Repository documentation consistency
+
+When auditing repository documentation, compare operational guides and translations with exact-base scripts and workflow behavior. Check local links, heading anchors and documented npm commands with `tools/scripts/tests/test_documentation_consistency.py`; dated evidence and backup snapshots are historical, not current instructions. Keep canonical guides discoverable from `docs/README.md`, distinguish source merge from release availability, and report the scope of the audit without claiming that all skill procedures or external integrations ran.
+
+## Specialized Plugin Consistency
+
+Use `data/specialized-plugin-candidates.json` for specialized-plugin membership and `data/editorial-bundles.json` for the installable composition, descriptions, limits and starter prompts. Review changes against canonical `skills_index.json`; keep IDs stable unless a migration is explicitly requested. Derive the web catalog and prerender/live-verifier counts from these sources instead of maintaining copied lists or fixed counts. Verify full skill-list expansion, source-to-web parity and a negative stale-count case. The specialized-resource regression must reject missing prose-declared local support paths and verify their bytes in generated specialized bundles; fenced application examples remain a separate semantic review. Run the pure-example regressions when editing documented calculations or chunking behavior. Regenerate plugin artifacts as evidence, but leave their commit to the protected canonical-sync lane. A source refresh does not authorize release or deployment.
+
+## Hosted Catalog and Legacy Redirect Bridge
+
+Treat the current catalog and the legacy user-site bridge as one public system:
+
+- Current catalog: `sickn33/agentic-awesome-skills` at `https://aaskills.tech/`.
+- Legacy bridge: `sickn33/sickn33.github.io` at `https://sickn33.github.io/antigravity-awesome-skills/`.
+
+For SEO, indexing, Pages, redirect, or infrastructure changes:
+
+1. Change the generator and verifier in the source repository through a protected source PR and `npm run merge:batch`.
+2. Keep the legacy deployment managed allowlist exact: `.nojekyll`, `redirect-manifest.json`, and `antigravity-awesome-skills/**`. Reject any unmanaged sync diff or PR file.
+3. Preserve Google verification byte-for-byte and the Bing `msvalidate.01` meta on the legacy root. Record both in manifest evidence.
+4. Keep skill counts dynamic, but retain intentional curated sitemap locks. Version manifest contract changes and record source provenance.
+5. Let `legacy-redirect-sync.yml` generate or update the fixed automation PR. Bind a fresh verifier run to the exact target head SHA, validate its run identity and managed file set, publish the required status only after that proof, then use protected auto-merge.
+6. Recheck source `main` before merge, request the legacy Pages build explicitly after bot-authored merges, and wait for the exact merged commit to be built.
+7. Verify locally generated output byte-for-byte, then verify all live legacy/current redirect pairs for a full audit. Retry transient CDN failures with the full audit rather than accepting a partial probe.
+8. Prove idempotence with a no-drift sync: no replacement, PR, verification, or merge steps should run; Pages and live probes must still pass.
+
+Keep both repositories on least-privilege Actions defaults (`read`) and require external actions to be pinned to full commit SHAs. When changing these settings or action versions, rerun source CI, CodeQL, Pages, and a legacy no-drift sync before declaring completion.
+
+## AAS Core Preview Acceptance
+
+For AAS CLI, MCP, stack, catalog-cache, or Workbench changes:
+
+1. Use the current scripts declared in `package.json`; do not resurrect retired evaluator, benchmark, tuning-gold, transaction-fault, race, or frozen-matrix gates as routine prerequisites.
+2. Run the focused Core tests with `npm run test:aas-v1`, the catalog integrity check with `npm run check:aas-v1-catalog`, and the relevant Workbench tests/build when its contracts or copy change.
+3. Keep MCP local, offline, read-only, bounded, and non-mutating. The coding agent inspects the project, searches and reads the complete catalog, and chooses the exact skill IDs. MCP searches, reads, validates agent-owned composition, and compares without scanning the repository or writing to it. Core must not rank, recommend, exclude, or disable skills; metadata is informational only.
+   - For bundle inspection changes, verify catalog-bound file inventories and per-read digests, traversal/link rejection, binary and size limits, older-catalog behavior, and a support-file read from the actual packed runtime. Never execute inspected scripts or fetch missing payloads. Preserve all canonical IDs, including skills whose files cannot be read through the text interface.
+   - Explicit caller search filters may narrow retrieval; they never define skill eligibility. For search changes, verify backward-compatible broad matching, all-term matching, bounded filters, category aliases, stable pagination, complete-catalog reachability without filters, and preservation of supplied options through evidence export and inspection.
+4. Keep `aas-stack.json` free of Core selection policy. It pins catalog identity, targets, goals, and the exact IDs selected by the agent. `compose_stack` validates and records that selection; missing or cautionary metadata must never make a canonical skill unselectable or unusable.
+5. Keep the supported public path at manifest validation and immutable plan preview. Planning may write only the requested plan artifact; it must not materialize skill payloads or AAS managed state in the target.
+   - Verify manifest-to-installer command preparation preserves exact agent-selected IDs and catalog version, rejects empty or unknown selections, quotes shell arguments, and only emits a dry run. Runtime auto-resolution must stay offline and bounded, fully verify cached bytes, and reject multiple verified identities; never infer skill suitability from runtime or metadata checks. Exercise actual packed installation in a temporary destination, compare all selected file bytes, repeat it, preserve unmanaged files, and reject moved-release and symlink-target cases. Distinguish fixture publication resolution from a real published-release/client check; the aggregate must reject missing installation evidence. Require both Linux and Windows packed receipts. Execute the emitted PowerShell command with both PowerShell 7 and Windows PowerShell 5.1 on a disposable Windows runner, recording and checking both actual shell versions, including paths with spaces and apostrophes, full payload comparison, repeat/prune behavior and junction rejection. Local Git/publication fixtures are not proof of registry availability or a native client session.
+   - Infer a target only for a validated single-target manifest; require an explicit choice otherwise. Verify that the cached runtime's catalog matches the manifest, and keep runtime integrity, cache location and destination explicit. Document the separate direct-installer handoff without implying it applies Core plans.
+   - Workbench evidence imports must remain bounded and in memory. Verify artifact digests, project references, manifest/catalog/profile/selection bindings, conflict displays and replacement of stale results. Identify browser checks separately from full Core inspection and semantic judgment. Recorded examples need real inputs and observed checks; optional feedback may export only user-entered fields after an explicit action, without telemetry or imported project data.
+   - Verify large manifest and evidence round trips through real stdio, not just in-process handlers. Artifact arguments may use the existing 256 KiB frame ceiling; ordinary requests and unrelated metadata remain bounded at 4 KiB. Rejected, safely parsed requests must retain a bounded request ID; never reflect malformed or unbounded IDs. Keep overload errors correlated to bounded, strictly parsed request IDs; valid notifications receive no response, including when the queue is full or a handler fails. Reject invalid envelopes without reflecting invalid IDs, and test the burst path through real stdio.
+6. Treat apply and recovery as experimental opt-ins outside the supported preview claim. Do not add apply/recovery, benchmark, fuzz, crash/race, or synthetic verifier work unless the user explicitly places it in scope.
+7. When the task asks for end-to-end client proof, use a real supported client that discovers and invokes the local AAS MCP tools; direct stdio probes and automated tests do not substitute for that evidence.
+8. Do not tag, publish npm, deploy Pages, or write real user MCP configuration without the separately required publication approval.
+
+## Protected Release
+
+Release only when requested.
+
+Every stable or prerelease version requires full release alignment. Creating the tag, GitHub Release, or npm package is an intermediate milestone, never the completion condition.
+
+1. Include the target changelog entry in the maintainer batch PR so it is already on protected `main`; avoid a separate release-notes-only PR.
+2. From clean, current `main`, run `npm run release:preflight` and required security checks.
+3. Run the release-state generator and its explicit plugin gates. Require a second no-drift pass before publication: `npm run sync:release-state`, `npm run plugin-compat:check`, and `npm run bundles:check` must leave a clean tree. Inspect `package.json`, `package-lock.json`, generated registries and the offline catalog, tracked web assets, `.agents/plugins/marketplace.json`, `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, every published Codex/Claude plugin mirror, and every eligible Agent Plugins editorial-bundle manifest. Every release-owned manifest version must equal `X.Y.Z`.
+4. Run `npm run release:prepare -- X.Y.Z`. This creates and pushes `release/vX.Y.Z` and opens the protected release PR.
+5. Merge that release PR through its required checks, update local `main` to equal `origin/main`, and wait for every source, release, or canonical-sync PR in the release path to close. Re-run the release-state and plugin gates if protected `main` moved.
+6. Run `npm run release:publish -- X.Y.Z`. It must resolve exactly one merged release PR from the same repository, authored by the repository owner, with base `main`, exact title `chore: release vX.Y.Z`, and head branch `release/vX.Y.Z`. Zero or multiple candidates fail closed; never select the newest approximate match. The command then verifies that exact protected merge before creating or reusing the tag and GitHub Release.
+   The npm publication workflow must first check out protected `main`, verify that the peeled release tag is an ancestor of current `origin/main`, validate the version directly from the tagged `package.json`, and only then check out or execute tag-controlled code. It has no manual-dispatch bypass.
+7. Wait for publishing workflows, then bind every proof to the exact released commit: verify the tag/ref, GitHub Release, npm version and intended dist-tag, required CI, CodeQL, and the release-tag Pages build from the exact immutable `vX.Y.Z` tag using `deployment_target=release`. Never manually dispatch the release-tag build from `main` or another branch. A separate `deployment_target=main` dispatch may publish a protected main commit after source and canonical-sync work completes; it must verify current-main identity before build and again before deploy. Canonical-sync commits marked `[skip pages]` are never dispatched by canonical synchronization. Verify live `llms.txt`, `skills.json`, catalog and plugin routes, and the legacy redirect bridge; do not accept a successful run for a different SHA.
+8. After npm confirms `X.Y.Z` as the published dist-tag, discover every already-configured local AAS MCP host from its real configuration and update each one to the exact same package version before declaring the release complete. Updating existing AAS host entries is part of the release; creating a previously absent host configuration still requires explicit authorization.
+   - Use the published package's `aas mcp configure` two-pass flow: first preview the change, then repeat the identical command with its approval digest. Supply absolute host-config, cache, and backup paths; require a backup when replacing an existing configuration.
+   - Pin `agentic-awesome-skills@X.Y.Z` and `--version X.Y.Z`; never use `latest`, reuse an older cached runtime, or create a previously absent host configuration without explicit authorization.
+   - Verify that the managed host configuration points to a content-addressed `X.Y.Z` runtime, that the runtime package metadata reports `X.Y.Z`, and that a real MCP `initialize` plus `tools/list` handshake reports catalog package version `X.Y.Z`.
+   - Restart the host or open a fresh client session when required so the new MCP process is actually loaded. If configuration access, approval, or runtime verification is blocked, report the exact blocker and keep the maintainer task incomplete even though the package itself is already public.
+9. Fetch `origin/main` again after automation settles, fast-forward the maintainer checkout, and repeat the release-state, plugin, version, public-surface, and MCP parity checks. The final generator pass must be idempotent, the tree must stay clean, and `git rev-list --left-right --count main...origin/main` must end at `0 0`.
+
+Never rebase a published release tag, force stale release state, reuse a failed published version, or claim npm publication from the GitHub Release alone.
+
+## Stop Condition
+
+Finish only when:
+
+- every in-scope PR, issue, and alert is resolved or has one exact blocker;
+- no open source or canonical-sync PR remains unintentionally;
+- for every stable or prerelease version, clean local `main`, `origin/main`, the released commit, canonical generated state, every Codex/Claude plugin mirror, eligible Agent Plugins bundle manifest, bundle, marketplace, compatibility report, tag, GitHub Release, npm dist-tag, required workflow, and live public surface agree exactly;
+- the source and legacy repositories have no unintended infrastructure PR, their protected branches and Actions settings remain enforced, and the live manifest identifies the source repository;
+- the user worktree is unchanged except for files the user explicitly placed in scope;
+- release proof is complete when a release was requested, including an idempotent no-drift regeneration and exact runtime parity between the published npm package and every already-configured local AAS MCP host. Any mismatch keeps the release incomplete.
+
+## Failure Rules
+
+- A protected-branch rejection means switch to the PR path; never retry direct `main` pushes.
+- A missing PR checklist is informational; never mutate, close, or reopen a PR merely to refresh template metadata.
+- Preserve unrelated dirty files and never stage them into maintainer work.
+- Do not bypass `merge:batch`, canonical-sync, or scripted release commands with generic Git helpers.
+- Do not weaken a test or policy gate merely to make a batch pass. Retire a gate only after explicit maintainer authorization, then update branch protection, workflow files, merge automation, documentation, and maintainer skills together so no phantom requirement remains.
+
+## Examples
+
+For a reviewed source PR whose exact head is `0123456789abcdef0123456789abcdef01234567`, exercise the protected path before merging:
+
+```bash
+npm run merge:batch -- --prs 914 --dry-run --reviewed-head 0123456789abcdef0123456789abcdef01234567
+```
+
+Run the same command without `--dry-run` only after every required check passes and the attested head remains unchanged.
+
+## Limitations
+
+- This skill orchestrates the repository's existing scripts and protected workflows; it does not grant GitHub, npm, Pages, or local-client permissions.
+- Stop at the exact approval or credential boundary when publication, authenticated configuration, or another externally visible action was not authorized.
+- Re-read the current repository policy and `package.json` on every run because branch protection, checks, and supported preview commands may change.

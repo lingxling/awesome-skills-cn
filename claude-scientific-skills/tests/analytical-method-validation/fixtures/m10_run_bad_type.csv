@@ -1,0 +1,3 @@
+type,label,nominal,measured
+standard_curve_point,LLOQ,1,1.15
+qc,low,3,3.1

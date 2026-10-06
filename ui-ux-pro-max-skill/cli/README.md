@@ -24,16 +24,18 @@ uipro init --ai qoder       # Qoder
 uipro init --ai gemini      # Gemini CLI
 uipro init --ai trae        # Trae
 uipro init --ai opencode    # OpenCode
-uipro init --ai continue    # Continue (Skills)
+uipro init --ai universal   # Universal / Agent Standard (.agents/skills/)
 uipro init --ai all         # All assistants
 
 # Options
 uipro init --offline        # Compatibility flag; installs bundled templates
 uipro init --force          # Overwrite existing files
+uipro init --global         # Install globally to home directory (~/)
 
 # Other commands
 uipro versions              # List available versions
 uipro update                # Update the global CLI to the latest release
+uipro update --global       # Refresh globally installed skill files from this CLI package
 ```
 
 ## GitHub Authentication
@@ -96,4 +98,4 @@ bun link
 
 ## License
 
-CC-BY-NC-4.0
+MIT

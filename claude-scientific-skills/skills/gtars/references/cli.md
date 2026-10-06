@@ -1,222 +1,369 @@
-# Command-Line Interface
+# Command-line interface (`gtars-cli==0.10.0`)
 
-Gtars provides a comprehensive CLI for genomic interval analysis directly from the terminal.
+Source-reviewed from the published 0.10.0 crate (commit `90141b6`) on **2026-10-01**.
+Commands below are illustrative templates; this audit did not compile the CLI.
+The package is `gtars-cli`; the installed binary is `gtars`.
 
-## Installation
+## Trust, installation, and features
 
-```bash
-# Install with all features
-cargo install gtars-cli --features "uniwig overlaprs igd bbcache scoring fragsplit"
-
-# Install specific features only
-cargo install gtars-cli --features "uniwig overlaprs"
-```
-
-## Global Options
+Cargo installation compiles native code and may run transitive build scripts.
+Review the official crate/source, lock resolution, license, and build environment
+before:
 
 ```bash
-# Display help
-gtars --help
-
-# Show version
+cargo install gtars-cli --version 0.10.0 --locked
 gtars --version
-
-# Verbose output
-gtars --verbose <command>
-
-# Quiet mode
-gtars --quiet <command>
+gtars --help
 ```
 
-## IGD Commands
+If using a precompiled binary, verify that its version and checksum match the
+reviewed release before extraction or execution. The bundled `artifact_inspector.py` hashes/classifies an
+artifact without extracting or executing it.
 
-Build and query IGD indexes for overlap detection:
+Default CLI features are:
+
+```text
+scoring uniwig bbcache igd fragsplit overlaprs genomicdist refget
+```
+
+To build a reduced binary:
 
 ```bash
-# Build IGD index
-gtars igd build --input regions.bed --output regions.igd
-
-# Query single region
-gtars igd query --index regions.igd --region "chr1:1000-2000"
-
-# Query from file
-gtars igd query --index regions.igd --query-file queries.bed --output results.bed
-
-# Count overlaps
-gtars igd count --index regions.igd --query-file queries.bed
+cargo install gtars-cli --version 0.10.0 --locked \
+  --no-default-features --features "overlaprs,genomicdist"
 ```
 
-## Overlap Commands
+Feature availability controls subcommand availability. There is no 0.10.0 CLI
+`tokenizers` feature/subcommand. Do not copy an old `--all-features` binary's
+command assumptions into a reduced binary.
 
-Compute overlaps between genomic region sets:
+## Global behavior
 
 ```bash
-# Find overlapping regions
-gtars overlaprs overlap --set-a regions_a.bed --set-b regions_b.bed --output overlaps.bed
-
-# Count overlaps
-gtars overlaprs count --set-a regions_a.bed --set-b regions_b.bed
-
-# Filter regions by overlap
-gtars overlaprs filter --input regions.bed --filter overlapping.bed --output filtered.bed
-
-# Subtract regions
-gtars overlaprs subtract --set-a regions_a.bed --set-b regions_b.bed --output difference.bed
+gtars --help
+gtars --version
+gtars <command> --help
 ```
 
-## Uniwig Commands
+Tagged source defines no global `--threads`, `--memory-limit`, `--buffer-size`,
+`--verbose`, `--quiet`, `--strict`, `--continue-on-error`, or `--log-file`
+options. Concurrency is command-specific.
 
-Generate coverage tracks from genomic intervals:
+Before every real command, run the exact installed `--help`. This reference is
+pinned to 0.10.0; unversioned web documentation can drift.
+
+## `overlaprs`
 
 ```bash
-# Generate coverage track
-gtars uniwig generate --input fragments.bed --output coverage.wig
-
-# Specify resolution
-gtars uniwig generate --input fragments.bed --output coverage.wig --resolution 10
-
-# Generate BigWig
-gtars uniwig generate --input fragments.bed --output coverage.bw --format bigwig
-
-# Strand-specific coverage
-gtars uniwig generate --input fragments.bed --output forward.wig --strand +
+gtars overlaprs \
+  --query query.bed \
+  --universe universe.bed \
+  --backend bits
 ```
 
-## BBCache Commands
+Options:
 
-Cache and manage BED files from BEDbase.org:
+- `-q/--query PATH` (required);
+- `-u/--universe PATH` (required);
+- `-e/--backend bits|ailist` (handler default: `bits`);
+- `--streaming` is parsed but ignored by the v0.10.0 handler.
+
+Output is BED3 universe-hit coordinates to stdout, one row per overlap. It is not
+a count table and does not retain query IDs. See `overlap.md`.
+
+## `igd`
+
+Create from a **folder** of BED files:
 
 ```bash
-# Cache BED file from bedbase
-gtars bbcache fetch --id <bedbase_id> --output cached.bed
-
-# List cached files
-gtars bbcache list
-
-# Clear cache
-gtars bbcache clear
-
-# Update cache
-gtars bbcache update
+gtars igd create \
+  --filelist approved-bed-directory \
+  --output index-directory \
+  --dbname reference_index
 ```
 
-## Scoring Commands
-
-Score fragment overlaps against reference datasets:
+Search with a BED/BED.GZ query:
 
 ```bash
-# Score fragments
-gtars scoring score --fragments fragments.bed --reference reference.bed --output scores.txt
-
-# Batch scoring
-gtars scoring batch --fragments-dir ./fragments/ --reference reference.bed --output-dir ./scores/
-
-# Score with weights
-gtars scoring score --fragments fragments.bed --reference reference.bed --weights weights.txt --output scores.txt
+gtars igd search \
+  --database index-directory/reference_index.igd \
+  --query query.bed
 ```
 
-## FragSplit Commands
+Current subcommands are `create` and `search`, not `build`, `query`, or `count`.
+The handler accepts a directory, a `.txt` file of paths, or `-`/`stdin`.
+Directory discovery includes every `.bed` or `.gz` file, so use a reviewed list
+when that would include unrelated gzip files. Create the output directory first.
+`search --database` needs the `.igd` **file**, not its parent directory. Output
+is per-database-file overlap counts plus a total, not row-aligned query matches.
 
-Split fragment files by cell barcodes or clusters:
+## `uniwig`
+
+Batch BigWig:
 
 ```bash
-# Split by barcode
-gtars fragsplit split --input fragments.tsv --barcodes barcodes.txt --output-dir ./split/
-
-# Split by clusters
-gtars fragsplit cluster-split --input fragments.tsv --clusters clusters.txt --output-dir ./clustered/
-
-# Filter fragments
-gtars fragsplit filter --input fragments.tsv --min-fragments 100 --output filtered.tsv
+gtars uniwig \
+  --file sorted.bed.gz \
+  --filetype bed \
+  --chromref assembly.chrom.sizes \
+  --smoothsize 5 \
+  --stepsize 1 \
+  --fileheader output/sample_ \
+  --outputtype bw \
+  --counttype core \
+  --threads 4
 ```
 
-## Common Workflows
-
-### Workflow 1: Overlap Analysis Pipeline
+BAM QC:
 
 ```bash
-# Step 1: Build IGD index for reference
-gtars igd build --input reference_regions.bed --output reference.igd
-
-# Step 2: Query with experimental data
-gtars igd query --index reference.igd --query-file experimental.bed --output overlaps.bed
-
-# Step 3: Generate statistics
-gtars overlaprs count --set-a experimental.bed --set-b reference_regions.bed
+gtars uniwig bamqc \
+  --input aligned.bam \
+  --output bamqc.tsv \
+  --threads 1
 ```
 
-### Workflow 2: Coverage Track Generation
+BED streaming adds `--streaming` and supports only WIG/bedGraph output. Read
+`coverage.md` for all flags, sorting/bounds, BAM behavior, and resource limits.
+
+## `consensus`
 
 ```bash
-# Step 1: Generate coverage
-gtars uniwig generate --input fragments.bed --output coverage.wig --resolution 10
-
-# Step 2: Convert to BigWig
-gtars uniwig generate --input fragments.bed --output coverage.bw --format bigwig
+gtars consensus \
+  --beds a.bed b.bed c.bed \
+  --min-count 2 \
+  --output consensus.bed
 ```
 
-### Workflow 3: Fragment Processing
+- `--beds` requires at least two paths;
+- `--min-count` defaults to 1;
+- output defaults to stdout and is BED4 (`chr start end count`).
+
+Consensus counts input sets overlapping a reduced union component; it is not
+per-base support segmentation. See `overlap.md`.
+
+## `ranges`
+
+`ranges` exposes interval algebra:
+
+```text
+gtars ranges reduce      --input BED [--output OUT]
+gtars ranges trim        --input BED --chrom-sizes SIZES [--output OUT]
+gtars ranges promoters   --input BED [--upstream 2000] [--downstream 200] [--output OUT]
+gtars ranges setdiff     -a BED_A -b BED_B [--output OUT]
+gtars ranges pintersect  -a BED_A -b BED_B [--output OUT]
+gtars ranges concat      -a BED_A -b BED_B [--output OUT]
+gtars ranges union       -a BED_A -b BED_B [--output OUT]
+gtars ranges jaccard     -a BED_A -b BED_B
+gtars ranges shift       --input BED --offset N [--output OUT]
+gtars ranges flank       --input BED --width N [--start|--both] [--output OUT]
+gtars ranges resize      --input BED --width N [--fix start|end|center] [--output OUT]
+gtars ranges narrow      --input BED [--start N] [--end N] [--width N] [--output OUT]
+gtars ranges disjoin     --input BED [--output OUT]
+gtars ranges gaps        --input BED --chrom-sizes SIZES [--output OUT]
+gtars ranges intersect   -a BED_A -b BED_B [--output OUT]
+```
+
+Operations without `--output` write to stdout. `promoters` is anchored on region
+starts in core behavior; do not assume strand-aware TSS handling.
+
+## `fscoring` fragment counts
+
+File-by-peak matrix:
 
 ```bash
-# Step 1: Filter fragments
-gtars fragsplit filter --input raw_fragments.tsv --min-fragments 100 --output filtered.tsv
-
-# Step 2: Split by clusters
-gtars fragsplit cluster-split --input filtered.tsv --clusters clusters.txt --output-dir ./by_cluster/
-
-# Step 3: Score against reference
-gtars scoring batch --fragments-dir ./by_cluster/ --reference reference.bed --output-dir ./scores/
+gtars fscoring "fragments/sample01.fragments.tsv.gz" consensus.bed \
+  --mode chip \
+  --output counts.csv.gz
 ```
 
-## Input/Output Formats
+Arguments are positional:
 
-### BED Format
-Standard 3-column or extended BED format:
-```
-chr1    1000    2000
-chr1    3000    4000
-chr2    5000    6000
+```text
+gtars fscoring <fragments> <consensus> [--mode atac|chip] [--output PATH]
 ```
 
-### Fragment Format (TSV)
-Tab-separated format for single-cell fragments:
-```
-chr1    1000    2000    BARCODE1
-chr1    3000    4000    BARCODE2
-chr2    5000    6000    BARCODE1
-```
+- `fragments` is interpreted by `FragmentFileGlob`; a single explicit local file
+  is safest. Shell globs can expose unintended files, while quoted globs are
+  expanded by the library.
+- default mode is `atac`;
+- default output is `fscoring.csv.gz`;
+- the shown `chip` mode uses fragment-body overlap semantics, one increment per
+  row/peak overlap; it ignores the fifth fragment-support count;
+- **do not use the default `atac` mode for scientific results in this pin.**
+  The CLI's locked `gtars-scoring 0.5.2` constructs its right-cut query as
+  `[fragment.end - 5, fragment.end - 6)`, an invalid reversed interval; small
+  coordinates can also underflow unsigned arithmetic. This is a source-confirmed
+  correctness issue, not a validated ATAC count implementation. The planner
+  refuses to approve this mode. Use a separately validated cut-site workflow if
+  ATAC insertion counts are required; selecting `chip` changes the measurement.
 
-### WIG Format
-Wiggle format for coverage tracks:
-```
-fixedStep chrom=chr1 start=1000 step=10
-12
-15
-18
-```
-
-## Performance Options
+Sparse barcode mode:
 
 ```bash
-# Set thread count
-gtars --threads 8 <command>
-
-# Memory limit
-gtars --memory-limit 4G <command>
-
-# Buffer size
-gtars --buffer-size 10000 <command>
+gtars fscoring sample.fragments.tsv.gz consensus.bed \
+  --barcode \
+  --output output/sample01
 ```
 
-## Error Handling
+This writes:
+
+```text
+output/sample01_matrix.mtx.gz
+output/sample01_barcodes.tsv.gz
+output/sample01_features.tsv.gz
+```
+
+Barcode mode ignores `--mode`: it counts whole-fragment overlaps, increments
+once per row, and ignores the fifth support count. It keeps only barcodes having
+an overlap. The matrix is **cells by peaks**, with lexicographically sorted
+barcodes and 1-based Matrix Market coordinates. Feature labels are synthetic
+`peak_0`, `peak_1`, etc.; retain a separate coordinate table in the constructor's
+sorted consensus order, and reject duplicate consensus intervals. Do not feed it
+into a reader assuming the common peaks-by-cells orientation without transposing.
+
+The fragment file must carry valid coordinates and barcodes. Do not expose raw
+barcodes in logs or reports; cap cells, peaks, nonzeros, memory, and output.
+
+## `pb` pseudobulk splitting
+
+The current command name is `pb`, not `fragsplit`:
 
 ```bash
-# Continue on errors
-gtars --continue-on-error <command>
-
-# Strict mode (fail on warnings)
-gtars --strict <command>
-
-# Log to file
-gtars --log-file output.log <command>
+gtars pb sample.fragments.tsv.gz barcode_to_cluster.tsv \
+  --output pseudobulk-output
 ```
+
+Positional arguments are fragments then mapping; default output is `out/`.
+This writes cluster-specific files. Validate mapping uniqueness, unknown
+barcodes, safe cluster names, output collisions, file-count bounds, and patient
+split policy first.
+
+## `genomicdist`
+
+Minimal call:
+
+```bash
+gtars genomicdist \
+  --bed regions.bed \
+  --chrom-sizes assembly.chrom.sizes \
+  --bins 250 \
+  --output distribution.json
+```
+
+Optional inputs/features:
+
+- `--gtf GTF` for partitions and derived TSS distances;
+- `--tss BED` to override GTF-derived TSS;
+- `--signal-matrix TSV`;
+- `--fasta FASTA|FAB` for GC content;
+- `--dinucl-freq` and `--dinucl-raw-counts`;
+- `--ignore-unk-chroms`;
+- `--promoter-upstream`, `--promoter-downstream`;
+- `--compact`.
+
+Supplying chromosome sizes makes region-distribution bins comparable across
+files and enables bounds-related operations. Omitting them derives scale from
+observed ends and is unsuitable for cross-file comparison.
+
+## `prep`
+
+```text
+gtars prep --gtf genes.gtf.gz [--output genes.gda]
+gtars prep --signal-matrix matrix.tsv.gz [--output matrix.bin]
+gtars prep --fasta reference.fa [--output reference.fab]
+```
+
+`prep` serializes local inputs into Gtars-specific binary formats. Treat these
+artifacts as versioned native data: hash inputs/outputs, record 0.10.0, reject
+untrusted serialized files, and bound expansion/memory.
+
+## `refget`
+
+```bash
+gtars refget build reference.fa reference-alt.fa.gz \
+  --output refget-store \
+  --jobs 1
+```
+
+Other options include `--file-list/-f`, `--raw`, `--force`,
+`--collection-alias NAMESPACE:ALIAS` (one FASTA only), and
+`--lock-timeout SECONDS` (default 1800; 0 waits indefinitely).
+`--jobs 0` means automatic concurrency. Version 0.10.0 also provides:
+
+```bash
+gtars refget lock-status refget-store
+gtars refget export --store refget-store --collection local:reference \
+  --names chr1 --output chr1.fa.gz --line-width 80
+```
+
+Export accepts a digest or collection alias; without `--collection` the store
+must contain exactly one collection. It loads the selected sequence bytes into
+RAM and overwrites the output path; bound selection and check output collisions.
+`.gz` enables gzip and line width 0 disables wrapping. `--force-alias` overwrites
+conflicting aliases; `--force-unlock` bypasses a writer lock and must never be
+used to solve normal contention from a live process. There are no `digest`,
+`verify`, or remote-query subcommands. See `refget.md`.
+
+## `bbcache`
+
+```text
+gtars bbcache cache-bed       --identifier VALUE [--cache-folder DIR]
+gtars bbcache cache-bedset    --identifier VALUE [--cache-folder DIR]
+gtars bbcache seek            --identifier VALUE [--cache-folder DIR]
+gtars bbcache inspect-bedfiles                 [--cache-folder DIR]
+gtars bbcache inspect-bedsets                  [--cache-folder DIR]
+gtars bbcache rm              --identifier VALUE [--cache-folder DIR]
+```
+
+Client construction creates cache directories. Cache/download calls can contact
+BEDbase or arbitrary URL hosts and write SQLite/cache files. `rm` deletes local
+content. The tagged source has a likely ID-only download mismatch described in
+`refget.md`; do not guess a workaround.
+
+## Threading and resource controls
+
+There is no global thread flag:
+
+- batch uniwig `--threads/-p` defaults to 6;
+- `uniwig bamqc --threads/-t` defaults to 1; values above 1 need a BAM index;
+- `refget build --jobs/-j` defaults to 0 (auto);
+- other commands expose no documented thread setting.
+
+Set command-specific values explicitly. Also bound input bytes/records/files,
+glob matches, hit pairs/nonzeros, stdout, memory, temporary disk, cache, and
+wall time externally.
+
+## Safe dry-run planning
+
+```bash
+python3 -B scripts/execution_plan.py --help
+python3 -B scripts/coverage_preflight.py --help
+```
+
+These helpers produce fixed argv templates only. They do not invoke `gtars`,
+expand globs, download data, create caches, or write outputs.
+
+## Removed stale command forms
+
+Do not use:
+
+```text
+gtars igd build/query/count
+gtars overlaprs overlap/count/filter/subtract
+gtars uniwig generate
+gtars scoring score/batch
+gtars fragsplit split/cluster-split/filter
+gtars refget digest/verify
+gtars --threads/--memory-limit/--verbose
+```
+
+## Official sources (accessed 2026-10-01)
+
+- [gtars-cli 0.10.0 crate](https://crates.io/crates/gtars-cli)
+- [Gtars v0.10.0 release](https://github.com/databio/gtars/releases/tag/gtars-v0.10.0)
+- [CLI main parser at v0.10.0](https://github.com/databio/gtars/blob/gtars-v0.10.0/gtars-cli/src/main.rs)
+- [Locked scoring implementation](https://github.com/databio/gtars/blob/gtars-v0.10.0/gtars-scoring/src/fragment_scoring.rs)
+- [CLI feature manifest at v0.10.0](https://github.com/databio/gtars/blob/gtars-v0.10.0/gtars-cli/Cargo.toml)
+- [Official CLI guide](https://docs.bedbase.org/gtars/cli/)
+- [Official versioning policy](https://docs.bedbase.org/gtars/versioning/)

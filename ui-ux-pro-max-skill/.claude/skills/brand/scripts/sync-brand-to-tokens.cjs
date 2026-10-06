@@ -7,6 +7,7 @@
  * Usage:
  *   node sync-brand-to-tokens.cjs
  *   node sync-brand-to-tokens.cjs --dry-run
+ *   node sync-brand-to-tokens.cjs --force
  */
 
 const fs = require('fs');
@@ -17,7 +18,96 @@ const { execFileSync } = require('child_process');
 const BRAND_GUIDELINES = 'docs/brand-guidelines.md';
 const DESIGN_TOKENS_JSON = 'assets/design-tokens.json';
 const DESIGN_TOKENS_CSS = 'assets/design-tokens.css';
-const GENERATE_TOKENS_SCRIPT = '.claude/skills/design-system/scripts/generate-tokens.cjs';
+const CSS_TOKEN_SOURCES = [
+  'src/index.css',
+  'src/globals.css',
+  'src/styles/globals.css',
+  'src/styles/tokens.css',
+  'src/app/globals.css',
+  'app/globals.css',
+  'styles/globals.css',
+  'styles/tokens.css'
+];
+const TAILWIND_CONFIGS = [
+  'tailwind.config.js',
+  'tailwind.config.cjs',
+  'tailwind.config.mjs',
+  'tailwind.config.ts'
+];
+// Sibling sub-skill, resolved from this file's location so it works in every
+// install context (plugin cache, project or --global CLI install), not only
+// when the process runs from a project root that contains .claude/skills/.
+const GENERATE_TOKENS_SCRIPT = path.resolve(__dirname, '..', '..', 'design-system', 'scripts', 'generate-tokens.cjs');
+
+/**
+ * Find project files that already act as design-token sources.
+ */
+function findExistingTokenSources(projectRoot) {
+  const sources = new Set();
+  const addIfPresent = (relativePath) => {
+    if (fs.existsSync(path.resolve(projectRoot, relativePath))) {
+      sources.add(relativePath);
+    }
+  };
+
+  const scanCssSource = (absolutePath, visited = new Set()) => {
+    const normalizedPath = path.resolve(absolutePath);
+    const relativePath = path.relative(projectRoot, normalizedPath);
+    if (
+      visited.has(normalizedPath) ||
+      relativePath.startsWith('..') ||
+      path.isAbsolute(relativePath) ||
+      !fs.existsSync(normalizedPath)
+    ) {
+      return;
+    }
+
+    visited.add(normalizedPath);
+    const content = fs.readFileSync(normalizedPath, 'utf-8');
+    const uncommented = content.replace(/\/\*[\s\S]*?\*\//g, '');
+    const hasRootTokens = /:root\b[^{}]*\{[^}]*--[A-Za-z0-9_-]+\s*:/.test(uncommented);
+    const hasTailwindTheme = /@theme(?:\s+[A-Za-z-]+)?\s*\{[^}]*--[A-Za-z0-9_-]+\s*:/.test(uncommented);
+    if (hasRootTokens || hasTailwindTheme) {
+      sources.add(relativePath.split(path.sep).join('/'));
+    }
+
+    const importPattern = /@import\s+(?:url\(\s*)?(['"])([^'"]+)\1\s*\)?[^;]*;/g;
+    for (const match of uncommented.matchAll(importPattern)) {
+      const importTarget = match[2].split(/[?#]/, 1)[0];
+      let importedPath;
+      if (importTarget.startsWith('.')) {
+        importedPath = path.resolve(path.dirname(normalizedPath), importTarget);
+      } else if (importTarget.startsWith('/')) {
+        importedPath = path.resolve(projectRoot, `.${importTarget}`);
+      } else {
+        continue;
+      }
+      scanCssSource(importedPath, visited);
+    }
+  };
+
+  addIfPresent(DESIGN_TOKENS_JSON);
+  addIfPresent(DESIGN_TOKENS_CSS);
+
+  for (const relativePath of CSS_TOKEN_SOURCES) {
+    const absolutePath = path.resolve(projectRoot, relativePath);
+    scanCssSource(absolutePath);
+  }
+
+  for (const relativePath of TAILWIND_CONFIGS) {
+    const absolutePath = path.resolve(projectRoot, relativePath);
+    if (!fs.existsSync(absolutePath)) continue;
+    const content = fs.readFileSync(absolutePath, 'utf-8');
+    const hasInlineColors = /\btheme\s*:\s*\{[\s\S]*?\bcolors\s*:/.test(content);
+    const hasPreset = /\bpresets\s*:/.test(content);
+    const hasThemeSpread = /\btheme\s*:\s*\{[\s\S]*?\.\.\.[A-Za-z_$]/.test(content);
+    if (hasInlineColors || hasPreset || hasThemeSpread) {
+      sources.add(relativePath);
+    }
+  }
+
+  return [...sources];
+}
 
 /**
  * Extract color info from brand guidelines markdown
@@ -96,15 +186,34 @@ function generateColorScale(baseHex, darkHex, lightHex) {
 }
 
 /**
- * Adjust hex color brightness
+ * Adjust hex color brightness.
+ *
+ * Blends each channel proportionally toward white (percent > 0) or toward
+ * black (percent < 0) instead of adding/subtracting a flat 255*percent to
+ * every channel. The flat-shift approach clamped all three channels to 0
+ * (or 255) whenever the base color's channels were already low (or high)
+ * relative to the shift — e.g. darkening a dark brand color like #4A3228
+ * by -0.3/-0.45/-0.6 produced #000000 for all three, collapsing shades
+ * 700/800/900 into an identical, useless black.
  */
 function adjustBrightness(hex, percent) {
   if (typeof hex !== 'string') return '#000000';
   const num = parseInt(hex.replace('#', ''), 16);
-  const r = Math.min(255, Math.max(0, (num >> 16) + Math.round(255 * percent)));
-  const g = Math.min(255, Math.max(0, ((num >> 8) & 0x00FF) + Math.round(255 * percent)));
-  const b = Math.min(255, Math.max(0, (num & 0x0000FF) + Math.round(255 * percent)));
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0').toUpperCase()}`;
+  const r = (num >> 16) & 0xFF;
+  const g = (num >> 8) & 0xFF;
+  const b = num & 0xFF;
+
+  const adjustChannel = (channel) => {
+    const adjusted = percent >= 0
+      ? channel + (255 - channel) * percent
+      : channel * (1 + percent);
+    return Math.min(255, Math.max(0, Math.round(adjusted)));
+  };
+
+  const newR = adjustChannel(r);
+  const newG = adjustChannel(g);
+  const newB = adjustChannel(b);
+  return `#${((newR << 16) | (newG << 8) | newB).toString(16).padStart(6, '0').toUpperCase()}`;
 }
 
 /**
@@ -189,16 +298,32 @@ function updateDesignTokens(tokens, colors) {
  */
 function main() {
   const dryRun = process.argv.includes('--dry-run');
+  const force = process.argv.includes('--force');
+  const projectRoot = process.cwd();
 
   console.log('🔄 Syncing brand guidelines → design tokens\n');
 
   // Read brand guidelines
-  const guidelinesPath = path.resolve(process.cwd(), BRAND_GUIDELINES);
+  const guidelinesPath = path.resolve(projectRoot, BRAND_GUIDELINES);
   if (!fs.existsSync(guidelinesPath)) {
     console.error(`❌ Brand guidelines not found: ${guidelinesPath}`);
     process.exit(1);
   }
   const guidelinesContent = fs.readFileSync(guidelinesPath, 'utf-8');
+
+  const existingSources = findExistingTokenSources(projectRoot);
+  if (existingSources.length > 0 && !force) {
+    const details = existingSources.map(source => `   - ${source}`).join('\n');
+    const message =
+      `Existing design-token source${existingSources.length === 1 ? '' : 's'} detected:\n${details}\n` +
+      'Refusing to create or replace token files. Review the detected source and re-run with --force only if replacement is intentional.';
+    if (dryRun) {
+      console.warn(`⚠️  ${message}\n`);
+    } else {
+      console.error(`❌ ${message}`);
+      process.exit(1);
+    }
+  }
 
   // Extract colors
   const colors = extractColorsFromMarkdown(guidelinesContent);
@@ -208,7 +333,7 @@ function main() {
   console.log(`   Accent: ${colors.accent.name} (${colors.accent.base})\n`);
 
   // Read existing tokens
-  const tokensPath = path.resolve(process.cwd(), DESIGN_TOKENS_JSON);
+  const tokensPath = path.resolve(projectRoot, DESIGN_TOKENS_JSON);
   let tokens = {};
   if (fs.existsSync(tokensPath)) {
     tokens = JSON.parse(fs.readFileSync(tokensPath, 'utf-8'));
@@ -225,11 +350,12 @@ function main() {
   }
 
   // Write updated tokens
+  fs.mkdirSync(path.dirname(tokensPath), { recursive: true });
   fs.writeFileSync(tokensPath, JSON.stringify(tokens, null, 2));
   console.log(`✅ Updated: ${DESIGN_TOKENS_JSON}`);
 
   // Regenerate CSS
-  const generateScript = path.resolve(process.cwd(), GENERATE_TOKENS_SCRIPT);
+  const generateScript = GENERATE_TOKENS_SCRIPT;
   if (fs.existsSync(generateScript)) {
     try {
       execFileSync('node', [generateScript, '--config', DESIGN_TOKENS_JSON, '-o', DESIGN_TOKENS_CSS], {
@@ -240,6 +366,8 @@ function main() {
     } catch (e) {
       console.error('⚠️  Failed to regenerate CSS:', e.message);
     }
+  } else {
+    console.warn(`⚠️  design-system sub-skill not found at ${generateScript}; ${DESIGN_TOKENS_CSS} not regenerated`);
   }
 
   console.log('\n✨ Brand sync complete!');

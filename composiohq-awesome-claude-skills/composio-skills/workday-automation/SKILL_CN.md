@@ -1,6 +1,6 @@
 ---
 name: Workday Automation
-description: "Automate HR operations in Workday -- manage workers, time off requests, absence balances, and employee data through natural language commands."
+description: "自动化 Workday 中的人力资源操作 —— 通过自然语言指令管理员工、请假申请、休假余额和员工数据。"
 requires:
   mcp:
     - rube
@@ -8,138 +8,138 @@ requires:
 
 # Workday Automation
 
-Automate your Workday HR operations directly from Claude Code. Look up workers, create time off requests, check absence balances, and validate time off eligibility -- all without leaving your terminal.
+直接从 Claude Code 自动化你的 Workday 人力资源操作。查找员工、创建请假申请、检查休假余额，以及验证请假资格 —— 全程无需离开终端。
 
-**Toolkit docs:** [composio.dev/toolkits/workday](https://composio.dev/toolkits/workday)
+**工具包文档：** [composio.dev/toolkits/workday](https://composio.dev/toolkits/workday)
 
 ---
 
 ## 设置
 
-1. Add the Rube MCP server to your Claude Code config with URL: `https://rube.app/mcp`
-2. When prompted, authenticate your Workday account through the connection link provided
-3. Start automating your HR workflows with natural language
+1. 将 Rube MCP 服务器添加到你的 Claude Code 配置中，URL 为：`https://rube.app/mcp`
+2. 收到提示时，通过提供的连接链接对你的 Workday 账户进行身份验证
+3. 开始用自然语言自动化你的 HR 工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Search and List Workers
+### 1. 搜索并列出员工
 
-Retrieve worker information with search and pagination.
+检索员工信息，支持搜索和分页。
 
-**Tool:** `WORKDAY_LIST_WORKERS`
+**工具：** `WORKDAY_LIST_WORKERS`
 
 ```
 Search for workers named "Sarah" and include terminated employees
 ```
 
-Key parameters:
-- `search` -- search by name or worker ID (case-insensitive, space-delimited for OR search)
-- `includeTerminatedWorkers` -- include terminated workers in results
-- `limit` (default 20, max 100) / `offset` -- pagination controls
+关键参数：
+- `search` —— 按姓名或员工 ID 搜索（不区分大小写，用空格分隔表示“或”搜索）
+- `includeTerminatedWorkers` —— 结果中是否包含已离职员工
+- `limit`（默认 20，最大 100）/ `offset` —— 分页控制
 
-### 2. Create Time Off Requests
+### 2. 创建请假申请
 
-Submit time off requests for workers with full business process support.
+为员工提交请假申请，完整支持业务流程。
 
-**Tool:** `WORKDAY_CREATE_TIME_OFF_REQUEST`
+**工具：** `WORKDAY_CREATE_TIME_OFF_REQUEST`
 
 ```
 Create a vacation request for worker abc123 for March 15-17, 2026 (8 hours each day)
 ```
 
-Key parameters:
-- `ID` (required) -- Workday worker ID
-- `businessProcessParameters` (required) -- must include `action` with `id` field (use `"d9e4223e446c11de98360015c5e6daf6"` for submit action)
-- `days` (required) -- array of time off entries, each with:
-  - `date` (required) -- date in `yyyy-mm-dd` format
-  - `timeOffType` (required) -- object with `id` of the eligible absence type
-  - `dailyQuantity` -- hours or days quantity
-  - `comment`, `start`, `end`, `position`, `reason` -- optional fields
-- `businessProcessParameters.comment` -- optional business process comment
+关键参数：
+- `ID`（必需）—— Workday 员工 ID
+- `businessProcessParameters`（必需）—— 必须包含带 `id` 字段的 `action`（提交操作使用 `"d9e4223e446c11de98360015c5e6daf6"`）
+- `days`（必需）—— 请假条目数组，每项包含：
+  - `date`（必需）—— `yyyy-mm-dd` 格式的日期
+  - `timeOffType`（必需）—— 包含符合条件的休假类型 `id` 的对象
+  - `dailyQuantity` —— 小时数或天数
+  - `comment`、`start`、`end`、`position`、`reason` —— 可选字段
+- `businessProcessParameters.comment` —— 可选的业务流程备注
 
-### 3. Check Time Off Eligibility
+### 3. 检查请假资格
 
-Validate which dates a worker can take off before submitting a request.
+在提交申请之前，验证员工可以请假的日期。
 
-**Tool:** `WORKDAY_GET_WORKER_VALID_TIME_OFF_DATES`
+**工具：** `WORKDAY_GET_WORKER_VALID_TIME_OFF_DATES`
 
 ```
 Check if worker abc123 is eligible to take time off on March 15, 2026
 ```
 
-Key parameters:
-- `ID` (required) -- Workday worker ID
-- `date` -- specific date to validate (`yyyy-mm-dd`)
-- `position` -- filter by specific position ID
-- `timeOff` -- filter by specific time off plan/type ID
-- `limit` (max 100) / `offset` -- pagination
+关键参数：
+- `ID`（必需）—— Workday 员工 ID
+- `date` —— 要验证的特定日期（`yyyy-mm-dd`）
+- `position` —— 按特定职位 ID 筛选
+- `timeOff` —— 按特定休假方案/类型 ID 筛选
+- `limit`（最大 100）/ `offset` —— 分页
 
-### 4. View Absence Balances
+### 4. 查看休假余额
 
-Check remaining time off balances for workers across all plans.
+查看组织内员工在各休假方案下的剩余休假余额。
 
-**Tool:** `WORKDAY_LIST_ABSENCE_BALANCES`
+**工具：** `WORKDAY_LIST_ABSENCE_BALANCES`
 
 ```
 Show me absence balances for all workers in the organization
 ```
 
-- Retrieves balances for time off plans and leave of absence types
-- Can be filtered by worker ID, category, and effective date
+- 检索休假方案和请假类型的余额
+- 可按员工 ID、类别和生效日期进行筛选
 
-### 5. Get Current User Profile
+### 5. 获取当前用户的个人资料
 
-Retrieve the authenticated worker's profile information.
+检索已通过身份验证员工的个人资料信息。
 
-**Tool:** `WORKDAY_GET_CURRENT_USER`
+**工具：** `WORKDAY_GET_CURRENT_USER`
 
 ```
 Show me my Workday profile information
 ```
 
-- No parameters required
-- Returns the authenticated worker's profile
-- Use this first to get the worker ID for subsequent operations
+- 不需要任何参数
+- 返回经过身份验证员工的个人资料
+- 使用此工具首先获取员工 ID，以供后续操作使用
 
-### 6. View Time Off History
+### 6. 查看请假历史
 
-Retrieve time off details and history for a specific worker.
+检索特定员工的请假详情和历史记录。
 
-**Tool:** `WORKDAY_GET_WORKER_TIME_OFF_DETAILS`
+**工具：** `WORKDAY_GET_WORKER_TIME_OFF_DETAILS`
 
 ```
 Show me the time off history for worker abc123
 ```
 
-- Retrieves a collection of time off details for the specified worker
-- Useful for auditing time off usage and remaining balances
+- 检索指定员工的一组请假详情
+- 便于审计请假使用情况和剩余余额
 
 ---
 
-## 已知陷阱
+## 已知问题
 
-- **Worker ID resolution:** Always call `WORKDAY_GET_CURRENT_USER` or `WORKDAY_LIST_WORKERS` first to resolve Workday worker IDs. Worker IDs are Workday-specific UUIDs, not employee numbers.
-- **Time off type IDs must be valid:** The `timeOffType.id` in `WORKDAY_CREATE_TIME_OFF_REQUEST` must reference a valid eligible absence type for that worker. Use the "Get Worker Eligible Absence Types" flow to discover valid type IDs.
-- **Submit action ID:** The `businessProcessParameters.action.id` should be `"d9e4223e446c11de98360015c5e6daf6"` for the submit action. Using an incorrect ID will cause the business process to fail.
-- **Date format:** All date fields use `yyyy-mm-dd` format. ISO 8601 with timestamps is not accepted for date-only fields.
-- **Pagination limits:** The maximum `limit` is 100 across all Workday endpoints. Default is 20. Always paginate for complete datasets.
-- **Business process approval:** Creating a time off request initiates the business process but does not guarantee approval. The request enters the normal approval workflow.
+- **员工 ID 解析：** 务必先调用 `WORKDAY_GET_CURRENT_USER` 或 `WORKDAY_LIST_WORKERS` 来解析 Workday 员工 ID。员工 ID 是 Workday 专用的 UUID，并非员工工号。
+- **请假类型 ID 必须有效：** `WORKDAY_CREATE_TIME_OFF_REQUEST` 中的 `timeOffType.id` 必须引用该员工有效的符合条件的休假类型。使用“获取员工符合条件的休假类型”流程来发现有效的类型 ID。
+- **提交操作 ID：** `businessProcessParameters.action.id` 对于提交操作应为 `"d9e4223e446c11de98360015c5e6daf6"`。使用错误的 ID 会导致业务流程失败。
+- **日期格式：** 所有日期字段均使用 `yyyy-mm-dd` 格式。带时间戳的 ISO 8601 格式对纯日期字段不被接受。
+- **分页限制：** 所有 Workday 端点的最大 `limit` 为 100，默认值为 20。务必进行分页以获取完整数据集。
+- **业务流程审批：** 创建请假申请会启动业务流程，但不保证获得批准。该申请将进入正常的审批工作流。
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 描述 |
 |---|---|
-| `WORKDAY_LIST_WORKERS` | Search and list workers with staffing info |
-| `WORKDAY_GET_CURRENT_USER` | Get the authenticated worker's profile |
-| `WORKDAY_CREATE_TIME_OFF_REQUEST` | Submit a time off request (requires `ID`, `businessProcessParameters`, `days`) |
-| `WORKDAY_GET_WORKER_VALID_TIME_OFF_DATES` | Check time off date eligibility (requires `ID`) |
-| `WORKDAY_LIST_ABSENCE_BALANCES` | Retrieve absence balances across time off plans |
-| `WORKDAY_GET_WORKER_TIME_OFF_DETAILS` | Get time off history for a worker |
+| `WORKDAY_LIST_WORKERS` | 搜索并列出员工及其在职信息 |
+| `WORKDAY_GET_CURRENT_USER` | 获取已通过身份验证员工的个人资料 |
+| `WORKDAY_CREATE_TIME_OFF_REQUEST` | 提交请假申请（需要 `ID`、`businessProcessParameters`、`days`） |
+| `WORKDAY_GET_WORKER_VALID_TIME_OFF_DATES` | 检查请假日期资格（需要 `ID`） |
+| `WORKDAY_LIST_ABSENCE_BALANCES` | 检索各休假方案下的休假余额 |
+| `WORKDAY_GET_WORKER_TIME_OFF_DETAILS` | 获取员工的请假历史 |
 
 ---
 
-*由 [Composio](https://composio.dev) 提供支持*
+*Powered by [Composio](https://composio.dev)*

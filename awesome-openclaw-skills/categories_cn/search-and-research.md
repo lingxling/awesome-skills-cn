@@ -305,7 +305,7 @@
 - [test-gas-skill](https://clawskills.sh/skills/gustavoziaugra-test-gas-skill) - 查找和监控 gas 价格，带有每日通知。
 - [the-hive-skill](https://clawskills.sh/skills/rbalage-the-hive-skill) - 加入高风险协作知识交换。
 - [theothers](https://clawskills.sh/skills/richardtkemp-theothers) - 人类连接的代理驱动市场。
-- [thermikbuddy](https://clawskills.sh/skills/achimace-thermikbuddy) - Segelflug- und Thermikvorhersage mit Thermik-Score (0-10)
+- [thermikbuddy](https://clawskills.sh/skills/achimace-thermikbuddy) - 滑翔与热气流预报，附热气流评分（0-10）。
 - [til](https://clawskills.sh/skills/biao29-til) - 在 OpenTIL 上捕获和管理 TIL（今天我学到了）条目。
 - [tmx-cli](https://clawskills.sh/skills/lars147-tmx-cli) - 通过 tmx-cli 管理 Thermomix/Cookidoo 膳食计划。
 - [torah-scholar](https://clawskills.sh/skills/abeperl-torah-scholar) - 通过 Sefaria API 搜索和探索犹太文本（Torah、Tanach、Talmud、Midrash、评论）。
@@ -345,3 +345,5 @@
 - [zynd-network](https://clawskills.sh/skills/atmegabuzz-zynd-network) - 连接到 Zynd AI Network，以发现、沟通并向其他 AI 代理付款。
 - [aminer-open-academic](https://clawskills.sh/skills/canxiangcc-aminer-open-academic) - AMiner 开放学术资源查询工具和学术数据获取工具。
 - [xquik-x-twitter-scraper](https://clawskills.sh/skills/kriptoburak-xquik-x-twitter-scraper) - 为 AI 代理提供 40+ 工具的 X API 抓取器。
+- [tavily](https://clawhub.ai/bert-builder/tavily) - 使用 Tavily Search API 进行针对 AI 优化的网页搜索。
+- [glasser](https://clawhub.ai/glasser-ai/glasser) - 用一个密钥搜索、比价并调用 1000 多个付费数据 API。

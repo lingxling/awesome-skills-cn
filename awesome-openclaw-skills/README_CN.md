@@ -43,12 +43,10 @@
 </div>
 
 [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
-[![Skills Count](https://img.shields.io/badge/skills-5199-blue?style=flat-square)](#table-of-contents)
+[![Skills Count](https://img.shields.io/badge/skills-5200-blue?style=flat-square)](#table-of-contents)
 [![Last Update](https://img.shields.io/github/last-commit/VoltAgent/awesome-clawdbot-skills?label=Last%20update&style=flat-square)](https://github.com/VoltAgent/awesome-clawdbot-skills/pulls?q=is%3Apr+is%3Amerged+sort%3Aupdated-desc)
-<a href="https://github.com/VoltAgent/voltagent">
-  <img alt="VoltAgent" src="https://cdn.voltagent.dev/website/logo/logo-2-svg.svg" height="20" />
-</a> 
 [![Discord](https://img.shields.io/discord/1361559153780195478.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://s.voltagent.dev/discord)
+[![Official MCP Servers](https://img.shields.io/badge/Official-MCP%20Servers-c2410c?style=flat-square&logo=github&logoColor=white&labelColor=24292f)](https://github.com/VoltAgent/official-mcp-servers)
 
 </div>
 
@@ -130,29 +128,23 @@ OpenClaw 的公共注册表（ClawHub）托管了数千个社区构建的技能�
 
 ## OpenClaw 生态系统工具
 
-### 🔌 连接到外部服务
+### 🕸️ 网页爬取与数据基础设施
 
-OpenClaw 代理可以与 GitHub、Slack、Gmail 等外部服务交互。您可以通过技能或插件自己构建集成，或使用托管服务来处理所有连接的身份验证、令牌刷新和权限。
+AI 代理的能力取决于它能获取到的网页数据。大规模爬取需要应对大量依赖 JavaScript 的页面、轮换代理和反爬虫系统——您可以自己构建这一切，也可以使用一个 API 来处理这些问题，并为您的代理提供干净、可直接使用的数据。
 
-<a href="https://composio.dev/claw?utm_source=github&utm_campaign=volt-agent">
-<img src="https://cdn.voltagent.dev/awesome-repo/composio-img.png" alt="Composio"  />
-托管 OAuth、范围权限和跨 1000+ 应用的原生工具调用日志。
+<a href="https://crawlbase.com/?utm_source=awesome-openclaw-skills&utm_medium=sponsorship&utm_campaign=voltagent_2026q3&utm_content=readme_banner">
+<picture><source media="(prefers-color-scheme: dark)" srcset="https://cdn.voltagent.dev/awesome-repo/crawlbase-new/crawlbase-sponsor-banner-dark-2760x480%402x.png"><img src="https://cdn.voltagent.dev/awesome-repo/crawlbase-new/crawlbase-sponsor-banner-light-2760x480%402x.png" alt="Crawlbase" width="690" /></picture><br/>
+Crawlbase 是受到 70,000 多名开发者信赖的网页数据基础设施：一个 API 即可大规模爬取任意 URL，并支持 JS 渲染、代理轮换和反爬虫处理。其 MCP 服务器为代理提供实时网页访问能力：crawl、crawl_markdown、crawl_screenshot。
 </a>
 
-### ☁️ 托管和部署
+### ☁️ 托管式 AI 主机
 
-您可以在任何 VPS 或云平台上部署 OpenClaw，在自己的基础设施上安全运行您的技能，也可以使用托管主机，由其负责服务器、更新和隔离。
+Cloudways 是一个托管云主机平台，可用于部署和扩展应用，而无需承担基础设施运维负担。Cloudways Managed AI Agents 让您可以在专用、隔离的基础设施上运行 OpenClaw，并提供托管更新、备份、SSL 和安全控制。使用优惠码 **VOLTAGENT** 可获得 **10 美元主机抵用金**。[注册](https://unified.cloudways.com/signup?id=1258368&coupon=VOLTAGENT&data1=voltagent)。
 
-<a href="https://myclaw.ai/?utm_source=github&utm_campaign=awesome-openclaw-skills">
-<img src="https://cdn.voltagent.dev/awesome-repo/myclaw-banner.svg" alt="MyClaw"  /><br/>
-您无需管理服务器即可运行这些技能 — 一键设置的全云托管 OpenClaw 实例，24/7 运行时间，完全数据所有权。
+<a href="https://www.cloudways.com/en/managed-ai-agents.php?id=1258368&data1=voltagent">
+<img src="https://cdn.voltagent.dev/awesome-repo/cloudways/cloudway-banner.jpg" alt="Cloudways Managed AI Agents" width="690" /><br/>
+在专用、隔离的基础设施上部署 OpenClaw，提供托管更新、备份、SSL 和安全控制。使用优惠码 VOLTAGENT 注册即可获得 10 美元主机抵用金。
 </a>
-
-
-<br/>
-<br/>
-
-> **提示：** 如果您是自托管，请将 OpenClaw 的 Docker 镜像固定到指定标签，并在升级前对技能卷做快照 — 这样当某次技能更新出问题时，回滚会轻松很多。
 
 ### 🔍 搜索与网络数据
 
@@ -162,31 +154,6 @@ OpenClaw 代理经常需要获取新鲜的真实世界数据 — 搜索结果、
 <img src="https://cdn.voltagent.dev/awesome-repo/serpapi.png" alt="SerpApi"  /><br/>
 让 OpenClaw 代理通过单一 API 访问实时的 Google 搜索、YouTube、Amazon 商品和网页搜索数据。
 </a>
-
-### 🛡️ 安全与配置审计
-
-随着您添加越来越多的技能、自定义代码和已连接服务，您的 OpenClaw 配置会积累大量密钥、文件访问权限和工具权限，很容易失去追踪。您可以手动审查这些内容，也可以运行持续审计，在配置错误和权限过宽演变成问题之前就发现它们。
-
-<a href="https://trent.ai/openclaw/?utm_source=github&utm_medium=referral&utm_campaign=volt-agent">
-<img src="https://cdn.voltagent.dev/awesome-repo/trentclaw-banner.png" alt="trentclaw"  /><br/>
-trentclaw：审计您的 OpenClaw 配置、已安装的技能和自定义代码，并以 diff 形式返回修复建议。安装命令：openclaw skills install trentclaw
-</a>
-
-### 🤖 模型提供商
-
-OpenClaw 开箱即用地支持 **25+ LLM 提供商**，包括 Anthropic、OpenAI 等。通过单个配置更改即可在它们之间切换。
-
-<details>
-<summary><strong>示例：使用 OpenAI 模型</strong></summary>
-
-OpenClaw 通过直接 API 密钥或 ChatGPT/Codex OAuth 支持 `gpt-5.4` 和 `gpt-5.4-pro`。默认启用 WebSocket 传输以降低延迟。
-
-```bash
-openclaw onboard --auth-choice openai-api-key
-# 或使用基于订阅的访问：
-openclaw onboard --auth-choice openai-codex
-```
-</details>
 
 <div align="center">
 
@@ -230,23 +197,17 @@ openclaw onboard --auth-choice openai-codex
 
 | | | |
 |---|---|---|
-| [Git & GitHub](#git--github) (167) | [Marketing & Sales](#marketing--sales) (106) | [Communication](#communication) (146) |
-| [Coding Agents & IDEs](#coding-agents--ides) (1184) | [Productivity & Tasks](#productivity--tasks) (206) | [Speech & Transcription](#speech--transcription) (46) |
+| [Git & GitHub](#git--github) (167) | [Marketing & Sales](#marketing--sales) (108) | [Communication](#communication) (146) |
+| [Coding Agents & IDEs](#coding-agents--ides) (1184) | [Productivity & Tasks](#productivity--tasks) (207) | [Speech & Transcription](#speech--transcription) (47) |
 | [Browser & Automation](#browser--automation) (323) | [AI & LLMs](#ai--llms) (176) | [Smart Home & IoT](#smart-home--iot) (41) |
 | [Web & Frontend Development](#web--frontend-development) (920) | [Data & Analytics](#data--analytics) (28) | [Shopping & E-commerce](#shopping--e-commerce) (51) |
 | [DevOps & Cloud](#devops--cloud) (393) | [Calendar & Scheduling](#calendar--scheduling) (66) | |
-| [Image & Video Generation](#image--video-generation) (170) | [Media & Streaming](#media--streaming) (86) | [PDF & Documents](#pdf--documents) (105) |
+| [Image & Video Generation](#image--video-generation) (171) | [Media & Streaming](#media--streaming) (86) | [PDF & Documents](#pdf--documents) (105) |
 | [Apple Apps & Services](#apple-apps--services) (44) | [Notes & PKM](#notes--pkm) (69) | [Self-Hosted & Automation](#self-hosted--automation) (33) |
-| [Search & Research](#search--research) (345) | [iOS & macOS Development](#ios--macos-development) (29) | [Security & Passwords](#security--passwords) (54) |
+| [Search & Research](#search--research) (343) | [iOS & macOS Development](#ios--macos-development) (29) | [Security & Passwords](#security--passwords) (54) |
 | [Clawdbot Tools](#clawdbot-tools) (37) | [Transportation](#transportation) (111) | [Moltbook](#moltbook) (29) |
-| [CLI Utilities](#cli-utilities) (180) | [Personal Development](#personal-development) (52) | [Gaming](#gaming) (35) |
+| [CLI Utilities](#cli-utilities) (180) | [Personal Development](#personal-development) (53) | [Gaming](#gaming) (35) |
 | [Health & Fitness](#health--fitness) (87) | | |
-
-<br/>
-
-<a href="https://launchkit.getdesign.md/">
-<img src="https://cdn.voltagent.dev/awesome-repo/launchkit-banner-3.png" alt="launchkit"  /><br/>
-</a>
 
 <br/>
 
@@ -262,19 +223,19 @@ openclaw onboard --auth-choice openai-codex
 
 ### Browser & Automation
 
-> **[查看 Browser & Automation 中的所有技能 →](categories/browser-and-automation.md)**
+> **[查看 Browser & Automation 中的所有 323 个技能 →](categories/browser-and-automation.md)**
 
 ### Web & Frontend Development
 
-> **[查看 Web & Frontend Development 中的所有技能 →](categories/web-and-frontend-development.md)**
+> **[查看 Web & Frontend Development 中的所有 925 个技能 →](categories/web-and-frontend-development.md)**
 
 ### DevOps & Cloud
 
-> **[查看 DevOps & Cloud 中的所有技能 →](categories/devops-and-cloud.md)**
+> **[查看 DevOps & Cloud 中的所有 392 个技能 →](categories/devops-and-cloud.md)**
 
 ### Image & Video Generation
 
-> **[查看 Image & Video Generation 中的所有 170 个技能 →](categories/image-and-video-generation.md)**
+> **[查看 Image & Video Generation 中的所有 171 个技能 →](categories/image-and-video-generation.md)**
 
 ### Apple Apps & Services
 
@@ -282,14 +243,14 @@ openclaw onboard --auth-choice openai-codex
 
 ### Search & Research
 
-> **[查看 Search & Research 中的所有 352 个技能 →](categories/search-and-research.md)**
+> **[查看 Search & Research 中的所有 343 个技能 →](categories/search-and-research.md)**
 
 ### 其他分类
 
-- [Marketing & Sales](categories/marketing-and-sales.md) (106)
+- [Marketing & Sales](categories/marketing-and-sales.md) (108)
 - [Communication](categories/communication.md) (146)
-- [Productivity & Tasks](categories/productivity-and-tasks.md) (206)
-- [Speech & Transcription](categories/speech-and-transcription.md) (46)
+- [Productivity & Tasks](categories/productivity-and-tasks.md) (207)
+- [Speech & Transcription](categories/speech-and-transcription.md) (47)
 - [AI & LLMs](categories/ai-and-llms.md) (176)
 - [Smart Home & IoT](categories/smart-home-and-iot.md) (41)
 - [Data & Analytics](categories/data-and-analytics.md) (28)
@@ -305,7 +266,7 @@ openclaw onboard --auth-choice openai-codex
 - [Transportation](categories/transportation.md) (111)
 - [Moltbook](categories/moltbook.md) (29)
 - [CLI Utilities](categories/cli-utilities.md) (180)
-- [Personal Development](categories/personal-development.md) (52)
+- [Personal Development](categories/personal-development.md) (53)
 - [Gaming](categories/gaming.md) (35)
 - [Health & Fitness](categories/health-and-fitness.md) (87)
 

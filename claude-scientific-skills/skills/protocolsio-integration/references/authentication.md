@@ -1,100 +1,138 @@
-# Protocols.io Authentication
+# Authentication and Credential Safety
 
-## Overview
+Verified **2026-09-30** against the official
+[Developer resources](https://www.protocols.io/developers) page and
+[API authentication reference](https://apidoc.protocols.io/).
 
-The protocols.io API supports two types of access tokens for authentication, enabling access to both public and private content.
+## Access Model
 
-## Access Token Types
+The official documentation names two bearer-token modes:
 
-### 1. CLIENT_ACCESS_TOKEN
+| Mode | Officially documented use | Safe default |
+|---|---|---|
+| Client access token | The Developer resources page says it can read all public data. The API authentication section additionally says it can access the creating user's private content. | Treat it as public-read unless the exact account/endpoint behavior and permissions have been verified. |
+| OAuth access token | Public content plus the authorizing user's permitted private content. | Use only for a multi-user application or a user-approved private/write workflow. |
 
-- **Purpose**: Enables access to public content and the private content of the client user
-- **Use case**: When accessing your own protocols and public protocols
-- **Scope**: Limited to the token owner's private content plus all public content
+The two official descriptions of client-token private access are not perfectly
+aligned. Do not use that ambiguity as authorization. Check the returned access
+flags and the user's intended scope before touching private content.
 
-### 2. OAUTH_ACCESS_TOKEN
+“Public protocol” describes the resource's visibility; it does not imply that a
+REST call is anonymous. The current list/get endpoint sections require
+`Authorization: Bearer ...`. The official PDF section documents signed-in and
+signed-out rates, so the bundled client allows anonymous access only when
+`export-pdf --anonymous` is explicit.
 
-- **Purpose**: Grants access to specific users' private content plus all public content
-- **Use case**: When building applications that need to access other users' content with their permission
-- **Scope**: Full access to authorized user's private content plus all public content
+## Named Variables
 
-## Authentication Header
+The bundled scripts read only `PROTOCOLS_IO_ACCESS_TOKEN`, the bearer token
+used by the read helper. They do not read OAuth client credentials or refresh
+tokens. A separately reviewed confidential application should keep those
+credentials in its own secret-manager scope and perform OAuth exchange there.
 
-All API requests must include an Authorization header:
+Never:
 
-```
-Authorization: Bearer [ACCESS_TOKEN]
-```
+- put any value in source, JSON payloads, command arguments, shell history,
+  notebooks, chat, screenshots, logs, exception text, or output;
+- enumerate unrelated environment variables;
+- load or search for `.env` files;
+- print a value, prefix, suffix, length, hash, or decoded form;
+- send a protocols.io bearer token to an attachment URL, S3 URL, redirect, or
+  any host other than the explicitly validated protocols.io API origin.
 
-## OAuth Flow
+Configure secrets through the execution host's credential manager. Validate
+presence locally:
 
-### Step 1: Generate Authorization Link
-
-Direct users to the authorization URL to grant access:
-
-```
-GET https://protocols.io/api/v3/oauth/authorize
-```
-
-**Parameters:**
-- `client_id` (required): Your application's client ID
-- `redirect_uri` (required): URL to redirect users after authorization
-- `response_type` (required): Set to "code"
-- `state` (optional but recommended): Random string to prevent CSRF attacks
-
-**Example:**
-```
-https://protocols.io/api/v3/oauth/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&state=RANDOM_STRING
-```
-
-### Step 2: Exchange Authorization Code for Token
-
-After user authorization, protocols.io redirects to your `redirect_uri` with an authorization code. Exchange this code for an access token:
-
-```
-POST https://protocols.io/api/v3/oauth/token
+```bash
+python3 -B scripts/validate_auth_config.py --require read
 ```
 
-**Parameters:**
-- `grant_type`: Set to "authorization_code"
-- `code`: The authorization code received
-- `client_id`: Your application's client ID
-- `client_secret`: Your application's client secret
-- `redirect_uri`: Must match the redirect_uri used in Step 1
+The validator reads only the named access token, reports a boolean, performs
+no network access, and never loads `.env`.
 
-**Response includes:**
-- `access_token`: The OAuth access token to use for API requests
-- `token_type`: "Bearer"
-- `expires_in`: Token lifetime in seconds (typically 1 year)
-- `refresh_token`: Token for refreshing the access token
+## OAuth 2.0 Contract
 
-### Step 3: Refresh Access Token
+The current official flow documents:
 
-Before the access token expires (typically 1 year), use the refresh token to obtain a new access token:
+1. Create/configure the client on
+   `https://www.protocols.io/developers`.
+2. Register the exact redirect URL there.
+3. Direct the user to
+   `https://www.protocols.io/api/v3/oauth/authorize`.
+4. Send `client_id`, `redirect_url`, `response_type=code`,
+   `scope=readwrite`, and a high-entropy, single-use `state`.
+5. Verify returned `state` before accepting the authorization `code`.
+6. Exchange the code server-side at
+   `POST https://www.protocols.io/api/v3/oauth/token` using
+   `grant_type=authorization_code`, `client_id`, `client_secret`, and `code`.
+7. Refresh at the same endpoint with `grant_type=refresh_token`,
+   `client_id`, `client_secret`, and `refresh_token`.
 
-```
-POST https://protocols.io/api/v3/oauth/token
-```
+Use the documented parameter name `redirect_url`; do not silently substitute
+`redirect_uri`. The token response documents `access_token`, `token_type`,
+`expires_in`, `scope`, `refresh_token`, `refresh_expires_in`, and `user`.
 
-**Parameters:**
-- `grant_type`: Set to "refresh_token"
-- `refresh_token`: The refresh token received in Step 2
-- `client_id`: Your application's client ID
-- `client_secret`: Your application's client secret
+The reference's example scope is `readwrite`. No finer REST scope list was
+found in the official materials reviewed. Therefore:
 
-## Rate Limits
+- use a client token for public-only discovery;
+- do not initiate OAuth merely because an access token is absent;
+- use `readwrite` only for an authorized user-context workflow requiring OAuth;
+  private read workflows still receive this broad documented scope;
+- enforce narrower authorization in the application even if the upstream
+  token is broad;
+- recheck the live developer page before production authorization, because
+  scope support can change.
 
-Be aware of rate limiting when making API requests:
+Do not perform OAuth token exchange in a browser-only client or general agent
+transcript. Keep the client secret and token endpoint in a confidential
+server-side component with redacted observability.
 
-- **Standard endpoints**: 100 requests per minute per user
-- **PDF endpoint** (`/view/[protocol-uri].pdf`):
-  - Signed-in users: 5 requests per minute
-  - Unsigned users: 3 requests per minute
+## Lifetime and Refresh
 
-## Best Practices
+The official authentication page says an OAuth access token resets after about
+one year, returns an `expires_in` value, and warns one month before expiry with
+`warning_code: 1`. It documents API `status_code: 1219` and “token is expired”
+after expiry. Treat the response fields—not a hardcoded calendar interval—as
+authoritative.
 
-1. **Store tokens securely**: Never expose access tokens in client-side code or version control
-2. **Handle token expiration**: Implement automatic token refresh before expiration
-3. **Respect rate limits**: Implement exponential backoff for rate limit errors
-4. **Use state parameter**: Always include a state parameter in OAuth flow for security
-5. **Validate redirect_uri**: Ensure redirect URIs match exactly between authorization and token requests
+On refresh, the documentation says old tokens stop working. Store the newly
+returned access and refresh credentials atomically, then revoke or discard the
+old pair. Never log the response body.
+
+## Header Handling
+
+Endpoint examples use the standard `Authorization: Bearer ...` header. The
+authentication introduction contains a label typo (“Authentication”), so use
+the endpoint contract and standard header name.
+
+Build the header only inside the HTTP transport immediately before a validated
+request. Redact it from plans, tracing, error reports, and mocks. Disable
+redirects; do not assume a same-site redirect is safe for a bearer credential.
+
+## Least-Privilege Checklist
+
+Before any authenticated operation:
+
+1. identify whether the resource is public, private, shared, or tenant-scoped;
+2. choose client access for public reads and OAuth only when user context is
+   necessary;
+3. verify owner/workspace access flags returned by the API;
+4. restrict protocol IDs, workspace URI, tenant origin, page/item count, and
+   response bytes;
+5. separate read credentials from any service capable of writes;
+6. require a current snapshot and fresh confirmation for every mutation;
+7. rotate credentials after suspected disclosure and remove exposed logs.
+
+## Source Notes
+
+- [Developer resources](https://www.protocols.io/developers), accessed
+  2026-09-30 — REST API link, client access, credential creation, OAuth setup.
+- [API authentication and OAuth reference](https://apidoc.protocols.io/),
+  accessed 2026-09-30 — token modes, `readwrite`, authorize/token paths,
+  response fields, lifetime/refresh behavior.
+- [Official MCP server](https://www.protocols.io/mcp-server),
+  accessed 2026-09-30 through rendered extraction — endpoint/auth, public
+  read tools, temporary Claude Connector unavailability. Its public-content
+  tool descriptions are narrower than the API page's OAuth access statement;
+  verify actual tool permissions before relying on private MCP reads.

@@ -66,4 +66,5 @@ OpenCode 会自动发现 `~/.opencode/skills/` 下的所有 `SKILL.md` 文件。
 | [obsidian-bases](skills/obsidian-bases) | 创建和编辑 [Obsidian Bases](https://help.obsidian.md/bases/syntax)（`.base`），支持视图、筛选器、公式和摘要 |
 | [json-canvas](skills/json-canvas) | 创建和编辑 [JSON Canvas](https://jsoncanvas.org/) 文件（`.canvas`），支持节点、边、组和连接 |
 | [obsidian-cli](skills/obsidian-cli) | 通过 [Obsidian CLI](https://help.obsidian.md/cli) 与 Obsidian 仓库交互，包括插件和主题开发 |
-| [defuddle](skills/defuddle) | 使用 [Defuddle](https://github.com/kepano/defuddle-cli) 从网页中提取干净的 Markdown，去除杂乱内容以节省 token |
+| [defuddle](skills/defuddle) | 使用 [Defuddle](https://github.com/kepano/defuddle) 从网页中提取干净的 Markdown，去除杂乱内容以节省 token |
+| [knap](skills/knap) | 使用 [Knap](https://github.com/obsidianmd/knap) 基于 JSON 或 CSV 数据渲染 Markdown 模板，支持批量生成文件 |

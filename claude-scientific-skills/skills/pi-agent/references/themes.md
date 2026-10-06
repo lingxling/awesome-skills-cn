@@ -2,33 +2,20 @@
 
 Source: https://pi.dev/docs/latest/themes
 
-Themes are JSON files defining TUI colors.
+Reviewed against Pi 0.99.2 and its bundled theme schema on 2026-09-30.
 
-## Locations
+## Select or create a theme
 
-- Built-in: `dark`, `light`
-- Global: `~/.pi/agent/themes/*.json`
-- Project: `.pi/themes/*.json` after project trust
-- Packages: `themes/` or `pi.themes`
-- Settings: `themes` array
-- CLI: `--theme`, repeatable
+Built-ins are `system` (default, derives colors from the terminal palette), `dark`, and `light`. Choose through `/settings`; `theme: "light/dark"` follows terminal appearance. `--use-theme light` selects one invocation's initial theme without changing saved settings.
 
-Disable with `--no-themes`. Select through `/settings` or `{"theme": "my-theme"}`. Pi detects terminal background on first run.
+Copy a complete built-in `dark.json` or `light.json` from `packages/coding-agent/src/modes/interactive/theme/`, rename it, and save it as `~/.pi/agent/themes/<name>.json`. Change `vars` and `colors` while preserving all required color roles. The [versioned schema](https://github.com/earendil-works/pi/blob/v0.99.2/packages/coding-agent/src/modes/interactive/theme/theme-schema.json) defines the contract; a file containing only accent/text colors is invalid.
 
-## Format
+Themes also load from trusted `.pi/themes/`, packages, the settings `themes` list, and repeated `--theme <path>` flags. `--theme` loads a file; `--use-theme` selects by name. The active user theme hot-reloads only from `<agent-dir>/themes/<name>.json`; use `/reload` for other locations.
 
-A theme has `$schema`, required `name`, optional `vars`, required `colors`, and optional `export` colors for HTML exports. All 51 color tokens must be defined.
+## File contract
 
-Color values can be 6-digit hex strings, xterm 256-color indices, variable names from `vars`, or `""` for terminal default.
+`name` is required, unique, cannot contain `/`, and cannot be `system` (reserved). Optional `appearance` is `dark` or `light`; optional `vars` may reference other variables without missing names or cycles. `colors` supplies 51 required tokens. Five optional colors fall back: `scrollbarTrack` to `muted`, `scrollbarThumb` to `text`, `searchMatchBg` to `selectedBg`, `searchMatchText` to `text`, and `thinkingMax` to `thinkingXhigh`.
 
-## Token Groups
+Accepted values are `#rgb`, `#rrggbb`, `oklch(...)`, `okhsl(...)`, ANSI indices 0–255, variable names, and `""` for terminal defaults. Pi uses truecolor when supported and approximates 256-color terminals; HTML export converts OKHSL to hex. `export.pageBg`, `cardBg`, and `infoBg` optionally override exported page colors.
 
-- Core UI: accent, borders, success/error/warning, muted/dim/text/thinkingText.
-- Background/content: selected/user/custom/tool states.
-- Markdown: headings, links, code, quote, hr, list bullets.
-- Tool diffs: added, removed, context.
-- Syntax: comment, keyword, function, variable, string, number, type, operator, punctuation.
-- Thinking levels: off, minimal, low, medium, high, xhigh.
-- Bash mode.
-
-Hot reload applies edits to the active custom theme for immediate feedback.
+Use callback-local `theme` in extensions. `theme.fg`, `bg`, `bold`, `italic`, `strikethrough`, `style`, `colors`, and `appearance` expose styling; rebuild cached colored child content in `invalidate()`. Verify long wrapped text, messages, tool states, diffs, and both terminal appearances. Graphical rendering was not exercised in this review.

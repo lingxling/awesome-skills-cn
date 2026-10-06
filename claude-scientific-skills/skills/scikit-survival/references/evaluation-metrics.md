@@ -1,378 +1,407 @@
-# Evaluation Metrics for Survival Models
+# Censoring-aware evaluation, calibration, and model selection
 
-## Overview
+Verified for scikit-survival 0.28.0 on 2026-10-01. API statements below use
+official scikit-survival documentation; interpretation is anchored to the cited
+primary methodological literature.
 
-Evaluating survival models requires specialized metrics that account for censored data. scikit-survival provides three main categories of metrics:
-1. Concordance Index (C-index)
-2. Time-dependent ROC and AUC
-3. Brier Score
+## Keep the targets distinct
 
-## Concordance Index (C-index)
+- **Discrimination:** can the score order subjects by event risk?
+  Harrell C, Uno C, and cumulative/dynamic AUC.
+- **Probability prediction error:** how close are predicted survival probabilities
+  to observed event-free status after censoring adjustment? Brier score and IBS.
+- **Calibration:** do predicted probabilities agree with observed probabilities at
+  a specified horizon and population? Requires horizon-specific assessment; Brier
+  score is not a pure calibration measure.
+- **Cause-specific cumulative incidence:** what is the absolute probability of a
+  particular competing cause by time \(t\)? Standard survival metrics are not
+  automatically cause-specific CIF metrics.
+- **Clinical/decision utility:** do decisions based on predictions improve outcomes
+  under defined consequences? None of the metrics above establishes this.
 
-### What It Measures
+Do not label one aggregate number "model accuracy" without its estimand, horizon,
+censoring estimator, and input type.
 
-The concordance index measures the rank correlation between predicted risk scores and observed event times. It represents the probability that, for a random pair of subjects, the model correctly orders their survival times.
+## Prediction contracts
 
-**Range**: 0 to 1
-- 0.5 = random predictions
-- 1.0 = perfect concordance
-- Typical good performance: 0.7-0.8
+### Higher-is-riskier scalar
 
-### Two Implementations
+Shape `(n_test,)`. Used by:
 
-#### Harrell's C-index (concordance_index_censored)
+- `concordance_index_censored`
+- `concordance_index_ipcw`
+- `cumulative_dynamic_auc` (same score at each requested time)
 
-The traditional estimator, simpler but has limitations.
+Typical source:
 
-**When to Use:**
-- Low censoring rates (< 40%)
-- Quick evaluation during development
-- Comparing models on same dataset
+```python
+risk = estimator.predict(X_test)
+```
 
-**Limitations:**
-- Becomes increasingly biased with high censoring rates
-- Overestimates performance starting at approximately 49% censoring
+Confirm direction. Cox and ranking-only SVM predictions are higher-is-riskier.
+Predicted survival/log-time outputs are the opposite direction and must not be
+silently treated as risk.
+
+### Time-dependent risk
+
+Shape `(n_test, n_times)`. Accepted by `cumulative_dynamic_auc`, where column
+`j` is risk at `times[j]`. For a random survival forest:
+
+```python
+functions = estimator.predict_cumulative_hazard_function(X_test)
+risk_by_time = np.vstack([fn(times) for fn in functions])
+```
+
+Cumulative hazard is risk-oriented. Untransformed survival probabilities have the opposite direction and are not valid risk inputs to `cumulative_dynamic_auc`. Numeric shape validation does not detect that semantic error; check output direction explicitly before using a transformed probability or hazard score.
+
+### Survival probability
+
+Shape `(n_test, n_times)`, values in `[0, 1]`, non-increasing across columns.
+Used by:
+
+- `brier_score`
+- `integrated_brier_score`
+
+```python
+functions = estimator.predict_survival_function(X_test)
+survival_probability = np.vstack([fn(times) for fn in functions])
+```
+
+Metric functions expect the numeric matrix, not a list of unevaluated
+`StepFunction` objects and not a 1D risk score.
+
+## Harrell concordance
 
 ```python
 from sksurv.metrics import concordance_index_censored
 
-# Compute Harrell's C-index
-result = concordance_index_censored(y_test['event'], y_test['time'], risk_scores)
-c_index = result[0]
-print(f"Harrell's C-index: {c_index:.3f}")
+harrell_c = concordance_index_censored(
+    y_test["event"],
+    y_test["time"],
+    risk,
+)[0]
 ```
 
-#### Uno's C-index (concordance_index_ipcw)
+Harrell C is the fraction of comparable pairs whose risk ordering is concordant,
+with handling for tied risk and event times. It measures rank discrimination over
+the observed follow-up mix.
 
-Inverse probability of censoring weighted (IPCW) estimator that corrects for censoring bias.
+Important limitations:
 
-**When to Use:**
-- Moderate to high censoring rates (> 40%)
-- Need unbiased estimates
-- Comparing models across different datasets
-- Publishing results (more robust)
+- It does not assess probability calibration.
+- It does not focus on a prespecified horizon.
+- The set of comparable pairs changes under censoring.
+- Uno et al. showed the conventional estimator's limiting value can depend on the
+  censoring distribution.
 
-**Advantages:**
-- Remains stable even with high censoring
-- More reliable estimates
-- Less biased
+There is no universal censoring-percentage cutoff at which Harrell C suddenly
+becomes invalid. Report censoring, compare sensitivity to IPCW concordance, and
+justify the estimand.
+
+## Uno IPCW concordance
 
 ```python
 from sksurv.metrics import concordance_index_ipcw
 
-# Compute Uno's C-index
-# Requires training data for IPCW calculation
-c_index, concordant, discordant, tied_risk = concordance_index_ipcw(
-    y_train, y_test, risk_scores
-)
-print(f"Uno's C-index: {c_index:.3f}")
+uno_c = concordance_index_ipcw(
+    y_train,
+    y_test,
+    risk,
+    tau=tau,
+)[0]
 ```
 
-### Choosing Between Harrell's and Uno's
+`survival_train` estimates the censoring distribution. Never pass pooled
+train+test outcomes or `y_test` as the training distribution.
 
-**Use Uno's C-index when:**
-- Censoring rate > 40%
-- Need most accurate estimates
-- Comparing models from different studies
-- Publishing research
+`tau` truncates the concordance target. Choose it before seeing model performance
+and where the estimated training censoring survival is positive. In 0.28.0 only test event times strictly below `tau` enter its censoring-weight
+lookup; later records remain potential comparison partners with zero event weight.
+A valid `tau` can therefore avoid a late-event support error for Uno C. This does
+not make the same test outcomes valid for AUC or Brier APIs.
 
-**Use Harrell's C-index when:**
-- Low censoring rates
-- Quick model comparisons during development
-- Computational efficiency is critical
+The implementation uses Kaplan-Meier censoring weights and assumes censoring is
+random/independent of features. If censoring depends on covariates, this marginal
+weight model may be inadequate. IPCW is not a generic correction for informative
+censoring.
 
-### Example Comparison
-
-```python
-from sksurv.metrics import concordance_index_censored, concordance_index_ipcw
-
-# Harrell's C-index
-harrell = concordance_index_censored(y_test['event'], y_test['time'], risk_scores)[0]
-
-# Uno's C-index
-uno = concordance_index_ipcw(y_train, y_test, risk_scores)[0]
-
-print(f"Harrell's C-index: {harrell:.3f}")
-print(f"Uno's C-index: {uno:.3f}")
-```
-
-## Time-Dependent ROC and AUC
-
-### What It Measures
-
-Time-dependent AUC evaluates model discrimination at specific time points. It distinguishes subjects who experience events by time *t* from those who don't.
-
-**Question answered**: "How well does the model predict who will have an event by time t?"
-
-### When to Use
-
-- Predicting event occurrence within specific time windows
-- Clinical decision-making at specific timepoints (e.g., 5-year survival)
-- Want to evaluate performance across different time horizons
-- Need both discrimination and timing information
-
-### Key Function: cumulative_dynamic_auc
+## Cumulative/dynamic AUC
 
 ```python
 from sksurv.metrics import cumulative_dynamic_auc
 
-# Define evaluation times
-times = [365, 730, 1095, 1460, 1825]  # 1, 2, 3, 4, 5 years
-
-# Compute time-dependent AUC
 auc, mean_auc = cumulative_dynamic_auc(
-    y_train, y_test, risk_scores, times
+    y_train,
+    y_test,
+    risk,   # (n_test,) or (n_test, n_times)
+    times,
 )
-
-# Plot AUC over time
-import matplotlib.pyplot as plt
-plt.plot(times, auc, marker='o')
-plt.xlabel('Time (days)')
-plt.ylabel('Time-dependent AUC')
-plt.title('Model Discrimination Over Time')
-plt.show()
-
-print(f"Mean AUC: {mean_auc:.3f}")
 ```
 
-### Interpretation
+At each \(t\), cumulative cases have an observed event by \(t\), while dynamic
+controls remain event-free after \(t\). IPCW handles right censoring.
 
-- **AUC at time t**: Probability model correctly ranks a subject who had event by time t above one who didn't
-- **Varying AUC over time**: Indicates model performance changes with time horizon
-- **Mean AUC**: Overall summary of discrimination across all time points
+Requirements:
 
-### Example: Comparing Models
+- `times` is one-dimensional, unique, and strictly increasing;
+- every value lies within test follow-up;
+- training follow-up supports test outcomes and the grid;
+- the training censoring survival is positive over the grid and at every test
+  event time used by the implementation (AUC weights all test events before
+  applying horizons);
+- each horizon has at least one observed case and a later control;
+- risk has shape `(n_test,)` or `(n_test, n_times)`;
+- higher values mean higher event risk.
+
+The returned `mean_auc` is not the arithmetic mean. It integrates
+\(\widehat{AUC}(t)\) over the time range, weighted by the estimated survival
+function.
+
+The cumulative/dynamic definition is one time-dependent ROC estimand. State it;
+other incident/dynamic or competing-risk definitions answer different questions.
+
+## Brier score
 
 ```python
-# Compare two models
-auc1, mean_auc1 = cumulative_dynamic_auc(y_train, y_test, risk_scores1, times)
-auc2, mean_auc2 = cumulative_dynamic_auc(y_train, y_test, risk_scores2, times)
+from sksurv.metrics import brier_score, integrated_brier_score
 
-plt.plot(times, auc1, marker='o', label='Model 1')
-plt.plot(times, auc2, marker='s', label='Model 2')
-plt.xlabel('Time (days)')
-plt.ylabel('Time-dependent AUC')
-plt.legend()
-plt.show()
+returned_times, brier = brier_score(
+    y_train,
+    y_test,
+    survival_probability,
+    times,
+)
+ibs = integrated_brier_score(
+    y_train,
+    y_test,
+    survival_probability,
+    times,
+)
 ```
 
-## Brier Score
+The time-dependent Brier score is an IPC-weighted squared error between predicted
+survival probability and event-free status at \(t\). Lower is better.
 
-### What It Measures
+Requirements:
 
-Brier score extends mean squared error to survival data with censoring. It measures both discrimination (ranking) and calibration (accuracy of predicted probabilities).
+- predictions are survival probabilities, not risk scores;
+- prediction shape is `(n_test, n_times)`;
+- time and training-support rules match the IPCW setting;
+- the marginal Kaplan-Meier censoring estimator's independence assumption is
+  plausible.
 
-**Formula**: **(1/n) Σ (S(t|x_i) - I(T_i > t))²**
+IBS in 0.28.0 equals `np.trapezoid(brier, times) / (times[-1] - times[0])`.
+It is the normalized trapezoidal integral over the supplied interval. It depends on the chosen interval; IBS values from different
+time ranges are not directly comparable.
 
-where S(t|x_i) is predicted survival probability at time t for subject i.
+Compare against useful reference predictions such as a training-derived
+Kaplan-Meier survival curve. Do not estimate the reference curve on test outcomes.
 
-**Range**: 0 to 1
-- 0 = perfect predictions
-- Lower is better
-- Typical good performance: < 0.2
+## Calibration
 
-### When to Use
+Brier score responds to both discrimination and calibration. A good Brier score
+does not prove that predicted 20% risk corresponds to 20% observed risk in every
+horizon or subgroup.
 
-- Need calibration assessment (not just ranking)
-- Want to evaluate predicted probabilities, not just risk scores
-- Comparing models that output survival functions
-- Clinical applications requiring probability estimates
+For a prespecified horizon:
 
-### Key Functions
+1. fit and tune the model without the calibration-evaluation rows;
+2. obtain event probability `1 - S(t | x)` on independent validation rows;
+3. compare predictions with a censoring-aware observed probability estimate;
+4. inspect calibration-in-the-large, slope/shape, uncertainty, and sample support;
+5. repeat only for prespecified horizons/subgroups or account for multiplicity.
 
-#### brier_score: Single Time Point
+scikit-survival 0.28 does not expose a dedicated calibration-curve API. Do not use
+`sklearn.calibration.calibration_curve` naively on censored binary labels. If an
+external method is used, document its censoring assumptions and train/validation
+separation.
+
+Any recalibration layer is another learned model. Fit it on a calibration split or
+inner resampling, then assess on independent data.
+
+## Safe time-grid construction
+
+A conservative grid for jointly computing AUC, Uno C, and Brier metrics:
 
 ```python
-from sksurv.metrics import brier_score
+import numpy as np
+from sksurv.nonparametric import CensoringDistributionEstimator
 
-# Compute Brier score at specific time
-time_point = 1825  # 5 years
-surv_probs = model.predict_survival_function(X_test)
-# Extract survival probability at time_point for each subject
-surv_at_t = [fn(time_point) for fn in surv_probs]
+test_time = y_test["time"]
+train_time = y_train["time"]
 
-bs = brier_score(y_train, y_test, surv_at_t, time_point)[1]
-print(f"Brier score at {time_point} days: {bs:.3f}")
+lower = np.quantile(test_time, 0.10)
+upper = min(
+    np.quantile(test_time, 0.80),
+    np.nextafter(train_time.max(), -np.inf),
+)
+times = np.linspace(lower, upper, 50)
+
+if not (test_time.min() < times[0] < times[-1] < test_time.max()):
+    raise ValueError("grid is outside test follow-up")
+if not test_time.max() < train_time.max():
+    raise ValueError("test follow-up exceeds training support")
+
+censoring = CensoringDistributionEstimator().fit(y_train)
+if np.any(censoring.predict_proba(times) <= 0):
+    raise ValueError("training censoring survival reaches zero on grid")
+censoring.predict_ipcw(y_test)  # AUC needs positive support at all test event times
+if not np.any(y_test["event"] & (test_time <= times[0])):
+    raise ValueError("AUC has no observed cases at the first horizon")
 ```
 
-#### integrated_brier_score: Summary Across Time
+This strict maximum-follow-up check is a helper policy, not an exact universal API
+restriction. Native Brier metrics also query censoring survival at all test times;
+zero weights may be suppressed by the implementation, so a successful call alone
+is not evidence of valid support. Never silently drop long-followed test subjects
+to obtain a score: define administrative truncation and recode late events as
+censored under a prespecified estimand if that is scientifically intended.
 
-```python
-from sksurv.metrics import integrated_brier_score
+Quantiles are an operational example, not a scientific default. Prefer
+prespecified meaningful horizons, then verify fold support. Do not select a grid
+because it maximizes a metric.
 
-# Compute integrated Brier score
-times = [365, 730, 1095, 1460, 1825]
-surv_probs = model.predict_survival_function(X_test)
+The bundled evaluator rejects unsupported grids and shape/type confusion:
 
-ibs = integrated_brier_score(y_train, y_test, surv_probs, times)
-print(f"Integrated Brier Score: {ibs:.3f}")
+```bash
+python skills/scikit-survival/scripts/evaluate_survival_metrics.py \
+  --input predictions.npz \
+  --output metrics-summary.json
 ```
 
-### Interpretation
+Its NPZ contract is:
 
-- **Brier score at time t**: Expected squared difference between predicted and actual survival at time t
-- **Integrated Brier Score**: Weighted average of Brier scores across time
-- **Lower values = better predictions**
+- `train_event`, `train_time`
+- `test_event`, `test_time`
+- `times`
+- `risk`
+- optional `survival`
 
-### Comparison with Null Model
+Archives are loaded with `allow_pickle=False`, with compressed-file and total
+expanded-member bounds. The evaluator requires at least two horizons for the
+combined workflow; native AUC and Brier permit a single horizon, whereas IBS does not.
 
-Always compare against a baseline (e.g., Kaplan-Meier):
+## Scorer wrappers and model selection
 
-```python
-from sksurv.nonparametric import kaplan_meier_estimator
+Survival estimators' default `.score()` is Harrell concordance and handles their
+own prediction direction. Discrimination wrappers below call raw `.predict()`;
+they do not reverse time-oriented IPCRidge, SVM-regression, or AFT-boosting output. For other targets,
+scikit-survival provides estimator wrappers:
 
-# Compute Kaplan-Meier baseline
-time_km, surv_km = kaplan_meier_estimator(y_train['event'], y_train['time'])
+- `as_concordance_index_ipcw_scorer(estimator, tau=None, tied_tol=...)`
+- `as_cumulative_dynamic_auc_scorer(estimator, times, tied_tol=...)`
+- `as_integrated_brier_score_scorer(estimator, times)`
 
-# Predict with KM for each test subject
-surv_km_test = [surv_km[time_km <= time_point][-1] if any(time_km <= time_point) else 1.0
-                for _ in range(len(X_test))]
-
-bs_km = brier_score(y_train, y_test, surv_km_test, time_point)[1]
-bs_model = brier_score(y_train, y_test, surv_at_t, time_point)[1]
-
-print(f"Kaplan-Meier Brier Score: {bs_km:.3f}")
-print(f"Model Brier Score: {bs_model:.3f}")
-print(f"Improvement: {(bs_km - bs_model) / bs_km * 100:.1f}%")
-```
-
-## Using Metrics with Cross-Validation
-
-### Concordance Index Scorer
-
-```python
-from sklearn.model_selection import cross_val_score
-from sksurv.metrics import as_concordance_index_ipcw_scorer
-
-# Create scorer
-scorer = as_concordance_index_ipcw_scorer()
-
-# Perform cross-validation
-scores = cross_val_score(model, X, y, cv=5, scoring=scorer)
-print(f"Mean C-index: {scores.mean():.3f} (±{scores.std():.3f})")
-```
-
-### Integrated Brier Score Scorer
-
-```python
-from sksurv.metrics import as_integrated_brier_score_scorer
-
-# Define time points for evaluation
-times = np.percentile(y['time'][y['event']], [25, 50, 75])
-
-# Create scorer
-scorer = as_integrated_brier_score_scorer(times)
-
-# Perform cross-validation
-scores = cross_val_score(model, X, y, cv=5, scoring=scorer)
-print(f"Mean IBS: {scores.mean():.3f} (±{scores.std():.3f})")
-```
-
-## Model Selection with GridSearchCV
+Correct pattern:
 
 ```python
 from sklearn.model_selection import GridSearchCV
-from sksurv.ensemble import RandomSurvivalForest
-from sksurv.metrics import as_concordance_index_ipcw_scorer
+from sksurv.metrics import as_integrated_brier_score_scorer
 
-# Define parameter grid
-param_grid = {
-    'n_estimators': [100, 200, 300],
-    'min_samples_split': [10, 20, 30],
-    'max_depth': [None, 10, 20]
-}
-
-# Create scorer
-scorer = as_concordance_index_ipcw_scorer()
-
-# Perform grid search
-cv = GridSearchCV(
-    RandomSurvivalForest(random_state=42),
-    param_grid,
-    scoring=scorer,
-    cv=5,
-    n_jobs=-1
+wrapped = as_integrated_brier_score_scorer(
+    estimator,
+    times=inner_times,
 )
-cv.fit(X, y)
-
-print(f"Best parameters: {cv.best_params_}")
-print(f"Best C-index: {cv.best_score_:.3f}")
+search = GridSearchCV(
+    wrapped,
+    {"estimator__model__max_depth": [1, 2, 4]},
+    cv=inner_splits,
+)
+search.fit(X_outer_train, y_outer_train)
 ```
 
-## Comprehensive Model Evaluation
+The wrapper:
 
-### Recommended Evaluation Pipeline
+- is the estimator supplied to `GridSearchCV`;
+- stores its fitted estimator in `estimator_`;
+- exposes nested parameters under `estimator__...`;
+- fits metric state, including training survival information, from each fit fold;
+- negates IBS so larger wrapper score remains better.
 
-```python
-from sksurv.metrics import (
-    concordance_index_censored,
-    concordance_index_ipcw,
-    cumulative_dynamic_auc,
-    integrated_brier_score
-)
+Do not write `scoring=as_integrated_brier_score_scorer(times)`; the constructor
+requires an estimator.
 
-def evaluate_survival_model(model, X_train, X_test, y_train, y_test):
-    """Comprehensive evaluation of survival model"""
+## Nested CV protocol
 
-    # Get predictions
-    risk_scores = model.predict(X_test)
-    surv_funcs = model.predict_survival_function(X_test)
+For tuned performance:
 
-    # 1. Concordance Index (both versions)
-    c_harrell = concordance_index_censored(y_test['event'], y_test['time'], risk_scores)[0]
-    c_uno = concordance_index_ipcw(y_train, y_test, risk_scores)[0]
-
-    # 2. Time-dependent AUC
-    times = np.percentile(y_test['time'][y_test['event']], [25, 50, 75])
-    auc, mean_auc = cumulative_dynamic_auc(y_train, y_test, risk_scores, times)
-
-    # 3. Integrated Brier Score
-    ibs = integrated_brier_score(y_train, y_test, surv_funcs, times)
-
-    # Print results
-    print("=" * 50)
-    print("Model Evaluation Results")
-    print("=" * 50)
-    print(f"Harrell's C-index:  {c_harrell:.3f}")
-    print(f"Uno's C-index:      {c_uno:.3f}")
-    print(f"Mean AUC:           {mean_auc:.3f}")
-    print(f"Integrated Brier:   {ibs:.3f}")
-    print("=" * 50)
-
-    return {
-        'c_harrell': c_harrell,
-        'c_uno': c_uno,
-        'mean_auc': mean_auc,
-        'ibs': ibs,
-        'time_auc': dict(zip(times, auc))
-    }
-
-# Use the evaluation function
-results = evaluate_survival_model(model, X_train, X_test, y_train, y_test)
+```text
+for each outer split:
+    outer_train, outer_valid
+    for each inner split within outer_train:
+        fit preprocessing + model + censoring-dependent scorer state
+        select hyperparameters
+    refit selected pipeline on all outer_train
+    evaluate once on outer_valid using outer_train censoring distribution
+aggregate outer scores and uncertainty
 ```
 
-## Choosing the Right Metric
+Every fold needs its own valid `tau`/time grid. A single global grid derived from
+all outcome times leaks outer-validation support information and may fail when an
+outer training fold has shorter follow-up.
 
-### Decision Guide
+After protocol evaluation, tune on all development data and evaluate once on an
+untouched final test set. Do not report the best inner-CV score as generalization
+performance.
 
-**Use C-index (Uno's) when:**
-- Primary goal is ranking/discrimination
-- Don't need calibrated probabilities
-- Standard survival analysis setting
-- Most common choice
+## Competing risks
 
-**Use Time-dependent AUC when:**
-- Need discrimination at specific time points
-- Clinical decisions at specific horizons
-- Want to understand how performance varies over time
+If events have causes:
 
-**Use Brier Score when:**
-- Need calibrated probability estimates
-- Both discrimination AND calibration important
-- Clinical decision-making requiring probabilities
-- Want comprehensive assessment
+- all-event risk combines causes and is not cause-specific discrimination;
+- treating other causes as censored defines a cause-specific hazard analysis;
+- a cause-specific CIF is an absolute probability accounting for all causes;
+- standard Brier/AUC functions here are documented for right-censored
+  single-event outcomes, not a complete competing-risk prediction evaluation.
 
-**Best Practice**: Report multiple metrics for comprehensive evaluation. At minimum, report:
-- Uno's C-index (discrimination)
-- Integrated Brier Score (discrimination + calibration)
-- Time-dependent AUC at clinically relevant time points
+State event coding and use methods designed for the cause-specific estimand. See
+`competing-risks.md`.
+
+## Reporting checklist
+
+- split and nesting protocol;
+- event/censoring counts per evaluation set;
+- metric definition and score direction;
+- `tau` and exact time grid/range;
+- source of censoring weights;
+- prediction shape and whether values are risks or survival probabilities;
+- uncertainty across independent outer folds or bootstrap resamples;
+- calibration assessment separate from discrimination;
+- handling of competing causes;
+- no claim of clinical utility from metrics alone.
+
+## Primary methodological literature
+
+- Harrell FE Jr, Califf RM, Pryor DB, Lee KL, Rosati RA. "Evaluating the
+  yield of medical tests." *JAMA* (1982).
+  [doi:10.1001/jama.1982.03320430047030](https://doi.org/10.1001/jama.1982.03320430047030)
+- Uno H, Cai T, Pencina MJ, D'Agostino RB, Wei LJ. "On the C-statistics for
+  evaluating overall adequacy of risk prediction procedures with censored
+  survival data." *Statistics in Medicine* (2011).
+  [doi:10.1002/sim.4154](https://doi.org/10.1002/sim.4154)
+- Heagerty PJ, Lumley T, Pepe MS. "Time-dependent ROC curves for censored
+  survival data and a diagnostic marker." *Biometrics* (2000).
+  [doi:10.1111/j.0006-341X.2000.00337.x](https://doi.org/10.1111/j.0006-341X.2000.00337.x)
+- Heagerty PJ, Zheng Y. "Survival model predictive accuracy and ROC curves."
+  *Biometrics* (2005).
+  [doi:10.1111/j.0006-341X.2005.030814.x](https://doi.org/10.1111/j.0006-341X.2005.030814.x)
+- Graf E, Schmoor C, Sauerbrei W, Schumacher M. "Assessment and comparison
+  of prognostic classification schemes for survival data."
+  *Statistics in Medicine* (1999).
+  [doi:10.1002/(SICI)1097-0258(19990915/30)18:17/18%3C2529::AID-SIM274%3E3.0.CO;2-5](https://doi.org/10.1002/%28SICI%291097-0258%2819990915/30%2918%3A17/18%3C2529%3A%3AAID-SIM274%3E3.0.CO%3B2-5)
+- Gerds TA, Schumacher M. "Consistent estimation of the expected Brier score
+  in general survival models with right-censored event times."
+  *Biometrical Journal* (2006).
+  [doi:10.1002/bimj.200610301](https://doi.org/10.1002/bimj.200610301)
+
+## Official API sources
+
+Checked 2026-10-01:
+
+- [Evaluation user guide](https://scikit-survival.readthedocs.io/en/stable/user_guide/evaluating-survival-models.html)
+- [Metrics API index](https://scikit-survival.readthedocs.io/en/stable/api/metrics.html)
+- [IPCW concordance API](https://scikit-survival.readthedocs.io/en/stable/api/generated/sksurv.metrics.concordance_index_ipcw.html)
+- [Cumulative/dynamic AUC API](https://scikit-survival.readthedocs.io/en/stable/api/generated/sksurv.metrics.cumulative_dynamic_auc.html)
+- [Brier score API](https://scikit-survival.readthedocs.io/en/stable/api/generated/sksurv.metrics.brier_score.html)
+- [Integrated Brier score API](https://scikit-survival.readthedocs.io/en/stable/api/generated/sksurv.metrics.integrated_brier_score.html)
+- [IPCW scorer wrapper API](https://scikit-survival.readthedocs.io/en/stable/api/generated/sksurv.metrics.as_concordance_index_ipcw_scorer.html)

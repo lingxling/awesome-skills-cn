@@ -1,6 +1,6 @@
 ---
 name: SEMrush Automation
-description: "Automate SEO analysis with SEMrush -- research keywords, analyze domain organic rankings, audit backlinks, assess keyword difficulty, and discover related terms through the Composio SEMrush integration."
+description: "通过 SEMrush 自动化 SEO 分析 -- 研究关键词、分析域名自然排名、审查反向链接、评估关键词难度，并通过 Composio SEMrush 集成发现相关词汇。"
 requires:
   mcp:
     - rube
@@ -8,153 +8,153 @@ requires:
 
 # SEMrush Automation
 
-Run **SEMrush** SEO analytics directly from Claude Code. Analyze domain keywords, audit backlink profiles, research keyword difficulty, discover related terms, and track organic page performance without leaving your terminal.
+直接从 Claude Code 运行 **SEMrush** SEO 分析。无需离开终端即可分析域名关键词、审查反向链接概况、研究关键词难度、发现相关词汇，并跟踪自然页面表现。
 
-**Toolkit docs:** [composio.dev/toolkits/semrush](https://composio.dev/toolkits/semrush)
+**工具包文档：** [composio.dev/toolkits/semrush](https://composio.dev/toolkits/semrush)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your configuration:
+1. 将 Composio MCP 服务器添加到你的配置中：
    ```
    https://rube.app/mcp
    ```
-2. 连接 your SEMrush account when prompted. The agent will provide an authentication link.
-3. All SEMrush tools require a `database` parameter specifying the regional database (e.g., `us`, `uk`, `de`). Choose the correct region for your target audience.
+2. 按提示连接你的 SEMrush 账户。智能体会提供一个身份验证链接。
+3. 所有 SEMrush 工具都需要 `database` 参数来指定区域数据库（例如 `us`、`uk`、`de`）。请根据目标受众选择正确的区域。
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Domain Organic Keywords Analysis
+### 1. 域名自然关键词分析
 
-Retrieve all organic search keywords for a domain, including positions, traffic estimates, CPC, and keyword difficulty.
+获取某个域名的所有自然搜索关键词，包括排名位置、流量估算、CPC 和关键词难度。
 
-**Tool:** `SEMRUSH_DOMAIN_ORGANIC_SEARCH_KEYWORDS`
+**工具：** `SEMRUSH_DOMAIN_ORGANIC_SEARCH_KEYWORDS`
 
-Key parameters:
-- `domain` (required) -- e.g., `example.com`
-- `database` (required) -- regional database code (e.g., `us`, `uk`, `de`)
-- `display_limit` (default 10000) and `display_offset` (default 0) -- pagination
-- `display_sort` -- sort by position, traffic, volume, etc. (e.g., `tr_desc` for traffic descending)
-- `display_date` -- historical data in `YYYYMM15` format (monthly) or `YYYYMMDD` (daily)
-- `export_columns` -- specify columns like `Ph` (phrase), `Po` (position), `Nq` (volume), `Tr` (traffic), `Kd` (difficulty)
-- `display_filter` -- filter by specific columns
+关键参数：
+- `domain`（必填）-- 例如 `example.com`
+- `database`（必填）-- 区域数据库代码（例如 `us`、`uk`、`de`）
+- `display_limit`（默认 10000）和 `display_offset`（默认 0）-- 分页
+- `display_sort` -- 按位置、流量、搜索量等排序（例如 `tr_desc` 表示按流量降序）
+- `display_date` -- 历史数据，格式为 `YYYYMM15`（月度）或 `YYYYMMDD`（每日）
+- `export_columns` -- 指定列，例如 `Ph`（短语）、`Po`（位置）、`Nq`（搜索量）、`Tr`（流量）、`Kd`（难度）
+- `display_filter` -- 按特定列筛选
 
-Example prompt: *"Get the top 100 organic keywords for example.com in the US database, sorted by traffic"*
-
----
-
-### 2. Keyword Overview and Batch Analysis
-
-Get detailed metrics for individual keywords or analyze up to 100 keywords at once.
-
-**Tools:** `SEMRUSH_KEYWORD_OVERVIEW_ONE_DATABASE`, `SEMRUSH_BATCH_KEYWORD_OVERVIEW`
-
-For single keyword:
-- `phrase` (required) -- keyword to investigate
-- `database` (required) -- regional database
-
-For batch (up to 100 keywords):
-- `phrase` (required) -- semicolon-separated keywords (max 255 chars total)
-- `database` (required) -- regional database
-- `export_columns` -- `Ph` (phrase), `Nq` (volume), `Cp` (CPC), `Co` (competition), `Kd` (difficulty), `In` (intent)
-
-Example prompt: *"Get keyword metrics for 'seo services;content marketing;link building' in the US database"*
+示例提示：*"获取 example.com 在美国数据库中按流量排序的前 100 个自然关键词"*
 
 ---
 
-### 3. Domain Organic Pages Report
+### 2. 关键词概览与批量分析
 
-Discover which URLs on a domain drive the most organic traffic and visibility.
+获取单个关键词的详细指标，或一次分析最多 100 个关键词。
 
-**Tool:** `SEMRUSH_DOMAIN_ORGANIC_PAGES`
+**工具：** `SEMRUSH_KEYWORD_OVERVIEW_ONE_DATABASE`、`SEMRUSH_BATCH_KEYWORD_OVERVIEW`
 
-Key parameters:
-- `domain` (required) -- target domain
-- `database` (required) -- regional database
-- `display_sort` -- e.g., `pc_desc` for traffic share descending
-- `display_limit` and `display_offset` -- pagination
-- `export_columns` -- `Ur` (URL), `Pc` (traffic %), `Tg` (traffic), `Tr` (traffic cost)
+单个关键词：
+- `phrase`（必填）-- 要调查的关键词
+- `database`（必填）-- 区域数据库
 
-Example prompt: *"Show the top 50 organic pages for example.com ranked by traffic share"*
+批量（最多 100 个关键词）：
+- `phrase`（必填）-- 用分号分隔的关键词（总字符数最多 255）
+- `database`（必填）-- 区域数据库
+- `export_columns` -- `Ph`（短语）、`Nq`（搜索量）、`Cp`（CPC）、`Co`（竞争度）、`Kd`（难度）、`In`（意图）
 
----
-
-### 4. Backlink Profile Overview
-
-Get a summary of backlinks for a domain including Authority Score, link types, and referring domain counts.
-
-**Tool:** `SEMRUSH_BACKLINKS_OVERVIEW`
-
-Key parameters:
-- `target` (required) -- domain, subdomain, or full URL
-- `target_type` (required) -- `root_domain`, `domain`, or `url`
-- `export_columns` -- `ascore` (Authority Score), `total` (total backlinks), `domains_num` (referring domains), `follows_num`, `nofollows_num`, etc.
-
-Example prompt: *"Get the backlink overview for example.com including Authority Score and referring domain count"*
+示例提示：*"获取美国数据库中 'seo services;content marketing;link building' 的关键词指标"*
 
 ---
 
-### 5. Keyword Difficulty Assessment
+### 3. 域名自然页面报告
 
-Score how hard it is to rank in the top 10 for specific keywords (0-100 scale).
+发现域名中哪些 URL 带来了最多的自然流量和可见度。
 
-**Tool:** `SEMRUSH_KEYWORD_DIFFICULTY`
+**工具：** `SEMRUSH_DOMAIN_ORGANIC_PAGES`
 
-Key parameters:
-- `phrase` (required) -- keyword to analyze
-- `database` (required) -- regional database
-- `export_columns` -- `Ph` (phrase), `Kd` (difficulty score)
+关键参数：
+- `domain`（必填）-- 目标域名
+- `database`（必填）-- 区域数据库
+- `display_sort` -- 例如 `pc_desc` 表示按流量占比降序
+- `display_limit` 和 `display_offset` -- 分页
+- `export_columns` -- `Ur`（URL）、`Pc`（流量占比）、`Tg`（流量）、`Tr`（流量成本）
 
-Example prompt: *"What is the keyword difficulty for 'best project management software' in the US?"*
-
----
-
-### 6. Discover Related Keywords
-
-Find synonyms, variations, and related terms for a seed keyword to expand your content strategy.
-
-**Tool:** `SEMRUSH_RELATED_KEYWORDS`
-
-Key parameters:
-- `phrase` (required) -- seed keyword
-- `database` (required) -- regional database
-- `display_limit` (default 10000) -- max results
-- `display_sort` -- e.g., `nq_desc` for volume descending, `kd_asc` for easiest first
-- `export_columns` -- `Ph`, `Nq`, `Kd`, `Cp`, `Co`, `Rr` (relatedness score)
-
-Example prompt: *"Find related keywords for 'project management' in the US, sorted by search volume"*
+示例提示：*"显示 example.com 按流量占比排名的前 50 个自然页面"*
 
 ---
 
-## 已知陷阱
+### 4. 反向链接概况总览
 
-- **Pagination is essential:** `SEMRUSH_DOMAIN_ORGANIC_SEARCH_KEYWORDS` and `SEMRUSH_DOMAIN_ORGANIC_PAGES` can return very large datasets. Always use `display_limit` and `display_offset` instead of assuming a single page is complete.
-- **CSV-style responses:** Many SEMrush tools return data as CSV-style text in a single field (e.g., `data/keyword_data`). You must parse rows and columns before analysis or joining reports.
-- **"ERROR 50 :: NOTHING FOUND":** This literal string means the domain or keyword has no data in that database. Treat it as a valid zero-result response, not a transport error.
-- **Batch keyword limits:** `SEMRUSH_BATCH_KEYWORD_OVERVIEW` may return HTTP 400 for problematic or oversized batches (max 255 chars total for the `phrase` field). Shrink batches or fall back to `SEMRUSH_KEYWORD_OVERVIEW_ONE_DATABASE` for individual lookups.
-- **Date format:** Historical dates must use `YYYYMM15` format for monthly data (e.g., `20231015`). Using an incorrect format will return unexpected results.
-- **Regional database matters:** Always use the correct regional database for your target audience. Results for `us` vs `uk` can differ dramatically in volume, CPC, and rankings.
-- **Column codes:** Export columns use short codes (`Ph`, `Nq`, `Kd`, etc.). Avoid over-narrowing `export_columns` so key metrics like traffic, CPC, position, and difficulty are retained.
+获取某个域名的反向链接摘要，包括权威分数（Authority Score）、链接类型和引用域名数量。
+
+**工具：** `SEMRUSH_BACKLINKS_OVERVIEW`
+
+关键参数：
+- `target`（必填）-- 域名、子域名或完整 URL
+- `target_type`（必填）-- `root_domain`、`domain` 或 `url`
+- `export_columns` -- `ascore`（权威分数）、`total`（反向链接总数）、`domains_num`（引用域名数）、`follows_num`、`nofollows_num` 等
+
+示例提示：*"获取 example.com 的反向链接概览，包括权威分数和引用域名数量"*
+
+---
+
+### 5. 关键词难度评估
+
+对特定关键词进入前 10 名的难度进行打分（0-100 分）。
+
+**工具：** `SEMRUSH_KEYWORD_DIFFICULTY`
+
+关键参数：
+- `phrase`（必填）-- 要分析的关键词
+- `database`（必填）-- 区域数据库
+- `export_columns` -- `Ph`（短语）、`Kd`（难度分数）
+
+示例提示：*"'best project management software' 在美国的关键词难度是多少？"*
+
+---
+
+### 6. 发现相关关键词
+
+为种子关键词找到同义词、变体和相关词汇，以扩展你的内容策略。
+
+**工具：** `SEMRUSH_RELATED_KEYWORDS`
+
+关键参数：
+- `phrase`（必填）-- 种子关键词
+- `database`（必填）-- 区域数据库
+- `display_limit`（默认 10000）-- 最大结果数
+- `display_sort` -- 例如 `nq_desc` 表示按搜索量降序，`kd_asc` 表示难度从易到难
+- `export_columns` -- `Ph`、`Nq`、`Kd`、`Cp`、`Co`、`Rr`（相关度分数）
+
+示例提示：*"查找 'project management' 的相关关键词，按搜索量排序"*
+
+---
+
+## 常见陷阱
+
+- **分页是必不可少的：** `SEMRUSH_DOMAIN_ORGANIC_SEARCH_KEYWORDS` 和 `SEMRUSH_DOMAIN_ORGANIC_PAGES` 可能返回非常大的数据集。始终使用 `display_limit` 和 `display_offset`，不要假设单页数据就是完整的。
+- **CSV 风格的响应：** 许多 SEMrush 工具会以单个字段中的 CSV 风格文本返回数据（例如 `data/keyword_data`）。在进行分析或联接报告之前，你必须先解析行和列。
+- **"ERROR 50 :: NOTHING FOUND"：** 这个字符串字面意思是该域名或关键词在该数据库中没有数据。应将其视为合法的零结果响应，而不是传输错误。
+- **批量关键词限制：** 对于存在问题或过大的批量请求，`SEMRUSH_BATCH_KEYWORD_OVERVIEW` 可能返回 HTTP 400（`phrase` 字段总字符数最多 255）。请缩小批量规模，或改用 `SEMRUSH_KEYWORD_OVERVIEW_ONE_DATABASE` 进行单项查询。
+- **日期格式：** 月度历史数据必须使用 `YYYYMM15` 格式（例如 `20231015`）。使用不正确的格式会返回意外结果。
+- **区域数据库很重要：** 始终为目标受众使用正确的区域数据库。`us` 与 `uk` 的结果在搜索量、CPC 和排名上可能有显著差异。
+- **列代码：** 导出列使用简短代码（`Ph`、`Nq`、`Kd` 等）。避免过度收窄 `export_columns`，以保留流量、CPC、排名和难度等关键指标。
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具 Slug | 描述 |
 |---|---|
-| `SEMRUSH_DOMAIN_ORGANIC_SEARCH_KEYWORDS` | Organic keywords for a domain with positions and traffic |
-| `SEMRUSH_KEYWORD_OVERVIEW_ONE_DATABASE` | Single keyword metrics (volume, CPC, difficulty) |
-| `SEMRUSH_BATCH_KEYWORD_OVERVIEW` | Batch metrics for up to 100 keywords |
-| `SEMRUSH_DOMAIN_ORGANIC_PAGES` | Top organic pages for a domain by traffic |
-| `SEMRUSH_BACKLINKS_OVERVIEW` | Backlink profile summary with Authority Score |
-| `SEMRUSH_BACKLINKS` | Detailed backlinks list for a target |
-| `SEMRUSH_KEYWORD_DIFFICULTY` | Keyword difficulty score (0-100) |
-| `SEMRUSH_RELATED_KEYWORDS` | Related/similar keywords for a seed phrase |
-| `SEMRUSH_CATEGORIES` | Domain categories with confidence ratings |
-| `SEMRUSH_DOMAIN_ORGANIC_SUBDOMAINS` | Subdomain-level organic rankings breakdown |
+| `SEMRUSH_DOMAIN_ORGANIC_SEARCH_KEYWORDS` | 域名的自然关键词，包含排名位置和流量 |
+| `SEMRUSH_KEYWORD_OVERVIEW_ONE_DATABASE` | 单个关键词指标（搜索量、CPC、难度） |
+| `SEMRUSH_BATCH_KEYWORD_OVERVIEW` | 最多 100 个关键词的批量指标 |
+| `SEMRUSH_DOMAIN_ORGANIC_PAGES` | 域名按流量排名的热门自然页面 |
+| `SEMRUSH_BACKLINKS_OVERVIEW` | 带权威分数的反向链接概况摘要 |
+| `SEMRUSH_BACKLINKS` | 目标的详细反向链接列表 |
+| `SEMRUSH_KEYWORD_DIFFICULTY` | 关键词难度分数（0-100） |
+| `SEMRUSH_RELATED_KEYWORDS` | 种子短语的相关/相似关键词 |
+| `SEMRUSH_CATEGORIES` | 带置信度评级的域名分类 |
+| `SEMRUSH_DOMAIN_ORGANIC_SUBDOMAINS` | 子域名级别的自然排名细分 |
 
 ---
 

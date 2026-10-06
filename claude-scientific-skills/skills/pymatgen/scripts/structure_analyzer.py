@@ -1,266 +1,294 @@
 #!/usr/bin/env python3
-"""
-Structure analysis tool using pymatgen.
+"""Produce a bounded JSON analysis of one local periodic structure."""
 
-Analyzes crystal structures and provides comprehensive information including:
-- Composition and formula
-- Space group and symmetry
-- Lattice parameters
-- Density
-- Coordination environment
-- Bond lengths and angles
-
-Usage:
-    python structure_analyzer.py structure_file [options]
-
-Examples:
-    python structure_analyzer.py POSCAR
-    python structure_analyzer.py structure.cif --symmetry --neighbors
-    python structure_analyzer.py POSCAR --export json
-"""
+from __future__ import annotations
 
 import argparse
-import json
-import sys
-from pathlib import Path
+import math
+import warnings
+from typing import Any
 
-try:
-    from pymatgen.core import Structure
-    from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
-    from pymatgen.analysis.local_env import CrystalNN
-except ImportError:
-    print("Error: pymatgen is not installed. Install with: pip install pymatgen")
-    sys.exit(1)
+from _common import (
+    ABSOLUTE_MAX_PAIRWISE_SITES,
+    CliError,
+    DEFAULT_MAX_INPUT_BYTES,
+    DEFAULT_MAX_OUTPUT_BYTES,
+    DEFAULT_MAX_SITES,
+    checked_output_file,
+    emit_json,
+    load_structure,
+    positive_int,
+    structure_oxidation_summary,
+    write_json_new,
+)
 
 
-def analyze_structure(struct: Structure, args) -> dict:
-    """
-    Perform comprehensive structure analysis.
+def minimum_periodic_distance(structure: Any, max_sites: int) -> float | None:
+    """Return the minimum non-self periodic distance under an explicit bound."""
+    if len(structure) < 2 or len(structure) > max_sites:
+        return None
+    minimum = math.inf
+    for first in range(len(structure)):
+        for second in range(first + 1, len(structure)):
+            minimum = min(minimum, float(structure.get_distance(first, second)))
+    return minimum if math.isfinite(minimum) else None
 
-    Args:
-        struct: Pymatgen Structure object
-        args: Command line arguments
 
-    Returns:
-        Dictionary containing analysis results
-    """
-    results = {}
-
-    # Basic information
-    print("\n" + "="*60)
-    print("STRUCTURE ANALYSIS")
-    print("="*60)
-
-    print("\n--- COMPOSITION ---")
-    print(f"Formula (reduced):    {struct.composition.reduced_formula}")
-    print(f"Formula (full):       {struct.composition.formula}")
-    print(f"Formula (Hill):       {struct.composition.hill_formula}")
-    print(f"Chemical system:      {struct.composition.chemical_system}")
-    print(f"Number of sites:      {len(struct)}")
-    print(f"Number of species:    {len(struct.composition.elements)}")
-    print(f"Molecular weight:     {struct.composition.weight:.2f} amu")
-
-    results['composition'] = {
-        'reduced_formula': struct.composition.reduced_formula,
-        'formula': struct.composition.formula,
-        'hill_formula': struct.composition.hill_formula,
-        'chemical_system': struct.composition.chemical_system,
-        'num_sites': len(struct),
-        'molecular_weight': struct.composition.weight,
-    }
-
-    # Lattice information
-    print("\n--- LATTICE ---")
-    print(f"a = {struct.lattice.a:.4f} Å")
-    print(f"b = {struct.lattice.b:.4f} Å")
-    print(f"c = {struct.lattice.c:.4f} Å")
-    print(f"α = {struct.lattice.alpha:.2f}°")
-    print(f"β = {struct.lattice.beta:.2f}°")
-    print(f"γ = {struct.lattice.gamma:.2f}°")
-    print(f"Volume:               {struct.volume:.2f} ų")
-    print(f"Density:              {struct.density:.3f} g/cm³")
-
-    results['lattice'] = {
-        'a': struct.lattice.a,
-        'b': struct.lattice.b,
-        'c': struct.lattice.c,
-        'alpha': struct.lattice.alpha,
-        'beta': struct.lattice.beta,
-        'gamma': struct.lattice.gamma,
-        'volume': struct.volume,
-        'density': struct.density,
-    }
-
-    # Symmetry analysis
-    if args.symmetry:
-        print("\n--- SYMMETRY ---")
-        try:
-            sga = SpacegroupAnalyzer(struct)
-
-            spacegroup_symbol = sga.get_space_group_symbol()
-            spacegroup_number = sga.get_space_group_number()
-            crystal_system = sga.get_crystal_system()
-            point_group = sga.get_point_group_symbol()
-
-            print(f"Space group:          {spacegroup_symbol} (#{spacegroup_number})")
-            print(f"Crystal system:       {crystal_system}")
-            print(f"Point group:          {point_group}")
-
-            # Get symmetry operations
-            symm_ops = sga.get_symmetry_operations()
-            print(f"Symmetry operations:  {len(symm_ops)}")
-
-            results['symmetry'] = {
-                'spacegroup_symbol': spacegroup_symbol,
-                'spacegroup_number': spacegroup_number,
-                'crystal_system': crystal_system,
-                'point_group': point_group,
-                'num_symmetry_ops': len(symm_ops),
+def site_records(structure: Any, limit: int) -> list[dict[str, Any]]:
+    """Return a bounded, explicit fractional-coordinate site table."""
+    records: list[dict[str, Any]] = []
+    for index, site in enumerate(structure[:limit]):
+        records.append(
+            {
+                "index": index,
+                "species": {
+                    str(specie): float(occupancy)
+                    for specie, occupancy in site.species.items()
+                },
+                "fractional_coordinates": [
+                    float(value) for value in site.frac_coords
+                ],
+                "label": site.label,
             }
+        )
+    return records
 
-            # Show equivalent sites
-            sym_struct = sga.get_symmetrized_structure()
-            print(f"Symmetry-equivalent site groups: {len(sym_struct.equivalent_sites)}")
 
-        except Exception as e:
-            print(f"Could not determine symmetry: {e}")
+def symmetry_report(
+    structure: Any,
+    *,
+    symprec: float,
+    angle_tolerance: float,
+) -> dict[str, Any]:
+    """Run one explicitly parameterized spglib-backed symmetry analysis."""
+    from pymatgen.symmetry.analyzer import SpacegroupAnalyzer
 
-    # Site information
-    print("\n--- SITES ---")
-    print(f"{'Index':<6} {'Species':<10} {'Wyckoff':<10} {'Frac Coords':<30}")
-    print("-" * 60)
+    analyzer = SpacegroupAnalyzer(
+        structure,
+        symprec=symprec,
+        angle_tolerance=angle_tolerance,
+    )
+    symmetrized = analyzer.get_symmetrized_structure()
+    return {
+        "backend": "spglib through pymatgen",
+        "symprec_angstrom": symprec,
+        "angle_tolerance_degrees": angle_tolerance,
+        "space_group_symbol": analyzer.get_space_group_symbol(),
+        "space_group_number": analyzer.get_space_group_number(),
+        "crystal_system": str(analyzer.get_crystal_system()),
+        "point_group_symbol": analyzer.get_point_group_symbol(),
+        "symmetry_operations": len(analyzer.get_symmetry_operations()),
+        "equivalent_site_groups": len(symmetrized.equivalent_indices),
+        "wyckoff_symbols_by_group": list(symmetrized.wyckoff_symbols),
+        "tolerance_sensitivity_assessed": False,
+    }
 
-    for i, site in enumerate(struct):
-        coords_str = f"[{site.frac_coords[0]:.4f}, {site.frac_coords[1]:.4f}, {site.frac_coords[2]:.4f}]"
-        wyckoff = "N/A"
 
-        if args.symmetry:
+def neighbor_report(
+    structure: Any,
+    *,
+    site_limit: int,
+    neighbor_limit: int,
+) -> dict[str, Any]:
+    """Run CrystalNN for a bounded site prefix and truncate each neighbor list."""
+    if not structure.is_ordered:
+        raise CliError("CrystalNN report requires an ordered structure")
+    from pymatgen.analysis.local_env import CrystalNN
+
+    strategy = CrystalNN()
+    rows: list[dict[str, Any]] = []
+    warning_messages: list[str] = []
+    with warnings.catch_warnings(record=True) as caught:
+        warnings.simplefilter("always")
+        for index in range(min(len(structure), site_limit)):
             try:
-                sga = SpacegroupAnalyzer(struct)
-                sym_struct = sga.get_symmetrized_structure()
-                wyckoff = sym_struct.equivalent_sites[0][0].species_string  # Simplified
-            except:
-                pass
+                neighbors = strategy.get_nn_info(structure, index)
+                rows.append(
+                    {
+                        "site_index": index,
+                        "species": structure[index].species_string,
+                        "coordination_number": len(neighbors),
+                        "neighbors": [
+                            {
+                                "site_index": int(item["site_index"]),
+                                "image": [int(value) for value in item["image"]],
+                                "weight": float(item["weight"]),
+                            }
+                            for item in neighbors[:neighbor_limit]
+                        ],
+                        "neighbors_omitted": max(
+                            0, len(neighbors) - neighbor_limit
+                        ),
+                    }
+                )
+            except (RuntimeError, TypeError, ValueError) as exc:
+                rows.append(
+                    {
+                        "site_index": index,
+                        "error": f"{type(exc).__name__}: {exc}"[:500],
+                    }
+                )
+        warning_messages = [
+            f"{item.category.__name__}: {item.message}" for item in caught[:20]
+        ]
+    return {
+        "method": "CrystalNN",
+        "sites": rows,
+        "sites_omitted": max(0, len(structure) - site_limit),
+        "warnings": warning_messages,
+        "coordination_is_model_dependent": True,
+    }
 
-        print(f"{i:<6} {site.species_string:<10} {wyckoff:<10} {coords_str:<30}")
 
-    # Neighbor analysis
+def analyze_structure(structure: Any, args: argparse.Namespace) -> dict[str, Any]:
+    """Build a bounded analysis payload."""
+    lattice = structure.lattice
+    report: dict[str, Any] = {
+        "ok": True,
+        "analysis": "periodic_structure",
+        "units": {
+            "length": "angstrom",
+            "angle": "degree",
+            "volume": "angstrom^3",
+            "density": "g/cm^3",
+            "mass": "amu per composition represented",
+        },
+        "periodicity": {
+            "periodic_boundary_conditions": [bool(value) for value in lattice.pbc],
+            "lattice_required": True,
+        },
+        "composition": {
+            "formula": structure.composition.formula,
+            "reduced_formula": structure.composition.reduced_formula,
+            "hill_formula": structure.composition.hill_formula,
+            "chemical_system": structure.composition.chemical_system,
+            "mass_amu": float(structure.composition.weight),
+            "charge": float(structure.charge),
+            "ordered": bool(structure.is_ordered),
+            "oxidation_states": structure_oxidation_summary(structure),
+        },
+        "lattice": {
+            "matrix_rows_angstrom": [
+                [float(value) for value in row] for row in lattice.matrix
+            ],
+            "abc_angstrom": [float(value) for value in lattice.abc],
+            "angles_degrees": [float(value) for value in lattice.angles],
+            "volume_angstrom_cubed": float(structure.volume),
+            "density_g_cm3": float(structure.density),
+        },
+        "sites": {
+            "count": len(structure),
+            "coordinate_mode": "fractional",
+            "records": site_records(structure, args.max_site_records),
+            "records_omitted": max(0, len(structure) - args.max_site_records),
+        },
+        "minimum_periodic_distance_angstrom": minimum_periodic_distance(
+            structure, args.max_distance_sites
+        ),
+        "minimum_distance_omitted_above_sites": args.max_distance_sites,
+        "minimum_distance_includes_self_images": False,
+        "scientific_validity_established": False,
+    }
+    if args.symmetry:
+        report["symmetry"] = symmetry_report(
+            structure,
+            symprec=args.symprec,
+            angle_tolerance=args.angle_tolerance,
+        )
     if args.neighbors:
-        print("\n--- COORDINATION ENVIRONMENT ---")
-        try:
-            cnn = CrystalNN()
-
-            for i, site in enumerate(struct):
-                neighbors = cnn.get_nn_info(struct, i)
-                print(f"\nSite {i} ({site.species_string}):")
-                print(f"  Coordination number: {len(neighbors)}")
-
-                if len(neighbors) > 0 and len(neighbors) <= 12:
-                    print(f"  Neighbors:")
-                    for j, neighbor in enumerate(neighbors):
-                        neighbor_site = struct[neighbor['site_index']]
-                        distance = site.distance(neighbor_site)
-                        print(f"    {neighbor_site.species_string} at {distance:.3f} Å")
-
-        except Exception as e:
-            print(f"Could not analyze coordination: {e}")
-
-    # Distance matrix (for small structures)
-    if args.distances and len(struct) <= 20:
-        print("\n--- DISTANCE MATRIX (Å) ---")
-        distance_matrix = struct.distance_matrix
-
-        # Print header
-        print(f"{'':>4}", end="")
-        for i in range(len(struct)):
-            print(f"{i:>8}", end="")
-        print()
-
-        # Print matrix
-        for i in range(len(struct)):
-            print(f"{i:>4}", end="")
-            for j in range(len(struct)):
-                if i == j:
-                    print(f"{'---':>8}", end="")
-                else:
-                    print(f"{distance_matrix[i][j]:>8.3f}", end="")
-            print()
-
-    print("\n" + "="*60)
-
-    return results
+        report["neighbors"] = neighbor_report(
+            structure,
+            site_limit=args.max_neighbor_sites,
+            neighbor_limit=args.max_neighbors_per_site,
+        )
+    return report
 
 
-def main():
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Analyze crystal structures using pymatgen",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
+        description=(
+            "Analyze one bounded local periodic structure. JSON output is "
+            "truncated by explicit site/neighbor limits."
+        )
     )
-
+    parser.add_argument("structure_file", help="Existing local structure file")
+    parser.add_argument("--structure-index", type=int, default=0)
+    parser.add_argument("--symmetry", action="store_true")
+    parser.add_argument("--symprec", type=float, default=0.01)
+    parser.add_argument("--angle-tolerance", type=float, default=5.0)
+    parser.add_argument("--neighbors", action="store_true")
+    parser.add_argument("--output", help="New JSON output; default is stdout")
     parser.add_argument(
-        "structure_file",
-        help="Structure file to analyze (CIF, POSCAR, etc.)"
+        "--max-input-bytes",
+        type=positive_int,
+        default=DEFAULT_MAX_INPUT_BYTES,
     )
-
+    parser.add_argument("--max-sites", type=positive_int, default=DEFAULT_MAX_SITES)
+    parser.add_argument("--max-site-records", type=positive_int, default=100)
+    parser.add_argument("--max-distance-sites", type=positive_int, default=500)
+    parser.add_argument("--max-neighbor-sites", type=positive_int, default=100)
     parser.add_argument(
-        "--symmetry", "-s",
-        action="store_true",
-        help="Perform symmetry analysis"
+        "--max-neighbors-per-site", type=positive_int, default=24
     )
-
     parser.add_argument(
-        "--neighbors", "-n",
-        action="store_true",
-        help="Analyze coordination environment"
+        "--max-output-bytes",
+        type=positive_int,
+        default=DEFAULT_MAX_OUTPUT_BYTES,
     )
+    return parser
 
-    parser.add_argument(
-        "--distances", "-d",
-        action="store_true",
-        help="Show distance matrix (for structures with ≤20 atoms)"
-    )
 
-    parser.add_argument(
-        "--export", "-e",
-        choices=["json", "yaml"],
-        help="Export analysis results to file"
-    )
-
-    parser.add_argument(
-        "--output", "-o",
-        help="Output file for exported results"
-    )
-
-    args = parser.parse_args()
-
-    # Read structure
+def main() -> int:
+    args = build_parser().parse_args()
     try:
-        struct = Structure.from_file(args.structure_file)
-    except Exception as e:
-        print(f"Error reading structure file: {e}")
-        sys.exit(1)
-
-    # Analyze structure
-    results = analyze_structure(struct, args)
-
-    # Export results
-    if args.export:
-        output_file = args.output or f"analysis.{args.export}"
-
-        if args.export == "json":
-            with open(output_file, "w") as f:
-                json.dump(results, f, indent=2)
-            print(f"\n✓ Analysis exported to {output_file}")
-
-        elif args.export == "yaml":
-            try:
-                import yaml
-                with open(output_file, "w") as f:
-                    yaml.dump(results, f, default_flow_style=False)
-                print(f"\n✓ Analysis exported to {output_file}")
-            except ImportError:
-                print("Error: PyYAML is not installed. Install with: pip install pyyaml")
+        if args.structure_index < 0:
+            raise CliError("--structure-index must be non-negative")
+        if not math.isfinite(args.symprec) or args.symprec <= 0:
+            raise CliError("--symprec must be finite and positive")
+        if not math.isfinite(args.angle_tolerance) or args.angle_tolerance < 0:
+            raise CliError("--angle-tolerance must be finite and non-negative")
+        if args.max_distance_sites > ABSOLUTE_MAX_PAIRWISE_SITES:
+            raise CliError(
+                f"--max-distance-sites may not exceed "
+                f"{ABSOLUTE_MAX_PAIRWISE_SITES}"
+            )
+        if args.max_site_records > 10_000:
+            raise CliError("--max-site-records may not exceed 10000")
+        if args.max_neighbor_sites > 10_000:
+            raise CliError("--max-neighbor-sites may not exceed 10000")
+        if args.max_neighbors_per_site > 1_000:
+            raise CliError("--max-neighbors-per-site may not exceed 1000")
+        structure, input_path, parse_report = load_structure(
+            args.structure_file,
+            structure_index=args.structure_index,
+            max_bytes=args.max_input_bytes,
+            max_sites=args.max_sites,
+        )
+        report = analyze_structure(structure, args)
+        report["input"] = parse_report
+        if args.output:
+            output = checked_output_file(args.output, input_paths=(input_path,))
+            write_json_new(
+                output,
+                report,
+                max_bytes=args.max_output_bytes,
+            )
+            emit_json(
+                {
+                    "ok": True,
+                    "output": output.name,
+                    "output_bytes": output.stat().st_size,
+                    "overwrote_existing": False,
+                    "sites": len(structure),
+                }
+            )
+        else:
+            emit_json(report)
+        return 0
+    except (CliError, ImportError, OSError, RuntimeError, TypeError, ValueError) as exc:
+        emit_json({"ok": False, "error": f"{type(exc).__name__}: {exc}"[:1000]})
+        return 2
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

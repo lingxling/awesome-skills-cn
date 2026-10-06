@@ -15,6 +15,7 @@ on the pull request. It exits non-zero when any scanned skill has a finding at
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -30,6 +31,21 @@ load_dotenv()
 
 SEVERITY_ORDER = ["CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO", "SAFE"]
 COMMENT_MARKER = "<!-- skill-security-scan -->"
+
+SKIP_NO_API_KEY_COMMENT = f"""\
+{COMMENT_MARKER}
+## 🛡️ Skill Security Scan
+
+_Skipped:_ `SKILL_SCANNER_LLM_API_KEY` is not available in this workflow run.
+
+GitHub does not expose repository secrets to `pull_request` workflows from forks,
+so the LLM analyzer cannot start. This is not a finding about the diff.
+
+A maintainer can re-run the scan from a trusted context (for example after the
+branch is pushed to this repository, or via a maintainer-triggered run with
+secrets). Structural CI checks (spec validation, repo-wide contract, skill suites)
+are unaffected.
+"""
 
 
 def _sev_str(obj) -> str:
@@ -210,6 +226,17 @@ def main() -> int:
         print("No skill directories to scan — writing no-op comment.")
         md = format_comment(Report(), [])
         Path(args.output).write_text(md)
+        return 0
+
+    if not os.getenv("SKILL_SCANNER_LLM_API_KEY"):
+        # Fork PRs never receive repository secrets under pull_request; fail open
+        # with an explanatory sticky comment instead of ValueError from LLMAnalyzer.
+        print(
+            "SKILL_SCANNER_LLM_API_KEY unset — skipping scan "
+            "(typical for pull_request workflows from forks)."
+        )
+        Path(args.output).write_text(SKIP_NO_API_KEY_COMMENT)
+        print(f"Comment written to {args.output}")
         return 0
 
     print("Building scanner (LLM + behavioral + trigger + balanced policy)...")

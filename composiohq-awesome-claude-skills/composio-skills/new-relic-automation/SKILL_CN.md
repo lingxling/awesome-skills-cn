@@ -1,6 +1,6 @@
 ---
 name: New Relic Automation
-description: "Automate New Relic observability workflows -- manage alert policies, notification channels, alert conditions, and monitor applications and browser apps via the Composio MCP integration."
+description: "自动化 New Relic 可观测性工作流 —— 通过 Composio MCP 集成管理告警策略、通知渠道、告警条件，并监控应用程序和浏览器应用。"
 requires:
   mcp:
     - rube
@@ -8,25 +8,25 @@ requires:
 
 # New Relic Automation
 
-Automate your New Relic observability workflows -- create and manage alert policies, configure notification channels (email, Slack, webhook, PagerDuty), monitor APM applications, inspect alert conditions, and integrate New Relic alerting into cross-app pipelines.
+自动化你的 New Relic 可观测性工作流 —— 创建和管理告警策略，配置通知渠道（电子邮件、Slack、webhook、PagerDuty），监控 APM 应用程序，检查告警条件，并将 New Relic 告警集成到跨应用管道中。
 
-**Toolkit docs:** [composio.dev/toolkits/new_relic](https://composio.dev/toolkits/new_relic)
+**工具包文档：** [composio.dev/toolkits/new_relic](https://composio.dev/toolkits/new_relic)
 
 ---
 
 ## 设置
 
-1. Add the Composio MCP server to your client: `https://rube.app/mcp`
-2. 连接 your New Relic account when prompted (API key authentication)
-3. Start using the workflows below
+1. 将 Composio MCP 服务器添加到你的客户端：`https://rube.app/mcp`
+2. 按提示连接你的 New Relic 账户（API 密钥认证）
+3. 开始使用下面的工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. List Alert Policies
+### 1. 列出告警策略
 
-Use `NEW_RELIC_GET_ALERT_POLICIES` to discover existing alert policies with optional filtering.
+使用 `NEW_RELIC_GET_ALERT_POLICIES` 发现现有的告警策略，支持可选过滤。
 
 ```
 Tool: NEW_RELIC_GET_ALERT_POLICIES
@@ -36,9 +36,9 @@ Inputs:
   - page: integer (1-indexed pagination)
 ```
 
-### 2. Create an Alert Policy
+### 2. 创建告警策略
 
-Use `NEW_RELIC_CREATE_ALERT_POLICY` to set up a new policy container for alert conditions.
+使用 `NEW_RELIC_CREATE_ALERT_POLICY` 为告警条件创建一个新的策略容器。
 
 ```
 Tool: NEW_RELIC_CREATE_ALERT_POLICY
@@ -47,14 +47,14 @@ Inputs:
   - incident_preference: "PER_POLICY" | "PER_CONDITION" | "PER_CONDITION_AND_TARGET" (default: PER_POLICY)
 ```
 
-**Incident preferences explained:**
-- `PER_POLICY` -- one issue per policy (recommended for most use cases)
-- `PER_CONDITION` -- one issue per alert condition
-- `PER_CONDITION_AND_TARGET` -- one issue per condition and signal/target
+**事件偏好说明：**
+- `PER_POLICY` —— 每个策略产生一个问题（大多数场景推荐使用）
+- `PER_CONDITION` —— 每个告警条件产生一个问题
+- `PER_CONDITION_AND_TARGET` —— 每个条件和信号/目标产生一个问题
 
-### 3. Create Alert Notification Channels
+### 3. 创建告警通知渠道
 
-Use `NEW_RELIC_CREATE_ALERT_CHANNEL` to register notification endpoints for alert delivery.
+使用 `NEW_RELIC_CREATE_ALERT_CHANNEL` 注册用于告警投递的通知端点。
 
 ```
 Tool: NEW_RELIC_CREATE_ALERT_CHANNEL
@@ -70,9 +70,9 @@ Inputs:
     VictorOps: { key: "<api_key>", route_key: "<routing_key>" }
 ```
 
-### 4. Get Alert Conditions for a Policy
+### 4. 获取策略的告警条件
 
-Use `NEW_RELIC_GET_ALERT_CONDITIONS` to inspect the conditions attached to a specific policy.
+使用 `NEW_RELIC_GET_ALERT_CONDITIONS` 检查附加到特定策略上的条件。
 
 ```
 Tool: NEW_RELIC_GET_ALERT_CONDITIONS
@@ -80,9 +80,9 @@ Inputs:
   - policy_id: integer (required)
 ```
 
-### 5. Monitor Applications
+### 5. 监控应用程序
 
-Use `NEW_RELIC_GET_APPLICATIONS` and `NEW_RELIC_GET_BROWSER_APPLICATIONS` to list APM and browser-monitored apps.
+使用 `NEW_RELIC_GET_APPLICATIONS` 和 `NEW_RELIC_GET_BROWSER_APPLICATIONS` 列出 APM 应用和浏览器监控的应用。
 
 ```
 Tool: NEW_RELIC_GET_APPLICATIONS
@@ -98,9 +98,9 @@ Inputs:
   - page: integer (1-indexed)
 ```
 
-### 6. Manage Channels and Policies
+### 6. 管理渠道和策略
 
-Use `NEW_RELIC_UPDATE_ALERT_CHANNEL` to modify existing channels and `NEW_RELIC_DELETE_ALERT_POLICY` to remove policies.
+使用 `NEW_RELIC_UPDATE_ALERT_CHANNEL` 修改现有渠道，使用 `NEW_RELIC_DELETE_ALERT_POLICY` 删除策略。
 
 ```
 Tool: NEW_RELIC_UPDATE_ALERT_CHANNEL
@@ -117,31 +117,31 @@ Inputs:
 
 ---
 
-## 已知陷阱
+## 已知问题
 
-| Pitfall | Detail |
+| 问题 | 详情 |
 |---------|--------|
-| Unique policy names | `NEW_RELIC_CREATE_ALERT_POLICY` requires the name to be unique within the account. |
-| Channel config varies by type | The `configuration` object for `NEW_RELIC_CREATE_ALERT_CHANNEL` has different required fields per channel type (e.g., `recipients` for email, `service_key` for PagerDuty). |
-| Pagination required | All list endpoints return paginated results. Iterate pages until results are exhausted. |
-| Policy ID type mismatch | `NEW_RELIC_GET_ALERT_CONDITIONS` expects `policy_id` as an integer, while `NEW_RELIC_DELETE_ALERT_POLICY` expects it as a string. |
-| Channel-policy linking | After creating a channel, you must separately associate it with a policy for alerts to flow to that channel. |
+| 策略名称唯一性 | `NEW_RELIC_CREATE_ALERT_POLICY` 要求名称在账户内唯一。 |
+| 渠道配置因类型而异 | `NEW_RELIC_CREATE_ALERT_CHANNEL` 的 `configuration` 对象在不同渠道类型下所需字段不同（例如电子邮件需要 `recipients`，PagerDuty 需要 `service_key`）。 |
+| 需要分页 | 所有列表端点返回分页结果。请遍历各页直至结果用尽。 |
+| policy_id 类型不一致 | `NEW_RELIC_GET_ALERT_CONDITIONS` 要求 `policy_id` 为整数，而 `NEW_RELIC_DELETE_ALERT_POLICY` 要求其为字符串。 |
+| 渠道-策略关联 | 创建渠道后，你必须单独将其与策略关联，才能让告警流向该渠道。 |
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具 Slug | 描述 |
 |-----------|-------------|
-| `NEW_RELIC_GET_ALERT_POLICIES` | List alert policies with optional filtering |
-| `NEW_RELIC_CREATE_ALERT_POLICY` | Create a new alert policy |
-| `NEW_RELIC_DELETE_ALERT_POLICY` | Delete an alert policy by ID |
-| `NEW_RELIC_CREATE_ALERT_CHANNEL` | Create a notification channel (email, Slack, webhook, etc.) |
-| `NEW_RELIC_GET_ALERT_CHANNELS` | List all configured alert channels |
-| `NEW_RELIC_UPDATE_ALERT_CHANNEL` | Update an existing alert channel |
-| `NEW_RELIC_GET_ALERT_CONDITIONS` | Get alert conditions for a policy |
-| `NEW_RELIC_GET_APPLICATIONS` | List APM applications |
-| `NEW_RELIC_GET_BROWSER_APPLICATIONS` | List browser-monitored applications |
+| `NEW_RELIC_GET_ALERT_POLICIES` | 列出告警策略，支持可选过滤 |
+| `NEW_RELIC_CREATE_ALERT_POLICY` | 创建新的告警策略 |
+| `NEW_RELIC_DELETE_ALERT_POLICY` | 按 ID 删除告警策略 |
+| `NEW_RELIC_CREATE_ALERT_CHANNEL` | 创建通知渠道（电子邮件、Slack、webhook 等） |
+| `NEW_RELIC_GET_ALERT_CHANNELS` | 列出所有已配置的告警渠道 |
+| `NEW_RELIC_UPDATE_ALERT_CHANNEL` | 更新现有告警渠道 |
+| `NEW_RELIC_GET_ALERT_CONDITIONS` | 获取策略的告警条件 |
+| `NEW_RELIC_GET_APPLICATIONS` | 列出 APM 应用程序 |
+| `NEW_RELIC_GET_BROWSER_APPLICATIONS` | 列出浏览器监控的应用程序 |
 
 ---
 

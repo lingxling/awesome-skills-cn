@@ -126,7 +126,7 @@ gemini extensions install https://github.com/huggingface/skills.git --consent
 | `hf-cloud-python-env-setup` | 为 SageMaker / AWS 工作搭建一个隔离的 Python 环境,使用正确的 Python 版本和最新的 boto3。 | [SKILL.md](skills/hf-cloud-python-env-setup/SKILL.md) |
 | `hf-cloud-sagemaker-deployment-planner` | 规划和协调将模型部署到 Amazon SageMaker AI。 | [SKILL.md](skills/hf-cloud-sagemaker-deployment-planner/SKILL.md) |
 | `hf-cloud-sagemaker-iam-preflight` | 在部署或训练前确保存在可用的 SageMaker 执行角色。 | [SKILL.md](skills/hf-cloud-sagemaker-iam-preflight/SKILL.md) |
-| `hf-cloud-sagemaker-production-defaults` | 创建默认启用自动扩缩容、CloudWatch 告警和标签的 SageMaker 端点(实时或异步)。 | [SKILL.md](skills/hf-cloud-sagemaker-production-defaults/SKILL.md) |
+| `hf-cloud-sagemaker-production-defaults` | 创建默认启用自动扩缩容、CloudWatch 告警和标签的 SageMaker 端点(实时、可缩容至零的实时或异步)。 | [SKILL.md](skills/hf-cloud-sagemaker-production-defaults/SKILL.md) |
 | `hf-cloud-serving-image-selection` | 为 SageMaker 模型部署选择合适的服务容器并查找其当前镜像 URI。 | [SKILL.md](skills/hf-cloud-serving-image-selection/SKILL.md) |
 | `hf-mem` | 用于从 Hugging Face Hub 估算加载 Safetensors 或 GGUF 模型权重进行推理所需内存的 Hugging Face CLI。 | [SKILL.md](skills/hf-mem/SKILL.md) |
 | `huggingface-best` | 当用户询问为某个任务寻找最佳、顶级或推荐的模型,想知道该使用哪个 AI 模型,或想按基准分数比较模型时使用。 | [SKILL.md](skills/huggingface-best/SKILL.md) |

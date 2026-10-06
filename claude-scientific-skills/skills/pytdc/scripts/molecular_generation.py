@@ -1,404 +1,434 @@
 #!/usr/bin/env python3
-"""
-TDC Molecular Generation with Oracles Template
+"""Safely plan PyTDC molecule data access or bounded oracle scoring."""
 
-This script demonstrates how to use TDC oracles for molecular generation
-tasks including goal-directed generation and distribution learning.
+from __future__ import annotations
 
-Usage:
-    python molecular_generation.py
-"""
+import argparse
+import contextlib
+import os
+import sys
+from pathlib import Path
+from typing import Any, Iterator
 
-from tdc.generation import MolGen
-from tdc import Oracle
-import numpy as np
-
-
-def load_generation_dataset():
-    """
-    Load molecular generation dataset
-    """
-    print("=" * 60)
-    print("Loading Molecular Generation Dataset")
-    print("=" * 60)
-
-    # Load ChEMBL dataset
-    data = MolGen(name='ChEMBL_V29')
-
-    # Get training molecules
-    split = data.get_split()
-    train_smiles = split['train']['Drug'].tolist()
-
-    print(f"\nDataset: ChEMBL_V29")
-    print(f"Training molecules: {len(train_smiles)}")
-
-    # Display sample molecules
-    print("\nSample SMILES:")
-    for i, smiles in enumerate(train_smiles[:5], 1):
-        print(f"  {i}. {smiles}")
-
-    return train_smiles
+from _common import (
+    CliError,
+    bounded_int,
+    canonical_name,
+    emit_json,
+    load_pytdc_metadata,
+    safe_directory,
+    safe_input_file,
+    truncate_value,
+    validate_fractions,
+)
 
 
-def single_oracle_example():
-    """
-    Example: Using a single oracle for molecular evaluation
-    """
-    print("\n" + "=" * 60)
-    print("Example 1: Single Oracle Evaluation")
-    print("=" * 60)
-
-    # Initialize oracle for GSK3B target
-    oracle = Oracle(name='GSK3B')
-
-    # Test molecules
-    test_molecules = [
-        'CC(C)Cc1ccc(cc1)C(C)C(O)=O',  # Ibuprofen
-        'CC(=O)Oc1ccccc1C(=O)O',        # Aspirin
-        'Cn1c(=O)c2c(ncn2C)n(C)c1=O',   # Caffeine
-        'CN1C=NC2=C1C(=O)N(C(=O)N2C)C'  # Theophylline
-    ]
-
-    print("\nEvaluating molecules with GSK3B oracle:")
-    print("-" * 60)
-
-    for smiles in test_molecules:
-        score = oracle(smiles)
-        print(f"SMILES: {smiles}")
-        print(f"GSK3B score: {score:.4f}\n")
+LOCAL_SCALAR_ORACLES = {"qed"}
+# LogP and SA are listed as "trivial" upstream, but their 1.1.15 implementation
+# lazily downloads the fpscores artifact through calculateScore().
+CHECKPOINT_ORACLES = {
+    "logp",
+    "sa",
+    "drd2",
+    "gsk3b",
+    "jnk3",
+    "cyp3a4_veith",
+}
+MAX_SMILES_FILE_BYTES = 1 * 1024 * 1024
 
 
-def multiple_oracles_example():
-    """
-    Example: Using multiple oracles for multi-objective optimization
-    """
-    print("\n" + "=" * 60)
-    print("Example 2: Multiple Oracles (Multi-Objective)")
-    print("=" * 60)
+@contextlib.contextmanager
+def _working_directory(path: Path) -> Iterator[None]:
+    original = Path.cwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(original)
 
-    # Initialize multiple oracles
-    oracles = {
-        'QED': Oracle(name='QED'),        # Drug-likeness
-        'SA': Oracle(name='SA'),          # Synthetic accessibility
-        'GSK3B': Oracle(name='GSK3B'),    # Target binding
-        'LogP': Oracle(name='LogP')       # Lipophilicity
+
+def classify_oracle(metadata: Any, query: str) -> tuple[str, str]:
+    name = canonical_name(query, metadata.oracle_names, "oracle")
+    if name in LOCAL_SCALAR_ORACLES:
+        return name, "local_scalar"
+    if name in CHECKPOINT_ORACLES:
+        return name, "checkpoint_download"
+    if name in set(metadata.download_oracle_names):
+        return name, "unsupported_checkpoint"
+    if name in set(metadata.distribution_oracles):
+        return name, "distribution_metric"
+    if name in set(metadata.download_receptor_oracle_name):
+        return name, "receptor_or_docking"
+    if name in set(metadata.synthetic_oracle_name):
+        return name, "remote_service"
+    return name, "specialized_or_composite"
+
+
+def load_smiles(
+    direct: list[str] | None,
+    input_path: str | None,
+    *,
+    max_molecules: int,
+) -> list[str]:
+    values = list(direct or [])
+    if input_path:
+        path = safe_input_file(
+            input_path,
+            max_bytes=MAX_SMILES_FILE_BYTES,
+            label="SMILES input",
+        )
+        with path.open("r", encoding="utf-8") as handle:
+            values.extend(line.strip() for line in handle if line.strip())
+    if not values:
+        raise CliError("provide at least one --smiles or --input line")
+    if len(values) > max_molecules:
+        raise CliError(
+            f"received {len(values)} molecules; --max-molecules is {max_molecules}"
+        )
+    if any(len(value) > 4096 for value in values):
+        raise CliError("each SMILES string is limited to 4096 characters")
+    return values
+
+
+def score_plan(
+    *,
+    oracle: str,
+    category: str,
+    smiles_count: int,
+    runtime_dir: Path,
+    package_version: str,
+    download_acknowledged: bool,
+) -> dict[str, Any]:
+    return {
+        "action": "plan",
+        "acknowledgement_required": (
+            "--execute"
+            if category == "local_scalar"
+            else "--execute --download (only supported checkpoint oracles)"
+        ),
+        "download_acknowledged": download_acknowledged,
+        "download_performed": False,
+        "oracle": oracle,
+        "oracle_category": category,
+        "package": "PyTDC",
+        "package_version": package_version,
+        "runtime_directory": str(runtime_dir),
+        "score_direction": "not assumed; consult the exact oracle documentation",
+        "smiles_count": smiles_count,
     }
 
-    # Test molecule
-    test_smiles = 'CC(C)Cc1ccc(cc1)C(C)C(O)=O'
 
-    print(f"\nEvaluating: {test_smiles}")
-    print("-" * 60)
+def execute_scores(
+    *,
+    oracle_name: str,
+    category: str,
+    smiles: list[str],
+    runtime_dir: Path,
+    download_acknowledged: bool,
+    package_version: str,
+) -> dict[str, Any]:
+    if category == "checkpoint_download" and not download_acknowledged:
+        raise CliError(
+            f"{oracle_name} may download a model checkpoint; pass --download "
+            "together with --execute to acknowledge this"
+        )
+    if category not in {"local_scalar", "checkpoint_download"}:
+        raise CliError(
+            "this helper executes only local QED or the explicitly acknowledged "
+            "LogP/SA/DRD2/GSK3B/JNK3/CYP3A4_Veith checkpoint-backed oracles; "
+            "remote services, docking, distribution, and composite oracles are "
+            "intentionally not called"
+        )
 
-    scores = {}
-    for name, oracle in oracles.items():
-        score = oracle(test_smiles)
-        scores[name] = score
-        print(f"{name:10s}: {score:.4f}")
+    from tdc import Oracle  # Lazy optional import.
+    from rdkit import Chem
 
-    # Multi-objective score (weighted combination)
-    print("\n--- Multi-Objective Scoring ---")
+    # Empty SMILES parses as a zero-atom molecule; it is not a scorable structure.
+    valid = []
+    for value in smiles:
+        molecule = Chem.MolFromSmiles(value)
+        valid.append(molecule is not None and molecule.GetNumAtoms() > 0)
+    valid_smiles = [value for value, ok in zip(smiles, valid) if ok]
 
-    # Invert SA (lower is better, so we invert for maximization)
-    sa_score = 1.0 / (1.0 + scores['SA'])
+    with _working_directory(runtime_dir):
+        if valid_smiles:
+            oracle = Oracle(name=oracle_name, num_max_call=len(valid_smiles))
+            scores = oracle(valid_smiles)
+        else:
+            scores = []
+    if not isinstance(scores, list) or len(scores) != len(valid_smiles):
+        raise CliError("PyTDC returned an unexpected oracle result shape")
+    score_iter = iter(scores)
 
-    # Weighted combination
-    weights = {'QED': 0.3, 'SA': 0.2, 'GSK3B': 0.4, 'LogP': 0.1}
-    multi_score = (
-        weights['QED'] * scores['QED'] +
-        weights['SA'] * sa_score +
-        weights['GSK3B'] * scores['GSK3B'] +
-        weights['LogP'] * (scores['LogP'] / 5.0)  # Normalize LogP
+    return {
+        "action": "executed",
+        "download_acknowledged": download_acknowledged,
+        "oracle": oracle_name,
+        "oracle_category": category,
+        "package": "PyTDC",
+        "package_version": package_version,
+        "results": [
+            {
+                "index": index,
+                "valid": ok,
+                "score": truncate_value(next(score_iter)) if ok else None,
+                "smiles": truncate_value(smiles_value),
+            }
+            for index, (smiles_value, ok) in enumerate(zip(smiles, valid))
+        ],
+        "runtime_directory": str(runtime_dir),
+        "score_direction": "not assumed; results preserve input order",
+    }
+
+
+def dataset_plan(
+    *,
+    dataset: str,
+    data_dir: Path,
+    seed: int,
+    fractions: tuple[float, float, float],
+    package_version: str,
+    download_acknowledged: bool,
+) -> dict[str, Any]:
+    return {
+        "action": "plan",
+        "acknowledgement_required": "--execute --download",
+        "data_directory": str(data_dir),
+        "dataset": dataset,
+        "download_acknowledged": download_acknowledged,
+        "download_performed": False,
+        "network_and_storage": (
+            "MolGen construction may download a complete, potentially very large "
+            "molecule corpus to data_directory."
+        ),
+        "package": "PyTDC",
+        "package_version": package_version,
+        "split": {
+            "fractions": list(fractions),
+            "method": "random",
+            "seed": seed,
+        },
+    }
+
+
+def execute_dataset(
+    *,
+    dataset: str,
+    data_dir: Path,
+    seed: int,
+    fractions: tuple[float, float, float],
+    preview: int,
+    package_version: str,
+) -> dict[str, Any]:
+    from tdc.generation import MolGen  # Lazy optional import.
+
+    loader = MolGen(name=dataset, path=str(data_dir))
+    split = loader.get_split(method="random", seed=seed, frac=list(fractions))
+    expected = {"train", "valid", "test"}
+    if not isinstance(split, dict) or not expected.issubset(split):
+        raise CliError("PyTDC returned an unexpected MolGen split structure")
+
+    partitions: dict[str, Any] = {}
+    for name in ("train", "valid", "test"):
+        frame = split[name]
+        summary: dict[str, Any] = {
+            "columns": [str(column) for column in list(frame.columns)[:100]],
+            "rows": len(frame),
+        }
+        if preview:
+            summary["preview"] = truncate_value(
+                frame.head(preview).to_dict(orient="records")
+            )
+        partitions[name] = summary
+
+    return {
+        "action": "executed",
+        "data_directory": str(data_dir),
+        "dataset": dataset,
+        "download_acknowledged": True,
+        "package": "PyTDC",
+        "package_version": package_version,
+        "partitions": partitions,
+        "split": {
+            "fractions": list(fractions),
+            "method": "random",
+            "seed": seed,
+        },
+    }
+
+
+def _add_output_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument("--output", help="write JSON to a relative workspace path")
+    parser.add_argument(
+        "--force", action="store_true", help="replace an existing --output file"
     )
 
-    print(f"Multi-objective score: {multi_score:.4f}")
-    print(f"Weights: {weights}")
 
-
-def batch_evaluation_example():
-    """
-    Example: Batch evaluation of multiple molecules
-    """
-    print("\n" + "=" * 60)
-    print("Example 3: Batch Evaluation")
-    print("=" * 60)
-
-    # Generate sample molecules
-    molecules = [
-        'CC(C)Cc1ccc(cc1)C(C)C(O)=O',
-        'CC(=O)Oc1ccccc1C(=O)O',
-        'Cn1c(=O)c2c(ncn2C)n(C)c1=O',
-        'CN1C=NC2=C1C(=O)N(C(=O)N2C)C',
-        'CC(C)NCC(COc1ccc(cc1)COCCOC(C)C)O'
-    ]
-
-    # Initialize oracle
-    oracle = Oracle(name='DRD2')
-
-    print(f"\nBatch evaluating {len(molecules)} molecules with DRD2 oracle...")
-
-    # Batch evaluation (more efficient than individual calls)
-    scores = oracle(molecules)
-
-    print("\nResults:")
-    print("-" * 60)
-    for smiles, score in zip(molecules, scores):
-        print(f"{smiles[:40]:40s}... Score: {score:.4f}")
-
-    # Statistics
-    print(f"\nStatistics:")
-    print(f"  Mean score: {np.mean(scores):.4f}")
-    print(f"  Std score: {np.std(scores):.4f}")
-    print(f"  Min score: {np.min(scores):.4f}")
-    print(f"  Max score: {np.max(scores):.4f}")
-
-
-def goal_directed_generation_template():
-    """
-    Template for goal-directed molecular generation
-    """
-    print("\n" + "=" * 60)
-    print("Example 4: Goal-Directed Generation Template")
-    print("=" * 60)
-
-    template = '''
-# Template for goal-directed molecular generation
-
-from tdc.generation import MolGen
-from tdc import Oracle
-import numpy as np
-
-# 1. Load training data
-data = MolGen(name='ChEMBL_V29')
-train_smiles = data.get_split()['train']['Drug'].tolist()
-
-# 2. Initialize oracle(s)
-oracle = Oracle(name='GSK3B')
-
-# 3. Initialize your generative model
-# model = YourGenerativeModel()
-# model.fit(train_smiles)
-
-# 4. Generation loop
-num_iterations = 100
-num_molecules_per_iter = 100
-best_molecules = []
-
-for iteration in range(num_iterations):
-    # Generate candidate molecules
-    # candidates = model.generate(num_molecules_per_iter)
-
-    # Evaluate with oracle
-    scores = oracle(candidates)
-
-    # Select top molecules
-    top_indices = np.argsort(scores)[-10:]
-    top_molecules = [candidates[i] for i in top_indices]
-    top_scores = [scores[i] for i in top_indices]
-
-    # Store best molecules
-    best_molecules.extend(zip(top_molecules, top_scores))
-
-    # Optional: Fine-tune model on top molecules
-    # model.fine_tune(top_molecules)
-
-    # Print progress
-    print(f"Iteration {iteration}: Best score = {max(scores):.4f}")
-
-# Sort and display top molecules
-best_molecules.sort(key=lambda x: x[1], reverse=True)
-print("\\nTop 10 molecules:")
-for smiles, score in best_molecules[:10]:
-    print(f"{smiles}: {score:.4f}")
-'''
-
-    print("\nGoal-Directed Generation Template:")
-    print("=" * 60)
-    print(template)
-
-
-def distribution_learning_example(train_smiles):
-    """
-    Example: Distribution learning evaluation
-    """
-    print("\n" + "=" * 60)
-    print("Example 5: Distribution Learning")
-    print("=" * 60)
-
-    # Use subset for demonstration
-    train_subset = train_smiles[:1000]
-
-    # Initialize oracle
-    oracle = Oracle(name='QED')
-
-    print("\nEvaluating property distribution...")
-
-    # Evaluate training set
-    print("Computing training set distribution...")
-    train_scores = oracle(train_subset)
-
-    # Simulate generated molecules (in practice, use your generative model)
-    # For demo: add noise to training molecules
-    print("Computing generated set distribution...")
-    generated_scores = train_scores + np.random.normal(0, 0.1, len(train_scores))
-    generated_scores = np.clip(generated_scores, 0, 1)  # QED is [0, 1]
-
-    # Compare distributions
-    print("\n--- Distribution Statistics ---")
-    print(f"Training set (n={len(train_subset)}):")
-    print(f"  Mean: {np.mean(train_scores):.4f}")
-    print(f"  Std: {np.std(train_scores):.4f}")
-    print(f"  Median: {np.median(train_scores):.4f}")
-
-    print(f"\nGenerated set (n={len(generated_scores)}):")
-    print(f"  Mean: {np.mean(generated_scores):.4f}")
-    print(f"  Std: {np.std(generated_scores):.4f}")
-    print(f"  Median: {np.median(generated_scores):.4f}")
-
-    # Distribution similarity metrics
-    from scipy.stats import ks_2samp
-    ks_statistic, p_value = ks_2samp(train_scores, generated_scores)
-
-    print(f"\nKolmogorov-Smirnov Test:")
-    print(f"  KS statistic: {ks_statistic:.4f}")
-    print(f"  P-value: {p_value:.4f}")
-
-    if p_value > 0.05:
-        print("  → Distributions are similar (p > 0.05)")
-    else:
-        print("  → Distributions are significantly different (p < 0.05)")
-
-
-def available_oracles_info():
-    """
-    Display information about available oracles
-    """
-    print("\n" + "=" * 60)
-    print("Example 6: Available Oracles")
-    print("=" * 60)
-
-    oracle_info = {
-        'Biochemical Targets': [
-            'DRD2', 'GSK3B', 'JNK3', '5HT2A', 'ACE',
-            'MAPK', 'CDK', 'P38', 'PARP1', 'PIK3CA'
-        ],
-        'Physicochemical Properties': [
-            'QED', 'SA', 'LogP', 'MW', 'Lipinski'
-        ],
-        'Composite Metrics': [
-            'Isomer_Meta', 'Median1', 'Median2',
-            'Rediscovery', 'Similarity', 'Uniqueness', 'Novelty'
-        ],
-        'Specialized': [
-            'ASKCOS', 'Docking', 'Vina'
-        ]
-    }
-
-    print("\nAvailable Oracle Categories:")
-    print("-" * 60)
-
-    for category, oracles in oracle_info.items():
-        print(f"\n{category}:")
-        for oracle_name in oracles:
-            print(f"  - {oracle_name}")
-
-    print("\nFor detailed oracle documentation, see:")
-    print("  references/oracles.md")
-
-
-def constraint_satisfaction_example():
-    """
-    Example: Molecular generation with constraints
-    """
-    print("\n" + "=" * 60)
-    print("Example 7: Constraint Satisfaction")
-    print("=" * 60)
-
-    # Define constraints
-    constraints = {
-        'QED': (0.5, 1.0),      # Drug-likeness >= 0.5
-        'SA': (1.0, 5.0),       # Easy to synthesize
-        'MW': (200, 500),       # Molecular weight 200-500 Da
-        'LogP': (0, 3)          # Lipophilicity 0-3
-    }
-
-    # Initialize oracles
-    oracles = {name: Oracle(name=name) for name in constraints.keys()}
-
-    # Test molecules
-    test_molecules = [
-        'CC(C)Cc1ccc(cc1)C(C)C(O)=O',
-        'CC(=O)Oc1ccccc1C(=O)O',
-        'Cn1c(=O)c2c(ncn2C)n(C)c1=O'
-    ]
-
-    print("\nConstraints:")
-    for prop, (min_val, max_val) in constraints.items():
-        print(f"  {prop}: [{min_val}, {max_val}]")
-
-    print("\n" + "-" * 60)
-    print("Evaluating molecules against constraints:")
-    print("-" * 60)
-
-    for smiles in test_molecules:
-        print(f"\nSMILES: {smiles}")
-
-        satisfies_all = True
-        for prop, (min_val, max_val) in constraints.items():
-            score = oracles[prop](smiles)
-            satisfies = min_val <= score <= max_val
-
-            status = "✓" if satisfies else "✗"
-            print(f"  {prop:10s}: {score:7.2f} [{min_val:5.1f}, {max_val:5.1f}] {status}")
-
-            satisfies_all = satisfies_all and satisfies
-
-        result = "PASS" if satisfies_all else "FAIL"
-        print(f"  Overall: {result}")
-
-
-def main():
-    """
-    Main function to run all molecular generation examples
-    """
-    print("\n" + "=" * 60)
-    print("TDC Molecular Generation with Oracles Examples")
-    print("=" * 60)
-
-    # Load generation dataset
-    train_smiles = load_generation_dataset()
-
-    # Example 1: Single oracle
-    single_oracle_example()
-
-    # Example 2: Multiple oracles
-    multiple_oracles_example()
-
-    # Example 3: Batch evaluation
-    batch_evaluation_example()
-
-    # Example 4: Goal-directed generation template
-    goal_directed_generation_template()
-
-    # Example 5: Distribution learning
-    distribution_learning_example(train_smiles)
-
-    # Example 6: Available oracles
-    available_oracles_info()
-
-    # Example 7: Constraint satisfaction
-    constraint_satisfaction_example()
-
-    print("\n" + "=" * 60)
-    print("Molecular generation examples completed!")
-    print("=" * 60)
-    print("\nNext steps:")
-    print("1. Implement your generative model")
-    print("2. Use oracles to guide generation")
-    print("3. Evaluate generated molecules")
-    print("4. Iterate and optimize")
-    print("=" * 60)
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Plan or explicitly execute bounded PyTDC molecular workflows. This "
+            "helper does not generate molecules and never calls remote-service or "
+            "docking oracles."
+        )
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    score = subparsers.add_parser(
+        "score",
+        help="plan or run bounded scalar-oracle scoring",
+        description=(
+            "Score bounded user-supplied SMILES. QED is local. LogP, SA, and four "
+            "model-backed oracles require --download because they can fetch an "
+            "artifact/checkpoint."
+        ),
+    )
+    score.add_argument("--oracle", default="QED", help="exact package oracle name")
+    score.add_argument(
+        "--smiles", action="append", help="SMILES string; repeat for multiple inputs"
+    )
+    score.add_argument(
+        "--input", help="relative UTF-8 file with one SMILES string per line"
+    )
+    score.add_argument(
+        "--max-molecules",
+        type=bounded_int(1, 500),
+        default=100,
+        help="maximum accepted molecules (default: 100; max: 500)",
+    )
+    score.add_argument(
+        "--runtime-dir",
+        default=".pytdc-oracles",
+        help="relative directory for any acknowledged checkpoint (default: .pytdc-oracles)",
+    )
+    score.add_argument(
+        "--execute", action="store_true", help="execute the bounded scoring call"
+    )
+    score.add_argument(
+        "--download",
+        action="store_true",
+        help="acknowledge a supported model-checkpoint download",
+    )
+    _add_output_arguments(score)
+
+    dataset = subparsers.add_parser(
+        "dataset",
+        help="plan or load/split a MolGen corpus",
+        description=(
+            "Plan a MolGen random split. Execution requires both --execute and "
+            "--download because these corpora can be large."
+        ),
+    )
+    dataset.add_argument("--dataset", required=True, help="exact MolGen registry name")
+    dataset.add_argument(
+        "--frac",
+        nargs=3,
+        type=float,
+        metavar=("TRAIN", "VALID", "TEST"),
+        default=(0.7, 0.1, 0.2),
+        help="split fractions summing to 1 (default: 0.7 0.1 0.2)",
+    )
+    dataset.add_argument(
+        "--seed",
+        type=bounded_int(0, 4_294_967_295),
+        default=42,
+        help="non-negative random split seed (default: 42)",
+    )
+    dataset.add_argument(
+        "--data-dir",
+        default=".pytdc-molgen",
+        help="relative dataset cache directory (default: .pytdc-molgen)",
+    )
+    dataset.add_argument(
+        "--preview",
+        type=bounded_int(0, 5),
+        default=0,
+        help="include at most this many bounded rows per partition (default: 0)",
+    )
+    dataset.add_argument(
+        "--execute", action="store_true", help="construct and split the MolGen loader"
+    )
+    dataset.add_argument(
+        "--download",
+        action="store_true",
+        help="acknowledge potentially large dataset download/storage",
+    )
+    _add_output_arguments(dataset)
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    try:
+        metadata, package_version = load_pytdc_metadata()
+        if args.command == "score":
+            smiles = load_smiles(
+                args.smiles, args.input, max_molecules=args.max_molecules
+            )
+            oracle, category = classify_oracle(metadata, args.oracle)
+            runtime_dir = safe_directory(
+                args.runtime_dir,
+                label="oracle runtime directory",
+                create=args.execute,
+            )
+            if args.execute:
+                result = execute_scores(
+                    oracle_name=oracle,
+                    category=category,
+                    smiles=smiles,
+                    runtime_dir=runtime_dir,
+                    download_acknowledged=args.download,
+                    package_version=package_version,
+                )
+            else:
+                result = score_plan(
+                    oracle=oracle,
+                    category=category,
+                    smiles_count=len(smiles),
+                    runtime_dir=runtime_dir,
+                    package_version=package_version,
+                    download_acknowledged=args.download,
+                )
+        else:
+            fractions = validate_fractions(args.frac)
+            registry_key = canonical_name("MolGen", metadata.dataset_names, "task")
+            dataset = canonical_name(
+                args.dataset, metadata.dataset_names[registry_key], "MolGen dataset"
+            )
+            data_dir = safe_directory(
+                args.data_dir,
+                label="MolGen data directory",
+                create=args.execute,
+            )
+            if args.execute:
+                if not args.download:
+                    raise CliError(
+                        "MolGen execution may download a large corpus; pass "
+                        "--download together with --execute to acknowledge it"
+                    )
+                result = execute_dataset(
+                    dataset=dataset,
+                    data_dir=data_dir,
+                    seed=args.seed,
+                    fractions=fractions,
+                    preview=args.preview,
+                    package_version=package_version,
+                )
+            else:
+                result = dataset_plan(
+                    dataset=dataset,
+                    data_dir=data_dir,
+                    seed=args.seed,
+                    fractions=fractions,
+                    package_version=package_version,
+                    download_acknowledged=args.download,
+                )
+        emit_json(result, args.output, force=args.force)
+    except (CliError, ImportError, OSError, TypeError, ValueError) as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 2
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

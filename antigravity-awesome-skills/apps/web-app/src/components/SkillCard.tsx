@@ -1,19 +1,23 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { SkillStarButton } from './SkillStarButton';
 import { Icon } from './ui/Icon';
 import type { Skill } from '../types';
+import { toIndexableRoutePath } from '../utils/seo';
 
 interface SkillCardProps {
   skill: Skill;
   starCount: number;
+  matchExplanation?: string;
+  shortlisted?: boolean;
+  onToggleShortlist?: (skillId: string) => void;
 }
 
-export const SkillCard = React.memo(({ skill, starCount }: SkillCardProps) => {
+export const SkillCard = React.memo(({ skill, starCount, matchExplanation, shortlisted = false, onToggleShortlist }: SkillCardProps) => {
   return (
     <article className="skill-row group">
       <Link
-        to={`/skill/${skill.id}`}
+        to={toIndexableRoutePath(`/skill/${skill.id}`)}
         className="skill-row__link"
         aria-label={`Read skill ${skill.name}`}
       >
@@ -26,6 +30,7 @@ export const SkillCard = React.memo(({ skill, starCount }: SkillCardProps) => {
             <span>{skill.category || 'Uncategorized'}</span>
           </div>
           <p>{skill.description}</p>
+          {matchExplanation && <p className="skill-row__match">{matchExplanation}</p>}
           <div className="skill-row__meta">
             <span>Risk: <strong>{skill.risk || 'unknown'}</strong></span>
             {skill.date_added && <span>Added {skill.date_added}</span>}
@@ -37,6 +42,17 @@ export const SkillCard = React.memo(({ skill, starCount }: SkillCardProps) => {
         </span>
       </Link>
       <div className="skill-row__save">
+        {onToggleShortlist && (
+          <button
+            type="button"
+            className={`skill-row__shortlist ${shortlisted ? 'is-active' : ''}`}
+            aria-pressed={shortlisted}
+            aria-label={shortlisted ? 'In shortlist' : 'Add to shortlist'}
+            onClick={() => onToggleShortlist(skill.id)}
+          >
+            {shortlisted ? 'In shortlist' : 'Add to shortlist'}
+          </button>
+        )}
         <SkillStarButton
           skillId={skill.id}
           communityCount={starCount}

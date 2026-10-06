@@ -1,0 +1,62 @@
+[
+  {
+    "level": 50.0,
+    "response": 10120.0
+  },
+  {
+    "level": 50.0,
+    "response": 10080.0
+  },
+  {
+    "level": 50.0,
+    "response": 10150.0
+  },
+  {
+    "level": 75.0,
+    "response": 15200.0
+  },
+  {
+    "level": 75.0,
+    "response": 15100.0
+  },
+  {
+    "level": 75.0,
+    "response": 15250.0
+  },
+  {
+    "level": 100.0,
+    "response": 20150.0
+  },
+  {
+    "level": 100.0,
+    "response": 20250.0
+  },
+  {
+    "level": 100.0,
+    "response": 20050.0
+  },
+  {
+    "level": 125.0,
+    "response": 25200.0
+  },
+  {
+    "level": 125.0,
+    "response": 25100.0
+  },
+  {
+    "level": 125.0,
+    "response": 25300.0
+  },
+  {
+    "level": 150.0,
+    "response": 30250.0
+  },
+  {
+    "level": 150.0,
+    "response": 30150.0
+  },
+  {
+    "level": 150.0,
+    "response": 30350.0
+  }
+]

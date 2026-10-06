@@ -60,7 +60,7 @@
 - [anti-slop-design](https://clawskills.sh/skills/kjaylee-anti-slop-design) - 创建独特、生产级别的前端界面，避免通用 AI 美学。
 - [anvevoice](https://clawskills.sh/skills/anveai-anvevoice) - 向您的网站添加 AI 语音助手。
 - [anydocs](https://clawskills.sh/skills/pektech-anydocs) - 通用文档索引和搜索。
-- [aoineco-squad-dispatch](https://clawskills.sh/skills/edmonddantesj-aoineco-squad-dispatch) - <!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-SD01 -->。
+- [aoineco-squad-dispatch](https://clawskills.sh/skills/edmonddantesj-aoineco-squad-dispatch) - <!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-SD01 -->（原文仅为验证标记，无功能描述）。
 - [apechain-reader](https://clawskills.sh/skills/luigi08001-apechain-reader) - 高级多链钱包分析器，具有 USD 定价、集合名称、ENS 支持和复杂的机器人。
 - [apewisdom](https://clawskills.sh/skills/stuhorsman-apewisdom) - 使用 ApeWisdom API（免费）扫描 Reddit 上的趋势股票和情绪高峰
 - [api-dev](https://clawskills.sh/skills/gitgoodordietrying-api-dev) - 搭建、测试、文档化和调试 REST 和 GraphQL API。
@@ -81,7 +81,7 @@
 - [ask-a-human](https://clawskills.sh/skills/manuelkiessling-ask-a-human) - 当不确定时，请求随机人类的判断。
 - [ask-council](https://clawskills.sh/skills/jeadland-ask-council) - 直接从 Telegram/聊天向 LLM Council 提问 — 无需打开即可获得主席的综合答案。
 - [asl-control](https://clawskills.sh/skills/kj5irq-asl-control) - 通过 REST API 监控和控制 AllStar Link 业余无线电节点。
-- [astra-docker](https://clawskills.sh/skills/walniek-astra-docker) - cat <<'EOF' > ~/.openclaw/workspace/skills/astra-docker/SKILL.md。
+- [astra-docker](https://clawskills.sh/skills/walniek-astra-docker) - cat <<'EOF' > ~/.openclaw/workspace/skills/astra-docker/SKILL.md（原文描述为一段 shell 命令，无功能说明）。
 - [attio-cli](https://clawskills.sh/skills/froemic-attio-cli) - 通过 attio-cli 与您的 Attio CRM 工作区交互。
 - [audio-conductor](https://clawskills.sh/skills/wells1137-audio-conductor) - 智能地将请求分配给适当的音频生成模型（音乐、音效或 TTS）
 - [audos](https://clawskills.sh/skills/werdelin-audos) - 通过 Audos API 创建 AI 驱动的创业工作空间。
@@ -109,6 +109,7 @@
 - [brave-api-search](https://clawskills.sh/skills/broedkrummen-brave-api-search) - 使用官方 Brave Search API 进行实时网页搜索和 AI 驱动的答案。
 - [brave-api-setup](https://clawskills.sh/skills/garibong-labs-brave-api-setup) - 为 OpenClaw web_search 设置 Brave Search API。
 - [brave-headless](https://clawskills.sh/skills/kelexine-brave-headless) - 通过 Brave Search API 进行无头网页搜索和内容提取。
+- [brewpage-publish](https://clawhub.ai/kochetkov-ma/brewpage-publish) - 将 HTML、Markdown、文件或网站发布到 brewpage.app，并返回 URL。
 - [bria-ai](https://clawskills.sh/skills/galbria-bria-ai) - 使用 Bria.ai 商业安全的 AI 模型进行可控的图像生成和编辑。
 - [bria-ai-api](https://clawskills.sh/skills/galbria-bria-ai-api) - 当使用 Bria.ai 生成视觉资产时使用 - 产品照片、英雄图像、图标、背景。
 - [bria-ai-api-skill](https://clawskills.sh/skills/galbria-bria-ai-api-skill) - 当使用 Bria.ai 生成视觉资产时使用 - 产品照片、英雄图像、图标、背景。
@@ -328,7 +329,19 @@
 - [google-tag-manager](https://clawskills.sh/skills/simonfunk-google-tag-manager) - 通过 GTM API v2 管理 Google Tag Manager 容器、标签、触发器、变量和版本。
 - [google-workspace-byok](https://clawskills.sh/skills/kyesh-google-workspace-byok) - 使用您自己的 GCP 项目凭据（BYoK — Bring Your Own Key）集成 Google 日历和 Gmail
 - [google-workspace-mcp](https://clawskills.sh/skills/dru-ca-google-workspace-mcp) - Gmail、日历、云端硬盘、文档、表格 — 无需 Google Cloud Console。
-- [hashbox-plugin](https://clawskills.sh/skills/w3h9uf-hashbox-plugin) - OpenClaw 插件，通过 Firebase webhook 将 AI 代理连接到 HashBox iOS 应用以实现推送通知。
+- [gowa](https://clawskills.sh/skills/aldinokemal-gowa) - 通过 GOWA（Go WhatsApp Web Multi-Device）REST API 进行个人自动化，与 WhatsApp 交互。
+- [gpu-cluster-monitor](https://clawskills.sh/skills/sounderliu-gpu-cluster-monitor) - 用于深度网页抓取的高性能工程工具。
+- [gradient-knowledge-base](https://clawskills.sh/skills/simondelorean-gradient-knowledge-base) - DigitalOcean Gradient Knowledge Bases 的社区技能（非官方）。
+- [gsuite-sdk](https://clawskills.sh/skills/pabloalaniz-gsuite-sdk) - 使用 gsuite-sdk 与 Google Workspace APIs（Gmail、日历、云端硬盘、表格）交互。
+- [guardian-core](https://clawskills.sh/skills/bluemax30001-guardian-core) - 带有捆绑签名和仪表板的本地 Guardian 扫描器。
+- [gumroad-pro](https://clawskills.sh/skills/abdul-karim-mia-gumroad-pro) - 全面的 Gumroad 商家管理，包括产品、销售、许可证、折扣、付款和 Webhooks。
+- [ha-ultimate](https://clawskills.sh/skills/titunito-ha-ultimate) - 面向 AI 代理的权威 Home Assistant 技能。
+- [hackmd](https://clawskills.sh/skills/nulltea-hackmd) - 处理 HackMD 文档。
+- [haibo-jina-reader](https://clawskills.sh/skills/smile-xuc-haibo-jina-reader) - 使用 Jina Reader API 从任何 URL 提取干净、可读的 markdown 内容。
+- [halocard-virtualcards](https://clawskills.sh/skills/adhambadr-halocard-virtualcards) - 为在线购买创建一次性虚拟信用卡。
+- [handsfree-windows-control](https://clawskills.sh/skills/lijinlar-handsfree-windows-control) - 通过 handsfree-windows CLI 控制原生 Windows 应用（UIA）和网页浏览器（Playwright）的指南技能。
+- [harpa-ai](https://clawskills.sh/skills/alxsharuk-harpa-ai) - 通过 HARPA AI Grid REST API 自动化网页浏览器、抓取页面、搜索网络并在实时网站上运行 AI 提示。
+- [hashbox-plugin](https://clawskills.sh/skills/w3h9uf-hashbox-plugin) - OpenClaw 插件，通过 Firebase webhook 将 AI 代理
 - [here-now](https://clawskills.sh/skills/adamludwin-here-now) - 立即将文件和文件夹发布到网络。
 - [heurist-mesh](https://clawskills.sh/skills/wjw12-heurist-mesh) - 实时加密货币令牌数据、DeFi 分析、区块链数据、Twitter/X 社交情报、增强型网络搜索。
 - [hf-spaces](https://clawskills.sh/skills/gary149-hf-spaces) - 直接使用 HuggingFace Spaces 和推理提供商生成图像、视频、音频等。
@@ -894,16 +907,3 @@
 - [ztpc-spam-sweep](https://clawskills.sh/skills/cubiczeta-ztpc-spam-sweep) - 使用持久的 OpenClaw 浏览器配置文件访问 **http://mail.ztpc.com/**（阿里云企业邮箱），
 - [zugashield](https://clawskills.sh/skills/zuga-luga-zugashield) - OpenClaw 的 7 层 AI 安全扫描器。
 - [zulk-short-url-skill](https://clawskills.sh/skills/agentmilindu-zulk-short-url-skill) - 高级 AI 优先 URL 缩短和管理，带有实时分析和通过 MCP 的团队协作。
-- [gowa](https://clawskills.sh/skills/aldinokemal-gowa) - 通过 GOWA（Go WhatsApp Web Multi-Device）REST API 进行个人自动化，与 WhatsApp 交互。
-- [gpu-cluster-monitor](https://clawskills.sh/skills/sounderliu-gpu-cluster-monitor) - 用于深度网页抓取的高性能工程工具。
-- [gradient-knowledge-base](https://clawskills.sh/skills/simondelorean-gradient-knowledge-base) - DigitalOcean Gradient Knowledge Bases 的社区技能（非官方）。
-- [gsuite-sdk](https://clawskills.sh/skills/pabloalaniz-gsuite-sdk) - 使用 gsuite-sdk 与 Google Workspace APIs（Gmail、日历、云端硬盘、表格）交互。
-- [guardian-core](https://clawskills.sh/skills/bluemax30001-guardian-core) - 带有捆绑签名和仪表板的本地 Guardian 扫描器。
-- [gumroad-pro](https://clawskills.sh/skills/abdul-karim-mia-gumroad-pro) - 全面的 Gumroad 商家管理，包括产品、销售、许可证、折扣、付款和 Webhooks。
-- [ha-ultimate](https://clawskills.sh/skills/titunito-ha-ultimate) - 面向 AI 代理的权威 Home Assistant 技能。
-- [hackmd](https://clawskills.sh/skills/nulltea-hackmd) - 处理 HackMD 文档。
-- [haibo-jina-reader](https://clawskills.sh/skills/smile-xuc-haibo-jina-reader) - 使用 Jina Reader API 从任何 URL 提取干净、可读的 markdown 内容。
-- [halocard-virtualcards](https://clawskills.sh/skills/adhambadr-halocard-virtualcards) - 为在线购买创建一次性虚拟信用卡。
-- [handsfree-windows-control](https://clawskills.sh/skills/lijinlar-handsfree-windows-control) - 通过 handsfree-windows CLI 控制原生 Windows 应用（UIA）和网页浏览器（Playwright）的指南技能。
-- [harpa-ai](https://clawskills.sh/skills/alxsharuk-harpa-ai) - 通过 HARPA AI Grid REST API 自动化网页浏览器、抓取页面、搜索网络并在实时网站上运行 AI 提示。
-- [hashbox-plugin](https://clawskills.sh/skills/w3h9uf-hashbox-plugin) - OpenClaw 插件，通过 Firebase webhook 将 AI 代理

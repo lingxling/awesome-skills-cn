@@ -1,448 +1,333 @@
-# Image Loading & Formats
+# Image loading, formats, levels, and coordinates
 
-## Overview
+This reference targets the **PyPI-stable PathML 3.0.8 API**. All sources were
+checked on 2026-10-01 against the v3.0.8 wheel/tag. PathML examples are
+illustrative: native readers were not executed in this review.
 
-PathML provides comprehensive support for loading whole-slide images (WSI) from 160+ proprietary medical imaging formats. The framework abstracts vendor-specific complexities through unified slide classes and interfaces, enabling seamless access to image pyramids, metadata, and regions of interest across different file formats.
+## Start with a local, de-identified file
 
-## Supported Formats
+Never infer authorization from the fact that a file is readable. Whole-slide
+images and DICOM objects can carry identifiers in pixels, labels, filenames, and
+metadata. Keep the original on approved storage, use a pseudonymous working name,
+and do not print arbitrary metadata. The bundled inspector emits only an
+allowlist of technical fields:
 
-PathML supports the following slide formats:
-
-### Brightfield Microscopy Formats
-- **Aperio SVS** (`.svs`) - Leica Biosystems
-- **Hamamatsu NDPI** (`.ndpi`) - Hamamatsu Photonics
-- **Leica SCN** (`.scn`) - Leica Biosystems
-- **Zeiss ZVI** (`.zvi`) - Carl Zeiss
-- **3DHISTECH** (`.mrxs`) - 3DHISTECH Ltd.
-- **Ventana BIF** (`.bif`) - Roche Ventana
-- **Generic tiled TIFF** (`.tif`, `.tiff`)
-
-### Medical Imaging Standards
-- **DICOM** (`.dcm`) - Digital Imaging and Communications in Medicine
-- **OME-TIFF** (`.ome.tif`, `.ome.tiff`) - Open Microscopy Environment
-
-### Multiparametric Imaging
-- **CODEX** - Spatial proteomics imaging
-- **Vectra** (`.qptiff`) - Multiplex immunofluorescence
-- **MERFISH** - Multiplexed error-robust FISH
-
-PathML leverages OpenSlide and other specialized libraries to handle format-specific nuances automatically.
-
-## Core Classes for Loading Images
-
-### SlideData
-
-`SlideData` is the fundamental class for representing whole-slide images in PathML.
-
-**Loading from file:**
-```python
-from pathml.core import SlideData
-
-# Load a whole-slide image
-wsi = SlideData.from_slide("path/to/slide.svs")
-
-# Load with specific backend
-wsi = SlideData.from_slide("path/to/slide.svs", backend="openslide")
-
-# Load from OME-TIFF
-wsi = SlideData.from_slide("path/to/slide.ome.tiff", backend="bioformats")
+```bash
+python scripts/slide_manifest.py inspect \
+  --slide data/pseudonymous_slide.svs \
+  --root .
 ```
 
-**Key attributes:**
-- `wsi.slide` - Backend slide object (OpenSlide, BioFormats, etc.)
-- `wsi.tiles` - Collection of image tiles
-- `wsi.metadata` - Slide metadata dictionary
-- `wsi.level_dimensions` - Image pyramid level dimensions
-- `wsi.level_downsamples` - Downsample factors for each pyramid level
+It rejects URLs and symlinks. PathML itself accepts paths more broadly, so validate
+before constructing a slide object.
 
-**Methods:**
-- `wsi.generate_tiles()` - Generate tiles from the slide
-- `wsi.read_region()` - Read a specific region at a given level
-- `wsi.get_thumbnail()` - Get a thumbnail image
-
-### SlideType
-
-`SlideType` is an enumeration defining supported slide backends:
+## Stable slide classes
 
 ```python
-from pathml.core import SlideType
-
-# Available backends
-SlideType.OPENSLIDE  # For most WSI formats (SVS, NDPI, etc.)
-SlideType.BIOFORMATS  # For OME-TIFF and other formats
-SlideType.DICOM  # For DICOM WSI
-SlideType.VectraQPTIFF  # For Vectra multiplex IF
-```
-
-### Specialized Slide Classes
-
-PathML provides specialized slide classes for specific imaging modalities:
-
-**CODEXSlide:**
-```python
-from pathml.core import CODEXSlide
-
-# Load CODEX spatial proteomics data
-codex_slide = CODEXSlide(
-    path="path/to/codex_dir",
-    stain="IF",  # Immunofluorescence
-    backend="bioformats"
+from pathml.core import (
+    CODEXSlide,
+    HESlide,
+    IHCSlide,
+    MultiparametricSlide,
+    SlideData,
+    SlideDataset,
+    VectraSlide,
+    types,
 )
 ```
 
-**VectraSlide:**
-```python
-from pathml.core import types
+Convenience classes pass a stable `SlideType`:
 
-# Load Vectra multiplex IF data
-vectra_slide = SlideData.from_slide(
-    "path/to/vectra.qptiff",
-    backend=SlideType.VectraQPTIFF
+- `HESlide(...)` → `types.HE`
+- `IHCSlide(...)` → `types.IHC`
+- `MultiparametricSlide(...)` → `types.IF`, Bio-Formats by default
+- `VectraSlide(...)` → `types.Vectra`, Bio-Formats by default
+- `CODEXSlide(...)` → `types.CODEX`, Bio-Formats by default
+
+The generic constructor is:
+
+```python
+slide = SlideData(
+    "data/pseudonymous_slide.svs",
+    name="slide-001",
+    backend="openslide",
+    slide_type=types.HE,
 )
 ```
 
-**MultiparametricSlide:**
-```python
-from pathml.core import MultiparametricSlide
+`SlideData.from_slide()`, `read_region()`, `level_dimensions`, and
+`level_downsamples` are not stable `SlideData` APIs. Use the constructor,
+`extract_region()`, `shape`, and backend-specific objects where necessary.
 
-# Generic multiparametric imaging
-mp_slide = MultiparametricSlide(path="path/to/multiparametric_data")
-```
-
-## Loading Strategies
-
-### Tile-Based Loading
-
-For large WSI files, tile-based loading enables memory-efficient processing:
+For a local cohort, instantiate slides first:
 
 ```python
-from pathml.core import SlideData
+from pathlib import Path
+from pathml.core import HESlide, SlideDataset
 
-# Load slide
-wsi = SlideData.from_slide("path/to/slide.svs")
-
-# Generate tiles at specific magnification level
-wsi.generate_tiles(
-    level=0,  # Pyramid level (0 = highest resolution)
-    tile_size=256,  # Tile dimensions in pixels
-    stride=256,  # Spacing between tiles (256 = no overlap)
-    pad=False  # Whether to pad edge tiles
-)
-
-# Iterate over tiles
-for tile in wsi.tiles:
-    image = tile.image  # numpy array
-    coords = tile.coords  # (x, y) coordinates
-    # Process tile...
+root = Path("data/slides")
+paths = sorted(root.glob("*.svs"))
+slides = [HESlide(path, backend="openslide", name=path.stem) for path in paths]
+dataset = SlideDataset(slides)
 ```
 
-**Overlapping tiles:**
-```python
-# Generate tiles with 50% overlap
-wsi.generate_tiles(
-    level=0,
-    tile_size=256,
-    stride=128  # 50% overlap
-)
-```
+Do not recursively accept arbitrary user-controlled paths. Validate a manifest,
+freeze the patient split, and then build this list.
 
-### Region-Based Loading
+## Backends and file types
 
-Extract specific regions of interest directly:
+### OpenSlide
 
-```python
-# Read region at specific location and level
-region = wsi.read_region(
-    location=(10000, 15000),  # (x, y) in level 0 coordinates
-    level=1,  # Pyramid level
-    size=(512, 512)  # Width, height in pixels
-)
+Use `backend="openslide"` for common brightfield pyramid formats. Stable PathML
+lists:
 
-# Returns numpy array
-```
+`.svs`, `.tif`, `.tiff`, `.bif`, `.ndpi`, `.vms`, `.vmu`, `.scn`, `.mrxs`,
+and `.svslide`.
 
-### Pyramid Level Selection
+The complete capability depends on the installed OpenSlide build and the vendor
+subtype, not only the suffix. Some generic TIFFs are not valid WSIs, and some
+files with a supported suffix use unsupported compression.
 
-Whole-slide images are stored in multi-resolution pyramids. Select the appropriate level based on desired magnification:
+Native OpenSlide is required. Official PathML guidance uses
+`openslide-tools` on Debian/Ubuntu, Homebrew `openslide` on macOS, and vcpkg or
+official prebuilt binaries on Windows.
 
-```python
-# Inspect available levels
-print(wsi.level_dimensions)  # [(width0, height0), (width1, height1), ...]
-print(wsi.level_downsamples)  # [1.0, 4.0, 16.0, ...]
+### Bio-Formats
 
-# Load at lower resolution for faster processing
-wsi.generate_tiles(level=2, tile_size=256)  # Use level 2 (16x downsampled)
-```
+Use `backend="bioformats"` for multidimensional microscopy, OME-TIFF, QPTIFF, and
+formats OpenSlide cannot read. Bio-Formats supports a large catalogue (the
+upstream examples describe 160+ formats), including `.ome.tif`, `.ome.tiff`,
+`.qptiff`, `.czi`, `.vsi`, `.zvi`, and many laboratory formats.
 
-**Common pyramid levels:**
-- Level 0: Full resolution (e.g., 40x magnification)
-- Level 1: 4x downsampled (e.g., 10x magnification)
-- Level 2: 16x downsampled (e.g., 2.5x magnification)
-- Level 3: 64x downsampled (thumbnail)
+This backend requires Java, `python-bioformats`, and `python-javabridge`. It
+starts a JVM and stable source configures a large maximum heap, so isolate and
+resource-limit untrusted images. Java has an approximately 2 GB array limit in
+the backend. A listed extension is not proof that every variant loads.
 
-### Thumbnail Loading
+Bio-Formats returns five-dimensional arrays in PathML order:
 
-Generate low-resolution thumbnails for visualization and quality control:
+`(i, j, z, channel, time)` = `(row, column, z, c, t)`.
 
-```python
-# Get thumbnail
-thumbnail = wsi.get_thumbnail(size=(1024, 1024))
+Even singleton `z` and `time` dimensions are retained until a transform such as
+`CollapseRunsCODEX` or `CollapseRunsVectra` changes the layout.
 
-# Display with matplotlib
-import matplotlib.pyplot as plt
-plt.imshow(thumbnail)
-plt.axis('off')
-plt.show()
-```
+`extract_region(..., normalize=True)` is the default. It divides by
+`2**(8 * source_dtype.itemsize)`, multiplies by 256, then casts to `uint8`.
+This loses high-bit-depth intensity precision and is not a valid generic
+normalization for signed/floating-point acquisitions. For quantification use
+`normalize=False` in `extract_region`, `generate_tiles`, or `SlideData.run`
+(forwarded through `**kwargs`), and verify dtype/range with known pixels.
+This preserves the read values in memory; h5path storage has a separate float16
+conversion described in `data_management.md`.
 
-## Batch Loading with SlideDataset
+### DICOM
 
-Process multiple slides efficiently using `SlideDataset`:
+Use `backend="dicom"` for `.dcm` or `.dicom`. Stable PathML treats DICOM frames as
+tiles. DICOM metadata is especially likely to contain PHI; de-identify with an
+approved DICOM process before PathML, preserve required UIDs consistently, and
+never dump the full dataset to logs.
 
-```python
-from pathml.core import SlideDataset
-import glob
+### h5path
 
-# Create dataset from multiple slides
-slide_paths = glob.glob("data/*.svs")
-dataset = SlideDataset(
-    slide_paths,
-    tile_size=256,
-    stride=256,
-    level=0
-)
-
-# Iterate over all tiles from all slides
-for tile in dataset:
-    image = tile.image
-    slide_id = tile.slide_id
-    # Process tile...
-```
-
-**With preprocessing pipeline:**
-```python
-from pathml.preprocessing import Pipeline, StainNormalizationHE
-
-# Create pipeline
-pipeline = Pipeline([
-    StainNormalizationHE(target='normalize')
-])
-
-# Apply to entire dataset
-dataset = SlideDataset(slide_paths)
-dataset.run(pipeline, distributed=True, n_workers=8)
-```
-
-## Metadata Access
-
-Extract slide metadata including acquisition parameters, magnification, and vendor-specific information:
-
-```python
-# Access metadata
-metadata = wsi.metadata
-
-# Common metadata fields
-print(metadata.get('openslide.objective-power'))  # Magnification
-print(metadata.get('openslide.mpp-x'))  # Microns per pixel X
-print(metadata.get('openslide.mpp-y'))  # Microns per pixel Y
-print(metadata.get('openslide.vendor'))  # Scanner vendor
-
-# Slide dimensions
-print(wsi.level_dimensions[0])  # (width, height) at level 0
-```
-
-## Working with DICOM Slides
-
-PathML supports DICOM WSI through specialized handling:
-
-```python
-from pathml.core import SlideData, SlideType
-
-# Load DICOM WSI
-dicom_slide = SlideData.from_slide(
-    "path/to/slide.dcm",
-    backend=SlideType.DICOM
-)
-
-# DICOM-specific metadata
-print(dicom_slide.metadata.get('PatientID'))
-print(dicom_slide.metadata.get('StudyDate'))
-```
-
-## Working with OME-TIFF
-
-OME-TIFF provides an open standard for multi-dimensional imaging:
+`.h5` and `.h5path` inputs are inferred as PathML's processed HDF5 format:
 
 ```python
 from pathml.core import SlideData
 
-# Load OME-TIFF
-ome_slide = SlideData.from_slide(
-    "path/to/slide.ome.tiff",
-    backend="bioformats"
+processed = SlideData("derived/slide-001.h5path")
+```
+
+There is no stable `from_hdf5()` constructor. See `data_management.md`.
+
+## Backend inference versus explicit selection
+
+If `backend=None`, PathML infers a backend from the suffix. Prefer an explicit
+backend in reproducible work:
+
+```python
+from pathml.core import HESlide
+
+slide = HESlide("data/slide-001.svs", backend="openslide")
+```
+
+Reasons to be explicit:
+
+- `.tif` can mean a brightfield pyramid, OME-TIFF, or a plain raster.
+- Bio-Formats is broader but slower and starts Java.
+- Backend metadata and pyramid interpretation differ.
+- A file renamed to a recognized suffix is not thereby valid.
+
+## Shape, regions, and tile generation
+
+`slide.shape` returns `(height, width)` for the backend's default level.
+
+```python
+height, width = slide.shape
+
+region = slide.extract_region(
+    location=(2_000, 3_000),  # (i, j) = (row, column)
+    size=(512, 768),          # (height, width)
+    level=1,
 )
 
-# Access channel information for multi-channel images
-n_channels = ome_slide.shape[2]  # Number of channels
-```
-
-## Performance Considerations
-
-### Memory Management
-
-For large WSI files (often >1GB), use tile-based loading to avoid memory exhaustion:
-
-```python
-# Efficient: Tile-based processing
-wsi.generate_tiles(level=1, tile_size=256)
-for tile in wsi.tiles:
-    process_tile(tile)  # Process one tile at a time
-
-# Inefficient: Loading entire slide into memory
-full_image = wsi.read_region((0, 0), level=0, wsi.level_dimensions[0])  # May crash
-```
-
-### Distributed Processing
-
-Use Dask for parallel processing across multiple workers:
-
-```python
-from pathml.core import SlideDataset
-from dask.distributed import Client
-
-# Start Dask client
-client = Client(n_workers=8, threads_per_worker=2)
-
-# Process dataset in parallel
-dataset = SlideDataset(slide_paths)
-dataset.run(pipeline, distributed=True, client=client)
-```
-
-### Level Selection
-
-Balance resolution and performance by selecting appropriate pyramid levels:
-
-- **Level 0:** Use for final analysis requiring maximum detail
-- **Level 1-2:** Use for most preprocessing and model training
-- **Level 3+:** Use for thumbnails, quality control, and rapid exploration
-
-## Common Issues and Solutions
-
-**Issue: Slide fails to load**
-- Verify file format is supported
-- Check file permissions and path
-- Try different backend: `backend="bioformats"` or `backend="openslide"`
-
-**Issue: Out of memory errors**
-- Use tile-based loading instead of full-slide loading
-- Process at lower pyramid level (e.g., level=1 or level=2)
-- Reduce tile_size parameter
-- Enable distributed processing with Dask
-
-**Issue: Color inconsistencies across slides**
-- Apply stain normalization preprocessing (see `preprocessing.md`)
-- Check scanner metadata for calibration information
-- Use `StainNormalizationHE` transform in preprocessing pipeline
-
-**Issue: Metadata missing or incorrect**
-- Different vendors store metadata in different locations
-- Use `wsi.metadata` to inspect available fields
-- Some formats may have limited metadata support
-
-## Best Practices
-
-1. **Always inspect pyramid structure** before processing: Check `level_dimensions` and `level_downsamples` to understand available resolutions
-
-2. **Use appropriate pyramid levels**: Process at level 1-2 for most tasks; reserve level 0 for final high-resolution analysis
-
-3. **Tile with overlap** for segmentation tasks: Use stride < tile_size to avoid edge artifacts
-
-4. **Verify magnification consistency**: Check `openslide.objective-power` metadata when combining slides from different sources
-
-5. **Handle vendor-specific formats**: Use specialized slide classes (CODEXSlide, VectraSlide) for multiparametric data
-
-6. **Implement quality control**: Generate thumbnails and inspect for artifacts before processing
-
-7. **Use distributed processing** for large datasets: Leverage Dask for parallel processing across multiple workers
-
-## Example Workflows
-
-### Loading and Inspecting a New Slide
-
-```python
-from pathml.core import SlideData
-import matplotlib.pyplot as plt
-
-# Load slide
-wsi = SlideData.from_slide("path/to/slide.svs")
-
-# Inspect properties
-print(f"Dimensions: {wsi.level_dimensions}")
-print(f"Downsamples: {wsi.level_downsamples}")
-print(f"Magnification: {wsi.metadata.get('openslide.objective-power')}")
-
-# Generate thumbnail for QC
-thumbnail = wsi.get_thumbnail(size=(1024, 1024))
-plt.imshow(thumbnail)
-plt.title(f"Slide: {wsi.name}")
-plt.axis('off')
-plt.show()
-```
-
-### Processing Multiple Slides
-
-```python
-from pathml.core import SlideDataset
-from pathml.preprocessing import Pipeline, TissueDetectionHE
-import glob
-
-# Find all slides
-slide_paths = glob.glob("data/slides/*.svs")
-
-# Create pipeline
-pipeline = Pipeline([TissueDetectionHE()])
-
-# Process all slides
-dataset = SlideDataset(
-    slide_paths,
-    tile_size=512,
-    stride=512,
-    level=1
+tiles = slide.generate_tiles(
+    shape=(512, 512),
+    stride=(256, 256),
+    pad=False,
+    level=1,
 )
-
-# Run pipeline with distributed processing
-dataset.run(pipeline, distributed=True, n_workers=8)
-
-# Save processed data
-dataset.to_hdf5("processed_dataset.h5")
 ```
 
-### Loading CODEX Multiparametric Data
+`generate_tiles()` is lazy. Do not materialize all tiles just to count them.
+Use the bounded planner first:
+
+```bash
+python scripts/plan_pipeline.py \
+  --width 100000 --height 80000 \
+  --tile-size 512 --stride 256 \
+  --level-downsample 4 \
+  --level-width 25000 --level-height 20000
+```
+
+The level dimensions above are illustrative; supply values read from your file.
+
+`SlideData.run()` uses different parameter names: `tile_size`, `tile_stride`,
+`tile_pad`, and `level`.
+
+## Coordinate convention
+
+PathML's `Tile.coords` is the top-left `(i, j)`:
+
+- `i`: row / vertical / image `y`
+- `j`: column / horizontal / image `x`
+- origin: top-left pixel `(0, 0)`
+- units: pixels at the **selected pyramid level**
+
+For OpenSlide, 3.0.8 uses `int(level_downsamples[level])`, then swaps `(i, j)`
+before calling OpenSlide's level-0 `(x, y)` API. A true downsample of 3.99 becomes
+3 for the region origin, although the requested image still uses that pyramid
+level. This shifts tiles and breaks a naive coordinate join. Prefer level 0;
+otherwise reject nonintegral downsamples before extraction:
 
 ```python
-from pathml.core import CODEXSlide
-from pathml.preprocessing import Pipeline, CollapseRunsCODEX, SegmentMIF
-
-# Load CODEX slide
-codex = CODEXSlide("path/to/codex_dir", stain="IF")
-
-# Create CODEX-specific pipeline
-pipeline = Pipeline([
-    CollapseRunsCODEX(z_slice=2),  # Select z-slice
-    SegmentMIF(
-        nuclear_channel='DAPI',
-        cytoplasm_channel='CD45',
-        model='mesmer'
-    )
-])
-
-# Process
-pipeline.run(codex)
+downsample_level = float(slide.slide.slide.level_downsamples[level])
+if not downsample_level.is_integer():
+    raise ValueError("PathML 3.0.8 truncates fractional OpenSlide downsamples; use level 0")
 ```
 
-## Additional Resources
+For the supported integral-downsample case:
 
-- **PathML Documentation:** https://pathml.readthedocs.io/
-- **OpenSlide:** https://openslide.org/ (underlying library for WSI formats)
-- **Bio-Formats:** https://www.openmicroscopy.org/bio-formats/ (alternative backend)
-- **DICOM Standard:** https://www.dicomstandard.org/
+```text
+row_level0 = i_level * downsample_level
+col_level0 = j_level * downsample_level
+y_um = row_level0 * mpp_y
+x_um = col_level0 * mpp_x
+```
+
+Use scanner-provided level-0 MPP when reliable. Do not silently derive MPP from
+objective power. Record:
+
+- coordinate convention (`ij` or `xy`)
+- pyramid level and exact downsample
+- whether MPP is measured, metadata-derived, or unavailable
+- tile height/width, stride, and padding
+
+`QuantifyMIF` later writes `obsm["spatial"]` in `(x, y)` order, so a conversion is
+required when joining it to `Tile.coords`. For a previously processed fractional
+level, recover actual sampled origins plus within-tile coordinates; multiplying
+the combined coordinate by the true downsample cannot repair the origin error.
+
+## Pyramid levels
+
+For OpenSlide, level 0 is highest resolution. Later levels are downsampled, but
+the factors are slide-specific; do not assume `4x`, `16x`, or a particular
+magnification sequence.
+
+Backend-level inspection:
+
+```python
+level_count = slide.slide.level_count
+level0_shape = slide.slide.get_image_shape(level=0)  # (height, width)
+
+# OpenSlide-specific internals, not a backend-neutral PathML contract:
+downsamples = tuple(slide.slide.slide.level_downsamples)
+dimensions_xy = tuple(slide.slide.slide.level_dimensions)
+```
+
+Guard backend-specific access and record it as such. Bio-Formats maps image series
+to levels; those series are not necessarily an optical pyramid.
+
+## Tile count and edge behavior
+
+For one dimension `D`, tile extent `T`, and stride `S`, `pad=False` yields:
+
+```text
+0                         if D < T
+floor((D - T) / S) + 1    otherwise
+```
+
+With `pad=True`, stable PathML follows its backend implementation, which is not
+identical to a generic `ceil(D / S)` rule for every overlapping configuration.
+Use the bundled planner and verify a small synthetic case. Padded pixels are zero,
+which can bias tissue/stain/QC transforms.
+
+At nonzero levels supply the exact backend width/height to the planner using
+`--level-width` and `--level-height`. The default `ceil(level0/downsample)` is an
+estimate; vendor pyramid dimensions can differ and change the tile count.
+
+Important stable limitation: `SlideData.generate_tiles()` does not slice
+slide-level masks into padded tiles. Do not combine a slide-level mask with
+`pad=True` without an explicit, tested padding policy.
+
+## Technical metadata without PHI leakage
+
+PathML 3.0.8 has no backend-neutral `slide.metadata` mapping. Technical metadata
+is backend-specific:
+
+- OpenSlide properties are under the wrapped OpenSlide object.
+- Bio-Formats stores OME-XML in its backend `metadata`.
+- DICOM contains a full clinical metadata model.
+
+Default to a strict allowlist such as:
+
+- dimensions and level count
+- level downsamples
+- MPP X/Y
+- objective power
+- scanner vendor/model
+- pixel dtype, channels, Z, and time dimensions
+
+Do not emit patient name/ID, accession, dates, institution, free text, UIDs, or
+file paths. Even technical fields can be identifying in a small cohort; minimize
+what is retained.
+
+## Loading/QC checklist
+
+Before large-scale processing:
+
+1. Validate suffix, regular-file status, symlinks, size, and manifest uniqueness.
+2. Confirm backend and native dependencies with a non-sensitive test slide.
+3. Read a thumbnail or a few bounded regions, not the full level-0 image.
+4. Confirm color/channel order, dtype, level count, dimensions, and MPP.
+5. Check orientation, blank areas, focus, folds, pen, bubbles, coverslip edges,
+   clipping, and scanner artifacts.
+6. Confirm tile coordinates by overlaying a few sampled tiles on a thumbnail.
+7. Record failures instead of silently dropping slides.
+
+## Sources and further reading
+
+API baseline reviewed 2026-10-01 using the released wheel/tag; hosted docs may lag.
+
+- Stable loading guide:
+  https://pathml.readthedocs.io/en/stable/loading_slides.html
+- Stable core API:
+  https://pathml.readthedocs.io/en/stable/api_core_reference.html
+- Stable source (`slide_data.py`):
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/core/slide_data.py
+- Stable source (`slide_backends.py`):
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/core/slide_backends.py
+- Stable source (`tile.py`):
+  https://github.com/Dana-Farber-AIOS/pathml/blob/v3.0.8/pathml/core/tile.py
+- OpenSlide formats: https://openslide.org/formats/
+- Bio-Formats supported formats:
+  https://docs.openmicroscopy.org/bio-formats/latest/supported-formats.html

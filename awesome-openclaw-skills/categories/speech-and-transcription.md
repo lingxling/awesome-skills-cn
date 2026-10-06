@@ -2,7 +2,7 @@
 
 [← Back to main list](../README.md#table-of-contents)
 
-**46 skills**
+**47 skills**
 
 - [addis-assistant-stt](https://clawskills.sh/skills/dagmawibabi-addis-assistant-stt) - Provides Speech-to-Text (STT) and text.
 - [agent-voice](https://clawskills.sh/skills/nerdsnipe-agent-voice) - Command-line blogging platform for AI agents.
@@ -38,7 +38,7 @@
 - [her-voice](https://clawskills.sh/skills/matusvojtek-her-voice) - Give your agent a voice.
 - [inworld-tts](https://clawskills.sh/skills/gugic-inworld-tts) - Text-to-speech via Inworld.ai API.
 - [jarvis-voice](https://clawskills.sh/skills/globalcaos-jarvis-voice) - Metallic AI voice persona with TTS and visual transcript styling.
-- [kesha-voice-kit](https://clawskills.sh/skills/drakulavich-kesha-voice-kit) - Local STT + TTS with Russian, offline on Apple Silicon.
+- [kesha-voice-kit](https://clawskills.sh/skills/drakulavich-kesha-voice-kit) - Offline speech-to-text in 25 languages, TTS in 9, speaker diarization.
 - [kokoro-tts](https://clawskills.sh/skills/edkief-kokoro-tts) - Generate spoken audio from text using the local Kokoro TTS engine.
 - [lnbits](https://clawskills.sh/skills/talvasconcelos-lnbits) - Manage LNbits Lightning Wallet (Balance, Pay, Invoice)
 - [lnbits-with-qrcode](https://clawskills.sh/skills/jamestsetsekas-lnbits-with-qrcode) - Manage LNbits Lightning Wallet (Balance, Pay, Invoice)
@@ -47,3 +47,4 @@
 - [norman-monthly-reconciliation](https://clawskills.sh/skills/stanlee000-norman-monthly-reconciliation) - Perform a complete monthly financial reconciliation - review all transactions, match invoices, check outstanding.
 - [ressemble](https://clawskills.sh/skills/adriano-vr-ressemble) - Text-to-Speech and Speech-to-Text integration using Resemble AI HTTP API.
 - [siliconflow-tts-gen](https://clawskills.sh/skills/lilei0311-siliconflow-tts-gen) - Text-to-Speech using SiliconFlow API (CosyVoice2)
+- [youtube-transcript-speaker-diarization](https://clawhub.ai/patelnav/youtube-transcript-speaker-diarization) - Speaker-labeled YouTube transcripts via the diarize.io API.

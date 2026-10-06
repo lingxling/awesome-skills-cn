@@ -1,307 +1,215 @@
 ---
 name: imaging-data-commons
-description: 使用idc-index从NCI成像数据Commons查询和下载公共癌症成像数据。用于访问大规模放射学（CT、MR、PET）和病理学数据集，以进行AI训练或研究。无需身份验证。按元数据查询、在浏览器中可视化、检查许可证。
+description: 从 NCI Imaging Data Commons 查询和下载公开的癌症影像数据。支持 IDC 数据集合发现、DICOM 访问、放射学（CT、MR、PET）和病理学 AI 数据集、元数据 SQL、可视化、许可和引用。使用公开的元数据和下载途径，无需身份验证；可选的 BigQuery 和 Google Healthcare 途径需要 Google 凭据。
+compatibility: Requires network access for hosted APIs, index fetching, citations, and downloads. Local Python workflows target idc-index 0.12.5; BigQuery and Google Healthcare require Google credentials.
 license: This skill is provided under the MIT License. IDC data itself has individual licensing (mostly CC-BY, some CC-NC) that must be respected when using the data.
-metadata: {"version": "1.1", "source-skill-version": "1.4.0", "skill-author": "Andrey Fedorov, @fedorov", "idc-index": "0.11.14", "idc-data-version": "v23", "repository": "https://github.com/ImagingDataCommons/idc-claude-skill"}
+metadata:
+  version: "1.8"
+  last-reviewed: "2026-09-30"
+  source-skill-version: "1.8.1"
+  skill-author: Andrey Fedorov, @fedorov
+  idc-index: "0.12.5"
+  idc-data-version: "v24"
+  repository: https://github.com/ImagingDataCommons/imaging-data-commons-skill
 ---
 
-
-
-
-
-
-# 成像数据公共资源
+# Imaging Data Commons
 
 ## 概述
 
-使用`idc-index` Python软件包查询和下载来自国家癌症研究所成像数据公共资源（IDC）的公共癌症成像数据。数据访问无需身份验证。
+从美国国家癌症研究所影像数据共享库（National Cancer Institute Imaging Data Commons，IDC）查询和下载公开的癌症影像数据。访问数据无需身份验证。
 
-**当前IDC数据版本：v23**（始终使用`IDCClient().get_idc_version()`验证）
+**预期的网络访问：** IDC 元数据有三种获取途径——捆绑的本地 DuckDB 索引（安装后可离线使用；额外的索引从 GitHub 获取，临床表从 S3 获取），或通过 MCP 或 REST 访问托管的 IDC 服务（`api.imaging.datacommons.cancer.gov`，无需身份验证）。文件下载使用公开的 GCS（`storage.googleapis.com`）和 AWS S3（`s3.amazonaws.com`）——无需身份验证。DICOMweb 访问可使用公开的 IDC 代理（`proxy.imaging.datacommons.cancer.gov`，无需验证），或 Google Cloud Healthcare API（`healthcare.googleapis.com`，需要 GCP 身份验证）。可选的 BigQuery 查询（`bigquery.googleapis.com`）同样需要 GCP 身份验证。引用解析会访问 DOI 服务。公开的 IDC 途径不需要任何凭据；可选的 Google 客户端使用应用默认凭据（Application Default Credentials）。
 
-**主要工具：** `idc-index`（[GitHub](https://github.com/imagingdatacommons/idc-index)）
+**2026-09-30 审阅：** idc-index 0.12.5、idc-index-data 24.2.2、IDC v24；托管 API 3.0.0b3。使用时请重新核对。
 
-**关键 - 检查软件包版本并在需要时升级（首先运行此操作）：**
+**首先选择访问路径。** 不存在单一的默认路径：成本最低且正确的路径取决于会话和任务。
 
-```python
-import idc_index
+1. **会话中已有 IDC MCP 服务器？** 将发现和元数据查询交给它——参见 *IDC MCP 服务器*。
+2. **否则，`idc-index` 是否已安装且为最新？** 运行 `python scripts/check_version.py`。如果通过，则所有工作都使用 `idc-index`。
+3. **未安装，且任务是只读元数据查询**——计数、属性值、数据集合查找、10 000 行以内的 SQL、许可、引用、查看器 URL？**通过 `curl` 使用 REST API；不要安装任何东西。** 安装需要约 77 MB 的打包索引数据外加 pandas、pyarrow 和 duckdb，而元数据问题并不需要这些。参见 *数据访问选项*。
+4. **未安装，且任务需要的不仅是元数据**——下载文件、pandas 或绘图、pydicom/SimpleITK、病理切片分块（tiling）、超过 10 000 行的结果，或用户需要重复运行的版本固定脚本？安装 `idc-index`：`check_version.py` 会以非零状态退出，并打印适用于当前运行解释器的确切安装命令。优先使用虚拟环境，然后重启 Python。
 
-REQUIRED_VERSION = "0.11.14"  # 必须与此文件中的metadata.idc-index匹配
-installed = idc_index.__version__
+`idc-index`（[GitHub](https://github.com/imagingdatacommons/idc-index)）仍然是功能最强的 Python 途径，在一个客户端中同时提供查询和下载辅助功能。`check_version.py` 本身从不安装任何东西——当存在更新的 `idc-index` 或技能版本时，它也会给出提示。
 
-if installed < REQUIRED_VERSION:
-    print(f"正在将idc-index从{installed}升级到{REQUIRED_VERSION}...")
-    import subprocess
-    subprocess.run(["pip3", "install", "--upgrade", "--break-system-packages", "idc-index"], check=True)
-    print("升级完成。重启Python以使用新版本。")
-else:
-    print(f"idc-index {installed}满足要求（{REQUIRED_VERSION}）")
-```
-
-**验证IDC数据版本并检查当前数据规模：**
+**`idc-index` 路径的设置：** 使用目标解释器运行 `scripts/check_version.py`，并在继续之前确认其输出 `meets pinned minimum` 消息。启动失败不算通过。
 
 ```python
 from idc_index import IDCClient
 client = IDCClient()
 
-# 验证IDC数据版本（应该是"v23"）
-print(f"IDC数据版本：{client.get_idc_version()}")
-
-# 获取集合计数和总序列
-stats = client.sql_query("""
-    SELECT
-        COUNT(DISTINCT collection_id) as collections,
-        COUNT(DISTINCT analysis_result_id) as analysis_results,
-        COUNT(DISTINCT PatientID) as patients,
-        COUNT(DISTINCT StudyInstanceUID) as studies,
-        COUNT(DISTINCT SeriesInstanceUID) as series,
-        SUM(instanceCount) as instances,
-        SUM(series_size_MB)/1000000 as size_TB
-    FROM index
-""")
-print(stats)
+# 验证 IDC 数据版本（应为 "v24"）
+print(f"IDC data version: {client.get_idc_version()}")
 ```
 
-**核心工作流程：**
-1. 查询元数据 → `client.sql_query()`
-2. 下载DICOM文件 → `client.download_from_selection()`
-3. 在浏览器中可视化 → `client.get_viewer_URL(seriesInstanceUID=...)`
+除非另有说明，下载和图像处理示例仅作说明用途；验证范围参见参考文档中的审阅说明。
+
+**核心工作流：** 使用 `client.sql_query()` 查询元数据 → 使用 `client.download_from_selection()` 下载 → 使用 `client.get_viewer_URL()` 可视化。下面的 Python 示例均假定已有此 `client`；*数据访问选项* 中给出了对应的 REST 等价方式。要了解当前的数据规模，请运行 `references/sql_patterns.md` 中的汇总查询或 `GET /v3/stats`。
+
+## IDC MCP 服务器
+
+IDC 在 `https://api.imaging.datacommons.cancer.gov/mcp` 运营一个托管的 MCP 服务器（可流式 HTTP，无需身份验证）。在可用的情况下，它是下文 `idc-index` 工作流的补充——而不是替代。
+
+**识别方法：** 通过 MCP 资源 `idc://guide`，或通过以下工具名称中的三个或更多：`build_cohort`、`get_cohort_urls`、`list_analysis_results` 和 `get_idc_version`。像 `run_sql` 这样的通用名称本身不能作为证据。如果识别结果不明确，请使用 `idc-index`。
+
+**如果本会话中有该服务器**，则将其视为发现和元数据方面的权威来源——IDC 版本、计数、属性值、队列构建、元数据 SQL——并遵循服务器自身的说明，而不是根据本文件重新推导。其数据版本以服务器报告的为准：调用 `get_idc_version`，而不要依赖本文件中固定的版本。
+
+对于服务器不做的事情，请回到这里：下载文件、本地 pandas/notebook 分析、DICOMweb、BigQuery、数字病理切片分块以及可复现脚本。交接方式是将服务器给出的 SeriesInstanceUID 传给 `client.download_from_selection(...)`，并在此时运行 `scripts/check_version.py`。
+
+**如果它不可用**，同一服务无需任何配置即可通过 REST API 在 `https://api.imaging.datacommons.cancer.gov/v3` 访问——按照 *概述* 中的路由规则，对于只读元数据请使用它，而不是安装 `idc-index`。最多建议一次连接 MCP 服务器，且仅在需要反复进行交互式发现时才建议，并且绝不要自行修改用户的配置。
+
+工具清单、交接模式和各宿主环境的说明参见 `references/mcp_guide.md`。
 
 ## 何时使用此技能
 
-- 查找公开可用的放射学（CT、MR、PET）或病理学（切片显微镜）图像
+- 查找公开可用的放射学（CT、MR、PET）或病理学（玻片显微成像）图像
 - 按癌症类型、模态、解剖部位或其他元数据选择图像子集
-- 从IDC下载DICOM数据
-- 在研究或商业应用中使用前检查数据许可证
-- 在不使用本地DICOM查看器软件的情况下在浏览器中可视化医学图像
+- 从 IDC 下载 DICOM 数据
+- 在用于研究或商业应用之前检查数据许可
+- 在浏览器中可视化医学图像，无需本地 DICOM 查看器软件
 
 ## 快速导航
 
-**核心部分（内联）：**
-- IDC数据模型 - 集合和分析结果层次结构
-- 索引表 - 可用表和连接模式
-- 安装 - 软件包设置和版本验证
-- 核心功能 - 基本API模式（查询、下载、可视化、许可证、引用、批量）
-- 最佳实践 - 使用指南
-- 故障排除 - 常见问题和解决方案
+下文直接包含：MCP/REST 路由规则、IDC 数据模型、索引表及其连接方式、核心 API 模式（查询、下载、可视化、许可、引用）、最佳实践和故障排除。
 
 **参考指南（按需加载）：**
 
 | 指南 | 何时加载 |
 |-------|--------------|
-| `index_tables_guide.md` | 复杂JOIN、模式发现、DataFrame访问 |
-| `use_cases.md` | 端到端工作流示例（训练数据集、批量下载） |
-| `sql_patterns.md` | 快速SQL模式用于过滤器发现、注释、大小估计 |
-| `clinical_data_guide.md` | 临床/表格数据、成像+临床连接、值映射 |
-| `cloud_storage_guide.md` | 直接S3/GCS访问、版本控制、UUID映射 |
-| `dicomweb_guide.md` | DICOMweb端点、PACS集成 |
-| `digital_pathology_guide.md` | 切片显微镜（SM）、注释（ANN）、病理学工作流 |
-| `bigquery_guide.md` | 完整DICOM元数据、私有元素（需要GCP） |
+| `index_tables_guide.md` | 复杂 JOIN、模式（schema）发现、DataFrame 访问 |
+| `use_cases.md` | 端到端工作流：训练数据集、批量下载、使用 pydicom/SimpleITK 读取 DICOM、流水线集成 |
+| `sql_patterns.md` | 用于筛选值发现、注释、大小估算的快速 SQL 模式 |
+| `clinical_data_guide.md` | 临床/表格数据、影像与临床数据连接、值映射 |
+| `licensing_and_citation.md` | 商业使用问题、混合许可队列、引用格式 |
+| `cloud_storage_guide.md` | 直接 S3/GCS 访问、版本控制、UUID 映射 |
+| `dicomweb_guide.md` | DICOMweb 端点、PACS 集成 |
+| `digital_pathology_guide.md` | 玻片显微成像（SM）、注释（ANN）、病理学工作流 |
+| `bigquery_guide.md` | 完整 DICOM 元数据、私有元素（需要 GCP） |
 | `cli_guide.md` | 命令行工具（`idc download`、清单文件） |
-| `parquet_access_guide.md` | 通过GCS直接Parquet查询（无需安装idc-index） |
+| `parquet_access_guide.md` | 通过 GCS 直接查询 Parquet（无需安装 idc-index） |
+| `mcp_guide.md` | 托管的 IDC MCP 服务器：工具清单、识别、交接到 `idc-index` |
+| `rest_api_guide.md` | 托管的 IDC REST API：端点、筛选语法、基于 HTTP 的 SQL、清单 |
 
-## IDC数据模型
+## IDC 数据模型
 
-IDC在标准DICOM层次结构（患者 → 研究 → 序列 → 实例）之上添加了两个分组级别：
+IDC 在标准 DICOM 层级（Patient → Study → Series → Instance）之上增加了两个分组层级：
 
-- **collection_id**：按疾病、模态或研究重点对患者进行分组（例如，`tcga_luad`、`nlst`）。一个患者恰好属于一个集合。
-- **analysis_result_id**：识别跨一个或多个原始集合的派生对象（分割、注释、放射组学特征）。
-
-使用`collection_id`查找原始成像数据，可能包括随图像一起存放的注释；使用`analysis_result_id`查找AI生成或专家注释。
+- **collection_id**：按疾病、模态或研究重点对患者分组（例如 `tcga_luad`、`nlst`）。将 `(collection_id, PatientID)` 视为患者键；不要假定 PatientID 是全局唯一的。
+- **analysis_result_id**：标识跨一个或多个原始数据集合的衍生对象（分割、注释、影像组学特征）。用它查找 AI 生成的或专家注释，而 `collection_id` 用于查找原始影像数据（其中本身可能包含随数据提交的注释）。
 
 **查询的关键标识符：**
-| 标识符 | 范围 | 用于 |
+| 标识符 | 范围 | 用途 |
 |------------|-------|---------|
-| `collection_id` | 数据集分组 | 按项目/研究过滤 |
-| `PatientID` | 患者 | 按患者分组图像 |
-| `StudyInstanceUID` | DICOM研究 | 相关序列的分组、可视化 |
-| `SeriesInstanceUID` | DICOM序列 | 相关序列的分组、可视化 |
+| `collection_id` | 数据集分组 | 按项目/研究筛选 |
+| `PatientID` | 患者 | 按患者对图像分组 |
+| `StudyInstanceUID` | DICOM 检查（study） | 相关序列的分组、可视化 |
+| `SeriesInstanceUID` | DICOM 序列（series） | 相关序列的分组、可视化 |
 
 ## 索引表
 
-`idc-index`软件包提供多个元数据索引表，可通过SQL或pandas DataFrame访问。
+`idc-index` 包提供多个元数据索引表，可通过 SQL 或作为 pandas DataFrame 访问。REST API 通过 `GET /tables` 和 `POST /sql` 提供相同的表。
 
-**完整索引表文档：** 使用https://idc-index.readthedocs.io/en/latest/indices_reference.html快速检查可用表和列，而无需执行任何代码。
-
-**重要：** 使用`client.indices_overview`获取当前表描述和列模式。这是可用列及其类型的权威来源 - 在编写SQL或探索数据结构时始终查询它。
+**重要：** `client.indices_overview` 是当前表描述、可用列及其类型的权威来源——编写 SQL 或探索数据结构时请查询它。它还能回答“哪个表包含列 X”；该搜索模式及完整的模式发现参见 `references/index_tables_guide.md`。
 
 ### 可用表
 
-| 表 | 行粒度 | 加载 | 描述 |
-|-------|-----------------|--------|-------------|
-| `index` | 1行 = 1个DICOM序列 | 自动 | 所有当前IDC数据的主要元数据 |
-| `prior_versions_index` | 1行 = 1个DICOM序列 | 自动 | 来自先前IDC版本的序列；用于下载已弃用的数据 |
-| `collections_index` | 1行 = 1个集合 | fetch_index() | 集合级元数据和描述 |
-| `analysis_results_index` | 1行 = 1个分析结果集合 | fetch_index() | 关于派生数据集（注释、分割）的元数据 |
-| `clinical_index` | 1行 = 1个临床数据列 | fetch_index() | 将临床表列映射到集合的字典 |
-| `sm_index` | 1行 = 1个切片显微镜序列 | fetch_index() | 切片显微镜（病理学）序列元数据 |
-| `sm_instance_index` | 1行 = 1个切片显微镜实例 | fetch_index() | 切片显微镜的实例级（SOPInstanceUID）元数据 |
-| `seg_index` | 1行 = 1个DICOM分割序列 | fetch_index() | 分割元数据：算法、段计数、对源图像序列的引用 |
-| `ann_index` | 1行 = 1个DICOM ANN序列 | fetch_index() | 显微镜批量简单注释序列元数据；引用注释的图像序列 |
-| `ann_group_index` | 1行 = 1个注释组 | fetch_index() | 详细注释组元数据：图形类型、注释计数、属性代码、算法 |
-| `contrast_index` | 1行 = 1个带有对比度信息的序列 | fetch_index() | 对比度剂元数据：剂名称、成分、给药途径（CT、MR、PT、XA、RF） |
-| `volume_geometry_index` | 1行 = 1个CT/MR/PT序列 | fetch_index() | 单帧CT、MR和PT序列的3D体积几何验证；方向、间距、维度和切片位置的布尔检查；复合 `regularly_spaced_3d_volume` 标志 |
-| `rtstruct_index` | 1行 = 1个RTSTRUCT序列 | fetch_index() | RT结构集元数据：总ROI计数、ROI名称、生成算法、解释类型以及引用的图像序列UID |
+在查询任何索引表之前，务必调用 `client.fetch_index("table_name")`——它对所有表（包括启动时自动加载的表）都是安全且幂等的。
 
-**自动** = 实例化`IDCClient()`时自动加载
-**fetch_index()** = 需要`client.fetch_index("table_name")`来加载
+| 类别 | 表 | 粒度 |
+|--------|--------|-------------|
+| 核心 | `index`（所有当前数据的主元数据）、`collections_index`、`analysis_results_index` | 序列 / 数据集合 / 分析结果 |
+| 模态采集参数 | `ct_index`、`mr_index`、`pt_index`、`contrast_index` | 1 行 = 该模态的 1 个序列 |
+| 衍生对象 | `seg_index`、`rtstruct_index`、`ann_index`、`ann_group_index` | 1 行 = 1 个序列（或注释组） |
+| 显微成像 | `sm_index`、`sm_instance_index` | 1 行 = 1 个 SM 序列 / 实例 |
+| 几何、临床、历史 | `volume_geometry_index`、`clinical_index`、`version_metadata_index`、`prior_versions_index` | 参见指南 |
+
+`references/index_tables_guide.md` 包含完整清单，列出每个表的列和内容——当你需要了解某个专用表实际包含什么时加载它。
+
+**`prior_versions_index` 包含历史序列版本**，包括其 DICOM SeriesInstanceUID 仍出现在 `index` 中的修订版本。对于历史内容，请固定 `crdc_series_uuid`。要查询当前发布中的“新增内容”，请使用主 `index` 表中的 `series_init_idc_version` / `series_revised_idc_version`，它们与该表中的 `min_idc_version` / `max_idc_version` 并不等价。
 
 ### 连接表
 
-**关键列没有明确标记，以下是可用于连接的子集。**
+**`SeriesInstanceUID` 是所有序列级专用表的通用连接键**：`sm_index`、`sm_instance_index`、`seg_index`、`ann_index`、`ann_group_index`、`contrast_index`、`volume_geometry_index`、`rtstruct_index`、`ct_index`、`mr_index`、`pt_index`。始终通过 `SeriesInstanceUID` 将这些表与 `index` 连接。下面的例外情况使用不同的列名。
 
 | 连接列 | 表 | 用例 |
 |-------------|--------|----------|
-| `collection_id` | index、prior_versions_index、collections_index、clinical_index | 将序列连接到集合元数据或临床数据 |
-| `SeriesInstanceUID` | index、prior_versions_index、sm_index、sm_instance_index | 跨表连接序列；连接到切片显微镜详情 |
-| `StudyInstanceUID` | index、prior_versions_index | 跨当前和历史数据连接研究 |
-| `PatientID` | index、prior_versions_index | 跨当前和历史数据连接患者 |
-| `analysis_result_id` | index、analysis_results_index | 将序列连接到分析结果元数据（注释、分割） |
-| `source_DOI` | index、analysis_results_index | 按出版DOI连接 |
-| `crdc_series_uuid` | index、prior_versions_index | 按CRDC唯一标识符连接 |
-| `Modality` | index、prior_versions_index | 按成像模态过滤 |
-| `SeriesInstanceUID` | index、seg_index、ann_index、ann_group_index、contrast_index | 将分割/注释/对比度序列连接到其索引元数据 |
-| `segmented_SeriesInstanceUID` | seg_index → index | 将分割连接到其源图像序列（连接seg_index.segmented_SeriesInstanceUID = index.SeriesInstanceUID） |
-| `referenced_SeriesInstanceUID` | ann_index → index | 将注释连接到其源图像序列（连接ann_index.referenced_SeriesInstanceUID = index.SeriesInstanceUID） |
-| `SeriesInstanceUID` | index, volume_geometry_index | 将序列连接到其3D几何验证结果（连接index.SeriesInstanceUID = volume_geometry_index.SeriesInstanceUID） |
-| `SeriesInstanceUID` / `referenced_SeriesInstanceUID` | index, rtstruct_index | 将RTSTRUCT序列连接到其元数据（index.SeriesInstanceUID = rtstruct_index.SeriesInstanceUID）；使用rtstruct_index.referenced_SeriesInstanceUID查找源图像序列 |
+| `collection_id` | index、prior_versions_index、collections_index、clinical_index | 将序列链接到数据集合元数据或临床数据 |
+| `analysis_result_id` | index、analysis_results_index | 将序列链接到分析结果元数据（注释、分割） |
+| `source_DOI` | index、analysis_results_index | 按出版物 DOI 链接 |
+| `segmented_SeriesInstanceUID` | seg_index → index | 将分割链接到其源图像序列（`seg_index.segmented_SeriesInstanceUID = index.SeriesInstanceUID`） |
+| `referenced_SeriesInstanceUID` | ann_index → index、rtstruct_index → index | 将注释或 RTSTRUCT 链接到其源图像序列 |
 
-**注意：** `Subjects`、`Updated`和`Description`出现在多个表中，但具有不同的含义（计数vs标识符、不同的更新上下文）。
+**注意：** `subjects`、`updated` 和 `description` 出现在多个表中，但含义不同（计数与标识符、不同的更新上下文）。仅按 UID 连接 `prior_versions_index` 可能匹配到多个历史修订版本；请使用 CRDC UUID 加以区分。
 
-有关详细连接示例、模式发现模式、关键列参考和DataFrame访问，请参阅`references/index_tables_guide.md`。
+详细的连接示例、模式发现模式、关键列参考和 DataFrame 访问，参见 `references/index_tables_guide.md`。
 
 ### 临床数据访问
 
-```python
-# 获取临床索引（也下载临床数据表）
-client.fetch_index("clinical_index")
+临床（非影像）属性——分期、人口统计学、治疗——存放在按数据集合划分的表中。`client.fetch_index("clinical_index")` 加载将列映射到数据集合的字典；`client.get_clinical_table(name)` 以 DataFrame 形式返回单个表。
 
-# 查询临床索引以查找可用表和列
-tables = client.sql_query("SELECT DISTINCT table_name, column_label FROM clinical_index")
-
-# 将特定临床表加载为DataFrame
-clinical_df = client.get_clinical_table("table_name")
-```
-
-有关详细工作流，包括值映射模式和将临床数据与成像连接，请参阅`references/clinical_data_guide.md`。
+发现工作流、编码值映射以及临床数据与影像的连接，参见 `references/clinical_data_guide.md`。
 
 ## 数据访问选项
 
-| 方法 | 需要身份验证 | 最适合 |
-|--------|---------------|----------|
-| `idc-index` | 否 | 关键查询和下载（推荐） |
-| Direct Parquet（GCS） | 否 | 无需安装idc-index的快速查询；始终使用最新数据 |
-| IDC门户 | 否 | 交互式探索、手动选择、基于浏览器的下载 |
-| BigQuery | 是（GCP账户） | 复杂查询、完整DICOM元数据 |
-| DICOMweb代理 | 否 | 通过DICOMweb API进行工具集成 |
-| 云存储（S3/GCS） | 否 | 直接文件访问、批量下载、自定义流程 |
+| 方法 | 认证 | 最适合 | 参考 |
+|--------|------|----------|-----------|
+| `idc-index` | 否 | 下载、pandas 分析、无限制查询——功能最强的途径 | 本文档 |
+| IDC MCP 服务器 | 否 | 会话中已有该服务器时的发现、队列构建、元数据 | `mcp_guide.md` |
+| IDC REST API | 否 | 无需安装、可从任何语言或 shell 获取元数据——`idc-index` 不存在时的默认途径 | `rest_api_guide.md` |
+| 直接 Parquet（GCS） | 否 | 版本固定的查询，或超出 REST 行数上限的结果 | `parquet_access_guide.md` |
+| 云存储（S3/GCS） | 否 | 直接文件访问、批量传输、自定义流水线 | `cloud_storage_guide.md` |
+| 通过 IDC 代理的 DICOMweb | 否 | 工具和 PACS 集成；有每日配额，适合测试和中等规模使用 | `dicomweb_guide.md` |
+| 通过 Google Healthcare 的 DICOMweb | 是（GCP） | 生产规模下的相同 DICOMweb API，没有代理配额限制 | `dicomweb_guide.md` |
+| SlicerIDCBrowser | 否 | 在 3D Slicer 中进行 3D 可视化和分析 | https://github.com/ImagingDataCommons/SlicerIDCBrowser |
+| BigQuery | 是（GCP） | 完整 DICOM 元数据、私有元素、SR 测量值——最后手段 | `bigquery_guide.md` |
 
-**云存储组织**
+**IDC 门户（https://portal.imaging.datacommons.cancer.gov/）仅供交互使用**——基于浏览器的探索、手动队列选择和下载。与上述所有选项不同，它没有编程接口，因此可以引导用户去那里自行浏览或点选数据；绝不要将其用作脚本或工作流中的一个步骤。
 
-IDC在AWS S3和Google云存储之间镜像的公共云存储桶中维护所有DICOM文件。文件按CRDC UUID（而非DICOM UID）组织，以支持版本控制。
+**REST API——无需安装的元数据途径**
 
-| 桶（AWS / GCS） | 许可证 | 内容 |
-|--------------------|---------|---------|
-| `idc-open-data` / `idc-open-data` | 无商业限制 | >90%的IDC数据 |
-| `idc-open-data-two` / `idc-open-idc1` | 无商业限制 | 可能包含头部扫描的集合 |
-| `idc-open-data-cr` / `idc-open-cr` | 商业使用受限（CC BY-NC） | ~4%的数据 |
+`https://api.imaging.datacommons.cancer.gov/v3`，无需身份验证：发现、队列计数和清单、只读 SQL、临床表、查看器 URL、许可、引用。它与 MCP 服务器是同一服务，只是通过普通 HTTP 提供，因此无需任何配置。它从不传输图像字节——要下载、获取 DataFrame 或处理超过 10 000 行的结果，请切换到 `idc-index`。
 
-文件存储为`<crdc_series_uuid>/<crdc_instance_uuid>.dcm`。通过AWS CLI、gsutil或s5cmd使用匿名访问免费访问（无出口费）。使用索引中的`series_aws_url`列获取S3 URL；GCS使用相同的路径结构。
-
-有关桶详情、访问命令、UUID映射和版本控制，请参阅`references/cloud_storage_guide.md`。
-
-**DICOMweb访问**
-
-IDC数据可通过DICOMweb接口（Google云医疗API实现）获得，用于与PACS系统和DICOMweb兼容工具集成。
-
-| 端点 | 身份验证 | 用例 |
-|----------|------|----------|
-| 公共代理 | 否 | 测试、适度查询、每日配额 |
-| Google医疗 | 是（GCP） | 生产使用、更高配额 |
-
-有关端点URL、代码示例、支持的操作和实施细节，请参阅`references/dicomweb_guide.md`。
-
-**Direct Parquet访问**
-
-所有idc-index元数据表都以Parquet文件形式发布到公共GCS桶（`idc-index-data-artifacts`），具有不受限制的CORS。这使得无需安装idc-index即可使用DuckDB或pandas查询，包括跨表连接和针对`volume_geometry_index`和`rtstruct_index`的查询。
-
-有关URL模式、可用文件和DuckDB查询示例，请参阅`references/parquet_access_guide.md`。
-
-## 安装和设置
-
-**必需（用于基本访问）：**
 ```bash
-pip install --upgrade idc-index
+B=https://api.imaging.datacommons.cancer.gov/v3
+curl -s $B/version   # idc_version、idc_index_data_version、api_version
+curl -s $B/stats     # 数据集合、患者、检查、序列、实例、size_TB
+curl -s "$B/attributes/Modality/values?limit=5"   # 真实的筛选值及计数
+curl -s $B/sql -H 'content-type: application/json' \
+  -d '{"sql":"SELECT collection_id, COUNT(*) n FROM index GROUP BY 1 ORDER BY n DESC LIMIT 3"}'
+curl -s $B/cohort/counts -H 'content-type: application/json' \
+  -d '{"filters":{"terms":{"collection_id":["rider_pilot"]}}}'
 ```
 
-**重要：** 新的IDC数据发布将始终触发`idc-index`的新版本。安装时始终使用`--upgrade`标志，除非为了可重复性需要较旧版本。
+**筛选对象始终放在 `filters` 下**——在 `cohort/counts`、`cohort/manifest`、`cohort/manifest.txt`、`licenses` 和 `citations` 上都是如此。裸筛选对象或无法识别的键会返回 422，并指明修正方法；未加筛选的序列枚举请求会返回 400，而不是整个存档。带筛选的 JSON 响应会回显 `filters_applied` 和 `warnings`（对于清单，位于 `counts` 内）——请阅读它们，因为它们会指出服务器丢弃了哪些谓词。因此，计数为零且 `warnings` 为空意味着筛选条件没有匹配到任何内容，而不是某个值的大小写错误；大小写错误会产生一条说明此情况的警告。
 
-**重要：** IDC数据版本v23是当前版本。始终验证您的版本：
-```python
-print(client.get_idc_version())  # 应该返回"v23"
-```
-如果您看到较旧版本，请使用以下命令升级：`pip install --upgrade idc-index`
+`POST /sql` 接受一条只读的 `SELECT`/`WITH` 语句，作用于 `idc-index` 提供的表以及 `clinical.<table>`；`max_rows` 默认为 5 000，上限为 10 000，`truncated` 标记结果是否被截断。`GET /attributes` 列出 19 个可筛选属性——临床值、分割的解剖结构和采集参数不在其中，需要使用 SQL。请求限制仍然适用。**仅使用 v3：** V1 和 V2 已被取代并计划关闭，因此对于用户带来的任何 `/v1/` 或 `Modality_btw` 风格的示例，请将其移植过来，而不是在其基础上扩展。
 
-**测试于：** idc-index 0.11.14（IDC数据版本v23）
+两端都构建在 `idc-index-data` 之上，因此在混合使用之前，请比较 API 的 `idc_index_data_version` 与本地的 `idc_index_data.__version__`：**主版本号即 IDC 数据发布版本**（`24.x.y` 提供 `v24`）；次版本/补丁版本的索引构建可能会修正元数据。如果 API 领先整整一个发布版本，`idc-index` **无法下载额外的序列**——混合选择可能会遗漏无法识别的 UID，而完全无法匹配的选择会抛出异常——因此要么升级它（运行 `scripts/check_version.py` 获取正确的命令），要么使用 `s5cmd --no-sign-request` 直接从存储桶传输。
 
-**可选（用于数据分析）：**
-```bash
-pip install pandas numpy pydicom
-```
+端点参考、筛选值依据、限制以及基于清单的下载流程，参见 `references/rest_api_guide.md`。
+
+**云存储组织方式**
+
+所有 DICOM 文件都存放在 AWS S3 和 GCS 之间互为镜像的公开存储桶中，按 CRDC UUID（而非 DICOM UID）组织以支持版本控制，格式为 `<crdc_series_uuid>/<crdc_instance_uuid>.dcm`。通过 AWS CLI、gsutil 或 s5cmd 匿名访问是免费的（无出口流量费用）；S3 URL 请使用 `series_aws_url` 列。存储桶名称并不决定许可；请为每个所选序列查询 `license_short_name`。完整的存储桶列表和 UUID 映射参见 `references/cloud_storage_guide.md`。
+
+**DICOMweb 访问**
+
+IDC 数据可通过 DICOMweb（Google Cloud Healthcare API）访问，用于 PACS 集成和兼容 DICOMweb 的工具：公开代理（无需验证，有每日配额）用于测试和中等规模查询，或 Google Healthcare（需 GCP 验证）用于生产规模。参见 `references/dicomweb_guide.md`。
+
+**直接 Parquet 访问**
+
+idc-index 元数据表也以 Parquet 格式发布在公开的 GCS 存储桶（`idc-index-data-artifacts`）上，可使用 DuckDB 或 pandas 查询。这需要安装 DuckDB
+对于临时的元数据查询，优先使用 REST `/sql`；对于固定版本或大型结果，选择 Parquet。另有一个独立的公开 S3 导出，还包含临床表和完整的 BigQuery 元数据。参见 `references/parquet_access_guide.md`。
 
 ## 核心功能
 
-### 1. 数据发现和探索
+以下模式是凭记忆而非经过核对时最容易出错的那些。每个领域的完整示例位于文中所提及的参考指南中。
 
-发现IDC中可用的成像集合和数据：
+### 1. 发现——先枚举取值，再据此筛选
+
+按猜测的 `Modality` 或 `BodyPartExamined` 字符串进行筛选，是结果集为空的最常见原因。请先枚举：
 
 ```python
-from idc_index import IDCClient
-
-client = IDCClient()
-
-# 从主索引获取摘要统计
-query = """
-SELECT
-  collection_id,
-  COUNT(DISTINCT PatientID) as patients,
-  COUNT(DISTINCT SeriesInstanceUID) as series,
-  SUM(series_size_MB) as size_mb
-FROM index
-GROUP BY collection_id
-ORDER BY patients DESC
-"""
-collections_summary = client.sql_query(query)
-
-# 对于更丰富的集合元数据，使用collections_index
-client.fetch_index("collections_index")
-collections_info = client.sql_query("""
-    SELECT collection_id, CancerTypes, TumorLocations, Species, Subjects, SupportingData
-    FROM collections_index
-""")
-
-# 对于分析结果（注释、分割），使用analysis_results_index
-client.fetch_index("analysis_results_index")
-analysis_info = client.sql_query("""
-    SELECT analysis_result_id, analysis_result_title, Subjects, Collections, Modalities
-    FROM analysis_results_index
-""")
-```
-
-**`collections_index`**为每个集合提供策划的元数据：癌症类型、肿瘤位置、物种、受试者计数和支持数据类型 - 无需从主索引聚合。
-
-**`analysis_results_index`**列出派生数据集（AI分割、专家注释、放射组学特征）及其源集合和模态。
-
-### 2. 使用SQL查询元数据
-
-使用SQL查询IDC迷你索引以查找特定数据集。
-
-**首先，探索过滤器列的可用值：**
-```python
-from idc_index import IDCClient
-
-client = IDCClient()
-
-# 检查存在什么模态值
 modalities = client.sql_query("""
     SELECT DISTINCT Modality, COUNT(*) as series_count
     FROM index
@@ -309,83 +217,43 @@ modalities = client.sql_query("""
     ORDER BY series_count DESC
 """)
 print(modalities)
-
-# 检查MR模态存在什么BodyPartExamined值
-body_parts = client.sql_query("""
-    SELECT DISTINCT BodyPartExamined, COUNT(*) as series_count
-    FROM index
-    WHERE Modality = 'MR' AND BodyPartExamined IS NOT NULL
-    GROUP BY BodyPartExamined
-    ORDER BY series_count DESC
-    LIMIT 20
-""")
-print(body_parts)
 ```
 
-**然后使用验证的过滤器值查询：**
-```python
-# 查找乳腺MRI扫描（使用上述探索中的实际值）
-results = client.sql_query("""
-    SELECT
-      collection_id,
-      PatientID,
-      SeriesInstanceUID,
-      Modality,
-      SeriesDescription,
-      license_short_name
-    FROM index
-    WHERE Modality = 'MR'
-      AND BodyPartExamined = 'BREAST'
-    LIMIT 20
-""")
+同样的模式适用于任何筛选列，并可选择用另一列进一步缩小范围——如某个 `Modality` 内的 `BodyPartExamined`、`Manufacturer`、`collection_id`。在 REST 途径上，这种取值核实只需一次调用——`GET /attributes/{attr}/values` 返回取值及其计数——而队列端点会在 `warnings` 中报告大小写错误的值，而不是返回空结果。
 
-# 作为pandas DataFrame访问结果
-for idx, row in results.iterrows():
-    print(f"患者：{row['PatientID']}，序列：{row['SeriesInstanceUID']}")
-```
+有两个索引包含主 `index` 所没有的、经过整理的数据集合级元数据，两者都需要先调用 `client.fetch_index(...)`：`collections_index`（癌症类型、肿瘤部位、物种、受试者数量）和 `analysis_results_index`（衍生数据集——AI 分割、专家注释、影像组学——及其源数据集合和模态）。
 
-**要按癌症类型过滤，与`collections_index`连接：**
+**癌症类型位于 `collections_index.cancer_types` 中，而不在 `index` 中**——按癌症类型筛选需要进行连接：
+
 ```python
 client.fetch_index("collections_index")
 results = client.sql_query("""
     SELECT i.collection_id, i.PatientID, i.SeriesInstanceUID, i.Modality
     FROM index i
     JOIN collections_index c ON i.collection_id = c.collection_id
-    WHERE c.CancerTypes LIKE '%Breast%'
+    WHERE c.cancer_types LIKE '%Breast%'
       AND i.Modality = 'MR'
     LIMIT 20
 """)
 ```
 
-**可用元数据字段**（使用`client.indices_overview`获取完整列表）：
-- 标识符：collection_id、PatientID、StudyInstanceUID、SeriesInstanceUID
-- 成像：Modality、BodyPartExamined、Manufacturer、ManufacturerModelName
-- 临床：PatientAge、PatientSex、StudyDate
-- 描述：StudyDescription、SeriesDescription
-- 许可证：license_short_name
+`client.sql_query()` 返回一个 pandas DataFrame。在编写查询之前，请使用 `client.get_index_schema('index')` 或 `client.indices_overview` 确认列名，而不要凭假设。
 
-**注意：** 癌症类型在`collections_index.CancerTypes`中，而不在主`index`表中。
+筛选值发现、注释和分割查询、大小估算、临床链接和版本跟踪（“vX 中有什么新内容”——使用 `index` 中的 `series_init_idc_version` / `series_revised_idc_version`；历史对象使用 `prior_versions_index`），参见 `references/sql_patterns.md`。
 
-### 3. 下载DICOM文件
+### 2. 下载 DICOM 文件
 
-从IDC的云存储高效下载成像数据：
+**两种下载方法的前两个参数顺序相反。** 这是 IDC 代码出错的最常见来源——请核对，而不要凭记忆：
 
-**下载整个集合：**
+| 方法 | 第一个参数 | 第二个参数 | 使用场景 |
+|--------|-----------|------------|----------|
+| `download_from_selection` | `downloadDir`（必需） | 筛选关键字参数（可选） | 按数据集合、患者、检查或序列筛选 |
+| `download_dicom_series` | `seriesInstanceUID`（必需） | `downloadDir`（必需） | 仅按 UID 下载特定序列 |
+
+**`download_from_selection` 接受筛选关键字参数，而不是 DataFrame。** 名称中的 “from_selection” 指的是按条件筛选 IDC 索引——而不是接受 pandas DataFrame。要下载查询结果，请先将 UID 提取为列表：
+
 ```python
-from idc_index import IDCClient
-
-client = IDCClient()
-
-# 下载小集合（RIDER Pilot ~1GB）
-client.download_from_selection(
-    collection_id="rider_pilot",
-    downloadDir="./data/rider"
-)
-```
-
-**下载特定序列：**
-```python
-# 首先，查询序列UID
+# 第 1 步：查询序列 UID
 series_df = client.sql_query("""
     SELECT SeriesInstanceUID
     FROM index
@@ -395,468 +263,118 @@ series_df = client.sql_query("""
     LIMIT 5
 """)
 
-# 仅下载那些序列
+# 第 2 步：从 DataFrame 中将 UID 提取为列表
+uids = list(series_df['SeriesInstanceUID'].values)
+
+# 第 3 步：将列表传给 download_from_selection（不是 DataFrame 本身）
 client.download_from_selection(
-    seriesInstanceUID=list(series_df['SeriesInstanceUID'].values),
+    downloadDir="./data/lung_ct",
+    seriesInstanceUID=uids       # 字符串列表，而不是 DataFrame
+)
+
+# 替代方式：download_dicom_series 的第一个参数是 seriesInstanceUID（顺序不同！）
+client.download_dicom_series(
+    seriesInstanceUID=uids,      # 这里是第一个参数
     downloadDir="./data/lung_ct"
 )
+
+# 整个数据集合：downloadDir 仍然是第一个位置参数
+client.download_from_selection(downloadDir="./data/rider", collection_id="rider_pilot")
 ```
 
-**自定义目录结构：**
+两者默认都使用 AWS；如需使用 Google，请指定 `source_bucket_location="gcs"`。在 0.12.5 中，最具体的选择器优先生效，因此对于需要取交集的条件，请先使用 SQL，并验证每个请求的 UID 都存在。
 
-默认`dirTemplate`：`%collection_id/%PatientID/%StudyInstanceUID/%Modality_%SeriesInstanceUID`
+**下载的文件命名为 `<crdc_instance_uuid>.dcm`，而不是按 SOPInstanceUID 命名。** DICOM UID 保存在文件元数据中，而不是文件名中。请读取 DICOM 头部获取序列 UID；`crdc_instance_uuid` 不是序列级 `index` 的列。
+
+`idc download <collection|series-uid|manifest> --download-dir ./data` 可在 shell 中完成同样的操作。`dirTemplate` 层级选项（Python 默认值：`%collection_id/%PatientID/%StudyInstanceUID/%Modality_%SeriesInstanceUID`；`dirTemplate=""` 表示扁平化）、支持断点续传的清单下载以及试运行（dry-run）大小估算，参见 `references/cli_guide.md`。
+
+### 3. 可视化 IDC 图像
 
 ```python
-# 简化层次结构（省略StudyInstanceUID级别）
-client.download_from_selection(
-    collection_id="tcga_luad",
-    downloadDir="./data",
-    dirTemplate="%collection_id/%PatientID/%Modality"
-)
-# 结果在：./data/tcga_luad/TCGA-05-4244/CT/
-
-# 扁平结构（所有文件在一个目录中）
-client.download_from_selection(
-    seriesInstanceUID=list(series_df['SeriesInstanceUID'].values),
-    downloadDir="./data/flat",
-    dirTemplate=""
-)
-# 结果在：./data/flat/*.dcm
+viewer_url = client.get_viewer_URL(seriesInstanceUID=uid)        # 单个序列
+viewer_url = client.get_viewer_URL(studyInstanceUID=study_uid)   # 一个检查中的所有序列
 ```
 
-**下载的文件名：**
+返回一个浏览器 URL——不会下载任何内容。该方法会自动为放射学选择 OHIF v3，为玻片显微成像选择 SLIM。当单个 DICOM 检查包含多个序列（来自一次 MRI 扫描的 T1、T2 和 DWI）时，按检查查看非常有用。
 
-单个DICOM文件使用其CRDC实例UUID命名：`<crdc_instance_uuid>.dcm`（例如，`0d73f84e-70ae-4eeb-96a0-1c613b5d9229.dcm`）。这种基于UUID的命名：
-- 启用版本跟踪（UUID在文件内容更改时更改）
-- 匹配云存储组织（`s3://idc-open-data/<crdc_series_uuid>/<crdc_instance_uuid>.dcm`）
-- 与保存在文件元数据中的DICOM UID（SOPInstanceUID）不同
+### 4. 许可和引用——是义务，而非可选步骤
 
-要识别文件，请在查询中使用`crdc_instance_uuid`列或从文件中读取DICOM元数据（SOPInstanceUID）。
-
-### 命令行下载
-
-安装`idc-index`后，`idc download`命令提供命令行访问下载功能。
-
-**自动检测输入类型：** 清单文件路径，或标识符（collection_id、PatientID、StudyInstanceUID、SeriesInstanceUID、crdc_series_uuid）。
-
-```bash
-# 下载整个集合
-idc download rider_pilot --download-dir ./data
-
-# 按UID下载特定序列
-idc download "1.3.6.1.4.1.9328.50.1.69736" --download-dir ./data
-
-# 下载多个项目（逗号分隔）
-idc download "tcga_luad,tcga_lusc" --download-dir ./data
-
-# 从清单文件下载（自动检测）
-idc download manifest.txt --download-dir ./data
-```
-
-**选项：**
-
-| 选项 | 描述 |
-|--------|-------------|
-| `--download-dir` | 输出目录（默认：当前目录） |
-| `--dir-template` | 目录层次结构模板（默认：`%collection_id/%PatientID/%StudyInstanceUID/%Modality_%SeriesInstanceUID`） |
-| `--log-level` | 详细程度：debug、info、warning、error、critical |
-
-**清单文件：**
-
-清单文件包含S3 URL（每行一个），可以是：
-- 在队列选择后从IDC门户导出
-- 由协作者共享以实现可重复的数据访问
-- 从查询结果以编程方式生成
-
-格式（每行一个S3 URL）：
-```
-s3://idc-open-data/cb09464a-c5cc-4428-9339-d7fa87cfe837/*
-s3://idc-open-data/88f3990d-bdef-49cd-9b2b-4787767240f2/*
-```
-
-**示例：从Python查询生成清单：**
+IDC 数据附带许可条款和署名要求，这些要求会延续到任何下游出版物或产品中，而且两者都无法从像素数据中推断出来。**使用前检查许可，并为下载的所有内容生成引用。**
 
 ```python
-from idc_index import IDCClient
-
-client = IDCClient()
-
-# 查询序列URL
-results = client.sql_query("""
-    SELECT series_aws_url
-    FROM index
-    WHERE collection_id = 'rider_pilot' AND Modality = 'CT'
+# 某个选择的许可分布
+licenses = client.sql_query("""
+    SELECT DISTINCT collection_id, license_short_name,
+           COUNT(DISTINCT SeriesInstanceUID) as series_count
+    FROM index GROUP BY collection_id, license_short_name
 """)
 
-# 保存为清单文件
-with open('ct_manifest.txt', 'w') as f:
-    for url in results['series_aws_url']:
-        f.write(url + '\n')
-```
-
-然后下载：
-```bash
-idc download ct_manifest.txt --download-dir ./ct_data
-```
-
-### 4. 可视化IDC图像
-
-在浏览器中查看DICOM数据而无需下载：
-
-```python
-from idc_index import IDCClient
-import webbrowser
-
-client = IDCClient()
-
-# 首先查询以获取有效UID
-results = client.sql_query("""
-    SELECT SeriesInstanceUID, StudyInstanceUID
-    FROM index
-    WHERE collection_id = 'rider_pilot' AND Modality = 'CT'
-    LIMIT 1
-""")
-
-# 查看单个序列
-viewer_url = client.get_viewer_URL(seriesInstanceUID=results.iloc[0]['SeriesInstanceUID'])
-webbrowser.open(viewer_url)
-
-# 查看研究中的所有序列（对于多序列检查（如MRI协议）有用）
-viewer_url = client.get_viewer_URL(studyInstanceUID=results.iloc[0]['StudyInstanceUID'])
-webbrowser.open(viewer_url)
-```
-
-该方法自动为放射学选择OHIF v3，或为切片显微镜选择SLIM。按研究查看在DICOM研究包含多个序列（例如，来自单个MRI会话的T1、T2、DWI序列）时很有用。
-
-### 5. 理解和检查许可证
-
-在使用前检查数据许可证（对于商业应用至关重要）：
-
-```python
-from idc_index import IDCClient
-
-client = IDCClient()
-
-# 检查所有集合的许可证
-query = """
-SELECT DISTINCT
-  collection_id,
-  license_short_name,
-  COUNT(DISTINCT SeriesInstanceUID) as series_count
-FROM index
-GROUP BY collection_id, license_short_name
-ORDER BY collection_id
-"""
-
-licenses = client.sql_query(query)
-print(licenses)
-```
-
-**IDC中的许可证类型：**
-- **CC BY 4.0** / **CC BY 3.0**（~97%的数据）- 允许商业使用，需署名
-- **CC BY-NC 4.0** / **CC BY-NC 3.0**（~3%的数据）- 仅非商业使用
-- **自定义许可证**（罕见）- 某些集合有特定条款（例如，NLM条款和条件）
-
-**重要：** 在出版物或商业应用中使用IDC数据之前，始终检查许可证。每个DICOM文件在元数据中标记有其特定许可证。
-
-### 为署名生成引用
-
-`source_DOI`列包含DOI，链接到描述数据生成方式的出版物。要满足署名要求，使用`citations_from_selection()`生成正确格式的引用：
-
-```python
-from idc_index import IDCClient
-
-client = IDCClient()
-
-# 获取集合的引用（默认APA格式）
-citations = client.citations_from_selection(collection_id="rider_pilot")
-for citation in citations:
+# 为你下载的同一选择生成引用（默认 APA 格式）
+for citation in client.citations_from_selection(collection_id="rider_pilot"):
     print(citation)
-
-# 获取特定序列的引用
-results = client.sql_query("""
-    SELECT SeriesInstanceUID FROM index
-    WHERE collection_id = 'tcga_luad' LIMIT 5
-""")
-citations = client.citations_from_selection(
-    seriesInstanceUID=list(results['SeriesInstanceUID'].values)
-)
-
-# 替代格式：BibTeX（用于LaTeX文档）
-bibtex_citations = client.citations_from_selection(
-    collection_id="tcga_luad",
-    citation_format=IDCClient.CITATION_FORMAT_BIBTEX
-)
 ```
 
-**参数：**
-- `collection_id`：按集合过滤
-- `patientId`：按患者ID过滤
-- `studyInstanceUID`：按研究UID过滤
-- `seriesInstanceUID`：按序列UID过滤
-- `citation_format`：使用`IDCClient.CITATION_FORMAT_*`常量：
-  - `CITATION_FORMAT_APA`（默认）- APA样式
-  - `CITATION_FORMAT_BIBTEX` - BibTeX用于LaTeX
-  - `CITATION_FORMAT_JSON` - CSL JSON
-  - `CITATION_FORMAT_TURTLE` - RDF Turtle
+在经审阅的 v24 快照中，按大小计算约 97% 的 IDC 数据为 CC BY（允许商业使用，需署名），约 3% 为 CC BY-NC（仅限非商业使用）。**许可附加在序列上，而不是数据集合上**——176 个数据集合中有 39 个包含不止一种许可——因此请检查你实际打算使用的选择，并注意每个组成部分都保留其许可义务。
 
-**最佳实践：** 使用IDC数据发布结果时，包含生成的引用以正确归属数据源并满足许可证要求。
+这两项任务在所有三种访问途径中都可用，因此请继续使用会话当前正在使用的途径：如上所示的 `idc-index`、REST 上的 `POST /v3/licenses` 和 `POST /v3/citations`，或 MCP 工具 `get_licenses` 和 `get_citations`。完整的许可清单、所有三种途径、引用格式（APA、BibTeX、CSL JSON、RDF Turtle）以及发表时应包含的内容，参见 `references/licensing_and_citation.md`。
 
-### 6. 批量处理和过滤
+### 5. 超出索引范围
 
-使用过滤高效处理大型数据集：
+使用 *概述* 中的路由规则选择访问途径；上文的 *数据访问选项* 是完整的路由表。
 
-```python
-from idc_index import IDCClient
-import pandas as pd
-
-client = IDCClient()
-
-# 查找来自GE扫描仪的胸部CT扫描
-query = """
-SELECT
-  SeriesInstanceUID,
-  PatientID,
-  collection_id,
-  ManufacturerModelName
-FROM index
-WHERE Modality = 'CT'
-  AND BodyPartExamined = 'CHEST'
-  AND Manufacturer = 'GE MEDICAL SYSTEMS'
-  AND license_short_name = 'CC BY 4.0'
-LIMIT 100
-"""
-
-results = client.sql_query(query)
-
-# 稍后保存清单
-results.to_csv('lung_ct_manifest.csv', index=False)
-
-# 分批下载以避免超时
-batch_size = 10
-for i in range(0, len(results), batch_size):
-    batch = results.iloc[i:i+batch_size]
-    client.download_from_selection(
-        seriesInstanceUID=list(batch['SeriesInstanceUID'].values),
-        downloadDir=f"./data/batch_{i//batch_size}"
-    )
-```
-
-### 7. 使用BigQuery进行高级查询
-
-对于需要完整DICOM元数据、复杂JOIN、临床数据表或私有DICOM元素的查询，使用Google BigQuery。需要启用计费的GCP账户。
-
-**快速参考：**
-- 数据集：`bigquery-public-data.idc_current.*`
-- 主表：`dicom_all`（组合元数据）
-- 完整元数据：`dicom_metadata`（所有DICOM标签）
-- 私有元素：`OtherElements`列（供应商特定标签，如扩散b值）
-
-有关设置、表模式、查询模式、私有元素访问和成本优化的详细信息，请参阅`references/bigquery_guide.md`。
-
-**在使用BigQuery之前**，始终检查专门的索引表是否已有您需要的元数据：
-1. 使用`client.indices_overview`或[idc-index索引参考](https://idc-index.readthedocs.io/en/latest/indices_reference.html)发现所有可用表及其列
-2. 获取相关索引：`client.fetch_index("table_name")`
-3. 使用`client.sql_query()`本地查询（免费，无需GCP账户）
-
-常用专用索引：`seg_index`（分割）、`ann_index` / `ann_group_index`（显微镜注释）、`sm_index`（切片显微镜）、`collections_index`（集合元数据）。仅当您需要私有DICOM元素或任何索引中不存在的属性时才使用BigQuery。
-
-**需要BigQuery的用例（无idc-index等效项）：**
-- **每段解剖搜索** — `seg_index`提供序列级SEG元数据，但BigQuery `segmentations`表单独公开每个段及其DICOM编码结构名称（例如，查找包含"肝脏"或"肿瘤"段的所有SEG序列）
-- **来自SR的定量测量** — BigQuery `quantitative_measurements`表包含从DICOM SR TID1500对象中预先提取的放射组学特征（体积、直径、形状描述符、纹理、强度统计）；无idc-index等效项
-- **来自SR的定性测量** — BigQuery `qualitative_measurements`表包含来自DICOM SR TID1500的编码评估（恶性度评级、钙化、纹理、边缘）；无idc-index等效项
-
-有关这些表的模式、列描述和查询示例，请参阅`references/bigquery_guide.md`。
-
-### 8. 工具选择指南
-
-| 任务 | 工具 | 参考 |
-|------|------|-----------|
-| 编程查询和下载 | `idc-index` | 此文档 |
-| 交互式探索 | IDC门户 | https://portal.imaging.datacommons.cancer.gov/explore/ |
-| 复杂元数据查询 | BigQuery | `references/bigquery_guide.md` |
-| 3D可视化和分析 | SlicerIDCBrowser | https://github.com/ImagingDataCommons/SlicerIDCBrowser |
-
-**默认选择：** 对于大多数任务使用`idc-index`（无需身份验证、简单API、批量下载）。
-
-### 9. 与分析流程集成
-
-将IDC数据集成到成像分析工作流中：
-
-**读取下载的DICOM文件：**
-```python
-import pydicom
-import os
-
-# 从下载的序列读取DICOM文件
-series_dir = "./data/rider/rider_pilot/RIDER-1007893286/CT_1.3.6.1..."
-
-dicom_files = [os.path.join(series_dir, f) for f in os.listdir(series_dir)
-               if f.endswith('.dcm')]
-
-# 加载第一张图像
-ds = pydicom.dcmread(dicom_files[0])
-print(f"患者ID：{ds.PatientID}")
-print(f"模态：{ds.Modality}")
-print(f"图像形状：{ds.pixel_array.shape}")
-```
-
-**从CT序列构建3D体积：**
-```python
-import pydicom
-import numpy as np
-from pathlib import Path
-
-def load_ct_series(series_path):
-    """将CT序列加载为3D numpy数组"""
-    files = sorted(Path(series_path).glob('*.dcm'))
-    slices = [pydicom.dcmread(str(f)) for f in files]
-
-    # 按切片位置排序
-    slices.sort(key=lambda x: float(x.ImagePositionPatient[2]))
-
-    # 堆叠为3D数组
-    volume = np.stack([s.pixel_array for s in slices])
-
-    return volume, slices[0]  # 返回体积和第一张切片的元数据
-
-volume, metadata = load_ct_series("./data/lung_ct/series_dir")
-print(f"体积形状：{volume.shape}")  # (z, y, x)
-```
-
-**与SimpleITK集成：**
-```python
-import SimpleITK as sitk
-from pathlib import Path
-
-# 读取DICOM序列
-series_path = "./data/ct_series"
-reader = sitk.ImageSeriesReader()
-dicom_names = reader.GetGDCMSeriesFileNames(series_path)
-reader.SetFileNames(dicom_names)
-image = reader.Execute()
-
-# 应用处理
-smoothed = sitk.CurvatureFlow(image1=image, timeStep=0.125, numberOfIterations=5)
-
-# 保存为NIfTI
-sitk.WriteImage(smoothed, "processed_volume.nii.gz")
-```
-
-## 常见用例
-
-有关完整的端到端工作流示例，请参阅`references/use_cases.md`，包括：
-- 从肺部CT扫描构建深度学习训练数据集
-- 比较扫描仪制造商之间的图像质量
-- 下载前在浏览器中预览数据
-- 商业使用的许可证感知批量下载
+在使用 BigQuery（需要 Google Cloud 项目和访问权限）之前，请检查某个专用索引表是否已有你需要的列：搜索 `client.indices_overview`，然后执行 `client.fetch_index(...)` 并在本地免费查询。完整的实例元数据、逐分割段的行以及 SR 测量表需要 BigQuery 或其公开的 Parquet 导出；它们不在紧凑的 idc-index 表中。
 
 ## 最佳实践
 
-- **在生成响应之前验证IDC版本** - 始终在会话开始时调用`client.get_idc_version()`以确认您正在使用预期的数据版本（当前v23）。如果使用较旧版本，建议`pip install --upgrade idc-index`
-- **使用前检查许可证** - 始终查询`license_short_name`字段并尊重许可条款（CC BY vs CC BY-NC）
-- **为署名生成引用** - 使用`citations_from_selection()`从`source_DOI`值获取正确格式的引用；在出版物中包含这些引用
-- **从小查询开始** - 探索时使用`LIMIT`子句以避免长时间下载并了解数据结构
-- **使用迷你索引进行简单查询** - 仅在需要全面元数据或复杂JOIN时使用BigQuery
-- **使用dirTemplate组织下载** - 使用有意义的目录结构，如`%collection_id/%PatientID/%Modality`
-- **缓存查询结果** - 将DataFrame保存到CSV文件以避免重新查询并确保可重复性
-- **首先估计大小** - 下载前检查集合大小 - 某些集合大小为太字节！
-- **保存清单** - 始终保存带有序列UID的查询结果以实现可重复性和数据来源
-- **阅读文档** - IDC数据结构和元数据字段记录在https://learn.canceridc.dev/
-- **使用IDC论坛** - 在https://discourse.canceridc.dev/搜索问题/答案并向IDC维护者和用户提问
+- **编写查询前检查模式** —— 使用 `client.get_index_schema('index')`（读取缓存的元数据，不执行 SQL）或 `client.indices_overview` 查看所有可用列及其描述。主 `index` 表中的版本跟踪列 `series_init_idc_version` 和 `series_revised_idc_version` 可直接回答“有什么新内容 / 何时添加”的问题，无需涉及 `prior_versions_index`。
+- **对于 IDC 数据内容问题，使用索引** - 直接查询 IDC 索引，可在本地通过 `client.sql_query()` 或通过 HTTP 使用 `POST /v3/sql`。网络来源（发布说明、博客文章、文档页面）经常过时，会导致错误的答案。索引是权威来源；即使可以进行网络搜索，也要使用索引。
+- **在会话开始时验证 IDC 数据版本** - 根据所用途径，使用 `client.get_idc_version()`、`GET /v3/version` 或 MCP 工具 `get_idc_version`（当前为 v24）。对于过时的本地索引，运行 `scripts/check_version.py` 并使用其打印的升级命令
+- **检查许可并生成引用** - 查询 `license_short_name` 并遵守 CC BY 与 CC BY-NC 的条款；使用 `citations_from_selection()` 根据 `source_DOI` 为出版物生成引用
+- **先小规模探索，再正式执行** - 探索时使用 `LIMIT`（或较小的 `max_rows`），并在下载前检查数据集合大小——有些数据集合达到 TB 级。参见 `references/cli_guide.md`
+- **保持下载可复现** - 使用 `dirTemplate`（例如 `%collection_id/%PatientID/%Modality`）组织文件，并保存你构建的任何数据集背后的序列 UID 或清单
 
 ## 故障排除
 
-**问题：** `ModuleNotFoundError: No module named 'idc_index'`
-- **原因：** 未安装idc-index软件包
-- **解决方案：** 使用`pip install --upgrade idc-index`安装
+**问题：`ModuleNotFoundError: No module named 'idc_index'`**
+- **原因：** 未安装 idc-index 包
+- **解决方案：** 如果任务是只读元数据查询，不要安装它——改用 REST API（*数据访问选项*）。否则运行 `scripts/check_version.py` 并使用其打印的安装命令，该命令针对当前运行的解释器并固定经过验证的版本。进行数据分析时还需添加 pandas、numpy 和 pydicom（已在 pandas>=1.5、numpy>=1.23、pydicom>=2.3 下测试）
 
-**问题：** 下载失败，连接超时
-- **原因：** 网络不稳定或下载大小过大
-- **解决方案：**
-  - 分批下载（例如，每次10-20个序列）
-  - 检查网络连接
-  - 使用`dirTemplate`按批次组织下载
-  - 实施带延迟的重试逻辑
+**问题：下载因连接超时失败**
+- **原因：** 网络不稳定或下载量过大
+- **解决方案：** 分小批次下载（10-20 个序列）；`--use-s5cmd-sync` 断点续传和重试指导参见 `references/cli_guide.md`
 
-**问题：** `BigQuery quota exceeded`或计费错误
-- **原因：** BigQuery需要启用计费的GCP项目
-- **解决方案：** 对简单查询使用idc-index迷你索引（无需计费），或参阅`references/bigquery_guide.md`以获取成本优化提示
+**问题：`BigQuery quota exceeded` 或计费错误**
+- **原因：** 项目配额、沙盒限制或计费配置导致查询无法执行
+- **解决方案：** 对简单查询使用 idc-index 迷你索引（无需计费），或参见 `references/bigquery_guide.md` 中的成本优化技巧
 
-**问题：** 未找到序列UID或未返回数据
-- **原因：** UID拼写错误、数据不在当前IDC版本中，或字段名称错误
-- **解决方案：**
-  - 检查数据是否在当前IDC版本中（某些旧数据可能已弃用）
-  - 使用`LIMIT 5`首先测试查询
-  - 对照元数据模式文档检查字段名称
+**问题：找不到序列 UID 或未返回数据**
+- **原因：** UID 拼写错误、数据不在当前 IDC 版本中，或字段名错误
+- **解决方案：** 先用 `LIMIT 5` 测试，对照 `client.indices_overview` 检查字段名，并确认该序列在当前版本中（一些旧数据已被弃用）
 
-**问题：** 下载的DICOM文件无法打开
-- **原因：** 下载损坏或查看器不兼容
-- **解决方案：**
-  - 检查DICOM对象类型（Modality和SOPClassUID属性）- 某些对象类型需要专用工具
-  - 验证文件完整性（检查文件大小）
-  - 使用pydicom验证：`pydicom.dcmread(file, force=True)`
-  - 尝试不同的DICOM查看器（3D Slicer、Horos、RadiAnt、QuPath）
-  - 重新下载序列
+**问题：在 `index` 表中找不到列（例如 `SliceThickness`、`PixelSpacing`、`KVP`、`EchoTime`、`InjectedDose`）**
+- **原因：** `index` 表仅包含序列级元数据；特定模态的采集和重建参数位于专用表中（`ct_index`、`mr_index`、`pt_index`）
+- **解决方案：** 在 `client.indices_overview` 中搜索该列以找到其所在的表——相应循环见 `references/index_tables_guide.md` 中的 *Finding which table contains a column* 部分——然后获取该表并通过 `SeriesInstanceUID` 连接：
+  ```python
+  client.fetch_index("ct_index")
+  result = client.sql_query("""
+      SELECT i.SeriesInstanceUID, i.Modality, c.SliceThickness, c.KVP, c.PixelSpacing_row_mm
+      FROM index i
+      JOIN ct_index c USING (SeriesInstanceUID)
+      WHERE i.collection_id = 'your_collection'
+  """)
+  ```
 
-## 常见SQL查询模式
-
-有关快速参考SQL模式，请参阅`references/sql_patterns.md`，包括：
-- 过滤器值发现（模态、身体部位、制造商）
-- 注释和分割查询（包括seg_index、ann_index连接）
-- 切片显微镜查询（sm_index模式）
-- 下载大小估计
-- 临床数据连接
-
-有关分割和注释的详细信息，也请参阅`references/digital_pathology_guide.md`。
-
-## 相关技能
-
-以下技能补充IDC工作流以进行下游分析和可视化：
-
-### DICOM处理
-- **pydicom** - 读取、写入和操作下载的DICOM文件。用于提取像素数据、读取元数据、匿名化和格式转换。对于处理IDC放射学数据（CT、MR、PET）至关重要。
-
-### 病理学和切片显微镜
-有关DICOM兼容工具（highdicom、wsidicom、TIA-Toolbox、Slim查看器），请参阅`references/digital_pathology_guide.md`。
-
-### 元数据可视化
-- **matplotlib** - 低级绘图以实现完全自定义。用于创建汇总IDC查询结果的静态图表（模态的条形图、序列计数的直方图等）。
-- **seaborn** - 带有pandas集成的统计可视化。用于快速探索IDC元数据分布、变量之间的关系以及具有吸引人默认值的分类比较。
-- **plotly** - 交互式可视化。当您需要悬停信息、缩放和平移以探索IDC元数据，或创建集合统计信息的可嵌入仪表板时使用。
-
-### 数据探索
-- **exploratory-data-analysis** - 对科学数据文件进行全面EDA。在下载IDC数据后使用以了解分析前的文件结构、质量和特征。
+**问题：下载的 DICOM 文件无法打开**
+- **原因：** 下载损坏，或查看器不支持的对象类型——SEG、RTSTRUCT、SR 和玻片显微成像都需要专用工具
+- **解决方案：** 使用常规的 `pydicom.dcmread` 检查 `Modality`、`SOPClassUID` 和传输语法；[强制解析并不等于验证](https://pydicom.github.io/pydicom/stable/reference/generated/pydicom.filereader.dcmread.html)。在重新下载之前，检查下载完整性以及解码器/查看器的支持情况；仅对已诊断为非 Part-10 的输入使用 `force=True`。
 
 ## 资源
 
-### 模式参考（主要来源）
+参考指南及其使用触发条件已在上文 *快速导航* 中列出。
 
-**始终使用`client.indices_overview`获取当前列模式。** 这确保与安装的idc-index版本的准确性：
-
-```python
-# 获取任何表的所有列名和类型
-schema = client.indices_overview["index"]["schema"]
-columns = [(c['name'], c['type'], c.get('description', '')) for c in schema['columns']]
-```
-
-### 参考文档
-
-有关完整参考指南列表，请参阅顶部的快速导航部分，并附带决策触发器。
-
-- **[indices_reference](https://idc-index.readthedocs.io/en/latest/indices_reference.html)** - 索引表的外部文档（可能领先于安装版本）
-
-### 外部链接
-
-- **IDC门户**：https://portal.imaging.datacommons.cancer.gov/explore/
-- **文档**：https://learn.canceridc.dev/
-- **教程**：https://github.com/ImagingDataCommons/IDC-Tutorials
-- **用户论坛**：https://discourse.canceridc.dev/
-- **idc-index GitHub**：https://github.com/ImagingDataCommons/idc-index
+- **IDC 门户**：https://portal.imaging.datacommons.cancer.gov/explore/
+- **文档**：https://learn.canceridc.dev/ — **教程**：https://github.com/ImagingDataCommons/IDC-Tutorials
+- **用户论坛**：https://discourse.canceridc.dev/ — **idc-index**：https://github.com/ImagingDataCommons/idc-index
+- **[indices_reference](https://idc-index.readthedocs.io/en/latest/indices_reference.html)** —— 外部索引表文档（可能领先于已安装的版本）
 - **引用**：Fedorov, A., et al. "National Cancer Institute Imaging Data Commons: Toward Transparency, Reproducibility, and Scalability in Imaging Artificial Intelligence." RadioGraphics 43.12 (2023). https://doi.org/10.1148/rg.230180
-
-### 技能更新
-
-此技能版本在技能元数据中可用。要检查更新：
-- 访问[releases页面](https://github.com/ImagingDataCommons/idc-claude-skill/releases)
-- 在GitHub上观察仓库（Watch → Custom → Releases）
+- **技能更新**：[发布页面](https://github.com/ImagingDataCommons/imaging-data-commons-skill/releases)；关注该仓库（Watch → Custom → Releases）

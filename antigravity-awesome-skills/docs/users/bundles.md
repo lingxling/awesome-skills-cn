@@ -6,7 +6,7 @@
 
 > **Important:** bundles are installable plugin subsets and activation presets, not invokable mega-skills such as `@web-wizard` or `/essentials-bundle`. Use the individual skills listed in the pack, install the bundle as a dedicated marketplace plugin, or use the activation scripts if you want only that bundle's skills active in your live Antigravity directory.
 
-> **Plugin compatibility:** root plugins and bundle plugins only publish plugin-safe skills. If a bundle shows `pending hardening`, the skills still exist in the repository, but that bundle is not yet published for that target. `Requires manual setup` means the bundle is installable, but one or more included skills need an explicit setup step before first use.
+> **Plugin compatibility:** root plugins and bundle plugins only publish plugin-safe skills. `Agent Plugins 1.0 portable` means the bundle also has a standard root `plugin.json` and a flat, directly discoverable `skills/` layout. If a bundle shows `pending hardening` or `pending flat skill layout`, its skills still exist in the repository but AAS does not claim that packaging target yet. `Requires manual setup` means the bundle is installable, but one or more included skills need an explicit setup step before first use.
 
 ## Quick Start
 
@@ -23,6 +23,7 @@
 3. **Use bundle plugins or individual skills** in your AI assistant:
    - Claude Code: install the matching marketplace bundle plugin, or invoke `>> /skill-name help me...`
    - Codex CLI / Codex app: install the matching bundle plugin where plugin marketplaces are available, or invoke `Use skill-name...`
+   - Agent Plugins 1.0 clients: load the matching `plugins/agentic-bundle-*/` directory when its status says `Agent Plugins 1.0 portable`
    - Cursor: `@skill-name` in chat
    - Gemini CLI: `Use skill-name...`
 
@@ -40,7 +41,7 @@ If you want a bundle to behave like a focused active subset instead of a full in
 
 _For everyone. Install these first._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`concise-planning`](../../skills/concise-planning/): Always start with a plan.
 - [`test-driven-development`](../../skills/test-driven-development/): Build features and fixes through a red-green-refactor loop.
@@ -57,7 +58,7 @@ _For everyone. Install these first._
 
 _For pentesting, auditing, and hardening._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`ethical-hacking-methodology`](../../skills/ethical-hacking-methodology/): Plan authorized security assessments with clear boundaries.
 - [`threat-modeling-expert`](../../skills/threat-modeling-expert/): Model threats with STRIDE, PASTA, and attack trees.
@@ -72,7 +73,7 @@ _For pentesting, auditing, and hardening._
 
 _For building secure applications._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`api-security-best-practices`](../../skills/api-security-best-practices/): Secure API design patterns.
 - [`auth-implementation-patterns`](../../skills/auth-implementation-patterns/): JWT, OAuth2, session management.
@@ -91,7 +92,7 @@ _For building secure applications._
 
 _For building modern, high-performance web apps._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`frontend-design`](../../skills/frontend-design/): UI guidelines and aesthetics.
 - [`tailwind-patterns`](../../skills/tailwind-patterns/): Tailwind CSS v4 styling patterns.
@@ -106,7 +107,7 @@ _For building modern, high-performance web apps._
 
 _For pixel-perfect experiences._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`ui-ux-pro-max`](../../skills/ui-ux-pro-max/): Premium design systems and tokens.
 - [`frontend-design`](../../skills/frontend-design/): The base layer of aesthetics.
@@ -120,7 +121,7 @@ _For pixel-perfect experiences._
 
 _For end-to-end web application development._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`senior-fullstack`](../../skills/senior-fullstack/): Complete fullstack development guide.
 - [`frontend-developer`](../../skills/frontend-developer/): React 19+ and Next.js 15+ expertise.
@@ -140,7 +141,7 @@ _For end-to-end web application development._
 
 _For building AI systems and autonomous agents._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`prompt-engineering`](../../skills/prompt-engineering/): Design reliable instructions and prompt workflows.
 - [`ai-agents-architect`](../../skills/ai-agents-architect/): Design autonomous AI agents.
@@ -154,7 +155,7 @@ _For building AI systems and autonomous agents._
 
 _For building production LLM applications._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`llm-app-patterns`](../../skills/llm-app-patterns/): Production-ready LLM patterns.
 - [`rag-implementation`](../../skills/rag-implementation/): Retrieval-Augmented Generation.
@@ -172,7 +173,7 @@ _For building production LLM applications._
 
 _For building games with AI assistants._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`game-development/game-design`](../../skills/game-development/game-design/): Mechanics and loops.
 - [`game-development/2d-games`](../../skills/game-development/2d-games/): Sprites and physics.
@@ -191,7 +192,7 @@ _For building games with AI assistants._
 
 _For backend heavyweights and data scientists._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`python-pro`](../../skills/python-pro/): Master Python 3.12+ with modern features.
 - [`python-patterns`](../../skills/python-patterns/): Idiomatic Python code.
@@ -205,7 +206,7 @@ _For backend heavyweights and data scientists._
 
 _For modern web development._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`typescript-expert`](../../skills/typescript-expert/): TypeScript mastery and advanced types.
 - [`javascript-pro`](../../skills/javascript-pro/): Modern JavaScript with ES6+.
@@ -217,7 +218,7 @@ _For modern web development._
 
 _For low-level and performance-critical code._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`rust-pro`](../../skills/rust-pro/): Rust 1.75+ with async patterns.
 - [`go-concurrency-patterns`](../../skills/go-concurrency-patterns/): Go concurrency mastery.
@@ -234,7 +235,7 @@ _For low-level and performance-critical code._
 
 _For building products, not just code._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`product-manager-toolkit`](../../skills/product-manager-toolkit/): RICE prioritization, PRD templates.
 - [`competitive-landscape`](../../skills/competitive-landscape/): Competitor analysis.
@@ -248,7 +249,7 @@ _For building products, not just code._
 
 _For data-driven decision making._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`business-analyst`](../../skills/business-analyst/): AI-powered analytics and KPIs.
 - [`startup-metrics-framework`](../../skills/startup-metrics-framework/): SaaS metrics and unit economics.
@@ -260,7 +261,7 @@ _For data-driven decision making._
 
 _For driving user acquisition and retention._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`content-strategy`](../../skills/content-strategy/): Plan content pillars, topic clusters, and an editorial roadmap.
 - [`content-creator`](../../skills/content-creator/): SEO-optimized marketing content.
@@ -279,7 +280,7 @@ _For driving user acquisition and retention._
 
 _For infrastructure and scaling._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`environment-setup-guide`](../../skills/environment-setup-guide/): Standardize development environments for teams.
 - [`bash-linux`](../../skills/bash-linux/): Automate operational work safely from the shell.
@@ -294,7 +295,7 @@ _For infrastructure and scaling._
 
 _For production reliability._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`observability-engineer`](../../skills/observability-engineer/): Comprehensive monitoring systems.
 - [`distributed-tracing`](../../skills/distributed-tracing/): Track requests across microservices.
@@ -312,7 +313,7 @@ _For production reliability._
 
 _For making sense of the numbers._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`analytics-tracking`](../../skills/analytics-tracking/): Set up GA4/PostHog correctly.
 - [`data-quality-frameworks`](../../skills/data-quality-frameworks/): Validate data with contracts, dbt tests, and quality monitoring.
@@ -326,7 +327,7 @@ _For making sense of the numbers._
 
 _For building data pipelines._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`data-engineer`](../../skills/data-engineer/): Data pipeline architecture.
 - [`airflow-dag-patterns`](../../skills/airflow-dag-patterns/): Apache Airflow DAGs.
@@ -343,7 +344,7 @@ _For building data pipelines._
 
 _For visuals, content, and branding._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`canvas-design`](../../skills/canvas-design/): Generate posters and diagrams.
 - [`frontend-design`](../../skills/frontend-design/): UI aesthetics.
@@ -361,7 +362,7 @@ _For visuals, content, and branding._
 
 _For breaking things before users do._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`test-driven-development`](../../skills/test-driven-development/): Red, Green, Refactor.
 - [`e2e-testing-patterns`](../../skills/e2e-testing-patterns/): Reliable E2E test suites.
@@ -380,13 +381,13 @@ _For breaking things before users do._
 
 _Frontend and full-stack developers shipping modern web apps._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`frontend-developer`](../../skills/frontend-developer/): Build production React and Next.js interfaces.
 - [`frontend-design`](../../skills/frontend-design/): Apply strong UI layout and visual design patterns.
 - [`react-best-practices`](../../skills/react-best-practices/): Optimize React performance and maintainability.
 - [`nextjs-app-router-patterns`](../../skills/nextjs-app-router-patterns/): Use Next.js App Router patterns safely.
-- [`nextjs-best-practices`](../../skills/nextjs-best-practices/): Ship high-quality Next.js applications.
+- [`browser-automation`](../../skills/browser-automation/): Verify user journeys through observed browser state and bounded checks.
 - [`tailwind-patterns`](../../skills/tailwind-patterns/): Style efficiently with Tailwind CSS patterns.
 - [`shadcn`](../../skills/shadcn/): Build polished interfaces with shadcn/ui.
 - [`form-cro`](../../skills/form-cro/): Improve form conversion and usability.
@@ -397,7 +398,7 @@ _Frontend and full-stack developers shipping modern web apps._
 
 _Builders who want richer UI, brand, portfolio, and visual product work._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`ui-ux-pro-max`](../../skills/ui-ux-pro-max/): Use advanced UI/UX reasoning and design systems.
 - [`high-end-visual-design`](../../skills/high-end-visual-design/): Raise visual polish for premium interfaces.
@@ -414,7 +415,7 @@ _Builders who want richer UI, brand, portfolio, and visual product work._
 
 _Authorized security testing, audit, and hardening teams._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`ethical-hacking-methodology`](../../skills/ethical-hacking-methodology/): Follow an authorized pentest methodology.
 - [`burp-suite-testing`](../../skills/burp-suite-testing/): Test web apps with Burp Suite workflows.
@@ -431,7 +432,7 @@ _Authorized security testing, audit, and hardening teams._
 
 _Application developers who want security embedded while building features._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`api-security-best-practices`](../../skills/api-security-best-practices/): Design secure APIs from the start.
 - [`auth-implementation-patterns`](../../skills/auth-implementation-patterns/): Implement auth, sessions, JWT, and OAuth2 safely.
@@ -440,7 +441,6 @@ _Application developers who want security embedded while building features._
 - [`cc-skill-security-review`](../../skills/cc-skill-security-review/): Review features with a security checklist.
 - [`pci-compliance`](../../skills/pci-compliance/): Handle payment security and PCI expectations.
 - [`sast-configuration`](../../skills/sast-configuration/): Configure static application security testing.
-- [`security-and-hardening`](../../skills/security-and-hardening/): Harden applications against untrusted input, auth, data, and integration risks.
 - [`secrets-management`](../../skills/secrets-management/): Manage application and CI/CD secrets with least privilege and rotation.
 - [`django-access-review`](../../skills/django-access-review/): Review Django access control and authorization behavior.
 
@@ -448,7 +448,7 @@ _Application developers who want security embedded while building features._
 
 _Users creating, editing, converting, and automating office documents._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`office-productivity`](../../skills/office-productivity/): Coordinate document, spreadsheet, and slide workflows.
 - [`docx-official`](../../skills/docx-official/): Create, edit, and inspect Word-compatible documents.
@@ -464,13 +464,13 @@ _Users creating, editing, converting, and automating office documents._
 
 _Operators, analysts, and builders working with product analytics, SQL, dashboards, and experiments._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`analytics-tracking`](../../skills/analytics-tracking/): Set up reliable product analytics.
 - [`analytics-product`](../../skills/analytics-product/): Model product analytics and product metrics.
 - [`sql-pro`](../../skills/sql-pro/): Query and model data with modern SQL.
 - [`postgres-best-practices`](../../skills/postgres-best-practices/): Optimize Postgres schemas and queries.
-- [`database-architect`](../../skills/database-architect/): Design robust database structures.
+- [`data-quality-frameworks`](../../skills/data-quality-frameworks/): Validate dataset assumptions, data contracts and analytical transformations.
 - [`dbt-transformation-patterns`](../../skills/dbt-transformation-patterns/): Build dbt transformation pipelines.
 - [`claude-d3js-skill`](../../skills/claude-d3js-skill/): Create custom D3 visualizations.
 - [`kpi-dashboard-design`](../../skills/kpi-dashboard-design/): Design dashboards for decision-making.
@@ -481,7 +481,7 @@ _Operators, analysts, and builders working with product analytics, SQL, dashboar
 
 _Developers building agentic apps, MCP tools, RAG systems, and evaluation loops._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`ai-agents-architect`](../../skills/ai-agents-architect/): Design autonomous AI agent systems.
 - [`agent-evaluation`](../../skills/agent-evaluation/): Evaluate agent reliability and performance.
@@ -498,7 +498,7 @@ _Developers building agentic apps, MCP tools, RAG systems, and evaluation loops.
 
 _Engineers and QA teams writing, debugging, and stabilizing test suites._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe · Requires manual setup
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable · Requires manual setup
 
 - [`test-driven-development`](../../skills/test-driven-development/): Use red-green-refactor development loops.
 - [`systematic-debugging`](../../skills/systematic-debugging/): Trace failures to root cause.
@@ -515,7 +515,7 @@ _Engineers and QA teams writing, debugging, and stabilizing test suites._
 
 _Teams shipping infrastructure, deployments, and operational workflows._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`docker-expert`](../../skills/docker-expert/): Build and operate containers cleanly.
 - [`aws-serverless`](../../skills/aws-serverless/): Ship serverless workloads on AWS.
@@ -537,7 +537,7 @@ _Teams shipping infrastructure, deployments, and operational workflows._
 
 _Founders and growth teams creating content, SEO systems, experiments, and email campaigns._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`content-creator`](../../skills/content-creator/): Create SEO-aware marketing content.
 - [`seo-audit`](../../skills/seo-audit/): Audit technical SEO and discoverability.
@@ -554,7 +554,7 @@ _Founders and growth teams creating content, SEO systems, experiments, and email
 
 _Teams designing reliable automations across tools, data stores, and communication platforms._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`workflow-automation`](../../skills/workflow-automation/): Design durable automation workflows.
 - [`mcp-builder`](../../skills/mcp-builder/): Create MCP interfaces for agents.
@@ -571,7 +571,7 @@ _Teams designing reliable automations across tools, data stores, and communicati
 
 _Engineering teams monitoring systems, debugging production issues, and writing postmortems._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`observability-engineer`](../../skills/observability-engineer/): Design monitoring and observability systems.
 - [`observability-and-instrumentation`](../../skills/observability-and-instrumentation/): Instrument production code with useful logs, metrics, traces, and alerts.
@@ -588,7 +588,7 @@ _Engineering teams monitoring systems, debugging production issues, and writing 
 
 _Python developers building APIs, services, and tests._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`python-pro`](../../skills/python-pro/): Write modern, idiomatic Python.
 - [`python-patterns`](../../skills/python-patterns/): Apply Python architecture and design patterns.
@@ -605,7 +605,7 @@ _Python developers building APIs, services, and tests._
 
 _Mobile teams shipping Expo, React Native, Flutter, and iOS apps._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`mobile-developer`](../../skills/mobile-developer/): Build cross-platform mobile applications.
 - [`react-native-architecture`](../../skills/react-native-architecture/): Structure production React Native apps.
@@ -627,7 +627,7 @@ _Mobile teams shipping Expo, React Native, Flutter, and iOS apps._
 
 _For iOS, Android, and cross-platform apps._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`mobile-developer`](../../skills/mobile-developer/): Cross-platform mobile development.
 - [`react-native-architecture`](../../skills/react-native-architecture/): React Native with Expo.
@@ -639,7 +639,7 @@ _For iOS, Android, and cross-platform apps._
 
 _For connecting services and building integrations._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`api-integration`](../../skills/api-integration/): Design service contracts, webhooks, and integration pipelines.
 - [`stripe-integration`](../../skills/stripe-integration/): Payments and subscriptions.
@@ -652,7 +652,7 @@ _For connecting services and building integrations._
 
 _For system design and technical decisions._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`senior-architect`](../../skills/senior-architect/): Comprehensive software architecture.
 - [`architecture-patterns`](../../skills/architecture-patterns/): Clean Architecture, DDD, Hexagonal.
@@ -664,7 +664,7 @@ _For system design and technical decisions._
 
 _For teams modeling complex domains and evolving toward evented systems._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`domain-driven-design`](../../skills/domain-driven-design/): Route DDD work from strategic modeling to implementation patterns.
 - [`ddd-strategic-design`](../../skills/ddd-strategic-design/): Subdomains, bounded contexts, and ubiquitous language.
@@ -679,7 +679,7 @@ _For teams modeling complex domains and evolving toward evented systems._
 
 _For connecting tools and building repeatable automated workflows._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`workflow-automation`](../../skills/workflow-automation/): Design durable automation flows for AI and business systems.
 - [`mcp-builder`](../../skills/mcp-builder/): Create tool interfaces agents can use reliably.
@@ -694,7 +694,7 @@ _For connecting tools and building repeatable automated workflows._
 
 _For revenue operations, support handoffs, and CRM-heavy automation._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`hubspot-automation`](../../skills/hubspot-automation/): Automate contacts, companies, deals, and tickets.
 - [`sendgrid-automation`](../../skills/sendgrid-automation/): Automate email sends, contacts, and templates.
@@ -708,7 +708,7 @@ _For revenue operations, support handoffs, and CRM-heavy automation._
 
 _For monetization, payments, and commerce workflows._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`stripe-integration`](../../skills/stripe-integration/): Build robust checkout, subscription, and webhook flows.
 - [`paypal-integration`](../../skills/paypal-integration/): Integrate PayPal payments and related flows.
@@ -721,7 +721,7 @@ _For monetization, payments, and commerce workflows._
 
 _For teams building or operating around Odoo-based business systems._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`odoo-module-developer`](../../skills/odoo-module-developer/): Create custom Odoo modules cleanly.
 - [`odoo-orm-expert`](../../skills/odoo-orm-expert/): Work effectively with Odoo ORM patterns and performance.
@@ -735,7 +735,7 @@ _For teams building or operating around Odoo-based business systems._
 
 _For building on Azure across cloud, AI, and platform services._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`azd-deployment`](../../skills/azd-deployment/): Ship Azure apps with Azure Developer CLI workflows.
 - [`azure-functions`](../../skills/azure-functions/): Build serverless workloads with Azure Functions.
@@ -748,7 +748,7 @@ _For building on Azure across cloud, AI, and platform services._
 
 _For shipping mobile apps with Expo and React Native._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`react-native-architecture`](../../skills/react-native-architecture/): Structure production React Native apps well.
 - [`expo-api-routes`](../../skills/expo-api-routes/): Build API routes in Expo Router and EAS Hosting.
@@ -762,7 +762,7 @@ _For shipping mobile apps with Expo and React Native._
 
 _For teams designing native-feeling Apple platform experiences._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`hig-foundations`](../../skills/hig-foundations/): Learn the core Apple Human Interface Guidelines.
 - [`hig-patterns`](../../skills/hig-patterns/): Apply Apple interaction and UX patterns correctly.
@@ -775,7 +775,7 @@ _For teams designing native-feeling Apple platform experiences._
 
 _For building UI-heavy apps with the Makepad ecosystem._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`makepad-basics`](../../skills/makepad-basics/): Start with Makepad fundamentals and mental model.
 - [`makepad-layout`](../../skills/makepad-layout/): Handle sizing, flow, alignment, and layout composition.
@@ -788,7 +788,7 @@ _For building UI-heavy apps with the Makepad ecosystem._
 
 _For technical SEO, content structure, and search growth._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`seo-fundamentals`](../../skills/seo-fundamentals/): Build from sound SEO principles and search constraints.
 - [`seo-content-planner`](../../skills/seo-content-planner/): Plan clusters, calendars, and content gaps.
@@ -802,7 +802,7 @@ _For technical SEO, content structure, and search growth._
 
 _For document-heavy workflows, spreadsheets, PDFs, and presentations._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`office-productivity`](../../skills/office-productivity/): Coordinate document, spreadsheet, and presentation workflows.
 - [`docx-official`](../../skills/docx-official/): Create and edit Word-compatible documents.
@@ -822,10 +822,12 @@ _For document-heavy workflows, spreadsheets, PDFs, and presentations._
 
 _For shipping clean changes in public repositories._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`commit`](../../skills/commit/): High-quality conventional commits.
+- [`create-branch`](../../skills/create-branch/): Create a safe topic branch before committing.
 - [`create-pr`](../../skills/create-pr/): PR creation with review-ready context.
+- [`pr-writer`](../../skills/pr-writer/): Write and open structured pull requests.
 - [`requesting-code-review`](../../skills/requesting-code-review/): Ask for targeted, high-signal reviews.
 - [`receiving-code-review`](../../skills/receiving-code-review/): Apply feedback with technical rigor.
 - [`changelog-automation`](../../skills/changelog-automation/): Keep release notes and changelogs consistent.
@@ -837,7 +839,7 @@ _For shipping clean changes in public repositories._
 
 _For creating and maintaining high-quality SKILL.md assets._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`skill-creator`](../../skills/skill-creator/): Design effective new skills.
 - [`effective-agent-skills`](../../skills/effective-agent-skills/): Design portable triggers, progressive disclosure, and safe skill workflows.
@@ -855,7 +857,7 @@ _For creating and maintaining high-quality SKILL.md assets._
 
 _Design, frontend, QA, and product teams improving accessible user experiences._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe · Requires manual setup
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable · Requires manual setup
 
 - [`accesslint-audit`](../../skills/accesslint-audit/): Audit accessibility issues with AccessLint workflows.
 - [`accesslint-scan`](../../skills/accesslint-scan/): Scan interfaces for accessibility regressions.
@@ -870,7 +872,7 @@ _Design, frontend, QA, and product teams improving accessible user experiences._
 
 _Backend and platform teams designing APIs, contracts, auth, security, load tests, and observability._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`api-design-principles`](../../skills/api-design-principles/): Design clear and maintainable APIs.
 - [`api-patterns`](../../skills/api-patterns/): Choose REST, GraphQL, tRPC, and API patterns.
@@ -887,7 +889,7 @@ _Backend and platform teams designing APIs, contracts, auth, security, load test
 
 _Founders and product teams launching, pricing, monetizing, measuring, and improving SaaS products._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`saas-mvp-launcher`](../../skills/saas-mvp-launcher/): Launch SaaS MVPs with practical product flow.
 - [`micro-saas-launcher`](../../skills/micro-saas-launcher/): Plan and ship micro-SaaS products.
@@ -904,7 +906,7 @@ _Founders and product teams launching, pricing, monetizing, measuring, and impro
 
 _PMs, founders, and AI product teams defining, measuring, and improving AI features._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`ai-wrapper-product`](../../skills/ai-wrapper-product/): Shape AI wrapper products with clearer value.
 - [`agent-evaluation`](../../skills/agent-evaluation/): Evaluate agent reliability and performance.
@@ -926,7 +928,7 @@ _PMs, founders, and AI product teams defining, measuring, and improving AI featu
 
 _Data and AI platform teams building pipelines, warehouses, transforms, embeddings, and RAG-ready data foundations._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`data-engineer`](../../skills/data-engineer/): Design and operate data pipelines.
 - [`airflow-dag-patterns`](../../skills/airflow-dag-patterns/): Build maintainable Airflow DAGs.
@@ -943,20 +945,19 @@ _Data and AI platform teams building pipelines, warehouses, transforms, embeddin
 
 _Teams building privacy-aware and compliance-sensitive SaaS, AI, finance, and cloud systems._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`privacy-by-design`](../../skills/privacy-by-design/): Apply privacy-by-design principles.
 - [`gdpr-data-handling`](../../skills/gdpr-data-handling/): Handle GDPR-sensitive data safely.
 - [`pci-compliance`](../../skills/pci-compliance/): Handle payment security and PCI expectations.
 - [`fsi-compliance-checker`](../../skills/fsi-compliance-checker/): Check financial-services compliance requirements.
-- [`security-audit`](../../skills/security-audit/): Audit security posture and controls.
 - [`cc-skill-security-review`](../../skills/cc-skill-security-review/): Review features with a security checklist.
 
 ### 🌍 The "AAS Localization & International Growth" Plugin
 
 _Growth, content, and product teams expanding sites and products across languages and markets._
 
-**Plugin status:** Codex plugin-safe · Claude plugin-safe
+**Plugin status:** Codex plugin-safe · Claude plugin-safe · Agent Plugins 1.0 portable
 
 - [`i18n-localization`](../../skills/i18n-localization/): Internationalize and localize product interfaces.
 - [`seo-hreflang`](../../skills/seo-hreflang/): Implement hreflang and international SEO signals.
@@ -985,6 +986,7 @@ Pick the minimum set for your current milestone. Expand only when you hit a real
 
 - **Claude Code**: install a bundle plugin or use `>> /skill-name help me...`
 - **Codex CLI**: install a bundle plugin where marketplaces are available, or use `Use skill-name...`
+- **Agent Plugins clients**: load the portable bundle directory using the client-specific installation flow
 - **Cursor**: `@skill-name` in chat
 - **Gemini CLI**: `Use skill-name...`
 
@@ -1060,4 +1062,4 @@ Found a skill that should be in a bundle? Or want to create a new bundle? [Open 
 
 ---
 
-_Last updated: June 2026 | Total Skills: 1,958+ | Total Bundles: 58_
+_Last updated: June 2026 | Total Skills: 2,652+ | Total Bundles: 58_

@@ -48,7 +48,7 @@
 - [safe-encryption-skill](https://clawskills.sh/skills/grittygrease-safe-encryption-skill) - 使用 SAFE CLI 加密、解密和管理密钥 —— 一个具有后量子支持的现代 GPG 替代品。
 - [saysigned](https://clawskills.sh/skills/klsv-saysigned) - > **AI 代理的电子签名。** 根据 ESIGN 法案和 UETA 第 14 节具有法律约束力。
 - [secure-auth-patterns](https://clawskills.sh/skills/brandonwise-secure-auth-patterns) - 掌握身份验证和授权模式，包括 JWT、OAuth2、会话管理和 RBAC，以构建安全的应用程序。
-- [solid-agent-storage](https://clawhub.ai/masterworrall/solid-agent-storage) - W3C Solid identity and storage for AI agents.
+- [solid-agent-storage](https://clawhub.ai/masterworrall/solid-agent-storage) - 为 AI 代理提供 W3C Solid 身份与存储。
 - [skill-liewatch](https://clawskills.sh/skills/evinelias-skill-liewatch) - 玩 LIE.WATCH AI 社交推理游戏 - 通过信任、欺骗和战略背叛生存。
 - [skill-provenance](https://clawskills.sh/skills/snapsynapse-skill-provenance) - 面向技能包的版本追踪和完整性验证。
 - [starwars](https://clawskills.sh/skills/jeffaf-starwars) - 供 AI 代理为人类查询星球大战宇宙信息的 CLI。
@@ -57,3 +57,4 @@
 - [x-oauth-api](https://clawskills.sh/skills/ngmeyer-x-oauth-api) - 使用官方 OAuth 1.0a API 发布到 X（Twitter）。
 - [xpr-agent-operator](https://clawskills.sh/skills/paulgnz-xpr-agent-operator) - 在 XPR Network 的无信任注册表上操作自主 AI 代理。
 - [xproof](https://clawskills.sh/skills/jasonxkensei-xproof) - 在 MultiversX 区块链上认证代理输出。
+- [thumbgate](https://clawhub.ai/igorganapolsky/thumbgate) - 在已知有害的代理工具调用执行前将其拦截。

@@ -1,0 +1,16 @@
+  5.00	500	500	U	0	unclassified
+ 95.00	9500	0	R	1	root
+ 95.00	9500	10	D	2	  Bacteria
+ 60.00	6000	5	P	1239	    Firmicutes
+ 60.00	6000	5	C	91061	      Bacilli
+ 60.00	6000	5	O	186826	        Lactobacillales
+ 60.00	6000	5	F	33958	          Lactobacillaceae
+ 60.00	6000	10	G	1578	            Lactobacillus
+ 55.00	5500	5500	S	1596	              Lactobacillus gasseri
+  5.00	500	500	S1	1597	                Lactobacillus gasseri strain X
+ 35.00	3500	5	P	976	    Bacteroidota
+ 35.00	3500	5	C	200643	      Bacteroidia
+ 35.00	3500	5	O	171549	        Bacteroidales
+ 35.00	3500	5	F	815	          Bacteroidaceae
+ 35.00	3500	10	G	816	            Bacteroides
+ 35.00	3500	3500	S	820	              Bacteroides uniformis

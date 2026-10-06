@@ -1,397 +1,328 @@
-# Competing Risks Analysis
+# Competing risks and cumulative incidence
 
-## Overview
+Verified for scikit-survival 0.28.0 on 2026-10-01.
 
-Competing risks occur when subjects can experience one of several mutually exclusive events (event types). When one event occurs, it prevents ("competes with") the occurrence of other events.
+## Estimand
 
-### Examples of Competing Risks
+Competing risks are mutually exclusive causes \(J \in \{1,\ldots,K\}\), where the
+first observed cause prevents observing the others as first events.
 
-**Medical Research:**
-- Death from cancer vs. death from cardiovascular disease vs. death from other causes
-- Relapse vs. death without relapse in cancer studies
-- Different types of infections in transplant patients
+The cause-\(k\) cumulative incidence function (CIF) is:
 
-**Other Applications:**
-- Job termination: retirement vs. resignation vs. termination for cause
-- Equipment failure: different failure modes
-- Customer churn: different reasons for leaving
+\[
+F_k(t) = P(T \le t, J=k).
+\]
 
-### Key Concept: Cumulative Incidence Function (CIF)
+It is an absolute cause-specific event probability accounting for all competing
+causes. It is not:
 
-The **Cumulative Incidence Function (CIF)** represents the probability of experiencing a specific event type by time *t*, accounting for the presence of competing risks.
+- a cause-specific hazard;
+- `1 - Kaplan-Meier` after censoring other causes;
+- a conditional probability among only those still event-free;
+- a causal effect or clinical-utility measure.
 
-**CIF_k(t) = P(T ≤ t, event type = k)**
+The total risk is \(\sum_k F_k(t)\). Its complement is estimated all-cause
+event-free survival. Censoring is an observation mechanism, not an additional
+event-free state.
 
-This differs from the Kaplan-Meier estimator, which would overestimate event probabilities when competing risks are present.
+## Event coding
 
-## When to Use Competing Risks Analysis
+The nonparametric CIF API takes two separate arrays:
 
-**Use competing risks when:**
-- Multiple mutually exclusive event types exist
-- Occurrence of one event prevents others
-- Need to estimate probability of specific event types
-- Want to understand how covariates affect different event types
+```python
+# event: 0=censored; 1..K=mutually exclusive causes
+event = frame["status"].to_numpy(dtype=int)
+time = frame["time"].to_numpy(dtype=float)
+```
 
-**Don't use when:**
-- Only one event type of interest (standard survival analysis)
-- Events are not mutually exclusive (use recurrent events methods)
-- Competing events are extremely rare (can treat as censoring)
+Requirements:
 
-## Cumulative Incidence with Competing Risks
+- `event` is integer and non-negative;
+- 0 always denotes right-censoring;
+- positive codes 1..K are contiguous;
+- the data contains observations for every code 1..K;
+- `time` is finite and positive;
+- event/time lengths match.
 
-### cumulative_incidence_competing_risks Function
+Do not pass a boolean `Surv` outcome to
+`cumulative_incidence_competing_risks()`. `Surv` intentionally collapses event
+status to event versus censoring and loses cause identity.
 
-Estimates the cumulative incidence function for each event type.
+## Nonparametric CIF API
 
 ```python
 from sksurv.nonparametric import cumulative_incidence_competing_risks
-from sksurv.datasets import load_leukemia
 
-# Load data with competing risks
-X, y = load_leukemia()
-# y has event types: 0=censored, 1=relapse, 2=death
-
-# Compute cumulative incidence for each event type
-# Returns: time points, CIF for event 1, CIF for event 2, ...
-time_points, cif_1, cif_2 = cumulative_incidence_competing_risks(y)
-
-# Plot cumulative incidence functions
-import matplotlib.pyplot as plt
-
-plt.figure(figsize=(10, 6))
-plt.step(time_points, cif_1, where='post', label='Relapse', linewidth=2)
-plt.step(time_points, cif_2, where='post', label='Death in remission', linewidth=2)
-plt.xlabel('Time (weeks)')
-plt.ylabel('Cumulative Incidence')
-plt.title('Competing Risks: Relapse vs Death')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-```
-
-### Interpretation
-
-- **CIF at time t**: Probability of experiencing that specific event by time t
-- **Sum of all CIFs**: Total probability of experiencing any event (all cause)
-- **1 - sum of CIFs**: Probability of being event-free and uncensored
-
-## Data Format for Competing Risks
-
-### Creating Structured Array with Event Types
-
-```python
-import numpy as np
-from sksurv.util import Surv
-
-# Event types: 0 = censored, 1 = event type 1, 2 = event type 2
-event_types = np.array([0, 1, 2, 1, 0, 2, 1])
-times = np.array([10.2, 5.3, 8.1, 3.7, 12.5, 6.8, 4.2])
-
-# Create survival array
-# For competing risks: event=True if any event occurred
-# Store event type separately or encode in the event field
-y = Surv.from_arrays(
-    event=(event_types > 0),  # True if any event
-    time=times
+time_points, cumulative_incidence = (
+    cumulative_incidence_competing_risks(event, time)
 )
-
-# Keep event_types for distinguishing between event types
 ```
 
-### Converting Data with Event Types
+Current signature:
 
-```python
-import pandas as pd
-from sksurv.util import Surv
-
-# Assume data has: time, event_type columns
-# event_type: 0=censored, 1=type1, 2=type2, etc.
-
-df = pd.read_csv('competing_risks_data.csv')
-
-# Create survival outcome
-y = Surv.from_arrays(
-    event=(df['event_type'] > 0),
-    time=df['time']
+```text
+cumulative_incidence_competing_risks(
+    event,
+    time_exit,
+    time_min=None,
+    conf_level=0.95,
+    conf_type=None,
+    var_type="Aalen",
 )
-
-# Store event types
-event_types = df['event_type'].values
 ```
 
-## Comparing Cumulative Incidence Between Groups
+Returns:
 
-### Stratified Analysis
-
-```python
-from sksurv.nonparametric import cumulative_incidence_competing_risks
-import matplotlib.pyplot as plt
-
-# Split by treatment group
-mask_treatment = X['treatment'] == 'A'
-mask_control = X['treatment'] == 'B'
-
-y_treatment = y[mask_treatment]
-y_control = y[mask_control]
-
-# Compute CIF for each group
-time_trt, cif1_trt, cif2_trt = cumulative_incidence_competing_risks(y_treatment)
-time_ctl, cif1_ctl, cif2_ctl = cumulative_incidence_competing_risks(y_control)
-
-# Plot comparison
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
-
-# Event type 1
-ax1.step(time_trt, cif1_trt, where='post', label='Treatment', linewidth=2)
-ax1.step(time_ctl, cif1_ctl, where='post', label='Control', linewidth=2)
-ax1.set_xlabel('Time')
-ax1.set_ylabel('Cumulative Incidence')
-ax1.set_title('Event Type 1')
-ax1.legend()
-ax1.grid(True, alpha=0.3)
-
-# Event type 2
-ax2.step(time_trt, cif2_trt, where='post', label='Treatment', linewidth=2)
-ax2.step(time_ctl, cif2_ctl, where='post', label='Control', linewidth=2)
-ax2.set_xlabel('Time')
-ax2.set_ylabel('Cumulative Incidence')
-ax2.set_title('Event Type 2')
-ax2.legend()
-ax2.grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.show()
-```
-
-## Statistical Testing with Competing Risks
-
-### Gray's Test
-
-Compare cumulative incidence functions between groups using Gray's test (available in other packages like lifelines).
+- `time_points`: shape `(n_times,)`;
+- `cumulative_incidence`: shape `(K + 1, n_times)`;
+- row 0: total risk of any cause;
+- row `k`: CIF for cause `k`.
 
 ```python
-# Note: Gray's test not directly available in scikit-survival
-# Consider using lifelines or other packages
+total_risk = cumulative_incidence[0]
+cause_1 = cumulative_incidence[1]
+cause_2 = cumulative_incidence[2]
 
-# from lifelines.statistics import multivariate_logrank_test
-# result = multivariate_logrank_test(times, groups, events, event_of_interest=1)
-```
-
-## Modeling with Competing Risks
-
-### Approach 1: Cause-Specific Hazard Models
-
-Fit separate Cox models for each event type, treating other event types as censored.
-
-```python
-from sksurv.linear_model import CoxPHSurvivalAnalysis
-from sksurv.util import Surv
-
-# Separate outcome for each event type
-# Event type 1: treat type 2 as censored
-y_event1 = Surv.from_arrays(
-    event=(event_types == 1),
-    time=times
+assert np.allclose(
+    total_risk,
+    cumulative_incidence[1:].sum(axis=0),
 )
-
-# Event type 2: treat type 1 as censored
-y_event2 = Surv.from_arrays(
-    event=(event_types == 2),
-    time=times
-)
-
-# Fit cause-specific models
-cox_event1 = CoxPHSurvivalAnalysis()
-cox_event1.fit(X, y_event1)
-
-cox_event2 = CoxPHSurvivalAnalysis()
-cox_event2.fit(X, y_event2)
-
-# Interpret coefficients for each event type
-print("Event Type 1 (e.g., Relapse):")
-print(cox_event1.coef_)
-
-print("\nEvent Type 2 (e.g., Death):")
-print(cox_event2.coef_)
 ```
 
-**Interpretation:**
-- Separate model for each competing event
-- Coefficients show effect on cause-specific hazard for that event type
-- A covariate may increase risk for one event type but decrease for another
+`time_min` is documented as conditional survival. In released 0.28.0 it fails
+with a broadcasting error when it removes any unique times; the bundled helper
+rejects that setting. Do not claim a conditional/landmark analysis from this
+helper. A different verified method and explicit target population are needed.
 
-### Approach 2: Fine-Gray Sub-distribution Hazard Model
-
-Models the cumulative incidence directly (not available directly in scikit-survival, but can use other packages).
+### Confidence intervals
 
 ```python
-# Note: Fine-Gray model not directly in scikit-survival
-# Consider using lifelines or rpy2 to access R's cmprsk package
-
-# from lifelines import CRCSplineFitter
-# crc = CRCSplineFitter()
-# crc.fit(df, event_col='event', duration_col='time')
-```
-
-## Practical Example: Complete Competing Risks Analysis
-
-```python
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sksurv.nonparametric import cumulative_incidence_competing_risks
-from sksurv.linear_model import CoxPHSurvivalAnalysis
-from sksurv.util import Surv
-
-# Simulate competing risks data
-np.random.seed(42)
-n = 200
-
-# Create features
-age = np.random.normal(60, 10, n)
-treatment = np.random.choice(['A', 'B'], n)
-
-# Simulate event times and types
-# Event types: 0=censored, 1=relapse, 2=death
-times = np.random.exponential(100, n)
-event_types = np.zeros(n, dtype=int)
-
-# Higher age increases both events, treatment A reduces relapse
-for i in range(n):
-    if times[i] < 150:  # Event occurred
-        # Probability of each event type
-        p_relapse = 0.6 if treatment[i] == 'B' else 0.4
-        event_types[i] = 1 if np.random.rand() < p_relapse else 2
-    else:
-        times[i] = 150  # Censored at study end
-
-# Create DataFrame
-df = pd.DataFrame({
-    'time': times,
-    'event_type': event_types,
-    'age': age,
-    'treatment': treatment
-})
-
-# Encode treatment
-df['treatment_A'] = (df['treatment'] == 'A').astype(int)
-
-# 1. OVERALL CUMULATIVE INCIDENCE
-print("=" * 60)
-print("OVERALL CUMULATIVE INCIDENCE")
-print("=" * 60)
-
-y_all = Surv.from_arrays(event=(df['event_type'] > 0), time=df['time'])
-time_points, cif_relapse, cif_death = cumulative_incidence_competing_risks(y_all)
-
-plt.figure(figsize=(10, 6))
-plt.step(time_points, cif_relapse, where='post', label='Relapse', linewidth=2)
-plt.step(time_points, cif_death, where='post', label='Death', linewidth=2)
-plt.xlabel('Time (days)')
-plt.ylabel('Cumulative Incidence')
-plt.title('Competing Risks: Relapse vs Death')
-plt.legend()
-plt.grid(True, alpha=0.3)
-plt.show()
-
-print(f"5-year relapse incidence: {cif_relapse[-1]:.2%}")
-print(f"5-year death incidence: {cif_death[-1]:.2%}")
-
-# 2. STRATIFIED BY TREATMENT
-print("\n" + "=" * 60)
-print("CUMULATIVE INCIDENCE BY TREATMENT")
-print("=" * 60)
-
-for trt in ['A', 'B']:
-    mask = df['treatment'] == trt
-    y_trt = Surv.from_arrays(
-        event=(df.loc[mask, 'event_type'] > 0),
-        time=df.loc[mask, 'time']
+time_points, cumulative_incidence, confidence_interval = (
+    cumulative_incidence_competing_risks(
+        event,
+        time,
+        conf_type="log-log",
+        conf_level=0.95,
+        var_type="Aalen",
     )
-    time_trt, cif1_trt, cif2_trt = cumulative_incidence_competing_risks(y_trt)
-    print(f"\nTreatment {trt}:")
-    print(f"  5-year relapse: {cif1_trt[-1]:.2%}")
-    print(f"  5-year death: {cif2_trt[-1]:.2%}")
-
-# 3. CAUSE-SPECIFIC MODELS
-print("\n" + "=" * 60)
-print("CAUSE-SPECIFIC HAZARD MODELS")
-print("=" * 60)
-
-X = df[['age', 'treatment_A']]
-
-# Model for relapse (event type 1)
-y_relapse = Surv.from_arrays(
-    event=(df['event_type'] == 1),
-    time=df['time']
 )
-cox_relapse = CoxPHSurvivalAnalysis()
-cox_relapse.fit(X, y_relapse)
-
-print("\nRelapse Model:")
-print(f"  Age:        HR = {np.exp(cox_relapse.coef_[0]):.3f}")
-print(f"  Treatment A: HR = {np.exp(cox_relapse.coef_[1]):.3f}")
-
-# Model for death (event type 2)
-y_death = Surv.from_arrays(
-    event=(df['event_type'] == 2),
-    time=df['time']
-)
-cox_death = CoxPHSurvivalAnalysis()
-cox_death.fit(X, y_death)
-
-print("\nDeath Model:")
-print(f"  Age:        HR = {np.exp(cox_death.coef_[0]):.3f}")
-print(f"  Treatment A: HR = {np.exp(cox_death.coef_[1]):.3f}")
-
-print("\n" + "=" * 60)
 ```
 
-## Important Considerations
+`confidence_interval` has shape `(K + 1, 2, n_times)`. Native 0.28.0 returns
+cause-specific rows in lower/upper order, but **total-risk row 0 is reversed and
+ignores `conf_level`**. Repair that row with the public all-event KM estimator:
 
-### Censoring in Competing Risks
+```python
+from sksurv.nonparametric import kaplan_meier_estimator
 
-- **Administrative censoring**: Subject still at risk at end of study
-- **Loss to follow-up**: Subject leaves study before event
-- **Competing event**: Other event occurred - NOT censored for CIF, but censored for cause-specific models
+km_time, _, km_ci = kaplan_meier_estimator(
+    event > 0, time, conf_type="log-log", conf_level=0.95,
+)
+assert np.array_equal(km_time, time_points)
+confidence_interval[0] = 1.0 - km_ci[::-1]
+assert np.all(confidence_interval[:, 0] <= confidence_interval[:, 1])
+```
 
-### Choosing Between Cause-Specific and Sub-distribution Models
+The bundled helper applies this repair using the requested level and rejects
+non-finite or reversed intervals. This repairs the total-risk row, not general
+small-sample coverage.
+Current variance choices are:
 
-**Cause-Specific Hazard Models:**
-- Easier to interpret
-- Direct effect on hazard rate
-- Better for understanding etiology
-- Can fit with scikit-survival
+- `"Aalen"`
+- `"Dinse"`
+- `"Dinse_Approx"`
 
-**Fine-Gray Sub-distribution Models:**
-- Models cumulative incidence directly
-- Better for prediction and risk stratification
-- More appropriate for clinical decision-making
-- Requires other packages
+Pointwise confidence intervals are not simultaneous confidence bands. Sparse
+causes and late follow-up can make estimates unstable even when the function
+returns a result.
 
-### Common Mistakes
+## Built-in competing-risk datasets
 
-**Mistake 1**: Using Kaplan-Meier to estimate event-specific probabilities
-- **Wrong**: Kaplan-Meier for event type 1, treating type 2 as censored
-- **Correct**: Cumulative incidence function accounting for competing risks
+```python
+from sksurv.datasets import load_bmt, load_cgvhd
 
-**Mistake 2**: Ignoring competing risks when they're substantial
-- If competing event rate > 10-20%, should use competing risks methods
+X_bmt, y_bmt = load_bmt()       # status codes 0, 1, 2
+X_cgvhd, y_cgvhd = load_cgvhd() # status codes 0, 1, 2, 3
+```
 
-**Mistake 3**: Confusing cause-specific and sub-distribution hazards
-- They answer different questions
-- Use appropriate model for your research question
+The first structured field is integer cause status, not boolean. These are real
+study datasets distributed for examples. The bundled tests do not use them; they
+use synthetic non-clinical outcomes only.
 
-## Summary
+## Why `1 - Kaplan-Meier` is wrong for one cause
 
-**Key Functions:**
-- `cumulative_incidence_competing_risks`: Estimate CIF for each event type
-- Fit separate Cox models for cause-specific hazards
-- Use stratified analysis to compare groups
+If cause 2 prevents cause 1, censoring cause 2 in a Kaplan-Meier curve treats those
+subjects as if they could still experience cause 1 later under non-informative
+censoring. That counterfactual risk set does not estimate the observed-world
+probability \(F_1(t)\) and typically overstates cause-1 probability.
 
-**Best Practices:**
-1. Always plot cumulative incidence functions
-2. Report both event-specific and overall incidence
-3. Use cause-specific models in scikit-survival
-4. Consider Fine-Gray models (other packages) for prediction
-5. Be explicit about which events are competing vs censored
+Use CIF for cause-specific absolute probability:
+
+```python
+time_points, cif = cumulative_incidence_competing_risks(event, time)
+probability_cause_1_by_t = cif[1]
+```
+
+Kaplan-Meier remains appropriate for all-cause event-free survival after collapsing
+all causes to event, if that is the estimand and censoring assumptions hold.
+
+## Comparing groups
+
+For prespecified groups where every original cause occurs (the native function
+requires contiguous observed causes), estimate point curves:
+
+```python
+curves = {}
+for label in prespecified_groups:
+    mask = group == label
+    curves[label] = cumulative_incidence_competing_risks(
+        event[mask],
+        time[mask],
+    )
+```
+
+If a subgroup has no event for a cause, do not silently relabel its rows or invent
+an event to satisfy the API. Preserve a global cause mapping and use a method
+that supports absent causes; an all-censored group needs separate handling.
+
+Plotting pointwise intervals does not test equality. scikit-survival 0.28 does not
+provide Gray's test in this API. Do not substitute an ordinary log-rank test:
+survival and CIF group hypotheses differ.
+
+Group labels and comparison times should be prespecified. Report at-risk/event
+support; late visual separation with few rows can be misleading.
+
+## Cause-specific Cox hazards
+
+For cause \(k\), a cause-specific hazard model encodes that cause as an event and
+other causes as censored at their occurrence time:
+
+```python
+from sksurv.linear_model import CoxPHSurvivalAnalysis
+from sksurv.util import Surv
+
+y_cause_1 = Surv.from_arrays(
+    event=(event == 1),
+    time=time,
+)
+cause_1_hazard_model = CoxPHSurvivalAnalysis(alpha=0.1)
+cause_1_hazard_model.fit(X_train, y_cause_1_train)
+```
+
+This estimates association with the instantaneous cause-specific hazard under a
+PH model. Other causes are censored for this hazard likelihood, which is different
+from pretending they are independent censoring when estimating absolute CIF.
+
+To derive cause-specific CIF predictions from cause-specific hazards, all modeled
+causes must be combined:
+
+\[
+F_k(t \mid x) =
+\int_0^t S(u^- \mid x)\,dH_k(u \mid x),
+\quad
+S(t \mid x)=\exp\left[-\sum_j H_j(t \mid x)\right].
+\]
+
+Therefore, `1 - cause_1_model.predict_survival_function(...)` is not the cause-1
+CIF. A set of separately fitted cause-specific models requires careful joint
+integration, common time grids, and external validation.
+
+## Fine-Gray regression
+
+scikit-survival 0.28 does not implement Fine-Gray subdistribution-hazard
+regression. Do not invent an import or describe `cumulative_incidence_competing_risks`
+as Fine-Gray; it is a nonparametric CIF estimator.
+
+If using another implementation:
+
+- verify it is actively maintained and supports the required censoring/truncation;
+- use its official API documentation;
+- distinguish subdistribution from cause-specific hazard coefficients;
+- keep preprocessing and tuning leakage-safe;
+- validate cause-specific absolute probabilities, not only coefficients.
+
+Neither hazard parameterization is universally "better." The estimand determines
+the method.
+
+## Prediction evaluation
+
+Standard `concordance_index_ipcw`, `cumulative_dynamic_auc`, and Brier APIs in
+scikit-survival are documented for right-censored single-event outcomes. A
+competing-risk prediction question needs:
+
+- a named cause;
+- a case/control definition at each horizon;
+- handling of other causes consistent with that definition;
+- cause-specific probability predictions for calibration/Brier evaluation;
+- censoring weights fitted on training data;
+- evaluation times supported by training follow-up;
+- nested tuning or an untouched holdout.
+
+Do not label an all-event C-index as cause-specific discrimination, and do not use
+an all-event survival probability as a cause-specific CIF.
+
+## Bundled helper
+
+The helper defaults to deterministic synthetic data:
+
+```bash
+python skills/scikit-survival/scripts/competing_risk_cif.py
+```
+
+For local CSV:
+
+```bash
+python skills/scikit-survival/scripts/competing_risk_cif.py \
+  --input competing.csv \
+  --event-column status \
+  --time-column time \
+  --horizons 2,5,10 \
+  --confidence \
+  --curve-output cif-curves.npz \
+  --output cif-summary.json
+```
+
+It:
+
+- rejects URLs, symlinks, missing/non-contiguous causes, and invalid times;
+- bounds file size and row count;
+- verifies that cause-specific rows sum to total CIF;
+- writes numeric arrays without pickle;
+- reports point estimates at requested horizons within observed follow-up;
+- repairs total-risk intervals and guards the upstream conditional-time defect;
+- makes no network calls.
+
+Use only authorized, de-identified local data. Do not include row-level data or PHI
+in reports.
+
+## Reporting checklist
+
+- cause definitions and code mapping;
+- censoring definition and follow-up window;
+- CIF versus cause-specific or subdistribution hazard estimand;
+- number of rows/events for every cause;
+- horizon-specific CIF with uncertainty and support;
+- whether intervals are pointwise;
+- handling of `time_min`, if any;
+- competing-risk-specific prediction evaluation;
+- no causal or clinical-utility claim from association/probability alone.
+
+## Sources
+
+Official scikit-survival sources checked 2026-10-01:
+
+- [Released CIF implementation](https://github.com/sebp/scikit-survival/blob/v0.28.0/sksurv/nonparametric.py) — native defects above reproduced on a six-row synthetic fixture.
+
+- [Competing-risks user guide](https://scikit-survival.readthedocs.io/en/stable/user_guide/competing-risks.html)
+- [CIF API](https://scikit-survival.readthedocs.io/en/stable/api/generated/sksurv.nonparametric.cumulative_incidence_competing_risks.html)
+- [Dataset API](https://scikit-survival.readthedocs.io/en/stable/api/datasets.html)
+- [0.24 release notes introducing CIF](https://scikit-survival.readthedocs.io/en/stable/release_notes/v0.24.html)
+
+Primary methods:
+
+- Aalen O. "Nonparametric estimation of partial transition probabilities in
+  multiple decrement models." *Annals of Statistics* 6 (1978), 534-545.
+  [Project Euclid record](https://projecteuclid.org/journals/annals-of-statistics/volume-6/issue-3/Nonparametric-Estimation-of-Partial-Transition-Probabilities-in-Multiple-Decrement-Models/10.1214/aos/1176344198.full)
+- Gray RJ. "A class of K-sample tests for comparing the cumulative incidence of
+  a competing risk." *Annals of Statistics* 16 (1988), 1141-1154.
+  [doi:10.1214/aos/1176350951](https://doi.org/10.1214/aos/1176350951)

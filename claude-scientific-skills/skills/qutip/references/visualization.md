@@ -1,431 +1,338 @@
-# QuTiP Visualization
+# QuTiP 5.3 Visualization
 
-## Bloch Sphere
+Research and API verification date: **2026-10-01**. Examples target
+`qutip==5.3.1` with its pinned graphics extra.
 
-Visualize qubit states on the Bloch sphere.
+```bash
+uv pip install "qutip[graphics]==5.3.1"
+```
 
-### Basic Usage
+Plots are diagnostics and communication artifacts, not substitutes for
+normalization, positivity, convergence, or uncertainty checks.
+
+## Phase-space coordinates and axis order
+
+For QuTiP's oscillator phase-space functions, the default scaling is
+
+\[
+a = \tfrac12 g(x + i y), \qquad g=\sqrt{2},
+\]
+
+which corresponds to \(\hbar=2/g^2=1\).
+
+In QuTiP 5.3, returned arrays use:
+
+```text
+array[j, k] <-> yvec[j], xvec[k]
+```
+
+This applies to `wigner`, `qfunc`, and class-based `QFunc`. Therefore, pass
+`xvec` horizontally and `yvec` vertically to Matplotlib:
 
 ```python
-from qutip import *
+image = ax.pcolormesh(xvec, yvec, values, shading="auto")
+```
+
+The 5.3 release notes explicitly clarified this order. Do not transpose by
+habit; test with unequal x/y lengths.
+
+## Wigner function
+
+Current signature:
+
+```text
+wigner(psi, xvec, yvec=None, method="clenshaw", g=sqrt(2),
+       sparse=False, parfor=False, offset=0)
+```
+
+```python
+import numpy as np
 import matplotlib.pyplot as plt
+from qutip import coherent, wigner
 
-# Create Bloch sphere
-b = Bloch()
-
-# Add states
-psi = (basis(2, 0) + basis(2, 1)).unit()
-b.add_states(psi)
-
-# Add vectors
-b.add_vectors([1, 0, 0])  # X-axis
-
-# Display
-b.show()
-```
-
-### Multiple States
-
-```python
-# Add multiple states
-states = [(basis(2, 0) + basis(2, 1)).unit(),
-          (basis(2, 0) + 1j*basis(2, 1)).unit()]
-b.add_states(states)
-
-# Add points
-b.add_points([[0, 1, 0], [0, -1, 0]])
-
-# Customize colors
-b.point_color = ['r', 'g']
-b.point_marker = ['o', 's']
-b.point_size = [20, 20]
-
-b.show()
-```
-
-### Animation
-
-```python
-# Animate state evolution
-states = result.states  # From sesolve/mesolve
-
-b = Bloch()
-b.vector_color = ['r']
-b.view = [-40, 30]  # Viewing angle
-
-# Create animation
-from matplotlib.animation import FuncAnimation
-
-def animate(i):
-    b.clear()
-    b.add_states(states[i])
-    b.make_sphere()
-    return b.axes
-
-anim = FuncAnimation(b.fig, animate, frames=len(states),
-                      interval=50, blit=False, repeat=True)
-plt.show()
-```
-
-### Customization
-
-```python
-b = Bloch()
-
-# Sphere appearance
-b.sphere_color = '#FFDDDD'
-b.sphere_alpha = 0.1
-b.frame_alpha = 0.1
-
-# Axes
-b.xlabel = ['$|+\\\\rangle$', '$|-\\\\rangle$']
-b.ylabel = ['$|+i\\\\rangle$', '$|-i\\\\rangle$']
-b.zlabel = ['$|0\\\\rangle$', '$|1\\\\rangle$']
-
-# Font sizes
-b.font_size = 20
-b.font_color = 'black'
-
-# View angle
-b.view = [-60, 30]
-
-# Save figure
-b.save('bloch.png')
-```
-
-## Wigner Function
-
-Phase-space quasi-probability distribution.
-
-### Basic Calculation
-
-```python
-# Create state
-psi = coherent(N, alpha)
-
-# Calculate Wigner function
-xvec = np.linspace(-5, 5, 200)
-W = wigner(psi, xvec, xvec)
-
-# Plot
-fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-cont = ax.contourf(xvec, xvec, W, 100, cmap='RdBu')
-ax.set_xlabel('Re(α)')
-ax.set_ylabel('Im(α)')
-plt.colorbar(cont, ax=ax)
-plt.show()
-```
-
-### Special Colormap
-
-```python
-# Wigner colormap emphasizes negative values
-from qutip import wigner_cmap
-
-W = wigner(psi, xvec, xvec)
+N = 30
+state = coherent(N, 1.5)
+xvec = np.linspace(-5.0, 5.0, 201)
+yvec = np.linspace(-4.0, 4.0, 161)
+W = wigner(state, xvec, yvec, method="clenshaw")
 
 fig, ax = plt.subplots()
-cont = ax.contourf(xvec, xvec, W, 100, cmap=wigner_cmap(W))
-ax.set_title('Wigner Function')
-plt.colorbar(cont)
-plt.show()
+limit = float(np.max(np.abs(W)))
+mesh = ax.pcolormesh(
+    xvec,
+    yvec,
+    W,
+    shading="auto",
+    cmap="RdBu_r",
+    vmin=-limit,
+    vmax=limit,
+)
+ax.set(xlabel="x", ylabel="y", title="Wigner function")
+fig.colorbar(mesh, ax=ax)
+fig.tight_layout()
 ```
 
-### 3D Surface Plot
+Methods:
+
+- `clenshaw`: robust default, especially at higher excitation;
+- `iterative`: recurrence method;
+- `laguerre`: can help for sparse high-dimensional states;
+- `fft`: computes y coordinates internally and has a different return form.
+
+The `offset` argument added in 5.3 supports Fock representations whose first
+represented number state is not zero.
+
+Numerical checks:
+
+- sweep Hilbert cutoff and phase-space extent;
+- increase grid density;
+- compare normalization using the documented coordinate scaling;
+- treat tiny negative values near numerical tolerance separately from robust
+  Wigner negativity;
+- preserve an equal data aspect ratio when x and y share physical units.
+
+Current convenience plotting:
 
 ```python
-from mpl_toolkits.mplot3d import Axes3D
+from qutip import plot_wigner
 
-X, Y = np.meshgrid(xvec, xvec)
-
-fig = plt.figure(figsize=(8, 6))
-ax = fig.add_subplot(111, projection='3d')
-ax.plot_surface(X, Y, W, cmap='RdBu', alpha=0.8)
-ax.set_xlabel('Re(α)')
-ax.set_ylabel('Im(α)')
-ax.set_zlabel('W(α)')
-plt.show()
+fig, ax = plot_wigner(
+    state,
+    xvec=xvec,
+    yvec=yvec,
+    projection="2d",
+    colorbar=True,
+)
 ```
 
-### Comparing States
+Use the returned figure and axis rather than relying on global plotting state.
 
-```python
-# Compare different states
-states = [coherent(N, 2), fock(N, 2), thermal_dm(N, 2)]
-titles = ['Coherent', 'Fock', 'Thermal']
+## Husimi Q function
 
-fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+### One state
 
-for i, (state, title) in enumerate(zip(states, titles)):
-    W = wigner(state, xvec, xvec)
-    cont = axes[i].contourf(xvec, xvec, W, 100, cmap='RdBu')
-    axes[i].set_title(title)
-    axes[i].set_xlabel('Re(α)')
-    if i == 0:
-        axes[i].set_ylabel('Im(α)')
+Current signature:
 
-plt.tight_layout()
-plt.show()
+```text
+qfunc(state, xvec, yvec, g=sqrt(2), precompute_memory=1024, cutoff=170)
 ```
-
-## Q-Function (Husimi)
-
-Smoothed phase-space distribution (always positive).
-
-### Basic Usage
 
 ```python
 from qutip import qfunc
 
-Q = qfunc(psi, xvec, xvec)
+Q = qfunc(state, xvec, yvec)
+assert Q.shape == (len(yvec), len(xvec))
 
 fig, ax = plt.subplots()
-cont = ax.contourf(xvec, xvec, Q, 100, cmap='viridis')
-ax.set_xlabel('Re(α)')
-ax.set_ylabel('Im(α)')
-ax.set_title('Q-Function')
-plt.colorbar(cont)
-plt.show()
+mesh = ax.pcolormesh(xvec, yvec, Q, shading="auto", cmap="viridis")
+fig.colorbar(mesh, ax=ax)
 ```
 
-### Efficient Batch Calculation
+`qfunc` and `QFunc` gained `cutoff=170` in 5.3.1 to stabilize
+large coherent amplitudes. This is an algorithmic threshold, not the Hilbert
+cutoff `N`; independently converge the physical state truncation.
+
+The Q function is nonnegative in exact arithmetic, but plotting still needs
+truncation, extent, and grid checks.
+
+### Many states on the same grid
+
+Current class usage is:
 
 ```python
 from qutip import QFunc
 
-# For calculating Q-function at many points
-qf = QFunc(rho)
-Q = qf.eval(xvec, xvec)
+q_on_grid = QFunc(xvec, yvec, memory=256)
+Q_first = q_on_grid(state_a)
+Q_second = q_on_grid(state_b)
 ```
 
-## Fock State Probability Distribution
+`QFunc` is constructed with fixed coordinates and then **called with each
+state**. QuTiP 5.3 exposes no `.eval` method on this class. This skill does not
+use Python dynamic-code execution.
 
-Visualize photon number distribution.
+The `memory` parameter bounds internal workspace in MB and can raise
+`MemoryError` for a large state. For a one-off large state, use `qfunc` with a
+carefully selected `precompute_memory`.
 
-### Basic Histogram
+## Bloch sphere
+
+```python
+import matplotlib.pyplot as plt
+from qutip import Bloch, basis
+
+psi = (basis(2, 0) + 1j * basis(2, 1)).unit()
+bloch = Bloch()
+bloch.add_states(psi)
+bloch.add_vectors([0.0, 0.0, 1.0], color="black")
+bloch.make_sphere()
+plt.show()
+```
+
+For dynamics, solve with saved states or the three Pauli expectations:
+
+```python
+from qutip import sigmax, sigmay, sigmaz
+
+result = mesolve(
+    H,
+    rho0,
+    tlist,
+    c_ops=c_ops,
+    e_ops=[sigmax(), sigmay(), sigmaz()],
+)
+bloch = Bloch()
+bloch.add_points([result.expect[0], result.expect[1], result.expect[2]])
+bloch.make_sphere()
+```
+
+Audit each Bloch vector norm. A density matrix maps inside the unit sphere; a
+vector materially outside it indicates numerical or modeling error.
+
+Use explicit colors and line styles and a colorblind-safe palette. QuTiP
+settings include:
+
+```python
+import qutip
+
+qutip.settings.colorblind_safe = True
+```
+
+Avoid mutating global settings in reusable library code unless the caller
+expects it.
+
+## Fock distributions
 
 ```python
 from qutip import plot_fock_distribution
 
-# Single state
-psi = coherent(N, 2)
-fig, ax = plot_fock_distribution(psi)
-ax.set_title('Coherent State')
-plt.show()
+fig, ax = plot_fock_distribution(state)
+ax.set(title="Fock probabilities", xlabel="n", ylabel="Probability")
+fig.tight_layout()
 ```
 
-### Comparing Distributions
+For comparisons, share axes and use the returned `fig, ax`:
 
 ```python
-states = {
-    'Coherent': coherent(20, 2),
-    'Thermal': thermal_dm(20, 2),
-    'Fock': fock(20, 2)
-}
-
-fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-
-for ax, (title, state) in zip(axes, states.items()):
-    plot_fock_distribution(state, fig=fig, ax=ax)
-    ax.set_title(title)
-    ax.set_ylim([0, 0.3])
-
-plt.tight_layout()
-plt.show()
+fig, axes = plt.subplots(1, 2, figsize=(9, 3), sharey=True)
+plot_fock_distribution(state_a, fig=fig, ax=axes[0])
+plot_fock_distribution(state_b, fig=fig, ax=axes[1])
 ```
 
-### Time Evolution
+Report the probability in the highest represented levels. A visually small
+last bar may still be insufficient if a target observable weights high
+occupations strongly.
 
-```python
-# Show evolution of photon distribution
-result = mesolve(H, psi0, tlist, c_ops)
+## Matrix diagnostics
 
-# Plot at different times
-times_to_plot = [0, 5, 10, 15]
-fig, axes = plt.subplots(1, 4, figsize=(16, 4))
-
-for ax, t_idx in zip(axes, times_to_plot):
-    plot_fock_distribution(result.states[t_idx], fig=fig, ax=ax)
-    ax.set_title(f't = {tlist[t_idx]:.1f}')
-    ax.set_ylim([0, 1])
-
-plt.tight_layout()
-plt.show()
-```
-
-## Matrix Visualization
-
-### Hinton Diagram
-
-Visualize matrix structure with weighted squares.
+Hinton diagrams:
 
 ```python
 from qutip import hinton
 
-# Density matrix
-rho = bell_state('00').proj()
-
-hinton(rho)
-plt.title('Bell State Density Matrix')
-plt.show()
+fig, ax = hinton(rho, color_style="phase")
 ```
 
-### Matrix Histogram
-
-3D bar plot of matrix elements.
+Three-dimensional matrix histograms:
 
 ```python
 from qutip import matrix_histogram
 
-# Show real and imaginary parts
-H = sigmaz()
-
-fig, axes = plt.subplots(1, 2, figsize=(12, 5))
-
-matrix_histogram(H.full(), xlabels=['0', '1'], ylabels=['0', '1'],
-                 fig=fig, ax=axes[0])
-axes[0].set_title('Real Part')
-
-matrix_histogram(H.full(), bar_type='imag', xlabels=['0', '1'],
-                 ylabels=['0', '1'], fig=fig, ax=axes[1])
-axes[1].set_title('Imaginary Part')
-
-plt.tight_layout()
-plt.show()
+fig, ax = matrix_histogram(rho, bar_style="abs", color_style="phase")
 ```
 
-### Complex Phase Diagram
+QuTiP 5 uses `x_basis`, `y_basis`, `bar_style`, and `color_style` rather than
+old ad hoc label and bar-type recipes. Pass a `Qobj` where supported so
+dimension-aware labels can be retained.
+
+For dense matrices beyond a modest size, a heatmap is usually more legible and
+less expensive than 3D bars. Never hide the imaginary part when it is relevant.
+
+## Solver result plots
+
+QuTiP 5.3 adds result methods:
 
 ```python
-# Visualize complex matrix elements
-rho = coherent_dm(10, 2)
-
-# Plot complex elements
-fig, axes = plt.subplots(1, 2, figsize=(12, 5))
-
-# Absolute value
-matrix_histogram(rho.full(), bar_type='abs', fig=fig, ax=axes[0])
-axes[0].set_title('Absolute Value')
-
-# Phase
-matrix_histogram(rho.full(), bar_type='phase', fig=fig, ax=axes[1])
-axes[1].set_title('Phase')
-
-plt.tight_layout()
-plt.show()
+fig, axes = result.plot_expect(labels=["population", "coherence"])
 ```
 
-## Energy Level Diagrams
+For publication or reusable analysis, explicit plotting remains clearer:
 
 ```python
-# Visualize energy eigenvalues
-H = num(N) + 0.1 * (create(N) + destroy(N))**2
-
-# Get eigenvalues and eigenvectors
-evals, ekets = H.eigenstates()
-
-# Plot energy levels
-fig, ax = plt.subplots(figsize=(8, 6))
-
-for i, E in enumerate(evals[:10]):
-    ax.hlines(E, 0, 1, linewidth=2)
-    ax.text(1.1, E, f'|{i}⟩', va='center')
-
-ax.set_ylabel('Energy')
-ax.set_xlim([-0.2, 1.5])
-ax.set_xticks([])
-ax.set_title('Energy Spectrum')
-plt.show()
-```
-
-## Quantum Process Tomography
-
-Visualize quantum channel/gate action.
-
-```python
-from qutip.qip.operations import cnot
-from qutip_qip.tomography import qpt, qpt_plot_combined
-
-# Define process (e.g., CNOT gate)
-U = cnot()
-
-# Perform QPT
-chi = qpt(U, method='choicm')
-
-# Visualize
-fig = qpt_plot_combined(chi)
-plt.show()
-```
-
-## Expectation Values Over Time
-
-```python
-# Standard plotting of expectation values
-result = mesolve(H, psi0, tlist, c_ops, e_ops=[num(N)])
-
 fig, ax = plt.subplots()
-ax.plot(tlist, result.expect[0])
-ax.set_xlabel('Time')
-ax.set_ylabel('⟨n⟩')
-ax.set_title('Photon Number Evolution')
-ax.grid(True)
-plt.show()
+ax.plot(result.times, result.e_data["population"], label="population")
+ax.set(xlabel="time", ylabel="expectation value")
+ax.legend()
+fig.tight_layout()
 ```
 
-### Multiple Observables
+Multi-trajectory means need uncertainty bands:
 
 ```python
-# Plot multiple expectation values
-e_ops = [a.dag() * a, a + a.dag(), 1j * (a - a.dag())]
-labels = ['⟨n⟩', '⟨X⟩', '⟨P⟩']
-
-result = mesolve(H, psi0, tlist, c_ops, e_ops=e_ops)
-
-fig, axes = plt.subplots(3, 1, figsize=(8, 9))
-
-for i, (ax, label) in enumerate(zip(axes, labels)):
-    ax.plot(tlist, result.expect[i])
-    ax.set_ylabel(label)
-    ax.grid(True)
-
-axes[-1].set_xlabel('Time')
-plt.tight_layout()
-plt.show()
+mean = np.asarray(result.average_expect[0])
+standard_error = np.asarray(result.std_expect[0]) / np.sqrt(result.num_trajectories)
+ax.plot(result.times, mean)
+ax.fill_between(
+    result.times,
+    mean - 1.96 * standard_error,
+    mean + 1.96 * standard_error,
+    alpha=0.25,
+)
 ```
 
-## Correlation Functions and Spectra
+Confirm that the trajectory estimator and sample count justify the chosen
+interval; the formula above is only a simple independent-sample approximation.
+
+## Correlation and spectrum plots
+
+Plot complex correlations deliberately:
 
 ```python
-# Two-time correlation function
-taulist = np.linspace(0, 10, 200)
-corr = correlation_2op_1t(H, rho0, taulist, c_ops, a.dag(), a)
-
-# Plot correlation
-fig, ax = plt.subplots()
-ax.plot(taulist, np.real(corr))
-ax.set_xlabel('τ')
-ax.set_ylabel('⟨a†(τ)a(0)⟩')
-ax.set_title('Correlation Function')
-plt.show()
-
-# Power spectrum
-from qutip import spectrum_correlation_fft
-
-w, S = spectrum_correlation_fft(taulist, corr)
-
-fig, ax = plt.subplots()
-ax.plot(w, S)
-ax.set_xlabel('Frequency')
-ax.set_ylabel('S(ω)')
-ax.set_title('Power Spectrum')
-plt.show()
+fig, axes = plt.subplots(2, 1, sharex=True)
+axes[0].plot(taulist, np.real(correlation), label="real")
+axes[1].plot(taulist, np.imag(correlation), label="imaginary")
+axes[1].set_xlabel("delay")
+for ax in axes:
+    ax.legend()
 ```
 
-## Saving Figures
+For spectra:
+
+- label angular frequency and units;
+- show negative frequencies when physically meaningful;
+- disclose windowing, smoothing, and zero-padding;
+- avoid a logarithmic y-axis when values can be negative;
+- include frequency resolution and convergence information in the caption.
+
+## Animations
+
+Animations can conceal nonconvergence and are expensive to render. First
+produce static frames at physically meaningful times. If animation is needed:
+
+- cap frame count and resolution;
+- keep phase-space color limits fixed across frames;
+- avoid recomputing solver dynamics inside the frame callback;
+- save to a user-selected local path;
+- record the time-to-frame mapping.
+
+QuTiP 5 includes animation helpers in its visualization API, but their inputs
+still require stored states and memory planning.
+
+## Figure export
 
 ```python
-# High-resolution saves
-fig.savefig('my_plot.png', dpi=300, bbox_inches='tight')
-fig.savefig('my_plot.pdf', bbox_inches='tight')
-fig.savefig('my_plot.svg', bbox_inches='tight')
+fig.savefig("phase_space.svg", bbox_inches="tight")
+fig.savefig("phase_space.png", dpi=300, bbox_inches="tight")
 ```
+
+Use an explicit local output path, avoid overwriting without user intent, and
+save the numeric data/configuration next to the figure. A raster image alone is
+not a reproducible result.
+
+## Sources (verified 2026-10-01)
+
+- [Visualization and animation API](https://qutip.readthedocs.io/en/stable/apidoc/visualization.html)
+- [Wigner and Q-function API](https://qutip.readthedocs.io/en/stable/apidoc/visualization.html#pseudoprobability-functions)
+- [Bloch sphere guide](https://qutip.readthedocs.io/en/stable/guide/guide-bloch.html)
+- [QuTiP 5.3.1 release notes](https://github.com/qutip/qutip/releases/tag/v5.3.1)
+- [Official QuTiP version-5 tutorials](https://github.com/qutip/qutip-tutorials/tree/main/tutorials-v5)

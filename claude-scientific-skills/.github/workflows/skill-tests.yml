@@ -1,0 +1,110 @@
+name: Skill Tests
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "tests/**"
+      - "plugin.json"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/skill-tests.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "skills/**"
+      - "tests/**"
+      - "plugin.json"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/skill-tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: skill-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  contract:
+    name: Repo-wide contract and coverage guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --python 3.13
+
+      # tests/_meta checks every skill against the shared structural contract
+      # (frontmatter, SKILL.md length, local links, scripts parse, no shipped
+      # bytecode, no hardcoded local paths, ...) and enforces the repo rule that
+      # a skill shipping scripts/ has a suite under tests/ and an entry in
+      # tests/skill-requirements.toml. It imports no skill code and needs no
+      # scientific packages, so it runs in seconds on every pull request.
+      # It also validates plugin.json against the bundled Agent Plugins schema,
+      # checks package-path containment, and keeps the collection version in sync.
+      - name: Structural contract and coverage
+        run: uv run --python 3.13 python -m pytest tests/_meta -q
+
+  suites:
+    name: Standard-library-only skill suites
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: contract
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v8.0.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+          python-version: "3.13"
+
+      # The skills whose bundled tooling is standard-library only -- read from
+      # `packages = []` in tests/skill-requirements.toml, so the list needs no
+      # separate maintenance. Each still gets a clean throwaway environment.
+      #
+      # The full `--isolated` sweep across every skill is deliberately NOT run
+      # here: it builds ~100 environments including torch, qiskit, and scanpy,
+      # and several skills need CUDA, a JDK, or a MATLAB install that CI does
+      # not have. Run it locally or on a schedule:
+      #     python tests/run_all.py --isolated
+      - name: Select standard-library-only skills
+        id: select
+        run: |
+          set -euo pipefail
+          SKILLS=$(python3 - <<'PY'
+          import pathlib, tomllib
+          manifest = tomllib.loads(
+              pathlib.Path("tests/skill-requirements.toml").read_text()
+          )
+          names = sorted(
+              name
+              for name, entry in manifest["skills"].items()
+              if not entry.get("packages") and "python" not in entry
+              and (pathlib.Path("tests") / name).is_dir()
+          )
+          print(" ".join(names))
+          PY
+          )
+          echo "Selected: $SKILLS"
+          echo "skills=$SKILLS" >> "$GITHUB_OUTPUT"
+
+      - name: Run suites, one environment each
+        run: uv run --python 3.13 python tests/run_all.py --isolated ${{ steps.select.outputs.skills }}

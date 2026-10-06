@@ -1,6 +1,6 @@
 ---
 name: Webex Automation
-description: "Automate Cisco Webex messaging, rooms, teams, webhooks, and people management through natural language commands"
+description: "通过自然语言命令自动化 Cisco Webex 的消息、房间、团队、Webhook 和人员管理"
 requires:
   mcp:
     - rube
@@ -8,168 +8,168 @@ requires:
 
 # Webex Automation
 
-Automate Cisco Webex collaboration workflows -- send messages, manage rooms and teams, configure webhooks, and look up people -- all through natural language.
+自动化 Cisco Webex 协作工作流——发送消息、管理房间和团队、配置 Webhook、查找人员——全部通过自然语言完成。
 
-**Toolkit docs:** [composio.dev/toolkits/webex](https://composio.dev/toolkits/webex)
+**工具包文档：** [composio.dev/toolkits/webex](https://composio.dev/toolkits/webex)
 
 ---
 
 ## 设置
 
-1. Add the Rube MCP server to your environment: `https://rube.app/mcp`
-2. 连接 your Webex account when prompted (OAuth flow via Composio)
-3. Start issuing natural language commands for Webex automation
+1. 将 Rube MCP 服务器添加到你的环境中：`https://rube.app/mcp`
+2. 按提示连接你的 Webex 账户（通过 Composio 的 OAuth 流程）
+3. 开始使用自然语言命令进行 Webex 自动化
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Send a Message to a Room or Person
+### 1. 向房间或个人发送消息
 
-Post plain text, markdown, file attachments, or Adaptive Cards to any Webex room or directly to a person.
+向任意 Webex 房间或直接向某个人发布纯文本、Markdown、文件附件或 Adaptive Card。
 
-**Tool:** `WEBEX_MESSAGING_CREATE_MESSAGE`
+**工具：** `WEBEX_MESSAGING_CREATE_MESSAGE`
 
-Key parameters:
-- `roomId` -- target room ID (use `WEBEX_MESSAGING_LIST_ROOMS` to find it)
-- `toPersonEmail` -- send a private 1:1 message instead (mutually exclusive with `roomId`)
-- `text` -- plain text content (max 7439 bytes)
-- `markdown` -- markdown-formatted content (takes precedence over `text`)
-- `files` -- list of public URLs for file attachments (one file per message)
-- `attachments` -- Adaptive Card JSON (one card per message)
-- `parentId` -- reply to a specific message as a threaded response
+关键参数：
+- `roomId` -- 目标房间 ID（使用 `WEBEX_MESSAGING_LIST_ROOMS` 查找）
+- `toPersonEmail` -- 改为发送私人 1:1 消息（与 `roomId` 互斥）
+- `text` -- 纯文本内容（最大 7439 字节）
+- `markdown` -- Markdown 格式的内容（优先于 `text`）
+- `files` -- 文件附件的公开 URL 列表（每条消息仅一个文件）
+- `attachments` -- Adaptive Card JSON（每条消息一张卡片）
+- `parentId` -- 以线程回复的形式回复特定消息
 
-Example prompt:
-> "Send a markdown message to room Y2lz... saying **Deploy completed** with a link to the release notes"
-
----
-
-### 2. List and Discover Rooms
-
-Browse all rooms you belong to, filtered by type, team, or sorted by activity.
-
-**Tool:** `WEBEX_MESSAGING_LIST_ROOMS`
-
-Key parameters:
-- `type` -- filter by `direct` (1:1) or `group`
-- `teamId` -- limit to rooms in a specific team
-- `sortBy` -- sort by `id`, `lastactivity`, or `created`
-- `max` -- limit results (1-1000, default 100)
-
-Follow-up with `WEBEX_MESSAGING_GET_ROOM_DETAILS` to get full metadata for a specific room including title, type, lock status, creator, and timestamps.
-
-Example prompt:
-> "List my 10 most recently active group rooms in Webex"
+示例提示词：
+> “向房间 Y2lz... 发送一条 Markdown 消息，内容为 **部署已完成**，并附上发布说明链接”
 
 ---
 
-### 3. Manage Webhooks for Event-Driven Automation
+### 2. 列出和发现房间
 
-Create webhooks to receive real-time HTTP POST notifications when Webex resources change.
+浏览你所属的所有房间，可按类型、团队筛选或按活动排序。
 
-**Tool:** `WEBEX_WEBHOOKS_CREATE_WEBHOOK`
+**工具：** `WEBEX_MESSAGING_LIST_ROOMS`
 
-Key parameters:
-- `name` -- human-friendly webhook name (required)
-- `targetUrl` -- URL that receives POST notifications (required)
-- `resource` -- what to monitor: `messages`, `rooms`, `memberships`, `meetings`, `recordings`, `meetingParticipants`, `telephony_calls`, etc. (required)
-- `event` -- trigger type: `created`, `updated`, `deleted`, `started`, `ended`, `joined`, `left` (required)
-- `filter` -- scope notifications (e.g., `roomId=<id>` or `hostEmail=<email>`)
-- `secret` -- optional HMAC secret for payload signature verification
-- `ownedBy` -- `creator` for personal or `org` for organization-wide webhooks
+关键参数：
+- `type` -- 按 `direct`（1:1）或 `group` 筛选
+- `teamId` -- 限定为特定团队的房间
+- `sortBy` -- 按 `id`、`lastactivity` 或 `created` 排序
+- `max` -- 限制结果数量（1-1000，默认 100）
 
-Supporting tools:
-- `WEBEX_LIST_WEBHOOKS` -- list all registered webhooks with optional `max` and `ownedBy` filters
-- `WEBEX_WEBHOOKS_GET_WEBHOOK` -- inspect a specific webhook by `webhookId`
+后续可用 `WEBEX_MESSAGING_GET_ROOM_DETAILS` 获取特定房间的完整元数据，包括标题、类型、锁定状态、创建者和时间戳。
 
-Example prompt:
-> "Create a webhook called 'New Messages' that POSTs to https://my-app.com/hook whenever a message is created in room Y2lz..."
+示例提示词：
+> “列出我最近活跃的 10 个群组房间”
 
 ---
 
-### 4. Manage Team Memberships
+### 3. 管理用于事件驱动自动化的 Webhook
 
-Add people to Webex teams and optionally grant moderator privileges.
+创建 Webhook，以便在 Webex 资源发生变化时实时接收 HTTP POST 通知。
 
-**Tool:** `WEBEX_MESSAGING_CREATE_TEAM_MEMBERSHIP`
+**工具：** `WEBEX_WEBHOOKS_CREATE_WEBHOOK`
 
-Key parameters:
-- `teamId` -- the team to add the person to (required)
-- `personEmail` -- email of the person to add
-- `personId` -- Webex person ID (alternative to email)
-- `isModerator` -- set to `true` for moderator access (default `false`)
+关键参数：
+- `name` -- 便于识别的 Webhook 名称（必填）
+- `targetUrl` -- 接收 POST 通知的 URL（必填）
+- `resource` -- 要监控的内容：`messages`、`rooms`、`memberships`、`meetings`、`recordings`、`meetingParticipants`、`telephony_calls` 等（必填）
+- `event` -- 触发类型：`created`、`updated`、`deleted`、`started`、`ended`、`joined`、`left`（必填）
+- `filter` -- 限定通知范围（例如 `roomId=<id>` 或 `hostEmail=<email>`）
+- `secret` -- 用于负载签名验证的可选 HMAC 密钥
+- `ownedBy` -- 个人 Webhook 用 `creator`，组织范围 Webhook 用 `org`
 
-Use `WEBEX_LIST_TEAMS` to discover available teams first.
+辅助工具：
+- `WEBEX_LIST_WEBHOOKS` -- 列出所有已注册的 Webhook，支持可选的 `max` 和 `ownedBy` 过滤
+- `WEBEX_WEBHOOKS_GET_WEBHOOK` -- 按 `webhookId` 查看特定 Webhook
 
-Example prompt:
-> "Add alice@example.com as a moderator to team Y2lz..."
-
----
-
-### 5. Audit Room Memberships
-
-Check who is in a room, verify a specific person's membership, or list memberships across teams.
-
-**Tool:** `WEBEX_MESSAGING_LIST_MEMBERSHIPS`
-
-Key parameters:
-- `roomId` -- list all members of a specific room
-- `personEmail` -- check if a person is a member (requires `roomId`)
-- `personId` -- check by Webex person ID (requires `roomId`)
-- `teamId` -- filter by team association
-- `max` -- limit results
-
-Example prompt:
-> "List all members of room Y2lz... and tell me who the moderators are"
+示例提示词：
+> “创建一个名为 'New Messages' 的 Webhook，在房间 Y2lz... 中有新消息创建时 POST 到 https://my-app.com/hook”
 
 ---
 
-### 6. Search and Look Up People
+### 4. 管理团队成员资格
 
-Look up people in your Webex organization by email, display name, or ID.
+将人员添加到 Webex 团队，并可选择授予协调员（moderator）权限。
 
-**Tool:** `WEBEX_PEOPLE_LIST_PEOPLE`
+**工具：** `WEBEX_MESSAGING_CREATE_TEAM_MEMBERSHIP`
 
-Use to resolve names to person IDs before sending direct messages or adding team members.
+关键参数：
+- `teamId` -- 要添加人员的团队（必填）
+- `personEmail` -- 要添加人员的邮箱
+- `personId` -- Webex 人员 ID（邮箱的替代方案）
+- `isModerator` -- 设为 `true` 以授予协调员权限（默认 `false`）
 
-Example prompt:
-> "Find the Webex person ID for bob@company.com"
+请先使用 `WEBEX_LIST_TEAMS` 发现可用团队。
+
+示例提示词：
+> “将 alice@example.com 添加为团队 Y2lz... 的协调员”
 
 ---
 
-## 已知陷阱
+### 5. 审计房间成员资格
 
-| Pitfall | Details |
+查看房间中有哪些成员、验证特定人员的成员资格，或列出跨团队的成员资格。
+
+**工具：** `WEBEX_MESSAGING_LIST_MEMBERSHIPS`
+
+关键参数：
+- `roomId` -- 列出特定房间的所有成员
+- `personEmail` -- 检查某人是否为成员（需要 `roomId`）
+- `personId` -- 按 Webex 人员 ID 检查（需要 `roomId`）
+- `teamId` -- 按团队关联筛选
+- `max` -- 限制结果数量
+
+示例提示词：
+> “列出房间 Y2lz... 的所有成员，并告诉我谁是协调员”
+
+---
+
+### 6. 搜索和查找人员
+
+按邮箱、显示名称或 ID 在你的 Webex 组织中查找人员。
+
+**工具：** `WEBEX_PEOPLE_LIST_PEOPLE`
+
+用于在发送直接消息或添加团队成员之前，将姓名解析为人员 ID。
+
+示例提示词：
+> “查找 bob@company.com 的 Webex 人员 ID”
+
+---
+
+## 常见陷阱
+
+| 陷阱 | 详情 |
 |---------|---------|
-| Webhook auto-disable | Target URL must respond with HTTP 2xx; 100 failures in 5 minutes disables the webhook automatically |
-| Message size limit | Both `text` and `markdown` have a 7439-byte maximum |
-| One file per message | The `files` array accepts a list but only one attachment is actually supported per message |
-| One card per message | Only one Adaptive Card attachment is supported per message |
-| Mutually exclusive targets | `roomId` and `toPersonEmail`/`toPersonId` cannot be used together when sending messages |
-| Room update requires title | `WEBEX_UPDATE_ROOM` always requires the `title` parameter, even when only changing lock status or team |
-| orgPublicSpaces conflicts | Cannot combine `orgPublicSpaces` with `teamId`, `type`, or `sortBy` when listing rooms |
-| Webhook read scope | Creating a webhook requires `read` scope on the monitored resource type |
-| Membership filter requires roomId | `personEmail` and `personId` filters in list memberships require `roomId` unless you are a Compliance Officer |
+| Webhook 自动禁用 | 目标 URL 必须响应 HTTP 2xx；5 分钟内失败 100 次会自动禁用该 Webhook |
+| 消息大小限制 | `text` 和 `markdown` 的最大值均为 7439 字节 |
+| 每条消息仅一个文件 | `files` 数组可以接受一个列表，但每条消息实际上只支持一个附件 |
+| 每条消息仅一张卡片 | 每条消息只支持一个 Adaptive Card 附件 |
+| 目标互斥 | 发送消息时 `roomId` 与 `toPersonEmail`/`toPersonId` 不能同时使用 |
+| 更新房间需要标题 | `WEBEX_UPDATE_ROOM` 始终要求提供 `title` 参数，即使只是更改锁定状态或团队 |
+| orgPublicSpaces 冲突 | 列出房间时，`orgPublicSpaces` 不能与 `teamId`、`type` 或 `sortBy` 组合使用 |
+| Webhook 读取范围 | 创建 Webhook 需要对所监控资源类型具有 `read` 权限范围 |
+| 成员筛选需要 roomId | 在列出成员资格时，`personEmail` 和 `personId` 过滤器需要 `roomId`，除非你是合规官（Compliance Officer） |
 
 ---
 
 ## 快速参考
 
-| Action | Tool Slug | Key Params |
+| 操作 | 工具 Slug | 关键参数 |
 |--------|-----------|------------|
-| Send message | `WEBEX_MESSAGING_CREATE_MESSAGE` | `roomId`, `text`/`markdown`, `toPersonEmail` |
-| List rooms | `WEBEX_MESSAGING_LIST_ROOMS` | `type`, `sortBy`, `max` |
-| Get room details | `WEBEX_MESSAGING_GET_ROOM_DETAILS` | `roomId` |
-| Update room | `WEBEX_UPDATE_ROOM` | `roomId`, `title` |
-| Delete message | `WEBEX_MESSAGING_DELETE_MESSAGE` | `messageId` |
-| Get message details | `WEBEX_MESSAGING_GET_MESSAGE_DETAILS` | `messageId` |
-| Create webhook | `WEBEX_WEBHOOKS_CREATE_WEBHOOK` | `name`, `targetUrl`, `resource`, `event` |
-| List webhooks | `WEBEX_LIST_WEBHOOKS` | `max`, `ownedBy` |
-| Get webhook | `WEBEX_WEBHOOKS_GET_WEBHOOK` | `webhookId` |
-| Add team member | `WEBEX_MESSAGING_CREATE_TEAM_MEMBERSHIP` | `teamId`, `personEmail`, `isModerator` |
-| List memberships | `WEBEX_MESSAGING_LIST_MEMBERSHIPS` | `roomId`, `personEmail`, `max` |
-| List people | `WEBEX_PEOPLE_LIST_PEOPLE` | email, displayName, ID filters |
-| List teams | `WEBEX_LIST_TEAMS` | `max` |
+| 发送消息 | `WEBEX_MESSAGING_CREATE_MESSAGE` | `roomId`、`text`/`markdown`、`toPersonEmail` |
+| 列出房间 | `WEBEX_MESSAGING_LIST_ROOMS` | `type`、`sortBy`、`max` |
+| 获取房间详情 | `WEBEX_MESSAGING_GET_ROOM_DETAILS` | `roomId` |
+| 更新房间 | `WEBEX_UPDATE_ROOM` | `roomId`、`title` |
+| 删除消息 | `WEBEX_MESSAGING_DELETE_MESSAGE` | `messageId` |
+| 获取消息详情 | `WEBEX_MESSAGING_GET_MESSAGE_DETAILS` | `messageId` |
+| 创建 Webhook | `WEBEX_WEBHOOKS_CREATE_WEBHOOK` | `name`、`targetUrl`、`resource`、`event` |
+| 列出 Webhook | `WEBEX_LIST_WEBHOOKS` | `max`、`ownedBy` |
+| 获取 Webhook | `WEBEX_WEBHOOKS_GET_WEBHOOK` | `webhookId` |
+| 添加团队成员 | `WEBEX_MESSAGING_CREATE_TEAM_MEMBERSHIP` | `teamId`、`personEmail`、`isModerator` |
+| 列出成员资格 | `WEBEX_MESSAGING_LIST_MEMBERSHIPS` | `roomId`、`personEmail`、`max` |
+| 列出人员 | `WEBEX_PEOPLE_LIST_PEOPLE` | 邮箱、displayName、ID 过滤器 |
+| 列出团队 | `WEBEX_LIST_TEAMS` | `max` |
 
 ---
 

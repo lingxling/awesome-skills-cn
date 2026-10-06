@@ -1,0 +1,9 @@
+#mpa_vJan21_CHOCOPhlAnSGB_202103
+#clade_name	NCBI_tax_id	sampleA	sampleB
+k__Bacteria	2	100.0	100.0
+k__Bacteria|p__Firmicutes	2|1239	60.0	30.0
+k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Lactobacillaceae|g__Lactobacillus	2|1239|91061|186826|33958|1578	60.0	30.0
+k__Bacteria|p__Firmicutes|c__Bacilli|o__Lactobacillales|f__Lactobacillaceae|g__Lactobacillus|s__Lactobacillus_gasseri	2|1239|91061|186826|33958|1578|1596	60.0	30.0
+k__Bacteria|p__Bacteroidota	2|976	40.0	70.0
+k__Bacteria|p__Bacteroidota|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides	2|976|200643|171549|815|816	40.0	70.0
+k__Bacteria|p__Bacteroidota|c__Bacteroidia|o__Bacteroidales|f__Bacteroidaceae|g__Bacteroides|s__Bacteroides_uniformis	2|976|200643|171549|815|816|820	40.0	70.0

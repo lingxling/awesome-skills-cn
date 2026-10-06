@@ -101,7 +101,7 @@
 - [llmcouncil-router](https://clawskills.sh/skills/ashtiwariasu-llmcouncil-router) - 使用 LLM Council 的同行评审委员会排名将任何提示路由到表现最佳的 LLM。
 - [llmfit](https://clawskills.sh/skills/alexsjones-llmfit) - 检测本地硬件（RAM、CPU、GPU/VRAM）并推荐最佳适合的本地 LLM 模型，具有最佳量化。
 - [local-llama-tts](https://clawskills.sh/skills/wuxxin-local-llama-tts) - 使用 llama-tts (llama.cpp) 和 OuteTTS-1.0-0.6B 模型进行本地文本转语音。
-- [mantis-manager](https://clawskills.sh/skills/willykinfoussia/mantis-manager) - 通过官方 Mantis REST API 管理 Mantis Bug Tracker（问题、项目、用户、过滤器、配置）。
+- [mantis-manager](https://clawskills.sh/skills/willykinfoussia-mantis-manager) - 通过官方 Mantis REST API 管理 Mantis Bug Tracker（问题、项目、用户、过滤器、配置）。
 - [manifest-build](https://clawskills.sh/skills/brunobuddy-manifest-build) - 开源 LLM 路由和成本跟踪插件。
 - [matchmaking](https://clawskills.sh/skills/amirmabhout-matchmaking) - 代理配对 - 为你的人类找到有意义的联系。
 - [meeting-autopilot](https://clawskills.sh/skills/tkuehnl-meeting-autopilot) - 将会议记录转换为运营输出 — 行动项、决策、后续电子邮件草稿和工单。
@@ -146,7 +146,7 @@
 - [ted-talk](https://clawskills.sh/skills/leegitw-ted-talk) - 将技术见解转化为完整的 40-50 分钟 TED 风格演讲，包括具体例子和问答环节。
 - [togetherai-tts](https://clawskills.sh/skills/marcus20232023-togetherai-tts) - 使用 TogetherAI API 和 MiniMax speech-2.6-turbo 模型进行文本转语音。
 - [token-alert](https://clawskills.sh/skills/r00tid-token-alert) - 🚨 **监控会话令牌并在 75%/90%/95% 时获取警报**。
-- [token-guard](https://clawskills.sh/skills/edmonddantesj-token-guard) - <!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-TG01 -->。
+- [token-guard](https://clawskills.sh/skills/edmonddantesj-token-guard) - <!-- 🌌 Aoineco-Verified | S-DNA: AOI-2026-0213-SDNA-TG01 -->（原文仅为验证标记，无功能描述）。
 - [tokenguard](https://clawskills.sh/skills/g0head-tokenguard) - AI 代理的 API 成本守护者。
 - [tracking](https://clawskills.sh/skills/rzyen-hash-tracking) - 通过 GMGN.AI 跟踪 Base 链上的令牌。
 - [universal-skills-manager](https://clawskills.sh/skills/jacob-bd-universal-skills-manager) - AI 技能的主协调器。

@@ -1,42 +1,42 @@
 ---
 name: google-search-console-automation
-description: "Automate Google Search Console tasks via Rube MCP (Composio): query search analytics, list sites, inspect URLs, submit sitemaps, monitor search performance. Always search tools first for current schemas."
+description: "通过 Rube MCP（Composio）自动化 Google Search Console 任务：查询搜索分析数据、列出网站、检查 URL、提交站点地图、监控搜索表现。请始终先搜索工具以获取最新的模式定义。"
 requires:
   mcp: [rube]
 ---
 
-# Google Search Console Automation via Rube MCP
+# 通过 Rube MCP 实现 Google Search Console 自动化
 
-Query search analytics, inspect URLs, manage sitemaps, and monitor search performance using Google Search Console via Rube MCP (Composio).
+通过 Rube MCP（Composio）使用 Google Search Console 查询搜索分析数据、检查 URL、管理站点地图并监控搜索表现。
 
-**Toolkit docs**: [composio.dev/toolkits/google_search_console](https://composio.dev/toolkits/google_search_console)
+**工具包文档**：[composio.dev/toolkits/google_search_console](https://composio.dev/toolkits/google_search_console)
 
 ## 前置条件
-- Rube MCP 必须已连接（RUBE_SEARCH_TOOLS 可用）
-- Active connection via `RUBE_MANAGE_CONNECTIONS` with toolkit `google_search_console`
-- Verified site ownership or appropriate permissions in Google Search Console
-- 始终首先调用 `RUBE_SEARCH_TOOLS` 以获取当前工具架构
+- 必须已连接 Rube MCP（`RUBE_SEARCH_TOOLS` 可用）
+- 通过 `RUBE_MANAGE_CONNECTIONS` 对工具包 `google_search_console` 建立活跃连接
+- 在 Google Search Console 中拥有已验证的站点所有权或相应权限
+- 始终先调用 `RUBE_SEARCH_TOOLS` 以获取最新的工具模式
 
 ## 设置
-**获取 Rube MCP**: 在客户端配置中添加 `https://rube.app/mcp` 作为 MCP 服务器。无需 API 密钥 — 只需添加端点即可使用。
+**获取 Rube MCP**：在你的客户端配置中添加 `https://rube.app/mcp` 作为 MCP 服务器。无需 API 密钥——只需添加该端点即可使用。
 
-1. 通过确认 `RUBE_SEARCH_TOOLS` 响应来验证 Rube MCP 可用
-2. Call `RUBE_MANAGE_CONNECTIONS` with toolkit `google_search_console`
-3. 如果连接未处于 ACTIVE 状态，请按照返回的授权链接完成设置
+1. 通过确认 `RUBE_SEARCH_TOOLS` 有响应来验证 Rube MCP 是否可用
+2. 对工具包 `google_search_console` 调用 `RUBE_MANAGE_CONNECTIONS`
+3. 如果连接未处于 ACTIVE 状态，按返回的身份验证链接完成设置
 4. 在运行任何工作流之前，确认连接状态显示为 ACTIVE
 
-## Core Workflows
+## 核心工作流
 
-### 1. List All Verified Sites
-Use `GOOGLE_SEARCH_CONSOLE_LIST_SITES` to retrieve all sites the authenticated user owns or has access to.
+### 1. 列出所有已验证的网站
+使用 `GOOGLE_SEARCH_CONSOLE_LIST_SITES` 检索已认证用户拥有或有权访问的所有网站。
 ```
 Tool: GOOGLE_SEARCH_CONSOLE_LIST_SITES
 Parameters: (none required)
 Returns: List of site entries with siteUrl and permissionLevel
 ```
 
-### 2. Query Search Analytics
-Use `GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY` to get search performance data including clicks, impressions, CTR, and position.
+### 2. 查询搜索分析数据
+使用 `GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY` 获取搜索表现数据，包括点击量、展示量、点击率和排名位置。
 ```
 Tool: GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY
 Parameters:
@@ -52,8 +52,8 @@ Parameters:
   - data_state: "final" (default), "all", "hourly_all"
 ```
 
-### 3. Inspect a URL
-Use `GOOGLE_SEARCH_CONSOLE_INSPECT_URL` to check the indexing status and issues for a specific URL.
+### 3. 检查某个 URL
+使用 `GOOGLE_SEARCH_CONSOLE_INSPECT_URL` 检查特定 URL 的索引状态和问题。
 ```
 Tool: GOOGLE_SEARCH_CONSOLE_INSPECT_URL
 Parameters:
@@ -62,8 +62,8 @@ Parameters:
   - language_code: BCP-47 language (default: "en-US")
 ```
 
-### 4. List Sitemaps
-Use `GOOGLE_SEARCH_CONSOLE_LIST_SITEMAPS` to retrieve all sitemaps submitted for a site.
+### 4. 列出站点地图
+使用 `GOOGLE_SEARCH_CONSOLE_LIST_SITEMAPS` 检索某个网站已提交的所有站点地图。
 ```
 Tool: GOOGLE_SEARCH_CONSOLE_LIST_SITEMAPS
 Parameters:
@@ -71,8 +71,8 @@ Parameters:
   - sitemap_index: Specific sitemap index URL to list sitemaps from
 ```
 
-### 5. Submit a Sitemap
-Use `GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP` to register or resubmit a sitemap for indexing.
+### 5. 提交站点地图
+使用 `GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP` 注册或重新提交一个站点地图以供索引。
 ```
 Tool: GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP
 Parameters:
@@ -80,8 +80,8 @@ Parameters:
   - feedpath (required): Full sitemap URL (e.g., "https://www.example.com/sitemap.xml")
 ```
 
-### 6. Get Sitemap Details
-Use `GOOGLE_SEARCH_CONSOLE_GET_SITEMAP` to retrieve information about a specific submitted sitemap.
+### 6. 获取站点地图详情
+使用 `GOOGLE_SEARCH_CONSOLE_GET_SITEMAP` 检索某个已提交站点地图的信息。
 ```
 Tool: GOOGLE_SEARCH_CONSOLE_GET_SITEMAP
 Parameters:
@@ -89,35 +89,35 @@ Parameters:
   - feedpath (required): Sitemap URL to retrieve details for
 ```
 
-## Common Patterns
+## 常见模式
 
-- **Performance monitoring**: Use `GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY` with `dimensions: ["date"]` over a date range to track daily search performance trends.
-- **Top queries report**: Use `GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY` with `dimensions: ["query"]` to find the most clicked search terms.
-- **Page-level analysis**: Use `dimensions: ["page"]` to identify top-performing pages, then `dimensions: ["query", "page"]` to see which queries drive traffic to each page.
-- **Indexing audit**: Use `GOOGLE_SEARCH_CONSOLE_INSPECT_URL` to check the indexing status of important pages.
-- **Sitemap management**: Use `GOOGLE_SEARCH_CONSOLE_LIST_SITEMAPS` to verify submitted sitemaps, then `GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP` to submit new or updated ones.
-- **Country/device breakdown**: Use `dimensions: ["country", "device"]` to understand geographic and device-type distribution of search traffic.
-- **Filter for specific queries**: Use `dimension_filter_groups` with `contains` or `includingRegex` operators to focus on specific keyword groups.
+- **表现监控**：使用 `GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY` 并设置 `dimensions: ["date"]`，在一段日期范围内跟踪每日搜索表现趋势。
+- **热门查询报告**：使用 `GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY` 并设置 `dimensions: ["query"]`，找出点击量最高的搜索词。
+- **页面级分析**：使用 `dimensions: ["page"]` 识别表现最佳的页面，再用 `dimensions: ["query", "page"]` 查看哪些查询为每个页面带来流量。
+- **索引审计**：使用 `GOOGLE_SEARCH_CONSOLE_INSPECT_URL` 检查重要页面的索引状态。
+- **站点地图管理**：使用 `GOOGLE_SEARCH_CONSOLE_LIST_SITEMAPS` 核实已提交的站点地图，然后用 `GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP` 提交新的或更新后的站点地图。
+- **国家/设备细分**：使用 `dimensions: ["country", "device"]` 了解搜索流量的地理和设备类型分布。
+- **筛选特定查询**：使用带 `contains` 或 `includingRegex` 操作符的 `dimension_filter_groups`，聚焦于特定关键词组。
 
-## 已知陷阱
+## 常见陷阱
 
-- **Site URL format matters**: URL-prefix properties use the full URL with protocol and trailing slash (e.g., `https://www.example.com/`). Domain properties use the `sc-domain:` prefix (e.g., `sc-domain:example.com`). Using the wrong format will return empty results or errors.
-- **Date range limits**: Data is typically available with a 2-3 day delay. `data_state: "all"` includes fresher data that may still change. `hourly_all` only works for dates within the last 3 days.
-- **Row limit pagination**: The API returns top results sorted by clicks (or by date when grouping by date). For complete data, paginate using `start_row` with the `row_limit`.
-- **Max 25,000 rows per request**: Even with pagination, each request returns at most 25,000 rows. For very large datasets, narrow your date range or add dimension filters.
-- **Inspection URL must match site**: The `inspection_url` must be a page under the `site_url` property. Cross-property inspections will fail.
-- **Sitemap must be accessible**: `GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP` requires the sitemap file to be publicly accessible at the specified URL and properly formatted as XML.
-- **Results sorted by clicks**: By default, analytics results are sorted by click count descending, except when grouping by `date` (which sorts by date ascending).
+- **站点 URL 格式很重要**：URL 前缀类型的属性使用带协议和末尾斜杠的完整 URL（例如 `https://www.example.com/`）。域名属性使用 `sc-domain:` 前缀（例如 `sc-domain:example.com`）。格式错误会返回空结果或报错。
+- **日期范围限制**：数据通常会有 2-3 天的延迟。`data_state: "all"` 包含可能仍会变化的更新数据。`hourly_all` 仅适用于最近 3 天内的日期。
+- **行数限制与分页**：API 返回按点击量排序的最高结果（按日期分组时则按日期排序）。要获取完整数据，请使用 `start_row` 配合 `row_limit` 进行分页。
+- **每次请求最多 25,000 行**：即使分页，每次请求最多也只返回 25,000 行。对于非常大的数据集，请缩小日期范围或添加维度过滤器。
+- **检查 URL 必须与站点匹配**：`inspection_url` 必须是 `site_url` 属性下的一个页面。跨属性检查将会失败。
+- **站点地图必须可访问**：`GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP` 要求站点地图文件在指定 URL 上可公开访问，并且是正确格式的 XML。
+- **结果按点击量排序**：默认情况下，分析结果按点击数降序排列，但按 `date` 分组时例外（此时按日期升序排列）。
 
 ## 快速参考
-| Action | Tool | Key Parameters |
+| 操作 | 工具 | 关键参数 |
 |--------|------|----------------|
-| List sites | `GOOGLE_SEARCH_CONSOLE_LIST_SITES` | (none) |
-| Search analytics | `GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY` | `site_url`, `start_date`, `end_date`, `dimensions` |
-| Inspect URL | `GOOGLE_SEARCH_CONSOLE_INSPECT_URL` | `inspection_url`, `site_url` |
-| List sitemaps | `GOOGLE_SEARCH_CONSOLE_LIST_SITEMAPS` | `site_url` |
-| Submit sitemap | `GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP` | `site_url`, `feedpath` |
-| Get sitemap info | `GOOGLE_SEARCH_CONSOLE_GET_SITEMAP` | `site_url`, `feedpath` |
+| 列出网站 | `GOOGLE_SEARCH_CONSOLE_LIST_SITES` | (none) |
+| 搜索分析 | `GOOGLE_SEARCH_CONSOLE_SEARCH_ANALYTICS_QUERY` | `site_url`, `start_date`, `end_date`, `dimensions` |
+| 检查 URL | `GOOGLE_SEARCH_CONSOLE_INSPECT_URL` | `inspection_url`, `site_url` |
+| 列出站点地图 | `GOOGLE_SEARCH_CONSOLE_LIST_SITEMAPS` | `site_url` |
+| 提交站点地图 | `GOOGLE_SEARCH_CONSOLE_SUBMIT_SITEMAP` | `site_url`, `feedpath` |
+| 获取站点地图信息 | `GOOGLE_SEARCH_CONSOLE_GET_SITEMAP` | `site_url`, `feedpath` |
 
 ---
 *由 [Composio](https://composio.dev) 提供支持*

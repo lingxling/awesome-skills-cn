@@ -1,6 +1,6 @@
 ---
 name: Shortcut Automation
-description: "Automate project management workflows in Shortcut -- create stories, manage tasks, track epics, and organize workflows through natural language commands."
+description: "自动化 Shortcut 中的项目管理工作流——创建故事（stories）、管理任务、跟踪 epics，并通过自然语言命令组织工作流。"
 requires:
   mcp:
     - rube
@@ -8,150 +8,150 @@ requires:
 
 # Shortcut Automation
 
-Automate your Shortcut project management operations directly from Claude Code. Create and list stories, add tasks and comments, batch-create stories, and navigate workflows -- all without leaving your terminal.
+直接从 Claude Code 自动化你的 Shortcut 项目管理操作。创建和列出故事（stories）、添加任务和评论、批量创建故事，并浏览工作流——全部无需离开你的终端。
 
-**Toolkit docs:** [composio.dev/toolkits/shortcut](https://composio.dev/toolkits/shortcut)
+**工具包文档：** [composio.dev/toolkits/shortcut](https://composio.dev/toolkits/shortcut)
 
 ---
 
 ## 设置
 
-1. Add the Rube MCP server to your Claude Code config with URL: `https://rube.app/mcp`
-2. When prompted, authenticate your Shortcut account through the connection link provided
-3. Start automating your project management workflows with natural language
+1. 将 Rube MCP 服务器添加到你的 Claude Code 配置中，URL 为：`https://rube.app/mcp`
+2. 按提示通过提供的连接链接验证你的 Shortcut 账户
+3. 开始使用自然语言自动化你的项目管理工作流
 
 ---
 
-## Core Workflows
+## 核心工作流
 
-### 1. Create Stories
+### 1. 创建故事（Stories）
 
-Add new stories to your Shortcut workspace with full configuration.
+向你的 Shortcut 工作区添加具有完整配置的新故事。
 
-**Tool:** `SHORTCUT_CREATE_STORY`
-
-```
-Create a feature story called "Add dark mode support" in workflow state 500000001 with estimate 5 and label "frontend"
-```
-
-Key parameters for `SHORTCUT_CREATE_STORY`:
-- `name` (required) -- the story title
-- `workflow_state_id` -- the workflow state to place the story in (recommended over `project_id`)
-- `story_type` -- `"feature"`, `"bug"`, or `"chore"`
-- `description` -- story body/description
-- `estimate` -- numeric point estimate (or null for unestimated)
-- `epic_id` -- associate with an epic
-- `iteration_id` -- associate with an iteration
-- `labels` -- array of label objects with `name` (and optional `color`, `description`)
-- `owner_ids` -- array of member UUIDs to assign
-- `deadline` -- due date in ISO 8601 format
-- `tasks` -- inline task array with `description` and optional `complete`, `owner_ids`
-- `comments` -- inline comment array with `text`
-- `story_links` -- link stories with `verb` (`"blocks"`, `"duplicates"`, `"relates to"`)
-
-**Important:** Either `workflow_state_id` or `project_id` must be provided, but not both. `workflow_state_id` is recommended as Projects are being sunset in Shortcut.
-
-### 2. Batch Create Stories
-
-Create multiple stories in a single API call.
-
-**Tool:** `SHORTCUT_CREATE_MULTIPLE_STORIES`
+**工具：** `SHORTCUT_CREATE_STORY`
 
 ```
-Create 3 bug stories: "Login page 500 error", "Cart total rounding issue", and "Search results empty state broken"
+在工作流状态 500000001 中创建一个名为 "Add dark mode support" 的功能故事，估点为 5，标签为 "frontend"
 ```
 
-- Requires `stories` array where each element follows the same schema as `SHORTCUT_CREATE_STORY`
-- Each story in the array requires `name`
-- Efficient for bulk imports, sprint planning, or template-based story creation
+`SHORTCUT_CREATE_STORY` 的关键参数：
+- `name`（必填）—— 故事标题
+- `workflow_state_id` —— 放置故事所在的工作流状态（推荐优先使用，而非 `project_id`）
+- `story_type` —— `"feature"`、`"bug"` 或 `"chore"`
+- `description` —— 故事正文/描述
+- `estimate` —— 数值点数估计（或 null 表示未估计）
+- `epic_id` —— 关联某个 epic
+- `iteration_id` —— 关联某个迭代
+- `labels` —— 标签对象数组，包含 `name`（以及可选的 `color`、`description`）
+- `owner_ids` —— 要指派的成员 UUID 数组
+- `deadline` —— ISO 8601 格式的截止日期
+- `tasks` —— 内联任务数组，包含 `description` 以及可选的 `complete`、`owner_ids`
+- `comments` —— 内联评论数组，包含 `text`
+- `story_links` —— 使用 `verb`（`"blocks"`、`"duplicates"`、`"relates to"`）链接故事
 
-### 3. List Stories in a Project
+**重要：** `workflow_state_id` 或 `project_id` 必须二者选一提供。两者都提供或都不提供都会导致请求被拒绝。推荐使用 `workflow_state_id`，因为 Projects 功能正在被 Shortcut 淘汰。
 
-Retrieve all stories within a specific project.
+### 2. 批量创建故事
 
-**Tool:** `SHORTCUT_LIST_STORIES`
+在单次 API 调用中创建多个故事。
 
-```
-List all stories in project 42 with their descriptions
-```
-
-- Requires `project__public__id` (integer project ID)
-- Optional `includes_description: true` to include story descriptions in the response
-- Returns all stories with their attributes (status, type, estimate, etc.)
-
-### 4. Manage Story Tasks
-
-Create tasks (checklists) within stories for tracking sub-work.
-
-**Tool:** `SHORTCUT_CREATE_TASK`
-
-```
-Add a task "Write unit tests for dark mode toggle" to story 12345
-```
-
-Key parameters:
-- `story__public__id` (required) -- the parent story ID
-- `description` (required) -- the task description
-- `complete` -- boolean, defaults to false
-- `owner_ids` -- array of member UUIDs to assign the task
-- `external_id` -- ID from an external tool if imported
-
-### 5. Add Story Comments
-
-Post comments on stories for discussion and documentation.
-
-**Tool:** `SHORTCUT_CREATE_STORY_COMMENT`
+**工具：** `SHORTCUT_CREATE_MULTIPLE_STORIES`
 
 ```
-Add a comment to story 12345: "Reviewed the implementation -- looks good, but needs accessibility testing"
+创建 3 个缺陷故事："Login page 500 error"、"Cart total rounding issue" 和 "Search results empty state broken"
 ```
 
-Key parameters:
-- `story__public__id` (required) -- the story ID
-- `text` (required) -- the comment body
-- `author_id` -- member UUID (defaults to API token owner)
-- `parent_id` -- ID of parent comment for threaded replies
+- 需要 `stories` 数组，其中每个元素遵循与 `SHORTCUT_CREATE_STORY` 相同的结构
+- 数组中的每个故事都需要 `name`
+- 适用于批量导入、冲刺计划，或基于模板的故事创建
 
-### 6. Workflow and Project Discovery
+### 3. 列出项目中的故事
 
-List workflows and projects to resolve IDs for story creation.
+检索特定项目中的所有故事。
 
-**Tools:** `SHORTCUT_LIST_WORKFLOWS`, `SHORTCUT_LIST_PROJECTS`
+**工具：** `SHORTCUT_LIST_STORIES`
 
 ```
-Show me all workflows in our Shortcut workspace so I can find the right workflow state ID
+列出项目 42 中的所有故事及其描述
 ```
 
-- `SHORTCUT_LIST_WORKFLOWS` returns all workflows with their states (IDs, names, types)
-- `SHORTCUT_LIST_PROJECTS` returns all projects with their attributes
-- Use these to discover valid `workflow_state_id` and `project_id` values before creating stories
+- 需要 `project__public__id`（整数项目 ID）
+- 可选 `includes_description: true`，在响应中包含故事描述
+- 返回所有故事及其属性（状态、类型、估点等）
+
+### 4. 管理故事任务
+
+在故事内创建任务（检查清单），用于跟踪子工作。
+
+**工具：** `SHORTCUT_CREATE_TASK`
+
+```
+为故事 12345 添加任务 "Write unit tests for dark mode toggle"
+```
+
+关键参数：
+- `story__public__id`（必填）—— 父故事 ID
+- `description`（必填）—— 任务描述
+- `complete` —— 布尔值，默认为 false
+- `owner_ids` —— 要指派该任务的成员 UUID 数组
+- `external_id` —— 如从外部工具导入时的 ID
+
+### 5. 添加故事评论
+
+在故事上发布评论，用于讨论和记录。
+
+**工具：** `SHORTCUT_CREATE_STORY_COMMENT`
+
+```
+在故事 12345 上添加评论："已审查实现——看起来不错，但需要进行无障碍测试"
+```
+
+关键参数：
+- `story__public__id`（必填）—— 故事 ID
+- `text`（必填）—— 评论内容
+- `author_id` —— 成员 UUID（默认为 API 令牌所有者）
+- `parent_id` —— 父评论的 ID，用于线程式回复
+
+### 6. 工作流和项目发现
+
+列出工作流和项目，以解析用于创建故事的 ID。
+
+**工具：** `SHORTCUT_LIST_WORKFLOWS`、`SHORTCUT_LIST_PROJECTS`
+
+```
+显示我们 Shortcut 工作区中的所有工作流，以便我找到正确的工作流状态 ID
+```
+
+- `SHORTCUT_LIST_WORKFLOWS` 返回所有工作流及其状态（ID、名称、类型）
+- `SHORTCUT_LIST_PROJECTS` 返回所有项目及其属性
+- 在创建故事之前，使用这些工具发现有效的 `workflow_state_id` 和 `project_id` 值
 
 ---
 
-## 已知陷阱
+## 常见陷阱
 
-- **`workflow_state_id` vs `project_id`:** `SHORTCUT_CREATE_STORY` requires exactly one of these. Providing both or neither causes a rejection. Prefer `workflow_state_id` since Projects are being sunset.
-- **Projects are being sunset:** Shortcut is deprecating Projects in favor of workflow-based organization. Use `workflow_state_id` for new stories.
-- **Label creation is inline:** Labels in the `labels` array are created on-the-fly if they do not exist. The `name` field is required for each label object.
-- **Story type defaults:** If `story_type` is omitted, it defaults to `"feature"`. Always set it explicitly for bugs and chores.
-- **Batch limits:** `SHORTCUT_CREATE_MULTIPLE_STORIES` processes all stories in a single request. Very large batches may time out -- keep batches under 25 stories.
-- **Integer IDs for stories/projects:** Story and project IDs are integers, not UUIDs. Member and group IDs are UUIDs. Mixing these formats causes errors.
-- **`move_to` positioning:** The `move_to` field (`"first"` or `"last"`) moves the story within its workflow state, not across states.
+- **`workflow_state_id` 与 `project_id` 的区别：** `SHORTCUT_CREATE_STORY` 恰好需要这两者之一。两者都提供或都不提供都会导致请求被拒绝。优先使用 `workflow_state_id`，因为 Projects 功能正在被淘汰。
+- **Projects 功能正在被淘汰：** Shortcut 正在用基于工作流的组织方式取代 Projects。对于新故事，请使用 `workflow_state_id`。
+- **标签创建是内联的：** `labels` 数组中的标签如果不存在会被即时创建。每个标签对象都需要 `name` 字段。
+- **故事类型的默认值：** 如果省略 `story_type`，默认为 `"feature"`。对于缺陷和杂务，请始终明确设置。
+- **批量限制：** `SHORTCUT_CREATE_MULTIPLE_STORIES` 在单次请求中处理所有故事。非常大的批次可能会超时——请将批次保持在 25 个故事以下。
+- **故事/项目使用整数 ID：** 故事和项目 ID 是整数，而不是 UUID。成员和组 ID 是 UUID。混用这些格式会导致错误。
+- **`move_to` 定位：** `move_to` 字段（`"first"` 或 `"last"`）会在其工作流状态内移动故事，而不是跨状态移动。
 
 ---
 
 ## 快速参考
 
-| Tool Slug | Description |
+| 工具标识 | 描述 |
 |---|---|
-| `SHORTCUT_CREATE_STORY` | Create a single story (requires `name` + `workflow_state_id` or `project_id`) |
-| `SHORTCUT_CREATE_MULTIPLE_STORIES` | Batch-create multiple stories (requires `stories` array) |
-| `SHORTCUT_LIST_STORIES` | List stories in a project (requires `project__public__id`) |
-| `SHORTCUT_CREATE_TASK` | Create a task in a story (requires `story__public__id`, `description`) |
-| `SHORTCUT_CREATE_STORY_COMMENT` | Add a comment to a story (requires `story__public__id`, `text`) |
-| `SHORTCUT_CREATE_STORY_FROM_TEMPLATE` | Create a story from a template |
-| `SHORTCUT_LIST_WORKFLOWS` | List all workflows and their states |
-| `SHORTCUT_LIST_PROJECTS` | List all projects |
+| `SHORTCUT_CREATE_STORY` | 创建单个故事（需要 `name` + `workflow_state_id` 或 `project_id`） |
+| `SHORTCUT_CREATE_MULTIPLE_STORIES` | 批量创建多个故事（需要 `stories` 数组） |
+| `SHORTCUT_LIST_STORIES` | 列出项目中的故事（需要 `project__public__id`） |
+| `SHORTCUT_CREATE_TASK` | 在故事中创建任务（需要 `story__public__id`、`description`） |
+| `SHORTCUT_CREATE_STORY_COMMENT` | 向故事添加评论（需要 `story__public__id`、`text`） |
+| `SHORTCUT_CREATE_STORY_FROM_TEMPLATE` | 从模板创建故事 |
+| `SHORTCUT_LIST_WORKFLOWS` | 列出所有工作流及其状态 |
+| `SHORTCUT_LIST_PROJECTS` | 列出所有项目 |
 
 ---
 

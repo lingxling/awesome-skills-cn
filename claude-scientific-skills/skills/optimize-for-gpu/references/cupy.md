@@ -1,5 +1,8 @@
 # CuPy Reference
 
+> Review: 2026-10-01. Code below is illustrative unless explicitly described as CPU-tested.
+> GPU execution, performance, GDS, and multi-GPU behavior require validation on target hardware.
+
 CuPy is a NumPy/SciPy-compatible array library for GPU-accelerated computing. It wraps NVIDIA's optimized libraries (cuBLAS, cuFFT, cuSOLVER, cuSPARSE, cuRAND) so standard array operations are already highly tuned. Most NumPy code works by simply changing the import.
 
 > **Full documentation:** https://docs.cupy.dev/en/stable/
@@ -25,14 +28,15 @@ CuPy is a NumPy/SciPy-compatible array library for GPU-accelerated computing. It
 
 ## Installation and Setup
 
-Always use `uv add` (never `pip install` or `conda install`) in all install instructions, docstrings, comments, and error messages.
+Use `uv add` in standalone examples; follow the user's existing project package manager when one
+is already configured.
 
 ```bash
-uv add cupy-cuda12x    # For CUDA 12.x
-uv add cupy-cuda13x    # For CUDA 13.x
+uv add "cupy-cuda12x==14.2.*"    # For CUDA 12.x
+uv add "cupy-cuda13x==14.2.*"    # For CUDA 13.x
 ```
 
-CuPy v14 (current) requires CUDA >= 12.0, Python >= 3.10, and NumPy >= 2.0 (it follows NumPy 2 type-promotion rules, NEP 50), and supports free-threaded Python. The `[ctk]` extra (e.g. `cupy-cuda13x[ctk]`) pulls the required CUDA runtime components from PyPI, so only the NVIDIA driver needs to be pre-installed.
+CuPy 14.2 requires CUDA >= 12.0, Python >= 3.10, and NumPy >= 2.0 (it follows NumPy 2 type-promotion rules, NEP 50), and supports free-threaded Python. The `[ctk]` extra (e.g. `cupy-cuda13x[ctk]`) pulls the required CUDA runtime components from PyPI, so only the NVIDIA driver needs to be pre-installed.
 
 Verify:
 ```python
@@ -110,7 +114,7 @@ cp.random.randn(1000, 1000)                   # Standard normal
 cp.random.default_rng(42).normal(0, 1, 1000)  # Generator API
 ```
 
-CuPy's random supports a `dtype` argument (float32/float64) — unlike NumPy which always returns float64. Use `dtype=cp.float32` when you don't need double precision.
+Many CuPy random methods accept `dtype`; check each method. NumPy Generator.random also supports float32/float64. Choose precision from the numerical contract.
 
 ---
 
@@ -215,6 +219,8 @@ norms = l2norm(matrix, axis=1)  # Reduce along axis → vector
 For complete control over grid, blocks, shared memory — write raw CUDA.
 
 ```python
+import numpy as np
+
 kernel_code = r'''
 extern "C" __global__
 void vector_add(const float* a, const float* b, float* c, int n) {
@@ -233,7 +239,7 @@ c = cp.zeros(n, dtype=cp.float32)
 
 threads = 256
 blocks = (n + threads - 1) // threads
-vector_add((blocks,), (threads,), (a, b, c, n))  # (grid, block, args)
+vector_add((blocks,), (threads,), (a, b, c, np.int32(n)))  # CUDA int is int32
 ```
 
 **Important RawKernel caveats:**
@@ -260,11 +266,12 @@ For multi-kernel CUDA files or precompiled binaries:
 
 ```python
 module = cp.RawModule(code=cuda_source)       # From source string
-module = cp.RawModule(path='kernels.cu')      # From file
+from pathlib import Path
+module = cp.RawModule(code=Path('kernels.cu').read_text())  # CUDA source file
 module = cp.RawModule(path='kernels.cubin')   # From precompiled
 
 kernel = module.get_function('my_kernel')
-kernel((blocks,), (threads,), (args...))
+kernel((blocks,), (threads,), args)  # args is the kernel argument tuple
 ```
 
 ### JIT Kernel (cupyx.jit.rawkernel) — CUDA Kernels in Python Syntax
@@ -375,8 +382,10 @@ When using CuPy alongside cuDF/RAPIDS, align on a single allocator:
 
 ```python
 import rmm
-rmm.reinitialize(pool_allocator=True)
-cp.cuda.set_allocator(rmm.rmm_cupy_allocator)
+from rmm.allocators.cupy import rmm_cupy_allocator
+
+rmm.reinitialize(pool_allocator=True)  # Configure before allocating any live device arrays
+cp.cuda.set_allocator(rmm_cupy_allocator)
 ```
 
 ---
@@ -470,7 +479,7 @@ with cp.cuda.Device(1):
 
 ### Benchmarking (Critical First Step)
 
-**Never use `time.perf_counter()` or `%timeit` for GPU code** — they measure only CPU time, not GPU execution time. CuPy operations are asynchronous.
+An unsynchronized `time.perf_counter()` or `%timeit` measures enqueue latency. For end-to-end wall time, synchronize the relevant device/streams before starting and before stopping the timer. For GPU region timing use CUDA events or the benchmark helper below.
 
 ```python
 from cupyx.profiler import benchmark
@@ -481,7 +490,7 @@ print(result)  # Shows CPU and GPU elapsed times with statistics
 
 In IPython/Jupyter:
 ```python
-%load_ext cupy
+%load_ext cupyx.profiler
 %gpu_timeit my_function(args)
 ```
 
@@ -498,19 +507,23 @@ export CUPY_ACCELERATORS=cub          # CUB only (default)
 export CUPY_ACCELERATORS=cub,cutensor # Both (requires cuTENSOR installed)
 ```
 
-CUB accelerates: reductions (`sum`, `prod`, `amin`, `amax`, `argmin`, `argmax`), inclusive scans (`cumsum`), histograms, sparse matrix-vector multiply, and `ReductionKernel`. Can provide ~100x speedup for reductions.
+CUB accelerates reductions (`sum`, `prod`, `amin`, `amax`, `argmin`, `argmax`),
+inclusive scans (`cumsum`), histograms, sparse matrix-vector multiply, and `ReductionKernel`.
+The benefit depends on dtype, shape, axis, and hardware; benchmark the target operation.
 
 cuTENSOR accelerates: binary elementwise ufuncs, reduction, tensor contraction.
 
 ### Key Optimization Strategies
 
-1. **Prefer float32 over float64.** Consumer GPUs have 2x-32x higher float32 throughput. Use `dtype=cp.float32` when precision allows.
+1. **Prefer float32 over float64 when the numerical contract allows it.** Throughput differences
+depend on GPU architecture; validate accuracy and benchmark the target device.
 
 2. **Minimize CPU-GPU transfers.** Every `cp.asnumpy()` / `.get()` triggers synchronization and PCI-e transfer. Keep data on GPU as long as possible.
 
 3. **Use kernel fusion.** `@cp.fuse()` combines multiple elementwise operations into one kernel, eliminating intermediate arrays.
 
-4. **Batch operations.** Fewer large operations beat many small ones (kernel launch overhead ~5-20us each).
+4. **Batch operations.** Fewer large operations usually beat many small ones. Measure launch
+overhead on the target system rather than relying on a fixed latency.
 
 5. **Pre-allocate output arrays.** Use `out=` parameter in ufuncs to avoid repeated allocation:
    ```python
@@ -618,7 +631,7 @@ These are the behavioral differences that can cause bugs if you're not aware of 
 
 1. **Reductions return 0-d arrays, not scalars.** `cp.sum(a)` returns a 0-d `cupy.ndarray`, not a Python float. This avoids implicit GPU-CPU synchronization. Use `.item()` if you need a scalar.
 
-2. **Out-of-bounds indexing wraps silently.** NumPy raises `IndexError`; CuPy wraps around without error.
+2. **Out-of-bounds integer-array indexing can wrap silently.** Validate indices rather than relying on NumPy error behavior.
 
 3. **Duplicate indices in assignment are undefined.** `a[[0, 0]] = [1, 2]` — NumPy stores the last value; CuPy stores an undefined value (GPU race condition).
 
@@ -628,13 +641,13 @@ These are the behavioral differences that can cause bugs if you're not aware of 
 
 6. **CuPy ufuncs require CuPy arrays.** Unlike NumPy ufuncs, CuPy ufuncs don't accept lists or NumPy arrays — convert first.
 
-7. **Random seed arrays are hashed.** Array seeds produce less entropy than NumPy's approach.
+7. **Random streams differ.** The same seed does not produce the same sequence across NumPy and CuPy or guarantee identical streams across versions. Use shared input fixtures for numerical comparisons.
 
 ---
 
 ## Common Pitfalls
 
-1. **Measuring with CPU timers.** GPU operations are async. `time.perf_counter()` measures only the time to *enqueue* operations, not execute them. Always use `cupyx.profiler.benchmark()`.
+1. **Unsynchronized timing.** Use CUDA events/`cupyx.profiler.benchmark()` for device regions, or explicitly synchronize before and after wall-clock timing.
 
 2. **Unnecessary round-trips.** Every `cp.asnumpy()` / `.get()` syncs the GPU and copies data across PCI-e. Restructure code to keep data on GPU.
 

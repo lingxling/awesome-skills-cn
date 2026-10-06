@@ -1,6 +1,6 @@
 {
   "name": "aasb-web-wizard",
-  "version": "14.4.0",
+  "version": "18.15.0",
   "description": "Install the \"Web Wizard\" editorial skill bundle from Agentic Awesome Skills.",
   "author": {
     "name": "sickn33 and contributors",
@@ -27,7 +27,13 @@
       "Interactive",
       "Write"
     ],
-    "websiteURL": "https://github.com/sickn33/agentic-awesome-skills",
-    "brandColor": "#111827"
+    "websiteURL": "https://aaskills.tech/",
+    "privacyPolicyURL": "https://github.com/sickn33/agentic-awesome-skills/blob/main/PRIVACY.md",
+    "termsOfServiceURL": "https://github.com/sickn33/agentic-awesome-skills/blob/main/TERMS.md",
+    "brandColor": "#111827",
+    "defaultPrompt": [
+      "Use the \"Web Wizard\" skills to help me complete this task.",
+      "Review this project with the \"Web Wizard\" workflow."
+    ]
   }
 }
