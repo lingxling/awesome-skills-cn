@@ -5,6 +5,16 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [2.36.0] - 2026-10-07
+### 新增
+ - 新增 antigravity-awesome-skills 首批 398 个技能的中文翻译
+
+### 修复
+ - 补入被根目录 `build/` 忽略规则遗漏的 antigravity-awesome-skills `build` 技能源文件及参考文档
+
+### 变更
+ - 更新主 README.md 中 antigravity-awesome-skills 的技能总数与翻译进度（398/2652），项目总翻译进度更新为 6720/8974
+
 ## [2.35.0] - 2026-10-06
 ### 修复
  - 修复 test_run.py 只覆盖复制、从不删除文件，导致上游已删除/改名的技能（及其 SKILL_CN.md）一直残留的问题：同步后会自动清理上游已不存在的文件（保留原文仍存在的翻译文件）；本次共清理 9473 个过期文件（含 66 个过期的 _CN.md）

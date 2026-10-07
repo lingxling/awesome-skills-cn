@@ -357,7 +357,7 @@ awesome-skills-cn/
 | 来源仓库 | SKILL 数量 | README 翻译 | SKILL 翻译 | 状态 |
 |---------|-----------|------------|-----------|------|
 | anthropics-skills | 19 | ✓ | 19/19 | 已完成 |
-| antigravity-awesome-skills | 2552 | - | 0/2552 | 未开始 |
+| antigravity-awesome-skills | 2652 | - | 398/2652 | 进行中 |
 | awesome-openclaw-skills | 5202 | ✓ | 5202/5202 | 已完成 |
 | claude-scientific-skills | 177 | ✓ | 177/177 | 已完成 |
 | composio-skills | 832 | ✓ | 832/832 | 已完成 |
@@ -367,7 +367,7 @@ awesome-skills-cn/
 | ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-agent-skills | 9 | ✓ | 9/9 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| **总计** | **8874** | **75** | **6322/8874** | **已完成** |
+| **总计** | **8974** | **75** | **6720/8974** | **进行中** |
 
 
 ### anthropics-skills (19个)
@@ -392,14 +392,14 @@ awesome-skills-cn/
 - [x] [webapp-testing](anthropics-skills/skills/webapp-testing/SKILL_CN.md) - Web 应用测试
 - [x] [xlsx](anthropics-skills/skills/xlsx/SKILL_CN.md) - Excel 处理
 
-### antigravity-awesome-skills (2552个)
+### antigravity-awesome-skills (2652个)
 
-- [ ] 00-andruia-consultant
-- [ ] 10-andruia-skill-smith
-- [ ] 20-andruia-niche-intelligence
-- [ ] 3d-web-experience
-- [ ] ab-test-setup
-- [ ] ... (共 2552 个技能，详见项目目录)
+- [x] [00-andruia-consultant](antigravity-awesome-skills/skills/00-andruia-consultant/SKILL_CN.md)
+- [x] [10-andruia-skill-smith](antigravity-awesome-skills/skills/10-andruia-skill-smith/SKILL_CN.md)
+- [x] [20-andruia-niche-intelligence](antigravity-awesome-skills/skills/20-andruia-niche-intelligence/SKILL_CN.md)
+- [x] [3d-web-experience](antigravity-awesome-skills/skills/3d-web-experience/SKILL_CN.md)
+- [x] [ab-test-setup](antigravity-awesome-skills/skills/ab-test-setup/SKILL_CN.md)
+- [ ] ...（已翻译 398/2652 个技能，详见项目目录）
 
 ### awesome-openclaw-skills (5180个)
 
