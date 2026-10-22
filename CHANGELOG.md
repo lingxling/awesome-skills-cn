@@ -5,6 +5,13 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [Unreleased]
+### 新增
+ - 新增 datawebot-mcp 项目：README_CN.md 与 datawebot 技能的中文翻译（SKILL_CN.md），原文 SKILL.md 与 LICENSE 同步自上游
+
+### 变更
+ - 更新主 README.md 中的项目列表、项目结构、翻译进度（6721/8975）与致谢
+
 ## [2.36.0] - 2026-10-07
 ### 新增
  - 新增 antigravity-awesome-skills 首批 398 个技能的中文翻译
