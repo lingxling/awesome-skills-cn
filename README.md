@@ -11,6 +11,7 @@
 - [**Antigravity Awesome Skills**](https://github.com/sickn33/antigravity-awesome-skills) ([中文学习版](antigravity-awesome-skills/)) [![GitHub Stars](https://badgen.net/github/stars/sickn33/antigravity-awesome-skills)](https://github.com/sickn33/antigravity-awesome-skills) - 2552+ 通用代理技能集合（2552个技能）
 - [**Claude Scientific Skills**](https://github.com/K-Dense-AI/claude-scientific-skills) ([中文学习版](claude-scientific-skills/)) [![GitHub Stars](https://badgen.net/github/stars/K-Dense-AI/claude-scientific-skills)](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域（177个技能，已全部翻译）
 - [**Composio Awesome Claude Skills**](https://github.com/ComposioHQ/awesome-claude-skills) ([中文学习版](composiohq-awesome-claude-skills/)) [![GitHub Stars](https://badgen.net/github/stars/ComposioHQ/awesome-claude-skills)](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等（800+个技能，已全部翻译）
+- [**datawebot MCP**](https://github.com/datawebot/datawebot-mcp) ([中文学习版](datawebot-mcp/)) [![GitHub Stars](https://badgen.net/github/stars/datawebot/datawebot-mcp)](https://github.com/datawebot/datawebot-mcp) - datawebot 官方托管 MCP 服务的电商商品数据技能：跨在线商店搜索商品、列出每个卖家的价格和直达链接、对 Amazon 与 Shopify 运行数据提取任务（1个技能，已全部翻译）
 - [**Hugging Face Skills**](https://github.com/huggingface/skills) ([中文学习版](huggingface-skills/)) [![GitHub Stars](https://badgen.net/github/stars/huggingface/skills)](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能（25个技能，已全部翻译）
 - [**Obsidian Skills**](https://github.com/kepano/obsidian-skills) ([中文学习版](obsidian-skills/)) [![GitHub Stars](https://badgen.net/github/stars/kepano/obsidian-skills)](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等（6个技能，已全部翻译）
 - [**OpenAI Skills**](https://github.com/openai/skills) ([中文学习版](openai-skills/)) [![GitHub Stars](https://badgen.net/github/stars/openai/skills)](https://github.com/openai/skills) - OpenAI Codex 技能目录（44个技能，已全部翻译）
@@ -191,6 +192,10 @@ awesome-skills-cn/
 │       ├── adobe-automation/SKILL_CN.md     # Adobe 自动化
 │       ├── amara-automation/SKILL_CN.md     # Amara 自动化
 │       └── ...                # 更多第三方自动化技能 (共 832 个，已全部翻译)
+├── datawebot-mcp/              # datawebot/datawebot-mcp 项目
+│   ├── README_CN.md            # 项目说明文档中文翻译
+│   └── skills/datawebot/
+│       └── SKILL_CN.md        # 电商商品数据（datawebot MCP 服务）
 ├── huggingface-skills/         # huggingface/skills 项目
 │   ├── README_CN.md            # 项目说明文档中文翻译
 │   └── skills/
@@ -361,13 +366,14 @@ awesome-skills-cn/
 | awesome-openclaw-skills | 5202 | ✓ | 5202/5202 | 已完成 |
 | claude-scientific-skills | 177 | ✓ | 177/177 | 已完成 |
 | composio-skills | 832 | ✓ | 832/832 | 已完成 |
+| datawebot-mcp | 1 | ✓ | 1/1 | 已完成 |
 | huggingface-skills | 25 | ✓ | 25/25 | 已完成 |
 | obsidian-skills | 6 | ✓ | 6/6 | 已完成 |
 | openai-skills | 44 | ✓ | 44/44 | 已完成 |
 | ui-ux-pro-max-skill | 7 | ✓ | 7/7 | 已完成 |
 | vercel-labs-agent-skills | 9 | ✓ | 9/9 | 已完成 |
 | vercel-labs-skills | 1 | ✓ | 1/1 | 已完成 |
-| **总计** | **8974** | **75** | **6720/8974** | **进行中** |
+| **总计** | **8975** | **76** | **6721/8975** | **进行中** |
 
 
 ### anthropics-skills (19个)
@@ -449,6 +455,10 @@ awesome-skills-cn/
 - [x] [brand-guidelines](composiohq-awesome-claude-skills/brand-guidelines/SKILL_CN.md) - Anthropic 品牌样式指南
 - [x] [canvas-design](composiohq-awesome-claude-skills/canvas-design/SKILL_CN.md) - 视觉艺术和设计创作
 - [x] ... (共 864 个技能，详见项目目录)
+
+### datawebot-mcp (1个)
+
+- [x] [datawebot](datawebot-mcp/skills/datawebot/SKILL_CN.md) - 通过 datawebot MCP 服务获取电商商品数据
 
 ### huggingface-skills (25个)
 
@@ -572,6 +582,7 @@ awesome-skills-cn/
 - [Awesome OpenClaw Skills](https://github.com/VoltAgent/awesome-openclaw-skills) - OpenClaw 技能集合，涵盖 AI/LLM、浏览器自动化、开发工具、数据分析等领域
 - [Claude Scientific Skills](https://github.com/K-Dense-AI/claude-scientific-skills) - 科学研究技能集合，涵盖生物信息学、化学、医学、机器学习等领域
 - [Composio Awesome Claude Skills](https://github.com/ComposioHQ/awesome-claude-skills) - Claude 技能集合，包含文档处理、开发工具、数据分析、业务营销等
+- [datawebot MCP](https://github.com/datawebot/datawebot-mcp) - datawebot 官方托管 MCP 服务、Agent Skill 和 Claude Code 插件，提供电商商品数据
 - [Hugging Face Skills](https://github.com/huggingface/skills) - Hugging Face AI/ML 任务技能
 - [Obsidian Skills](https://github.com/kepano/obsidian-skills) - Obsidian 笔记应用技能集合，包含 Markdown 编辑、Bases 数据库、JSON Canvas、CLI 交互等
 - [OpenAI Skills](https://github.com/openai/skills) - OpenAI Codex 技能目录
